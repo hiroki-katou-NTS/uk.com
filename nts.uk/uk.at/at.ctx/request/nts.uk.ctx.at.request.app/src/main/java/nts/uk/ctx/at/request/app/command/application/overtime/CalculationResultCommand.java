@@ -26,7 +26,8 @@ public class CalculationResultCommand {
 		return new CalculationResult(
 				flag,
 				overTimeZoneFlag,
-				overStateOutput.toDomain(),
+				// case change date at mobile
+				overStateOutput == null ? null : overStateOutput.toDomain(),
 				CollectionUtil.isEmpty(applicationTimes) ?
 						Collections.emptyList() : 
 						applicationTimes.stream()

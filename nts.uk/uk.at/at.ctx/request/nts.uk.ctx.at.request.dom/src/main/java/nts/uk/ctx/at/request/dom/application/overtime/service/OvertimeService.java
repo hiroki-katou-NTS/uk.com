@@ -135,10 +135,12 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy
 			);
+	
 	/**
 	 * Refactor5 16_勤務種類・就業時間帯を選択する
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.16_勤務種類・就業時間帯を選択する
 	 * @param companyId
+	 * @param employeeId
 	 * @param dateOp
 	 * @param workTypeCode
 	 * @param workTimeCode
@@ -146,7 +148,7 @@ public interface OvertimeService {
 	 * @param endTimeSPR
 	 * @param actualContentDisplay
 	 * @param overtimeAppSet
-	 * @return 
+	 * @return
 	 */
 	public SelectWorkOutput selectWork(
 			String companyId,
@@ -251,7 +253,7 @@ public interface OvertimeService {
 			Boolean isProxy
 			);
 	/**
-	 * 
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
 	 * @param companyId
 	 * @param employeeId
 	 * @param dateOp
@@ -274,7 +276,7 @@ public interface OvertimeService {
 			);
 	
 	/**
-	 * Refactor5
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
 	 * @param companyId
 	 * @param employeeId
 	 * @param dateOp
@@ -298,5 +300,102 @@ public interface OvertimeService {
 			List<WorkType> worktypes
 			);
 	
+	// Mobile //
+	/**
+	 * Refactor5 
+	 * @param mode
+	 * @param companyId
+	 * @param employeeIdOptional
+	 * @param dateOptional
+	 * @param disOptional
+	 * @param appOptional
+	 * @param appDispInfoStartupOutput
+	 * @param overtimeAppAtr
+	 * @return
+	 */
+	public DisplayInfoOverTimeMobile startMobile(
+			Boolean mode,
+			String companyId,
+			Optional<String> employeeIdOptional,
+			Optional<GeneralDate> dateOptional,
+			Optional<DisplayInfoOverTime> disOptional,
+			Optional<AppOverTime> appOptional,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppAtr overtimeAppAtr);
+	/**
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請日を変更する
+	 * 申請日を変更する
+	 * @param companyId
+	 * @param date
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public DisplayInfoOverTime changeDateMobile(
+			String companyId,
+			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime
+			);
+	/**
+	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請時間の申請内容をチェックする
+	 * 申請時間の申請内容をチェックする
+	 * @param require
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkBeforeInsert(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime
+			);
+	/**
+	 * Refactor5 申請時間に移動する前の個別チェック処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請時間に移動する前の個別チェック処理
+	 * @param companyId
+	 * @param mode
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 */
+	public void checkBeforeMovetoAppTime(
+			String companyId,
+			Boolean mode,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime);
+
+	/**
+	 * Refactor5 勤務情報の申請内容をチェックする
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.勤務情報の申請内容をチェックする
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @param mode
+	 */
+	public void checkContentApp(
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
+			Boolean mode
+			);
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).ユースケース
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @param mode
+	 * @param employeeId
+	 * @param dateOp
+	 * @return
+	 */
+	public DisplayInfoOverTime calculateMobile(
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
+			Boolean mode,
+			String employeeId,
+			Optional<GeneralDate> dateOp
+			);
 	
 }

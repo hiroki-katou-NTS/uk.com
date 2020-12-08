@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -33,7 +34,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithmImpl;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -79,8 +83,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	@Inject
 	private OvertimeRepository overTimeRepository;
+	
 	@Inject
 	ApplicationApprovalService appRepository;
 	
@@ -109,7 +115,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Inject
-	NewBeforeRegister processBeforeRegister;
+	private NewBeforeRegister processBeforeRegister;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithmImpl;
+	
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -1034,6 +1044,239 @@ public class OvertimeServiceImpl implements OvertimeService {
 			infoWithDateApplication.setBreakTime(breakTime);
 			displayInfoOverTimeTemp.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
 		return displayInfoOverTimeTemp;
+	}
+
+	@Override
+	public DisplayInfoOverTimeMobile startMobile(
+			Boolean mode,
+			String companyId,
+			Optional<String> employeeIdOptional,
+			Optional<GeneralDate> dateOptional,
+			Optional<DisplayInfoOverTime> disOptional,
+			Optional<AppOverTime> appOptional,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppAtr overtimeAppAtr) {
+		DisplayInfoOverTimeMobile output = new DisplayInfoOverTimeMobile();
+		DisplayInfoOverTime displayInfoOverTime;
+		if (!mode) { // 修正モード
+			// INPUT「残業申請の表示情報」と「残業申請」を返す
+			output.setAppOverTimeOp(appOptional);
+			output.setDisplayInfoOverTime(disOptional.get());
+			return output;
+		}
+		// PCのアルゴリズム「01_初期起動の処理」を実行する
+		displayInfoOverTime = this.getInitData(
+				companyId,
+				dateOptional,
+				overtimeAppAtr,
+				appDispInfoStartupOutput,
+				Optional.empty(),
+				Optional.empty(),
+				false);
+		output.setDisplayInfoOverTime(displayInfoOverTime);	
+		return output;
+	}
+
+	@Override
+	public DisplayInfoOverTime changeDateMobile(
+			String companyId,
+			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime) {
+		
+		List<GeneralDate> dates = new ArrayList<>();
+		dates.add(date);
+		
+		// 申請表示情報(基準日関係あり)を取得する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithmImpl.getAppDispInfoWithDate(
+				companyId,
+				ApplicationType.OVER_TIME_APPLICATION,
+				dates,
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
+				true,
+				Optional.of(displayInfoOverTime.getOvertimeAppAtr()));
+		// 「残業申請の表示情報」を更新する
+		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		// 申請日に関する情報を取得する
+		InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
+				companyId,
+				Optional.of(date),
+				Optional.empty(),
+				Optional.empty(),
+				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
+				displayInfoOverTime.getAppDispInfoStartup(),
+				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+		
+		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+		// 「残業申請の表示情報」を更新して返す
+		if (displayInfoOverTime.getCalculationResultOp().isPresent()) {
+			displayInfoOverTime.getCalculationResultOp().get().setFlag(1);
+		} else {
+			CalculationResult calculationResult = new CalculationResult();
+			calculationResult.setFlag(1);
+			displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
+		}
+		
+		return displayInfoOverTime;
+	}
+
+	@Override
+	public List<ConfirmMsgOutput> checkBeforeInsert(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime) {
+		List<ConfirmMsgOutput> outputs = new ArrayList<ConfirmMsgOutput>();
+		// 申請する残業時間をチェックする
+		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		// 事前申請・実績超過チェック
+		List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
+		outputs.addAll(checkExcessList);
+		// 登録時の乖離時間チェックを行う
+		this.checkDivergenceTime(
+				require,
+				ApplicationType.OVER_TIME_APPLICATION,
+				Optional.of(appOverTime),
+				Optional.empty(),
+				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
+		// ３６上限チェック
+		
+		// 取得した「確認メッセージリスト」と「残業申請」を返す
+		return outputs;
+	}
+
+	@Override
+	public void checkBeforeMovetoAppTime(
+			String companyId,
+			Boolean mode,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime) {
+		// 勤務種類、就業時間帯チェックのメッセージを表示
+		otherCommonAlgorithm.checkWorkingInfo(
+				companyId,
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+		// 事前申請が必須か確認する
+		displayInfoOverTime.getInfoNoBaseDate()
+					       .getOverTimeAppSet()
+					       .getApplicationDetailSetting()
+					       .checkAdvanceApp(
+					    		   ApplicationType.OVER_TIME_APPLICATION,
+					    		   appOverTime.getPrePostAtr(),
+					    		   Optional.of(appOverTime),
+					    		   Optional.empty());
+		// 申請日の矛盾チェック
+		commonAlgorithmOverTime.commonAlgorithmAB(
+				companyId,
+				displayInfoOverTime,
+				appOverTime,
+				BooleanUtils.toInteger(mode));
+	}
+
+	@Override
+	public void checkContentApp(String companyId, DisplayInfoOverTime displayInfoOverTime, AppOverTime appOverTime,
+			Boolean mode) {
+		if (mode) { // 新規モード　の場合
+			// 2-1.新規画面登録前の処理
+			List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+					companyId,
+					EmploymentRootAtr.APPLICATION, // QA 112515 done
+					displayInfoOverTime.getIsProxy(),
+					appOverTime.getApplication(),
+					appOverTime.getOverTimeClf(),
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+					Collections.emptyList(), 
+					displayInfoOverTime.getAppDispInfoStartup());
+			
+		} else { // 詳細・照会モード　の場合
+			// 4-1.詳細画面登録前の処理
+			detailBeforeUpdate.processBeforeDetailScreenRegistration(
+					companyId,
+					appOverTime.getEmployeeID(),
+					appOverTime.getAppDate().getApplicationDate(),
+					EmploymentRootAtr.APPLICATION.value,
+					appOverTime.getAppID(),
+					appOverTime.getPrePostAtr(),
+					appOverTime.getVersion(),
+					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+					displayInfoOverTime.getAppDispInfoStartup());
+			
+		}
+		// 申請時間に移動する前の個別チェック処理
+		this.checkBeforeMovetoAppTime(
+				companyId,
+				mode,
+				displayInfoOverTime,
+				appOverTime);
+		
+	}
+
+	@Override
+	public DisplayInfoOverTime calculateMobile(String companyId, DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime, Boolean mode, String employeeId, Optional<GeneralDate> dateOp) {
+		
+		// 勤務情報の申請内容をチェックする
+		this.checkContentApp(
+				companyId,
+				displayInfoOverTime,
+				appOverTime,
+				mode);
+		if (displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == nts.uk.shr.com.enumcommon.NotUseAtr.USE) {
+			Integer prePost = displayInfoOverTime.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput()
+					.getPrePostAtr().value;
+				WorkContent workContent = new WorkContent();
+				if (appOverTime.getWorkInfoOp().isPresent()) {
+					workContent.setWorkTypeCode(appOverTime.getWorkInfoOp().get().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTypeCode().v()));
+					workContent.setWorkTimeCode(appOverTime.getWorkInfoOp().get().getWorkTimeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTimeCode().v()));
+				}
+				List<TimeZone> timeZones = new ArrayList<TimeZone>();
+				List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+				if (appOverTime.getWorkHoursOp().isPresent()) {
+					appOverTime.getWorkHoursOp().get()
+												.stream()
+												.forEach(x -> {
+													TimeWithDayAttr start = x.getTimeZone().getStartTime();
+													TimeWithDayAttr end = x.getTimeZone().getEndTime();
+													timeZones.add(new TimeZone(start, end));
+												});
+				}
+				if (appOverTime.getBreakTimeOp().isPresent()) {
+					appOverTime.getBreakTimeOp().get()
+							.stream()
+							.forEach(x -> {
+								TimeWithDayAttr start = x.getTimeZone().getStartTime();
+								TimeWithDayAttr end = x.getTimeZone().getEndTime();
+								breakTimes.add(new BreakTimeSheet(
+										new BreakFrameNo(x.getWorkNo().v()),
+										start,
+										end));
+							});
+				}
+				
+				
+				workContent.setTimeZones(timeZones);
+				workContent.setBreakTimes(breakTimes);
+			
+			// 計算処理を実行する
+			this.calculate(
+					companyId,
+					employeeId,
+					dateOp,
+					EnumAdaptor.valueOf(prePost, PrePostAtr.class),
+					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet(),
+					displayInfoOverTime.getAppDispInfoStartup()
+						.getAppDispInfoWithDateOutput()
+						.getOpPreAppContentDisplayLst()
+						.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+						.orElse(null),
+					displayInfoOverTime.getInfoWithDateApplicationOp()
+						.map(x -> x.getApplicationTime().orElse(null))
+						.orElse(null),
+					workContent);
+		}
+		
+		return displayInfoOverTime;
 	}
 
 	
