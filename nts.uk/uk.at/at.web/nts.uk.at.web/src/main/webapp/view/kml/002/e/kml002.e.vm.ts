@@ -15,12 +15,11 @@ module nts.uk.at.view.kml002.e {
 
     isEnableAddNew: KnockoutObservable<boolean> = ko.observable(true);
     isEnableDelete: KnockoutObservable<boolean> = ko.observable(false);
+    isTimeZoneSetting: KnockoutObservable<any> = ko.observable(null);
 
     constructor(params: any) {
       super();
       const vm = this;
-
-      //vm.createListOfStartTimes();
 
       vm.selectedAll.subscribe((newValue) => {
         if (newValue === null) return;
@@ -45,7 +44,7 @@ module nts.uk.at.view.kml002.e {
         vm.selectedAll(isSelectedAll);
       });
 
-      //get time zone that registed before
+      //get time zone that registered before
       vm.getWorkplaceTimeZoneById();
     }
 
@@ -67,7 +66,7 @@ module nts.uk.at.view.kml002.e {
         vm.$window.storage('REGISTER_TIME_ZONE').then((data) => {
           if (!_.isNil(data)) {
 
-            if(nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
+            if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
 
             let startTime: number = data.startTime,
               endTime: number = data.endTime;
@@ -92,7 +91,9 @@ module nts.uk.at.view.kml002.e {
 
     closeDialog() {
       const vm = this;
-      vm.$window.close();
+      vm.$window.storage('KML002_SCREEN_E_OUTPUT', { setting: vm.isTimeZoneSetting() }).then(() => {
+        vm.$window.close();
+      });      
     }
 
     createListOfStartTimes(data: Array<any>) {
@@ -121,10 +122,10 @@ module nts.uk.at.view.kml002.e {
       let newItem: StartTime = new StartTime(0, false, null);
       vm.addItem(newItem);
       if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
-      if( vm.listOfStartTimes().length <= 24 ) {
-        let last  = _.last(vm.listOfStartTimes());
+      if (vm.listOfStartTimes().length <= 24) {
+        let last = _.last(vm.listOfStartTimes());
         $('#starttime-' + last.id).focus();
-      }      
+      }
     }
 
     addItem(item: StartTime, isNew: boolean = false) {
@@ -137,13 +138,6 @@ module nts.uk.at.view.kml002.e {
       item.isChecked.subscribe((value) => {
         vm.listOfStartTimes.valueHasMutated();
       });
-
-      /* item.time.subscribe((value) => {        
-        $('#starttime-' + item.id).ntsError('clear');
-        if( value < -720 ||  value > 4260) {          
-          $('#starttime-' + item.id).ntsError('set', { messageId: "MsgB_16" }).focus();
-        }        
-      }); */
 
       vm.listOfStartTimes.push(item);
       if (isNew) $('#starttime-' + id).focus();
@@ -159,7 +153,7 @@ module nts.uk.at.view.kml002.e {
       //時間帯一覧は1～24で指定してください。
       if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 24) {
         vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {
-          $('.gridList').focus();
+          //$('.gridList').focus();
         });
         return;
       }
@@ -224,9 +218,11 @@ module nts.uk.at.view.kml002.e {
     getWorkplaceTimeZoneById() {
       const vm = this;
       vm.$blockui('show');
+      vm.listOfStartTimes([]);
       vm.$ajax(PATH.wkpTimeZonebyId).done((data) => {
-        if (!_.isNil(data)) {
+        if (!_.isNil(data) && data.length > 0) {
           vm.createListOfStartTimes(data);
+          vm.isTimeZoneSetting(true);
           vm.$blockui('hide');
         }
 
@@ -247,9 +243,11 @@ module nts.uk.at.view.kml002.e {
         params.push(x.time());
       });
 
-      vm.$ajax(PATH.wkpTimeZoneRegister, { 'timeZone': params }).done((data) => {
+      vm.$ajax(PATH.wkpTimeZoneRegister, { 'timeZone': params }).done(() => {            
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.$blockui('hide');
+          //vm.isTimeZoneSetting(true);
+          vm.getWorkplaceTimeZoneById();          
+          vm.$blockui('hide');         
         });
       }).fail().always(() => vm.$blockui('hide'));
     }
