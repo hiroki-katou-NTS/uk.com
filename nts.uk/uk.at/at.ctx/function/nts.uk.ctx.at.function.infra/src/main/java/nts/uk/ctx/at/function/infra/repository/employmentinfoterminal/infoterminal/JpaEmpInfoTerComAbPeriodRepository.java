@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.infra.entity.employmentinfoterminal.infoterminal.K
 @Stateless
 public class JpaEmpInfoTerComAbPeriodRepository extends JpaRepository implements EmpInfoTerComAbPeriodRepository {
 	
-	private final static String FIND_IN_PERIOD = "SELECT a FROM KfndtTrSignalAbNormal a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode = :code AND a.pk.preTimeSuccDate <= end AND a.lastestTimeSuccDate >= start ORDER BY a.pk.preTimeSuccDate ASC";
+	private final static String FIND_IN_PERIOD = "SELECT a FROM KfndtTrSignalAbNormal a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode = :code AND a.pk.preTimeSuccDate <= :end AND a.lastestTimeSuccDate >= :start ORDER BY a.pk.preTimeSuccDate ASC";
 
 	@Override
 	public void insert(EmpInfoTerComAbPeriod empInfoTerComAbPeriod) {
