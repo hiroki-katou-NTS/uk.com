@@ -38,7 +38,7 @@ module nts.uk.at.view.kmk004.l {
 						<div class="header_content">
 							<div data-bind="component: {
 								name: 'view-l-basic-setting',
-								params: params 
+								params: paramL 
 							}"></div>
 						</div>
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
@@ -107,6 +107,8 @@ module nts.uk.at.view.kmk004.l {
 		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+		paramL: IParam;
+		
 		constructor(private params: IParam){
 			super();
 		}
@@ -195,49 +197,36 @@ module nts.uk.at.view.kmk004.l {
 				isShowSelectAllButton: vm.isShowSelectAllButton(),
 				disableSelection: vm.disableSelection()
 			};
-			vm.params = {sidebarType : "Com_Person", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null};
+			vm.paramL = {sidebarType : "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null};
 			vm.selectedYear
 			.subscribe(() => {
 				if(vm.selectedYear != null) {
 					vm.existYear(true);
 				}
 			});
+			
+			vm.selectedCode.subscribe((newValue) => {
+				let selectedItem : UnitModel = _.find(vm.employeeList(), ['code', newValue]);
+				vm.currentItemName(selectedItem.code + " " + selectedItem.name);
+				vm.paramL.empId(newValue);
+				vm.paramL.titleName = vm.currentItemName();
+				
+			});
+			
 		}
 
 		mounted() {
 			let vm = this;
+			$('#com-kcp005').ntsListComponent(vm.listComponentOption);
 			$('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
-			});
-
-			$('#com-kcp005').ntsListComponent(vm.listComponentOption).done(() => {
-				if (vm.employeeList().length > 0) {
+				if (vm.employeeList().length > 0) 
 					vm.selectedCode(vm.employeeList()[0].code);
-				}
-				
-				vm.selectedCode.subscribe((newValue) => {
-					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
-						vm.currentItemName("");
-						return;
-					}
-					
-					let selectedItem = _.find(vm.employeeList(), emp => {
-						return emp.code == newValue;
-					});
-					
-					if (selectedItem) {
-						vm.currentItemName(selectedItem.code + " " + selectedItem.name);
-						vm.params.empId = newValue;
-						vm.params.titleName = vm.currentItemName();
-					}
 				});
-				vm.selectedCode.valueHasMutated();
-			});
-
 		}
 		
 		openViewP() {
 			let vm = this;
-			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL))
 		}
 	}
 
