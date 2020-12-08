@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_RPT_REMLST_OUTHDSP")
+@Table(name = "KFNMT_SPECIAL_HOLIDAY")
 public class KfnmtRptRemlstOuthdsp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,15 +27,15 @@ public class KfnmtRptRemlstOuthdsp extends ContractUkJpaEntity implements Serial
 	 * ID
 	 */
 	@EmbeddedId
-	public KfnmtRptRemlstOuthdspPk kfnmtRptRemlstOuthdspPk;
+	public KfnmtSpecialHolidayPk kfnmtSpecialHolidayPk;
 	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "CD", referencedColumnName = "CD") })
-	private KfnmtRptRemlstOutitem kfnmtRptRemlstOutitem;
+	private KfnmtRptRemlstOutitem kfnmtHdRemainManage;
 	
 	@Override
 	protected Object getKey() {
-		return kfnmtRptRemlstOuthdspPk;
+		return kfnmtSpecialHolidayPk;
 	}
 }

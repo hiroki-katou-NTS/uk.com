@@ -41,7 +41,7 @@ public class JpaEmpEstPriceGetMemento implements  EstimatedPriceSettingGetMement
 	@Override
 	public EstimateTargetClassification getTargetClassification() {
 		return EnumAdaptor.valueOf(
-				this.estimatePriceEmployment.getKscmtEstPriceEmpPK().getTargetCls(),
+				this.estimatePriceEmployment.getKscmtEstPriceEmpSetPK().getTargetCls(),
 				EstimateTargetClassification.class);
 	}
 

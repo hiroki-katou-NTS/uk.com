@@ -14,14 +14,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_VERTICAL_TS")
+@Table(name = "KSCST_VERT_TIME_SET")
 
 public class KscmtVerticalTs extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscmtVerticalTsPK kscstVerticalTimeSetPK;
+	public KscstVertTimeSetPK kscstVerticalTimeSetPK;
 	
 	/* 表示区分 */
 	@Column(name = "DISPLAY_ATR")

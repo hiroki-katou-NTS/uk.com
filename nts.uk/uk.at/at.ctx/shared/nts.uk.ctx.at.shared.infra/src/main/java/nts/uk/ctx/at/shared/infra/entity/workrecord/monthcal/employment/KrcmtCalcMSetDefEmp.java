@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_M_SET_DEF_EMP")
+@Table(name = "KRCST_EMP_DEFOR_M_CAL_SET")
 public class KrcmtCalcMSetDefEmp extends KrcstDeforMCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcMSetDefEmp extends KrcstDeforMCalSet implements Serializab
 
 	/** The krcst emp defor M cal set PK. */
 	@EmbeddedId
-	protected KrcmtCalcMSetDefEmpPK krcmtCalcMSetDefEmpPK;
+	protected KrcstEmpDeforMCalSetPK krcstEmpDeforMCalSetPK;
 
 	/**
 	 * Instantiates a new krcst emp defor M cal set.
@@ -45,7 +45,7 @@ public class KrcmtCalcMSetDefEmp extends KrcstDeforMCalSet implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtCalcMSetDefEmpPK != null ? krcmtCalcMSetDefEmpPK.hashCode() : 0);
+		hash += (krcstEmpDeforMCalSetPK != null ? krcstEmpDeforMCalSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -60,9 +60,9 @@ public class KrcmtCalcMSetDefEmp extends KrcstDeforMCalSet implements Serializab
 			return false;
 		}
 		KrcmtCalcMSetDefEmp other = (KrcmtCalcMSetDefEmp) object;
-		if ((this.krcmtCalcMSetDefEmpPK == null && other.krcmtCalcMSetDefEmpPK != null)
-				|| (this.krcmtCalcMSetDefEmpPK != null
-						&& !this.krcmtCalcMSetDefEmpPK.equals(other.krcmtCalcMSetDefEmpPK))) {
+		if ((this.krcstEmpDeforMCalSetPK == null && other.krcstEmpDeforMCalSetPK != null)
+				|| (this.krcstEmpDeforMCalSetPK != null
+						&& !this.krcstEmpDeforMCalSetPK.equals(other.krcstEmpDeforMCalSetPK))) {
 			return false;
 		}
 		return true;
@@ -75,7 +75,7 @@ public class KrcmtCalcMSetDefEmp extends KrcstDeforMCalSet implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcMSetDefEmpPK;
+		return this.krcstEmpDeforMCalSetPK;
 	}
 
 }

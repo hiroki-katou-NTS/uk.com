@@ -17,13 +17,13 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KshmtOutsideLangBrd.
+ * The Class KshstOverTimeLangBrd.
  */
 
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OUTSIDE_DETAIL_LANG")
+@Table(name = "KSHST_OUTSIDE_OT_BRD_LANG")
 public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -31,7 +31,7 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
     
     /** The kshst over time lang brd PK. */
     @EmbeddedId
-    protected KshmtOutsideDetailLangPK kshmtOutsideDetailLangPK;
+    protected KshstOutsideOtBrdLangPK kshstOutsideOtBrdLangPK;
     
     /** The name. */
     @Basic(optional = false)
@@ -47,21 +47,21 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
     /**
      * Instantiates a new kshst over time lang brd.
      *
-     * @param kshmtOutsideLangBrdPK the kshst over time lang brd PK
+     * @param kshstOverTimeLangBrdPK the kshst over time lang brd PK
      */
-    public KshmtOutsideDetailLang(KshmtOutsideDetailLangPK kshmtOutsideLangBrdPK) {
-        this.kshmtOutsideDetailLangPK = kshmtOutsideLangBrdPK;
+    public KshmtOutsideDetailLang(KshstOutsideOtBrdLangPK kshstOverTimeLangBrdPK) {
+        this.kshstOutsideOtBrdLangPK = kshstOverTimeLangBrdPK;
     }
 
     /**
      * Instantiates a new kshst over time lang brd.
      *
-     * @param kshmtOutsideLangBrdPK the kshst over time lang brd PK
+     * @param kshstOverTimeLangBrdPK the kshst over time lang brd PK
      * @param exclusVer the exclus ver
      * @param name the name
      */
-	public KshmtOutsideDetailLang(KshmtOutsideDetailLangPK kshmtOutsideLangBrdPK, String name) {
-		this.kshmtOutsideDetailLangPK = kshmtOutsideLangBrdPK;
+	public KshmtOutsideDetailLang(KshstOutsideOtBrdLangPK kshstOverTimeLangBrdPK, String name) {
+		this.kshstOutsideOtBrdLangPK = kshstOverTimeLangBrdPK;
 		this.name = name;
 	}
 
@@ -73,7 +73,7 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
      * @param languageId the language id
      */
     public KshmtOutsideDetailLang(String cid, short brdItemNo, String languageId) {
-        this.kshmtOutsideDetailLangPK = new KshmtOutsideDetailLangPK(cid, brdItemNo, languageId);
+        this.kshstOutsideOtBrdLangPK = new KshstOutsideOtBrdLangPK(cid, brdItemNo, languageId);
     }
 
    
@@ -84,7 +84,7 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtOutsideDetailLangPK != null ? kshmtOutsideDetailLangPK.hashCode() : 0);
+        hash += (kshstOutsideOtBrdLangPK != null ? kshstOutsideOtBrdLangPK.hashCode() : 0);
         return hash;
     }
 
@@ -98,9 +98,9 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
 			return false;
 		}
 		KshmtOutsideDetailLang other = (KshmtOutsideDetailLang) object;
-		if ((this.kshmtOutsideDetailLangPK == null && other.kshmtOutsideDetailLangPK != null)
-				|| (this.kshmtOutsideDetailLangPK != null
-						&& !this.kshmtOutsideDetailLangPK.equals(other.kshmtOutsideDetailLangPK))) {
+		if ((this.kshstOutsideOtBrdLangPK == null && other.kshstOutsideOtBrdLangPK != null)
+				|| (this.kshstOutsideOtBrdLangPK != null
+						&& !this.kshstOutsideOtBrdLangPK.equals(other.kshstOutsideOtBrdLangPK))) {
 			return false;
 		}
 		return true;
@@ -111,7 +111,7 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KshmtOutsideLangBrd[ kshmtOutsideLangBrdPK=" + kshmtOutsideDetailLangPK + " ]";
+        return "entity.KshstOverTimeLangBrd[ kshstOverTimeLangBrdPK=" + kshstOutsideOtBrdLangPK + " ]";
     }
 
 	/* (non-Javadoc)
@@ -119,7 +119,7 @@ public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtOutsideDetailLangPK;
+		return this.kshstOutsideOtBrdLangPK;
 	}
 	
     

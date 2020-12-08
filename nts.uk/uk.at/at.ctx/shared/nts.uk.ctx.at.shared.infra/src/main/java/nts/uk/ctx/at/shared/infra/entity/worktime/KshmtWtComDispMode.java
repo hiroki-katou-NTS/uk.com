@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_DISP_MODE")
+@Table(name = "KSHMT_WORKTIME_DISP_MODE")
 public class KshmtWtComDispMode extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComDispMode extends ContractUkJpaEntity implements Serializa
 
 	/** The kshmt worktime disp mode PK. */
 	@EmbeddedId
-	private KshmtWtComDispModePK kshmtWtComDispModePK;
+	private KshmtWorktimeDispModePK kshmtWorktimeDispModePK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -54,7 +54,7 @@ public class KshmtWtComDispMode extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComDispModePK != null ? kshmtWtComDispModePK.hashCode() : 0);
+		hash += (kshmtWorktimeDispModePK != null ? kshmtWorktimeDispModePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -69,9 +69,9 @@ public class KshmtWtComDispMode extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KshmtWtComDispMode other = (KshmtWtComDispMode) object;
-		if ((this.kshmtWtComDispModePK == null && other.kshmtWtComDispModePK != null)
-				|| (this.kshmtWtComDispModePK != null
-						&& !this.kshmtWtComDispModePK.equals(other.kshmtWtComDispModePK))) {
+		if ((this.kshmtWorktimeDispModePK == null && other.kshmtWorktimeDispModePK != null)
+				|| (this.kshmtWorktimeDispModePK != null
+						&& !this.kshmtWorktimeDispModePK.equals(other.kshmtWorktimeDispModePK))) {
 			return false;
 		}
 		return true;
@@ -84,6 +84,6 @@ public class KshmtWtComDispMode extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComDispModePK;
+		return this.kshmtWorktimeDispModePK;
 	}
 }

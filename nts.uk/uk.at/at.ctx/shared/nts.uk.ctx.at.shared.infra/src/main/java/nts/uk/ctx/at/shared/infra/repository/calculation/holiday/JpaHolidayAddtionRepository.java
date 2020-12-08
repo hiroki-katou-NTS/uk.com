@@ -48,9 +48,9 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSet
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFle;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFlePK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdReg;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdRegPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -141,11 +141,11 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @return
 	 */
 	protected KshmtCalcCAddHdReg convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
-		KshmtCalcCAddHdRegPK kshstRegularWorkSetPK = new KshmtCalcCAddHdRegPK(regularWork.getCompanyId());
+		KshstWorkRegularSetPK kshstRegularWorkSetPK = new KshstWorkRegularSetPK(regularWork.getCompanyId());
 		KshmtCalcCAddHdReg kshstRegularWorkSet;
-		Optional<KshmtCalcCAddHdReg> optKshmtCalcCAddHdReg = this.queryProxy().find(kshstRegularWorkSetPK,KshmtCalcCAddHdReg.class);
-		if (optKshmtCalcCAddHdReg.isPresent()) {
-			kshstRegularWorkSet = optKshmtCalcCAddHdReg.get();
+		Optional<KshmtCalcCAddHdReg> optKshstWorkRegularSet = this.queryProxy().find(kshstRegularWorkSetPK,KshmtCalcCAddHdReg.class);
+		if (optKshstWorkRegularSet.isPresent()) {
+			kshstRegularWorkSet = optKshstWorkRegularSet.get();
 		} else {
 			kshstRegularWorkSet = new KshmtCalcCAddHdReg();
 		}
@@ -393,11 +393,11 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @return the kshst work flex set
 	 */
 	private KshmtCalcCAddHdFle convertToDbTypeFlexWork(WorkFlexAdditionSet flexWork) {
-		KshmtCalcCAddHdFlePK kshstFlexWorkSetPK = new KshmtCalcCAddHdFlePK(flexWork.getCompanyId());
+		KshstWorkFlexSetPK kshstFlexWorkSetPK = new KshstWorkFlexSetPK(flexWork.getCompanyId());
 		KshmtCalcCAddHdFle kshstFlexWorkSet;
-		Optional<KshmtCalcCAddHdFle> optKshmtCalcCAddHdFle = this.queryProxy().find(kshstFlexWorkSetPK,KshmtCalcCAddHdFle.class);
-		if (optKshmtCalcCAddHdFle.isPresent()) {
-			kshstFlexWorkSet = optKshmtCalcCAddHdFle.get();
+		Optional<KshmtCalcCAddHdFle> optKshstWorkFlexSet = this.queryProxy().find(kshstFlexWorkSetPK,KshmtCalcCAddHdFle.class);
+		if (optKshstWorkFlexSet.isPresent()) {
+			kshstFlexWorkSet = optKshstWorkFlexSet.get();
 		} else {
 			kshstFlexWorkSet = new KshmtCalcCAddHdFle();
 		}

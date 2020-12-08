@@ -43,7 +43,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.workplaceCode, wi.workplaceGeneric, wi.workplaceName, wi.pk.workplaceId"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId AND awh.cid =:cid"
-			+ " LEFT JOIN BsymtWkpInfor wi ON awhi.workPlaceId = wi.pk.workplaceId AND wi.pk.companyId =:cid"
+			+ " LEFT JOIN BsymtWorkplaceInfor wi ON awhi.workPlaceId = wi.pk.workplaceId AND wi.pk.companyId =:cid"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
 			+ " AND awh.endDate >= :refDate";
@@ -88,7 +88,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 	private static final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
 			+ "FROM BsymtAffEmpHist eh "
-			+ "LEFT JOIN BsymtAffEmpHistItem ehi ON ehi.hisId = eh.hisId AND eh.companyId =:cid "
+			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId AND eh.companyId =:cid "
 			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode AND  e.bsymtEmploymentPK.cid =:cid "
 			+ "WHERE eh.sid IN :listSid "
 			+ "AND eh.strDate <= :refDate "
@@ -102,10 +102,10 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ "AND ach.startDate <= :refDate "
 			+ "AND ach.endDate >= :refDate";
 
-	private static final String EMPCLS_QUERY = "SELECT wc.kshmtWorkcondHistPK.sid, wci.laborSys "
+	private static final String EMPCLS_QUERY = "SELECT wc.kshmtWorkingCondPK.sid, wci.laborSys "
 			+ "FROM KshmtWorkcondHist wc "
-			+ "LEFT JOIN KshmtWorkcondHistItem wci ON wci.historyId = wc.kshmtWorkcondHistPK.historyId "
-			+ "WHERE wc.kshmtWorkcondHistPK.sid IN :listSid "
+			+ "LEFT JOIN KshmtWorkcondHistItem wci ON wci.historyId = wc.kshmtWorkingCondPK.historyId "
+			+ "WHERE wc.kshmtWorkingCondPK.sid IN :listSid "
 			+ "AND wc.strD <= :refDate "
 			+ "AND wc.endD >= :refDate";
 

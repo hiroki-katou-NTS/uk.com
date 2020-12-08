@@ -24,7 +24,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_DIF")
+@Table(name = "KSHMT_DIFF_TIME_WORK_SET")
 public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -41,7 +41,7 @@ public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 
 	/** The kshmt diff time work set PK. */
 	@EmbeddedId
-	protected KshmtWtDifPK kshmtWtDifPK;
+	protected KshmtDiffTimeWorkSetPK kshmtDiffTimeWorkSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -111,43 +111,43 @@ public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtDifBrWekTs> lstKshmtWtDifBrWekTs;// ok
+	private List<KshmtWtDifBrWekTs> lstKshmtDtHalfRestTime;// ok
 
 	/** The lst kshmt dt work time set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtDifWorkTs> lstKshmtWtDifWorkTs;// ok
+	private List<KshmtWtDifWorkTs> lstKshmtDtWorkTimeSet;// ok
 
 	/** The lst kshmt dt ot time set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtDifOverTs> lstKshmtWtDifOverTs;// ok
+	private List<KshmtWtDifOverTs> lstKshmtDtOtTimeSet;// ok
 
 	/** The lst kshmt dt hol rest time. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtDifBrHolTs> lstKshmtWtDifBrHolTs;// ok
+	private List<KshmtWtDifBrHolTs> lstKshmtDtHolRestTime;// ok
 
 	/** The lst kshmt diff time hol set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtDifHolTs> lstKshmtWtDifHolTs;// ok
+	private List<KshmtWtDifHolTs> lstKshmtDiffTimeHolSet;// ok
 
 	/** The lst kshmt dt stamp reflect. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtDifStmpRefTs> lstKshmtWtDifStmpRefTs;// ok
+	private List<KshmtWtDifStmpRefTs> lstKshmtDtStampReflect;// ok
 
 	/** The lst kshmt worktime common set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false) })
-	private List<KshmtWtCom> lstKshmtWtCom;
+	private List<KshmtWtCom> lstKshmtWorktimeCommonSet;
 
 	/**
 	 * Instantiates a new kshmt diff time work set.
@@ -161,12 +161,12 @@ public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 	 *
 	 * @return the kshmt worktime common set
 	 */
-	public KshmtWtCom getKshmtWtCom() {
-		if (CollectionUtil.isEmpty(this.lstKshmtWtCom)) {
-			this.lstKshmtWtCom = new ArrayList<KshmtWtCom>();
+	public KshmtWtCom getKshmtWorktimeCommonSet() {
+		if (CollectionUtil.isEmpty(this.lstKshmtWorktimeCommonSet)) {
+			this.lstKshmtWorktimeCommonSet = new ArrayList<KshmtWtCom>();
 		}
-		return this.lstKshmtWtCom.stream().filter(entityCommon -> {
-			KshmtWtComPK pk = entityCommon.getKshmtWtComPK();
+		return this.lstKshmtWorktimeCommonSet.stream().filter(entityCommon -> {
+			KshmtWorktimeCommonSetPK pk = entityCommon.getKshmtWorktimeCommonSetPK();
 			return pk.getWorkFormAtr() == WorkTimeDailyAtr.REGULAR_WORK.value
 					&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.DIFFTIME_WORK.value;
 		}).findFirst().orElse(null);
@@ -180,7 +180,7 @@ public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtDifPK != null ? kshmtWtDifPK.hashCode() : 0);
+		hash += (kshmtDiffTimeWorkSetPK != null ? kshmtDiffTimeWorkSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -195,9 +195,9 @@ public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KshmtWtDif other = (KshmtWtDif) object;
-		if ((this.kshmtWtDifPK == null && other.kshmtWtDifPK != null)
-				|| (this.kshmtWtDifPK != null
-						&& !this.kshmtWtDifPK.equals(other.kshmtWtDifPK))) {
+		if ((this.kshmtDiffTimeWorkSetPK == null && other.kshmtDiffTimeWorkSetPK != null)
+				|| (this.kshmtDiffTimeWorkSetPK != null
+						&& !this.kshmtDiffTimeWorkSetPK.equals(other.kshmtDiffTimeWorkSetPK))) {
 			return false;
 		}
 		return true;
@@ -210,7 +210,7 @@ public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtDifPK;
+		return this.kshmtDiffTimeWorkSetPK;
 	}
 
 }

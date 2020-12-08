@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_EVENT_COM")
+@Table(name = "KSMMT_COMPANY_EVENT")
 public class KscmtEventCom extends ContractUkJpaEntity implements Serializable{
 
 	/**
@@ -31,7 +31,7 @@ public class KscmtEventCom extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtEventComPK kscmtEventComPK;
+	public KsmmtCompanyEventPK ksmmtCompanyEventPK;
 	
 	@Basic(optional = false)
 	@Column(name = "EVENT_NAME")
@@ -41,6 +41,6 @@ public class KscmtEventCom extends ContractUkJpaEntity implements Serializable{
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return this.kscmtEventComPK;
+		return this.ksmmtCompanyEventPK;
 	}
 }

@@ -18,8 +18,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMComPK_;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet_;
 
 /**
  * The Class JpaCompanyMonthDaySettingRepository.
@@ -101,22 +101,22 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 		// eq company id
 		if (companyId != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK).get(KshmtHdpubDPerMComPK_.cid), companyId.v()));
+					.add(criteriaBuilder.equal(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.cid), companyId.v()));
 		}
 
 		if (year != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK).get(KshmtHdpubDPerMComPK_.manageYear),
+					root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.manageYear),
 					year.v()));
 		}
 
 		if (month != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK)
-							.get(KshmtHdpubDPerMComPK_.month), month.intValue()));
+					.add(criteriaBuilder.equal(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK)
+							.get(KshmtComMonthDaySetPK_.month), month.intValue()));
 		}
 		
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK).get(KshmtHdpubDPerMComPK_.month)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

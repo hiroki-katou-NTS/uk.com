@@ -12,14 +12,14 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SEVMT_USE_CONTACT_COM")
+@Table(name = "SEVST_USER_INFO_USEMETHOD")
 @Getter
 @Setter
 public class SevmtUseContactCom extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected SevmtUseContactComPK sevmtUseContactComPK;
+    protected SevstUserInfoUsemethodPK sevstUserInfoUsemethodPK;
     
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
@@ -33,14 +33,14 @@ public class SevmtUseContactCom extends ContractUkJpaEntity implements Serializa
     public SevmtUseContactCom() {
     }
     
-    public SevmtUseContactCom(SevmtUseContactComPK sevmtUseContactComPK) {
-        this.sevmtUseContactComPK = sevmtUseContactComPK;
+    public SevmtUseContactCom(SevstUserInfoUsemethodPK sevstUserInfoUsemethodPK) {
+        this.sevstUserInfoUsemethodPK = sevstUserInfoUsemethodPK;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (sevmtUseContactComPK != null ? sevmtUseContactComPK.hashCode() : 0);
+        hash += (sevstUserInfoUsemethodPK != null ? sevstUserInfoUsemethodPK.hashCode() : 0);
         return hash;
     }
 
@@ -50,7 +50,7 @@ public class SevmtUseContactCom extends ContractUkJpaEntity implements Serializa
             return false;
         }
         SevmtUseContactCom other = (SevmtUseContactCom) object;
-        if ((this.sevmtUseContactComPK == null && other.sevmtUseContactComPK != null) || (this.sevmtUseContactComPK != null && !this.sevmtUseContactComPK.equals(other.sevmtUseContactComPK))) {
+        if ((this.sevstUserInfoUsemethodPK == null && other.sevstUserInfoUsemethodPK != null) || (this.sevstUserInfoUsemethodPK != null && !this.sevstUserInfoUsemethodPK.equals(other.sevstUserInfoUsemethodPK))) {
             return false;
         }
         return true;
@@ -58,12 +58,12 @@ public class SevmtUseContactCom extends ContractUkJpaEntity implements Serializa
 
     @Override
     public String toString() {
-        return "javaapplication1.SevmtUseContactCom[ sevmtUseContactComPK=" + sevmtUseContactComPK + " ]";
+        return "javaapplication1.SevmtUseContactCom[ sevstUserInfoUsemethodPK=" + sevstUserInfoUsemethodPK + " ]";
     }
 
 	@Override
 	protected Object getKey() {
-		return this.sevmtUseContactComPK;
+		return this.sevstUserInfoUsemethodPK;
 	}
     
 }

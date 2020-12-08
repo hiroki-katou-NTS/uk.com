@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "KFNMT_PLAN_TIME_ITEM")
+@Table(name = "KFNST_PLAN_TIME_ITEM")
 public class KfnmtPlanTimeItem extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -25,7 +25,7 @@ public class KfnmtPlanTimeItem extends ContractUkJpaEntity implements Serializab
 	
 	/** The kfnst plan time item PK. */
 	@EmbeddedId
-	protected KfnmtPlanTimeItemPK kfnmtPlanTimeItemPK;
+	protected KfnstPlanTimeItemPK kfnstPlanTimeItemPK;
 
 	/**
 	 * Instantiates a new kfnst plan time item.
@@ -37,10 +37,10 @@ public class KfnmtPlanTimeItem extends ContractUkJpaEntity implements Serializab
 	/**
 	 * Instantiates a new kfnst plan time item.
 	 *
-	 * @param kfnmtPlanTimeItemPK the kfnst plan time item PK
+	 * @param kfnstPlanTimeItemPK the kfnst plan time item PK
 	 */
-	public KfnmtPlanTimeItem(KfnmtPlanTimeItemPK kfnmtPlanTimeItemPK) {
-		this.kfnmtPlanTimeItemPK = kfnmtPlanTimeItemPK;
+	public KfnmtPlanTimeItem(KfnstPlanTimeItemPK kfnstPlanTimeItemPK) {
+		this.kfnstPlanTimeItemPK = kfnstPlanTimeItemPK;
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class KfnmtPlanTimeItem extends ContractUkJpaEntity implements Serializab
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((kfnmtPlanTimeItemPK == null) ? 0 : kfnmtPlanTimeItemPK.hashCode());
+		result = prime * result + ((kfnstPlanTimeItemPK == null) ? 0 : kfnstPlanTimeItemPK.hashCode());
 		return result;
 	}
 
@@ -66,10 +66,10 @@ public class KfnmtPlanTimeItem extends ContractUkJpaEntity implements Serializab
 		if (getClass() != obj.getClass())
 			return false;
 		KfnmtPlanTimeItem other = (KfnmtPlanTimeItem) obj;
-		if (kfnmtPlanTimeItemPK == null) {
-			if (other.kfnmtPlanTimeItemPK != null)
+		if (kfnstPlanTimeItemPK == null) {
+			if (other.kfnstPlanTimeItemPK != null)
 				return false;
-		} else if (!kfnmtPlanTimeItemPK.equals(other.kfnmtPlanTimeItemPK))
+		} else if (!kfnstPlanTimeItemPK.equals(other.kfnstPlanTimeItemPK))
 			return false;
 		return true;
 	}

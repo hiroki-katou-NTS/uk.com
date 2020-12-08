@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_TIME_SYA")
+@Table(name = "KSCMT_EST_TIME_PER_SET")
 public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -31,7 +31,7 @@ public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable
     
     /** The kscmt est time per set PK. */
     @EmbeddedId
-    protected KscmtEstTimeSyaPK kscmtEstTimeSyaPK;
+    protected KscmtEstTimePerSetPK kscmtEstTimePerSetPK;
     
     /** The est condition 1 st time. */
     @Basic(optional = false)
@@ -72,10 +72,10 @@ public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable
     /**
      * Instantiates a new kscmt est time per set.
      *
-     * @param kscmtEstTimeSyaPK the kscmt est time per set PK
+     * @param kscmtEstTimePerSetPK the kscmt est time per set PK
      */
-    public KscmtEstTimeSya(KscmtEstTimeSyaPK kscmtEstTimeSyaPK) {
-        this.kscmtEstTimeSyaPK = kscmtEstTimeSyaPK;
+    public KscmtEstTimeSya(KscmtEstTimePerSetPK kscmtEstTimePerSetPK) {
+        this.kscmtEstTimePerSetPK = kscmtEstTimePerSetPK;
     }
 
 	/* (non-Javadoc)
@@ -83,7 +83,7 @@ public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtEstTimeSyaPK;
+		return this.kscmtEstTimePerSetPK;
 	}
 
 	/* (non-Javadoc)
@@ -94,7 +94,7 @@ public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((kscmtEstTimeSyaPK == null) ? 0 : kscmtEstTimeSyaPK.hashCode());
+				+ ((kscmtEstTimePerSetPK == null) ? 0 : kscmtEstTimePerSetPK.hashCode());
 		return result;
 	}
 
@@ -107,10 +107,10 @@ public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtEstTimeSya other = (KscmtEstTimeSya) obj;
-		if (kscmtEstTimeSyaPK == null) {
-			if (other.kscmtEstTimeSyaPK != null)
+		if (kscmtEstTimePerSetPK == null) {
+			if (other.kscmtEstTimePerSetPK != null)
 				return false;
-		} else if (!kscmtEstTimeSyaPK.equals(other.kscmtEstTimeSyaPK))
+		} else if (!kscmtEstTimePerSetPK.equals(other.kscmtEstTimePerSetPK))
 			return false;
 		return true;
 	}

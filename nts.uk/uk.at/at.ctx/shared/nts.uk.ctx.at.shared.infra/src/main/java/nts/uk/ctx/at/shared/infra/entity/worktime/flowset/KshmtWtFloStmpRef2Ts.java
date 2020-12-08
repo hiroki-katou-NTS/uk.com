@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLO_STMP_REF2_TS")
+@Table(name = "KSHMT_FSTAMP_REFLECT_TIME")
 public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -35,7 +35,7 @@ public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Seriali
 
 	/** The kshmt fstamp reflect time PK. */
 	@EmbeddedId
-	protected KshmtWtFloStmpRef2TsPK kshmtWtFloStmpRef2TsPK;
+	protected KshmtFstampReflectTimePK kshmtFstampReflectTimePK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -50,7 +50,7 @@ public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Seriali
 	@JoinColumns({
 		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFloStmpRefTs> lstKshmtWtFloStmpRefTs;
+	private List<KshmtWtFloStmpRefTs> lstKshmtFlowStampReflect;
 	
 	/**
 	 * Instantiates a new kshmt fstamp reflect time.
@@ -67,7 +67,7 @@ public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Seriali
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFloStmpRef2TsPK != null ? kshmtWtFloStmpRef2TsPK.hashCode() : 0);
+		hash += (kshmtFstampReflectTimePK != null ? kshmtFstampReflectTimePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -82,9 +82,9 @@ public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Seriali
 			return false;
 		}
 		KshmtWtFloStmpRef2Ts other = (KshmtWtFloStmpRef2Ts) object;
-		if ((this.kshmtWtFloStmpRef2TsPK == null && other.kshmtWtFloStmpRef2TsPK != null)
-				|| (this.kshmtWtFloStmpRef2TsPK != null
-						&& !this.kshmtWtFloStmpRef2TsPK.equals(other.kshmtWtFloStmpRef2TsPK))) {
+		if ((this.kshmtFstampReflectTimePK == null && other.kshmtFstampReflectTimePK != null)
+				|| (this.kshmtFstampReflectTimePK != null
+						&& !this.kshmtFstampReflectTimePK.equals(other.kshmtFstampReflectTimePK))) {
 			return false;
 		}
 		return true;
@@ -97,7 +97,7 @@ public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Seriali
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFloStmpRef2TsPK;
+		return this.kshmtFstampReflectTimePK;
 	}
 
 }

@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KscmtSpecDateCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KscmtSpecDateComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSetPK;
 
 @Stateless
 public class JpaCompanySpecificDateRepository extends JpaRepository implements CompanySpecificDateRepository {
@@ -27,29 +27,29 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * select KscmtSpecDateCom by date
 	 */
 	private static final String GET_BY_DATE = SELECT_NO_WHERE 
-			+ " WHERE s.kscmtSpecDateComPK.companyId = :companyId"
-			+ " AND s.kscmtSpecDateComPK.specificDate = :specificDate";
+			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate = :specificDate";
 
 	/**
 	 * get List With Name of Specific
 	 */
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KscmtSpecDateCom s"
-			+ " INNER JOIN KscmtSpecDateItem p ON p.kscmtSpecDateItemPK.itemNo = s.kscmtSpecDateComPK.specificDateItemNo AND p.kscmtSpecDateItemPK.companyId = s.kscmtSpecDateComPK.companyId "
-			+ " WHERE s.kscmtSpecDateComPK.companyId = :companyId"
-			+ " AND s.kscmtSpecDateComPK.specificDate >= :startYm"
-			+ " AND s.kscmtSpecDateComPK.specificDate <= :endYm";
+			+ " INNER JOIN KscmtSpecDateItem p ON p.ksmstSpecificDateItemPK.itemNo = s.ksmmtComSpecDateSetPK.specificDateItemNo AND p.ksmstSpecificDateItemPK.companyId = s.ksmmtComSpecDateSetPK.companyId "
+			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate >= :startYm"
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate <= :endYm";
 	
 	/**
 	 *Delete by Month 
 	 */
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE from KscmtSpecDateCom c "
-			+ " WHERE c.kscmtSpecDateComPK.companyId = :companyId"
-			+ " AND c.kscmtSpecDateComPK.specificDate >= :startYm"
-			+ " AND c.kscmtSpecDateComPK.specificDate <= :endYm";
+			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate >= :startYm"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate <= :endYm";
 	
 	private static final String DELETE_BY_DATE = "DELETE FROM KscmtSpecDateCom c"
-			+ " WHERE c.kscmtSpecDateComPK.companyId = :companyId"
-			+ " AND c.kscmtSpecDateComPK.specificDate = :specificDate";
+			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate = :specificDate";
 	
 
 	/**
@@ -83,8 +83,8 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 */
 	private static CompanySpecificDateItem toDomain(KscmtSpecDateCom entity) {
 		CompanySpecificDateItem domain = CompanySpecificDateItem.createFromJavaType(
-				entity.kscmtSpecDateComPK.companyId, entity.kscmtSpecDateComPK.specificDate,
-				entity.kscmtSpecDateComPK.specificDateItemNo, "");
+				entity.ksmmtComSpecDateSetPK.companyId, entity.ksmmtComSpecDateSetPK.specificDate,
+				entity.ksmmtComSpecDateSetPK.specificDateItemNo, "");
 		return domain;
 	}
 
@@ -97,8 +97,8 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 		String specificDateItemName = (String) object[0];
 		KscmtSpecDateCom entity = (KscmtSpecDateCom) object[2];
 		CompanySpecificDateItem domain = CompanySpecificDateItem.createFromJavaType(
-				entity.kscmtSpecDateComPK.companyId, entity.kscmtSpecDateComPK.specificDate,
-				entity.kscmtSpecDateComPK.specificDateItemNo, specificDateItemName);
+				entity.ksmmtComSpecDateSetPK.companyId, entity.ksmmtComSpecDateSetPK.specificDate,
+				entity.ksmmtComSpecDateSetPK.specificDateItemNo, specificDateItemName);
 		return domain;
 	}
 	
@@ -109,7 +109,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 */
 	private static KscmtSpecDateCom toEntity(CompanySpecificDateItem domain){
 		val entity = new KscmtSpecDateCom();
-		entity.kscmtSpecDateComPK = new KscmtSpecDateComPK(
+		entity.ksmmtComSpecDateSetPK = new KsmmtComSpecDateSetPK(
 				domain.getCompanyId(),
 				domain.getSpecificDate(),
 				domain.getSpecificDateItemNo().v());

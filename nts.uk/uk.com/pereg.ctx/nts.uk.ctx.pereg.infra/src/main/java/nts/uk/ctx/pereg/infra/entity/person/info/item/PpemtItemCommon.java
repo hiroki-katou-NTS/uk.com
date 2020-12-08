@@ -15,13 +15,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_ITEM_COMMON")
+@Table(name = "PPEMT_PER_INFO_ITEM_CM")
 public class PpemtItemCommon extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpemtItemCommonPK ppemtItemCommonPK;
+	public PpemtPerInfoItemCmPK ppemtPerInfoItemCmPK;
 
 	@Basic(optional = true)
 	@Column(name = "ITEM_PARENT_CD")
@@ -110,10 +110,10 @@ public class PpemtItemCommon extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return ppemtItemCommonPK;
+		return ppemtPerInfoItemCmPK;
 	}
 
-	public PpemtItemCommon(PpemtItemCommonPK ppemtItemCommonPK, String itemParentCd, int systemRequiredAtr,
+	public PpemtItemCommon(PpemtPerInfoItemCmPK ppemtPerInfoItemCmPK, String itemParentCd, int systemRequiredAtr,
 			int requireChangabledAtr, int fixedAtr, int itemType, BigDecimal dataType, BigDecimal timeItemMin,
 			BigDecimal timeItemMax, BigDecimal timepointItemMin, BigDecimal timepointItemMax, BigDecimal dateItemType,
 			BigDecimal stringItemType, BigDecimal stringItemLength, BigDecimal stringItemDataType,
@@ -122,7 +122,7 @@ public class PpemtItemCommon extends UkJpaEntity implements Serializable {
 			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode,
 			String resourceId, int canAbolition) {
 		super();
-		this.ppemtItemCommonPK = ppemtItemCommonPK;
+		this.ppemtPerInfoItemCmPK = ppemtPerInfoItemCmPK;
 		this.itemParentCd = itemParentCd;
 		this.systemRequiredAtr = systemRequiredAtr;
 		this.requireChangabledAtr = requireChangabledAtr;

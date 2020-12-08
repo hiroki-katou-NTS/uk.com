@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_TIME_PREMIUM")
+@Table(name = "KRCDT_DAY_PREMIUM_TIME")
 public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KrcdtDayTimePremiumPK krcdtDayTimePremiumPK;
+	public KrcdtDayPremiumTimePK krcdtDayPremiumTimePK;
 	
 	/* 割増時間1 */
 	@Column(name = "PREMIUM_TIME1")
@@ -63,13 +63,13 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 	@Column(name = "PREMIUM_TIME10")
 	public int premiumTime10;
 	
-	@OneToOne(mappedBy="KrcdtDayTimePremium", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy="KrcdtDayPremiumTime", fetch = FetchType.LAZY)
 	//public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
-	public KrcdtDayTimeAtd krcdtDayTimeAtd;
+	public KrcdtDayTimeAtd krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayTimePremiumPK;
+		return this.krcdtDayPremiumTimePK;
 	}
 	
 	public PremiumTimeOfDailyPerformance toDomain() {	
@@ -108,7 +108,7 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 	public static KrcdtDayTimePremium totoEntity(String employeeId,GeneralDate targetDate,PremiumTimeOfDailyPerformance domain) {
 		KrcdtDayTimePremium entity = new KrcdtDayTimePremium();
 		/*主キーセット*/
-		entity.krcdtDayTimePremiumPK = new KrcdtDayTimePremiumPK(employeeId, targetDate);
+		entity.krcdtDayPremiumTimePK = new KrcdtDayPremiumTimePK(employeeId, targetDate);
 		/*データセット*/
 		entity.setData(domain);
 		return entity;

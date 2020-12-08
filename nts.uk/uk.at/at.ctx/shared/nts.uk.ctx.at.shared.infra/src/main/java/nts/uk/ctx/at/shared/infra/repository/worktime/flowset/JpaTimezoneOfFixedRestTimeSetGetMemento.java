@@ -29,8 +29,8 @@ public class JpaTimezoneOfFixedRestTimeSetGetMemento implements TimezoneOfFixedR
 	public JpaTimezoneOfFixedRestTimeSetGetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloBrFiAllTs())) {
-			this.entity.setLstKshmtWtFloBrFiAllTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFixedRtSet())) {
+			this.entity.setLstKshmtFlowFixedRtSet(new ArrayList<>());
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class JpaTimezoneOfFixedRestTimeSetGetMemento implements TimezoneOfFixedR
 	 */
 	@Override
 	public List<DeductionTime> getTimezones() {
-		return this.entity.getLstKshmtWtFloBrFiAllTs().stream()
+		return this.entity.getLstKshmtFlowFixedRtSet().stream()
 			.map(entity -> new DeductionTime(new JpaDeductionTimeGetMemento(entity)))
 			.sorted((item1, item2) -> item1.getStart().compareTo(item2.getStart()))
 			.collect(Collectors.toList());

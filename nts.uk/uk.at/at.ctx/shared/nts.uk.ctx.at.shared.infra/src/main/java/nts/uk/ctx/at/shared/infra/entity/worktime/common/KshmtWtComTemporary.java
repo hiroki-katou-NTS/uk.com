@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_TEMPORARY")
+@Table(name = "KSHMT_TEMP_WORKTIME_SET")
 public class KshmtWtComTemporary extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComTemporary extends ContractUkJpaEntity implements Serializ
 
 	/** The kshmt temp worktime set PK. */
 	@EmbeddedId
-	protected KshmtWtComTemporaryPK kshmtWtComTemporaryPK;
+	protected KshmtTempWorktimeSetPK kshmtTempWorktimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -86,7 +86,7 @@ public class KshmtWtComTemporary extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComTemporaryPK != null ? kshmtWtComTemporaryPK.hashCode() : 0);
+		hash += (kshmtTempWorktimeSetPK != null ? kshmtTempWorktimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -101,9 +101,9 @@ public class KshmtWtComTemporary extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KshmtWtComTemporary other = (KshmtWtComTemporary) object;
-		if ((this.kshmtWtComTemporaryPK == null && other.kshmtWtComTemporaryPK != null)
-				|| (this.kshmtWtComTemporaryPK != null
-						&& !this.kshmtWtComTemporaryPK.equals(other.kshmtWtComTemporaryPK))) {
+		if ((this.kshmtTempWorktimeSetPK == null && other.kshmtTempWorktimeSetPK != null)
+				|| (this.kshmtTempWorktimeSetPK != null
+						&& !this.kshmtTempWorktimeSetPK.equals(other.kshmtTempWorktimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -116,7 +116,7 @@ public class KshmtWtComTemporary extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComTemporaryPK;
+		return this.kshmtTempWorktimeSetPK;
 	}
 
 }

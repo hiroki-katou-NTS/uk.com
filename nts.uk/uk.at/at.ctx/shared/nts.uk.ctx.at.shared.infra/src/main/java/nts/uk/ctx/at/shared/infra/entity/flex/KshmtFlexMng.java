@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KSHMT_FLEX_MNG")
+@Table(name="KSHST_FLEX_WORK_SETTING")
 public class KshmtFlexMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KshmtFlexMngPK id;
+	private KshstFlexWorkSettingPK id;
 	
 	/** フレックス勤務を管理する */
 	@Column(name="MANAGE_FLEX_WORK")

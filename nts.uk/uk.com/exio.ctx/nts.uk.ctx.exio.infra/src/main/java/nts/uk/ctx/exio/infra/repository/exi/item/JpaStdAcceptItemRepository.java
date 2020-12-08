@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemRepository;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
-import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItemPk;
+import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItemPk;
 
 @Stateless
 public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcceptItemRepository {
@@ -21,7 +21,7 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	public Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd,
 			int acceptItemNumber) {
 		Optional<OiomtExAcItem> entity = this.queryProxy().find(
-				new OiomtExAcItemPk(cid, sysType, conditionSetCd, acceptItemNumber), OiomtExAcItem.class);
+				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber), OiomtExAcItem.class);
 		if (entity.isPresent()) {
 			return Optional.of(OiomtExAcItem.toDomain(entity.get()));
 		} else {
@@ -38,7 +38,7 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	public void update(StdAcceptItem domain) {
 		Optional<OiomtExAcItem> entityOpt = this
 				.queryProxy().find(
-						new OiomtExAcItemPk(domain.getCid(), domain.getSystemType().value,
+						new OiomtStdAcceptItemPk(domain.getCid(), domain.getSystemType().value,
 								domain.getConditionSetCd().v(), domain.getAcceptItemNumber()),
 						OiomtExAcItem.class);
 		if (entityOpt.isPresent()) {
@@ -50,7 +50,7 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	@Override
 	public void remove(String cid, int sysType, String conditionSetCd, int acceptItemNumber) {
 		this.commandProxy().remove(OiomtExAcItem.class,
-				new OiomtExAcItemPk(cid, sysType, conditionSetCd, acceptItemNumber));
+				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber));
 	}
 
 	@Override

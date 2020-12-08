@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_4W4D_NUM_SET")
+@Table(name = "KSHMT_FOURWEEKFOUR_HD_NUMB_SET")
 public class Kshmt4w4dNumSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

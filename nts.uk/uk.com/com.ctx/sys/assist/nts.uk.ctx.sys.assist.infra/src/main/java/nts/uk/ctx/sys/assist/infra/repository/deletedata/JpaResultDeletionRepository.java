@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionResult;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionResultPK;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletionPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
@@ -27,7 +27,7 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtDeletionResult f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtDeletionResultPK.delId = :delId ";
+			+ " WHERE  f.sspdtResultDeletionPK.delId = :delId ";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtDeletionResult f "
 			+ " WHERE f.companyID =:cid "
@@ -71,7 +71,7 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 
 	@Override
 	public void update(ResultDeletion resultDel, ManualSetDeletion manualSetDel) {
-		SspdtDeletionResultPK key  = new SspdtDeletionResultPK(resultDel.getDelId());
+		SspdtResultDeletionPK key  = new SspdtResultDeletionPK(resultDel.getDelId());
 		Optional<SspdtDeletionResult> resultOfDeleteOpt = this.queryProxy().find(key, SspdtDeletionResult.class);
 		resultOfDeleteOpt.ifPresent(data -> {
 			data.status = resultDel.getStatus().value;

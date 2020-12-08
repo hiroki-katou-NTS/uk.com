@@ -111,21 +111,21 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory, String employeeId) {
 		if (workCategory != null) {
-			List<KshmtWorkcondCtg> kshmtWorkcondCtgs = new ArrayList<>();
-			if (this.entity.getKshmtWorkcondCtgs() != null) {
-				kshmtWorkcondCtgs = this.entity.getKshmtWorkcondCtgs();
+			List<KshmtWorkcondCtg> kshmtPerWorkCats = new ArrayList<>();
+			if (this.entity.getKshmtPerWorkCats() != null) {
+				kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
 			}
-			workCategory.saveToMemento(new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtWorkcondCtgs, employeeId));
-			kshmtWorkcondCtgs.stream().forEach(c -> {
+			workCategory.saveToMemento(new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats, employeeId));
+			kshmtPerWorkCats.stream().forEach(c -> {
 				c.setSid(employeeId);
-				if (!CollectionUtil.isEmpty(c.getKshmtWorkcondCtgTss())) {
-					c.getKshmtWorkcondCtgTss().stream().forEach(catTimeZone -> {
+				if (!CollectionUtil.isEmpty(c.getKshmtWorkCatTimeZones())) {
+					c.getKshmtWorkCatTimeZones().stream().forEach(catTimeZone -> {
 						catTimeZone.setSid(employeeId);
 					});
 				}
 			});
 
-			this.entity.setKshmtWorkcondCtgs(kshmtWorkcondCtgs);
+			this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 		}
 	}
 
@@ -172,13 +172,13 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek, String employeeId) {
 		if (workDayOfWeek != null) {
-			List<KshmtWorkcondWeek> kshmtWorkcondWeeks = new ArrayList<>();
-			if (this.entity.getKshmtWorkcondWeeks() != null) {
-				kshmtWorkcondWeeks = this.entity.getKshmtWorkcondWeeks();
+			List<KshmtWorkcondWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
+			if (this.entity.getKshmtPersonalDayOfWeeks() != null) {
+				kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
 			}
 			workDayOfWeek
-					.saveToMemento(new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtWorkcondWeeks, employeeId));
-			this.entity.setKshmtWorkcondWeeks(kshmtWorkcondWeeks);
+					.saveToMemento(new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks, employeeId));
+			this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);
 		}
 	}
 
@@ -221,20 +221,20 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod, String employeeId) {
 		// Check exist
 		if (!scheduleMethod.isPresent()) {
-			//this.entity.setKshmtWorkcondScheMeth(null);
+			//this.entity.setKshmtScheduleMethod(null);
 			return;
 		}
 
-		KshmtWorkcondScheMeth kshmtWorkcondScheMeth = this.entity.getKshmtWorkcondScheMeth();
+		KshmtWorkcondScheMeth kshmtScheduleMethod = this.entity.getKshmtScheduleMethod();
 		
-		if (kshmtWorkcondScheMeth == null) {
-			kshmtWorkcondScheMeth = new KshmtWorkcondScheMeth();
+		if (kshmtScheduleMethod == null) {
+			kshmtScheduleMethod = new KshmtWorkcondScheMeth();
 		}
-		kshmtWorkcondScheMeth.setSid(employeeId);
+		kshmtScheduleMethod.setSid(employeeId);
 		scheduleMethod.get().saveToMemento(
-				new JpaScheduleMethodSetMemento(this.entity.getHistoryId(), kshmtWorkcondScheMeth));
+				new JpaScheduleMethodSetMemento(this.entity.getHistoryId(), kshmtScheduleMethod));
 
-		this.entity.setKshmtWorkcondScheMeth(kshmtWorkcondScheMeth);
+		this.entity.setKshmtScheduleMethod(kshmtScheduleMethod);
 	}
 
 	/*

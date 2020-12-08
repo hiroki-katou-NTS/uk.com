@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @NoArgsConstructor
-@Table(name = "KFNMT_RPT_REMLST_OUTITEM")
+@Table(name = "KFNMT_HD_REMAIN_MANAGE")
 public class KfnmtRptRemlstOutitem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class KfnmtRptRemlstOutitem extends ContractUkJpaEntity implements Serial
 	 * ID
 	 */
 	@EmbeddedId
-	public KfnmtRptRemlstOutitemPk hdRemainManagePk;
+	public KfnmtHdRemainManagePk hdRemainManagePk;
 
 	/**
 	 * 名称
@@ -143,20 +143,20 @@ public class KfnmtRptRemlstOutitem extends ContractUkJpaEntity implements Serial
 	@Column(name = "NURSING_CARE_LEAVE")
 	public int nursingCareLeave;
 
-	@OneToMany(targetEntity = KfnmtRptRemlstOuthdsp.class, cascade = CascadeType.ALL, mappedBy = "kfnmtRptRemlstOutitem", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KFNMT_RPT_REMLST_OUTHDSP")
-	public List<KfnmtRptRemlstOuthdsp> kfnmtRptRemlstOuthdsps;
+	@OneToMany(targetEntity = KfnmtRptRemlstOuthdsp.class, cascade = CascadeType.ALL, mappedBy = "kfnmtHdRemainManage", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KFNMT_SPECIAL_HOLIDAY")
+	public List<KfnmtRptRemlstOuthdsp> kfnmtSpecialHolidays;
 
 	@Override
 	protected Object getKey() {
 		return hdRemainManagePk;
 	}
 
-	public KfnmtRptRemlstOutitem(KfnmtRptRemlstOutitemPk hdRemainManagePk, String name, int yearlyHoliday,
+	public KfnmtRptRemlstOutitem(KfnmtHdRemainManagePk hdRemainManagePk, String name, int yearlyHoliday,
 			int insideHalfDay, int insideHours, int yearlyReserved, int outItemSub, int representSub,
 			int remainChargeSub, int pauseItem, int undigestedPause, int numRemainPause, int outputItemsHolidays,
 			int outputHolidayForward, int monthlyPublic, int childCareLeave, int nursingCareLeave,
-			List<KfnmtRptRemlstOuthdsp> kfnmtRptRemlstOuthdsps) {
+			List<KfnmtRptRemlstOuthdsp> kfnmtSpecialHolidays) {
 		super();
 		this.hdRemainManagePk = hdRemainManagePk;
 		this.name = name;
@@ -175,6 +175,6 @@ public class KfnmtRptRemlstOutitem extends ContractUkJpaEntity implements Serial
 		this.monthlyPublic = monthlyPublic;
 		this.childCareLeave = childCareLeave;
 		this.nursingCareLeave = nursingCareLeave;
-		this.kfnmtRptRemlstOuthdsps = kfnmtRptRemlstOuthdsps;
+		this.kfnmtSpecialHolidays = kfnmtSpecialHolidays;
 	}
 }

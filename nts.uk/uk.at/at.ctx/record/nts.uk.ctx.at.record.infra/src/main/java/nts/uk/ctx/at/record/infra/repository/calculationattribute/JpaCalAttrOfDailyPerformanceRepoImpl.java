@@ -28,7 +28,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcdtDayInfoCalc;
-import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcdtDayInfoCalcPK;
+import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalculationSetPK;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetFlex;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetHdWork;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetOverTime;
@@ -52,7 +52,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	@Override
 	public CalAttrOfDailyPerformance find(String employeeId, GeneralDate baseDate) {
 		KrcdtDayInfoCalc calc = this.queryProxy()
-				.find(new KrcdtDayInfoCalcPK(employeeId, baseDate), KrcdtDayInfoCalc.class).orElse(null);
+				.find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcdtDayInfoCalc.class).orElse(null);
 		if (calc != null) {
 			//1
 //			KrcmtCalcSetFlex flexCalc = this.queryProxy()
@@ -134,7 +134,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	@Override
 	public void update(CalAttrOfDailyPerformance domain) {
 		KrcdtDayInfoCalc calc = this.queryProxy()
-				.find(new KrcdtDayInfoCalcPK(domain.getEmployeeId(), domain.getYmd()),
+				.find(new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()),
 						KrcdtDayInfoCalc.class)
 				.orElse(null);
 		if (calc == null) {
@@ -180,7 +180,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		setOvertimeCalcSetting(domain.getCalcategory().getOvertimeSetting(), overtimeCalc);
 
 		KrcdtDayInfoCalc calcSet = new KrcdtDayInfoCalc(
-				new KrcdtDayInfoCalcPK(domain.getEmployeeId(), domain.getYmd()));
+				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()));
 		if (domain.getCalcategory().getRasingSalarySetting() != null) {
 			calcSet.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
 			calcSet.bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
@@ -276,7 +276,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 					newAutoCalcSetting(overtimeCalc.legalMidOtCalAtr, overtimeCalc.legalMidOtLimitSet));
 		}
 
-		return new CalAttrOfDailyPerformance(calc.krcdtDayInfoCalcPK.sid, calc.krcdtDayInfoCalcPK.ymd,
+		return new CalAttrOfDailyPerformance(calc.krcstDaiCalculationSetPK.sid, calc.krcstDaiCalculationSetPK.ymd,
 				new AutoCalFlexOvertimeSetting(flex),
 				new AutoCalRaisingSalarySetting(
 						calc.bonusPaySpeCalSet == 1 ? true : false,
@@ -348,7 +348,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	@Override
 	public void deleteByKey(String employeeId, GeneralDate baseDate) {
 		
-		this.queryProxy().find(new KrcdtDayInfoCalcPK(employeeId, baseDate), KrcdtDayInfoCalc.class).ifPresent(entity -> {
+		this.queryProxy().find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcdtDayInfoCalc.class).ifPresent(entity -> {
 			this.commandProxy().remove(entity);
 			this.queryProxy().find(StringUtils.rightPad(entity.flexExcessTimeId, 36), KrcmtCalcSetFlex.class).ifPresent(e -> {
 						this.commandProxy().remove(e);

@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaOutManageSetMemento implements OutManageSetMemento{
 
 	/** The krcst out manage. */
-	private KrcmtGooutMng krcmtGooutMng; 
+	private KrcmtGooutMng krcstOutManage; 
 	
 	/**
 	 * Instantiates a new jpa out manage set memento.
@@ -22,7 +22,7 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	 * @param entity the entity
 	 */
 	public JpaOutManageSetMemento(KrcmtGooutMng entity) {
-		this.krcmtGooutMng = entity;
+		this.krcstOutManage = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -31,9 +31,9 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	@Override
 	public void setCompanyID(String companyID) {
 		if (companyID == null) {
-			this.krcmtGooutMng.setCid(AppContexts.user().companyId());
+			this.krcstOutManage.setCid(AppContexts.user().companyId());
 		} else {
-			this.krcmtGooutMng.setCid(companyID);
+			this.krcstOutManage.setCid(companyID);
 		}
 	}
 
@@ -42,7 +42,7 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	 */
 	@Override
 	public void setMaxUsage(int maxUsage) {
-		this.krcmtGooutMng.setMaxUsage(new BigDecimal(maxUsage));
+		this.krcstOutManage.setMaxUsage(new BigDecimal(maxUsage));
 		
 	}
 
@@ -51,7 +51,7 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	 */
 	@Override
 	public void setInitValueReasonGoOut(int initValueReasonGoOut) {
-		this.krcmtGooutMng.setInitValueReasonGoOut(new BigDecimal(initValueReasonGoOut));
+		this.krcstOutManage.setInitValueReasonGoOut(new BigDecimal(initValueReasonGoOut));
 	}
 
 }

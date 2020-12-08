@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_TEAM_SETTING")
+@Table(name = "KSCST_TEAM_SET")
 public class KscmtTeamSetting extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KscmtTeamSettingPK ksctTeamSetPk;
+	public KscstTeamSetPK ksctTeamSetPk;
 
 	@Column(name = "TEAM_CD")
 	public String teamCode;

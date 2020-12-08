@@ -23,9 +23,9 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUseContactCom;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUseContactComPK;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUseContactComPK_;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUseContactCom_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethodPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethodPK_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethod_;
 
 /**
  * The Class JpaUserInfoUseMethodRepository.
@@ -55,15 +55,15 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(SevmtUseContactCom_.sevmtUseContactComPK).get(SevmtUseContactComPK_.cid),
+				root.get(SevstUserInfoUsemethod_.sevstUserInfoUsemethodPK).get(SevstUserInfoUsemethodPK_.cid),
 				companyId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		List<SevmtUseContactCom> listSevmtUseContactCom = em.createQuery(cq).getResultList();
+		List<SevmtUseContactCom> listSevstUserInfoUsemethod = em.createQuery(cq).getResultList();
 
 		// Check exist
-		if (!CollectionUtil.isEmpty(listSevmtUseContactCom)) {
-			listSevmtUseContactCom.stream().forEach(
+		if (!CollectionUtil.isEmpty(listSevstUserInfoUsemethod)) {
+			listSevstUserInfoUsemethod.stream().forEach(
 					entity -> lstReturn.add(new UserInfoUseMethod(new JpaUserInfoUseMethodGetMemento(entity))));
 		}
 
@@ -80,7 +80,7 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 	 */
 	@Override
 	public Optional<UserInfoUseMethod> findByCompanyIdAndSettingItem(String companyId, UserInfoItem settingItem) {
-		val pk = new SevmtUseContactComPK(companyId, settingItem.value);
+		val pk = new SevstUserInfoUsemethodPK(companyId, settingItem.value);
 		return this.queryProxy().find(pk, SevmtUseContactCom.class)
 				.map(entity -> new UserInfoUseMethod(new JpaUserInfoUseMethodGetMemento(entity)));
 	}
@@ -96,9 +96,9 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 	public void update(List<UserInfoUseMethod> lstUserInfo) {
 		lstUserInfo.stream().forEach(dom -> {
 			Optional<SevmtUseContactCom> optional = this.queryProxy().find(
-					new SevmtUseContactComPK(dom.getCompanyId(), dom.getSettingItem().value),
+					new SevstUserInfoUsemethodPK(dom.getCompanyId(), dom.getSettingItem().value),
 					SevmtUseContactCom.class);
-			SevmtUseContactCom entity = new SevmtUseContactCom(new SevmtUseContactComPK());
+			SevmtUseContactCom entity = new SevmtUseContactCom(new SevstUserInfoUsemethodPK());
 			if (optional.isPresent()) {
 				entity = optional.get();
 			}
@@ -117,7 +117,7 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 	@Override
 	public void create(List<UserInfoUseMethod> lstUserInfo) {
 		List<SevmtUseContactCom> entities = lstUserInfo.stream().map(dom -> {
-			SevmtUseContactCom entity = new SevmtUseContactCom(new SevmtUseContactComPK());
+			SevmtUseContactCom entity = new SevmtUseContactCom(new SevstUserInfoUsemethodPK());
 			dom.saveToMemento(new JpaUserInfoUseMethodSetMemento(entity));
 			return entity;
 		}).collect(Collectors.toList());

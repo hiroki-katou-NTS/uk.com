@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCMT_CALC_M_FLEX_BAK")
+@Table(name = "KRCST_MON_FLEX_AGGR_SET")
 @NoArgsConstructor
 public class KrcmtCalcMFlexBak extends ContractUkJpaEntity implements Serializable {
 
@@ -34,7 +34,7 @@ public class KrcmtCalcMFlexBak extends ContractUkJpaEntity implements Serializab
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcmtCalcMFlexBakPK PK;
+	public KrcstMonFlexAggrSetPK PK;
 	
 	/** 残業加算する01 */
 	@Column(name = "OVER_TIME_ADD_01")
@@ -168,7 +168,7 @@ public class KrcmtCalcMFlexBak extends ContractUkJpaEntity implements Serializab
 	 */
 	public void fromDomainForPersist(MonthlyAggrSetOfFlex domain){
 		
-		this.PK = new KrcmtCalcMFlexBakPK(domain.getCompanyId());
+		this.PK = new KrcstMonFlexAggrSetPK(domain.getCompanyId());
 		this.fromDomainForUpdate(domain);
 	}
 	

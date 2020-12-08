@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name="SRCDT_LOGIN_CORRECTION")
+@Table(name="SRCDT_LOGIN_RECORD")
 @Getter
 @Setter
 public class SrcdtLoginCorrection extends ContractUkJpaEntity implements Serializable {
@@ -31,7 +31,7 @@ public class SrcdtLoginCorrection extends ContractUkJpaEntity implements Seriali
 
 	/** The srcdt login record PK. */
 	@EmbeddedId
-	private SrcdtLoginCorrectionPK srcdtLoginCorrectionPK;
+	private SrcdtLoginRecordPK srcdtLoginRecordPK;
 
 	/** The lock status. */
 	@Column(name="LOCK_STATUS")
@@ -64,7 +64,7 @@ public class SrcdtLoginCorrection extends ContractUkJpaEntity implements Seriali
 	 */
 	@Override
 	protected Object getKey() {
-		return this.srcdtLoginCorrectionPK;
+		return this.srcdtLoginRecordPK;
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +74,7 @@ public class SrcdtLoginCorrection extends ContractUkJpaEntity implements Seriali
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((srcdtLoginCorrectionPK == null) ? 0 : srcdtLoginCorrectionPK.hashCode());
+		result = prime * result + ((srcdtLoginRecordPK == null) ? 0 : srcdtLoginRecordPK.hashCode());
 		return result;
 	}
 
@@ -90,10 +90,10 @@ public class SrcdtLoginCorrection extends ContractUkJpaEntity implements Seriali
 		if (getClass() != obj.getClass())
 			return false;
 		SrcdtLoginCorrection other = (SrcdtLoginCorrection) obj;
-		if (srcdtLoginCorrectionPK == null) {
-			if (other.srcdtLoginCorrectionPK != null)
+		if (srcdtLoginRecordPK == null) {
+			if (other.srcdtLoginRecordPK != null)
 				return false;
-		} else if (!srcdtLoginCorrectionPK.equals(other.srcdtLoginCorrectionPK))
+		} else if (!srcdtLoginRecordPK.equals(other.srcdtLoginRecordPK))
 			return false;
 		return true;
 	}

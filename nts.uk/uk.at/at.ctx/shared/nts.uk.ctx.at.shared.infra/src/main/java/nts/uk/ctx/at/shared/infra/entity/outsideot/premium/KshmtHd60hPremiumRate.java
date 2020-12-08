@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_HD60H_PREMIUM_RATE")
+@Table(name = "KSHST_PREMIUM_EXT60H_RATE")
 public class KshmtHd60hPremiumRate implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KshmtHd60hPremiumRate implements Serializable {
     
     /** The kshst premium ext 60 h rate PK. */
     @EmbeddedId
-    protected KshmtHd60hPremiumRatePK kshmtHd60hPremiumRatePK;
+    protected KshstPremiumExt60hRatePK kshstPremiumExt60hRatePK;
     
     /** The premium rate. */
     @Basic(optional = false)
@@ -47,20 +47,20 @@ public class KshmtHd60hPremiumRate implements Serializable {
     /**
      * Instantiates a new kshst premium ext 60 h rate.
      *
-     * @param kshmtHd60hPremiumRatePK the kshst premium ext 60 h rate PK
+     * @param kshstPremiumExt60hRatePK the kshst premium ext 60 h rate PK
      */
-    public KshmtHd60hPremiumRate(KshmtHd60hPremiumRatePK kshmtHd60hPremiumRatePK) {
-        this.kshmtHd60hPremiumRatePK = kshmtHd60hPremiumRatePK;
+    public KshmtHd60hPremiumRate(KshstPremiumExt60hRatePK kshstPremiumExt60hRatePK) {
+        this.kshstPremiumExt60hRatePK = kshstPremiumExt60hRatePK;
     }
 
     /**
      * Instantiates a new kshst premium ext 60 h rate.
      *
-     * @param kshmtHd60hPremiumRatePK the kshst premium ext 60 h rate PK
+     * @param kshstPremiumExt60hRatePK the kshst premium ext 60 h rate PK
      * @param premiumRate the premium rate
      */
-    public KshmtHd60hPremiumRate(KshmtHd60hPremiumRatePK kshmtHd60hPremiumRatePK, short premiumRate) {
-        this.kshmtHd60hPremiumRatePK = kshmtHd60hPremiumRatePK;
+    public KshmtHd60hPremiumRate(KshstPremiumExt60hRatePK kshstPremiumExt60hRatePK, short premiumRate) {
+        this.kshstPremiumExt60hRatePK = kshstPremiumExt60hRatePK;
         this.premiumRate = premiumRate;
     }
 
@@ -72,7 +72,7 @@ public class KshmtHd60hPremiumRate implements Serializable {
      * @param overTimeNo the over time no
      */
     public KshmtHd60hPremiumRate(String cid, short brdItemNo, short overTimeNo) {
-        this.kshmtHd60hPremiumRatePK = new KshmtHd60hPremiumRatePK(cid, brdItemNo, overTimeNo);
+        this.kshstPremiumExt60hRatePK = new KshstPremiumExt60hRatePK(cid, brdItemNo, overTimeNo);
     }
 
     /**
@@ -80,17 +80,17 @@ public class KshmtHd60hPremiumRate implements Serializable {
      *
      * @return the kshst premium ext 60 h rate PK
      */
-    public KshmtHd60hPremiumRatePK getKshmtHd60hPremiumRatePK() {
-        return kshmtHd60hPremiumRatePK;
+    public KshstPremiumExt60hRatePK getKshstPremiumExt60hRatePK() {
+        return kshstPremiumExt60hRatePK;
     }
 
     /**
      * Sets the kshst premium ext 60 h rate PK.
      *
-     * @param kshmtHd60hPremiumRatePK the new kshst premium ext 60 h rate PK
+     * @param kshstPremiumExt60hRatePK the new kshst premium ext 60 h rate PK
      */
-    public void setKshmtHd60hPremiumRatePK(KshmtHd60hPremiumRatePK kshmtHd60hPremiumRatePK) {
-        this.kshmtHd60hPremiumRatePK = kshmtHd60hPremiumRatePK;
+    public void setKshstPremiumExt60hRatePK(KshstPremiumExt60hRatePK kshstPremiumExt60hRatePK) {
+        this.kshstPremiumExt60hRatePK = kshstPremiumExt60hRatePK;
     }
 
 	/* (non-Javadoc)
@@ -99,7 +99,7 @@ public class KshmtHd60hPremiumRate implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtHd60hPremiumRatePK != null ? kshmtHd60hPremiumRatePK.hashCode() : 0);
+		hash += (kshstPremiumExt60hRatePK != null ? kshstPremiumExt60hRatePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -113,9 +113,9 @@ public class KshmtHd60hPremiumRate implements Serializable {
 			return false;
 		}
 		KshmtHd60hPremiumRate other = (KshmtHd60hPremiumRate) object;
-		if ((this.kshmtHd60hPremiumRatePK == null && other.kshmtHd60hPremiumRatePK != null)
-				|| (this.kshmtHd60hPremiumRatePK != null
-						&& !this.kshmtHd60hPremiumRatePK.equals(other.kshmtHd60hPremiumRatePK))) {
+		if ((this.kshstPremiumExt60hRatePK == null && other.kshstPremiumExt60hRatePK != null)
+				|| (this.kshstPremiumExt60hRatePK != null
+						&& !this.kshstPremiumExt60hRatePK.equals(other.kshstPremiumExt60hRatePK))) {
 			return false;
 		}
 		return true;
@@ -126,7 +126,7 @@ public class KshmtHd60hPremiumRate implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshmtHd60hPremiumRate[ kshmtHd60hPremiumRatePK=" + kshmtHd60hPremiumRatePK
+		return "entity.KshmtHd60hPremiumRate[ kshstPremiumExt60hRatePK=" + kshstPremiumExt60hRatePK
 				+ " ]";
 	}
 

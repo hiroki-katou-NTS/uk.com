@@ -91,7 +91,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 			// Delete all old data
 			entityCurrentCom.forEach(item -> {
 				// layoutID of current company
-				String groupItemId = item.ppemtGroupItemPk.groupItemId;
+				String groupItemId = item.ppemtPinfoItemGroupPk.groupItemId;
 
 				// get data layout item cls of current company
 				List<PpemtPInfoItemGroupDf> itemList = this.entityManager
@@ -122,7 +122,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 				// get get data layout item cls of company Zero
 				List<PpemtPInfoItemGroupDf> itemList = this.entityManager
 						.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
-						.setParameter("groupItemId", entity.ppemtGroupItemPk.groupItemId)
+						.setParameter("groupItemId", entity.ppemtPinfoItemGroupPk.groupItemId)
 						.getResultList();
 
 				// Insert new data
@@ -156,7 +156,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 					// get get data layout item cls of company Zero
 					List<PpemtPInfoItemGroupDf> itemList = this.entityManager
 							.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
-							.setParameter("groupItemId", entity.ppemtGroupItemPk.groupItemId)
+							.setParameter("groupItemId", entity.ppemtPinfoItemGroupPk.groupItemId)
 							.getResultList();
 
 					// Insert new data
@@ -190,7 +190,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 						List<PpemtPInfoItemGroupDf> itemList = this.entityManager
 								.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 								.setParameter("groupItemId",
-										entity.ppemtGroupItemPk.groupItemId)
+										entity.ppemtPinfoItemGroupPk.groupItemId)
 								.getResultList();
 
 						// Insert new data
@@ -212,14 +212,14 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 						List<PpemtPInfoItemGroupDf> itemZeroList = this.entityManager
 								.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 								.setParameter("groupItemId",
-										zeroData.ppemtGroupItemPk.groupItemId)
+										zeroData.ppemtPinfoItemGroupPk.groupItemId)
 								.getResultList();
 
 						// get get data layout item cls of destinatio company
 						List<PpemtPInfoItemGroupDf> itemDesList = this.entityManager
 								.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
 								.setParameter("groupItemId",
-										desDataItem.ppemtGroupItemPk.groupItemId)
+										desDataItem.ppemtPinfoItemGroupPk.groupItemId)
 								.getResultList();
 
 						List<String> defineIdDesList = itemDesList.stream()
@@ -231,7 +231,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 									.contains(item.ppemtPInfoItemGroupDfPk.itemDefId.trim())) {
 								String groupItemDfId = this.transferIdMap.getOrDefault(item.ppemtPInfoItemGroupDfPk.itemDefId, item.ppemtPInfoItemGroupDfPk.itemDefId);
 								PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(
-										desDataItem.ppemtGroupItemPk.groupItemId,
+										desDataItem.ppemtPinfoItemGroupPk.groupItemId,
 										groupItemDfId);
 								PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk,
 										companyId);

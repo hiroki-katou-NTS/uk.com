@@ -28,29 +28,29 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXEC_TARGET")
+@Table(name = "KRCDT_EMP_EXE_TARGET")
 public class KrcdtExecTarget extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtExecTargetPK krcdtExecTargetPK;
+	public KrcdtEmpExeTargetPK krcdtEmpExeTargetPK;
 
 	@OneToMany(mappedBy="empExeTarget", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCDT_EXEC_TARGET_STS")
+	@JoinTable(name = "KRCDT_EMP_EXE_TARGET_STT")
 	public List<KrcdtExecTargetSts> lstEmpExeTargetStt;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtExecTargetPK;
+		return this.krcdtEmpExeTargetPK;
 	}
 
 	public static KrcdtExecTarget toEntity(TargetPerson domain) {
 		KrcdtExecTarget entity = new KrcdtExecTarget(
-			new KrcdtExecTargetPK(domain.getEmployeeId(), domain.getEmpCalAndSumExecLogId()),
+			new KrcdtEmpExeTargetPK(domain.getEmployeeId(), domain.getEmpCalAndSumExecLogId()),
 			domain.getState().stream().map(state -> {
 				return new KrcdtExecTargetSts(
-					new KrcdtExecTargetStsPK(domain.getEmployeeId(), domain.getEmpCalAndSumExecLogId(), state.getExecutionContent().value),
+					new KrcdtEmpExeTargetSttPK(domain.getEmployeeId(), domain.getEmpCalAndSumExecLogId(), state.getExecutionContent().value),
 					state.getStatus().value
 				);
 			}).collect(Collectors.toList())
@@ -60,11 +60,11 @@ public class KrcdtExecTarget extends ContractUkJpaEntity implements Serializable
 
 	public TargetPerson toDomain() {
 		return new TargetPerson(
-			this.krcdtExecTargetPK.employeeId,
-			this.krcdtExecTargetPK.empCalAndSumExecLogID,
+			this.krcdtEmpExeTargetPK.employeeId,
+			this.krcdtEmpExeTargetPK.empCalAndSumExecLogID,
 			this.lstEmpExeTargetStt.stream().map(state -> {
 				return new ComplStateOfExeContents(
-					EnumAdaptor.valueOf(state.KrcdtExecTargetStsPK.executionContent, ExecutionContent.class),
+					EnumAdaptor.valueOf(state.KrcdtEmpExeTargetSttPK.executionContent, ExecutionContent.class),
 					EnumAdaptor.valueOf(state.executionState, EmployeeExecutionStatus.class)
 				);
 			}).collect(Collectors.toList())

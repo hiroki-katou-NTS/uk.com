@@ -115,15 +115,15 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	/**
 	 * convert PremiumItem Entity Object to PremiumItem Domain Object
-	 * @param kscmtPremiumItem PremiumItem Entity Object
+	 * @param kmnmtPremiumItem PremiumItem Entity Object
 	 * @return PremiumItem Domain Object
 	 */ 
-	private PremiumItem convertToDomain(KscmtPremiumItem kscmtPremiumItem){
+	private PremiumItem convertToDomain(KscmtPremiumItem kmnmtPremiumItem){
 		return new PremiumItem(
-				kscmtPremiumItem.kmnmpPremiumItemPK.companyID, 
-				kscmtPremiumItem.kmnmpPremiumItemPK.displayNumber,
-				new PremiumName(kscmtPremiumItem.name), 
-				EnumAdaptor.valueOf(kscmtPremiumItem.useAtr, UseAttribute.class));
+				kmnmtPremiumItem.kmnmpPremiumItemPK.companyID, 
+				kmnmtPremiumItem.kmnmpPremiumItemPK.displayNumber,
+				new PremiumName(kmnmtPremiumItem.name), 
+				EnumAdaptor.valueOf(kmnmtPremiumItem.useAtr, UseAttribute.class));
 	}
 
 	

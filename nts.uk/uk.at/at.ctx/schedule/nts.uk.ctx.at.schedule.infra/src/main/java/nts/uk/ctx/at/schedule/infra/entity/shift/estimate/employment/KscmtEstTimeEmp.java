@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_TIME_EMP")
+@Table(name = "KSCMT_EST_TIME_EMP_SET")
 public class KscmtEstTimeEmp extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -31,7 +31,7 @@ public class KscmtEstTimeEmp extends ContractUkJpaEntity implements Serializable
     
     /** The kscmt est time emp set PK. */
     @EmbeddedId
-    protected KscmtEstTimeEmpPK kscmtEstTimeEmpPK;
+    protected KscmtEstTimeEmpSetPK kscmtEstTimeEmpSetPK;
     
     /** The est condition 1 st time. */
     @Basic(optional = false)
@@ -72,10 +72,10 @@ public class KscmtEstTimeEmp extends ContractUkJpaEntity implements Serializable
     /**
      * Instantiates a new kscmt est time emp set.
      *
-     * @param kscmtEstTimeEmpPK the kscmt est time emp set PK
+     * @param kscmtEstTimeEmpSetPK the kscmt est time emp set PK
      */
-    public KscmtEstTimeEmp(KscmtEstTimeEmpPK kscmtEstTimeEmpPK) {
-        this.kscmtEstTimeEmpPK = kscmtEstTimeEmpPK;
+    public KscmtEstTimeEmp(KscmtEstTimeEmpSetPK kscmtEstTimeEmpSetPK) {
+        this.kscmtEstTimeEmpSetPK = kscmtEstTimeEmpSetPK;
     }
 
 	/* (non-Javadoc)
@@ -83,7 +83,7 @@ public class KscmtEstTimeEmp extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtEstTimeEmpPK;
+		return this.kscmtEstTimeEmpSetPK;
 	}
 
 	/*
@@ -96,7 +96,7 @@ public class KscmtEstTimeEmp extends ContractUkJpaEntity implements Serializable
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((kscmtEstTimeEmpPK == null) ? 0 : kscmtEstTimeEmpPK.hashCode());
+				+ ((kscmtEstTimeEmpSetPK == null) ? 0 : kscmtEstTimeEmpSetPK.hashCode());
 		return result;
 	}
 
@@ -109,10 +109,10 @@ public class KscmtEstTimeEmp extends ContractUkJpaEntity implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtEstTimeEmp other = (KscmtEstTimeEmp) obj;
-		if (kscmtEstTimeEmpPK == null) {
-			if (other.kscmtEstTimeEmpPK != null)
+		if (kscmtEstTimeEmpSetPK == null) {
+			if (other.kscmtEstTimeEmpSetPK != null)
 				return false;
-		} else if (!kscmtEstTimeEmpPK.equals(other.kscmtEstTimeEmpPK))
+		} else if (!kscmtEstTimeEmpSetPK.equals(other.kscmtEstTimeEmpSetPK))
 			return false;
 		return true;
 	}

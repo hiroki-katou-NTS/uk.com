@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCDT_ATD_ACTUAL_LOCK")
+@Table(name = "KRCST_ACTUAL_LOCK")
 
 public class KrcdtAtdActualLock extends ContractUkJpaEntity implements Serializable {
 	
@@ -30,7 +30,7 @@ public class KrcdtAtdActualLock extends ContractUkJpaEntity implements Serializa
     
     /** The krcmt actual lock PK. */
     @EmbeddedId
-    protected KrcdtAtdActualLockPK krcdtAtdActualLockPK;
+    protected KrcstActualLockPK krcstActualLockPK;
     
     /** The d lock state. */
     @Column(name = "D_LOCK_STATE")
@@ -53,7 +53,7 @@ public class KrcdtAtdActualLock extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcdtAtdActualLockPK;
+		return this.krcstActualLockPK;
 	}
 
 
@@ -64,7 +64,7 @@ public class KrcdtAtdActualLock extends ContractUkJpaEntity implements Serializa
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((krcdtAtdActualLockPK == null) ? 0 : krcdtAtdActualLockPK.hashCode());
+		result = prime * result + ((krcstActualLockPK == null) ? 0 : krcstActualLockPK.hashCode());
 		return result;
 	}
 
@@ -81,10 +81,10 @@ public class KrcdtAtdActualLock extends ContractUkJpaEntity implements Serializa
 		if (getClass() != obj.getClass())
 			return false;
 		KrcdtAtdActualLock other = (KrcdtAtdActualLock) obj;
-		if (krcdtAtdActualLockPK == null) {
-			if (other.krcdtAtdActualLockPK != null)
+		if (krcstActualLockPK == null) {
+			if (other.krcstActualLockPK != null)
 				return false;
-		} else if (!krcdtAtdActualLockPK.equals(other.krcdtAtdActualLockPK))
+		} else if (!krcstActualLockPK.equals(other.krcstActualLockPK))
 			return false;
 		return true;
 	}

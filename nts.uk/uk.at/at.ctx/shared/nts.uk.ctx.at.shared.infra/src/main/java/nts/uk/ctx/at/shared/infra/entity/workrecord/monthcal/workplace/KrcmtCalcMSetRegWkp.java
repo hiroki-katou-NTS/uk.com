@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstRegMCalSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_M_SET_REG_WKP")
+@Table(name = "KRCST_WKP_REG_M_CAL_SET")
 public class KrcmtCalcMSetRegWkp extends KrcstRegMCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcMSetRegWkp extends KrcstRegMCalSet implements Serializable
 
 	/** The krcst wkp reg M cal set PK. */
 	@EmbeddedId
-	protected KrcmtCalcMSetRegWkpPK krcmtCalcMSetRegWkpPK;
+	protected KrcstWkpRegMCalSetPK krcstWkpRegMCalSetPK;
 
 	/**
 	 * Instantiates a new krcst wkp reg M cal set.
@@ -45,7 +45,7 @@ public class KrcmtCalcMSetRegWkp extends KrcstRegMCalSet implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtCalcMSetRegWkpPK != null ? krcmtCalcMSetRegWkpPK.hashCode() : 0);
+		hash += (krcstWkpRegMCalSetPK != null ? krcstWkpRegMCalSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -62,9 +62,9 @@ public class KrcmtCalcMSetRegWkp extends KrcstRegMCalSet implements Serializable
 			return false;
 		}
 		KrcmtCalcMSetRegWkp other = (KrcmtCalcMSetRegWkp) object;
-		if ((this.krcmtCalcMSetRegWkpPK == null && other.krcmtCalcMSetRegWkpPK != null)
-				|| (this.krcmtCalcMSetRegWkpPK != null
-						&& !this.krcmtCalcMSetRegWkpPK.equals(other.krcmtCalcMSetRegWkpPK))) {
+		if ((this.krcstWkpRegMCalSetPK == null && other.krcstWkpRegMCalSetPK != null)
+				|| (this.krcstWkpRegMCalSetPK != null
+						&& !this.krcstWkpRegMCalSetPK.equals(other.krcstWkpRegMCalSetPK))) {
 			return false;
 		}
 		return true;
@@ -77,7 +77,7 @@ public class KrcmtCalcMSetRegWkp extends KrcstRegMCalSet implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcMSetRegWkpPK;
+		return this.krcstWkpRegMCalSetPK;
 	}
 
 }

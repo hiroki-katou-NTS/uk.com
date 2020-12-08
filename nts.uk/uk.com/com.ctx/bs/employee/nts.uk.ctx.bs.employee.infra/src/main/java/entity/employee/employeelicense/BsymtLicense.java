@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYMT_LICENSE")
+@Table(name = "BSYMT_EMPLOYEE_LICENSE")
 public class BsymtLicense extends ContractUkJpaEntity implements Serializable {
 	
 	/**
@@ -22,7 +22,7 @@ public class BsymtLicense extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public BsymtLicensePK bsymtLicensePK;
+    public BsymtEmployeeLicensePK bsymtEmployeeLicensePK;
 	
 	/**
 	 * 上限人数 Max number of License
@@ -39,11 +39,11 @@ public class BsymtLicense extends ContractUkJpaEntity implements Serializable {
     public String licenseKey;
 	@Override
 	protected Object getKey() {
-		return bsymtLicensePK;
+		return bsymtEmployeeLicensePK;
 	}
 	public EmployeeLicense toDomain(){
 		return EmployeeLicense.createFromJavatype(
-						this.bsymtLicensePK.contractCD,
+						this.bsymtEmployeeLicensePK.contractCD,
 						this.maxNumberLicense,
 						this.warningNumberLicense,
 						this.licenseKey);
@@ -52,7 +52,7 @@ public class BsymtLicense extends ContractUkJpaEntity implements Serializable {
 	
 	public static BsymtLicense toEntity(EmployeeLicense employeeLicense){
 				return new BsymtLicense(
-						new BsymtLicensePK(employeeLicense.getContractCD().v()),
+						new BsymtEmployeeLicensePK(employeeLicense.getContractCD().v()),
 						employeeLicense.getMaxNumberLicenses().v(),
 						employeeLicense.getWarningNumberLicenses().v(),
 						employeeLicense.getLicenseKey().toString());

@@ -107,7 +107,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtMonTimeAtdPk krcdtMonRemainPk;
+	public KrcdtMonMergePk krcdtMonRemainPk;
 
 	/** 締め処理状態 */
 	@Column(name = "CLOSURE_STATUS")

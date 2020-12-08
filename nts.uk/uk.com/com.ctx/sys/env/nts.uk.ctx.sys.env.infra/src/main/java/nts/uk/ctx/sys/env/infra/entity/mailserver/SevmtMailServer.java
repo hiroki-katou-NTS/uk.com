@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "SEVMT_MAIL_SERVER")
+@Table(name = "SEVST_MAIL_SERVER")
 public class SevmtMailServer extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

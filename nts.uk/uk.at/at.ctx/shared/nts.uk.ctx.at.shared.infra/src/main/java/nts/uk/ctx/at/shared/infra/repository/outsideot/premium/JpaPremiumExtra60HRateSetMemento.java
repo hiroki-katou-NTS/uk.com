@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.Premium
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRatePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK;
 
 /**
  * The Class JpaPremiumExtra60HRateSetMemento.
@@ -27,10 +27,10 @@ public class JpaPremiumExtra60HRateSetMemento implements PremiumExtra60HRateSetM
 	 * @param companyId the company id
 	 */
 	public JpaPremiumExtra60HRateSetMemento(KshmtHd60hPremiumRate entity, String companyId) {
-		if(entity.getKshmtHd60hPremiumRatePK() ==null){
-			entity.setKshmtHd60hPremiumRatePK(new KshmtHd60hPremiumRatePK());
+		if(entity.getKshstPremiumExt60hRatePK() ==null){
+			entity.setKshstPremiumExt60hRatePK(new KshstPremiumExt60hRatePK());
 		}
-		entity.getKshmtHd60hPremiumRatePK().setCid(companyId);
+		entity.getKshstPremiumExt60hRatePK().setCid(companyId);
 		this.entity = entity;
 	}
 	/*
@@ -42,7 +42,7 @@ public class JpaPremiumExtra60HRateSetMemento implements PremiumExtra60HRateSetM
 	 */
 	@Override
 	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.entity.getKshmtHd60hPremiumRatePK().setBrdItemNo(breakdownItemNo.value);
+		this.entity.getKshstPremiumExt60hRatePK().setBrdItemNo(breakdownItemNo.value);
 
 	}
 
@@ -67,7 +67,7 @@ public class JpaPremiumExtra60HRateSetMemento implements PremiumExtra60HRateSetM
 	 */
 	@Override
 	public void setOvertimeNo(OvertimeNo overtimeNo) {
-		this.entity.getKshmtHd60hPremiumRatePK().setOverTimeNo(overtimeNo.value);
+		this.entity.getKshstPremiumExt60hRatePK().setOverTimeNo(overtimeNo.value);
 	}
 
 }

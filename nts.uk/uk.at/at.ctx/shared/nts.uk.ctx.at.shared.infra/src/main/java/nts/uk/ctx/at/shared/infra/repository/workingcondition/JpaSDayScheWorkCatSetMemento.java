@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTs;
 
 /**
@@ -29,7 +29,7 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	private KshmtWorkcondCtg entity;
 	
 	/** The map kshmt work cat time zone. */
-	private Map<Integer, KshmtWorkcondCtgTs> mapKshmtWorkcondCtgTs;
+	private Map<Integer, KshmtWorkcondCtgTs> mapKshmtWorkCatTimeZone;
 
 	/**
 	 * Instantiates a new jpa single day schedule set memento.
@@ -39,23 +39,23 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	public JpaSDayScheWorkCatSetMemento(String historyId, int workCategoryAtr,
 			KshmtWorkcondCtg entity) {
-		if (entity.getKshmtWorkcondCtgPK() == null) {
-			KshmtWorkcondCtgPK kshmtWorkcondCtgPK = new KshmtWorkcondCtgPK();
-			kshmtWorkcondCtgPK.setHistoryId(historyId);
-			kshmtWorkcondCtgPK.setPerWorkCatAtr(workCategoryAtr);
-			entity.setKshmtWorkcondCtgPK(kshmtWorkcondCtgPK);
+		if (entity.getKshmtPerWorkCatPK() == null) {
+			KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
+			kshmtPerWorkCatPK.setHistoryId(historyId);
+			kshmtPerWorkCatPK.setPerWorkCatAtr(workCategoryAtr);
+			entity.setKshmtPerWorkCatPK(kshmtPerWorkCatPK);
 		}
 
 		this.entity = entity;
 		
-		this.mapKshmtWorkcondCtgTs = new HashMap<>();
-		if (!CollectionUtil.isEmpty(entity.getKshmtWorkcondCtgTss())) {
-			entity.getKshmtWorkcondCtgTss().stream().forEach(c -> {
+		this.mapKshmtWorkCatTimeZone = new HashMap<>();
+		if (!CollectionUtil.isEmpty(entity.getKshmtWorkCatTimeZones())) {
+			entity.getKshmtWorkCatTimeZones().stream().forEach(c -> {
 				c.setSid(entity.getSid());
 			});
 			
-			this.mapKshmtWorkcondCtgTs = entity.getKshmtWorkcondCtgTss().stream()
-					.collect(Collectors.toMap(item -> item.getKshmtWorkcondCtgTsPK().getCnt(), Function.identity()));
+			this.mapKshmtWorkCatTimeZone = entity.getKshmtWorkCatTimeZones().stream()
+					.collect(Collectors.toMap(item -> item.getKshmtWorkCatTimeZonePK().getCnt(), Function.identity()));
 		}
 	}
 
@@ -84,12 +84,12 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		this.entity.setKshmtWorkcondCtgTss(workingHours.stream().map(item -> {
-			KshmtWorkcondCtgTs kshmtWorkcondCtgTs = this.mapKshmtWorkcondCtgTs.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkcondCtgTs());
+		this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
+			KshmtWorkcondCtgTs kshmtWorkCatTimeZone = this.mapKshmtWorkCatTimeZone.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkcondCtgTs());
 			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkcondCtgTs>(
-					this.entity.getKshmtWorkcondCtgPK().getHistoryId(),
-					this.entity.getKshmtWorkcondCtgPK().getPerWorkCatAtr(), kshmtWorkcondCtgTs));
-			return kshmtWorkcondCtgTs;
+					this.entity.getKshmtPerWorkCatPK().getHistoryId(),
+					this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
+			return kshmtWorkCatTimeZone;
 		}).collect(Collectors.toList()));
 	}
 

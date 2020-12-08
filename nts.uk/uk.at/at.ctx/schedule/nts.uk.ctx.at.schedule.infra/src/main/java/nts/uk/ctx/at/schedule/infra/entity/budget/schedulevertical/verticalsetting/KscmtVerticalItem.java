@@ -21,13 +21,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_VERTICAL_ITEM")
+@Table(name = "KSCMT_GEN_VERT_ITEM")
 public class KscmtVerticalItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscmtVerticalItemPK kscmtVerticalItemPK;
+	public KscmtGenVertItemPK kscmtGenVertItemPK;
 
 	/* 項目名 */
 	@Column(name = "ITEM_NAME")
@@ -73,34 +73,34 @@ public class KscmtVerticalItem extends ContractUkJpaEntity implements Serializab
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="genVertItem", orphanRemoval = true)
 	public KscmtVerticalSort genVertOrder;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtVerticalItemBuilt", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemBuilt", orphanRemoval = true)
 	public KscmtFormBuilt formBuilt;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtVerticalItemTime", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemTime", orphanRemoval = true)
 	public KscmtFormTime formTime;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtVerticalItemPeople", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemPeople", orphanRemoval = true)
 	public KscmtFormPeople formPeople;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtVerticalItem", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
 	public KscstFormAmount amount;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtVerticalItem", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItem", orphanRemoval = true)
 	public List<KscstFormNumerical> numerical;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtVerticalItemUnitPrice", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtGenVertItemUnitPrice", orphanRemoval = true)
 	public KscstFormulaUnitPrice price;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscmtVerticalItemPK;
+		return kscmtGenVertItemPK;
 	}
 	
-	public KscmtVerticalItem(KscmtVerticalItemPK kscmtVerticalItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
+	public KscmtVerticalItem(KscmtGenVertItemPK kscmtGenVertItemPK, String itemName, int calculateAtr, int displayAtr, int cumulativeAtr, 
 			int attributes, int rounding, int roundingProcessing, KscmtVerticalSort genVertOrder, KscmtFormBuilt formBuilt, 
 			KscmtFormTime formTime, KscmtFormPeople formPeople, KscstFormAmount amount, List<KscstFormNumerical> numerical, KscstFormulaUnitPrice price) {
-		this.kscmtVerticalItemPK = kscmtVerticalItemPK;
+		this.kscmtGenVertItemPK = kscmtGenVertItemPK;
 		this.itemName = itemName;
 		this.calculateAtr = calculateAtr;
 		this.displayAtr = displayAtr;

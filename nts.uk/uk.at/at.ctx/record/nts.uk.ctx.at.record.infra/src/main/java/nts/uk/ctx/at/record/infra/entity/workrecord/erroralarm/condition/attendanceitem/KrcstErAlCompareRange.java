@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CNDEXP")
+@Table(name = "KRCST_ERAL_COMPARE_RANGE")
 public class KrcstErAlCompareRange extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcstErAlCompareRangePK krcmtEralstCndexpPK;
+	public KrcstErAlCompareRangePK krcstEralCompareRangePK;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "COMPARE_ATR")
@@ -50,17 +50,17 @@ public class KrcstErAlCompareRange extends ContractUkJpaEntity implements Serial
 	@JoinColumns({
 		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtEralstCndgrp krcmtEralstCndgrp;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralstCndexpPK;
+		return this.krcstEralCompareRangePK;
 	}
 
-	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcmtEralstCndexpPK, int compareAtr,
+	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcstEralCompareRangePK, int compareAtr,
 			double startValue, double endValue) {
 		super();
-		this.krcmtEralstCndexpPK = krcmtEralstCndexpPK;
+		this.krcstEralCompareRangePK = krcstEralCompareRangePK;
 		this.compareAtr = compareAtr;
 		this.startValue = startValue;
 		this.endValue = endValue;

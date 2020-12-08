@@ -22,9 +22,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHist;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHistPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHistPK_;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHist_;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK_;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHist_;
 
 /**
  * The Class JpaActualLockHistRepository.
@@ -56,7 +56,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	@Override
 	public void update(ActualLockHistory actualLockHistory) {
 		Optional<KrcdtAtdActuallockHist> optional = this.queryProxy()
-				.find(new KrcdtAtdActuallockHistPK(actualLockHistory.getCompanyId(),
+				.find(new KrcdtActualLockHistPK(actualLockHistory.getCompanyId(),
 						actualLockHistory.getClosureId().value, actualLockHistory.getLockDateTime()),
 						KrcdtAtdActuallockHist.class);
 		KrcdtAtdActuallockHist entity = new KrcdtAtdActuallockHist();
@@ -87,7 +87,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(
-				bd.equal(root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.cid), companyId));
+				bd.equal(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.cid), companyId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -120,16 +120,16 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 
 		// Equal CompanyId
 		predicateList.add(
-				cb.equal(root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.cid), companyId));
+				cb.equal(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.cid), companyId));
 		// Equal ClosureId
 		predicateList.add(cb.equal(
-				root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.closureId), closureId));
+				root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.closureId), closureId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// LockDate Desc
-		cq.orderBy(cb.desc(root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.lockDate)));
+		cq.orderBy(cb.desc(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.lockDate)));
 
 		// Create Query
 		TypedQuery<KrcdtAtdActuallockHist> query = em.createQuery(cq);
@@ -147,7 +147,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	@Override
 	public Optional<ActualLockHistory> findByLockDate(String companyId, int closureId, GeneralDateTime lockDate) {
 		return this.queryProxy()
-				.find(new KrcdtAtdActuallockHistPK(companyId, closureId, lockDate), KrcdtAtdActuallockHist.class)
+				.find(new KrcdtActualLockHistPK(companyId, closureId, lockDate), KrcdtAtdActuallockHist.class)
 				.map(c -> this.toDomain(c));
 	}
 
@@ -173,18 +173,18 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 
 		// Equal CompanyId
 		predicateList.add(
-				cb.equal(root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.cid), companyId));
+				cb.equal(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.cid), companyId));
 		// Equal ClosureId
 		predicateList.add(cb.equal(
-				root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.closureId), closureId));
+				root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.closureId), closureId));
 		// Equal TargetMonth
-		predicateList.add(cb.equal(root.get(KrcdtAtdActuallockHist_.targetMonth), targetMonth));
+		predicateList.add(cb.equal(root.get(KrcdtActualLockHist_.targetMonth), targetMonth));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// LockDate Desc
-		cq.orderBy(cb.desc(root.get(KrcdtAtdActuallockHist_.krcdtAtdActuallockHistPK).get(KrcdtAtdActuallockHistPK_.lockDate)));
+		cq.orderBy(cb.desc(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.lockDate)));
 
 		// Create Query
 		TypedQuery<KrcdtAtdActuallockHist> query = em.createQuery(cq);
@@ -202,7 +202,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	@Override
 	public void remove(String companyId, int closureId, GeneralDateTime lockDate) {
 		this.commandProxy().remove(KrcdtAtdActuallockHist.class,
-				new KrcdtAtdActuallockHistPK(companyId, closureId, lockDate));
+				new KrcdtActualLockHistPK(companyId, closureId, lockDate));
 	}
 
 	/**

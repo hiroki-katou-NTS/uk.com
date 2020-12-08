@@ -52,10 +52,10 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 	 */
 	@Override
 	public List<EstimatedAlarmColor> getAlarmColors() {
-		return this.entity.getKscmtEstAlarmColors().stream()
+		return this.entity.getKscstEstAlarmColors().stream()
 				.map(item -> new EstimatedAlarmColor(
 						EstimatedCondition
-								.valueOf(item.getKscmtEstAlarmColorPK().getEstimateCondition()),
+								.valueOf(item.getKscstEstAlarmColorPK().getEstimateCondition()),
 						new ColorCode(item.getColorCd())))
 				.collect(Collectors.toList());
 	}

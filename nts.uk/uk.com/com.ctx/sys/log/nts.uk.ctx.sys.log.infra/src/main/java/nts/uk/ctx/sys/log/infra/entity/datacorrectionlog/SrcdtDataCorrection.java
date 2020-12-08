@@ -30,13 +30,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name = "SRCDT_DATA_CORRECTION")
+@Table(name = "SRCDT_DATA_CORRECTION_LOG")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcdtDataCorrection extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public SrcdtDataCorrectionPk pk;
+	public SrcdtDataCorrectionLogPk pk;
 
 	@Column(name = "USER_NAME")
 	@Basic(optional = false)
@@ -154,7 +154,7 @@ public class SrcdtDataCorrection extends ContractUkJpaEntity {
 	public static SrcdtDataCorrection fromDomain(DataCorrectionLog dataLog){
 		SrcdtDataCorrection entityLog = new SrcdtDataCorrection();
 		val correctedItem = dataLog.getCorrectedItem();
-		entityLog.pk = new SrcdtDataCorrectionPk(dataLog.getOperationId(), dataLog.getTargetUser().getUserId(),
+		entityLog.pk = new SrcdtDataCorrectionLogPk(dataLog.getOperationId(), dataLog.getTargetUser().getUserId(),
 				dataLog.getTargetDataType().value, correctedItem.getId(), dataLog.getTargetDataKey().getDateKey());
 		entityLog.userName = dataLog.getTargetUser().getUserName();
 		entityLog.employeeId = dataLog.getTargetUser().getEmployeeId();
@@ -197,7 +197,7 @@ public class SrcdtDataCorrection extends ContractUkJpaEntity {
 				this.showOrder, this.note);
 	}
 
-	public SrcdtDataCorrection(SrcdtDataCorrectionPk pk, String userName, String employeeId, Integer ymKey,
+	public SrcdtDataCorrection(SrcdtDataCorrectionLogPk pk, String userName, String employeeId, Integer ymKey,
 			Integer yKey, String stringKey, int correctionAttr, String itemName, String rawValueBefore,
 			String viewValueBefore, String rawValueAfter, String viewValueAfter, Integer valueType, int showOrder,
 			String note) {

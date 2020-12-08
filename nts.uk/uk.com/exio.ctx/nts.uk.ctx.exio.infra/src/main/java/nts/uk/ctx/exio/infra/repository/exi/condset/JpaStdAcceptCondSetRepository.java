@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcCond;
-import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcCondPk;
+import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
 
 @Stateless
 public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdAcceptCondSetRepository {
@@ -25,7 +25,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	@Override
 	public Optional<StdAcceptCondSet> getStdAcceptCondSetById(String cid, int sysType, String conditionSetCd) {
 		Optional<OiomtExAcCond> entity = this.queryProxy()
-				.find(new OiomtExAcCondPk(cid, sysType, conditionSetCd), OiomtExAcCond.class);
+				.find(new OiomtStdAcceptCondSetPk(cid, sysType, conditionSetCd), OiomtExAcCond.class);
 		if (entity.isPresent()) {
 			return Optional.of(OiomtExAcCond.entityToDomain(entity.get()));
 		} else {
@@ -40,7 +40,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 
 	@Override
 	public void update(StdAcceptCondSet domain) {
-		Optional<OiomtExAcCond> entityOpt = this.queryProxy().find(new OiomtExAcCondPk(domain.getCid(),
+		Optional<OiomtExAcCond> entityOpt = this.queryProxy().find(new OiomtStdAcceptCondSetPk(domain.getCid(),
 				domain.getSystemType().value, domain.getConditionSetCd().v()), OiomtExAcCond.class);
 		if (entityOpt.isPresent()) {
 			OiomtExAcCond entity = entityOpt.get();
@@ -60,19 +60,19 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	@Override
 	public void remove(String cid, int sysType, String conditionSetCd) {
 		this.commandProxy().remove(OiomtExAcCond.class,
-				new OiomtExAcCondPk(cid, sysType, conditionSetCd));
+				new OiomtStdAcceptCondSetPk(cid, sysType, conditionSetCd));
 	}
 
 	@Override
 	public boolean isSettingCodeExist(String cid, int sysType, String conditionSetCd) {
 		Optional<OiomtExAcCond> entity = this.queryProxy()
-				.find(new OiomtExAcCondPk(cid, sysType, conditionSetCd), OiomtExAcCond.class);
+				.find(new OiomtStdAcceptCondSetPk(cid, sysType, conditionSetCd), OiomtExAcCond.class);
 		return entity.isPresent();
 	}
 
 	@Override
 	public void updateFromD(StdAcceptCondSet domain) {
-		Optional<OiomtExAcCond> entityOpt = this.queryProxy().find(new OiomtExAcCondPk(domain.getCid(),
+		Optional<OiomtExAcCond> entityOpt = this.queryProxy().find(new OiomtStdAcceptCondSetPk(domain.getCid(),
 				domain.getSystemType().value, domain.getConditionSetCd().v()), OiomtExAcCond.class);
 		if (entityOpt.isPresent()) {
 			OiomtExAcCond entity = entityOpt.get();

@@ -27,13 +27,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_PAIR_PATRN_COM")
+@Table(name = "KSCMT_COM_PATTERN_ITEM")
 public class KscmtPairPatrnCom extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtPairPatrnComPK kscmtPairPatrnComPk;
+	public KscmtComPatternItemPK kscmtComPatternItemPk;
 
 	@Column(name = "PATTERN_NAME")
 	public String patternName;
@@ -41,22 +41,22 @@ public class KscmtPairPatrnCom extends ContractUkJpaEntity implements Serializab
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "GROUP_NO", referencedColumnName = "GROUP_NO", insertable = false, updatable = false) })
-	private KscmtPairGrpCom kscmtPairGrpCom;
+	private KscmtPairGrpCom kscmtComPattern;
 
-	@OneToMany(targetEntity=KscmtPairCom.class, cascade = CascadeType.ALL, mappedBy = "kscmtPairPatrnCom", orphanRemoval = true)
-	@JoinTable(name = "KSCMT_PAIR_COM")
-	public List<KscmtPairCom> kscmtPairCom;
+	@OneToMany(targetEntity=KscmtPairCom.class, cascade = CascadeType.ALL, mappedBy = "kscmtComPatternItem", orphanRemoval = true)
+	@JoinTable(name = "KSCMT_COM_WORK_PAIR_SET")
+	public List<KscmtPairCom> kscmtComWorkPairSet;
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtPairPatrnComPk;
+		return this.kscmtComPatternItemPk;
 	}
 
-	public KscmtPairPatrnCom(KscmtPairPatrnComPK kscmtPairPatrnComPk, String patternName,
-			List<KscmtPairCom> kscmtPairCom) {
+	public KscmtPairPatrnCom(KscmtComPatternItemPK kscmtComPatternItemPk, String patternName,
+			List<KscmtPairCom> kscmtComWorkPairSet) {
 		super();
-		this.kscmtPairPatrnComPk = kscmtPairPatrnComPk;
+		this.kscmtComPatternItemPk = kscmtComPatternItemPk;
 		this.patternName = patternName;
-		this.kscmtPairCom = kscmtPairCom;
+		this.kscmtComWorkPairSet = kscmtComWorkPairSet;
 	}
 }

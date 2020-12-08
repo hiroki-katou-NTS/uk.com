@@ -11,7 +11,7 @@ import java.util.Optional;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.WorkCategoryAtr;
 
 /**
@@ -21,7 +21,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	
 
 	/** The entitys. */
-	private List<KshmtWorkcondCtgegory> entitys;
+	private List<KshmtPerWorkCategory> entitys;
 	
 
 	/**
@@ -29,7 +29,7 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 *
 	 * @param entitys the entitys
 	 */
-	public JpaPersonalWorkCategorySetMemento(List<KshmtWorkcondCtgegory> entitys) {
+	public JpaPersonalWorkCategorySetMemento(List<KshmtPerWorkCategory> entitys) {
 		if (CollectionUtil.isEmpty(entitys)) {
 			this.entitys = new ArrayList<>();
 		} else {
@@ -133,10 +133,10 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	 * @param workCategoryAtr the work category atr
 	 * @return the kshmt per work category
 	 */
-	private KshmtWorkcondCtgegory toEntity(SingleDaySchedule domain, int workCategoryAtr) {
-		KshmtWorkcondCtgegory entity = new KshmtWorkcondCtgegory();
+	private KshmtPerWorkCategory toEntity(SingleDaySchedule domain, int workCategoryAtr) {
+		KshmtPerWorkCategory entity = new KshmtPerWorkCategory();
 		domain.saveToMemento(new JpaSingleDayScheduleWorkCategorySetMemento(entity));
-		entity.getKshmtWorkcondCtgegoryPK().setWorkCategoryAtr(workCategoryAtr);
+		entity.getKshmtPerWorkCategoryPK().setWorkCategoryAtr(workCategoryAtr);
 		return entity;
 	}
 

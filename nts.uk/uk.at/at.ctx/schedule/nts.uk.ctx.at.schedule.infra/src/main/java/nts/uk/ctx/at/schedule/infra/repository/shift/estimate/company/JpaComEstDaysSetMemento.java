@@ -11,7 +11,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSetPK;
 
 /**
  * The Class JpaCompanyEstimateNumberOfDaySetMemento.
@@ -26,8 +26,8 @@ public class JpaComEstDaysSetMemento implements EstimateNumberOfDaySetMemento {
 	 * @param estimateDaysCompany the estimate days company
 	 */
 	public JpaComEstDaysSetMemento(KscmtEstDaysCom estimateDaysCompany) {
-		if(estimateDaysCompany.getKscmtEstDaysComPK() == null){
-			estimateDaysCompany.setKscmtEstDaysComPK(new KscmtEstDaysComPK());
+		if(estimateDaysCompany.getKscmtEstDaysComSetPK() == null){
+			estimateDaysCompany.setKscmtEstDaysComSetPK(new KscmtEstDaysComSetPK());
 		}
 		this.estimateDaysCompany = estimateDaysCompany;
 	}
@@ -42,7 +42,7 @@ public class JpaComEstDaysSetMemento implements EstimateNumberOfDaySetMemento {
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estimateDaysCompany.getKscmtEstDaysComPK().setTargetCls(targetClassification.value);
+		this.estimateDaysCompany.getKscmtEstDaysComSetPK().setTargetCls(targetClassification.value);
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class JpaComEstDaysSetMemento implements EstimateNumberOfDaySetMemento {
 	public void setYearlyEstimateNumberOfDaySetting(
 			List<YearlyEstimateNumberOfDay> yearlyEstimateNumberOfDaySetting) {
 		
-		if (this.estimateDaysCompany.getKscmtEstDaysComPK()
+		if (this.estimateDaysCompany.getKscmtEstDaysComSetPK()
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 			yearlyEstimateNumberOfDaySetting.forEach(yearly -> {
 				switch (yearly.getEstimatedCondition()) {
@@ -96,7 +96,7 @@ public class JpaComEstDaysSetMemento implements EstimateNumberOfDaySetMemento {
 	public void setMonthlyEstimateNumberOfDaySetting(
 			List<MonthlyEstimateNumberOfDay> monthlyEstimateNumberOfDaySetting) {
 
-		if (this.estimateDaysCompany.getKscmtEstDaysComPK()
+		if (this.estimateDaysCompany.getKscmtEstDaysComSetPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 			monthlyEstimateNumberOfDaySetting.forEach(monthly -> {
 				switch (monthly.getEstimatedCondition()) {

@@ -12,9 +12,9 @@ import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtExAcCdConv;
-import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtExAcCdConvPk;
+import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtAcceptCdConvertPk;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtExAcCdConvDtl;
-import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtExAcCdConvDtlPk;
+import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtCdConvertDetailsPk;
 
 @Stateless
 public class JpaAcceptCdConvertRepository extends JpaRepository implements AcceptCdConvertRepository {
@@ -58,13 +58,13 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 
 	@Override
 	public void remove(String cid, String convertCd) {
-		this.commandProxy().remove(OiomtExAcCdConv.class, new OiomtExAcCdConvPk(cid, convertCd));
+		this.commandProxy().remove(OiomtExAcCdConv.class, new OiomtAcceptCdConvertPk(cid, convertCd));
 	}
 
 	private static AcceptCdConvert toDomain(OiomtExAcCdConv entity) {
 		return new AcceptCdConvert(entity.acceptCdConvertPk.cid,
 				entity.acceptCdConvertPk.convertCd, entity.convertName, entity.acceptWithoutSetting,
-				entity.oiomtExAcCdConvDtl.stream().map(itemDetail -> {
+				entity.oiomtCdConvertDetails.stream().map(itemDetail -> {
 					return new CdConvertDetails(itemDetail.cdConvertDetailsPk.cid,
 							itemDetail.cdConvertDetailsPk.convertCd, itemDetail.cdConvertDetailsPk.lineNumber,
 							itemDetail.outputItem, itemDetail.systemCd);
@@ -74,10 +74,10 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 
 	private OiomtExAcCdConv toEntity(AcceptCdConvert domain) {
 		return new OiomtExAcCdConv(
-				new OiomtExAcCdConvPk(domain.getCid(), domain.getConvertCd().v()), domain.getConvertName().v(),
+				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), domain.getConvertName().v(),
 				domain.getAcceptWithoutSetting().value, domain.getListConvertDetails().stream().map(itemDetail -> {
 					return new OiomtExAcCdConvDtl(
-							new OiomtExAcCdConvDtlPk(itemDetail.getCid(), itemDetail.getConvertCd(),
+							new OiomtCdConvertDetailsPk(itemDetail.getCid(), itemDetail.getConvertCd(),
 									itemDetail.getLineNumber()),
 							itemDetail.getOutputItem().v(), itemDetail.getSystemCd().v(), null);
 				}).collect(Collectors.toList()));

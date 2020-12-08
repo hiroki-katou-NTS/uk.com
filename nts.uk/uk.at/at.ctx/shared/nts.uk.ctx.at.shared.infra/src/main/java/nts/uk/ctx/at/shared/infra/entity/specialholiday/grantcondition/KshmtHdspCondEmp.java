@@ -19,12 +19,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSP_COND_EMP")
+@Table(name = "KSHST_SPEC_EMP")
 public class KshmtHdspCondEmp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshmtHdspCondEmpPK pk;
+	public KshstSpecEmpPK pk;
 	
 	@Override
 	protected Object getKey() {

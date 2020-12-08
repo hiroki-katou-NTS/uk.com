@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 
 /**
@@ -42,17 +42,17 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	@Override
 	public void setFlowRestSet(List<FlowRestSetting> set) {
 		if (CollectionUtil.isEmpty(set)) {
-			this.entity.setKshmtWtFleBrFlHolTss(new ArrayList<>());
+			this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 		} else {
-			if (this.entity.getKshmtWtFleBrFlHolTss() == null) {
-				this.entity.setKshmtWtFleBrFlHolTss(new ArrayList<>());
+			if (this.entity.getKshmtFlexOdRestSets() == null) {
+				this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 			}
-			Map<KshmtWtFleBrFlHolTsPK, KshmtWtFleBrFlHolTs> mapEntity = this.entity.getKshmtWtFleBrFlHolTss().stream()
-					.collect(Collectors.toMap(KshmtWtFleBrFlHolTs::getKshmtWtFleBrFlHolTsPK, Function.identity()));
+			Map<KshmtFlexOdRestSetPK, KshmtWtFleBrFlHolTs> mapEntity = this.entity.getKshmtFlexOdRestSets().stream()
+					.collect(Collectors.toMap(KshmtWtFleBrFlHolTs::getKshmtFlexOdRestSetPK, Function.identity()));
 			List<KshmtWtFleBrFlHolTs> lstNew = new ArrayList<>();
 			for (int i = 0; i < set.size(); i++) {
-				KshmtWtFleBrFlHolTsPK newPK = new KshmtWtFleBrFlHolTsPK(this.entity.getKshmtWtFleBrFlHolPK().getCid(),
-						this.entity.getKshmtWtFleBrFlHolPK().getWorktimeCd(), i + 1);
+				KshmtFlexOdRestSetPK newPK = new KshmtFlexOdRestSetPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), i + 1);
 				KshmtWtFleBrFlHolTs newEntity = new KshmtWtFleBrFlHolTs(newPK);
 
 				KshmtWtFleBrFlHolTs oldEntity = mapEntity.get(newPK);
@@ -64,7 +64,7 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 				set.get(i).saveToMemento(new JpaFlexODFlowRestSetMemento(newEntity));
 				lstNew.add(newEntity);
 			}
-			this.entity.setKshmtWtFleBrFlHolTss(lstNew);
+			this.entity.setKshmtFlexOdRestSets(lstNew);
 		}
 	}
 

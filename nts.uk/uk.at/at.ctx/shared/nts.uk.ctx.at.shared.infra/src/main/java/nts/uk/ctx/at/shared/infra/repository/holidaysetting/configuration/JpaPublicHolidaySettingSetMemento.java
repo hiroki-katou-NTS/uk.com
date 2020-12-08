@@ -20,7 +20,7 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	private final static int FALSE_VALUE = 0;
 	
 	/** The kshmt public hd set. */
-	private KshmtHdpubSet kshmtHdpubSet;
+	private KshmtHdpubSet kshmtPublicHdSet;
 	
 	/**
 	 * Instantiates a new jpa public holiday setting set memento.
@@ -28,7 +28,7 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	 * @param entity the entity
 	 */
 	public JpaPublicHolidaySettingSetMemento(KshmtHdpubSet entity) {
-		this.kshmtHdpubSet = entity;
+		this.kshmtPublicHdSet = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	 */
 	@Override
 	public void setCompanyID(String CompanyID) {
-		this.kshmtHdpubSet.setCid(CompanyID);
+		this.kshmtPublicHdSet.setCid(CompanyID);
 	}
 
 	/* (non-Javadoc)
@@ -45,9 +45,9 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	@Override
 	public void setIsManageComPublicHd(boolean isManageComPublicHd) {
 		if(isManageComPublicHd){
-			this.kshmtHdpubSet.setIsManageComPublicHd(TRUE_VALUE);
+			this.kshmtPublicHdSet.setIsManageComPublicHd(TRUE_VALUE);
 		} else {
-			this.kshmtHdpubSet.setIsManageComPublicHd(FALSE_VALUE);
+			this.kshmtPublicHdSet.setIsManageComPublicHd(FALSE_VALUE);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	@Override
 	public void setPublicHdManagementClassification(
 			PublicHolidayManagementClassification publicHdManagementClassification) {
-		this.kshmtHdpubSet.setPublicHdManageAtr(publicHdManagementClassification.value);
+		this.kshmtPublicHdSet.setPublicHdManageAtr(publicHdManagementClassification.value);
 	}
 
 	/* (non-Javadoc)
@@ -66,24 +66,24 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	@Override
 	public void setIsWeeklyHdCheck(boolean isWeeklyHdCheck) {
 		if(isWeeklyHdCheck){
-			this.kshmtHdpubSet.setIsWeeklyHdCheck(TRUE_VALUE);
+			this.kshmtPublicHdSet.setIsWeeklyHdCheck(TRUE_VALUE);
 		} else {
-			this.kshmtHdpubSet.setIsWeeklyHdCheck(FALSE_VALUE);
+			this.kshmtPublicHdSet.setIsWeeklyHdCheck(FALSE_VALUE);
 		}
 	}
 
 	@Override
 	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate) {
-		if (this.kshmtHdpubSet.getPublicHdManageAtr() == 0) {
+		if (this.kshmtPublicHdSet.getPublicHdManageAtr() == 0) {
 			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
-			this.kshmtHdpubSet.setPeriod(publicHolidayGrantDate.getPeriod().value);
+			this.kshmtPublicHdSet.setPeriod(publicHolidayGrantDate.getPeriod().value);
 		} else {
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
-			this.kshmtHdpubSet.setDetermineStartD(publicHoliday.getDetermineStartDate().value);
+			this.kshmtPublicHdSet.setDetermineStartD(publicHoliday.getDetermineStartDate().value);
 			if (publicHoliday.getDetermineStartDate().value == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY.value) {
-				this.kshmtHdpubSet.setFullDate(publicHoliday.getDate());
+				this.kshmtPublicHdSet.setFullDate(publicHoliday.getDate());
 			} else {
-				this.kshmtHdpubSet.setDayMonth(publicHoliday.getDayMonth());
+				this.kshmtPublicHdSet.setDayMonth(publicHoliday.getDayMonth());
 			}
 		}
 	}

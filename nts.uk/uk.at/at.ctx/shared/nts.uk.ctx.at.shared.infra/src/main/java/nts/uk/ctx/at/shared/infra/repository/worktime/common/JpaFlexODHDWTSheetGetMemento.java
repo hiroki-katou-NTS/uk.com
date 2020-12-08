@@ -37,7 +37,7 @@ public class JpaFlexODHDWTSheetGetMemento implements HDWorkTimeSheetSettingGetMe
 	 */
 	@Override
 	public Integer getWorkTimeNo() {
-		return this.entity.getKshmtWtFleHolTsPK().getWorktimeNo();
+		return this.entity.getKshmtFlexHolSetPK().getWorktimeNo();
 	}
 
 	/*

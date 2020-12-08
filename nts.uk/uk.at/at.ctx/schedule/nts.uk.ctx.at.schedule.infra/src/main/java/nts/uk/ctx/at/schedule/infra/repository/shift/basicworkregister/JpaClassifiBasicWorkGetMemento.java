@@ -43,7 +43,7 @@ public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemen
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.get(0).getKscmtBasicWorkClsPK().getCid();
+		return this.typeValue.get(0).getKscmtClassifyWorkSetPK().getCid();
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemen
 	 */
 	@Override
 	public ClassificationCode getClassificationCode() {
-		return new ClassificationCode(this.typeValue.get(0).getKscmtBasicWorkClsPK().getClassifyCode());
+		return new ClassificationCode(this.typeValue.get(0).getKscmtClassifyWorkSetPK().getClassifyCode());
 	}
 
 	/*

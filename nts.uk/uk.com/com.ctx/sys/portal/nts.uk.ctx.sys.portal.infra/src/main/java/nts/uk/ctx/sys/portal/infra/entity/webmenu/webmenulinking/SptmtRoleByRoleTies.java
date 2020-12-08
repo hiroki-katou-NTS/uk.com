@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "SPTMT_ROLE_BY_ROLE_TIES")
+@Table(name = "SACMT_ROLE_BY_ROLE_TIES")
 @Setter
 public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

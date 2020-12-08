@@ -31,9 +31,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayInfoPerWork;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayInfoPerWorkPK;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfoPK;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSchePK;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -50,14 +50,14 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class JpaWorkInformationRepository extends JpaRepository implements WorkInformationRepository {
 
 	private static final String FIND_BY_EMPLOYEE_ID = "SELECT a FROM KrcdtDayInfoPerWork a "
-			+ " WHERE a.krcdtDayInfoPerWorkPK.employeeId = :employeeId ";
+			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ";
 
-	private String FIND_BY_WORKTYPE_PERIOD = "SELECT c.krcdtDayInfoPerWorkPK.ymd" + " FROM KrcdtDayInfoPerWork c"
-			+ " WHERE c.krcdtDayInfoPerWorkPK.ymd >= :startDate" + " AND c.krcdtDayInfoPerWorkPK.ymd <= :endDate"
-			+ " AND c.recordWorkWorktypeCode = :workTypeCode" + " AND c.krcdtDayInfoPerWorkPK.employeeId = :employeeId";
+	private String FIND_BY_WORKTYPE_PERIOD = "SELECT c.krcdtDaiPerWorkInfoPK.ymd" + " FROM KrcdtDayInfoPerWork c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd >= :startDate" + " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
+			+ " AND c.recordWorkWorktypeCode = :workTypeCode" + " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	private String FIND_BY_LIST_DATE = "SELECT c " + " FROM KrcdtDayInfoPerWork c"
-			+ " WHERE c.krcdtDayInfoPerWorkPK.ymd IN :dates" + " AND c.krcdtDayInfoPerWorkPK.employeeId = :employeeId";
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd IN :dates" + " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -66,13 +66,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		List<KrcdtDayTsAtdSche> scheduleTimes;
 		try (PreparedStatement sqlSchedule = this.connection().prepareStatement(
-				"select * from KRCDT_DAY_TS_ATD_SCHE"
+				"select * from KRCDT_WORK_SCHEDULE_TIME"
 				+ " where SID = ? and YMD = ?")) {
 			sqlSchedule.setString(1, employeeId);
 			sqlSchedule.setDate(2, Date.valueOf(ymd.localDate()));
 			scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
 				KrcdtDayTsAtdSche entity = new KrcdtDayTsAtdSche();
-				entity.krcdtDayTsAtdSchePK = new KrcdtDayTsAtdSchePK(
+				entity.krcdtWorkScheduleTimePK = new KrcdtWorkScheduleTimePK(
 						rec.getString("SID"),
 						rec.getGeneralDate("YMD"),
 						rec.getInt("WORK_NO"));
@@ -84,14 +84,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		Optional<KrcdtDayInfoPerWork> workInfo;
 		try (PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
-				"select * from KRCDT_DAY_INFO_PER_WORK"
+				"select * from KRCDT_DAI_PER_WORK_INFO"
 				+ " where SID = ? and YMD = ?")) {
 			sqlWorkInfo.setString(1, employeeId);
 			sqlWorkInfo.setDate(2, Date.valueOf(ymd.localDate()));
 			
 			 workInfo = new NtsResultSet(sqlWorkInfo.executeQuery()).getSingle(rec -> {
 				KrcdtDayInfoPerWork entity = new KrcdtDayInfoPerWork();
-				entity.krcdtDayInfoPerWorkPK = new KrcdtDayInfoPerWorkPK(
+				entity.krcdtDaiPerWorkInfoPK = new KrcdtDaiPerWorkInfoPK(
 						rec.getString("SID"), rec.getGeneralDate("YMD"));
 				entity.recordWorkWorktypeCode = rec.getString("RECORD_WORK_WORKTYPE_CODE");
 				entity.recordWorkWorktimeCode = rec.getString("RECORD_WORK_WORKTIME_CODE");
@@ -156,7 +156,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			sqlSchedule.setDate(3, Date.valueOf(datePeriod.end().localDate()));
 			scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
 				KrcdtDayTsAtdSche entity = new KrcdtDayTsAtdSche();
-				entity.krcdtDayTsAtdSchePK = new KrcdtDayTsAtdSchePK(rec.getString("SID"),
+				entity.krcdtWorkScheduleTimePK = new KrcdtWorkScheduleTimePK(rec.getString("SID"),
 						rec.getGeneralDate("YMD"), rec.getInt("WORK_NO"));
 				entity.attendance = rec.getInt("ATTENDANCE");
 				entity.leaveWork = rec.getInt("LEAVE_WORK");
@@ -185,7 +185,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						goStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use,
 						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, ymd,
 						EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
-						scheduleTimess.stream().filter(c -> c.krcdtDayTsAtdSchePK.ymd.equals(ymd))
+						scheduleTimess.stream().filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd))
 								.map(c -> c.toDomain()).collect(Collectors.toList()));
 				domain.setVersion(rec.getLong("EXCLUS_VER"));
 				return domain;
@@ -211,7 +211,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			sqlSchedule.setDate(3, Date.valueOf(datePeriod.end().localDate()));
 			scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
 				KrcdtDayTsAtdSche entity = new KrcdtDayTsAtdSche();
-				entity.krcdtDayTsAtdSchePK = new KrcdtDayTsAtdSchePK(rec.getString("SID"),
+				entity.krcdtWorkScheduleTimePK = new KrcdtWorkScheduleTimePK(rec.getString("SID"),
 						rec.getGeneralDate("YMD"), rec.getInt("WORK_NO"));
 				entity.attendance = rec.getInt("ATTENDANCE");
 				entity.leaveWork = rec.getInt("LEAVE_WORK");
@@ -237,7 +237,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						goStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use,
 						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, ymd,
 						EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
-						scheduleTimes.stream().filter(c -> c.krcdtDayTsAtdSchePK.ymd.equals(ymd))
+						scheduleTimes.stream().filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd))
 								.map(c -> c.toDomain()).collect(Collectors.toList()));
 				domain.setVersion(rec.getLong("EXCLUS_VER"));
 				return domain;
@@ -249,9 +249,9 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	public void updateByKey(WorkInfoOfDailyPerformance domain) {
 
 		if (domain != null) {
-			KrcdtDayInfoPerWork data = this.findKrcdtDayInfoPerWorkWithJdbc(domain.getEmployeeId(), domain.getYmd())
+			KrcdtDayInfoPerWork data = this.findKrcdtDaiPerWorkInfoWithJdbc(domain.getEmployeeId(), domain.getYmd())
 					.orElseGet(() -> new KrcdtDayInfoPerWork(
-							new KrcdtDayInfoPerWorkPK(domain.getEmployeeId(), domain.getYmd())));
+							new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd())));
 
 			internalUpdate(domain, data);
 		}
@@ -288,14 +288,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
 				data.scheduleTimes = domain.getWorkInformation().getScheduleTimeSheets().stream()
 						.map(c -> new KrcdtDayTsAtdSche(
-								new KrcdtDayTsAtdSchePK(domain.getEmployeeId(), domain.getYmd(),
+								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
 										c.getWorkNo().v()),
 								c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
 						.collect(Collectors.toList());
 			} else {
 				data.scheduleTimes.stream().forEach(st -> {
 					domain.getWorkInformation().getScheduleTimeSheets().stream()
-							.filter(dst -> dst.getWorkNo().v() == st.krcdtDayTsAtdSchePK.workNo).findFirst()
+							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
 							.ifPresent(dst -> {
 								st.attendance = dst.getAttendance().valueAsMinutes();
 								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
@@ -304,18 +304,18 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			}   
 			List<KrcdtDayTsAtdSche> schedules = new ArrayList<>();
 			try (PreparedStatement stmtSche = this.connection().prepareStatement(
-					"select * from KRCDT_DAY_TS_ATD_SCHE"
+					"select * from KRCDT_WORK_SCHEDULE_TIME"
 					+ " where SID = ? and YMD = ?")) {
 				stmtSche.setString(1, domain.getEmployeeId());
 				stmtSche.setDate(2, Date.valueOf(domain.getYmd().localDate()));
 				schedules = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
-					KrcdtDayTsAtdSchePK pks = new KrcdtDayTsAtdSchePK();
+					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
 					pks.employeeId = rs.getString("SID");
 					pks.ymd = rs.getGeneralDate("YMD");
 					pks.workNo = rs.getInt("WORK_NO");
 							
 					KrcdtDayTsAtdSche es = new KrcdtDayTsAtdSche();
-					es.krcdtDayTsAtdSchePK = pks;
+					es.krcdtWorkScheduleTimePK = pks;
 					es.attendance = rs.getInt("ATTENDANCE");
 					es.leaveWork = rs.getInt("LEAVE_WORK");
 					
@@ -334,10 +334,10 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 
 	@SneakyThrows
-	private Optional<KrcdtDayInfoPerWork> findKrcdtDayInfoPerWorkWithJdbc(String employeeId, GeneralDate ymd) {
+	private Optional<KrcdtDayInfoPerWork> findKrcdtDaiPerWorkInfoWithJdbc(String employeeId, GeneralDate ymd) {
 		
 		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
-				"select * from KRCDT_DAY_INFO_PER_WORK"
+				"select * from KRCDT_DAI_PER_WORK_INFO"
 				+ " where SID = ? and YMD = ?")) {
 			stmtFindById.setString(1, employeeId);
 			stmtFindById.setDate(2, Date.valueOf(ymd.toLocalDate()));
@@ -350,12 +350,12 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@SneakyThrows
 	private KrcdtDayInfoPerWork convertToEntity(NtsResultRecord rec) {
-		KrcdtDayInfoPerWorkPK pk = new KrcdtDayInfoPerWorkPK();
+		KrcdtDaiPerWorkInfoPK pk = new KrcdtDaiPerWorkInfoPK();
 		pk.employeeId = rec.getString("SID");
 		pk.ymd = rec.getGeneralDate("YMD");
 		
 		KrcdtDayInfoPerWork entity = new KrcdtDayInfoPerWork();
-		entity.krcdtDayInfoPerWorkPK = pk;
+		entity.krcdtDaiPerWorkInfoPK = pk;
 		entity.recordWorkWorktypeCode = rec.getString("RECORD_WORK_WORKTYPE_CODE");
 		entity.recordWorkWorktimeCode = rec.getString("RECORD_WORK_WORKTIME_CODE");
 		entity.scheduleWorkWorktypeCode = rec.getString("SCHEDULE_WORK_WORKTYPE_CODE");
@@ -366,18 +366,18 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
 		entity.version = rec.getLong("EXCLUS_VER");
 		try (PreparedStatement stmtSche = this.connection().prepareStatement(
-					"select * from KRCDT_DAY_TS_ATD_SCHE"
+					"select * from KRCDT_WORK_SCHEDULE_TIME"
 					+ " where SID = ? and YMD = ?")) {
 			stmtSche.setString(1, pk.employeeId);
 			stmtSche.setDate(2, Date.valueOf(pk.ymd.toLocalDate()));
 			entity.scheduleTimes = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
-				KrcdtDayTsAtdSchePK pks = new KrcdtDayTsAtdSchePK();
+				KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
 				pks.employeeId = rs.getString("SID");
 				pks.ymd = rs.getGeneralDate("YMD");
 				pks.workNo = rs.getInt("WORK_NO");
 						
 				KrcdtDayTsAtdSche es = new KrcdtDayTsAtdSche();
-				es.krcdtDayTsAtdSchePK = pks;
+				es.krcdtWorkScheduleTimePK = pks;
 				es.attendance = rs.getInt("ATTENDANCE");
 				es.leaveWork = rs.getInt("LEAVE_WORK");
 				
@@ -406,15 +406,15 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		List<Object[]> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder(
 				"SELECT af, c from KrcdtDayInfoPerWork af LEFT JOIN af.scheduleTimes c ");
-		query.append(" WHERE af.krcdtDayInfoPerWorkPK.employeeId IN :employeeId ");
-		query.append(" AND af.krcdtDayInfoPerWorkPK.ymd IN :date");
+		query.append(" WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
+		query.append(" AND af.krcdtDaiPerWorkInfoPK.ymd IN :date");
 		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream().filter(c -> {
 						KrcdtDayInfoPerWork af = (KrcdtDayInfoPerWork) c[0];
-						return p.get(af.krcdtDayInfoPerWorkPK.employeeId).contains(af.krcdtDayInfoPerWorkPK.ymd);
+						return p.get(af.krcdtDaiPerWorkInfoPK.employeeId).contains(af.krcdtDaiPerWorkInfoPK.ymd);
 					}).collect(Collectors.toList()));
 		});
 		return toDomainFromJoin(result);
@@ -589,7 +589,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@SneakyThrows
 	public long getVer(String employeeId, GeneralDate date) {
 		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
-				"select EXCLUS_VER from KRCDT_DAY_INFO_PER_WORK"
+				"select EXCLUS_VER from KRCDT_DAI_PER_WORK_INFO"
 				+ " where SID = ? and YMD = ?")) {
 			stmtFindById.setString(1, employeeId);
 			stmtFindById.setDate(2, Date.valueOf(date.toLocalDate()));
@@ -602,7 +602,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void dirtying(String employeeId, GeneralDate date){
-		this.queryProxy().find(new KrcdtDayInfoPerWorkPK(employeeId, date), KrcdtDayInfoPerWork.class).ifPresent(entity -> {
+		this.queryProxy().find(new KrcdtDaiPerWorkInfoPK(employeeId, date), KrcdtDayInfoPerWork.class).ifPresent(entity -> {
 			entity.dirtying();
 			this.commandProxy().update(entity);
 		});
@@ -610,7 +610,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void dirtying(String employeeId, GeneralDate date, long version){
-		this.queryProxy().find(new KrcdtDayInfoPerWorkPK(employeeId, date), KrcdtDayInfoPerWork.class).ifPresent(entity -> {
+		this.queryProxy().find(new KrcdtDaiPerWorkInfoPK(employeeId, date), KrcdtDayInfoPerWork.class).ifPresent(entity -> {
 			entity.dirtying();
 			entity.version = version;
 			this.commandProxy().update(entity);
@@ -629,8 +629,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		List<KrcdtDayInfoPerWork> result = new ArrayList<>();
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a FROM KrcdtDayInfoPerWork a");
-		builderString.append(" WHERE a.krcdtDayInfoPerWorkPK.employeeId IN :employeeIds");
-		builderString.append(" AND a.krcdtDayInfoPerWorkPK.ymd IN :processingYmds");
+		builderString.append(" WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds");
+		builderString.append(" AND a.krcdtDaiPerWorkInfoPK.ymd IN :processingYmds");
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistEmployeeIds -> {
 			CollectionUtil.split(ymds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistYMDs -> {
 				result.addAll(this.getEntityManager().createQuery(builderString.toString(), KrcdtDayInfoPerWork.class)

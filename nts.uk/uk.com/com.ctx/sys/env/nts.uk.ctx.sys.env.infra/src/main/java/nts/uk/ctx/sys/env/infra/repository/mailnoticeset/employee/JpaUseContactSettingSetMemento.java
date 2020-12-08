@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSya;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSyaPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
 
 /**
  * The Class JpaUseContactSettingSetMemento.
@@ -25,9 +25,9 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 */
 	public JpaUseContactSettingSetMemento(SevmtUseContactSya entity, String companyId) {
 		this.entity = entity;
-		SevmtUseContactSyaPK pk = new SevmtUseContactSyaPK();
+		SevstUseContactSetPK pk = new SevstUseContactSetPK();
 		pk.setCid(companyId);
-		this.entity.setSevmtUseContactSyaPK(pk);
+		this.entity.setSevstUseContactSetPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 */
 	@Override
 	public void setEmployeeID(String employeeID) {
-		this.entity.getSevmtUseContactSyaPK().setSid(employeeID);
+		this.entity.getSevstUseContactSetPK().setSid(employeeID);
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +43,7 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 */
 	@Override
 	public void setSettingItem(UserInfoItem settingItem) {
-		this.entity.getSevmtUseContactSyaPK().setSetItem(settingItem.value);
+		this.entity.getSevstUseContactSetPK().setSetItem(settingItem.value);
 	}
 
 	/* (non-Javadoc)

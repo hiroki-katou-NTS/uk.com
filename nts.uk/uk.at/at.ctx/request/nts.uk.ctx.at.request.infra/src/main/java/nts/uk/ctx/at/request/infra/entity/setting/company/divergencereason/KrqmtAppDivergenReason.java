@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author loivt
  */
 @Entity
-@Table(name = "KRQMT_APP_DIVERGEN_REASON")
+@Table(name = "KRQST_APP_DIVERGEN_REASON")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,7 +27,7 @@ public class KrqmtAppDivergenReason extends ContractUkJpaEntity implements Seria
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected KrqmtAppDivergenReasonPK krqmtAppDivergenReasonPK;
+    protected KrqstAppDivergenReasonPK krqstAppDivergenReasonPK;
 
     @Column(name = "DISPORDER")
     private int disporder;
@@ -39,7 +39,7 @@ public class KrqmtAppDivergenReason extends ContractUkJpaEntity implements Seria
     private int defaultFlg;
 	@Override
 	protected Object getKey() {
-		return krqmtAppDivergenReasonPK;
+		return krqstAppDivergenReasonPK;
 	}
 }
 

@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
 
 /**
  * The Class JpaFlexFixedWorkTimezoneSetSetMemento.
@@ -51,30 +51,30 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 	public void setLstWorkingTimezone(List<EmTimeZoneSet> lstWorkingTimezone) {
 		
 		// check list entity get empty
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleWorkTss())) {
-			this.entity.setKshmtWtFleWorkTss(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexWorkTimeSets())) {
+			this.entity.setKshmtFlexWorkTimeSets(new ArrayList<>());
 		}
 		
-		Integer amPmAtr = this.entity.getKshmtWtFleBrFlWekPK().getAmPmAtr();
+		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
 		
 		// get other list entity has type # amPmAtr
-		List<KshmtWtFleWorkTs> lstOtherAmPmEntity = this.entity.getKshmtWtFleWorkTss().stream()
-				.filter(item -> item.getKshmtWtFleWorkTsPK().getAmPmAtr() != amPmAtr)
+		List<KshmtWtFleWorkTs> lstOtherAmPmEntity = this.entity.getKshmtFlexWorkTimeSets().stream()
+				.filter(item -> item.getKshmtFlexWorkTimeSetPK().getAmPmAtr() != amPmAtr)
 				.collect(Collectors.toList());
 		
 		// check input empty
 		if (CollectionUtil.isEmpty(lstWorkingTimezone)) {
-			this.entity.setKshmtWtFleWorkTss(lstOtherAmPmEntity);
+			this.entity.setKshmtFlexWorkTimeSets(lstOtherAmPmEntity);
 			return;
 		}
 		
 		// convert map entity
-		Map<KshmtWtFleWorkTsPK, KshmtWtFleWorkTs> mapEntity = this.entity.getKshmtWtFleWorkTss().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtWtFleWorkTs) entity).getKshmtWtFleWorkTsPK(),
+		Map<KshmtFlexWorkTimeSetPK, KshmtWtFleWorkTs> mapEntity = this.entity.getKshmtFlexWorkTimeSets().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtWtFleWorkTs) entity).getKshmtFlexWorkTimeSetPK(),
 						Function.identity()));
 		
-		String companyId = this.entity.getKshmtWtFleBrFlWekPK().getCid();
-		String workTimeCd = this.entity.getKshmtWtFleBrFlWekPK().getWorktimeCd();
+		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
 		
 		// add other list AmPm entity
 		List<KshmtWtFleWorkTs> newListEntity = new ArrayList<>();
@@ -84,7 +84,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		newListEntity.addAll(lstWorkingTimezone.stream().map(domain -> {
 			
 			// newPk
-			KshmtWtFleWorkTsPK pk = new KshmtWtFleWorkTsPK();
+			KshmtFlexWorkTimeSetPK pk = new KshmtFlexWorkTimeSetPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setAmPmAtr(amPmAtr);
@@ -103,7 +103,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		}).collect(Collectors.toList()));
 		
 		// set list entity
-		this.entity.setKshmtWtFleWorkTss(newListEntity);
+		this.entity.setKshmtFlexWorkTimeSets(newListEntity);
 	}
 
 	/*
@@ -116,30 +116,30 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 	@Override
 	public void setLstOTTimezone(List<OverTimeOfTimeZoneSet> lstOTTimezone) {
 		// check list entity get empty
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleOverTss())) {
-			this.entity.setKshmtWtFleOverTss(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOtTimeSets())) {
+			this.entity.setKshmtFlexOtTimeSets(new ArrayList<>());
 		}
 		
-		Integer amPmAtr = this.entity.getKshmtWtFleBrFlWekPK().getAmPmAtr();
+		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
 		
 		// get other list entity has type # amPmAtr
-		List<KshmtWtFleOverTs> lstOtherAmPmEntity = this.entity.getKshmtWtFleOverTss().stream()
-				.filter(item -> item.getKshmtWtFleOverTsPK().getAmPmAtr() != amPmAtr)
+		List<KshmtWtFleOverTs> lstOtherAmPmEntity = this.entity.getKshmtFlexOtTimeSets().stream()
+				.filter(item -> item.getKshmtFlexOtTimeSetPK().getAmPmAtr() != amPmAtr)
 				.collect(Collectors.toList());
 		
 		// check input empty
 		if (CollectionUtil.isEmpty(lstOTTimezone)) {
-			this.entity.setKshmtWtFleOverTss(lstOtherAmPmEntity);
+			this.entity.setKshmtFlexOtTimeSets(lstOtherAmPmEntity);
 			return;
 		}
 		
 		// convert map entity
-		Map<KshmtWtFleOverTsPK, KshmtWtFleOverTs> mapEntity = this.entity.getKshmtWtFleOverTss().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtWtFleOverTs) entity).getKshmtWtFleOverTsPK(),
+		Map<KshmtFlexOtTimeSetPK, KshmtWtFleOverTs> mapEntity = this.entity.getKshmtFlexOtTimeSets().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtWtFleOverTs) entity).getKshmtFlexOtTimeSetPK(),
 						Function.identity()));
 		
-		String companyId = this.entity.getKshmtWtFleBrFlWekPK().getCid();
-		String workTimeCd = this.entity.getKshmtWtFleBrFlWekPK().getWorktimeCd();
+		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
 		
 		// add other list AmPm entity
 		List<KshmtWtFleOverTs> newListEntity = new ArrayList<>();
@@ -149,7 +149,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		newListEntity.addAll(lstOTTimezone.stream().map(domain -> {
 			
 			// newPk
-			KshmtWtFleOverTsPK pk = new KshmtWtFleOverTsPK();
+			KshmtFlexOtTimeSetPK pk = new KshmtFlexOtTimeSetPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setAmPmAtr(amPmAtr);
@@ -168,7 +168,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		}).collect(Collectors.toList()));
 		
 		// set list entity
-		this.entity.setKshmtWtFleOverTss(newListEntity);
+		this.entity.setKshmtFlexOtTimeSets(newListEntity);
 	}
 
 }

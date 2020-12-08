@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRolesetDefault;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRolesetDefaultPK;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
 
 /**
  * Class JpaDefaultRoleSetRepository implement of DefaultRoleSetRepository
@@ -41,7 +41,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
      * @return
      */
     private SacmtRolesetDefault toEntity(DefaultRoleSet domain) {
-        return new SacmtRolesetDefault(new SacmtRolesetDefaultPK(domain.getCompanyId()), domain.getRoleSetCd().v());
+        return new SacmtRolesetDefault(new SacmtDefaultRoleSetPK(domain.getCompanyId()), domain.getRoleSetCd().v());
     }
 
     /**
@@ -65,7 +65,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
     
     @Override
     public Optional<DefaultRoleSet> findByCompanyId(String companyId) {
-        SacmtRolesetDefaultPK pk = new SacmtRolesetDefaultPK(companyId);
+        SacmtDefaultRoleSetPK pk = new SacmtDefaultRoleSetPK(companyId);
         return this.queryProxy().find(pk, SacmtRolesetDefault.class).map(c -> toDomain(c));
     }
 
@@ -76,7 +76,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 
     @Override
     public void update(DefaultRoleSet domain) {
-         Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtRolesetDefaultPK(domain.getCompanyId()),
+         Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtDefaultRoleSetPK(domain.getCompanyId()),
                  SacmtRolesetDefault.class);
         if (upEntity.isPresent()) {
             this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));
@@ -85,12 +85,12 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 
     @Override
     public void delete(String companyId) {
-        this.commandProxy().remove(SacmtRolesetDefault.class, new SacmtRolesetDefaultPK(companyId));
+        this.commandProxy().remove(SacmtRolesetDefault.class, new SacmtDefaultRoleSetPK(companyId));
     }
 
     @Override
     public void addOrUpdate(DefaultRoleSet domain) {
-        Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtRolesetDefaultPK(domain.getCompanyId()),
+        Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtDefaultRoleSetPK(domain.getCompanyId()),
                  SacmtRolesetDefault.class);
         if (upEntity.isPresent()) {
             this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));

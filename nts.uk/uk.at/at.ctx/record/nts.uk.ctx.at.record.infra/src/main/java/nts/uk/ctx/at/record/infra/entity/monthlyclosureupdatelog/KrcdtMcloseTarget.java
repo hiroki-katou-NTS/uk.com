@@ -17,11 +17,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MCLOSE_TARGET")
+@Table(name = "KRCDT_MCLOSE_UPD_PER_LOG")
 public class KrcdtMcloseTarget extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public KrcdtMcloseTargetPk pk;
+	public KrcdtMcloseUpdPerLogPk pk;
 
 	// 実行結果
 	@Column(name = "EXECUTE_RESULT")
@@ -39,7 +39,7 @@ public class KrcdtMcloseTarget extends ContractUkJpaEntity {
 	public KrcdtMcloseTarget(String employeeId, String monthlyClosureUpdateLogId, int executionResult,
 			int executionStatus) {
 		super();
-		this.pk = new KrcdtMcloseTargetPk(employeeId, monthlyClosureUpdateLogId);
+		this.pk = new KrcdtMcloseUpdPerLogPk(employeeId, monthlyClosureUpdateLogId);
 		this.executionResult = executionResult;
 		this.executionStatus = executionStatus;
 	}

@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 // 社員情報カテゴリデータ
-@Table(name = "PPEMT_SYA_DATA_CTG")
+@Table(name = "PPEMT_EMP_INFO_CTG_DATA")
 public class PpemtSyaDataCtg extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

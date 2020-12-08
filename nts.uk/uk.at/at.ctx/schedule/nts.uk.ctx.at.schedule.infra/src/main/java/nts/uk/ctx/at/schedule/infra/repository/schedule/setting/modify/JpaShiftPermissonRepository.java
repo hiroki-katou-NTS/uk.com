@@ -28,12 +28,12 @@ public class JpaShiftPermissonRepository extends JpaRepository implements ShiftP
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private ShiftPermisson convertToDomain(KscstScheShiftPermisson kscmtScheAuthWkp) {
+	private ShiftPermisson convertToDomain(KscstScheShiftPermisson kscstSchePerWorkplace) {
 		ShiftPermisson persAuthority = ShiftPermisson.createFromJavaType(
-				kscmtScheAuthWkp.kscstScheShiftPermissonPK.companyId, 
-				kscmtScheAuthWkp.kscstScheShiftPermissonPK.roleId, 
-				kscmtScheAuthWkp.availableShift,
-				kscmtScheAuthWkp.kscstScheShiftPermissonPK.functionNoShift
+				kscstSchePerWorkplace.kscstScheShiftPermissonPK.companyId, 
+				kscstSchePerWorkplace.kscstScheShiftPermissonPK.roleId, 
+				kscstSchePerWorkplace.availableShift,
+				kscstSchePerWorkplace.kscstScheShiftPermissonPK.functionNoShift
 				);
 		return persAuthority;
 	}

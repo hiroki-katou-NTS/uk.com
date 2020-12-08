@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_TIME_OUTSIDE")
+@Table(name = "KRCDT_WEK_EXCOUT_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeOutside extends ContractUkJpaEntity implements Serializable {
@@ -31,7 +31,7 @@ public class KrcdtWekTimeOutside extends ContractUkJpaEntity implements Serializ
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtWekTimeOutsidePK PK;
+	public KrcdtWekExcoutTimePK PK;
 
 	/** 超過時間 */
 	@Column(name = "EXCESS_TIME")
@@ -75,7 +75,7 @@ public class KrcdtWekTimeOutside extends ContractUkJpaEntity implements Serializ
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfWeeklyKey key, ExcessOutsideItemByPeriod domain){
 		
-		this.PK = new KrcdtWekTimeOutsidePK(
+		this.PK = new KrcdtWekExcoutTimePK(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,

@@ -20,13 +20,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  *
  */
 @Entity
-@Table(name = "PPEMT_PER_DATA_ITEM")
+@Table(name = "PPEMT_PER_INFO_ITEM_DATA")
 @AllArgsConstructor
 @NoArgsConstructor
 public class PpemtPerDataItem extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public PpemtPerDataItemPK primaryKey;
+	public PpemtPerInfoItemDataPK primaryKey;
 
 	@Column(name = "SAVE_DATA_ATR")
 	public int saveDataAtr;

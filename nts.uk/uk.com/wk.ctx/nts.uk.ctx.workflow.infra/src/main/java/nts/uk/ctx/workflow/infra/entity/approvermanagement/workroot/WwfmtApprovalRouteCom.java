@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "WWFMT_APPROVAL_ROUTE_COM")
+@Table(name = "WWFMT_COM_APPROVAL_ROOT")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtApprovalRouteCom extends ContractUkJpaEntity implements Serializable {
@@ -25,7 +25,7 @@ public class WwfmtApprovalRouteCom extends ContractUkJpaEntity implements Serial
 
 	/**主キー*/
 	@EmbeddedId
-	public WwfmtApprovalRouteComPK wwfmtApprovalRouteComPK;
+	public WwfmtComApprovalRootPK wwfmtComApprovalRootPK;
 	
 	/**システム区分*/
 	@Column(name = "SYSTEM_ATR")
@@ -60,6 +60,6 @@ public class WwfmtApprovalRouteCom extends ContractUkJpaEntity implements Serial
 
 	@Override
 	protected Object getKey() {
-		return wwfmtApprovalRouteComPK;
+		return wwfmtComApprovalRootPK;
 	}
 }

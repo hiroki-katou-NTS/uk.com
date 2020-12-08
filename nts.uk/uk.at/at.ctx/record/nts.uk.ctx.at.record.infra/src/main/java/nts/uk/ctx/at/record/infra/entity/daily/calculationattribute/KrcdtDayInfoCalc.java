@@ -24,33 +24,33 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCDT_DAY_INFO_CALC")
+@Table(name = "KRCST_DAI_CALCULATION_SET")
 @XmlRootElement
 @NamedQueries({
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findAll", query = "SELECT k FROM KrcdtDayInfoCalc k"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByInsDate", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insDate = :insDate"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByInsCcd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insCcd = :insCcd"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByInsScd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insScd = :insScd"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByInsPg", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insPg = :insPg"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByUpdDate", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updDate = :updDate"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByUpdCcd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updCcd = :updCcd"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByUpdScd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updScd = :updScd"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByUpdPg", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updPg = :updPg"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByExclusVer", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.exclusVer = :exclusVer"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findBySid", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.krcdtDayInfoCalcPK.sid = :sid"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByYmd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.krcdtDayInfoCalcPK.ymd = :ymd"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByFlexExcessTimeId", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.flexExcessTimeId = :flexExcessTimeId"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByBonusPayNormalCalSet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.bonusPayNormalCalSet = :bonusPayNormalCalSet"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByBonusPaySpeCalSet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.bonusPaySpeCalSet = :bonusPaySpeCalSet"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByHolWorkTimeId", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.holWorkTimeId = :holWorkTimeId"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByOverTimeWorkId", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.overTimeWorkId = :overTimeWorkId"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByLeaveLateSet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.leaveLateSet = :leaveLateSet"),
-//    @NamedQuery(name = "KrcdtDayInfoCalc.findByLeaveEarlySet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.leaveEarlySet = :leaveEarlySet")
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findAll", query = "SELECT k FROM KrcdtDayInfoCalc k"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsDate", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsCcd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsScd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsPg", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdDate", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdCcd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdScd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdPg", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByExclusVer", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findBySid", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.krcstDaiCalculationSetPK.sid = :sid"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByYmd", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.krcstDaiCalculationSetPK.ymd = :ymd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByFlexExcessTimeId", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.flexExcessTimeId = :flexExcessTimeId"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByBonusPayNormalCalSet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.bonusPayNormalCalSet = :bonusPayNormalCalSet"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByBonusPaySpeCalSet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.bonusPaySpeCalSet = :bonusPaySpeCalSet"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByHolWorkTimeId", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.holWorkTimeId = :holWorkTimeId"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByOverTimeWorkId", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.overTimeWorkId = :overTimeWorkId"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveLateSet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.leaveLateSet = :leaveLateSet"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveEarlySet", query = "SELECT k FROM KrcdtDayInfoCalc k WHERE k.leaveEarlySet = :leaveEarlySet")
 	})
 public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    public KrcdtDayInfoCalcPK krcdtDayInfoCalcPK;
+    public KrcstDaiCalculationSetPK krcstDaiCalculationSetPK;
     
     @NotNull
     @Size(min = 1, max = 36)
@@ -90,13 +90,13 @@ public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializabl
     public KrcdtDayInfoCalc() {
     }
 
-    public KrcdtDayInfoCalc(KrcdtDayInfoCalcPK krcdtDayInfoCalcPK) {
-        this.krcdtDayInfoCalcPK = krcdtDayInfoCalcPK;
+    public KrcdtDayInfoCalc(KrcstDaiCalculationSetPK krcstDaiCalculationSetPK) {
+        this.krcstDaiCalculationSetPK = krcstDaiCalculationSetPK;
     }
 
-    public KrcdtDayInfoCalc(KrcdtDayInfoCalcPK krcdtDayInfoCalcPK, String flexExcessTimeId, int bonusPayNormalCalSet, 
+    public KrcdtDayInfoCalc(KrcstDaiCalculationSetPK krcstDaiCalculationSetPK, String flexExcessTimeId, int bonusPayNormalCalSet, 
     		int bonusPaySpeCalSet, String holWorkTimeId, String overTimeWorkId, int leaveLateSet, int leaveEarlySet, int divergenceTime) {
-        this.krcdtDayInfoCalcPK = krcdtDayInfoCalcPK;
+        this.krcstDaiCalculationSetPK = krcstDaiCalculationSetPK;
         this.flexExcessTimeId = flexExcessTimeId;
         this.bonusPayNormalCalSet = bonusPayNormalCalSet;
         this.bonusPaySpeCalSet = bonusPaySpeCalSet;
@@ -110,7 +110,7 @@ public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializabl
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (krcdtDayInfoCalcPK != null ? krcdtDayInfoCalcPK.hashCode() : 0);
+        hash += (krcstDaiCalculationSetPK != null ? krcstDaiCalculationSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -121,7 +121,7 @@ public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializabl
             return false;
         }
         KrcdtDayInfoCalc other = (KrcdtDayInfoCalc) object;
-        if ((this.krcdtDayInfoCalcPK == null && other.krcdtDayInfoCalcPK != null) || (this.krcdtDayInfoCalcPK != null && !this.krcdtDayInfoCalcPK.equals(other.krcdtDayInfoCalcPK))) {
+        if ((this.krcstDaiCalculationSetPK == null && other.krcstDaiCalculationSetPK != null) || (this.krcstDaiCalculationSetPK != null && !this.krcstDaiCalculationSetPK.equals(other.krcstDaiCalculationSetPK))) {
             return false;
         }
         return true;
@@ -129,12 +129,12 @@ public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializabl
 
     @Override
     public String toString() {
-        return "entities.KrcdtDayInfoCalc[ krcdtDayInfoCalcPK=" + krcdtDayInfoCalcPK + " ]";
+        return "entities.KrcdtDayInfoCalc[ krcstDaiCalculationSetPK=" + krcstDaiCalculationSetPK + " ]";
     }
 
 	@Override
 	protected Object getKey() {
-		return krcdtDayInfoCalcPK;
+		return krcstDaiCalculationSetPK;
 	}
     
 }

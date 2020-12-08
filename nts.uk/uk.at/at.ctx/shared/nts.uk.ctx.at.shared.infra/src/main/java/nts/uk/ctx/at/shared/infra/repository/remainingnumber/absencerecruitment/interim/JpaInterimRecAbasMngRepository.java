@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimHdSubMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecHdSub;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecHdSubPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecMng;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -244,13 +244,13 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public void persistAndUpdateInterimRecAbsMng(InterimRecAbsMng domain) {
 		
 		// キー
-		val key = new KrcdtInterimRecHdSubPK(domain.getAbsenceMngId(), domain.getRecruitmentMngId());
+		val key = new KrcmtInterimRecAbsPK(domain.getAbsenceMngId(), domain.getRecruitmentMngId());
 		
 		// 登録・更新
 		KrcdtInterimRecHdSub entity = this.getEntityManager().find(KrcdtInterimRecHdSub.class, key);
 		if (entity == null){
 			entity = new KrcdtInterimRecHdSub();
-			entity.recAbsPk = new KrcdtInterimRecHdSubPK();
+			entity.recAbsPk = new KrcmtInterimRecAbsPK();
 			entity.recAbsPk.absenceMngID = domain.getAbsenceMngId();
 			entity.recAbsPk.recruitmentMngId = domain.getRecruitmentMngId();
 			entity.absenceMngAtr = domain.getAbsenceMngAtr().value;

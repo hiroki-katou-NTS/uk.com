@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MON_SYA_ERROR")
+@Table(name = "KRCDT_MONTH_PER_ERR")
 public class KrcdtEmployeeMonthlyPerError extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

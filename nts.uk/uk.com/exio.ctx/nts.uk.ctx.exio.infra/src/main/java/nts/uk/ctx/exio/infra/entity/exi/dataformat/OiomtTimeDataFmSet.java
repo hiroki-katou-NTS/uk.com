@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_FM_TI")
+@Table(name = "OIOMT_TIME_DAT_FM_SET")
 public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

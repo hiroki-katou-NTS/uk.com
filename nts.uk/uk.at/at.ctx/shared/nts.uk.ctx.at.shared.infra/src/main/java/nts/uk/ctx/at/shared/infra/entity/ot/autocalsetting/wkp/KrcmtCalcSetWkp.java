@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.KshmtAutoCalSet;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCMT_CALC_SET_WKP")
+@Table(name = "KSHMT_AUTO_WKP_CAL_SET")
 public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
 	
     /** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
     
     /** The kshmt auto wkp cal set PK. */
     @EmbeddedId
-    protected KrcmtCalcSetWkpPK krcmtCalcSetWkpPK;
+    protected KshmtAutoWkpCalSetPK kshmtAutoWkpCalSetPK;
 
     /**
      * Instantiates a new kshmt auto wkp cal set.
@@ -40,10 +40,10 @@ public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
     /**
      * Instantiates a new kshmt auto wkp cal set.
      *
-     * @param krcmtCalcSetWkpPK the kshmt auto wkp cal set PK
+     * @param kshmtAutoWkpCalSetPK the kshmt auto wkp cal set PK
      */
-    public KrcmtCalcSetWkp(KrcmtCalcSetWkpPK krcmtCalcSetWkpPK) {
-        this.krcmtCalcSetWkpPK = krcmtCalcSetWkpPK;
+    public KrcmtCalcSetWkp(KshmtAutoWkpCalSetPK kshmtAutoWkpCalSetPK) {
+        this.kshmtAutoWkpCalSetPK = kshmtAutoWkpCalSetPK;
     }
 
     /**
@@ -53,7 +53,7 @@ public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
      * @param wkpid the wkpid
      */
     public KrcmtCalcSetWkp(String cid, String wkpid) {
-        this.krcmtCalcSetWkpPK = new KrcmtCalcSetWkpPK(cid, wkpid);
+        this.kshmtAutoWkpCalSetPK = new KshmtAutoWkpCalSetPK(cid, wkpid);
     }
 
     /* (non-Javadoc)
@@ -62,7 +62,7 @@ public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (krcmtCalcSetWkpPK != null ? krcmtCalcSetWkpPK.hashCode() : 0);
+        hash += (kshmtAutoWkpCalSetPK != null ? kshmtAutoWkpCalSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -75,7 +75,7 @@ public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
             return false;
         }
         KrcmtCalcSetWkp other = (KrcmtCalcSetWkp) object;
-        if ((this.krcmtCalcSetWkpPK == null && other.krcmtCalcSetWkpPK != null) || (this.krcmtCalcSetWkpPK != null && !this.krcmtCalcSetWkpPK.equals(other.krcmtCalcSetWkpPK))) {
+        if ((this.kshmtAutoWkpCalSetPK == null && other.kshmtAutoWkpCalSetPK != null) || (this.kshmtAutoWkpCalSetPK != null && !this.kshmtAutoWkpCalSetPK.equals(other.kshmtAutoWkpCalSetPK))) {
             return false;
         }
         return true;
@@ -86,7 +86,7 @@ public class KrcmtCalcSetWkp extends KshmtAutoCalSet implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcSetWkpPK;
+		return this.kshmtAutoWkpCalSetPK;
 	}
     
 }

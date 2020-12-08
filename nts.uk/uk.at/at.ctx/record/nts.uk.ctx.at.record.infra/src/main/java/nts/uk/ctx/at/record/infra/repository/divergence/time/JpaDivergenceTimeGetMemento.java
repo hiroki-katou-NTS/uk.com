@@ -117,7 +117,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 					.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 		}
 
-		return this.entityDvgcTime.getKrcmtDvgcAttendances().stream()
+		return this.entityDvgcTime.getKrcstDvgcAttendances().stream()
 				.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 	}
 

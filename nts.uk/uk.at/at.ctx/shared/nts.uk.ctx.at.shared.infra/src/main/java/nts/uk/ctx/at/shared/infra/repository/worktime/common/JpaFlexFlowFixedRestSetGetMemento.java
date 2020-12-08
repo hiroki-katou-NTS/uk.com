@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
  * The Class JpaFlexFlowFixedRestSetGetMemento.
@@ -27,8 +27,8 @@ public class JpaFlexFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMem
 	 */
 	public JpaFlexFlowFixedRestSetGetMemento(KshmtWtFleBrFl entity) {
 		super();
-		if (entity.getKshmtWtFleBrFlPK() == null) {
-			entity.setKshmtWtFleBrFlPK(new KshmtWtFleBrFlPK());
+		if (entity.getKshmtFlexRestSetPK() == null) {
+			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
 		}
 		this.entity = entity;
 	}

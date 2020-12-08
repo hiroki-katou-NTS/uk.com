@@ -312,8 +312,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		// 時間外超過：時間外超過
 		val excessOutsideTimeMap = domain.getExcessOutside().getExcessOutsideItems();
-		if (entity.krcdtWekTimeOutside == null) entity.krcdtWekTimeOutside = new ArrayList<>();
-		val entityExcoutTimeList = entity.krcdtWekTimeOutside;
+		if (entity.krcdtWekExcoutTime == null) entity.krcdtWekExcoutTime = new ArrayList<>();
+		val entityExcoutTimeList = entity.krcdtWekExcoutTime;
 		entityExcoutTimeList.removeIf(
 				a -> {return !excessOutsideTimeMap.containsKey(a.PK.breakdownNo);} );
 		for (val breakdown : excessOutsideTimeMap.values()){
@@ -333,8 +333,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		// 縦計：勤務日数：集計欠勤日数
 		val vtWorkDays = domain.getVerticalTotal().getWorkDays();
 		val absenceDaysMap = vtWorkDays.getAbsenceDays().getAbsenceDaysList();
-		if (entity.krcdtWekDaysAbsence == null) entity.krcdtWekDaysAbsence = new ArrayList<>();
-		val entityAggrAbsnDaysList = entity.krcdtWekDaysAbsence;
+		if (entity.krcdtWekAggrAbsnDays == null) entity.krcdtWekAggrAbsnDays = new ArrayList<>();
+		val entityAggrAbsnDaysList = entity.krcdtWekAggrAbsnDays;
 		entityAggrAbsnDaysList.removeIf(a -> {return !absenceDaysMap.containsKey(a.PK.absenceFrameNo);} );
 		for (val absenceDays : absenceDaysMap.values()){
 			KrcdtWekDaysAbsence entityAggrAbsnDays = new KrcdtWekDaysAbsence();
@@ -392,8 +392,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		// 縦計：勤務時間：集計加給時間
 		val vtWorkTime = domain.getVerticalTotal().getWorkTime();
 		val bonusPayTimeMap = vtWorkTime.getBonusPayTime().getBonusPayTime();
-		if (entity.krcdtWekTimeBonusPay == null) entity.krcdtWekTimeBonusPay = new ArrayList<>();
-		val entityAggrBnspyTimeList = entity.krcdtWekTimeBonusPay;
+		if (entity.krcdtWekAggrBnspyTime == null) entity.krcdtWekAggrBnspyTime = new ArrayList<>();
+		val entityAggrBnspyTimeList = entity.krcdtWekAggrBnspyTime;
 		entityAggrBnspyTimeList.removeIf(a -> {return !bonusPayTimeMap.containsKey(a.PK.bonusPayFrameNo);} );
 		for (val bonusPayTime : bonusPayTimeMap.values()){
 			KrcdtWekTimeBonusPay entityAggrBnspyTime = new KrcdtWekTimeBonusPay();
@@ -411,8 +411,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		// 縦計：勤務時間：集計乖離時間
 		val divergenceTimeMap = vtWorkTime.getDivergenceTime().getDivergenceTimeList();
-		if (entity.krcdtWekTimeDvgc == null) entity.krcdtWekTimeDvgc = new ArrayList<>();
-		val entityAggrDivgTimeList = entity.krcdtWekTimeDvgc;
+		if (entity.krcdtWekAggrDivgTime == null) entity.krcdtWekAggrDivgTime = new ArrayList<>();
+		val entityAggrDivgTimeList = entity.krcdtWekAggrDivgTime;
 		entityAggrDivgTimeList.removeIf(a -> {return !divergenceTimeMap.containsKey(a.PK.divergenceTimeNo);} );
 		for (val divergenceTime : divergenceTimeMap.values()){
 			KrcdtWekTimeDvgc entityAggrDivgTime = new KrcdtWekTimeDvgc();
@@ -430,8 +430,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		// 縦計：勤務時間：集計外出
 		val goOutMap = vtWorkTime.getGoOut().getGoOuts();
-		if (entity.krcdtWekTimeGoout == null) entity.krcdtWekTimeGoout = new ArrayList<>();
-		val entityAggrGooutList = entity.krcdtWekTimeGoout;
+		if (entity.krcdtWekAggrGoout == null) entity.krcdtWekAggrGoout = new ArrayList<>();
+		val entityAggrGooutList = entity.krcdtWekAggrGoout;
 		entityAggrGooutList.removeIf(
 				a -> {return !goOutMap.containsKey(EnumAdaptor.valueOf(a.PK.goOutReason, GoingOutReason.class));} );
 		for (val goOut : goOutMap.values()){
@@ -489,8 +489,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		// 回数集計：回数集計
 		val totalCountMap = domain.getTotalCount().getTotalCountList();
-		if (entity.krcdtWekTimeTotalcount == null) entity.krcdtWekTimeTotalcount = new ArrayList<>();
-		val entityTotalTimesList = entity.krcdtWekTimeTotalcount;
+		if (entity.krcdtWekTotalTimes == null) entity.krcdtWekTotalTimes = new ArrayList<>();
+		val entityTotalTimesList = entity.krcdtWekTotalTimes;
 		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
 		for (val totalCount : totalCountMap.values()){
 			KrcdtWekTimeTotalcount entityTotalTimes = new KrcdtWekTimeTotalcount();

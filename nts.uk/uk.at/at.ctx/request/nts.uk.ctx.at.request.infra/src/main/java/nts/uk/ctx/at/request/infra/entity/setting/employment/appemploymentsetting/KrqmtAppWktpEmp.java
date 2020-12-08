@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author loivt
  */
 @Entity
-@Table(name = "KRQMT_APP_WKTP_EMP")
+@Table(name = "KRQDT_APP_EMPLOY_WORKTYPE")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -30,7 +30,7 @@ public class KrqmtAppWktpEmp extends ContractUkJpaEntity implements Serializable
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    public  KrqmtAppWktpEmpPK krqmtAppWktpEmpPK;
+    public  KrqdtAppEmployWorktypePK krqdtAppEmployWorktypePK;
 
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
@@ -42,6 +42,6 @@ public class KrqmtAppWktpEmp extends ContractUkJpaEntity implements Serializable
 	private KrqstAppEmploymentSet krqstAppEmploymentSet;
 	@Override
 	protected Object getKey() {
-		return krqmtAppWktpEmpPK;
+		return krqdtAppEmployWorktypePK;
 	}
 }

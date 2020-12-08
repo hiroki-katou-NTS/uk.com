@@ -37,7 +37,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalPhaseStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApproverStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppRootStateSimple;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstPhaseate;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalPhaseState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstRoute;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstApprover;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtFullJoinState;
@@ -82,7 +82,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_APPS_BY_APPROVER;
 	private static final String SELECT_CFS_DAY_BY_APPROVER;
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
-	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtAppInstPhaseate a"
+	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
 			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID = :appID"
 			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
 	static {
@@ -206,7 +206,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" ON a.rootStateID = b.wwfdpApproverStatePK.rootStateID ");
 		builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID = :approverID");
 		builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
-		builderString.append(" (SELECT d.wwfmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 = :approverID");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 = :approverID");
 		builderString.append(" AND :systemDate <= d.endDate AND :systemDate >= d.startDate))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
@@ -221,7 +221,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" ON a.wwfdpApprovalRootDayPK.rootStateID = b.wwfdpApproverDayPK.rootStateID ");
 		builderString.append(" WHERE (b.wwfdpApproverDayPK.approverID = :approverID");
 		builderString.append(" OR b.wwfdpApproverDayPK.approverID IN");
-		builderString.append(" (SELECT d.wwfmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 = :approverID");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 = :approverID");
 		builderString.append(" AND :systemDate <= d.endDate AND :systemDate >= d.startDate))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
@@ -236,7 +236,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" ON a.wwfdpApprovalRootMonthPK.rootStateID = b.wwfdpApproverMonthPK.rootStateID ");
 		builderString.append(" WHERE (b.wwfdpApproverMonthPK.approverID = :approverID");
 		builderString.append(" OR b.wwfdpApproverMonthPK.approverID IN");
-		builderString.append(" (SELECT d.wwfmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 = :approverID");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 = :approverID");
 		builderString.append(" AND :systemDate <= d.endDate AND :systemDate >= d.startDate))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
@@ -296,7 +296,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				+ "FROM WWFDT_APP_INST_PHASE phase " + "LEFT JOIN ( "
 				+ "SELECT frame.ROOT_STATE_ID, frame.PHASE_ORDER, frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, "
 				+ "frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON, approver.APPROVER_CHILD_ID "
-				+ "FROM WWFDT_APP_INST_FRAME frame " + "LEFT JOIN " + "WWFDT_APP_INST_APPROVER approver "
+				+ "FROM WWFDT_APP_INST_FRAME frame " + "LEFT JOIN " + "WWFDT_APPROVER_STATE approver "
 				+ "ON frame.ROOT_STATE_ID = approver.ROOT_STATE_ID " + "AND frame.PHASE_ORDER = approver.PHASE_ORDER "
 				+ "AND frame.FRAME_ORDER = approver.FRAME_ORDER) " + "AS frameJoin "
 				+ "ON phase.ROOT_STATE_ID = frameJoin.ROOT_STATE_ID "
@@ -342,11 +342,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public void update(ApprovalRootState root, Integer rootType) {
-		WwfdtAppInstRoute wwfdtAppInstRoute = this.queryProxy()
+		WwfdtAppInstRoute wwfdtApprovalRootState = this.queryProxy()
 				.find(root.getRootStateID(),WwfdtAppInstRoute.class).get();
-		wwfdtAppInstRoute.listWwfdtPhase = root.getListApprovalPhaseState().stream()
-				.map(x -> updateEntityWwfdtAppInstPhaseate(root.getRootStateID(), x)).collect(Collectors.toList());
-		this.commandProxy().update(wwfdtAppInstRoute);
+		wwfdtApprovalRootState.listWwfdtPhase = root.getListApprovalPhaseState().stream()
+				.map(x -> updateEntityWwfdtApprovalPhaseState(root.getRootStateID(), x)).collect(Collectors.toList());
+		this.commandProxy().update(wwfdtApprovalRootState);
 		this.getEntityManager().flush();
 	}
 
@@ -364,20 +364,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		}
 	}
 
-	private WwfdtAppInstPhaseate updateEntityWwfdtAppInstPhaseate(String rootId, ApprovalPhaseState phase) {
-		WwfdtAppInstPhaseate entityPhase = this.queryProxy().find(
-				new WwfdpApprovalPhaseStatePK(rootId, phase.getPhaseOrder()), WwfdtAppInstPhaseate.class).get();
+	private WwfdtApprovalPhaseState updateEntityWwfdtApprovalPhaseState(String rootId, ApprovalPhaseState phase) {
+		WwfdtApprovalPhaseState entityPhase = this.queryProxy().find(
+				new WwfdpApprovalPhaseStatePK(rootId, phase.getPhaseOrder()), WwfdtApprovalPhaseState.class).get();
 		entityPhase.approvalAtr = phase.getApprovalAtr().value;
 		entityPhase.approvalForm = phase.getApprovalForm().value;
 		List<WwfdtAppInstApprover> lstEntityApprover = new ArrayList<>();
 		for (ApprovalFrame frame : phase.getListApprovalFrame()) {
-			lstEntityApprover.addAll(this.updateEntityWwfdtAppInstFrame(rootId, phase.getPhaseOrder(), frame));
+			lstEntityApprover.addAll(this.updateEntityWwfdtApprovalFrame(rootId, phase.getPhaseOrder(), frame));
 		}
 		entityPhase.listWwfdtApprover = lstEntityApprover;
 		return entityPhase;
 	}
 
-	private List<WwfdtAppInstApprover> updateEntityWwfdtAppInstFrame(String rootId, int phaseOrder, ApprovalFrame frame) {
+	private List<WwfdtAppInstApprover> updateEntityWwfdtApprovalFrame(String rootId, int phaseOrder, ApprovalFrame frame) {
 		List<ApproverInfor> lstApprover = frame.getLstApproverInfo();
 		List<WwfdtAppInstApprover> lstEntityApprover = new ArrayList<>();
 		for (ApproverInfor approver : lstApprover) {
@@ -560,11 +560,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public List<ApprovalPhaseState> findPhaseApprovalMax(String appID) {
-		return this.queryProxy().query(FIND_PHASE_APPROVAL_MAX, WwfdtAppInstPhaseate.class)
+		return this.queryProxy().query(FIND_PHASE_APPROVAL_MAX, WwfdtApprovalPhaseState.class)
 				.setParameter("appID", appID).getList(c -> c.toDomain());
 	}
 
-	// private ApprovalPhaseState toDomainPhase(WwfdtAppInstPhaseate entity)
+	// private ApprovalPhaseState toDomainPhase(WwfdtApprovalPhaseState entity)
 	// {
 	// return new
 	// ApprovalPhaseState(entity.wwfdpApprovalPhaseStatePK.rootStateID,
@@ -822,7 +822,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		GeneralDate baseDate = GeneralDate.today();
 		String SELECT = "SELECT COUNT (*) FROM ( "
 				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APP_INST_APPROVER APS " + "INNER JOIN " + "WWFDT_APP_INST_FRAME AF "
+				+ "FROM WWFDT_APP_INST_APPROVER APS " + "INNER JOIN " + "WWFDT_APPROVAL_FRAME AF "
 				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
 				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
 				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "

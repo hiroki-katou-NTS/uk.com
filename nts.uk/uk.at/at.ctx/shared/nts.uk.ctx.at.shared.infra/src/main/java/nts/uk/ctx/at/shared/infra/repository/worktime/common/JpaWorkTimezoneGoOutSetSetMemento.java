@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSetPK;
 
 /**
  * The Class JpaWorkTimezoneGoOutSetSetMemento.
@@ -39,17 +39,17 @@ public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSe
 	 */
 	@Override
 	public void setTotalRoundingSet(TotalRoundingSet set) {
-		if (this.entity.getKshmtWtComGoout() == null) {			
-			KshmtWtComGooutPK pk = new KshmtWtComGooutPK(this.entity.getKshmtWtComPK().getCid(),
-					this.entity.getKshmtWtComPK().getWorktimeCd(),
-					this.entity.getKshmtWtComPK().getWorkFormAtr(),
-					this.entity.getKshmtWtComPK().getWorktimeSetMethod());
+		if (this.entity.getKshmtWorktimeGoOutSet() == null) {			
+			KshmtWorktimeGoOutSetPK pk = new KshmtWorktimeGoOutSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 			KshmtWtComGoout entity = new KshmtWtComGoout();
-			entity.setKshmtWtComGooutPK(pk);
-			this.entity.setKshmtWtComGoout(entity);
+			entity.setKshmtWorktimeGoOutSetPK(pk);
+			this.entity.setKshmtWorktimeGoOutSet(entity);
 		}
-		this.entity.getKshmtWtComGoout().setRoundingSameFrame(set.getSetSameFrameRounding().value);
-		this.entity.getKshmtWtComGoout().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
+		this.entity.getKshmtWorktimeGoOutSet().setRoundingSameFrame(set.getSetSameFrameRounding().value);
+		this.entity.getKshmtWorktimeGoOutSet().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
 	}
 
 	/*

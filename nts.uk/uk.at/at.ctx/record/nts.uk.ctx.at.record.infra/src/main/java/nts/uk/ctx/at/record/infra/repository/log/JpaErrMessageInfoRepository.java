@@ -17,7 +17,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecErrMsg;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecErrMsgPK;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfoPK;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -28,29 +28,29 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 	private static final String SELECT_FROM_ERR_MESSAGE = "SELECT c FROM KrcdtExecErrMsg c ";
 	
 	private static final String SELECT_ERR_MESSAGE_BY_EMPID = SELECT_FROM_ERR_MESSAGE
-			+ " WHERE c.krcdtExecErrMsgPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 	
 	private static final String SELECT_ERR_MESSAGE_BY_EXECONTEXT = SELECT_FROM_ERR_MESSAGE
-			+ " WHERE c.krcdtExecErrMsgPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
-			+ " AND c.krcdtExecErrMsgPK.executionContent = :executionContent";
+			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
+			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent";
 	
 	private static final String SELECT_ERR_MESSAGE_BYID = SELECT_ERR_MESSAGE_BY_EMPID
-			+ " AND c.krcdtExecErrMsgPK.executionContent = :executionContent ";
+			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent ";
 	
 	private static final String SELECT_ERR_MESSAGE_BY_ALL_ID = SELECT_FROM_ERR_MESSAGE
-			+ " WHERE c.krcdtExecErrMsgPK.employeeID = :employeeID "
-			+ " AND c.krcdtExecErrMsgPK.empCalAndSumExecLogID = :empCalAndSumExecLogID "
-			+ " AND c.krcdtExecErrMsgPK.resourceID = :resourceID "
-			+ " AND c.krcdtExecErrMsgPK.executionContent = :executionContent "
-			+ " AND c.krcdtExecErrMsgPK.disposalDay = :disposalDay ";
+			+ " WHERE c.krcdtErrMessageInfoPK.employeeID = :employeeID "
+			+ " AND c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID "
+			+ " AND c.krcdtErrMessageInfoPK.resourceID = :resourceID "
+			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent "
+			+ " AND c.krcdtErrMessageInfoPK.disposalDay = :disposalDay ";
 	
 	private ErrMessageInfo toDomain(KrcdtExecErrMsg entity) {
 		return new ErrMessageInfo(
-				entity.krcdtExecErrMsgPK.employeeID,
-				entity.krcdtExecErrMsgPK.empCalAndSumExecLogID,
-				new ErrMessageResource(entity.krcdtExecErrMsgPK.resourceID),
-				EnumAdaptor.valueOf( entity.krcdtExecErrMsgPK.executionContent,ExecutionContent.class),
-				entity.krcdtExecErrMsgPK.disposalDay,
+				entity.krcdtErrMessageInfoPK.employeeID,
+				entity.krcdtErrMessageInfoPK.empCalAndSumExecLogID,
+				new ErrMessageResource(entity.krcdtErrMessageInfoPK.resourceID),
+				EnumAdaptor.valueOf( entity.krcdtErrMessageInfoPK.executionContent,ExecutionContent.class),
+				entity.krcdtErrMessageInfoPK.disposalDay,
 				new ErrMessageContent(entity.messageError)
 				);
 	}
@@ -58,12 +58,12 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 	private KrcdtExecErrMsg toEntity(ErrMessageInfo errMessageInfo){
 		val entity = new KrcdtExecErrMsg();
 		
-		entity.krcdtExecErrMsgPK = new KrcdtExecErrMsgPK();
-		entity.krcdtExecErrMsgPK.employeeID = errMessageInfo.getEmployeeID();
-		entity.krcdtExecErrMsgPK.empCalAndSumExecLogID = errMessageInfo.getEmpCalAndSumExecLogID();
-		entity.krcdtExecErrMsgPK.resourceID = errMessageInfo.getResourceID().v();
-		entity.krcdtExecErrMsgPK.disposalDay = errMessageInfo.getDisposalDay();
-		entity.krcdtExecErrMsgPK.executionContent = errMessageInfo.getExecutionContent().value;
+		entity.krcdtErrMessageInfoPK = new KrcdtErrMessageInfoPK();
+		entity.krcdtErrMessageInfoPK.employeeID = errMessageInfo.getEmployeeID();
+		entity.krcdtErrMessageInfoPK.empCalAndSumExecLogID = errMessageInfo.getEmpCalAndSumExecLogID();
+		entity.krcdtErrMessageInfoPK.resourceID = errMessageInfo.getResourceID().v();
+		entity.krcdtErrMessageInfoPK.disposalDay = errMessageInfo.getDisposalDay();
+		entity.krcdtErrMessageInfoPK.executionContent = errMessageInfo.getExecutionContent().value;
 		entity.messageError = errMessageInfo.getMessageError().v();
 		
 		return entity;

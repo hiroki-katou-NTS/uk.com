@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="SGWMT_SSO_WIN_ACC")
+@Table(name="SGWMT_WINDOW_ACC")
 public class SgwmtSsoWinAcc extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class SgwmtSsoWinAcc extends ContractUkJpaEntity implements Serializable 
 
 	/** The sgwmt window acc PK. */
 	@EmbeddedId
-	private SgwmtSsoWinAccPK sgwmtSsoWinAccPK;
+	private SgwmtWindowAccPK sgwmtWindowAccPK;
 		
 	/** The host name. */
 	@Column(name="HOST_NAME")
@@ -57,7 +57,7 @@ public class SgwmtSsoWinAcc extends ContractUkJpaEntity implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.sgwmtSsoWinAccPK;
+		return this.sgwmtWindowAccPK;
 	}
 	
 }

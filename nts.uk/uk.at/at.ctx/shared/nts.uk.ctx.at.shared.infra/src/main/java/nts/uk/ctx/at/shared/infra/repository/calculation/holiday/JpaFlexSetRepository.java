@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCFlex;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCFlexPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexSetPK;
 /**
  * 
  * @author phongtq
@@ -22,18 +22,18 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshmtCalcCFlex e");
-		builderString.append(" WHERE e.kshmtCalcCFlexPK.companyId = :companyId");
+		builderString.append(" WHERE e.kshstFlexSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
 
 	/**
 	 * convert To Domain Flex Set
-	 * @param kshmtCalcCFlex
+	 * @param kshstFlexSet
 	 * @return
 	 */
-	private FlexSet convertToDomain(KshmtCalcCFlex kshmtCalcCFlex) {
-		FlexSet flexSet = FlexSet.createFromJavaType(kshmtCalcCFlex.kshmtCalcCFlexPK.companyId, kshmtCalcCFlex.missCalcHd,
-				kshmtCalcCFlex.premiumCalcHd, kshmtCalcCFlex.missCalcSubhd, kshmtCalcCFlex.premiumCalcSubhd, kshmtCalcCFlex.flexDeductCalc, kshmtCalcCFlex.flexNonwkingCalc);
+	private FlexSet convertToDomain(KshmtCalcCFlex kshstFlexSet) {
+		FlexSet flexSet = FlexSet.createFromJavaType(kshstFlexSet.kshstFlexSetPK.companyId, kshstFlexSet.missCalcHd,
+				kshstFlexSet.premiumCalcHd, kshstFlexSet.missCalcSubhd, kshstFlexSet.premiumCalcSubhd, kshstFlexSet.flexDeductCalc, kshstFlexSet.flexNonwkingCalc);
 		
 		return flexSet;
 	}
@@ -44,14 +44,14 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 * @return
 	 */
 	private KshmtCalcCFlex convertToDbType(FlexSet flexSet) {
-		KshmtCalcCFlex kshmtCalcCFlex = new KshmtCalcCFlex();
-		KshmtCalcCFlexPK kshmtCalcCFlexPK = new KshmtCalcCFlexPK(flexSet.getCompanyId());
-				kshmtCalcCFlex.missCalcHd = flexSet.getMissCalcHd().value;
-				kshmtCalcCFlex.premiumCalcHd = flexSet.getPremiumCalcHd().value;
-				kshmtCalcCFlex.missCalcSubhd = flexSet.getMissCalcSubhd().value;
-				kshmtCalcCFlex.premiumCalcSubhd = flexSet.getPremiumCalcSubhd().value;
-				kshmtCalcCFlex.kshmtCalcCFlexPK = kshmtCalcCFlexPK;
-		return kshmtCalcCFlex;
+		KshmtCalcCFlex kshstFlexSet = new KshmtCalcCFlex();
+		KshstFlexSetPK kshstFlexSetPK = new KshstFlexSetPK(flexSet.getCompanyId());
+				kshstFlexSet.missCalcHd = flexSet.getMissCalcHd().value;
+				kshstFlexSet.premiumCalcHd = flexSet.getPremiumCalcHd().value;
+				kshstFlexSet.missCalcSubhd = flexSet.getMissCalcSubhd().value;
+				kshstFlexSet.premiumCalcSubhd = flexSet.getPremiumCalcSubhd().value;
+				kshstFlexSet.kshstFlexSetPK = kshstFlexSetPK;
+		return kshstFlexSet;
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 */
 	@Override
 	public void update(FlexSet flexSet) {
-		KshmtCalcCFlexPK primaryKey = new KshmtCalcCFlexPK(flexSet.getCompanyId());
+		KshstFlexSetPK primaryKey = new KshstFlexSetPK(flexSet.getCompanyId());
 		KshmtCalcCFlex entity = this.queryProxy().find(primaryKey, KshmtCalcCFlex.class).get();
 				entity.missCalcHd = flexSet.getMissCalcHd().value;
 				entity.premiumCalcHd = flexSet.getPremiumCalcHd().value;
@@ -85,7 +85,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 				entity.flexDeductCalc = flexSet.getFlexDeductTimeCalc().value;
 				entity.flexNonwkingCalc = flexSet.getFlexNonworkingDayCalc().value;
 				
-				entity.kshmtCalcCFlexPK = primaryKey;
+				entity.kshstFlexSetPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -94,7 +94,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 */
 	@Override
 	public Optional<FlexSet> findByCId(String companyId) {
-		return this.queryProxy().find(new KshmtCalcCFlexPK(companyId),KshmtCalcCFlex.class)
+		return this.queryProxy().find(new KshstFlexSetPK(companyId),KshmtCalcCFlex.class)
 				.map(c->convertToDomain(c));
 	}
 }

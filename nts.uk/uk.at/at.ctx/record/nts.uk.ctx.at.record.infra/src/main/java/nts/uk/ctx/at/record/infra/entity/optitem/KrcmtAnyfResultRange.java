@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF_RESULT_RANGE")
+@Table(name = "KRCST_CALC_RESULT_RANGE")
 public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 
 	/** The krcst calc result range PK. */
 	@EmbeddedId
-	protected KrcmtAnyfResultRangePK krcmtAnyfResultRangePK;
+	protected KrcstCalcResultRangePK krcstCalcResultRangePK;
 
 	/** The upper limit atr. */
 	@Column(name = "UPPER_LIMIT_ATR")
@@ -72,11 +72,11 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	/**
 	 * Instantiates a new krcst calc result range.
 	 *
-	 * @param krcmtAnyfResultRangePK
+	 * @param krcstCalcResultRangePK
 	 *            the krcst calc result range PK
 	 */
-	public KrcmtAnyfResultRange(KrcmtAnyfResultRangePK krcmtAnyfResultRangePK) {
-		this.krcmtAnyfResultRangePK = krcmtAnyfResultRangePK;
+	public KrcmtAnyfResultRange(KrcstCalcResultRangePK krcstCalcResultRangePK) {
+		this.krcstCalcResultRangePK = krcstCalcResultRangePK;
 	}
 
 	/*
@@ -87,7 +87,7 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfResultRangePK != null ? krcmtAnyfResultRangePK.hashCode() : 0);
+		hash += (krcstCalcResultRangePK != null ? krcstCalcResultRangePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -102,9 +102,9 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 			return false;
 		}
 		KrcmtAnyfResultRange other = (KrcmtAnyfResultRange) object;
-		if ((this.krcmtAnyfResultRangePK == null && other.krcmtAnyfResultRangePK != null)
-				|| (this.krcmtAnyfResultRangePK != null
-						&& !this.krcmtAnyfResultRangePK.equals(other.krcmtAnyfResultRangePK))) {
+		if ((this.krcstCalcResultRangePK == null && other.krcstCalcResultRangePK != null)
+				|| (this.krcstCalcResultRangePK != null
+						&& !this.krcstCalcResultRangePK.equals(other.krcstCalcResultRangePK))) {
 			return false;
 		}
 		return true;
@@ -117,6 +117,6 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfResultRangePK;
+		return this.krcstCalcResultRangePK;
 	}
 }

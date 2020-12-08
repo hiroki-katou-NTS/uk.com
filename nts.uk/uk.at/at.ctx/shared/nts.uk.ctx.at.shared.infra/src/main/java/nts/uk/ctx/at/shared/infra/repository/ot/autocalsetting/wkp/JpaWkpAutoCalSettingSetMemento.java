@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkpPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
 
 /**
  * The Class JpaWkpAutoCalSettingSetMemento.
@@ -30,8 +30,8 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 * @param entity the entity
 	 */
 	public JpaWkpAutoCalSettingSetMemento(KrcmtCalcSetWkp entity) {
-		if (entity.getKrcmtCalcSetWkpPK() == null) {
-			entity.setKrcmtCalcSetWkpPK(new KrcmtCalcSetWkpPK());
+		if (entity.getKshmtAutoWkpCalSetPK() == null) {
+			entity.setKshmtAutoWkpCalSetPK(new KshmtAutoWkpCalSetPK());
 		}
 		this.entity = entity;
 	}
@@ -41,9 +41,9 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KrcmtCalcSetWkpPK pk = entity.getKrcmtCalcSetWkpPK();
+		KshmtAutoWkpCalSetPK pk = entity.getKshmtAutoWkpCalSetPK();
 		pk.setCid(companyId.v());
-		this.entity.setKrcmtCalcSetWkpPK(pk);
+		this.entity.setKshmtAutoWkpCalSetPK(pk);
 
 	}
 
@@ -52,9 +52,9 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		KrcmtCalcSetWkpPK pk = entity.getKrcmtCalcSetWkpPK();
+		KshmtAutoWkpCalSetPK pk = entity.getKshmtAutoWkpCalSetPK();
 		pk.setWkpid(workplaceId.v());
-		this.entity.setKrcmtCalcSetWkpPK(pk);
+		this.entity.setKshmtAutoWkpCalSetPK(pk);
 
 	}
 

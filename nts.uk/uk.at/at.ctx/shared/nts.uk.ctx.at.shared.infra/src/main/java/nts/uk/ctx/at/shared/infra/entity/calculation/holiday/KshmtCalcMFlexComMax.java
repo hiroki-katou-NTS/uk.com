@@ -21,12 +21,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="KSHMT_CALC_M_FLEX_COM_MAX")
+@Table(name="KSHST_INSUFF_FLEX_MNT")
 public class KshmtCalcMFlexComMax extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KshmtCalcMFlexComMaxPK kshmtCalcMFlexComMaxPK;
+	public KshstInsuffFlexMntPK kshstInsuffFlexMntPK;
 
 	/** 補填可能時間 */
 	@Column(name="SUPPLEMTABLE_DAYS")
@@ -34,6 +34,6 @@ public class KshmtCalcMFlexComMax extends ContractUkJpaEntity implements Seriali
 
 	@Override
 	protected Object getKey() {
-		return kshmtCalcMFlexComMaxPK;
+		return kshstInsuffFlexMntPK;
 	}
 }

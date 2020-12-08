@@ -30,10 +30,10 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory_;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyData;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyDataPK_;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyData_;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
 
 
 @Stateless
@@ -101,7 +101,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		Root<SspctMastercopyData> root = cq.from(SspctMastercopyData.class);
 		cq.select(root);
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(SspctMastercopyData_.id).get(SspctMastercopyDataPK_.categoryNo),
+		predicates.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.id).get(SspmtMastercopyDataPK_.categoryNo),
 				categoryEntity.getCategoryNo()));
 		cq.where(predicates.toArray(new Predicate[] {}));
 		List<SspctMastercopyData> dataEntities = em.createQuery(cq).getResultList();
@@ -137,7 +137,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 			// Add where conditions
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere
-					.add(root.get(SspctMastercopyCategory_.categoryNo).in(splitData));
+					.add(root.get(SspmtMastercopyCategory_.categoryNo).in(splitData));
 
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

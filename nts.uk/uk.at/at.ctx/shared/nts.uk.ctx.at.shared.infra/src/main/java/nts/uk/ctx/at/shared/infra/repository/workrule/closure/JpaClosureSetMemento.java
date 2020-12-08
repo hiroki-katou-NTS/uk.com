@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosure;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosurePK;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosurePK;
 
 /**
  * The Class JpaClosureSetMemento.
@@ -24,19 +24,19 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	
 	/** The kclmt closure. */
 	@Setter
-	private KshmtClosure kshmtClosure;
+	private KshmtClosure kclmtClosure;
 
 	/**
 	 * Instantiates a new jpa closure set memento.
 	 *
-	 * @param kshmtClosure
+	 * @param kclmtClosure
 	 *            the kclmt closure
 	 */
-	public JpaClosureSetMemento(KshmtClosure kshmtClosure) {
-		if (kshmtClosure.getKshmtClosurePK() == null) {
-			kshmtClosure.setKshmtClosurePK(new KshmtClosurePK());
+	public JpaClosureSetMemento(KshmtClosure kclmtClosure) {
+		if (kclmtClosure.getKclmtClosurePK() == null) {
+			kclmtClosure.setKclmtClosurePK(new KclmtClosurePK());
 		}
-		this.kshmtClosure = kshmtClosure;
+		this.kclmtClosure = kclmtClosure;
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.kshmtClosure.getKshmtClosurePK().setCid(companyId.v());
+		this.kclmtClosure.getKclmtClosurePK().setCid(companyId.v());
 	}
 
 	/*
@@ -60,7 +60,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
-		this.kshmtClosure.getKshmtClosurePK().setClosureId(closureId.value);
+		this.kclmtClosure.getKclmtClosurePK().setClosureId(closureId.value);
 	}
 
 	/*
@@ -72,7 +72,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 */
 	@Override
 	public void setUseClassification(UseClassification useClassification) {
-		this.kshmtClosure.setUseClass(useClassification.value);
+		this.kclmtClosure.setUseClass(useClassification.value);
 	}
 
 	/*
@@ -83,8 +83,8 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 */
 	@Override
 	public void setClosureMonth(CurrentMonth month) {
-		if (this.kshmtClosure.getUseClass() == 1) {
-			this.kshmtClosure.setClosureMonth(month.getProcessingYm().v());
+		if (this.kclmtClosure.getUseClass() == 1) {
+			this.kclmtClosure.setClosureMonth(month.getProcessingYm().v());
 		}
 	}
 

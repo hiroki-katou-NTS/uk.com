@@ -36,7 +36,7 @@ public class JpaUserInfoUseMethodGetMemento implements UserInfoUseMethodGetMemen
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getSevmtUseContactComPK().getCid();
+		return this.entity.getSevstUserInfoUsemethodPK().getCid();
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class JpaUserInfoUseMethodGetMemento implements UserInfoUseMethodGetMemen
 	 */
 	@Override
 	public UserInfoItem getSettingItem() {
-		return UserInfoItem.valueOf(this.entity.getSevmtUseContactComPK().getSettingItem());
+		return UserInfoItem.valueOf(this.entity.getSevstUserInfoUsemethodPK().getSettingItem());
 	}
 
 	/**

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_GOOUT_ROUND")
+@Table(name = "KSHMT_SPECIAL_ROUND_OUT")
 public class KshmtWtComGooutRound extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComGooutRound extends ContractUkJpaEntity implements Seriali
 
 	/** The kshmt special round out PK. */
 	@EmbeddedId
-	protected KshmtWtComGooutRoundPK kshmtWtComGooutRoundPK;
+	protected KshmtSpecialRoundOutPK kshmtSpecialRoundOutPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -98,7 +98,7 @@ public class KshmtWtComGooutRound extends ContractUkJpaEntity implements Seriali
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComGooutRoundPK != null ? kshmtWtComGooutRoundPK.hashCode() : 0);
+		hash += (kshmtSpecialRoundOutPK != null ? kshmtSpecialRoundOutPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -113,9 +113,9 @@ public class KshmtWtComGooutRound extends ContractUkJpaEntity implements Seriali
 			return false;
 		}
 		KshmtWtComGooutRound other = (KshmtWtComGooutRound) object;
-		if ((this.kshmtWtComGooutRoundPK == null && other.kshmtWtComGooutRoundPK != null)
-				|| (this.kshmtWtComGooutRoundPK != null
-						&& !this.kshmtWtComGooutRoundPK.equals(other.kshmtWtComGooutRoundPK))) {
+		if ((this.kshmtSpecialRoundOutPK == null && other.kshmtSpecialRoundOutPK != null)
+				|| (this.kshmtSpecialRoundOutPK != null
+						&& !this.kshmtSpecialRoundOutPK.equals(other.kshmtSpecialRoundOutPK))) {
 			return false;
 		}
 		return true;
@@ -126,7 +126,7 @@ public class KshmtWtComGooutRound extends ContractUkJpaEntity implements Seriali
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComGooutRoundPK;
+		return this.kshmtSpecialRoundOutPK;
 	}
 
 }

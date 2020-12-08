@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MON_TIME_ANYITEM")
+@Table(name = "KRCDT_MON_ANYITEMVALUE_MERGE")
 public class KrcdtMonAnyItemValueMerge extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
@@ -42,7 +42,7 @@ public class KrcdtMonAnyItemValueMerge extends ContractUkJpaEntity implements Se
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtMonTimeAtdPk krcdtMonAnyItemValuePk;
+	public KrcdtMonMergePk krcdtMonAnyItemValuePk;
 
 	/** 時間 */
 	/** 振替時間 - TIME_VALUE_1 */

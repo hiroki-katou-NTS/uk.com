@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_REC_MNG")
+@Table(name = "KRCMT_INTERIM_REC_MNG")
 public class KrcdtInterimRecMng extends ContractUkJpaEntity implements Serializable{
 	/**	暫定振出管理データID */
 	@Id

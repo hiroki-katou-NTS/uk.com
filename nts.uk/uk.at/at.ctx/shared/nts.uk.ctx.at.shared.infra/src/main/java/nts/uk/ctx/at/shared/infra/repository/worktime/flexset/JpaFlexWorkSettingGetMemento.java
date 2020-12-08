@@ -57,7 +57,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtFlePK().getCid();
+		return this.entity.getKshmtFlexWorkSetPK().getCid();
 	}
 
 	/*
@@ -68,7 +68,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtFlePK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtFlexWorkSetPK().getWorktimeCd());
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlowWorkRestSetting getRestSetting() {
-		return new FlowWorkRestSetting(new JpaFlexFlowWorkRestSettingGetMemento(this.entity.getKshmtWtFleBrFl()));
+		return new FlowWorkRestSetting(new JpaFlexFlowWorkRestSettingGetMemento(this.entity.getKshmtFlexRestSet()));
 	}
 
 	/*
@@ -101,7 +101,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlexOffdayWorkTime getOffdayWorkTime() {
-		return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entity.getKshmtWtFleBrFlHol()));
+		return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entity.getKshmtFlexOdRtSet()));
 	}
 
 	/*
@@ -134,10 +134,10 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public List<FlexHalfDayWorkTime> getLstHalfDayWorkTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFlWeks())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRtSets())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleBrFlWeks().stream()
+		return this.entity.getKshmtFlexHaRtSets().stream()
 				.map(entity -> new FlexHalfDayWorkTime(new JpaFlexHAWorkTimeGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
@@ -150,10 +150,10 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public List<StampReflectTimezone> getLstStampReflectTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleStmpRefTss())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexStampReflects())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleStmpRefTss().stream()
+		return this.entity.getKshmtFlexStampReflects().stream()
 				.map(entity -> new StampReflectTimezone(new JpaFlexStampReflectTZGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

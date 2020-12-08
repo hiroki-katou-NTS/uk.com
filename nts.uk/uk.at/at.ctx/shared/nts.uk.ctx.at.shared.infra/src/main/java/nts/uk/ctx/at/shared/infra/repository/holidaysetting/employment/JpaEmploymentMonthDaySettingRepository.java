@@ -23,8 +23,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtHdpubMonthdaysEmp;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtHdpubMonthdaysEmpPK_;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtHdpubMonthdaysEmp_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtEmpMonthDaySetPK_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtEmpMonthDaySet_;
 
 /**
  * The Class JpaEmploymentMonthDaySettingRepository.
@@ -107,28 +107,28 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		// eq company id
 		if (companyId != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubMonthdaysEmp_.kshmtHdpubMonthdaysEmpPK).get(KshmtHdpubMonthdaysEmpPK_.cid), companyId.v()));
+					.add(criteriaBuilder.equal(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.cid), companyId.v()));
 		}
 		
 		if (empCd != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubMonthdaysEmp_.kshmtHdpubMonthdaysEmpPK).get(KshmtHdpubMonthdaysEmpPK_.empCd),
+					root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.empCd),
 					empCd));
 		}
 
 		if (year != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubMonthdaysEmp_.kshmtHdpubMonthdaysEmpPK).get(KshmtHdpubMonthdaysEmpPK_.manageYear),
+					root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.manageYear),
 					year.v()));
 		}
 
 		if (month != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubMonthdaysEmp_.kshmtHdpubMonthdaysEmpPK)
-							.get(KshmtHdpubMonthdaysEmpPK_.month), month.intValue()));
+					.add(criteriaBuilder.equal(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK)
+							.get(KshmtEmpMonthDaySetPK_.month), month.intValue()));
 		}
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtHdpubMonthdaysEmp_.kshmtHdpubMonthdaysEmpPK).get(KshmtHdpubMonthdaysEmpPK_.month)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -148,7 +148,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		// Check exist
 		if (result != null && !result.isEmpty()) {
 			return result.stream()
-					.map(obj -> obj.getKshmtHdpubMonthdaysEmpPK().getEmpCd())
+					.map(obj -> obj.getKshmtEmpMonthDaySetPK().getEmpCd())
 					.distinct()
 					.collect(Collectors.toList()); 
 		}

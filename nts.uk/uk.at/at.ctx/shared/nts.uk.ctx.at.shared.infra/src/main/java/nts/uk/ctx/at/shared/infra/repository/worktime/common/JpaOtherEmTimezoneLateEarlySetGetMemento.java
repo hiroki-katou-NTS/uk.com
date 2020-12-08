@@ -87,7 +87,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 	 */
 	@Override
 	public LateEarlyAtr getLateEarlyAtr() {
-		return LateEarlyAtr.valueOf(this.entity.getKshmtWtComLatetimePK().getLateEarlyAtr());
+		return LateEarlyAtr.valueOf(this.entity.getKshmtOtherLateEarlyPK().getLateEarlyAtr());
 	}
 
 }

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_HDCOM")
+@Table(name = "KSHMT_SUBSTITUTION_SET")
 public class KshmtWtComHdcom extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComHdcom extends ContractUkJpaEntity implements Serializable
 
 	/** The kshmt substitution set PK. */
 	@EmbeddedId
-	protected KshmtWtComHdcomPK kshmtWtComHdcomPK;
+	protected KshmtSubstitutionSetPK kshmtSubstitutionSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -70,7 +70,7 @@ public class KshmtWtComHdcom extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComHdcomPK != null ? kshmtWtComHdcomPK.hashCode() : 0);
+		hash += (kshmtSubstitutionSetPK != null ? kshmtSubstitutionSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -85,9 +85,9 @@ public class KshmtWtComHdcom extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtWtComHdcom other = (KshmtWtComHdcom) object;
-		if ((this.kshmtWtComHdcomPK == null && other.kshmtWtComHdcomPK != null)
-				|| (this.kshmtWtComHdcomPK != null
-						&& !this.kshmtWtComHdcomPK.equals(other.kshmtWtComHdcomPK))) {
+		if ((this.kshmtSubstitutionSetPK == null && other.kshmtSubstitutionSetPK != null)
+				|| (this.kshmtSubstitutionSetPK != null
+						&& !this.kshmtSubstitutionSetPK.equals(other.kshmtSubstitutionSetPK))) {
 			return false;
 		}
 		return true;
@@ -100,7 +100,7 @@ public class KshmtWtComHdcom extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComHdcomPK;
+		return this.kshmtSubstitutionSetPK;
 	}
 
 }

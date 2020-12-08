@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.SptmtStandardMenu;
-import nts.uk.ctx.sys.portal.infra.entity.standardmenu.SptmtStandardMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 
@@ -78,10 +78,10 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "s.programId ASC";
 
 	public SptmtStandardMenu insertToEntity(StandardMenu domain) {
-		 SptmtStandardMenuPK sptmtStandardMenuPK = new SptmtStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
+		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
 		 int maxDisplayOrder = this.getMaxDisplayOrder() + 1;
 	return new SptmtStandardMenu(
-			 sptmtStandardMenuPK, 
+			 ccgstStandardMenuPK, 
 			 domain.getTargetItems(), 
 			 domain.getDisplayName().v(), 
 			 maxDisplayOrder, 
@@ -99,9 +99,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	}
 	
 	public SptmtStandardMenu toEntity(StandardMenu domain) {
-		 SptmtStandardMenuPK sptmtStandardMenuPK = new SptmtStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
+		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
 	return new SptmtStandardMenu(
-			 sptmtStandardMenuPK, 
+			 ccgstStandardMenuPK, 
 			 domain.getTargetItems(), 
 			 domain.getDisplayName().v(), 
 			 domain.getDisplayOrder(), 
@@ -242,9 +242,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	@Override
 	public void changeName(List<StandardMenu> StandardMenu) {
 		EntityManager manager = this.getEntityManager();
-		SptmtStandardMenuPK pk;
+		CcgstStandardMenuPK pk;
 		for (StandardMenu obj : StandardMenu) {
-			pk = new SptmtStandardMenuPK(obj.getCompanyId(), obj.getCode().v(), obj.getSystem().value,
+			pk = new CcgstStandardMenuPK(obj.getCompanyId(), obj.getCode().v(), obj.getSystem().value,
 					obj.getClassification().value);
 			SptmtStandardMenu o = manager.find(SptmtStandardMenu.class, pk);
 			o.setDisplayName(obj.getDisplayName().v());

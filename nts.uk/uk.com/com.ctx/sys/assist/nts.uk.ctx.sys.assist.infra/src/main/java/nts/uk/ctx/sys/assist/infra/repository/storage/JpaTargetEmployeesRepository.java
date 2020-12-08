@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveTarget;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveTargetPk;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetEmployeesPk;
 
 @Stateless
 public class JpaTargetEmployeesRepository extends JpaRepository implements TargetEmployeesRepository {
@@ -48,7 +48,7 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 	@Override
 	public void remove(String storeProcessingId, String employeeId) {
 		this.commandProxy().remove(SspdtSaveTarget.class,
-				new SspdtSaveTargetPk(storeProcessingId, employeeId));
+				new SspmtTargetEmployeesPk(storeProcessingId, employeeId));
 	}
 
 	@Override

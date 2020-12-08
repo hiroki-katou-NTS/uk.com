@@ -19,7 +19,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KscmtPublicHoliday;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KscmtPublicHolidayPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KsmmtPublicHolidayPK;
 
 
 /**
@@ -29,16 +29,16 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KscmtP
 @Stateless
 public class JpaPublicHolidayRepository extends JpaRepository implements PublicHolidayRepository {
 
-	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KscmtPublicHoliday a WHERE a.kscmtPublicHolidayPK.companyId = :companyId AND a.kscmtPublicHolidayPK.date IN :lstDate";
+	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KscmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId AND a.ksmmtPublicHolidayPK.date IN :lstDate";
 	private static final String SELECT_BY_DATE = "SELECT a FROM KscmtPublicHoliday a "
-			+ " WHERE a.kscmtPublicHolidayPK.companyId = :companyId "
-			+ " AND a.kscmtPublicHolidayPK.date = :date ";
-	private static final String SELECT_ALL = "SELECT a FROM KscmtPublicHoliday a WHERE a.kscmtPublicHolidayPK.companyId = :companyId";
-//	private static final String SELECT_SINGLE = "SELECT a FROM KscmtPublicHoliday a WHERE a.kscmtPublicHolidayPK.companyId = :companyID AND a.kscmtPublicHolidayPK.date = :date";
+			+ " WHERE a.ksmmtPublicHolidayPK.companyId = :companyId "
+			+ " AND a.ksmmtPublicHolidayPK.date = :date ";
+	private static final String SELECT_ALL = "SELECT a FROM KscmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
+//	private static final String SELECT_SINGLE = "SELECT a FROM KscmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
 	private static final String SELECT_BY_SDATE_EDATE = "SELECT c FROM KscmtPublicHoliday c"
-			+ " WHERE c.kscmtPublicHolidayPK.companyId = :companyId"
-			+ " AND c.kscmtPublicHolidayPK.date >= :strDate"
-			+ " AND c.kscmtPublicHolidayPK.date <= :endDate";
+			+ " WHERE c.ksmmtPublicHolidayPK.companyId = :companyId"
+			+ " AND c.ksmmtPublicHolidayPK.date >= :strDate"
+			+ " AND c.ksmmtPublicHolidayPK.date <= :endDate";
 
 	@Override
 	public List<PublicHoliday> getHolidaysByListDate(String companyId, List<GeneralDate> lstDate) {
@@ -60,7 +60,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	}
 
 	private PublicHoliday toDomain(KscmtPublicHoliday entity) {
-		return PublicHoliday.createFromJavaType(entity.kscmtPublicHolidayPK.companyId, entity.kscmtPublicHolidayPK.date,
+		return PublicHoliday.createFromJavaType(entity.ksmmtPublicHolidayPK.companyId, entity.ksmmtPublicHolidayPK.date,
 				entity.holidayName);
 	}
 
@@ -72,14 +72,14 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 
 	@Override
 	public void remove(String companyID, GeneralDate date) {
-		this.commandProxy().remove(KscmtPublicHoliday.class, new KscmtPublicHolidayPK(companyID, date));
+		this.commandProxy().remove(KscmtPublicHoliday.class, new KsmmtPublicHolidayPK(companyID, date));
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void update(PublicHoliday publicHoliday) {
 		KscmtPublicHoliday newEntity = toEntity(publicHoliday);
-		KscmtPublicHoliday entity = this.queryProxy().find(newEntity.kscmtPublicHolidayPK, KscmtPublicHoliday.class)
+		KscmtPublicHoliday entity = this.queryProxy().find(newEntity.ksmmtPublicHolidayPK, KscmtPublicHoliday.class)
 				.get();
 		entity.holidayName = newEntity.holidayName;
 
@@ -92,7 +92,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	}
 
 	private KscmtPublicHoliday toEntity(PublicHoliday domain) {
-		return new KscmtPublicHoliday(new KscmtPublicHolidayPK(domain.getCompanyId(), domain.getDate()),
+		return new KscmtPublicHoliday(new KsmmtPublicHolidayPK(domain.getCompanyId(), domain.getDate()),
 				domain.getHolidayName().v());
 
 	}

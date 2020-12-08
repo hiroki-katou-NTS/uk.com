@@ -25,13 +25,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_TS_ATD_SCHE")
+@Table(name = "KRCDT_WORK_SCHEDULE_TIME")
 public class KrcdtDayTsAtdSche extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayTsAtdSchePK krcdtDayTsAtdSchePK;
+	public KrcdtWorkScheduleTimePK krcdtWorkScheduleTimePK;
 
 	@Column(name = "ATTENDANCE")
 	public Integer attendance;
@@ -44,21 +44,21 @@ public class KrcdtDayTsAtdSche extends ContractUkJpaEntity implements Serializab
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayInfoPerWork daiPerWorkInfo;
 
-	public KrcdtDayTsAtdSche(KrcdtDayTsAtdSchePK krcmtWorkScheduleTimePK, Integer attendance,
+	public KrcdtDayTsAtdSche(KrcdtWorkScheduleTimePK krcmtWorkScheduleTimePK, Integer attendance,
 			Integer leaveWork) {
 		super();
-		this.krcdtDayTsAtdSchePK = krcmtWorkScheduleTimePK;
+		this.krcdtWorkScheduleTimePK = krcmtWorkScheduleTimePK;
 		this.attendance = attendance;
 		this.leaveWork = leaveWork;
 	}
 
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayTsAtdSchePK;
+		return this.krcdtWorkScheduleTimePK;
 	}
 
 	public ScheduleTimeSheet toDomain() {
-		ScheduleTimeSheet domain = new ScheduleTimeSheet(this.krcdtDayTsAtdSchePK.workNo, this.attendance,
+		ScheduleTimeSheet domain = new ScheduleTimeSheet(this.krcdtWorkScheduleTimePK.workNo, this.attendance,
 				this.leaveWork);
 		return domain;
 	}
@@ -70,7 +70,7 @@ public class KrcdtDayTsAtdSche extends ContractUkJpaEntity implements Serializab
 	public static KrcdtDayTsAtdSche toEntity(String employeeId, GeneralDate ymd,
 			ScheduleTimeSheet scheduleTimeSheet) {
 		return new KrcdtDayTsAtdSche(
-				new KrcdtDayTsAtdSchePK(employeeId, ymd, scheduleTimeSheet.getWorkNo().v()),
+				new KrcdtWorkScheduleTimePK(employeeId, ymd, scheduleTimeSheet.getWorkNo().v()),
 				scheduleTimeSheet.getAttendance().v(), scheduleTimeSheet.getLeaveWork().v());
 	}
 

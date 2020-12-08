@@ -65,7 +65,7 @@ public class KrcdtDayLateTime extends ContractUkJpaEntity implements Serializabl
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayTimeAtd krcdtDayTimeAtd;
+	public KrcdtDayTimeAtd krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {

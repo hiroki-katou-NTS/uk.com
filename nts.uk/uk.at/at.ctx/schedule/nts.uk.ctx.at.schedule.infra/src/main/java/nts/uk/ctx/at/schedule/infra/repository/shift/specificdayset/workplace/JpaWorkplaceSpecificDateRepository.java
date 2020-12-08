@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KscmtSpecDateWkp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KscmtSpecDateWkpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSetPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -22,27 +22,27 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	private static final String SELECT_NO_WHERE = "SELECT s FROM KscmtSpecDateWkp s";
 
 	private static final String GET_BY_DATE = SELECT_NO_WHERE 
-			+ " WHERE s.kscmtSpecDateWkpPK.workplaceId = :workplaceId"
-			+ " AND s.kscmtSpecDateWkpPK.specificDate = :specificDate";
+			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND s.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
 
 	// get List With Name of Specific
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KscmtSpecDateWkp s"
-			+ " LEFT JOIN KscmtSpecDateItem p ON s.kscmtSpecDateWkpPK.specificDateItemNo = p.kscmtSpecDateItemPK.itemNo "
-			+ " WHERE s.kscmtSpecDateWkpPK.workplaceId = :workplaceId"
-			+ " AND p.kscmtSpecDateItemPK.companyId = :companyID"
-			+ " AND s.kscmtSpecDateWkpPK.specificDate >= :startYm"
-			+ " AND s.kscmtSpecDateWkpPK.specificDate <= :endYm";
+			+ " LEFT JOIN KscmtSpecDateItem p ON s.ksmmtWpSpecDateSetPK.specificDateItemNo = p.ksmstSpecificDateItemPK.itemNo "
+			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND p.ksmstSpecificDateItemPK.companyId = :companyID"
+			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
+			+ " AND s.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
 	//Delete by Month 
 	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE from KscmtSpecDateWkp c "
-			+ " WHERE c.kscmtSpecDateWkpPK.workplaceId = :workplaceId"
-			+ " AND c.kscmtSpecDateWkpPK.specificDate >= :startYm"
-			+ " AND c.kscmtSpecDateWkpPK.specificDate <= :endYm";
+			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
 	private static final String DELETE_BY_DATE = "DELETE FROM KscmtSpecDateWkp c"
-			+ " WHERE c.kscmtSpecDateWkpPK.workplaceId = :workplaceId"
-			+ " AND c.kscmtSpecDateWkpPK.specificDate = :specificDate";
+			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
 
 	// No WITH name
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -70,8 +70,8 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	// No with name
 	private static WorkplaceSpecificDateItem toDomain(KscmtSpecDateWkp entity) {
 		WorkplaceSpecificDateItem domain = WorkplaceSpecificDateItem.createFromJavaType(
-				entity.kscmtSpecDateWkpPK.workplaceId, entity.kscmtSpecDateWkpPK.specificDate,
-				entity.kscmtSpecDateWkpPK.specificDateItemNo, "");
+				entity.ksmmtWpSpecDateSetPK.workplaceId, entity.ksmmtWpSpecDateSetPK.specificDate,
+				entity.ksmmtWpSpecDateSetPK.specificDateItemNo, "");
 		return domain;
 	}
 
@@ -80,9 +80,9 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 		String specificDateItemName = (String) object[0];
 		KscmtSpecDateWkp entity = (KscmtSpecDateWkp) object[2];
 		WorkplaceSpecificDateItem domain = WorkplaceSpecificDateItem.createFromJavaType(
-				entity.kscmtSpecDateWkpPK.workplaceId, 
-				entity.kscmtSpecDateWkpPK.specificDate,
-				entity.kscmtSpecDateWkpPK.specificDateItemNo, 
+				entity.ksmmtWpSpecDateSetPK.workplaceId, 
+				entity.ksmmtWpSpecDateSetPK.specificDate,
+				entity.ksmmtWpSpecDateSetPK.specificDateItemNo, 
 				specificDateItemName);
 		return domain;
 	}
@@ -90,7 +90,7 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	//No with Name 
 	private static KscmtSpecDateWkp toEntity(WorkplaceSpecificDateItem domain){
 		val entity = new KscmtSpecDateWkp();
-		entity.kscmtSpecDateWkpPK = new KscmtSpecDateWkpPK(
+		entity.ksmmtWpSpecDateSetPK = new KsmmtWpSpecDateSetPK(
 				domain.getWorkplaceId(),
 				domain.getSpecificDate(),
 				domain.getSpecificDateItemNo().v());

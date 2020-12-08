@@ -24,17 +24,17 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERAL_BUSINESS_TYPE")
+@Table(name = "KRCST_ER_AL_BUSINESS_TYPE")
 public class KrcmtEralBusinessType extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtEralBusinessTypePK krcmtEralBusinessTypePK;
+	public KrcstErAlBusinessTypePK krcstErAlBusinessTypePK;
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralBusinessTypePK;
+		return this.krcstErAlBusinessTypePK;
 	}
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -44,8 +44,8 @@ public class KrcmtEralBusinessType extends ContractUkJpaEntity implements Serial
 	})
 	public KrcmtErAlCondition krcmtErAlCondition;
 
-	public KrcmtEralBusinessType(KrcmtEralBusinessTypePK krcmtEralBusinessTypePK) {
+	public KrcmtEralBusinessType(KrcstErAlBusinessTypePK krcstErAlBusinessTypePK) {
 		super();
-		this.krcmtEralBusinessTypePK = krcmtEralBusinessTypePK;
+		this.krcstErAlBusinessTypePK = krcstErAlBusinessTypePK;
 	}
 }

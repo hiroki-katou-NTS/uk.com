@@ -26,30 +26,30 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 
 	/** The kshmt fixed work time sets. */
 	// KSHMT_WT_FIX_WORK_TS 就業時間の時間帯設定(固定)
-	private List<KshmtWtFixWorkTs> kshmtWtFixWorkTss;
+	private List<KshmtWtFixWorkTs> kshmtFixedWorkTimeSets;
 
 	/** The kshmt fixed ot time sets. */
 	// KSHMT_WT_FIX_OVER_TS 残業時間の時間帯設定
-	private List<KshmtWtFixOverTs> kshmtWtFixOverTss;
+	private List<KshmtWtFixOverTs> kshmtFixedOtTimeSets;
 
 	/**
 	 * Instantiates a new jpa fixed work timezone set get memento.
 	 *
-	 * @param kshmtWtFixWorkTss
+	 * @param kshmtFixedWorkTimeSets
 	 *            the kshmt fixed work time sets
-	 * @param kshmtWtFixOverTss
+	 * @param kshmtFixedOtTimeSets
 	 *            the kshmt fixed ot time sets
 	 */
-	public JpaFixedWorkTimezoneSetGetMemento(List<KshmtWtFixWorkTs> kshmtWtFixWorkTss,
-			List<KshmtWtFixOverTs> kshmtWtFixOverTss) {
+	public JpaFixedWorkTimezoneSetGetMemento(List<KshmtWtFixWorkTs> kshmtFixedWorkTimeSets,
+			List<KshmtWtFixOverTs> kshmtFixedOtTimeSets) {
 		super();		
-		this.kshmtWtFixWorkTss = kshmtWtFixWorkTss;
-		this.kshmtWtFixOverTss = kshmtWtFixOverTss;
-		if (CollectionUtil.isEmpty(this.kshmtWtFixWorkTss)) {
-			this.kshmtWtFixWorkTss = new ArrayList<>();
+		this.kshmtFixedWorkTimeSets = kshmtFixedWorkTimeSets;
+		this.kshmtFixedOtTimeSets = kshmtFixedOtTimeSets;
+		if (CollectionUtil.isEmpty(this.kshmtFixedWorkTimeSets)) {
+			this.kshmtFixedWorkTimeSets = new ArrayList<>();
 		}
-		if (CollectionUtil.isEmpty(this.kshmtWtFixOverTss)) {
-			this.kshmtWtFixOverTss = new ArrayList<>();
+		if (CollectionUtil.isEmpty(this.kshmtFixedOtTimeSets)) {
+			this.kshmtFixedOtTimeSets = new ArrayList<>();
 		}
 	}
 
@@ -62,9 +62,9 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 	 */
 	@Override
 	public List<EmTimeZoneSet> getLstWorkingTimezone() {
-		return this.kshmtWtFixWorkTss.stream()
+		return this.kshmtFixedWorkTimeSets.stream()
 				.map(item -> new EmTimeZoneSet(
-						new EmTimeFrameNo(item.getKshmtWtFixWorkTsPK().getTimeFrameNo()),
+						new EmTimeFrameNo(item.getKshmtFixedWorkTimeSetPK().getTimeFrameNo()),
 						new TimeZoneRounding(new TimeWithDayAttr(item.getTimeStr()),
 						new TimeWithDayAttr(item.getTimeEnd()), new TimeRoundingSetting(
 								item.getUnit(), 
@@ -83,7 +83,7 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 	 */
 	@Override
 	public List<OverTimeOfTimeZoneSet> getLstOTTimezone() {
-		return this.kshmtWtFixOverTss.stream()
+		return this.kshmtFixedOtTimeSets.stream()
 				.map(item -> new OverTimeOfTimeZoneSet(new JpaFixOverTimeOfTimeZoneSetGetMemento(item)))
 				.collect(Collectors.toList());
 	}

@@ -23,8 +23,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtHdpubMonthdaysSya;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtHdpubMonthdaysSyaPK_;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtHdpubMonthdaysSya_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySetPK_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySet_;
 
 /**
  * The Class JpaEmployeeMonthDaySettingRepository.
@@ -59,7 +59,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 		// Check exist
 		if (result != null && !result.isEmpty()) {
 			return result.stream()
-								.map(obj -> obj.getKshmtHdpubMonthdaysSyaPK().getSid())
+								.map(obj -> obj.getKshmtEmployeeMonthDaySetPK().getSid())
 								.distinct()
 								.collect(Collectors.toList());
 		}
@@ -125,28 +125,28 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 		// eq company id
 		if (companyId != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubMonthdaysSya_.kshmtHdpubMonthdaysSyaPK).get(KshmtHdpubMonthdaysSyaPK_.cid), companyId.v()));
+					.add(criteriaBuilder.equal(root.get(KshmtEmployeeMonthDaySet_.kshmtEmployeeMonthDaySetPK).get(KshmtEmployeeMonthDaySetPK_.cid), companyId.v()));
 		}
 		
 		if (employee != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubMonthdaysSya_.kshmtHdpubMonthdaysSyaPK).get(KshmtHdpubMonthdaysSyaPK_.sid),
+					root.get(KshmtEmployeeMonthDaySet_.kshmtEmployeeMonthDaySetPK).get(KshmtEmployeeMonthDaySetPK_.sid),
 					employee));
 		}
 
 		if (year != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubMonthdaysSya_.kshmtHdpubMonthdaysSyaPK).get(KshmtHdpubMonthdaysSyaPK_.manageYear),
+					root.get(KshmtEmployeeMonthDaySet_.kshmtEmployeeMonthDaySetPK).get(KshmtEmployeeMonthDaySetPK_.manageYear),
 					year.v()));
 		}
 
 		if (month != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubMonthdaysSya_.kshmtHdpubMonthdaysSyaPK)
-							.get(KshmtHdpubMonthdaysSyaPK_.month), month.intValue()));
+					.add(criteriaBuilder.equal(root.get(KshmtEmployeeMonthDaySet_.kshmtEmployeeMonthDaySetPK)
+							.get(KshmtEmployeeMonthDaySetPK_.month), month.intValue()));
 		}
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtHdpubMonthdaysSya_.kshmtHdpubMonthdaysSyaPK).get(KshmtHdpubMonthdaysSyaPK_.month)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtEmployeeMonthDaySet_.kshmtEmployeeMonthDaySetPK).get(KshmtEmployeeMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

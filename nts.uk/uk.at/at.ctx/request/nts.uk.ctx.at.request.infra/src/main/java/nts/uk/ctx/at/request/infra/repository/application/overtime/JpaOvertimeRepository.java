@@ -32,7 +32,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeD
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeInput;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeInputPK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtTime36UpLimitPerMonth;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtYear36OverMonth;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtYear36OverMonthPk;
@@ -116,7 +116,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 	private KrqdtAppOvertime toEntity(AppOverTime domain) {
 		List<KrqdtAppOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream().map(item -> {
-			KrqdtAppOvertimeInputPK pk = new KrqdtAppOvertimeInputPK(item.getCompanyID(), item.getAppID(),
+			KrqdtOvertimeInputPK pk = new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 					item.getAttendanceType().value, item.getFrameNo(), item.getTimeItemTypeAtr().value);
 			return new KrqdtAppOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(),
 					item.getEndTime() == null ? null : item.getEndTime().v(),
@@ -207,7 +207,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 		Set<KrqdtYear36OverMonth> lstYear36OverMonth = new HashSet<KrqdtYear36OverMonth>();
 		Set<KrqdtTime36UpLimitPerMonth> lstAverageTimeLst = new HashSet<KrqdtTime36UpLimitPerMonth>();
-		Set<KrqdtAppOvertimeInput> lstKrqdtAppOvertimeInput = new HashSet<KrqdtAppOvertimeInput>();
+		Set<KrqdtAppOvertimeInput> lstKrqdtOvertimeInput = new HashSet<KrqdtAppOvertimeInput>();
 		Set<KrqdtAppOvertimeDetail> lstkrqdtAppOvertimeDetail = new HashSet<KrqdtAppOvertimeDetail>();
 		Set<KrqdtAppOvertime> lstKrqdtAppOvertime = new HashSet<KrqdtAppOvertime>();
 
@@ -246,7 +246,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 					}
 					// ATTENDANCE_ID is not null
 					if (rs.getInt("ATTENDANCE_ID") != null) {
-						lstKrqdtAppOvertimeInput.add(this.createKrqdtAppOvertimeInput(cid, appId, rs));
+						lstKrqdtOvertimeInput.add(this.createKrqdtOvertimeInput(cid, appId, rs));
 					}
 					// APPLICATION_TIME is not null
 					if (rs.getInt("YEAR_MONTH") != null) {
@@ -273,10 +273,10 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 			// get krqdtAppOvertime
 			KrqdtAppOvertime krqdtAppOvertime = optKrqdtAppOvertime.get();
 			// get list KrqdtAppOvertimeInput
-			List<KrqdtAppOvertimeInput> lstKrqdtAppOvertimeInputFilter = lstKrqdtAppOvertimeInput.stream()
-					.filter(x -> x.getKrqdtAppOvertimeInputPK().getAppId().equals(appId)).collect(Collectors.toList());
+			List<KrqdtAppOvertimeInput> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
+					.filter(x -> x.getKrqdtOvertimeInputPK().getAppId().equals(appId)).collect(Collectors.toList());
 			// set KrqdtAppOvertimeInput for krqdtAppOvertime
-			krqdtAppOvertime.setOvertimeInputs(lstKrqdtAppOvertimeInputFilter);
+			krqdtAppOvertime.setOvertimeInputs(lstKrqdtOvertimeInputFilter);
 			// get KrqdtAppOvertimeDetail
 			Optional<KrqdtAppOvertimeDetail> optKrqdtAppOvertimeDetail = lstkrqdtAppOvertimeDetail.stream()
 					.filter(x -> x.appOvertimeDetailPk.appId.equals(appId)).findFirst();
@@ -326,9 +326,9 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				rs.getInt("AVE_TIME"), rs.getInt("TOTAL_TIME"));
 	}
 
-	private KrqdtAppOvertimeInput createKrqdtAppOvertimeInput(String cid, String appId, NtsResultRecord rs) {
+	private KrqdtAppOvertimeInput createKrqdtOvertimeInput(String cid, String appId, NtsResultRecord rs) {
 		return new KrqdtAppOvertimeInput(
-				new KrqdtAppOvertimeInputPK(cid, appId, rs.getInt("ATTENDANCE_ID"), rs.getInt("FRAME_NO"),
+				new KrqdtOvertimeInputPK(cid, appId, rs.getInt("ATTENDANCE_ID"), rs.getInt("FRAME_NO"),
 						rs.getInt("TIME_ITEM_TYPE_ATR")),
 				rs.getInt("START_TIME"), rs.getInt("END_TIME"), rs.getInt("APPLICATION_TIME_INPUT"));
 	}

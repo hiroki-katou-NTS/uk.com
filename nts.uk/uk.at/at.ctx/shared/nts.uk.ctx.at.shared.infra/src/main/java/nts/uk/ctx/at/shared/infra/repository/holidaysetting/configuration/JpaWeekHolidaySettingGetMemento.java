@@ -12,7 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMemento {
 	
 	/** The kshmt week hd set. */
-	private KshmtHdpubPerWeek kshmtHdpubPerWeek;
+	private KshmtHdpubPerWeek kshmtWeekHdSet;
 	
 	/**
 	 * Instantiates a new jpa week holiday setting get memento.
@@ -20,7 +20,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 * @param entity the entity
 	 */
 	public JpaWeekHolidaySettingGetMemento(KshmtHdpubPerWeek entity){
-		this.kshmtHdpubPerWeek = entity;
+		this.kshmtWeekHdSet = entity;
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 */
 	@Override
 	public WeekNumberOfDay getInLegalHoliday() {
-		return new WeekNumberOfDay(this.kshmtHdpubPerWeek.getInLegalHd().doubleValue());
+		return new WeekNumberOfDay(this.kshmtWeekHdSet.getInLegalHd().doubleValue());
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +44,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 */
 	@Override
 	public WeekNumberOfDay getOutLegalHoliday() {
-		return new WeekNumberOfDay(this.kshmtHdpubPerWeek.getOutLegalHd().doubleValue());
+		return new WeekNumberOfDay(this.kshmtWeekHdSet.getOutLegalHd().doubleValue());
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +52,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 */
 	@Override
 	public DayOfWeek getStartDay() {
-		return DayOfWeek.valueOf(this.kshmtHdpubPerWeek.getStartDay());
+		return DayOfWeek.valueOf(this.kshmtWeekHdSet.getStartDay());
 	}
 
 }

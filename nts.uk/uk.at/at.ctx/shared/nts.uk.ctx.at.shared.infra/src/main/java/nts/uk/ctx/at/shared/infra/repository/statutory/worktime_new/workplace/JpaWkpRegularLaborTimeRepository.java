@@ -25,9 +25,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegaltimeDRegWkp;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegaltimeDRegWkpPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegaltimeDRegWkpPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegaltimeDRegWkp_;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTimePK;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTimePK_;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTime_;
 
 /**
  * The Class JpaWkpRegularLaborTimeRepository.
@@ -50,7 +50,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements R
 	@Override
 	public void update(RegularLaborTimeWkp setting) {
 		KshmtLegaltimeDRegWkp entity = this.queryProxy()
-				.find(new KshmtLegaltimeDRegWkpPK(setting.getComId(), setting.getWorkplaceId()),
+				.find(new KshstWkpRegLaborTimePK(setting.getComId(), setting.getWorkplaceId()),
 						KshmtLegaltimeDRegWkp.class)
 				.get();
 
@@ -69,7 +69,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements R
 	@Override
 	public Optional<RegularLaborTimeWkp> find(String cid, String wkpId) {
 		// Get info
-		return this.queryProxy().find(new KshmtLegaltimeDRegWkpPK(cid, wkpId),
+		return this.queryProxy().find(new KshstWkpRegLaborTimePK(cid, wkpId),
 				KshmtLegaltimeDRegWkp.class).map(c -> toDomain(c));
 	}
 
@@ -86,7 +86,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements R
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setKshmtLegaltimeDRegWkpPK(new KshmtLegaltimeDRegWkpPK(domain.getComId(), 
+		entity.setKshstWkpRegLaborTimePK(new KshstWkpRegLaborTimePK(domain.getComId(), 
 													domain.getWorkplaceId()));
 		
 		this.commandProxy().insert(entity);
@@ -100,7 +100,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements R
 	 */
 	@Override
 	public void remove(String cid, String wkpId) {
-		this.commandProxy().remove(KshmtLegaltimeDRegWkp.class, new KshmtLegaltimeDRegWkpPK(cid, wkpId));
+		this.commandProxy().remove(KshmtLegaltimeDRegWkp.class, new KshstWkpRegLaborTimePK(cid, wkpId));
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements R
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(
-				cb.equal(root.get(KshmtLegaltimeDRegWkp_.kshmtLegaltimeDRegWkpPK).get(KshmtLegaltimeDRegWkpPK_.cid), cid));
+				cb.equal(root.get(KshstWkpRegLaborTime_.kshstWkpRegLaborTimePK).get(KshstWkpRegLaborTimePK_.cid), cid));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		List<KshmtLegaltimeDRegWkp> resultList = em.createQuery(cq).getResultList();
@@ -144,8 +144,8 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements R
 	 *
 	 */
 	private RegularLaborTimeWkp toDomain(KshmtLegaltimeDRegWkp entity) {
-		return RegularLaborTimeWkp.of(entity.getKshmtLegaltimeDRegWkpPK().getCid(),
-				entity.getKshmtLegaltimeDRegWkpPK().getCid(),
+		return RegularLaborTimeWkp.of(entity.getKshstWkpRegLaborTimePK().getCid(),
+				entity.getKshstWkpRegLaborTimePK().getCid(),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}

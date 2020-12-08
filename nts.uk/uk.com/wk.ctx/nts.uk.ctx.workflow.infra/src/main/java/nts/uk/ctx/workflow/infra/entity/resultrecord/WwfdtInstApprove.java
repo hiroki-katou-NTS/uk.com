@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_INST_APPROVE")
+@Table(name="WWFDT_APP_APPROVE_INSTANCE")
 public class WwfdtInstApprove extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -30,7 +30,7 @@ public class WwfdtInstApprove extends ContractUkJpaEntity {
 		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER"),
 		@PrimaryKeyJoinColumn(name="FRAME_ORDER",referencedColumnName="FRAME_ORDER")
 	})
-	private WwfdtInstFrame wwfdtInstFrame;
+	private WwfdtInstFrame wwfdtAppFrameInstance;
 
 	@Override
 	protected Object getKey() {

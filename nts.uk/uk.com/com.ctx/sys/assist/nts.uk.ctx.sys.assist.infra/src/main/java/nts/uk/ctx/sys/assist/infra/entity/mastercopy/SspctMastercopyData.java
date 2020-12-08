@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="SSPCT_MASTERCOPY_DATA")
+@Table(name="SSPMT_MASTERCOPY_DATA")
 public class SspctMastercopyData extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class SspctMastercopyData extends ContractUkJpaEntity implements Serializ
 
 	/** The id. */
 	@EmbeddedId
-	private SspctMastercopyDataPK id;
+	private SspmtMastercopyDataPK id;
 
 	/** The copy atr. */
 	@Column(name="COPY_ATR")

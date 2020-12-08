@@ -16,12 +16,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Setter
-@Table(name = "KSCMT_SPEC_DATE_ITEM")
+@Table(name = "KSMST_SPECIFIC_DATE_ITEM")
 public class KscmtSpecDateItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KscmtSpecDateItemPK kscmtSpecDateItemPK;
+	public KsmstSpecificDateItemPK ksmstSpecificDateItemPK;
 
 	@Column(name = "USE_ATR")
 	public Integer useAtr;
@@ -31,6 +31,6 @@ public class KscmtSpecDateItem extends ContractUkJpaEntity implements Serializab
 	
 	@Override
 	protected Object getKey() {
-		return kscmtSpecDateItemPK;
+		return ksmstSpecificDateItemPK;
 	}
 }

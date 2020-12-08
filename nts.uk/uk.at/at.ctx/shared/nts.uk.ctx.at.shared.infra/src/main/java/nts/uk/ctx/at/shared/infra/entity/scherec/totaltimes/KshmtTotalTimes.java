@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_TOTAL_TIMES")
+@Table(name = "KSHST_TOTAL_TIMES")
 public class KshmtTotalTimes extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -36,7 +36,7 @@ public class KshmtTotalTimes extends ContractUkJpaEntity implements Serializable
 
 	/** The kshst total times PK. */
 	@EmbeddedId
-	protected KshmtTotalTimesPK kshmtTotalTimesPK;
+	protected KshstTotalTimesPK kshstTotalTimesPK;
 
 	/** The use atr. */
 	@Column(name = "USE_ATR")
@@ -82,11 +82,11 @@ public class KshmtTotalTimes extends ContractUkJpaEntity implements Serializable
 	/**
 	 * Instantiates a new kshst total times.
 	 *
-	 * @param kshmtTotalTimesPK
+	 * @param kshstTotalTimesPK
 	 *            the kshst total times PK
 	 */
-	public KshmtTotalTimes(KshmtTotalTimesPK kshmtTotalTimesPK) {
-		this.kshmtTotalTimesPK = kshmtTotalTimesPK;
+	public KshmtTotalTimes(KshstTotalTimesPK kshstTotalTimesPK) {
+		this.kshstTotalTimesPK = kshstTotalTimesPK;
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class KshmtTotalTimes extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtTotalTimesPK != null ? kshmtTotalTimesPK.hashCode() : 0);
+		hash += (kshstTotalTimesPK != null ? kshstTotalTimesPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -112,9 +112,9 @@ public class KshmtTotalTimes extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtTotalTimes other = (KshmtTotalTimes) object;
-		if ((this.kshmtTotalTimesPK == null && other.kshmtTotalTimesPK != null)
-				|| (this.kshmtTotalTimesPK != null
-						&& !this.kshmtTotalTimesPK.equals(other.kshmtTotalTimesPK))) {
+		if ((this.kshstTotalTimesPK == null && other.kshstTotalTimesPK != null)
+				|| (this.kshstTotalTimesPK != null
+						&& !this.kshstTotalTimesPK.equals(other.kshstTotalTimesPK))) {
 			return false;
 		}
 		return true;
@@ -127,7 +127,7 @@ public class KshmtTotalTimes extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtTotalTimesPK;
+		return this.kshstTotalTimesPK;
 	}
 
 }

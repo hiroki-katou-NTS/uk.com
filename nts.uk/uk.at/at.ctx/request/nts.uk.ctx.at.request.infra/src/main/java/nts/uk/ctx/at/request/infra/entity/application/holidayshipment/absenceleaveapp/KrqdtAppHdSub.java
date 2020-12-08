@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_APP_HD_SUB")
+@Table(name = "KRQDT_ABSENCE_LEAVE_APP")
 @Getter
 @Setter
 @AllArgsConstructor

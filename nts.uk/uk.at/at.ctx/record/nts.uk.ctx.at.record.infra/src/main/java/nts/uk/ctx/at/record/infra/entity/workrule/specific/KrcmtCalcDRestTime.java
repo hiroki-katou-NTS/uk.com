@@ -19,12 +19,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KRCMT_CALC_D_REST_TIME")
+@Table(name="KRCST_CONSTRAINT_TIME_CAL")
 public class KrcmtCalcDRestTime extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KrcmtCalcDRestTimePK id;
+	private KrcstConstraintTimeCalPK id;
 
 	@Column(name="CAL_METHOD")
 	private int calMethod;

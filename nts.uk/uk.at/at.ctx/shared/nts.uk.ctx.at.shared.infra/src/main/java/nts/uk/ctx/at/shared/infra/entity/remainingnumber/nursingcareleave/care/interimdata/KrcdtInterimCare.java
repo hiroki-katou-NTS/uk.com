@@ -15,14 +15,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_CARE")
+@Table(name = "KRCDT_TEMP_CARE_DATA")
 public class KrcdtInterimCare extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtInterimCarePK id;
+	public KrcdtTempCareDataPK id;
 
 	@Column(name = "USED_DAYS")
 	public double usedDays;

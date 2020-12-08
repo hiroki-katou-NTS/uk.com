@@ -40,7 +40,7 @@ public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtFloPK().getCid();
+		return this.entity.getKshmtFlowWorkSetPK().getCid();
 	}
 
 	/* (non-Javadoc)
@@ -48,7 +48,7 @@ public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 	 */
 	@Override
 	public WorkTimeCode getWorkingCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtFloPK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 	 */
 	@Override
 	public FlowWorkRestSetting getRestSetting() {
-		return new FlowWorkRestSetting(new JpaFlowWorkRestSettingGetMemento(this.entity.getKshmtWtFloBrFlAll()));
+		return new FlowWorkRestSetting(new JpaFlowWorkRestSettingGetMemento(this.entity.getKshmtFlowRestSet()));
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +72,7 @@ public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		KshmtWtCom commonEntity = this.entity.getKshmtWtCom();
+		KshmtWtCom commonEntity = this.entity.getKshmtWorktimeCommonSet();
 		if (commonEntity == null) {
 			return null;
 		}
@@ -92,7 +92,7 @@ public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 	 */
 	@Override
 	public FlowStampReflectTimezone getStampReflectTimezone() {
-		return new FlowStampReflectTimezone(new JpaFlowStampReflectTimezoneGetMemento(this.entity.getKshmtWtFloStmpRef2Ts()));
+		return new FlowStampReflectTimezone(new JpaFlowStampReflectTimezoneGetMemento(this.entity.getKshmtFstampReflectTime()));
 	}
 
 	/* (non-Javadoc)

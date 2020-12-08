@@ -18,11 +18,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_REC_HD_SUB")
+@Table(name = "KRCMT_INTERIM_REC_ABS")
 public class KrcdtInterimRecHdSub extends ContractUkJpaEntity implements Serializable{
 	/**	 */
 	@EmbeddedId
-	public KrcdtInterimRecHdSubPK recAbsPk;
+	public KrcmtInterimRecAbsPK recAbsPk;
 	/**振休管理データ区分	 */
 	@Column(name = "ABSENCE_MNG_ATR")
 	public int absenceMngAtr;

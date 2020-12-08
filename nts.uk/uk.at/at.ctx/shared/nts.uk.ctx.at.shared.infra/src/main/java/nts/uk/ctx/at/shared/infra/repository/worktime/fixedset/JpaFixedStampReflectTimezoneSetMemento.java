@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporaryti
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -36,13 +36,13 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, WorkNo workNo,
 			GoLeavingWorkAtr classification, KshmtWtFixStmpRefTs entity) {
 		this.entity = entity;
-		if (this.entity.getKshmtWtFixStmpRefTsPK() == null) {
-			this.entity.setKshmtWtFixStmpRefTsPK(new KshmtWtFixStmpRefTsPK());
+		if (this.entity.getKshmtFixedStampReflectPK() == null) {
+			this.entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
 		}
-		this.entity.getKshmtWtFixStmpRefTsPK().setCid(companyId);
-		this.entity.getKshmtWtFixStmpRefTsPK().setWorktimeCd(workTimeCd);
-		this.entity.getKshmtWtFixStmpRefTsPK().setWorkNo(workNo.v());
-		this.entity.getKshmtWtFixStmpRefTsPK().setAtr(classification.value);
+		this.entity.getKshmtFixedStampReflectPK().setCid(companyId);
+		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(workTimeCd);
+		this.entity.getKshmtFixedStampReflectPK().setWorkNo(workNo.v());
+		this.entity.getKshmtFixedStampReflectPK().setAtr(classification.value);
 	}
 
 	/*

@@ -24,8 +24,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkComPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet_;
 
 /**
  * The Class JpaCompanyBasicWorkRepository.
@@ -80,7 +80,7 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(KscmtBasicWorkCom_.kscmtBasicWorkComPK).get(KscmtBasicWorkComPK_.cid),
+		predicateList.add(bd.equal(root.get(KscmtCompanyWorkSet_.kscmtCompanyWorkSetPK).get(KscmtCompanyWorkSetPK_.cid),
 				companyId));
 		
 		// Set Where clause to SQL Query
@@ -121,7 +121,7 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 		return domain.getBasicWorkSetting().stream().map(basic -> {
 			KscmtBasicWorkCom entity = new KscmtBasicWorkCom();
 			basic.saveToMemento(new JpaBWSettingComSetMemento(entity));
-			entity.getKscmtBasicWorkComPK().setCid(domain.getCompanyId());
+			entity.getKscmtCompanyWorkSetPK().setCid(domain.getCompanyId());
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -135,12 +135,12 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 */
 	private KscmtBasicWorkCom updateEntity(KscmtBasicWorkCom entity) {
 		KscmtBasicWorkCom entityToUpdate = this.queryProxy()
-				.find(entity.getKscmtBasicWorkComPK(), KscmtBasicWorkCom.class).get();
+				.find(entity.getKscmtCompanyWorkSetPK(), KscmtBasicWorkCom.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
 		entityToUpdate.setWorkingCode(StringUtils.isEmpty(entity.getWorkingCode()) ? null : entity.getWorkingCode());
-		entityToUpdate.getKscmtBasicWorkComPK()
-				.setWorkdayDivision(entity.getKscmtBasicWorkComPK().getWorkdayDivision());
-		entityToUpdate.getKscmtBasicWorkComPK().setCid(entity.getKscmtBasicWorkComPK().getCid());
+		entityToUpdate.getKscmtCompanyWorkSetPK()
+				.setWorkdayDivision(entity.getKscmtCompanyWorkSetPK().getWorkdayDivision());
+		entityToUpdate.getKscmtCompanyWorkSetPK().setCid(entity.getKscmtCompanyWorkSetPK().getCid());
 		return entityToUpdate;
 	}
 
@@ -162,11 +162,11 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 		List<Predicate> predicateList = new ArrayList<>();
 		
 		// equal companyId
-		predicateList.add(bd.equal(root.get(KscmtBasicWorkCom_.kscmtBasicWorkComPK).get(KscmtBasicWorkComPK_.cid),
+		predicateList.add(bd.equal(root.get(KscmtCompanyWorkSet_.kscmtCompanyWorkSetPK).get(KscmtCompanyWorkSetPK_.cid),
 				companyId));
 		
 		// equal workdayDivision
-		predicateList.add(bd.equal(root.get(KscmtBasicWorkCom_.kscmtBasicWorkComPK).get(KscmtBasicWorkComPK_.workdayDivision),
+		predicateList.add(bd.equal(root.get(KscmtCompanyWorkSet_.kscmtCompanyWorkSetPK).get(KscmtCompanyWorkSetPK_.workdayDivision),
 				workdayAtr));
 
 		// Set Where clause to SQL Query

@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name="KRCMT_OTK_HD_CK")
-//@NamedQuery(name="KrcmtOtkHdCk.findAll", query="SELECT k FROM KrcmtOtkHdCk k")
+@Table(name="KRCCT_OTK_VACATION_CK")
+//@NamedQuery(name="KrcctOtkVacationCk.findAll", query="SELECT k FROM KrcmtOtkHdCk k")
 public class KrcmtOtkHdCk extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -42,10 +42,10 @@ public class KrcmtOtkHdCk extends ContractUkJpaEntity implements Serializable {
 	@Column(name="MESSAGE_DISPLAY")
 	public String messageDisplay;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtOtkHdCk")
-	public List<KrcmtOtkHdCkWktpTgt> krcmtOtkHdCkWktpTgt;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcctOtkVacationCk")
+	public List<KrcmtOtkHdCkWktpTgt> krcctOtkWtTarget;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtOtkHdCk")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcctOtkVacationCk")
 	public List<KrcctOtkWtNonTarget> krcctOtkWtNonTarget;
 	
 	public KrcmtOtkHdCk() {
@@ -66,7 +66,7 @@ public class KrcmtOtkHdCk extends ContractUkJpaEntity implements Serializable {
 
 	public ContinuousHolCheckSet toDomain(){
 		return new ContinuousHolCheckSet(cid, 
-						krcmtOtkHdCkWktpTgt == null ? new ArrayList<>() : krcmtOtkHdCkWktpTgt.stream()
+						krcctOtkWtTarget == null ? new ArrayList<>() : krcctOtkWtTarget.stream()
 								.map(c -> new WorkTypeCode(c.id.worktypeCd)).collect(Collectors.toList()), 
 						krcctOtkWtNonTarget == null ? new ArrayList<>() : krcctOtkWtNonTarget.stream()
 								.map(c -> new WorkTypeCode(c.id.worktypeCd)).collect(Collectors.toList()), 

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_TOTAL_CONDITION")
+@Table(name = "KSHST_TOTAL_CONDITION")
 public class KshmtTotalCondition extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtTotalCondition extends ContractUkJpaEntity implements Serializ
 
 	/** The kshst total condition PK. */
 	@EmbeddedId
-	protected KshmtTotalConditionPK kshmtTotalConditionPK;
+	protected KshstTotalConditionPK kshstTotalConditionPK;
 
 	/** The upper limit set atr. */
 	@Column(name = "UPPER_LIMIT_SET_ATR")
@@ -62,11 +62,11 @@ public class KshmtTotalCondition extends ContractUkJpaEntity implements Serializ
 	/**
 	 * Instantiates a new kshst total condition.
 	 *
-	 * @param kshmtTotalConditionPK
+	 * @param kshstTotalConditionPK
 	 *            the kshst total condition PK
 	 */
-	public KshmtTotalCondition(KshmtTotalConditionPK kshmtTotalConditionPK) {
-		this.kshmtTotalConditionPK = kshmtTotalConditionPK;
+	public KshmtTotalCondition(KshstTotalConditionPK kshstTotalConditionPK) {
+		this.kshstTotalConditionPK = kshstTotalConditionPK;
 	}
 
 	/*
@@ -77,7 +77,7 @@ public class KshmtTotalCondition extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtTotalConditionPK != null ? kshmtTotalConditionPK.hashCode() : 0);
+		hash += (kshstTotalConditionPK != null ? kshstTotalConditionPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -92,9 +92,9 @@ public class KshmtTotalCondition extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KshmtTotalCondition other = (KshmtTotalCondition) object;
-		if ((this.kshmtTotalConditionPK == null && other.kshmtTotalConditionPK != null)
-				|| (this.kshmtTotalConditionPK != null
-						&& !this.kshmtTotalConditionPK.equals(other.kshmtTotalConditionPK))) {
+		if ((this.kshstTotalConditionPK == null && other.kshstTotalConditionPK != null)
+				|| (this.kshstTotalConditionPK != null
+						&& !this.kshstTotalConditionPK.equals(other.kshstTotalConditionPK))) {
 			return false;
 		}
 		return true;
@@ -107,7 +107,7 @@ public class KshmtTotalCondition extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtTotalConditionPK;
+		return this.kshstTotalConditionPK;
 	}
 
 }

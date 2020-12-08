@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLangPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLangPK;
 
 /**
  * The Class JpaOutsideOTBRDItemLangSetMemento.
@@ -26,8 +26,8 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 * @param entity the entity
 	 */
 	public JpaOutsideOTBRDItemLangSetMemento(KshmtOutsideDetailLang entity) {
-		if(entity.getKshmtOutsideDetailLangPK() == null){
-			entity.setKshmtOutsideDetailLangPK(new KshmtOutsideDetailLangPK());
+		if(entity.getKshstOutsideOtBrdLangPK() == null){
+			entity.setKshstOutsideOtBrdLangPK(new KshstOutsideOtBrdLangPK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshmtOutsideDetailLangPK().setCid(companyId.v());
+		this.entity.getKshstOutsideOtBrdLangPK().setCid(companyId.v());
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 */
 	@Override
 	public void setLanguageId(LanguageId languageId) {
-		this.entity.getKshmtOutsideDetailLangPK().setLanguageId(languageId.v());
+		this.entity.getKshstOutsideOtBrdLangPK().setLanguageId(languageId.v());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 */
 	@Override
 	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.entity.getKshmtOutsideDetailLangPK().setBrdItemNo(breakdownItemNo.value);
+		this.entity.getKshstOutsideOtBrdLangPK().setBrdItemNo(breakdownItemNo.value);
 		
 	}
 

@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.OtherEmTimezoneLateEarlySetRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetimePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarlyPK;
 
 @Stateless
 public class JpaOtherEmTimezoneLateEarlySetRepository extends JpaRepository
@@ -17,7 +17,7 @@ public class JpaOtherEmTimezoneLateEarlySetRepository extends JpaRepository
 	public boolean getStampExaclyByKey(String cid, String worktimeCd, int workFormAtr, int worktimeSetMethod,
 			int lateEarlyAtr) {
 
-		KshmtWtComLatetimePK pk = new KshmtWtComLatetimePK();
+		KshmtOtherLateEarlyPK pk = new KshmtOtherLateEarlyPK();
 		pk.setCid(cid);
 		pk.setLateEarlyAtr(lateEarlyAtr);
 		pk.setWorkFormAtr(workFormAtr);

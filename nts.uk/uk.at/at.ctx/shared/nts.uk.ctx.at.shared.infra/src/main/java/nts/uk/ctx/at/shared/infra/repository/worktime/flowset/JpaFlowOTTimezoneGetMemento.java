@@ -36,7 +36,7 @@ public class JpaFlowOTTimezoneGetMemento implements FlowOTTimezoneGetMemento {
 	 */
 	@Override
 	public Integer getWorktimeNo() {
-		return this.entity.getKshmtWtFloOverTsPK().getWorktimeNo();
+		return this.entity.getKshmtOtTimeZonePK().getWorktimeNo();
 	}
 
 	/* (non-Javadoc)

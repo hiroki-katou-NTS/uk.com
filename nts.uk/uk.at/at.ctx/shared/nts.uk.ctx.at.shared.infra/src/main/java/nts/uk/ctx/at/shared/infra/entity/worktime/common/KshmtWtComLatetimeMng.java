@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_LATETIME_MNG")
+@Table(name = "KSHMT_LATE_EARLY_SET")
 public class KshmtWtComLatetimeMng extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComLatetimeMng extends ContractUkJpaEntity implements Serial
 
 	/** The kshmt late early set PK. */
 	@EmbeddedId
-	protected KshmtWtComLatetimeMngPK kshmtWtComLatetimeMngPK;
+	protected KshmtLateEarlySetPK kshmtLateEarlySetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -54,7 +54,7 @@ public class KshmtWtComLatetimeMng extends ContractUkJpaEntity implements Serial
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComLatetimeMngPK != null ? kshmtWtComLatetimeMngPK.hashCode() : 0);
+		hash += (kshmtLateEarlySetPK != null ? kshmtLateEarlySetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -71,9 +71,9 @@ public class KshmtWtComLatetimeMng extends ContractUkJpaEntity implements Serial
 			return false;
 		}
 		KshmtWtComLatetimeMng other = (KshmtWtComLatetimeMng) object;
-		if ((this.kshmtWtComLatetimeMngPK == null && other.kshmtWtComLatetimeMngPK != null)
-				|| (this.kshmtWtComLatetimeMngPK != null
-						&& !this.kshmtWtComLatetimeMngPK.equals(other.kshmtWtComLatetimeMngPK))) {
+		if ((this.kshmtLateEarlySetPK == null && other.kshmtLateEarlySetPK != null)
+				|| (this.kshmtLateEarlySetPK != null
+						&& !this.kshmtLateEarlySetPK.equals(other.kshmtLateEarlySetPK))) {
 			return false;
 		}
 		return true;
@@ -86,7 +86,7 @@ public class KshmtWtComLatetimeMng extends ContractUkJpaEntity implements Serial
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComLatetimeMngPK;
+		return this.kshmtLateEarlySetPK;
 	}
 
 }

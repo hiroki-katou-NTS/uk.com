@@ -38,10 +38,10 @@ public class JpaFlexODTzOFRTimeSetGetMemento implements TimezoneOfFixedRestTimeS
 	 */
 	@Override
 	public List<DeductionTime> getTimezones() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFiHolTss())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleBrFiHolTss().stream()
+		return this.entity.getKshmtFlexOdFixRests().stream()
 				.map(entity -> new DeductionTime(new JpaFlexODDeductionTimeGetMemento(entity)))
 				.collect(Collectors.toList());
 

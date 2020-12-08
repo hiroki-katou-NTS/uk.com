@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DVGC_REF_HIST_BUS")
+@Table(name = "KRCST_WORKTYPE_DRT_HIST")
 public class KrcmtDvgcRefHistBus extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

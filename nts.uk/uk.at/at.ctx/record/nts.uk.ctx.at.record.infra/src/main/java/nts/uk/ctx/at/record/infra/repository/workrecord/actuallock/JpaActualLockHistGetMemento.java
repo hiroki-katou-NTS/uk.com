@@ -9,7 +9,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHist;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHistPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
@@ -28,8 +28,8 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	public JpaActualLockHistGetMemento(KrcdtAtdActuallockHist typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getKrcdtAtdActuallockHistPK() == null) {
-			this.typedValue.setKrcdtAtdActuallockHistPK(new KrcdtAtdActuallockHistPK());
+		if (this.typedValue.getKrcdtActualLockHistPK() == null) {
+			this.typedValue.setKrcdtActualLockHistPK(new KrcdtActualLockHistPK());
 		}
 	}
 
@@ -38,7 +38,7 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typedValue.getKrcdtAtdActuallockHistPK().getCid();
+		return this.typedValue.getKrcdtActualLockHistPK().getCid();
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +46,7 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	@Override
 	public ClosureId getClosureId() {
-		return ClosureId.valueOf(this.typedValue.getKrcdtAtdActuallockHistPK().getClosureId());
+		return ClosureId.valueOf(this.typedValue.getKrcdtActualLockHistPK().getClosureId());
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +78,7 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	@Override
 	public GeneralDateTime getLockDateTime() {
-		return this.typedValue.getKrcdtAtdActuallockHistPK().getLockDate();
+		return this.typedValue.getKrcdtActualLockHistPK().getLockDate();
 	}
 
 	/* (non-Javadoc)

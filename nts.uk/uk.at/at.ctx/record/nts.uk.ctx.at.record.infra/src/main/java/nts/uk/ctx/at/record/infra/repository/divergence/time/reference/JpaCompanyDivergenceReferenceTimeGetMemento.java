@@ -23,8 +23,8 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	public JpaCompanyDivergenceReferenceTimeGetMemento() {
 	}
 
-	public JpaCompanyDivergenceReferenceTimeGetMemento(KrcmtDvgcRefTime krcmtDvgcRefTime) {
-		this.entity = krcmtDvgcRefTime;
+	public JpaCompanyDivergenceReferenceTimeGetMemento(KrcmtDvgcRefTime krcstDrt) {
+		this.entity = krcstDrt;
 	}
 
 	/*

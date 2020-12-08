@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPDT_RECOVER_LOG")
+@Table(name = "SSPMT_DATA_RECOVER_LOG")
 public class SspdtRecoverLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class SspdtRecoverLog extends ContractUkJpaEntity implements Serializable
 	 * ID
 	 */
 	@EmbeddedId
-	public SspdtRecoverLogPk dataRecoverLogPk;
+	public SspmtDataRecoverLogPk dataRecoverLogPk;
 
 	/**
 	 * 処理内容
@@ -84,7 +84,7 @@ public class SspdtRecoverLog extends ContractUkJpaEntity implements Serializable
 	public static SspdtRecoverLog toEntity(DataRecoveryLog domain) {
 		return new SspdtRecoverLog
 			(
-				new SspdtRecoverLogPk(domain.getRecoveryProcessId(),domain.getLogSequenceNumber()), 
+				new SspmtDataRecoverLogPk(domain.getRecoveryProcessId(),domain.getLogSequenceNumber()), 
 				domain.getProcessingContent().v(),
 				domain.getTarget(),
 				domain.getTargetDate(),
@@ -93,9 +93,9 @@ public class SspdtRecoverLog extends ContractUkJpaEntity implements Serializable
 			);
 	}
 
-	public SspdtRecoverLog(SspdtRecoverLogPk sspdtDeletionResultLogPK, String processingContent, String target,
+	public SspdtRecoverLog(SspmtDataRecoverLogPk sspdtResultLogDeletionPK, String processingContent, String target,
 			GeneralDate targetDate, String errorContent, String contentSql) {
-		this.dataRecoverLogPk = sspdtDeletionResultLogPK;
+		this.dataRecoverLogPk = sspdtResultLogDeletionPK;
 		this.processingContent = processingContent;
 		this.target = target;
 		this.targetDate = targetDate;

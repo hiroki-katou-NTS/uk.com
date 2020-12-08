@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FIX_BR_HOL_TS")
+@Table(name = "KSHMT_FIXED_HOL_REST_SET")
 public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializab
     
     /** The kshmt fixed hol rest set PK. */
     @EmbeddedId
-    protected KshmtWtFixBrHolTsPK kshmtWtFixBrHolTsPK;
+    protected KshmtFixedHolRestSetPK kshmtFixedHolRestSetPK;
     
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
@@ -54,11 +54,11 @@ public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializab
     /**
      * Instantiates a new kshmt fixed hol rest set.
      *
-     * @param kshmtWtFixBrHolTsPK the kshmt fixed hol rest set PK
+     * @param kshmtFixedHolRestSetPK the kshmt fixed hol rest set PK
      */
-    public KshmtWtFixBrHolTs(KshmtWtFixBrHolTsPK kshmtWtFixBrHolTsPK) {
+    public KshmtWtFixBrHolTs(KshmtFixedHolRestSetPK kshmtFixedHolRestSetPK) {
     	super();
-    	this.kshmtWtFixBrHolTsPK = kshmtWtFixBrHolTsPK;
+    	this.kshmtFixedHolRestSetPK = kshmtFixedHolRestSetPK;
     }
     
     /**
@@ -69,7 +69,7 @@ public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializab
      * @param periodNo the period no
      */
     public KshmtWtFixBrHolTs(String cid, String worktimeCd,int periodNo) {
-		this.kshmtWtFixBrHolTsPK = new KshmtWtFixBrHolTsPK(cid, worktimeCd,periodNo);
+		this.kshmtFixedHolRestSetPK = new KshmtFixedHolRestSetPK(cid, worktimeCd,periodNo);
 	}
 
     /* (non-Javadoc)
@@ -78,7 +78,7 @@ public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializab
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtWtFixBrHolTsPK != null ? kshmtWtFixBrHolTsPK.hashCode() : 0);
+        hash += (kshmtFixedHolRestSetPK != null ? kshmtFixedHolRestSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -91,7 +91,7 @@ public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializab
             return false;
         }
         KshmtWtFixBrHolTs other = (KshmtWtFixBrHolTs) object;
-        if ((this.kshmtWtFixBrHolTsPK == null && other.kshmtWtFixBrHolTsPK != null) || (this.kshmtWtFixBrHolTsPK != null && !this.kshmtWtFixBrHolTsPK.equals(other.kshmtWtFixBrHolTsPK))) {
+        if ((this.kshmtFixedHolRestSetPK == null && other.kshmtFixedHolRestSetPK != null) || (this.kshmtFixedHolRestSetPK != null && !this.kshmtFixedHolRestSetPK.equals(other.kshmtFixedHolRestSetPK))) {
             return false;
         }
         return true;
@@ -102,7 +102,7 @@ public class KshmtWtFixBrHolTs extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFixBrHolTsPK;
+		return this.kshmtFixedHolRestSetPK;
 	}
     
 }

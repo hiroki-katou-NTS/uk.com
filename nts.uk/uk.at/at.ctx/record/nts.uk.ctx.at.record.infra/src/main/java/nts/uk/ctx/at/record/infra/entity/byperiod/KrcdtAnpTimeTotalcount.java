@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_ANP_TIME_TOTALCOUNT")
+@Table(name = "KRCDT_ANP_TOTAL_TIMES")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtAnpTimeTotalcount extends ContractUkJpaEntity implements Serializable {
@@ -32,7 +32,7 @@ public class KrcdtAnpTimeTotalcount extends ContractUkJpaEntity implements Seria
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtAnpTimeTotalcountPK PK;
+	public KrcdtAnpTotalTimesPK PK;
 
 	/** 時間 */
 	@Column(name = "TOTAL_TIME")
@@ -76,7 +76,7 @@ public class KrcdtAnpTimeTotalcount extends ContractUkJpaEntity implements Seria
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfAnyPeriodKey key, TotalCount domain){
 		
-		this.PK = new KrcdtAnpTimeTotalcountPK(
+		this.PK = new KrcdtAnpTotalTimesPK(
 				key.getEmployeeId(),
 				key.getAnyAggrFrameCode().v(),
 				domain.getTotalCountNo());

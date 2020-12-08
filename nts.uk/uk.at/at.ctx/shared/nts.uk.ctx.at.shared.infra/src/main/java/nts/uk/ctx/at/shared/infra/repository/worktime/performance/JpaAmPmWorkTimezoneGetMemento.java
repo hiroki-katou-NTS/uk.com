@@ -103,7 +103,7 @@ public class JpaAmPmWorkTimezoneGetMemento<T extends ContractUkJpaEntity>
 	public AmPmAtr getAmPmAtr() {
 		if (this.entity instanceof KshmtWtFixBrWekTs) {
 			return AmPmAtr.valueOf(((KshmtWtFixBrWekTs) this.entity)
-					.getKshmtWtFixBrWekTsPK().getAmPmAtr());
+					.getKshmtFixedHalfRestSetPK().getAmPmAtr());
 		}
 		if (this.entity instanceof KshmtWtFixBrHolTs) {
 			return null;
@@ -113,7 +113,7 @@ public class JpaAmPmWorkTimezoneGetMemento<T extends ContractUkJpaEntity>
 		}
 		if (this.entity instanceof KshmtWtDifBrWekTs) {
 			return AmPmAtr.valueOf(((KshmtWtDifBrWekTs) this.entity)
-					.getKshmtWtDifBrWekTsPK().getAmPmAtr());
+					.getKshmtDtHalfRestTimePK().getAmPmAtr());
 		}
 		if (this.entity instanceof KshmtWtFloBrFiAllTs) {
 			return null;

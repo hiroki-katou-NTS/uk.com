@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_HDPUB_PER_WEEK")
+@Table(name = "KSHMT_WEEK_HD_SET")
 public class KshmtHdpubPerWeek extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

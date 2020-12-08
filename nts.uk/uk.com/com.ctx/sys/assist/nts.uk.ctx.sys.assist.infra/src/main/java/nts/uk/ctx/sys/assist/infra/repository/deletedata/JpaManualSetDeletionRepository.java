@@ -18,11 +18,11 @@ public class JpaManualSetDeletionRepository extends JpaRepository implements Man
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtDeletionManual f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.cid =:cid AND  f.sspdtDeletionManualPK.delId =:delId ";
+			+ " WHERE  f.cid =:cid AND  f.sspdtManualSetDeletionPK.delId =:delId ";
 	private static final String SELECT_BY_KEY_STRING_STORE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtDeletionManualPK.delId =:delId ";
+			+ " WHERE  f.sspdtManualSetDeletionPK.delId =:delId ";
 	private static final String SELECT_BY_SYSTEM_TYPE_AND_KEY = SELECT_ALL_QUERY_STRING
-				+ " WHERE f.sspdtDeletionManualPK.delId IN :delIds ";
+				+ " WHERE f.sspdtManualSetDeletionPK.delId IN :delIds ";
 
 	@Override
 	public List<ManualSetDeletion> getAllManualSetDeletion() {

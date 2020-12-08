@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLO_BR_FL_ALL_TS")
+@Table(name = "KSHMT_FLOW_FLOW_RT_SET")
 public class KshmtWtFloBrFlAllTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFloBrFlAllTs extends ContractUkJpaEntity implements Serializ
 
 	/** The kshmt flow flow rt set PK. */
 	@EmbeddedId
-	protected KshmtWtFloBrFlAllTsPK kshmtWtFloBrFlAllTsPK;
+	protected KshmtFlowFlowRtSetPK kshmtFlowFlowRtSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -58,7 +58,7 @@ public class KshmtWtFloBrFlAllTs extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFloBrFlAllTsPK != null ? kshmtWtFloBrFlAllTsPK.hashCode() : 0);
+		hash += (kshmtFlowFlowRtSetPK != null ? kshmtFlowFlowRtSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -73,9 +73,9 @@ public class KshmtWtFloBrFlAllTs extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KshmtWtFloBrFlAllTs other = (KshmtWtFloBrFlAllTs) object;
-		if ((this.kshmtWtFloBrFlAllTsPK == null && other.kshmtWtFloBrFlAllTsPK != null)
-				|| (this.kshmtWtFloBrFlAllTsPK != null
-						&& !this.kshmtWtFloBrFlAllTsPK.equals(other.kshmtWtFloBrFlAllTsPK))) {
+		if ((this.kshmtFlowFlowRtSetPK == null && other.kshmtFlowFlowRtSetPK != null)
+				|| (this.kshmtFlowFlowRtSetPK != null
+						&& !this.kshmtFlowFlowRtSetPK.equals(other.kshmtFlowFlowRtSetPK))) {
 			return false;
 		}
 		return true;
@@ -88,7 +88,7 @@ public class KshmtWtFloBrFlAllTs extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFloBrFlAllTsPK;
+		return this.kshmtFlowFlowRtSetPK;
 	}
 
 }

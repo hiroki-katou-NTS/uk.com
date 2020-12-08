@@ -12,20 +12,20 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarCls;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarClsPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClassPK;
 
 @Stateless
 public class JpaCalendarClassRepository extends JpaRepository implements CalendarClassRepository {
 	private static final String SELECT_FROM_CLASS = "select l from KscmtCalendarCls l";
 	private static final String SELECT_ALL_CLASS = SELECT_FROM_CLASS
-			+ " where l.kscmtCalendarClsPK.companyId = :companyId "
-			+ " and l.kscmtCalendarClsPK.classId = :classId ";
+			+ " where l.ksmmtCalendarClassPK.companyId = :companyId "
+			+ " and l.ksmmtCalendarClassPK.classId = :classId ";
 	private static final String SELECT_CLASS_BY_DATE = SELECT_ALL_CLASS
-			+ " and l.kscmtCalendarClsPK.date = :date";
-	private static final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.kscmtCalendarClsPK.date >= :startYM and l.kscmtCalendarClsPK.date <= :endYM";
-	private static final String DELETE_BY_YEAR_MONTH = "delete from KscmtCalendarCls l where l.kscmtCalendarClsPK.companyId = :companyId"
-			+ " and l.kscmtCalendarClsPK.classId = :classId "
-			+" and l.kscmtCalendarClsPK.date >= :startYM and l.kscmtCalendarClsPK.date <= :endYM";
+			+ " and l.ksmmtCalendarClassPK.date = :date";
+	private static final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
+	private static final String DELETE_BY_YEAR_MONTH = "delete from KscmtCalendarCls l where l.ksmmtCalendarClassPK.companyId = :companyId"
+			+ " and l.ksmmtCalendarClassPK.classId = :classId "
+			+" and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
 	/**
 	 * class
 	 * @param entity
@@ -34,16 +34,16 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	// toDomain calendar class
 	private static CalendarClass toDomainCalendarClass(KscmtCalendarCls entity){
 		val domain = CalendarClass.createFromJavaType(
-				entity.kscmtCalendarClsPK.companyId,
-				entity.kscmtCalendarClsPK.classId,
-				entity.kscmtCalendarClsPK.date,
+				entity.ksmmtCalendarClassPK.companyId,
+				entity.ksmmtCalendarClassPK.classId,
+				entity.ksmmtCalendarClassPK.date,
 				entity.workingDayAtr);
 		return domain;
 	}
 	//toEntity calendar Class
 	private static KscmtCalendarCls toEntityCalendarClass(CalendarClass domain){
 		val entity = new KscmtCalendarCls();
-		entity.kscmtCalendarClsPK = new KscmtCalendarClsPK(
+		entity.ksmmtCalendarClassPK = new KsmmtCalendarClassPK(
 												domain.getCompanyId(),
 												domain.getClassId().v(),
 												domain.getDate());
@@ -85,7 +85,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	public void updateCalendarClass(CalendarClass calendarClass) {
 		KscmtCalendarCls clendarCla = toEntityCalendarClass(calendarClass);
 		KscmtCalendarCls classUpdate = this.queryProxy()
-				.find(clendarCla.kscmtCalendarClsPK, KscmtCalendarCls.class).get();
+				.find(clendarCla.ksmmtCalendarClassPK, KscmtCalendarCls.class).get();
 		classUpdate.workingDayAtr = calendarClass.getWorkDayDivision().value;
 		this.commandProxy().update(classUpdate);
 		
@@ -93,10 +93,10 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 
 	@Override
 	public void deleteCalendarClass(String companyId,String classId,GeneralDate date) {
-		KscmtCalendarClsPK kscmtCalendarClsPK = new KscmtCalendarClsPK(companyId,
+		KsmmtCalendarClassPK ksmmtCalendarClassPK = new KsmmtCalendarClassPK(companyId,
 														classId,
 														date);  
-		this.commandProxy().remove(KscmtCalendarCls.class,kscmtCalendarClsPK);
+		this.commandProxy().remove(KscmtCalendarCls.class,ksmmtCalendarClassPK);
 	}
 
 	@Override

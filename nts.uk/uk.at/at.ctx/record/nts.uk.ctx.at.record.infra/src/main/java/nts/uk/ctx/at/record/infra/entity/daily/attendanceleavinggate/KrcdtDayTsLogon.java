@@ -21,14 +21,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name = "KRCDT_DAY_TS_LOGON")
-// @NamedQuery(name="KrcdtDayTsLogon.findAll", query="SELECT k FROM
+@Table(name = "KRCDT_DAY_PC_LOGON_INFO")
+// @NamedQuery(name="KrcdtDayPcLogonInfo.findAll", query="SELECT k FROM
 // KrcdtDayTsLogon k")
 public class KrcdtDayTsLogon extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayTsLogonPK id;
+	public KrcdtDayPcLogonInfoPK id;
 
 	@Column(name = "LOGOFF_TIME")
 	public Integer logoffTime;
@@ -39,7 +39,7 @@ public class KrcdtDayTsLogon extends ContractUkJpaEntity implements Serializable
 	public KrcdtDayTsLogon() {
 	}
 
-	public KrcdtDayTsLogon(KrcdtDayTsLogonPK id) {
+	public KrcdtDayTsLogon(KrcdtDayPcLogonInfoPK id) {
 		super();
 		this.id = id;
 	}
@@ -56,7 +56,7 @@ public class KrcdtDayTsLogon extends ContractUkJpaEntity implements Serializable
 	}
 	
 	public static KrcdtDayTsLogon from(String eId, GeneralDate ymd, LogOnInfo domain) {
-		KrcdtDayTsLogon entity = new KrcdtDayTsLogon(new KrcdtDayTsLogonPK(eId, ymd, domain.getWorkNo().v()));
+		KrcdtDayTsLogon entity = new KrcdtDayTsLogon(new KrcdtDayPcLogonInfoPK(eId, ymd, domain.getWorkNo().v()));
 		entity.setData(domain);
 		return entity;
 	}

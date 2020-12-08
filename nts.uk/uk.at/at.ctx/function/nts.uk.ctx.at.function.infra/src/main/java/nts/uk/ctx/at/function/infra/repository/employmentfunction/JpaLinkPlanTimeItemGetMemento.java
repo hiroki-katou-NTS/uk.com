@@ -29,7 +29,7 @@ public class JpaLinkPlanTimeItemGetMemento implements LinkPlanTimeItemGetMemento
 	 */
 	@Override
 	public String getScheduleID() {
-		return this.entity.getKfnmtPlanTimeItemPK().getScheduleId();
+		return this.entity.getKfnstPlanTimeItemPK().getScheduleId();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaLinkPlanTimeItemGetMemento implements LinkPlanTimeItemGetMemento
 	 */
 	@Override
 	public Integer getAtdID() {
-		return this.entity.getKfnmtPlanTimeItemPK().getAtdId();
+		return this.entity.getKfnstPlanTimeItemPK().getAtdId();
 	}
 
 }

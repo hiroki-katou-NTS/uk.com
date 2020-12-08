@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_ALST_CHKMON_UDREMOP")
+@Table(name = "KRCMT_CHECK_REMAIN_MON")
 public class KrcmtCheckRemainNumberMon extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
@@ -48,10 +48,10 @@ public class KrcmtCheckRemainNumberMon extends ContractUkJpaEntity implements Se
 	
 	
 	@OneToOne(mappedBy = "comparerange", cascade = CascadeType.ALL)
-	public KrcmtAlstChkmonUdremvr krcmtAlstChkmonUdremvr;
+	public KrcmtAlstChkmonUdremvr krcmtCompareRange;
 
 	@OneToOne(mappedBy = "comparesingle",cascade = CascadeType.ALL)
-	public KrcmtAlstChkmonUdremvs krcmtAlstChkmonUdremvs;
+	public KrcmtAlstChkmonUdremvs krcmtCompareSingleVal;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
@@ -62,13 +62,13 @@ public class KrcmtCheckRemainNumberMon extends ContractUkJpaEntity implements Se
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtAlstChkmonUdremvr krcmtAlstChkmonUdremvr, KrcmtAlstChkmonUdremvs krcmtAlstChkmonUdremvs, List<KrcmtRemainListItemID> listItemID) {
+	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtAlstChkmonUdremvr krcmtCompareRange, KrcmtAlstChkmonUdremvs krcmtCompareSingleVal, List<KrcmtRemainListItemID> listItemID) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.typeCheckVacation = typeCheckVacation;
 		this.checkOperatorType = checkOperatorType;
-		this.krcmtAlstChkmonUdremvr = krcmtAlstChkmonUdremvr;
-		this.krcmtAlstChkmonUdremvs = krcmtAlstChkmonUdremvs;
+		this.krcmtCompareRange = krcmtCompareRange;
+		this.krcmtCompareSingleVal = krcmtCompareSingleVal;
 		this.listItemID = listItemID;
 	}
 	
@@ -86,9 +86,9 @@ public class KrcmtCheckRemainNumberMon extends ContractUkJpaEntity implements Se
 	public CheckRemainNumberMon toDomain() {
 		CheckedCondition checkedCondition = new CheckedCondition();
 		if (this.checkOperatorType == 1) {
-			checkedCondition = this.krcmtAlstChkmonUdremvr.toDomain();
+			checkedCondition = this.krcmtCompareRange.toDomain();
 		} else {
-			checkedCondition = this.krcmtAlstChkmonUdremvs.toDomain();
+			checkedCondition = this.krcmtCompareSingleVal.toDomain();
 		}
 		return new CheckRemainNumberMon(this.errorAlarmCheckID, EnumAdaptor.valueOf(this.typeCheckVacation, TypeCheckVacation.class), checkedCondition,
 			   EnumAdaptor.valueOf(this.checkOperatorType, CheckOperatorType.class),

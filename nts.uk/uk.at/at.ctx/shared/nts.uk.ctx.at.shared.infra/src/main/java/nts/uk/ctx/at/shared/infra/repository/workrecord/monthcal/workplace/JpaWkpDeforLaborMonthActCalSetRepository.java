@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcmtCalcMSetDefWkp;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcmtCalcMSetDefWkpPK;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSetPK;
 
 /**
  * The Class JpaWkpDeforLaborMonthActCalSetRepository.
@@ -35,8 +35,8 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 
 		// Transfer data
 		entity.transfer(domain);
-		entity.setKrcmtCalcMSetDefWkpPK(
-				new KrcmtCalcMSetDefWkpPK(domain.getComId(), domain.getWorkplaceId()));
+		entity.setKrcstWkpDeforMCalSetPK(
+				new KrcstWkpDeforMCalSetPK(domain.getComId(), domain.getWorkplaceId()));
 
 		// Insert into DB
 		this.commandProxy().insert(entity);
@@ -53,7 +53,7 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(WkpDeforLaborMonthActCalSet domain) {
 		// Get info
-		KrcmtCalcMSetDefWkpPK pk = new KrcmtCalcMSetDefWkpPK(domain.getComId(),
+		KrcstWkpDeforMCalSetPK pk = new KrcstWkpDeforMCalSetPK(domain.getComId(),
 				domain.getWorkplaceId());
 		
 		this.queryProxy().find(pk, KrcmtCalcMSetDefWkp.class).ifPresent(e -> {
@@ -75,7 +75,7 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<WkpDeforLaborMonthActCalSet> find(String cid, String wkpId) {
 		// Get info
-		KrcmtCalcMSetDefWkpPK pk = new KrcmtCalcMSetDefWkpPK(cid, wkpId);
+		KrcstWkpDeforMCalSetPK pk = new KrcstWkpDeforMCalSetPK(cid, wkpId);
 		
 		return this.queryProxy().find(pk, KrcmtCalcMSetDefWkp.class).map(c -> toDomain(c));
 	}
@@ -90,15 +90,15 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void remove(String cid, String wkpId) {
 		
-		this.queryProxy().find(new KrcmtCalcMSetDefWkpPK(cid, wkpId),
+		this.queryProxy().find(new KrcstWkpDeforMCalSetPK(cid, wkpId),
 				KrcmtCalcMSetDefWkp.class)
 			.ifPresent(entity -> this.commandProxy().remove(entity));
 	}
 
 	private WkpDeforLaborMonthActCalSet toDomain (KrcmtCalcMSetDefWkp e) {
 		
-		return WkpDeforLaborMonthActCalSet.of(e.getKrcmtCalcMSetDefWkpPK().getWkpId(),
-				e.getKrcmtCalcMSetDefWkpPK().getCid(), 
+		return WkpDeforLaborMonthActCalSet.of(e.getKrcstWkpDeforMCalSetPK().getWkpId(),
+				e.getKrcstWkpDeforMCalSetPK().getCid(), 
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcExecLog;
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcExecLogPk;
+import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLogPk;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -64,7 +64,7 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
 
     @Override
     public void remove(String cid, String conditionSetCd, String externalProcessId){
-        this.commandProxy().remove(OiodtExAcExecLog.class, new OiodtExAcExecLogPk(cid, conditionSetCd, externalProcessId)); 
+        this.commandProxy().remove(OiodtExAcExecLog.class, new OiomtExacExeResultLogPk(cid, conditionSetCd, externalProcessId)); 
     }
 
     private static ExacExeResultLog toDomain(OiodtExAcExecLog entity) {
@@ -72,7 +72,7 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     }
 
     private OiodtExAcExecLog toEntity(ExacExeResultLog domain) {
-        return new OiodtExAcExecLog(domain.getVersion(), new OiodtExAcExecLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
+        return new OiodtExAcExecLog(domain.getVersion(), new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
     }
 
 	/* (non-Javadoc)

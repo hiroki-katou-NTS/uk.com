@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_INST_ROUTE")
+@Table(name="WWFDT_APPROVAL_ROOT_STATE")
 @Builder
 public class WwfdtAppInstRoute extends ContractUkJpaEntity {
 	
@@ -41,9 +41,9 @@ public class WwfdtAppInstRoute extends ContractUkJpaEntity {
 	@Column(name="APPROVAL_RECORD_DATE")
 	public GeneralDate recordDate;
 	
-	@OneToMany(targetEntity=WwfdtAppInstPhaseate.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppInstRoute", orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinTable(name = "WWFDT_APP_INST_PHASE")
-	public List<WwfdtAppInstPhaseate> listWwfdtPhase;
+	@OneToMany(targetEntity=WwfdtApprovalPhaseState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootState", orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinTable(name = "WWFDT_APPROVAL_PHASE_ST")
+	public List<WwfdtApprovalPhaseState> listWwfdtPhase;
 
 	@Override
 	protected Object getKey() {
@@ -57,7 +57,7 @@ public class WwfdtAppInstRoute extends ContractUkJpaEntity {
 				.recordDate(approvalRootState.getApprovalRecordDate())
 				.listWwfdtPhase(
 						approvalRootState.getListApprovalPhaseState().stream()
-						.map(x -> WwfdtAppInstPhaseate.fromDomain(approvalRootState.getRootStateID(), x))
+						.map(x -> WwfdtApprovalPhaseState.fromDomain(approvalRootState.getRootStateID(), x))
 						.collect(Collectors.toList()))
 				.build();
 	}

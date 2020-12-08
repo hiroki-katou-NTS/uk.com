@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_TITLE_BAR")
+@Table(name = "CCGST_TITLE_BAR")
 public class SptmtTitleBar extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

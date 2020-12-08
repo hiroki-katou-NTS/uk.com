@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FIX_HOL_TS")
+@Table(name = "KSHMT_FIXED_HOL_TIME_SET")
 public class KshmtWtFixHolTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFixHolTs extends ContractUkJpaEntity implements Serializable
 
 	/** The kshmt fixed hol time set PK. */
 	@EmbeddedId
-	protected KshmtWtFixHolTsPK kshmtWtFixHolTsPK;
+	protected KshmtFixedHolTimeSetPK kshmtFixedHolTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -91,7 +91,7 @@ public class KshmtWtFixHolTs extends ContractUkJpaEntity implements Serializable
 	 */
 	public KshmtWtFixHolTs(String cid, String worktimeCd, Integer worktimeNo) {
 		super();
-		this.kshmtWtFixHolTsPK = new KshmtWtFixHolTsPK(cid, worktimeCd, worktimeNo);
+		this.kshmtFixedHolTimeSetPK = new KshmtFixedHolTimeSetPK(cid, worktimeCd, worktimeNo);
 	}
 	
 	/*
@@ -102,7 +102,7 @@ public class KshmtWtFixHolTs extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFixHolTsPK != null ? kshmtWtFixHolTsPK.hashCode() : 0);
+		hash += (kshmtFixedHolTimeSetPK != null ? kshmtFixedHolTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -117,9 +117,9 @@ public class KshmtWtFixHolTs extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtWtFixHolTs other = (KshmtWtFixHolTs) object;
-		if ((this.kshmtWtFixHolTsPK == null && other.kshmtWtFixHolTsPK != null)
-				|| (this.kshmtWtFixHolTsPK != null
-						&& !this.kshmtWtFixHolTsPK.equals(other.kshmtWtFixHolTsPK))) {
+		if ((this.kshmtFixedHolTimeSetPK == null && other.kshmtFixedHolTimeSetPK != null)
+				|| (this.kshmtFixedHolTimeSetPK != null
+						&& !this.kshmtFixedHolTimeSetPK.equals(other.kshmtFixedHolTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -132,7 +132,7 @@ public class KshmtWtFixHolTs extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFixHolTsPK;
+		return this.kshmtFixedHolTimeSetPK;
 	}
 
 }

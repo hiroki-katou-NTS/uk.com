@@ -13,13 +13,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSPEV_COND_EMP")
+@Table(name = "KSHST_EMPLOYMENT_LIST")
 // 雇用一覧
 public class KshmtHdspevCondEmp extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KshmtHdspevCondEmpPK pk;
+	public KshstEmploymentListPK pk;
 	
 	@Override
 	protected Object getKey() {

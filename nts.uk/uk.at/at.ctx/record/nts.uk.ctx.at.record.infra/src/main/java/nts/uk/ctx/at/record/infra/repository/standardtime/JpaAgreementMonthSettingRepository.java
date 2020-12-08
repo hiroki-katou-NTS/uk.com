@@ -16,7 +16,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.Krcmt36agrMonth;
-import nts.uk.ctx.at.record.infra.entity.standardtime.Krcmt36agrMonthPK;
+import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSetPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
 @Stateless
@@ -42,58 +42,58 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId = :employeeId ");
-		builderString.append("ORDER BY a.krcmt36agrMonthPK.yearmonthValue DESC ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcmt36agrMonthPK.yearmonthValue = :yearmonthValue ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		FIND_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcmt36agrMonthPK.yearmonthValue IN :yearmonthValues ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId IN :employeeIds ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue IN :yearmonthValues ");
 		FIND_BY_KEYS = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcmt36agrMonthPK.yearmonthValue = :yearmonthValue ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		DEL_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcmt36agrMonthPK.yearmonthValue = :yearmonthValue ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		IS_EXIST_DATA = builderString.toString();
 		
 		// fix bug 100605
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcmt36agrMonthPK.yearmonthValue = :yearmonthValue ");
-		builderString.append("ORDER BY a.krcmt36agrMonthPK.yearmonthValue DESC ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
+		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
 		FIND_BY_ID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId = :employeeId ");
-		builderString.append("ORDER BY a.krcmt36agrMonthPK.yearmonthValue DESC ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
 		FIND_BY_SID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM Krcmt36agrMonth a ");
-		builderString.append("WHERE a.krcmt36agrMonthPK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId IN :employeeIds ");
 		FIND_BY_LIST_SID = builderString.toString();
 	}
 
@@ -163,7 +163,7 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 				.setParameter("yearmonthValue", yearMonthValueOld).getSingle();
 		if (entity.isPresent()) {
 			Krcmt36agrMonth data = entity.get();
-			this.delete(data.krcmt36agrMonthPK.employeeId, new BigDecimal(yearMonthValueOld));
+			this.delete(data.kmkmtAgreementMonthSetPK.employeeId, new BigDecimal(yearMonthValueOld));
 			this.add(agreementMonthSetting);
 		}
 
@@ -208,19 +208,19 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		return result;
 	}
 
-	private static AgreementMonthSetting toDomain(Krcmt36agrMonth krcmt36agrMonth) {
+	private static AgreementMonthSetting toDomain(Krcmt36agrMonth kmkmtAgreementMonthSet) {
 		return AgreementMonthSetting.createFromJavaType(
-				krcmt36agrMonth.krcmt36agrMonthPK.employeeId,
-				krcmt36agrMonth.krcmt36agrMonthPK.yearmonthValue,
-				krcmt36agrMonth.errorOneMonth, krcmt36agrMonth.alarmOneMonth);
+				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.employeeId,
+				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.yearmonthValue,
+				kmkmtAgreementMonthSet.errorOneMonth, kmkmtAgreementMonthSet.alarmOneMonth);
 	}
 
 	private Krcmt36agrMonth toEntity(AgreementMonthSetting agreementMonthSetting) {
 		val entity = new Krcmt36agrMonth();
 
-		entity.krcmt36agrMonthPK = new Krcmt36agrMonthPK();
-		entity.krcmt36agrMonthPK.employeeId = agreementMonthSetting.getEmployeeId();
-		entity.krcmt36agrMonthPK.yearmonthValue = new BigDecimal(agreementMonthSetting.getYearMonthValue().v());
+		entity.kmkmtAgreementMonthSetPK = new KmkmtAgreementMonthSetPK();
+		entity.kmkmtAgreementMonthSetPK.employeeId = agreementMonthSetting.getEmployeeId();
+		entity.kmkmtAgreementMonthSetPK.yearmonthValue = new BigDecimal(agreementMonthSetting.getYearMonthValue().v());
 		entity.alarmOneMonth = agreementMonthSetting.getOneMonthTime().getAlarm().valueAsMinutes();
 		entity.errorOneMonth = agreementMonthSetting.getOneMonthTime().getError().valueAsMinutes();
 		return entity;

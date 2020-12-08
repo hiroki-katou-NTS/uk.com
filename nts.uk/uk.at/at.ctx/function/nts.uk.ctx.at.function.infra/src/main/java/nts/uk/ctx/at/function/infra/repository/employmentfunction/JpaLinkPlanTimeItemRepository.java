@@ -20,8 +20,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.employmentfunction.LinkPlanTimeItem;
 import nts.uk.ctx.at.function.dom.employmentfunction.LinkPlanTimeItemRepository;
 import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItem;
-import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItemPK_;
-import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItem_;
+import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItemPK_;
+import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItem_;
 
 /**
  * The Class JpaLinkPlanTimeItemRepository.
@@ -44,7 +44,7 @@ public class JpaLinkPlanTimeItemRepository extends JpaRepository implements Link
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(
-				builder.equal(root.get(KfnmtPlanTimeItem_.kfnmtPlanTimeItemPK).get(KfnmtPlanTimeItemPK_.cid), cId));
+				builder.equal(root.get(KfnstPlanTimeItem_.kfnstPlanTimeItemPK).get(KfnstPlanTimeItemPK_.cid), cId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 

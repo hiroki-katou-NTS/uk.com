@@ -27,9 +27,9 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountGetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAccPK;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAccPK_;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAcc_;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK_;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc_;
 
 /**
  * The Class JpaWindowAccountRepository.
@@ -40,7 +40,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 
 	/** The get by list userids. */
 	private static final String GET_BY_LIST_SIDS = "SELECT w FROM SgwmtSsoWinAcc w "
-			+ " where w.sgwmtSsoWinAccPK.employeeId IN :lstEmployeeId";
+			+ " where w.sgwmtWindowAccPK.employeeId IN :lstEmployeeId";
 
 	/** The Constant USED. */
 	private static final int USED = 1;
@@ -66,9 +66,9 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(SgwmtSsoWinAcc_.sgwmtSsoWinAccPK).get(SgwmtSsoWinAccPK_.cid), companyId));
+				root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.cid), companyId));
 		predicateList.add(bd.equal(
-				root.get(SgwmtSsoWinAcc_.sgwmtSsoWinAccPK).get(SgwmtSsoWinAccPK_.employeeId), employeeId));
+				root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.employeeId), employeeId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -95,7 +95,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 	@Override
 	public void remove(String cid, String sid, Integer no) {
 
-		SgwmtSsoWinAccPK pk = new SgwmtSsoWinAccPK(cid,sid, no);
+		SgwmtWindowAccPK pk = new SgwmtWindowAccPK(cid,sid, no);
 
 		if (pk != null) {
 			this.commandProxy().remove(SgwmtSsoWinAcc.class, pk);
@@ -144,8 +144,8 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(SgwmtSsoWinAcc_.userName), userName));
-		predicateList.add(bd.equal(root.get(SgwmtSsoWinAcc_.hostName), hostName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.userName), userName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.hostName), hostName));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -157,8 +157,8 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 			return Optional.empty();
 		} else {
 			return Optional
-					.of(this.toWindowsAccountDomain(result.stream().findFirst().get().getSgwmtSsoWinAccPK().getCid(),
-							result.stream().findFirst().get().getSgwmtSsoWinAccPK().getEmployeeId(),
+					.of(this.toWindowsAccountDomain(result.stream().findFirst().get().getSgwmtWindowAccPK().getCid(),
+							result.stream().findFirst().get().getSgwmtWindowAccPK().getEmployeeId(),
 							result.stream().map(item -> this.toAccInfoDomain(item)).collect(Collectors.toList())));
 		}
 
@@ -185,9 +185,9 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 		
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(SgwmtSsoWinAcc_.userName), userName));
-		predicateList.add(bd.equal(root.get(SgwmtSsoWinAcc_.hostName), hostName));
-		predicateList.add(bd.equal(root.get(SgwmtSsoWinAcc_.useAtr), USED));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.userName), userName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.hostName), hostName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.useAtr), USED));
 		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -199,8 +199,8 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 			return Optional.empty();
 		} else {
 			return Optional.of(this.toWindowsAccountDomain(
-					result.stream().findFirst().get().getSgwmtSsoWinAccPK().getCid(),
-					result.stream().findFirst().get().getSgwmtSsoWinAccPK().getEmployeeId(),
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getCid(),
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getEmployeeId(),
 					result.stream().map(item -> this.toAccInfoDomain(item))
 					.collect(Collectors.toList())));
 		}
@@ -227,9 +227,9 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(SgwmtSsoWinAcc_.sgwmtSsoWinAccPK).get(SgwmtSsoWinAccPK_.cid), cid));
+				root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.cid), cid));
 		predicateList.add(bd.equal(
-				root.get(SgwmtSsoWinAcc_.sgwmtSsoWinAccPK).get(SgwmtSsoWinAccPK_.employeeId), employeeId));
+				root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.employeeId), employeeId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -342,7 +342,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 	public void update(String companyId, String employeeId, WindowsAccountInfo winAccCommand,
 			WindowsAccountInfo winAccDb) {
 		SgwmtSsoWinAcc entity = this.queryProxy()
-				.find(new SgwmtSsoWinAccPK(companyId,employeeId, winAccDb.getNo()), SgwmtSsoWinAcc.class).get();
+				.find(new SgwmtWindowAccPK(companyId,employeeId, winAccDb.getNo()), SgwmtSsoWinAcc.class).get();
 
 		// set data
 		entity.setHostName(winAccCommand.getHostName().v());
@@ -375,14 +375,14 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 		});
 
 		Map<String, List<SgwmtSsoWinAcc>> mapUsrAcc = resultList.stream()
-				.collect(Collectors.groupingBy(item -> item.getSgwmtSsoWinAccPK().getEmployeeId()));
+				.collect(Collectors.groupingBy(item -> item.getSgwmtWindowAccPK().getEmployeeId()));
 
 		// Return
 		return mapUsrAcc.keySet().stream().map(employeeId -> {
 			List<SgwmtSsoWinAcc> result = mapUsrAcc.get(employeeId);
 
-			return this.toWindowsAccountDomain(result.stream().findFirst().get().getSgwmtSsoWinAccPK().getCid(),
-					result.stream().findFirst().get().getSgwmtSsoWinAccPK().getEmployeeId(),
+			return this.toWindowsAccountDomain(result.stream().findFirst().get().getSgwmtWindowAccPK().getCid(),
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getEmployeeId(),
 					result.stream().map(item -> this.toAccInfoDomain(item)).collect(Collectors.toList()));
 
 		}).collect(Collectors.toList());

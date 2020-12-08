@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  * The Class KfnmtStampOutpItem.
  */
 @Entity
-@Table(name="KFNMT_STAMP_OUTP_ITEM")
+@Table(name="KFNMT_STAMP_OUTP_ITEM_SET")
 @Getter
 @Setter
 public class KfnmtStampOutpItem extends ContractUkJpaEntity implements Serializable {
@@ -26,7 +26,7 @@ public class KfnmtStampOutpItem extends ContractUkJpaEntity implements Serializa
 
 	/** The id. */
 	@EmbeddedId
-	private KfnmtStampOutpItemPK id;
+	private KfnmtStampOutpItemSetPK id;
 
 	/** The output emboss method. */
 	@Column(name="OUTPUT_EMBOSS_METHOD")

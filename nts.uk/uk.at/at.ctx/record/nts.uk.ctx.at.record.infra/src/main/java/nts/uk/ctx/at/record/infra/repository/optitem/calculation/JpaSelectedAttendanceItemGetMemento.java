@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelect;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelectPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelectionPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.AddSubOperator;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItemGetMemento;
 
@@ -23,8 +23,8 @@ public class JpaSelectedAttendanceItemGetMemento implements SelectedAttendanceIt
 	 * @param entity the entity
 	 */
 	public JpaSelectedAttendanceItemGetMemento(KrcmtAnyfItemSelect entity) {
-		if(entity.getKrcmtAnyfItemSelectPK() == null){
-			entity.setKrcmtAnyfItemSelectPK(new KrcmtAnyfItemSelectPK());
+		if(entity.getKrcmtCalcItemSelectionPK() == null){
+			entity.setKrcmtCalcItemSelectionPK(new KrcmtCalcItemSelectionPK());
 		}
 		this.entity = entity;
 	}
@@ -34,7 +34,7 @@ public class JpaSelectedAttendanceItemGetMemento implements SelectedAttendanceIt
 	 */
 	@Override
 	public int getAttItemId() {
-		return this.entity.getKrcmtAnyfItemSelectPK().getAttendanceItemId();
+		return this.entity.getKrcmtCalcItemSelectionPK().getAttendanceItemId();
 	}
 
 	/* (non-Javadoc)

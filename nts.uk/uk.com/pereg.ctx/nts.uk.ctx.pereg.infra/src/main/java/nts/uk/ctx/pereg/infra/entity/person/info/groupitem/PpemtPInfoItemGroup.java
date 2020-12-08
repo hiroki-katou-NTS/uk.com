@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PPEMT_GROUP_ITEM")
+@Table(name = "PPEMT_PINFO_ITEM_GROUP")
 public class PpemtPInfoItemGroup extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtPInfoItemGroupPk ppemtGroupItemPk;
+	public PpemtPInfoItemGroupPk ppemtPinfoItemGroupPk;
 
 	@Basic(optional = false)
 	@Column(name = "CID")
@@ -39,6 +39,6 @@ public class PpemtPInfoItemGroup extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.ppemtGroupItemPk;
+		return this.ppemtPinfoItemGroupPk;
 	}
 }

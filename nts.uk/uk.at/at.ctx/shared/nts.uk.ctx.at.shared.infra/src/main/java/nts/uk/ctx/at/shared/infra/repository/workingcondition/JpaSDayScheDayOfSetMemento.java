@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTs;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
  * The Class JpaSingleDayScheduleDayOfSetMemento.
@@ -41,9 +41,9 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 			KshmtWorkcondWeek entity, String employeeId) {
 		this.historyId = historyId;
 		this.perWorkDayOffAtr = perWorkDayOffAtr;
-		if (entity.getKshmtWorkcondWeekPK() == null) {
-			entity.setKshmtWorkcondWeekPK(
-					new KshmtWorkcondWeekPK(historyId, perWorkDayOffAtr));
+		if (entity.getKshmtPersonalDayOfWeekPK() == null) {
+			entity.setKshmtPersonalDayOfWeekPK(
+					new KshmtPersonalDayOfWeekPK(historyId, perWorkDayOffAtr));
 		}
 		entity.setSid(employeeId);
 		this.entity = entity;
@@ -73,13 +73,13 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		List<KshmtWorkcondWeekTs> kshmtWorkcondWeekTss = workingHours.stream().map(item -> {
+		List<KshmtWorkcondWeekTs> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
 			KshmtWorkcondWeekTs entity = new KshmtWorkcondWeekTs();
 			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkcondWeekTs>(historyId,
 					this.perWorkDayOffAtr, entity));
 			return entity;
 		}).collect(Collectors.toList());
-		this.entity.setKshmtWorkcondWeekTss(kshmtWorkcondWeekTss);
+		this.entity.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZones);
 	}
 
 	/*

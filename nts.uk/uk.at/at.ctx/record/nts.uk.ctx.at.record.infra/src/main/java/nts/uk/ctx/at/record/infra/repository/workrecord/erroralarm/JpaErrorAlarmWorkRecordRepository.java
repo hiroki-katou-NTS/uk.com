@@ -115,8 +115,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		// targetEntity.fixedAtr = domainAfterConvert.fixedAtr;
 		// targetEntity.krcmtErAlCondition =
 		// domainAfterConvert.krcmtErAlCondition;
-		// targetEntity.krcmtEralApplication =
-		// domainAfterConvert.krcmtEralApplication;
+		// targetEntity.krcstErAlApplication =
+		// domainAfterConvert.krcstErAlApplication;
 		// targetEntity.kwrmtErAlWorkRecordPK =
 		// domainAfterConvert.kwrmtErAlWorkRecordPK;
 		// targetEntity.messageColor = domainAfterConvert.messageColor;
@@ -517,35 +517,35 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 
 	private String buildJDBCSelectErAlBusinessType() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_BUSINESS_TYPE", "BUSINESS_TYPE_CD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_BUSINESS_TYPE", "BUSINESS_TYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlJobTittle() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_JOB_TITLE", "JOB_ID");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_JOB_TITLE", "JOB_ID");
 	}
 
 	private String buildJDBCSelectErAlEmployment() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_EMPLOYMENT", "EMPTCD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_EMPLOYMENT", "EMPTCD");
 	}
 
 	private String buildJDBCSelectErAlCLassification() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_CLASS", "CLSCD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_CLASS", "CLSCD");
 	}
 
 	private String buildJDBCSelectErAlWtPlan() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTP_PLAN", "WORKTYPE_CD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_WT_PLAN", "WORKTYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlWtActual() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTP_ACTUAL", "WORKTYPE_CD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_WT_ACTUAL", "WORKTYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlWhPlan() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTM_PLAN", "WORK_TIME_CD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_WH_PLAN", "WORK_TIME_CD");
 	}
 
 	private String buildJDBCSelectErAlWhActual() {
-		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTM_ACTUAL", "WORK_TIME_CD");
+		return buildJDBCSelectErAlGet("KRCST_ER_AL_WH_ACTUAL", "WORK_TIME_CD");
 	}
 
 	@SneakyThrows
@@ -759,7 +759,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	public List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtrV2(String companyId, boolean useAtr) {
 		StringBuilder builder = new StringBuilder("SELECT a, eac, eaa FROM KwrmtErAlWorkRecord a");
 		builder.append(" LEFT JOIN a.krcmtErAlCondition eac ");
-		builder.append(" LEFT JOIN a.krcmtEralApplication eaa ");
+		builder.append(" LEFT JOIN a.krcstErAlApplication eaa ");
 		builder.append(" WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ");
 		return this.queryProxy().query(builder.toString(), Object[].class).setParameter("companyId", companyId)
 				.setParameter("useAtr", useAtr ? 1 : 0).getList().stream()

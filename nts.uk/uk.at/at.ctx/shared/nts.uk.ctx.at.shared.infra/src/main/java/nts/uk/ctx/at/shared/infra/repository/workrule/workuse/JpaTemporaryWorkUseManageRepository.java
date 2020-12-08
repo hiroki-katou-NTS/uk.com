@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 import nts.uk.ctx.at.shared.infra.entity.workusage.KshmtTemporaryMng;
-import nts.uk.ctx.at.shared.infra.entity.workusage.KshmtTemporaryMngPK;
+import nts.uk.ctx.at.shared.infra.entity.workusage.KshstTempWkUseManagePK;
 
 /**
  * The Class JpaTemporaryWorkUseManageRepository.
@@ -35,7 +35,7 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	 */
 	public KshmtTemporaryMng convertToDbType(TemporaryWorkUseManage setting) {
 		KshmtTemporaryMng entity = new KshmtTemporaryMng();
-		KshmtTemporaryMngPK primaryKey = new KshmtTemporaryMngPK();
+		KshstTempWkUseManagePK primaryKey = new KshstTempWkUseManagePK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setId(primaryKey);
 		entity.setUseClassification(setting.getUseClassification().value);
@@ -48,7 +48,7 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	@Override
 	public Optional<TemporaryWorkUseManage> findByCid(String companyId) {
 		return this.queryProxy()
-				.find(new KshmtTemporaryMngPK(companyId), KshmtTemporaryMng.class)
+				.find(new KshstTempWkUseManagePK(companyId), KshmtTemporaryMng.class)
 				.map(x -> convertToDomain(x));
 
 	}

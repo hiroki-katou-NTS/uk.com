@@ -17,11 +17,11 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFlePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaFlexWorkSettingRepository.
@@ -30,9 +30,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFlePK;
 public class JpaFlexWorkSettingRepository extends JpaRepository
 		implements FlexWorkSettingRepository {
 
-	private static final String SEL_1 = "SELECT * FROM KshmtWtFle a WHERE a.kshmtWtFlePK.cid =:cid AND a.kshmtWtFlePK.worktimeCd IN :worktimeCd";
+	private static final String SEL_1 = "SELECT * FROM KshmtWtFle a WHERE a.kshmtFlexWorkSetPK.cid =:cid AND a.kshmtFlexWorkSetPK.worktimeCd IN :worktimeCd";
 	
-	private static final String SEL_2 = "SELECT * FROM KshmtWtCom a WHERE a.kshmtWtComPK.cid =:cid AND a.kshmtWtComPK.workFormAtr =:workFormAtr AND  a.kshmtWtComPK.worktimeSetMethod =:worktimeSetMethod AND a.kshmtWtComPK.worktimeCd IN :worktimeCd";
+	private static final String SEL_2 = "SELECT * FROM KshmtWtCom a WHERE a.kshmtWorktimeCommonSetPK.cid =:cid AND a.kshmtWorktimeCommonSetPK.workFormAtr =:workFormAtr AND  a.kshmtWorktimeCommonSetPK.worktimeSetMethod =:worktimeSetMethod AND a.kshmtWorktimeCommonSetPK.worktimeCd IN :worktimeCd";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,7 +56,7 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	public void add(FlexWorkSetting domain) {
 		KshmtWtFle entity = new KshmtWtFle();
 		KshmtWtCom entityCommon = new KshmtWtCom(
-				new KshmtWtComPK(domain.getCompanyId(), domain.getWorkTimeCode().v(),
+				new KshmtWorktimeCommonSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v(),
 						WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value));
 		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
 		this.commandProxy().insert(entity);
@@ -82,16 +82,16 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	
 	private void removeRefTimeNo2(KshmtWtFle entity) {		
 		// this algorithm for remove RefTimeNo2 if not Use
-				boolean notUseRefTimeNo2 = !entity.getKshmtWtFleStmpRefTss().stream()
-						.filter(x -> x.getKshmtWtFleStmpRefTsPK().getWorkNo() == 2).findAny().isPresent();
+				boolean notUseRefTimeNo2 = !entity.getKshmtFlexStampReflects().stream()
+						.filter(x -> x.getKshmtFlexStampReflectPK().getWorkNo() == 2).findAny().isPresent();
 				if (notUseRefTimeNo2) {
-					entity.getKshmtWtFleStmpRefTss().stream().filter(x -> x.getKshmtWtFleStmpRefTsPK().getWorkNo() == 1)
+					entity.getKshmtFlexStampReflects().stream().filter(x -> x.getKshmtFlexStampReflectPK().getWorkNo() == 1)
 					.findFirst().ifPresent(x -> {
-						KshmtWtFleStmpRefTsPK pk = x.getKshmtWtFleStmpRefTsPK();
+						KshmtFlexStampReflectPK pk = x.getKshmtFlexStampReflectPK();
 						String SEL_REF_TIME_NO_2 = "SELECT a FROM KshmtWtFleStmpRefTs a WHERE "
-								+ "a.kshmtWtFleStmpRefTsPK.cid= :cid "
-								+ "AND a.kshmtWtFleStmpRefTsPK.worktimeCd = :worktimeCd "
-								+ "AND a.kshmtWtFleStmpRefTsPK.workNo = 2";
+								+ "a.kshmtFlexStampReflectPK.cid= :cid "
+								+ "AND a.kshmtFlexStampReflectPK.worktimeCd = :worktimeCd "
+								+ "AND a.kshmtFlexStampReflectPK.workNo = 2";
 						// get No 2
 						List<KshmtWtFleStmpRefTs> no2Items = this.queryProxy()
 								.query(SEL_REF_TIME_NO_2, KshmtWtFleStmpRefTs.class)
@@ -113,7 +113,7 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWtFle.class, new KshmtWtFlePK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWtFle.class, new KshmtFlexWorkSetPK(companyId, workTimeCode));
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	 * @return the optional
 	 */
 	private Optional<KshmtWtFle> findWorkSetting(String companyId, String worktimeCode) {
-		return this.queryProxy().find(new KshmtWtFlePK(companyId, worktimeCode),
+		return this.queryProxy().find(new KshmtFlexWorkSetPK(companyId, worktimeCode),
 				KshmtWtFle.class);
 	}
 	
@@ -147,22 +147,22 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	 * @return the optional
 	 */
 	private Optional<KshmtWtCom> findCommonSetting(String companyId, String worktimeCode ) {
-		return this.queryProxy().find(new KshmtWtComPK(companyId, worktimeCode,
+		return this.queryProxy().find(new KshmtWorktimeCommonSetPK(companyId, worktimeCode,
 				WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value), KshmtWtCom.class);
 	}
 
 	@Override
 	public List<FlexWorkSetting> getAllByCidAndWorkCodes(String cid, List<String> workTimeCodes) {
 		List<FlexWorkSetting> result = new ArrayList<>();
-		List<KshmtWtFle> kshmtWtFle = this.queryProxy().query(SEL_1, KshmtWtFle.class)
+		List<KshmtWtFle> kshmtFlexWorkSet = this.queryProxy().query(SEL_1, KshmtWtFle.class)
 				.setParameter("cid", cid).setParameter("worktimeCd", workTimeCodes).getList();
-		List<KshmtWtCom> kshmtWtCom = this.queryProxy().query(SEL_2, KshmtWtCom.class)
+		List<KshmtWtCom> kshmtWorktimeCommonSet = this.queryProxy().query(SEL_2, KshmtWtCom.class)
 				.setParameter("cid", cid).setParameter("worktimeCd", workTimeCodes)
 				.setParameter("workFormAtr", WorkTimeDailyAtr.FLEX_WORK.value).setParameter("worktimeSetMethod",  WorkTimeMethodSet.FIXED_WORK.value)
 				.getList();
-		kshmtWtFle.parallelStream().forEach(c ->{
-			Optional<KshmtWtCom> kshmtWtComOpt = kshmtWtCom.parallelStream().filter(item -> item.getKshmtWtComPK().getWorktimeCd().equals(c.getKshmtWtFlePK().getWorktimeCd())).findFirst();
-			result.add(this.toDomain(c, kshmtWtComOpt.get()));
+		kshmtFlexWorkSet.parallelStream().forEach(c ->{
+			Optional<KshmtWtCom> kshmtWorktimeCommonSetOpt = kshmtWorktimeCommonSet.parallelStream().filter(item -> item.getKshmtWorktimeCommonSetPK().getWorktimeCd().equals(c.getKshmtFlexWorkSetPK().getWorktimeCd())).findFirst();
+			result.add(this.toDomain(c, kshmtWorktimeCommonSetOpt.get()));
 		});
 		return result;
 	}

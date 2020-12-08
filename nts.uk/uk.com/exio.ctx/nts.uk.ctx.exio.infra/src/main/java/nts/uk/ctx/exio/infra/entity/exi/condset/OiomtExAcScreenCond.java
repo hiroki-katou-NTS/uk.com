@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_SCREEN_COND")
+@Table(name = "OIOMT_AC_SCREEN_COND_SET")
 public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +33,7 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcScreenCondPk acScreenCondSetPk;
+	public OiomtAcScreenCondSetPk acScreenCondSetPk;
 
 	/**
 	 * 比較条件選択
@@ -129,7 +129,7 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 			Integer timeMoCondVal2, GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1,
 			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
 		super();
-		this.acScreenCondSetPk = new OiomtExAcScreenCondPk(cid, sysType, conditionCode, acceptItemNum);
+		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.selCompareCond = selCompareCond;
 		this.timeCondVal2 = timeCondVal2;
 		this.timeCondVal1 = timeCondVal1;

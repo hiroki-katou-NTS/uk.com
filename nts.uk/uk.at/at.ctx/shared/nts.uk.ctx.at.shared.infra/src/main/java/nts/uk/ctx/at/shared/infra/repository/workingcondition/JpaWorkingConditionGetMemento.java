@@ -23,16 +23,16 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 
 	/** The kshmt working cond. */
 	@Setter
-	private List<KshmtWorkcondHist> kshmtWorkcondHists;
+	private List<KshmtWorkcondHist> kshmtWorkingConds;
 
 	/**
 	 * Instantiates a new jpa working condition get memento.
 	 *
-	 * @param kshmtWorkcondHist
+	 * @param kshmtWorkingCond
 	 *            the kshmt working cond
 	 */
-	public JpaWorkingConditionGetMemento(List<KshmtWorkcondHist> kshmtWorkcondHists) {
-		this.kshmtWorkcondHists = kshmtWorkcondHists;
+	public JpaWorkingConditionGetMemento(List<KshmtWorkcondHist> kshmtWorkingConds) {
+		this.kshmtWorkingConds = kshmtWorkingConds;
 	}
 
 	/*
@@ -44,7 +44,7 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.kshmtWorkcondHists.get(FIRST_ITEM_INDEX).getCid();
+		return this.kshmtWorkingConds.get(FIRST_ITEM_INDEX).getCid();
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.kshmtWorkcondHists.get(FIRST_ITEM_INDEX).getKshmtWorkcondHistPK().getSid();
+		return this.kshmtWorkingConds.get(FIRST_ITEM_INDEX).getKshmtWorkingCondPK().getSid();
 	}
 
 	/*
@@ -68,8 +68,8 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 */
 	@Override
 	public List<DateHistoryItem> getDateHistoryItem() {
-		return this.kshmtWorkcondHists.stream()
-				.map(item -> new DateHistoryItem(item.getKshmtWorkcondHistPK().getHistoryId(),
+		return this.kshmtWorkingConds.stream()
+				.map(item -> new DateHistoryItem(item.getKshmtWorkingCondPK().getHistoryId(),
 						new DatePeriod(item.getStrD(), item.getEndD())))
 				.collect(Collectors.toList());
 	}

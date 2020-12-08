@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJob;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJobPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK;
 
 /**
  * The Class JpaWkpJobAutoCalSettingSetMemento.
@@ -31,8 +31,8 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 * @param entity the entity
 	 */
 	public JpaWkpJobAutoCalSettingSetMemento(KrcmtCalcSetWkpJob entity) {
-		if (entity.getKrcmtCalcSetWkpJobPK() == null) {
-			entity.setKrcmtCalcSetWkpJobPK(new KrcmtCalcSetWkpJobPK());
+		if (entity.getKshmtAutoWkpJobCalPK() == null) {
+			entity.setKshmtAutoWkpJobCalPK(new KshmtAutoWkpJobCalPK());
 		}
 		this.entity = entity;
 	}
@@ -42,9 +42,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KrcmtCalcSetWkpJobPK pk = entity.getKrcmtCalcSetWkpJobPK();
+		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
 		pk.setCid(companyId.v());
-		this.entity.setKrcmtCalcSetWkpJobPK(pk);
+		this.entity.setKshmtAutoWkpJobCalPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -52,9 +52,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		KrcmtCalcSetWkpJobPK pk = entity.getKrcmtCalcSetWkpJobPK();
+		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
 		pk.setWpkid(workplaceId.v());
-		this.entity.setKrcmtCalcSetWkpJobPK(pk);
+		this.entity.setKshmtAutoWkpJobCalPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -62,9 +62,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setJobId(JobTitleId positionId) {
-		KrcmtCalcSetWkpJobPK pk = entity.getKrcmtCalcSetWkpJobPK();
+		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
 		pk.setJobid(positionId.v());
-		this.entity.setKrcmtCalcSetWkpJobPK(pk);
+		this.entity.setKshmtAutoWkpJobCalPK(pk);
 		
 	}
 

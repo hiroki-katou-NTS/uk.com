@@ -11,8 +11,8 @@ public class JpaHalfDTRestTimezoneGetMemento implements DiffTimeRestTimezoneGetM
 
 	private List<KshmtWtDifBrWekTs> lstEntity;
 
-	public JpaHalfDTRestTimezoneGetMemento(List<KshmtWtDifBrWekTs> lstKshmtWtDifBrWekTs) {
-		this.lstEntity = lstKshmtWtDifBrWekTs;
+	public JpaHalfDTRestTimezoneGetMemento(List<KshmtWtDifBrWekTs> lstKshmtDtHalfRestTime) {
+		this.lstEntity = lstKshmtDtHalfRestTime;
 	}
 
 	@Override

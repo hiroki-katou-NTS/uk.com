@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KRCMT_ALST_CHKMON_UDREMSP")
+@Table(name = "KRCMT_REMAIN_LIST_ITEM_ID")
 public class KrcmtRemainListItemID extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

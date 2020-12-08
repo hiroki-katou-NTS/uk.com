@@ -17,13 +17,13 @@ public class JpaOvertimeInputRepository extends JpaRepository implements Overtim
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE e.krqdtAppOvertimeInputPK.cid = :companyID");
-		query.append(" AND e.krqdtAppOvertimeInputPK.appId = :appID");
+		query.append(" WHERE e.krqdtOvertimeInputPK.cid = :companyID");
+		query.append(" AND e.krqdtOvertimeInputPK.appId = :appID");
 		FIND_BY_APPID = query.toString();
 		
 		query = new StringBuilder();
 		query.append(FIND_BY_APPID);
-		query.append(" AND e.krqdtAppOvertimeInputPK.attendanceId = :attendanceId");
+		query.append(" AND e.krqdtOvertimeInputPK.attendanceId = :attendanceId");
 		FIND_BY_APPID_AND_ATTENDANCEID = query.toString();
 	}
 
@@ -48,14 +48,14 @@ public class JpaOvertimeInputRepository extends JpaRepository implements Overtim
 	}
 	
 	private OverTimeInput convertToDomain(KrqdtAppOvertimeInput entity){
-		return OverTimeInput.createSimpleFromJavaType(entity.getKrqdtAppOvertimeInputPK().getCid(),
-				entity.getKrqdtAppOvertimeInputPK().getAppId(),
-				entity.getKrqdtAppOvertimeInputPK().getAttendanceId(),
-				entity.getKrqdtAppOvertimeInputPK().getFrameNo(),
+		return OverTimeInput.createSimpleFromJavaType(entity.getKrqdtOvertimeInputPK().getCid(),
+				entity.getKrqdtOvertimeInputPK().getAppId(),
+				entity.getKrqdtOvertimeInputPK().getAttendanceId(),
+				entity.getKrqdtOvertimeInputPK().getFrameNo(),
 				entity.getStartTime(),
 				entity.getEndTime(),
 				entity.getApplicationTime(),
-				entity.getKrqdtAppOvertimeInputPK().getTimeItemTypeAtr());
+				entity.getKrqdtOvertimeInputPK().getTimeItemTypeAtr());
 	}
 
 	

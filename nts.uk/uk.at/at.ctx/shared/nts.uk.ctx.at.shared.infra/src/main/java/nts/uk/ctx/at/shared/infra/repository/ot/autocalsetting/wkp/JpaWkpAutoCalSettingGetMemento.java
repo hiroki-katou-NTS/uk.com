@@ -42,7 +42,7 @@ public class JpaWkpAutoCalSettingGetMemento implements WkpAutoCalSettingGetMemen
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKrcmtCalcSetWkpPK().getCid());
+		return new CompanyId(this.entity.getKshmtAutoWkpCalSetPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaWkpAutoCalSettingGetMemento implements WkpAutoCalSettingGetMemen
 	 */
 	@Override
 	public WorkplaceId getWkpId() {
-		return new WorkplaceId(this.entity.getKrcmtCalcSetWkpPK().getWkpid());
+		return new WorkplaceId(this.entity.getKshmtAutoWkpCalSetPK().getWkpid());
 	}
 
 	/* (non-Javadoc)

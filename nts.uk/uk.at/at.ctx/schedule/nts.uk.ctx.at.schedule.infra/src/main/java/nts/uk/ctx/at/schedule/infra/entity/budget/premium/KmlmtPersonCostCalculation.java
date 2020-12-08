@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KSCMT_PER_COST_CALC")
+@Table(name="KMLMT_COST_CALC_SET")
 public class KmlmtPersonCostCalculation extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmlmpPersonCostCalculationPK kmlmpPersonCostCalculationPK;
@@ -44,8 +44,8 @@ public class KmlmtPersonCostCalculation extends ContractUkJpaEntity{
 	public String memo;
 	
 	@OneToMany(targetEntity=KscmtPerCostPremiRate.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation", orphanRemoval = true)
-	@JoinTable(name = "KSCMT_PER_COST_PREMI_RATE")
-	public List<KscmtPerCostPremiRate> kscmtPerCostPremiRates;
+	@JoinTable(name = "KMLST_PREMIUM_SET")
+	public List<KscmtPerCostPremiRate> kmlstPremiumSets;
 
 	@Override
 	protected Object getKey() {

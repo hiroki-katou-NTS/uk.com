@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_BOSS_CHECK_NOT_JOB")
+@Table(name = "KRCST_APP_PRO_USE_JB_SET")
 public class KrcmtBossCheckNotJob extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -28,10 +28,10 @@ public class KrcmtBossCheckNotJob extends ContractUkJpaEntity implements Seriali
 	public static final JpaEntityMapper<KrcmtBossCheckNotJob> MAPPER = new JpaEntityMapper<>(KrcmtBossCheckNotJob.class);
 
 	@EmbeddedId
-	public KrcmtBossCheckNotJobPK krcmtBossCheckNotJobPK;
+	public KrcstAppProUseJbSetPK krcstAppProUseJbSetPK;
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtBossCheckNotJobPK;
+		return this.krcstAppProUseJbSetPK;
 	}
 }

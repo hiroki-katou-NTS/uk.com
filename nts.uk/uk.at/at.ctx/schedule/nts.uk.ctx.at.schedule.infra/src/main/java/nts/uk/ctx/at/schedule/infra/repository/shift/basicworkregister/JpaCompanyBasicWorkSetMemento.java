@@ -43,7 +43,7 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	@Override
 	public void setCompanyId(String companyId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtBasicWorkComPK().setCid(companyId);
+			item.getKscmtCompanyWorkSetPK().setCid(companyId);
 		});
 	}
 
@@ -57,7 +57,7 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
 			KscmtBasicWorkCom entity = new KscmtBasicWorkCom();
-			entity.getKscmtBasicWorkComPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			entity.getKscmtCompanyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

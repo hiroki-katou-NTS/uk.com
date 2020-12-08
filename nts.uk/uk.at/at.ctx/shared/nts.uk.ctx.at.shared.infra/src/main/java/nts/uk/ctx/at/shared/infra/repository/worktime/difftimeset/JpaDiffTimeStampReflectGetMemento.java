@@ -27,7 +27,7 @@ public class JpaDiffTimeStampReflectGetMemento implements DiffTimeStampReflectGe
 
 	@Override
 	public List<StampReflectTimezone> getStampReflectTimezone() {
-		return this.entity.getLstKshmtWtDifStmpRefTs().stream().map(item -> {
+		return this.entity.getLstKshmtDtStampReflect().stream().map(item -> {
 			return new StampReflectTimezone(new JpaDTStampReflectTimezoneGetMemento(item));
 		}).collect(Collectors.toList());
 	}

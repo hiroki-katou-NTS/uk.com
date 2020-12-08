@@ -24,17 +24,17 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTsPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTsPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet_;
 import nts.uk.ctx.at.shared.infra.repository.worktime.performance.JpaAmPmWorkTimezoneGetMemento;
 
 /**
@@ -72,16 +72,16 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 
 	private void removeRefTimeNo2(KshmtWtFix entity) {
 		// this algorithm for remove RefTimeNo2 if not Use
-		boolean notUseRefTimeNo2 = !entity.getLstKshmtWtFixStmpRefTs().stream()
-				.filter(x -> x.getKshmtWtFixStmpRefTsPK().getWorkNo() == 2).findAny().isPresent();
+		boolean notUseRefTimeNo2 = !entity.getLstKshmtFixedStampReflect().stream()
+				.filter(x -> x.getKshmtFixedStampReflectPK().getWorkNo() == 2).findAny().isPresent();
 		if (notUseRefTimeNo2) {
-			entity.getLstKshmtWtFixStmpRefTs().stream().filter(x -> x.getKshmtWtFixStmpRefTsPK().getWorkNo() == 1)
+			entity.getLstKshmtFixedStampReflect().stream().filter(x -> x.getKshmtFixedStampReflectPK().getWorkNo() == 1)
 					.findFirst().ifPresent(x -> {
-						KshmtWtFixStmpRefTsPK pk = x.getKshmtWtFixStmpRefTsPK();
+						KshmtFixedStampReflectPK pk = x.getKshmtFixedStampReflectPK();
 						String SEL_REF_TIME_NO_2 = "SELECT a FROM KshmtWtFixStmpRefTs a WHERE "
-								+ "a.kshmtWtFixStmpRefTsPK.cid= :cid "
-								+ "AND a.kshmtWtFixStmpRefTsPK.worktimeCd = :worktimeCd "
-								+ "AND a.kshmtWtFixStmpRefTsPK.workNo = 2";
+								+ "a.kshmtFixedStampReflectPK.cid= :cid "
+								+ "AND a.kshmtFixedStampReflectPK.worktimeCd = :worktimeCd "
+								+ "AND a.kshmtFixedStampReflectPK.workNo = 2";
 						// get No 2
 						List<KshmtWtFixStmpRefTs> no2Items = this.queryProxy()
 								.query(SEL_REF_TIME_NO_2, KshmtWtFixStmpRefTs.class).setParameter("cid", pk.getCid())
@@ -103,7 +103,7 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWtFix.class, new KshmtWtFixPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWtFix.class, new KshmtFixedWorkSetPK(companyId, workTimeCode));
 	}
 
 	/*
@@ -117,7 +117,7 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	public Optional<FixedWorkSetting> findByKey(String companyId, String workTimeCode) {
 		// Query
 		Optional<KshmtWtFix> optionalEntityTimeSet = this.queryProxy()
-				.find(new KshmtWtFixPK(companyId, workTimeCode), KshmtWtFix.class);
+				.find(new KshmtFixedWorkSetPK(companyId, workTimeCode), KshmtWtFix.class);
 
 		// Check exist
 		if (!optionalEntityTimeSet.isPresent()) {
@@ -136,7 +136,7 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	private KshmtWtFix toEntity(FixedWorkSetting domain) {
 		// Find entity
 		Optional<KshmtWtFix> optional = this.queryProxy().find(
-				new KshmtWtFixPK(domain.getCompanyId(), domain.getWorkTimeCode().v()), KshmtWtFix.class);
+				new KshmtFixedWorkSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()), KshmtWtFix.class);
 
 		KshmtWtFix entity;
 		// check existed
@@ -168,7 +168,7 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(KshmtWtFix_.kshmtWtFixPK).get(KshmtWtFixPK_.cid),
+				root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.cid),
 				companyId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
@@ -198,18 +198,18 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(KshmtWtFixBrHolTs_.kshmtWtFixBrHolTsPK).get(KshmtWtFixBrHolTsPK_.cid), companyId));
-		predicateList.add(root.get(KshmtWtFixBrHolTs_.kshmtWtFixBrHolTsPK).get(KshmtWtFixBrHolTsPK_.worktimeCd)
+				root.get(KshmtFixedHolRestSet_.kshmtFixedHolRestSetPK).get(KshmtFixedHolRestSetPK_.cid), companyId));
+		predicateList.add(root.get(KshmtFixedHolRestSet_.kshmtFixedHolRestSetPK).get(KshmtFixedHolRestSetPK_.worktimeCd)
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 		
-		query.orderBy(builder.asc(root.get(KshmtWtFixBrHolTs_.startTime)));
+		query.orderBy(builder.asc(root.get(KshmtFixedHolRestSet_.startTime)));
 
 		List<KshmtWtFixBrHolTs> result = em.createQuery(query).getResultList();
 
 		Map<WorkTimeCode, List<KshmtWtFixBrHolTs>> mapResttimes = result.stream().collect(
-				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtWtFixBrHolTsPK().getWorktimeCd())));
+				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFixedHolRestSetPK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors
 				.toMap(e -> e.getKey(),  e -> e.getValue().stream().map(
@@ -236,18 +236,18 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(KshmtWtFixBrWekTs_.kshmtWtFixBrWekTsPK).get(KshmtWtFixBrWekTsPK_.cid), companyId));
-		predicateList.add(root.get(KshmtWtFixBrWekTs_.kshmtWtFixBrWekTsPK).get(KshmtWtFixBrWekTsPK_.worktimeCd)
+				root.get(KshmtFixedHalfRestSet_.kshmtFixedHalfRestSetPK).get(KshmtFixedHalfRestSetPK_.cid), companyId));
+		predicateList.add(root.get(KshmtFixedHalfRestSet_.kshmtFixedHalfRestSetPK).get(KshmtFixedHalfRestSetPK_.worktimeCd)
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 		
-		query.orderBy(builder.asc(root.get(KshmtWtFixBrWekTs_.startTime)));
+		query.orderBy(builder.asc(root.get(KshmtFixedHalfRestSet_.startTime)));
 
 		List<KshmtWtFixBrWekTs> result = em.createQuery(query).getResultList();
 
 		Map<WorkTimeCode, List<KshmtWtFixBrWekTs>> mapResttimes = result.stream().collect(
-				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtWtFixBrWekTsPK().getWorktimeCd())));
+				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFixedHalfRestSetPK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors
 				.toMap(e -> e.getKey(),  e -> e.getValue().stream().map(
@@ -267,8 +267,8 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(KshmtWtFix_.kshmtWtFixPK).get(KshmtWtFixPK_.cid), companyId));
-		predicateList.add(root.get(KshmtWtFix_.kshmtWtFixPK).get(KshmtWtFixPK_.worktimeCd).in(workTimeCodes));
+				root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.cid), companyId));
+		predicateList.add(root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.worktimeCd).in(workTimeCodes));
 		query.where(predicateList.toArray(new Predicate[] {}));
 		List<KshmtWtFix> result = em.createQuery(query).getResultList();
 		return result.stream()

@@ -42,7 +42,7 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 	 */
 	@Override
 	public EmTimezoneLateEarlyCommonSet getCommonSet() {
-		return new EmTimezoneLateEarlyCommonSet(this.entity.getKshmtWtComLatetimeMng().getIsDeducteFromTime() == TRUE_VALUE);
+		return new EmTimezoneLateEarlyCommonSet(this.entity.getKshmtLateEarlySet().getIsDeducteFromTime() == TRUE_VALUE);
 	}
 
 	/* (non-Javadoc)

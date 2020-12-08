@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispModePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
 
 /**
  * The Class JpaWorkTimeDisplayModeSetMemento.
@@ -25,8 +25,8 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 *            the entity
 	 */
 	public JpaWorkTimeDisplayModeSetMemento(KshmtWtComDispMode entity) {
-		if (entity.getKshmtWtComDispModePK() == null) {
-			entity.setKshmtWtComDispModePK(new KshmtWtComDispModePK());
+		if (entity.getKshmtWorktimeDispModePK() == null) {
+			entity.setKshmtWorktimeDispModePK(new KshmtWorktimeDispModePK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getKshmtWtComDispModePK().setCid(companyId);
+		this.entity.getKshmtWorktimeDispModePK().setCid(companyId);
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 */
 	@Override
 	public void setWorktimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtWtComDispModePK().setWorktimeCd(workTimeCode.v());
+		this.entity.getKshmtWorktimeDispModePK().setWorktimeCd(workTimeCode.v());
 	}
 
 	/*

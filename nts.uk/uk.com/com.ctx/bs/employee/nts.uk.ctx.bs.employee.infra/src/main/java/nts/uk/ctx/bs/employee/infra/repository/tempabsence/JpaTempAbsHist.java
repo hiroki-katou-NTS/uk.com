@@ -129,7 +129,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	public void delete(String histId) {
 		Optional<BsymtTempAbsHist> histItem = this.queryProxy().find(histId, BsymtTempAbsHist.class);
 		if (!histItem.isPresent()) {
-			throw new RuntimeException("invalid BsymtTempAbsHist");
+			throw new RuntimeException("invalid BsymtTempAbsHistory");
 		}
 		this.commandProxy().remove(BsymtTempAbsHist.class, histId);
 	}
@@ -275,7 +275,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	public List<DateHistoryItem> getAllBySidAndCidAndBaseDate(String cid, List<String> sids, GeneralDate standardDate) {
 		List<DateHistoryItem> tempAbsHistoryEntities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIST" + " WHERE CID = ?" + " AND START_DATE <= ?"
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?" + " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" + " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " ORDER BY SID, START_DATE DESC";;
 
@@ -321,7 +321,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	public List<TempAbsenceHistory> getBySidsAndCid(String cid, List<String> employeeIds) {
 		List<TempAbsenceHistory> tempAbsenceHistory = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIST" + " WHERE CID = ?  AND SID IN ("
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?  AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -362,7 +362,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIST" + " WHERE CID = ?  AND SID IN ("
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?  AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE ASC";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -460,7 +460,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			GeneralDate standardDate) {
 		List<TempAbsenceHistory> tempAbsenceHistory = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIST" + " WHERE CID = ?" + " AND START_DATE <= ?"
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HISTORY" + " WHERE CID = ?" + " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" + " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {

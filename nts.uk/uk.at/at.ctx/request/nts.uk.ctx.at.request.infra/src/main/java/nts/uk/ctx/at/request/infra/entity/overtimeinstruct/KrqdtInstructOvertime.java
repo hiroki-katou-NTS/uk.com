@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author loivt
  */
 @Entity
-@Table(name = "KRQDT_INSTRUCT_OVERTIME")
+@Table(name = "KRQDT_OVERTIME_INSTRUCT")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -30,7 +30,7 @@ public class KrqdtInstructOvertime extends ContractUkJpaEntity implements Serial
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected KrqdtInstructOvertimePK krqdtInstructOvertimePK;
+    protected KrqdtOvertimeInstructPK krqdtOvertimeInstructPK;
     
     @Column(name = "WORK_CONTENT")
     private String workContent;
@@ -56,7 +56,7 @@ public class KrqdtInstructOvertime extends ContractUkJpaEntity implements Serial
 
 	@Override
 	protected Object getKey() {
-		return krqdtInstructOvertimePK;
+		return krqdtOvertimeInstructPK;
 	}
     
 }

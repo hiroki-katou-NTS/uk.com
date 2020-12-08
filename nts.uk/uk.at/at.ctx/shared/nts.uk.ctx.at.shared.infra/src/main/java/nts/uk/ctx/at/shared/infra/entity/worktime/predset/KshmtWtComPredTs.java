@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_PRED_TS")
+@Table(name = "KSHMT_WORK_TIME_SHEET_SET")
 public class KshmtWtComPredTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComPredTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt work time sheet set PK. */
 	@EmbeddedId
-	protected KshmtWtComPredTsPK kshmtWtComPredTsPK;
+	protected KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -58,11 +58,11 @@ public class KshmtWtComPredTs extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new kshmt work time sheet set.
 	 *
-	 * @param kshmtWtComPredTsPK the kshmt work time sheet set PK
+	 * @param kshmtWorkTimeSheetSetPK the kshmt work time sheet set PK
 	 */
-	public KshmtWtComPredTs(KshmtWtComPredTsPK kshmtWtComPredTsPK) {
+	public KshmtWtComPredTs(KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK) {
 		super();
-		this.kshmtWtComPredTsPK = kshmtWtComPredTsPK;
+		this.kshmtWorkTimeSheetSetPK = kshmtWorkTimeSheetSetPK;
 	}
 	
 
@@ -74,7 +74,7 @@ public class KshmtWtComPredTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComPredTsPK != null ? kshmtWtComPredTsPK.hashCode() : 0);
+		hash += (kshmtWorkTimeSheetSetPK != null ? kshmtWorkTimeSheetSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -89,9 +89,9 @@ public class KshmtWtComPredTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtComPredTs other = (KshmtWtComPredTs) object;
-		if ((this.kshmtWtComPredTsPK == null && other.kshmtWtComPredTsPK != null)
-				|| (this.kshmtWtComPredTsPK != null
-						&& !this.kshmtWtComPredTsPK.equals(other.kshmtWtComPredTsPK))) {
+		if ((this.kshmtWorkTimeSheetSetPK == null && other.kshmtWorkTimeSheetSetPK != null)
+				|| (this.kshmtWorkTimeSheetSetPK != null
+						&& !this.kshmtWorkTimeSheetSetPK.equals(other.kshmtWorkTimeSheetSetPK))) {
 			return false;
 		}
 		return true;
@@ -104,7 +104,7 @@ public class KshmtWtComPredTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComPredTsPK;
+		return this.kshmtWorkTimeSheetSetPK;
 	}
 
 

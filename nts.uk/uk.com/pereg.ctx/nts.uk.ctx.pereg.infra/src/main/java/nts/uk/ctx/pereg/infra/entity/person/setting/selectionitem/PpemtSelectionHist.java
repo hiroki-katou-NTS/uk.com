@@ -16,13 +16,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_SELECTION_HIST")
+@Table(name = "PPEMT_HISTORY_SELECTION")
 public class PpemtSelectionHist extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpemtSelectionHistPK histidPK;
+	public PpemtHistorySelectionPK histidPK;
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_ITEM_ID")

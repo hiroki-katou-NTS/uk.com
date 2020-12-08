@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveTargetCtg;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveTargetCtgPk;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetCategoryPk;
 
 @Stateless
 public class JpaTargetCategoryRepository extends JpaRepository implements TargetCategoryRepository {
@@ -48,7 +48,7 @@ public class JpaTargetCategoryRepository extends JpaRepository implements Target
 
 	@Override
 	public void remove(String storeProcessingId, String categoryId) {
-		this.commandProxy().remove(SspdtSaveTargetCtg.class, new SspdtSaveTargetCtgPk(storeProcessingId, categoryId));
+		this.commandProxy().remove(SspdtSaveTargetCtg.class, new SspmtTargetCategoryPk(storeProcessingId, categoryId));
 	}
 
 	/* (non-Javadoc)

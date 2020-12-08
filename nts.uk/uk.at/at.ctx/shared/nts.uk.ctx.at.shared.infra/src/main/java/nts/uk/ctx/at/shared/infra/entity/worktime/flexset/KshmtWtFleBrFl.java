@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_BR_FL")
+@Table(name = "KSHMT_FLEX_REST_SET")
 public class KshmtWtFleBrFl extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFleBrFl extends ContractUkJpaEntity implements Serializable 
 
 	/** The kshmt flex rest set PK. */
 	@EmbeddedId
-	protected KshmtWtFleBrFlPK kshmtWtFleBrFlPK;
+	protected KshmtFlexRestSetPK kshmtFlexRestSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -97,12 +97,12 @@ public class KshmtWtFleBrFl extends ContractUkJpaEntity implements Serializable 
 	/**
 	 * Instantiates a new kshmt flex rest set.
 	 *
-	 * @param kshmtWtFleBrFlPK
+	 * @param kshmtFlexRestSetPK
 	 *            the kshmt flex rest set PK
 	 */
-	public KshmtWtFleBrFl(KshmtWtFleBrFlPK kshmtWtFleBrFlPK) {
+	public KshmtWtFleBrFl(KshmtFlexRestSetPK kshmtFlexRestSetPK) {
 		super();
-		this.kshmtWtFleBrFlPK = kshmtWtFleBrFlPK;
+		this.kshmtFlexRestSetPK = kshmtFlexRestSetPK;
 	}
 
 	/*
@@ -113,7 +113,7 @@ public class KshmtWtFleBrFl extends ContractUkJpaEntity implements Serializable 
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleBrFlPK != null ? kshmtWtFleBrFlPK.hashCode() : 0);
+		hash += (kshmtFlexRestSetPK != null ? kshmtFlexRestSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -128,8 +128,8 @@ public class KshmtWtFleBrFl extends ContractUkJpaEntity implements Serializable 
 			return false;
 		}
 		KshmtWtFleBrFl other = (KshmtWtFleBrFl) object;
-		if ((this.kshmtWtFleBrFlPK == null && other.kshmtWtFleBrFlPK != null)
-				|| (this.kshmtWtFleBrFlPK != null && !this.kshmtWtFleBrFlPK.equals(other.kshmtWtFleBrFlPK))) {
+		if ((this.kshmtFlexRestSetPK == null && other.kshmtFlexRestSetPK != null)
+				|| (this.kshmtFlexRestSetPK != null && !this.kshmtFlexRestSetPK.equals(other.kshmtFlexRestSetPK))) {
 			return false;
 		}
 		return true;
@@ -142,7 +142,7 @@ public class KshmtWtFleBrFl extends ContractUkJpaEntity implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleBrFlPK;
+		return this.kshmtFlexRestSetPK;
 	}
 
 }

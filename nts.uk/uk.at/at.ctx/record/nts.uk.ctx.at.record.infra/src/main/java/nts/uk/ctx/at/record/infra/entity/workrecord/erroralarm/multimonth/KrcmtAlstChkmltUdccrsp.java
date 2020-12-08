@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 //複数月のチェック条件(該当月数)
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ALST_CHKMLT_UDCCRSP")
+@Table(name = "KRCMT_MUL_MON_COND_COSP")
 public class KrcmtAlstChkmltUdccrsp extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,12 +45,12 @@ public class KrcmtAlstChkmltUdccrsp extends ContractUkJpaEntity implements Seria
 	@Column(name = "COMPARE_OPERATOR")
 	public int compareOperator;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUdccrsp", orphanRemoval=true)
-	public KrcmtEralstCndgrp krcmtEralstCndgrp;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonCondCosp", orphanRemoval=true)
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUd krcmtAlstChkmltUd;
+	public KrcmtAlstChkmltUd krcmtMulMonAlarmCheck;
 	
 	@Override
 	protected Object getKey() {
@@ -71,17 +71,17 @@ public class KrcmtAlstChkmltUdccrsp extends ContractUkJpaEntity implements Seria
 				this.isUseFlg == 1 ? true : false,
 				this.times,
 				this.compareOperator,
-				this.krcmtEralstCndgrp.toDomain(this.krcmtEralstCndgrp, null, null));
+				this.krcmtErAlAtdItemCon.toDomain(this.krcmtErAlAtdItemCon, null, null));
 	}
 
 	public KrcmtAlstChkmltUdccrsp(String errorAlarmCheckID, int isUseFlg, int times, int compareOperator,
-			KrcmtEralstCndgrp krcmtEralstCndgrp) {
+			KrcmtEralstCndgrp krcmtErAlAtdItemCon) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.isUseFlg = isUseFlg;
 		this.times = times;
 		this.compareOperator = compareOperator;
-		this.krcmtEralstCndgrp = krcmtEralstCndgrp;
+		this.krcmtErAlAtdItemCon = krcmtErAlAtdItemCon;
 	}
 	
 }

@@ -76,7 +76,7 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public void setManageAnnualSetting(ManageAnnualSetting manageAnnualSetting) {
-        KshmtHdpaidSetMng entityAnnual = this.entity.getKshmtHdpaidSetMng();
+        KshmtHdpaidSetMng entityAnnual = this.entity.getKmamtMngAnnualSet();
         if (entityAnnual == null) {
             entityAnnual = new KshmtHdpaidSetMng();
         }
@@ -84,7 +84,7 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
         manageAnnualSetting.saveToMemento(memento);
         
         entityAnnual.setCid(this.entity.getCid());
-        this.entity.setKshmtHdpaidSetMng(entityAnnual);
+        this.entity.setKmamtMngAnnualSet(entityAnnual);
     }
 
     /*

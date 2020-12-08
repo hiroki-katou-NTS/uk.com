@@ -21,8 +21,8 @@ public class JpaDataRecoverySelectionRepository extends JpaRepository implements
 			+ "r.deletedFiles = 0 AND r.fileId IS NOT NULL AND r.saveStatus = 0";
 
 	private final String SELECT_FILE_RECOVERY_SELECTION_DELETE = "SELECT r.delCode, r.delName, m.supplementExplanation, r.startDateTimeDel, r.delType, "
-			+ "r.numberEmployees, r.fileName, r.fileId, r.sspdtDeletionResultPK.delId FROM SspdtDeletionResult  r "
-			+ "INNER JOIN SspdtDeletionManual m on r.sspdtDeletionResultPK.delId = m.sspdtDeletionManualPK.delId "
+			+ "r.numberEmployees, r.fileName, r.fileId, r.sspdtResultDeletionPK.delId FROM SspdtDeletionResult  r "
+			+ "INNER JOIN SspdtDeletionManual m on r.sspdtResultDeletionPK.delId = m.sspdtManualSetDeletionPK.delId "
 			+ "where r.companyID = :companyId and r.startDateTimeDel >= :startDate and r.startDateTimeDel <= :endDate and "
 			+ "r.isDeletedFilesFlg = 0 AND r.fileId IS NOT NULL AND r.status = 0 ";
 

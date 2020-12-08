@@ -18,13 +18,13 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.valueobject.WebMenuSimple;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtMenuBar;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtMenuBarPK;
+import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBarPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtTitleBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleMenuPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtTreeMenu;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtTreeMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTreeMenuPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtWebMenu;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtWebMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstWebMenuPK;
 
 /**
  * 
@@ -34,13 +34,13 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.SptmtWebMenuPK;
 @Stateless
 public class JpaWebMenuRepository extends JpaRepository implements WebMenuRepository {
 
-	private static final String SEL_1 = "SELECT a FROM SptmtWebMenu a WHERE a.sptmtWebMenuPK.companyId = :companyId";
-	private static final String FIND_DEFAULT = "SELECT a FROM SptmtWebMenu a WHERE a.sptmtWebMenuPK.companyId = :companyId AND a.defaultMenu = 1";
+	private static final String SEL_1 = "SELECT a FROM SptmtWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId";
+	private static final String FIND_DEFAULT = "SELECT a FROM SptmtWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId AND a.defaultMenu = 1";
 	private static final String UPD_NOT_DEFAULT = "UPDATE SptmtWebMenu a SET a.defaultMenu = 0 "
-			+ "WHERE a.sptmtWebMenuPK.companyId = :companyId " + "AND a.sptmtWebMenuPK.webMenuCd != :webMenuCd ";
-	private static final String SELECT_SIMPLE_WEBMENU = "SELECT a.sptmtWebMenuPK.webMenuCd, a.webMenuName FROM SptmtWebMenu a "
-			+ "WHERE a.sptmtWebMenuPK.companyId = :companyId";
-	private static final String SEL_ORDER = SELECT_SIMPLE_WEBMENU + " ORDER BY a.sptmtWebMenuPK.webMenuCd ASC ";
+			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId " + "AND a.ccgstWebMenuPK.webMenuCd != :webMenuCd ";
+	private static final String SELECT_SIMPLE_WEBMENU = "SELECT a.ccgstWebMenuPK.webMenuCd, a.webMenuName FROM SptmtWebMenu a "
+			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId";
+	private static final String SEL_ORDER = SELECT_SIMPLE_WEBMENU + " ORDER BY a.ccgstWebMenuPK.webMenuCd ASC ";
 
 	@Override
 	public List<WebMenu> findAll(String companyId) {
@@ -69,7 +69,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public Optional<WebMenu> find(String companyId, String webMenuCode) {
-		SptmtWebMenuPK key = new SptmtWebMenuPK(companyId, webMenuCode);
+		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		return this.queryProxy().find(key, SptmtWebMenu.class).map(wm -> toDomain(companyId, wm));
 	}
 
@@ -78,7 +78,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		StringBuilder queryStr = new StringBuilder(SEL_1);
 		if (webMenuCodes == null)
 			return null;
-		queryStr.append(" AND a.sptmtWebMenuPK.webMenuCd IN :codes");
+		queryStr.append(" AND a.ccgstWebMenuPK.webMenuCd IN :codes");
 		
 		List<WebMenu> results = new ArrayList<>();
 		CollectionUtil.split(webMenuCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -100,9 +100,9 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public void update(WebMenu webMenu) {
-		SptmtWebMenuPK key = new SptmtWebMenuPK(webMenu.getCompanyId(), webMenu.getWebMenuCode().v());
+		CcgstWebMenuPK key = new CcgstWebMenuPK(webMenu.getCompanyId(), webMenu.getWebMenuCode().v());
 		SptmtWebMenu entity = this.queryProxy().find(key, SptmtWebMenu.class).get();
-		entity.sptmtWebMenuPK = key;
+		entity.ccgstWebMenuPK = key;
 		entity.defaultMenu = webMenu.getDefaultMenu().value;
 		entity.webMenuName = webMenu.getWebMenuName().v();
 		entity.menuBars = toEntityMenuBar(webMenu);
@@ -111,7 +111,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public void remove(String companyId, String webMenuCode) {
-		SptmtWebMenuPK key = new SptmtWebMenuPK(companyId, webMenuCode);
+		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		this.commandProxy().remove(SptmtWebMenu.class, key);
 		this.getEntityManager().flush();
 	}
@@ -135,7 +135,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			return toDomainMenuBar(mb);
 		}).collect(Collectors.toList());
 
-		return WebMenu.createFromJavaType(companyId, w.sptmtWebMenuPK.webMenuCd, w.webMenuName, w.defaultMenu,
+		return WebMenu.createFromJavaType(companyId, w.ccgstWebMenuPK.webMenuCd, w.webMenuName, w.defaultMenu,
 				menuBars);
 	}
 
@@ -150,7 +150,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			return toDomainTitleMenu(tm);
 		}).collect(Collectors.toList());
 
-		return MenuBar.createFromJavaType(mb.sptmtMenuBarPK.menuBarId, mb.menuBarName, mb.selectedAtr, mb.system,
+		return MenuBar.createFromJavaType(mb.ccgstMenuBarPK.menuBarId, mb.menuBarName, mb.selectedAtr, mb.system,
 				mb.menuCls, mb.code, mb.backgroundColor, mb.textColor, mb.displayOrder, titleMenus);
 	}
 
@@ -162,8 +162,8 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 */
 	private TitleBar toDomainTitleMenu(SptmtTitleBar tm) {
 		List<TreeMenu> treeMenus = tm.treeMenus.stream().map(trm -> {
-			return TreeMenu.createFromJavaType(trm.sptmtTreeMenuPK.titleMenuId, trm.code,
-					trm.sptmtTreeMenuPK.displayOrder, trm.classification, trm.system);
+			return TreeMenu.createFromJavaType(trm.ccgstTreeMenuPK.titleMenuId, trm.code,
+					trm.ccgstTreeMenuPK.displayOrder, trm.classification, trm.system);
 		}).collect(Collectors.toList());
 
 		return TitleBar.createFromJavaType(tm.ccgstTitleMenuPK.menuBarId, tm.ccgstTitleMenuPK.titleMenuId,
@@ -178,7 +178,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 * @return
 	 */
 	private static SptmtWebMenu toEntity(WebMenu domain) {
-		SptmtWebMenuPK key = new SptmtWebMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v());
+		CcgstWebMenuPK key = new CcgstWebMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v());
 
 		List<SptmtMenuBar> menuBars = toEntityMenuBar(domain);
 
@@ -199,9 +199,9 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		List<SptmtMenuBar> menuBars = domain.getMenuBars().stream().map(mn -> {
 			List<SptmtTitleBar> titleMenus = toEntityTitleMenu(domain, mn);
 
-			SptmtMenuBarPK sptmtMenuBarPK = new SptmtMenuBarPK(domain.getCompanyId(), domain.getWebMenuCode().v(),
+			CcgstMenuBarPK ccgstMenuBarPK = new CcgstMenuBarPK(domain.getCompanyId(), domain.getWebMenuCode().v(),
 					mn.getMenuBarId().toString());
-			return new SptmtMenuBar(sptmtMenuBarPK, mn.getMenuBarName().v(), mn.getSelectedAtr().value,
+			return new SptmtMenuBar(ccgstMenuBarPK, mn.getMenuBarName().v(), mn.getSelectedAtr().value,
 					mn.getSystem().value, mn.getMenuCls().value, mn.getCode().v(), mn.getBackgroundColor().v(),
 					mn.getTextColor().v(), mn.getDisplayOrder(), titleMenus);
 		}).collect(Collectors.toList());
@@ -237,17 +237,17 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 */
 	private static List<SptmtTreeMenu> toEntityTreeMenu(WebMenu domain, TitleBar tm) {
 		List<SptmtTreeMenu> treeMenus = tm.getTreeMenu().stream().map(trm -> {
-			SptmtTreeMenuPK sptmtTreeMenuPK = new SptmtTreeMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v(),
+			CcgstTreeMenuPK ccgstTreeMenuPK = new CcgstTreeMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v(),
 					tm.getTitleMenuId().toString(), tm.getMenuBarId().toString(), trm.getDisplayOrder());
-			return new SptmtTreeMenu(sptmtTreeMenuPK, trm.getCode().v(), trm.getClassification().value,
+			return new SptmtTreeMenu(ccgstTreeMenuPK, trm.getCode().v(), trm.getClassification().value,
 					trm.getSystem().value);
 		}).collect(Collectors.toList());
 		return treeMenus;
 	}
 	
 	private static final String DELETE_TREE_MENU = "DELETE FROM SptmtTreeMenu t "
-			+ "WHERE t.sptmtTreeMenuPK.companyID = :companyID "
-			+ "AND t.sptmtTreeMenuPK.webMenuCd = :code "
+			+ "WHERE t.ccgstTreeMenuPK.companyID = :companyID "
+			+ "AND t.ccgstTreeMenuPK.webMenuCd = :code "
 			+ "AND t.classification = :classification ";
 	@Override
 	public void removeTreeMenu(String companyId, int classification, String code) {

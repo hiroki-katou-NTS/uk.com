@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_INST_PHASE")
+@Table(name="WWFDT_APP_PHASE_INSTANCE")
 public class WwfdtInstPhase extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -38,11 +38,11 @@ public class WwfdtInstPhase extends ContractUkJpaEntity {
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="ROOT_ID",referencedColumnName="ROOT_ID")
 	})
-	private WwfdtInstRoute wwfdtInstRoute;
+	private WwfdtInstRoute wwfdtAppRootInstance;
 	
-	@OneToMany(targetEntity=WwfdtInstFrame.class, cascade = CascadeType.ALL, mappedBy = "wwfdtInstPhase", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_INST_FRAME")
-	public List<WwfdtInstFrame> listWwfdtInstFrame;
+	@OneToMany(targetEntity=WwfdtInstFrame.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppPhaseInstance", orphanRemoval = true)
+	@JoinTable(name = "WWFDT_APP_FRAME_INSTANCE")
+	public List<WwfdtInstFrame> listWwfdtAppFrameInstance;
 
 	@Override
 	protected Object getKey() {

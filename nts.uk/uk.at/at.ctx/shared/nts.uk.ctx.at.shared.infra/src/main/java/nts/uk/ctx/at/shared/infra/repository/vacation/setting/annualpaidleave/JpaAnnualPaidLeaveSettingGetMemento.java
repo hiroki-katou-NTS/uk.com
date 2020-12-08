@@ -72,7 +72,7 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public ManageAnnualSetting getManageAnnualSetting() {
-        return new ManageAnnualSetting(new JpaManageAnnualSettingGetMemento(this.entity.getKshmtHdpaidSetMng()));
+        return new ManageAnnualSetting(new JpaManageAnnualSettingGetMemento(this.entity.getKmamtMngAnnualSet()));
     }
 
     /*

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FIX_OVER_TS")
+@Table(name = "KSHMT_FIXED_OT_TIME_SET")
 public class KshmtWtFixOverTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFixOverTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt fixed ot time set PK. */
 	@EmbeddedId
-	protected KshmtWtFixOverTsPK kshmtWtFixOverTsPK;
+	protected KshmtFixedOtTimeSetPK kshmtFixedOtTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -82,11 +82,11 @@ public class KshmtWtFixOverTs extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new kshmt fixed ot time set.
 	 *
-	 * @param kshmtWtFixOverTsPK the kshmt fixed ot time set PK
+	 * @param kshmtFixedOtTimeSetPK the kshmt fixed ot time set PK
 	 */
-	public KshmtWtFixOverTs(KshmtWtFixOverTsPK kshmtWtFixOverTsPK) {
+	public KshmtWtFixOverTs(KshmtFixedOtTimeSetPK kshmtFixedOtTimeSetPK) {
 		super();
-		this.kshmtWtFixOverTsPK = kshmtWtFixOverTsPK;
+		this.kshmtFixedOtTimeSetPK = kshmtFixedOtTimeSetPK;
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class KshmtWtFixOverTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFixOverTsPK != null ? kshmtWtFixOverTsPK.hashCode() : 0);
+		hash += (kshmtFixedOtTimeSetPK != null ? kshmtFixedOtTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -112,9 +112,9 @@ public class KshmtWtFixOverTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtFixOverTs other = (KshmtWtFixOverTs) object;
-		if ((this.kshmtWtFixOverTsPK == null && other.kshmtWtFixOverTsPK != null)
-				|| (this.kshmtWtFixOverTsPK != null
-						&& !this.kshmtWtFixOverTsPK.equals(other.kshmtWtFixOverTsPK))) {
+		if ((this.kshmtFixedOtTimeSetPK == null && other.kshmtFixedOtTimeSetPK != null)
+				|| (this.kshmtFixedOtTimeSetPK != null
+						&& !this.kshmtFixedOtTimeSetPK.equals(other.kshmtFixedOtTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -127,7 +127,7 @@ public class KshmtWtFixOverTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFixOverTsPK;
+		return this.kshmtFixedOtTimeSetPK;
 	}
 
 }

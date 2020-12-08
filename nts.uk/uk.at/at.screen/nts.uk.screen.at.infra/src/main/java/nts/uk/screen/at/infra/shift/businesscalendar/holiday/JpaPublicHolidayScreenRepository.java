@@ -19,14 +19,14 @@ import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScr
 public class JpaPublicHolidayScreenRepository extends JpaRepository implements PublicHolidayScreenRepository {
 
 	private static final String GET_BY_CID_AND_DATE = "SELECT s FROM KscmtPublicHoliday s"
-			+ " WHERE s.kscmtPublicHolidayPK.companyId = :companyId"
-			+ " AND s.kscmtPublicHolidayPK.date >= :startDate AND s.kscmtPublicHolidayPK.date <= :endDate";
+			+ " WHERE s.ksmmtPublicHolidayPK.companyId = :companyId"
+			+ " AND s.ksmmtPublicHolidayPK.date >= :startDate AND s.ksmmtPublicHolidayPK.date <= :endDate";
 
 	@Override
 	public List<GeneralDate> findDataPublicHoliday(String companyId, WorkplaceIdAndDateScreenParams params) {
 		return this.queryProxy().query(GET_BY_CID_AND_DATE, KscmtPublicHoliday.class)
 				.setParameter("companyId", companyId).setParameter("startDate", params.startDate)
-				.setParameter("endDate", params.endDate).getList(x -> x.kscmtPublicHolidayPK.date);
+				.setParameter("endDate", params.endDate).getList(x -> x.ksmmtPublicHolidayPK.date);
 	}
 
 }

@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLang;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLangPK;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLangPK;
 
 /**
  * The Class JpaOvertimeNameLangSetMemento.
@@ -26,8 +26,8 @@ public class JpaOvertimeNameLangSetMemento implements OvertimeNameLangSetMemento
 	 * @param entity the entity
 	 */
 	public JpaOvertimeNameLangSetMemento(KshmtOutsideLang entity) {
-		if(entity.getKshmtOutsideLangPK() == null){
-			entity.setKshmtOutsideLangPK(new KshmtOutsideLangPK());
+		if(entity.getKshstOverTimeNameLangPK() == null){
+			entity.setKshstOverTimeNameLangPK(new KshstOverTimeNameLangPK());
 		}
 		this.entity = entity;
 	}
@@ -41,7 +41,7 @@ public class JpaOvertimeNameLangSetMemento implements OvertimeNameLangSetMemento
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshmtOutsideLangPK().setCid(companyId.v());
+		this.entity.getKshstOverTimeNameLangPK().setCid(companyId.v());
 	}
 
 	/*
@@ -65,7 +65,7 @@ public class JpaOvertimeNameLangSetMemento implements OvertimeNameLangSetMemento
 	 */
 	@Override
 	public void setLanguageId(LanguageId languageId) {
-		this.entity.getKshmtOutsideLangPK().setLanguageId(languageId.v());
+		this.entity.getKshstOverTimeNameLangPK().setLanguageId(languageId.v());
 	}
 
 	/*
@@ -77,7 +77,7 @@ public class JpaOvertimeNameLangSetMemento implements OvertimeNameLangSetMemento
 	 */
 	@Override
 	public void setOvertimeNo(OvertimeNo overtimeNo) {
-		this.entity.getKshmtOutsideLangPK().setOverTimeNo(overtimeNo.value);
+		this.entity.getKshstOverTimeNameLangPK().setOverTimeNo(overtimeNo.value);
 	}
 	
 }

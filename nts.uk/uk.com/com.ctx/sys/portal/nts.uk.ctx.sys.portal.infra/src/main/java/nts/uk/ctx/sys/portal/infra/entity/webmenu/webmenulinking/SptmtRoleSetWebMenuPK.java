@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * Class SacmtRolesetWebMenu - Contain keys of the table.
+ * Class SacmtRoleSetWebMenu - Contain keys of the table.
  * @author HieuNV
  *
  */

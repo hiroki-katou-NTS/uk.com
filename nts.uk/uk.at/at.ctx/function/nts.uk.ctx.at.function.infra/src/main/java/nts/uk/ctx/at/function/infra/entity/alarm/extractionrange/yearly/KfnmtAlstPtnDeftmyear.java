@@ -12,14 +12,14 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeft
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_ALST_PTN_DEFTMYEAR")
+@Table(name = "KFNMT_EXTRACT_RANGE_YEAR")
 @NoArgsConstructor
 public class KfnmtAlstPtnDeftmyear extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KfnmtAlstPtnDeftmyearPK pk;
+	public KfnmtExtractRangeYearPK pk;
 
 	@Override
 	protected Object getKey() {
@@ -45,7 +45,7 @@ public class KfnmtAlstPtnDeftmyear extends ContractUkJpaEntity implements Serial
 	}
 	
 	public KfnmtAlstPtnDeftmyear(AYear domain) {
-		this.pk = new KfnmtAlstPtnDeftmyearPK(domain.getExtractionId(), domain.getExtractionRange().value);
+		this.pk = new KfnmtExtractRangeYearPK(domain.getExtractionId(), domain.getExtractionRange().value);
 		this.year = domain.getYear();
 		this.thisYear = domain.isToBeThisYear() ? 1: 0;
 	}

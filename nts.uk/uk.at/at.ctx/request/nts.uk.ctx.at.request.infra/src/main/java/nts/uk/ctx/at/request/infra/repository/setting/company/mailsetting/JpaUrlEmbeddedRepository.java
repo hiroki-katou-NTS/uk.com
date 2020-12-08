@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.mailcontenturlsetting.KrqmtUrlEmbedded;
-import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.mailcontenturlsetting.KrqmtUrlEmbeddedPk;
+import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.mailcontenturlsetting.KrqstUrlEmbeddedPk;
 
 @Stateless
 public class JpaUrlEmbeddedRepository extends JpaRepository implements UrlEmbeddedRepository
@@ -43,6 +43,6 @@ public class JpaUrlEmbeddedRepository extends JpaRepository implements UrlEmbedd
 
     @Override
     public void remove(String cid){
-        this.commandProxy().remove(KrqmtUrlEmbedded.class, new KrqmtUrlEmbeddedPk(cid)); 
+        this.commandProxy().remove(KrqmtUrlEmbedded.class, new KrqstUrlEmbeddedPk(cid)); 
     }
 }

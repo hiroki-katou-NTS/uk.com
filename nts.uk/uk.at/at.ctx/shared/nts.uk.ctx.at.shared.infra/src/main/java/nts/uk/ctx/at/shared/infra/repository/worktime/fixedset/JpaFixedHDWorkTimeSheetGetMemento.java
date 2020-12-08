@@ -46,7 +46,7 @@ public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSetting
 	 */
 	@Override
 	public Integer getWorkTimeNo() {
-		return this.entity.getKshmtWtFixHolTsPK().getWorktimeNo();
+		return this.entity.getKshmtFixedHolTimeSetPK().getWorktimeNo();
 	}
 
 	/*

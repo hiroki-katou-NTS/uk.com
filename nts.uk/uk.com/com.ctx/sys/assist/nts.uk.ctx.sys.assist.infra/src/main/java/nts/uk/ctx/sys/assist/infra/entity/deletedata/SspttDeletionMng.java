@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPTT_DELETION_MNG")
+@Table(name = "SSPDT_MANAGEMENT_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SspttDeletionMng extends ContractUkJpaEntity implements Serializable {
@@ -22,7 +22,7 @@ public class SspttDeletionMng extends ContractUkJpaEntity implements Serializabl
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public SspttDeletionMngPK sspttDeletionMngPK;
+    public SspdtManagementDeletionPK sspdtManagementDeletionPK;
 	
 	
 	/** The interrupted flag. */
@@ -58,12 +58,12 @@ public class SspttDeletionMng extends ContractUkJpaEntity implements Serializabl
 
 	@Override
 	protected Object getKey() {
-		return sspttDeletionMngPK;
+		return sspdtManagementDeletionPK;
 	}
 
 	public ManagementDeletion toDomain() {
 		boolean isInterruptedFlg = this.isInterruptedFlg == 1;
-		return ManagementDeletion.createFromJavatype(this.sspttDeletionMngPK.delId, 
+		return ManagementDeletion.createFromJavatype(this.sspdtManagementDeletionPK.delId, 
 				isInterruptedFlg, this.totalCategoryCount, this.categoryCount, 
 				this.errorCount, this.operatingCondition);
 	}
@@ -71,7 +71,7 @@ public class SspttDeletionMng extends ContractUkJpaEntity implements Serializabl
 	public static SspttDeletionMng toEntity(ManagementDeletion managementDeletion) {
 		int isInterruptedFlg = managementDeletion.isInterruptedFlg ? 1 : 0;
 		
-		return new SspttDeletionMng(new SspttDeletionMngPK(managementDeletion.delId), isInterruptedFlg,
+		return new SspttDeletionMng(new SspdtManagementDeletionPK(managementDeletion.delId), isInterruptedFlg,
 				managementDeletion.totalCategoryCount, managementDeletion.categoryCount, 
 				managementDeletion.errorCount, managementDeletion.operatingCondition.value);
 	}

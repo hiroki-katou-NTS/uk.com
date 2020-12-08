@@ -11,7 +11,7 @@ import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicenseReposi
 @Stateless
 public class JpaEmployeeLicenseRepository extends JpaRepository implements EmployeeLicenseRepository {
 
-	private static final String SELECT_BY_KEY = "SELECT c FROM BsymtLicense c WHERE c.bsymtLicensePK.contractCD = :contractCD";
+	private static final String SELECT_BY_KEY = "SELECT c FROM BsymtLicense c WHERE c.bsymtEmployeeLicensePK.contractCD = :contractCD";
 
 	@Override
 	public Optional<EmployeeLicense> findByKey(String contractCD) {

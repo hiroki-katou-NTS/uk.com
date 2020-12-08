@@ -20,9 +20,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.job.JobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.job.JobAutoCalSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KrcmtCalcSetJob;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KrcmtCalcSetJobPK;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KrcmtCalcSetJobPK_;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KrcmtCalcSetJob_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSet_;
 
 /**
  * The Class JpaJobAutoCalSettingRepository.
@@ -49,7 +49,7 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 	 */
 	private KrcmtCalcSetJob toEntity(JobAutoCalSetting jobAutoCalSetting) {
 		Optional<KrcmtCalcSetJob> optinal = this.queryProxy().find(
-				new KrcmtCalcSetJobPK(jobAutoCalSetting.getCompanyId().v(), jobAutoCalSetting.getJobId().v()),
+				new KshmtAutoJobCalSetPK(jobAutoCalSetting.getCompanyId().v(), jobAutoCalSetting.getJobId().v()),
 				KrcmtCalcSetJob.class);
 		KrcmtCalcSetJob entity = null;
 		if (optinal.isPresent()) {
@@ -67,16 +67,16 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 	 */
 	@Override
 	public Optional<JobAutoCalSetting> getJobAutoCalSetting(String companyId, String jobId) {
-		KrcmtCalcSetJobPK krcmtCalcSetJobPK = new KrcmtCalcSetJobPK(companyId, jobId);
+		KshmtAutoJobCalSetPK kshmtAutoJobCalSetPK = new KshmtAutoJobCalSetPK(companyId, jobId);
 
-		Optional<KrcmtCalcSetJob> optKrcmtCalcSetJob = this.queryProxy().find(krcmtCalcSetJobPK,
+		Optional<KrcmtCalcSetJob> optKshmtAutoJobCalSet = this.queryProxy().find(kshmtAutoJobCalSetPK,
 				KrcmtCalcSetJob.class);
 
-		if (!optKrcmtCalcSetJob.isPresent()) {
+		if (!optKshmtAutoJobCalSet.isPresent()) {
 			return Optional.empty();
 		}
 
-		return Optional.of(new JobAutoCalSetting(new JpaJobAutoCalSettingGetMemento(optKrcmtCalcSetJob.get())));
+		return Optional.of(new JobAutoCalSetting(new JpaJobAutoCalSettingGetMemento(optKshmtAutoJobCalSet.get())));
 	}
 
 	/* (non-Javadoc)
@@ -84,7 +84,7 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 	 */
 	@Override
 	public void delete(String cid, String jobId) {
-		this.commandProxy().remove(KrcmtCalcSetJob.class, new KrcmtCalcSetJobPK(cid, jobId));
+		this.commandProxy().remove(KrcmtCalcSetJob.class, new KshmtAutoJobCalSetPK(cid, jobId));
 
 	}
 
@@ -112,8 +112,8 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KrcmtCalcSetJob_.krcmtCalcSetJobPK)
-				.get(KrcmtCalcSetJobPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KshmtAutoJobCalSet_.kshmtAutoJobCalSetPK)
+				.get(KshmtAutoJobCalSetPK_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return em.createQuery(cq).getResultList().stream()

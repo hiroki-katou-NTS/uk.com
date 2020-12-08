@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_PRICE_COM")
+@Table(name = "KSCMT_EST_PRICE_COM_SET")
 public class KscmtEstPriceCom extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -31,7 +31,7 @@ public class KscmtEstPriceCom extends ContractUkJpaEntity implements Serializabl
     
     /** The kscmt est price com set PK. */
     @EmbeddedId
-    protected KscmtEstPriceComPK kscmtEstPriceComPK;
+    protected KscmtEstPriceComSetPK kscmtEstPriceComSetPK;
     
     /** The est condition 1 st mny. */
     @Basic(optional = false)
@@ -72,10 +72,10 @@ public class KscmtEstPriceCom extends ContractUkJpaEntity implements Serializabl
     /**
      * Instantiates a new kscmt est price com set.
      *
-     * @param kscmtEstPriceComPK the kscmt est price com set PK
+     * @param kscmtEstPriceComSetPK the kscmt est price com set PK
      */
-    public KscmtEstPriceCom(KscmtEstPriceComPK kscmtEstPriceComPK) {
-        this.kscmtEstPriceComPK = kscmtEstPriceComPK;
+    public KscmtEstPriceCom(KscmtEstPriceComSetPK kscmtEstPriceComSetPK) {
+        this.kscmtEstPriceComSetPK = kscmtEstPriceComSetPK;
     }
 
 	/* (non-Javadoc)
@@ -83,7 +83,7 @@ public class KscmtEstPriceCom extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtEstPriceComPK;
+		return this.kscmtEstPriceComSetPK;
 	}
 
 	/* (non-Javadoc)
@@ -94,7 +94,7 @@ public class KscmtEstPriceCom extends ContractUkJpaEntity implements Serializabl
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((kscmtEstPriceComPK == null) ? 0 : kscmtEstPriceComPK.hashCode());
+				+ ((kscmtEstPriceComSetPK == null) ? 0 : kscmtEstPriceComSetPK.hashCode());
 		return result;
 	}
 
@@ -107,10 +107,10 @@ public class KscmtEstPriceCom extends ContractUkJpaEntity implements Serializabl
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtEstPriceCom other = (KscmtEstPriceCom) obj;
-		if (kscmtEstPriceComPK == null) {
-			if (other.kscmtEstPriceComPK != null)
+		if (kscmtEstPriceComSetPK == null) {
+			if (other.kscmtEstPriceComSetPK != null)
 				return false;
-		} else if (!kscmtEstPriceComPK.equals(other.kscmtEstPriceComPK))
+		} else if (!kscmtEstPriceComSetPK.equals(other.kscmtEstPriceComSetPK))
 			return false;
 		return true;
 	}

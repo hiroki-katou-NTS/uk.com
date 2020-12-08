@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK_;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureEmp;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureEmp_;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment_;
 
 /**
  * 
@@ -108,13 +108,13 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	/**
 	 * Convert to domain.
 	 *
-	 * @param kshmtClosureEmp the kclmt closure employment
+	 * @param kclmtClosureEmployment the kclmt closure employment
 	 * @return the closure employment
 	 */
-	private ClosureEmployment convertToDomain(KshmtClosureEmp kshmtClosureEmp) {
-		return new ClosureEmployment(kshmtClosureEmp.kclmpClosureEmploymentPK.companyId,
-				kshmtClosureEmp.kclmpClosureEmploymentPK.employmentCD, 
-				kshmtClosureEmp.closureId);
+	private ClosureEmployment convertToDomain(KshmtClosureEmp kclmtClosureEmployment) {
+		return new ClosureEmployment(kclmtClosureEmployment.kclmpClosureEmploymentPK.companyId,
+				kclmtClosureEmployment.kclmpClosureEmploymentPK.employmentCD, 
+				kclmtClosureEmployment.closureId);
 	}
 
 	/* (non-Javadoc)
@@ -136,11 +136,11 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		List<Predicate> predicateList = new ArrayList<>();
 		// Equal companyId
 		predicateList.add(cb.equal(
-				root.get(KshmtClosureEmp_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
+				root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
 				companyId));
 		// Equal ClosureId
 		predicateList.add(cb.equal(
-				root.get(KshmtClosureEmp_.closureId),
+				root.get(KclmtClosureEmployment_.closureId),
 				closureId));
 
 		// Create Query
@@ -171,10 +171,10 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		// Equal companyId
-		predicateList.add(cb.equal(root.get(KshmtClosureEmp_.kclmpClosureEmploymentPK)
+		predicateList.add(cb.equal(root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK)
 				.get(KclmpClosureEmploymentPK_.companyId), companyId));
 		// in ClosureIds
-		predicateList.add(root.get(KshmtClosureEmp_.closureId).in(closureIds));
+		predicateList.add(root.get(KclmtClosureEmployment_.closureId).in(closureIds));
 
 		// Create Query.
 		cq.where(predicateList.toArray(new Predicate[] {}));

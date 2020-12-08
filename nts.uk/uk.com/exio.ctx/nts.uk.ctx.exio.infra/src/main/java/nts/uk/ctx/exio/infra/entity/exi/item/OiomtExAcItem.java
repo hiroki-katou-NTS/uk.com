@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_ITEM")
+@Table(name = "OIOMT_STD_ACCEPT_ITEM")
 public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcItemPk stdAcceptItemPk;
+	public OiomtStdAcceptItemPk stdAcceptItemPk;
 
 	/**
 	 * カテゴリ項目NO
@@ -103,7 +103,7 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 			OiomtExAcFmDate dateDataFormatSet, OiomtExAcFmTime insTimeDataFormatSet,
 			OiomtTimeDataFmSet timeDataFormatSet) {
 		super();
-		this.stdAcceptItemPk = new OiomtExAcItemPk(cid, sysType, conditionCode, acceptItemNum);
+		this.stdAcceptItemPk = new OiomtStdAcceptItemPk(cid, sysType, conditionCode, acceptItemNum);
 		this.categoryItemNo = categoryItemNo;
 		this.csvItemNumber = csvItemNumber;
 		this.csvItemName = csvItemName;

@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SGWMT_PASSWORD_POLICY")
+@Table(name = "SGWST_PASSWORD_POLICY")
 public class SgwmtPasswordPolicy extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

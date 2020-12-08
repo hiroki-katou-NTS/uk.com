@@ -42,7 +42,7 @@ public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.get(0).getKscmtBasicWorkComPK().getCid();
+		return this.typeValue.get(0).getKscmtCompanyWorkSetPK().getCid();
 	}
 
 	/*

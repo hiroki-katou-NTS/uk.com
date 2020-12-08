@@ -15,11 +15,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_PLACEMENT")
+@Table(name = "CCGMT_PLACEMENT")
 public class SptmtPlacement extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public SptmtPlacementPK sptmtPlacementPK;
+	public CcgmtPlacementPK ccgmtPlacementPK;
 
 	@Column(name = "LAYOUT_ID")
 	public String layoutID;
@@ -44,7 +44,7 @@ public class SptmtPlacement extends ContractUkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return sptmtPlacementPK;
+		return ccgmtPlacementPK;
 	}
 
 }

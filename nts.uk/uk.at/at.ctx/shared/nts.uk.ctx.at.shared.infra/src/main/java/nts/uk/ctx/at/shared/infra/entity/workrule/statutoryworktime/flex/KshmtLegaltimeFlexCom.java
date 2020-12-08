@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KSHMT_LEGALTIME_FLEX_COM")
+@Table(name = "KSHST_FLX_GET_PRWK_TIME")
 @NoArgsConstructor
 public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serializable {
 
@@ -26,7 +26,7 @@ public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serial
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KshmtLegaltimeFlexComPK PK;
+	public KshstFlxGetPrwkTimePK PK;
 	
 	/** 所定時間参照 */
 	@Column(name = "REFERENCE_PRED_TIME")
@@ -57,7 +57,7 @@ public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serial
 	 */
 	public void fromDomainForPersist(GetFlexPredWorkTime domain){
 		
-		this.PK = new KshmtLegaltimeFlexComPK(domain.getCompanyId());
+		this.PK = new KshstFlxGetPrwkTimePK(domain.getCompanyId());
 		this.fromDomainForUpdate(domain);
 	}
 	

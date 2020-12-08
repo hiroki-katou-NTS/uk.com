@@ -17,14 +17,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCCT_OUTPUT_ITEM")
+@Table(name = "SRCMT_LOG_OUTPUT_ITEM")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcctOutputItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SrcctOutputItemPK srcdtLogOutputItemPK;
+	public SrcmtLogOutputItemPK srcdtLogOutputItemPK;
 	
 	/** 項目名 */
 	@Basic(optional=false)
@@ -42,7 +42,7 @@ public class SrcctOutputItem extends ContractUkJpaEntity implements Serializable
 	}
 
 	public static SrcctOutputItem toEntity(LogOutputItem domain) {
-		return new SrcctOutputItem(new SrcctOutputItemPK(domain.getItemNo(), domain.getRecordType().code),
+		return new SrcctOutputItem(new SrcmtLogOutputItemPK(domain.getItemNo(), domain.getRecordType().code),
 				 domain.getItemName().v());
 	}
 }

@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYV")
+@Table(name = "KRCST_OPTIONAL_ITEM")
 public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -34,7 +34,7 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 
 	/** The krcst optional item PK. */
 	@EmbeddedId
-	protected KrcmtAnyvPK krcmtAnyvPK;
+	protected KrcstOptionalItemPK krcstOptionalItemPK;
 
 	/** The optional item name. */
 	@Column(name = "OPTIONAL_ITEM_NAME")
@@ -64,7 +64,7 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
-	public KrcmtAnyfResultRange krcmtAnyfResultRange;
+	public KrcmtAnyfResultRange krcstCalcResultRange;
 	
 	/**
 	 * Instantiates a new krcst optional item.
@@ -76,11 +76,11 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst optional item.
 	 *
-	 * @param krcmtAnyvPK
+	 * @param krcstOptionalItemPK
 	 *            the krcst optional item PK
 	 */
-	public KrcmtAnyv(KrcmtAnyvPK krcmtAnyvPK) {
-		this.krcmtAnyvPK = krcmtAnyvPK;
+	public KrcmtAnyv(KrcstOptionalItemPK krcstOptionalItemPK) {
+		this.krcstOptionalItemPK = krcstOptionalItemPK;
 	}
 
 	/*
@@ -91,7 +91,7 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyvPK != null ? krcmtAnyvPK.hashCode() : 0);
+		hash += (krcstOptionalItemPK != null ? krcstOptionalItemPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -106,9 +106,9 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KrcmtAnyv other = (KrcmtAnyv) object;
-		if ((this.krcmtAnyvPK == null && other.krcmtAnyvPK != null)
-				|| (this.krcmtAnyvPK != null
-						&& !this.krcmtAnyvPK.equals(other.krcmtAnyvPK))) {
+		if ((this.krcstOptionalItemPK == null && other.krcstOptionalItemPK != null)
+				|| (this.krcstOptionalItemPK != null
+						&& !this.krcstOptionalItemPK.equals(other.krcstOptionalItemPK))) {
 			return false;
 		}
 		return true;
@@ -121,7 +121,7 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyvPK;
+		return this.krcstOptionalItemPK;
 	}
 
 }

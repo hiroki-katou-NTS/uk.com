@@ -16,18 +16,18 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class SptmtPartItemting.
+ * The Class CcgmtPartItemSetting.
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "SPTMT_PART_ITEM")
+@Table(name = "CCGMT_PART_ITEM_SET")
 public class SptmtPartItem extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public SptmtPartItemPK sptmtPartItemPK;
+	public CcgmtPartItemSetPK ccgmtPartItemSetPK;
 
 	/** The use atr. */
 	@Column(name = "USE_ATR")
@@ -35,7 +35,7 @@ public class SptmtPartItem extends ContractUkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return sptmtPartItemPK;
+		return ccgmtPartItemSetPK;
 	}
 
 }

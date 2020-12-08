@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSCMT_PER_COST_EXTRA_ITEM")
+@Table(name = "KSCST_PER_COST_EXTRA_ITEM")
 public class KscmtPerCostExtraItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -31,20 +31,20 @@ public class KscmtPerCostExtraItem extends ContractUkJpaEntity implements Serial
 	
 	/** The kscst per cost extra item PK. */
 	@EmbeddedId
-    protected KscmtPerCostExtraItemPK kscmtPerCostExtraItemPK;
+    protected KscstPerCostExtraItemPK kscstPerCostExtraItemPK;
 	
 	/** The kscst est aggregate set. */
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false) })
-	public KscmtEstAggregate kscmtEstAggregate;
+	public KscmtEstAggregate kscstEstAggregateSet;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtPerCostExtraItemPK;
+		return this.kscstPerCostExtraItemPK;
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +54,7 @@ public class KscmtPerCostExtraItem extends ContractUkJpaEntity implements Serial
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((kscmtPerCostExtraItemPK == null) ? 0 : kscmtPerCostExtraItemPK.hashCode());
+		result = prime * result + ((kscstPerCostExtraItemPK == null) ? 0 : kscstPerCostExtraItemPK.hashCode());
 		return result;
 	}
 
@@ -70,10 +70,10 @@ public class KscmtPerCostExtraItem extends ContractUkJpaEntity implements Serial
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtPerCostExtraItem other = (KscmtPerCostExtraItem) obj;
-		if (kscmtPerCostExtraItemPK == null) {
-			if (other.kscmtPerCostExtraItemPK != null)
+		if (kscstPerCostExtraItemPK == null) {
+			if (other.kscstPerCostExtraItemPK != null)
 				return false;
-		} else if (!kscmtPerCostExtraItemPK.equals(other.kscmtPerCostExtraItemPK))
+		} else if (!kscstPerCostExtraItemPK.equals(other.kscstPerCostExtraItemPK))
 			return false;
 		return true;
 	}
@@ -88,11 +88,11 @@ public class KscmtPerCostExtraItem extends ContractUkJpaEntity implements Serial
 	/**
 	 * Instantiates a new kscst per cost extra item.
 	 *
-	 * @param kscmtPerCostExtraItemPK the kscst per cost extra item PK
+	 * @param kscstPerCostExtraItemPK the kscst per cost extra item PK
 	 */
-	public KscmtPerCostExtraItem(KscmtPerCostExtraItemPK kscmtPerCostExtraItemPK) {
+	public KscmtPerCostExtraItem(KscstPerCostExtraItemPK kscstPerCostExtraItemPK) {
 		super();
-		this.kscmtPerCostExtraItemPK = kscmtPerCostExtraItemPK;
+		this.kscstPerCostExtraItemPK = kscstPerCostExtraItemPK;
 	}
 	
 	

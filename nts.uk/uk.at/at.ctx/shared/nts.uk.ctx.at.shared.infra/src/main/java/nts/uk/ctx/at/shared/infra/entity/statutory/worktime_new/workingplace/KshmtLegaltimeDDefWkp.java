@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstTrans
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_LEGALTIME_D_DEF_WKP")
+@Table(name = "KSHST_WKP_TRANS_LAB_TIME")
 public class KshmtLegaltimeDDefWkp extends KshstTransLabTime implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -31,7 +31,7 @@ public class KshmtLegaltimeDDefWkp extends KshstTransLabTime implements Serializ
 	
 	/** The kshst wkp trans lab time PK. */
 	@EmbeddedId
-	protected KshmtLegaltimeDDefWkpPK kshmtLegaltimeDDefWkpPK;
+	protected KshstWkpTransLabTimePK kshstWkpTransLabTimePK;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
@@ -39,7 +39,7 @@ public class KshmtLegaltimeDDefWkp extends KshstTransLabTime implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtLegaltimeDDefWkpPK != null ? kshmtLegaltimeDDefWkpPK.hashCode() : 0);
+		hash += (kshstWkpTransLabTimePK != null ? kshstWkpTransLabTimePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -52,9 +52,9 @@ public class KshmtLegaltimeDDefWkp extends KshstTransLabTime implements Serializ
 			return false;
 		}
 		KshmtLegaltimeDDefWkp other = (KshmtLegaltimeDDefWkp) object;
-		if ((this.kshmtLegaltimeDDefWkpPK == null && other.kshmtLegaltimeDDefWkpPK != null)
-				|| (this.kshmtLegaltimeDDefWkpPK != null
-						&& !this.kshmtLegaltimeDDefWkpPK.equals(other.kshmtLegaltimeDDefWkpPK))) {
+		if ((this.kshstWkpTransLabTimePK == null && other.kshstWkpTransLabTimePK != null)
+				|| (this.kshstWkpTransLabTimePK != null
+						&& !this.kshstWkpTransLabTimePK.equals(other.kshstWkpTransLabTimePK))) {
 			return false;
 		}
 		return true;
@@ -65,7 +65,7 @@ public class KshmtLegaltimeDDefWkp extends KshstTransLabTime implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtLegaltimeDDefWkpPK;
+		return this.kshstWkpTransLabTimePK;
 	}
 
 }

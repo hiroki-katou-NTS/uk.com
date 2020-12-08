@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM")
+@Table(name = "KSHMT_WORKTIME_COMMON_SET")
 public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -38,7 +38,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 
 	/** The kshmt worktime common set PK. */
 	@EmbeddedId
-	protected KshmtWtComPK kshmtWtComPK;
+	protected KshmtWorktimeCommonSetPK kshmtWorktimeCommonSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -102,7 +102,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
-	private List<KshmtWtComHdcom> kshmtWtComHdcoms;
+	private List<KshmtWtComHdcom> kshmtSubstitutionSets;
 
 	/** The kshmt medical time sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -110,7 +110,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
-	private List<KshmtWtComMedical> kshmtWtComMedicals;
+	private List<KshmtWtComMedical> kshmtMedicalTimeSets;
 
 	/** The kshmt special round outs. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -118,7 +118,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
-	private List<KshmtWtComGooutRound> kshmtWtComGooutRounds;
+	private List<KshmtWtComGooutRound> kshmtSpecialRoundOuts;
 
 	/** The kshmt late early set. */
 	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -126,7 +126,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
 			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
-	private KshmtWtComLatetimeMng kshmtWtComLatetimeMng;
+	private KshmtWtComLatetimeMng kshmtLateEarlySet;
 
 	/** The kshmt other late earlies. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -158,7 +158,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
 			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
-	private KshmtWtComTemporary kshmtWtComTemporary;
+	private KshmtWtComTemporary kshmtTempWorktimeSet;
 
 	/** The Kshmt worktime go out set. */
 	@OneToOne(optional = false, cascade = CascadeType.ALL)
@@ -166,7 +166,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
 			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
-	private KshmtWtComGoout KshmtWtComGoout;
+	private KshmtWtComGoout KshmtWorktimeGoOutSet;
 
 	/**
 	 * Instantiates a new kshmt worktime common set.
@@ -178,11 +178,11 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new kshmt worktime common set.
 	 *
-	 * @param kshmtWtComPK
+	 * @param kshmtWorktimeCommonSetPK
 	 *            the kshmt worktime common set PK
 	 */
-	public KshmtWtCom(KshmtWtComPK kshmtWtComPK) {
-		this.kshmtWtComPK = kshmtWtComPK;
+	public KshmtWtCom(KshmtWorktimeCommonSetPK kshmtWorktimeCommonSetPK) {
+		this.kshmtWorktimeCommonSetPK = kshmtWorktimeCommonSetPK;
 	}
 
 	/*
@@ -193,7 +193,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComPK != null ? kshmtWtComPK.hashCode() : 0);
+		hash += (kshmtWorktimeCommonSetPK != null ? kshmtWorktimeCommonSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -208,9 +208,9 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KshmtWtCom other = (KshmtWtCom) object;
-		if ((this.kshmtWtComPK == null && other.kshmtWtComPK != null)
-				|| (this.kshmtWtComPK != null
-						&& !this.kshmtWtComPK.equals(other.kshmtWtComPK))) {
+		if ((this.kshmtWorktimeCommonSetPK == null && other.kshmtWorktimeCommonSetPK != null)
+				|| (this.kshmtWorktimeCommonSetPK != null
+						&& !this.kshmtWorktimeCommonSetPK.equals(other.kshmtWorktimeCommonSetPK))) {
 			return false;
 		}
 		return true;
@@ -223,7 +223,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComPK;
+		return this.kshmtWorktimeCommonSetPK;
 	}
 
 }

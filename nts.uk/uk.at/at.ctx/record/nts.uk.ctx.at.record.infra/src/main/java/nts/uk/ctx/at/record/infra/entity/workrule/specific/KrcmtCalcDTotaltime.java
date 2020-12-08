@@ -17,12 +17,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KRCMT_CALC_D_TOTALTIME")
+@Table(name="KRCST_WK_HOUR_LIMIT_CTRL")
 public class KrcmtCalcDTotaltime extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KrcmtCalcDTotaltimePK id;
+	private KrcstWkHourLimitCtrlPK id;
 	
 	@Column(name="WORK_LIMIT_CTRL")
 	private int workLimitCtrl;

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_LATETIME")
+@Table(name = "KSHMT_OTHER_LATE_EARLY")
 public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializa
 
 	/** The kshmt other late early PK. */
 	@EmbeddedId
-	protected KshmtWtComLatetimePK kshmtWtComLatetimePK;
+	protected KshmtOtherLateEarlyPK kshmtOtherLateEarlyPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -75,9 +75,9 @@ public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializa
 	 *
 	 * @param pk the pk
 	 */
-	public KshmtWtComLatetime(KshmtWtComLatetimePK pk) {
+	public KshmtWtComLatetime(KshmtOtherLateEarlyPK pk) {
 		super();
-		this.kshmtWtComLatetimePK = pk;
+		this.kshmtOtherLateEarlyPK = pk;
 	}
 
 	/*
@@ -88,7 +88,7 @@ public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComLatetimePK != null ? kshmtWtComLatetimePK.hashCode() : 0);
+		hash += (kshmtOtherLateEarlyPK != null ? kshmtOtherLateEarlyPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -103,9 +103,9 @@ public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KshmtWtComLatetime other = (KshmtWtComLatetime) object;
-		if ((this.kshmtWtComLatetimePK == null && other.kshmtWtComLatetimePK != null)
-				|| (this.kshmtWtComLatetimePK != null
-						&& !this.kshmtWtComLatetimePK.equals(other.kshmtWtComLatetimePK))) {
+		if ((this.kshmtOtherLateEarlyPK == null && other.kshmtOtherLateEarlyPK != null)
+				|| (this.kshmtOtherLateEarlyPK != null
+						&& !this.kshmtOtherLateEarlyPK.equals(other.kshmtOtherLateEarlyPK))) {
 			return false;
 		}
 		return true;
@@ -118,6 +118,6 @@ public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComLatetimePK;
+		return this.kshmtOtherLateEarlyPK;
 	}
 }

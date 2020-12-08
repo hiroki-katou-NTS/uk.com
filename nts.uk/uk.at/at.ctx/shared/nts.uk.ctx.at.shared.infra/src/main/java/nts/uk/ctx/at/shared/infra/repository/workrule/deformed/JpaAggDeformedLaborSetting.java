@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.deformed.KshmtDeformedLaborMng;
-import nts.uk.ctx.at.shared.infra.entity.workrule.deformed.KshmtDeformedLaborMngPK;
+import nts.uk.ctx.at.shared.infra.entity.workrule.deformed.KshstAggLaborSetPK;
 
 /**
  * The Class JpaAggDeformedLaborSetting.
@@ -27,7 +27,7 @@ public class JpaAggDeformedLaborSetting extends JpaRepository implements AggDefo
 //		StringBuilder builderString = new StringBuilder();
 //		builderString.append("SELECT a ");
 //		builderString.append("FROM KshmtDeformedLaborMng a ");
-//		builderString.append("WHERE a.KshmtDeformedLaborMngPK.companyId = :companyId ");
+//		builderString.append("WHERE a.KshstAggLaborSetPK.companyId = :companyId ");
 //		FIND = builderString.toString();
 //	}
 	
@@ -37,7 +37,7 @@ public class JpaAggDeformedLaborSetting extends JpaRepository implements AggDefo
 	@Override
 	public Optional<AggDeformedLaborSetting> findByCid(String companyId) {
 		return this.queryProxy()
-				.find(new KshmtDeformedLaborMngPK(companyId), KshmtDeformedLaborMng.class)
+				.find(new KshstAggLaborSetPK(companyId), KshmtDeformedLaborMng.class)
 				.map(x -> convertToDomain(x));
 	}
 
@@ -54,7 +54,7 @@ public class JpaAggDeformedLaborSetting extends JpaRepository implements AggDefo
 	 */
 	private KshmtDeformedLaborMng toDbType (AggDeformedLaborSetting aggLaborSet) {
 		KshmtDeformedLaborMng setting = new KshmtDeformedLaborMng();
-		KshmtDeformedLaborMngPK primaryKey = new KshmtDeformedLaborMngPK();
+		KshstAggLaborSetPK primaryKey = new KshstAggLaborSetPK();
 		primaryKey.setCid(aggLaborSet.getCompanyId().v());
 		setting.setId(primaryKey);
 		setting.setUseDeformLabor(aggLaborSet.getUseDeformedLabor().value);

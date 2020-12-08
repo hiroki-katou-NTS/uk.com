@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWkpManager;
-import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWkpManagerPK;
+import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWorkplaceManagerPK;
 
 @Stateless
 public class JpaWorkplaceManagerRepository extends JpaRepository implements WorkplaceManagerRepository {
@@ -40,7 +40,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
 
 	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
-			+ "FROM BsymtWkpInfor wm "
+			+ "FROM BsymtWorkplaceInfor wm "
 			+ "LEFT JOIN SacmtWkpManager wi ON wm.pk.workplaceId = wi.workplaceId "
 			+ "LEFT JOIN BsymtEmployeeDataMngInfo edm ON wi.employeeId = edm.bsymtEmployeeDataMngInfoPk.sId "
 			+ "LEFT JOIN BpsmtPerson ps ON edm.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
@@ -66,7 +66,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		builderString.append(" FROM");
 		builderString.append(
 				" (SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate , kwa.availability, wkf.functionNo");
-		builderString.append(" FROM BsymtWkpInfor wm");
+		builderString.append(" FROM BsymtWorkplaceInfor wm");
 		builderString.append(" LEFT JOIN SacmtWkpManager wi ON wm.pk.workplaceId = wi.workplaceId");
 		builderString.append(
 				" LEFT JOIN BsymtEmployeeDataMngInfo edm ON wi.employeeId = edm.bsymtEmployeeDataMngInfoPk.sId");
@@ -127,7 +127,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 
 	@Override
 	public void delete(String wkpManagerId) {
-		SacmtWkpManagerPK kacmtWorkplaceManagerPK = new SacmtWkpManagerPK(wkpManagerId);
+		SacmtWorkplaceManagerPK kacmtWorkplaceManagerPK = new SacmtWorkplaceManagerPK(wkpManagerId);
 		this.commandProxy().remove(SacmtWkpManager.class, kacmtWorkplaceManagerPK);
 	}
 

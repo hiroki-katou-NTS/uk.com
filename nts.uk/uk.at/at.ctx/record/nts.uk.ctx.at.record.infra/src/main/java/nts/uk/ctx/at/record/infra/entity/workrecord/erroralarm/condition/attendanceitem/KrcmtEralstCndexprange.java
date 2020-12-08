@@ -27,13 +27,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CNDEXPRANGE")
+@Table(name = "KRCST_ER_AL_ATD_TARGET")
 public class KrcmtEralstCndexprange extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public KrcmtEralstCndexprangePK krcmtEralstCndexprangePK;
+    public KrcstErAlAtdTargetPK krcstErAlAtdTargetPK;
 	
 	@Basic(optional = false)
     @NotNull
@@ -43,16 +43,16 @@ public class KrcmtEralstCndexprange extends ContractUkJpaEntity implements Seria
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtEralstCndgrp krcmtEralstCndgrp;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralstCndexprangePK;
+		return this.krcstErAlAtdTargetPK;
 	}
 
-	public KrcmtEralstCndexprange(KrcmtEralstCndexprangePK krcmtEralstCndexprangePK, int targetAtr) {
+	public KrcmtEralstCndexprange(KrcstErAlAtdTargetPK krcstErAlAtdTargetPK, int targetAtr) {
 		super();
-		this.krcmtEralstCndexprangePK = krcmtEralstCndexprangePK;
+		this.krcstErAlAtdTargetPK = krcstErAlAtdTargetPK;
 		this.targetAtr = targetAtr;
 	}
 

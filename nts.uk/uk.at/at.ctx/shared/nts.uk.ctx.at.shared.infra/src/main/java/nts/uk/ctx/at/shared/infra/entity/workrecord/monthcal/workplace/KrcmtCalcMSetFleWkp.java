@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstFlexMCalSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_M_SET_FLE_WKP")
+@Table(name = "KRCST_WKP_FLEX_M_CAL_SET")
 public class KrcmtCalcMSetFleWkp extends KrcstFlexMCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcMSetFleWkp extends KrcstFlexMCalSet implements Serializabl
 
 	/** The krcst wkp flex M cal set PK. */
 	@EmbeddedId
-	protected KrcmtCalcMSetFleWkpPK krcmtCalcMSetFleWkpPK;
+	protected KrcstWkpFlexMCalSetPK krcstWkpFlexMCalSetPK;
 
 	/**
 	 * Instantiates a new krcst wkp flex M cal set.
@@ -45,7 +45,7 @@ public class KrcmtCalcMSetFleWkp extends KrcstFlexMCalSet implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtCalcMSetFleWkpPK != null ? krcmtCalcMSetFleWkpPK.hashCode() : 0);
+		hash += (krcstWkpFlexMCalSetPK != null ? krcstWkpFlexMCalSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -62,9 +62,9 @@ public class KrcmtCalcMSetFleWkp extends KrcstFlexMCalSet implements Serializabl
 			return false;
 		}
 		KrcmtCalcMSetFleWkp other = (KrcmtCalcMSetFleWkp) object;
-		if ((this.krcmtCalcMSetFleWkpPK == null && other.krcmtCalcMSetFleWkpPK != null)
-				|| (this.krcmtCalcMSetFleWkpPK != null
-						&& !this.krcmtCalcMSetFleWkpPK.equals(other.krcmtCalcMSetFleWkpPK))) {
+		if ((this.krcstWkpFlexMCalSetPK == null && other.krcstWkpFlexMCalSetPK != null)
+				|| (this.krcstWkpFlexMCalSetPK != null
+						&& !this.krcstWkpFlexMCalSetPK.equals(other.krcstWkpFlexMCalSetPK))) {
 			return false;
 		}
 		return true;
@@ -77,7 +77,7 @@ public class KrcmtCalcMSetFleWkp extends KrcstFlexMCalSet implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcMSetFleWkpPK;
+		return this.krcstWkpFlexMCalSetPK;
 	}
 
 }

@@ -23,8 +23,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordRepository;
 import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrection;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrectionPK_;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrection_;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecordPK_;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord_;
 
 /**
  * The Class JpaLoginRecordRepository.
@@ -64,7 +64,7 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK).get(SrcdtLoginCorrectionPK_.operationId), operationId));
+				root.get(SrcdtLoginRecord_.srcdtLoginRecordPK).get(SrcdtLoginRecordPK_.operationId), operationId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
@@ -110,8 +110,8 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			// employment in data employment
-			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK)
-					.get(SrcdtLoginCorrectionPK_.operationId).in(operationId)));
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginRecord_.srcdtLoginRecordPK)
+					.get(SrcdtLoginRecordPK_.operationId).in(operationId)));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -151,8 +151,8 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			// employment in data employment
-			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK)
-					.get(SrcdtLoginCorrectionPK_.operationId).in(operationId)));
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginRecord_.srcdtLoginRecordPK)
+					.get(SrcdtLoginRecordPK_.operationId).in(operationId)));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -193,8 +193,8 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			// employment in data employment
-			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK)
-					.get(SrcdtLoginCorrectionPK_.operationId).in(operationId)));
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginRecord_.srcdtLoginRecordPK)
+					.get(SrcdtLoginRecordPK_.operationId).in(operationId)));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

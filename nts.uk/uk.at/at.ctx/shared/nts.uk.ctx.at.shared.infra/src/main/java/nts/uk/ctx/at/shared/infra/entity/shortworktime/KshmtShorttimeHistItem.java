@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_SHORTTIME_HIST_ITEM")
+@Table(name = "BSHMT_WORKTIME_HIST_ITEM")
 public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -32,15 +32,15 @@ public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Seria
 
 	/** The bshmt worktime hist item PK. */
 	@EmbeddedId
-	protected KshmtShorttimeHistItemPK kshmtShorttimeHistItemPK;
+	protected BshmtWorktimeHistItemPK bshmtWorktimeHistItemPK;
 
 	/** The child care atr. */
 	@Column(name = "CHILD_CARE_ATR")
 	private Integer childCareAtr;
 	
 	/** The lst bshmt schild care frame. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kshmtShorttimeHistItem", orphanRemoval = true)
-	private List<KshmtShorttimeTs> lstKshmtShorttimeTs;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bshmtWorktimeHistItem", orphanRemoval = true)
+	private List<KshmtShorttimeTs> lstBshmtSchildCareFrame;
 
 	/**
 	 * Instantiates a new bshmt worktime hist item.
@@ -52,11 +52,11 @@ public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Seria
 	/**
 	 * Instantiates a new bshmt worktime hist item.
 	 *
-	 * @param kshmtShorttimeHistItemPK
+	 * @param bshmtWorktimeHistItemPK
 	 *            the bshmt worktime hist item PK
 	 */
-	public KshmtShorttimeHistItem(KshmtShorttimeHistItemPK kshmtShorttimeHistItemPK) {
-		this.kshmtShorttimeHistItemPK = kshmtShorttimeHistItemPK;
+	public KshmtShorttimeHistItem(BshmtWorktimeHistItemPK bshmtWorktimeHistItemPK) {
+		this.bshmtWorktimeHistItemPK = bshmtWorktimeHistItemPK;
 	}
 
 	/*
@@ -67,7 +67,7 @@ public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Seria
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtShorttimeHistItemPK != null ? kshmtShorttimeHistItemPK.hashCode() : 0);
+		hash += (bshmtWorktimeHistItemPK != null ? bshmtWorktimeHistItemPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -82,9 +82,9 @@ public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Seria
 			return false;
 		}
 		KshmtShorttimeHistItem other = (KshmtShorttimeHistItem) object;
-		if ((this.kshmtShorttimeHistItemPK == null && other.kshmtShorttimeHistItemPK != null)
-				|| (this.kshmtShorttimeHistItemPK != null
-						&& !this.kshmtShorttimeHistItemPK.equals(other.kshmtShorttimeHistItemPK))) {
+		if ((this.bshmtWorktimeHistItemPK == null && other.bshmtWorktimeHistItemPK != null)
+				|| (this.bshmtWorktimeHistItemPK != null
+						&& !this.bshmtWorktimeHistItemPK.equals(other.bshmtWorktimeHistItemPK))) {
 			return false;
 		}
 		return true;
@@ -97,7 +97,7 @@ public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Seria
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtShorttimeHistItemPK;
+		return this.bshmtWorktimeHistItemPK;
 	}
 
 }

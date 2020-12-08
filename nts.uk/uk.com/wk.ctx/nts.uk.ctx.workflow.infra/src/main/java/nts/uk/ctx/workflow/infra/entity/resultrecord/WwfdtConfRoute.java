@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_CONF_ROUTE")
+@Table(name="WWFDT_APP_ROOT_CONFIRM")
 public class WwfdtConfRoute extends ContractUkJpaEntity {
 	
 	@Id
@@ -53,9 +53,9 @@ public class WwfdtConfRoute extends ContractUkJpaEntity {
 	@Column(name="LAST_DAY_FLG")
 	private Integer lastDayFlg;
 	
-	@OneToMany(targetEntity=WwfdtConfPhase.class, cascade = CascadeType.ALL, mappedBy = "wwfdtConfRoute", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_CONF_PHASE")
-	public List<WwfdtConfPhase> listWwfdtConfPhase;
+	@OneToMany(targetEntity=WwfdtConfPhase.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootConfirm", orphanRemoval = true)
+	@JoinTable(name = "WWFDT_APP_PHASE_CONFIRM")
+	public List<WwfdtConfPhase> listWwfdtAppPhaseConfirm;
 
 	@Override
 	protected Object getKey() {

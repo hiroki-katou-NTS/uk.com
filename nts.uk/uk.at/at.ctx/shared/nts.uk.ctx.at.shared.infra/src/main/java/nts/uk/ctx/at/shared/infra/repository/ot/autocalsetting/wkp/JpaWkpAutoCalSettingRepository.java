@@ -21,9 +21,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkpPK;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkpPK_;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet_;
 
 /**
  * The Class JpaWkpAutoCalSettingRepository.
@@ -69,7 +69,7 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 */
 	private KrcmtCalcSetWkp toEntity(WkpAutoCalSetting wkpAutoCalSetting) {
 		Optional<KrcmtCalcSetWkp> optinal = this.queryProxy().find(
-				new KrcmtCalcSetWkpPK(wkpAutoCalSetting.getCompanyId().v(), wkpAutoCalSetting.getWkpId().v()),
+				new KshmtAutoWkpCalSetPK(wkpAutoCalSetting.getCompanyId().v(), wkpAutoCalSetting.getWkpId().v()),
 				KrcmtCalcSetWkp.class);
 		KrcmtCalcSetWkp entity = null;
 		if (optinal.isPresent()) {
@@ -91,16 +91,16 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 */
 	@Override
 	public Optional<WkpAutoCalSetting> getWkpAutoCalSetting(String companyId, String wkpId) {
-		KrcmtCalcSetWkpPK krcmtCalcSetWkpPK = new KrcmtCalcSetWkpPK(companyId, wkpId);
+		KshmtAutoWkpCalSetPK kshmtAutoWkpCalSetPK = new KshmtAutoWkpCalSetPK(companyId, wkpId);
 
-		Optional<KrcmtCalcSetWkp> optKrcmtCalcSetWkp = this.queryProxy().find(krcmtCalcSetWkpPK,
+		Optional<KrcmtCalcSetWkp> optKshmtAutoWkpCalSet = this.queryProxy().find(kshmtAutoWkpCalSetPK,
 				KrcmtCalcSetWkp.class);
 
-		if (!optKrcmtCalcSetWkp.isPresent()) {
+		if (!optKshmtAutoWkpCalSet.isPresent()) {
 			return Optional.empty();
 		}
 
-		return Optional.of(new WkpAutoCalSetting(new JpaWkpAutoCalSettingGetMemento(optKrcmtCalcSetWkp.get())));
+		return Optional.of(new WkpAutoCalSetting(new JpaWkpAutoCalSettingGetMemento(optKshmtAutoWkpCalSet.get())));
 	}
 
 	/*
@@ -111,7 +111,7 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 */
 	@Override
 	public void delete(String cid, String wkpId) {
-		this.commandProxy().remove(KrcmtCalcSetWkp.class, new KrcmtCalcSetWkpPK(cid, wkpId));
+		this.commandProxy().remove(KrcmtCalcSetWkp.class, new KshmtAutoWkpCalSetPK(cid, wkpId));
 
 	}
 
@@ -128,8 +128,8 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KrcmtCalcSetWkp_.krcmtCalcSetWkpPK)
-				.get(KrcmtCalcSetWkpPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KshmtAutoWkpCalSet_.kshmtAutoWkpCalSetPK)
+				.get(KshmtAutoWkpCalSetPK_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return em.createQuery(cq).getResultList().stream()

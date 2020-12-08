@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstRegLa
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_LEGALTIME_D_REG_EMP")
+@Table(name = "KSHST_EMP_REG_LABOR_TIME")
 public class KshmtLegaltimeDRegEmp extends KshstRegLaborTime implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KshmtLegaltimeDRegEmp extends KshstRegLaborTime implements Serializ
 	
 	/** The kshst emp reg labor time PK. */
 	@EmbeddedId
-	protected KshmtLegaltimeDRegEmpPK kshmtLegaltimeDRegEmpPK;
+	protected KshstEmpRegLaborTimePK kshstEmpRegLaborTimePK;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
@@ -40,7 +40,7 @@ public class KshmtLegaltimeDRegEmp extends KshstRegLaborTime implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtLegaltimeDRegEmpPK != null ? kshmtLegaltimeDRegEmpPK.hashCode() : 0);
+		hash += (kshstEmpRegLaborTimePK != null ? kshstEmpRegLaborTimePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -54,9 +54,9 @@ public class KshmtLegaltimeDRegEmp extends KshstRegLaborTime implements Serializ
 			return false;
 		}
 		KshmtLegaltimeDRegEmp other = (KshmtLegaltimeDRegEmp) object;
-		if ((this.kshmtLegaltimeDRegEmpPK == null && other.kshmtLegaltimeDRegEmpPK != null)
-				|| (this.kshmtLegaltimeDRegEmpPK != null
-						&& !this.kshmtLegaltimeDRegEmpPK.equals(other.kshmtLegaltimeDRegEmpPK))) {
+		if ((this.kshstEmpRegLaborTimePK == null && other.kshstEmpRegLaborTimePK != null)
+				|| (this.kshstEmpRegLaborTimePK != null
+						&& !this.kshstEmpRegLaborTimePK.equals(other.kshstEmpRegLaborTimePK))) {
 			return false;
 		}
 		return true;
@@ -67,7 +67,7 @@ public class KshmtLegaltimeDRegEmp extends KshstRegLaborTime implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtLegaltimeDRegEmpPK;
+		return this.kshstEmpRegLaborTimePK;
 	}
 
 }

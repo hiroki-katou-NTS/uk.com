@@ -26,9 +26,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFramePK;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFramePK_;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame_;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK_;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame_;
 
 /**
  * The Class JpaOvertimeWorkFrameRepository.
@@ -44,7 +44,7 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	@Override
 	public Optional<OvertimeWorkFrame> findOvertimeWorkFrame(CompanyId companyId, int overtimeWorkFrNo) {
 		return this.queryProxy()
-				.find(new KshmtOverFramePK(companyId.v(), (short) overtimeWorkFrNo), KshmtOverFrame.class)
+				.find(new KshstOvertimeFramePK(companyId.v(), (short) overtimeWorkFrNo), KshmtOverFrame.class)
 				.map(e -> this.toDomain(e));
 	}
 
@@ -81,8 +81,8 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 
 		// eq company id
 		lstpredicateWhere
-			.add(criteriaBuilder.equal(root.get(KshmtOverFrame_.kshmtOverFramePK)
-				.get(KshmtOverFramePK_.cid), companyId));
+			.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+				.get(KshstOvertimeFramePK_.cid), companyId));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -118,11 +118,11 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 					List<Predicate> lstpredicateWhere = new ArrayList<>();
 					// eq company id
 					lstpredicateWhere.add(
-							criteriaBuilder.equal(root.get(KshmtOverFrame_.kshmtOverFramePK)
-									.get(KshmtOverFramePK_.cid), companyId));
+							criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+									.get(KshstOvertimeFramePK_.cid), companyId));
 
-					lstpredicateWhere.add(root.get(KshmtOverFrame_.kshmtOverFramePK)
-							.get(KshmtOverFramePK_.otFrNo).in(splitData));
+					lstpredicateWhere.add(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+							.get(KshstOvertimeFramePK_.otFrNo).in(splitData));
 					// set where to SQL
 					cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -154,10 +154,10 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 
 		// eq company id
 		lstpredicateWhere
-			.add(criteriaBuilder.equal(root.get(KshmtOverFrame_.kshmtOverFramePK)
-				.get(KshmtOverFramePK_.cid), companyId));
+			.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+				.get(KshstOvertimeFramePK_.cid), companyId));
 		lstpredicateWhere
-		.add(criteriaBuilder.equal(root.get(KshmtOverFrame_.useAtr), useAtr));
+		.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.useAtr), useAtr));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

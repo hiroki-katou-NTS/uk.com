@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF_ITEM_SELECT")
+@Table(name = "KRCMT_CALC_ITEM_SELECTION")
 public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializ
 
 	/** The krcmt calc item selection PK. */
 	@EmbeddedId
-	protected KrcmtAnyfItemSelectPK krcmtAnyfItemSelectPK;
+	protected KrcmtCalcItemSelectionPK krcmtCalcItemSelectionPK;
 
 	/** The krcmt opt item formula. */
 	@ManyToOne
@@ -41,7 +41,7 @@ public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializ
 		@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
 		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
 		})
-	private KrcmtAnyf krcmtAnyf;
+	private KrcmtAnyf krcmtOptItemFormula;
 
 	/** The minus segment. */
 	@Column(name = "MINUS_SEGMENT")
@@ -61,14 +61,14 @@ public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializ
 	/**
 	 * Instantiates a new krcmt calc item selection.
 	 *
-	 * @param krcmtAnyfItemSelectPK the krcmt calc item selection PK
+	 * @param krcmtCalcItemSelectionPK the krcmt calc item selection PK
 	 */
-	public KrcmtAnyfItemSelect(KrcmtAnyfItemSelectPK krcmtAnyfItemSelectPK) {
-		this.krcmtAnyfItemSelectPK = krcmtAnyfItemSelectPK;
+	public KrcmtAnyfItemSelect(KrcmtCalcItemSelectionPK krcmtCalcItemSelectionPK) {
+		this.krcmtCalcItemSelectionPK = krcmtCalcItemSelectionPK;
 	}
 
-	public KrcmtAnyfItemSelect(KrcmtAnyfPK pk) {
-		this.krcmtAnyfItemSelectPK = new KrcmtAnyfItemSelectPK();
+	public KrcmtAnyfItemSelect(KrcmtOptItemFormulaPK pk) {
+		this.krcmtCalcItemSelectionPK = new KrcmtCalcItemSelectionPK();
 	}
 
 	/*
@@ -79,7 +79,7 @@ public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfItemSelectPK != null ? krcmtAnyfItemSelectPK.hashCode() : 0);
+		hash += (krcmtCalcItemSelectionPK != null ? krcmtCalcItemSelectionPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -94,9 +94,9 @@ public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KrcmtAnyfItemSelect other = (KrcmtAnyfItemSelect) object;
-		if ((this.krcmtAnyfItemSelectPK == null && other.krcmtAnyfItemSelectPK != null)
-				|| (this.krcmtAnyfItemSelectPK != null
-						&& !this.krcmtAnyfItemSelectPK.equals(other.krcmtAnyfItemSelectPK))) {
+		if ((this.krcmtCalcItemSelectionPK == null && other.krcmtCalcItemSelectionPK != null)
+				|| (this.krcmtCalcItemSelectionPK != null
+						&& !this.krcmtCalcItemSelectionPK.equals(other.krcmtCalcItemSelectionPK))) {
 			return false;
 		}
 		return true;
@@ -109,7 +109,7 @@ public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfItemSelectPK;
+		return this.krcmtCalcItemSelectionPK;
 	}
 
 }

@@ -23,13 +23,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHMT_HDPAID_CONDITION")
+@Table(name="KSHST_GRANT_CONDITION")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtHdpaidCondition extends ContractUkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
-    public KshmtHdpaidConditionPK kshmtHdpaidConditionPK;
+    public KshstGrantConditionPK kshstGrantConditionPK;
 	
 	/* 条件値 */
 	@Column(name = "CONDITION_VALUE")
@@ -51,12 +51,12 @@ public class KshmtHdpaidCondition extends ContractUkJpaEntity {
 	
 	@Override
 	protected Object getKey() {
-		return kshmtHdpaidConditionPK;
+		return kshstGrantConditionPK;
 	}
 
-	public KshmtHdpaidCondition(KshmtHdpaidConditionPK kshmtHdpaidConditionPK, Double conditionValue, int useConditionAtr) {
+	public KshmtHdpaidCondition(KshstGrantConditionPK kshstGrantConditionPK, Double conditionValue, int useConditionAtr) {
 		super();
-		this.kshmtHdpaidConditionPK = kshmtHdpaidConditionPK;
+		this.kshstGrantConditionPK = kshstGrantConditionPK;
 		this.conditionValue = conditionValue;
 		this.useConditionAtr = useConditionAtr;
 	}

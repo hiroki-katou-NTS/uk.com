@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMemento {
 	
 	/** The kshmt schedule method. */
-	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
+	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 	
 	/**
 	 * Instantiates a new jpa work schedule bus cal get memento.
@@ -20,7 +20,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	 * @param entity the entity
 	 */
 	public JpaWorkScheduleBusCalGetMemento(KshmtWorkcondScheMeth entity){
-		this.kshmtWorkcondScheMeth = entity;
+		this.kshmtScheduleMethod = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBusinessDayCalendar() {
 		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtWorkcondScheMeth.getRefBusinessDayCalendar());
+			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBusinessDayCalendar());
 		} catch (Exception e) {
 			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
 		}
@@ -42,7 +42,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBasicWork() {
 		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtWorkcondScheMeth.getRefBasicWork());
+			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBasicWork());
 		} catch (Exception e) {
 			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
 		}
@@ -54,7 +54,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceWorkingHours() {
 		try {
-			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtWorkcondScheMeth.getRefWorkingHours());
+			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
 		} catch (Exception e) {
 			return TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 		}

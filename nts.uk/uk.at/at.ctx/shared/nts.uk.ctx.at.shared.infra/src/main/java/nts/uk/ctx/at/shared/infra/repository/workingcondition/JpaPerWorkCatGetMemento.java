@@ -29,7 +29,7 @@ public class JpaPerWorkCatGetMemento implements PersonalWorkCategoryGetMemento {
 	 */
 	public JpaPerWorkCatGetMemento(List<KshmtWorkcondCtg> entities) {
 		this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-				entity -> WorkCategoryAtr.valueOf(entity.getKshmtWorkcondCtgPK().getPerWorkCatAtr()),
+				entity -> WorkCategoryAtr.valueOf(entity.getKshmtPerWorkCatPK().getPerWorkCatAtr()),
 				entity -> new SingleDaySchedule(
 						new JpaSDayScheWorkCatGetMemento(entity))));
 	}

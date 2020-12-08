@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_CLOSURE_HIST")
+@Table(name = "KCLMT_CLOSURE_HIST")
 public class KshmtClosureHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 	
 	/** The kclmt closure hist PK. */
 	@EmbeddedId
-	protected KshmtClosureHistPK kshmtClosureHistPK;
+	protected KclmtClosureHistPK kclmtClosureHistPK;
 	
 	/** The name. */
 	@Column(name = "CLOSURE_NAME")
@@ -56,10 +56,10 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new kclmt closure hist.
 	 *
-	 * @param kshmtClosureHistPK the kclmt closure hist PK
+	 * @param kclmtClosureHistPK the kclmt closure hist PK
 	 */
-	public KshmtClosureHist(KshmtClosureHistPK kshmtClosureHistPK) {
-		this.kshmtClosureHistPK = kshmtClosureHistPK;
+	public KshmtClosureHist(KclmtClosureHistPK kclmtClosureHistPK) {
+		this.kclmtClosureHistPK = kclmtClosureHistPK;
 	}
 
 	/**
@@ -67,17 +67,17 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 	 *
 	 * @return the kclmt closure hist PK
 	 */
-	public KshmtClosureHistPK getKshmtClosureHistPK() {
-		return kshmtClosureHistPK;
+	public KclmtClosureHistPK getKclmtClosureHistPK() {
+		return kclmtClosureHistPK;
 	}
 
 	/**
 	 * Sets the kclmt closure hist PK.
 	 *
-	 * @param kshmtClosureHistPK the new kclmt closure hist PK
+	 * @param kclmtClosureHistPK the new kclmt closure hist PK
 	 */
-	public void setKshmtClosureHistPK(KshmtClosureHistPK kshmtClosureHistPK) {
-		this.kshmtClosureHistPK = kshmtClosureHistPK;
+	public void setKclmtClosureHistPK(KclmtClosureHistPK kclmtClosureHistPK) {
+		this.kclmtClosureHistPK = kclmtClosureHistPK;
 	}
 
 
@@ -87,7 +87,7 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtClosureHistPK != null ? kshmtClosureHistPK.hashCode() : 0);
+		hash += (kclmtClosureHistPK != null ? kclmtClosureHistPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -100,9 +100,9 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtClosureHist other = (KshmtClosureHist) object;
-		if ((this.kshmtClosureHistPK == null && other.kshmtClosureHistPK != null)
-			|| (this.kshmtClosureHistPK != null
-				&& !this.kshmtClosureHistPK.equals(other.kshmtClosureHistPK))) {
+		if ((this.kclmtClosureHistPK == null && other.kclmtClosureHistPK != null)
+			|| (this.kclmtClosureHistPK != null
+				&& !this.kclmtClosureHistPK.equals(other.kclmtClosureHistPK))) {
 			return false;
 		}
 		return true;
@@ -113,7 +113,7 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshmtClosureHist[ kshmtClosureHistPK=" + kshmtClosureHistPK + " ]";
+		return "entity.KshmtClosureHist[ kclmtClosureHistPK=" + kclmtClosureHistPK + " ]";
 	}
 
 	/*
@@ -123,7 +123,7 @@ public class KshmtClosureHist extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.getKshmtClosureHistPK();
+		return this.getKclmtClosureHistPK();
 	}
 
 }

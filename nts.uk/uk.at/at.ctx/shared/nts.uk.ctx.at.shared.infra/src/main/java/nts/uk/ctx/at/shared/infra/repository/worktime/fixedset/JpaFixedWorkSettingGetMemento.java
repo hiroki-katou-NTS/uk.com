@@ -54,7 +54,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtFixPK().getCid();
+		return this.entity.getKshmtFixedWorkSetPK().getCid();
 	}
 
 	/*
@@ -66,7 +66,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtFixPK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtFixedWorkSetPK().getWorktimeCd());
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		KshmtWtCom commonEntity = this.entity.getKshmtWtCom();
+		KshmtWtCom commonEntity = this.entity.getKshmtWorktimeCommonSet();
 		if (commonEntity == null) {
 			return null;
 		}
@@ -149,7 +149,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public List<StampReflectTimezone> getLstStampReflectTimezone() {
-		return this.entity.getLstKshmtWtFixStmpRefTs().stream()
+		return this.entity.getLstKshmtFixedStampReflect().stream()
 				.map(entity -> new StampReflectTimezone(new JpaFixedStampReflectTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

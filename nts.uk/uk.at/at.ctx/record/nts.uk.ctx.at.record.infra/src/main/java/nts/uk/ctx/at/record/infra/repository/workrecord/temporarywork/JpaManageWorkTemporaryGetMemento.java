@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetMemento{
 
 	/** The krcst manage work temp. */
-	private KrcmtTemporaryMng krcmtTemporaryMng;
+	private KrcmtTemporaryMng krcstManageWorkTemp;
 	
 	
 	/**
-	 * @param krcmtTemporaryMng
+	 * @param krcstManageWorkTemp
 	 */
-	public JpaManageWorkTemporaryGetMemento(KrcmtTemporaryMng krcmtTemporaryMng) {
-		this.krcmtTemporaryMng = krcmtTemporaryMng;
+	public JpaManageWorkTemporaryGetMemento(KrcmtTemporaryMng krcstManageWorkTemp) {
+		this.krcstManageWorkTemp = krcstManageWorkTemp;
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetM
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.krcmtTemporaryMng.getCid();
+		return this.krcstManageWorkTemp.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +38,7 @@ public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetM
 	 */
 	@Override
 	public MaxUsage getMaxUsage() {
-		return new MaxUsage(this.krcmtTemporaryMng.getMaxUsage().intValue());
+		return new MaxUsage(this.krcstManageWorkTemp.getMaxUsage().intValue());
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +46,7 @@ public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetM
 	 */
 	@Override
 	public AttendanceTime getTimeTreatTemporarySame() {
-		return new AttendanceTime(this.krcmtTemporaryMng.getTimeTreatTempSame().intValue());
+		return new AttendanceTime(this.krcstManageWorkTemp.getTimeTreatTempSame().intValue());
 	}
 
 }

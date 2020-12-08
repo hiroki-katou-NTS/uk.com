@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
 
 /**
  * The Class JpaEmploymentSettingSetMemento.
@@ -25,8 +25,8 @@ public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMem
 	 */
 	public JpaEmploymentSettingSetMemento(KshmtHdstkSetEmp typeValue) {
 		this.typeValue = typeValue;
-		if(this.typeValue.getKshmtHdstkSetEmpPK() == null) {
-			this.typeValue.setKshmtHdstkSetEmpPK(new KshmtHdstkSetEmpPK());
+		if(this.typeValue.getKmfmtRetentionEmpCtrPK() == null) {
+			this.typeValue.setKmfmtRetentionEmpCtrPK(new KmfmtRetentionEmpCtrPK());
 		}
 		
 	}
@@ -38,7 +38,7 @@ public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMem
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.typeValue.getKshmtHdstkSetEmpPK().setCid(companyId);
+		this.typeValue.getKmfmtRetentionEmpCtrPK().setCid(companyId);
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMem
 	 */
 	@Override
 	public void setEmploymentCode(String employmentCode) {
-		this.typeValue.getKshmtHdstkSetEmpPK().setEmpCtrCd(employmentCode);
+		this.typeValue.getKmfmtRetentionEmpCtrPK().setEmpCtrCd(employmentCode);
 	}
 
 	/*

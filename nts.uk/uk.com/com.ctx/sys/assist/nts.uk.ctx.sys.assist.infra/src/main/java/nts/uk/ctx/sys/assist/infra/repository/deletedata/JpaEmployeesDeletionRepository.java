@@ -9,16 +9,16 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionEmployees;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionEmployeesPK;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtEmployeesDeletionPK;
 
 @Stateless
 public class JpaEmployeesDeletionRepository extends JpaRepository implements EmployeesDeletionRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtDeletionEmployees f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtDeletionEmployeesPK.delId =:delId AND  f.sspdtDeletionEmployeesPK.employeeId =:employeeId ";
+			+ " WHERE  f.sspdtEmployeesDeletionPK.delId =:delId AND  f.sspdtEmployeesDeletionPK.employeeId =:employeeId ";
 	private static final String SELECT_BY_KEY_STRING_LIST = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtDeletionEmployeesPK.delId =:delId";
+			+ " WHERE  f.sspdtEmployeesDeletionPK.delId =:delId";
 
 	@Override
 	public List<EmployeeDeletion> getAllEmployeesDeletion() {
@@ -46,7 +46,7 @@ public class JpaEmployeesDeletionRepository extends JpaRepository implements Emp
 	@Override
 	public void remove(String delId, String employeeId) {
 		this.commandProxy().remove(SspdtDeletionEmployees.class,
-				new SspdtDeletionEmployeesPK(delId, employeeId));
+				new SspdtEmployeesDeletionPK(delId, employeeId));
 	}
 
 	@Override

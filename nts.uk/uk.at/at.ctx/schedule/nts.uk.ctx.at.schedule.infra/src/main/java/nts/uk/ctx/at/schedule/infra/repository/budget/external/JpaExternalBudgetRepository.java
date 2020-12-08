@@ -18,18 +18,18 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KscmtExtBudget c ";
 
 	private static final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
-			+ " WHERE c.kscmtExtBudgetPk.companyId = :companyId";
+			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId";
 
 	private static final String SELECTED_ITEM = SELECT_NO_WHERE 
-			+ " WHERE c.kscmtExtBudgetPk.companyId = :companyId "
-			+ " AND c.kscmtExtBudgetPk.externalBudgetCd = :externalBudgetCd ";
+			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId "
+			+ " AND c.kscstExternalBudgetPk.externalBudgetCd = :externalBudgetCd ";
 	
 	private static final String SELECTED_ITEM_ATR = SELECT_ALL_DETAILS + " AND c.budgetAtr = :budgetAtr AND c.unitAtr = :unitAtr";
 	
 
 	private static ExternalBudget toDomain(KscmtExtBudget entity) {
-		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscmtExtBudgetPk.companyId,
-				entity.kscmtExtBudgetPk.externalBudgetCd, 
+		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
+				entity.kscstExternalBudgetPk.externalBudgetCd, 
 				entity.externalBudgetName, 
 				entity.budgetAtr,
 				entity.unitAtr);
@@ -38,9 +38,9 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 
 	private static KscmtExtBudget toEntity(ExternalBudget domain) {
 		val entity = new KscmtExtBudget();
-		entity.kscmtExtBudgetPk = new KstscExternalBudgetPK();
-		entity.kscmtExtBudgetPk.companyId = domain.getCompanyId();
-		entity.kscmtExtBudgetPk.externalBudgetCd = domain.getExternalBudgetCd().v();
+		entity.kscstExternalBudgetPk = new KstscExternalBudgetPK();
+		entity.kscstExternalBudgetPk.companyId = domain.getCompanyId();
+		entity.kscstExternalBudgetPk.externalBudgetCd = domain.getExternalBudgetCd().v();
 		entity.externalBudgetName = domain.getExternalBudgetName().v();
 		entity.budgetAtr = domain.getBudgetAtr().value;
 		entity.unitAtr = domain.getUnitAtr().value;

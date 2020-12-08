@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKCOND_WEEK_TS")
+@Table(name = "KSHMT_DAYOFWEEK_TIME_ZONE")
 public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 
 
@@ -33,7 +33,7 @@ public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 
 	/** The kshmt dayofweek time zone PK. */
 	@EmbeddedId
-	protected KshmtWorkcondWeekTsPK kshmtWorkcondWeekTsPK;
+	protected KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK;
 
 	/**
 	 * Instantiates a new kshmt dayofweek time zone.
@@ -50,7 +50,7 @@ public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWorkcondWeekTsPK != null ? kshmtWorkcondWeekTsPK.hashCode() : 0);
+		hash += (kshmtDayofweekTimeZonePK != null ? kshmtDayofweekTimeZonePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -65,9 +65,9 @@ public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 			return false;
 		}
 		KshmtWorkcondWeekTs other = (KshmtWorkcondWeekTs) object;
-		if ((this.kshmtWorkcondWeekTsPK == null && other.kshmtWorkcondWeekTsPK != null)
-				|| (this.kshmtWorkcondWeekTsPK != null
-						&& !this.kshmtWorkcondWeekTsPK.equals(other.kshmtWorkcondWeekTsPK))) {
+		if ((this.kshmtDayofweekTimeZonePK == null && other.kshmtDayofweekTimeZonePK != null)
+				|| (this.kshmtDayofweekTimeZonePK != null
+						&& !this.kshmtDayofweekTimeZonePK.equals(other.kshmtDayofweekTimeZonePK))) {
 			return false;
 		}
 		return true;
@@ -80,25 +80,25 @@ public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWorkcondWeekTsPK;
+		return this.kshmtDayofweekTimeZonePK;
 	}
 	
 	public TimeZone toDomain() {
-		return new TimeZone(NotUseAtr.valueOf(this.getUseAtr()), this.kshmtWorkcondWeekTsPK.getCnt(), this.getStartTime(), this.getEndTime());
+		return new TimeZone(NotUseAtr.valueOf(this.getUseAtr()), this.kshmtDayofweekTimeZonePK.getCnt(), this.getStartTime(), this.getEndTime());
 		
 	}
 	
 	public static KshmtWorkcondWeekTs toEntity(TimeZone timeZone,String historyId,int perWorkDayOffAtr) {
-		KshmtWorkcondWeekTs data =  new KshmtWorkcondWeekTs(new KshmtWorkcondWeekTsPK(historyId, perWorkDayOffAtr, timeZone.getCnt()));
+		KshmtWorkcondWeekTs data =  new KshmtWorkcondWeekTs(new KshmtDayofweekTimeZonePK(historyId, perWorkDayOffAtr, timeZone.getCnt()));
 		data.setUseAtr(timeZone.getUseAtr().value);
 		data.setStartTime(timeZone.getStart().valueAsMinutes());
 		data.setEndTime(timeZone.getEnd().valueAsMinutes());
 		return data;
 	}
 	
-	public KshmtWorkcondWeekTs(KshmtWorkcondWeekTsPK kshmtWorkcondWeekTsPK) {
+	public KshmtWorkcondWeekTs(KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK) {
 		super();
-		this.kshmtWorkcondWeekTsPK = kshmtWorkcondWeekTsPK;
+		this.kshmtDayofweekTimeZonePK = kshmtDayofweekTimeZonePK;
 	}
 
 }

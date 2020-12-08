@@ -26,15 +26,15 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_HDNURSING_LEAVE")
+@Table(name = "KNLMT_NURSING_LEAVE_SET")
 public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kshmtHdnursingLeavePK. */
+    /** The knlmtNursingLeaveSetPK. */
     @EmbeddedId
-    private KshmtHdnursingLeavePK kshmtHdnursingLeavePK;
+    private KnlmtNursingLeaveSetPK knlmtNursingLeaveSetPK;
     
     /** The manage type. */
     @Column(name = "MANAGE_ATR")
@@ -60,7 +60,7 @@ public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializ
     @Column(name = "WORK_ABS")
     private Integer workAbsence;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kshmtHdnursingLeave", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "knlmtNursingLeaveSet", orphanRemoval = true)
     private List<KnlmtNursingWorkType> listWorkType;
 
     /**
@@ -76,7 +76,7 @@ public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializ
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtHdnursingLeavePK != null ? kshmtHdnursingLeavePK.hashCode() : 0);
+        hash += (knlmtNursingLeaveSetPK != null ? knlmtNursingLeaveSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -89,9 +89,9 @@ public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializ
             return false;
         }
         KshmtHdnursingLeave other = (KshmtHdnursingLeave) object;
-        if ((this.kshmtHdnursingLeavePK == null && other.kshmtHdnursingLeavePK != null)
-                || (this.kshmtHdnursingLeavePK != null && !this.kshmtHdnursingLeavePK.equals(
-                        other.kshmtHdnursingLeavePK))) {
+        if ((this.knlmtNursingLeaveSetPK == null && other.knlmtNursingLeaveSetPK != null)
+                || (this.knlmtNursingLeaveSetPK != null && !this.knlmtNursingLeaveSetPK.equals(
+                        other.knlmtNursingLeaveSetPK))) {
             return false;
         }
         return true;
@@ -102,6 +102,6 @@ public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializ
      */
     @Override
     protected Object getKey() {
-        return this.kshmtHdnursingLeavePK;
+        return this.knlmtNursingLeaveSetPK;
     }
 }

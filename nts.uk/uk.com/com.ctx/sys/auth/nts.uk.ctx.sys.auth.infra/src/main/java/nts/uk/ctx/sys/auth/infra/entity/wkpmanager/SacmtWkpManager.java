@@ -16,11 +16,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_WKP_MANAGER")
+@Table(name = "SACMT_WORKPLACE_MANAGER")
 public class SacmtWkpManager extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public SacmtWkpManagerPK  kacmtWorkplaceManagerPK;
+	public SacmtWorkplaceManagerPK  kacmtWorkplaceManagerPK;
 	
 	@Basic(optional = false)
 	@Column(name = "SID")
@@ -43,7 +43,7 @@ public class SacmtWkpManager extends ContractUkJpaEntity implements Serializable
 		return this.kacmtWorkplaceManagerPK;
 	}
 
-	public SacmtWkpManager(SacmtWkpManagerPK kacmtWorkplaceManagerPK, String employeeId, String workplaceId,
+	public SacmtWkpManager(SacmtWorkplaceManagerPK kacmtWorkplaceManagerPK, String employeeId, String workplaceId,
 			GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.kacmtWorkplaceManagerPK = kacmtWorkplaceManagerPK;
@@ -60,7 +60,7 @@ public class SacmtWkpManager extends ContractUkJpaEntity implements Serializable
 	 */
 	public static SacmtWkpManager toEntity(WorkplaceManager domain) {
 		return new SacmtWkpManager(
-					new SacmtWkpManagerPK(domain.getWorkplaceManagerId()),
+					new SacmtWorkplaceManagerPK(domain.getWorkplaceManagerId()),
 					domain.getEmployeeId(),
 					domain.getWorkplaceId(),
 					domain.getHistoryPeriod().start(),

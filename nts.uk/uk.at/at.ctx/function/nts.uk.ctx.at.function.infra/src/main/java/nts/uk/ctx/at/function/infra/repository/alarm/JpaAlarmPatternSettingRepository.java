@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlstPtn;
-import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlstPtnPK;
+import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSetPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth.KfnmtAlstPtnDeftmbsmon;
 
 @Stateless
@@ -60,7 +60,7 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 
 	@Override
 	public void delete(String companyId, String alarmPatternCode) {
-		KfnmtAlstPtnPK pk = new KfnmtAlstPtnPK(companyId, alarmPatternCode);
+		KfnmtAlarmPatternSetPK pk = new KfnmtAlarmPatternSetPK(companyId, alarmPatternCode);
 		this.commandProxy().remove(KfnmtAlstPtn.class, pk);		
 	}
 

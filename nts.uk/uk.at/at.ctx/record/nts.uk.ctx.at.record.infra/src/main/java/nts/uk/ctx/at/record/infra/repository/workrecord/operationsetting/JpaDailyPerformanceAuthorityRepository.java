@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAut;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAutPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAutPk;
 
 /**
  * @author danpv
@@ -45,7 +45,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 
 	@Override
 	public void save(DailyPerformanceAuthority daiPerAuthority) {
-		KrcmtAttendanceAutPk primaryKey = new KrcmtAttendanceAutPk(daiPerAuthority.getCompanyId(), daiPerAuthority.getRoleID(),
+		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getCompanyId(), daiPerAuthority.getRoleID(),
 				daiPerAuthority.getFunctionNo().v());
 		Optional<KrcmtAttendanceAut> daiPerAthrOptional = this.queryProxy().find(primaryKey,
 				KrcmtAttendanceAut.class);

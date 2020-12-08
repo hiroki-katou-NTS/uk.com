@@ -42,12 +42,12 @@ public class JpaUseUnitAutoCalSettingRepository  extends JpaRepository implement
 	@Override
 	public Optional<UseUnitAutoCalSetting> getAllUseUnitAutoCalSetting(String companyId) {
 
-		Optional<KrcmtCalcSetUnitSet> optKrcmtCalcSetUnitSet = this.queryProxy().find(companyId, KrcmtCalcSetUnitSet.class);
+		Optional<KrcmtCalcSetUnitSet> optKshmtAutoUseUnitSet = this.queryProxy().find(companyId, KrcmtCalcSetUnitSet.class);
 
-		if (!optKrcmtCalcSetUnitSet.isPresent()) {
+		if (!optKshmtAutoUseUnitSet.isPresent()) {
 			return Optional.empty();
 		}
-		return Optional.of(new UseUnitAutoCalSetting(new JpaUseUnitAutoCalSettingGetMemento(optKrcmtCalcSetUnitSet.get())));
+		return Optional.of(new UseUnitAutoCalSetting(new JpaUseUnitAutoCalSettingGetMemento(optKshmtAutoUseUnitSet.get())));
 	}
 	
 }

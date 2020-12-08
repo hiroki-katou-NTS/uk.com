@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KRCMT_BONUS_PAY_SET_COM")
+@Table(name = "KBPST_CP_BP_SET")
 public class KbpstCompanyBPSetting extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

@@ -24,14 +24,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KSHMT_HDSTK_SET_EMP")
+@Table(name = "KMFMT_RETENTION_EMP_CTR")
 public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/** The kmfmt retention emp ctr PK. */
 	@EmbeddedId
-	protected KshmtHdstkSetEmpPK kshmtHdstkSetEmpPK;
+	protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
 
 	/** The year amount. */
 	@Basic(optional = false)
@@ -59,7 +59,7 @@ public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtHdstkSetEmpPK != null ? kshmtHdstkSetEmpPK.hashCode() : 0);
+		hash += (kmfmtRetentionEmpCtrPK != null ? kmfmtRetentionEmpCtrPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -74,9 +74,9 @@ public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtHdstkSetEmp other = (KshmtHdstkSetEmp) object;
-		if ((this.kshmtHdstkSetEmpPK == null && other.kshmtHdstkSetEmpPK != null)
-				|| (this.kshmtHdstkSetEmpPK != null
-						&& !this.kshmtHdstkSetEmpPK.equals(other.kshmtHdstkSetEmpPK))) {
+		if ((this.kmfmtRetentionEmpCtrPK == null && other.kmfmtRetentionEmpCtrPK != null)
+				|| (this.kmfmtRetentionEmpCtrPK != null
+						&& !this.kmfmtRetentionEmpCtrPK.equals(other.kmfmtRetentionEmpCtrPK))) {
 			return false;
 		}
 		return true;
@@ -89,7 +89,7 @@ public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtHdstkSetEmpPK;
+		return this.kmfmtRetentionEmpCtrPK;
 	}
 
 }

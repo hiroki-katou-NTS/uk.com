@@ -15,24 +15,24 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_WIDGET_DISPLAY")
+@Table(name = "SPTST_WIDGET_DISPLAY")
 public class SptmtWidgetDisplay extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SptmtWidgetDisplayPK sptmtWidgetDisplayPK;
+	public SptstWidgetDisplayPK sptstWidgetDisplayPK;
 
 	@Column(name = "USE_ATR")
 	public int useAtr;
 	
 	@Override
 	protected Object getKey() {
-		return sptmtWidgetDisplayPK;
+		return sptstWidgetDisplayPK;
 	}
 	
 	public WidgetDisplayItem toDomain() {
-		return WidgetDisplayItem.createFromJavaType(sptmtWidgetDisplayPK.widgetType, useAtr);
+		return WidgetDisplayItem.createFromJavaType(sptstWidgetDisplayPK.widgetType, useAtr);
 	}
 
 }

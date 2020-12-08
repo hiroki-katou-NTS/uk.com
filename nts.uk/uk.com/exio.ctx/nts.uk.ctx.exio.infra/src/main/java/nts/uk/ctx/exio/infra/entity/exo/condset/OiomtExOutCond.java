@@ -26,7 +26,7 @@ public class OiomtExOutCond extends ContractUkJpaEntity implements Serializable 
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExOutCondPk stdOutputCondSetPk;
+	public OiomtStdOutputCondSetPk stdOutputCondSetPk;
 
 	/**
 	 * 外部出力条件名称

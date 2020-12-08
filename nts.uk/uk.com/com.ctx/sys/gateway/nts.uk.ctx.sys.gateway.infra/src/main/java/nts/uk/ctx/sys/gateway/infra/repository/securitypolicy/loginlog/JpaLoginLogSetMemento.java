@@ -13,15 +13,15 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog
 public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	
 	/** The sgwmt login log. */
-	private SgwdtLoginLog sgwdtLoginLog;
+	private SgwdtLoginLog sgwmtLoginLog;
 	
 	/**
 	 * Instantiates a new jpa login log set memento.
 	 *
-	 * @param sgwdtLoginLog the sgwmt login log
+	 * @param sgwmtLoginLog the sgwmt login log
 	 */
-	public JpaLoginLogSetMemento(SgwdtLoginLog sgwdtLoginLog) {
-		this.sgwdtLoginLog = sgwdtLoginLog;
+	public JpaLoginLogSetMemento(SgwdtLoginLog sgwmtLoginLog) {
+		this.sgwmtLoginLog = sgwmtLoginLog;
 	}
 
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setUserId(String userId) {
-		this.sgwdtLoginLog.setUserId(userId);;
+		this.sgwmtLoginLog.setUserId(userId);;
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setContractCode(ContractCode contractCode) {
-		this.sgwdtLoginLog.setContractCd(contractCode.v());
+		this.sgwmtLoginLog.setContractCd(contractCode.v());
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setProgramId(String programId) {
-		this.sgwdtLoginLog.setProgramId(programId);;
+		this.sgwmtLoginLog.setProgramId(programId);;
 	}
 
 	/* (non-Javadoc)
@@ -53,7 +53,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setProcessDateTime(GeneralDateTime processDateTime) {
-		this.sgwdtLoginLog.setProcessDateTime(processDateTime);
+		this.sgwmtLoginLog.setProcessDateTime(processDateTime);
 	}
 
 	/* (non-Javadoc)
@@ -61,7 +61,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setSuccessOrFail(SuccessFailureClassification successOrFail) {
-		this.sgwdtLoginLog.setSuccessOrFailure(successOrFail.value);
+		this.sgwmtLoginLog.setSuccessOrFailure(successOrFail.value);
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +69,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setOperation(OperationSection operation) {
-		this.sgwdtLoginLog.setOperationSection(operation.value);;
+		this.sgwmtLoginLog.setOperationSection(operation.value);;
 	}
 
 }

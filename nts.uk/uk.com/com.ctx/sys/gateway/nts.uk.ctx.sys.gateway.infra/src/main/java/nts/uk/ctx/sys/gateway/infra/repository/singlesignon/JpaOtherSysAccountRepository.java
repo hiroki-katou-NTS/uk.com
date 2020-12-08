@@ -25,9 +25,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAccPK;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAccPK_;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAcc_;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK_;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAcc_;
 
 /**
  * The Class JpaOtherSysAccountRepository.
@@ -37,7 +37,7 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 
 	/** The get by list userids. */
 	private static final String GET_BY_LIST_SID = "SELECT o FROM SgwmtSsoOtherSysAcc o "
-			+ " where o.sgwmtSsoOtherSysAccPK.employeeId IN :lstEmployeeId";
+			+ " where o.sgwmtOtherSysAccPK.employeeId IN :lstEmployeeId";
 
 	/*
 	 * (non-Javadoc)
@@ -48,7 +48,7 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 	 */
 	@Override
 	public void remove(String cid, String employeeId) {
-		SgwmtSsoOtherSysAccPK pk = new SgwmtSsoOtherSysAccPK(cid,employeeId);
+		SgwmtOtherSysAccPK pk = new SgwmtOtherSysAccPK(cid,employeeId);
 
 		if (pk != null) {
 			this.commandProxy().remove(SgwmtSsoOtherSysAcc.class, pk);
@@ -91,8 +91,8 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(SgwmtSsoOtherSysAcc_.ccd), companyCode));
-		predicateList.add(bd.equal(root.get(SgwmtSsoOtherSysAcc_.userName), userName));
+		predicateList.add(bd.equal(root.get(SgwmtOtherSysAcc_.ccd), companyCode));
+		predicateList.add(bd.equal(root.get(SgwmtOtherSysAcc_.userName), userName));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -142,10 +142,10 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(SgwmtSsoOtherSysAcc_.sgwmtSsoOtherSysAccPK).get(SgwmtSsoOtherSysAccPK_.employeeId),
+		predicateList.add(bd.equal(root.get(SgwmtOtherSysAcc_.sgwmtOtherSysAccPK).get(SgwmtOtherSysAccPK_.employeeId),
 				employeeId));
 		predicateList
-				.add(bd.equal(root.get(SgwmtSsoOtherSysAcc_.sgwmtSsoOtherSysAccPK).get(SgwmtSsoOtherSysAccPK_.cid), companyId));
+				.add(bd.equal(root.get(SgwmtOtherSysAcc_.sgwmtOtherSysAccPK).get(SgwmtOtherSysAccPK_.cid), companyId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -173,7 +173,7 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 	@Override
 	public void update(OtherSysAccount otherSysAccCommand, OtherSysAccount otherSysAccDB) {
 		SgwmtSsoOtherSysAcc entity = this.queryProxy()
-				.find(new SgwmtSsoOtherSysAccPK(otherSysAccDB.getCompanyId(),otherSysAccDB.getEmployeeId()), SgwmtSsoOtherSysAcc.class).get();
+				.find(new SgwmtOtherSysAccPK(otherSysAccDB.getCompanyId(),otherSysAccDB.getEmployeeId()), SgwmtSsoOtherSysAcc.class).get();
 
 		// set data
 		entity.setCcd(otherSysAccCommand.getAccountInfo().getCompanyCode().v());

@@ -37,7 +37,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getKrcmtAnyfSortPK().getCid());
+		return new CompanyId(this.typeValue.getKrcstFormulaDisporderPK().getCid());
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 */
 	@Override
 	public OptionalItemNo getOptionalItemNo() {
-		return new OptionalItemNo(this.typeValue.getKrcmtAnyfSortPK().getOptionalItemNo());
+		return new OptionalItemNo(this.typeValue.getKrcstFormulaDisporderPK().getOptionalItemNo());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 */
 	@Override
 	public FormulaId getFormulaId() {
-		return new FormulaId(this.typeValue.getKrcmtAnyfSortPK().getFormulaId());
+		return new FormulaId(this.typeValue.getKrcstFormulaDisporderPK().getFormulaId());
 	}
 
 	/*

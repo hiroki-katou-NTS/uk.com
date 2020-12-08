@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_DIF_STMP_REF_TS")
+@Table(name = "KSHMT_DT_STAMP_REFLECT")
 public class KshmtWtDifStmpRefTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtDifStmpRefTs extends ContractUkJpaEntity implements Serializ
 
 	/** The kshmt dt stamp reflect PK. */
 	@EmbeddedId
-	protected KshmtWtDifStmpRefTsPK kshmtWtDifStmpRefTsPK;
+	protected KshmtDtStampReflectPK kshmtDtStampReflectPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -58,7 +58,7 @@ public class KshmtWtDifStmpRefTs extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtDifStmpRefTsPK != null ? kshmtWtDifStmpRefTsPK.hashCode() : 0);
+		hash += (kshmtDtStampReflectPK != null ? kshmtDtStampReflectPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -73,9 +73,9 @@ public class KshmtWtDifStmpRefTs extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KshmtWtDifStmpRefTs other = (KshmtWtDifStmpRefTs) object;
-		if ((this.kshmtWtDifStmpRefTsPK == null && other.kshmtWtDifStmpRefTsPK != null)
-				|| (this.kshmtWtDifStmpRefTsPK != null
-						&& !this.kshmtWtDifStmpRefTsPK.equals(other.kshmtWtDifStmpRefTsPK))) {
+		if ((this.kshmtDtStampReflectPK == null && other.kshmtDtStampReflectPK != null)
+				|| (this.kshmtDtStampReflectPK != null
+						&& !this.kshmtDtStampReflectPK.equals(other.kshmtDtStampReflectPK))) {
 			return false;
 		}
 		return true;
@@ -88,6 +88,6 @@ public class KshmtWtDifStmpRefTs extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtDifStmpRefTsPK;
+		return this.kshmtDtStampReflectPK;
 	}
 }

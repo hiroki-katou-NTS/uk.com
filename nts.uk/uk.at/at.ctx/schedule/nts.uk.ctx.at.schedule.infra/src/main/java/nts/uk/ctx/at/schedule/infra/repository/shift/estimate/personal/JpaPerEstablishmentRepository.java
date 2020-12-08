@@ -24,17 +24,17 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.personal.PersonalEstablishment;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.personal.PersonalEstablishmentRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSya;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSyaPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSyaPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSya_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSet_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPriceSya;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPriceSyaPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPriceSyaPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPriceSya_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSet_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSya;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSyaPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSyaPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSya_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSet_;
 
 /**
  * The Class JpaPersonalEstablishmentRepository.
@@ -133,13 +133,13 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 
 		// equal Personal id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtEstTimeSya_.kscmtEstTimeSyaPK).get(KscmtEstTimeSyaPK_.sid),
+				root.get(KscmtEstTimePerSet_.kscmtEstTimePerSetPK).get(KscmtEstTimePerSetPK_.sid),
 				employeeId));
 
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstTimeSya_.kscmtEstTimeSyaPK)
-						.get(KscmtEstTimeSyaPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstTimePerSet_.kscmtEstTimePerSetPK)
+						.get(KscmtEstTimePerSetPK_.targetYear), targetYear));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -195,13 +195,13 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstPriceSya_.kscmtEstPriceSyaPK)
-						.get(KscmtEstPriceSyaPK_.sid), employeeId));
+				.add(criteriaBuilder.equal(root.get(KscmtEstPricePerSet_.kscmtEstPricePerSetPK)
+						.get(KscmtEstPricePerSetPK_.sid), employeeId));
 
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstPriceSya_.kscmtEstPriceSyaPK)
-						.get(KscmtEstPriceSyaPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstPricePerSet_.kscmtEstPricePerSetPK)
+						.get(KscmtEstPricePerSetPK_.targetYear), targetYear));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -257,13 +257,13 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 		
 		// equal employee id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtEstDaysSya_.kscmtEstDaysSyaPK).get(KscmtEstDaysSyaPK_.sid),
+				root.get(KscmtEstDaysPerSet_.kscmtEstDaysPerSetPK).get(KscmtEstDaysPerSetPK_.sid),
 				employeeId));
 		
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstDaysSya_.kscmtEstDaysSyaPK)
-						.get(KscmtEstDaysSyaPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstDaysPerSet_.kscmtEstDaysPerSetPK)
+						.get(KscmtEstDaysPerSetPK_.targetYear), targetYear));
 		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -299,7 +299,7 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 	 */
 	public KscmtEstTimeSya toEntityTimeDefault(String PersonalId, int targetYear, int targetCls) {
 		KscmtEstTimeSya entity = new KscmtEstTimeSya();
-		entity.setKscmtEstTimeSyaPK(new KscmtEstTimeSyaPK(PersonalId, targetYear, targetCls));
+		entity.setKscmtEstTimePerSetPK(new KscmtEstTimePerSetPK(PersonalId, targetYear, targetCls));
 		entity.setEstCondition1stTime(DEFAULT_VALUE);
 		entity.setEstCondition2ndTime(DEFAULT_VALUE);
 		entity.setEstCondition3rdTime(DEFAULT_VALUE);
@@ -320,8 +320,8 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 	public KscmtEstPriceSya toEntityPriceDefault(String PersonalId, int targetYear,
 			int targetCls) {
 		KscmtEstPriceSya entity = new KscmtEstPriceSya();
-		entity.setKscmtEstPriceSyaPK(
-				new KscmtEstPriceSyaPK(PersonalId, targetYear, targetCls));
+		entity.setKscmtEstPricePerSetPK(
+				new KscmtEstPricePerSetPK(PersonalId, targetYear, targetCls));
 		entity.setEstCondition1stMny(DEFAULT_VALUE);
 		entity.setEstCondition2ndMny(DEFAULT_VALUE);
 		entity.setEstCondition3rdMny(DEFAULT_VALUE);
@@ -341,7 +341,7 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 	public KscmtEstDaysSya toEntityDaysDefault(String employeeId, int targetYear,
 			int targetCls) {
 		KscmtEstDaysSya entity = new KscmtEstDaysSya();
-		entity.setKscmtEstDaysSyaPK(new KscmtEstDaysSyaPK(employeeId, targetYear, targetCls));
+		entity.setKscmtEstDaysPerSetPK(new KscmtEstDaysPerSetPK(employeeId, targetYear, targetCls));
 		entity.setEstCondition1stDays(DEFAULT_VALUE);
 		entity.setEstCondition2ndDays(DEFAULT_VALUE);
 		entity.setEstCondition3rdDays(DEFAULT_VALUE);
@@ -460,14 +460,14 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 
 		Map<String, KscmtEstTimeSya> mapEstimatePersonal = new HashMap<>();
 		estimatePersonal.forEach(estimate -> {
-			if (!mapEstimatePersonal.containsKey(estimate.getKscmtEstTimeSyaPK().getSid())) {
-				mapEstimatePersonal.put(estimate.getKscmtEstTimeSyaPK().getSid(), estimate);
+			if (!mapEstimatePersonal.containsKey(estimate.getKscmtEstTimePerSetPK().getSid())) {
+				mapEstimatePersonal.put(estimate.getKscmtEstTimePerSetPK().getSid(), estimate);
 			}
 		});
 
 		// to list data
 		return mapEstimatePersonal.values().stream()
-				.map(estimate -> estimate.getKscmtEstTimeSyaPK().getSid())
+				.map(estimate -> estimate.getKscmtEstTimePerSetPK().getSid())
 				.collect(Collectors.toList());
 	}
 	
@@ -498,8 +498,8 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstTimeSya_.kscmtEstTimeSyaPK)
-						.get(KscmtEstTimeSyaPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstTimePerSet_.kscmtEstTimePerSetPK)
+						.get(KscmtEstTimePerSetPK_.targetYear), targetYear));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

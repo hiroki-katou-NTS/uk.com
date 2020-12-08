@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FIX_WORK_TS")
+@Table(name = "KSHMT_FIXED_WORK_TIME_SET")
 public class KshmtWtFixWorkTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFixWorkTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt fixed work time set PK. */
 	@EmbeddedId
-	protected KshmtWtFixWorkTsPK kshmtWtFixWorkTsPK;
+	protected KshmtFixedWorkTimeSetPK kshmtFixedWorkTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -60,10 +60,10 @@ public class KshmtWtFixWorkTs extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new kshmt fixed work time set.
 	 *
-	 * @param kshmtWtFixWorkTsPK the kshmt fixed work time set PK
+	 * @param kshmtFixedWorkTimeSetPK the kshmt fixed work time set PK
 	 */
-	public KshmtWtFixWorkTs(KshmtWtFixWorkTsPK kshmtWtFixWorkTsPK) {
-		this.kshmtWtFixWorkTsPK = kshmtWtFixWorkTsPK;
+	public KshmtWtFixWorkTs(KshmtFixedWorkTimeSetPK kshmtFixedWorkTimeSetPK) {
+		this.kshmtFixedWorkTimeSetPK = kshmtFixedWorkTimeSetPK;
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class KshmtWtFixWorkTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFixWorkTsPK != null ? kshmtWtFixWorkTsPK.hashCode() : 0);
+		hash += (kshmtFixedWorkTimeSetPK != null ? kshmtFixedWorkTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -89,9 +89,9 @@ public class KshmtWtFixWorkTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtFixWorkTs other = (KshmtWtFixWorkTs) object;
-		if ((this.kshmtWtFixWorkTsPK == null && other.kshmtWtFixWorkTsPK != null)
-				|| (this.kshmtWtFixWorkTsPK != null
-						&& !this.kshmtWtFixWorkTsPK.equals(other.kshmtWtFixWorkTsPK))) {
+		if ((this.kshmtFixedWorkTimeSetPK == null && other.kshmtFixedWorkTimeSetPK != null)
+				|| (this.kshmtFixedWorkTimeSetPK != null
+						&& !this.kshmtFixedWorkTimeSetPK.equals(other.kshmtFixedWorkTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -104,7 +104,7 @@ public class KshmtWtFixWorkTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFixWorkTsPK;
+		return this.kshmtFixedWorkTimeSetPK;
 	}
 
 }

@@ -17,13 +17,13 @@ import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonIn
 @Stateless
 public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoInitValSetCtgRepository {
 
-	private static final String SEL_ALL_CTG = "SELECT  b.ppemtCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, "
+	private static final String SEL_ALL_CTG = "SELECT  b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
 			+ " FROM PpemtCtg b " + " INNER JOIN PpemtCtgCommon cm "
-			+ " ON b.categoryCd = cm.ppemtCtgCommonPK.categoryCd " + " INNER JOIN PpemtCtgSort e "
-			+ " ON  b.ppemtCtgPK.perInfoCtgId = e.ppemtCtgPK.perInfoCtgId " + " AND b.cid = e.cid "
+			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtCtgSort e "
+			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId " + " AND b.cid = e.cid "
 			+ " LEFT JOIN PpemtPersonInitValueSettingCtg c "
-			+ " ON  b.ppemtCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId "
+			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId "
 			+ " AND c.settingCtgPk.settingId = :settingId " + " WHERE ( b.abolitionAtr = 0 "
 			+ " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId "
 			+ " AND cm.personEmployeeType = 2 " + " AND  cm.categoryType <> 2 " + " AND cm.categoryType <> 5 "
@@ -35,9 +35,9 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	// sonnlb
 	private final static String SEL_CTG_BY_SET_ID = "SELECT b.categoryCd, b.categoryName "
 			+ " FROM PpemtPersonInitValueSettingCtg c " + " LEFT JOIN PpemtCtg b"
-			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtCtgPK.perInfoCtgId" + " LEFT JOIN PpemtCtgCommon cm "
-			+ " ON b.categoryCd = cm.ppemtCtgCommonPK.categoryCd" + " LEFT JOIN PpemtCtgSort e"
-			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
+			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " LEFT JOIN PpemtCtgCommon cm "
+			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " LEFT JOIN PpemtCtgSort e"
+			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 
 	private final static String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"

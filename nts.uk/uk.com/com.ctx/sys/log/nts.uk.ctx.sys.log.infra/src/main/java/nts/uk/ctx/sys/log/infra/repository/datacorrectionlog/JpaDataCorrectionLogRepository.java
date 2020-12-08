@@ -23,7 +23,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.infra.entity.datacorrectionlog.SrcdtDataCorrection;
-import nts.uk.ctx.sys.log.infra.entity.datacorrectionlog.SrcdtDataCorrectionPk;
+import nts.uk.ctx.sys.log.infra.entity.datacorrectionlog.SrcdtDataCorrectionLogPk;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.processor.DataCorrectionLogWriter;
@@ -85,13 +85,13 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 					Integer yKey = Integer.valueOf(rs.getInt("Y_KEY"));
 					Integer valueType = Integer.valueOf(rs.getInt("VALUE_DATA_TYPE"));
 					
-					SrcdtDataCorrectionPk pk = new SrcdtDataCorrectionPk(operationId, userId, targetDtType,
+					SrcdtDataCorrectionLogPk pk = new SrcdtDataCorrectionLogPk(operationId, userId, targetDtType,
 							itemId, ymdKey);
-					SrcdtDataCorrection srcdtDataCorrection = new SrcdtDataCorrection(pk, userName, sId, ymKey,
+					SrcdtDataCorrection srcdtDataCorrectionLog = new SrcdtDataCorrection(pk, userName, sId, ymKey,
 							yKey, stringKey, correctionAttr, itemName, rawValueBefore, viewValueBefore, rawValueAfter,
 							viewValueAfter, valueType, showOrder, note);
 					
-					resultList.add(srcdtDataCorrection.toDomainToView());
+					resultList.add(srcdtDataCorrectionLog.toDomainToView());
 				}
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
@@ -261,7 +261,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			// SQLServer
 			String sql = "select OPERATION_ID, USER_ID , TARGET_DATA_TYPE,  ITEM_ID, YMD_KEY," // primary Key
 					+ " SID, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR,  ITEM_NAME, VIEW_VALUE_BEFORE, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER" // other
-					+ " from SRCDT_DATA_CORRECTION" //table name
+					+ " from SRCDT_DATA_CORRECTION_LOG" //table name
 					+ " with(index(SRCDI_DATA_CORRECTION_LOG2))";//hint
 			//TODO：ログ照会レスポンス改善
 			//一時対応として、出力するログ自体を減らすため、修正区分を指定
@@ -280,7 +280,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 								  	.paramString("operationIds", subIdList)
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 								  																			rec.getString("USER_ID"), 
 								  																			rec.getInt("TARGET_DATA_TYPE"),
 								  																			rec.getString("ITEM_ID"),
@@ -322,7 +322,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 								  .paramString("operationIds", subIdList)
 								  .paramDate("startYmd", period.start())
 								  .paramDate("endYmd", period.end())
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 												rec.getString("USER_ID"), 
 												rec.getInt("TARGET_DATA_TYPE"),
 												rec.getString("ITEM_ID"),
@@ -365,7 +365,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 									.paramString("operationIds", subIdList)
 									.paramString("listEmployeeId", listEmployeeId)
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 												rec.getString("USER_ID"), 
 												rec.getInt("TARGET_DATA_TYPE"),
 												rec.getString("ITEM_ID"),
@@ -407,7 +407,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 									  .paramDate("endYmd", period.end())
 									  .paramString("operationIds", subIdList)
 									  .paramString("listEmployeeId", listEmployeeId)
-									  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+									  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 													rec.getString("USER_ID"), 
 													rec.getInt("TARGET_DATA_TYPE"),
 													rec.getString("ITEM_ID"),
@@ -454,7 +454,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 							  .paramString("operationIds", operationIds)
 							  .paramInt("targetDataType", targetDataType.value)
-							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -499,7 +499,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramInt("targetDataType", targetDataType.value)
 							  .getList(rec ->	
 							  {
-							  	return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -547,7 +547,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramString("operationIds", subIdList)
 							  .paramInt("targetDataType", targetDataType.value)
 							  .paramString("listEmployeeId", listEmployeeId)
-							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -593,7 +593,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramInt("targetDataType", targetDataType.value)
 							  .paramString("listEmployeeId", listEmployeeId)
 							  	.getList(rec -> {
-							  		return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  		return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -668,7 +668,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			// SQLServer
 			String sql = "select top 1000 OPERATION_ID, USER_ID , TARGET_DATA_TYPE,  ITEM_ID, YMD_KEY," // primary Key
 					+ " SID, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR,  ITEM_NAME, VIEW_VALUE_BEFORE, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER" // other
-					+ " from SRCDT_DATA_CORRECTION" //table name
+					+ " from SRCDT_DATA_CORRECTION_LOG" //table name
 					+ " with(index(SRCDI_DATA_CORRECTION_LOG2))";//hint
 			//TODO：ログ照会レスポンス改善
 			//一時対応として、出力するログ自体を減らすため、修正区分を指定
@@ -684,7 +684,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 								  	.paramString("operationIds", subIdList)
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 								  																			rec.getString("USER_ID"), 
 								  																			rec.getInt("TARGET_DATA_TYPE"),
 								  																			rec.getString("ITEM_ID"),
@@ -718,7 +718,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 								  .paramString("operationIds", subIdList)
 								  .paramDate("startYmd", period.start())
 								  .paramDate("endYmd", period.end())
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 												rec.getString("USER_ID"), 
 												rec.getInt("TARGET_DATA_TYPE"),
 												rec.getString("ITEM_ID"),
@@ -753,7 +753,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 									.paramString("operationIds", subIdList)
 									.paramString("listEmployeeId", subEmployeeId)
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 												rec.getString("USER_ID"), 
 												rec.getInt("TARGET_DATA_TYPE"),
 												rec.getString("ITEM_ID"),
@@ -788,7 +788,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 									  .paramDate("endYmd", period.end())
 									  .paramString("operationIds", subIdList)
 									  .paramString("listEmployeeId", subEmployeeId)
-									  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+									  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 													rec.getString("USER_ID"), 
 													rec.getInt("TARGET_DATA_TYPE"),
 													rec.getString("ITEM_ID"),
@@ -825,7 +825,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 							  .paramString("operationIds", operationIds)
 							  .paramInt("targetDataType", targetDataType.value)
-							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -860,7 +860,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramInt("targetDataType", targetDataType.value)
 							  .getList(rec ->	
 							  {
-							  	return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -897,7 +897,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramString("operationIds", subIdList)
 							  .paramInt("targetDataType", targetDataType.value)
 							  .paramString("listEmployeeId", subEmployeeId)
-							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -934,7 +934,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramInt("targetDataType", targetDataType.value)
 							  .paramString("listEmployeeId", subEmpList)
 							  	.getList(rec -> {
-							  		return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  		return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -977,7 +977,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			// SQLServer
 			String sql = "SELECT OPERATION_ID, USER_ID , TARGET_DATA_TYPE,  ITEM_ID, YMD_KEY," // primary Key
 					+ " SID, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR,  ITEM_NAME, VIEW_VALUE_BEFORE, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER" // other
-					+ " FROM SRCDT_DATA_CORRECTION" //table name
+					+ " FROM SRCDT_DATA_CORRECTION_LOG" //table name
 					+ " WITH(INDEX(SRCDI_DATA_CORRECTION_LOG2))";//hint
 			//TODO：ログ照会レスポンス改善
 			//一時対応として、出力するログ自体を減らすため、修正区分を指定
@@ -996,7 +996,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 								  	.paramString("operationIds", subIdList)
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 								  																			rec.getString("USER_ID"), 
 								  																			rec.getInt("TARGET_DATA_TYPE"),
 								  																			rec.getString("ITEM_ID"),
@@ -1031,7 +1031,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 								  .paramString("operationIds", subIdList)
 								  .paramDate("startYmd", period.start())
 								  .paramDate("endYmd", period.end())
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 												rec.getString("USER_ID"), 
 												rec.getInt("TARGET_DATA_TYPE"),
 												rec.getString("ITEM_ID"),
@@ -1067,7 +1067,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 									.paramString("operationIds", subIdList)
 									.paramString("listEmployeeId", subEmpList)
-								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+								  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 												rec.getString("USER_ID"), 
 												rec.getInt("TARGET_DATA_TYPE"),
 												rec.getString("ITEM_ID"),
@@ -1103,7 +1103,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 									  .paramDate("endYmd", period.end())
 									  .paramString("operationIds", subIdList)
 									  .paramString("listEmployeeId", subEmpIdList)
-									  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+									  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 													rec.getString("USER_ID"), 
 													rec.getInt("TARGET_DATA_TYPE"),
 													rec.getString("ITEM_ID"),
@@ -1141,7 +1141,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
 							  .paramString("operationIds", operationIds)
 							  .paramInt("targetDataType", targetDataType.value)
-							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -1177,7 +1177,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramInt("targetDataType", targetDataType.value)
 							  .getList(rec ->	
 							  {
-							  	return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -1214,7 +1214,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramString("operationIds", subIdList)
 							  .paramInt("targetDataType", targetDataType.value)
 							  .paramString("listEmployeeId", subEmpList)
-							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  	.getList(rec -> {return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),
@@ -1252,7 +1252,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							  .paramInt("targetDataType", targetDataType.value)
 							  .paramString("listEmployeeId", subEmpIdList)
 							  	.getList(rec -> {
-							  		return new SrcdtDataCorrection(new SrcdtDataCorrectionPk(rec.getString("OPERATION_ID"), 
+							  		return new SrcdtDataCorrection(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
 											rec.getInt("TARGET_DATA_TYPE"),
 											rec.getString("ITEM_ID"),

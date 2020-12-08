@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -31,7 +31,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	private List<KshmtPerDayOfWeek> entityDayOfWeeks ;
 	
 	/** The entity work categorys. */
-	private List<KshmtWorkcondCtgegory> entityWorkCategorys ;
+	private List<KshmtPerWorkCategory> entityWorkCategorys ;
 	
 	
 
@@ -44,7 +44,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	public JpaPersonalLaborConditionSetMemento(KshmtPerLaborCond entityCondiotion,
 			List<KshmtPerDayOfWeek> entityDayOfWeeks,
-			List<KshmtWorkcondCtgegory> entityWorkCategorys) {
+			List<KshmtPerWorkCategory> entityWorkCategorys) {
 		if (entityCondiotion.getKshmtPerLaborCondPK() == null) {
 			entityCondiotion.setKshmtPerLaborCondPK(new KshmtPerLaborCondPK());
 		}

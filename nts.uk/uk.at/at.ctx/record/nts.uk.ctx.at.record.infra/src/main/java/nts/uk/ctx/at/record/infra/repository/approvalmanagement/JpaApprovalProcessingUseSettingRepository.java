@@ -28,16 +28,16 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprov
 public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 		implements ApprovalProcessingUseSettingRepository {
 
-	public static final String SEL_USE_JB_SET_BY_CID = "SELECT c FROM KrcmtBossCheckNotJob c WHERE c.krcmtBossCheckNotJobPK.cId = :companyId";
+	public static final String SEL_USE_JB_SET_BY_CID = "SELECT c FROM KrcmtBossCheckNotJob c WHERE c.krcstAppProUseJbSetPK.cId = :companyId";
 
 	private ApprovalProcessingUseSetting fromEntity(Optional<KrcmtApprovalProcess> krcstAppProUseSet,
-			List<KrcmtBossCheckNotJob> lstKrcmtBossCheckNotJob) {
+			List<KrcmtBossCheckNotJob> lstKrcstAppProUseJbSet) {
 		if (krcstAppProUseSet.isPresent()) {
 			ApprovalProcessingUseSetting domain = new ApprovalProcessingUseSetting(krcstAppProUseSet.get().approvalProcessPk.cid,
 					krcstAppProUseSet.get().useDailyBossChk == 1,
 					krcstAppProUseSet.get().useMonthBossChk == 1,
-					lstKrcmtBossCheckNotJob.stream().map((entity) -> {
-						return entity.krcmtBossCheckNotJobPK.jobId;
+					lstKrcstAppProUseJbSet.stream().map((entity) -> {
+						return entity.krcstAppProUseJbSetPK.jobId;
 					}).collect(Collectors.toList())).setSupervisorConfirmErrorAtr(krcstAppProUseSet.get().supervisorConfirmError.intValue());
 			return domain;
 		} else {
@@ -62,18 +62,18 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 			}
 		}
 		
-		List<KrcmtBossCheckNotJob> lstKrcmtBossCheckNotJob;
+		List<KrcmtBossCheckNotJob> lstKrcstAppProUseJbSet;
 		{
-			String sql = "select * from KRCMT_BOSS_CHECK_NOT_JOB"
+			String sql = "select * from KRCST_APP_PRO_USE_JB_SET"
 					+ " where CID = ?";
 			try (val stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, companyId);
-				lstKrcmtBossCheckNotJob = new NtsResultSet(stmt.executeQuery())
+				lstKrcstAppProUseJbSet = new NtsResultSet(stmt.executeQuery())
 						.getList(rec -> KrcmtBossCheckNotJob.MAPPER.toEntity(rec));
 			}
 		}
 		
-		return Optional.ofNullable(fromEntity(krcstAppProUseSet, lstKrcmtBossCheckNotJob));
+		return Optional.ofNullable(fromEntity(krcstAppProUseSet, lstKrcstAppProUseJbSet));
 	}
 
 }

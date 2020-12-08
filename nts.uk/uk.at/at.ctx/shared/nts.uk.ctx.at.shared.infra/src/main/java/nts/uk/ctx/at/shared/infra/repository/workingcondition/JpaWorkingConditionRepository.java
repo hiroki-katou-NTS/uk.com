@@ -39,8 +39,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHist;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistPK_;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHist_;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -140,9 +140,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 
 		// eq company id
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK).get(KshmtWorkcondHistPK_.sid), employeeId));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkcondHist_.strD), baseDate));
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KshmtWorkcondHist_.endD), baseDate));
+				.equal(root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -266,24 +266,24 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 
 		// eq company id
 		if (companyId != null) {
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkcondHist_.cid), companyId));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), companyId));
 		}
 
 		if (sId != null) {
 			lstpredicateWhere.add(criteriaBuilder
-					.equal(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK).get(KshmtWorkcondHistPK_.sid), sId));
+					.equal(root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid), sId));
 		}
 
 		if (historyId != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK).get(KshmtWorkcondHistPK_.historyId), historyId));
+					root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.historyId), historyId));
 		}
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// Order by start date
-		cq.orderBy(criteriaBuilder.desc(root.get(KshmtWorkcondHist_.strD)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KshmtWorkingCond_.strD)));
 
 		// creat query
 		TypedQuery<KshmtWorkcondHist> query = em.createQuery(cq);
@@ -328,9 +328,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			// eq company id
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkcondHist_.cid), cid));
-			lstpredicateWhere.add(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK)
-					.get(KshmtWorkcondHistPK_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), cid));
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -343,7 +343,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		});
 
 		return result.stream()
-				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkcondHistPK().getSid()));
+				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()));
 
 	}
 
@@ -371,11 +371,11 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 
 		// eq company id
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkcondHist_.cid), companyId));
+				.equal(root.get(KshmtWorkingCond_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK).get(KshmtWorkcondHistPK_.sid), employeeId));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkcondHist_.strD), baseDate));
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KshmtWorkcondHist_.endD), baseDate));
+				.equal(root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -423,11 +423,11 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			// eq company id
-			lstpredicateWhere.add(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK)
-					.get(KshmtWorkcondHistPK_.sid).in(subList));
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
 			lstpredicateWhere.add(criteriaBuilder.not(criteriaBuilder.or(
-					criteriaBuilder.lessThan(root.get(KshmtWorkcondHist_.endD), datePeriod.start()),
-					criteriaBuilder.greaterThan(root.get(KshmtWorkcondHist_.strD), datePeriod.end()))));
+					criteriaBuilder.lessThan(root.get(KshmtWorkingCond_.endD), datePeriod.start()),
+					criteriaBuilder.greaterThan(root.get(KshmtWorkingCond_.strD), datePeriod.end()))));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -439,7 +439,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		});
 
 		List<WorkingCondition> data = result.parallelStream()
-				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkcondHistPK().getSid()))
+				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 				.values().parallelStream()
 				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
@@ -522,11 +522,11 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 					List<Predicate> lstpredicateWhere = new ArrayList<>();
 					
 					// eq company id
-					lstpredicateWhere.add(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK)
-							.get(KshmtWorkcondHistPK_.sid).in(subList));
+					lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+							.get(KshmtWorkingCondPK_.sid).in(subList));
 					lstpredicateWhere.add(criteriaBuilder.not(criteriaBuilder.or(
-							criteriaBuilder.lessThan(root.get(KshmtWorkcondHist_.endD), baseDate),
-							criteriaBuilder.greaterThan(root.get(KshmtWorkcondHist_.strD), baseDate))));
+							criteriaBuilder.lessThan(root.get(KshmtWorkingCond_.endD), baseDate),
+							criteriaBuilder.greaterThan(root.get(KshmtWorkingCond_.strD), baseDate))));
 
 
 					// set where to SQL
@@ -539,7 +539,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 				});
 
 				return result.stream()
-						.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkcondHistPK().getSid()))
+						.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 						.values().stream()
 						.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 						.collect(Collectors.toList());
@@ -571,12 +571,12 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			// eq company id
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkcondHist_.cid), cid));
-			lstpredicateWhere.add(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK)
-					.get(KshmtWorkcondHistPK_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), cid));
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
 			lstpredicateWhere.add(criteriaBuilder.not(criteriaBuilder.or(
-					criteriaBuilder.lessThan(root.get(KshmtWorkcondHist_.endD), baseDate),
-					criteriaBuilder.greaterThan(root.get(KshmtWorkcondHist_.strD), baseDate))));
+					criteriaBuilder.lessThan(root.get(KshmtWorkingCond_.endD), baseDate),
+					criteriaBuilder.greaterThan(root.get(KshmtWorkingCond_.strD), baseDate))));
 
 
 			// set where to SQL
@@ -589,7 +589,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		});
 
 		return result.stream()
-				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkcondHistPK().getSid()))
+				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 				.values().stream()
 				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
@@ -621,14 +621,14 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			// eq company id
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkcondHist_.cid), cid));
-			lstpredicateWhere.add(root.get(KshmtWorkcondHist_.kshmtWorkcondHistPK)
-					.get(KshmtWorkcondHistPK_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), cid));
+			lstpredicateWhere.add(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+					.get(KshmtWorkingCondPK_.sid).in(subList));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			// Order by start date DESC
-			cq.orderBy(criteriaBuilder.desc(root.get(KshmtWorkcondHist_.strD)));
+			cq.orderBy(criteriaBuilder.desc(root.get(KshmtWorkingCond_.strD)));
 
 			// creat query
 			TypedQuery<KshmtWorkcondHist> query = em.createQuery(cq);
@@ -637,7 +637,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		});
 
 		return result.stream()
-				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkcondHistPK().getSid()))
+				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 				.values().stream()
 				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
@@ -689,8 +689,8 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	}
 			private static final String GET_DATA_UPDATE = " SELECT c FROM KshmtWorkcondHist c  " 
 					 + " WHERE c.cid = :cid "   
-			         + " AND c.kshmtWorkcondHistPK.sid = :sid "
-		             + " AND c.kshmtWorkcondHistPK.historyId IN :lstHistID ";
+			         + " AND c.kshmtWorkingCondPK.sid = :sid "
+		             + " AND c.kshmtWorkingCondPK.historyId IN :lstHistID ";
 	@Override
 	public void update(WorkingCondition workingCondition, WorkingConditionItem workingConditionItem) {
 		// TODO Auto-generated method stub
@@ -704,7 +704,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 										.setParameter("sid", workingCondition.getEmployeeId())
 										.setParameter("lstHistID",lstHistIDNew)
 										.getList();
-		List<String> lstHistIDOld = lstOldEntity.stream().map( c -> c.getKshmtWorkcondHistPK().getHistoryId()).collect(Collectors.toList());
+		List<String> lstHistIDOld = lstOldEntity.stream().map( c -> c.getKshmtWorkingCondPK().getHistoryId()).collect(Collectors.toList());
 		List<String> lstHistIdUpdate = new ArrayList<>();
 		List<String> lstHistIdAdd = new ArrayList<>();
 		List<String> lstHistIdDelete = new ArrayList<>();
@@ -761,11 +761,11 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	private final static String SELECT_WORK_COND_BY_SID_HIST = new StringBuilder("SELECT item FROM KshmtWorkcondHist item ")
 			.append(" LEFT JOIN  item.KshmtWorkcondHistItem hst ")
 			.append(" WHERE item.cid = :cid ")
-			.append(" AND  item.kshmtWorkcondHistPK.sid = :empID ")
-			.append(" AND  item.kshmtWorkcondHistPK.historyId = :historyId ")
+			.append(" AND  item.kshmtWorkingCondPK.sid = :empID ")
+			.append(" AND  item.kshmtWorkingCondPK.historyId = :historyId ")
 			.toString();
 	private final static String SELECT_ITEM_BY_SID_HIST = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
 			.append(" WHERE hst.cid = :cid ")
 			.append(" AND item.sid = :sid")
 			.append(" AND item.historyId = :historyId")
@@ -773,53 +773,53 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	@Override
 	public void delete(String companyID, String empID, String histID) {
 		//労働条件
-		Optional<KshmtWorkcondHist> kshmtWorkcondHist = this.queryProxy().query(SELECT_WORK_COND_BY_SID_HIST, KshmtWorkcondHist.class)
+		Optional<KshmtWorkcondHist> kshmtWorkingCond = this.queryProxy().query(SELECT_WORK_COND_BY_SID_HIST, KshmtWorkcondHist.class)
 				.setParameter("cid", companyID)
 				.setParameter("empID", empID)
 				.setParameter("historyId", histID)
 				.getSingle();
-		if(kshmtWorkcondHist.isPresent()) {
-			this.commandProxy().remove(kshmtWorkcondHist.get());
+		if(kshmtWorkingCond.isPresent()) {
+			this.commandProxy().remove(kshmtWorkingCond.get());
 		}
 		
 		//労働条件項目
-		Optional<KshmtWorkcondHistItem> kshmtWorkcondHistItem = this.queryProxy().query(SELECT_ITEM_BY_SID_HIST, KshmtWorkcondHistItem.class)
+		Optional<KshmtWorkcondHistItem> kshmtWorkingCondItem = this.queryProxy().query(SELECT_ITEM_BY_SID_HIST, KshmtWorkcondHistItem.class)
 				.setParameter("cid", companyID)
 				.setParameter("sid", empID)
 				.setParameter("historyId", histID)
 				.getSingle();
-		if(kshmtWorkcondHistItem.isPresent()) {
-			this.commandProxy().remove(kshmtWorkcondHistItem.get());
+		if(kshmtWorkingCondItem.isPresent()) {
+			this.commandProxy().remove(kshmtWorkingCondItem.get());
 		}
 	}
 
 	
 	private final static String SELECT_ITEM_BY_SID = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
 			.append(" WHERE hst.cid = :cid ")
 			.append(" AND item.sid = :sid").toString();
 	@Override
 	public void delete(String companyID, String empID) {
-		List<KshmtWorkcondHist> lstKshmtWorkcondHist = this.queryProxy().query(SELECT_WORK_COND_BY_SID, KshmtWorkcondHist.class)
+		List<KshmtWorkcondHist> lstKshmtWorkingCond = this.queryProxy().query(SELECT_WORK_COND_BY_SID, KshmtWorkcondHist.class)
 				.setParameter("cid", companyID)
 				.setParameter("empID", empID)
 				.getList();
-		this.commandProxy().removeAll(lstKshmtWorkcondHist);
+		this.commandProxy().removeAll(lstKshmtWorkingCond);
 		
-		Optional<KshmtWorkcondHistItem> kshmtWorkcondHistItem = this.queryProxy().query(SELECT_ITEM_BY_SID, KshmtWorkcondHistItem.class)
+		Optional<KshmtWorkcondHistItem> kshmtWorkingCondItem = this.queryProxy().query(SELECT_ITEM_BY_SID, KshmtWorkcondHistItem.class)
 			.setParameter("cid", companyID)
 			.setParameter("sid", empID)
 			.getSingle();
-		if(kshmtWorkcondHistItem.isPresent()) {
-			this.commandProxy().remove(kshmtWorkcondHistItem.get());
+		if(kshmtWorkingCondItem.isPresent()) {
+			this.commandProxy().remove(kshmtWorkingCondItem.get());
 		}
 	}
 	
 	
 	private final static String SELECT_WORK_COND_BY_SID = new StringBuilder("SELECT item FROM KshmtWorkcondHist item ")
-			.append(" LEFT JOIN  item.kshmtWorkcondHistItem hst ")
+			.append(" LEFT JOIN  item.kshmtWorkingCondItem hst ")
 			.append(" WHERE item.cid = :cid ")
-			.append(" AND  item.kshmtWorkcondHistPK.sid = :empID ")
+			.append(" AND  item.kshmtWorkingCondPK.sid = :empID ")
 			.toString();
 	@Override
 	public Optional<WorkingCondition> getWorkingCondition(String companyID, String empID) {
@@ -847,7 +847,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	
 	private final static String SELECT_BY_HISTID = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN  item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
 			.append(" WHERE item.historyId = :histID ").toString();
 	@Override
 	public Optional<WorkingConditionItem> getWorkingConditionItem(String histID) {
@@ -859,7 +859,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	
 	private final static String SELECT_BY_LIST_HISTID = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN  item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
 			.append(" WHERE item.historyId IN :listHistID ").toString();
 	@Override
 	public List<WorkingConditionItem> getWorkingConditionItemByListHistID(List<String> listHistID) {
@@ -874,7 +874,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	
 	private final static String SELECT_BY_ID_DATE_NOT_SID = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN  item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
 			.append(" WHERE hst.cid = :cid ")
 			.append(" AND hst.strD <= :ymds ")
 			.append(" AND hst.endD >= :ymds ").toString();
@@ -889,7 +889,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	
 	private final static String SELECT_BY_ID_DATE = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
 			.append(" WHERE hst.cid = :cid ")
 			.append(" AND hst.strD <= :ymds ")
 			.append(" AND hst.endD >= :ymds ")
@@ -908,7 +908,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	
 	private final static String SELECT_BY_LIST_ID_AND_DATE = new StringBuilder("SELECT item FROM KshmtWorkcondHistItem item ")
-			.append(" LEFT JOIN item.kshmtWorkcondHist hst ")
+			.append(" LEFT JOIN item.kshmtWorkingCond hst ")
 			.append(" WHERE hst.cid = :cid ")
 			.append(" AND hst.strD <= :ymds ")
 			.append(" AND hst.endD >= :ymds ")

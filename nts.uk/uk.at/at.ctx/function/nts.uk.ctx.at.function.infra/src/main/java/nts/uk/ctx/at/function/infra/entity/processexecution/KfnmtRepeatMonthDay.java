@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_AUTOEXEC_TASK_DATE")
+@Table(name="KFNMT_REP_MONTH_DAY")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtRepeatMonthDay extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtRepeatMonthDayPK kfnmtAutoexecTaskDatePK;
+    public KfnmtRepeatMonthDayPK kfnmtRepMonthDayPK;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -32,12 +32,12 @@ public class KfnmtRepeatMonthDay extends ContractUkJpaEntity implements Serializ
 	
 	@Override
 	protected Object getKey() {
-		return this.kfnmtAutoexecTaskDatePK;
+		return this.kfnmtRepMonthDayPK;
 	}
 	
-	public KfnmtRepeatMonthDay(KfnmtRepeatMonthDayPK kfnmtAutoexecTaskDatePK) {
+	public KfnmtRepeatMonthDay(KfnmtRepeatMonthDayPK kfnmtRepMonthDayPK) {
 		super();
-		this.kfnmtAutoexecTaskDatePK = kfnmtAutoexecTaskDatePK;
+		this.kfnmtRepMonthDayPK = kfnmtRepMonthDayPK;
 	}
 	
 	public static KfnmtRepeatMonthDay toEntity(String companyId, String execItemCd, RepeatMonthDaysSelect monthDay) {

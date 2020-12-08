@@ -37,7 +37,7 @@ public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshmtOutsideLangPK().getCid());
+		return new CompanyId(this.entity.getKshstOverTimeNameLangPK().getCid());
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento
 	 */
 	@Override
 	public LanguageId getLanguageId() {
-		return new LanguageId(this.entity.getKshmtOutsideLangPK().getLanguageId());
+		return new LanguageId(this.entity.getKshstOverTimeNameLangPK().getLanguageId());
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +69,7 @@ public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento
 	 */
 	@Override
 	public OvertimeNo getOvertimeNo() {
-		return OvertimeNo.valueOf(this.entity.getKshmtOutsideLangPK().getOverTimeNo());
+		return OvertimeNo.valueOf(this.entity.getKshstOverTimeNameLangPK().getOverTimeNo());
 	}
 	
 

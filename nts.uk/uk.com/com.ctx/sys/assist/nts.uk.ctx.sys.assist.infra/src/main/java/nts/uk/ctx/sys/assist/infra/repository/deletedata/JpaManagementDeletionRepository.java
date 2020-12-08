@@ -10,14 +10,14 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspttDeletionMng;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspttDeletionMngPK;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtManagementDeletionPK;
 
 @Stateless
 public class JpaManagementDeletionRepository extends JpaRepository implements ManagementDeletionRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspttDeletionMng f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspttDeletionMngPK.delId =:delId ";
+			+ " WHERE  f.sspdtManagementDeletionPK.delId =:delId ";
 
 	@Override
 	public List<ManagementDeletion> getAllManagementDeletion() {
@@ -43,8 +43,8 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 
 	@Override
 	public void updateTotalCatCount(String delId, int totalCategoryCount) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(delId);
-		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (entityOpt.isPresent()) {
 			SspttDeletionMng entity = entityOpt.get();
 			entity.totalCategoryCount = totalCategoryCount;
@@ -54,8 +54,8 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 
 	@Override
 	public void updateCatCountAnCond(String delId, int categoryCount, OperatingCondition operatingCondition) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(delId);
-		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (entityOpt.isPresent()) {
 			SspttDeletionMng entity = entityOpt.get();
 			entity.categoryCount = categoryCount;
@@ -66,8 +66,8 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 
 	@Override
 	public void update(ManagementDeletion managementDeletion) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(managementDeletion.getDelId());
-		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(managementDeletion.getDelId());
+		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (entityOpt.isPresent()) {
 			SspttDeletionMng entity = entityOpt.get();
 			entity.errorCount = managementDeletion.errorCount;
@@ -77,8 +77,8 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	
 	@Override
 	public void updateCatCount(String delId, int categoryCount) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(delId);
-		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (entityOpt.isPresent()) {
 			SspttDeletionMng entity = entityOpt.get();
 			entity.categoryCount = categoryCount;
@@ -88,8 +88,8 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 
 	@Override
 	public void updateOperationCond(String delId, OperatingCondition operatingCondition) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(delId);
-		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		Optional<SspttDeletionMng> entityOpt = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (entityOpt.isPresent()) {
 			SspttDeletionMng entity = entityOpt.get();
 			entity.operatingCondition = operatingCondition.value;
@@ -99,8 +99,8 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	
 	@Override
 	public void setInterruptDeleting(String delId,int interruptedFlg,OperatingCondition operatingCondition ) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(delId);
-		Optional<SspttDeletionMng> optEntity = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		Optional<SspttDeletionMng> optEntity = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (optEntity.isPresent()) {
 			SspttDeletionMng entity = optEntity.get();
 			entity.operatingCondition = operatingCondition.value;
@@ -111,10 +111,10 @@ public class JpaManagementDeletionRepository extends JpaRepository implements Ma
 	
 	@Override
     public void remove(String delId) {
-		SspttDeletionMngPK sspttDeletionMngPK = new  SspttDeletionMngPK(delId);
-		Optional<SspttDeletionMng> optEntity = this.queryProxy().find(sspttDeletionMngPK, SspttDeletionMng.class);
+		SspdtManagementDeletionPK sspdtManagementDeletionPK = new  SspdtManagementDeletionPK(delId);
+		Optional<SspttDeletionMng> optEntity = this.queryProxy().find(sspdtManagementDeletionPK, SspttDeletionMng.class);
 		if (optEntity.isPresent()) {
-			this.commandProxy().remove(SspttDeletionMng.class, sspttDeletionMngPK);
+			this.commandProxy().remove(SspttDeletionMng.class, sspdtManagementDeletionPK);
 		}
     }
 }

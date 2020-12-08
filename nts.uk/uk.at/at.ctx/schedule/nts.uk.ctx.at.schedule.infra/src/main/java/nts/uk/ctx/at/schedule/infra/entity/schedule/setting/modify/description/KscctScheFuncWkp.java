@@ -14,12 +14,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCCT_SCHE_FUNC_WKP")
+@Table(name = "KSCST_SCHEDULE_WORKPLACE")
 public class KscctScheFuncWkp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KscctScheFuncWkpPK kscctScheFuncWkpPK;
+	public KscstScheduleWorkplacePK kscstScheduleWorkplacePK;
 	
 	/** 表示順 */
 	@Column(name = "DISPLAY_ORDER_WORKPLACE")
@@ -40,7 +40,7 @@ public class KscctScheFuncWkp extends ContractUkJpaEntity implements Serializabl
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscctScheFuncWkpPK;
+		return kscstScheduleWorkplacePK;
 	}
 	
 	

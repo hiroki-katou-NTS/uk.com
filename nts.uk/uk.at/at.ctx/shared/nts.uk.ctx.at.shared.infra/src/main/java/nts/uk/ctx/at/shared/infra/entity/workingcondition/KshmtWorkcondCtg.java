@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKCOND_CTG")
+@Table(name = "KSHMT_PER_WORK_CAT")
 public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -38,7 +38,7 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt per work cat PK. */
 	@EmbeddedId
-	protected KshmtWorkcondCtgPK kshmtWorkcondCtgPK;
+	protected KshmtPerWorkCatPK kshmtPerWorkCatPK;
 	
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -61,7 +61,7 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) ,
 			@JoinColumn(name = "PER_WORK_CAT_ATR", referencedColumnName = "PER_WORK_CAT_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWorkcondCtgTs> kshmtWorkcondCtgTss;
+	private List<KshmtWorkcondCtgTs> kshmtWorkCatTimeZones;
 
 	/**
 	 * Instantiates a new kshmt per work cat.
@@ -78,7 +78,7 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWorkcondCtgPK != null ? kshmtWorkcondCtgPK.hashCode() : 0);
+		hash += (kshmtPerWorkCatPK != null ? kshmtPerWorkCatPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -93,9 +93,9 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWorkcondCtg other = (KshmtWorkcondCtg) object;
-		if ((this.kshmtWorkcondCtgPK == null && other.kshmtWorkcondCtgPK != null)
-				|| (this.kshmtWorkcondCtgPK != null
-						&& !this.kshmtWorkcondCtgPK.equals(other.kshmtWorkcondCtgPK))) {
+		if ((this.kshmtPerWorkCatPK == null && other.kshmtPerWorkCatPK != null)
+				|| (this.kshmtPerWorkCatPK != null
+						&& !this.kshmtPerWorkCatPK.equals(other.kshmtPerWorkCatPK))) {
 			return false;
 		}
 		return true;
@@ -108,28 +108,28 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWorkcondCtgPK;
+		return this.kshmtPerWorkCatPK;
 	}
 
-	public KshmtWorkcondCtg(KshmtWorkcondCtgPK kshmtWorkcondCtgPK, String sid, String workTypeCode, String workTimeCode,
-			List<KshmtWorkcondCtgTs> kshmtWorkcondCtgTss) {
+	public KshmtWorkcondCtg(KshmtPerWorkCatPK kshmtPerWorkCatPK, String sid, String workTypeCode, String workTimeCode,
+			List<KshmtWorkcondCtgTs> kshmtWorkCatTimeZones) {
 		super();
-		this.kshmtWorkcondCtgPK = kshmtWorkcondCtgPK;
+		this.kshmtPerWorkCatPK = kshmtPerWorkCatPK;
 		this.sid = sid;
 		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
-		this.kshmtWorkcondCtgTss = kshmtWorkcondCtgTss;
+		this.kshmtWorkCatTimeZones = kshmtWorkCatTimeZones;
 	}
 	
 	public SingleDaySchedule toDomain() {
 		return new SingleDaySchedule(this.workTypeCode,
-				kshmtWorkcondCtgTss.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+				kshmtWorkCatTimeZones.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.workTimeCode));
 	}
 	
 	public static KshmtWorkcondCtg toEntity(SingleDaySchedule domain,String historyId,String sid,int workCategoryAtr) {
 		return new KshmtWorkcondCtg(
-				new KshmtWorkcondCtgPK(historyId, workCategoryAtr),
+				new KshmtPerWorkCatPK(historyId, workCategoryAtr),
 				sid, 
 				domain.getWorkTypeCode().isPresent()?domain.getWorkTypeCode().get().v():null, 
 				domain.getWorkTimeCode().isPresent()?domain.getWorkTimeCode().get().v():null,

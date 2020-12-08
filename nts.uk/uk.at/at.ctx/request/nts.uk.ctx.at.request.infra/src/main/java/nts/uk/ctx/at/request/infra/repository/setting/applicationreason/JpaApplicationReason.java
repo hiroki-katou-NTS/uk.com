@@ -20,24 +20,24 @@
 //import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 //import nts.uk.ctx.at.request.dom.setting.applicationreason.ReasonTemp;
 //import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqmtAppReason;
-//import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqmtAppReasonPK;
+//import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReasonPK;
 ////import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.shr.com.i18n.TextResource;
 //
 //@Stateless
 //public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
 //	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqmtAppReason c "
-//			+ "WHERE c.krqmtAppReasonPK.companyId = :companyId";
+//			+ "WHERE c.krqstAppReasonPK.companyId = :companyId";
 //	
-//	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqmtAppReasonPK.appType = :appType";
+//	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.appType = :appType";
 //
 //	
-//	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqmtAppReasonPK.reasonID = :reasonID";
+//	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.reasonID = :reasonID";
 //	
 ////	private static final String FINDBYDEFAULT = FINDBYAPPTYPE + " AND c.defaultFlg = :defaultFlg";
 //	
-//	private static final String DELETEREASON = "DELETE FROM KrqmtAppReason c WHERE c.krqmtAppReasonPK.companyId = :companyId "
-//			+ "AND c.krqmtAppReasonPK.appType = :appType AND c.krqmtAppReasonPK.reasonID = :reasonID ";
+//	private static final String DELETEREASON = "DELETE FROM KrqmtAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId "
+//			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.reasonID = :reasonID ";
 //
 //	/**
 //	 * get reason by companyid
@@ -52,9 +52,9 @@
 //	}
 //
 //	private ApplicationReason toOvertimeAppSetDomain(KrqmtAppReason c) {
-//		return ApplicationReason.createSimpleFromJavaType(c.krqmtAppReasonPK.companyId,
-//				c.krqmtAppReasonPK.appType,
-//				c.krqmtAppReasonPK.reasonID,
+//		return ApplicationReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
+//				c.krqstAppReasonPK.appType,
+//				c.krqstAppReasonPK.reasonID,
 //				c.dispOrder,
 //				c.reasonTemp,
 //				c.defaultFlg
@@ -119,7 +119,7 @@
 //	 * @author yennth
 //	 */
 //	private KrqmtAppReason toEntity(ApplicationReason domain){
-//		val entity = new KrqmtAppReason(new KrqmtAppReasonPK(domain.getCompanyId(), domain.getAppType().value, domain.getReasonID()), 
+//		val entity = new KrqmtAppReason(new KrqstAppReasonPK(domain.getCompanyId(), domain.getAppType().value, domain.getReasonID()), 
 //				domain.getDispOrder(), domain.getReasonTemp().v(), domain.getDefaultFlg().value);
 //		return entity;
 //	}

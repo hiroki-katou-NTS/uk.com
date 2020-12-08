@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtPerCostExtraItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtPerCostExtraItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaAggregateSettingSetMemento extends JpaRepository implements AggregateSettingSetMemento {
 
 	/** The kscst est aggregate set. */
-	private KscmtEstAggregate kscmtEstAggregate;
+	private KscmtEstAggregate kscstEstAggregateSet;
 
 	/**
 	 * Instantiates a new jpa aggregate setting set memento.
@@ -34,10 +34,10 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 * @param entity the entity
 	 */
 	public JpaAggregateSettingSetMemento(KscmtEstAggregate entity) {
-		if (CollectionUtil.isEmpty(entity.getKscmtPerCostExtraItem())) {
-			entity.setKscmtPerCostExtraItem(new ArrayList<>());
+		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
+			entity.setKscstPerCostExtraItem(new ArrayList<>());
 		}
-		this.kscmtEstAggregate = entity;
+		this.kscstEstAggregateSet = entity;
 	}
 
 	/*
@@ -49,7 +49,7 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.kscmtEstAggregate.setCid(companyId.v());
+		this.kscstEstAggregateSet.setCid(companyId.v());
 	}
 
 	/*
@@ -60,16 +60,16 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 */
 	@Override
 	public void setPremiumNo(List<ExtraTimeItemNo> premiumNo) {
-		String companyId = this.kscmtEstAggregate.getCid();
+		String companyId = this.kscstEstAggregateSet.getCid();
 
 		// convert map entity
-		Map<KscmtPerCostExtraItemPK, KscmtPerCostExtraItem> mapEntity = this.kscmtEstAggregate
-				.getKscmtPerCostExtraItem().stream().collect(Collectors.toMap(
-						item -> ((KscmtPerCostExtraItem) item).getKscmtPerCostExtraItemPK(), Function.identity()));
+		Map<KscstPerCostExtraItemPK, KscmtPerCostExtraItem> mapEntity = this.kscstEstAggregateSet
+				.getKscstPerCostExtraItem().stream().collect(Collectors.toMap(
+						item -> ((KscmtPerCostExtraItem) item).getKscstPerCostExtraItemPK(), Function.identity()));
 
 		// set item list
-		this.kscmtEstAggregate.setKscmtPerCostExtraItem(premiumNo.stream().map(item -> {
-			KscmtPerCostExtraItemPK pk = new KscmtPerCostExtraItemPK(companyId, item.v());
+		this.kscstEstAggregateSet.setKscstPerCostExtraItem(premiumNo.stream().map(item -> {
+			KscstPerCostExtraItemPK pk = new KscstPerCostExtraItemPK(companyId, item.v());
 			if (mapEntity.containsKey(pk)) {
 				return mapEntity.get(pk);
 			}
@@ -86,10 +86,10 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 */
 	@Override
 	public void setMonthlyWorkingDaySetting(MonthlyWorkingDaySetting monthlyWorkingDaySetting) {
-		this.kscmtEstAggregate.setHalfDayAtr(monthlyWorkingDaySetting.getHalfDayAtr().value);
-		this.kscmtEstAggregate.setYearHdAtr(monthlyWorkingDaySetting.getYearHdAtr().value);
-		this.kscmtEstAggregate.setSphdAtr(monthlyWorkingDaySetting.getSphdAtr().value);
-		this.kscmtEstAggregate.setHavyHdAtr(monthlyWorkingDaySetting.getHavyHdAtr().value);
+		this.kscstEstAggregateSet.setHalfDayAtr(monthlyWorkingDaySetting.getHalfDayAtr().value);
+		this.kscstEstAggregateSet.setYearHdAtr(monthlyWorkingDaySetting.getYearHdAtr().value);
+		this.kscstEstAggregateSet.setSphdAtr(monthlyWorkingDaySetting.getSphdAtr().value);
+		this.kscstEstAggregateSet.setHavyHdAtr(monthlyWorkingDaySetting.getHavyHdAtr().value);
 	}
 
 }

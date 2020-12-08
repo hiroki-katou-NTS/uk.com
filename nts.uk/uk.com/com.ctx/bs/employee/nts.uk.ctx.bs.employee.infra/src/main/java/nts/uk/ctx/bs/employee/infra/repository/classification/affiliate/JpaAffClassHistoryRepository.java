@@ -69,7 +69,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	public Optional<DateHistoryItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				"select * from BSYMT_AFF_CLASS_HIST"
+				"select * from BSYMT_AFF_CLASS_HISTORY"
 				+ " where SID = ?"
 				+ " and START_DATE <= ?"
 				+ " and END_DATE >= ?")) {
@@ -225,7 +225,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
 					+ " WHERE  CID = ?" 
 					+ " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" 
@@ -261,7 +261,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
 					+ " WHERE  CID = ?" 
 					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE ASC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -286,7 +286,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	public List<AffClassHistory> getBySidsWithCid(String cid, List<String> sids) {
 		List<BsymtAffClassHist> entityLst = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
 					+ " WHERE  CID = ?" 
 					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"  + " ORDER BY SID, START_DATE DESC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -404,7 +404,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			GeneralDate standardDate) {
 		List<BsymtAffClassHist> entityLst = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
 					+ " WHERE  CID = ?" 
 					+ " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" 

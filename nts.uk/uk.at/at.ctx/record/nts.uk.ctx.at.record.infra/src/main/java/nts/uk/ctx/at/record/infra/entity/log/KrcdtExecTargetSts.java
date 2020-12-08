@@ -19,12 +19,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXEC_TARGET_STS")
+@Table(name = "KRCDT_EMP_EXE_TARGET_STT")
 public class KrcdtExecTargetSts extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KrcdtExecTargetStsPK KrcdtExecTargetStsPK;
+	public KrcdtEmpExeTargetSttPK KrcdtEmpExeTargetSttPK;
 	
 	@Column(name = "EXECUTION_STATE")
 	public int executionState;
@@ -36,15 +36,15 @@ public class KrcdtExecTargetSts extends ContractUkJpaEntity implements Serializa
 	})
 	public KrcdtExecTarget empExeTarget;
 
-	public KrcdtExecTargetSts(KrcdtExecTargetStsPK krcdtExecTargetStsPK, int executionState) {
+	public KrcdtExecTargetSts(KrcdtEmpExeTargetSttPK krcdtEmpExeTargetSttPK, int executionState) {
 		super();
-		KrcdtExecTargetStsPK = krcdtExecTargetStsPK;
+		KrcdtEmpExeTargetSttPK = krcdtEmpExeTargetSttPK;
 		this.executionState = executionState;
 	}
 	
 	@Override
 	protected Object getKey() {
-		return this.KrcdtExecTargetStsPK;
+		return this.KrcdtEmpExeTargetSttPK;
 	}
 
 }

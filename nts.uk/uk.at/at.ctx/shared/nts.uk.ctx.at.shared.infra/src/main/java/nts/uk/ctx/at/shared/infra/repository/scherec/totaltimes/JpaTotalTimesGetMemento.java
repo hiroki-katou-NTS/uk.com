@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjects;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjectsPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimes;
 
 /**
@@ -45,7 +45,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtTotalTimesPK().getCid();
+		return this.entity.getKshstTotalTimesPK().getCid();
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 */
 	@Override
 	public Integer getTotalCountNo() {
-		return this.entity.getKshmtTotalTimesPK().getTotalTimesNo();
+		return this.entity.getKshstTotalTimesPK().getTotalTimesNo();
 	}
 
 	/*
@@ -136,14 +136,14 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 		SummaryList summaryList = new SummaryList();
 		summaryList.setWorkTimeCodes(this.entity.getListTotalSubjects().stream()
 				.filter(item -> WorkTypeAtr.WORKINGTIME.equals(
-						WorkTypeAtr.valueOf(item.getKshmtTotalSubjectsPK().getWorkTypeAtr())))
-				.map(KshmtTotalSubjects::getKshmtTotalSubjectsPK)
-				.map(KshmtTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
+						WorkTypeAtr.valueOf(item.getKshstTotalSubjectsPK().getWorkTypeAtr())))
+				.map(KshmtTotalSubjects::getKshstTotalSubjectsPK)
+				.map(KshstTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
 		summaryList.setWorkTypeCodes(this.entity.getListTotalSubjects().stream()
 				.filter(item -> WorkTypeAtr.WORKTYPE.equals(
-						WorkTypeAtr.valueOf(item.getKshmtTotalSubjectsPK().getWorkTypeAtr())))
-				.map(KshmtTotalSubjects::getKshmtTotalSubjectsPK)
-				.map(KshmtTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
+						WorkTypeAtr.valueOf(item.getKshstTotalSubjectsPK().getWorkTypeAtr())))
+				.map(KshmtTotalSubjects::getKshstTotalSubjectsPK)
+				.map(KshstTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
 		
 		return summaryList;
 	}

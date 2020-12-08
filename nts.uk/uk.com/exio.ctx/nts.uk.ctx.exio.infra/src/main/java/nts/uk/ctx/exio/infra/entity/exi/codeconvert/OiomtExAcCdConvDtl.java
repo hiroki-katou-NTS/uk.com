@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_CD_CONV_DTL")
+@Table(name = "OIOMT_CD_CONVERT_DETAILS")
 public class OiomtExAcCdConvDtl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class OiomtExAcCdConvDtl extends ContractUkJpaEntity implements Serializa
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcCdConvDtlPk cdConvertDetailsPk;
+	public OiomtCdConvertDetailsPk cdConvertDetailsPk;
 
 	/**
 	 * 出力項目
@@ -48,7 +48,7 @@ public class OiomtExAcCdConvDtl extends ContractUkJpaEntity implements Serializa
 	@ManyToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "CONVERT_CD", referencedColumnName = "CONVERT_CD") })
-	private OiomtExAcCdConv oiomtExAcCdConv;
+	private OiomtExAcCdConv oiomtAcceptCdConvert;
 
 	@Override
 	protected Object getKey() {

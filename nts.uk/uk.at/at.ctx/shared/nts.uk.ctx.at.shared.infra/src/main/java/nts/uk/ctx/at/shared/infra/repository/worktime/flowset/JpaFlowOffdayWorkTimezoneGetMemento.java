@@ -30,8 +30,8 @@ public class JpaFlowOffdayWorkTimezoneGetMemento implements FlowOffdayWtzGetMeme
 	public JpaFlowOffdayWorkTimezoneGetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloHolTs())) {
-			this.entity.setLstKshmtWtFloHolTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFworkHolidayTime())) {
+			this.entity.setLstKshmtFworkHolidayTime(new ArrayList<>());
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class JpaFlowOffdayWorkTimezoneGetMemento implements FlowOffdayWtzGetMeme
 	 */
 	@Override
 	public List<FlowWorkHolidayTimeZone> getLstWorkTimezone() {
-		return this.entity.getLstKshmtWtFloHolTs().stream()
+		return this.entity.getLstKshmtFworkHolidayTime().stream()
 				.map(entity -> new FlowWorkHolidayTimeZone(new JpaFlowWorkHolidayTimeZoneGetMemento(entity)))
 				.sorted((item1, item2) -> item1.getWorktimeNo().compareTo(item2.getWorktimeNo()))
 				.collect(Collectors.toList());

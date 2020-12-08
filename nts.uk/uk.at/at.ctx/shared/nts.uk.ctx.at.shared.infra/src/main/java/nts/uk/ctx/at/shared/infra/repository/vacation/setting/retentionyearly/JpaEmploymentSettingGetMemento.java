@@ -33,7 +33,7 @@ public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMem
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.getKshmtHdstkSetEmpPK().getCid();
+		return this.typeValue.getKmfmtRetentionEmpCtrPK().getCid();
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMem
 	 */
 	@Override
 	public String getEmploymentCode() {
-		return this.typeValue.getKshmtHdstkSetEmpPK().getEmpCtrCd();
+		return this.typeValue.getKmfmtRetentionEmpCtrPK().getEmpCtrCd();
 	}
 
 	/*

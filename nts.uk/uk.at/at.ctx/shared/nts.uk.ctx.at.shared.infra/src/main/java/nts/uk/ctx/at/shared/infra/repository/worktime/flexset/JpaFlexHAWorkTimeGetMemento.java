@@ -64,7 +64,7 @@ public class JpaFlexHAWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMement
 	 */
 	@Override
 	public AmPmAtr getAmpmAtr() {
-		return AmPmAtr.valueOf(this.entity.getKshmtWtFleBrFlWekPK().getAmPmAtr());
+		return AmPmAtr.valueOf(this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr());
 	}
 
 }

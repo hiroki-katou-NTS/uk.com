@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_HDPAID_SET")
+@Table(name = "KALMT_ANNUAL_PAID_LEAVE")
 public class KshmtHdpaidSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -50,7 +50,7 @@ public class KshmtHdpaidSet extends ContractUkJpaEntity implements Serializable 
     /** The kmamt mng annual set. */
     @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    public KshmtHdpaidSetMng kshmtHdpaidSetMng;
+    public KshmtHdpaidSetMng kmamtMngAnnualSet;
     
     /** The ktvmt time vacation set. */
     @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)

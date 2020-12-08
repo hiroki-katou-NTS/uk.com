@@ -63,7 +63,7 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 	}
 
 	private ScheduleAuthority convertToDomainAut(KscctScheFuncSya authority) {
-		ScheduleAuthority scheduleAuthority = ScheduleAuthority.createFromJavaType(authority.kscctScheFuncSyaPK.functionNoAuth
+		ScheduleAuthority scheduleAuthority = ScheduleAuthority.createFromJavaType(authority.kscstScheduleAuthorityPK.functionNoAuth
 				, authority.displayOrderAuth
 				, authority.displayNameAuth
 				, authority.descriptionAuth
@@ -78,7 +78,7 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 	}
 	
 	private ScheduleCommon convertToDomainCom(KscctScheFuncCommon common) {
-		ScheduleCommon scheduleCommon = ScheduleCommon.createFromJavaType(common.kscctScheFuncCommonPK.functionNoCom
+		ScheduleCommon scheduleCommon = ScheduleCommon.createFromJavaType(common.kscstScheduleCommonPK.functionNoCom
 				, common.displayOrderCom
 				, common.displayNameCom
 				, common.descriptionCom
@@ -93,7 +93,7 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 	}
 	
 	private ScheduleDate convertToDomainDate(KscctScheFuncDate date) {
-		ScheduleDate scheduleDate = ScheduleDate.createFromJavaType(date.kscctScheFuncDatePK.functionNoDate
+		ScheduleDate scheduleDate = ScheduleDate.createFromJavaType(date.kscstScheduleDatePK.functionNoDate
 				, date.displayOrderDate
 				, date.displayNameDate
 				, date.descriptionDate
@@ -108,7 +108,7 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 	}
 	
 	private ScheduleShift convertToDomainShift(KscctScheFuncShift shift) {
-		ScheduleShift scheduleShift = ScheduleShift.createFromJavaType(shift.kscctScheFuncShiftPK.functionNoShift
+		ScheduleShift scheduleShift = ScheduleShift.createFromJavaType(shift.kscstScheduleShiftPK.functionNoShift
 				, shift.displayOrderShift
 				, shift.displayNameShift
 				, shift.descriptionShift
@@ -123,7 +123,7 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 	}
 	
 	private ScheduleWorkplace convertToDomainWork(KscctScheFuncWkp workplace) {
-		ScheduleWorkplace scheduleWorkplace = ScheduleWorkplace.createFromJavaType(workplace.kscctScheFuncWkpPK.functionNoWork
+		ScheduleWorkplace scheduleWorkplace = ScheduleWorkplace.createFromJavaType(workplace.kscstScheduleWorkplacePK.functionNoWork
 				, workplace.displayOrderWork
 				, workplace.displayNameWork
 				, workplace.descriptionWork

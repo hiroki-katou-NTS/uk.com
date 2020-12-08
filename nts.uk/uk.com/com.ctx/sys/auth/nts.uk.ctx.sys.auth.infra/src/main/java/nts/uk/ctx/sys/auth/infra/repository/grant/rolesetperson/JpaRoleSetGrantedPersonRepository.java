@@ -22,24 +22,24 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedP
 @Stateless
 public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements RoleSetGrantedPersonRepository {
 
-	private static final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRolesetGrantedPerson r Where r.companyId = :companyId And r.roleSetCd = :roleSetCd";
+	private static final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.companyId = :companyId And r.roleSetCd = :roleSetCd";
 
-	private static final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRolesetGrantedPerson c"
+	private static final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
 			+ " WHERE c.companyId = :companyId"
 			+ " AND c.employeeId = :employeeId"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
-	private static final String FIND_BY_DETAIL = "SELECT c FROM SacmtRolesetGrantedPerson c"
+	private static final String FIND_BY_DETAIL = "SELECT c FROM SacmtRoleSetGrantedPerson c"
 			+ " WHERE c.companyId = :companyId"
 			+ " AND c.employeeId = :employeeId"
 			+ " AND c.roleSetCd IN :roleCDLst"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
-	private static final String SELECT_BY_DATE = "SELECT c FROM SacmtRolesetGrantedPerson c"
+	private static final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
 			+ " WHERE c.employeeId = :employeeId"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	//hoatt - RQ139
-	private static final String GET_SID_BY_ROLE_DATE = "SELECT c.employeeId FROM SacmtRolesetGrantedPerson c"
+	private static final String GET_SID_BY_ROLE_DATE = "SELECT c.employeeId FROM SacmtRoleSetGrantedPerson c"
 			+ " WHERE c.companyId = :companyID"
 			+ " AND c.employeeId IN :lstSid"
 			+ " AND c.roleSetCd IN :roleSetCDLst"

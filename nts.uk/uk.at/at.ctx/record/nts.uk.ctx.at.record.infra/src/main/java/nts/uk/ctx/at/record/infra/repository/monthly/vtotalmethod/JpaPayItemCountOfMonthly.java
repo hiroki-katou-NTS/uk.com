@@ -10,7 +10,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMPayAbsn;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMPayAttn;
-import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMPayAttnPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDaysPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -93,13 +93,13 @@ public class JpaPayItemCountOfMonthly extends JpaRepository implements PayItemCo
 		val attendanceDays = payItemCountOfMonthly.getPayAttendanceDays();
 		for (val workTypeCode : attendanceDays){
 			KrcmtCalcMPayAttn entity = new KrcmtCalcMPayAttn();
-			entity.PK = new KrcmtCalcMPayAttnPK(companyId, workTypeCode.v());
+			entity.PK = new KrcstMonPayAttnDaysPK(companyId, workTypeCode.v());
 			this.getEntityManager().persist(entity);
 		}
 		val absenceDays = payItemCountOfMonthly.getPayAbsenceDays();
 		for (val workTypeCode : absenceDays){
 			KrcmtCalcMPayAbsn entity = new KrcmtCalcMPayAbsn();
-			entity.PK = new KrcmtCalcMPayAttnPK(companyId, workTypeCode.v());
+			entity.PK = new KrcstMonPayAttnDaysPK(companyId, workTypeCode.v());
 			this.getEntityManager().persist(entity);
 		}
 	}

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_STMP_REF_TS")
+@Table(name = "KSHMT_FLEX_STAMP_REFLECT")
 public class KshmtWtFleStmpRefTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFleStmpRefTs extends ContractUkJpaEntity implements Serializ
 
 	/** The kshmt flex stamp reflect PK. */
 	@EmbeddedId
-	protected KshmtWtFleStmpRefTsPK kshmtWtFleStmpRefTsPK;
+	protected KshmtFlexStampReflectPK kshmtFlexStampReflectPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -53,11 +53,11 @@ public class KshmtWtFleStmpRefTs extends ContractUkJpaEntity implements Serializ
 	/**
 	 * Instantiates a new kshmt flex stamp reflect.
 	 *
-	 * @param kshmtWtFleStmpRefTsPK the kshmt flex stamp reflect PK
+	 * @param kshmtFlexStampReflectPK the kshmt flex stamp reflect PK
 	 */
-	public KshmtWtFleStmpRefTs(KshmtWtFleStmpRefTsPK kshmtWtFleStmpRefTsPK) {
+	public KshmtWtFleStmpRefTs(KshmtFlexStampReflectPK kshmtFlexStampReflectPK) {
 		super();
-		this.kshmtWtFleStmpRefTsPK = kshmtWtFleStmpRefTsPK;
+		this.kshmtFlexStampReflectPK = kshmtFlexStampReflectPK;
 	}
 	/*
 	 * (non-Javadoc)
@@ -67,7 +67,7 @@ public class KshmtWtFleStmpRefTs extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleStmpRefTsPK != null ? kshmtWtFleStmpRefTsPK.hashCode() : 0);
+		hash += (kshmtFlexStampReflectPK != null ? kshmtFlexStampReflectPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -82,9 +82,9 @@ public class KshmtWtFleStmpRefTs extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KshmtWtFleStmpRefTs other = (KshmtWtFleStmpRefTs) object;
-		if ((this.kshmtWtFleStmpRefTsPK == null && other.kshmtWtFleStmpRefTsPK != null)
-				|| (this.kshmtWtFleStmpRefTsPK != null
-						&& !this.kshmtWtFleStmpRefTsPK.equals(other.kshmtWtFleStmpRefTsPK))) {
+		if ((this.kshmtFlexStampReflectPK == null && other.kshmtFlexStampReflectPK != null)
+				|| (this.kshmtFlexStampReflectPK != null
+						&& !this.kshmtFlexStampReflectPK.equals(other.kshmtFlexStampReflectPK))) {
 			return false;
 		}
 		return true;
@@ -97,7 +97,7 @@ public class KshmtWtFleStmpRefTs extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleStmpRefTsPK;
+		return this.kshmtFlexStampReflectPK;
 	}
 
 }

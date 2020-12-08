@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OVER_FRAME")
+@Table(name = "KSHST_OVERTIME_FRAME")
 public class KshmtOverFrame extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtOverFrame extends ContractUkJpaEntity implements Serializable 
     
     /** The kshst overtime frame PK. */
     @EmbeddedId
-    protected KshmtOverFramePK kshmtOverFramePK;
+    protected KshstOvertimeFramePK kshstOvertimeFramePK;
     
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
@@ -60,7 +60,7 @@ public class KshmtOverFrame extends ContractUkJpaEntity implements Serializable 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtOverFramePK != null ? kshmtOverFramePK.hashCode() : 0);
+        hash += (kshstOvertimeFramePK != null ? kshstOvertimeFramePK.hashCode() : 0);
         return hash;
     }
 
@@ -73,7 +73,7 @@ public class KshmtOverFrame extends ContractUkJpaEntity implements Serializable 
             return false;
         }
         KshmtOverFrame other = (KshmtOverFrame) object;
-        if ((this.kshmtOverFramePK == null && other.kshmtOverFramePK != null) || (this.kshmtOverFramePK != null && !this.kshmtOverFramePK.equals(other.kshmtOverFramePK))) {
+        if ((this.kshstOvertimeFramePK == null && other.kshstOvertimeFramePK != null) || (this.kshstOvertimeFramePK != null && !this.kshstOvertimeFramePK.equals(other.kshstOvertimeFramePK))) {
             return false;
         }
         return true;
@@ -84,7 +84,7 @@ public class KshmtOverFrame extends ContractUkJpaEntity implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtOverFramePK;
+		return this.kshstOvertimeFramePK;
 	}
     
 }

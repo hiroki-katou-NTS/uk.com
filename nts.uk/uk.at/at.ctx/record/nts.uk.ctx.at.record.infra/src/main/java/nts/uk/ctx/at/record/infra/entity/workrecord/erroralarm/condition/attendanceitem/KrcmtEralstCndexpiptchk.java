@@ -37,7 +37,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CNDEXPIPTCHK")
+@Table(name = "KRCST_ER_AL_CON_GROUP")
 public class KrcmtEralstCndexpiptchk extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -56,11 +56,11 @@ public class KrcmtEralstCndexpiptchk extends ContractUkJpaEntity implements Seri
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = true) })
 	public List<KrcmtEralstCndgrp> lstAtdItemCon;
 	
-    @OneToOne(mappedBy="krcmtEralstCndexpiptchk1")
+    @OneToOne(mappedBy="krcstErAlConGroup1")
 	public KrcmtErAlCondition krcmtErAlCondition;
     
-    @OneToOne(mappedBy="krcmtEralstCndexpiptchk1")
-	public KrcmtMonCorrectCndAtd krcmtMonCorrectCndAtd;
+    @OneToOne(mappedBy="krcstErAlConGroup1")
+	public KrcmtMonCorrectCndAtd krcmtTimeChkMonthly;
     
 	@Override
 	protected Object getKey() {

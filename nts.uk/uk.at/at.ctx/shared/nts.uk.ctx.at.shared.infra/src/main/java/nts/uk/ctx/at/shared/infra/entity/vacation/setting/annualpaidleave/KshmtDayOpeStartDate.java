@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name="KSHMT_DAY_OPE_START_DATE")
+@Table(name="KSHST_START_SET_DAILY_PFM")
 public class KshmtDayOpeStartDate extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

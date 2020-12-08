@@ -82,7 +82,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@Override
 	public Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId) {
 		try (PreparedStatement sql = this.connection().prepareStatement(
-				"SELECT * FROM KRCDT_HD_SP_REMAIN"
+				"SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
 				+ " WHERE SPECIAL_LEAVE_ID = ?")) {
 
 			sql.setString(1, specialId);
@@ -234,7 +234,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
 			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
 			
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HD_SP_REMAIN"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
 						+ " WHERE SID = ?"
 						+ " AND SPECIAL_LEAVE_CD = ?"
 						+ " AND GRANT_DATE <= ?"
@@ -276,7 +276,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<SpecialLeaveGrantRemainingData> getByNextDate(String sid, int speCode, DatePeriod datePriod,
 			GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HD_SP_REMAIN"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
 				+ " WHERE SID = ?"
 				+ " AND SPECIAL_LEAVE_CD = ?"
 				+ " AND GRANT_DATE > ?"

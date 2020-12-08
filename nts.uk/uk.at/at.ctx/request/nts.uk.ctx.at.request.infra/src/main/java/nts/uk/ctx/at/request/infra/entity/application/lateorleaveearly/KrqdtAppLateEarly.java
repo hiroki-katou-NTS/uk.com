@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author hieult
  */
 @Entity
-@Table(name = "KRQDT_APP_LATE_EARLY")
+@Table(name = "KRQDT_APP_LATE_OR_LEAVE")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -29,7 +29,7 @@ public class KrqdtAppLateEarly  extends ContractUkJpaEntity implements Serializa
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrqdtAppLateEarlyPK krqdtAppLateEarlyPK;
+	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
 	
 	@Column(name = "ACTUAL_CANCEL_ATR")
 	public int actualCancelAtr;
@@ -60,12 +60,12 @@ public class KrqdtAppLateEarly  extends ContractUkJpaEntity implements Serializa
 	
 	@Override
 	protected Object getKey() {
-		return krqdtAppLateEarlyPK;
+		return krqdtAppLateOrLeavePK;
 	}
 	
 	public LateOrLeaveEarly toDomain() {
 //		LateOrLeaveEarly lateOrLeaveEarly = LateOrLeaveEarly.builder()
-//				.application(Application_New.builder().appID(this.krqdtAppLateEarlyPK.appID).companyID(this.krqdtAppLateEarlyPK.companyID).build())
+//				.application(Application_New.builder().appID(this.krqdtAppLateOrLeavePK.appID).companyID(this.krqdtAppLateOrLeavePK.companyID).build())
 //				.actualCancelAtr(this.actualCancelAtr)
 //				.early1(EnumAdaptor.valueOf(this.early1, Select.class))
 //				.earlyTime1(getEarlyTime1())
@@ -82,7 +82,7 @@ public class KrqdtAppLateEarly  extends ContractUkJpaEntity implements Serializa
 	
 	public static KrqdtAppLateEarly toEntity(LateOrLeaveEarly domain){
 //		return new KrqdtAppLateEarly (
-//					new KrqdtAppLateEarlyPK(
+//					new KrqdtAppLateOrLeavePK(
 //							domain.getApplication().getCompanyID(), 
 //							domain.getApplication().getAppID()),
 //					domain.getActualCancelAtr(),

@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_BR_FL_WEK")
+@Table(name = "KSHMT_FLEX_HA_RT_SET")
 public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -35,7 +35,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 
 	/** The kshmt flex ha rt set PK. */
 	@EmbeddedId
-	protected KshmtWtFleBrFlWekPK kshmtWtFleBrFlWekPK;
+	protected KshmtFlexHaRtSetPK kshmtFlexHaRtSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -63,7 +63,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWtFleWorkTs> kshmtWtFleWorkTss;
+	private List<KshmtWtFleWorkTs> kshmtFlexWorkTimeSets;
 
 	/** The kshmt flex ot time sets. */
 	@JoinColumns({
@@ -71,7 +71,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWtFleOverTs> kshmtWtFleOverTss;
+	private List<KshmtWtFleOverTs> kshmtFlexOtTimeSets;
 	
 	/** The kshmt flex ha fix rests. */
 	@JoinColumns({
@@ -79,7 +79,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWtFleBrFiWekTs> kshmtWtFleBrFiWekTss;
+	private List<KshmtWtFleBrFiWekTs> kshmtFlexHaFixRests;
 	
 	/** The kshmt flex ha rest sets. */
 	@JoinColumns({
@@ -87,7 +87,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWtFleBrFlWekTs> kshmtWtFleBrFlWekTss;
+	private List<KshmtWtFleBrFlWekTs> kshmtFlexHaRestSets;
 
 	/**
 	 * Instantiates a new kshmt flex ha rt set.
@@ -99,11 +99,11 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 	/**
 	 * Instantiates a new kshmt flex ha rt set.
 	 *
-	 * @param kshmtWtFleBrFlWekPK the kshmt flex ha rt set PK
+	 * @param kshmtFlexHaRtSetPK the kshmt flex ha rt set PK
 	 */
-	public KshmtWtFleBrFlWek(KshmtWtFleBrFlWekPK kshmtWtFleBrFlWekPK) {
+	public KshmtWtFleBrFlWek(KshmtFlexHaRtSetPK kshmtFlexHaRtSetPK) {
 		super();
-		this.kshmtWtFleBrFlWekPK = kshmtWtFleBrFlWekPK;
+		this.kshmtFlexHaRtSetPK = kshmtFlexHaRtSetPK;
 	}
 
 	/*
@@ -114,7 +114,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleBrFlWekPK != null ? kshmtWtFleBrFlWekPK.hashCode() : 0);
+		hash += (kshmtFlexHaRtSetPK != null ? kshmtFlexHaRtSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -129,9 +129,9 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 			return false;
 		}
 		KshmtWtFleBrFlWek other = (KshmtWtFleBrFlWek) object;
-		if ((this.kshmtWtFleBrFlWekPK == null && other.kshmtWtFleBrFlWekPK != null)
-				|| (this.kshmtWtFleBrFlWekPK != null
-						&& !this.kshmtWtFleBrFlWekPK.equals(other.kshmtWtFleBrFlWekPK))) {
+		if ((this.kshmtFlexHaRtSetPK == null && other.kshmtFlexHaRtSetPK != null)
+				|| (this.kshmtFlexHaRtSetPK != null
+						&& !this.kshmtFlexHaRtSetPK.equals(other.kshmtFlexHaRtSetPK))) {
 			return false;
 		}
 		return true;
@@ -144,7 +144,7 @@ public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleBrFlWekPK;
+		return this.kshmtFlexHaRtSetPK;
 	}
 
 

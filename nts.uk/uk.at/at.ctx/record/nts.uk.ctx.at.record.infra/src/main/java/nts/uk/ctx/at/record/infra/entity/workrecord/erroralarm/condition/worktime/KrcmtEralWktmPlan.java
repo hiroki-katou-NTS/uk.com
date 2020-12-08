@@ -27,17 +27,17 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRCMT_ERAL_WKTM_PLAN")
+@Table(name="KRCST_ER_AL_WH_PLAN")
 public class KrcmtEralWktmPlan extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public KrcmtEralWktmPlanActualPK krcmtEralWktmPlanActualPK;
+    public KrcstErAlWhPlanActualPK krcstErAlWhPlanActualPK;
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralWktmPlanActualPK;
+		return this.krcstErAlWhPlanActualPK;
 	}
 	
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -47,8 +47,8 @@ public class KrcmtEralWktmPlan extends ContractUkJpaEntity implements Serializab
 	})
 	public KrcmtErAlCondition krcmtErAlCondition;
 
-	public KrcmtEralWktmPlan(KrcmtEralWktmPlanActualPK krcmtEralWktmPlanActualPK) {
+	public KrcmtEralWktmPlan(KrcstErAlWhPlanActualPK krcstErAlWhPlanActualPK) {
 		super();
-		this.krcmtEralWktmPlanActualPK = krcmtEralWktmPlanActualPK;
+		this.krcstErAlWhPlanActualPK = krcstErAlWhPlanActualPK;
 	}
 }

@@ -27,13 +27,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERAL_MON_SET")
+@Table(name = "KRCMT_MONTHLY_CORRECT_CON")
 public class KrcmtEralMonSet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtEralMonSetPK krcmtEralMonSetPK;
+	public KrcmtMonthlyCorrectConPK krcmtMonthlyCorrectConPK;
 
 	@Column(name = "ERROR_ALARM_NAME")
 	public String errorAlarmName;
@@ -47,12 +47,12 @@ public class KrcmtEralMonSet extends ContractUkJpaEntity implements Serializable
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
 	@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false)
-	public KrcmtMonCorrectCndAtd krcmtMonCorrectCndAtd;
+	public KrcmtMonCorrectCndAtd krcmtTimeChkMonthly;
 
-	public KrcmtEralMonSet(KrcmtEralMonSetPK krcmtEralMonSetPK, String errorAlarmName,
+	public KrcmtEralMonSet(KrcmtMonthlyCorrectConPK krcmtMonthlyCorrectConPK, String errorAlarmName,
 			BigDecimal useAtr, String eralCheckId) {
 		super();
-		this.krcmtEralMonSetPK = krcmtEralMonSetPK;
+		this.krcmtMonthlyCorrectConPK = krcmtMonthlyCorrectConPK;
 		this.errorAlarmName = errorAlarmName;
 		this.useAtr = useAtr;
 		this.eralCheckId = eralCheckId;
@@ -60,17 +60,17 @@ public class KrcmtEralMonSet extends ContractUkJpaEntity implements Serializable
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralMonSetPK;
+		return this.krcmtMonthlyCorrectConPK;
 	}
 
 	public static MonthlyCorrectExtractCondition toDomain(KrcmtEralMonSet entity) {
-		return MonthlyCorrectExtractCondition.createFromJavaType(entity.krcmtEralMonSetPK.companyId,
-				entity.krcmtEralMonSetPK.errorAlarmCode, entity.errorAlarmName, entity.useAtr.intValue() == 1,
+		return MonthlyCorrectExtractCondition.createFromJavaType(entity.krcmtMonthlyCorrectConPK.companyId,
+				entity.krcmtMonthlyCorrectConPK.errorAlarmCode, entity.errorAlarmName, entity.useAtr.intValue() == 1,
 				entity.eralCheckId);
 	}
 
 	public static KrcmtEralMonSet fromDomain(MonthlyCorrectExtractCondition domain) {
-		return new KrcmtEralMonSet(new KrcmtEralMonSetPK(AppContexts.user().companyId(), domain.getCode().v()),
+		return new KrcmtEralMonSet(new KrcmtMonthlyCorrectConPK(AppContexts.user().companyId(), domain.getCode().v()),
 				domain.getName().v(), domain.getUseAtr() ? new BigDecimal(1) : new BigDecimal(0),
 				domain.getErrorAlarmCheckID());
 	}

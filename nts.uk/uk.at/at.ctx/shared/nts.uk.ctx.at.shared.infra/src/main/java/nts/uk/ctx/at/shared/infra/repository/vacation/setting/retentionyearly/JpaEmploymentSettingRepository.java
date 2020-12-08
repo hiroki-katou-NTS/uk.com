@@ -21,9 +21,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmpPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmpPK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr_;
 
 
 /**
@@ -54,7 +54,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	@Override
 	public void update(EmptYearlyRetentionSetting emptYearlyRetentionSetting) {
 		Optional<KshmtHdstkSetEmp> optional = this.queryProxy()
-				.find(new KshmtHdstkSetEmpPK(emptYearlyRetentionSetting.getCompanyId(),
+				.find(new KmfmtRetentionEmpCtrPK(emptYearlyRetentionSetting.getCompanyId(),
 						emptYearlyRetentionSetting.getEmploymentCode()), KshmtHdstkSetEmp.class);
 		KshmtHdstkSetEmp entity = null;
 		if(optional.isPresent()) {
@@ -75,7 +75,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	@Override
 	public void remove(String companyId, String employmentCode) {
 		this.commandProxy()
-		.remove(KshmtHdstkSetEmp.class, new KshmtHdstkSetEmpPK(companyId, employmentCode));
+		.remove(KshmtHdstkSetEmp.class, new KmfmtRetentionEmpCtrPK(companyId, employmentCode));
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	@Override
 	public Optional<EmptYearlyRetentionSetting> find(String companyId, String employmentCode) {
 		return this.queryProxy()
-				.find(new KshmtHdstkSetEmpPK(companyId, employmentCode), KshmtHdstkSetEmp.class)
+				.find(new KmfmtRetentionEmpCtrPK(companyId, employmentCode), KshmtHdstkSetEmp.class)
 				.map(c -> this.toDomain(c));
 	}
 	
@@ -120,7 +120,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KshmtHdstkSetEmp_.kshmtHdstkSetEmpPK).get(KshmtHdstkSetEmpPK_.cid), companyId));
+				root.get(KmfmtRetentionEmpCtr_.kmfmtRetentionEmpCtrPK).get(KmfmtRetentionEmpCtrPK_.cid), companyId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));

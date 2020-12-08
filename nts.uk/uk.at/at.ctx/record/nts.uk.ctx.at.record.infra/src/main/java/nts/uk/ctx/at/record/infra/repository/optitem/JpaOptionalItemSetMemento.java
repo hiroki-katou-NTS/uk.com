@@ -43,7 +43,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId comId) {
-		this.entity.getKrcmtAnyvPK().setCid(comId.v());
+		this.entity.getKrcstOptionalItemPK().setCid(comId.v());
 	}
 
 	/*
@@ -55,7 +55,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optionalItemNo) {
-		this.entity.getKrcmtAnyvPK().setOptionalItemNo(optionalItemNo.v());
+		this.entity.getKrcstOptionalItemPK().setOptionalItemNo(optionalItemNo.v());
 	}
 
 	/*
@@ -124,9 +124,9 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
-		KrcmtAnyfResultRange entityRange = this.entity.getKrcmtAnyfResultRange();
+		KrcmtAnyfResultRange entityRange = this.entity.getKrcstCalcResultRange();
 		calculationResultRange.saveToMemento(new JpaCalcResultRangeSetMemento(entityRange));
-		this.entity.setKrcmtAnyfResultRange(entityRange);
+		this.entity.setKrcstCalcResultRange(entityRange);
 	}
 
 	/*

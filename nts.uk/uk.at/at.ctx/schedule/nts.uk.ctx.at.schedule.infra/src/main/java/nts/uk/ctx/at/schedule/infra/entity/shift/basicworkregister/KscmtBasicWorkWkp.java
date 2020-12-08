@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KSCMT_BASIC_WORK_WKP")
+@Table(name = "KSCMT_WORKPLACE_WORK_SET")
 public class KscmtBasicWorkWkp extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KscmtBasicWorkWkp extends ContractUkJpaEntity implements Serializab
 
 	/** The kwbmt workplace work set PK. */
 	@EmbeddedId
-	protected KscmtBasicWorkWkpPK kscmtBasicWorkWkpPK;
+	protected KscmtWorkplaceWorkSetPK kscmtWorkplaceWorkSetPK;
 	
 	/** The worktype code. */
 	@Column(name = "WORK_TYPE_CD")
@@ -47,7 +47,7 @@ public class KscmtBasicWorkWkp extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtBasicWorkWkpPK;
+		return this.kscmtWorkplaceWorkSetPK;
 	}
 
 
@@ -58,7 +58,7 @@ public class KscmtBasicWorkWkp extends ContractUkJpaEntity implements Serializab
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((kscmtBasicWorkWkpPK == null) ? 0 : kscmtBasicWorkWkpPK.hashCode());
+		result = prime * result + ((kscmtWorkplaceWorkSetPK == null) ? 0 : kscmtWorkplaceWorkSetPK.hashCode());
 		result = prime * result + ((workingCode == null) ? 0 : workingCode.hashCode());
 		result = prime * result + ((worktypeCode == null) ? 0 : worktypeCode.hashCode());
 		return result;
@@ -77,10 +77,10 @@ public class KscmtBasicWorkWkp extends ContractUkJpaEntity implements Serializab
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtBasicWorkWkp other = (KscmtBasicWorkWkp) obj;
-		if (kscmtBasicWorkWkpPK == null) {
-			if (other.kscmtBasicWorkWkpPK != null)
+		if (kscmtWorkplaceWorkSetPK == null) {
+			if (other.kscmtWorkplaceWorkSetPK != null)
 				return false;
-		} else if (!kscmtBasicWorkWkpPK.equals(other.kscmtBasicWorkWkpPK))
+		} else if (!kscmtWorkplaceWorkSetPK.equals(other.kscmtWorkplaceWorkSetPK))
 			return false;
 		if (workingCode == null) {
 			if (other.workingCode != null)

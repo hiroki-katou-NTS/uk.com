@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KSCMT_BASIC_WORK_COM")
+@Table(name = "KSCMT_COMPANY_WORK_SET")
 public class KscmtBasicWorkCom extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KscmtBasicWorkCom extends ContractUkJpaEntity implements Serializab
 
 	/** The kcbmt company work set PK. */
 	@EmbeddedId
-	protected KscmtBasicWorkComPK kscmtBasicWorkComPK;
+	protected KscmtCompanyWorkSetPK kscmtCompanyWorkSetPK;
 
 	/** The worktype code. */
 	@Column(name = "WORK_TYPE_CD")
@@ -48,7 +48,7 @@ public class KscmtBasicWorkCom extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtBasicWorkComPK;
+		return this.kscmtCompanyWorkSetPK;
 	}
 
 
@@ -60,7 +60,7 @@ public class KscmtBasicWorkCom extends ContractUkJpaEntity implements Serializab
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((kscmtBasicWorkComPK == null) ? 0 : kscmtBasicWorkComPK.hashCode());
+		result = prime * result + ((kscmtCompanyWorkSetPK == null) ? 0 : kscmtCompanyWorkSetPK.hashCode());
 		return result;
 	}
 
@@ -78,10 +78,10 @@ public class KscmtBasicWorkCom extends ContractUkJpaEntity implements Serializab
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtBasicWorkCom other = (KscmtBasicWorkCom) obj;
-		if (kscmtBasicWorkComPK == null) {
-			if (other.kscmtBasicWorkComPK != null)
+		if (kscmtCompanyWorkSetPK == null) {
+			if (other.kscmtCompanyWorkSetPK != null)
 				return false;
-		} else if (!kscmtBasicWorkComPK.equals(other.kscmtBasicWorkComPK))
+		} else if (!kscmtCompanyWorkSetPK.equals(other.kscmtCompanyWorkSetPK))
 			return false;
 		return true;
 	}

@@ -19,7 +19,7 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	private final static int TRUE_VALUE = 1;
 	
 	/** The kshmt fourweekfour hd numb set. */
-	private Kshmt4w4dNumSet kshmt4w4dNumSet;
+	private Kshmt4w4dNumSet kshmtFourweekfourHdNumbSet;
 	
 	/**
 	 * Instantiates a new jpa four week four holiday number setting get memento.
@@ -27,7 +27,7 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	 * @param entity the entity
 	 */
 	public JpaFourWeekFourHolidayNumberSettingGetMemento(Kshmt4w4dNumSet entity){
-		this.kshmt4w4dNumSet = entity;
+		this.kshmtFourweekfourHdNumbSet = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	 */
 	@Override
 	public boolean getIsOneWeekHoliday() {
-		if(this.kshmt4w4dNumSet.getIsOneWeekHd() == TRUE_VALUE){
+		if(this.kshmtFourweekfourHdNumbSet.getIsOneWeekHd() == TRUE_VALUE){
 			return true;
 		}
 		return false;
@@ -46,11 +46,11 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	 */
 	@Override
 	public OneWeekPublicHoliday getOneWeek() {
-		LastWeekHolidayNumberOfOneWeek obj = new LastWeekHolidayNumberOfOneWeek(new WeekNumberOfDay(this.kshmt4w4dNumSet.getInLegalHdLwhnoow().doubleValue()),
-													new WeekNumberOfDay(this.kshmt4w4dNumSet.getOutLegalHdLwhnoow().doubleValue()));
+		LastWeekHolidayNumberOfOneWeek obj = new LastWeekHolidayNumberOfOneWeek(new WeekNumberOfDay(this.kshmtFourweekfourHdNumbSet.getInLegalHdLwhnoow().doubleValue()),
+													new WeekNumberOfDay(this.kshmtFourweekfourHdNumbSet.getOutLegalHdLwhnoow().doubleValue()));
 		return new OneWeekPublicHoliday(obj, 
-										new WeekNumberOfDay(this.kshmt4w4dNumSet.getInLegalHdOwph().doubleValue()),
-										new WeekNumberOfDay(this.kshmt4w4dNumSet.getOutLegalHdOwph().doubleValue()));
+										new WeekNumberOfDay(this.kshmtFourweekfourHdNumbSet.getInLegalHdOwph().doubleValue()),
+										new WeekNumberOfDay(this.kshmtFourweekfourHdNumbSet.getOutLegalHdOwph().doubleValue()));
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	 */
 	@Override
 	public boolean getIsFourWeekHoliday() {
-		if(this.kshmt4w4dNumSet.getIsFourWeekHd() == TRUE_VALUE){
+		if(this.kshmtFourweekfourHdNumbSet.getIsFourWeekHd() == TRUE_VALUE){
 			return true;
 		}
 		return false;
@@ -70,11 +70,11 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	@Override
 	public FourWeekPublicHoliday getFourWeek() {
 		LastWeekHolidayNumberOfFourWeek obj = new LastWeekHolidayNumberOfFourWeek(
-														new FourWeekDay(this.kshmt4w4dNumSet.getInLegalHdLwhnofw().doubleValue()),
-														new FourWeekDay(this.kshmt4w4dNumSet.getOutLegalHdLwhnofw().doubleValue()));
+														new FourWeekDay(this.kshmtFourweekfourHdNumbSet.getInLegalHdLwhnofw().doubleValue()),
+														new FourWeekDay(this.kshmtFourweekfourHdNumbSet.getOutLegalHdLwhnofw().doubleValue()));
 		return new FourWeekPublicHoliday(obj,
-										 new FourWeekDay(this.kshmt4w4dNumSet.getInLegelHdFwph().doubleValue()),
-										 new FourWeekDay(this.kshmt4w4dNumSet.getOutLegalHdFwph().doubleValue()));
+										 new FourWeekDay(this.kshmtFourweekfourHdNumbSet.getInLegelHdFwph().doubleValue()),
+										 new FourWeekDay(this.kshmtFourweekfourHdNumbSet.getOutLegalHdFwph().doubleValue()));
 	}
 
 	/* (non-Javadoc)

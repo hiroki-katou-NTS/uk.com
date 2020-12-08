@@ -25,13 +25,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_PAIR_GRP_COM")
+@Table(name = "KSCMT_COM_PATTERN")
 public class KscmtPairGrpCom extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtPairGrpComPK kscmtPairGrpComPk;
+	public KscmtComPatternPK kscmtComPatternPk;
 
 	@Column(name = "GROUP_NAME")
 	public String groupName;
@@ -42,13 +42,13 @@ public class KscmtPairGrpCom extends ContractUkJpaEntity implements Serializable
 	@Column(name = "NOTE")
 	public String note;
 
-	@OneToMany(targetEntity=KscmtPairPatrnCom.class, cascade = CascadeType.ALL, mappedBy = "kscmtPairGrpCom", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KSCMT_PAIR_PATRN_COM")
-	public List<KscmtPairPatrnCom> kscmtPairPatrnCom;
+	@OneToMany(targetEntity=KscmtPairPatrnCom.class, cascade = CascadeType.ALL, mappedBy = "kscmtComPattern", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCMT_COM_PATTERN_ITEM")
+	public List<KscmtPairPatrnCom> kscmtComPatternItem;
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtPairGrpComPk;
+		return this.kscmtComPatternPk;
 	}
 
 }

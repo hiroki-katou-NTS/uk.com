@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_TIME_DVGC")
+@Table(name = "KRCDT_WEK_AGGR_DIVG_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializable {
@@ -34,7 +34,7 @@ public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializabl
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtWekTimeDvgcPK PK;
+	public KrcdtWekAggrDivgTimePK PK;
 	
 	/** 乖離フラグ */
 	@Column(name = "DIVERGENCE_ATR")
@@ -90,7 +90,7 @@ public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializabl
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfWeeklyKey key, AggregateDivergenceTime domain){
 		
-		this.PK = new KrcdtWekTimeDvgcPK(
+		this.PK = new KrcdtWekAggrDivgTimePK(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,

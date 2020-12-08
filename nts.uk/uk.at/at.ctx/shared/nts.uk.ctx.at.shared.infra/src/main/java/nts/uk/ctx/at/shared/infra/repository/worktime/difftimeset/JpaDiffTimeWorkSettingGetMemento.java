@@ -37,11 +37,11 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	/**
 	 * Instantiates a new jpa diff time work setting get memento.
 	 *
-	 * @param kshmtWtDif
+	 * @param kshmtDiffTimeWorkSet
 	 *            the kshmt diff time work set
 	 */
-	public JpaDiffTimeWorkSettingGetMemento(KshmtWtDif kshmtWtDif) {
-		this.entity = kshmtWtDif;
+	public JpaDiffTimeWorkSettingGetMemento(KshmtWtDif kshmtDiffTimeWorkSet) {
+		this.entity = kshmtDiffTimeWorkSet;
 
 	}
 
@@ -53,7 +53,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtDifPK().getCid();
+		return this.entity.getKshmtDiffTimeWorkSetPK().getCid();
 	}
 
 	/*
@@ -64,7 +64,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtDifPK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd());
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSet() {
-		KshmtWtCom diffTimeCommonSet = this.entity.getKshmtWtCom();
+		KshmtWtCom diffTimeCommonSet = this.entity.getKshmtWorktimeCommonSet();
 		if (diffTimeCommonSet == null) {
 			return null;
 		}

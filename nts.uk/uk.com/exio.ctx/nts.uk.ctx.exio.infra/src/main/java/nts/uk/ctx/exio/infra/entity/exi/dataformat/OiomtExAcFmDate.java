@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_FM_DATE")
+@Table(name = "OIOMT_DATE_DATA_FORM_SET")
 public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcFmDatePk dateDataFormSetPk;
+	public OiomtDateDataFormSetPk dateDataFormSetPk;
 
 	/**
 	 * 固定値
@@ -69,7 +69,7 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 	public OiomtExAcFmDate(String cid, int sysType, String conditionCode, int acceptItemNum, int fixedValue,
 			int formatSelection, String valueOfFixedValue) {
 		super();
-		this.dateDataFormSetPk = new OiomtExAcFmDatePk(cid, sysType, conditionCode, acceptItemNum);
+		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.valueOfFixedValue = valueOfFixedValue;
 		this.formatSelection = formatSelection;

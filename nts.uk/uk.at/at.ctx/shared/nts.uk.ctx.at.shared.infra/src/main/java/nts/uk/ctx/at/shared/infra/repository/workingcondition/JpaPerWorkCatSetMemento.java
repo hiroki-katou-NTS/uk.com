@@ -44,7 +44,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		this.mapSingleDaySchedule = new HashMap<>();
 		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-					entity -> entity.getKshmtWorkcondCtgPK().getPerWorkCatAtr(), Function.identity()));
+					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), Function.identity()));
 		}
 		this.entities = entities;
 		this.entities.clear();
@@ -161,8 +161,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		entity.setSid(this.sid);
 		domain.get().saveToMemento(
 				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-		if (!CollectionUtil.isEmpty(entity.getKshmtWorkcondCtgTss())) {
-			entity.getKshmtWorkcondCtgTss().stream().forEach(catTimeZone -> {
+		if (!CollectionUtil.isEmpty(entity.getKshmtWorkCatTimeZones())) {
+			entity.getKshmtWorkCatTimeZones().stream().forEach(catTimeZone -> {
 				catTimeZone.setSid(this.sid);
 			});
 		}

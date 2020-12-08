@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
  * The Class JpaSingleDayScheduleGetMemento.
@@ -32,8 +32,8 @@ public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 	 *            the entity
 	 */
 	public JpaSDayScheDayOfGetMemento(KshmtWorkcondWeek entity) {
-		if (entity.getKshmtWorkcondWeekPK() == null) {
-			entity.setKshmtWorkcondWeekPK(new KshmtWorkcondWeekPK());
+		if (entity.getKshmtPersonalDayOfWeekPK() == null) {
+			entity.setKshmtPersonalDayOfWeekPK(new KshmtPersonalDayOfWeekPK());
 		}
 		this.entity = entity;
 	}
@@ -61,10 +61,10 @@ public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<TimeZone> getWorkingHours() {
-		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkcondWeekTss())) {
+		if(CollectionUtil.isEmpty(this.entity.getKshmtDayofweekTimeZones())) {
 			return Collections.emptyList();
 		}
-		return this.entity.getKshmtWorkcondWeekTss().stream()
+		return this.entity.getKshmtDayofweekTimeZones().stream()
 				.map(entity -> new TimeZone(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

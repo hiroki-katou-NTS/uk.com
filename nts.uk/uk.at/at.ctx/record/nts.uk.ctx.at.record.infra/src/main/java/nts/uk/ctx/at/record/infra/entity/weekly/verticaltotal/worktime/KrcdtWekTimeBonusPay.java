@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_TIME_BONUS_PAY")
+@Table(name = "KRCDT_WEK_AGGR_BNSPY_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeBonusPay extends ContractUkJpaEntity implements Serializable {
@@ -32,7 +32,7 @@ public class KrcdtWekTimeBonusPay extends ContractUkJpaEntity implements Seriali
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtWekTimeBonusPayPK PK;
+	public KrcdtWekAggrBnspyTimePK PK;
 	
 	/** 加給時間 */
 	@Column(name = "BONUS_PAY_TIME")
@@ -104,7 +104,7 @@ public class KrcdtWekTimeBonusPay extends ContractUkJpaEntity implements Seriali
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfWeeklyKey key, AggregateBonusPayTime domain){
 		
-		this.PK = new KrcdtWekTimeBonusPayPK(
+		this.PK = new KrcdtWekAggrBnspyTimePK(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,

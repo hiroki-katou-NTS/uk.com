@@ -23,10 +23,10 @@ public class JpaDiffTimeHalfDayGetMemento implements DiffTimeHalfDayGetMemento {
 
 	@Override
 	public DiffTimeRestTimezone getRestTimezone() {
-		List<KshmtWtDifBrWekTs> lstKshmtWtDifBrWekTs = this.entity.getLstKshmtWtDifBrWekTs().stream()
-				.filter(item -> item.getKshmtWtDifBrWekTsPK().getAmPmAtr() == this.type)
+		List<KshmtWtDifBrWekTs> lstKshmtDtHalfRestTime = this.entity.getLstKshmtDtHalfRestTime().stream()
+				.filter(item -> item.getKshmtDtHalfRestTimePK().getAmPmAtr() == this.type)
 				.collect(Collectors.toList());
-		return new DiffTimeRestTimezone(new JpaHalfDTRestTimezoneGetMemento(lstKshmtWtDifBrWekTs));
+		return new DiffTimeRestTimezone(new JpaHalfDTRestTimezoneGetMemento(lstKshmtDtHalfRestTime));
 	}
 
 	@Override

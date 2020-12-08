@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetailPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 
 /**
  * The Class JpaOutsideOTBRDItemGetMemento.
@@ -30,8 +30,8 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	 * @param entityAtens the entity atens
 	 */
 	public JpaOutsideOTBRDItemGetMemento(KshmtOutsideDetail entity) {
-		if (entity.getKshmtOutsideDetailPK() == null) {
-			entity.setKshmtOutsideDetailPK(new KshmtOutsideDetailPK());
+		if (entity.getKshstOutsideOtBrdPK() == null) {
+			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
 		}
 		this.entity = entity;
 	}
@@ -57,7 +57,7 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshmtOutsideDetailPK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshstOutsideOtBrdPK().getBrdItemNo());
 	}
 
 	/*
@@ -94,7 +94,7 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	@Override
 	public List<Integer> getAttendanceItemIds() {
 		return this.entity.getLstOutsideOtBrdAten().stream()
-				.map(entity -> entity.getKshmtOutsideAtdPK().getAttendanceItemId())
+				.map(entity -> entity.getKshstOutsideOtBrdAtenPK().getAttendanceItemId())
 				.collect(Collectors.toList());
 	}
 

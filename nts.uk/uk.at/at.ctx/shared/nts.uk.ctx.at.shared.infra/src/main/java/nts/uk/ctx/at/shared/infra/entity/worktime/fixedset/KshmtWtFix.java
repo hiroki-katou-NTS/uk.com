@@ -24,7 +24,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FIX")
+@Table(name = "KSHMT_FIXED_WORK_SET")
 public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -41,7 +41,7 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 
 	/** The kshmt fixed work set PK. */
 	@EmbeddedId
-	protected KshmtWtFixPK kshmtWtFixPK;
+	protected KshmtFixedWorkSetPK kshmtFixedWorkSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -91,43 +91,43 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFixBrWekTs> kshmtWtFixBrWekTss;
+	private List<KshmtWtFixBrWekTs> kshmtFixedHalfRestSets;
 
 	/** The kshmt fixed work time sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFixWorkTs> kshmtWtFixWorkTss;
+	private List<KshmtWtFixWorkTs> kshmtFixedWorkTimeSets;
 
 	/** The kshmt fixed ot time sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFixOverTs> kshmtWtFixOverTss;
+	private List<KshmtWtFixOverTs> kshmtFixedOtTimeSets;
 
 	/** The lst kshmt fixed hol rest set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFixBrHolTs> lstKshmtWtFixBrHolTs;
+	private List<KshmtWtFixBrHolTs> lstKshmtFixedHolRestSet;
 
 	/** The lst kshmt fixed hol time set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFixHolTs> lstKshmtWtFixHolTs;
+	private List<KshmtWtFixHolTs> lstKshmtFixedHolTimeSet;
 
 	/** The lst kshmt fixed stamp reflect. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtWtFixStmpRefTs> lstKshmtWtFixStmpRefTs;
+	private List<KshmtWtFixStmpRefTs> lstKshmtFixedStampReflect;
 
 	/** The lst kshmt worktime common set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false) })
-	private List<KshmtWtCom> lstKshmtWtCom;
+	private List<KshmtWtCom> lstKshmtWorktimeCommonSet;
 
 	/**
 	 * Instantiates a new kshmt fixed work set.
@@ -139,11 +139,11 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new kshmt fixed work set.
 	 *
-	 * @param kshmtWtFixPK the kshmt fixed work set PK
+	 * @param kshmtFixedWorkSetPK the kshmt fixed work set PK
 	 */
-	public KshmtWtFix(KshmtWtFixPK kshmtWtFixPK) {
+	public KshmtWtFix(KshmtFixedWorkSetPK kshmtFixedWorkSetPK) {
 		super();
-		this.kshmtWtFixPK = kshmtWtFixPK;
+		this.kshmtFixedWorkSetPK = kshmtFixedWorkSetPK;
 	}
 
 	/**
@@ -151,12 +151,12 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	 *
 	 * @return the kshmt worktime common set
 	 */
-	public KshmtWtCom getKshmtWtCom() {
-		if (CollectionUtil.isEmpty(this.lstKshmtWtCom)) {
-			this.lstKshmtWtCom = new ArrayList<KshmtWtCom>();
+	public KshmtWtCom getKshmtWorktimeCommonSet() {
+		if (CollectionUtil.isEmpty(this.lstKshmtWorktimeCommonSet)) {
+			this.lstKshmtWorktimeCommonSet = new ArrayList<KshmtWtCom>();
 		}
-		return this.lstKshmtWtCom.stream().filter(entityCommon -> {
-			KshmtWtComPK pk = entityCommon.getKshmtWtComPK();
+		return this.lstKshmtWorktimeCommonSet.stream().filter(entityCommon -> {
+			KshmtWorktimeCommonSetPK pk = entityCommon.getKshmtWorktimeCommonSetPK();
 			return pk.getWorkFormAtr() == WorkTimeDailyAtr.REGULAR_WORK.value
 					&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.FIXED_WORK.value;
 		}).findFirst().orElse(null);
@@ -170,7 +170,7 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFixPK != null ? kshmtWtFixPK.hashCode() : 0);
+		hash += (kshmtFixedWorkSetPK != null ? kshmtFixedWorkSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -185,8 +185,8 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KshmtWtFix other = (KshmtWtFix) object;
-		if ((this.kshmtWtFixPK == null && other.kshmtWtFixPK != null)
-				|| (this.kshmtWtFixPK != null && !this.kshmtWtFixPK.equals(other.kshmtWtFixPK))) {
+		if ((this.kshmtFixedWorkSetPK == null && other.kshmtFixedWorkSetPK != null)
+				|| (this.kshmtFixedWorkSetPK != null && !this.kshmtFixedWorkSetPK.equals(other.kshmtFixedWorkSetPK))) {
 			return false;
 		}
 		return true;
@@ -199,7 +199,7 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFixPK;
+		return this.kshmtFixedWorkSetPK;
 	}
 
 }

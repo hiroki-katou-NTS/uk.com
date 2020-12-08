@@ -15,13 +15,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_CTG_COMMON")
+@Table(name = "PPEMT_PER_INFO_CTG_CM")
 public class PpemtCtgCommon extends UkJpaEntity implements Serializable {
 	
     private static final long serialVersionUID = 1L;
     
     @EmbeddedId
-    public PpemtCtgCommonPK ppemtCtgCommonPK;
+    public PpemtPerInfoCtgCmPK ppemtPerInfoCtgCmPK;
     
     @Basic(optional = false)
     @Column(name = "CATEGORY_PARENT_CD")
@@ -67,6 +67,6 @@ public class PpemtCtgCommon extends UkJpaEntity implements Serializable {
     
 	@Override
 	protected Object getKey() {
-		return ppemtCtgCommonPK;
+		return ppemtPerInfoCtgCmPK;
 	}
 }

@@ -42,11 +42,11 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		cq.select(root);
 
 		// query data
-		List<CismtEraName> cismtEraNames = em.createQuery(cq).getResultList();
+		List<CismtEraName> cisdtEraNames = em.createQuery(cq).getResultList();
 
 		// return
-		if (cismtEraNames != null) {
-			List<EraNameDom> eraNameDoms = cismtEraNames.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
+		if (cisdtEraNames != null) {
+			List<EraNameDom> eraNameDoms = cisdtEraNames.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
 			return eraNameDoms.stream().sorted(Comparator.comparing(EraNameDom :: getStartDate)).collect(Collectors.toList());
 		}
 		return new ArrayList<EraNameDom>();
@@ -72,7 +72,7 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		Optional<CismtEraName> entity = this.queryProxy().find(eraNameId, CismtEraName.class);
 		
 		if(!entity.isPresent()) {
-			throw new RuntimeException("Invalid CismtEraName");
+			throw new RuntimeException("Invalid CisdtEraName");
 		}
 		
 		this.commandProxy().remove(entity.get());
@@ -85,7 +85,7 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 		Optional<CismtEraName> entity = this.queryProxy().find(domain.getEraNameId(), CismtEraName.class);
 		
 		if(!entity.isPresent()) {
-			throw new RuntimeException("Invalid CismtEraName");
+			throw new RuntimeException("Invalid CisdtEraName");
 		}
 		// update details
 		entity.get().setEraName(domain.getEraName().toString());

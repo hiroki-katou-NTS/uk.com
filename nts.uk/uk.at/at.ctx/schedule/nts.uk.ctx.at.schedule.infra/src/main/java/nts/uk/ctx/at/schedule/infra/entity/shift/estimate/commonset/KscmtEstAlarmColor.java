@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_ALARM_COLOR")
+@Table(name = "KSCST_EST_ALARM_COLOR")
 public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializa
 
 	/** The kscst est alarm color PK. */
 	@EmbeddedId
-	protected KscmtEstAlarmColorPK kscmtEstAlarmColorPK;
+	protected KscstEstAlarmColorPK kscstEstAlarmColorPK;
 
 	/** The color cd. */
 	@Column(name = "COLOR_CD")
@@ -54,24 +54,24 @@ public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializa
 	/**
 	 * Instantiates a new kscst est alarm color.
 	 *
-	 * @param kscmtEstAlarmColorPK
+	 * @param kscstEstAlarmColorPK
 	 *            the kscst est alarm color PK
 	 */
-	public KscmtEstAlarmColor(KscmtEstAlarmColorPK kscmtEstAlarmColorPK) {
-		this.kscmtEstAlarmColorPK = kscmtEstAlarmColorPK;
+	public KscmtEstAlarmColor(KscstEstAlarmColorPK kscstEstAlarmColorPK) {
+		this.kscstEstAlarmColorPK = kscstEstAlarmColorPK;
 	}
 
 	/**
 	 * Instantiates a new kscst est alarm color.
 	 *
-	 * @param kscmtEstAlarmColorPK
+	 * @param kscstEstAlarmColorPK
 	 *            the kscst est alarm color PK
 	 * @param colorCd
 	 *            the color cd
 	 */
-	public KscmtEstAlarmColor(KscmtEstAlarmColorPK kscmtEstAlarmColorPK, String colorCd) {
+	public KscmtEstAlarmColor(KscstEstAlarmColorPK kscstEstAlarmColorPK, String colorCd) {
 		super();
-		this.kscmtEstAlarmColorPK = kscmtEstAlarmColorPK;
+		this.kscstEstAlarmColorPK = kscstEstAlarmColorPK;
 		this.colorCd = colorCd;
 	}
 
@@ -83,7 +83,7 @@ public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kscmtEstAlarmColorPK != null ? kscmtEstAlarmColorPK.hashCode() : 0);
+		hash += (kscstEstAlarmColorPK != null ? kscstEstAlarmColorPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -98,9 +98,9 @@ public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KscmtEstAlarmColor other = (KscmtEstAlarmColor) object;
-		if ((this.kscmtEstAlarmColorPK == null && other.kscmtEstAlarmColorPK != null)
-				|| (this.kscmtEstAlarmColorPK != null
-						&& !this.kscmtEstAlarmColorPK.equals(other.kscmtEstAlarmColorPK))) {
+		if ((this.kscstEstAlarmColorPK == null && other.kscstEstAlarmColorPK != null)
+				|| (this.kscstEstAlarmColorPK != null
+						&& !this.kscstEstAlarmColorPK.equals(other.kscstEstAlarmColorPK))) {
 			return false;
 		}
 		return true;
@@ -108,7 +108,7 @@ public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializa
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtEstAlarmColorPK;
+		return this.kscstEstAlarmColorPK;
 	}
 
 }

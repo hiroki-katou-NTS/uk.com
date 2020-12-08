@@ -26,9 +26,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationList;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationListPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshmtHdspevCondEmp;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshmtHdspevCondEmpPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshmtHdspEvent;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshmtHdspEventPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstEmploymentListPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstSpecialHolidayEvent;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstSpecialHolidayEventPK;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
@@ -58,7 +58,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT c");
-		builderString.append(" FROM KshmtHdspEvent c");
+		builderString.append(" FROM KshstSpecialHolidayEvent c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENos");
 		FIND_BY_NO_LIST_QUERY = builderString.toString();
@@ -77,7 +77,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT c");
-		builderString.append(" FROM KshmtHdspEvent c");
+		builderString.append(" FROM KshstSpecialHolidayEvent c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		FIND_BY_CID_LIST_QUERY = builderString.toString();
 	}
@@ -89,7 +89,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		}
 		List<SpecialHolidayEvent> resultList = new ArrayList<>();
 		CollectionUtil.split(sHsNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_NO_LIST_QUERY, KshmtHdspEvent.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_NO_LIST_QUERY, KshstSpecialHolidayEvent.class)
 								.setParameter("companyId", companyId)
 								.setParameter("SHENos", subList)
 								.getList(c -> toDomain(c)));
@@ -100,11 +100,11 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	@Override
 	public Optional<SpecialHolidayEvent> findByKey(String companyId, int eventNo) {
 		return this.queryProxy()
-				.find(new KshmtHdspEventPK(companyId, eventNo), KshmtHdspEvent.class)
+				.find(new KshstSpecialHolidayEventPK(companyId, eventNo), KshstSpecialHolidayEvent.class)
 				.map(x -> toDomain(x));
 	}
 
-	private SpecialHolidayEvent toDomain(KshmtHdspEvent entity) {
+	private SpecialHolidayEvent toDomain(KshstSpecialHolidayEvent entity) {
 		return new SpecialHolidayEvent(entity.pk.companyId, entity.pk.specialHolidayEventNo,
 				EnumAdaptor.valueOf(entity.maxNumberDayType, MaxNumberDayType.class),
 				new FixedDayGrant(entity.fixedDayGrant), EnumAdaptor.valueOf(entity.makeInvitation, UseAtr.class),
@@ -161,7 +161,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	}
 
 	private KshmtHdspevCondEmp toEmpEntity(EmploymentList domain) {
-		return new KshmtHdspevCondEmp(new KshmtHdspevCondEmpPK(domain.getCompanyId(),
+		return new KshmtHdspevCondEmp(new KshstEmploymentListPK(domain.getCompanyId(),
 				domain.getSpecialHolidayEventNo(), domain.getEmploymentCd().v()));
 	}
 
@@ -176,9 +176,9 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 				domain.getSpecialHolidayEventNo(), domain.getClassificationCd()));
 	}
 
-	private KshmtHdspEvent toEntity(SpecialHolidayEvent domain) {
-		return new KshmtHdspEvent(
-				new KshmtHdspEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
+	private KshstSpecialHolidayEvent toEntity(SpecialHolidayEvent domain) {
+		return new KshstSpecialHolidayEvent(
+				new KshstSpecialHolidayEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
 				domain.getMaxNumberDay().value, domain.getFixedDayGrant().v(), domain.getMakeInvitation().value,
 				domain.getIncludeHolidays().value, domain.getAgeLimit().value, domain.getGenderRestrict().value,
 				domain.getRestrictEmployment().value, domain.getRestrictClassification().value,
@@ -188,8 +188,8 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 	@Override
 	public void update(SpecialHolidayEvent domain) {
-		this.queryProxy().find(new KshmtHdspEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
-				KshmtHdspEvent.class).ifPresent(x -> {
+		this.queryProxy().find(new KshstSpecialHolidayEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
+				KshstSpecialHolidayEvent.class).ifPresent(x -> {
 					x.updateEntity(domain);
 					this.commandProxy().update(x);
 					updateClsItem(domain);
@@ -222,8 +222,8 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 	@Override
 	public void remove(String companyId, int specialHolidayEventNo) {
-		this.commandProxy().remove(KshmtHdspEvent.class,
-				new KshmtHdspEventPK(companyId, specialHolidayEventNo));
+		this.commandProxy().remove(KshstSpecialHolidayEvent.class,
+				new KshstSpecialHolidayEventPK(companyId, specialHolidayEventNo));
 		removeClsItems(companyId, specialHolidayEventNo);
 		removeEmpItems(companyId, specialHolidayEventNo);
 
@@ -231,7 +231,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	
 	@Override
 	public List<SpecialHolidayEvent> findByCompany(String companyId) {
-		return this.queryProxy().query(FIND_BY_CID_LIST_QUERY, KshmtHdspEvent.class)
+		return this.queryProxy().query(FIND_BY_CID_LIST_QUERY, KshstSpecialHolidayEvent.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 }

@@ -36,7 +36,7 @@ public class JpaMulMonCheckCondContRepository extends JpaRepository implements M
 				mulMonthCheckCondContinue.getErrorAlarmCheckID(), KrcmtAlstChkmltUdcont.class).get();
 		updateEntity.isUseFlg = newEntity.isUseFlg;
 		updateEntity.continousMonth = newEntity.continousMonth;
-		updateEntity.krcmtEralstCndgrp = newEntity.krcmtEralstCndgrp;
+		updateEntity.krcmtErAlAtdItemCon = newEntity.krcmtErAlAtdItemCon;
 		this.commandProxy().update(updateEntity);
 		this.getEntityManager().flush();
 	}

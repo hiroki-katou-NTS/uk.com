@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegory;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegoryPK;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategoryPK;
 
 /**
  * The Class JpaSingleDayScheduleSetMemento.
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtg
 public class JpaSingleDayScheduleWorkCategorySetMemento implements SingleDayScheduleSetMemento{
 	
 	/** The entity. */
-	private KshmtWorkcondCtgegory entity;
+	private KshmtPerWorkCategory entity;
 	
 	/** The Constant DEFAULT_WORK_TIME_CODE. */
 	public static final String DEFAULT_WORK_TIME_CODE = "000"; 
@@ -39,9 +39,9 @@ public class JpaSingleDayScheduleWorkCategorySetMemento implements SingleDaySche
 	 *
 	 * @param entity the entity
 	 */
-	public JpaSingleDayScheduleWorkCategorySetMemento(KshmtWorkcondCtgegory entity) {
-		if(entity.getKshmtWorkcondCtgegoryPK() == null){
-			entity.setKshmtWorkcondCtgegoryPK(new KshmtWorkcondCtgegoryPK());
+	public JpaSingleDayScheduleWorkCategorySetMemento(KshmtPerWorkCategory entity) {
+		if(entity.getKshmtPerWorkCategoryPK() == null){
+			entity.setKshmtPerWorkCategoryPK(new KshmtPerWorkCategoryPK());
 		}
 		this.entity = entity;
 	}

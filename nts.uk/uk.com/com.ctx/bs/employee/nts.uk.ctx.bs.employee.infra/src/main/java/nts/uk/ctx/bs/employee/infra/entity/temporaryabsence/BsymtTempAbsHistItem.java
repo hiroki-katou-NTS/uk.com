@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BSYMT_TEMP_ABS_HIST_ITEM")
+@Table(name = "BSYMT_TEMP_ABS_HIS_ITEM")
 public class BsymtTempAbsHistItem extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

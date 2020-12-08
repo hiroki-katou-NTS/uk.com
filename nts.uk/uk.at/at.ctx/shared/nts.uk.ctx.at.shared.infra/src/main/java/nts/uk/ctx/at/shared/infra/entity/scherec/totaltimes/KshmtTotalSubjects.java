@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_TOTAL_SUBJECTS")
+@Table(name = "KSHST_TOTAL_SUBJECTS")
 public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializa
 
 	/** The kshst total subjects PK. */
 	@EmbeddedId
-	protected KshmtTotalSubjectsPK kshmtTotalSubjectsPK;
+	protected KshstTotalSubjectsPK kshstTotalSubjectsPK;
 
 
 
@@ -43,11 +43,11 @@ public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializa
 	/**
 	 * Instantiates a new kshst total subjects.
 	 *
-	 * @param kshmtTotalSubjectsPK
+	 * @param kshstTotalSubjectsPK
 	 *            the kshst total subjects PK
 	 */
-	public KshmtTotalSubjects(KshmtTotalSubjectsPK kshmtTotalSubjectsPK) {
-		this.kshmtTotalSubjectsPK = kshmtTotalSubjectsPK;
+	public KshmtTotalSubjects(KshstTotalSubjectsPK kshstTotalSubjectsPK) {
+		this.kshstTotalSubjectsPK = kshstTotalSubjectsPK;
 	}
 
 	/*
@@ -58,7 +58,7 @@ public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtTotalSubjectsPK != null ? kshmtTotalSubjectsPK.hashCode() : 0);
+		hash += (kshstTotalSubjectsPK != null ? kshstTotalSubjectsPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -73,9 +73,9 @@ public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KshmtTotalSubjects other = (KshmtTotalSubjects) object;
-		if ((this.kshmtTotalSubjectsPK == null && other.kshmtTotalSubjectsPK != null)
-				|| (this.kshmtTotalSubjectsPK != null
-						&& !this.kshmtTotalSubjectsPK.equals(other.kshmtTotalSubjectsPK))) {
+		if ((this.kshstTotalSubjectsPK == null && other.kshstTotalSubjectsPK != null)
+				|| (this.kshstTotalSubjectsPK != null
+						&& !this.kshstTotalSubjectsPK.equals(other.kshstTotalSubjectsPK))) {
 			return false;
 		}
 		return true;
@@ -88,7 +88,7 @@ public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtTotalSubjectsPK;
+		return this.kshstTotalSubjectsPK;
 	}
 
 }

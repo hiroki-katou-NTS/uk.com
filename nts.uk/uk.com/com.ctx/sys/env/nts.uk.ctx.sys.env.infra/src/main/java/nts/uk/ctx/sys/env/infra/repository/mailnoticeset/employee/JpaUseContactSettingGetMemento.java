@@ -15,12 +15,12 @@ public class JpaUseContactSettingGetMemento implements UseContactSettingGetMemen
 
 	@Override
 	public String getEmployeeID() {
-		return this.entity.getSevmtUseContactSyaPK().getSid();
+		return this.entity.getSevstUseContactSetPK().getSid();
 	}
 
 	@Override
 	public UserInfoItem getSettingItem() {
-		return UserInfoItem.valueOf(this.entity.getSevmtUseContactSyaPK().getSetItem());
+		return UserInfoItem.valueOf(this.entity.getSevstUseContactSetPK().getSetItem());
 	}
 
 	@Override

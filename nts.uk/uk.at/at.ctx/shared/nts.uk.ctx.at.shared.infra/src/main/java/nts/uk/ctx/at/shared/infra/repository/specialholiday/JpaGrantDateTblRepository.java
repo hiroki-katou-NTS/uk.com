@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapseYears;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapseYearsPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTbl;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTblPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateTblPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -94,7 +94,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @return
 	 */
 	private KshmtHdspGrantTbl createGrantDateTblFromDomain(GrantDateTbl domain) {
-		KshmtHdspGrantTblPK pk = new KshmtHdspGrantTblPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getGrantDateCode().v());
+		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getGrantDateCode().v());
 		return new KshmtHdspGrantTbl(pk, domain.getGrantDateName().v(), domain.isSpecified() ? 1 : 0, domain.isFixedAssign() ? 1 : 0, domain.getNumberOfDays());
 	}
 
@@ -104,7 +104,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @return
 	 */
 	private KshmtHdspElapseYears toElapseEntity(ElapseYear domain) {
-		KshmtHdspElapseYearsPK pk = new KshmtHdspElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getGrantDateCode(), domain.getElapseNo());
+		KshstElapseYearsPK pk = new KshstElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getGrantDateCode(), domain.getElapseNo());
 		return new KshmtHdspElapseYears(pk, domain.getGrantedDays().v(), domain.getMonths().v(), domain.getYears().v());
 	}
 
@@ -150,7 +150,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public void update(GrantDateTbl grantDateTbl) {
-		KshmtHdspGrantTblPK pk = new KshmtHdspGrantTblPK(grantDateTbl.getCompanyId(), grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v());
+		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(grantDateTbl.getCompanyId(), grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v());
 		KshmtHdspGrantTbl old = this.queryProxy().find(pk, KshmtHdspGrantTbl.class).orElse(null);
 		old.grantName = grantDateTbl.getGrantDateName().v();
 		old.isSpecified = grantDateTbl.isSpecified() ? 1 : 0;
@@ -183,7 +183,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.executeUpdate();
 		
-		KshmtHdspGrantTblPK gPk = new KshmtHdspGrantTblPK(companyId, specialHolidayCode, grantDateCode);
+		KshstGrantDateTblPK gPk = new KshstGrantDateTblPK(companyId, specialHolidayCode, grantDateCode);
 		this.commandProxy().remove(KshmtHdspGrantTbl.class, gPk);
 	}
 

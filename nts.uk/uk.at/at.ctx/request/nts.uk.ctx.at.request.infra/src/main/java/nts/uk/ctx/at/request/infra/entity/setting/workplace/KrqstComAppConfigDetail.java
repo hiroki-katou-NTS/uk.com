@@ -42,7 +42,7 @@
 //public class KrqstComAppConfigDetail extends ContractUkJpaEntity implements Serializable{
 //	
 //	@EmbeddedId
-//	public KrqstComAppConfigDetailPK krqmtAppConfigWkpDetailPK;
+//	public KrqstComAppConfigDetailPK krqstWpAppConfigDetailPK;
 //	/**
 //	 * 備考
 //	 */
@@ -150,12 +150,12 @@
 //
 //	@Override
 //	protected Object getKey() {
-//		return krqmtAppConfigWkpDetailPK;
+//		return krqstWpAppConfigDetailPK;
 //	}
 //
 //	public static KrqstComAppConfigDetail fromDomain(ApprovalFunctionSetting approvalFunctionSetting, String companyID){
 //		return KrqstComAppConfigDetail.builder()
-//				.krqmtAppConfigWkpDetailPK(new KrqstComAppConfigDetailPK(
+//				.krqstWpAppConfigDetailPK(new KrqstComAppConfigDetailPK(
 //						companyID, 
 //						approvalFunctionSetting.getAppUseSetting().getAppType().value))
 //				.memo(approvalFunctionSetting.getAppUseSetting().getMemo().v())
@@ -192,7 +192,7 @@
 //				SettingFlg.toEnum(this.lateOrLeaveAppSettingFlg), 
 //				new ApplicationUseSetting(
 //						EnumAdaptor.valueOf(this.useAtr, UseDivision.class), 
-//						EnumAdaptor.valueOf(this.krqmtAppConfigWkpDetailPK.appType, ApplicationType.class),
+//						EnumAdaptor.valueOf(this.krqstWpAppConfigDetailPK.appType, ApplicationType.class),
 //						new AppUseSetRemark(this.memo)), 
 //				Optional.of(new ApplicationDetailSetting(
 //						this.breakInputFieldDisFlg == 1? true : false, 

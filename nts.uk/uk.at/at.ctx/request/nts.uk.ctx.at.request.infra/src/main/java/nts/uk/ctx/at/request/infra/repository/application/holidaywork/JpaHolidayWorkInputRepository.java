@@ -17,13 +17,13 @@ public class JpaHolidayWorkInputRepository extends JpaRepository implements Holi
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE e.krqdtAppHdWorkTimePK.cid = :companyID");
-		query.append(" AND e.krqdtAppHdWorkTimePK.appId = :appID");
+		query.append(" WHERE e.krqdtHolidayWorkInputPK.cid = :companyID");
+		query.append(" AND e.krqdtHolidayWorkInputPK.appId = :appID");
 		FIND_BY_APPID = query.toString();
 		
 		query = new StringBuilder();
 		query.append(FIND_BY_APPID);
-		query.append(" AND e.krqdtAppHdWorkTimePK.attendanceType = :attendanceType");
+		query.append(" AND e.krqdtHolidayWorkInputPK.attendanceType = :attendanceType");
 		FIND_BY_APPID_AND_ATTENDANCEID = query.toString();
 	}
 	@Override
@@ -34,10 +34,10 @@ public class JpaHolidayWorkInputRepository extends JpaRepository implements Holi
 					.setParameter("attendanceType", attendanceType).getList(e -> convertToDomain(e));
 	}
 	private HolidayWorkInput convertToDomain(KrqdtAppHdWorkTime entity){
-		return HolidayWorkInput.createSimpleFromJavaType(entity.getKrqdtAppHdWorkTimePK().getCid(),
-				entity.getKrqdtAppHdWorkTimePK().getAppId(),
-				entity.getKrqdtAppHdWorkTimePK().getAttendanceType(),
-				entity.getKrqdtAppHdWorkTimePK().getFrameNo(),
+		return HolidayWorkInput.createSimpleFromJavaType(entity.getKrqdtHolidayWorkInputPK().getCid(),
+				entity.getKrqdtHolidayWorkInputPK().getAppId(),
+				entity.getKrqdtHolidayWorkInputPK().getAttendanceType(),
+				entity.getKrqdtHolidayWorkInputPK().getFrameNo(),
 				entity.getStartTime(),
 				entity.getEndTime(),
 				entity.getApplicationTime());

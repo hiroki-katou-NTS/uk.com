@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_FORM_MONEY_FUNC")
+@Table(name = "KSCST_FORM_MONEY_FUNC")
 public class KscmtFormMoneyFunc extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KscmtFormMoneyFuncPK kscstMoneyFuncPK;
+	public KscstFormMoneyFuncPK kscstMoneyFuncPK;
 
 	/* 外部予算実績項目コード */
 	@Column(name = "EXTERNAL_BUDGET_CD")

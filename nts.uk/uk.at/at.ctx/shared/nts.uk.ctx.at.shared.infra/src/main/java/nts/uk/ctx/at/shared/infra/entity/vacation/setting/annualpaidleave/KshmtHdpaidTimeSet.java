@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_HDPAID_TIME_SET")
+@Table(name = "KTVMT_TIME_ANNUAL_SET")
 public class KshmtHdpaidTimeSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

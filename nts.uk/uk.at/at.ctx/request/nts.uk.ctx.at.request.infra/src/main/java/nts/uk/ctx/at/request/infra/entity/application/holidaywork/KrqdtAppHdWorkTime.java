@@ -23,12 +23,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQDT_APP_HD_WORK_TIME")
+@Table(name = "KRQDT_HOLIDAY_WORK_INPUT")
 public class KrqdtAppHdWorkTime extends ContractUkJpaEntity implements Serializable {
 private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    protected KrqdtAppHdWorkTimePK krqdtAppHdWorkTimePK;
+    protected KrqdtHolidayWorkInputPK krqdtHolidayWorkInputPK;
 	
 	@Version
 	@Column(name="EXCLUS_VER")
@@ -65,15 +65,15 @@ private static final long serialVersionUID = 1L;
     })
 	public KrqdtAppHdWork appHolidayWork;
     
-    public KrqdtAppHdWorkTime(KrqdtAppHdWorkTimePK pk , Integer startTime, Integer endTime, Integer appTime){
-    	this.krqdtAppHdWorkTimePK = pk;
+    public KrqdtAppHdWorkTime(KrqdtHolidayWorkInputPK pk , Integer startTime, Integer endTime, Integer appTime){
+    	this.krqdtHolidayWorkInputPK = pk;
     	this.startTime = startTime;
     	this.endTime = endTime;
     	this.applicationTime = appTime;
     }
 	@Override
 	protected Object getKey() {
-		return krqdtAppHdWorkTimePK;
+		return krqdtHolidayWorkInputPK;
 	}
 	
 	public KrqdtAppHdWorkTime fromDomainValue(HolidayWorkInput holidayWorkInput){
@@ -85,10 +85,10 @@ private static final long serialVersionUID = 1L;
 	
 	public HolidayWorkInput toDomain(){
 		return HolidayWorkInput.createSimpleFromJavaType(
-				this.krqdtAppHdWorkTimePK.getCid(), 
-				this.krqdtAppHdWorkTimePK.getAppId(), 
-				this.krqdtAppHdWorkTimePK.getAttendanceType(), 
-				this.krqdtAppHdWorkTimePK.getFrameNo(), 
+				this.krqdtHolidayWorkInputPK.getCid(), 
+				this.krqdtHolidayWorkInputPK.getAppId(), 
+				this.krqdtHolidayWorkInputPK.getAttendanceType(), 
+				this.krqdtHolidayWorkInputPK.getFrameNo(), 
 				this.startTime, 
 				this.endTime, 
 				this.applicationTime);

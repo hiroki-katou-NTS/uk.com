@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetailPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtd;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtdPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAtenPK;
 
 /**
  * The Class JpaOutsideOTBRDItemSetMemento.
@@ -33,11 +33,11 @@ public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento
 	 * @param companyId the company id
 	 */
 	public JpaOutsideOTBRDItemSetMemento(KshmtOutsideDetail entity, String companyId) {
-		if (entity.getKshmtOutsideDetailPK() == null) {
-			entity.setKshmtOutsideDetailPK(new KshmtOutsideDetailPK());
+		if (entity.getKshstOutsideOtBrdPK() == null) {
+			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
 		}
 		this.entity = entity;
-		this.entity.getKshmtOutsideDetailPK().setCid(companyId);
+		this.entity.getKshstOutsideOtBrdPK().setCid(companyId);
 	}
 	/*
 	 * (non-Javadoc)
@@ -61,7 +61,7 @@ public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento
 	 */
 	@Override
 	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.entity.getKshmtOutsideDetailPK().setBrdItemNo(breakdownItemNo.value);
+		this.entity.getKshstOutsideOtBrdPK().setBrdItemNo(breakdownItemNo.value);
 	}
 
 	/*
@@ -99,9 +99,9 @@ public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento
 	public void setAttendanceItemIds(List<Integer> attendanceItemIds) {
 		this.entity.setLstOutsideOtBrdAten(attendanceItemIds.stream().map(id->{
 			KshmtOutsideAtd entityAten = new KshmtOutsideAtd();
-			entityAten.setKshmtOutsideAtdPK(
-					new KshmtOutsideAtdPK(this.entity.getKshmtOutsideDetailPK().getCid(),
-							this.entity.getKshmtOutsideDetailPK().getBrdItemNo(), id));
+			entityAten.setKshstOutsideOtBrdAtenPK(
+					new KshstOutsideOtBrdAtenPK(this.entity.getKshstOutsideOtBrdPK().getCid(),
+							this.entity.getKshstOutsideOtBrdPK().getBrdItemNo(), id));
 			return entityAten;
 		}).collect(Collectors.toList()));
 	}

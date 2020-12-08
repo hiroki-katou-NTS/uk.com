@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="SGWMT_SSO_OTHER_SYS_ACC")
+@Table(name="SGWMT_OTHER_SYS_ACC")
 public class SgwmtSsoOtherSysAcc extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class SgwmtSsoOtherSysAcc extends ContractUkJpaEntity implements Serializ
 
 	/** The sgwmt other sys acc PK. */
 	@EmbeddedId
-	private SgwmtSsoOtherSysAccPK sgwmtSsoOtherSysAccPK;
+	private SgwmtOtherSysAccPK sgwmtOtherSysAccPK;
 	
 	/** The ccd. */
 	// company code
@@ -57,6 +57,6 @@ public class SgwmtSsoOtherSysAcc extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.sgwmtSsoOtherSysAccPK;
+		return this.sgwmtOtherSysAccPK;
 	}
 }

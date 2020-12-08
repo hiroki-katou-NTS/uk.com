@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPDT_SAVE_TABLE_LIST")
+@Table(name = "SSPMT_TABLE_LIST")
 public class SspdtSaveTableList extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class SspdtSaveTableList extends ContractUkJpaEntity implements Serializa
 	 * ID
 	 */
 	@EmbeddedId
-	public SspdtSaveTableListPk tableListPk;
+	public SspmtTableListPk tableListPk;
 
 	/**
 	 * カテゴリ名
@@ -836,7 +836,7 @@ public class SspdtSaveTableList extends ContractUkJpaEntity implements Serializa
 
 	public static SspdtSaveTableList toEntity(TableList domain) {
 		return new SspdtSaveTableList(
-				new SspdtSaveTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),
+				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),
 				domain.getCategoryName(), domain.getDataRecoveryProcessId().orElse(null), domain.getTableJapaneseName(),
 				domain.getTableEnglishName(), domain.getFieldAcqCid().orElse(null),
 				domain.getFieldAcqDateTime().orElse(null), domain.getFieldAcqEmployeeId().orElse(null),

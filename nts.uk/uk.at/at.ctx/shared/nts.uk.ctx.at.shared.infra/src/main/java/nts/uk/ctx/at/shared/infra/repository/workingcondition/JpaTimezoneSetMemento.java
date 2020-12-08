@@ -7,10 +7,10 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTs;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTsPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZonePK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtTimeZone;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTs;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTsPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZonePK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -39,15 +39,15 @@ public class JpaTimezoneSetMemento<T extends KshmtTimeZone> implements TimezoneS
 		this.entity = entity;
 
 		if (this.entity instanceof KshmtWorkcondCtgTs
-				&& ((KshmtWorkcondCtgTs) this.entity).getKshmtWorkcondCtgTsPK() == null) {
+				&& ((KshmtWorkcondCtgTs) this.entity).getKshmtWorkCatTimeZonePK() == null) {
 			((KshmtWorkcondCtgTs) this.entity)
-					.setKshmtWorkcondCtgTsPK(new KshmtWorkcondCtgTsPK(historyId, perAtr, 0));
+					.setKshmtWorkCatTimeZonePK(new KshmtWorkCatTimeZonePK(historyId, perAtr, 0));
 		}
 
 		if (entity instanceof KshmtWorkcondWeekTs
-				&& ((KshmtWorkcondWeekTs) this.entity).getKshmtWorkcondWeekTsPK() == null) {
-			((KshmtWorkcondWeekTs) this.entity).setKshmtWorkcondWeekTsPK(
-					new KshmtWorkcondWeekTsPK(historyId, perAtr, 0));
+				&& ((KshmtWorkcondWeekTs) this.entity).getKshmtDayofweekTimeZonePK() == null) {
+			((KshmtWorkcondWeekTs) this.entity).setKshmtDayofweekTimeZonePK(
+					new KshmtDayofweekTimeZonePK(historyId, perAtr, 0));
 		}
 	}
 
@@ -73,19 +73,19 @@ public class JpaTimezoneSetMemento<T extends KshmtTimeZone> implements TimezoneS
 	public void setCnt(int workNo) {
 		// Is KshmtWorkcondCtgTs
 		if (this.entity instanceof KshmtWorkcondCtgTs) {
-			KshmtWorkcondCtgTsPK kshmtWorkcondCtgTsPK = ((KshmtWorkcondCtgTs) this.entity)
-					.getKshmtWorkcondCtgTsPK();
-			kshmtWorkcondCtgTsPK.setCnt(workNo);
-			((KshmtWorkcondCtgTs) this.entity).setKshmtWorkcondCtgTsPK(kshmtWorkcondCtgTsPK);
+			KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK = ((KshmtWorkcondCtgTs) this.entity)
+					.getKshmtWorkCatTimeZonePK();
+			kshmtWorkCatTimeZonePK.setCnt(workNo);
+			((KshmtWorkcondCtgTs) this.entity).setKshmtWorkCatTimeZonePK(kshmtWorkCatTimeZonePK);
 		}
 
 		// Is KshmtWorkcondWeekTs
 		if (entity instanceof KshmtWorkcondWeekTs) {
-			KshmtWorkcondWeekTsPK kshmtWorkcondWeekTsPK = ((KshmtWorkcondWeekTs) this.entity)
-					.getKshmtWorkcondWeekTsPK();
-			kshmtWorkcondWeekTsPK.setCnt(workNo);
+			KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK = ((KshmtWorkcondWeekTs) this.entity)
+					.getKshmtDayofweekTimeZonePK();
+			kshmtDayofweekTimeZonePK.setCnt(workNo);
 			((KshmtWorkcondWeekTs) this.entity)
-					.setKshmtWorkcondWeekTsPK(kshmtWorkcondWeekTsPK);
+					.setKshmtDayofweekTimeZonePK(kshmtDayofweekTimeZonePK);
 		}
 	}
 

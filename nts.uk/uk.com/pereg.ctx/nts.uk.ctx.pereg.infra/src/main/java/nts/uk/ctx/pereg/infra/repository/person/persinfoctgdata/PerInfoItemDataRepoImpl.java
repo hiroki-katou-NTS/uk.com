@@ -27,7 +27,7 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtItem;
 import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerDataItem;
-import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerDataItemPK;
+import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoItemDataPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValueType;
 
@@ -40,38 +40,38 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 //	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerDataItem id"
 //			+ " INNER JOIN PpemtItem pi"
-//			+ " ON id.primaryKey.perInfoDefId = pi.ppemtItemPK.perInfoItemDefId"
-//			+ " INNER JOIN PpemtCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
-//			+ " INNER JOIN PpemtCtg pc" + " ON ic.pInfoCtgId = pc.ppemtCtgPK.perInfoCtgId";
+//			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+//			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
+//			+ " INNER JOIN PpemtCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	private static final String GET_BY_RID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerDataItem itemData"
-			+ " INNER JOIN PpemtItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.recordId = :recordId";
 	
 	private static final String GET_BY_RIDS = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerDataItem itemData"
-			+ " INNER JOIN PpemtItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.recordId IN :recordId";
 	
 	private static final String GET_BY_ITEM_DEF_ID_AND_RECORD_ID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerDataItem itemData"
-			+ " INNER JOIN PpemtItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.perInfoDefId = :perInfoDefId and itemData.primaryKey.recordId = :recordId";
 
 	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_PID = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerDataItem id"
 			+ " INNER JOIN PpemtItem pi"
-			+ " ON id.primaryKey.perInfoDefId = pi.ppemtItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
-			+ " INNER JOIN PpemtCtg pc" + " ON ic.pInfoCtgId = pc.ppemtCtgPK.perInfoCtgId"
+			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
+			+ " INNER JOIN PpemtCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ic.pInfoCtgId = :ctgid AND ic.pId = :pid";
 	
 	private static final String SEL_ALL_ITEM_BY_CTG_IDS = "SELECT id.primaryKey.perInfoDefId"
 			+ " FROM PpemtPerDataItem id"
-			+ " INNER JOIN PpemtItem pi ON id.primaryKey.perInfoDefId = pi.ppemtItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtCtg pc ON pi.perInfoCtgId = pc.ppemtCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtItemCommon pm ON pi.itemCd = pm.ppemtItemCommonPK.itemCd AND pc.categoryCd = pm.ppemtItemCommonPK.categoryCd"
-			+ " WHERE pm.ppemtItemCommonPK.itemCd =:itemCd"
+			+ " INNER JOIN PpemtItem pi ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItemCommon pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
 			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
 	
 	private static final String GET_ITEM_DATA_WITH_RECORD_IDS = "SELECT id FROM PpemtPerDataItem id "
@@ -97,8 +97,8 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		PpemtPerDataItem itemData = (PpemtPerDataItem) data[0];
 		PpemtItem itemInfo = (PpemtItem) data[1];
 		PpemtCtg infoCtg = (PpemtCtg) data[2];
-		return PersonInfoItemData.createFromJavaType(itemInfo.itemCd, itemInfo.ppemtItemPK.perInfoItemDefId,
-				itemData.primaryKey.recordId, infoCtg.ppemtCtgPK.perInfoCtgId, infoCtg.categoryCd,
+		return PersonInfoItemData.createFromJavaType(itemInfo.itemCd, itemInfo.ppemtPerInfoItemPK.perInfoItemDefId,
+				itemData.primaryKey.recordId, infoCtg.ppemtPerInfoCtgPK.perInfoCtgId, infoCtg.categoryCd,
 				itemInfo.itemName, itemInfo.requiredAtr, itemData.saveDataAtr, itemData.stringVal, itemData.intVal,
 				itemData.dateVal);
 	}
@@ -131,7 +131,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 	// sonnlb code start
 	private PpemtPerDataItem toEntity(PersonInfoItemData domain) {
 
-		PpemtPerDataItemPK key = new PpemtPerDataItemPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 
 		String stringValue = null;
 		BigDecimal intValue = null;
@@ -189,7 +189,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 	
 	@Override
 	public void registerItemData(PersonInfoItemData domain) {
-		PpemtPerDataItemPK key = new PpemtPerDataItemPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 		Optional<PpemtPerDataItem> existItem = this.queryProxy().find(key, PpemtPerDataItem.class);
 		if (!existItem.isPresent()) {
 			addItemData(domain);
@@ -204,7 +204,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public void updateItemData(PersonInfoItemData domain) {
-		PpemtPerDataItemPK key = new PpemtPerDataItemPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 		Optional<PpemtPerDataItem> existItem = this.queryProxy().find(key, PpemtPerDataItem.class);
 		if (!existItem.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoItemData");
@@ -217,7 +217,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public void deleteItemData(PersonInfoItemData domain) {
-		PpemtPerDataItemPK key = new PpemtPerDataItemPK(domain.getRecordId(), domain.getPerInfoItemDefId());
+		PpemtPerInfoItemDataPK key = new PpemtPerInfoItemDataPK(domain.getRecordId(), domain.getPerInfoItemDefId());
 		this.commandProxy().remove(PpemtPerDataItem.class, key);
 
 	}
@@ -370,7 +370,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public void updateAll(List<PersonInfoItemData> domains) {
-		String UP_SQL = "UPDATE PPEMT_PER_DATA_ITEM"
+		String UP_SQL = "UPDATE PPEMT_PER_INFO_ITEM_DATA"
 				+ " SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " RECORD_ID = RECORD_ID_VAL, PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR = SAVE_DATA_ATR_VAL,"
 				+ " STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL "

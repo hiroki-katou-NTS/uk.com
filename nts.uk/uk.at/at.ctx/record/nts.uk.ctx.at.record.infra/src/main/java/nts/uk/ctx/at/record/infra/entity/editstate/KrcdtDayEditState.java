@@ -20,19 +20,19 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_EDIT_STATE")
+@Table(name = "KRCDT_DAILY_REC_EDIT_SET")
 public class KrcdtDayEditState extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayEditStatePK krcdtDayEditStatePK;
+	public KrcdtDailyRecEditSetPK krcdtDailyRecEditSetPK;
 	
 	@Column(name = "EDIT_STATE")
 	public int editState;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayEditStatePK;
+		return this.krcdtDailyRecEditSetPK;
 	}
 }

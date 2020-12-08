@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 //複数月のチェック条件(平均)
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ALST_CHKMLT_UDCAVG")
+@Table(name = "KRCMT_MUL_MON_COND_AVG")
 public class KrcmtAlstChkmltUdcavg extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -35,12 +35,12 @@ public class KrcmtAlstChkmltUdcavg extends ContractUkJpaEntity implements Serial
 	@Column(name = "IS_USE_FLG")
 	public int isUseFlg;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUdcavg", orphanRemoval=true)
-	public KrcmtEralstCndgrp krcmtEralstCndgrp;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonCondAvg", orphanRemoval=true)
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUd krcmtAlstChkmltUd;
+	public KrcmtAlstChkmltUd krcmtMulMonAlarmCheck;
 	
 	@Override
 	protected Object getKey() {
@@ -59,14 +59,14 @@ public class KrcmtAlstChkmltUdcavg extends ContractUkJpaEntity implements Serial
 		return new MulMonthCheckCondAverage(
 				this.errorAlarmCheckID,
 				this.isUseFlg == 1 ? true : false,
-				this.krcmtEralstCndgrp.toDomain(this.krcmtEralstCndgrp, null, null));
+				this.krcmtErAlAtdItemCon.toDomain(this.krcmtErAlAtdItemCon, null, null));
 	}
 
-	public KrcmtAlstChkmltUdcavg(String errorAlarmCheckID, int isUseFlg, KrcmtEralstCndgrp krcmtEralstCndgrp) {
+	public KrcmtAlstChkmltUdcavg(String errorAlarmCheckID, int isUseFlg, KrcmtEralstCndgrp krcmtErAlAtdItemCon) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.isUseFlg = isUseFlg;
-		this.krcmtEralstCndgrp = krcmtEralstCndgrp;
+		this.krcmtErAlAtdItemCon = krcmtErAlAtdItemCon;
 	}
 	
 	

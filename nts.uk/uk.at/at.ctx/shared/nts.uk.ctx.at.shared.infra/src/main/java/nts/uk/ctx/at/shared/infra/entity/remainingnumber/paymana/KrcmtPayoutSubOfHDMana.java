@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_PAYOUT_HD_SUB_MNG")
+@Table(name = "KRCMT_PAYOUT_SUBOFHD_MANA")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcmtPayoutSubOfHDMana extends ContractUkJpaEntity implements Serializable{

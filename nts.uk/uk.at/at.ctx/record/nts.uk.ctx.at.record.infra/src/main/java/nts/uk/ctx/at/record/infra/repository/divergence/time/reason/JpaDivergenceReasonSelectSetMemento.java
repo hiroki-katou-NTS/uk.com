@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReasonPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 
 /**
  * The Class JpaDivergenceReasonSelectRepositorySetMemento.
@@ -25,7 +25,7 @@ public class JpaDivergenceReasonSelectSetMemento implements DivergenceReasonSele
 	 */
 	public JpaDivergenceReasonSelectSetMemento(KrcmtDvgcReason entity) {
 		if (entity.getId() == null) {
-			KrcmtDvgcReasonPK PK = new KrcmtDvgcReasonPK();
+			KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK();
 			entity.setId(PK);
 		}
 

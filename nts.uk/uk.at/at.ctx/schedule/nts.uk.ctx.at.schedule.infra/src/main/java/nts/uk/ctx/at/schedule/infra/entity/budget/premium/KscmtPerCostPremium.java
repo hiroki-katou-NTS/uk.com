@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KSCMT_PER_COST_PREMIUM")
+@Table(name="KMLDT_PREMIUM_ATTENDANCE")
 public class KscmtPerCostPremium extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
@@ -32,7 +32,7 @@ public class KscmtPerCostPremium extends ContractUkJpaEntity{
 		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),
 		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
 	})
-	public KscmtPerCostPremiRate kscmtPerCostPremiRate;
+	public KscmtPerCostPremiRate kmlstPremiumSet;
 	
 	@Override
 	protected Object getKey() {

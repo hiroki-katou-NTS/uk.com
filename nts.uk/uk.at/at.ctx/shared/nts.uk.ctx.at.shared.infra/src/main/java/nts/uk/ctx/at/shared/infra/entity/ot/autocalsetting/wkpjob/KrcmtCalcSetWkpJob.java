@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.KshmtAutoCalSet;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCMT_CALC_SET_WKP_JOB")
+@Table(name = "KSHMT_AUTO_WKP_JOB_CAL")
 public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable 
 
 	/** The kshmt auto wkp job cal PK. */
 	@EmbeddedId
-	protected KrcmtCalcSetWkpJobPK krcmtCalcSetWkpJobPK;
+	protected KshmtAutoWkpJobCalPK kshmtAutoWkpJobCalPK;
 
 	/**
 	 * Instantiates a new kshmt auto wkp job cal.
@@ -40,11 +40,11 @@ public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable 
 	/**
 	 * Instantiates a new kshmt auto wkp job cal.
 	 *
-	 * @param krcmtCalcSetWkpJobPK
+	 * @param kshmtAutoWkpJobCalPK
 	 *            the kshmt auto wkp job cal PK
 	 */
-	public KrcmtCalcSetWkpJob(KrcmtCalcSetWkpJobPK krcmtCalcSetWkpJobPK) {
-		this.krcmtCalcSetWkpJobPK = krcmtCalcSetWkpJobPK;
+	public KrcmtCalcSetWkpJob(KshmtAutoWkpJobCalPK kshmtAutoWkpJobCalPK) {
+		this.kshmtAutoWkpJobCalPK = kshmtAutoWkpJobCalPK;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable 
 	 *            the jobid
 	 */
 	public KrcmtCalcSetWkpJob(String cid, String wpkid, String jobid) {
-		this.krcmtCalcSetWkpJobPK = new KrcmtCalcSetWkpJobPK(cid, wpkid, jobid);
+		this.kshmtAutoWkpJobCalPK = new KshmtAutoWkpJobCalPK(cid, wpkid, jobid);
 	}
 
 	/*
@@ -69,7 +69,7 @@ public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable 
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtCalcSetWkpJobPK != null ? krcmtCalcSetWkpJobPK.hashCode() : 0);
+		hash += (kshmtAutoWkpJobCalPK != null ? kshmtAutoWkpJobCalPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -84,9 +84,9 @@ public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable 
 			return false;
 		}
 		KrcmtCalcSetWkpJob other = (KrcmtCalcSetWkpJob) object;
-		if ((this.krcmtCalcSetWkpJobPK == null && other.krcmtCalcSetWkpJobPK != null)
-				|| (this.krcmtCalcSetWkpJobPK != null
-						&& !this.krcmtCalcSetWkpJobPK.equals(other.krcmtCalcSetWkpJobPK))) {
+		if ((this.kshmtAutoWkpJobCalPK == null && other.kshmtAutoWkpJobCalPK != null)
+				|| (this.kshmtAutoWkpJobCalPK != null
+						&& !this.kshmtAutoWkpJobCalPK.equals(other.kshmtAutoWkpJobCalPK))) {
 			return false;
 		}
 		return true;
@@ -99,7 +99,7 @@ public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcSetWkpJobPK;
+		return this.kshmtAutoWkpJobCalPK;
 	}
 
 }

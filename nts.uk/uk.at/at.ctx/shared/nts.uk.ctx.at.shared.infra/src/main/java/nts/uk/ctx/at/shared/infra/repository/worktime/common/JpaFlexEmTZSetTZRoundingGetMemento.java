@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -25,8 +25,8 @@ public class JpaFlexEmTZSetTZRoundingGetMemento implements TimeZoneRoundingGetMe
 	 */
 	public JpaFlexEmTZSetTZRoundingGetMemento(KshmtWtFleWorkTs entity) {
 		super();
-		if(entity.getKshmtWtFleWorkTsPK() == null){
-			entity.setKshmtWtFleWorkTsPK(new KshmtWtFleWorkTsPK());
+		if(entity.getKshmtFlexWorkTimeSetPK() == null){
+			entity.setKshmtFlexWorkTimeSetPK(new KshmtFlexWorkTimeSetPK());
 		}
 		this.entity = entity;
 	}

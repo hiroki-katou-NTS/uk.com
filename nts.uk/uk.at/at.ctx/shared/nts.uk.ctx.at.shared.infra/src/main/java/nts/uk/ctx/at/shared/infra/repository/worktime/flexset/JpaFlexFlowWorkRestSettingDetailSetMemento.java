@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowFixedRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowRestSetSetMemento;
 
@@ -30,8 +30,8 @@ public class JpaFlexFlowWorkRestSettingDetailSetMemento implements FlowWorkRestS
 	 */
 	public JpaFlexFlowWorkRestSettingDetailSetMemento(KshmtWtFleBrFl entity) {
 		super();
-		if (entity.getKshmtWtFleBrFlPK() == null) {
-			entity.setKshmtWtFleBrFlPK(new KshmtWtFleBrFlPK());
+		if (entity.getKshmtFlexRestSetPK() == null) {
+			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
 		}
 		this.entity = entity;
 	}

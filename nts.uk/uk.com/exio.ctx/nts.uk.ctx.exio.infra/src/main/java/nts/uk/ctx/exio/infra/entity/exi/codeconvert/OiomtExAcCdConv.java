@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_CD_CONV")
+@Table(name = "OIOMT_ACCEPT_CD_CONVERT")
 public class OiomtExAcCdConv extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public class OiomtExAcCdConv extends ContractUkJpaEntity implements Serializable
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcCdConvPk acceptCdConvertPk;
+	public OiomtAcceptCdConvertPk acceptCdConvertPk;
 
 	/**
 	 * コード変換名称
@@ -47,9 +47,9 @@ public class OiomtExAcCdConv extends ContractUkJpaEntity implements Serializable
 	@Column(name = "ACCEPT_WITHOUT_SETTING")
 	public int acceptWithoutSetting;
 
-	@OneToMany(targetEntity = OiomtExAcCdConvDtl.class, cascade = CascadeType.ALL, mappedBy = "oiomtExAcCdConv", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "OIOMT_EX_AC_CD_CONV_DTL")
-	public List<OiomtExAcCdConvDtl> oiomtExAcCdConvDtl;
+	@OneToMany(targetEntity = OiomtExAcCdConvDtl.class, cascade = CascadeType.ALL, mappedBy = "oiomtAcceptCdConvert", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "OIOMT_CD_CONVERT_DETAILS")
+	public List<OiomtExAcCdConvDtl> oiomtCdConvertDetails;
 
 	@Override
 	protected Object getKey() {

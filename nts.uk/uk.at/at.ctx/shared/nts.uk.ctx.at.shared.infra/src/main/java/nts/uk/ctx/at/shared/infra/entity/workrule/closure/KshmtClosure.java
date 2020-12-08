@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_CLOSURE")
+@Table(name = "KCLMT_CLOSURE")
 public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
     
     /** The kclmt closure PK. */
     @EmbeddedId
-    protected KshmtClosurePK kshmtClosurePK;
+    protected KclmtClosurePK kclmtClosurePK;
     
     /** The use class. */
     @Column(name = "USE_ATR")
@@ -48,10 +48,10 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
     /**
      * Instantiates a new kclmt closure.
      *
-     * @param kshmtClosurePK the kclmt closure PK
+     * @param kclmtClosurePK the kclmt closure PK
      */
-    public KshmtClosure(KshmtClosurePK kshmtClosurePK) {
-        this.kshmtClosurePK = kshmtClosurePK;
+    public KshmtClosure(KclmtClosurePK kclmtClosurePK) {
+        this.kclmtClosurePK = kclmtClosurePK;
     }
 
 
@@ -62,7 +62,7 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
      * @param closureId the closure id
      */
     public KshmtClosure(String ccid, int closureId) {
-        this.kshmtClosurePK = new KshmtClosurePK(ccid, closureId);
+        this.kclmtClosurePK = new KclmtClosurePK(ccid, closureId);
     }
 
     /**
@@ -70,17 +70,17 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
      *
      * @return the kclmt closure PK
      */
-    public KshmtClosurePK getKshmtClosurePK() {
-        return kshmtClosurePK;
+    public KclmtClosurePK getKclmtClosurePK() {
+        return kclmtClosurePK;
     }
 
     /**
      * Sets the kclmt closure PK.
      *
-     * @param kshmtClosurePK the new kclmt closure PK
+     * @param kclmtClosurePK the new kclmt closure PK
      */
-    public void setKshmtClosurePK(KshmtClosurePK kshmtClosurePK) {
-        this.kshmtClosurePK = kshmtClosurePK;
+    public void setKclmtClosurePK(KclmtClosurePK kclmtClosurePK) {
+        this.kclmtClosurePK = kclmtClosurePK;
     }
 
 
@@ -90,7 +90,7 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtClosurePK != null ? kshmtClosurePK.hashCode() : 0);
+        hash += (kclmtClosurePK != null ? kclmtClosurePK.hashCode() : 0);
         return hash;
     }
 
@@ -103,8 +103,8 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
             return false;
         }
 		KshmtClosure other = (KshmtClosure) object;
-		if ((this.kshmtClosurePK == null && other.kshmtClosurePK != null)
-			|| (this.kshmtClosurePK != null && !this.kshmtClosurePK.equals(other.kshmtClosurePK))) {
+		if ((this.kclmtClosurePK == null && other.kclmtClosurePK != null)
+			|| (this.kclmtClosurePK != null && !this.kclmtClosurePK.equals(other.kclmtClosurePK))) {
 			return false;
 		}
         return true;
@@ -115,7 +115,7 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KshmtClosure[ kshmtClosurePK=" + kshmtClosurePK + " ]";
+        return "entity.KshmtClosure[ kclmtClosurePK=" + kclmtClosurePK + " ]";
     }
 
 	/* (non-Javadoc)
@@ -123,7 +123,7 @@ public class KshmtClosure extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.getKshmtClosurePK();
+		return this.getKclmtClosurePK();
 	}
     
 }

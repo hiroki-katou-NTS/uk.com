@@ -49,13 +49,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CNDGRP")
+@Table(name = "KRCMT_ER_AL_ATD_ITEM_CON")
 public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtEralstCndgrpPK krcmtEralstCndgrpPK;
+	public KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK;
 
 	@Basic(optional = false)
 	@Column(name = "CONDITION_ATR")
@@ -78,16 +78,16 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 	@Transient
 	public KrcmtEralstCndexprange atdItemTarget;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtEralstCndgrp", orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlCompareSingle erAlCompareSingle;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtEralstCndgrp", orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlCompareRange erAlCompareRange;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtEralstCndgrp", orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlInputCheck erAlInputCheck;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtEralstCndgrp", orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlSingleFixed erAlSingleFixed;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
@@ -101,35 +101,35 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false) })
-	public KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk;
+	public KrcmtEralstCndexpiptchk krcstErAlConGroup;
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdcsum krcmtAlstChkmltUdcsum;
+	public KrcmtAlstChkmltUdcsum krcmtMulMonCond;
 	
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdcavg krcmtAlstChkmltUdcavg;
+	public KrcmtAlstChkmltUdcavg krcmtMulMonCondAvg;
 	
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdcont krcmtAlstChkmltUdcont;
+	public KrcmtAlstChkmltUdcont krcmtMulMonCondCont;
 	
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdccrsp krcmtAlstChkmltUdccrsp;
+	public KrcmtAlstChkmltUdccrsp krcmtMulMonCondCosp;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralstCndgrpPK;
+		return this.krcmtErAlAtdItemConPK;
 	}
 
-	public KrcmtEralstCndgrp(KrcmtEralstCndgrpPK krcmtEralstCndgrpPK, int conditionAtr, int useAtr, int type,
+	public KrcmtEralstCndgrp(KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK, int conditionAtr, int useAtr, int type,
 			List<KrcmtEralstCndexprange> lstAtdItemTarget, KrcstErAlCompareSingle erAlCompareSingle,
 			KrcstErAlCompareRange erAlCompareRange, KrcstErAlInputCheck erAlInputCheck,
 			KrcstErAlSingleFixed erAlSingleFixed, List<KrcstErAlSingleAtd> erAlSingleAtd) {
 		super();
-		this.krcmtEralstCndgrpPK = krcmtEralstCndgrpPK;
+		this.krcmtErAlAtdItemConPK = krcmtErAlAtdItemConPK;
 		this.conditionAtr = conditionAtr;
 		this.useAtr = useAtr;
 		this.type = type;
@@ -144,24 +144,24 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
     
     public static KrcmtEralstCndgrp toEntity(String atdItemConditionGroup1,
             ErAlAttendanceItemCondition<?> erAlAtdItemCon, boolean isGroupOne) {
-        KrcmtEralstCndgrpPK krcmtEralstCndgrpPK = new KrcmtEralstCndgrpPK(atdItemConditionGroup1,
+        KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
                 erAlAtdItemCon.getTargetNO());
         List<KrcmtEralstCndexprange> lstAtdItemTarget = new ArrayList<>();
         if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
             lstAtdItemTarget.add(new KrcmtEralstCndexprange(
-                    new KrcmtEralstCndexprangePK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
+                    new KrcstErAlAtdTargetPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
                             erAlAtdItemCon.getUncountableTarget().getAttendanceItem()),2));
         } else {
             List<KrcmtEralstCndexprange> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
                     .getAddSubAttendanceItems().getAdditionAttendanceItems().stream()
                     .map(atdItemId -> new KrcmtEralstCndexprange(
-                            new KrcmtEralstCndexprangePK(atdItemConditionGroup1,
+                            new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
                                     erAlAtdItemCon.getTargetNO(), atdItemId),0))
                     .collect(Collectors.toList());
             List<KrcmtEralstCndexprange> lstAtdItemTargetSub = erAlAtdItemCon.getCountableTarget()
                     .getAddSubAttendanceItems().getSubstractionAttendanceItems().stream()
                     .map(atdItemId -> new KrcmtEralstCndexprange(
-                            new KrcmtEralstCndexprangePK(atdItemConditionGroup1,
+                            new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
                                     erAlAtdItemCon.getTargetNO(),atdItemId),1))
                     .collect(Collectors.toList());
             lstAtdItemTarget.addAll(lstAtdItemTargetAdd);
@@ -239,7 +239,7 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 					new KrcstErAlInputCheckPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
 					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
-		return new KrcmtEralstCndgrp(krcmtEralstCndgrpPK, erAlAtdItemCon.getConditionAtr().value,
+		return new KrcmtEralstCndgrp(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
 				isGroupOne == true ? 1 : erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
     }
@@ -248,23 +248,23 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
     public <V> ErAlAttendanceItemCondition<V> toDomain(
             KrcmtEralstCndgrp atdItemCon, String companyId, String errorAlarmCode) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
-				atdItemCon.krcmtEralstCndgrpPK.atdItemConNo, atdItemCon.conditionAtr,
+				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.conditionAtr,
 				atdItemCon.useAtr == 1 ? true : false, atdItemCon.type);
         // Set Target
         if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
             atdItemConDomain.setUncountableTarget(
                     Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
                             .filter(atdItemTarget -> (atdItemTarget.targetAtr == 2))
-                            .findFirst().get().krcmtEralstCndexprangePK.attendanceItemId);
+                            .findFirst().get().krcstErAlAtdTargetPK.attendanceItemId);
         } else {
             atdItemConDomain.setCountableTarget(
                     Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
                             .filter(atdItemTarget -> atdItemTarget.targetAtr == 0)
-                            .map(addItem -> addItem.krcmtEralstCndexprangePK.attendanceItemId)
+                            .map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
                             .collect(Collectors.toList()),
                     Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
                             .filter(atdItemTarget -> atdItemTarget.targetAtr == 1)
-                            .map(addItem -> addItem.krcmtEralstCndexprangePK.attendanceItemId)
+                            .map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
                             .collect(Collectors.toList()));
         }
         // Set Compare
@@ -322,7 +322,7 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
                         atdItemCon.erAlCompareSingle.compareAtr,
                         atdItemCon.erAlCompareSingle.conditionType,
                         (V) new AttendanceItemId(
-                                atdItemCon.erAlSingleAtd.get(0).krcmtEralstCndexpsglatdPK.attendanceItemId));
+                                atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
             }
         } else if (atdItemCon.erAlInputCheck != null) {
         	atdItemConDomain.setInputCheck(atdItemCon.erAlInputCheck.inputCheckCondition);

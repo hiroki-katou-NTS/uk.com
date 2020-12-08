@@ -41,7 +41,7 @@ public class JpaJobAutoCalSettingGetMemento implements JobAutoCalSettingGetMemen
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKrcmtCalcSetJobPK().getCid());
+		return new CompanyId(this.entity.getKshmtAutoJobCalSetPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public class JpaJobAutoCalSettingGetMemento implements JobAutoCalSettingGetMemen
 	 */
 	@Override
 	public JobTitleId getPositionId() {
-		return new JobTitleId(this.entity.getKrcmtCalcSetJobPK().getJobid());
+		return new JobTitleId(this.entity.getKshmtAutoJobCalSetPK().getJobid());
 	}
 
 	/* (non-Javadoc)

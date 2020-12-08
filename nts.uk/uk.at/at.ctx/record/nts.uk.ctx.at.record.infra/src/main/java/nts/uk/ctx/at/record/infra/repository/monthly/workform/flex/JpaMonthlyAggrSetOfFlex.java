@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.workform.flex.KrcmtCalcMFlexBak;
-import nts.uk.ctx.at.record.infra.entity.monthly.workform.flex.KrcmtCalcMFlexBakPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.workform.flex.KrcstMonFlexAggrSetPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 
@@ -23,7 +23,7 @@ public class JpaMonthlyAggrSetOfFlex extends JpaRepository implements MonthlyAgg
 	public Optional<MonthlyAggrSetOfFlex> find(String companyId) {
 		
 		return this.queryProxy()
-				.find(new KrcmtCalcMFlexBakPK(companyId), KrcmtCalcMFlexBak.class)
+				.find(new KrcstMonFlexAggrSetPK(companyId), KrcmtCalcMFlexBak.class)
 				.map(c -> c.toDomain());
 	}
 	
@@ -32,7 +32,7 @@ public class JpaMonthlyAggrSetOfFlex extends JpaRepository implements MonthlyAgg
 	public void persistAndUpdate(MonthlyAggrSetOfFlex domain) {
 
 		// キー
-		val key = new KrcmtCalcMFlexBakPK(domain.getCompanyId());
+		val key = new KrcstMonFlexAggrSetPK(domain.getCompanyId());
 		
 		// 登録・更新
 		KrcmtCalcMFlexBak entity = this.getEntityManager().find(KrcmtCalcMFlexBak.class, key);
@@ -50,6 +50,6 @@ public class JpaMonthlyAggrSetOfFlex extends JpaRepository implements MonthlyAgg
 	@Override
 	public void remove(String companyId) {
 
-		this.commandProxy().remove(KrcmtCalcMFlexBak.class, new KrcmtCalcMFlexBakPK(companyId));
+		this.commandProxy().remove(KrcmtCalcMFlexBak.class, new KrcstMonFlexAggrSetPK(companyId));
 	}
 }

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_APP_RECRUITMENT")
+@Table(name = "KRQDT_RECRUITMENT_APP")
 @Getter
 @Setter
 @AllArgsConstructor

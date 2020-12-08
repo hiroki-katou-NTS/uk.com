@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRQDT_APP_HD")
+@Table(name = "KRQDT_APP_FOR_LEAVE")
 @Setter
 @Getter
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	protected KrqdtAppHdPK krqdtAppHdPK;
+	protected KrqdtAppForLeavePK krqdtAppForLeavePK;
 	 /**
      * 排他バージョン
      */
@@ -96,12 +96,12 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable{
 
 	@Override
 	protected Object getKey() {
-		return krqdtAppHdPK;
+		return krqdtAppForLeavePK;
 	}
 	
 	public AppAbsence toDomain(){
-		AppAbsence appAbsene =  new AppAbsence(this.krqdtAppHdPK.getCid(),
-				this.krqdtAppHdPK.getAppId(),
+		AppAbsence appAbsene =  new AppAbsence(this.krqdtAppForLeavePK.getCid(),
+				this.krqdtAppForLeavePK.getAppId(),
 				this.getHolidayAppType(),
 				this.getWorkTypeCode(),
 				this.getWorkTimeCode(),

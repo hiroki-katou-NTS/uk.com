@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSetPK;
 
 /**
  * The Class JpaFlexOffdayHDWTSheetGetMemento.
@@ -26,8 +26,8 @@ public class JpaFlexOffdayHDWTSheetGetMemento implements HDWorkTimeSheetSettingG
 	 */
 	public JpaFlexOffdayHDWTSheetGetMemento(KshmtWtFleHolTs entity) {
 		super();
-		if(entity.getKshmtWtFleHolTsPK() == null){
-			entity.setKshmtWtFleHolTsPK(new KshmtWtFleHolTsPK());
+		if(entity.getKshmtFlexHolSetPK() == null){
+			entity.setKshmtFlexHolSetPK(new KshmtFlexHolSetPK());
 		}
 		this.entity = entity;
 	}
@@ -41,7 +41,7 @@ public class JpaFlexOffdayHDWTSheetGetMemento implements HDWorkTimeSheetSettingG
 	 */
 	@Override
 	public Integer getWorkTimeNo() {
-		return this.entity.getKshmtWtFleHolTsPK().getWorktimeNo();
+		return this.entity.getKshmtFlexHolSetPK().getWorktimeNo();
 	}
 
 	/* (non-Javadoc)

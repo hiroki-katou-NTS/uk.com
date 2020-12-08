@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCCT_SCHE_FUNC_COMMON")
+@Table(name = "KSCST_SCHEDULE_COMMON")
 public class KscctScheFuncCommon extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KscctScheFuncCommonPK kscctScheFuncCommonPK;
+	public KscstScheduleCommonPK kscstScheduleCommonPK;
 	
 	/** 表示順 */
 	@Column(name = "DISPLAY_ORDER_COM")
@@ -44,7 +44,7 @@ public class KscctScheFuncCommon extends ContractUkJpaEntity implements Serializ
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscctScheFuncCommonPK;
+		return kscstScheduleCommonPK;
 	}
 	
 	

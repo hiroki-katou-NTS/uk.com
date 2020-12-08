@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_TIME_LEAVEEARLY")
+@Table(name = "KRCDT_DAY_LEAVEEARLYTIME")
 public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -68,7 +68,7 @@ public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Seri
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
 	})
-	public KrcdtDayTimeAtd krcdtDayTimeAtd;
+	public KrcdtDayTimeAtd krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {

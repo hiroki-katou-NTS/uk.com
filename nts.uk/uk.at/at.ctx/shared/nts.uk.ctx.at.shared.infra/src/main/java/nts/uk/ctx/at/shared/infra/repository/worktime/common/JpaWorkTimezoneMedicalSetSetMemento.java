@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedical;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedicalPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
 
 /**
  * The Class JpaWorkTimezoneMedicalSetSetMemento.
@@ -28,8 +28,8 @@ public class JpaWorkTimezoneMedicalSetSetMemento implements WorkTimezoneMedicalS
 	public JpaWorkTimezoneMedicalSetSetMemento(KshmtWtComMedical entity) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtWtComMedicalPK() == null) {
-			this.entity.setKshmtWtComMedicalPK(new KshmtWtComMedicalPK());
+		if (this.entity.getKshmtMedicalTimeSetPK() == null) {
+			this.entity.setKshmtMedicalTimeSetPK(new KshmtMedicalTimeSetPK());
 		}
 	}
 
@@ -56,7 +56,7 @@ public class JpaWorkTimezoneMedicalSetSetMemento implements WorkTimezoneMedicalS
 	 */
 	@Override
 	public void setWorkSystemAtr(WorkSystemAtr atr) {
-		this.entity.getKshmtWtComMedicalPK().setWorkFormAtr(atr.value);
+		this.entity.getKshmtMedicalTimeSetPK().setWorkFormAtr(atr.value);
 	}
 
 	/*

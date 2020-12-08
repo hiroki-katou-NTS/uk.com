@@ -14,12 +14,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANP_PERIOD_TARGET")
+@Table(name = "KRCMT_AGGR_PERIOD_TARGET")
 public class KrcdtAnpPeriodTarget extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KrcdtAnpPeriodTargetPK krcdtAnpPeriodTargetPK;
+	public KrcmtAggrPeriodTargetPK krcmtAggrPeriodTargetPK;
 	
 	@Column(name = "STATE")
 	public int state;
@@ -27,7 +27,7 @@ public class KrcdtAnpPeriodTarget extends ContractUkJpaEntity implements Seriali
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return krcdtAnpPeriodTargetPK;
+		return krcmtAggrPeriodTargetPK;
 	}
 
 }

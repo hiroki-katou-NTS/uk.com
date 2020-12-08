@@ -33,13 +33,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_TIME_GOOUT")
+@Table(name = "KRCDT_DAY_OUTING_TIME")
 public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KrcdtDayTimeGooutPK krcdtDayTimeGooutPK;
+	public KrcdtDayOutingTimePK krcdtDayOutingTimePK;
 
 //	計上用合計時間
 	@Column(name = "TO_RECORED_TOTAL_TIME")
@@ -125,17 +125,17 @@ public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializab
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayTimeAtd krcdtDayTimeAtd;
+	public KrcdtDayTimeAtd krcdtDayTime;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayTimeGooutPK;
+		return this.krcdtDayOutingTimePK;
 	}
 	
 	
 	public static KrcdtDayTimeGoout toEntity(String empId, GeneralDate ymd, OutingTimeOfDaily outingTimeOfDaily) {
 		val entity = new KrcdtDayTimeGoout();
-		entity.krcdtDayTimeGooutPK = new KrcdtDayTimeGooutPK(empId,ymd,outingTimeOfDaily.getReason().value);
+		entity.krcdtDayOutingTimePK = new KrcdtDayOutingTimePK(empId,ymd,outingTimeOfDaily.getReason().value);
 		entity.setData(outingTimeOfDaily);
 		return entity;
 	}
@@ -234,7 +234,7 @@ public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializab
 	}
 	
 	public OutingTimeOfDaily toDomain() {
-		val reason = GoingOutReason.corvert(this.krcdtDayTimeGooutPK.reason);
+		val reason = GoingOutReason.corvert(this.krcdtDayOutingTimePK.reason);
 		return new OutingTimeOfDaily(new BreakTimeGoOutTimes(count),
 									 //外出理由
 									 reason.isPresent()?reason.get():GoingOutReason.UNION, 

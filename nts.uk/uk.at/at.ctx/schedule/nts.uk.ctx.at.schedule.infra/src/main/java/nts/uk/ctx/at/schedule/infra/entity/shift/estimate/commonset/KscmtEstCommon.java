@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_COMMON")
+@Table(name = "KSCST_EST_COM_SET")
 public class KscmtEstCommon extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -84,7 +84,7 @@ public class KscmtEstCommon extends ContractUkJpaEntity implements Serializable 
 	private int daysMonthAlarmCheckCond;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstGuideSetting", orphanRemoval = true)
-	public List<KscmtEstAlarmColor> kscmtEstAlarmColors;
+	public List<KscmtEstAlarmColor> kscstEstAlarmColors;
 
 	/**
 	 * Instantiates a new kscst est guide setting.

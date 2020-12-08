@@ -22,9 +22,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLabor
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 //import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmp;
-//import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmpPK;
+//import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDDefEmp;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDDefEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
 
 /**
  * The Class JpaEmpTransLaborTimeRepository.
@@ -53,7 +53,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 */
 	@Override
 	public void delete(String cid, String employmentCode) {
-		commandProxy().remove(KshmtLegaltimeDDefEmp.class, new KshmtLegaltimeDDefEmpPK(cid, employmentCode));
+		commandProxy().remove(KshmtLegaltimeDDefEmp.class, new KshstEmpTransLabTimePK(cid, employmentCode));
 	}
 
 	/* 
@@ -61,7 +61,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 */
 	@Override
 	public Optional<DeforLaborTimeEmp> find(String cid, String employmentCode) {
-		Optional<KshmtLegaltimeDDefEmp> optEntity = this.queryProxy().find(new KshmtLegaltimeDDefEmpPK(cid, employmentCode), KshmtLegaltimeDDefEmp.class);
+		Optional<KshmtLegaltimeDDefEmp> optEntity = this.queryProxy().find(new KshstEmpTransLabTimePK(cid, employmentCode), KshmtLegaltimeDDefEmp.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -81,7 +81,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setKshmtLegaltimeDDefEmpPK(new KshmtLegaltimeDDefEmpPK(domain.getComId(), 
+		entity.setKshstEmpTransLabTimePK(new KshstEmpTransLabTimePK(domain.getComId(), 
 													domain.getEmploymentCode().v()));
 		
 		return entity;
@@ -94,8 +94,8 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @return the emp trans work time
 	 */
 	private DeforLaborTimeEmp toDomain(KshmtLegaltimeDDefEmp entity) {
-		return DeforLaborTimeEmp.of(entity.getKshmtLegaltimeDDefEmpPK().getCid(),
-				new EmploymentCode(entity.getKshmtLegaltimeDDefEmpPK().getEmpCd()),
+		return DeforLaborTimeEmp.of(entity.getKshstEmpTransLabTimePK().getCid(),
+				new EmploymentCode(entity.getKshstEmpTransLabTimePK().getEmpCd()),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}

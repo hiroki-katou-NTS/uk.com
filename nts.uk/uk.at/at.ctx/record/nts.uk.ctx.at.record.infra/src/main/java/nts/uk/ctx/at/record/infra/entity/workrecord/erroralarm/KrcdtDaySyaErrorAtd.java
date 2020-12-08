@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK;
+	public KrcdtErAttendanceItemPK krcdtErAttendanceItemPK;
 	
 	@Column(nullable = false, name = "CID")
 	public String cid;
@@ -37,7 +37,7 @@ public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtDaySyaErrorAtdPK;
+		return this.krcdtErAttendanceItemPK;
 	}
 	
 //	@ManyToOne
@@ -54,12 +54,12 @@ public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 	
 	public static KrcdtDaySyaErrorAtd toEntity(String id, int attendanceItemId, String cid, 
 			String sid, String ccd, GeneralDate processDate){
-		KrcdtDaySyaErrorAtd krcdtDaySyaErrorAtd = new KrcdtDaySyaErrorAtd();
-		KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK = new KrcdtDaySyaErrorAtdPK(id, attendanceItemId);
-		krcdtDaySyaErrorAtd.krcdtDaySyaErrorAtdPK = krcdtDaySyaErrorAtdPK;
-		krcdtDaySyaErrorAtd.cid = cid;
-		krcdtDaySyaErrorAtd.sid = cid;
-		krcdtDaySyaErrorAtd.processDate = processDate;
-		return krcdtDaySyaErrorAtd;
+		KrcdtDaySyaErrorAtd krcdtErAttendanceItem = new KrcdtDaySyaErrorAtd();
+		KrcdtErAttendanceItemPK krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK(id, attendanceItemId);
+		krcdtErAttendanceItem.krcdtErAttendanceItemPK = krcdtErAttendanceItemPK;
+		krcdtErAttendanceItem.cid = cid;
+		krcdtErAttendanceItem.sid = cid;
+		krcdtErAttendanceItem.processDate = processDate;
+		return krcdtErAttendanceItem;
 	}
 }

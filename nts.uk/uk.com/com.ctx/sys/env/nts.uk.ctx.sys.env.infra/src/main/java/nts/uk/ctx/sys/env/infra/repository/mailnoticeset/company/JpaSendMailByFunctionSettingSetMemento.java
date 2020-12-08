@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSettingSetMemento;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFunc;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFuncPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -32,9 +32,9 @@ public class JpaSendMailByFunctionSettingSetMemento implements SendMailByFunctio
 	 */
 	@Override
 	public void setFunctionId(FunctionId functionId) {
-		SevmtMailDestinFuncPK pk = this.entity.getSevmtMailDestinFuncPK();
+		SevstMailDestinFuncPK pk = this.entity.getSevstMailDestinFuncPK();
 		pk.setFunctionId(functionId.v());
-		this.entity.setSevmtMailDestinFuncPK(pk);
+		this.entity.setSevstMailDestinFuncPK(pk);
 	}
 
 	/* (non-Javadoc)

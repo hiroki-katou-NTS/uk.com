@@ -25,14 +25,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name = "KRCDT_DAY_TS_GATE")
-// @NamedQuery(name="KrcdtDayTsGate.findAll", query="SELECT k FROM
+@Table(name = "KRCDT_DAY_LEAVE_GATE")
+// @NamedQuery(name="KrcdtDayLeaveGate.findAll", query="SELECT k FROM
 // KrcdtDayTsGate k")
 public class KrcdtDayTsGate extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayTsGatePK id;
+	public KrcdtDayLeaveGatePK id;
 
 	@Column(name = "ATTENDANCE_PLACE_CODE")
 	public String attendancePlaceCode;
@@ -55,7 +55,7 @@ public class KrcdtDayTsGate extends ContractUkJpaEntity implements Serializable 
 	public KrcdtDayTsGate() {
 	}
 
-	public KrcdtDayTsGate(KrcdtDayTsGatePK id) {
+	public KrcdtDayTsGate(KrcdtDayLeaveGatePK id) {
 		super();
 		this.id = id;
 	}
@@ -67,7 +67,7 @@ public class KrcdtDayTsGate extends ContractUkJpaEntity implements Serializable 
 	}
 	
 	public static KrcdtDayTsGate from(String eId, GeneralDate ymd, AttendanceLeavingGate domain) {
-		KrcdtDayTsGate entity = new KrcdtDayTsGate(new KrcdtDayTsGatePK(eId, ymd, domain.getWorkNo().v()));
+		KrcdtDayTsGate entity = new KrcdtDayTsGate(new KrcdtDayLeaveGatePK(eId, ymd, domain.getWorkNo().v()));
 		entity.setData(domain);
 		return entity;
 	}

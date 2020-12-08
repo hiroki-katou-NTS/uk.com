@@ -35,7 +35,7 @@ public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMement
 	 */
 	@Override
 	public Integer getWorktimeNo() {
-		return this.entity.getKshmtWtFloHolTsPK().getWorktimeNo();
+		return this.entity.getKshmtFworkHolidayTimePK().getWorktimeNo();
 	}
 
 	/* (non-Javadoc)

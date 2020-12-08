@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionSetMe
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFunc;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFuncPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK;
 
 /**
  * The Class JpaMailDestinationFunctionSetMemento.
@@ -51,7 +51,7 @@ public class JpaMailDestinationFunctionSetMemento implements MailDestinationFunc
 	@Override
 	public void setSendByFunctionSetting(List<SendMailByFunctionSetting> sendByFunctionSetting) {
 		sendByFunctionSetting.stream().forEach(dom -> {
-			SevmtMailDestinFuncPK pk = new SevmtMailDestinFuncPK(this.companyId, this.settingItem,
+			SevstMailDestinFuncPK pk = new SevstMailDestinFuncPK(this.companyId, this.settingItem,
 					dom.getFunctionId().v());
 			SevmtMailDestinFunc entity = new SevmtMailDestinFunc(pk);
 			dom.saveToMemento(new JpaSendMailByFunctionSettingSetMemento(entity));

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 
 /**
  * The Class JpaFixHalfDayWorkTimezoneSetMemento.
@@ -33,8 +33,8 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	public JpaFixHalfDayWorkTimezoneSetMemento(KshmtWtFix entity, AmPmAtr type) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtWtFixPK() == null) {
-			this.entity.setKshmtWtFixPK(new KshmtWtFixPK());
+		if (this.entity.getKshmtFixedWorkSetPK() == null) {
+			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
 		}	
 		this.type = type;
 	}
@@ -49,7 +49,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	@Override
 	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
 		restTimezone.saveToMemento(new JpaFixRestHalfdayTzSetMemento(this.entity,
-				this.entity.getKshmtWtFixPK().getCid(), this.entity.getKshmtWtFixPK().getWorktimeCd(),
+				this.entity.getKshmtFixedWorkSetPK().getCid(), this.entity.getKshmtFixedWorkSetPK().getWorktimeCd(),
 				this.type));
 	}
 

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_DAY_FORM_BUS_DAY")
+@Table(name = "KRCMT_BUS_DAILY_ITEM")
 public class KrcmtBusinessTypeDaily extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

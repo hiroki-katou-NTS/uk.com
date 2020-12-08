@@ -38,7 +38,7 @@ public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 	 */
 	@Override
 	public void setWorktimeNo(Integer no) {
-		this.entity.getKshmtWtFloOverTsPK().setWorktimeNo(no);
+		this.entity.getKshmtOtTimeZonePK().setWorktimeNo(no);
 	}
 
 	/*

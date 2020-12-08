@@ -11,7 +11,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SPTMT_STANDARD_WIDGET")
+@Table(name = "SPTST_STANDARD_WIDGET")
 public class SptmtStandardWidget extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
@@ -19,12 +19,12 @@ public class SptmtStandardWidget extends ContractUkJpaEntity implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SptmtStandardWidgetPK sptmtStandardWidgetPK;
+	public SptstStandardWidgetPK sptstStandardWidgetPK;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return sptmtStandardWidgetPK;
+		return sptstStandardWidgetPK;
 	}
 
 }

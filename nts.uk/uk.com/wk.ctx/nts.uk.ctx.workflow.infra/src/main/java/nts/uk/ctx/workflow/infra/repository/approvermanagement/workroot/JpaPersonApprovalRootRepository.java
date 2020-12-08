@@ -17,7 +17,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalRoutePs;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalRoutePsPK;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsApprovalRootPK;
 /**
  * 
  * @author hoatt
@@ -28,10 +28,10 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 
 	 private static final String FIND_ALL = "SELECT c FROM WwfmtApprovalRoutePs c";
 	 private static final String FIND_BY_CID = FIND_ALL
-			   + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId";
+			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId";
 	 private static final String FIN_BY_EMP = FIND_ALL
-			   + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-			   + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId";
+			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
 	 private static final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
 			   + " AND c.endDate = :endDate" 
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
@@ -44,7 +44,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
-	 private static final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
+	 private static final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.sysAtr = :sysAtr";
@@ -76,13 +76,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			 + " AND c.employmentRootAtr = 0 "
 			 + " AND c.sysAtr = :sysAtr"
 			 + " AND c.startDate = "
-			 + "(SELECT MAX(c1.startDate) FROM WwfmtApprovalRoutePs c1 WHERE c1.wwfmtApprovalRoutePsPK.companyId = :companyId"
-			 + " AND c1.wwfmtApprovalRoutePsPK.employeeId = :employeeId AND c1.employmentRootAtr = 0"
+			 + "(SELECT MAX(c1.startDate) FROM WwfmtApprovalRoutePs c1 WHERE c1.wwfmtPsApprovalRootPK.companyId = :companyId"
+			 + " AND c1.wwfmtPsApprovalRootPK.employeeId = :employeeId AND c1.employmentRootAtr = 0"
 			 + " AND c1.sysAtr = :sysAtr)";
 	 private static final String FIND_MONTHLY_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.employmentRootAtr = 2"
 			 + " AND c.confirmationRootType = 1"
-			 + " AND c.startDate = (SELECT MAX(c1.startDate) FROM WwfmtApprovalRoutePs c1 WHERE c1.wwfmtApprovalRoutePsPK.companyId = :companyId AND c1.wwfmtApprovalRoutePsPK.employeeId = :employeeId AND c1.employmentRootAtr = 2 AND c1.confirmationRootType = 1)";
+			 + " AND c.startDate = (SELECT MAX(c1.startDate) FROM WwfmtApprovalRoutePs c1 WHERE c1.wwfmtPsApprovalRootPK.companyId = :companyId AND c1.wwfmtPsApprovalRootPK.employeeId = :employeeId AND c1.employmentRootAtr = 2 AND c1.confirmationRootType = 1)";
 	 private static final String FIND_PART_HISTORY = FIN_BY_EMP
 			 + " AND ((c.employmentRootAtr = 0 AND (c.applicationType IS NULL)) OR (c.employmentRootAtr = 2 AND c.confirmationRootType = 1))"
 			 + " ORDER BY c.startDate DESC";
@@ -90,53 +90,53 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			 + " AND c.startDate = :startDate"
 			 + " AND c.sysAtr = :sysAtr";
 	 private static final String GET_ALL__MODE_COM = "SELECT c FROM WwfmtApprovalRoutePs c"
-			 + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-			 + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 			 + " ORDER BY c.startDate DESC";
 	 private static final String GET_ALL_MODE_PRI_CM = "SELECT c FROM WwfmtApprovalRoutePs c"
-			 + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-			 + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 			 + " AND c.employmentRootAtr = 0"
 			 + " AND c.sysAtr = :sysAtr"
 			 + " ORDER BY c.startDate DESC";
 	 private static final String GET_ALL_MODE_PRI_AP = "SELECT c FROM WwfmtApprovalRoutePs c"
-			 + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-			 + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 			 + " AND c.employmentRootAtr = 1"
 			 + " AND c.applicationType = :applicationType"
 			 + " ORDER BY c.startDate DESC";
 	 private static final String GET_ALL_MODE_PRI_CF = "SELECT c FROM WwfmtApprovalRoutePs c"
-			 + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-			 + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 			 + " AND c.employmentRootAtr = 2"
 			 + " AND c.confirmationRootType = :confirmationRootType"
 			 + " ORDER BY c.startDate DESC";
 	 	//CMM018_ver2
 		private static final String FIND_BY_ATR_WORK1 = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				+ " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = 0"
 				+ " AND c.employmentRootAtr = 1"
 				+ " AND c.applicationType IN :lstAppType";
 		private static final String FIND_BY_ATR_WORK02 = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				+ " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = 0"
 				+ " AND c.employmentRootAtr IN (0,2)";
 		private static final String FIND_BY_ATR_HR0 = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				+ " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = 1"
 				+ " AND c.employmentRootAtr = 0";
 		private static final String FIND_BY_ATR_HR4 = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				+ " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = 1"
 				+ " AND c.employmentRootAtr = 4"
 				+ " AND c.noticeId IN :lstNoticeID";
 		private static final String FIND_BY_ATR_HR5 = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				+ " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = 1"
 				+ " AND c.employmentRootAtr = 5"
 				+ " AND c.busEventId IN :lstEventID";
@@ -157,21 +157,21 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				   + " AND c.busEventId = :busEventId"
 				   + " AND c.employmentRootAtr = :employmentRootAtr";
 		private static final String GET_ALL_MODE_PRI_NT = "SELECT c FROM WwfmtApprovalRoutePs c"
-				 + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				 + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				 + " AND c.employmentRootAtr = 2"
 				 + " AND c.noticeId = :noticeId"
 				 + " ORDER BY c.startDate DESC";
 		private static final String GET_ALL_MODE_PRI_EV = "SELECT c FROM WwfmtApprovalRoutePs c"
-				 + " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				 + " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				 + " AND c.employmentRootAtr = 2"
 				 + " AND c.busEventId = :busEventId"
 				 + " ORDER BY c.startDate DESC";
 		//CMM053
 		private static final String FIND_BY_EDATE = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE c.wwfmtApprovalRoutePsPK.companyId = :companyId"
-				+ " AND c.wwfmtApprovalRoutePsPK.employeeId = :employeeId"
+				+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = :sysAtr"
 				+ " AND c.endDate = :endDate";
 		
@@ -217,20 +217,20 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		}
 		
 		private static final String FIND_ALL_BY_BASEDATE_CM = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE  c.wwfmtApprovalRoutePsPK.companyId = :companyId"
+				+ " WHERE  c.wwfmtPsApprovalRootPK.companyId = :companyId"
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.sysAtr = 1"
 				+ " AND c.employmentRootAtr = 0";
 		private static final String FIND_ALL_BY_BASEDATE_NT = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE  c.wwfmtApprovalRoutePsPK.companyId = :companyId"
+				+ " WHERE  c.wwfmtPsApprovalRootPK.companyId = :companyId"
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.sysAtr = 1"
 				+ " AND c.employmentRootAtr = 4"
 				+ " AND c.noticeId IN :lstNoticeID";
 		private static final String FIND_ALL_BY_BASEDATE_EV = "SELECT c FROM WwfmtApprovalRoutePs c"
-				+ " WHERE  c.wwfmtApprovalRoutePsPK.companyId = :companyId"
+				+ " WHERE  c.wwfmtPsApprovalRootPK.companyId = :companyId"
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.sysAtr = 1"
@@ -288,7 +288,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId) {
-		WwfmtApprovalRoutePsPK comPK = new WwfmtApprovalRoutePsPK(companyId, approvalId, employeeId, historyId);
+		WwfmtPsApprovalRootPK comPK = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		this.commandProxy().remove(WwfmtApprovalRoutePs.class,comPK);
 		this.getEntityManager().flush();
 	}
@@ -320,7 +320,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public void updatePsApprovalRoot(PersonApprovalRoot psAppRoot) {
 		WwfmtApprovalRoutePs a = toEntityPsApR(psAppRoot);
-		WwfmtApprovalRoutePs x = this.queryProxy().find(a.wwfmtApprovalRoutePsPK, WwfmtApprovalRoutePs.class).get();
+		WwfmtApprovalRoutePs x = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtApprovalRoutePs.class).get();
 		x.setStartDate(a.startDate);
 		x.setEndDate(a.endDate);
 		x.setApplicationType(a.applicationType);
@@ -340,7 +340,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		List<WwfmtApprovalRoutePs> lstEntity = new ArrayList<>();
 		for (PersonApprovalRoot ps : psAppRoot) {
 			WwfmtApprovalRoutePs a = toEntityPsApR(ps);
-			WwfmtApprovalRoutePs x = this.queryProxy().find(a.wwfmtApprovalRoutePsPK, WwfmtApprovalRoutePs.class).get();
+			WwfmtApprovalRoutePs x = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtApprovalRoutePs.class).get();
 			x.setStartDate(a.startDate);
 			x.setEndDate(a.endDate);
 			x.setApplicationType(a.applicationType);
@@ -418,7 +418,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public Optional<PersonApprovalRoot> getPsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId) {
-		WwfmtApprovalRoutePsPK pk = new WwfmtApprovalRoutePsPK(companyId, approvalId, employeeId, historyId);
+		WwfmtPsApprovalRootPK pk = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		return this.queryProxy().find(pk, WwfmtApprovalRoutePs.class).map(c->toDomainPsApR(c));
 	}
 	
@@ -500,10 +500,10 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @return
 	 */
 	private PersonApprovalRoot toDomainPsApR(WwfmtApprovalRoutePs entity){
-		val domain = PersonApprovalRoot.convert(entity.wwfmtApprovalRoutePsPK.companyId,
-				entity.wwfmtApprovalRoutePsPK.approvalId,
-				entity.wwfmtApprovalRoutePsPK.employeeId,
-				entity.wwfmtApprovalRoutePsPK.historyId,
+		val domain = PersonApprovalRoot.convert(entity.wwfmtPsApprovalRootPK.companyId,
+				entity.wwfmtPsApprovalRootPK.approvalId,
+				entity.wwfmtPsApprovalRootPK.employeeId,
+				entity.wwfmtPsApprovalRootPK.historyId,
 				entity.applicationType,
 				entity.startDate,
 				entity.endDate,
@@ -523,7 +523,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	private WwfmtApprovalRoutePs toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtApprovalRoutePs();
-		entity.wwfmtApprovalRoutePsPK = new WwfmtApprovalRoutePsPK(domain.getCompanyId(), domain.getApprovalId(),
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(),
 				domain.getEmployeeId(), domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();

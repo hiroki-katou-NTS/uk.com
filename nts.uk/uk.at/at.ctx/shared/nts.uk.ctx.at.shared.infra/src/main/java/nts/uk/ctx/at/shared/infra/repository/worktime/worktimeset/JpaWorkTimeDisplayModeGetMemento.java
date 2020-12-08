@@ -35,7 +35,7 @@ public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetM
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtComDispModePK().getCid();
+		return this.entity.getKshmtWorktimeDispModePK().getCid();
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetM
 	 */
 	@Override
 	public WorkTimeCode getWorktimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtComDispModePK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtWorktimeDispModePK().getWorktimeCd());
 	}
 
 	/*

@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlTaskIncreRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.mail.SgwdtUrlTaskIncre;
-import nts.uk.ctx.sys.gateway.infra.entity.mail.SgwdtUrlTaskIncrePk;
+import nts.uk.ctx.sys.gateway.infra.entity.mail.SgwmtUrlTaskIncrePk;
 import nts.uk.shr.com.url.UrlTaskIncre;
 
 @Stateless
@@ -45,6 +45,6 @@ public class JpaUrlTaskIncreRepository extends JpaRepository implements UrlTaskI
 
     @Override
     public void remove(String embeddedId, String cid, String taskIncreId){
-        this.commandProxy().remove(SgwdtUrlTaskIncre.class, new SgwdtUrlTaskIncrePk(embeddedId, cid, taskIncreId)); 
+        this.commandProxy().remove(SgwdtUrlTaskIncre.class, new SgwmtUrlTaskIncrePk(embeddedId, cid, taskIncreId)); 
     }
 }

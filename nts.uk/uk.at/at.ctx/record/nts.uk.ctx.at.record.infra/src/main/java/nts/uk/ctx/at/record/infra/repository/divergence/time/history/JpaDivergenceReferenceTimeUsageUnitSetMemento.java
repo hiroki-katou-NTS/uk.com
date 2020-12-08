@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcUnitSe
 public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements DivergenceReferenceTimeUsageUnitSetMemento{
 
 	/** The entity. */
-	private KrcmtDvgcUnitSet krcmtDvgcUnitSet;
+	private KrcmtDvgcUnitSet krcstDrtUseUnit;
 		
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit set memento.
@@ -20,7 +20,7 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 *            the entity
 	 */
 	public JpaDivergenceReferenceTimeUsageUnitSetMemento(KrcmtDvgcUnitSet entity) {
-		this.krcmtDvgcUnitSet = entity;
+		this.krcstDrtUseUnit = entity;
 	}	
 	
 	/*
@@ -32,7 +32,7 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.krcmtDvgcUnitSet.setCid(companyId);
+		this.krcstDrtUseUnit.setCid(companyId);
 	}
 
 	/*
@@ -44,7 +44,7 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 */
 	@Override
 	public void setWorkTypeUseSet(boolean workTypeUseSet) {
-		this.krcmtDvgcUnitSet.setWorktypeUseSet(workTypeUseSet ? BigDecimal.ONE : BigDecimal.ZERO);
+		this.krcstDrtUseUnit.setWorktypeUseSet(workTypeUseSet ? BigDecimal.ONE : BigDecimal.ZERO);
 	}
 
 }

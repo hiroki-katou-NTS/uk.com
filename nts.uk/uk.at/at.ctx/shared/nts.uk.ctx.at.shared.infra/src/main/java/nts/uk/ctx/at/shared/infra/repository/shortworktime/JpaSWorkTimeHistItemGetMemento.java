@@ -39,7 +39,7 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.entity.getKshmtShorttimeHistItemPK().getHistId();
+		return this.entity.getBshmtWorktimeHistItemPK().getHistId();
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entity.getKshmtShorttimeHistItemPK().getSid();
+		return this.entity.getBshmtWorktimeHistItemPK().getSid();
 	}
 
 	/*
@@ -72,9 +72,9 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 */
 	@Override
 	public List<SChildCareFrame> getLstTimeSlot() {
-		return this.entity.getLstKshmtShorttimeTs().stream().map(entity -> {
+		return this.entity.getLstBshmtSchildCareFrame().stream().map(entity -> {
 			return SChildCareFrame.builder()
-					.timeSlot(entity.getKshmtShorttimeTsPK().getTimeNo())
+					.timeSlot(entity.getBshmtSchildCareFramePK().getTimeNo())
 					.startTime(new TimeWithDayAttr(entity.getStrClock()))
 					.endTime(new TimeWithDayAttr(entity.getEndClock()))
 					.build();

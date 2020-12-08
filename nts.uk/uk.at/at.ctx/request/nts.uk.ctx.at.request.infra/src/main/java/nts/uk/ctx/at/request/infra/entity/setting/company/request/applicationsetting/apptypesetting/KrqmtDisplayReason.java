@@ -14,11 +14,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQMT_DISPLAY_REASON")
+@Table(name = "KRQST_DISPLAY_REASON")
 public class KrqmtDisplayReason extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KrqmtDisplayReasonPK krqmtDisplayReasonPK;
+	public KrqstDisplayReasonPK krqstDisplayReasonPK;
 	
 	/** 定型理由の表示 */
 	@Column(name = "DISPLAY_FIXED_REASON")
@@ -30,7 +30,7 @@ public class KrqmtDisplayReason extends ContractUkJpaEntity implements Serializa
 
 	@Override
 	protected Object getKey() {
-		return krqmtDisplayReasonPK;
+		return krqstDisplayReasonPK;
 	}
 	
 }

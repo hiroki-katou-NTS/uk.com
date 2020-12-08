@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 * @author loivt
 */
 @Entity
-@Table(name = "KRQDT_INSTRUCT_HD_WORK")
+@Table(name = "KRQDT_HOLIDAY_INSTRUCT")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class KrqdtInstructHdWork extends ContractUkJpaEntity implements Serializ
 
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected KrqdtInstructHdWorkPK krqdtInstructHdWorkPK;
+    protected KrqdtHolidayInstructPK krqdtHolidayInstructPK;
     
     /**
      * 作業内容
@@ -76,7 +76,7 @@ public class KrqdtInstructHdWork extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return krqdtInstructHdWorkPK;
+		return krqdtHolidayInstructPK;
 	}
 
 }

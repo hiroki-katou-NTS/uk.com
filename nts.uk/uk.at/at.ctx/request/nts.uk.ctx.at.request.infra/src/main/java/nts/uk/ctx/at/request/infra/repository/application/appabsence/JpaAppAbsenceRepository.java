@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHd;
-import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHdPK;
+import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeavePK;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppHdSp;
 //import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 //import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
@@ -28,11 +28,11 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 
 	@Override
 	public Optional<AppAbsence> getAbsenceById(String companyID, String appId) {
-		Optional<KrqdtAppHd> opKrqdtAppHd = this.queryProxy().find(new KrqdtAppHdPK(companyID, appId), KrqdtAppHd.class);
-		if(!opKrqdtAppHd.isPresent()){
+		Optional<KrqdtAppHd> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appId), KrqdtAppHd.class);
+		if(!opKrqdtAppForLeave.isPresent()){
 			return Optional.ofNullable(null);
 		}
-		KrqdtAppHd krqdtAppAbsence = opKrqdtAppHd.get();
+		KrqdtAppHd krqdtAppAbsence = opKrqdtAppForLeave.get();
 		AppAbsence appAbsence = krqdtAppAbsence.toDomain();
 		return Optional.of(appAbsence);
 	}
@@ -75,7 +75,7 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 	
 	private KrqdtAppHd toEntity(AppAbsence domain) {
 
-		return new KrqdtAppHd(new KrqdtAppHdPK(domain.getCompanyID(), domain.getAppID()),
+		return new KrqdtAppHd(new KrqdtAppForLeavePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(),
 				domain.getHolidayAppType() == null ? null : domain.getHolidayAppType().value,
 				domain.getWorkTypeCode() == null? null : domain.getWorkTypeCode().toString(),
@@ -92,13 +92,13 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 
 	@Override
 	public Optional<AppAbsence> getAbsenceByAppId(String companyID, String appID) {
-//		Optional<KrqdtAppHd> opKrqdtAppHd = this.queryProxy().find(new KrqdtAppHdPK(companyID, appID), KrqdtAppHd.class);
+//		Optional<KrqdtAppHd> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appID), KrqdtAppHd.class);
 //		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
-//		Optional<AppForSpecLeave> appforSpecLeave = this.queryProxy().find(new KrqdtAppHdSpPK(companyID, appID), KrqdtAppHdSp.class).map(c->toOvertimeAppSetDomain(c));
-//		if(!opKrqdtAppHd.isPresent() || !opKafdtApplication.isPresent()){
+//		Optional<AppForSpecLeave> appforSpecLeave = this.queryProxy().find(new KrqdtAppForSpecLeavePK(companyID, appID), KrqdtAppHdSp.class).map(c->toOvertimeAppSetDomain(c));
+//		if(!opKrqdtAppForLeave.isPresent() || !opKafdtApplication.isPresent()){
 //			return Optional.ofNullable(null);
 //		}
-//		KrqdtAppHd krqdtAppAbsence = opKrqdtAppHd.get();
+//		KrqdtAppHd krqdtAppAbsence = opKrqdtAppForLeave.get();
 //		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
 //		AppAbsence appAbsence = krqdtAppAbsence.toOvertimeAppSetDomain();
 //		if(appforSpecLeave.isPresent()) {
@@ -109,7 +109,7 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 		return Optional.empty();
 	}
 	private AppForSpecLeave toDomain(KrqdtAppHdSp entity){
-		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppHdSpPK().getAppId(),
+		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
 				entity.isMournerFlg(),
 				entity.getRelationshipCD(),
 				entity.getRelationshipReason());
@@ -121,12 +121,12 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 
 	@Override
 	public void delete(String companyID, String appID) {
-		Optional<KrqdtAppHd> opKrqdtAppHd = this.queryProxy().find(new KrqdtAppHdPK(companyID, appID), KrqdtAppHd.class);
-		if(!opKrqdtAppHd.isPresent()){
+		Optional<KrqdtAppHd> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appID), KrqdtAppHd.class);
+		if(!opKrqdtAppForLeave.isPresent()){
 			throw new RuntimeException("khong ton tai doi tuong de xoa");
 		}
 		//Delete application over time
-		this.commandProxy().remove(KrqdtAppHd.class, new KrqdtAppHdPK(companyID, appID));
+		this.commandProxy().remove(KrqdtAppHd.class, new KrqdtAppForLeavePK(companyID, appID));
 		
 	}
 

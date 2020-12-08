@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPDT_RECOVER_TARGET")
+@Table(name = "SSPMT_TARGET")
 public class SspdtRecoverTarget extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class SspdtRecoverTarget extends ContractUkJpaEntity implements Serializa
 	 * ID
 	 */
 	@EmbeddedId
-	public SspdtRecoverTargetPk targetPk;
+	public SspmtTargetPk targetPk;
 
 	/**
 	 * 社員コード
@@ -54,7 +54,7 @@ public class SspdtRecoverTarget extends ContractUkJpaEntity implements Serializa
 	}
 
 	public static SspdtRecoverTarget toEntity(Target domain) {
-		return new SspdtRecoverTarget(new SspdtRecoverTargetPk(domain.getDataRecoveryProcessId(), domain.getSid()),
+		return new SspdtRecoverTarget(new SspmtTargetPk(domain.getDataRecoveryProcessId(), domain.getSid()),
 				domain.getScd().orElse(null), domain.getBussinessName().orElse(null));
 	}
 }

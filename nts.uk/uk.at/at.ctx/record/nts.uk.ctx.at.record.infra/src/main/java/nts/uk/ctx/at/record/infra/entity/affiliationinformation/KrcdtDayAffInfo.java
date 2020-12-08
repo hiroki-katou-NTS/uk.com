@@ -25,13 +25,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_AFF_INFO")
+@Table(name = "KRCDT_DAI_AFFILIATION_INF")
 public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayAffInfoPK krcdtDayAffInfoPK;
+	public KrcdtDaiAffiliationInfPK krcdtDaiAffiliationInfPK;
 
 	@Column(name = "EMP_CODE")
 	public String employmentCode;
@@ -53,17 +53,17 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayAffInfoPK;
+		return this.krcdtDaiAffiliationInfPK;
 	}
 
 	public AffiliationInforOfDailyPerfor toDomain(){
 		BusinessTypeCode businessTypeCode = this.businessTypeCode == null ? null : new BusinessTypeCode(this.businessTypeCode);
 		AffiliationInforOfDailyPerfor domain = new AffiliationInforOfDailyPerfor(
 				new EmploymentCode(this.employmentCode),
-				this.krcdtDayAffInfoPK.employeeId,
+				this.krcdtDaiAffiliationInfPK.employeeId,
 				this.jobtitleID,
 				this.workplaceID,
-				this.krcdtDayAffInfoPK.ymd,
+				this.krcdtDaiAffiliationInfPK.ymd,
 				new ClassificationCode(this.classificationCode),
 				this.bonusPayCode == null ? null : new BonusPaySettingCode(this.bonusPayCode),
 				businessTypeCode);
@@ -72,7 +72,7 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 	
 	public static KrcdtDayAffInfo toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor){
 		return new KrcdtDayAffInfo(
-				new KrcdtDayAffInfoPK(affiliationInforOfDailyPerfor.getEmployeeId(), affiliationInforOfDailyPerfor.getYmd()),
+				new KrcdtDaiAffiliationInfPK(affiliationInforOfDailyPerfor.getEmployeeId(), affiliationInforOfDailyPerfor.getYmd()),
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v(),
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID(),
 				affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v(),

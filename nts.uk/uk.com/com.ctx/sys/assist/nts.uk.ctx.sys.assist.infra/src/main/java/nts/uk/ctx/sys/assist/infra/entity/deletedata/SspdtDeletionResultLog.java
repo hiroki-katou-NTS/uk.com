@@ -17,14 +17,14 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_DELETION_RESULT_LOG")
+@Table(name = "SSPDT_RESULT_LOG_DELETION")
 @NoArgsConstructor
 public class SspdtDeletionResultLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public SspdtDeletionResultLogPK sspdtDeletionResultLogPK;
+    public SspdtResultLogDeletionPK sspdtResultLogDeletionPK;
 
 	/** The company Id. */
 	/** 会社ID */
@@ -68,16 +68,16 @@ public class SspdtDeletionResultLog extends ContractUkJpaEntity implements Seria
 
 	@Override
 	protected Object getKey() {
-		return sspdtDeletionResultLogPK;
+		return sspdtResultLogDeletionPK;
 	}
 
 	public ResultLogDeletion toDomain() {
-		return ResultLogDeletion.createFromJavatype(this.sspdtDeletionResultLogPK.seqId, this.sspdtDeletionResultLogPK.delId, this.companyID, this.logTime,
+		return ResultLogDeletion.createFromJavatype(this.sspdtResultLogDeletionPK.seqId, this.sspdtResultLogDeletionPK.delId, this.companyID, this.logTime,
 				this.processingContent, this.errorContent, this.errorEmployeeId, this.errorDate);
 	}
 
 	public static SspdtDeletionResultLog toEntity(ResultLogDeletion resultLog) {
-		SspdtDeletionResultLog e = new SspdtDeletionResultLog(new SspdtDeletionResultLogPK(resultLog.getDelId(), resultLog.getSeqId()), 
+		SspdtDeletionResultLog e = new SspdtDeletionResultLog(new SspdtResultLogDeletionPK(resultLog.getDelId(), resultLog.getSeqId()), 
 				resultLog.getCompanyId(), resultLog.getLogTime(), resultLog.getProcessingContent().v(), resultLog.getErrorContent().v(),
 				resultLog.getErrorEmployeeId(), resultLog.getErrorDate());
 		System.out.println();
@@ -86,7 +86,7 @@ public class SspdtDeletionResultLog extends ContractUkJpaEntity implements Seria
 
 	public SspdtDeletionResultLog
 		(
-		SspdtDeletionResultLogPK sspdtDeletionResultLogPK, 
+		SspdtResultLogDeletionPK sspdtResultLogDeletionPK, 
 		String companyId,
 		GeneralDateTime logTime, 
 		String processingContent, 
@@ -95,7 +95,7 @@ public class SspdtDeletionResultLog extends ContractUkJpaEntity implements Seria
 		GeneralDate errorDate
 		) {
 			super();
-			this.sspdtDeletionResultLogPK = sspdtDeletionResultLogPK;
+			this.sspdtResultLogDeletionPK = sspdtResultLogDeletionPK;
 			this.companyID = companyId;
 			this.logTime = logTime;
 			this.processingContent = processingContent;

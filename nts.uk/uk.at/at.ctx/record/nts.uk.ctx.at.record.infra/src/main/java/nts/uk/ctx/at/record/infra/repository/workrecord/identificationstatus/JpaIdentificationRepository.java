@@ -203,7 +203,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	public void removeByEmpListDate(String employeeId, List<GeneralDate> lstProcessingYmd) {
 		
 		PreparedStatement statement = this.connection().prepareStatement(
-				"Delete From KRCDT_DAY_SELF_CHECK" + " Where SID = ?" + " AND PROCESSING_YMD IN ("
+				"Delete From KRCDT_CONFIRMATION_DAY" + " Where SID = ?" + " AND PROCESSING_YMD IN ("
 						+ lstProcessingYmd.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		statement.setString(1, employeeId);
 		for (int i = 0; i < lstProcessingYmd.size(); i++) {

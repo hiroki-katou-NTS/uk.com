@@ -14,27 +14,27 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarWkp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarWkpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplacePK;
 
 @Stateless
 public class JpaCalendarWorkPlaceRepository extends JpaRepository implements CalendarWorkPlaceRepository {
 	private	static final String SELECT_FROM_WORKPLACE = "SELECT w FROM KscmtCalendarWkp w";
 	private static final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
-			+ " WHERE w.kscmtCalendarWkpPK.workPlaceId = :workPlaceId ";
+			+ " WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ";
 	private static final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
-			+ " AND w.kscmtCalendarWkpPK.date = :date";
+			+ " AND w.ksmmtCalendarWorkplacePK.date = :date";
 	private static final String SELECT_BY_YEAR_MONTH = SELECT_ALL_WORKPLACE 
-			+ " AND w.kscmtCalendarWkpPK.date >= :startYM "
-			+ " AND w.kscmtCalendarWkpPK.date <= :endYM";
+			+ " AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
+			+ " AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
 	private static final String DELETE_BY_YEAR_MONTH = "delete FROM KscmtCalendarWkp w "
-			+" WHERE w.kscmtCalendarWkpPK.workPlaceId = :workPlaceId"
-			+" AND w.kscmtCalendarWkpPK.date >= :startYM "
-			+" AND w.kscmtCalendarWkpPK.date <= :endYM";
+			+" WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
+			+" AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
+			+" AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
 	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KscmtCalendarWkp a"
-			+ " WHERE a.kscmtCalendarWkpPK.workPlaceId = :workPlaceId"
-			+ " AND a.kscmtCalendarWkpPK.date >= :date"
+			+ " WHERE a.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
+			+ " AND a.ksmmtCalendarWorkplacePK.date >= :date"
 			+ " AND a.workingDayAtr = :workingDayAtr"
-			+ " ORDER BY a.kscmtCalendarWkpPK.date asc";
+			+ " ORDER BY a.ksmmtCalendarWorkplacePK.date asc";
 	
 	/**
 	 * toDomain calendar workplace
@@ -43,8 +43,8 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 */
 	private static CalendarWorkplace toDomainCalendarWorkplace(KscmtCalendarWkp entity){
 		val domain = CalendarWorkplace.createFromJavaType(
-				entity.kscmtCalendarWkpPK.workPlaceId,
-				entity.kscmtCalendarWkpPK.date,
+				entity.ksmmtCalendarWorkplacePK.workPlaceId,
+				entity.ksmmtCalendarWorkplacePK.date,
 				entity.workingDayAtr);
 		return domain;
 	}
@@ -55,7 +55,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 */
 	private static KscmtCalendarWkp toEntityCalendarWorkplace(CalendarWorkplace domain){
 		val entity = new  KscmtCalendarWkp();
-		entity.kscmtCalendarWkpPK = new KscmtCalendarWkpPK(
+		entity.ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 															domain.getWorkPlaceId(),
 															domain.getDate());
 		entity.workingDayAtr = domain.getWorkDayDivision().value;
@@ -98,7 +98,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	public void updateCalendarWorkplace(CalendarWorkplace calendarWorkplace) {
 		KscmtCalendarWkp clendarWork = toEntityCalendarWorkplace(calendarWorkplace);
 		KscmtCalendarWkp workplaceUpdate = this.queryProxy()
-				.find(clendarWork.kscmtCalendarWkpPK, KscmtCalendarWkp.class).get();
+				.find(clendarWork.ksmmtCalendarWorkplacePK, KscmtCalendarWkp.class).get();
 		workplaceUpdate.workingDayAtr = calendarWorkplace.getWorkDayDivision().value;
 		this.commandProxy().update(workplaceUpdate);
 		
@@ -108,10 +108,10 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 */
 	@Override
 	public void deleteCalendarWorkplace(String workPlaceId,GeneralDate date) {
-		KscmtCalendarWkpPK kscmtCalendarWkpPK = new KscmtCalendarWkpPK(
+		KsmmtCalendarWorkplacePK ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 																		workPlaceId,
 																		date);
-		this.commandProxy().remove(KscmtCalendarWkp.class,kscmtCalendarWkpPK);
+		this.commandProxy().remove(KscmtCalendarWkp.class,ksmmtCalendarWorkplacePK);
 		
 	}
 	/**

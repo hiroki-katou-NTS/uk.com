@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQMT_MAIL_OT_INSTRUCT")
+@Table(name = "KRQMT_MAIL_OT_INSTRUCTION")
 public class KrqmtMailOtInstruct extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	// 会社ID

@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_PUBLIC_HOLIDAY")
+@Table(name = "KSMMT_PUBLIC_HOLIDAY")
 public class KscmtPublicHoliday extends ContractUkJpaEntity implements Serializable {
 
 	/**
@@ -31,7 +31,7 @@ public class KscmtPublicHoliday extends ContractUkJpaEntity implements Serializa
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtPublicHolidayPK kscmtPublicHolidayPK;
+	public KsmmtPublicHolidayPK ksmmtPublicHolidayPK;
 
 	@Basic(optional = false)
 	@Column(name = "HOLIDAY_NAME")
@@ -40,6 +40,6 @@ public class KscmtPublicHoliday extends ContractUkJpaEntity implements Serializa
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return this.kscmtPublicHolidayPK;
+		return this.ksmmtPublicHolidayPK;
 	}
 }

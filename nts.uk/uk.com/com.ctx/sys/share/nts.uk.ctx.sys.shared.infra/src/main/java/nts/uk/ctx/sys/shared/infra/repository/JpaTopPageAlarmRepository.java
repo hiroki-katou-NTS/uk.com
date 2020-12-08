@@ -12,8 +12,8 @@ import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarm;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
 import nts.uk.ctx.sys.shared.infra.entity.SshdtToppagealarm;
-import nts.uk.ctx.sys.shared.infra.entity.SshdtToppagealarmDetail;
-import nts.uk.ctx.sys.shared.infra.entity.SshdtToppagealarmDetailPK;
+import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetail;
+import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetailPK;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageAlarmRepository{
@@ -26,8 +26,8 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	private static final String SELECT_EXECUTIONCONTENT = SELECT_BYCOM + "AND c.executionContent = :executionContent ";
 	
 	// toppage alarm detail table 
-	private static final String SELECT_BYLOGID = "SELECT c FROM SshdtToppagealarmDetail c WHERE c.sshdtToppagealarmDetailPK.executionLogId = :executionLogId ";
-	private static final String SELECT_SORT = SELECT_BYLOGID + "ORDER BY c.sshdtToppagealarmDetailPK.serialNo, c.targerEmployee ASC";
+	private static final String SELECT_BYLOGID = "SELECT c FROM KrcstToppageAlarmDetail c WHERE c.krcstToppageAlarmDetailPK.executionLogId = :executionLogId ";
+	private static final String SELECT_SORT = SELECT_BYLOGID + "ORDER BY c.krcstToppageAlarmDetailPK.serialNo, c.targerEmployee ASC";
 	
 	// convert from entity to toppage alarm domain
 	private TopPageAlarm toDomain(SshdtToppagealarm entity){
@@ -52,16 +52,16 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	}
 	
 	// convert from entity to toppage alarm detail domain
-	private TopPageAlarmDetail toDomainDetail(SshdtToppagealarmDetail entity){
-		return TopPageAlarmDetail.createFromJavaType(entity.sshdtToppagealarmDetailPK.executionLogId, 
-														entity.sshdtToppagealarmDetailPK.serialNo,
+	private TopPageAlarmDetail toDomainDetail(KrcstToppageAlarmDetail entity){
+		return TopPageAlarmDetail.createFromJavaType(entity.krcstToppageAlarmDetailPK.executionLogId, 
+														entity.krcstToppageAlarmDetailPK.serialNo,
 														entity.errorMessage, entity.targerEmployee);
 	}
 	
 	// convert from domain to entity, this function created for request list No.477
-	private SshdtToppagealarmDetail toEntityDetail(TopPageAlarmDetail domainDetail){
-		SshdtToppagealarmDetail entityDetail = new SshdtToppagealarmDetail(
-				new SshdtToppagealarmDetailPK(
+	private KrcstToppageAlarmDetail toEntityDetail(TopPageAlarmDetail domainDetail){
+		KrcstToppageAlarmDetail entityDetail = new KrcstToppageAlarmDetail(
+				new KrcstToppageAlarmDetailPK(
 						domainDetail.getExecutionLogId(),
 						domainDetail.getSerialNo().v()
 						),
@@ -70,8 +70,8 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 				);
 //		entityDetail.errorMessage = domainDetail.getErrorMessage().v();
 //		entityDetail.targerEmployee = domainDetail.getTargerEmployee();
-//		entityDetail.sshdtToppagealarmDetailPK.executionLogId = domainDetail.getExecutionLogId();
-//		entityDetail.sshdtToppagealarmDetailPK.serialNo = domainDetail.getSerialNo().v();
+//		entityDetail.krcstToppageAlarmDetailPK.executionLogId = domainDetail.getExecutionLogId();
+//		entityDetail.krcstToppageAlarmDetailPK.serialNo = domainDetail.getSerialNo().v();
 		return entityDetail;
 	}
 	
@@ -92,7 +92,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	// find toppage alarm detail by executionLogId and processingName
 	@Override
 	public List<TopPageAlarmDetail> findDetail(String executionLogId) {
-		return this.queryProxy().query(SELECT_SORT, SshdtToppagealarmDetail.class)
+		return this.queryProxy().query(SELECT_SORT, KrcstToppageAlarmDetail.class)
 								.setParameter("executionLogId", executionLogId)
 								.getList(x -> toDomainDetail(x));
 	}
@@ -137,7 +137,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 
 	@Override
 	public void insertDetail(TopPageAlarmDetail domain) {
-		SshdtToppagealarmDetail entity = toEntityDetail(domain);
+		KrcstToppageAlarmDetail entity = toEntityDetail(domain);
 		this.commandProxy().insert(entity);
 	}
 

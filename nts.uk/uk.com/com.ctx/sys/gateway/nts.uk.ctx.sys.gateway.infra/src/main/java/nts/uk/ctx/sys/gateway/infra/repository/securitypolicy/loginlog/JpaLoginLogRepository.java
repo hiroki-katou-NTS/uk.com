@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog_;
 
 /**
  * The Class JpaLoginLogRepository.
@@ -55,16 +55,16 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 		List<Predicate> predicateList = new ArrayList<>();
 
 		//Add Condition UserId
-		predicateList.add(builder.equal(root.get(SgwdtLoginLog_.userId), userId));
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.userId), userId));
 
 		//Add Condition successOrFailure
-		predicateList.add(builder.equal(root.get(SgwdtLoginLog_.successOrFailure), SuccessFailureClassification.Failure.value));
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.successOrFailure), SuccessFailureClassification.Failure.value));
 
 		//Add Condition operationSection
-		predicateList.add(builder.equal(root.get(SgwdtLoginLog_.operationSection), OperationSection.Login.value));
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.operationSection), OperationSection.Login.value));
 
 		//Add Condition startTime
-		predicateList.add(builder.greaterThanOrEqualTo(root.get(SgwdtLoginLog_.processDateTime), startTime));
+		predicateList.add(builder.greaterThanOrEqualTo(root.get(SgwmtLoginLog_.processDateTime), startTime));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 

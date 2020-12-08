@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_STANDARD_MENU")
+@Table(name = "CCGST_STANDARD_MENU")
 public class SptmtStandardMenu extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class SptmtStandardMenu extends ContractUkJpaEntity implements Serializab
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SptmtStandardMenuPK ccgmtStandardMenuPK;
+	public CcgstStandardMenuPK ccgmtStandardMenuPK;
 	
 	/** The Target Items. */
 	@Column(name = "TARGET_ITEMS")
@@ -90,7 +90,7 @@ public class SptmtStandardMenu extends ContractUkJpaEntity implements Serializab
     public int logUpdateDisplay;
 
 	@Override
-	protected SptmtStandardMenuPK getKey() {
+	protected CcgstStandardMenuPK getKey() {
 		return this.ccgmtStandardMenuPK;
 	}
 }

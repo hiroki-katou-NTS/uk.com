@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMem
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -67,13 +67,13 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 	public void setLstTimezone(List<TimezoneUse> lstTimezone) {
 		
 		if(CollectionUtil.isEmpty(lstTimezone)){
-			this.entity.setKshmtWtComPredTss(new ArrayList<>());
+			this.entity.setKshmtWorkTimeSheetSets(new ArrayList<>());
 			return;
 		}
-		String companyId = this.entity.getKshmtWtComPredTimePK().getCid();
-		String workTimeCd = this.entity.getKshmtWtComPredTimePK().getWorktimeCd();
+		String companyId = this.entity.getKshmtPredTimeSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtPredTimeSetPK().getWorktimeCd();
 
-		List<KshmtWtComPredTs> lstEnttiy = this.entity.getKshmtWtComPredTss();
+		List<KshmtWtComPredTs> lstEnttiy = this.entity.getKshmtWorkTimeSheetSets();
 		if(CollectionUtil.isEmpty(lstEnttiy)){
 			lstEnttiy = new ArrayList<>();
 		}
@@ -82,11 +82,11 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 		
 		for(TimezoneUse domain : lstTimezone) {
 			// newPK
-			KshmtWtComPredTsPK pk = new KshmtWtComPredTsPK(companyId, workTimeCd, domain.getWorkNo());
+			KshmtWorkTimeSheetSetPK pk = new KshmtWorkTimeSheetSetPK(companyId, workTimeCd, domain.getWorkNo());
 			
 			// find entity if existed, else new entity
 			KshmtWtComPredTs entity = lstEnttiy.stream()
-					.filter(item -> item.getKshmtWtComPredTsPK().equals(pk))
+					.filter(item -> item.getKshmtWorkTimeSheetSetPK().equals(pk))
 					.findFirst()
 					.orElse(new KshmtWtComPredTs(pk));
 			
@@ -97,8 +97,8 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 			newListEntity.add(entity);
 		}
 		
-		// set list KshmtWtComPredTss
-		this.entity.setKshmtWtComPredTss(newListEntity);
+		// set list KshmtWorkTimeSheetSets
+		this.entity.setKshmtWorkTimeSheetSets(newListEntity);
 	}
 
 }

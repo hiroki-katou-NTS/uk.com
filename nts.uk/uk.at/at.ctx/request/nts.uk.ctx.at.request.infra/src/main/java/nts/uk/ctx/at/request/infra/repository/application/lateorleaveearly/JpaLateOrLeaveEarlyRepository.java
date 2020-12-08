@@ -14,18 +14,18 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateEarly;
-import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateEarlyPK;
+import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
 @Stateless
 public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements LateOrLeaveEarlyRepository {
 
 	// private final String SELECT= "SELECT c FROM KrqdtAppLateEarly c";
 	// private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE
-	// c.KrqdtAppLateEarlyPK.companyID = :companyID";
+	// c.KrqdtAppLateOrLeavePK.companyID = :companyID";
 	private static final String SELECT_SINGLE = "SELECT c" + " FROM KrqdtAppLateEarly c"
-			+ " WHERE c.krqdtAppLateEarlyPK.appID = :appID AND c.krqdtAppLateEarlyPK.companyID = :companyID";
+			+ " WHERE c.krqdtAppLateOrLeavePK.appID = :appID AND c.krqdtAppLateOrLeavePK.companyID = :companyID";
 	private static final String SELECT_LIST_CANCEL_ATR = "SELECT c FROM KrqdtAppLateEarly c "
-			+ "WHERE c.krqdtAppLateEarlyPK.appID IN :listAppID AND c.actualCancelAtr = :actualCancelAtr";
+			+ "WHERE c.krqdtAppLateOrLeavePK.appID IN :listAppID AND c.actualCancelAtr = :actualCancelAtr";
 
 	@Override
 	public Optional<LateOrLeaveEarly> findByCode(String companyID, String appID) {
@@ -59,7 +59,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 
 	@Override
 	public void remove(String companyID, String appID) {
-		this.commandProxy().remove(KrqdtAppLateEarly.class, new KrqdtAppLateEarlyPK(companyID, appID));
+		this.commandProxy().remove(KrqdtAppLateEarly.class, new KrqdtAppLateOrLeavePK(companyID, appID));
 		this.getEntityManager().flush();
 
 	}

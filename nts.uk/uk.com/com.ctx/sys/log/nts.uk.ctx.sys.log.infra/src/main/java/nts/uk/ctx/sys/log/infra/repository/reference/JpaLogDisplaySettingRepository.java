@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.log.dom.reference.LogSettingCode;
 import nts.uk.ctx.sys.log.dom.reference.LogSettingName;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtDisplaySetting;
-import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtDisplaySettingPK;
+import nts.uk.ctx.sys.log.infra.entity.reference.SrcdtLogDisplaySettingPK;
 
 /*
  * author: thuong.tv
@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtDisplaySettingPK;
 @Stateless
 public class JpaLogDisplaySettingRepository extends JpaRepository implements LogDisplaySettingRepository {
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcmtDisplaySetting s";
-	private static final String SELECT_GET_CODE_NAME_QUERY_STRING = "SELECT s.srcmtDisplaySettingPK.logSetId,s.cid,s.code,s.name,s.dataType,s.recordType FROM SrcmtDisplaySetting s";
+	private static final String SELECT_GET_CODE_NAME_QUERY_STRING = "SELECT s.srcdtLogDisplaySettingPK.logSetId,s.cid,s.code,s.name,s.dataType,s.recordType FROM SrcmtDisplaySetting s";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid AND  s.code =:code ";
 	private static final String SELECT_BY_KEY_STRING_USE_FLG = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid AND  s.code =:code ";
 	private static final String SELECT_BY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid ";
@@ -112,7 +112,7 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 	
 	@Override
     public void remove(String logSetId){
-		SrcmtDisplaySettingPK srcmtDisplaySettingPK = new SrcmtDisplaySettingPK(logSetId);
-		this.commandProxy().remove(SrcmtDisplaySetting.class, srcmtDisplaySettingPK);
+		SrcdtLogDisplaySettingPK srcdtLogDisplaySettingPK = new SrcdtLogDisplaySettingPK(logSetId);
+		this.commandProxy().remove(SrcmtDisplaySetting.class, srcdtLogDisplaySettingPK);
     }
 }

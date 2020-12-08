@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.infra.entity.outsideot.KshmtOutsideSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutsidePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMemento;
 
@@ -45,8 +45,8 @@ public class JpaOutsideOTSettingSetMemento implements OutsideOTSettingSetMemento
 	public JpaOutsideOTSettingSetMemento(List<KshmtOutside> entityOvertimes,
 			List<KshmtOutsideDetail> entityOvertimeBRDItems, KshmtOutsideSet entity) {
 		entityOvertimes.forEach(entityItem -> {
-			if (entityItem.getKshmtOutsidePK() == null) {
-				entityItem.setKshmtOutsidePK(new KshmtOutsidePK());
+			if (entityItem.getKshstOverTimePK() == null) {
+				entityItem.setKshstOverTimePK(new KshstOverTimePK());
 			}
 		});
 		this.entityOvertimes = entityOvertimes;

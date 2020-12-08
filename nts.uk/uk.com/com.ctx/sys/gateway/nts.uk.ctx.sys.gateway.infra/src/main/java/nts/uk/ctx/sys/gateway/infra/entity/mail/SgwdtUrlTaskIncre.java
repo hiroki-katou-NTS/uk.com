@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SGWDT_URL_TASK_INCRE")
+@Table(name = "SGWMT_URL_TASK_INCRE")
 public class SgwdtUrlTaskIncre extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -33,7 +33,7 @@ public class SgwdtUrlTaskIncre extends ContractUkJpaEntity implements Serializab
     * ID
     */
     @EmbeddedId
-    public SgwdtUrlTaskIncrePk urlTaskIncrePk;
+    public SgwmtUrlTaskIncrePk urlTaskIncrePk;
     
     /**
     * キー
@@ -70,7 +70,7 @@ public class SgwdtUrlTaskIncre extends ContractUkJpaEntity implements Serializab
         		this.taskIncreKey, this.taskIncreValue, this.urlAtr==null ? UrlParamAtr.PROCESS_PARAM : EnumAdaptor.valueOf(this.urlAtr, UrlParamAtr.class));
     }
     public static SgwdtUrlTaskIncre toEntity(UrlTaskIncre domain) {
-        return new SgwdtUrlTaskIncre(new SgwdtUrlTaskIncrePk(domain.getEmbeddedId(), domain.getCid(), domain.getTaskIncreId()), 
+        return new SgwdtUrlTaskIncre(new SgwmtUrlTaskIncrePk(domain.getEmbeddedId(), domain.getCid(), domain.getTaskIncreId()), 
         		domain.getTaskIncreKey(), domain.getTaskIncreValue(), domain.getUrlParamAtr().value, null);
     }
 

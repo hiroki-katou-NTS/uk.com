@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.KshmtAutoCalSet;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCMT_CALC_SET_JOB")
+@Table(name = "KSHMT_AUTO_JOB_CAL_SET")
 public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
 	
     /** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
     
     /** The kshmt auto job cal set PK. */
     @EmbeddedId
-    protected KrcmtCalcSetJobPK krcmtCalcSetJobPK;
+    protected KshmtAutoJobCalSetPK kshmtAutoJobCalSetPK;
 
     /**
      * Instantiates a new kshmt auto job cal set.
@@ -40,10 +40,10 @@ public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
     /**
      * Instantiates a new kshmt auto job cal set.
      *
-     * @param krcmtCalcSetJobPK the kshmt auto job cal set PK
+     * @param kshmtAutoJobCalSetPK the kshmt auto job cal set PK
      */
-    public KrcmtCalcSetJob(KrcmtCalcSetJobPK krcmtCalcSetJobPK) {
-        this.krcmtCalcSetJobPK = krcmtCalcSetJobPK;
+    public KrcmtCalcSetJob(KshmtAutoJobCalSetPK kshmtAutoJobCalSetPK) {
+        this.kshmtAutoJobCalSetPK = kshmtAutoJobCalSetPK;
     }
 
     /**
@@ -53,7 +53,7 @@ public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
      * @param jobid the jobid
      */
     public KrcmtCalcSetJob(String cid, String jobid) {
-        this.krcmtCalcSetJobPK = new KrcmtCalcSetJobPK(cid, jobid);
+        this.kshmtAutoJobCalSetPK = new KshmtAutoJobCalSetPK(cid, jobid);
     }
 
     /* (non-Javadoc)
@@ -62,7 +62,7 @@ public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (krcmtCalcSetJobPK != null ? krcmtCalcSetJobPK.hashCode() : 0);
+        hash += (kshmtAutoJobCalSetPK != null ? kshmtAutoJobCalSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -75,7 +75,7 @@ public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
             return false;
         }
         KrcmtCalcSetJob other = (KrcmtCalcSetJob) object;
-        if ((this.krcmtCalcSetJobPK == null && other.krcmtCalcSetJobPK != null) || (this.krcmtCalcSetJobPK != null && !this.krcmtCalcSetJobPK.equals(other.krcmtCalcSetJobPK))) {
+        if ((this.kshmtAutoJobCalSetPK == null && other.kshmtAutoJobCalSetPK != null) || (this.kshmtAutoJobCalSetPK != null && !this.kshmtAutoJobCalSetPK.equals(other.kshmtAutoJobCalSetPK))) {
             return false;
         }
         return true;
@@ -86,7 +86,7 @@ public class KrcmtCalcSetJob extends KshmtAutoCalSet implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcSetJobPK;
+		return this.kshmtAutoJobCalSetPK;
 	}
     
 }

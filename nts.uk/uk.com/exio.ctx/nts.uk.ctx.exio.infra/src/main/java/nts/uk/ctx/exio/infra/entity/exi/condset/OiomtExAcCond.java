@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_COND")
+@Table(name = "OIOMT_STD_ACCEPT_COND_SET")
 public class OiomtExAcCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class OiomtExAcCond extends ContractUkJpaEntity implements Serializable {
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcCondPk stdAcceptCondSetPk;
+	public OiomtStdAcceptCondSetPk stdAcceptCondSetPk;
 
 	/**
 	 * 外部受入カテゴリID
@@ -100,7 +100,7 @@ public class OiomtExAcCond extends ContractUkJpaEntity implements Serializable {
 			int deleteExistData, Integer acceptMode, Integer checkCompleted, String categoryId,
 			Integer csvDataLineNumber, Integer csvDataStartLine, Integer characterCode, Integer deleteExtDataMethod) {
 		super();
-		this.stdAcceptCondSetPk = new OiomtExAcCondPk(companyId, systemType, conditionSettingCode);
+		this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk(companyId, systemType, conditionSettingCode);
 		this.categoryId = categoryId;
 		this.csvDataLineNumber = csvDataLineNumber;
 		this.deleteExistData = deleteExistData;

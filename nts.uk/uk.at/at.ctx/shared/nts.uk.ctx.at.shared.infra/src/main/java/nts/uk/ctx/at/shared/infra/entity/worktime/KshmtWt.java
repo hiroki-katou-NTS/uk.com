@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT")
+@Table(name = "KSHMT_WORK_TIME_SET")
 @AllArgsConstructor
 public class KshmtWt extends ContractUkJpaEntity implements Serializable {
 
@@ -31,7 +31,7 @@ public class KshmtWt extends ContractUkJpaEntity implements Serializable {
 
 	/** The kshmt work time set PK. */
 	@EmbeddedId
-	protected KshmtWtPK kshmtWtPK;
+	protected KshmtWorkTimeSetPK kshmtWorkTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -88,7 +88,7 @@ public class KshmtWt extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtPK != null ? kshmtWtPK.hashCode() : 0);
+		hash += (kshmtWorkTimeSetPK != null ? kshmtWorkTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -103,9 +103,9 @@ public class KshmtWt extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KshmtWt other = (KshmtWt) object;
-		if ((this.kshmtWtPK == null && other.kshmtWtPK != null)
-				|| (this.kshmtWtPK != null
-						&& !this.kshmtWtPK.equals(other.kshmtWtPK))) {
+		if ((this.kshmtWorkTimeSetPK == null && other.kshmtWorkTimeSetPK != null)
+				|| (this.kshmtWorkTimeSetPK != null
+						&& !this.kshmtWorkTimeSetPK.equals(other.kshmtWorkTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -118,7 +118,7 @@ public class KshmtWt extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtPK;
+		return this.kshmtWorkTimeSetPK;
 	}
 
 }

@@ -79,10 +79,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComHdcoms())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtComHdcoms().stream()
+		return this.entity.getKshmtSubstitutionSets().stream()
 				.map(item -> new WorkTimezoneOtherSubHolTimeSet(new JpaWorkTimezoneOtherSubHolTimeSetGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -96,10 +96,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public List<WorkTimezoneMedicalSet> getMedicalSet() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComMedicals())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtComMedicals().stream()
+		return this.entity.getKshmtMedicalTimeSets().stream()
 				.map(item -> new WorkTimezoneMedicalSet(new JpaWorkTimezoneMedicalSetGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -113,8 +113,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneGoOutSet getGoOutSet() {
-		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(this.entity.getKshmtWtComGoout(),
-				this.entity.getKshmtWtComGooutRounds()));
+		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(this.entity.getKshmtWorktimeGoOutSet(),
+				this.entity.getKshmtSpecialRoundOuts()));
 	}
 
 	/*
@@ -166,7 +166,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneExtraordTimeSet getExtraordTimeSet() {
-		KshmtWtComTemporary entityTemp = this.entity.getKshmtWtComTemporary();
+		KshmtWtComTemporary entityTemp = this.entity.getKshmtTempWorktimeSet();
 		return new WorkTimezoneExtraordTimeSet(new JpaWorkTimezoneExtraordTimeSetGetMemento(entityTemp));
 	}
 

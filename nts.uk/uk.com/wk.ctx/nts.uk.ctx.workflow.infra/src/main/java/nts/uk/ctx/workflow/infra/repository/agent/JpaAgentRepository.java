@@ -18,7 +18,7 @@ import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.infra.entity.agent.WwfmtAgent;
-import nts.uk.ctx.workflow.infra.entity.agent.WwfmtAgentPK;
+import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgentPK;
 
 @Stateless
 public class JpaAgentRepository extends JpaRepository implements AgentRepository {
@@ -47,21 +47,21 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");	
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");	
 		SELECT_ALL = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.wwfmtAgentPK.employeeId = :employeeId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
 		builderString.append(" ORDER BY e.startDate DESC");
 		SELECT_ALL_AGENT = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND NOT (e.startDate > :endDate");
 		builderString.append(" OR e.endDate < :startDate)");
 		builderString.append(" ORDER BY e.startDate DESC");
@@ -70,15 +70,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid = :agentSid");
 		SELECT_AGENT_SID = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId"); 
-		builderString.append(" AND e.wwfmtAgentPK.employeeId IN :employeeIds");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.cmmmtAgentPK.employeeId IN :employeeIds");
 		builderString.append(" AND e.startDate <= :baseDate");
 		builderString.append(" AND e.endDate >= :baseDate");
 		SELECT_AGENT_SID_DATE = builderString.toString();
@@ -86,7 +86,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId"); 
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
 		builderString.append(" AND (e.agentSid1 = :employeeId");
 		builderString.append(" OR e.agentSid2 = :employeeId");
 		builderString.append(" OR e.agentSid3 = :employeeId");
@@ -98,7 +98,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid1 = :employeeId");
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" OR e.endDate >= :startDate");
@@ -107,7 +107,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid1 = :employeeId");
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" AND e.endDate >= :startDate");
@@ -116,7 +116,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid2 = :employeeId");
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" AND e.endDate >= :startDate");
@@ -125,7 +125,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid3 = :employeeId");
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" AND e.endDate >= :startDate");
@@ -134,7 +134,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid4 = :employeeId");
 		builderString.append(" AND e.startDate <= :endDate");
 		builderString.append(" AND e.endDate >= :startDate");
@@ -143,41 +143,41 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfmtAgent e");
-		builderString.append(" WHERE e.wwfmtAgentPK.companyId = :companyId"); 
-		builderString.append(" AND e.wwfmtAgentPK.employeeId = :employeeId");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
 		builderString.append(" AND e.startDate <= :startDate");
 		builderString.append(" AND e.endDate >= :endDate");
 		SELECT_AGENT_BY_SID_DATE = builderString.toString();
 		
 		}
 	private static final String GET_LST_BY_AGENT_TYPE1 = "SELECT c  FROM WwfmtAgent c"
-			+ " WHERE c.wwfmtAgentPK.companyId = :companyId"
+			+ " WHERE c.cmmmtAgentPK.companyId = :companyId"
 			+ " AND c.agentSid1 = :agentId";
 	private static final String GET_LST_BY_SID_REQID = "SELECT c  FROM WwfmtAgent c"
-			+ " WHERE c.wwfmtAgentPK.companyId = :companyId"
-			+ " AND c.wwfmtAgentPK.employeeId = :employeeId"
-			+ " AND c.wwfmtAgentPK.requestId != :requestId";
+			+ " WHERE c.cmmmtAgentPK.companyId = :companyId"
+			+ " AND c.cmmmtAgentPK.employeeId = :employeeId"
+			+ " AND c.cmmmtAgentPK.requestId != :requestId";
 		
 	/**
 	 * Convert Data to Domain
-	 * @param wwfmtAgent
+	 * @param cmmmtAgent
 	 * @return
 	 */
-	private Agent convertToDomain(WwfmtAgent wwfmtAgent){
+	private Agent convertToDomain(WwfmtAgent cmmmtAgent){
 		Agent agent = Agent.createFromJavaType(
-				wwfmtAgent.wwfmtAgentPK.companyId,
-				wwfmtAgent.wwfmtAgentPK.employeeId,
-				wwfmtAgent.wwfmtAgentPK.requestId,
-				wwfmtAgent.startDate,
-				wwfmtAgent.endDate,
-				wwfmtAgent.agentSid1,
-				wwfmtAgent.agentAppType1,
-				wwfmtAgent.agentSid2,
-				wwfmtAgent.agentAppType2,
-				wwfmtAgent.agentSid3,
-				wwfmtAgent.agentAppType3,
-				wwfmtAgent.agentSid4,
-				wwfmtAgent.agentAppType4);
+				cmmmtAgent.cmmmtAgentPK.companyId,
+				cmmmtAgent.cmmmtAgentPK.employeeId,
+				cmmmtAgent.cmmmtAgentPK.requestId,
+				cmmmtAgent.startDate,
+				cmmmtAgent.endDate,
+				cmmmtAgent.agentSid1,
+				cmmmtAgent.agentAppType1,
+				cmmmtAgent.agentSid2,
+				cmmmtAgent.agentAppType2,
+				cmmmtAgent.agentSid3,
+				cmmmtAgent.agentAppType3,
+				cmmmtAgent.agentSid4,
+				cmmmtAgent.agentAppType4);
 		return agent;
 	}
 	
@@ -187,23 +187,23 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 * @return
 	 */
 	private WwfmtAgent convertToDbType(Agent agent) {
-		WwfmtAgent wwfmtAgent = new WwfmtAgent();
-		WwfmtAgentPK wwfmtAgentPK = new WwfmtAgentPK(
+		WwfmtAgent cmmmtAgent = new WwfmtAgent();
+		CmmmtAgentPK cmmmtAgentPK = new CmmmtAgentPK(
 				agent.getCompanyId(),
 				agent.getEmployeeId(),
 				agent.getRequestId().toString());
-		wwfmtAgent.startDate = agent.getStartDate();
-		wwfmtAgent.endDate = agent.getEndDate();
-		wwfmtAgent.agentSid1 = agent.getAgentSid1();
-		wwfmtAgent.agentAppType1 = agent.getAgentAppType1().value;
-		wwfmtAgent.agentSid2 = agent.getAgentSid2();
-		wwfmtAgent.agentAppType2 = agent.getAgentAppType2().value;
-		wwfmtAgent.agentSid3 = agent.getAgentSid3();
-		wwfmtAgent.agentAppType3 = agent.getAgentAppType3().value;
-		wwfmtAgent.agentSid4 = agent.getAgentSid4();
-		wwfmtAgent.agentAppType4 = agent.getAgentAppType4().value;
-		wwfmtAgent.wwfmtAgentPK = wwfmtAgentPK;
-		return wwfmtAgent;
+		cmmmtAgent.startDate = agent.getStartDate();
+		cmmmtAgent.endDate = agent.getEndDate();
+		cmmmtAgent.agentSid1 = agent.getAgentSid1();
+		cmmmtAgent.agentAppType1 = agent.getAgentAppType1().value;
+		cmmmtAgent.agentSid2 = agent.getAgentSid2();
+		cmmmtAgent.agentAppType2 = agent.getAgentAppType2().value;
+		cmmmtAgent.agentSid3 = agent.getAgentSid3();
+		cmmmtAgent.agentAppType3 = agent.getAgentAppType3().value;
+		cmmmtAgent.agentSid4 = agent.getAgentSid4();
+		cmmmtAgent.agentAppType4 = agent.getAgentAppType4().value;
+		cmmmtAgent.cmmmtAgentPK = cmmmtAgentPK;
+		return cmmmtAgent;
 	}
 	
 	/**
@@ -231,7 +231,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		List<Agent> results = new ArrayList<>();
 		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "select * from WWFMT_AGENT"
+			String sql = "select * from CMMMT_AGENT"
 					+ " where CID = ?"
 					+ " and SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and START_DATE <= ?"
@@ -271,7 +271,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 */
 	@Override
 	public void update(Agent agent) {
-		WwfmtAgentPK primaryKey = new WwfmtAgentPK(agent.getCompanyId(), agent.getEmployeeId(), agent.getRequestId().toString());
+		CmmmtAgentPK primaryKey = new CmmmtAgentPK(agent.getCompanyId(), agent.getEmployeeId(), agent.getRequestId().toString());
 		WwfmtAgent entity = this.queryProxy().find(primaryKey, WwfmtAgent.class).get();
 		entity.startDate = agent.getStartDate();
 		entity.endDate = agent.getEndDate();
@@ -283,7 +283,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		entity.agentAppType3 = agent.getAgentAppType3().value;
 		entity.agentSid4 = agent.getAgentSid4();
 		entity.agentAppType4 = agent.getAgentAppType4().value;
-		entity.wwfmtAgentPK = primaryKey;
+		entity.cmmmtAgentPK = primaryKey;
 		this.commandProxy().update(entity);	
 	}
 
@@ -292,8 +292,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 */
 	@Override
 	public void delete(String companyId, String employeeId, String requestId) {
-		WwfmtAgentPK wwfmtAgentPK = new WwfmtAgentPK(companyId, employeeId, requestId);
-		this.commandProxy().remove(WwfmtAgent.class, wwfmtAgentPK);
+		CmmmtAgentPK cmmmtAgentPK = new CmmmtAgentPK(companyId, employeeId, requestId);
+		this.commandProxy().remove(WwfmtAgent.class, cmmmtAgentPK);
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	@SneakyThrows
 	public Optional<Agent> find(String companyId, String employeeId, String requestId) {
 		
-		String sql = "select * from WWFMT_AGENT"
+		String sql = "select * from CMMMT_AGENT"
 				+ " where CID = ?"
 				+ " and SID = ?"
 				+ " and REQUEST_ID = ?";
@@ -372,7 +372,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return NtsStatement.In.split(listApprover, approverIds -> {
 			
 			String agentSidColumn = "AGENT_SID" + agentType;
-			String sql = "select * from WWFMT_AGENT"
+			String sql = "select * from CMMMT_AGENT"
 					+ " where CID = ?"
 					+ " and " + agentSidColumn + " in (" + NtsStatement.In.createParamsString(approverIds) + ")"
 					+ " and START_DATE <= ?"
@@ -391,7 +391,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 					WwfmtAgent c = WwfmtAgent.MAPPER.toEntity(rec);
 					return new AgentInfoOutput(
 							rec.getString(agentSidColumn),
-							c.wwfmtAgentPK.employeeId,
+							c.cmmmtAgentPK.employeeId,
 							c.startDate,
 							c.endDate);
 				});

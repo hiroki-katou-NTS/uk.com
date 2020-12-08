@@ -21,7 +21,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "BSYMT_SRCH_SYA_SORT_CND")
+@Table(name = "BSYMT_EMP_ORDER_COND")
 public class BsymtSrchSyaSortCnd extends JpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class BsymtSrchSyaSortCnd extends JpaEntity implements Serializable {
 
 	/** The id. */
 	@EmbeddedId
-	private BsymtSrchSyaSortCndPK id;
+	private BsymtEmpOrderCondPK id;
 
 	/** The condition order. */
 	@Column(name = "CONDITION_ORDER")
@@ -40,7 +40,7 @@ public class BsymtSrchSyaSortCnd extends JpaEntity implements Serializable {
 	 *
 	 * @param id the id
 	 */
-	public BsymtSrchSyaSortCnd(BsymtSrchSyaSortCndPK id) {
+	public BsymtSrchSyaSortCnd(BsymtEmpOrderCondPK id) {
 		this.id = id;
 	}
 	/**

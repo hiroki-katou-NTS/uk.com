@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERAL_APPLICATION")
+@Table(name = "KRCST_ER_AL_APPLICATION")
 public class KrcmtEralApplication extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtEralApplicationPK krcmtEralApplicationPK;
+	public KrcstErAlApplicationPK krcstErAlApplicationPK;
 
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
@@ -41,20 +41,20 @@ public class KrcmtEralApplication extends ContractUkJpaEntity implements Seriali
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralApplicationPK;
+		return this.krcstErAlApplicationPK;
 	}
 
-	public KrcmtEralApplication(KrcmtEralApplicationPK krcmtEralApplicationPK) {
+	public KrcmtEralApplication(KrcstErAlApplicationPK krcstErAlApplicationPK) {
 		super();
-		this.krcmtEralApplicationPK = krcmtEralApplicationPK;
+		this.krcstErAlApplicationPK = krcstErAlApplicationPK;
 	}
 	
 	public String getErrorCd(){
-		return krcmtEralApplicationPK.getErrorCd();
+		return krcstErAlApplicationPK.getErrorCd();
 	}
 	
 	public int getAppTypeCd(){
-		return krcmtEralApplicationPK.getAppTypeCd();
+		return krcstErAlApplicationPK.getAppTypeCd();
 	}
 
 }

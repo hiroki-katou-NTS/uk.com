@@ -20,13 +20,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_FORM_MONEY")
+@Table(name = "KSCST_FORM_MONEY")
 public class KscmtFormMoney extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KscmtFormMoneyPK kscstFormulaMoneyPK;
+	public KscstFormMoneyPK kscstFormulaMoneyPK;
 
 	/* カテゴリ区分 */
 	@Column(name = "CATEGORY_INDICATOR")

@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSCMT_EST_AGGREGATE")
+@Table(name = "KSCST_EST_AGGREGATE_SET")
 public class KscmtEstAggregate extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -53,8 +53,8 @@ public class KscmtEstAggregate extends ContractUkJpaEntity implements Serializab
     private int havyHdAtr;
     
     /** The kscst per cost extra item. */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtEstAggregate", orphanRemoval = true, fetch = FetchType.LAZY)
-	public List<KscmtPerCostExtraItem> kscmtPerCostExtraItem;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<KscmtPerCostExtraItem> kscstPerCostExtraItem;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

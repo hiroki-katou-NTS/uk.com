@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLO_HOL_TS")
+@Table(name = "KSHMT_FWORK_HOLIDAY_TIME")
 public class KshmtWtFloHolTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFloHolTs extends ContractUkJpaEntity implements Serializable
 
 	/** The kshmt fwork holiday time PK. */
 	@EmbeddedId
-	protected KshmtWtFloHolTsPK kshmtWtFloHolTsPK;
+	protected KshmtFworkHolidayTimePK kshmtFworkHolidayTimePK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -86,7 +86,7 @@ public class KshmtWtFloHolTs extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFloHolTsPK != null ? kshmtWtFloHolTsPK.hashCode() : 0);
+		hash += (kshmtFworkHolidayTimePK != null ? kshmtFworkHolidayTimePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -101,9 +101,9 @@ public class KshmtWtFloHolTs extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtWtFloHolTs other = (KshmtWtFloHolTs) object;
-		if ((this.kshmtWtFloHolTsPK == null && other.kshmtWtFloHolTsPK != null)
-				|| (this.kshmtWtFloHolTsPK != null
-						&& !this.kshmtWtFloHolTsPK.equals(other.kshmtWtFloHolTsPK))) {
+		if ((this.kshmtFworkHolidayTimePK == null && other.kshmtFworkHolidayTimePK != null)
+				|| (this.kshmtFworkHolidayTimePK != null
+						&& !this.kshmtFworkHolidayTimePK.equals(other.kshmtFworkHolidayTimePK))) {
 			return false;
 		}
 		return true;
@@ -116,7 +116,7 @@ public class KshmtWtFloHolTs extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFloHolTsPK;
+		return this.kshmtFworkHolidayTimePK;
 	}
 
 }

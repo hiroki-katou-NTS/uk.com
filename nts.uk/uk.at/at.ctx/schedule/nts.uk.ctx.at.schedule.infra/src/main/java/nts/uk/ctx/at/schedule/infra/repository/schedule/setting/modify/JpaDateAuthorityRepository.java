@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.DateAuthority;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.DateAuthorityRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthDate;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthDatePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstScheDateAuthorityPK;
 @Stateless
 public class JpaDateAuthorityRepository extends JpaRepository implements DateAuthorityRepository{
 	private static final String SELECT_BY_CID;
@@ -17,8 +17,8 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtScheAuthDate e");
-		builderString.append(" WHERE e.kscmtScheAuthDatePK.companyId = :companyId");
-		builderString.append(" AND e.kscmtScheAuthDatePK.roleId = :roleId");
+		builderString.append(" WHERE e.kscstScheDateAuthorityPK.companyId = :companyId");
+		builderString.append(" AND e.kscstScheDateAuthorityPK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	/**
@@ -26,12 +26,12 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private DateAuthority convertToDomain(KscmtScheAuthDate kscmtScheAuthDate) {
+	private DateAuthority convertToDomain(KscmtScheAuthDate kscstScheDateAuthority) {
 		DateAuthority dateAuthority = DateAuthority.createFromJavaType(
-				kscmtScheAuthDate.kscmtScheAuthDatePK.companyId, 
-				kscmtScheAuthDate.kscmtScheAuthDatePK.roleId, 
-				kscmtScheAuthDate.availableDate,
-				kscmtScheAuthDate.kscmtScheAuthDatePK.functionNoDate
+				kscstScheDateAuthority.kscstScheDateAuthorityPK.companyId, 
+				kscstScheDateAuthority.kscstScheDateAuthorityPK.roleId, 
+				kscstScheDateAuthority.availableDate,
+				kscstScheDateAuthority.kscstScheDateAuthorityPK.functionNoDate
 				
 				);
 		return dateAuthority;
@@ -44,9 +44,9 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	private KscmtScheAuthDate convertToDbType(DateAuthority dateAuthority) {
 		KscmtScheAuthDate scheDateAuthority = new KscmtScheAuthDate();
-		KscmtScheAuthDatePK scheDateAuthorityPK = new KscmtScheAuthDatePK(dateAuthority.getCompanyId(), dateAuthority.getRoleId(),dateAuthority.getFunctionNoDate());
+		KscstScheDateAuthorityPK scheDateAuthorityPK = new KscstScheDateAuthorityPK(dateAuthority.getCompanyId(), dateAuthority.getRoleId(),dateAuthority.getFunctionNoDate());
 		scheDateAuthority.availableDate = dateAuthority.getAvailableDate();
-		scheDateAuthority.kscmtScheAuthDatePK = scheDateAuthorityPK;
+		scheDateAuthority.kscstScheDateAuthorityPK = scheDateAuthorityPK;
 		return scheDateAuthority;
 	}
 	
@@ -73,10 +73,10 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public void update(DateAuthority author) {
-		KscmtScheAuthDatePK primaryKey = new KscmtScheAuthDatePK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoDate());
+		KscstScheDateAuthorityPK primaryKey = new KscstScheDateAuthorityPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoDate());
 		KscmtScheAuthDate entity = this.queryProxy().find(primaryKey, KscmtScheAuthDate.class).get();
 				entity.availableDate = author.getAvailableDate();
-				entity.kscmtScheAuthDatePK = primaryKey;
+				entity.kscstScheDateAuthorityPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -85,7 +85,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public Optional<DateAuthority> findByCId(String companyId, String roleId, int functionNoDate) {
-		return this.queryProxy().find(new KscmtScheAuthDatePK(companyId, roleId ,functionNoDate), KscmtScheAuthDate.class)
+		return this.queryProxy().find(new KscstScheDateAuthorityPK(companyId, roleId ,functionNoDate), KscmtScheAuthDate.class)
 				.map(c -> convertToDomain(c));
 	}
 

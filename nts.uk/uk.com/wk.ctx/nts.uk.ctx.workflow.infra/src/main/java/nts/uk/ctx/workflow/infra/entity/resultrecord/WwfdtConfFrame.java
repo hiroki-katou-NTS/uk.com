@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_CONF_FRAME")
+@Table(name="WWFDT_APP_FRAME_CONFIRM")
 public class WwfdtConfFrame extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -40,7 +40,7 @@ public class WwfdtConfFrame extends ContractUkJpaEntity {
 		@PrimaryKeyJoinColumn(name="ROOT_ID",referencedColumnName="ROOT_ID"),
 		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER")
 	})
-	private WwfdtConfPhase wwfdtConfPhase;
+	private WwfdtConfPhase wwfdtAppPhaseConfirm;
 	
 	@Override
 	protected Object getKey() {

@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 
 /**
@@ -43,12 +43,12 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
 	public JpaFlowRestTimezoneSetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloBrFlAllTs())) {
-			this.entity.setLstKshmtWtFloBrFlAllTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFlowRtSet())) {
+			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtWtFloBrFlPK().getCid();
-		this.workTimeCd = this.entity.getKshmtWtFloBrFlPK().getWorktimeCd();
-		this.resttimeAtr = this.entity.getKshmtWtFloBrFlPK().getResttimeAtr();
+		this.companyId = this.entity.getKshmtFlowRtSetPK().getCid();
+		this.workTimeCd = this.entity.getKshmtFlowRtSetPK().getWorktimeCd();
+		this.resttimeAtr = this.entity.getKshmtFlowRtSetPK().getResttimeAtr();
 	}
 	
 	/* (non-Javadoc)
@@ -57,24 +57,24 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
 	@Override
 	public void setFlowRestSet(List<FlowRestSetting> set) {
 		if (CollectionUtil.isEmpty(set)) {
-			this.entity.setLstKshmtWtFloBrFlAllTs(new ArrayList<>());
+			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
 			return;
 		}		
 		
-		List<KshmtWtFloBrFlAllTs> lstEntity = this.entity.getLstKshmtWtFloBrFlAllTs();
+		List<KshmtWtFloBrFlAllTs> lstEntity = this.entity.getLstKshmtFlowFlowRtSet();
         if (CollectionUtil.isEmpty(lstEntity)) {
             lstEntity = new ArrayList<>();
         }
 		
         // convert map entity
-     	Map<KshmtWtFloBrFlAllTsPK, KshmtWtFloBrFlAllTs> mapEntity = lstEntity.stream()
-     			.collect(Collectors.toMap(KshmtWtFloBrFlAllTs::getKshmtWtFloBrFlAllTsPK, Function.identity()));
+     	Map<KshmtFlowFlowRtSetPK, KshmtWtFloBrFlAllTs> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtWtFloBrFlAllTs::getKshmtFlowFlowRtSetPK, Function.identity()));
         
         // set list entity
         List<KshmtWtFloBrFlAllTs> newListEntity = new ArrayList<>();
         int periodNo = 1;
         for (FlowRestSetting domain : set) {
-        	KshmtWtFloBrFlAllTsPK pk = new KshmtWtFloBrFlAllTsPK();
+        	KshmtFlowFlowRtSetPK pk = new KshmtFlowFlowRtSetPK();
             pk.setCid(companyId);
             pk.setWorktimeCd(workTimeCd);
             pk.setResttimeAtr(resttimeAtr);
@@ -84,7 +84,7 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
             KshmtWtFloBrFlAllTs entity = mapEntity.get(pk);
  			if (entity == null) {
  				entity = new KshmtWtFloBrFlAllTs();
- 				entity.setKshmtWtFloBrFlAllTsPK(pk);
+ 				entity.setKshmtFlowFlowRtSetPK(pk);
  			}
             
             // save to memento
@@ -92,7 +92,7 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
             periodNo++;
             newListEntity.add(entity);
         }
-        this.entity.setLstKshmtWtFloBrFlAllTs(newListEntity);
+        this.entity.setLstKshmtFlowFlowRtSet(newListEntity);
 	}
 
 	/* (non-Javadoc)

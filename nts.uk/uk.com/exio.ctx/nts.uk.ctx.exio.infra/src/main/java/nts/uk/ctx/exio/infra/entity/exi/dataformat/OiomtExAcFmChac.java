@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_FM_CHAC")
+@Table(name = "OIOMT_CHR_DATA_FORMAT_SET")
 public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcFmChacPk chrDataFormatSetPk;
+	public OiomtChrDataFormatSetPk chrDataFormatSetPk;
 
 	/**
 	 * コード編集
@@ -113,7 +113,7 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 			int fixedValue, int effectiveDigitLength, String cdConvertCd, Integer cdEditMethod, Integer cdEditDigit,
 			String fixedVal, Integer startDigit, Integer endDigit) {
 		super();
-		this.chrDataFormatSetPk = new OiomtExAcFmChacPk(cid, sysType, conditionCode, acceptItemNum);
+		this.chrDataFormatSetPk = new OiomtChrDataFormatSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.cdEditing = cdEditing;
 		this.fixedValue = fixedValue;
 		this.effectiveDigitLength = effectiveDigitLength;

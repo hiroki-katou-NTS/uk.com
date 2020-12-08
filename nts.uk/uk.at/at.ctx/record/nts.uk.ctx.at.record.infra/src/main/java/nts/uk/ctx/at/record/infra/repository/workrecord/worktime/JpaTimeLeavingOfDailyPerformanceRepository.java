@@ -29,11 +29,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 //import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
-//import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSchePK;
+//import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtd;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtdPK;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtdStmp;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtdStmpPK;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -60,8 +60,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDayTsAtd a ");
-		builderString.append("WHERE a.krcdtDayTsAtdPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDayTsAtdPK.ymd = :ymd ");
+		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
 	}
 
@@ -108,7 +108,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 			scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
 				KrcdtDayTsAtdStmp entity = new KrcdtDayTsAtdStmp();
-				entity.krcdtDayTsAtdStmpPK = new KrcdtDayTsAtdStmpPK(rec.getString("SID"), rec.getInt("WORK_NO"),
+				entity.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(rec.getString("SID"), rec.getInt("WORK_NO"),
 						rec.getGeneralDate("YMD"), rec.getInt("TIME_LEAVING_TYPE"));
 				entity.attendanceActualRoudingTime = rec.getInt("ATD_ACTUAL_ROUDING_TIME_DAY");
 				entity.attendanceActualTime = rec.getInt("ATD_ACTUAL_TIME");
@@ -158,7 +158,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			return new NtsResultSet(sqlScheduleNew.executeQuery()).getList(newRec -> {
 				GeneralDate ymd = newRec.getGeneralDate("YMD");
 				return new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(newRec.getInt("WORK_TIMES")),
-						newScheduleTimes.stream().filter(c -> c.krcdtDayTsAtdStmpPK.ymd.equals(ymd))
+						newScheduleTimes.stream().filter(c -> c.krcdtTimeLeavingWorkPK.ymd.equals(ymd))
 								.map(item -> item.toDomain()).collect(Collectors.toList()),
 						ymd);
 			});
@@ -185,14 +185,14 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		List<KrcdtDayTsAtdStmp> timeWorks = entity.timeLeavingWorks;
 		entity.workTimes = domain.getAttendance().getWorkTimes() == null ? null : domain.getAttendance().getWorkTimes().v();
 		domain.getAttendance().getTimeLeavingWorks().stream().forEach(c -> {
-			KrcdtDayTsAtdStmp krcdtDayTsAtdStmp = timeWorks.stream()
-					.filter(x -> x.krcdtDayTsAtdStmpPK.workNo == c.getWorkNo().v()
-							&& x.krcdtDayTsAtdStmpPK.timeLeavingType == 0)
+			KrcdtDayTsAtdStmp krcdtTimeLeavingWork = timeWorks.stream()
+					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
+							&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 0)
 					.findFirst().orElse(null);
-			boolean isNew = krcdtDayTsAtdStmp == null;
+			boolean isNew = krcdtTimeLeavingWork == null;
 			if (isNew) {
-				krcdtDayTsAtdStmp = new KrcdtDayTsAtdStmp();
-				krcdtDayTsAtdStmp.krcdtDayTsAtdStmpPK = new KrcdtDayTsAtdStmpPK(domain.getEmployeeId(),
+				krcdtTimeLeavingWork = new KrcdtDayTsAtdStmp();
+				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(),
 						c.getWorkNo().v(), domain.getYmd(), 0);
 			}
 			if (c.getAttendanceStamp().isPresent()) {
@@ -202,54 +202,54 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				// set 時間外時間
 				OvertimeDeclaration overtimeDeclaration = attendanceStamp.getOvertimeDeclaration().orElse(null);
 				if (overtimeDeclaration != null) {
-					krcdtDayTsAtdStmp.atdOvertime = overtimeDeclaration.getOverTime() == null?null:overtimeDeclaration.getOverTime().valueAsMinutes();
-					krcdtDayTsAtdStmp.atdLateNightOvertime = overtimeDeclaration.getOverLateNightTime() == null?null:overtimeDeclaration.getOverLateNightTime().valueAsMinutes();
+					krcdtTimeLeavingWork.atdOvertime = overtimeDeclaration.getOverTime() == null?null:overtimeDeclaration.getOverTime().valueAsMinutes();
+					krcdtTimeLeavingWork.atdLateNightOvertime = overtimeDeclaration.getOverLateNightTime() == null?null:overtimeDeclaration.getOverLateNightTime().valueAsMinutes();
 				}else {
-					krcdtDayTsAtdStmp.atdOvertime = null;
-					krcdtDayTsAtdStmp.atdLateNightOvertime = null;
+					krcdtTimeLeavingWork.atdOvertime = null;
+					krcdtTimeLeavingWork.atdLateNightOvertime = null;
 				}
 				//set 時間休暇時間帯
 				TimeZone timeZone = attendanceStamp.getTimeVacation().orElse(null);
 				if (timeZone != null) {
-					krcdtDayTsAtdStmp.atdBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
-					krcdtDayTsAtdStmp.atdBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
+					krcdtTimeLeavingWork.atdBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
+					krcdtTimeLeavingWork.atdBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
 				}else {
-					krcdtDayTsAtdStmp.atdBreakStart = null;
-					krcdtDayTsAtdStmp.atdBreakEnd = null;
+					krcdtTimeLeavingWork.atdBreakStart = null;
+					krcdtTimeLeavingWork.atdBreakEnd = null;
 				}
 				if (attendanceActualS != null) {
-					krcdtDayTsAtdStmp.attendanceActualRoudingTime = attendanceActualS.getAfterRoundingTime() == null
+					krcdtTimeLeavingWork.attendanceActualRoudingTime = attendanceActualS.getAfterRoundingTime() == null
 							? null : attendanceActualS.getAfterRoundingTime().valueAsMinutes();
-					krcdtDayTsAtdStmp.attendanceActualTime = attendanceActualS.getTimeDay().getTimeWithDay().isPresent() ? attendanceActualS.getTimeDay().getTimeWithDay().get().valueAsMinutes()
+					krcdtTimeLeavingWork.attendanceActualTime = attendanceActualS.getTimeDay().getTimeWithDay().isPresent() ? attendanceActualS.getTimeDay().getTimeWithDay().get().valueAsMinutes()
 							: null;
-					krcdtDayTsAtdStmp.attendanceActualPlaceCode = !attendanceActualS.getLocationCode().isPresent()
+					krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendanceActualS.getLocationCode().isPresent()
 							? null : attendanceActualS.getLocationCode().get().v();
-					krcdtDayTsAtdStmp.attendanceActualSourceInfo = attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
 							: attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 
 				} else {
-					krcdtDayTsAtdStmp.attendanceActualRoudingTime = null;
-					krcdtDayTsAtdStmp.attendanceActualTime = null;
-					krcdtDayTsAtdStmp.attendanceActualPlaceCode = null;
-					krcdtDayTsAtdStmp.attendanceActualSourceInfo = null;
+					krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
+					krcdtTimeLeavingWork.attendanceActualTime = null;
+					krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
+					krcdtTimeLeavingWork.attendanceActualSourceInfo = null;
 				}
 				if (attendanceS != null) {
-					krcdtDayTsAtdStmp.attendanceStampRoudingTime = attendanceS.getAfterRoundingTime() == null ? null
+					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceS.getAfterRoundingTime() == null ? null
 							: attendanceS.getAfterRoundingTime().valueAsMinutes();
-					krcdtDayTsAtdStmp.attendanceStampTime = attendanceS.getTimeDay().getTimeWithDay().isPresent() ? attendanceS.getTimeDay().getTimeWithDay().get().valueAsMinutes()
+					krcdtTimeLeavingWork.attendanceStampTime = attendanceS.getTimeDay().getTimeWithDay().isPresent() ? attendanceS.getTimeDay().getTimeWithDay().get().valueAsMinutes()
 							: null;
-					krcdtDayTsAtdStmp.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent() ? null
+					krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent() ? null
 							: attendanceS.getLocationCode().get().v();
-					krcdtDayTsAtdStmp.attendanceStampSourceInfo = attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
 							: attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 
 				} else {
-					krcdtDayTsAtdStmp.attendanceStampRoudingTime = null;
-					krcdtDayTsAtdStmp.attendanceStampTime = null;
-					krcdtDayTsAtdStmp.attendanceStampPlaceCode = null;
-					krcdtDayTsAtdStmp.attendanceStampSourceInfo = null;
+					krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
+					krcdtTimeLeavingWork.attendanceStampTime = null;
+					krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
+					krcdtTimeLeavingWork.attendanceStampSourceInfo = null;
 				}
-				krcdtDayTsAtdStmp.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
+				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
 			}
 			if (c.getLeaveStamp().isPresent()) {
 				TimeActualStamp ls = c.getLeaveStamp().get();
@@ -258,59 +258,59 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				// set 時間外時間
 				OvertimeDeclaration overtimeDeclaration = ls.getOvertimeDeclaration().orElse(null);
 				if (overtimeDeclaration != null) {
-					krcdtDayTsAtdStmp.lwkOvertime = overtimeDeclaration.getOverTime() == null?null:overtimeDeclaration.getOverTime().valueAsMinutes();
-					krcdtDayTsAtdStmp.lwkLateNightOvertime = overtimeDeclaration.getOverLateNightTime() == null?null:overtimeDeclaration.getOverLateNightTime().valueAsMinutes();
+					krcdtTimeLeavingWork.lwkOvertime = overtimeDeclaration.getOverTime() == null?null:overtimeDeclaration.getOverTime().valueAsMinutes();
+					krcdtTimeLeavingWork.lwkLateNightOvertime = overtimeDeclaration.getOverLateNightTime() == null?null:overtimeDeclaration.getOverLateNightTime().valueAsMinutes();
 				}else {
-					krcdtDayTsAtdStmp.lwkOvertime = null;
-					krcdtDayTsAtdStmp.lwkLateNightOvertime = null;
+					krcdtTimeLeavingWork.lwkOvertime = null;
+					krcdtTimeLeavingWork.lwkLateNightOvertime = null;
 				}
 				//set 時間休暇時間帯
 				TimeZone timeZone = ls.getTimeVacation().orElse(null);
 				if (timeZone != null) {
-					krcdtDayTsAtdStmp.lwkBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
-					krcdtDayTsAtdStmp.lwkBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
+					krcdtTimeLeavingWork.lwkBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
+					krcdtTimeLeavingWork.lwkBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
 				}else {
-					krcdtDayTsAtdStmp.lwkBreakStart = null;
-					krcdtDayTsAtdStmp.lwkBreakEnd = null;
+					krcdtTimeLeavingWork.lwkBreakStart = null;
+					krcdtTimeLeavingWork.lwkBreakEnd = null;
 				}
 				
 				if (as != null) {
-					krcdtDayTsAtdStmp.leaveWorkActualRoundingTime = as.getAfterRoundingTime() == null ? null
+					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = as.getAfterRoundingTime() == null ? null
 							: as.getAfterRoundingTime().valueAsMinutes();
-					krcdtDayTsAtdStmp.leaveWorkActualTime = as.getTimeDay().getTimeWithDay() == null ? null
+					krcdtTimeLeavingWork.leaveWorkActualTime = as.getTimeDay().getTimeWithDay() == null ? null
 							: as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
-					krcdtDayTsAtdStmp.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
+					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
 							: as.getLocationCode().get().v();
-					krcdtDayTsAtdStmp.leaveActualSourceInfo = as.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+					krcdtTimeLeavingWork.leaveActualSourceInfo = as.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
 							: as.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 				} else {
-					krcdtDayTsAtdStmp.leaveWorkActualRoundingTime = null;
-					krcdtDayTsAtdStmp.leaveWorkActualTime = null;
-					krcdtDayTsAtdStmp.leaveWorkActualPlaceCode = null;
-					krcdtDayTsAtdStmp.leaveActualSourceInfo = null;
+					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
+					krcdtTimeLeavingWork.leaveWorkActualTime = null;
+					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
+					krcdtTimeLeavingWork.leaveActualSourceInfo = null;
 				}
 				if (s != null) {
-					krcdtDayTsAtdStmp.leaveWorkStampRoundingTime = s.getAfterRoundingTime() == null ? null
+					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = s.getAfterRoundingTime() == null ? null
 							: s.getAfterRoundingTime().valueAsMinutes();
-					krcdtDayTsAtdStmp.leaveWorkStampTime = s.getTimeDay().getTimeWithDay() == null ? null
+					krcdtTimeLeavingWork.leaveWorkStampTime = s.getTimeDay().getTimeWithDay() == null ? null
 							: s.getTimeDay().getTimeWithDay().get().valueAsMinutes();
-					krcdtDayTsAtdStmp.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
+					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
 							: s.getLocationCode().get().v();
-					krcdtDayTsAtdStmp.leaveWorkStampSourceInfo = s.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
 							: s.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 				} else {
-					krcdtDayTsAtdStmp.leaveWorkStampRoundingTime = null;
-					krcdtDayTsAtdStmp.leaveWorkStampTime = null;
-					krcdtDayTsAtdStmp.leaveWorkStampPlaceCode = null;
-					krcdtDayTsAtdStmp.leaveWorkStampSourceInfo = null;
+					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
+					krcdtTimeLeavingWork.leaveWorkStampTime = null;
+					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
+					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = null;
 				}
-				krcdtDayTsAtdStmp.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
+				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
 
 			}
-			// krcdtDayTsAtdStmp.krcdtDayTsAtdStmpPK.timeLeavingType = 0;
-			krcdtDayTsAtdStmp.daiLeavingWork = entity;
+			// krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
+			krcdtTimeLeavingWork.daiLeavingWork = entity;
 			if (isNew) {
-				timeWorks.add(krcdtDayTsAtdStmp);
+				timeWorks.add(krcdtTimeLeavingWork);
 			}
 		});
 
@@ -330,7 +330,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			Optional<KrcdtDayTsAtd> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery())
 					.getSingle(rec -> {
 						val entity = new KrcdtDayTsAtd();
-						entity.krcdtDayTsAtdPK = new KrcdtDayTsAtdPK(employee, date);
+						entity.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
 						entity.workTimes = rec.getInt("WORK_TIMES");
 						entity.timeLeavingWorks = getTimeLeavingWork(employee, date);
 						return entity;
@@ -348,7 +348,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	private KrcdtDayTsAtd getDefault(String employee, GeneralDate date) {
 		KrcdtDayTsAtd defaultV = new KrcdtDayTsAtd();
-		defaultV.krcdtDayTsAtdPK = new KrcdtDayTsAtdPK(employee, date);
+		defaultV.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
 		defaultV.timeLeavingWorks = new ArrayList<>();
 		return defaultV;
 	}
@@ -362,11 +362,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			statement.setInt(3, 0);
 			List<KrcdtDayTsAtdStmp> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
 				val entity = new KrcdtDayTsAtdStmp();
-				entity.krcdtDayTsAtdStmpPK = new KrcdtDayTsAtdStmpPK();
-				entity.krcdtDayTsAtdStmpPK.employeeId = employee;
-				entity.krcdtDayTsAtdStmpPK.ymd = date;
-				entity.krcdtDayTsAtdStmpPK.timeLeavingType = 0;
-				entity.krcdtDayTsAtdStmpPK.workNo = rec.getInt("WORK_NO");
+				entity.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK();
+				entity.krcdtTimeLeavingWorkPK.employeeId = employee;
+				entity.krcdtTimeLeavingWorkPK.ymd = date;
+				entity.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
+				entity.krcdtTimeLeavingWorkPK.workNo = rec.getInt("WORK_NO");
 				entity.attendanceActualRoudingTime = rec.getInt("ATD_ACTUAL_ROUDING_TIME_DAY");
 				entity.attendanceActualTime = rec.getInt("ATD_ACTUAL_TIME");
 				entity.attendanceActualPlaceCode = rec.getString("ATD_ACTUAL_PLACE_CODE");

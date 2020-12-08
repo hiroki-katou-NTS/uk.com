@@ -46,7 +46,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
 
     @OneToMany(targetEntity = KrqmtAppWorktypeEmp.class, cascade = CascadeType.ALL, mappedBy = "krqstAppEmploymentSet", orphanRemoval = true)
     @JoinTable(name = "KRQMT_APP_WORKTYPE_EMP")
-    public List<KrqmtAppWorktypeEmp> krqmtAppWktpEmp;
+    public List<KrqmtAppWorktypeEmp> krqdtAppEmployWorktype;
 
     String getCompanyId() {
         return pk.getCid();
@@ -73,7 +73,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
                     return new TargetWorkTypeByApp(
                             appType,
                             BooleanUtils.toBoolean(e.getDisplayFlag()),
-                            e.getKrqmtAppWktpEmp().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
+                            e.getKrqdtAppEmployWorktype().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
                             Optional.empty(),
                             Optional.of(BooleanUtils.toBoolean(e.getHolidayTypeUseFlg())),
                             Optional.of(EnumAdaptor.valueOf(e.getPk().getHolidayOrPauseType(), HolidayAppType.class)),
@@ -83,7 +83,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
                     return new TargetWorkTypeByApp(
                             appType,
                             BooleanUtils.toBoolean(e.getDisplayFlag()),
-                            e.getKrqmtAppWktpEmp().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
+                            e.getKrqdtAppEmployWorktype().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
                             Optional.empty(),
                             Optional.empty(),
                             Optional.empty(),
@@ -93,7 +93,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
                     return new TargetWorkTypeByApp(
                             appType,
                             BooleanUtils.toBoolean(e.getDisplayFlag()),
-                            e.getKrqmtAppWktpEmp().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
+                            e.getKrqdtAppEmployWorktype().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
                             Optional.of(EnumAdaptor.valueOf(e.getPk().getHolidayOrPauseType(), BreakOrRestTime.class)),
                             Optional.empty(),
                             Optional.empty(),
@@ -103,7 +103,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
                     return new TargetWorkTypeByApp(
                             appType,
                             BooleanUtils.toBoolean(e.getDisplayFlag()),
-                            e.getKrqmtAppWktpEmp().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
+                            e.getKrqdtAppEmployWorktype().stream().map(KrqmtAppWorktypeEmp::getWorkTypeCode).collect(Collectors.toList()),
                             Optional.empty(),
                             Optional.empty(),
                             Optional.empty(),
@@ -187,15 +187,15 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
     public void update(TargetWorkTypeByApp target) {
         this.displayFlag = BooleanUtils.toInteger(target.isDisplayWorkType());
         this.holidayTypeUseFlg = target.getAppType() == ApplicationType.ABSENCE_APPLICATION ? target.getOpHolidayTypeUse().map(BooleanUtils::toInteger).orElse(null) : null;
-        this.krqmtAppWktpEmp.clear();
-        this.krqmtAppWktpEmp.addAll(target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(
+        this.krqdtAppEmployWorktype.clear();
+        this.krqdtAppEmployWorktype.addAll(target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(
                 this.pk.getCid(),
                 this.pk.getEmploymentCode(),
                 this.pk.getAppType(),
                 this.pk.getHolidayOrPauseType(),
                 c
         )).collect(Collectors.toList()));
-        this.krqmtAppWktpEmp.forEach(t -> {t.setContractCd(this.contractCd);});
+        this.krqdtAppEmployWorktype.forEach(t -> {t.setContractCd(this.contractCd);});
     }
 }
 

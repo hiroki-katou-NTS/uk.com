@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_TIME_TOTALCOUNT")
+@Table(name = "KRCDT_WEK_TOTAL_TIMES")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeTotalcount extends ContractUkJpaEntity implements Serializable {
@@ -32,7 +32,7 @@ public class KrcdtWekTimeTotalcount extends ContractUkJpaEntity implements Seria
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtWekTimeTotalcountPK PK;
+	public KrcdtWekTotalTimesPK PK;
 
 	/** 時間 */
 	@Column(name = "TOTAL_TIME")
@@ -80,7 +80,7 @@ public class KrcdtWekTimeTotalcount extends ContractUkJpaEntity implements Seria
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfWeeklyKey key, TotalCount domain){
 		
-		this.PK = new KrcdtWekTimeTotalcountPK(
+		this.PK = new KrcdtWekTotalTimesPK(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,

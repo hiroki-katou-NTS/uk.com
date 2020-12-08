@@ -46,8 +46,8 @@ public class KrqstAppEmploymentSet extends ContractUkJpaEntity implements Serial
 
     
     @OneToMany(targetEntity=KrqmtAppWktpEmp.class, cascade = CascadeType.ALL, mappedBy = "KrqstAppEmploymentSet", orphanRemoval = true)
-	@JoinTable(name = "KRQMT_APP_WKTP_EMP")
-	public List<KrqmtAppWktpEmp> krqmtAppWktpEmp;
+	@JoinTable(name = "KRQDT_APP_EMPLOY_WORKTYPE")
+	public List<KrqmtAppWktpEmp> krqdtAppEmployWorktype;
     
 	@Override
 	protected Object getKey() {

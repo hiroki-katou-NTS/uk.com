@@ -15,7 +15,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRQDT_APP_HD_SP")
+@Table(name = "KRQDT_APP_FOR_SPEC_LEAVE")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class KrqdtAppHdSp extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	protected KrqdtAppHdSpPK krqdtAppHdSpPK;
+	protected KrqdtAppForSpecLeavePK krqdtAppForSpecLeavePK;
 	/**
      * 排他バージョン
      */
@@ -50,7 +50,7 @@ public class KrqdtAppHdSp extends ContractUkJpaEntity implements Serializable{
 
 	@Override
 	protected Object getKey() {
-		return krqdtAppHdSpPK;
+		return krqdtAppForSpecLeavePK;
 	}
 
 }

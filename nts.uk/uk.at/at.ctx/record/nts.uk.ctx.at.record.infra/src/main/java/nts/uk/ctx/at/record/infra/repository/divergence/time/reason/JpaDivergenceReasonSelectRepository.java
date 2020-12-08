@@ -20,9 +20,9 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReasonPK;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReasonPK_;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason_;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason_;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,8 +54,8 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcReason_.id).get(KrcmtDvgcReasonPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcReason_.id).get(KrcmtDvgcReasonPK_.no), divTimeNo));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcReason_.id).get(KrcstDvgcReasonPK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcReason_.id).get(KrcstDvgcReasonPK_.no), divTimeNo));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -80,7 +80,7 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	public Optional<DivergenceReasonSelect> findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
 
 		// Get Primary Key
-		KrcmtDvgcReasonPK PK = new KrcmtDvgcReasonPK(divTimeNo, companyId, reasonCode);
+		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, companyId, reasonCode);
 
 		return this.queryProxy().find(PK, KrcmtDvgcReason.class).map(e -> toDomain(e));
 
@@ -110,7 +110,7 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	public void delete(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
 
 		// Get Primary Key
-		KrcmtDvgcReasonPK PK = new KrcmtDvgcReasonPK(divTimeNo, AppContexts.user().companyId(),
+		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, AppContexts.user().companyId(),
 				divReasonSelect.getDivergenceReasonCode().toString());
 
 		// Find Entity

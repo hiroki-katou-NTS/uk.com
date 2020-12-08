@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PerWorkplace;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PerWorkplaceRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthWkp;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthWkpPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstSchePerWorkplacePK;
 
 @Stateless
 public class JpaPerWorkplaceRepository extends JpaRepository implements PerWorkplaceRepository{
@@ -18,8 +18,8 @@ public class JpaPerWorkplaceRepository extends JpaRepository implements PerWorkp
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtScheAuthWkp e");
-		builderString.append(" WHERE e.kscmtScheAuthWkpPK.companyId = :companyId");
-		builderString.append(" AND e.kscmtScheAuthWkpPK.roleId = :roleId");
+		builderString.append(" WHERE e.kscstSchePerWorkplacePK.companyId = :companyId");
+		builderString.append(" AND e.kscstSchePerWorkplacePK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	/**
@@ -27,12 +27,12 @@ public class JpaPerWorkplaceRepository extends JpaRepository implements PerWorkp
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private PerWorkplace convertToDomain(KscmtScheAuthWkp kscmtScheAuthWkp) {
+	private PerWorkplace convertToDomain(KscmtScheAuthWkp kscstSchePerWorkplace) {
 		PerWorkplace persAuthority = PerWorkplace.createFromJavaType(
-				kscmtScheAuthWkp.kscmtScheAuthWkpPK.companyId, 
-				kscmtScheAuthWkp.kscmtScheAuthWkpPK.roleId, 
-				kscmtScheAuthWkp.availableWorkplace,
-				kscmtScheAuthWkp.kscmtScheAuthWkpPK.functionNoWorkplace
+				kscstSchePerWorkplace.kscstSchePerWorkplacePK.companyId, 
+				kscstSchePerWorkplace.kscstSchePerWorkplacePK.roleId, 
+				kscstSchePerWorkplace.availableWorkplace,
+				kscstSchePerWorkplace.kscstSchePerWorkplacePK.functionNoWorkplace
 				
 				);
 		return persAuthority;
@@ -45,9 +45,9 @@ public class JpaPerWorkplaceRepository extends JpaRepository implements PerWorkp
 	 */
 	private KscmtScheAuthWkp convertToDbType(PerWorkplace persAuthority) {
 		KscmtScheAuthWkp schePersAuthority = new KscmtScheAuthWkp();
-		KscmtScheAuthWkpPK scheDateAuthorityPK = new KscmtScheAuthWkpPK(persAuthority.getCompanyId(), persAuthority.getRoleId(), persAuthority.getFunctionNoWorkplace());
+		KscstSchePerWorkplacePK scheDateAuthorityPK = new KscstSchePerWorkplacePK(persAuthority.getCompanyId(), persAuthority.getRoleId(), persAuthority.getFunctionNoWorkplace());
 		schePersAuthority.availableWorkplace = persAuthority.getAvailableWorkplace();
-		schePersAuthority.kscmtScheAuthWkpPK = scheDateAuthorityPK;
+		schePersAuthority.kscstSchePerWorkplacePK = scheDateAuthorityPK;
 		return schePersAuthority;
 	}
 	
@@ -74,10 +74,10 @@ public class JpaPerWorkplaceRepository extends JpaRepository implements PerWorkp
 	 */
 	@Override
 	public void update(PerWorkplace author) {
-		KscmtScheAuthWkpPK primaryKey = new KscmtScheAuthWkpPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoWorkplace());
+		KscstSchePerWorkplacePK primaryKey = new KscstSchePerWorkplacePK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoWorkplace());
 		KscmtScheAuthWkp entity = this.queryProxy().find(primaryKey, KscmtScheAuthWkp.class).get();
 				entity.availableWorkplace = author.getAvailableWorkplace();
-				entity.kscmtScheAuthWkpPK = primaryKey;
+				entity.kscstSchePerWorkplacePK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -86,7 +86,7 @@ public class JpaPerWorkplaceRepository extends JpaRepository implements PerWorkp
 	 */
 	@Override
 	public Optional<PerWorkplace> findByCId(String companyId, String roleId, int functionNoWorkplace) {
-		return this.queryProxy().find(new KscmtScheAuthWkpPK(companyId, roleId, functionNoWorkplace), KscmtScheAuthWkp.class)
+		return this.queryProxy().find(new KscstSchePerWorkplacePK(companyId, roleId, functionNoWorkplace), KscmtScheAuthWkp.class)
 				.map(c -> convertToDomain(c));
 	}
 

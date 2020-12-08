@@ -52,7 +52,7 @@ public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMe
 	 */
 	@Override
 	public Year getTargetYear() {
-		return new Year(this.estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimeSyaPK()
+		return new Year(this.estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimePerSetPK()
 				.getTargetYear());
 	}
 
@@ -76,7 +76,7 @@ public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMe
 	 */
 	@Override
 	public String getEmployeeId() {
-		return estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimeSyaPK().getSid();
+		return estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimePerSetPK().getSid();
 	}
 
 }

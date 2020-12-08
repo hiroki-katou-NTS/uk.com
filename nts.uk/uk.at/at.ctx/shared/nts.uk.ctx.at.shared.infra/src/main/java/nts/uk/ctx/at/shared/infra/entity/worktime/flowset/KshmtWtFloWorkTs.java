@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLO_WORK_TS")
+@Table(name = "KSHMT_FLOW_TIME_ZONE")
 public class KshmtWtFloWorkTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFloWorkTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt flow time zone PK. */
 	@EmbeddedId
-	protected KshmtWtFloWorkTsPK kshmtWtFloWorkTsPK;
+	protected KshmtFlowTimeZonePK kshmtFlowTimeZonePK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -58,7 +58,7 @@ public class KshmtWtFloWorkTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFloWorkTsPK != null ? kshmtWtFloWorkTsPK.hashCode() : 0);
+		hash += (kshmtFlowTimeZonePK != null ? kshmtFlowTimeZonePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -73,9 +73,9 @@ public class KshmtWtFloWorkTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtFloWorkTs other = (KshmtWtFloWorkTs) object;
-		if ((this.kshmtWtFloWorkTsPK == null && other.kshmtWtFloWorkTsPK != null)
-				|| (this.kshmtWtFloWorkTsPK != null
-						&& !this.kshmtWtFloWorkTsPK.equals(other.kshmtWtFloWorkTsPK))) {
+		if ((this.kshmtFlowTimeZonePK == null && other.kshmtFlowTimeZonePK != null)
+				|| (this.kshmtFlowTimeZonePK != null
+						&& !this.kshmtFlowTimeZonePK.equals(other.kshmtFlowTimeZonePK))) {
 			return false;
 		}
 		return true;
@@ -88,7 +88,7 @@ public class KshmtWtFloWorkTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFloWorkTsPK;
+		return this.kshmtFlowTimeZonePK;
 	}
 
 }

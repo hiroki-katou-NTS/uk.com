@@ -15,13 +15,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_ROLE_ITEM_AUTH")
+@Table(name = "PPEMT_PERSON_ITEM_AUTH")
 @Entity
 public class PpemtRoleItemAuth extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtRoleItemAuthPk ppemtRoleItemAuthPk;
+	public PpemtPersonItemAuthPk ppemtPersonItemAuthPk;
 
 	@Basic(optional = false)
 	@Column(name = "OTHER_PERSON_AUTH_TYPE")
@@ -33,7 +33,7 @@ public class PpemtRoleItemAuth extends ContractUkJpaEntity implements Serializab
 
 	@Override
 	protected Object getKey() {
-		return this.ppemtRoleItemAuthPk;
+		return this.ppemtPersonItemAuthPk;
 	}
 
 	public PpemtRoleItemAuth updateFromDomain(PersonInfoItemAuth domain) {

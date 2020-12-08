@@ -27,14 +27,14 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE o.krqdtInstructHdWorkPK.instructDate = :instructDate");
-		query.append(" AND o.krqdtInstructHdWorkPK.targetPerson = :targetPerson");
+		query.append(" WHERE o.krqdtHolidayInstructPK.instructDate = :instructDate");
+		query.append(" AND o.krqdtHolidayInstructPK.targetPerson = :targetPerson");
 		FIND_FOR_TARGET_PERSON = query.toString();
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE o.krqdtInstructHdWorkPK.targetPerson = :targetPerson");
-		query.append(" ORDER BY o.krqdtInstructHdWorkPK.instructDate ASC");
+		query.append(" WHERE o.krqdtHolidayInstructPK.targetPerson = :targetPerson");
+		query.append(" ORDER BY o.krqdtHolidayInstructPK.instructDate ASC");
 		FIND_ALL_BY_TARGET_PERSON = query.toString();
 	}
 	@Override
@@ -51,8 +51,8 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 		 return HolidayInstruct.createSimpleFromJavaType(
 				 krqdtHolidayWorkInstruct.getWorkContent(),
 				 krqdtHolidayWorkInstruct.getInputDate(),
-				 krqdtHolidayWorkInstruct.getKrqdtInstructHdWorkPK().getTargetPerson(),
-				 krqdtHolidayWorkInstruct.getKrqdtInstructHdWorkPK().getInstructDate(),
+				 krqdtHolidayWorkInstruct.getKrqdtHolidayInstructPK().getTargetPerson(),
+				 krqdtHolidayWorkInstruct.getKrqdtHolidayInstructPK().getInstructDate(),
 				 krqdtHolidayWorkInstruct.getInstructor(),
 				 krqdtHolidayWorkInstruct.getHolidayInstructReason(),
 				 krqdtHolidayWorkInstruct.getHolidayWorkHour(),

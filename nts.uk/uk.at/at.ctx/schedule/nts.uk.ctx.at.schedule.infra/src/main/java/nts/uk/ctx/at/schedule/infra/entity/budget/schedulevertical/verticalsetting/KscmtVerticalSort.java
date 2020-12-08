@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_VERTICAL_SORT")
+@Table(name = "KSCMT_GEN_VERT_ORDER")
 public class KscmtVerticalSort extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KscmtVerticalSortPK kscmtVerticalSortPK;
+	public KscmtGenVertOrderPK kscmtGenVertOrderPK;
 	
 	/* 並び順 */
 	@Column(name = "DISPORDER")
@@ -40,11 +40,11 @@ public class KscmtVerticalSort extends ContractUkJpaEntity implements Serializab
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscmtVerticalSortPK;
+		return kscmtGenVertOrderPK;
 	}
 	
-	public KscmtVerticalSort(KscmtVerticalSortPK kscmtVerticalSortPK, int dispOrder) {
-		this.kscmtVerticalSortPK = kscmtVerticalSortPK;
+	public KscmtVerticalSort(KscmtGenVertOrderPK kscmtGenVertOrderPK, int dispOrder) {
+		this.kscmtGenVertOrderPK = kscmtGenVertOrderPK;
 		this.dispOrder = dispOrder;
 	}
 }

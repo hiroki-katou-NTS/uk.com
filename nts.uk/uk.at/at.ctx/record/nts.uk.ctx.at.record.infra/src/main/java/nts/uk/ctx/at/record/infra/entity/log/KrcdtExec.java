@@ -30,13 +30,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXEC")
+@Table(name = "KRCDT_EMP_EXECUTION_LOG")
 public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtExecPK krcdtExecPK;
+	public KrcdtEmpExecutionLogPK krcdtEmpExecutionLogPK;
 	
 	@Column(name = "CID")
 	public String companyID;
@@ -66,17 +66,17 @@ public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 	public int executionClassification;
 
 //	@OneToMany(mappedBy="empexecutionlog", cascade = CascadeType.ALL)
-//	@JoinTable(name = "KRCDT_EXEC_LOG")
+//	@JoinTable(name = "KRCDT_EXECUTION_LOG")
 //	public List<KrcdtExecLog> executionLogs;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtExecPK;
+		return this.krcdtEmpExecutionLogPK;
 	}
 	
 	public static KrcdtExec toEntity(EmpCalAndSumExeLog domain) {
 		return new  KrcdtExec(
-				new KrcdtExecPK(domain.getEmpCalAndSumExecLogID()),
+				new KrcdtEmpExecutionLogPK(domain.getEmpCalAndSumExecLogID()),
 				domain.getCompanyID(),
 				domain.getProcessingMonth().v(),
 				domain.getExecutedMenu().value,
@@ -92,7 +92,7 @@ public class KrcdtExec extends ContractUkJpaEntity implements Serializable {
 	public EmpCalAndSumExeLog toDomain() {
 		//List<ExecutionLog> executionLogs = this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 		return EmpCalAndSumExeLog.createFromJavaType(
-				this.krcdtExecPK.empCalAndSumExecLogID,
+				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
 				new YearMonth( this.processingMonth),
 				this.executedMenu,

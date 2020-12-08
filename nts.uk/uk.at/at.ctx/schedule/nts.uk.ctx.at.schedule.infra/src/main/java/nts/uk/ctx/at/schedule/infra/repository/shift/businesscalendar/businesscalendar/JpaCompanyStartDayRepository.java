@@ -14,10 +14,10 @@ public class JpaCompanyStartDayRepository extends JpaRepository implements Start
 
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KscmtWeekstartCompany c ";
 	private static final String SELECT_BY_COM_ID = SELECT_NO_WHERE 
-			+ " WHERE c.kscmtWeekstartCompanyPK.companyId = :companyId";
+			+ " WHERE c.kccmtCompanyStartDayPK.companyId = :companyId";
 
 	private static StartDayItem toDomain(KscmtWeekstartCompany entity) {
-		StartDayItem domain = StartDayItem.createFromJavaType(entity.kscmtWeekstartCompanyPK.companyId, entity.startDay);
+		StartDayItem domain = StartDayItem.createFromJavaType(entity.kccmtCompanyStartDayPK.companyId, entity.startDay);
 		return domain;
 	}
 

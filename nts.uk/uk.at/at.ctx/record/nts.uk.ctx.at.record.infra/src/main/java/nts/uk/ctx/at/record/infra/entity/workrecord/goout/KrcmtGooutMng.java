@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name="KRCMT_GOOUT_MNG")
+@Table(name="KRCST_OUT_MANAGE")
 public class KrcmtGooutMng extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

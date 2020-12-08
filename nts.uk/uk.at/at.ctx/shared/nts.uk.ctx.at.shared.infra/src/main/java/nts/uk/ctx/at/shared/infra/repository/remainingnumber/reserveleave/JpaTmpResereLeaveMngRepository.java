@@ -24,9 +24,9 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	private InterimRemainRepository interRemain;
 	@Override
 	public Optional<TmpResereLeaveMng> getById(String resereMngId) {
-		Optional<TmpResereLeaveMng> optKrcdtHdstkTemp = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class)
+		Optional<TmpResereLeaveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class)
 				.map(x -> toDomain(x));
-		return optKrcdtHdstkTemp;
+		return optKrcmtInterimReserveMng;
 	}
 
 	private TmpResereLeaveMng toDomain(KrcdtHdstkTemp x) {
@@ -35,17 +35,17 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 
 	@Override
 	public void deleteById(String resereMngId) {
-		Optional<KrcdtHdstkTemp> optKrcdtHdstkTemp = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class);
-		optKrcdtHdstkTemp.ifPresent(x -> {
+		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class);
+		optKrcmtInterimReserveMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
 	}
 
 	@Override
 	public void persistAndUpdate(TmpResereLeaveMng dataMng) {
-		Optional<KrcdtHdstkTemp> optKrcdtHdstkTemp = this.queryProxy().find(dataMng.getResereId(), KrcdtHdstkTemp.class);
-		if(optKrcdtHdstkTemp.isPresent()) {
-			KrcdtHdstkTemp entity = optKrcdtHdstkTemp.get();
+		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcdtHdstkTemp.class);
+		if(optKrcmtInterimReserveMng.isPresent()) {
+			KrcdtHdstkTemp entity = optKrcmtInterimReserveMng.get();
 			entity.useDays = dataMng.getUseDays().v();
 			this.commandProxy().update(entity);
 		} else {

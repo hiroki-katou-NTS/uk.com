@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_ROLESET")
-public class SacmtRoleSet extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SACMT_ROLE_SET")
+public class SacmtRoleset extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

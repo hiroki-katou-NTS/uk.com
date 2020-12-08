@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutNewEntry;
-import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutNewEntryPk;
+import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayoutPk;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -23,7 +23,7 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 				.setParameter("companyId", companyId).getSingle();
 
 		if (!entity.isPresent()) {
-			commandProxy().insert(new PpemtLayoutNewEntry(new PpemtLayoutNewEntryPk(domain.getLayoutID()), domain.getCompanyId(),
+			commandProxy().insert(new PpemtLayoutNewEntry(new PpemtNewLayoutPk(domain.getLayoutID()), domain.getCompanyId(),
 					domain.getLayoutCode().v(), domain.getLayoutName().v()));
 		} else {
 			entity.ifPresent(ent -> {
@@ -43,7 +43,7 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 	}
 
 	private NewLayout toDomain(PpemtLayoutNewEntry entity) {
-		return NewLayout.createFromJavaType(entity.companyId, entity.ppemtLayoutNewEntryPk.layoutId, entity.layoutCode,
+		return NewLayout.createFromJavaType(entity.companyId, entity.ppemtNewLayoutPk.layoutId, entity.layoutCode,
 				entity.layoutName);
 	}
 }

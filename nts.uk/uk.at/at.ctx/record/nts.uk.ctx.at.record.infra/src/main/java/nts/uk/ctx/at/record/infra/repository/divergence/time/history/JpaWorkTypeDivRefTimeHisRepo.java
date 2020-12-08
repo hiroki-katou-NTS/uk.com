@@ -21,9 +21,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistCom_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistBus;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistBus_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist_;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -57,17 +57,17 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.worktypeCd), workTypeCode.v()));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode.v()));
 		if (!StringUtils.isEmpty(histId)) {
-			predicates.add(criteriaBuilder.notEqual(root.get(KrcmtDvgcRefHistBus_.histId), histId));
+			predicates.add(criteriaBuilder.notEqual(root.get(KrcstWorktypeDrtHist_.histId), histId));
 		}
 
 		predicates.add(criteriaBuilder.or(
-				criteriaBuilder.between(root.get(KrcmtDvgcRefHistCom_.strD.getName()), startDate, endDate),
-				criteriaBuilder.between(root.get(KrcmtDvgcRefHistCom_.endD.getName()), startDate, endDate),
-				criteriaBuilder.and(criteriaBuilder.lessThan(root.get(KrcmtDvgcRefHistCom_.strD.getName()), startDate),
-						criteriaBuilder.greaterThan(root.get(KrcmtDvgcRefHistCom_.endD.getName()), endDate))));
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate),
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate),
+				criteriaBuilder.and(criteriaBuilder.lessThan(root.get(KrcstComDrtHist_.strD.getName()), startDate),
+						criteriaBuilder.greaterThan(root.get(KrcstComDrtHist_.endD.getName()), endDate))));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -115,15 +115,15 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
 		predicates.add(
-				criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.worktypeCd), workTypeCode));
+				criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
 
 		// order by insert date
-		cq.orderBy(criteriaBuilder.desc(root.get(KrcmtDvgcRefHistBus_.strD)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.strD)));
 
 		List<KrcmtDvgcRefHistBus> worktypeDrtHists = em.createQuery(cq).getResultList();
 
@@ -178,12 +178,12 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.worktypeCd), workTypeCode));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.desc(root.get(KrcmtDvgcRefHistBus_.endD)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.endD)));
 
 		// query data
 		List<KrcmtDvgcRefHistBus> comDrtHists = em.createQuery(cq).setMaxResults(1).getResultList();
@@ -204,15 +204,15 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
 
-		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrcmtDvgcRefHistBus_.strD), date));
-		predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrcmtDvgcRefHistBus_.endD), date));
+		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrcstWorktypeDrtHist_.strD), date));
+		predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrcstWorktypeDrtHist_.endD), date));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.desc(root.get(KrcmtDvgcRefHistBus_.endD)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.endD)));
 
 		// query data
 		List<KrcmtDvgcRefHistBus> worktypeDrtHists = em.createQuery(cq).getResultList();
@@ -285,17 +285,17 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.cid), companyId));
-			predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefHistBus_.worktypeCd), workTypeCode));
+			predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+			predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
 
 			// Find by history id
-			predicates.add(root.get(KrcmtDvgcRefHistBus_.histId).in(splitData));
+			predicates.add(root.get(KrcstWorktypeDrtHist_.histId).in(splitData));
 
 			// add where to query
 			cq.where(predicates.toArray(new Predicate[] {}));
 
 			// order by insert date
-			cq.orderBy(criteriaBuilder.desc(root.get(KrcmtDvgcRefHistBus_.strD)));
+			cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.strD)));
 
 			worktypeDrtHists.addAll(em.createQuery(cq).getResultList());
 		});

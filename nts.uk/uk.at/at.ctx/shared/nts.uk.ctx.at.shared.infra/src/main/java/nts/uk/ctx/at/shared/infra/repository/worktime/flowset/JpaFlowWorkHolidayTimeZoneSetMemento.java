@@ -37,7 +37,7 @@ public class JpaFlowWorkHolidayTimeZoneSetMemento implements FlWorkHdTzSetMement
 	 */
 	@Override
 	public void setWorktimeNo(Integer wtNo) {
-		this.entity.getKshmtWtFloHolTsPK().setWorktimeNo(wtNo);
+		this.entity.getKshmtFworkHolidayTimePK().setWorktimeNo(wtNo);
 	}
 
 	/*

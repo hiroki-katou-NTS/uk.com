@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="KRCMT_DVGC_ERAL_MSG_BUS")
+@Table(name="KRCST_DVGCWT_TIME_EA_MSG")
 public class KrcmtDvgcEralMsgBus extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KrcmtDvgcEralMsgBus extends ContractUkJpaEntity implements Serializ
 
 	/** The id. */
 	@EmbeddedId
-	private KrcmtDvgcEralMsgBusPK id;
+	private KrcstDvgcwtTimeEaMsgPK id;
 
 	/** The alarm message. */
 	@Column(name="ALARM_MESSAGE")

@@ -17,17 +17,17 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_DAY_APP_CALL")
+@Table(name = "KFNMT_APPLICATION_CALL")
 public class KfnmtDayAppCall extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KfnmtDayAppCallPK kfnmtDayAppCallPK;
+	public KfnmtApplicationCallPK kfnmtApplicationCallPK;
 
 	@Override
 	protected Object getKey() {
-		return kfnmtDayAppCallPK;
+		return kfnmtApplicationCallPK;
 	}
 	
 }

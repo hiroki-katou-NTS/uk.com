@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQMT_URL_EMBEDDED")
+@Table(name = "KRQST_URL_EMBEDDED")
 public class KrqmtUrlEmbedded extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class KrqmtUrlEmbedded extends ContractUkJpaEntity implements Serializabl
     * ID
     */
     @EmbeddedId
-    public KrqmtUrlEmbeddedPk urlEmbeddedPk;
+    public KrqstUrlEmbeddedPk urlEmbeddedPk;
     
     /**
     * URL埋込
@@ -47,7 +47,7 @@ public class KrqmtUrlEmbedded extends ContractUkJpaEntity implements Serializabl
         return UrlEmbedded.createFromJavaType(this.urlEmbeddedPk.cid, this.urlEmbedded);
     }
     public static KrqmtUrlEmbedded toEntity(UrlEmbedded domain) {
-        return new KrqmtUrlEmbedded(new KrqmtUrlEmbeddedPk(domain.getCid()), domain.getUrlEmbedded().value);
+        return new KrqmtUrlEmbedded(new KrqstUrlEmbeddedPk(domain.getCid()), domain.getUrlEmbedded().value);
     }
 
 }

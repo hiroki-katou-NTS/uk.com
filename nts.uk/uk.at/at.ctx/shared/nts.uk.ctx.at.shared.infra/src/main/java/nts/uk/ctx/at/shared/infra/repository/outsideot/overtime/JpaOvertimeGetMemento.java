@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutsidePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
 
 /**
  * The Class JpaOvertimeGetMemento.
@@ -29,8 +29,8 @@ public class JpaOvertimeGetMemento implements OvertimeGetMemento{
 	 * @param entity the entity
 	 */
 	public JpaOvertimeGetMemento(KshmtOutside entity) {
-		if (entity.getKshmtOutsidePK() == null) {
-			entity.setKshmtOutsidePK(new KshmtOutsidePK());
+		if (entity.getKshstOverTimePK() == null) {
+			entity.setKshstOverTimePK(new KshstOverTimePK());
 		}
 		this.entity = entity;
 	}
@@ -82,7 +82,7 @@ public class JpaOvertimeGetMemento implements OvertimeGetMemento{
 	 */
 	@Override
 	public OvertimeNo getOvertimeNo() {
-		return OvertimeNo.valueOf(this.entity.getKshmtOutsidePK().getOverTimeNo());
+		return OvertimeNo.valueOf(this.entity.getKshstOverTimePK().getOverTimeNo());
 	}
 
 }

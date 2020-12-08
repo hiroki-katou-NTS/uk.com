@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampMng;
-import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampMngPK;
+import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprintPK;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 
@@ -65,7 +65,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
  */
 @Override
 	public void update(StampReflectionManagement reflectionManagement) {
-		KrcmtStampMngPK stampImprintPK = new KrcmtStampMngPK(reflectionManagement.getCompanyId());
+		KrcmtStampImprintPK stampImprintPK = new KrcmtStampImprintPK(reflectionManagement.getCompanyId());
 		KrcmtStampMng imprint = this.queryProxy().find(stampImprintPK, KrcmtStampMng.class).get();
 		imprint.breakSwitchClass = reflectionManagement.getBreakSwitchClass().value;
 		imprint.autoStampReflectionClass = reflectionManagement.getAutoStampReflectionClass().value;
@@ -93,7 +93,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 		 */
 		private KrcmtStampMng convertToDbType(StampReflectionManagement atten) {
 		KrcmtStampMng newEntity = KrcmtStampMng.toEntity(atten);
-		KrcmtStampMngPK attSetPK = new KrcmtStampMngPK(atten.getCompanyId());
+		KrcmtStampImprintPK attSetPK = new KrcmtStampImprintPK(atten.getCompanyId());
 		Optional<KrcmtStampMng> optUpdateEntity = this.queryProxy().find(attSetPK, KrcmtStampMng.class);
 		if (optUpdateEntity.isPresent()) {
 			KrcmtStampMng updateEntity = optUpdateEntity.get();

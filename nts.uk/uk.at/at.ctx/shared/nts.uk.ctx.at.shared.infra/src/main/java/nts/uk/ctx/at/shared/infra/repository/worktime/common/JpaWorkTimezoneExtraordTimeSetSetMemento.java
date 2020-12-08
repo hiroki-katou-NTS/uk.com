@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordWorkOTFrameSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayFramset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporary;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporaryPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
@@ -92,23 +92,23 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	 *            the parent entity
 	 */
 	private void initialEntity(KshmtWtCom parentEntity) {
-		if (parentEntity.getKshmtWtComTemporary() == null) {
-			parentEntity.setKshmtWtComTemporary(new KshmtWtComTemporary());
+		if (parentEntity.getKshmtTempWorktimeSet() == null) {
+			parentEntity.setKshmtTempWorktimeSet(new KshmtWtComTemporary());
 		}
 		
 		// check existed key
-		if (parentEntity.getKshmtWtComTemporary().getKshmtWtComTemporaryPK() == null) {
+		if (parentEntity.getKshmtTempWorktimeSet().getKshmtTempWorktimeSetPK() == null) {
 			// set primary key
-			KshmtWtComTemporaryPK pk = new KshmtWtComTemporaryPK();
-			pk.setCid(parentEntity.getKshmtWtComPK().getCid());
-			pk.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
-			pk.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
-			pk.setWorktimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
-			parentEntity.getKshmtWtComTemporary().setKshmtWtComTemporaryPK(pk);
+			KshmtTempWorktimeSetPK pk = new KshmtTempWorktimeSetPK();
+			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			pk.setWorktimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			parentEntity.getKshmtTempWorktimeSet().setKshmtTempWorktimeSetPK(pk);
 		}
 
 		// set entity
-		this.entity = parentEntity.getKshmtWtComTemporary();
+		this.entity = parentEntity.getKshmtTempWorktimeSet();
 	}
 
 }

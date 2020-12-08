@@ -46,7 +46,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getBsymtJobRankPK().getCid());
+		return new CompanyId(this.typeValue.getBsymtJobSeqMasterPK().getCid());
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public SequenceCode getSequenceCode() {
-		return new SequenceCode(this.typeValue.getBsymtJobRankPK().getSeqCd());
+		return new SequenceCode(this.typeValue.getBsymtJobSeqMasterPK().getSeqCd());
 	}
 
 	/*

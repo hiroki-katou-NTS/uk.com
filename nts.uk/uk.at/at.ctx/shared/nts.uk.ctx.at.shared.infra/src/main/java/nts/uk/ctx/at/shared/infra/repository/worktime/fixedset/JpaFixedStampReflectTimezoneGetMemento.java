@@ -38,7 +38,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 */
 	@Override
 	public WorkNo getWorkNo() {
-		return new WorkNo(this.entity.getKshmtWtFixStmpRefTsPK().getWorkNo());
+		return new WorkNo(this.entity.getKshmtFixedStampReflectPK().getWorkNo());
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtWtFixStmpRefTsPK().getAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtFixedStampReflectPK().getAtr());
 	}
 
 	/*

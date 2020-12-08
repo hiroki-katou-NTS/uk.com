@@ -60,7 +60,7 @@ public class JpaPrescribedTimezoneSettingGetMemento implements PrescribedTimezon
 	 */
 	@Override
 	public List<TimezoneUse> getLstTimezone() {
-		return this.entity.getKshmtWtComPredTss().stream()
+		return this.entity.getKshmtWorkTimeSheetSets().stream()
 				.map(entity -> new TimezoneUse(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

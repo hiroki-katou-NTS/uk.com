@@ -13,7 +13,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 
 	/** The entity. */
 	@Setter
-	private KrcmtDvgcUnitSet krcmtDvgcUnitSet;
+	private KrcmtDvgcUnitSet krcstDrtUseUnit;
 
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit get memento.
@@ -25,10 +25,10 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit get memento.
 	 *
-	 * @param krcmtDvgcUnitSet the krcst drt use unit
+	 * @param krcstDrtUseUnit the krcst drt use unit
 	 */
-	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcmtDvgcUnitSet krcmtDvgcUnitSet) {
-		this.krcmtDvgcUnitSet = krcmtDvgcUnitSet;
+	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcmtDvgcUnitSet krcstDrtUseUnit) {
+		this.krcstDrtUseUnit = krcstDrtUseUnit;
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.krcmtDvgcUnitSet.getCid();
+		return this.krcstDrtUseUnit.getCid();
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 */
 	@Override
 	public boolean getWorkTypeUseSet() {
-		return this.krcmtDvgcUnitSet.getWorktypeUseSet().equals(BigDecimal.ONE);
+		return this.krcstDrtUseUnit.getWorktypeUseSet().equals(BigDecimal.ONE);
 	}
 
 }

@@ -31,8 +31,8 @@ public class JpaFlowWorkTimezoneSettingGetMemento implements FlWtzSettingGetMeme
 	public JpaFlowWorkTimezoneSettingGetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;	
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloOverTs())) {
-			this.entity.setLstKshmtWtFloOverTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtOtTimeZone())) {
+			this.entity.setLstKshmtOtTimeZone(new ArrayList<>());
 		}
 	}
 	
@@ -41,8 +41,8 @@ public class JpaFlowWorkTimezoneSettingGetMemento implements FlWtzSettingGetMeme
 	 */
 	@Override
 	public TimeRoundingSetting getWorkTimeRounding() {
-		KshmtWtFloWorkTs kshmtWtFloWorkTs = this.entity.getKshmtWtFloWorkTs();
-		return new TimeRoundingSetting(kshmtWtFloWorkTs.getUnit(), kshmtWtFloWorkTs.getRounding());
+		KshmtWtFloWorkTs kshmtFlowTimeZone = this.entity.getKshmtFlowTimeZone();
+		return new TimeRoundingSetting(kshmtFlowTimeZone.getUnit(), kshmtFlowTimeZone.getRounding());
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaFlowWorkTimezoneSettingGetMemento implements FlWtzSettingGetMeme
 	 */
 	@Override
 	public List<FlowOTTimezone> getLstOTTimezone() {
-		return this.entity.getLstKshmtWtFloOverTs().stream()
+		return this.entity.getLstKshmtOtTimeZone().stream()
 				.map(entity -> new FlowOTTimezone(new JpaFlowOTTimezoneGetMemento(entity)))
 				.sorted((item1, item2) -> item1.getWorktimeNo().compareTo(item2.getWorktimeNo()))
 				.collect(Collectors.toList());

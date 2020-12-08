@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.Premium
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRatePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK;
 
 /**
  * The Class JpaPremiumExtra60HRateGetMemento.
@@ -25,8 +25,8 @@ public class JpaPremiumExtra60HRateGetMemento implements PremiumExtra60HRateGetM
 	 * @param entity the entity
 	 */
 	public JpaPremiumExtra60HRateGetMemento(KshmtHd60hPremiumRate entity) {
-		if(entity.getKshmtHd60hPremiumRatePK() ==null){
-			entity.setKshmtHd60hPremiumRatePK(new KshmtHd60hPremiumRatePK());
+		if(entity.getKshstPremiumExt60hRatePK() ==null){
+			entity.setKshstPremiumExt60hRatePK(new KshstPremiumExt60hRatePK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaPremiumExtra60HRateGetMemento implements PremiumExtra60HRateGetM
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshmtHd60hPremiumRatePK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshstPremiumExt60hRatePK().getBrdItemNo());
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class JpaPremiumExtra60HRateGetMemento implements PremiumExtra60HRateGetM
 	 */
 	@Override
 	public OvertimeNo getOvertimeNo() {
-		return OvertimeNo.valueOf(this.entity.getKshmtHd60hPremiumRatePK().getOverTimeNo());
+		return OvertimeNo.valueOf(this.entity.getKshstPremiumExt60hRatePK().getOverTimeNo());
 	}
 
 }

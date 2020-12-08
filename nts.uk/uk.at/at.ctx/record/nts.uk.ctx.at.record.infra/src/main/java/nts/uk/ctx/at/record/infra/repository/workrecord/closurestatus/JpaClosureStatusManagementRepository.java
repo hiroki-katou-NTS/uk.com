@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSts;
-import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureStsPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMngPk;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -38,7 +38,7 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 	@Override
 	public Optional<ClosureStatusManagement> getById(String employeeId, YearMonth ym, int closureId,
 			ClosureDate closureDate) {
-		Optional<KrcdtClosureSts> opt = this.queryProxy().find(new KrcdtClosureStsPk(ym.v(), employeeId,
+		Optional<KrcdtClosureSts> opt = this.queryProxy().find(new KrcdtClosureSttMngPk(ym.v(), employeeId,
 				closureId, closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth() ? 1 : 0),
 				KrcdtClosureSts.class);
 		if (opt.isPresent())

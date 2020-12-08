@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
 
 /**
  * The Class JpaOtherSysAccountSetMemento.
@@ -26,8 +26,8 @@ public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 	 */
 	public JpaOtherSysAccountSetMemento(SgwmtSsoOtherSysAcc typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getSgwmtSsoOtherSysAccPK() == null) {
-			this.typedValue.setSgwmtSsoOtherSysAccPK(new SgwmtSsoOtherSysAccPK());
+		if (this.typedValue.getSgwmtOtherSysAccPK() == null) {
+			this.typedValue.setSgwmtOtherSysAccPK(new SgwmtOtherSysAccPK());
 		}
 	}
 
@@ -36,7 +36,7 @@ public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		this.typedValue.getSgwmtSsoOtherSysAccPK().setEmployeeId(employeeId);
+		this.typedValue.getSgwmtOtherSysAccPK().setEmployeeId(employeeId);
 	}
 
 	/* (non-Javadoc)
@@ -65,6 +65,6 @@ public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 
 	@Override
 	public void setCompanyId(String companyId) {
-		this.typedValue.getSgwmtSsoOtherSysAccPK().setCid(companyId);
+		this.typedValue.getSgwmtOtherSysAccPK().setCid(companyId);
 	}
 }

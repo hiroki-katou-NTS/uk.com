@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcomPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 
 /**
  * The Class JpaWorkTimezoneOtherSubHolTimeSetSetMemento.
@@ -28,8 +28,8 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	public JpaWorkTimezoneOtherSubHolTimeSetSetMemento(KshmtWtComHdcom entity) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtWtComHdcomPK() == null) {
-			this.entity.setKshmtWtComHdcomPK(new KshmtWtComHdcomPK());
+		if (this.entity.getKshmtSubstitutionSetPK() == null) {
+			this.entity.setKshmtSubstitutionSetPK(new KshmtSubstitutionSetPK());
 		}
 	}
 
@@ -54,7 +54,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode cd) {
-		this.entity.getKshmtWtComHdcomPK().setWorktimeCd(cd.v());
+		this.entity.getKshmtSubstitutionSetPK().setWorktimeCd(cd.v());
 	}
 
 	/*
@@ -66,7 +66,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	 */
 	@Override
 	public void setOriginAtr(CompensatoryOccurrenceDivision atr) {
-		this.entity.getKshmtWtComHdcomPK().setOriginAtr(atr.value);
+		this.entity.getKshmtSubstitutionSetPK().setOriginAtr(atr.value);
 	}
 
 }

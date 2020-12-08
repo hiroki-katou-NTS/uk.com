@@ -24,9 +24,9 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT etl FROM KfnmtExecutionTaskLog etl ";
 	private static final String SELECT_LIST = SELECT_ALL
-			+ "WHERE etl.kfndtAutoexecTaskLogPK.companyId = :companyId "
-			+ "AND etl.kfndtAutoexecTaskLogPK.execItemCd = :execItemCd "
-			+ "AND etl.kfndtAutoexecTaskLogPK.execId = :execId ";
+			+ "WHERE etl.kfnmtExecTaskLogPK.companyId = :companyId "
+			+ "AND etl.kfnmtExecTaskLogPK.execItemCd = :execItemCd "
+			+ "AND etl.kfnmtExecTaskLogPK.execId = :execId ";
 	@Override
 	public List<ExecutionTaskLog> getAllByCidExecCdExecId(String companyId, String execItemCd, String execId) {
 		String SELECT_LIST = "SELECT * FROM KFNDT_AUTOEXEC_TASK_LOG WHERE CID =? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";

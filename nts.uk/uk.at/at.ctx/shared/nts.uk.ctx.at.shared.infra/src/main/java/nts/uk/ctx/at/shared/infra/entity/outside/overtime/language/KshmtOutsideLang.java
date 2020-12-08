@@ -17,12 +17,12 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KshmtOutsideLangName.
+ * The Class KshstOverTimeLangName.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OUTSIDE_LANG")
+@Table(name = "KSHST_OVER_TIME_NAME_LANG")
 public class KshmtOutsideLang extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
     
     /** The kshst over time lang name PK. */
     @EmbeddedId
-    protected KshmtOutsideLangPK kshmtOutsideLangPK;
+    protected KshstOverTimeNameLangPK kshstOverTimeNameLangPK;
     
     /** The name. */
     @Basic(optional = false)
@@ -46,10 +46,10 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
     /**
      * Instantiates a new kshst over time lang name.
      *
-     * @param KshmtOutsideLangPK the kshst over time lang name PK
+     * @param KshstOverTimeNameLangPK the kshst over time lang name PK
      */
-    public KshmtOutsideLang(KshmtOutsideLangPK kshmtOutsideLangPK) {
-        this.kshmtOutsideLangPK = kshmtOutsideLangPK;
+    public KshmtOutsideLang(KshstOverTimeNameLangPK kshstOverTimeNameLangPK) {
+        this.kshstOverTimeNameLangPK = kshstOverTimeNameLangPK;
     }
 
     /**
@@ -60,7 +60,7 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
      * @param languageId the language id
      */
     public KshmtOutsideLang(String cid, int overTimeNo, String languageId) {
-        this.kshmtOutsideLangPK = new KshmtOutsideLangPK(cid, overTimeNo, languageId);
+        this.kshstOverTimeNameLangPK = new KshstOverTimeNameLangPK(cid, overTimeNo, languageId);
     }
 
     /**
@@ -68,17 +68,17 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
      *
      * @return the kshst over time lang name PK
      */
-    public KshmtOutsideLangPK getKshmtOutsideLangPK() {
-        return kshmtOutsideLangPK;
+    public KshstOverTimeNameLangPK getKshstOverTimeNameLangPK() {
+        return kshstOverTimeNameLangPK;
     }
 
     /**
      * Sets the kshst over time lang name PK.
      *
-     * @param KshmtOutsideLangPK the new kshst over time lang name PK
+     * @param KshstOverTimeNameLangPK the new kshst over time lang name PK
      */
-    public void setKshmtOutsideLangPK(KshmtOutsideLangPK kshmtOutsideLangPK) {
-        this.kshmtOutsideLangPK = kshmtOutsideLangPK;
+    public void setKshstOverTimeNameLangPK(KshstOverTimeNameLangPK kshstOverTimeNameLangPK) {
+        this.kshstOverTimeNameLangPK = kshstOverTimeNameLangPK;
     }
 
     /* (non-Javadoc)
@@ -87,7 +87,7 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtOutsideLangPK != null ? kshmtOutsideLangPK.hashCode() : 0);
+        hash += (kshstOverTimeNameLangPK != null ? kshstOverTimeNameLangPK.hashCode() : 0);
         return hash;
     }
 
@@ -101,9 +101,9 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
 			return false;
 		}
 		KshmtOutsideLang other = (KshmtOutsideLang) object;
-		if ((this.kshmtOutsideLangPK == null && other.kshmtOutsideLangPK != null)
-				|| (this.kshmtOutsideLangPK != null
-						&& !this.kshmtOutsideLangPK.equals(other.kshmtOutsideLangPK))) {
+		if ((this.kshstOverTimeNameLangPK == null && other.kshstOverTimeNameLangPK != null)
+				|| (this.kshstOverTimeNameLangPK != null
+						&& !this.kshstOverTimeNameLangPK.equals(other.kshstOverTimeNameLangPK))) {
 			return false;
 		}
 		return true;
@@ -114,7 +114,7 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KshmtOutsideLangName[ KshmtOutsideLangPK=" + kshmtOutsideLangPK + " ]";
+        return "entity.KshstOverTimeLangName[ KshstOverTimeNameLangPK=" + kshstOverTimeNameLangPK + " ]";
     }
 
 	/* (non-Javadoc)
@@ -122,7 +122,7 @@ public class KshmtOutsideLang extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtOutsideLangPK;
+		return this.kshstOverTimeNameLangPK;
 	}
     
 }

@@ -17,7 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KscmtEventCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KscmtEventComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtCompanyEventPK;
 
 /**
  * @author hungnm
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KscmtEve
 @Stateless
 public class JpaCompanyEventRepository extends JpaRepository implements CompanyEventRepository {
 
-	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KscmtEventCom a WHERE a.kscmtEventComPK.companyId = :companyId AND a.kscmtEventComPK.date IN :lstDate";
+	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KscmtEventCom a WHERE a.ksmmtCompanyEventPK.companyId = :companyId AND a.ksmmtCompanyEventPK.date IN :lstDate";
 
 	@Override
 	public List<CompanyEvent> getCompanyEventsByListDate(String companyId, List<GeneralDate> lstDate) {
@@ -43,7 +43,7 @@ public class JpaCompanyEventRepository extends JpaRepository implements CompanyE
 
 	@Override
 	public Optional<CompanyEvent> findByPK(String companyId, GeneralDate date) {
-		return this.queryProxy().find(new KscmtEventComPK(companyId, date), KscmtEventCom.class)
+		return this.queryProxy().find(new KsmmtCompanyEventPK(companyId, date), KscmtEventCom.class)
 				.map(entity -> toDomain(entity));
 	}
 
@@ -55,7 +55,7 @@ public class JpaCompanyEventRepository extends JpaRepository implements CompanyE
 	@Override
 	public void updateEvent(CompanyEvent domain) {
 		Optional<KscmtEventCom> entity = this.queryProxy()
-				.find(new KscmtEventComPK(domain.getCompanyId(), domain.getDate()), KscmtEventCom.class);
+				.find(new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()), KscmtEventCom.class);
 		if (entity.isPresent()) {
 			entity.get().eventName = domain.getEventName().v();
 			this.commandProxy().update(entity.get());
@@ -65,20 +65,20 @@ public class JpaCompanyEventRepository extends JpaRepository implements CompanyE
 	@Override
 	public void removeEvent(CompanyEvent domain) {
 		Optional<KscmtEventCom> entity = this.queryProxy()
-				.find(new KscmtEventComPK(domain.getCompanyId(), domain.getDate()), KscmtEventCom.class);
+				.find(new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()), KscmtEventCom.class);
 		if (entity.isPresent()) {
 			this.commandProxy().remove(KscmtEventCom.class,
-					new KscmtEventComPK(domain.getCompanyId(), domain.getDate()));
+					new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()));
 		}
 	}
 
 	private CompanyEvent toDomain(KscmtEventCom entity) {
-		return CompanyEvent.createFromJavaType(entity.kscmtEventComPK.companyId, entity.kscmtEventComPK.date,
+		return CompanyEvent.createFromJavaType(entity.ksmmtCompanyEventPK.companyId, entity.ksmmtCompanyEventPK.date,
 				entity.eventName);
 	}
 
 	private KscmtEventCom fromDomain(CompanyEvent domain) {
-		return new KscmtEventCom(new KscmtEventComPK(domain.getCompanyId(), domain.getDate()),
+		return new KscmtEventCom(new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()),
 				domain.getEventName().v());
 	}
 

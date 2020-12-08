@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name ="KRCDT_PUB_HOLIDAY_REMAIN")
+@Table(name ="KRCMT_PUB_HOLIDAY_REMAIN")
 public class KrcdtPubHolidayRemain extends ContractUkJpaEntity {
 	
 	@Column(name = "CID")

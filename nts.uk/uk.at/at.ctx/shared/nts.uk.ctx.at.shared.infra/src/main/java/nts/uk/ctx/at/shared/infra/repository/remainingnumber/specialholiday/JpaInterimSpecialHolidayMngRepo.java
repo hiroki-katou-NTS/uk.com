@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcdtInterimHdSpMng;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcdtInterimHdSpMngPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHolidayPK;
 @Stateless
 public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
 
@@ -31,7 +31,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	}
 	@Override
 	public void persistAndUpdateInterimSpecialHoliday(InterimSpecialHolidayMng domain) {
-		KrcdtInterimHdSpMngPK key = new KrcdtInterimHdSpMngPK(domain.getSpecialHolidayId(), domain.getSpecialHolidayCode());
+		KrcmtInterimSpeHolidayPK key = new KrcmtInterimSpeHolidayPK(domain.getSpecialHolidayId(), domain.getSpecialHolidayCode());
 		KrcdtInterimHdSpMng entity = this.getEntityManager().find(KrcdtInterimHdSpMng.class, key);
 		
 		if(entity == null) {

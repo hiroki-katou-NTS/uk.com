@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_BR_FI_HOL_TS")
+@Table(name = "KSHMT_FLEX_OD_FIX_REST")
 public class KshmtWtFleBrFiHolTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFleBrFiHolTs extends ContractUkJpaEntity implements Serializ
 
 	/** The kshmt flex od fix rest PK. */
 	@EmbeddedId
-	protected KshmtWtFleBrFiHolTsPK kshmtWtFleBrFiHolTsPK;
+	protected KshmtFlexOdFixRestPK kshmtFlexOdFixRestPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -54,11 +54,11 @@ public class KshmtWtFleBrFiHolTs extends ContractUkJpaEntity implements Serializ
 	/**
 	 * Instantiates a new kshmt flex od fix rest.
 	 *
-	 * @param kshmtWtFleBrFiHolTsPK the kshmt flex od fix rest PK
+	 * @param kshmtFlexOdFixRestPK the kshmt flex od fix rest PK
 	 */
-	public KshmtWtFleBrFiHolTs(KshmtWtFleBrFiHolTsPK kshmtWtFleBrFiHolTsPK) {
+	public KshmtWtFleBrFiHolTs(KshmtFlexOdFixRestPK kshmtFlexOdFixRestPK) {
 		super();
-		this.kshmtWtFleBrFiHolTsPK = kshmtWtFleBrFiHolTsPK;
+		this.kshmtFlexOdFixRestPK = kshmtFlexOdFixRestPK;
 	}
 	
 
@@ -70,7 +70,7 @@ public class KshmtWtFleBrFiHolTs extends ContractUkJpaEntity implements Serializ
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleBrFiHolTsPK != null ? kshmtWtFleBrFiHolTsPK.hashCode() : 0);
+		hash += (kshmtFlexOdFixRestPK != null ? kshmtFlexOdFixRestPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -85,9 +85,9 @@ public class KshmtWtFleBrFiHolTs extends ContractUkJpaEntity implements Serializ
 			return false;
 		}
 		KshmtWtFleBrFiHolTs other = (KshmtWtFleBrFiHolTs) object;
-		if ((this.kshmtWtFleBrFiHolTsPK == null && other.kshmtWtFleBrFiHolTsPK != null)
-				|| (this.kshmtWtFleBrFiHolTsPK != null
-						&& !this.kshmtWtFleBrFiHolTsPK.equals(other.kshmtWtFleBrFiHolTsPK))) {
+		if ((this.kshmtFlexOdFixRestPK == null && other.kshmtFlexOdFixRestPK != null)
+				|| (this.kshmtFlexOdFixRestPK != null
+						&& !this.kshmtFlexOdFixRestPK.equals(other.kshmtFlexOdFixRestPK))) {
 			return false;
 		}
 		return true;
@@ -100,7 +100,7 @@ public class KshmtWtFleBrFiHolTs extends ContractUkJpaEntity implements Serializ
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleBrFiHolTsPK;
+		return this.kshmtFlexOdFixRestPK;
 	}
 
 

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "WWFMT_APPROVAL_SETTING")
+@Table(name = "WWFST_APPROVAL_SETTING")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtApprovalSetting extends ContractUkJpaEntity implements Serializable {

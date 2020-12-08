@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_DELETION_EMPLOYEES")
+@Table(name = "SSPDT_EMPLOYEES_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SspdtDeletionEmployees extends ContractUkJpaEntity implements Serializable {
@@ -22,7 +22,7 @@ public class SspdtDeletionEmployees extends ContractUkJpaEntity implements Seria
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public SspdtDeletionEmployeesPK sspdtDeletionEmployeesPK;
+    public SspdtEmployeesDeletionPK sspdtEmployeesDeletionPK;
 	
 	/**
 	 * The employee code
@@ -40,16 +40,16 @@ public class SspdtDeletionEmployees extends ContractUkJpaEntity implements Seria
 	
 	@Override
 	protected Object getKey() {
-		return sspdtDeletionEmployeesPK;
+		return sspdtEmployeesDeletionPK;
 	}
 
 	public EmployeeDeletion toDomain() {
-		return EmployeeDeletion.createFromJavatype(this.sspdtDeletionEmployeesPK.delId, 
-				this.sspdtDeletionEmployeesPK.employeeId, this.employeeCode, this.businessName);
+		return EmployeeDeletion.createFromJavatype(this.sspdtEmployeesDeletionPK.delId, 
+				this.sspdtEmployeesDeletionPK.employeeId, this.employeeCode, this.businessName);
 	}
 
 	public static SspdtDeletionEmployees toEntity(EmployeeDeletion employeeDeletion) {
-		return new SspdtDeletionEmployees(new SspdtDeletionEmployeesPK(
+		return new SspdtDeletionEmployees(new SspdtEmployeesDeletionPK(
 				employeeDeletion.getDelId(), employeeDeletion.getEmployeeId()), 
 				employeeDeletion.getEmployeeCode().v(), employeeDeletion.getBusinessName().v());
 	}

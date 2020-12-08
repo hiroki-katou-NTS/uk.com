@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcmtCalcMSetFleEmp;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcmtCalcMSetFleEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpFlexMCalSetPK;
 
 /**
  * The Class JpaEmpFlexMonthActCalSetRepository.
@@ -35,8 +35,8 @@ public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements
 
 		// Transfer data
 		entity.transfer(domain);
-		entity.setKrcmtCalcMSetFleEmpPK(
-				new KrcmtCalcMSetFleEmpPK(domain.getComId(), domain.getEmploymentCode().v()));
+		entity.setKrcstEmpFlexMCalSetPK(
+				new KrcstEmpFlexMCalSetPK(domain.getComId(), domain.getEmploymentCode().v()));
 
 		// Insert into DB
 		this.commandProxy().insert(entity);
@@ -53,7 +53,7 @@ public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public void update(EmpFlexMonthActCalSet domain) {
 		// Get info
-		KrcmtCalcMSetFleEmpPK pk = new KrcmtCalcMSetFleEmpPK(domain.getComId().toString(),
+		KrcstEmpFlexMCalSetPK pk = new KrcstEmpFlexMCalSetPK(domain.getComId().toString(),
 				domain.getEmploymentCode().toString());
 		
 		this.queryProxy().find(pk, KrcmtCalcMSetFleEmp.class).ifPresent(e -> {
@@ -74,7 +74,7 @@ public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public Optional<EmpFlexMonthActCalSet> find(String cid, String empCode) {
 		// Get info
-		KrcmtCalcMSetFleEmpPK pk = new KrcmtCalcMSetFleEmpPK(cid, empCode);
+		KrcstEmpFlexMCalSetPK pk = new KrcstEmpFlexMCalSetPK(cid, empCode);
 		
 		return this.queryProxy().find(pk, KrcmtCalcMSetFleEmp.class).map(c -> toDomain(c));
 
@@ -89,7 +89,7 @@ public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements
 	 */
 	@Override
 	public void remove(String cid, String empCode) {
-		this.queryProxy().find(new KrcmtCalcMSetFleEmpPK(cid, empCode),
+		this.queryProxy().find(new KrcstEmpFlexMCalSetPK(cid, empCode),
 				KrcmtCalcMSetFleEmp.class)
 			.ifPresent(entity -> this.commandProxy().remove(entity));
 
@@ -97,12 +97,12 @@ public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements
 
 	private EmpFlexMonthActCalSet toDomain (KrcmtCalcMSetFleEmp e) {
 		
-		return EmpFlexMonthActCalSet.of(e.getKrcmtCalcMSetFleEmpPK().getCid(),
+		return EmpFlexMonthActCalSet.of(e.getKrcstEmpFlexMCalSetPK().getCid(),
 										e.flexAggregateMethod(),
 										e.shortageFlexSetting(), 
 										e.aggregateTimeSetting(), 
 										e.flexTimeHandle(), 
-										new EmploymentCode(e.getKrcmtCalcMSetFleEmpPK().getEmpCd()));
+										new EmploymentCode(e.getKrcstEmpFlexMCalSetPK().getEmpCd()));
 	}
 
 }

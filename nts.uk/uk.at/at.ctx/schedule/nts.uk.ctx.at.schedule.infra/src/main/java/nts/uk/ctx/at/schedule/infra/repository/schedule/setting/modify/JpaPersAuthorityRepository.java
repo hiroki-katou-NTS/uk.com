@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PersAuthority;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PersAuthorityRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthSya;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthSyaPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstSchePersAuthorityPK;
 @Stateless
 public class JpaPersAuthorityRepository extends JpaRepository implements PersAuthorityRepository{
 	private static final String SELECT_BY_CID;
@@ -17,8 +17,8 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtScheAuthSya e");
-		builderString.append(" WHERE e.kscmtScheAuthSyaPK.companyId = :companyId");
-		builderString.append(" AND e.kscmtScheAuthSyaPK.roleId = :roleId");
+		builderString.append(" WHERE e.kscstSchePersAuthorityPK.companyId = :companyId");
+		builderString.append(" AND e.kscstSchePersAuthorityPK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	/**
@@ -26,12 +26,12 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private PersAuthority convertToDomain(KscmtScheAuthSya kscmtScheAuthSya) {
+	private PersAuthority convertToDomain(KscmtScheAuthSya kscstSchePersAuthority) {
 		PersAuthority persAuthority = PersAuthority.createFromJavaType(
-				kscmtScheAuthSya.kscmtScheAuthSyaPK.companyId, 
-				kscmtScheAuthSya.kscmtScheAuthSyaPK.roleId,
-				kscmtScheAuthSya.availablePers,
-				kscmtScheAuthSya.kscmtScheAuthSyaPK.functionNoPers
+				kscstSchePersAuthority.kscstSchePersAuthorityPK.companyId, 
+				kscstSchePersAuthority.kscstSchePersAuthorityPK.roleId,
+				kscstSchePersAuthority.availablePers,
+				kscstSchePersAuthority.kscstSchePersAuthorityPK.functionNoPers
 				
 				);
 		return persAuthority;
@@ -44,9 +44,9 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 */
 	private KscmtScheAuthSya convertToDbType(PersAuthority persAuthority) {
 		KscmtScheAuthSya schePersAuthority = new KscmtScheAuthSya();
-		KscmtScheAuthSyaPK scheDateAuthorityPK = new KscmtScheAuthSyaPK(persAuthority.getCompanyId(), persAuthority.getRoleId(),persAuthority.getFunctionNoPers());
+		KscstSchePersAuthorityPK scheDateAuthorityPK = new KscstSchePersAuthorityPK(persAuthority.getCompanyId(), persAuthority.getRoleId(),persAuthority.getFunctionNoPers());
 		schePersAuthority.availablePers = persAuthority.getAvailablePers();
-		schePersAuthority.kscmtScheAuthSyaPK = scheDateAuthorityPK;
+		schePersAuthority.kscstSchePersAuthorityPK = scheDateAuthorityPK;
 		return schePersAuthority;
 	}
 	
@@ -73,10 +73,10 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 */
 	@Override
 	public void update(PersAuthority author) {
-		KscmtScheAuthSyaPK primaryKey = new KscmtScheAuthSyaPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoPers());
+		KscstSchePersAuthorityPK primaryKey = new KscstSchePersAuthorityPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoPers());
 		KscmtScheAuthSya entity = this.queryProxy().find(primaryKey, KscmtScheAuthSya.class).get();
 				entity.availablePers = author.getAvailablePers();
-				entity.kscmtScheAuthSyaPK = primaryKey;
+				entity.kscstSchePersAuthorityPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -85,7 +85,7 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 */
 	@Override
 	public Optional<PersAuthority> findByCId(String companyId, String roleId, int functionNoPers) {
-		return this.queryProxy().find(new KscmtScheAuthSyaPK(companyId, roleId, functionNoPers), KscmtScheAuthSya.class)
+		return this.queryProxy().find(new KscstSchePersAuthorityPK(companyId, roleId, functionNoPers), KscmtScheAuthSya.class)
 				.map(c -> convertToDomain(c));
 	}
 

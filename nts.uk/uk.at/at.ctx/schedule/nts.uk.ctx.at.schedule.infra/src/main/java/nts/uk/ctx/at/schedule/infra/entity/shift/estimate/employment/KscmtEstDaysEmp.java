@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_DAYS_EMP")
+@Table(name = "KSCMT_EST_DAYS_EMP_SET")
 public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -43,7 +43,7 @@ public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable
     
     /** The kscmt est days emp set PK. */
     @EmbeddedId
-    protected KscmtEstDaysEmpPK kscmtEstDaysEmpPK;
+    protected KscmtEstDaysEmpSetPK kscmtEstDaysEmpSetPK;
     
     /** The est condition 1 st days. */
     @Basic(optional = false)
@@ -84,10 +84,10 @@ public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable
     /**
      * Instantiates a new kscmt est days emp set.
      *
-     * @param kscmtEstDaysEmpPK the kscmt est days emp set PK
+     * @param kscmtEstDaysEmpSetPK the kscmt est days emp set PK
      */
-    public KscmtEstDaysEmp(KscmtEstDaysEmpPK kscmtEstDaysEmpPK) {
-        this.kscmtEstDaysEmpPK = kscmtEstDaysEmpPK;
+    public KscmtEstDaysEmp(KscmtEstDaysEmpSetPK kscmtEstDaysEmpSetPK) {
+        this.kscmtEstDaysEmpSetPK = kscmtEstDaysEmpSetPK;
     }
 
 	/* (non-Javadoc)
@@ -95,7 +95,7 @@ public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtEstDaysEmpPK;
+		return this.kscmtEstDaysEmpSetPK;
 	}
 
 	/* (non-Javadoc)
@@ -106,7 +106,7 @@ public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((kscmtEstDaysEmpPK == null) ? 0 : kscmtEstDaysEmpPK.hashCode());
+				+ ((kscmtEstDaysEmpSetPK == null) ? 0 : kscmtEstDaysEmpSetPK.hashCode());
 		return result;
 	}
 
@@ -122,10 +122,10 @@ public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		KscmtEstDaysEmp other = (KscmtEstDaysEmp) obj;
-		if (kscmtEstDaysEmpPK == null) {
-			if (other.kscmtEstDaysEmpPK != null)
+		if (kscmtEstDaysEmpSetPK == null) {
+			if (other.kscmtEstDaysEmpSetPK != null)
 				return false;
-		} else if (!kscmtEstDaysEmpPK.equals(other.kscmtEstDaysEmpPK))
+		} else if (!kscmtEstDaysEmpSetPK.equals(other.kscmtEstDaysEmpSetPK))
 			return false;
 		return true;
 	}

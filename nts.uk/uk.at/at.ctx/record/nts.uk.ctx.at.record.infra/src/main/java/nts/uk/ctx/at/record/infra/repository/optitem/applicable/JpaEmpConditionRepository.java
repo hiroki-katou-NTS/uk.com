@@ -25,8 +25,8 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmp;
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmpPK_;
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmp_;
+import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK_;
+import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionRepository;
 
@@ -91,9 +91,9 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 
 		// Add where condition
 		predicateList.add(
-				builder.equal(root.get(KrcmtAnyfCondEmp_.krcmtAnyfCondEmpPK).get(KrcmtAnyfCondEmpPK_.cid), companyId));
+				builder.equal(root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.cid), companyId));
 		predicateList.add(builder.equal(
-				root.get(KrcmtAnyfCondEmp_.krcmtAnyfCondEmpPK).get(KrcmtAnyfCondEmpPK_.optionalItemNo), optionalItemNo));
+				root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.optionalItemNo), optionalItemNo));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results
@@ -117,7 +117,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		List<KrcmtAnyfCondEmp> result = new ArrayList<>();
 		CollectionUtil.split(optionalItemNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
-			String sql = "select * from KRCMT_ANYF_COND_EMP"
+			String sql = "select * from KRCST_APPL_EMP_CON"
 					+ " where CID = ?"
 					+ " and OPTIONAL_ITEM_NO in (" + NtsStatement.In.createParamsString(subList) + ")";
 			
@@ -139,7 +139,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		
 		// Group by item NO
 		Map<Integer, List<KrcmtAnyfCondEmp>> mapEmpCondition = result.stream().collect(
-				Collectors.groupingBy(item -> item.getKrcmtAnyfCondEmpPK().getOptionalItemNo()));
+				Collectors.groupingBy(item -> item.getKrcstApplEmpConPK().getOptionalItemNo()));
 
 		// Return
 		return mapEmpCondition.entrySet().stream()

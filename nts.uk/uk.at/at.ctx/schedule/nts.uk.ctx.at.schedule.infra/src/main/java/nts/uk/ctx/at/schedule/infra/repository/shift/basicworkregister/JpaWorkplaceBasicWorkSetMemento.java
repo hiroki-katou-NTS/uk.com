@@ -43,7 +43,7 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	@Override
 	public void setWorkPlaceId(String workplaceId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtBasicWorkWkpPK().setWorkplaceId(workplaceId);
+			item.getKscmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId);
 		});
 	}
 
@@ -57,7 +57,7 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
 			KscmtBasicWorkWkp entity = new KscmtBasicWorkWkp();
-			entity.getKscmtBasicWorkWkpPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			entity.getKscmtWorkplaceWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

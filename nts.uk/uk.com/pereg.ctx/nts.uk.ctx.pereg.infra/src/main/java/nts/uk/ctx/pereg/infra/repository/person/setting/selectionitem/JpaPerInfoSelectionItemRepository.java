@@ -12,7 +12,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoS
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.SelectionItemReportData;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionDef;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionDefPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionItemPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -55,10 +55,10 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	@Override
 	public void update(PerInfoSelectionItem domain) {
 		Optional<PpemtSelectionDef> existSelItem = this.queryProxy()
-				.find(new PpemtSelectionDefPK(domain.getSelectionItemId()), PpemtSelectionDef.class);
+				.find(new PpemtSelectionItemPK(domain.getSelectionItemId()), PpemtSelectionDef.class);
 
 		if (!existSelItem.isPresent()) {
-			throw new RuntimeException("invalid PpemtSelectionDef!");
+			throw new RuntimeException("invalid PpemtSelectionItem!");
 		}
 
 		PpemtSelectionDef entity = existSelItem.get();
@@ -70,7 +70,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	@Override
 	public void remove(String selectionItemId) {
-		PpemtSelectionDefPK pk = new PpemtSelectionDefPK(selectionItemId);
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
 		this.commandProxy().remove(PpemtSelectionDef.class, pk);
 	}
 
@@ -98,7 +98,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	// check selectionItemId
 	@Override
 	public Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId) {
-		PpemtSelectionDefPK pk = new PpemtSelectionDefPK(selectionItemId);
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
 		return this.queryProxy().find(pk, PpemtSelectionDef.class).map(c -> toDomain(c));
 	}
 
@@ -118,7 +118,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	}
 
 	private PpemtSelectionDef toEntity(PerInfoSelectionItem domain) {
-		PpemtSelectionDefPK key = new PpemtSelectionDefPK(domain.getSelectionItemId());
+		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionItemId());
 		PpemtSelectionDef entity = new PpemtSelectionDef();
 
 		entity.selectionItemPk = key;

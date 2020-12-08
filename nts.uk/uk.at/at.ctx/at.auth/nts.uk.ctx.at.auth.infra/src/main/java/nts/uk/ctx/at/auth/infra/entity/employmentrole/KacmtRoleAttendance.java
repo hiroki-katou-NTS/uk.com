@@ -18,14 +18,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KACMT_ROLE_ATTENDANCE")
+@Table(name = "KACMT_EMPLOYMENT_ROLE")
 @Setter
 public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = -5374494134003331017L;
 
 	@EmbeddedId
-	public KacmtRoleAttendancePK kacmtRoleAttendancePK;
+	public KacmtEmploymentRolePK kacmtEmploymentRolePK;
 	
 	@Column(name = "SCHEDULE_EMPLOYEE_REF")
 	public int scheduleEmployeeRef;
@@ -44,14 +44,14 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.kacmtRoleAttendancePK;
+		return this.kacmtEmploymentRolePK;
 	}
 	
 
 	public EmploymentRole toDomain() {
 		return new EmploymentRole(
-			this.kacmtRoleAttendancePK.companyID,
-			this.kacmtRoleAttendancePK.roleID,
+			this.kacmtEmploymentRolePK.companyID,
+			this.kacmtEmploymentRolePK.roleID,
 			EnumAdaptor.valueOf(this.scheduleEmployeeRef, ScheduleEmployeeRef.class),
 			EnumAdaptor.valueOf(this.bookEmployeeRef,EmployeeRefRange.class),
 			EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
@@ -60,16 +60,16 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 		);
 	}
 
-	public KacmtRoleAttendance(KacmtRoleAttendancePK kacmtRoleAttendancePK) {
+	public KacmtRoleAttendance(KacmtEmploymentRolePK kacmtEmploymentRolePK) {
 		super();
-		this.kacmtRoleAttendancePK = kacmtRoleAttendancePK;
+		this.kacmtEmploymentRolePK = kacmtEmploymentRolePK;
 	}
 
 
-	public KacmtRoleAttendance(KacmtRoleAttendancePK kacmtRoleAttendancePK, int scheduleEmployeeRef,
+	public KacmtRoleAttendance(KacmtEmploymentRolePK kacmtEmploymentRolePK, int scheduleEmployeeRef,
 			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit) {
 		super();
-		this.kacmtRoleAttendancePK = kacmtRoleAttendancePK;
+		this.kacmtEmploymentRolePK = kacmtEmploymentRolePK;
 		this.scheduleEmployeeRef = scheduleEmployeeRef;
 		this.bookEmployeeRef = bookEmployeeRef;
 		this.employeeRefSpecAgent = employeeRefSpecAgent;
@@ -79,7 +79,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 	
 	public static KacmtRoleAttendance toEntity(EmploymentRole domain) {
 		return new KacmtRoleAttendance(
-				new KacmtRoleAttendancePK(domain.getCompanyId(),domain.getRoleId()),
+				new KacmtEmploymentRolePK(domain.getCompanyId(),domain.getRoleId()),
 				domain.getScheduleEmployeeRef().value,
 				domain.getBookEmployeeRef().value,
 				domain.getEmployeeRefSpecAgent().value,

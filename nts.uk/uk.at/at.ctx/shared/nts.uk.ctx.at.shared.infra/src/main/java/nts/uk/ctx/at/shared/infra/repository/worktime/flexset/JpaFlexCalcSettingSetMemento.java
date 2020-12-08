@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFlePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaFlexCalcSettingSetMemento.
@@ -24,8 +24,8 @@ public class JpaFlexCalcSettingSetMemento implements FlexCalcSettingSetMemento {
 	 */
 	public JpaFlexCalcSettingSetMemento(KshmtWtFle entity) {
 		super();
-		if(entity.getKshmtWtFlePK() == null){
-			entity.setKshmtWtFlePK(new KshmtWtFlePK());
+		if(entity.getKshmtFlexWorkSetPK() == null){
+			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
 		}
 		this.entity = entity;
 	}

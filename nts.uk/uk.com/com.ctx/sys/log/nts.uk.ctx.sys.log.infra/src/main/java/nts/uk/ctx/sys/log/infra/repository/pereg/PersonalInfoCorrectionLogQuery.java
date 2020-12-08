@@ -14,11 +14,11 @@ import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrection;
 public class PersonalInfoCorrectionLogQuery {
 	private String perCorrectionLogID;
 
-	private SrcdtPerCorrection srcdtPerCorrection;
+	private SrcdtPerCorrection srcdtPerCorrectionLog;
 
-	private SrcdtPerCtgCorrection srcdtPerCtgCorrection;
+	private SrcdtPerCtgCorrection srcdtCtgCorrectionLog;
 
-	private SrcdtPerHistoryData srcdtPerHistoryData;
+	private SrcdtPerHistoryData srcdtDataHistoryLog;
 
-	private SrcdtPerItemInfo srcdtPerItemInfo;
+	private SrcdtPerItemInfo srcdtItemInfoLog;
 }

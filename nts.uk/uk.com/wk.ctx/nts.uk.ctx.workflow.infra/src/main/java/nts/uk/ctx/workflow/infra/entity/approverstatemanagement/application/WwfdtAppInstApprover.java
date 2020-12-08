@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_INST_APPROVER")
+@Table(name="WWFDT_APPROVER_STATE")
 @Builder
 public class WwfdtAppInstApprover extends ContractUkJpaEntity {
 	/**主キー*/
@@ -58,7 +58,7 @@ public class WwfdtAppInstApprover extends ContractUkJpaEntity {
 		@PrimaryKeyJoinColumn(name="ROOT_STATE_ID",referencedColumnName="ROOT_STATE_ID"),
 		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER")
 	})
-	private WwfdtAppInstPhaseate wwfdtAppInstPhaseate;
+	private WwfdtApprovalPhaseState wwfdtApprovalPhaseState;
 
 	@Override
 	protected Object getKey() {
@@ -94,7 +94,7 @@ public class WwfdtAppInstApprover extends ContractUkJpaEntity {
 //				.representerID(this.representerID)
 //				.approvalDate(this.approvalDate)
 //				.approvalReason(this.approvalReason)
-//				.listApproverState(this.listWwfdtAppInstApprover.stream()
+//				.listApproverState(this.listWwfdtApproverState.stream()
 //									.map(x -> x.toDomain()).collect(Collectors.toList()))
 //				.build();
 //	}

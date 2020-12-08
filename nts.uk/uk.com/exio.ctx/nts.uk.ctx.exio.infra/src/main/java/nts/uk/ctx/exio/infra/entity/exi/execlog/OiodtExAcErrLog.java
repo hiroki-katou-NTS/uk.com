@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIODT_EX_AC_ERR_LOG")
+@Table(name = "OIOMT_EXAC_ERROR_LOG")
 public class OiodtExAcErrLog extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class OiodtExAcErrLog extends ContractUkJpaEntity implements Serializable
 	 * ID
 	 */
 	@EmbeddedId
-	public OiodtExAcErrLogPk exacErrorLogPk;
+	public OiomtExacErrorLogPk exacErrorLogPk;
 
 	/**
 	 * CSVエラー項目名

@@ -15,11 +15,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_EXT_BUDGET")
+@Table(name = "KSCST_EXTERNAL_BUDGET")
 public class KscmtExtBudget extends ContractUkJpaEntity{
 
 	@EmbeddedId
-	public KstscExternalBudgetPK kscmtExtBudgetPk;
+	public KstscExternalBudgetPK kscstExternalBudgetPk;
 
 	@Basic(optional = false)
 	@Column(name = "EXTERNAL_BUDGET_NAME")
@@ -41,7 +41,7 @@ public class KscmtExtBudget extends ContractUkJpaEntity{
 
 	@Override
 	protected Object getKey() {
-		return kscmtExtBudgetPk;
+		return kscstExternalBudgetPk;
 	}
 
 }

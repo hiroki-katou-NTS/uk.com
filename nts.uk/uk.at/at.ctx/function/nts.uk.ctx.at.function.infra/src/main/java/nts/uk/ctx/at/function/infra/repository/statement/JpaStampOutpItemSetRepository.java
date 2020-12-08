@@ -21,12 +21,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemPK;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemPK_;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem_;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK_;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet_;
 
 /**
- * The Class JpaKfnmtStampOutpItemRepository.
+ * The Class JpaKfnmtStampOutpItemSetRepository.
  */
 @Stateless
 public class JpaStampOutpItemSetRepository extends JpaRepository implements StampingOutputItemSetRepository{
@@ -36,7 +36,7 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 */
 	@Override
 	public Optional<StampingOutputItemSet> getByCidAndCode(String companyId, String code) {
-		KfnmtStampOutpItemPK primaryKey = new KfnmtStampOutpItemPK(companyId, code);
+		KfnmtStampOutpItemSetPK primaryKey = new KfnmtStampOutpItemSetPK(companyId, code);
 		return this.queryProxy().find(primaryKey, KfnmtStampOutpItem.class).map(entity -> this.toDomain(entity));
 	}
 	
@@ -58,8 +58,8 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 		Root<KfnmtStampOutpItem> root = cq.from(KfnmtStampOutpItem.class);
 
 		// Add where condition
-		cq.where(builder.equal(root.get(KfnmtStampOutpItem_.id).get(KfnmtStampOutpItemPK_.cid),companyId));
-		cq.orderBy(builder.asc(root.get(KfnmtStampOutpItem_.id).get(KfnmtStampOutpItemPK_.cid)));
+		cq.where(builder.equal(root.get(KfnmtStampOutpItemSet_.id).get(KfnmtStampOutpItemSetPK_.cid),companyId));
+		cq.orderBy(builder.asc(root.get(KfnmtStampOutpItemSet_.id).get(KfnmtStampOutpItemSetPK_.cid)));
 		// Get results
 		List<KfnmtStampOutpItem> results = em.createQuery(cq).getResultList();
 
@@ -99,7 +99,7 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 */
 	@Override
 	public void removeByCidAndCode(String companyId, String code) {
-		KfnmtStampOutpItemPK primaryKey = new KfnmtStampOutpItemPK(companyId, code);
+		KfnmtStampOutpItemSetPK primaryKey = new KfnmtStampOutpItemSetPK(companyId, code);
 		this.commandProxy().remove(KfnmtStampOutpItem.class, primaryKey);
 	}
 	

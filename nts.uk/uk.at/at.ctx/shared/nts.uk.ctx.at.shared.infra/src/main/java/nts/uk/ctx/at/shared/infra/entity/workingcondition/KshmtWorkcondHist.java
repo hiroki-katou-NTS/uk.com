@@ -36,7 +36,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKCOND_HIST")
+@Table(name = "KSHMT_WORKING_COND")
 public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -44,7 +44,7 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 
 	/** The kshmt working cond PK. */
 	@EmbeddedId
-	protected KshmtWorkcondHistPK kshmtWorkcondHistPK;
+	protected KshmtWorkingCondPK kshmtWorkingCondPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -68,7 +68,7 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 	@OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
-	private KshmtWorkcondHistItem kshmtWorkcondHistItem;
+	private KshmtWorkcondHistItem kshmtWorkingCondItem;
 
 	/**
 	 * Instantiates a new kshmt working cond.
@@ -85,7 +85,7 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWorkcondHistPK != null ? kshmtWorkcondHistPK.hashCode() : 0);
+		hash += (kshmtWorkingCondPK != null ? kshmtWorkingCondPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -100,9 +100,9 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 			return false;
 		}
 		KshmtWorkcondHist other = (KshmtWorkcondHist) object;
-		if ((this.kshmtWorkcondHistPK == null && other.kshmtWorkcondHistPK != null)
-				|| (this.kshmtWorkcondHistPK != null
-						&& !this.kshmtWorkcondHistPK.equals(other.kshmtWorkcondHistPK))) {
+		if ((this.kshmtWorkingCondPK == null && other.kshmtWorkingCondPK != null)
+				|| (this.kshmtWorkingCondPK != null
+						&& !this.kshmtWorkingCondPK.equals(other.kshmtWorkingCondPK))) {
 			return false;
 		}
 		return true;
@@ -115,12 +115,12 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWorkcondHistPK;
+		return this.kshmtWorkingCondPK;
 	}
 
-	public KshmtWorkcondHist(KshmtWorkcondHistPK kshmtWorkcondHistPK, String cid, GeneralDate strD, GeneralDate endD) {
+	public KshmtWorkcondHist(KshmtWorkingCondPK kshmtWorkingCondPK, String cid, GeneralDate strD, GeneralDate endD) {
 		super();
-		this.kshmtWorkcondHistPK = kshmtWorkcondHistPK;
+		this.kshmtWorkingCondPK = kshmtWorkingCondPK;
 		this.cid = cid;
 		this.strD = strD;
 		this.endD = endD;
@@ -131,7 +131,7 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 		List<DateHistoryItem> listDate = dom.getDateHistoryItem();
 		listDate.stream().forEach( x ->{
 			KshmtWorkcondHist data = new KshmtWorkcondHist(
-					new KshmtWorkcondHistPK(dom.getEmployeeId(), x.identifier()),
+					new KshmtWorkingCondPK(dom.getEmployeeId(), x.identifier()),
 					dom.getCompanyId(),
 					x.span().start(),
 					x.span().end());
@@ -146,12 +146,12 @@ public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializab
 			return Optional.empty();
 		}
 		List<DateHistoryItem> lstDateHis = lstEntity.stream()
-				.map(c -> new DateHistoryItem(c.getKshmtWorkcondHistPK().getHistoryId(),
+				.map(c -> new DateHistoryItem(c.getKshmtWorkingCondPK().getHistoryId(),
 						new DatePeriod(c.getStrD(), c.getEndD())))
 				.collect(Collectors.toList());
 		WorkingCondition dom = new WorkingCondition(
 				lstEntity.get(0).getCid(),
-				lstEntity.get(0).getKshmtWorkcondHistPK().getSid(),
+				lstEntity.get(0).getKshmtWorkingCondPK().getSid(),
 				lstDateHis);
 		return Optional.of(dom);
 	}

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF_SORT")
+@Table(name = "KRCST_FORMULA_DISPORDER")
 public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 
 	/** The krcst formula disporder PK. */
 	@EmbeddedId
-	protected KrcmtAnyfSortPK krcmtAnyfSortPK;
+	protected KrcstFormulaDisporderPK krcstFormulaDisporderPK;
 
 	/** The disporder. */
 	@Column(name = "DISPORDER")
@@ -45,11 +45,11 @@ public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst formula disporder.
 	 *
-	 * @param krcmtAnyfSortPK
+	 * @param krcstFormulaDisporderPK
 	 *            the krcst formula disporder PK
 	 */
-	public KrcmtAnyfSort(KrcmtAnyfSortPK krcmtAnyfSortPK) {
-		this.krcmtAnyfSortPK = krcmtAnyfSortPK;
+	public KrcmtAnyfSort(KrcstFormulaDisporderPK krcstFormulaDisporderPK) {
+		this.krcstFormulaDisporderPK = krcstFormulaDisporderPK;
 	}
 
 	/*
@@ -60,7 +60,7 @@ public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfSortPK != null ? krcmtAnyfSortPK.hashCode() : 0);
+		hash += (krcstFormulaDisporderPK != null ? krcstFormulaDisporderPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -75,9 +75,9 @@ public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KrcmtAnyfSort other = (KrcmtAnyfSort) object;
-		if ((this.krcmtAnyfSortPK == null && other.krcmtAnyfSortPK != null)
-				|| (this.krcmtAnyfSortPK != null
-						&& !this.krcmtAnyfSortPK.equals(other.krcmtAnyfSortPK))) {
+		if ((this.krcstFormulaDisporderPK == null && other.krcstFormulaDisporderPK != null)
+				|| (this.krcstFormulaDisporderPK != null
+						&& !this.krcstFormulaDisporderPK.equals(other.krcstFormulaDisporderPK))) {
 			return false;
 		}
 		return true;
@@ -90,7 +90,7 @@ public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfSortPK;
+		return this.krcstFormulaDisporderPK;
 	}
 
 }

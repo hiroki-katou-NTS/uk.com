@@ -11,7 +11,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSettingSetMeme
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSetPK;
 
 /**
  * The Class JpaEstimateTimeSettingEmploymentGetMemento.
@@ -27,8 +27,8 @@ public class JpaEmpEstTimeSetSetMemento implements EstimateTimeSettingSetMemento
 	 * @param estTimeEmployment the est time employment
 	 */
 	public JpaEmpEstTimeSetSetMemento(KscmtEstTimeEmp estTimeEmployment){
-		if(estTimeEmployment.getKscmtEstTimeEmpPK() == null){
-			estTimeEmployment.setKscmtEstTimeEmpPK(new KscmtEstTimeEmpPK());
+		if(estTimeEmployment.getKscmtEstTimeEmpSetPK() == null){
+			estTimeEmployment.setKscmtEstTimeEmpSetPK(new KscmtEstTimeEmpSetPK());
 		}
 		this.estTimeEmployment = estTimeEmployment;
 	}
@@ -43,7 +43,7 @@ public class JpaEmpEstTimeSetSetMemento implements EstimateTimeSettingSetMemento
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estTimeEmployment.getKscmtEstTimeEmpPK().setTargetCls(targetClassification.value);
+		this.estTimeEmployment.getKscmtEstTimeEmpSetPK().setTargetCls(targetClassification.value);
 
 	}
 
@@ -57,7 +57,7 @@ public class JpaEmpEstTimeSetSetMemento implements EstimateTimeSettingSetMemento
 	@Override
 	public void setYearlyEstimateTimeSetting(
 			List<YearlyEstimateTimeSetting> yearlyEstimateTimeSetting) {
-		if (this.estTimeEmployment.getKscmtEstTimeEmpPK()
+		if (this.estTimeEmployment.getKscmtEstTimeEmpSetPK()
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 
 			
@@ -99,7 +99,7 @@ public class JpaEmpEstTimeSetSetMemento implements EstimateTimeSettingSetMemento
 			List<MonthlyEstimateTimeSetting> monthlyEstimateTimeSetting) {
 		
 		// check target class not yearly
-		if (this.estTimeEmployment.getKscmtEstTimeEmpPK()
+		if (this.estTimeEmployment.getKscmtEstTimeEmpSetPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 
 			

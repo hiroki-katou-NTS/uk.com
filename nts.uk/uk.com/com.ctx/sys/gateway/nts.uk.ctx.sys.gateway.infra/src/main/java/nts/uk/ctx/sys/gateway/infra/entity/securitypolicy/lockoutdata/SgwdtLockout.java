@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class SgwdtLockout.
  */
 @Entity
-@Table(name="SGWDT_LOCKOUT")
+@Table(name="SGWMT_LOCKOUT_DATA")
 @Getter
 @Setter
 public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
@@ -25,7 +25,7 @@ public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 
 	/** The id. */
 	@EmbeddedId
-	private SgwdtLockoutPK sgwdtLockoutPK;
+	private SgwmtLockoutDataPK sgwmtLockoutDataPK;
 
 	/** The lock type. */
 	@Column(name="LOCK_TYPE")
@@ -46,7 +46,7 @@ public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.sgwdtLockoutPK;
+		return this.sgwmtLockoutDataPK;
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((sgwdtLockoutPK == null) ? 0 : sgwdtLockoutPK.hashCode());
+		result = prime * result + ((sgwmtLockoutDataPK == null) ? 0 : sgwmtLockoutDataPK.hashCode());
 		return result;
 	}
 
@@ -72,10 +72,10 @@ public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SgwdtLockout other = (SgwdtLockout) obj;
-		if (sgwdtLockoutPK == null) {
-			if (other.sgwdtLockoutPK != null)
+		if (sgwmtLockoutDataPK == null) {
+			if (other.sgwmtLockoutDataPK != null)
 				return false;
-		} else if (!sgwdtLockoutPK.equals(other.sgwdtLockoutPK))
+		} else if (!sgwmtLockoutDataPK.equals(other.sgwmtLockoutDataPK))
 			return false;
 		return true;
 	}

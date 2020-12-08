@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "KRCMT_MIDNIGHT_TS")
+@Table(name = "KRCST_NIGHT_TIMESHEET")
 public class KrcstNightTimeSheet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

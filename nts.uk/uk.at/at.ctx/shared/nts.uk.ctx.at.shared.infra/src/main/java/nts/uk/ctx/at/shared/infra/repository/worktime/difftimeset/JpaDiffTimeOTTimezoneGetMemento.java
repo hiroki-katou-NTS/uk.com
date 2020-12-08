@@ -25,7 +25,7 @@ public class JpaDiffTimeOTTimezoneGetMemento implements DiffTimeOTTimezoneGetMem
 
 	@Override
 	public EmTimezoneNo getWorkTimezoneNo() {
-		return new EmTimezoneNo(this.entity.getKshmtWtDifOverTsPK().getWorkTimeNo());
+		return new EmTimezoneNo(this.entity.getKshmtDtOtTimeSetPK().getWorkTimeNo());
 	}
 
 	@Override

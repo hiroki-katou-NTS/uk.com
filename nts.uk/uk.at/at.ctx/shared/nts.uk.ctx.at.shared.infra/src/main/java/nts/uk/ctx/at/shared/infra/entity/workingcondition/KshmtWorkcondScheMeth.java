@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKCOND_SCHE_METH")
+@Table(name = "KSHMT_SCHEDULE_METHOD")
 public class KshmtWorkcondScheMeth extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

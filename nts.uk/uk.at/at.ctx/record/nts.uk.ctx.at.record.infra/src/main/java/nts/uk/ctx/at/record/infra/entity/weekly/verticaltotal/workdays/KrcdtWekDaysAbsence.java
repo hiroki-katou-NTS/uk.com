@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_DAYS_ABSENCE")
+@Table(name = "KRCDT_WEK_AGGR_ABSN_DAYS")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekDaysAbsence extends ContractUkJpaEntity implements Serializable {
@@ -33,7 +33,7 @@ public class KrcdtWekDaysAbsence extends ContractUkJpaEntity implements Serializ
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtWekDaysAbsencePK PK;
+	public KrcdtWekAggrAbsnDaysPK PK;
 	
 	/** 欠勤日数 */
 	@Column(name = "ABSENCE_DAYS")
@@ -81,7 +81,7 @@ public class KrcdtWekDaysAbsence extends ContractUkJpaEntity implements Serializ
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfWeeklyKey key, AggregateAbsenceDays domain){
 		
-		this.PK = new KrcdtWekDaysAbsencePK(
+		this.PK = new KrcdtWekAggrAbsnDaysPK(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,

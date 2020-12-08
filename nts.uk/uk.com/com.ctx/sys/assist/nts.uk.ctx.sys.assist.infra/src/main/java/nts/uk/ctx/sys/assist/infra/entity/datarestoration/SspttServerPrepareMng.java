@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPTT_SERVER_PREPARE_MNG")
+@Table(name = "SSPMT_SERVER_PREPARE_MNG")
 public class SspttServerPrepareMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

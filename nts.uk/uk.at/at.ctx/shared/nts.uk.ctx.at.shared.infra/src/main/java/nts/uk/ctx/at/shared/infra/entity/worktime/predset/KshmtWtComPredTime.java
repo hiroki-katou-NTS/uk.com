@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_PRED_TIME")
+@Table(name = "KSHMT_PRED_TIME_SET")
 @AllArgsConstructor
 public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializable {
 
@@ -37,7 +37,7 @@ public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializa
 
 	/** The kshmt pred time set PK. */
 	@EmbeddedId
-	protected KshmtWtComPredTimePK kshmtWtComPredTimePK;
+	protected KshmtPredTimeSetPK kshmtPredTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -96,7 +96,7 @@ public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializa
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)})
-	private List<KshmtWtComPredTs> kshmtWtComPredTss;
+	private List<KshmtWtComPredTs> kshmtWorkTimeSheetSets;
 
 	/**
 	 * Instantiates a new kshmt pred time set.
@@ -113,7 +113,7 @@ public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComPredTimePK != null ? kshmtWtComPredTimePK.hashCode() : 0);
+		hash += (kshmtPredTimeSetPK != null ? kshmtPredTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -128,9 +128,9 @@ public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KshmtWtComPredTime other = (KshmtWtComPredTime) object;
-		if ((this.kshmtWtComPredTimePK == null && other.kshmtWtComPredTimePK != null)
-				|| (this.kshmtWtComPredTimePK != null
-						&& !this.kshmtWtComPredTimePK.equals(other.kshmtWtComPredTimePK))) {
+		if ((this.kshmtPredTimeSetPK == null && other.kshmtPredTimeSetPK != null)
+				|| (this.kshmtPredTimeSetPK != null
+						&& !this.kshmtPredTimeSetPK.equals(other.kshmtPredTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -143,7 +143,7 @@ public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComPredTimePK;
+		return this.kshmtPredTimeSetPK;
 	}
 
 }

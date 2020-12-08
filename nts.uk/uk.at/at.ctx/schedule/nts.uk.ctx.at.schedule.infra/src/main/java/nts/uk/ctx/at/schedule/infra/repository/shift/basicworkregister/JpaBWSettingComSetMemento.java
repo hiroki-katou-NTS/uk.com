@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSetPK;
 
 /**
  * The Class JpaBWSettingComSetMemento.
@@ -25,8 +25,8 @@ public class JpaBWSettingComSetMemento implements BasicWorkSettingSetMemento {
 	 * @param typeValue the type value
 	 */
 	public JpaBWSettingComSetMemento(KscmtBasicWorkCom typeValue) {
-		if(typeValue.getKscmtBasicWorkComPK() == null){
-			typeValue.setKscmtBasicWorkComPK(new KscmtBasicWorkComPK());
+		if(typeValue.getKscmtCompanyWorkSetPK() == null){
+			typeValue.setKscmtCompanyWorkSetPK(new KscmtCompanyWorkSetPK());
 		}
 		this.typeValue = typeValue;
 	}
@@ -67,7 +67,7 @@ public class JpaBWSettingComSetMemento implements BasicWorkSettingSetMemento {
 	 */
 	@Override
 	public void setWorkDayDivision(WorkdayDivision workdayDivision) {
-		this.typeValue.getKscmtBasicWorkComPK().setWorkdayDivision(workdayDivision.value);
+		this.typeValue.getKscmtCompanyWorkSetPK().setWorkdayDivision(workdayDivision.value);
 	}
 
 }

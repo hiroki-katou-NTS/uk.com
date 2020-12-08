@@ -68,7 +68,7 @@ public class JpaEmpEstablishmentGetMemento implements EmploymentEstablishmentGet
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(
-				this.estimateTimeEmployments.get(FIRST_TIME).getKscmtEstTimeEmpPK().getCid());
+				this.estimateTimeEmployments.get(FIRST_TIME).getKscmtEstTimeEmpSetPK().getCid());
 	}
 
 	/*
@@ -80,7 +80,7 @@ public class JpaEmpEstablishmentGetMemento implements EmploymentEstablishmentGet
 	@Override
 	public EmploymentCode getEmploymentCode() {
 		return new EmploymentCode(
-				this.estimateTimeEmployments.get(FIRST_TIME).getKscmtEstTimeEmpPK().getEmpcd());
+				this.estimateTimeEmployments.get(FIRST_TIME).getKscmtEstTimeEmpSetPK().getEmpcd());
 	}
 
 
@@ -92,7 +92,7 @@ public class JpaEmpEstablishmentGetMemento implements EmploymentEstablishmentGet
 	 */
 	@Override
 	public Year getTargetYear() {
-		return new Year(this.estimateDaysEmployments.get(FIRST_TIME).getKscmtEstDaysEmpPK().getTargetYear());
+		return new Year(this.estimateDaysEmployments.get(FIRST_TIME).getKscmtEstDaysEmpSetPK().getTargetYear());
 	}
 
 }

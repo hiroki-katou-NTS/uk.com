@@ -35,23 +35,23 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetti
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimeFuncPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtVerticalItem;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtVerticalItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtVerticalSort;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtVerticalSortPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertOrderPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtVerticalSet;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtVerticalSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtGenVertSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormAmount;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormAmountPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormMoney;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormMoneyFunc;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormMoneyFuncPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormMoneyPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormMoneyFuncPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormMoneyPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormNumerical;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormNumericalPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeUnit;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeUnitPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimeunitFunc;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscmtFormTimeunitFuncPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormTimeunitFuncPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaUnitPrice;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.verticalsetting.KscstFormulaUnitPricePK;
 
@@ -86,7 +86,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtVerticalSet e");
-		builderString.append(" WHERE e.kscmtVerticalSetPK.companyId = :companyId");
+		builderString.append(" WHERE e.kscmtGenVertSetPK.companyId = :companyId");
 		SELECT_ALL_GEN_VERT_SET = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -104,19 +104,19 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtFormTimeunitFunc e");
-		builderString.append(" WHERE e.kscmtFormTimeunitFuncPK.companyId = :companyId");
+		builderString.append(" WHERE e.kscstFormTimeunitFuncPK.companyId = :companyId");
 		SELECT_TIME_UNIT_FUNC = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtFormMoneyFunc e");
-		builderString.append(" WHERE e.kscmtFormMoneyFuncPK.companyId = :companyId");
+		builderString.append(" WHERE e.kscstFormMoneyFuncPK.companyId = :companyId");
 		SELECT_MONEY_FUNC = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtFormMoney e");
-		builderString.append(" WHERE e.kscmtFormMoneyPK.companyId = :companyId");
+		builderString.append(" WHERE e.kscstFormMoneyPK.companyId = :companyId");
 		SELECT_FORMULA_MONEY = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -355,7 +355,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	private KscmtFormMoneyFunc toEntityFormMoney(MoneyFunc func) {
 		KscmtFormMoneyFunc entity = new KscmtFormMoneyFunc();
-		entity.kscstMoneyFuncPK = new KscmtFormMoneyFuncPK(func.getCompanyId(), func.getVerticalCalCd(),
+		entity.kscstMoneyFuncPK = new KscstFormMoneyFuncPK(func.getCompanyId(), func.getVerticalCalCd(),
 				func.getVerticalCalItemId(), func.getDispOrder());
 		entity.externalBudgetCd = func.getExternalBudgetCd();
 		entity.attendanceItemId = func.getAttendanceItemId();
@@ -405,7 +405,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			return null;
 		}
 		KscmtFormMoney entity = new KscmtFormMoney();
-		entity.kscstFormulaMoneyPK = new KscmtFormMoneyPK(item.getCompanyId(), item.getVerticalCalCd(),
+		entity.kscstFormulaMoneyPK = new KscstFormMoneyPK(item.getCompanyId(), item.getVerticalCalCd(),
 				item.getVerticalCalItemId());
 		entity.categoryIndicator = item.getCategoryIndicator().value;
 		entity.actualDisplayAtr = item.getActualDisplayAtr().value;
@@ -428,7 +428,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	private KscmtFormTimeunitFunc toEntityTimeUnitFunc(TimeUnitFunc unitFunc) {
 		KscmtFormTimeunitFunc entity = new KscmtFormTimeunitFunc();
-		entity.kscstTimeUnitFuncPK = new KscmtFormTimeunitFuncPK(unitFunc.getCompanyId(), unitFunc.getVerticalCalCd(),
+		entity.kscstTimeUnitFuncPK = new KscstFormTimeunitFuncPK(unitFunc.getCompanyId(), unitFunc.getVerticalCalCd(),
 				unitFunc.getVerticalCalItemId(), unitFunc.getDispOrder());
 		entity.attendanceItemId = unitFunc.getAttendanceItemId();
 		entity.presetItemId = unitFunc.getPresetItemId();
@@ -496,14 +496,14 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 			List<FormulaNumerical> numerical = toDomainFormNumer(t.numerical);
 			FormulaUnitprice unitprice = toDomainFromPrice(t.price);
 
-			return VerticalCalItem.createFromJavatype(t.kscmtVerticalItemPK.companyId,
-					t.kscmtVerticalItemPK.verticalCalCd, t.kscmtVerticalItemPK.itemId, t.itemName, t.calculateAtr,
+			return VerticalCalItem.createFromJavatype(t.kscmtGenVertItemPK.companyId,
+					t.kscmtGenVertItemPK.verticalCalCd, t.kscmtGenVertItemPK.itemId, t.itemName, t.calculateAtr,
 					t.displayAtr, t.cumulativeAtr, t.attributes, t.rounding, t.roundingProcessing,
 					t.genVertOrder.dispOrder, formBuilt, formTime, formPeople, amount, numerical, unitprice);
 		}).collect(Collectors.toList());
 
 		VerticalCalSet verticalCalSet = VerticalCalSet.createFromJavaType(
-				kscstVerticalCalSet.kscmtVerticalSetPK.companyId, kscstVerticalCalSet.kscmtVerticalSetPK.verticalCalCd,
+				kscstVerticalCalSet.kscmtGenVertSetPK.companyId, kscstVerticalCalSet.kscmtGenVertSetPK.verticalCalCd,
 				kscstVerticalCalSet.verticalCalName, kscstVerticalCalSet.unit, kscstVerticalCalSet.useAtr,
 				kscstVerticalCalSet.assistanceTabulationAtr, verticalCalItems);
 
@@ -573,7 +573,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public Optional<VerticalCalSet> getVerticalCalSetByCode(String companyId, String verticalCalCd) {
-		KscmtVerticalSetPK primaryKey = new KscmtVerticalSetPK(companyId, verticalCalCd);
+		KscmtGenVertSetPK primaryKey = new KscmtGenVertSetPK(companyId, verticalCalCd);
 
 		return this.queryProxy().find(primaryKey, KscmtVerticalSet.class).map(x -> convertToDomainVcs(x));
 	}
@@ -587,7 +587,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private KscmtVerticalSet convertToDbTypeVcs(VerticalCalSet verticalCalSet) {
 		List<KscmtVerticalItem> items = verticalCalSet.getVerticalCalItems().stream().map(x -> {
 			KscmtVerticalSort kscstVerticalItemOrder = new KscmtVerticalSort(
-					new KscmtVerticalSortPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(),
+					new KscmtGenVertOrderPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(),
 							x.getItemId()),
 					x.getDispOrder());
 
@@ -621,7 +621,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				price = toEntityFormPrice(x.getUnitprice());
 			}
 
-			KscmtVerticalItemPK key = new KscmtVerticalItemPK(verticalCalSet.getCompanyId(),
+			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 
 			return new KscmtVerticalItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
@@ -631,14 +631,14 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 
 		KscmtVerticalSet kscstVerticalCalSet = new KscmtVerticalSet();
 
-		KscmtVerticalSetPK kscmtVerticalSetPK = new KscmtVerticalSetPK(verticalCalSet.getCompanyId(),
+		KscmtGenVertSetPK kscmtGenVertSetPK = new KscmtGenVertSetPK(verticalCalSet.getCompanyId(),
 				verticalCalSet.getVerticalCalCd().v());
 
 		kscstVerticalCalSet.verticalCalName = verticalCalSet.getVerticalCalName().v();
 		kscstVerticalCalSet.unit = verticalCalSet.getUnit().value;
 		kscstVerticalCalSet.useAtr = verticalCalSet.getUseAtr().value;
 		kscstVerticalCalSet.assistanceTabulationAtr = verticalCalSet.getAssistanceTabulationAtr().value;
-		kscstVerticalCalSet.kscmtVerticalSetPK = kscmtVerticalSetPK;
+		kscstVerticalCalSet.kscmtGenVertSetPK = kscmtGenVertSetPK;
 		kscstVerticalCalSet.genVertItems = items;
 
 		return kscstVerticalCalSet;
@@ -703,7 +703,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public void updateVerticalCalSet(VerticalCalSet verticalCalSet) {
-		KscmtVerticalSetPK kscstVerticalCalSetPK = new KscmtVerticalSetPK(verticalCalSet.getCompanyId(),
+		KscmtGenVertSetPK kscstVerticalCalSetPK = new KscmtGenVertSetPK(verticalCalSet.getCompanyId(),
 				verticalCalSet.getVerticalCalCd().v());
 		KscmtVerticalSet kscstVerticalCalSet = this.queryProxy().find(kscstVerticalCalSetPK, KscmtVerticalSet.class)
 				.get();
@@ -715,7 +715,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 
 		List<KscmtVerticalItem> items = verticalCalSet.getVerticalCalItems().stream().map(x -> {
 			KscmtVerticalSort kscstVerticalItemOrder = new KscmtVerticalSort(
-					new KscmtVerticalSortPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(),
+					new KscmtGenVertOrderPK(verticalCalSet.getCompanyId(), verticalCalSet.getVerticalCalCd().v(),
 							x.getItemId()),
 					x.getDispOrder());
 
@@ -749,7 +749,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 				price = toEntityFormPrice(x.getUnitprice());
 			}
 
-			KscmtVerticalItemPK key = new KscmtVerticalItemPK(verticalCalSet.getCompanyId(),
+			KscmtGenVertItemPK key = new KscmtGenVertItemPK(verticalCalSet.getCompanyId(),
 					verticalCalSet.getVerticalCalCd().v(), x.getItemId());
 
 			return new KscmtVerticalItem(key, x.getItemName(), x.getCalculateAtr().value, x.getDisplayAtr().value,
@@ -788,7 +788,7 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	 */
 	@Override
 	public void deleteVerticalCalSet(String companyId, String verticalCalCd) {
-		KscmtVerticalSetPK kscstVerticalCalSetPK = new KscmtVerticalSetPK(companyId, verticalCalCd);
+		KscmtGenVertSetPK kscstVerticalCalSetPK = new KscmtGenVertSetPK(companyId, verticalCalCd);
 		this.commandProxy().remove(KscmtVerticalSet.class, kscstVerticalCalSetPK);
 	}
 

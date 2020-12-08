@@ -17,7 +17,7 @@ public class JpaDiffTimeRestTimezoneGetMemento implements DiffTimeRestTimezoneGe
 
 	@Override
 	public List<DiffTimeDeductTimezone> getRestTimezones() {
-		return this.entity.getLstKshmtWtDifBrHolTs().stream().map(item -> {
+		return this.entity.getLstKshmtDtHolRestTime().stream().map(item -> {
 			return new DiffTimeDeductTimezone(new JpaODDiffTimeDeductTimezoneGetMemento(item));
 		}).collect(Collectors.toList());
 	}

@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshmtLegaltimeFlexCom;
-import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshmtLegaltimeFlexComPK;
+import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTimePK;
 
 /**
  * リポジトリ実装：フレックス勤務所定労働時間取得
@@ -23,7 +23,7 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	public Optional<GetFlexPredWorkTime> find(String companyId) {
 		
 		return this.queryProxy()
-				.find(new KshmtLegaltimeFlexComPK(companyId), KshmtLegaltimeFlexCom.class)
+				.find(new KshstFlxGetPrwkTimePK(companyId), KshmtLegaltimeFlexCom.class)
 				.map(c -> c.toDomain());
 	}
 	
@@ -32,7 +32,7 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	public void persistAndUpdate(GetFlexPredWorkTime domain) {
 
 		// キー
-		val key = new KshmtLegaltimeFlexComPK(domain.getCompanyId());
+		val key = new KshstFlxGetPrwkTimePK(domain.getCompanyId());
 		
 		// 登録・更新
 		KshmtLegaltimeFlexCom entity = this.getEntityManager().find(KshmtLegaltimeFlexCom.class, key);
@@ -50,6 +50,6 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	@Override
 	public void remove(String companyId) {
 
-		this.commandProxy().remove(KshmtLegaltimeFlexCom.class, new KshmtLegaltimeFlexComPK(companyId));
+		this.commandProxy().remove(KshmtLegaltimeFlexCom.class, new KshstFlxGetPrwkTimePK(companyId));
 	}
 }

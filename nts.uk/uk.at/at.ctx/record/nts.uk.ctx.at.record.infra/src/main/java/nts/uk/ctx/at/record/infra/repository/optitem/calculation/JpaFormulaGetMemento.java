@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfRoundPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRoundingPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
@@ -44,7 +44,7 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKrcmtAnyfPK().getCid());
+		return new CompanyId(this.entity.getKrcmtOptItemFormulaPK().getCid());
 	}
 
 	/*
@@ -55,7 +55,7 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 */
 	@Override
 	public FormulaId getFormulaId() {
-		return new FormulaId(this.entity.getKrcmtAnyfPK().getFormulaId());
+		return new FormulaId(this.entity.getKrcmtOptItemFormulaPK().getFormulaId());
 	}
 
 	/*
@@ -66,7 +66,7 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 */
 	@Override
 	public OptionalItemNo getOptionalItemNo() {
-		return new OptionalItemNo(this.entity.getKrcmtAnyfPK().getOptionalItemNo());
+		return new OptionalItemNo(this.entity.getKrcmtOptItemFormulaPK().getOptionalItemNo());
 	}
 
 	/*
@@ -93,11 +93,11 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 		switch (this.entity.getCalcAtr()) {
 
 		case KrcmtAnyf.FORMULA_SETTING:
-			domain = new CalcFormulaSetting(new JpaFormulaSettingGetMemento(this.entity.getKrcmtAnyfDetail()));
+			domain = new CalcFormulaSetting(new JpaFormulaSettingGetMemento(this.entity.getKrcmtFormulaSetting()));
 			break;
 
 		case KrcmtAnyf.ITEM_SELECTION:
-			domain = new CalcFormulaSetting(new JpaItemSelectionGetMemento(this.entity.getKrcmtAnyfItemSelects()));
+			domain = new CalcFormulaSetting(new JpaItemSelectionGetMemento(this.entity.getKrcmtCalcItemSelections()));
 			break;
 
 		default:
@@ -137,8 +137,8 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 */
 	@Override
 	public Optional<Rounding> getMonthlyRounding() {
-		JpaRoundingGetMemento memento = new JpaRoundingGetMemento(this.entity.getKrcmtAnyfRounds().stream()
-				.filter(item -> item.getKrcmtAnyfRoundPK().getRoundingAtr() == KrcmtAnyfRoundPK.MONTHLY_ATR)
+		JpaRoundingGetMemento memento = new JpaRoundingGetMemento(this.entity.getKrcmtFormulaRoundings().stream()
+				.filter(item -> item.getKrcmtFormulaRoundingPK().getRoundingAtr() == KrcmtFormulaRoundingPK.MONTHLY_ATR)
 				.findFirst().get());
 		return Optional.of(new Rounding(memento));
 	}
@@ -151,8 +151,8 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 	 */
 	@Override
 	public Optional<Rounding> getDailyRounding() {
-		JpaRoundingGetMemento memento = new JpaRoundingGetMemento(this.entity.getKrcmtAnyfRounds().stream()
-				.filter(item -> item.getKrcmtAnyfRoundPK().getRoundingAtr() == KrcmtAnyfRoundPK.DAILY_ATR)
+		JpaRoundingGetMemento memento = new JpaRoundingGetMemento(this.entity.getKrcmtFormulaRoundings().stream()
+				.filter(item -> item.getKrcmtFormulaRoundingPK().getRoundingAtr() == KrcmtFormulaRoundingPK.DAILY_ATR)
 				.findFirst().get());
 		return Optional.of(new Rounding(memento));
 	}

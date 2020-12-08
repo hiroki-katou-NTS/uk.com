@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_SAVE_CATEGORY")
+@Table(name = "SSPMT_CATEGORY")
 public class SspmtSaveCategory extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

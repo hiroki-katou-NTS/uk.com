@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @Entity
-@Table(name = "KSHMT_WT_FLE")
+@Table(name = "KSHMT_FLEX_WORK_SET")
 public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -41,7 +41,7 @@ public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 
 	/** The kshmt flex work set PK. */
 	@EmbeddedId
-	protected KshmtWtFlePK kshmtWtFlePK;
+	protected KshmtFlexWorkSetPK kshmtFlexWorkSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -80,33 +80,33 @@ public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
-	private KshmtWtFleBrFl kshmtWtFleBrFl;
+	private KshmtWtFleBrFl kshmtFlexRestSet;
 	
 	/** The kshmt flex od rt set. */
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 		@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
-	private KshmtWtFleBrFlHol kshmtWtFleBrFlHol;
+	private KshmtWtFleBrFlHol kshmtFlexOdRtSet;
 	
 	/** The kshmt worktime common set. */
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 		@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
-	private KshmtWtCom kshmtWtCom;
+	private KshmtWtCom kshmtWorktimeCommonSet;
 	
 	/** The kshmt flex ha rt sets. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWtFleBrFlWek> kshmtWtFleBrFlWeks;
+	private List<KshmtWtFleBrFlWek> kshmtFlexHaRtSets;
 	
 	/** The kshmt flex stamp reflects. */
 	@JoinColumns({
 		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWtFleStmpRefTs> kshmtWtFleStmpRefTss;
+	private List<KshmtWtFleStmpRefTs> kshmtFlexStampReflects;
 
 
 	/**
@@ -124,7 +124,7 @@ public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFlePK != null ? kshmtWtFlePK.hashCode() : 0);
+		hash += (kshmtFlexWorkSetPK != null ? kshmtFlexWorkSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -139,9 +139,9 @@ public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KshmtWtFle other = (KshmtWtFle) object;
-		if ((this.kshmtWtFlePK == null && other.kshmtWtFlePK != null)
-				|| (this.kshmtWtFlePK != null
-						&& !this.kshmtWtFlePK.equals(other.kshmtWtFlePK))) {
+		if ((this.kshmtFlexWorkSetPK == null && other.kshmtFlexWorkSetPK != null)
+				|| (this.kshmtFlexWorkSetPK != null
+						&& !this.kshmtFlexWorkSetPK.equals(other.kshmtFlexWorkSetPK))) {
 			return false;
 		}
 		return true;
@@ -154,7 +154,7 @@ public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFlePK;
+		return this.kshmtFlexWorkSetPK;
 	}
 
 }

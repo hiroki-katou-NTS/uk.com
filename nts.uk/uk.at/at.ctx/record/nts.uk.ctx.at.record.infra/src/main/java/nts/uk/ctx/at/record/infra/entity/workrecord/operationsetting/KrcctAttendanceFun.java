@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCCT_ATTENDANCE_FUN")
+@Table(name = "KRCMT_DAI_PERFORMANCE_FUN")
 public class KrcctAttendanceFun extends ContractUkJpaEntity{
 	
 	@Id

@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_HD_WORK_MNG")
+@Table(name = "KRCMT_LEAVE_MANA_DATA")
 public class KrcdtHdWorkMng extends ContractUkJpaEntity {
 	@Id
 	@Column(name="LEAVE_MANA_ID")

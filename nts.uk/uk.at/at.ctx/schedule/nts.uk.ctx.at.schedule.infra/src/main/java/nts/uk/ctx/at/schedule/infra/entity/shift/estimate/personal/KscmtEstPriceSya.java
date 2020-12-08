@@ -35,7 +35,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_PRICE_SYA")
+@Table(name = "KSCMT_EST_PRICE_PER_SET")
 public class KscmtEstPriceSya extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -43,7 +43,7 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
     
     /** The kscmt est price per set PK. */
     @EmbeddedId
-    protected KscmtEstPriceSyaPK kscmtEstPriceSyaPK;
+    protected KscmtEstPricePerSetPK kscmtEstPricePerSetPK;
     
     /** The est condition 1 st mny. */
     @Basic(optional = false)
@@ -84,10 +84,10 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
     /**
      * Instantiates a new kscmt est price per set.
      *
-     * @param kscmtEstPriceSyaPK the kscmt est price per set PK
+     * @param kscmtEstPricePerSetPK the kscmt est price per set PK
      */
-    public KscmtEstPriceSya(KscmtEstPriceSyaPK kscmtEstPriceSyaPK) {
-        this.kscmtEstPriceSyaPK = kscmtEstPriceSyaPK;
+    public KscmtEstPriceSya(KscmtEstPricePerSetPK kscmtEstPricePerSetPK) {
+        this.kscmtEstPricePerSetPK = kscmtEstPricePerSetPK;
     }
 
     /**
@@ -98,7 +98,7 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
      * @param targetCls the target cls
      */
     public KscmtEstPriceSya(String sid, short targetYear, short targetCls) {
-        this.kscmtEstPriceSyaPK = new KscmtEstPriceSyaPK(sid, targetYear, targetCls);
+        this.kscmtEstPricePerSetPK = new KscmtEstPricePerSetPK(sid, targetYear, targetCls);
     }
 
     /**
@@ -106,17 +106,17 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
      *
      * @return the kscmt est price per set PK
      */
-    public KscmtEstPriceSyaPK getKscmtEstPriceSyaPK() {
-        return kscmtEstPriceSyaPK;
+    public KscmtEstPricePerSetPK getKscmtEstPricePerSetPK() {
+        return kscmtEstPricePerSetPK;
     }
 
     /**
      * Sets the kscmt est price per set PK.
      *
-     * @param kscmtEstPriceSyaPK the new kscmt est price per set PK
+     * @param kscmtEstPricePerSetPK the new kscmt est price per set PK
      */
-    public void setKscmtEstPriceSyaPK(KscmtEstPriceSyaPK kscmtEstPriceSyaPK) {
-        this.kscmtEstPriceSyaPK = kscmtEstPriceSyaPK;
+    public void setKscmtEstPricePerSetPK(KscmtEstPricePerSetPK kscmtEstPricePerSetPK) {
+        this.kscmtEstPricePerSetPK = kscmtEstPricePerSetPK;
     }
 
 
@@ -126,7 +126,7 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kscmtEstPriceSyaPK != null ? kscmtEstPriceSyaPK.hashCode() : 0);
+        hash += (kscmtEstPricePerSetPK != null ? kscmtEstPricePerSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -140,9 +140,9 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
 			return false;
 		}
 		KscmtEstPriceSya other = (KscmtEstPriceSya) object;
-		if ((this.kscmtEstPriceSyaPK == null && other.kscmtEstPriceSyaPK != null)
-				|| (this.kscmtEstPriceSyaPK != null
-						&& !this.kscmtEstPriceSyaPK.equals(other.kscmtEstPriceSyaPK))) {
+		if ((this.kscmtEstPricePerSetPK == null && other.kscmtEstPricePerSetPK != null)
+				|| (this.kscmtEstPricePerSetPK != null
+						&& !this.kscmtEstPricePerSetPK.equals(other.kscmtEstPricePerSetPK))) {
 			return false;
 		}
 		return true;
@@ -153,7 +153,7 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KscmtEstPriceSya[ kscmtEstPriceSyaPK=" + kscmtEstPriceSyaPK + " ]";
+		return "entity.KscmtEstPriceSya[ kscmtEstPricePerSetPK=" + kscmtEstPricePerSetPK + " ]";
 	}
 
 	/*
@@ -163,7 +163,7 @@ public class KscmtEstPriceSya extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kscmtEstPriceSyaPK;
+		return this.kscmtEstPricePerSetPK;
 	}
     
 }

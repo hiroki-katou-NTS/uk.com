@@ -6,7 +6,7 @@ package nts.uk.ctx.at.function.infra.repository.employmentfunction;
 
 import nts.uk.ctx.at.function.dom.employmentfunction.LinkPlanTimeItemSetMemento;
 import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItem;
-import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItemPK;
+import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItemPK;
 
 /**
  * The Class JpaLinkPlanTimeItemSetMemento.
@@ -30,9 +30,9 @@ public class JpaLinkPlanTimeItemSetMemento implements LinkPlanTimeItemSetMemento
 	 */
 	@Override
 	public void setScheduleID(String scheduleId) {
-		KfnmtPlanTimeItemPK pk = entity.getKfnmtPlanTimeItemPK();
+		KfnstPlanTimeItemPK pk = entity.getKfnstPlanTimeItemPK();
 		pk.setScheduleId(scheduleId);
-		this.entity.setKfnmtPlanTimeItemPK(pk);
+		this.entity.setKfnstPlanTimeItemPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -40,9 +40,9 @@ public class JpaLinkPlanTimeItemSetMemento implements LinkPlanTimeItemSetMemento
 	 */
 	@Override
 	public void setAtdID(Integer atdId) {
-		KfnmtPlanTimeItemPK pk = entity.getKfnmtPlanTimeItemPK();
+		KfnstPlanTimeItemPK pk = entity.getKfnstPlanTimeItemPK();
 		pk.setAtdId(atdId);
-		this.entity.setKfnmtPlanTimeItemPK(pk);
+		this.entity.setKfnstPlanTimeItemPK(pk);
 	}
 
 }

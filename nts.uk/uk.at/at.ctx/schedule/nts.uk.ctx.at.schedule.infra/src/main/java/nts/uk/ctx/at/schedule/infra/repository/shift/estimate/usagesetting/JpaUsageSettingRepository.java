@@ -66,17 +66,17 @@ public class JpaUsageSettingRepository extends JpaRepository implements UsageSet
 	@Override
 	public Optional<UsageSetting> findByCompanyId(String companyId) {
 		// Find records.
-		Optional<KscmtEstUsage> optKscmtEstUsage = this.queryProxy().find(companyId,
+		Optional<KscmtEstUsage> optKscstEstUsageSet = this.queryProxy().find(companyId,
 				KscmtEstUsage.class);
 
 		// Check exist.
-		if (!optKscmtEstUsage.isPresent()) {
+		if (!optKscstEstUsageSet.isPresent()) {
 			return Optional.empty();
 		}
 
 		// Return domain.
 		return Optional
-				.of(new UsageSetting(new JpaUsageSettingGetMemento(optKscmtEstUsage.get())));
+				.of(new UsageSetting(new JpaUsageSettingGetMemento(optKscstEstUsageSet.get())));
 	}
 
 }

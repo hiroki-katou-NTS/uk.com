@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_M_SET_DEF_SYA")
+@Table(name = "KRCST_SHA_DEFOR_M_CAL_SET")
 public class KrcmtCalcMSetDefSya extends KrcstDeforMCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -28,7 +28,7 @@ public class KrcmtCalcMSetDefSya extends KrcstDeforMCalSet implements Serializab
 
 	/** The krcst sha defor M cal set PK. */
 	@EmbeddedId
-	protected KrcmtCalcMSetDefSyaPK krcmtCalcMSetDefSyaPK;
+	protected KrcstShaDeforMCalSetPK krcstShaDeforMCalSetPK;
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +38,7 @@ public class KrcmtCalcMSetDefSya extends KrcstDeforMCalSet implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtCalcMSetDefSyaPK != null ? krcmtCalcMSetDefSyaPK.hashCode() : 0);
+		hash += (krcstShaDeforMCalSetPK != null ? krcstShaDeforMCalSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -55,9 +55,9 @@ public class KrcmtCalcMSetDefSya extends KrcstDeforMCalSet implements Serializab
 			return false;
 		}
 		KrcmtCalcMSetDefSya other = (KrcmtCalcMSetDefSya) object;
-		if ((this.krcmtCalcMSetDefSyaPK == null && other.krcmtCalcMSetDefSyaPK != null)
-				|| (this.krcmtCalcMSetDefSyaPK != null
-						&& !this.krcmtCalcMSetDefSyaPK.equals(other.krcmtCalcMSetDefSyaPK))) {
+		if ((this.krcstShaDeforMCalSetPK == null && other.krcstShaDeforMCalSetPK != null)
+				|| (this.krcstShaDeforMCalSetPK != null
+						&& !this.krcstShaDeforMCalSetPK.equals(other.krcstShaDeforMCalSetPK))) {
 			return false;
 		}
 		return true;
@@ -70,7 +70,7 @@ public class KrcmtCalcMSetDefSya extends KrcstDeforMCalSet implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtCalcMSetDefSyaPK;
+		return this.krcstShaDeforMCalSetPK;
 	}
 
 }

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KRCMT_CALC_M_AGG")
+@Table(name="KRCST_VERT_MON_METHOD")
 public class KrcmtCalcMAgg extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

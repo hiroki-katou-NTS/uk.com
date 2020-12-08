@@ -59,10 +59,10 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			
 			// new pk
 			KshmtRoundingSetPK newPK = new KshmtRoundingSetPK();
-			newPK.setCid(parentEntity.getKshmtWtComPK().getCid());
-			newPK.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
-			newPK.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
-			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
+			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 			newPK.setAtr(rounding.getSection().value);
 			
 			// get entity existed
@@ -99,10 +99,10 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			
 			// new pk
 			KshmtPioritySetPK newPK = new KshmtPioritySetPK();
-			newPK.setCid(parentEntity.getKshmtWtComPK().getCid());
-			newPK.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
-			newPK.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
-			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
+			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 			newPK.setPiorityAtr(pioritySet.getPriorityAtr().value);
 			newPK.setStampAtr(pioritySet.getStampAtr().value);
 			

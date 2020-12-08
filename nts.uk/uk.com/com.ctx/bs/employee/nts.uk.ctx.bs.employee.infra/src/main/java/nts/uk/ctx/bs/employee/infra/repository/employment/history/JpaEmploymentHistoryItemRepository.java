@@ -37,9 +37,9 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHistItem;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHistItem_;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHist_;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -49,7 +49,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 //	private static final String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
 //			+ " INNER JOIN BsymtAffEmpHist h" 
 //			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
-//			+ " INNER JOIN BsymtAffEmpHistItem i"
+//			+ " INNER JOIN BsymtEmploymentHistItem i"
 //			+ " ON  h.hisId = i.hisId " 
 //			+ " AND h.sid  = i.sid"
 //			+ " AND a.bsymtEmploymentPK.code =  i.empCode" 
@@ -57,23 +57,23 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 //			+ " AND h.endDate >= :date " 
 //			+ " AND a.bsymtEmploymentPK.cid =:companyId";
 	
-	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT ehi FROM BsymtAffEmpHistItem ehi"
+	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT ehi FROM BsymtEmploymentHistItem ehi"
 			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid AND eh.strDate <= :basedate AND :basedate <= eh.endDate";
 
-	private static final String SELECT_BY_EMPID = "SELECT ehi.sid, eh.strDate, eh.endDate, ehi.empCode FROM BsymtAffEmpHistItem ehi"
+	private static final String SELECT_BY_EMPID = "SELECT ehi.sid, eh.strDate, eh.endDate, ehi.empCode FROM BsymtEmploymentHistItem ehi"
 			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid ORDER BY eh.strDate";
 	
 //	/** The Constant SELECT_BY_HISTIDS. */
-//	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtAffEmpHistItem aw"
+//	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtEmploymentHistItem aw"
 //			+ " WHERE aw.hisId IN :historyId";
 	
-//	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi FROM BsymtAffEmpHistItem ehi" 
+//	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi FROM BsymtEmploymentHistItem ehi" 
 //			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId" 
 //			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 	
-	private static final String GET_LST_SID_BY_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtAffEmpHistItem ehi" 
+	private static final String GET_LST_SID_BY_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi" 
 			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId " 
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate"
 			+ " AND eh.companyId = :companyId";
@@ -82,7 +82,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " FROM BsymtEmployment a"
 			+ " INNER JOIN BsymtAffEmpHist h"
 			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
-			+ " INNER JOIN BsymtAffEmpHistItem i"
+			+ " INNER JOIN BsymtEmploymentHistItem i"
 			+ " ON h.hisId = i.hisId AND h.sid = i.sid"
 			+ " AND a.bsymtEmploymentPK.code = i.empCode"
 			+ " WHERE a.bsymtEmploymentPK.cid = :companyId"
@@ -131,9 +131,9 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	
 	@Override
 	public Optional<EmploymentHistoryItem> getByHistoryId(String historyId) {
-		Optional<BsymtAffEmpHistItem> hiDataOpt = this.queryProxy().find(historyId, BsymtAffEmpHistItem.class);
+		Optional<BsymtEmploymentHistItem> hiDataOpt = this.queryProxy().find(historyId, BsymtEmploymentHistItem.class);
 		if (hiDataOpt.isPresent()) {
-			BsymtAffEmpHistItem ent = hiDataOpt.get();
+			BsymtEmploymentHistItem ent = hiDataOpt.get();
 			return Optional.of( EmploymentHistoryItem.createFromJavaType(ent.hisId, ent.sid, ent.empCode, ent.salarySegment));
 		}
 		return null;
@@ -145,8 +145,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * @param domain
 	 * @return
 	 */
-	private BsymtAffEmpHistItem toEntity(EmploymentHistoryItem domain) {
-		return new BsymtAffEmpHistItem(domain.getHistoryId(), domain.getEmployeeId(),
+	private BsymtEmploymentHistItem toEntity(EmploymentHistoryItem domain) {
+		return new BsymtEmploymentHistItem(domain.getHistoryId(), domain.getEmployeeId(),
 				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: null);
 	}
 
@@ -167,7 +167,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * @param domain
 	 * @param entity
 	 */
-	private void updateEntity(EmploymentHistoryItem domain, BsymtAffEmpHistItem entity) {
+	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity) {
 		entity.empCode = domain.getEmploymentCode().v();
 		entity.salarySegment = domain.getSalarySegment()!= null? domain.getSalarySegment().value: null;
 	}
@@ -179,10 +179,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 	@Override
 	public void update(EmploymentHistoryItem domain) {
-		Optional<BsymtAffEmpHistItem> existItem = this.queryProxy().find(domain.getHistoryId(),
-				BsymtAffEmpHistItem.class);
+		Optional<BsymtEmploymentHistItem> existItem = this.queryProxy().find(domain.getHistoryId(),
+				BsymtEmploymentHistItem.class);
 		if (!existItem.isPresent()) {
-			throw new RuntimeException("Invalid BsymtAffEmpHistItem");
+			throw new RuntimeException("Invalid BsymtEmploymentHistItem");
 		}
 		updateEntity(domain, existItem.get());
 		this.commandProxy().update(existItem.get());
@@ -190,11 +190,11 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 	@Override
 	public void delete(String histId) {
-		Optional<BsymtAffEmpHistItem> existItem = this.queryProxy().find(histId, BsymtAffEmpHistItem.class);
+		Optional<BsymtEmploymentHistItem> existItem = this.queryProxy().find(histId, BsymtEmploymentHistItem.class);
 		if (!existItem.isPresent()) {
-			throw new RuntimeException("Invalid BsymtAffEmpHistItem");
+			throw new RuntimeException("Invalid BsymtEmploymentHistItem");
 		}
-		this.commandProxy().remove(BsymtAffEmpHistItem.class, histId);
+		this.commandProxy().remove(BsymtEmploymentHistItem.class, histId);
 	}
 
 	/*
@@ -218,17 +218,17 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_EMPLOYMENT_HIST (KmnmtEmploymentHist SQL)
-		CriteriaQuery<BsymtAffEmpHistItem> cq = criteriaBuilder
-				.createQuery(BsymtAffEmpHistItem.class);
+		CriteriaQuery<BsymtEmploymentHistItem> cq = criteriaBuilder
+				.createQuery(BsymtEmploymentHistItem.class);
 
 		// root data
-		Root<BsymtAffEmpHistItem> root = cq.from(BsymtAffEmpHistItem.class);
+		Root<BsymtEmploymentHistItem> root = cq.from(BsymtEmploymentHistItem.class);
 
 		// select root
 		cq.select(root);
 		
 		// Split query.
-		List<BsymtAffEmpHistItem> resultList = new ArrayList<>();
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
 		
 		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
@@ -236,23 +236,23 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 			// employment in data employment
 			lstpredicateWhere
-					.add(criteriaBuilder.and(root.get(BsymtAffEmpHistItem_.empCode).in(subList)));
+					.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.empCode).in(subList)));
 
 			// start date <= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.lessThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-							.get(BsymtAffEmpHist_.strDate), baseDate));
+					.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.strDate), baseDate));
 
 			// endDate >= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.greaterThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-							.get(BsymtAffEmpHist_.endDate), baseDate));
+					.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.endDate), baseDate));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// create query
-			TypedQuery<BsymtAffEmpHistItem> query = em.createQuery(cq);
+			TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
 			resultList.addAll(query.getResultList());
 		});
 		
@@ -280,16 +280,16 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_EMPLOYMENT_HIST (KmnmtEmploymentHist SQL)
-		CriteriaQuery<BsymtAffEmpHistItem> cq = criteriaBuilder
-				.createQuery(BsymtAffEmpHistItem.class);
+		CriteriaQuery<BsymtEmploymentHistItem> cq = criteriaBuilder
+				.createQuery(BsymtEmploymentHistItem.class);
 
 		// root data
-		Root<BsymtAffEmpHistItem> root = cq.from(BsymtAffEmpHistItem.class);
+		Root<BsymtEmploymentHistItem> root = cq.from(BsymtEmploymentHistItem.class);
 
 		// select root
 		cq.select(root);
 
-		List<BsymtAffEmpHistItem> resultList = new ArrayList<>();
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employeeSubList -> {
 			CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employmentSubList -> {
 				// add where
@@ -297,27 +297,27 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 				// employment in data employment
 				lstpredicateWhere
-						.add(criteriaBuilder.and(root.get(BsymtAffEmpHistItem_.empCode).in(employmentSubList)));
+						.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.empCode).in(employmentSubList)));
 
 				// employee id in data employee id
 				lstpredicateWhere
-						.add(criteriaBuilder.and(root.get(BsymtAffEmpHistItem_.sid).in(employeeSubList)));
+						.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.sid).in(employeeSubList)));
 
 				// start date <= base date
 				lstpredicateWhere.add(criteriaBuilder
-						.lessThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-								.get(BsymtAffEmpHist_.strDate), baseDate));
+						.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+								.get(BsymtEmploymentHist_.strDate), baseDate));
 
 				// endDate >= base date
 				lstpredicateWhere.add(criteriaBuilder
-						.greaterThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-								.get(BsymtAffEmpHist_.endDate), baseDate));
+						.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+								.get(BsymtEmploymentHist_.endDate), baseDate));
 
 				// set where to SQL
 				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 				// create query
-				TypedQuery<BsymtAffEmpHistItem> query = em.createQuery(cq);
+				TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
 				resultList.addAll(query.getResultList());
 			});
 		});
@@ -340,11 +340,11 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_EMPLOYMENT_HIST (KmnmtEmploymentHist SQL)
-		CriteriaQuery<BsymtAffEmpHistItem> cq = criteriaBuilder
-				.createQuery(BsymtAffEmpHistItem.class);
+		CriteriaQuery<BsymtEmploymentHistItem> cq = criteriaBuilder
+				.createQuery(BsymtEmploymentHistItem.class);
 
 		// root data
-		Root<BsymtAffEmpHistItem> root = cq.from(BsymtAffEmpHistItem.class);
+		Root<BsymtEmploymentHistItem> root = cq.from(BsymtEmploymentHistItem.class);
 
 		// select root
 		cq.select(root);
@@ -353,19 +353,19 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			// start date <= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.lessThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-							.get(BsymtAffEmpHist_.strDate), baseDate));
+					.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.strDate), baseDate));
 	
 			// endDate >= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.greaterThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-							.get(BsymtAffEmpHist_.endDate), baseDate));
+					.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.endDate), baseDate));
 	
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 	
 			// create query
-			TypedQuery<BsymtAffEmpHistItem> query = em.createQuery(cq);
+			TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
 	
 			// exclude select
 			return query.getResultList().stream().map(category -> toDomain(category))
@@ -373,7 +373,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		}
 		
 		// Split employee ids.
-		List<BsymtAffEmpHistItem> resultList = new ArrayList<>();
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
@@ -381,22 +381,22 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 			// employee id in data employee id
 			lstpredicateWhere
-					.add(criteriaBuilder.and(root.get(BsymtAffEmpHistItem_.sid).in(subList)));
+					.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.sid).in(subList)));
 
 			lstpredicateWhere.add(criteriaBuilder
-					.lessThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-							.get(BsymtAffEmpHist_.strDate), baseDate));
+					.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.strDate), baseDate));
 	
 			// endDate >= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.greaterThanOrEqualTo(root.get(BsymtAffEmpHistItem_.bsymtAffEmpHist)
-							.get(BsymtAffEmpHist_.endDate), baseDate));
+					.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.endDate), baseDate));
 			
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// create query
-			TypedQuery<BsymtAffEmpHistItem> query = em.createQuery(cq);
+			TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
 			resultList.addAll(query.getResultList());
 		});
 		
@@ -412,15 +412,15 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 *            the entity
 	 * @return the employment history
 	 */
-	private EmploymentHistoryItem toDomain(BsymtAffEmpHistItem entity) {
+	private EmploymentHistoryItem toDomain(BsymtEmploymentHistItem entity) {
 		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
 	}
 
 	@Override
 	public List<EmploymentHistoryItem> getEmploymentByEmpIdAndDate(GeneralDate basedate, String employeeId) {
 		
-		List<BsymtAffEmpHistItem> listHistItem = this.queryProxy()
-				.query(SELECT_BY_EMPID_BASEDATE, BsymtAffEmpHistItem.class)
+		List<BsymtEmploymentHistItem> listHistItem = this.queryProxy()
+				.query(SELECT_BY_EMPID_BASEDATE, BsymtEmploymentHistItem.class)
 				.setParameter("sid", employeeId).setParameter("basedate", basedate)
 				.getList();
 
@@ -471,7 +471,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		if (CollectionUtil.isEmpty(historyIds)) {
 			return new ArrayList<>();
 		}
-		List<BsymtAffEmpHistItem> listHistItem = new ArrayList<>();
+		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				try(PreparedStatement statement = this.connection().prepareStatement(
 						"select * from BSYMT_AFF_EMP_HIST_ITEM a"
@@ -480,8 +480,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 						statement.setString(i + 1, subList.get(i));
 					}
 					
-					List<BsymtAffEmpHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-						BsymtAffEmpHistItem entity = new BsymtAffEmpHistItem();
+					List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
 						entity.hisId = rec.getString("HIST_ID");
 						entity.sid = rec.getString("SID");
 						entity.empCode = rec.getString("EMP_CD");
@@ -518,7 +518,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 					
 				new NtsResultSet(statement.executeQuery()).getList(rec -> {
 					  Map<String, Integer> mapListEnum = new HashMap<>();
-						BsymtAffEmpHistItem entity = new BsymtAffEmpHistItem();
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
 						entity.hisId = rec.getString("HIST_ID");
 						entity.sid = rec.getString("SID");
 						entity.empCode = rec.getString("EMP_CD");
@@ -558,15 +558,15 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	@Override
 	@SneakyThrows
 	public List<EmploymentHistoryItem> getEmploymentHistoryItem(String cid, GeneralDate baseDate) {
-		List<BsymtAffEmpHistItem> listHistItem = new ArrayList<>();
+		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 				try(PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT DISTINCT b.* FROM BSYMT_AFF_EMP_HIST a INNER JOIN BSYMT_AFF_EMP_HIST_ITEM b ON a.HIST_ID = b.HIST_ID"
 					  + " WHERE a.CID = ? AND a.START_DATE  <= ? AND a.END_DATE >= ? ORDER BY b.EMP_CD")){
 					statement.setString(1, cid);
 					statement.setDate(2, Date.valueOf(baseDate.localDate()));
 					statement.setDate(3, Date.valueOf(baseDate.localDate()));
-					List<BsymtAffEmpHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-						BsymtAffEmpHistItem entity = new BsymtAffEmpHistItem();
+					List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
 						entity.hisId = rec.getString("HIST_ID");
 						entity.sid = rec.getString("SID");
 						entity.empCode = rec.getString("EMP_CD");

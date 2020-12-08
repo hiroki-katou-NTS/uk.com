@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CNDEXPSGLFIX")
+@Table(name = "KRCST_ERAL_SINGLE_FIXED")
 public class KrcstErAlSingleFixed extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcstErAlSingleFixedPK krcmtEralstCndexpsglfixPK;
+	public KrcstErAlSingleFixedPK krcstEralSingleFixedPK;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FIXED_VALUE")
@@ -42,15 +42,15 @@ public class KrcstErAlSingleFixed extends ContractUkJpaEntity implements Seriali
 	@JoinColumns({
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtEralstCndgrp krcmtEralstCndgrp;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralstCndexpsglfixPK;
+		return this.krcstEralSingleFixedPK;
 	}
-	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcmtEralstCndexpsglfixPK, double fixedValue) {
+	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcstEralSingleFixedPK, double fixedValue) {
 		super();
-		this.krcmtEralstCndexpsglfixPK = krcmtEralstCndexpsglfixPK;
+		this.krcstEralSingleFixedPK = krcstEralSingleFixedPK;
 		this.fixedValue = fixedValue;
 	}
 }

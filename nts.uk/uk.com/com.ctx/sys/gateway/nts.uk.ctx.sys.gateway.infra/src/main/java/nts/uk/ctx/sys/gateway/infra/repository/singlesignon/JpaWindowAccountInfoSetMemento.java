@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfoSetMemento;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 
 /**
  * The Class JpaWindowAccountSetMemento.
@@ -26,11 +26,11 @@ public class JpaWindowAccountInfoSetMemento implements WindowsAccountInfoSetMeme
 	 */
 	public JpaWindowAccountInfoSetMemento(String companyId, String employeeId, SgwmtSsoWinAcc typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getSgwmtSsoWinAccPK() == null) {
-			this.typedValue.setSgwmtSsoWinAccPK(new SgwmtSsoWinAccPK());
+		if (this.typedValue.getSgwmtWindowAccPK() == null) {
+			this.typedValue.setSgwmtWindowAccPK(new SgwmtWindowAccPK());
 		}
-		this.typedValue.getSgwmtSsoWinAccPK().setEmployeeId(employeeId);
-		this.typedValue.getSgwmtSsoWinAccPK().setCid(companyId);
+		this.typedValue.getSgwmtWindowAccPK().setEmployeeId(employeeId);
+		this.typedValue.getSgwmtWindowAccPK().setCid(companyId);
 	}
 
 	/* (non-Javadoc)
@@ -62,7 +62,7 @@ public class JpaWindowAccountInfoSetMemento implements WindowsAccountInfoSetMeme
 	 */
 	@Override
 	public void setNo(Integer no) {
-		this.typedValue.getSgwmtSsoWinAccPK().setNo(no);
+		this.typedValue.getSgwmtWindowAccPK().setNo(no);
 	}
 
 }

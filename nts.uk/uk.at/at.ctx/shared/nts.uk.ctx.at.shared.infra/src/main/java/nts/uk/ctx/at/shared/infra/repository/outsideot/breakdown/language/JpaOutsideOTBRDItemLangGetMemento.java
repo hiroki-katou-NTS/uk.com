@@ -37,7 +37,7 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshmtOutsideDetailLangPK().getCid());
+		return new CompanyId(this.entity.getKshstOutsideOtBrdLangPK().getCid());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 	 */
 	@Override
 	public LanguageId getLanguageId() {
-		return new LanguageId(this.entity.getKshmtOutsideDetailLangPK().getLanguageId());
+		return new LanguageId(this.entity.getKshstOutsideOtBrdLangPK().getLanguageId());
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshmtOutsideDetailLangPK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshstOutsideOtBrdLangPK().getBrdItemNo());
 	}
 
 }

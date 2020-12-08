@@ -14,14 +14,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="KFNCT_ATTENDANCE_TYPE")
+@Table(name="KMNMT_ATTENDANCE_TYPE")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnctAttendanceType extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/*主キー*/
 	@EmbeddedId
-    public KfnctAttendanceTypePK kfnctAttendanceTypePK;
+    public KmnmtAttendanceTypePK kmnmtAttendanceTypePK;
 	
 	@Override
 	protected Object getKey() {

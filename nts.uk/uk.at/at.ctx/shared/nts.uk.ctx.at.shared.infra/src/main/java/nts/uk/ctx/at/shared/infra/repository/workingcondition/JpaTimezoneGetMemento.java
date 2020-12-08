@@ -54,10 +54,10 @@ public class JpaTimezoneGetMemento<T extends KshmtTimeZone> implements TimezoneG
 	@Override
 	public int getCnt() {
 		if (entity instanceof KshmtWorkcondCtgTs) {
-			return ((KshmtWorkcondCtgTs) this.entity).getKshmtWorkcondCtgTsPK().getCnt();
+			return ((KshmtWorkcondCtgTs) this.entity).getKshmtWorkCatTimeZonePK().getCnt();
 		}
 
-		return ((KshmtWorkcondWeekTs) this.entity).getKshmtWorkcondWeekTsPK().getCnt();
+		return ((KshmtWorkcondWeekTs) this.entity).getKshmtDayofweekTimeZonePK().getCnt();
 	}
 
 	/*

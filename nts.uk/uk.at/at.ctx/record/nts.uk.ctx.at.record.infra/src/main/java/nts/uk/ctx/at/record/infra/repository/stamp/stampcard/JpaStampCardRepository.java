@@ -251,7 +251,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		Map<String, StampCard> result = new HashMap<>();
 		Map<String, List<StampCard>> stampCards = new HashMap<>();
 		CollectionUtil.split(new ArrayList<>(cardNos.entrySet()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * from KRCMT_STAMP_CARD" + " WHERE CONTRACT_CODE = ? AND SID IN ("
+			String sql = "SELECT * from KWKDT_STAMP_CARD" + " WHERE CONTRACT_CODE = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, contractCd);
@@ -372,7 +372,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		}
 		Map<String, List<StampCard>> stampCards = new HashMap<>();
 		CollectionUtil.split(stampCardId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * from KRCMT_STAMP_CARD" + " WHERE CONTRACT_CODE = ? AND SID IN ("
+			String sql = "SELECT * from KWKDT_STAMP_CARD" + " WHERE CONTRACT_CODE = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, contractCd);

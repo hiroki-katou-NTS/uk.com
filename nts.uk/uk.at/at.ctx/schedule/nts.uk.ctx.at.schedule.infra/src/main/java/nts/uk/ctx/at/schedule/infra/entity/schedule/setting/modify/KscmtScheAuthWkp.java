@@ -20,13 +20,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SCHE_AUTH_WKP")
+@Table(name = "KSCST_SCHE_PER_WORKPLACE")
 public class KscmtScheAuthWkp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtScheAuthWkpPK kscmtScheAuthWkpPK;
+	public KscstSchePerWorkplacePK kscstSchePerWorkplacePK;
 
 	/** 利用できる */
 	@Column(name = "AVAILABLE_WORKPLACE")

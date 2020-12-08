@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichi_ishida
  */
 @Entity
-@Table(name = "KRCMT_CALC_M_TRNS_SORT")
+@Table(name = "KRCST_MONSET_LGL_TRNS_SET")
 @NoArgsConstructor
 public class KrcmtCalcMTrnsSort extends ContractUkJpaEntity implements Serializable {
 
@@ -24,7 +24,7 @@ public class KrcmtCalcMTrnsSort extends ContractUkJpaEntity implements Serializa
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcmtCalcMTrnsSortPK PK;
+	public KrcstMonsetLglTrnsSetPK PK;
 	
 	/** 残業並び順01 */
 	@Column(name = "OVER_TIME_ORDER_01")

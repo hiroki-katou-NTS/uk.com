@@ -14,29 +14,29 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KscmtSpecDateItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KscmtSpecDateItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KsmstSpecificDateItemPK;
 
 @Stateless
 public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements SpecificDateItemRepository {
 
 	private static final String SELECT_NO_WHERE = "SELECT s FROM KscmtSpecDateItem s";
 	private static final String GET_ALL = SELECT_NO_WHERE
-			+ " WHERE s.kscmtSpecDateItemPK.companyId = :companyId";
+			+ " WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
 	private static final String GET_BY_USE = SELECT_NO_WHERE
-			+" WHERE s.kscmtSpecDateItemPK.companyId = :companyId"
+			+" WHERE s.ksmstSpecificDateItemPK.companyId = :companyId"
 			+" AND s.useAtr = :useAtr";
 	private static final String GET_BY_LIST_CODE = GET_ALL 
-			+" AND s.kscmtSpecDateItemPK.itemNo IN :lstSpecificDateItem";
+			+" AND s.ksmstSpecificDateItemPK.itemNo IN :lstSpecificDateItem";
 	/**
 	 * Entity to Domain
 	 * 
-	 * @param kscmtSpecDateItem
+	 * @param ksmstSpecificDateItem
 	 * @return
 	 */
-	private SpecificDateItem toBonusPaySettingDomain(KscmtSpecDateItem kscmtSpecDateItem) {
-		return SpecificDateItem.createFromJavaType(kscmtSpecDateItem.kscmtSpecDateItemPK.companyId,
-				kscmtSpecDateItem.useAtr,
-				kscmtSpecDateItem.kscmtSpecDateItemPK.itemNo, kscmtSpecDateItem.name);
+	private SpecificDateItem toBonusPaySettingDomain(KscmtSpecDateItem ksmstSpecificDateItem) {
+		return SpecificDateItem.createFromJavaType(ksmstSpecificDateItem.ksmstSpecificDateItemPK.companyId,
+				ksmstSpecificDateItem.useAtr,
+				ksmstSpecificDateItem.ksmstSpecificDateItemPK.itemNo, ksmstSpecificDateItem.name);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 */
 	private static KscmtSpecDateItem toEntity(SpecificDateItem domain) {
 		val entity = new KscmtSpecDateItem();
-		entity.kscmtSpecDateItemPK = new KscmtSpecDateItemPK(domain.getCompanyId(), domain.getSpecificDateItemNo().v());
+		entity.ksmstSpecificDateItemPK = new KsmstSpecificDateItemPK(domain.getCompanyId(), domain.getSpecificDateItemNo().v());
 		entity.name = domain.getSpecificName().v();
 		entity.useAtr = domain.getUseAtr().value;
 		return entity;
@@ -75,7 +75,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 		List<KscmtSpecDateItem> lstEntity = new ArrayList<>();
 		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
 			KscmtSpecDateItem b = toEntity(specificDateItem);
-			KscmtSpecDateItem x = this.queryProxy().find(b.kscmtSpecDateItemPK, KscmtSpecDateItem.class).get();
+			KscmtSpecDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KscmtSpecDateItem.class).get();
 			x.setUseAtr(b.useAtr);
 			x.setName(b.name);
 			lstEntity.add(x);

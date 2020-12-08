@@ -20,14 +20,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCMT_DISPLAY_SET_DETAIL")
+@Table(name = "SRCDT_LOG_SET_ITEM_DETAIL")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcmtDisplaySetDetail extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SrcmtDisplaySetDetailPK srcmtDisplaySetDetailPK;
+	public SrcdtLogSetItemDetailPK srcdtLogSetItemDetailPK;
 	
 	/** 条件  */
 	@Basic(optional=false)
@@ -55,24 +55,24 @@ public class SrcmtDisplaySetDetail extends ContractUkJpaEntity implements Serial
 
 	@Override
 	protected Object getKey() {
-		return srcmtDisplaySetDetailPK;
+		return srcdtLogSetItemDetailPK;
 	}
 
 	public LogSetItemDetail toDomain() {
-		return LogSetItemDetail.createFromJavatype(this.srcmtDisplaySetDetailPK.logSetId,
-				this.srcmtDisplaySetDetailPK.itemNo, this.srcmtDisplaySetDetailPK.frame,
+		return LogSetItemDetail.createFromJavatype(this.srcdtLogSetItemDetailPK.logSetId,
+				this.srcdtLogSetItemDetailPK.itemNo, this.srcdtLogSetItemDetailPK.frame,
 				this.condition, this.symbol, this.cid);
 	}
 
 	public static SrcmtDisplaySetDetail toEntity(LogSetItemDetail domain) {
-		return new SrcmtDisplaySetDetail(new SrcmtDisplaySetDetailPK(domain.getLogSetId(), domain.getItemNo(), domain.getFrame()),
+		return new SrcmtDisplaySetDetail(new SrcdtLogSetItemDetailPK(domain.getLogSetId(), domain.getItemNo(), domain.getFrame()),
 				domain.getCondition().v(), domain.getSymbol().code, domain.getCid());
 	}
 
-	public SrcmtDisplaySetDetail(SrcmtDisplaySetDetailPK srcmtDisplaySetDetailPK, String condition,
+	public SrcmtDisplaySetDetail(SrcdtLogSetItemDetailPK srcdtLogSetItemDetailPK, String condition,
 			int symbol, String cid) {
 		super();
-		this.srcmtDisplaySetDetailPK = srcmtDisplaySetDetailPK;
+		this.srcdtLogSetItemDetailPK = srcdtLogSetItemDetailPK;
 		this.condition = condition;
 		this.symbol = symbol;
 		this.condition = condition;

@@ -22,7 +22,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_DELETION_MANUAL")
+@Table(name = "SSPDT_MANUAL_SET_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SspdtDeletionManual extends ContractUkJpaEntity implements Serializable {
@@ -30,7 +30,7 @@ public class SspdtDeletionManual extends ContractUkJpaEntity implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public SspdtDeletionManualPK sspdtDeletionManualPK;
+    public SspdtManualSetDeletionPK sspdtManualSetDeletionPK;
 	
 	/** The company Id. */
 	/** 会社ID */
@@ -154,14 +154,14 @@ public class SspdtDeletionManual extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return sspdtDeletionManualPK;
+		return sspdtManualSetDeletionPK;
 	}
 
 	public ManualSetDeletion toDomain() {
 		boolean isSaveBeforeDeleteFlg = this.isSaveBeforeDeleteFlg == 1;
 		boolean isExistCompressPassFlg = this.isExistCompressPassFlg == 1;
 		boolean haveEmployeeSpecifiedFlg = this.haveEmployeeSpecifiedFlg == 1;
-		return ManualSetDeletion.createFromJavatype(this.sspdtDeletionManualPK.delId, this.companyID,
+		return ManualSetDeletion.createFromJavatype(this.sspdtManualSetDeletionPK.delId, this.companyID,
 				this.delName, isSaveBeforeDeleteFlg, isExistCompressPassFlg, this.passwordCompressFileEncrypt,
 				haveEmployeeSpecifiedFlg, this.sId, this.supplementExplanation, this.referenceDate,
 				this.executionDateTime, this.startDateOfDaily, this.endDateOfDaily,
@@ -177,7 +177,7 @@ public class SspdtDeletionManual extends ContractUkJpaEntity implements Serializ
 		Optional<Integer> startMonthly = ManualSetDeletion.convertYearMonthToInt(manualSetting.getStartMonthOfMonthly());
 		Optional<Integer> endMonthly = ManualSetDeletion.convertYearMonthToInt(manualSetting.getEndMonthOfMonthly());
 		
-		return new SspdtDeletionManual(new SspdtDeletionManualPK(manualSetting.getDelId()),
+		return new SspdtDeletionManual(new SspdtManualSetDeletionPK(manualSetting.getDelId()),
 				manualSetting.getCompanyId(), manualSetting.getDelName().v(), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, 
 				manualSetting.getPasswordCompressFileEncrypt().isPresent() ? manualSetting.getPasswordCompressFileEncrypt().get().v() : null, 

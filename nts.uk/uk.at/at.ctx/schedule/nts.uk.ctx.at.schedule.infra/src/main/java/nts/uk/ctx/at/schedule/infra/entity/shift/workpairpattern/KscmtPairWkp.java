@@ -23,13 +23,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_PAIR_WKP")
+@Table(name = "KSCMT_WKP_WORK_PAIR_SET")
 public class KscmtPairWkp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtPairWkpPK kscmtPairWkpPk;
+	public KscmtWkpWorkPairSetPK kscmtWkpWorkPairSetPk;
 
 	@Column(name = "WORKTYPE_CD")
 	public String workTypeCode;
@@ -41,16 +41,16 @@ public class KscmtPairWkp extends ContractUkJpaEntity implements Serializable {
 	@JoinColumns({ @JoinColumn(name = "WKP_ID", referencedColumnName = "WKP_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "GROUP_NO", referencedColumnName = "GROUP_NO", insertable = false, updatable = false),
 			@JoinColumn(name = "PATTERN_NO", referencedColumnName = "PATTERN_NO", insertable = false, updatable = false), })
-	private KscmtPairPatrnWkp kscmtPairPatrnWkp;
+	private KscmtPairPatrnWkp kscmtWkpPatternItem;
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtPairWkpPk;
+		return this.kscmtWkpWorkPairSetPk;
 	}
 
-	public KscmtPairWkp(KscmtPairWkpPK kscmtPairWkpPk, String workTypeCode, String workTimeCode) {
+	public KscmtPairWkp(KscmtWkpWorkPairSetPK kscmtWkpWorkPairSetPk, String workTypeCode, String workTimeCode) {
 		super();
-		this.kscmtPairWkpPk = kscmtPairWkpPk;
+		this.kscmtWkpWorkPairSetPk = kscmtWkpWorkPairSetPk;
 		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
 	}

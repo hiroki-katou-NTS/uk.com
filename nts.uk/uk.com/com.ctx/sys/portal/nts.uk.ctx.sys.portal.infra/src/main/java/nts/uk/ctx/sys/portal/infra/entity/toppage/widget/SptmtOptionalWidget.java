@@ -12,17 +12,17 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_OPTIONAL_WIDGET")
+@Table(name = "SPTST_OPTIONAL_WIDGET")
 public class SptmtOptionalWidget  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SptmtOptionalWidgetPK sptmtOptionalWidgetPK;
+	public SptstOptionalWidgetPK sptstOptionalWidgetPK;
 
 	@Override
 	protected Object getKey() {
-		return sptmtOptionalWidgetPK;
+		return sptstOptionalWidgetPK;
 	}
 
 }

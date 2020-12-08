@@ -31,7 +31,7 @@ public class JpaSendMailByFunctionSettingGetMemento implements SendMailByFunctio
 	 */
 	@Override
 	public FunctionId getFunctionId() {
-		return new FunctionId(this.entity.getSevmtMailDestinFuncPK().getFunctionId());
+		return new FunctionId(this.entity.getSevstMailDestinFuncPK().getFunctionId());
 	}
 
 	/* (non-Javadoc)

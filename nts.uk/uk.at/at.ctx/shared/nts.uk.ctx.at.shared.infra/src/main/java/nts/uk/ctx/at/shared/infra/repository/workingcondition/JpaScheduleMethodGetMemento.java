@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 
 	/** The kshmt schedule method. */
-	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
+	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 
 	/**
 	 * Instantiates a new jpa schedule method get memento.
@@ -27,7 +27,7 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 *            the entity
 	 */
 	public JpaScheduleMethodGetMemento(KshmtWorkcondScheMeth entity) {
-		this.kshmtWorkcondScheMeth = entity;
+		this.kshmtScheduleMethod = entity;
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	@Override
 	public WorkScheduleBasicCreMethod getBasicCreateMethod() {
 		try {
-			return WorkScheduleBasicCreMethod.valueOf(this.kshmtWorkcondScheMeth.getBasicCreateMethod());
+			return WorkScheduleBasicCreMethod.valueOf(this.kshmtScheduleMethod.getBasicCreateMethod());
 		} catch (Exception e) {
 			return WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR;
 		}
@@ -54,9 +54,9 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public Optional<WorkScheduleBusCal> getWorkScheduleBusCal() {
-		return this.kshmtWorkcondScheMeth.getRefBusinessDayCalendar() != null
+		return this.kshmtScheduleMethod.getRefBusinessDayCalendar() != null
 				? Optional.of(new WorkScheduleBusCal(
-						new JpaWorkScheduleBusCalGetMemento(this.kshmtWorkcondScheMeth)))
+						new JpaWorkScheduleBusCalGetMemento(this.kshmtScheduleMethod)))
 				: Optional.empty();
 	}
 
@@ -68,9 +68,9 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public Optional<MonthlyPatternWorkScheduleCre> getMonthlyPatternWorkScheduleCre() {
-		return this.kshmtWorkcondScheMeth.getRefWorkingHours() != null
+		return this.kshmtScheduleMethod.getRefWorkingHours() != null
 				? Optional.of(new MonthlyPatternWorkScheduleCre(
-						new JpaMPatternWorkScheCreGetMemento(this.kshmtWorkcondScheMeth)))
+						new JpaMPatternWorkScheCreGetMemento(this.kshmtScheduleMethod)))
 				: Optional.empty();
 	}
 

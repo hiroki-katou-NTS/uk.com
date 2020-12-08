@@ -13,7 +13,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	private static final int TRUE_VALUE = 1;
 	
 	/** The kshmt forward set of public hd. */
-	private KshmtHdpubForwardSet kshmtHdpubForwardSet;
+	private KshmtHdpubForwardSet kshmtForwardSetOfPublicHd;
 	
 	/**
 	 * Instantiates a new jpa forward setting of public holiday get memento.
@@ -21,7 +21,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 * @param entity the entity
 	 */
 	public JpaForwardSettingOfPublicHolidayGetMemento(KshmtHdpubForwardSet entity){
-		this.kshmtHdpubForwardSet = entity;
+		this.kshmtForwardSetOfPublicHd = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.kshmtHdpubForwardSet.getCid();
+		return this.kshmtForwardSetOfPublicHd.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 */
 	@Override
 	public boolean getIsTransferWhenPublicHdIsMinus() {
-		if (this.kshmtHdpubForwardSet.getIsPublicHdMinus() == TRUE_VALUE){
+		if (this.kshmtForwardSetOfPublicHd.getIsPublicHdMinus() == TRUE_VALUE){
 			return true;
 		}
 		return false;
@@ -48,7 +48,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 */
 	@Override
 	public PublicHolidayCarryOverDeadline getCarryOverDeadline() {
-		return PublicHolidayCarryOverDeadline.valueOf(this.kshmtHdpubForwardSet.getCarryOverDeadline());
+		return PublicHolidayCarryOverDeadline.valueOf(this.kshmtForwardSetOfPublicHd.getCarryOverDeadline());
 	}
 
 }

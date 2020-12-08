@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgCom;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgComPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
@@ -40,7 +40,7 @@ public class JpaDivergenceTimeErrorAlarmMessageSetMemento implements DivergenceT
 	 */
 	@Override
 	public void setCId(CompanyId cId) {
-		KrcmtDvgcEralMsgComPK pk = new KrcmtDvgcEralMsgComPK();
+		KrcstDvgcTimeEaMsgPK pk = new KrcstDvgcTimeEaMsgPK();
 		pk.setCid(cId.v());
 		this.entity.setId(pk);
 	}

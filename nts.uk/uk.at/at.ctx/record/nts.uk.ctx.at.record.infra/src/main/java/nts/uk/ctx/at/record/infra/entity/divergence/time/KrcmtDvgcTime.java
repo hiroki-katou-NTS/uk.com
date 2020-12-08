@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DVGC_TIME")
+@Table(name = "KRCST_DVGC_TIME")
 public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -39,7 +39,7 @@ public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 
 	/** The id. */
 	@EmbeddedId
-	private KrcmtDvgcTimePK id;
+	private KrcstDvgcTimePK id;
 
 	/** The dvgc reason inputed. */
 	@Column(name = "DVGC_REASON_INPUTED")
@@ -74,7 +74,7 @@ public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "[NO]", referencedColumnName = "[NO]", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KrcmtDvgcAttendance> krcmtDvgcAttendances;
+	private List<KrcmtDvgcAttendance> krcstDvgcAttendances;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

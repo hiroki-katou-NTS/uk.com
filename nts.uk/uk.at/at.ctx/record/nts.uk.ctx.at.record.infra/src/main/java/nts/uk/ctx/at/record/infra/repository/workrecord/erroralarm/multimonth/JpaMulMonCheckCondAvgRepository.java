@@ -34,7 +34,7 @@ public class JpaMulMonCheckCondAvgRepository extends JpaRepository implements Mu
 		KrcmtAlstChkmltUdcavg updateEntity = this.queryProxy().find(
 				mulMonthCheckCondAverage.getErrorAlarmCheckID(), KrcmtAlstChkmltUdcavg.class).get();
 		updateEntity.isUseFlg = newEntity.isUseFlg;
-		updateEntity.krcmtEralstCndgrp = newEntity.krcmtEralstCndgrp;
+		updateEntity.krcmtErAlAtdItemCon = newEntity.krcmtErAlAtdItemCon;
 		this.commandProxy().update(updateEntity);
 		this.getEntityManager().flush();
 		

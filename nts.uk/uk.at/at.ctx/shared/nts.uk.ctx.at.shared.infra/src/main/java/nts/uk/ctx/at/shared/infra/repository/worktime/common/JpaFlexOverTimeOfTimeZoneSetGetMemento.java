@@ -38,7 +38,7 @@ public class JpaFlexOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZon
 	 */
 	@Override
 	public EmTimezoneNo getWorkTimezoneNo() {
-		return new EmTimezoneNo(this.entity.getKshmtWtFleOverTsPK().getWorktimeNo());
+		return new EmTimezoneNo(this.entity.getKshmtFlexOtTimeSetPK().getWorktimeNo());
 	}
 
 	/*

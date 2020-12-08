@@ -26,9 +26,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame;
-import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFramePK;
-import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFramePK_;
-import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame_;
+import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK;
+import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK_;
+import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame_;
 
 /**
  * The Class JpaWorkdayoffFrameRepository.
@@ -48,7 +48,7 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 	public Optional<WorkdayoffFrame> findWorkdayoffFrame(CompanyId companyId,
 			int workdayoffFrameNo) {
 		return this.queryProxy()
-				.find(new KshmtHdWorkFramePK(companyId.v(), (short) workdayoffFrameNo),
+				.find(new KshstWorkdayoffFramePK(companyId.v(), (short) workdayoffFrameNo),
 						KshmtHdWorkFrame.class)
 				.map(e -> this.toDomain(e));
 	}
@@ -91,8 +91,8 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 
 		// eq company id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtHdWorkFrame_.kshmtHdWorkFramePK)
-						.get(KshmtHdWorkFramePK_.cid), companyId));
+				.add(criteriaBuilder.equal(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
+						.get(KshstWorkdayoffFramePK_.cid), companyId));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -160,10 +160,10 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 
 			// eq company id
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdWorkFrame_.kshmtHdWorkFramePK)
-							.get(KshmtHdWorkFramePK_.cid), companyId));
-			lstpredicateWhere.add(root.get(KshmtHdWorkFrame_.kshmtHdWorkFramePK)
-					.get(KshmtHdWorkFramePK_.wdoFrNo).in(splitData));
+					.add(criteriaBuilder.equal(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
+							.get(KshstWorkdayoffFramePK_.cid), companyId));
+			lstpredicateWhere.add(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
+					.get(KshstWorkdayoffFramePK_.wdoFrNo).in(splitData));
 			
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -196,9 +196,9 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 
 		// eq company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtHdWorkFrame_.kshmtHdWorkFramePK).get(KshmtHdWorkFramePK_.cid), companyId));
+				root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK).get(KshstWorkdayoffFramePK_.cid), companyId));
 		// useAtr condition
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtHdWorkFrame_.useAtr), useAtr));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshstWorkdayoffFrame_.useAtr), useAtr));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

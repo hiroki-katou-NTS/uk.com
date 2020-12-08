@@ -15,12 +15,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEMT_LAYOUT_NEW_ENTRY")
+@Table(name = "PPEMT_NEW_LAYOUT")
 public class PpemtLayoutNewEntry extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtLayoutNewEntryPk ppemtLayoutNewEntryPk;
+	public PpemtNewLayoutPk ppemtNewLayoutPk;
 
 	@Basic(optional = false)
 	@Column(name = "CID")
@@ -36,6 +36,6 @@ public class PpemtLayoutNewEntry extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.ppemtLayoutNewEntryPk;
+		return this.ppemtNewLayoutPk;
 	}
 }

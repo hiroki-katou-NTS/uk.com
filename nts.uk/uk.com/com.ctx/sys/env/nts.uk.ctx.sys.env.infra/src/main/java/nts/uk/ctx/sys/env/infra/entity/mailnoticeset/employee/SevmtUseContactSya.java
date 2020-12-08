@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class SevmtUseContactSya.
  */
 @Entity
-@Table(name = "SEVMT_USE_CONTACT_SYA")
+@Table(name = "SEVST_USE_CONTACT_SET")
 @Getter
 @Setter
 public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializable {
@@ -29,7 +29,7 @@ public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializa
     
     /** The sevst use contact set PK. */
     @EmbeddedId
-    protected SevmtUseContactSyaPK sevmtUseContactSyaPK;
+    protected SevstUseContactSetPK sevstUseContactSetPK;
     
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
@@ -47,10 +47,10 @@ public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializa
     /**
      * Instantiates a new sevst use contact set.
      *
-     * @param sevmtUseContactSyaPK the sevst use contact set PK
+     * @param sevstUseContactSetPK the sevst use contact set PK
      */
-    public SevmtUseContactSya(SevmtUseContactSyaPK sevmtUseContactSyaPK) {
-        this.sevmtUseContactSyaPK = sevmtUseContactSyaPK;
+    public SevmtUseContactSya(SevstUseContactSetPK sevstUseContactSetPK) {
+        this.sevstUseContactSetPK = sevstUseContactSetPK;
     }
 
     /* (non-Javadoc)
@@ -58,7 +58,7 @@ public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializa
      */
     @Override
     public String toString() {
-        return "javaapplication1.SevmtUseContactSya[ sevmtUseContactSyaPK=" + sevmtUseContactSyaPK + " ]";
+        return "javaapplication1.SevmtUseContactSya[ sevstUseContactSetPK=" + sevstUseContactSetPK + " ]";
     }
 
 	/* (non-Javadoc)
@@ -66,14 +66,14 @@ public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.sevmtUseContactSyaPK;
+		return this.sevstUseContactSetPK;
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + exclusVer;
-		result = prime * result + ((sevmtUseContactSyaPK == null) ? 0 : sevmtUseContactSyaPK.hashCode());
+		result = prime * result + ((sevstUseContactSetPK == null) ? 0 : sevstUseContactSetPK.hashCode());
 		result = prime * result + useMailSet;
 		return result;
 	}
@@ -88,10 +88,10 @@ public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializa
 		SevmtUseContactSya other = (SevmtUseContactSya) obj;
 		if (exclusVer != other.exclusVer)
 			return false;
-		if (sevmtUseContactSyaPK == null) {
-			if (other.sevmtUseContactSyaPK != null)
+		if (sevstUseContactSetPK == null) {
+			if (other.sevstUseContactSetPK != null)
 				return false;
-		} else if (!sevmtUseContactSyaPK.equals(other.sevmtUseContactSyaPK))
+		} else if (!sevstUseContactSetPK.equals(other.sevstUseContactSetPK))
 			return false;
 		if (useMailSet != other.useMailSet)
 			return false;

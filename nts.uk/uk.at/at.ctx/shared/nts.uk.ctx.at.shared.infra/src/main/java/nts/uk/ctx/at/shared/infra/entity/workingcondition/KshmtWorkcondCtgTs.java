@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_WORKCOND_CTG_TS")
+@Table(name = "KSHMT_WORK_CAT_TIME_ZONE")
 public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 
 	/** The kshmt work cat time zone PK. */
 	@EmbeddedId
-	protected KshmtWorkcondCtgTsPK kshmtWorkcondCtgTsPK;
+	protected KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK;
 
 	/**
 	 * Instantiates a new kshmt work cat time zone.
@@ -46,7 +46,7 @@ public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWorkcondCtgTsPK != null ? kshmtWorkcondCtgTsPK.hashCode() : 0);
+		hash += (kshmtWorkCatTimeZonePK != null ? kshmtWorkCatTimeZonePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -61,9 +61,9 @@ public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 			return false;
 		}
 		KshmtWorkcondCtgTs other = (KshmtWorkcondCtgTs) object;
-		if ((this.kshmtWorkcondCtgTsPK == null && other.kshmtWorkcondCtgTsPK != null)
-				|| (this.kshmtWorkcondCtgTsPK != null
-						&& !this.kshmtWorkcondCtgTsPK.equals(other.kshmtWorkcondCtgTsPK))) {
+		if ((this.kshmtWorkCatTimeZonePK == null && other.kshmtWorkCatTimeZonePK != null)
+				|| (this.kshmtWorkCatTimeZonePK != null
+						&& !this.kshmtWorkCatTimeZonePK.equals(other.kshmtWorkCatTimeZonePK))) {
 			return false;
 		}
 		return true;
@@ -76,21 +76,21 @@ public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWorkcondCtgTsPK;
+		return this.kshmtWorkCatTimeZonePK;
 	}
 
-	public KshmtWorkcondCtgTs(KshmtWorkcondCtgTsPK kshmtWorkcondCtgTsPK) {
+	public KshmtWorkcondCtgTs(KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK) {
 		super();
-		this.kshmtWorkcondCtgTsPK = kshmtWorkcondCtgTsPK;
+		this.kshmtWorkCatTimeZonePK = kshmtWorkCatTimeZonePK;
 	}
 	
 	public TimeZone toDomain() {
-		return new TimeZone(NotUseAtr.valueOf(this.getUseAtr()), this.kshmtWorkcondCtgTsPK.getCnt(), this.getStartTime(), this.getEndTime());
+		return new TimeZone(NotUseAtr.valueOf(this.getUseAtr()), this.kshmtWorkCatTimeZonePK.getCnt(), this.getStartTime(), this.getEndTime());
 		
 	}
 	
 	public static KshmtWorkcondCtgTs toEntity(TimeZone timeZone,String historyId,int workCategoryAtr) {
-		KshmtWorkcondCtgTs data =  new KshmtWorkcondCtgTs(new KshmtWorkcondCtgTsPK(historyId, workCategoryAtr, timeZone.getCnt()));
+		KshmtWorkcondCtgTs data =  new KshmtWorkcondCtgTs(new KshmtWorkCatTimeZonePK(historyId, workCategoryAtr, timeZone.getCnt()));
 		data.setUseAtr(timeZone.getUseAtr().value);
 		data.setStartTime(timeZone.getStart().valueAsMinutes());
 		data.setEndTime(timeZone.getEnd().valueAsMinutes());

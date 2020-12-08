@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRound;
-import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRoundPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingMonthRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -66,7 +66,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	 */
 	private KrcmtCalcMRound convertToDbType(RoundingMonth month) {
 		KrcmtCalcMRound monthSet = new KrcmtCalcMRound();
-		KrcmtCalcMRoundPK monthSetPK = new KrcmtCalcMRoundPK(month.getCompanyId(), month.getTimeItemId());
+		KrcstMonItemRoundPK monthSetPK = new KrcstMonItemRoundPK(month.getCompanyId(), month.getTimeItemId());
 		monthSet.roundUnit = month.getUnit().value;
 		monthSet.roundProc = month.getRounding().value;
 		monthSet.PK = monthSetPK;
@@ -107,7 +107,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	 */
 	@Override
 	public void update(RoundingMonth month) {
-		KrcmtCalcMRoundPK primaryKey = new KrcmtCalcMRoundPK(month.getCompanyId(), month.getTimeItemId());
+		KrcstMonItemRoundPK primaryKey = new KrcstMonItemRoundPK(month.getCompanyId(), month.getTimeItemId());
 		KrcmtCalcMRound entity = this.queryProxy().find(primaryKey, KrcmtCalcMRound.class).get();
 		entity.roundUnit = month.getUnit().value;
 		entity.roundProc = month.getRounding().value;
@@ -124,7 +124,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	 */
 	@Override
 	public Optional<RoundingMonth> findByCId(String companyId, Integer timeItemId) {
-		return this.queryProxy().find(new KrcmtCalcMRoundPK(companyId, timeItemId), KrcmtCalcMRound.class)
+		return this.queryProxy().find(new KrcstMonItemRoundPK(companyId, timeItemId), KrcmtCalcMRound.class)
 				.map(c -> convertToDomain(c));
 	}
 

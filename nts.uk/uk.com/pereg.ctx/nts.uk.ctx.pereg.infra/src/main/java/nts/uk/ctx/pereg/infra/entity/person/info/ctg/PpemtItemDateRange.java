@@ -15,13 +15,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_ITEM_DATE_RANGE")
+@Table(name = "PPEMT_DATE_RANGE_ITEM")
 public class PpemtItemDateRange extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpemtCtgPK ppemtCtgPK;
+	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE_ITEM_ID")
@@ -37,6 +37,6 @@ public class PpemtItemDateRange extends ContractUkJpaEntity implements Serializa
 
 	@Override
 	protected Object getKey() {
-		return ppemtCtgPK;
+		return ppemtPerInfoCtgPK;
 	}
 }

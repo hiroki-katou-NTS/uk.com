@@ -20,13 +20,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_STAMP_MNG")
+@Table(name = "KRCMT_STAMP_IMPRINT")
 public class KrcmtStampMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtStampMngPK krcdtStampReflectPK;
+	public KrcmtStampImprintPK krcdtStampReflectPK;
 
 	/** 休出切替区分*/
 	@Column(name = "BREAK_OF_SWITCH_ATR")
@@ -71,7 +71,7 @@ public class KrcmtStampMng extends ContractUkJpaEntity implements Serializable {
 	 * @param goBackOutCorrectionClass the go back out correction class
 	 * @param autoStampForFutureDayClass the auto stamp for future day class
 	 */
-	public KrcmtStampMng(KrcmtStampMngPK krcdtStampReflectPK, int breakSwitchClass,
+	public KrcmtStampMng(KrcmtStampImprintPK krcdtStampReflectPK, int breakSwitchClass,
 			int autoStampReflectionClass, int actualStampOfPriorityClass,
 			int reflectWorkingTimeClass, int goBackOutCorrectionClass, 
 			int autoStampForFutureDayClass
@@ -106,7 +106,7 @@ public class KrcmtStampMng extends ContractUkJpaEntity implements Serializable {
 	 */
 	public static KrcmtStampMng toEntity(StampReflectionManagement domain){
 		return new KrcmtStampMng(
-				new KrcmtStampMngPK(domain.getCompanyId()),
+				new KrcmtStampImprintPK(domain.getCompanyId()),
 				domain.getBreakSwitchClass().value,domain.getAutoStampReflectionClass().value,domain.getActualStampOfPriorityClass().value, domain.getReflectWorkingTimeClass().value, domain.getGoBackOutCorrectionClass().value,
 				domain.getAutoStampForFutureDayClass().value
 				);

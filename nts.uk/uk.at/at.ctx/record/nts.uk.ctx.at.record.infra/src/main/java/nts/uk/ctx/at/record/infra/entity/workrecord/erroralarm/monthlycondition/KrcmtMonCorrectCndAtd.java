@@ -38,9 +38,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 //import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralEmployment;
 //import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralJobTitle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndgrp;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndgrpPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemConPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexprange;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexprangePK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTargetPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRangePK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
@@ -61,7 +61,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CND")
+@Table(name = "KRCMT_ERAL_CONDITION")
 public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -114,7 +114,7 @@ public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serial
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP1", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
-	public KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk1;
+	public KrcmtEralstCndexpiptchk krcstErAlConGroup1;
 
 	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP2")
@@ -122,10 +122,10 @@ public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serial
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP2", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
-	public KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk2;
+	public KrcmtEralstCndexpiptchk krcstErAlConGroup2;
 
-	@OneToOne(mappedBy = "krcmtMonCorrectCndAtd")
-	public KrcmtEralMonSet krcmtEralMonSet;
+	@OneToOne(mappedBy = "krcmtTimeChkMonthly")
+	public KrcmtEralMonSet krcmtMonthlyCorrectCon;
 
 	@Override
 	protected Object getKey() {
@@ -137,45 +137,45 @@ public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serial
 		domain.setCheckId(entity.eralCheckId);
 		domain.setDisplayMessage(entity.messageDisplay);
 		// Set AttendanceItemCondition
-		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional.ofNullable(entity.krcmtEralstCndexpiptchk1)
+		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional.ofNullable(entity.krcstErAlConGroup1)
 				.orElse(new KrcmtEralstCndexpiptchk("", 0, new ArrayList<>())).lstAtdItemCon.stream().map(
-						atdItemCon -> convertKrcmtEralstCndgrpToDomain(entity, atdItemCon, companyId, errorAlarmCode))
+						atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
 						.collect(Collectors.toList());
-		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional.ofNullable(entity.krcmtEralstCndexpiptchk2)
+		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional.ofNullable(entity.krcstErAlConGroup2)
 				.orElse(new KrcmtEralstCndexpiptchk("", 0, new ArrayList<>())).lstAtdItemCon.stream().map(
-						atdItemCon -> convertKrcmtEralstCndgrpToDomain(entity, atdItemCon, companyId, errorAlarmCode))
+						atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
 						.collect(Collectors.toList());
 		domain.createAttendanceItemCondition(entity.operatorBetweenGroups, entity.group2UseAtr == 1)
-				.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcmtEralstCndexpiptchk1)
+				.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcstErAlConGroup1)
 						.orElse(new KrcmtEralstCndexpiptchk("", (0), new ArrayList<>())).conditionOperator,
 						conditionsGroup1)
-				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtEralstCndexpiptchk2)
+				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcstErAlConGroup2)
 						.orElse(new KrcmtEralstCndexpiptchk("", (0), new ArrayList<>())).conditionOperator,
 						conditionsGroup2);
 		return domain;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtEralstCndgrpToDomain(KrcmtMonCorrectCndAtd entity,
+	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtMonCorrectCndAtd entity,
 			KrcmtEralstCndgrp atdItemCon, String companyId, String errorAlarmCode) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
-				(atdItemCon.krcmtEralstCndgrpPK.atdItemConNo), (atdItemCon.conditionAtr), (atdItemCon.useAtr == 1),
+				(atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo), (atdItemCon.conditionAtr), (atdItemCon.useAtr == 1),
 				atdItemCon.type);
 		// Set Target
 		if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 			atdItemConDomain.setUncountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
 							.filter(atdItemTarget -> (atdItemTarget.targetAtr == 2))
-							.findFirst().get().krcmtEralstCndexprangePK.attendanceItemId);
+							.findFirst().get().krcstErAlAtdTargetPK.attendanceItemId);
 		} else {
 			atdItemConDomain.setCountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
 							.filter(atdItemTarget -> atdItemTarget.targetAtr == 0)
-							.map(addItem -> addItem.krcmtEralstCndexprangePK.attendanceItemId)
+							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
 							.collect(Collectors.toList()),
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
 							.filter(atdItemTarget -> atdItemTarget.targetAtr == 1)
-							.map(addItem -> addItem.krcmtEralstCndexprangePK.attendanceItemId)
+							.map(addItem -> addItem.krcstErAlAtdTargetPK.attendanceItemId)
 							.collect(Collectors.toList()));
 		}
 		// Set Compare
@@ -233,7 +233,7 @@ public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serial
 						atdItemCon.erAlCompareSingle.compareAtr,
 						atdItemCon.erAlCompareSingle.conditionType,
 						(V) new AttendanceItemId(
-								atdItemCon.erAlSingleAtd.get(0).krcmtEralstCndexpsglatdPK.attendanceItemId));
+								atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
 			}
 		}
 		return atdItemConDomain;
@@ -249,44 +249,44 @@ public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serial
 		int conditionOperator1 = domain.getAtdItemCondition().getGroup1().getConditionOperator().value;
 		List<KrcmtEralstCndgrp> lstAtdItemCon1 = domain.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon()
 				.stream()
-				.map(erAlAtdItemCon -> getKrcmtEralstCndgrpFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
+				.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
 				.collect(Collectors.toList());
-		KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk1 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup1, conditionOperator1,
+		KrcmtEralstCndexpiptchk krcstErAlConGroup1 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup1, conditionOperator1,
 				lstAtdItemCon1);
 		int conditionOperator2 = domain.getAtdItemCondition().getGroup2().getConditionOperator().value;
 		List<KrcmtEralstCndgrp> lstAtdItemCon2 = domain.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon()
 				.stream()
-				.map(erAlAtdItemCon -> getKrcmtEralstCndgrpFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
+				.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
 				.collect(Collectors.toList());
-		KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk2 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup2, conditionOperator2,
+		KrcmtEralstCndexpiptchk krcstErAlConGroup2 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup2, conditionOperator2,
 				lstAtdItemCon2);
 		KrcmtMonCorrectCndAtd entity = new KrcmtMonCorrectCndAtd(eralCheckId, displayMessage, operatorBetweenGroups,
-				group2UseAtr, atdItemConditionGroup1, krcmtEralstCndexpiptchk1, atdItemConditionGroup2, krcmtEralstCndexpiptchk2);
+				group2UseAtr, atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2, krcstErAlConGroup2);
 		return entity;
 	}
 
-	private static KrcmtEralstCndgrp getKrcmtEralstCndgrpFromDomain(String atdItemConditionGroup1,
+	private static KrcmtEralstCndgrp getKrcmtErAlAtdItemConFromDomain(String atdItemConditionGroup1,
 			ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
-		KrcmtEralstCndgrpPK krcmtEralstCndgrpPK = new KrcmtEralstCndgrpPK(atdItemConditionGroup1,
+		KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
 				(erAlAtdItemCon.getTargetNO()));
 		List<KrcmtEralstCndexprange> lstAtdItemTarget = new ArrayList<>();
 		if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
 			lstAtdItemTarget.add(new KrcmtEralstCndexprange(
-					new KrcmtEralstCndexprangePK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
+					new KrcstErAlAtdTargetPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO(),
 							erAlAtdItemCon.getUncountableTarget().getAttendanceItem()),
 					2));
 		} else {
 			List<KrcmtEralstCndexprange> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getAdditionAttendanceItems().stream()
 					.map(atdItemId -> new KrcmtEralstCndexprange(
-							new KrcmtEralstCndexprangePK(atdItemConditionGroup1,
+							new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
 									erAlAtdItemCon.getTargetNO(), atdItemId),
 							0))
 					.collect(Collectors.toList());
 			List<KrcmtEralstCndexprange> lstAtdItemTargetSub = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getSubstractionAttendanceItems().stream()
 					.map(atdItemId -> new KrcmtEralstCndexprange(
-							new KrcmtEralstCndexprangePK(atdItemConditionGroup1,
+							new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
 									erAlAtdItemCon.getTargetNO(), atdItemId),
 							1))
 					.collect(Collectors.toList());
@@ -355,22 +355,22 @@ public class KrcmtMonCorrectCndAtd extends ContractUkJpaEntity implements Serial
 					new KrcstErAlInputCheckPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
 					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
-		return new KrcmtEralstCndgrp(krcmtEralstCndgrpPK, erAlAtdItemCon.getConditionAtr().value,
+		return new KrcmtEralstCndgrp(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
 				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
 	}
 
 	public KrcmtMonCorrectCndAtd(String eralCheckId, String messageDisplay, int operatorBetweenGroups,
-			int group2UseAtr, String atdItemConditionGroup1, KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk1,
-			String atdItemConditionGroup2, KrcmtEralstCndexpiptchk krcmtEralstCndexpiptchk2) {
+			int group2UseAtr, String atdItemConditionGroup1, KrcmtEralstCndexpiptchk krcstErAlConGroup1,
+			String atdItemConditionGroup2, KrcmtEralstCndexpiptchk krcstErAlConGroup2) {
 		super();
 		this.eralCheckId = eralCheckId;
 		this.messageDisplay = messageDisplay;
 		this.operatorBetweenGroups = operatorBetweenGroups;
 		this.group2UseAtr = group2UseAtr;
 		this.atdItemConditionGroup1 = atdItemConditionGroup1;
-		this.krcmtEralstCndexpiptchk1 = krcmtEralstCndexpiptchk1;
+		this.krcstErAlConGroup1 = krcstErAlConGroup1;
 		this.atdItemConditionGroup2 = atdItemConditionGroup2;
-		this.krcmtEralstCndexpiptchk2 = krcmtEralstCndexpiptchk2;
+		this.krcstErAlConGroup2 = krcstErAlConGroup2;
 	}
 }

@@ -18,10 +18,10 @@ public class JpaLoginLogGetMemento implements LoginLogGetMemento{
 	/**
 	 * Instantiates a new jpa login log get memento.
 	 *
-	 * @param sgwdtLoginLog the sgwmt login log
+	 * @param sgwmtLoginLog the sgwmt login log
 	 */
-	public JpaLoginLogGetMemento(SgwdtLoginLog sgwdtLoginLog) {
-		this.entity = sgwdtLoginLog;
+	public JpaLoginLogGetMemento(SgwdtLoginLog sgwmtLoginLog) {
+		this.entity = sgwmtLoginLog;
 	}
 
 	/* (non-Javadoc)

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento{
 	
 	/** The kscst est aggregate set. */
-	private KscmtEstAggregate kscmtEstAggregate;
+	private KscmtEstAggregate kscstEstAggregateSet;
 	
 	/**
 	 * Instantiates a new jpa aggregate setting get memento.
@@ -25,7 +25,7 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	 * @param entity the entity
 	 */
 	public JpaAggregateSettingGetMemento(KscmtEstAggregate entity){
-		this.kscmtEstAggregate = entity;
+		this.kscstEstAggregateSet = entity;
 	}
 
 	/* (non-Javadoc)
@@ -33,7 +33,7 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kscmtEstAggregate.getCid());
+		return new CompanyId(this.kscstEstAggregateSet.getCid());
 	}
 
 	/* (non-Javadoc)
@@ -42,8 +42,8 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	@Override
 	public List<ExtraTimeItemNo> getPremiumNo() {
 		List<ExtraTimeItemNo> list = new ArrayList<>();
-		this.kscmtEstAggregate.getKscmtPerCostExtraItem().stream().forEach(e -> {
-			list.add(new ExtraTimeItemNo(e.getKscmtPerCostExtraItemPK().getPremiumNo()));
+		this.kscstEstAggregateSet.getKscstPerCostExtraItem().stream().forEach(e -> {
+			list.add(new ExtraTimeItemNo(e.getKscstPerCostExtraItemPK().getPremiumNo()));
 		});
 		return list;
 	}
@@ -53,10 +53,10 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	 */
 	@Override
 	public MonthlyWorkingDaySetting getMonthlyWorkingDaySetting() {
-		return new MonthlyWorkingDaySetting(HalfDayWorkCountCat.valueOf(this.kscmtEstAggregate.getHalfDayAtr()),
-											NotUseAtr.valueOf(this.kscmtEstAggregate.getYearHdAtr()),
-											NotUseAtr.valueOf(this.kscmtEstAggregate.getSphdAtr()),
-											NotUseAtr.valueOf(this.kscmtEstAggregate.getHavyHdAtr()));
+		return new MonthlyWorkingDaySetting(HalfDayWorkCountCat.valueOf(this.kscstEstAggregateSet.getHalfDayAtr()),
+											NotUseAtr.valueOf(this.kscstEstAggregateSet.getYearHdAtr()),
+											NotUseAtr.valueOf(this.kscstEstAggregateSet.getSphdAtr()),
+											NotUseAtr.valueOf(this.kscstEstAggregateSet.getHavyHdAtr()));
 	}
 
 }

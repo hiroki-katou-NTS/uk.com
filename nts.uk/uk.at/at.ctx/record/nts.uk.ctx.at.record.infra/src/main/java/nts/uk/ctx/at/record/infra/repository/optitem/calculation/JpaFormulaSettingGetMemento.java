@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetail;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetailPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSettingPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
@@ -28,8 +28,8 @@ public class JpaFormulaSettingGetMemento implements FormulaSettingGetMemento{
 	 * @param operatorAtr the operator atr
 	 */
 	public JpaFormulaSettingGetMemento(KrcmtAnyfDetail setting) {
-		if (setting.getKrcmtAnyfDetailPK() == null) {
-			setting.setKrcmtAnyfDetailPK(new KrcmtAnyfDetailPK());
+		if (setting.getKrcmtFormulaSettingPK() == null) {
+			setting.setKrcmtFormulaSettingPK(new KrcmtFormulaSettingPK());
 		}
 		this.setting = setting;
 	}

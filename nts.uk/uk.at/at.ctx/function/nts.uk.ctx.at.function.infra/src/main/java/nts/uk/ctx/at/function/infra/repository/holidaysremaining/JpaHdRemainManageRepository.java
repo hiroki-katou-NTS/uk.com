@@ -12,9 +12,9 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ItemOutputForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtRptRemlstOutitem;
-import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtRptRemlstOutitemPk;
+import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManagePk;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtRptRemlstOuthdsp;
-import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtRptRemlstOuthdspPk;
+import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHolidayPk;
 
 @Stateless
 public class JpaHdRemainManageRepository extends JpaRepository implements HolidaysRemainingManagementRepository {
@@ -64,18 +64,18 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 			oldData.monthlyPublic = updateData.monthlyPublic;
 			oldData.childCareLeave = updateData.childCareLeave;
 			oldData.nursingCareLeave = updateData.nursingCareLeave;
-			oldData.kfnmtRptRemlstOuthdsps = updateData.kfnmtRptRemlstOuthdsps;
+			oldData.kfnmtSpecialHolidays = updateData.kfnmtSpecialHolidays;
 			this.commandProxy().update(oldData);
 		}
 	}
 
 	@Override
 	public void remove(String companyId, String code) {
-		KfnmtRptRemlstOutitemPk kfnmtRptRemlstOuthdspPk = new KfnmtRptRemlstOutitemPk(companyId, code);
-		Optional<KfnmtRptRemlstOutitem> optOldData = this.queryProxy().find(kfnmtRptRemlstOuthdspPk,
+		KfnmtHdRemainManagePk kfnmtSpecialHolidayPk = new KfnmtHdRemainManagePk(companyId, code);
+		Optional<KfnmtRptRemlstOutitem> optOldData = this.queryProxy().find(kfnmtSpecialHolidayPk,
 				KfnmtRptRemlstOutitem.class);
 		if (optOldData.isPresent()) {
-			this.commandProxy().remove(KfnmtRptRemlstOutitem.class, kfnmtRptRemlstOuthdspPk);
+			this.commandProxy().remove(KfnmtRptRemlstOutitem.class, kfnmtSpecialHolidayPk);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	}
 
 	private KfnmtRptRemlstOutitem toEntity(HolidaysRemainingManagement domain) {
-		return new KfnmtRptRemlstOutitem(new KfnmtRptRemlstOutitemPk(domain.getCompanyID(), domain.getCode().v()),
+		return new KfnmtRptRemlstOutitem(new KfnmtHdRemainManagePk(domain.getCompanyID(), domain.getCode().v()),
 				domain.getName().v(), domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHours() ? 1 : 0,
@@ -105,7 +105,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 						: 0,
 				domain.getListItemsOutput().getSpecialHoliday().stream()
 						.map(itemDetai -> new KfnmtRptRemlstOuthdsp(
-								new KfnmtRptRemlstOuthdspPk(domain.getCompanyID(), domain.getCode().v(), itemDetai),
+								new KfnmtSpecialHolidayPk(domain.getCompanyID(), domain.getCode().v(), itemDetai),
 								null))
 						.collect(Collectors.toList()));
 	}
@@ -117,8 +117,8 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 						entity.outputItemsHolidays > 0, entity.childCareLeave > 0, entity.yearlyHoliday > 0,
 						entity.insideHours > 0, entity.insideHalfDay > 0, entity.numRemainPause > 0,
 						entity.undigestedPause > 0, entity.pauseItem > 0, entity.yearlyReserved > 0,
-						entity.kfnmtRptRemlstOuthdsps.stream()
-								.map(itemDetail -> itemDetail.kfnmtRptRemlstOuthdspPk.specialCd)
+						entity.kfnmtSpecialHolidays.stream()
+								.map(itemDetail -> itemDetail.kfnmtSpecialHolidayPk.specialCd)
 								.collect(Collectors.toList())));
 
 	}

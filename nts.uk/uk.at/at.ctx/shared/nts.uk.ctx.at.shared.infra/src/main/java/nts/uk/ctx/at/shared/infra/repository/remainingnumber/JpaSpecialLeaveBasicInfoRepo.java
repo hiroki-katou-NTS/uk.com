@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtHdspBasic;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtHdspBasicPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfoPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -54,7 +54,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public void update(SpecialLeaveBasicInfo domain) {
-		KrcmtHdspBasicPK key = new KrcmtHdspBasicPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		Optional<KrcmtHdspBasic> entity = this.queryProxy().find(key, KrcmtHdspBasic.class);
 		if (!entity.isPresent()) {
 			return;
@@ -68,7 +68,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public void delete(String sID, int spLeavCD) {
-		KrcmtHdspBasicPK key = new KrcmtHdspBasicPK(sID, spLeavCD);
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(sID, spLeavCD);
 		this.commandProxy().remove(KrcmtHdspBasic.class, key);
 	}
 
@@ -105,7 +105,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	private KrcmtHdspBasic toEntity(SpecialLeaveBasicInfo domain) {
 		KrcmtHdspBasic entity = new KrcmtHdspBasic();
 		entity.cID = domain.getCID();
-		KrcmtHdspBasicPK key = new KrcmtHdspBasicPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		entity.key = key;
 		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
@@ -171,7 +171,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 				
 				List<KrcmtHdspBasic> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					KrcmtHdspBasic entity = new KrcmtHdspBasic();
-					entity.key = new KrcmtHdspBasicPK(rec.getString("SID"), rec.getInt("SPECIAL_LEAVE_CD"));
+					entity.key = new KrcmtSpecialLeaveInfoPK(rec.getString("SID"), rec.getInt("SPECIAL_LEAVE_CD"));
 					entity.cID = rec.getString("CID");
 					entity.useCls = rec.getInt("USE_ATR");
 					entity.appSetting = rec.getInt("APPLICATION_SET");

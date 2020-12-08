@@ -16,13 +16,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_ITEM_SORT")
+@Table(name = "PPEMT_PER_INFO_ITEM_ORDER")
 public class PpemtItemSort extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpemtItemPK ppemtItemPK;
+	public PpemtPerInfoItemPK ppemtPerInfoItemPK;
 
 	@Basic(optional = false)
 	@NotNull
@@ -41,6 +41,6 @@ public class PpemtItemSort extends ContractUkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return ppemtItemPK;
+		return ppemtPerInfoItemPK;
 	}
 }

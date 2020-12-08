@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ALST_CHKMLT_UD")
+@Table(name = "KRCMT_MUL_MON_ALARM_CHECK")
 public class KrcmtAlstChkmltUd extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -51,17 +51,17 @@ public class KrcmtAlstChkmltUd extends ContractUkJpaEntity implements Serializab
 	@Basic(optional = true)
 	public String messageDisplay;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUd", orphanRemoval=true)
-	public KrcmtAlstChkmltUdcsum krcmtAlstChkmltUdcsum;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtAlstChkmltUdcsum krcmtMulMonCond;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUd", orphanRemoval=true)
-	public KrcmtAlstChkmltUdcavg krcmtAlstChkmltUdcavg;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtAlstChkmltUdcavg krcmtMulMonCondAvg;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUd", orphanRemoval=true)
-	public KrcmtAlstChkmltUdcont krcmtAlstChkmltUdcont;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtAlstChkmltUdcont krcmtMulMonCondCont;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUd", orphanRemoval=true)
-	public KrcmtAlstChkmltUdccrsp krcmtAlstChkmltUdccrsp;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtAlstChkmltUdccrsp krcmtMulMonCondCosp;
 	
 	@Override
 	protected Object getKey() {
@@ -97,9 +97,9 @@ public class KrcmtAlstChkmltUd extends ContractUkJpaEntity implements Serializab
 					this.messageColor==null?null:this.messageColor
 					),
 			this.messageDisplay==null?null:new MessageDisplay(this.messageDisplay),
-					this.krcmtAlstChkmltUdcsum == null ? null: this.krcmtAlstChkmltUdcsum.toDomain(),
-					this.krcmtAlstChkmltUdcavg == null ? null: this.krcmtAlstChkmltUdcavg.toDomain(),
-					this.krcmtAlstChkmltUdcont == null ? null: this.krcmtAlstChkmltUdcont.toDomain(),
-					this.krcmtAlstChkmltUdccrsp == null ? null: this.krcmtAlstChkmltUdccrsp.toDomain());
+					this.krcmtMulMonCond == null ? null: this.krcmtMulMonCond.toDomain(),
+					this.krcmtMulMonCondAvg == null ? null: this.krcmtMulMonCondAvg.toDomain(),
+					this.krcmtMulMonCondCont == null ? null: this.krcmtMulMonCondCont.toDomain(),
+					this.krcmtMulMonCondCosp == null ? null: this.krcmtMulMonCondCosp.toDomain());
 	}
 }

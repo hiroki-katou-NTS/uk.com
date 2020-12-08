@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSetPK;
 
 /**
  * The Class JpaEmploymentEstimatedPriceSetMemento.
@@ -26,8 +26,8 @@ public class JpaEmpEstPriceSetMemento implements EstimatedPriceSettingSetMemento
 	 * @param estimatePriceEmployment the estimate price employment
 	 */
 	public JpaEmpEstPriceSetMemento(KscmtEstPriceEmp estimatePriceEmployment) {
-		if (estimatePriceEmployment.getKscmtEstPriceEmpPK() == null) {
-			estimatePriceEmployment.setKscmtEstPriceEmpPK(new KscmtEstPriceEmpPK());
+		if (estimatePriceEmployment.getKscmtEstPriceEmpSetPK() == null) {
+			estimatePriceEmployment.setKscmtEstPriceEmpSetPK(new KscmtEstPriceEmpSetPK());
 		}
 		this.estimatePriceEmployment = estimatePriceEmployment;
 	}
@@ -41,7 +41,7 @@ public class JpaEmpEstPriceSetMemento implements EstimatedPriceSettingSetMemento
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estimatePriceEmployment.getKscmtEstPriceEmpPK()
+		this.estimatePriceEmployment.getKscmtEstPriceEmpSetPK()
 				.setTargetCls(targetClassification.value);
 	}
 

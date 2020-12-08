@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXEC_ERR_MSG")
+@Table(name = "KRCDT_ERR_MESSAGE_INFO")
 public class KrcdtExecErrMsg extends ContractUkJpaEntity implements Serializable {
 	
 	/**
@@ -24,7 +24,7 @@ public class KrcdtExecErrMsg extends ContractUkJpaEntity implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtExecErrMsgPK krcdtExecErrMsgPK;
+	public KrcdtErrMessageInfoPK krcdtErrMessageInfoPK;
 	
 	
 	
@@ -35,7 +35,7 @@ public class KrcdtExecErrMsg extends ContractUkJpaEntity implements Serializable
 
 	@Override
 	protected Object getKey() {
-		return this.krcdtExecErrMsgPK;
+		return this.krcdtErrMessageInfoPK;
 	}
 
 }

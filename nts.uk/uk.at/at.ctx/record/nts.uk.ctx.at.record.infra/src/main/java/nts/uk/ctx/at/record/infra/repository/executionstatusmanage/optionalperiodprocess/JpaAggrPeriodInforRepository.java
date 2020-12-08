@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.Aggr
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcdtAnpPeriodErr;
-import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcdtAnpPeriodErrPK;
+import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodInforPK;
 
 /**
  * 
@@ -22,14 +22,14 @@ public class JpaAggrPeriodInforRepository extends JpaRepository implements AggrP
 
 	@Override
 	public List<AggrPeriodInfor> findAll(String anyPeriodAggrLogId) {
-		String sql = "SELECT a FROM KrcdtAnpPeriodErr a WHERE a.krcdtAnpPeriodErrPK.periodArrgLogId = :periodArrgLogId";
+		String sql = "SELECT a FROM KrcdtAnpPeriodErr a WHERE a.krcmtAggrPeriodInforPK.periodArrgLogId = :periodArrgLogId";
 		return this.queryProxy().query(sql, KrcdtAnpPeriodErr.class)
 				.setParameter("periodArrgLogId", anyPeriodAggrLogId).getList(c -> convertEntityToDomain(c));
 	}
 
 	private AggrPeriodInfor convertEntityToDomain(KrcdtAnpPeriodErr entity) {
-		AggrPeriodInfor domain = new AggrPeriodInfor(entity.krcdtAnpPeriodErrPK.memberId,
-				entity.krcdtAnpPeriodErrPK.periodArrgLogId, entity.krcdtAnpPeriodErrPK.resourceId,
+		AggrPeriodInfor domain = new AggrPeriodInfor(entity.krcmtAggrPeriodInforPK.memberId,
+				entity.krcmtAggrPeriodInforPK.periodArrgLogId, entity.krcmtAggrPeriodInforPK.resourceId,
 				entity.processDay, new ErrorMess(entity.errorMess));
 		return domain;
 	}
@@ -42,7 +42,7 @@ public class JpaAggrPeriodInforRepository extends JpaRepository implements AggrP
 	
 	private KrcdtAnpPeriodErr convertToDbTypeApi(AggrPeriodInfor periodInfor) {
 		KrcdtAnpPeriodErr entity = new KrcdtAnpPeriodErr();
-		entity.krcdtAnpPeriodErrPK = new KrcdtAnpPeriodErrPK(periodInfor.getMemberId(), periodInfor.getPeriodArrgLogId(), periodInfor.getResourceId());
+		entity.krcmtAggrPeriodInforPK = new KrcmtAggrPeriodInforPK(periodInfor.getMemberId(), periodInfor.getPeriodArrgLogId(), periodInfor.getResourceId());
 		entity.processDay = periodInfor.getProcessDay();
 		entity.errorMess = periodInfor.getErrorMess().v();
 		return entity;

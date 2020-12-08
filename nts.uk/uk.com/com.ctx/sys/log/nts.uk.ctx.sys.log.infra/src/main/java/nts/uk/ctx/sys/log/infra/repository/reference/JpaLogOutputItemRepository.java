@@ -17,7 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.reference.LogOutputItem;
 import nts.uk.ctx.sys.log.dom.reference.LogOutputItemRepository;
 import nts.uk.ctx.sys.log.infra.entity.reference.SrcctOutputItem;
-import nts.uk.ctx.sys.log.infra.entity.reference.SrcctOutputItemPK;
+import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtLogOutputItemPK;
 
 /*
  * author: hiep.th
@@ -63,7 +63,7 @@ public class JpaLogOutputItemRepository extends JpaRepository implements LogOutp
 				}
 				
 				List<LogOutputItem> domains = new NtsResultSet(stmt.executeQuery()).getList(r -> {
-					SrcctOutputItem entity = new SrcctOutputItem(new SrcctOutputItemPK(r.getInt("ITEM_NO"), r.getInt("RECORD_TYPE")), r.getString("ITEM_NAME"));
+					SrcctOutputItem entity = new SrcctOutputItem(new SrcmtLogOutputItemPK(r.getInt("ITEM_NO"), r.getInt("RECORD_TYPE")), r.getString("ITEM_NAME"));
 					return entity.toDomain();
 				});
 				

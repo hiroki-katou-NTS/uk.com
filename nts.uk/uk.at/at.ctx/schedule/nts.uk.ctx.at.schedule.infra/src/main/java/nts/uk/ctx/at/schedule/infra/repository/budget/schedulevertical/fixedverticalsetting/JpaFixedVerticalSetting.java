@@ -13,9 +13,9 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.V
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVertSet;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstFixedVertSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscmtVerticalCntAgg;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscmtVerticalCntAggPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVertCntSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscmtVerticalTs;
-import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscmtVerticalTsPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.schedulevertical.fixedverticalsetting.KscstVertTimeSetPK;
 
 
 /**
@@ -189,7 +189,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	private KscmtVerticalTs convertToDbTypeTime(VerticalTime verticalTime) {
 		KscmtVerticalTs kTimeSet = new KscmtVerticalTs();
-		KscmtVerticalTsPK kVerticalSetPK = new KscmtVerticalTsPK(
+		KscstVertTimeSetPK kVerticalSetPK = new KscstVertTimeSetPK(
 				verticalTime.getCompanyId(),
 				verticalTime.getFixedItemAtr().value,
 				verticalTime.getVerticalTimeNo());
@@ -214,7 +214,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	private KscmtVerticalCntAgg convertToDbTypeCnt(VerticalCnt verticalCnt) {
 		KscmtVerticalCntAgg kCntSet= new KscmtVerticalCntAgg();
-		KscmtVerticalCntAggPK kVerticalSetPK = new KscmtVerticalCntAggPK(
+		KscstVertCntSetPK kVerticalSetPK = new KscstVertCntSetPK(
 				verticalCnt.getCompanyId(),
 				verticalCnt.getFixedItemAtr(),
 				verticalCnt.getVerticalCountNo());
@@ -235,7 +235,7 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 	 */
 	@Override
 	public void updateVerticalTime(VerticalTime verticalTime) {
-		KscmtVerticalTsPK kVerticalSetPK = new KscmtVerticalTsPK(verticalTime.getCompanyId(), verticalTime.getFixedItemAtr().value,verticalTime.getVerticalTimeNo());
+		KscstVertTimeSetPK kVerticalSetPK = new KscstVertTimeSetPK(verticalTime.getCompanyId(), verticalTime.getFixedItemAtr().value,verticalTime.getVerticalTimeNo());
 		KscmtVerticalTs kTimeSet = this.queryProxy().find(kVerticalSetPK, KscmtVerticalTs.class).get();
 		kTimeSet.displayAtr = verticalTime.getDisplayAtr().value;
 		this.commandProxy().update(kTimeSet);	

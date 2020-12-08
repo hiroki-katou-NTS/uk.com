@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_GOOUT")
+@Table(name = "KSHMT_WORKTIME_GO_OUT_SET")
 public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable
 
 	/** The kshmt worktime go out set PK. */
 	@EmbeddedId
-	protected KshmtWtComGooutPK kshmtWtComGooutPK;
+	protected KshmtWorktimeGoOutSetPK kshmtWorktimeGoOutSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -54,11 +54,11 @@ public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable
 	/**
 	 * Instantiates a new kshmt worktime go out set.
 	 *
-	 * @param kshmtWtComGooutPK the kshmt worktime go out set PK
+	 * @param kshmtWorktimeGoOutSetPK the kshmt worktime go out set PK
 	 */
-	public KshmtWtComGoout(KshmtWtComGooutPK kshmtWtComGooutPK) {
+	public KshmtWtComGoout(KshmtWorktimeGoOutSetPK kshmtWorktimeGoOutSetPK) {
 		super();
-		this.kshmtWtComGooutPK = kshmtWtComGooutPK;
+		this.kshmtWorktimeGoOutSetPK = kshmtWorktimeGoOutSetPK;
 	}
 	
 	/*
@@ -69,7 +69,7 @@ public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComGooutPK != null ? kshmtWtComGooutPK.hashCode() : 0);
+		hash += (kshmtWorktimeGoOutSetPK != null ? kshmtWorktimeGoOutSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -84,9 +84,9 @@ public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtWtComGoout other = (KshmtWtComGoout) object;
-		if ((this.kshmtWtComGooutPK == null && other.kshmtWtComGooutPK != null)
-				|| (this.kshmtWtComGooutPK != null
-						&& !this.kshmtWtComGooutPK.equals(other.kshmtWtComGooutPK))) {
+		if ((this.kshmtWorktimeGoOutSetPK == null && other.kshmtWorktimeGoOutSetPK != null)
+				|| (this.kshmtWorktimeGoOutSetPK != null
+						&& !this.kshmtWorktimeGoOutSetPK.equals(other.kshmtWorktimeGoOutSetPK))) {
 			return false;
 		}
 		return true;
@@ -99,7 +99,7 @@ public class KshmtWtComGoout extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComGooutPK;
+		return this.kshmtWorktimeGoOutSetPK;
 	}
 
 }

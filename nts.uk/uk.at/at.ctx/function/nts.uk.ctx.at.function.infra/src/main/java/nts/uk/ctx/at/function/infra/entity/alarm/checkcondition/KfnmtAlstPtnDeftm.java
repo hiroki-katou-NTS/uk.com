@@ -38,13 +38,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_PTN_DEFTM")
+@Table(name = "KFNMT_CHECK_CONDITION")
 public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KfnmtAlstPtnDeftmPK pk;
+	public KfnmtCheckConditionPK pk;
 
 	@Column(name = "EXTRACTION_ID")
 	public String extractionId;
@@ -59,7 +59,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	public KfnmtAlstPtn alarmPatternSet;
 
 	@OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_PTN_CHKCND")
+	@JoinTable(name = "KFNMT_CHECK_CON_ITEM")
 	public List<KfnmtAlstPtnChkcnd> checkConItems;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -79,7 +79,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	
 	
 	@OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_PTN_DEFTMMON")
+	@JoinTable(name = "KFNMT_EXTRACT_PER_MONTH")
 	public List<KfnmtExtractPeriodMonth> listExtractPerMonth;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -97,7 +97,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	public KfnmtAlstPtnDeftmbsmon alstPtnDeftmbsmon ;
 	
 	
-	public KfnmtAlstPtnDeftm(KfnmtAlstPtnDeftmPK pk, String extractionId, int extractionRange,
+	public KfnmtAlstPtnDeftm(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtAlstPtnChkcnd> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily) {
 		super();
 		this.pk = pk;
@@ -107,7 +107,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 		this.extractionPeriodDaily = extractionPeriodDaily;
 	}
 	
-	public KfnmtAlstPtnDeftm(KfnmtAlstPtnDeftmPK pk, String extractionId, int extractionRange, List<KfnmtAlstPtnChkcnd> checkConItems,
+	public KfnmtAlstPtnDeftm(KfnmtCheckConditionPK pk, String extractionId, int extractionRange, List<KfnmtAlstPtnChkcnd> checkConItems,
 			KfnmtAlstPtnDeftmcycle extractionPerUnit) {
 		super();
 		this.pk = pk;
@@ -117,7 +117,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 		this.extractionPerUnit = extractionPerUnit;
 	}
 
-	public KfnmtAlstPtnDeftm(KfnmtAlstPtnDeftmPK pk, String extractionId, int extractionRange,
+	public KfnmtAlstPtnDeftm(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtAlstPtnChkcnd> checkConItems, List<KfnmtExtractPeriodMonth> listExtractPerMonth) {
 		super();
 		this.pk = pk;
@@ -128,7 +128,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	}
 
 
-	public KfnmtAlstPtnDeftm(KfnmtAlstPtnDeftmPK pk, String extractionId, int extractionRange,
+	public KfnmtAlstPtnDeftm(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtAlstPtnChkcnd> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily,
 			List<KfnmtExtractPeriodMonth> listExtractPerMonth, KfnmtAlstPtnDeftmyear extractRangeYear, KfnmtAlstPtnDeftmbsmon kfnmtAlstPtnDeftmbsmon) {
 		super();
@@ -143,7 +143,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	}
 	
 	
-	public KfnmtAlstPtnDeftm(KfnmtAlstPtnDeftmPK pk, String extractionId, int extractionRange, List<KfnmtAlstPtnChkcnd> checkConItems) {
+	public KfnmtAlstPtnDeftm(KfnmtCheckConditionPK pk, String extractionId, int extractionRange, List<KfnmtAlstPtnChkcnd> checkConItems) {
 		super();
 		this.pk = pk;
 		this.extractionId = extractionId;
@@ -208,7 +208,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 			KfnmtAlstPtnDeftm entity = new KfnmtAlstPtnDeftm(
-					new KfnmtAlstPtnDeftmPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
 					extractBase.getExtractionId(), extractBase.getExtractionRange().value,
 					domain.getCheckConditionList().stream().map(
 							x -> new KfnmtAlstPtnChkcnd(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
@@ -221,7 +221,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 
 			KfnmtAlstPtnDeftm entity = new KfnmtAlstPtnDeftm(
-					new KfnmtAlstPtnDeftmPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
 					extractBase.getExtractionId(), extractBase.getExtractionRange().value,
 					domain.getCheckConditionList().stream().map(
 							x -> new KfnmtAlstPtnChkcnd(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
@@ -235,7 +235,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 
 			ExtractionPeriodUnit extractionPerUnit = (ExtractionPeriodUnit) extractBase;
 			KfnmtAlstPtnDeftm entity = new KfnmtAlstPtnDeftm(
-					new KfnmtAlstPtnDeftmPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
 					extractBase.getExtractionId(), extractBase.getExtractionRange().value,
 					domain.getCheckConditionList().stream().map(
 							x -> new KfnmtAlstPtnChkcnd(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
@@ -272,7 +272,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 				extractionRange = 0;
 			}
 			return new KfnmtAlstPtnDeftm(
-					new KfnmtAlstPtnDeftmPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
 					extractYear.getExtractionId(), extractionRange,
 					domain.getCheckConditionList().stream().map( x -> new KfnmtAlstPtnChkcnd(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()), 
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily), 
@@ -285,7 +285,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 		} else {
 			
 			return new KfnmtAlstPtnDeftm(
-					new KfnmtAlstPtnDeftmPK(companyId, alarmPatternCode, domain.getAlarmCategory().value), "", 0,
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value), "", 0,
 					domain.getCheckConditionList().stream().map(
 							x -> new KfnmtAlstPtnChkcnd(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
 							.collect(Collectors.toList()));
@@ -339,8 +339,8 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 		});
 	}
 	
-	private static KfnmtAlstPtnChkcndPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
-		return new KfnmtAlstPtnChkcndPK(companyId, alarmPatternCode, domain.getAlarmCategory().value, checkConditionCD);
+	private static KfnmtCheckConItemPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
+		return new KfnmtCheckConItemPK(companyId, alarmPatternCode, domain.getAlarmCategory().value, checkConditionCD);
 	}
 
 	

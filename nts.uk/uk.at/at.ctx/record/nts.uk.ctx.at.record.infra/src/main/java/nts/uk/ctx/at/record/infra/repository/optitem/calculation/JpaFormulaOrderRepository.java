@@ -19,8 +19,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSortPK_;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderRepository;
 
@@ -128,10 +128,10 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcmtAnyfSort_.krcmtAnyfSortPK)
-				.get(KrcmtAnyfSortPK_.cid), comId));
-		predicateList.add(builder.equal(root.get(KrcmtAnyfSort_.krcmtAnyfSortPK)
-				.get(KrcmtAnyfSortPK_.optionalItemNo), optItemNo));
+		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
+				.get(KrcstFormulaDisporderPK_.cid), comId));
+		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
+				.get(KrcstFormulaDisporderPK_.optionalItemNo), optItemNo));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results
@@ -159,8 +159,8 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcmtAnyfSort_.krcmtAnyfSortPK)
-				.get(KrcmtAnyfSortPK_.cid), comId));
+		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
+				.get(KrcstFormulaDisporderPK_.cid), comId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results

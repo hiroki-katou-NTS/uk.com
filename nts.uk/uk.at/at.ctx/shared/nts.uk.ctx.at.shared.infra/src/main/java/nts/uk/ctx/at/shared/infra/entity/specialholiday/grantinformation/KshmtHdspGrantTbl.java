@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSP_GRANT_TBL")
+@Table(name = "KSHST_GRANT_DATE_TBL")
 public class KshmtHdspGrantTbl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshmtHdspGrantTblPK pk;
+	public KshstGrantDateTblPK pk;
 	
 	/* 名称 */
 	@Column(name = "GRANT_NAME")
@@ -47,7 +47,7 @@ public class KshmtHdspGrantTbl extends ContractUkJpaEntity implements Serializab
 		return pk;
 	}
 
-	public KshmtHdspGrantTbl(KshmtHdspGrantTblPK pk, String grantName, int isSpecified, int fixedAssign, Integer numberOfDays) {
+	public KshmtHdspGrantTbl(KshstGrantDateTblPK pk, String grantName, int isSpecified, int fixedAssign, Integer numberOfDays) {
 		this.pk = pk;
 		this.grantName = grantName;
 		this.isSpecified = isSpecified;

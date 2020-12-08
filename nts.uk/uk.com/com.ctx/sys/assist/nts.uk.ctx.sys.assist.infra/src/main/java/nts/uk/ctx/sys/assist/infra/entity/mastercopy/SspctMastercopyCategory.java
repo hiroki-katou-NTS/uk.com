@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="SSPCT_MASTERCOPY_CATEGORY")
+@Table(name="SSPMT_MASTERCOPY_CATEGORY")
 public class SspctMastercopyCategory extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

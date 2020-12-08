@@ -42,7 +42,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKrcmtCalcSetWkpJobPK().getCid());
+		return new CompanyId(this.entity.getKshmtAutoWkpJobCalPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public WorkplaceId getWkpId() {
-		return new WorkplaceId(this.entity.getKrcmtCalcSetWkpJobPK().getWpkid());
+		return new WorkplaceId(this.entity.getKshmtAutoWkpJobCalPK().getWpkid());
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public JobTitleId getJobId() {
-		return new JobTitleId(this.entity.getKrcmtCalcSetWkpJobPK().getJobid());
+		return new JobTitleId(this.entity.getKshmtAutoWkpJobCalPK().getJobid());
 	}
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingGetMemento#getNormalOTTime()

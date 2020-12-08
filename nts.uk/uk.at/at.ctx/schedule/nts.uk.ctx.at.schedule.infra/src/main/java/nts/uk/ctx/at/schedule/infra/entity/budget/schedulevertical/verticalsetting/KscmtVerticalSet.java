@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_VERTICAL_SET")
+@Table(name = "KSCMT_GEN_VERT_SET")
 public class KscmtVerticalSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
 	@EmbeddedId
-	public KscmtVerticalSetPK kscmtVerticalSetPK;
+	public KscmtGenVertSetPK kscmtGenVertSetPK;
 	
 	/* 名称 */
 	@Column(name = "VERTICAL_CAL_NAME")
@@ -47,6 +47,6 @@ public class KscmtVerticalSet extends ContractUkJpaEntity implements Serializabl
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscmtVerticalSetPK;
+		return kscmtGenVertSetPK;
 	}
 }

@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KSCMT_PER_COST_PREMI_RATE")
+@Table(name="KMLST_PREMIUM_SET")
 public class KscmtPerCostPremiRate extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmlspPremiumSetPK kmlspPremiumSet;
@@ -44,13 +44,13 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity{
 	})
 	private KmlmtPersonCostCalculation kmlmtPersonCostCalculation;
 	
-	@OneToOne(targetEntity = KscmtPremiumItem.class, mappedBy = "kscmtPerCostPremiRate")
-	@JoinTable(name = "KSCMT_PREMIUM_ITEM")
-	public KscmtPremiumItem kscmtPremiumItem;
+	@OneToOne(targetEntity = KscmtPremiumItem.class, mappedBy = "kmlstPremiumSet")
+	@JoinTable(name = "KMNMT_PREMIUM_ITEM")
+	public KscmtPremiumItem kmnmtPremiumItem;
 	
-	@OneToMany(targetEntity = KscmtPerCostPremium.class, cascade = CascadeType.ALL, mappedBy = "kscmtPerCostPremiRate", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KSCMT_PER_COST_PREMIUM")
-	public List<KscmtPerCostPremium> kscmtPerCostPremiums;
+	@OneToMany(targetEntity = KscmtPerCostPremium.class, cascade = CascadeType.ALL, mappedBy = "kmlstPremiumSet", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KMLDT_PREMIUM_ATTENDANCE")
+	public List<KscmtPerCostPremium> kmldtPremiumAttendances;
 	
 	@Override
 	protected Object getKey() {

@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_D_OVD_WTOH")
+@Table(name = "KSHST_WEEKDAY_FROM_HD")
 public class KshmtCalcDOvdWtoh extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshmtCalcDOvdWtohPK kshstWeekdayHdPK;
+	public KshstWeekdayFromHdPK kshstWeekdayHdPK;
 
 	/** 変更後の法定内休出NO */
 	@Column(name = "LEGAL_HD_NO")
@@ -52,11 +52,11 @@ public class KshmtCalcDOvdWtoh extends ContractUkJpaEntity implements Serializab
 	}
 
 	public static KshmtCalcDOvdWtoh toEntity(WeekdayHoliday domain) {
-		return new KshmtCalcDOvdWtoh(new KshmtCalcDOvdWtohPK(domain.getCompanyId(), domain.getOverworkFrameNo()),
+		return new KshmtCalcDOvdWtoh(new KshstWeekdayFromHdPK(domain.getCompanyId(), domain.getOverworkFrameNo()),
 				domain.getWeekdayNo(), domain.getExcessHolidayNo(), domain.getExcessSphdNo());
 	}
 
-	public KshmtCalcDOvdWtoh(KshmtCalcDOvdWtohPK kshstWeekdayHdPK, int weekdayNo, int excessHolidayNo,
+	public KshmtCalcDOvdWtoh(KshstWeekdayFromHdPK kshstWeekdayHdPK, int weekdayNo, int excessHolidayNo,
 			int excessSphdNo) {
 		super();
 		this.kshstWeekdayHdPK = kshstWeekdayHdPK;

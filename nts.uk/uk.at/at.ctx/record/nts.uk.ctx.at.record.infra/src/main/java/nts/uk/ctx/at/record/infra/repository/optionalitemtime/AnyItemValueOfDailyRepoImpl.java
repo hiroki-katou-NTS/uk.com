@@ -25,7 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValueMerge;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtdPK;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
@@ -42,8 +42,8 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDayAnyItemValueMerge a ");
-		builderString.append("WHERE a.krcdtDayTimeAtdPk.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimeAtdPk.generalDate = :processingDate ");
+		builderString.append("WHERE a.krcdtDayTimePk.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePk.generalDate = :processingDate ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
 	}
 
@@ -51,7 +51,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	@Override
 	public Optional<AnyItemValueOfDaily> find(String employeeId, GeneralDate baseDate) {
 		Optional<KrcdtDayAnyItemValueMerge> anyEntity = this.queryProxy()
-				.find(new KrcdtDayTimeAtdPK(employeeId, baseDate), KrcdtDayAnyItemValueMerge.class);
+				.find(new KrcdtDayTimePK(employeeId, baseDate), KrcdtDayAnyItemValueMerge.class);
 		if (anyEntity.isPresent()) {
 			return Optional.of(anyEntity.get().toDomainAnyItemValueOfDaily());
 		}
@@ -65,8 +65,8 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 			return new ArrayList<>();
 		}
 		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
-		query.append(" WHERE op.krcdtDayTimeAtdPk.employeeID = :empId");
-		query.append(" AND op.krcdtDayTimeAtdPk.generalDate IN :date");
+		query.append(" WHERE op.krcdtDayTimePk.employeeID = :empId");
+		query.append(" AND op.krcdtDayTimePk.generalDate IN :date");
 		
 		List<KrcdtDayAnyItemValueMerge> resultList = new ArrayList<>();
 		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
@@ -86,7 +86,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	@Override
 	public List<AnyItemValueOfDaily> find(String employeeId) {
 		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
-		query.append(" WHERE op.krcdtDayTimeAtdPk.employeeID = :empId");
+		query.append(" WHERE op.krcdtDayTimePk.employeeID = :empId");
 		List<KrcdtDayAnyItemValueMerge> result = queryProxy()
 				.query(query.toString(), KrcdtDayAnyItemValueMerge.class)
 				.setParameter("empId", employeeId)
@@ -187,13 +187,13 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		if (domain == null) return;
 		
 		// キー
-		val key = new KrcdtDayTimeAtdPK(domain.getEmployeeId(), domain.getYmd());
+		val key = new KrcdtDayTimePK(domain.getEmployeeId(), domain.getYmd());
 
 		// 登録・更新
 		KrcdtDayAnyItemValueMerge entity = this.getEntityManager().find(KrcdtDayAnyItemValueMerge.class, key);
 		if (entity == null) {
 			entity = new KrcdtDayAnyItemValueMerge();
-			entity.setKrcdtDayTimeAtdPk(key);
+			entity.setKrcdtDayTimePk(key);
 			entity.toEntityAnyItemValueOfDaily(domain);
 			this.getEntityManager().persist(entity);
 		}
@@ -215,13 +215,13 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		if (domain == null) return;
 		
 		// キー
-		val key = new KrcdtDayTimeAtdPK(domain.getEmployeeId(), domain.getYmd());
+		val key = new KrcdtDayTimePK(domain.getEmployeeId(), domain.getYmd());
 
 		// 登録・更新
 		KrcdtDayAnyItemValueMerge entity = this.getEntityManager().find(KrcdtDayAnyItemValueMerge.class, key);
 		if (entity == null) {
 			entity = new KrcdtDayAnyItemValueMerge();
-			entity.setKrcdtDayTimeAtdPk(key);
+			entity.setKrcdtDayTimePk(key);
 			entity.toEntityAnyItemValueOfDaily(domain);
 			this.getEntityManager().persist(entity);
 		}
@@ -238,7 +238,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	@SneakyThrows
 	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
 		try (val statement = this.connection().prepareStatement(
-				"DELETE FROM KRCDT_DAY_TIME_ANYITEM"
+				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
 				+ " WHERE SID = ? AND YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(baseDate.localDate()));

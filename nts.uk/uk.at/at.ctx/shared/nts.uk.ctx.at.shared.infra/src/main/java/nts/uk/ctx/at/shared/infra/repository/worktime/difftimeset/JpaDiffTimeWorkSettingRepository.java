@@ -26,15 +26,15 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTsPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTimePK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTsPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTs_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTimePK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTime_;
 import nts.uk.ctx.at.shared.infra.repository.worktime.performance.JpaAmPmWorkTimezoneGetMemento;
 
 /**
@@ -54,7 +54,7 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 	public Optional<DiffTimeWorkSetting> find(String companyId, String workTimeCode) {
 		// Query
 		Optional<KshmtWtDif> optionalEntityTimeSet = this.queryProxy()
-				.find(new KshmtWtDifPK(companyId, workTimeCode), KshmtWtDif.class);
+				.find(new KshmtDiffTimeWorkSetPK(companyId, workTimeCode), KshmtWtDif.class);
 
 		// Check exist
 		if (!optionalEntityTimeSet.isPresent()) {
@@ -97,13 +97,13 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWtDif.class, new KshmtWtDifPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWtDif.class, new KshmtDiffTimeWorkSetPK(companyId, workTimeCode));
 	}
 
 	private KshmtWtDif toEntity(DiffTimeWorkSetting domain) {
 		// Find entity
 		Optional<KshmtWtDif> optional = this.queryProxy().find(
-				new KshmtWtDifPK(domain.getCompanyId(), domain.getWorkTimeCode().v()),
+				new KshmtDiffTimeWorkSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()),
 				KshmtWtDif.class);
 
 		KshmtWtDif entity;
@@ -134,8 +134,8 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(root.get(KshmtWtDif_.kshmtWtDifPK)
-				.get(KshmtWtDifPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KshmtDiffTimeWorkSet_.kshmtDiffTimeWorkSetPK)
+				.get(KshmtDiffTimeWorkSetPK_.cid), companyId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
@@ -169,21 +169,21 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 			List<Predicate> predicateList = new ArrayList<>();
 
 			predicateList.add(builder.equal(
-					root.get(KshmtWtDifBrHolTs_.kshmtWtDifBrHolTsPK).get(KshmtWtDifBrHolTsPK_.cid),
+					root.get(KshmtDtHolRestTime_.kshmtDtHolRestTimePK).get(KshmtDtHolRestTimePK_.cid),
 					companyId));
-			predicateList.add(root.get(KshmtWtDifBrHolTs_.kshmtWtDifBrHolTsPK)
-					.get(KshmtWtDifBrHolTsPK_.worktimeCd).in(splitData));
+			predicateList.add(root.get(KshmtDtHolRestTime_.kshmtDtHolRestTimePK)
+					.get(KshmtDtHolRestTimePK_.worktimeCd).in(splitData));
 
 			query.where(predicateList.toArray(new Predicate[] {}));
 
-			query.orderBy(builder.asc(root.get(KshmtWtDifBrHolTs_.startTime)));
+			query.orderBy(builder.asc(root.get(KshmtDtHolRestTime_.startTime)));
 
 			resultList.addAll(em.createQuery(query).getResultList());
 		});
 
 		Map<WorkTimeCode, List<KshmtWtDifBrHolTs>> mapResttimes = resultList.stream()
 				.collect(Collectors.groupingBy(
-						item -> new WorkTimeCode(item.getKshmtWtDifBrHolTsPK().getWorktimeCd())));
+						item -> new WorkTimeCode(item.getKshmtDtHolRestTimePK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream().map(
@@ -213,22 +213,22 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> predicateList = new ArrayList<>();
 
-			predicateList.add(builder.equal(root.get(KshmtWtDifBrWekTs_.kshmtWtDifBrWekTsPK)
-					.get(KshmtWtDifBrWekTsPK_.cid), companyId));
-			predicateList.add(root.get(KshmtWtDifBrWekTs_.kshmtWtDifBrWekTsPK)
-					.get(KshmtWtDifBrWekTsPK_.worktimeCd).in(splitData));
+			predicateList.add(builder.equal(root.get(KshmtDtHalfRestTime_.kshmtDtHalfRestTimePK)
+					.get(KshmtDtHalfRestTimePK_.cid), companyId));
+			predicateList.add(root.get(KshmtDtHalfRestTime_.kshmtDtHalfRestTimePK)
+					.get(KshmtDtHalfRestTimePK_.worktimeCd).in(splitData));
 
 			query.where(predicateList.toArray(new Predicate[] {}));
 
 			// order by closure id asc
-			query.orderBy(builder.asc(root.get(KshmtWtDifBrWekTs_.startTime)));
+			query.orderBy(builder.asc(root.get(KshmtDtHalfRestTime_.startTime)));
 
 			resultList.addAll(em.createQuery(query).getResultList());
 		});
 
 		Map<WorkTimeCode, List<KshmtWtDifBrWekTs>> mapResttimes = resultList.stream()
 				.collect(Collectors.groupingBy(
-						item -> new WorkTimeCode(item.getKshmtWtDifBrWekTsPK().getWorktimeCd())));
+						item -> new WorkTimeCode(item.getKshmtDtHalfRestTimePK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream().map(
@@ -249,11 +249,11 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> predicateList = new ArrayList<>();
 
-			predicateList.add(builder.equal(root.get(KshmtWtDif_.kshmtWtDifPK)
-					.get(KshmtWtDifPK_.cid), cid));
+			predicateList.add(builder.equal(root.get(KshmtDiffTimeWorkSet_.kshmtDiffTimeWorkSetPK)
+					.get(KshmtDiffTimeWorkSetPK_.cid), cid));
 			
-			predicateList.add(root.get(KshmtWtDif_.kshmtWtDifPK)
-					.get(KshmtWtDifPK_.worktimeCd).in(workTimeCodes));
+			predicateList.add(root.get(KshmtDiffTimeWorkSet_.kshmtDiffTimeWorkSetPK)
+					.get(KshmtDiffTimeWorkSetPK_.worktimeCd).in(workTimeCodes));
 
 			query.where(predicateList.toArray(new Predicate[] {}));
 

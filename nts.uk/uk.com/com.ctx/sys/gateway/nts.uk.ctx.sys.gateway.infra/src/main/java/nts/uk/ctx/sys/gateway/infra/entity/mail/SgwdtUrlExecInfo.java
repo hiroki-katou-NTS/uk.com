@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SGWDT_URL_EXEC_INFO")
+@Table(name = "SGWMT_URL_EXEC_INFO")
 public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializabl
     * ID
     */
     @EmbeddedId
-    public SgwdtUrlExecInfoPk urlExecInfoPk;
+    public SgwmtUrlExecInfoPk urlExecInfoPk;
     
     /**
     * プログラムID
@@ -91,7 +91,7 @@ public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializabl
         return urlExecInfoPk;
     }
     @OneToMany(targetEntity=SgwdtUrlTaskIncre.class, mappedBy="urlExecInfo", cascade = CascadeType.ALL)
-    @JoinTable(name = "SGWDT_URL_TASK_INCRE")
+    @JoinTable(name = "SGWMT_URL_TASK_INCRE")
 	public List<SgwdtUrlTaskIncre> taskIncrement;
     
     public UrlExecInfo toDomain() {
@@ -101,7 +101,7 @@ public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializabl
     }
     public static SgwdtUrlExecInfo toEntity(UrlExecInfo domain) {
     	
-        return new SgwdtUrlExecInfo(new SgwdtUrlExecInfoPk(domain.getEmbeddedId(), domain.getCid()), domain.getProgramId(), domain.getLoginId(), domain.getExpiredDate(), domain.getIssueDate(), domain.getScreenId(), domain.getSid(), domain.getScd(), domain.getTaskIncre().stream().map(x -> {
+        return new SgwdtUrlExecInfo(new SgwmtUrlExecInfoPk(domain.getEmbeddedId(), domain.getCid()), domain.getProgramId(), domain.getLoginId(), domain.getExpiredDate(), domain.getIssueDate(), domain.getScreenId(), domain.getSid(), domain.getScd(), domain.getTaskIncre().stream().map(x -> {
     		return SgwdtUrlTaskIncre.toEntity(x);
     	}).collect(Collectors.toList()));
     }

@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRestPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 
 /**
@@ -33,8 +33,8 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	public JpaFlexODTzOFRTimeSetSetMemento(KshmtWtFleBrFlHol entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFiHolTss())) {
-			this.entity.setKshmtWtFleBrFiHolTss(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
+			this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 		}
 	}
 
@@ -45,19 +45,19 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	@Override
 	public void setTimezones(List<DeductionTime> timzones) {
 		if (CollectionUtil.isEmpty(timzones)) {
-			this.entity.setKshmtWtFleBrFiHolTss(new ArrayList<>());
+			this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 		} else {
-			if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFiHolTss())) {
-				this.entity.setKshmtWtFleBrFiHolTss(new ArrayList<>());
+			if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
+				this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 			}
-			Map<KshmtWtFleBrFiHolTsPK, KshmtWtFleBrFiHolTs> mapEntity = this.entity.getKshmtWtFleBrFiHolTss().stream()
-					.collect(Collectors.toMap(KshmtWtFleBrFiHolTs::getKshmtWtFleBrFiHolTsPK, Function.identity()));
+			Map<KshmtFlexOdFixRestPK, KshmtWtFleBrFiHolTs> mapEntity = this.entity.getKshmtFlexOdFixRests().stream()
+					.collect(Collectors.toMap(KshmtWtFleBrFiHolTs::getKshmtFlexOdFixRestPK, Function.identity()));
 
 			List<KshmtWtFleBrFiHolTs> lstNew = new ArrayList<>();
 			for (int i = 0; i < timzones.size(); i++) {
 
-				KshmtWtFleBrFiHolTsPK newPK = new KshmtWtFleBrFiHolTsPK(this.entity.getKshmtWtFleBrFlHolPK().getCid(),
-						this.entity.getKshmtWtFleBrFlHolPK().getWorktimeCd(), i+1);
+				KshmtFlexOdFixRestPK newPK = new KshmtFlexOdFixRestPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), i+1);
 				KshmtWtFleBrFiHolTs newEntity = new KshmtWtFleBrFiHolTs(newPK);
 
 				KshmtWtFleBrFiHolTs oldEntity = mapEntity.get(newPK);
@@ -69,7 +69,7 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 				timzones.get(i).saveToMemento(new JpaFlexODDeductionTimeSetMemento(newEntity));
 				lstNew.add(newEntity);
 			}
-			this.entity.setKshmtWtFleBrFiHolTss(lstNew);
+			this.entity.setKshmtFlexOdFixRests(lstNew);
 		}
 
 	}

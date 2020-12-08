@@ -21,17 +21,17 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 		SELECT_BY_CID = builderString.toString();
 	}
 	
-	private DeformLaborOT convertToDomain(KrcmtCalcDDef krcmtCalcDDef) {
-		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(krcmtCalcDDef.getCid(), krcmtCalcDDef.getLegalOtCalc());
+	private DeformLaborOT convertToDomain(KrcmtCalcDDef kshstDefLaborOtCalc) {
+		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(kshstDefLaborOtCalc.getCid(), kshstDefLaborOtCalc.getLegalOtCalc());
 		
 		return deformLaborOT;
 	}
 	
 	private KrcmtCalcDDef convertToDbType(DeformLaborOT deformLaborOT){
-		KrcmtCalcDDef krcmtCalcDDef = new KrcmtCalcDDef();
-		krcmtCalcDDef.setCid(deformLaborOT.getCid());
-		krcmtCalcDDef.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
-		return krcmtCalcDDef;
+		KrcmtCalcDDef kshstDefLaborOtCalc = new KrcmtCalcDDef();
+		kshstDefLaborOtCalc.setCid(deformLaborOT.getCid());
+		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
+		return kshstDefLaborOtCalc;
 	}
 
 	@Override
@@ -46,9 +46,9 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 
 	@Override
 	public void update(DeformLaborOT deformLaborOT) {
-		KrcmtCalcDDef krcmtCalcDDef = this.queryProxy().find(deformLaborOT.getCid(), KrcmtCalcDDef.class).get();
-		krcmtCalcDDef.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
-		this.commandProxy().update(krcmtCalcDDef);
+		KrcmtCalcDDef kshstDefLaborOtCalc = this.queryProxy().find(deformLaborOT.getCid(), KrcmtCalcDDef.class).get();
+		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
+		this.commandProxy().update(kshstDefLaborOtCalc);
 	}
 
 	@Override

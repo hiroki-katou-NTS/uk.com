@@ -22,11 +22,11 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
@@ -48,8 +48,8 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	public JpaFixedWorkSettingSetMemento(KshmtWtFix entity) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtWtFixPK() == null) {
-			this.entity.setKshmtWtFixPK(new KshmtWtFixPK());
+		if (this.entity.getKshmtFixedWorkSetPK() == null) {
+			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
 		}
 	}
 
@@ -62,7 +62,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getKshmtWtFixPK().setCid(companyId);
+		this.entity.getKshmtFixedWorkSetPK().setCid(companyId);
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtWtFixPK().setWorktimeCd(workTimeCode.v());
+		this.entity.getKshmtFixedWorkSetPK().setWorktimeCd(workTimeCode.v());
 	}
 
 	/*
@@ -100,22 +100,22 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet commonSetting) {
-		KshmtWtCom commonEntity = this.entity.getKshmtWtCom();
+		KshmtWtCom commonEntity = this.entity.getKshmtWorktimeCommonSet();
 		if (commonEntity == null) {
 			commonEntity = new KshmtWtCom();
 
 			// new pk
-			KshmtWtComPK pk = new KshmtWtComPK();
-			pk.setCid(this.entity.getKshmtWtFixPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtWtFixPK().getWorktimeCd());
+			KshmtWorktimeCommonSetPK pk = new KshmtWorktimeCommonSetPK();
+			pk.setCid(this.entity.getKshmtFixedWorkSetPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtFixedWorkSetPK().getWorktimeCd());
 			pk.setWorkFormAtr(WorkTimeDailyAtr.REGULAR_WORK.value);
 			pk.setWorktimeSetMethod(WorkTimeMethodSet.FIXED_WORK.value);
 
 			// set pk
-			commonEntity.setKshmtWtComPK(pk);
+			commonEntity.setKshmtWorktimeCommonSetPK(pk);
 
 			// add entity when empty list common.
-			this.entity.getLstKshmtWtCom().add(commonEntity);
+			this.entity.getLstKshmtWorktimeCommonSet().add(commonEntity);
 		}
 		commonSetting.saveToMemento(new JpaWorkTimezoneCommonSetSetMemento(commonEntity));
 	}
@@ -174,14 +174,14 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 			lstStampReflectTimezone = new ArrayList<>();
 		}
 
-		String companyId = this.entity.getKshmtWtFixPK().getCid();
-		String workTimeCd = this.entity.getKshmtWtFixPK().getWorktimeCd();
+		String companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
 
 		// get list entity
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFixStmpRefTs())) {
-			this.entity.setLstKshmtWtFixStmpRefTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedStampReflect())) {
+			this.entity.setLstKshmtFixedStampReflect(new ArrayList<>());
 		}
-		List<KshmtWtFixStmpRefTs> lstStampReflect = this.entity.getLstKshmtWtFixStmpRefTs();
+		List<KshmtWtFixStmpRefTs> lstStampReflect = this.entity.getLstKshmtFixedStampReflect();
 
 		List<KshmtWtFixStmpRefTs> newListStampReflect = new ArrayList<>();
 
@@ -189,7 +189,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 
 			// get entity existed
 			KshmtWtFixStmpRefTs entity = lstStampReflect.stream().filter(item -> {
-				KshmtWtFixStmpRefTsPK pk = item.getKshmtWtFixStmpRefTsPK();
+				KshmtFixedStampReflectPK pk = item.getKshmtFixedStampReflectPK();
 				return pk.getCid().compareTo(companyId) == 0 && pk.getWorktimeCd().compareTo(workTimeCd) == 0
 						&& pk.getWorkNo() == stampRelect.getWorkNo().v().intValue() && pk.getAtr() == stampRelect.getClassification().value;
 			}).findFirst().orElse(new KshmtWtFixStmpRefTs());
@@ -197,7 +197,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 			stampRelect.saveToMemento(new JpaFixedStampReflectTimezoneSetMemento(companyId, workTimeCd, stampRelect.getWorkNo(), stampRelect.getClassification(), entity));
 			newListStampReflect.add(entity);
 		}
-		this.entity.setLstKshmtWtFixStmpRefTs(newListStampReflect);
+		this.entity.setLstKshmtFixedStampReflect(newListStampReflect);
 	}
 
 	/*

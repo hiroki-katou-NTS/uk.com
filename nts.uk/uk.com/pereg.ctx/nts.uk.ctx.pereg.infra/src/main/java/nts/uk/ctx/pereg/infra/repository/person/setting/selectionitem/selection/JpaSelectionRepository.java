@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItem;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 
 /**
  * 
@@ -89,7 +89,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void remove(String selectionId) {
-		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionId);
+		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
 		this.commandProxy().remove(PpemtSelectionItem.class, pk);
 	}
 	
@@ -98,7 +98,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		if (selectionIds.isEmpty()) {
 			return;
 		}
-		List<PpemtSelectionItemPK> keys = selectionIds.stream().map(x -> new PpemtSelectionItemPK(x))
+		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
 				.collect(Collectors.toList());
 		this.commandProxy().removeAll(PpemtSelectionItem.class, keys);
 	}
@@ -148,7 +148,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	// to Entity:
 	private static PpemtSelectionItem toEntity(Selection domain) {
-		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionID());
+		PpemtSelectionPK key = new PpemtSelectionPK(domain.getSelectionID());
 		return new PpemtSelectionItem(key, domain.getHistId(), domain.getSelectionCD().v(), domain.getSelectionName().v(),
 				domain.getExternalCD().v(), domain.getMemoSelection().v());
 

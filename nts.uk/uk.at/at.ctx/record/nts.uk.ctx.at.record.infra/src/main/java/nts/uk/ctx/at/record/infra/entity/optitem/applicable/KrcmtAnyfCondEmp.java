@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF_COND_EMP")
+@Table(name = "KRCST_APPL_EMP_CON")
 public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializabl
 
 	/** The krcst appl emp con PK. */
 	@EmbeddedId
-	protected KrcmtAnyfCondEmpPK krcmtAnyfCondEmpPK;
+	protected KrcstApplEmpConPK krcstApplEmpConPK;
 
 	/** The emp appl atr. */
 	@Column(name = "EMP_APPL_ATR")
@@ -49,11 +49,11 @@ public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new krcst appl emp con.
 	 *
-	 * @param krcmtAnyfCondEmpPK
+	 * @param krcstApplEmpConPK
 	 *            the krcst appl emp con PK
 	 */
-	public KrcmtAnyfCondEmp(KrcmtAnyfCondEmpPK krcmtAnyfCondEmpPK) {
-		this.krcmtAnyfCondEmpPK = krcmtAnyfCondEmpPK;
+	public KrcmtAnyfCondEmp(KrcstApplEmpConPK krcstApplEmpConPK) {
+		this.krcstApplEmpConPK = krcstApplEmpConPK;
 	}
 
 	/*
@@ -64,7 +64,7 @@ public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfCondEmpPK != null ? krcmtAnyfCondEmpPK.hashCode() : 0);
+		hash += (krcstApplEmpConPK != null ? krcstApplEmpConPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -79,9 +79,9 @@ public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KrcmtAnyfCondEmp other = (KrcmtAnyfCondEmp) object;
-		if ((this.krcmtAnyfCondEmpPK == null && other.krcmtAnyfCondEmpPK != null)
-				|| (this.krcmtAnyfCondEmpPK != null
-						&& !this.krcmtAnyfCondEmpPK.equals(other.krcmtAnyfCondEmpPK))) {
+		if ((this.krcstApplEmpConPK == null && other.krcstApplEmpConPK != null)
+				|| (this.krcstApplEmpConPK != null
+						&& !this.krcstApplEmpConPK.equals(other.krcstApplEmpConPK))) {
 			return false;
 		}
 		return true;
@@ -94,7 +94,7 @@ public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfCondEmpPK;
+		return this.krcstApplEmpConPK;
 	}
 
 }

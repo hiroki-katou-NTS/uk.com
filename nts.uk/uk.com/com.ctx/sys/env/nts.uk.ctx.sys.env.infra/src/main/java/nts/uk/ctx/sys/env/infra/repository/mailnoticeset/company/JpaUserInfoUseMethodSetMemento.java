@@ -34,7 +34,7 @@ public class JpaUserInfoUseMethodSetMemento implements UserInfoUseMethodSetMemen
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getSevmtUseContactComPK().setCid(companyId);
+		this.entity.getSevstUserInfoUsemethodPK().setCid(companyId);
 	}
 
 	/* (non-Javadoc)
@@ -42,7 +42,7 @@ public class JpaUserInfoUseMethodSetMemento implements UserInfoUseMethodSetMemen
 	 */
 	@Override
 	public void setSettingItem(UserInfoItem settingItem) {
-		this.entity.getSevmtUseContactComPK().setSettingItem(settingItem.value);
+		this.entity.getSevstUserInfoUsemethodPK().setSettingItem(settingItem.value);
 	}
 
 	/* (non-Javadoc)

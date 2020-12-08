@@ -26,17 +26,17 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERAL_CLASS")
+@Table(name = "KRCST_ER_AL_CLASS")
 public class KrcmtEralClass extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtEralClassPK krcmtEralClassPK;
+	public KrcstErAlClassPK krcstErAlClassPK;
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtEralClassPK;
+		return this.krcstErAlClassPK;
 	}
 	
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -46,8 +46,8 @@ public class KrcmtEralClass extends ContractUkJpaEntity implements Serializable 
 	})
 	public KrcmtErAlCondition krcmtErAlCondition;
 
-	public KrcmtEralClass(KrcmtEralClassPK krcmtEralClassPK) {
+	public KrcmtEralClass(KrcstErAlClassPK krcstErAlClassPK) {
 		super();
-		this.krcmtEralClassPK = krcmtEralClassPK;
+		this.krcstErAlClassPK = krcstErAlClassPK;
 	}
 }

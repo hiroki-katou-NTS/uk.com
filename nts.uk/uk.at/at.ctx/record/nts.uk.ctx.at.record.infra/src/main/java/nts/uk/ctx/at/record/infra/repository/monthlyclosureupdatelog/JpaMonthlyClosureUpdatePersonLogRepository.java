@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseTarget;
-import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseTargetPk;
+import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdPerLogPk;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class JpaMonthlyClosureUpdatePersonLogRepository extends JpaRepository
 	@Override
 	public void delete(String monthlyLogId, String empId) {
 		Optional<KrcdtMcloseTarget> optEntity = this.queryProxy()
-				.find(new KrcdtMcloseTargetPk(empId, monthlyLogId), KrcdtMcloseTarget.class);
+				.find(new KrcdtMcloseUpdPerLogPk(empId, monthlyLogId), KrcdtMcloseTarget.class);
 		if (optEntity.isPresent())
 			this.commandProxy().remove(optEntity.get());
 	}
@@ -44,7 +44,7 @@ public class JpaMonthlyClosureUpdatePersonLogRepository extends JpaRepository
 	@Override
 	public Optional<MonthlyClosureUpdatePersonLog> getById(String monthlyClosureUpdateLogId, String employeeId) {
 		Optional<KrcdtMcloseTarget> optEntity = this.queryProxy()
-				.find(new KrcdtMcloseTargetPk(employeeId, monthlyClosureUpdateLogId), KrcdtMcloseTarget.class);
+				.find(new KrcdtMcloseUpdPerLogPk(employeeId, monthlyClosureUpdateLogId), KrcdtMcloseTarget.class);
 		if (optEntity.isPresent())
 			return Optional.of(optEntity.get().toDomain());
 		else

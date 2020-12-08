@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_DVGC_REASON")
+@Table(name = "KRCST_DVGC_REASON")
 public class KrcmtDvgcReason extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KrcmtDvgcReason extends ContractUkJpaEntity implements Serializable
 
 	/** The id. */
 	@EmbeddedId
-	private KrcmtDvgcReasonPK id;
+	private KrcstDvgcReasonPK id;
 
 	/** The reason. */
 	@Column(name = "REASON")

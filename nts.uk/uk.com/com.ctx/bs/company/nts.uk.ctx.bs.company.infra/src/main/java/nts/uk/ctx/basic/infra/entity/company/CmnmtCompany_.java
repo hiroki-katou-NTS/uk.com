@@ -8,7 +8,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KshmtClosure_.
+ * The Class KclmtClosure_.
  */
 @StaticMetamodel(CmnmtCompanyOld.class)
 public class CmnmtCompany_ {

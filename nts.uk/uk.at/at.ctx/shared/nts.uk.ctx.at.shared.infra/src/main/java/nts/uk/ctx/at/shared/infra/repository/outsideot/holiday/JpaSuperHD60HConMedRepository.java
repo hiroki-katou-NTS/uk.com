@@ -23,8 +23,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshmtHd60hConMed;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRatePK_;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate_;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateSetMemento;
 
@@ -151,18 +151,18 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KshmtHd60hPremiumRate_.kshmtHd60hPremiumRatePK)
-						.get(KshmtHd60hPremiumRatePK_.cid), companyId));
+				criteriaBuilder.equal(root.get(KshstPremiumExt60hRate_.kshstPremiumExt60hRatePK)
+						.get(KshstPremiumExt60hRatePK_.cid), companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by breakdown item no asc and overtime no asc
 		cq.orderBy(
-				criteriaBuilder.asc(root.get(KshmtHd60hPremiumRate_.kshmtHd60hPremiumRatePK)
-						.get(KshmtHd60hPremiumRatePK_.brdItemNo)),
-				criteriaBuilder.asc(root.get(KshmtHd60hPremiumRate_.kshmtHd60hPremiumRatePK)
-						.get(KshmtHd60hPremiumRatePK_.overTimeNo)));
+				criteriaBuilder.asc(root.get(KshstPremiumExt60hRate_.kshstPremiumExt60hRatePK)
+						.get(KshstPremiumExt60hRatePK_.brdItemNo)),
+				criteriaBuilder.asc(root.get(KshstPremiumExt60hRate_.kshstPremiumExt60hRatePK)
+						.get(KshstPremiumExt60hRatePK_.overTimeNo)));
 
 		// create query
 		TypedQuery<KshmtHd60hPremiumRate> query = em.createQuery(cq);

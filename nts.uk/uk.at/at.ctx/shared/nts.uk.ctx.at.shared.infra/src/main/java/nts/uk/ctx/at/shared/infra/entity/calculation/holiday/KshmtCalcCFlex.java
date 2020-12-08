@@ -17,12 +17,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_C_FLEX")
+@Table(name = "KSHST_FLEX_SET")
 public class KshmtCalcCFlex  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshmtCalcCFlexPK kshmtCalcCFlexPK;
+	public KshstFlexSetPK kshstFlexSetPK;
 	
 	/** 不足計算 */
 	@Column(name = "MISS_CALC_HD")
@@ -50,6 +50,6 @@ public class KshmtCalcCFlex  extends ContractUkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return kshmtCalcCFlexPK;
+		return kshstFlexSetPK;
 	}
 }

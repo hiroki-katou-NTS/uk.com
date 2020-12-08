@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OUTSIDE")
+@Table(name = "KSHST_OVER_TIME")
 public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
     
     /** The kshst over time PK. */
     @EmbeddedId
-    protected KshmtOutsidePK kshmtOutsidePK;
+    protected KshstOverTimePK kshstOverTimePK;
     
     /** The is 60 h super hd. */
     @Column(name = "IS_60H_SUPER_HD")
@@ -57,10 +57,10 @@ public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
     /**
      * Instantiates a new kshst over time.
      *
-     * @param kshmtOutsidePK the kshst over time PK
+     * @param kshstOverTimePK the kshst over time PK
      */
-    public KshmtOutside(KshmtOutsidePK kshmtOutsidePK) {
-        this.kshmtOutsidePK = kshmtOutsidePK;
+    public KshmtOutside(KshstOverTimePK kshstOverTimePK) {
+        this.kshstOverTimePK = kshstOverTimePK;
     }
 
 
@@ -70,7 +70,7 @@ public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtOutsidePK != null ? kshmtOutsidePK.hashCode() : 0);
+        hash += (kshstOverTimePK != null ? kshstOverTimePK.hashCode() : 0);
         return hash;
     }
 
@@ -83,9 +83,9 @@ public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KshmtOutside other = (KshmtOutside) object;
-		if ((this.kshmtOutsidePK == null && other.kshmtOutsidePK != null)
-				|| (this.kshmtOutsidePK != null
-						&& !this.kshmtOutsidePK.equals(other.kshmtOutsidePK))) {
+		if ((this.kshstOverTimePK == null && other.kshstOverTimePK != null)
+				|| (this.kshstOverTimePK != null
+						&& !this.kshstOverTimePK.equals(other.kshstOverTimePK))) {
 			return false;
 		}
 		return true;
@@ -96,7 +96,7 @@ public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtOutsidePK;
+		return this.kshstOverTimePK;
 	}
     
 }

@@ -21,9 +21,9 @@ public class JpaProcessExecutionRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT pe FROM KfnmtProcessExecution pe ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
-			+ "WHERE pe.kfnmtAutoexecPK.companyId = :companyId ORDER BY pe.kfnmtAutoexecPK.execItemCd ASC";
+			+ "WHERE pe.kfnmtProcExecPK.companyId = :companyId ORDER BY pe.kfnmtProcExecPK.execItemCd ASC";
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
-			+ "WHERE pe.kfnmtAutoexecPK.companyId = :companyId AND pe.kfnmtAutoexecPK.execItemCd = :execItemCd ";
+			+ "WHERE pe.kfnmtProcExecPK.companyId = :companyId AND pe.kfnmtProcExecPK.execItemCd = :execItemCd ";
 	
 	@Override
 	public List<ProcessExecution> getProcessExecutionByCompanyId(String companyId) {
@@ -46,7 +46,7 @@ public class JpaProcessExecutionRepository extends JpaRepository
 	@Override
 	public void update(ProcessExecution domain) {
 		KfnmtProcessExecution updateData = KfnmtProcessExecution.toEntity(domain);
-		KfnmtProcessExecution oldData = this.queryProxy().find(updateData.kfnmtAutoexecPK, KfnmtProcessExecution.class).get();
+		KfnmtProcessExecution oldData = this.queryProxy().find(updateData.kfnmtProcExecPK, KfnmtProcessExecution.class).get();
 		oldData.execItemName = updateData.execItemName;
 		oldData.execScope = setScope(oldData.execScope, updateData.execScope);
 		oldData.execSetting = setSetting(oldData.execSetting, updateData.execSetting);
@@ -57,8 +57,8 @@ public class JpaProcessExecutionRepository extends JpaRepository
 
 	@Override
 	public void remove(String companyId, String execItemCd) {
-		KfnmtProcessExecutionPK kfnmtAutoexecPK = new KfnmtProcessExecutionPK(companyId, execItemCd);
-		this.commandProxy().remove(KfnmtProcessExecution.class,kfnmtAutoexecPK);
+		KfnmtProcessExecutionPK kfnmtProcExecPK = new KfnmtProcessExecutionPK(companyId, execItemCd);
+		this.commandProxy().remove(KfnmtProcessExecution.class,kfnmtProcExecPK);
 	}
 	
 	private KfnmtAutoexecScope setScope(KfnmtAutoexecScope old, KfnmtAutoexecScope update) {

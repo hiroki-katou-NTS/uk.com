@@ -27,13 +27,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_PAIR_PATRN_WKP")
+@Table(name = "KSCMT_WKP_PATTERN_ITEM")
 public class KscmtPairPatrnWkp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtPairPatrnWkpPK kscmtPairPatrnWkpPk;
+	public KscmtWkpPatternItemPK kscmtWkpPatternItemPk;
 
 	@Column(name = "PATTERN_NAME")
 	public String patternName;
@@ -41,22 +41,22 @@ public class KscmtPairPatrnWkp extends ContractUkJpaEntity implements Serializab
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "WKP_ID", referencedColumnName = "WKP_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "GROUP_NO", referencedColumnName = "GROUP_NO", insertable = false, updatable = false) })
-	private KscmtPairGrpWkp kscmtPairGrpWkp;
+	private KscmtPairGrpWkp kscmtWkpPattern;
 
-	@OneToMany(targetEntity=KscmtPairWkp.class, cascade = CascadeType.ALL, mappedBy = "kscmtPairPatrnWkp", orphanRemoval = true)
-	@JoinTable(name = "KSCMT_PAIR_WKP")
-	public List<KscmtPairWkp> kscmtPairWkp;
+	@OneToMany(targetEntity=KscmtPairWkp.class, cascade = CascadeType.ALL, mappedBy = "kscmtWkpPatternItem", orphanRemoval = true)
+	@JoinTable(name = "KSCMT_WKP_WORK_PAIR_SET")
+	public List<KscmtPairWkp> kscmtWkpWorkPairSet;
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtPairPatrnWkpPk;
+		return this.kscmtWkpPatternItemPk;
 	}
 
-	public KscmtPairPatrnWkp(KscmtPairPatrnWkpPK kscmtPairPatrnWkpPk, String patternName,
-			List<KscmtPairWkp> kscmtPairWkp) {
+	public KscmtPairPatrnWkp(KscmtWkpPatternItemPK kscmtWkpPatternItemPk, String patternName,
+			List<KscmtPairWkp> kscmtWkpWorkPairSet) {
 		super();
-		this.kscmtPairPatrnWkpPk = kscmtPairPatrnWkpPk;
+		this.kscmtWkpPatternItemPk = kscmtWkpPatternItemPk;
 		this.patternName = patternName;
-		this.kscmtPairWkp = kscmtPairWkp;
+		this.kscmtWkpWorkPairSet = kscmtWkpWorkPairSet;
 	}
 }

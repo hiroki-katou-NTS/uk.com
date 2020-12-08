@@ -637,7 +637,7 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 	public List<KrcdtWekAggrHdwkTime> krcdtWekAggrHdwkTimes;
 	/** 縦計：勤務日数：集計欠勤日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekDaysAbsence> krcdtWekDaysAbsence;
+	public List<KrcdtWekDaysAbsence> krcdtWekAggrAbsnDays;
 	/** 縦計：勤務日数：集計特定日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAggrSpecDays> krcdtWekAggrSpecDays;
@@ -646,13 +646,13 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 	public List<KrcdtWekAggrSpvcDays> krcdtWekAggrSpvcDays;
 	/** 縦計：勤務時間：集計加給時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeBonusPay> krcdtWekTimeBonusPay;
+	public List<KrcdtWekTimeBonusPay> krcdtWekAggrBnspyTime;
 	/** 縦計：勤務時間：集計乖離時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeDvgc> krcdtWekTimeDvgc;
+	public List<KrcdtWekTimeDvgc> krcdtWekAggrDivgTime;
 	/** 縦計：勤務時間：集計外出 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeGoout> krcdtWekTimeGoout;
+	public List<KrcdtWekTimeGoout> krcdtWekAggrGoout;
 	/** 縦計：勤務時間：集計割増時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAggrPremTime> krcdtWekAggrPremTime;
@@ -661,10 +661,10 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 	public List<KrcdtWekMedicalTime> krcdtWekMedicalTime;
 	/** 時間外超過：時間外超過 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeOutside> krcdtWekTimeOutside;
+	public List<KrcdtWekTimeOutside> krcdtWekExcoutTime;
 	/** 回数集計：回数集計 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeTotalcount> krcdtWekTimeTotalcount;
+	public List<KrcdtWekTimeTotalcount> krcdtWekTotalTimes;
 	/** 任意項目：任意項目値 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAnyItemValue> krcdtWekAnyItemValue;
@@ -799,7 +799,7 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 				AbsenceDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.vtTotalAbsenceDays),
 						new AttendanceTimeMonth(this.vtTotalAbsenceTime),
-						this.krcdtWekDaysAbsence.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						this.krcdtWekAggrAbsnDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				PredeterminedDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.vtPredetermineDays)),
 				WorkDaysDetailOfMonthly.of(new AttendanceDaysMonth(this.vtWorkDays)),
@@ -850,9 +850,9 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 		// 月別実績の勤務時間
 		val vtWorkTime = WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
-						this.krcdtWekTimeBonusPay.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						this.krcdtWekAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				GoOutOfMonthly.of(
-						this.krcdtWekTimeGoout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+						this.krcdtWekAggrGoout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 						goOutForChildCares),
 				PremiumTimeOfMonthly.of(
 						this.krcdtWekAggrPremTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
@@ -903,7 +903,7 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateUnemployedTime)),
 				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonthWithMinus(this.vtBudgetVarienceTime)),
 				DivergenceTimeOfMonthly.of(
-						this.krcdtWekTimeDvgc.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						this.krcdtWekAggrDivgTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				this.krcdtWekMedicalTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 				TopPageDisplayOfMonthly.of(
 						new AttendanceTimeMonth(this.topPageOtTime), 
@@ -961,10 +961,10 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 				new DatePeriod(this.startYmd, this.endYmd),
 				weeklyCalculation,
 				ExcessOutsideByPeriod.of(
-						this.krcdtWekTimeOutside.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						this.krcdtWekExcoutTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				verticalTotal,
 				TotalCountByPeriod.of(
-						this.krcdtWekTimeTotalcount.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						this.krcdtWekTotalTimes.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				AnyItemByPeriod.of(
 						this.krcdtWekAnyItemValue.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				new AttendanceDaysMonth(this.aggregateDays));

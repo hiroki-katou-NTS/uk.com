@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @Entity
-@Table(name = "WWFMT_AGENT")
+@Table(name = "CMMMT_AGENT")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtAgent extends ContractUkJpaEntity implements Serializable {
@@ -27,7 +27,7 @@ public class WwfmtAgent extends ContractUkJpaEntity implements Serializable {
 	public static final JpaEntityMapper<WwfmtAgent> MAPPER = new JpaEntityMapper<>(WwfmtAgent.class);
 
 	@EmbeddedId
-	public WwfmtAgentPK wwfmtAgentPK;
+	public CmmmtAgentPK cmmmtAgentPK;
 
 	/**開始日*/
 	@Basic(optional = false)
@@ -81,13 +81,13 @@ public class WwfmtAgent extends ContractUkJpaEntity implements Serializable {
 
 
 	@Override
-	protected WwfmtAgentPK getKey() {
-		return this.wwfmtAgentPK;
+	protected CmmmtAgentPK getKey() {
+		return this.cmmmtAgentPK;
 	}
 
 	public static WwfmtAgent fromJdbc(NtsResultSet.NtsResultRecord rec) {
 		WwfmtAgent ent = new WwfmtAgent();
-		ent.wwfmtAgentPK = new WwfmtAgentPK(
+		ent.cmmmtAgentPK = new CmmmtAgentPK(
 				rec.getString("CID"),
 				rec.getString("SID"),
 				rec.getString("REQUEST_ID"));

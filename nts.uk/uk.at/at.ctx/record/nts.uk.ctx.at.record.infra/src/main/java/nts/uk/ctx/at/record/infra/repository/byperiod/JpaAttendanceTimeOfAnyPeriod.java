@@ -179,8 +179,8 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		// 縦計：勤務日数：集計欠勤日数
 		val vtWorkDays = domain.getVerticalTotal().getWorkDays();
 		val absenceDaysMap = vtWorkDays.getAbsenceDays().getAbsenceDaysList();
-		if (entity.krcdtAnpDaysAbsence == null) entity.krcdtAnpDaysAbsence = new ArrayList<>();
-		val entityAggrAbsnDaysList = entity.krcdtAnpDaysAbsence;
+		if (entity.krcdtAnpAggrAbsnDays == null) entity.krcdtAnpAggrAbsnDays = new ArrayList<>();
+		val entityAggrAbsnDaysList = entity.krcdtAnpAggrAbsnDays;
 		entityAggrAbsnDaysList.removeIf(a -> {return !absenceDaysMap.containsKey(a.PK.absenceFrameNo);} );
 		for (val absenceDays : absenceDaysMap.values()){
 			KrcdtAnpDaysAbsence entityAggrAbsnDays = new KrcdtAnpDaysAbsence();
@@ -276,8 +276,8 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		
 		// 縦計：勤務時間：集計外出
 		val goOutMap = vtWorkTime.getGoOut().getGoOuts();
-		if (entity.krcdtAnpTimeGoout == null) entity.krcdtAnpTimeGoout = new ArrayList<>();
-		val entityAggrGooutList = entity.krcdtAnpTimeGoout;
+		if (entity.krcdtAnpAggrGoout == null) entity.krcdtAnpAggrGoout = new ArrayList<>();
+		val entityAggrGooutList = entity.krcdtAnpAggrGoout;
 		entityAggrGooutList.removeIf(
 				a -> {return !goOutMap.containsKey(EnumAdaptor.valueOf(a.PK.goOutReason, GoingOutReason.class));} );
 		for (val goOut : goOutMap.values()){
@@ -335,8 +335,8 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		
 		// 回数集計：回数集計
 		val totalCountMap = domain.getTotalCount().getTotalCountList();
-		if (entity.krcdtAnpTimeTotalcount == null) entity.krcdtAnpTimeTotalcount = new ArrayList<>();
-		val entityTotalTimesList = entity.krcdtAnpTimeTotalcount;
+		if (entity.krcdtAnpTotalTimes == null) entity.krcdtAnpTotalTimes = new ArrayList<>();
+		val entityTotalTimesList = entity.krcdtAnpTotalTimes;
 		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
 		for (val totalCount : totalCountMap.values()){
 			KrcdtAnpTimeTotalcount entityTotalTimes = new KrcdtAnpTimeTotalcount();

@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCMT_CALC_M_ROUND")
+@Table(name = "KRCST_MON_ITEM_ROUND")
 @NoArgsConstructor
 public class KrcmtCalcMRound extends ContractUkJpaEntity implements Serializable {
 
@@ -24,7 +24,7 @@ public class KrcmtCalcMRound extends ContractUkJpaEntity implements Serializable
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcmtCalcMRoundPK PK;
+	public KrcstMonItemRoundPK PK;
 	
 	/** 丸め単位 */
 	@Column(name = "ROUND_UNIT")

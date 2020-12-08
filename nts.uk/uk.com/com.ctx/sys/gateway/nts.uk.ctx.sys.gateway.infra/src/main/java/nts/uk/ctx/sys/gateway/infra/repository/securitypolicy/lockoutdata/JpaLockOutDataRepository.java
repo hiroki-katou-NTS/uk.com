@@ -24,8 +24,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK_;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
 
 /**
  * The Class JpaLogoutDataRepository.
@@ -53,7 +53,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 
 		//Check UserId
 		predicateList.add(
-				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.userId), userId));
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
@@ -95,7 +95,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		
 		CollectionUtil.split(usersID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			lstpredicateWhere.add(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.userId).in(splitData));
+			lstpredicateWhere.add(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId).in(splitData));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			em.createQuery(cq).executeUpdate();
 		});
@@ -116,7 +116,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 
 		//Check UserId
 		predicateList.add(
-				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.contractCd), contractCode));
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.contractCd), contractCode));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
@@ -150,9 +150,9 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 
 		//Check UserId
 		predicateList.add(
-				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.userId), userId));
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userId));
 		predicateList.add(
-				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.contractCd), contractCd));
+				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.contractCd), contractCd));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 

@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CommonAuthor;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CommonAuthorRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthCommon;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthCommonPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstScheCommonAuthorPK;
 @Stateless
 public class JpaCommonAuthorRepository extends JpaRepository implements CommonAuthorRepository{
 	private static final String SELECT_BY_CID;
@@ -17,8 +17,8 @@ public class JpaCommonAuthorRepository extends JpaRepository implements CommonAu
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KscmtScheAuthCommon e");
-		builderString.append(" WHERE e.kscmtScheAuthCommonPK.companyId = :companyId");
-		builderString.append(" AND e.kscmtScheAuthCommonPK.roleId = :roleId");
+		builderString.append(" WHERE e.kscstScheCommonAuthorPK.companyId = :companyId");
+		builderString.append(" AND e.kscstScheCommonAuthorPK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	/**
@@ -28,10 +28,10 @@ public class JpaCommonAuthorRepository extends JpaRepository implements CommonAu
 	 */
 	private CommonAuthor convertToDomain(KscmtScheAuthCommon author) {
 		CommonAuthor commonAuthor = CommonAuthor.createFromJavaType(
-				author.kscmtScheAuthCommonPK.companyId, 
-				author.kscmtScheAuthCommonPK.roleId,
+				author.kscstScheCommonAuthorPK.companyId, 
+				author.kscstScheCommonAuthorPK.roleId,
 				author.availableCommon,
-				author.kscmtScheAuthCommonPK.functionNoCommon
+				author.kscstScheCommonAuthorPK.functionNoCommon
 				
 				);
 		return commonAuthor;
@@ -44,9 +44,9 @@ public class JpaCommonAuthorRepository extends JpaRepository implements CommonAu
 	 */
 	private KscmtScheAuthCommon convertToDbType(CommonAuthor author) {
 		KscmtScheAuthCommon commonAuthor = new KscmtScheAuthCommon();
-		KscmtScheAuthCommonPK commonAuthorPK = new KscmtScheAuthCommonPK(author.getCompanyId(), author.getRoleId(),author.getFunctionNoCommon());
+		KscstScheCommonAuthorPK commonAuthorPK = new KscstScheCommonAuthorPK(author.getCompanyId(), author.getRoleId(),author.getFunctionNoCommon());
 				commonAuthor.availableCommon = author.getAvailableCommon();
-				commonAuthor.kscmtScheAuthCommonPK = commonAuthorPK;
+				commonAuthor.kscstScheCommonAuthorPK = commonAuthorPK;
 		return commonAuthor;
 	}
 	
@@ -73,10 +73,10 @@ public class JpaCommonAuthorRepository extends JpaRepository implements CommonAu
 	 */
 	@Override
 	public void update(CommonAuthor author) {
-		KscmtScheAuthCommonPK primaryKey = new KscmtScheAuthCommonPK(author.getCompanyId(), author.getRoleId(),author.getFunctionNoCommon());
+		KscstScheCommonAuthorPK primaryKey = new KscstScheCommonAuthorPK(author.getCompanyId(), author.getRoleId(),author.getFunctionNoCommon());
 		KscmtScheAuthCommon entity = this.queryProxy().find(primaryKey, KscmtScheAuthCommon.class).get();
 				entity.availableCommon = author.getAvailableCommon();
-				entity.kscmtScheAuthCommonPK = primaryKey;
+				entity.kscstScheCommonAuthorPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -85,7 +85,7 @@ public class JpaCommonAuthorRepository extends JpaRepository implements CommonAu
 	 */
 	@Override
 	public Optional<CommonAuthor> findByCId(String companyId, String roleId, int functionNoCommon) {
-		return this.queryProxy().find(new KscmtScheAuthCommonPK(companyId, roleId,functionNoCommon), KscmtScheAuthCommon.class)
+		return this.queryProxy().find(new KscstScheCommonAuthorPK(companyId, roleId,functionNoCommon), KscmtScheAuthCommon.class)
 				.map(c -> convertToDomain(c));
 	}
 }

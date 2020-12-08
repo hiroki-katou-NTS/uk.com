@@ -32,7 +32,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistItem_;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHist_;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory_;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -127,13 +127,13 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 			
 			// start date <= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.lessThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHist)
-							.get(BsymtAffClassHist_.startDate), baseDate));
+					.lessThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+							.get(BsymtAffClassHistory_.startDate), baseDate));
 
 			// endDate >= base date
 			lstpredicateWhere.add(criteriaBuilder
-					.greaterThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHist)
-							.get(BsymtAffClassHist_.endDate), baseDate));
+					.greaterThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+							.get(BsymtAffClassHistory_.endDate), baseDate));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -194,16 +194,16 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 				lstpredicateWhere
 						.add(criteriaBuilder
 								.lessThanOrEqualTo(
-										root.get(BsymtAffClassHistItem_.bsymtAffClassHist)
-												.get(BsymtAffClassHist_.startDate),
+										root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+												.get(BsymtAffClassHistory_.startDate),
 										baseDate));
 
 				// endDate >= base date
 				lstpredicateWhere
 						.add(criteriaBuilder
 								.greaterThanOrEqualTo(
-										root.get(BsymtAffClassHistItem_.bsymtAffClassHist)
-												.get(BsymtAffClassHist_.endDate),
+										root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+												.get(BsymtAffClassHistory_.endDate),
 										baseDate));
 
 				// set where to SQL
@@ -236,7 +236,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 		List<AffClassHistItem> result = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST_ITEM" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIS_ITEM" 
 						+ " WHERE  HIST_ID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {

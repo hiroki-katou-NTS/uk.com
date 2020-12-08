@@ -34,7 +34,7 @@ public class JpaMulMonCheckCondRepository extends JpaRepository implements MulMo
 		KrcmtAlstChkmltUdcsum updateEntity = this.queryProxy().find(
 				mulMonthCheckCond.getErrorAlarmCheckID(), KrcmtAlstChkmltUdcsum.class).get();
 		updateEntity.isUseFlg = newEntity.isUseFlg;
-		updateEntity.krcmtEralstCndgrp = newEntity.krcmtEralstCndgrp;
+		updateEntity.krcmtErAlAtdItemCon = newEntity.krcmtErAlAtdItemCon;
 		this.commandProxy().update(updateEntity);
 		this.getEntityManager().flush();
 	}

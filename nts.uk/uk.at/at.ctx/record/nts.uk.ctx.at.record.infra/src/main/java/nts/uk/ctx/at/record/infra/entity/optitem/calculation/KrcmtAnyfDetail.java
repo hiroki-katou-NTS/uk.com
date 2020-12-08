@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF_DETAIL")
+@Table(name = "KRCMT_FORMULA_SETTING")
 public class KrcmtAnyfDetail extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KrcmtAnyfDetail extends ContractUkJpaEntity implements Serializable
 
 	/** The krcmt formula setting PK. */
 	@EmbeddedId
-	protected KrcmtAnyfDetailPK krcmtAnyfDetailPK;
+	protected KrcmtFormulaSettingPK krcmtFormulaSettingPK;
 
 
 	/** The minus segment. */
@@ -77,18 +77,18 @@ public class KrcmtAnyfDetail extends ContractUkJpaEntity implements Serializable
 	 *
 	 * @param pk the pk
 	 */
-	public KrcmtAnyfDetail(KrcmtAnyfPK pk) {
+	public KrcmtAnyfDetail(KrcmtOptItemFormulaPK pk) {
 		super();
-		this.krcmtAnyfDetailPK = new KrcmtAnyfDetailPK(pk);
+		this.krcmtFormulaSettingPK = new KrcmtFormulaSettingPK(pk);
 	}
 
 	/**
 	 * Instantiates a new krcmt formula setting.
 	 *
-	 * @param krcmtAnyfDetailPK the krcmt formula setting PK
+	 * @param krcmtFormulaSettingPK the krcmt formula setting PK
 	 */
-	public KrcmtAnyfDetail(KrcmtAnyfDetailPK krcmtAnyfDetailPK) {
-		this.krcmtAnyfDetailPK = krcmtAnyfDetailPK;
+	public KrcmtAnyfDetail(KrcmtFormulaSettingPK krcmtFormulaSettingPK) {
+		this.krcmtFormulaSettingPK = krcmtFormulaSettingPK;
 	}
 
 	/*
@@ -99,7 +99,7 @@ public class KrcmtAnyfDetail extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfDetailPK != null ? krcmtAnyfDetailPK.hashCode() : 0);
+		hash += (krcmtFormulaSettingPK != null ? krcmtFormulaSettingPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -114,9 +114,9 @@ public class KrcmtAnyfDetail extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KrcmtAnyfDetail other = (KrcmtAnyfDetail) object;
-		if ((this.krcmtAnyfDetailPK == null && other.krcmtAnyfDetailPK != null)
-				|| (this.krcmtAnyfDetailPK != null
-						&& !this.krcmtAnyfDetailPK.equals(other.krcmtAnyfDetailPK))) {
+		if ((this.krcmtFormulaSettingPK == null && other.krcmtFormulaSettingPK != null)
+				|| (this.krcmtFormulaSettingPK != null
+						&& !this.krcmtFormulaSettingPK.equals(other.krcmtFormulaSettingPK))) {
 			return false;
 		}
 		return true;
@@ -129,7 +129,7 @@ public class KrcmtAnyfDetail extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfDetailPK;
+		return this.krcmtFormulaSettingPK;
 	}
 
 }

@@ -20,7 +20,7 @@ public class KrcdtErOtkAtd extends KrcdtDaySyaErrorAtd implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 //	@EmbeddedId
-//	public KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK;
+//	public KrcdtErAttendanceItemPK krcdtErAttendanceItemPK;
 //	
 //	@Column(nullable = false, name = "CID")
 //	public String cid;
@@ -37,7 +37,7 @@ public class KrcdtErOtkAtd extends KrcdtDaySyaErrorAtd implements Serializable {
 //	
 //	@Override
 //	protected Object getKey() {
-//		return this.krcdtDaySyaErrorAtdPK;
+//		return this.krcdtErAttendanceItemPK;
 //	}
 //	
 ////	@ManyToOne
@@ -54,13 +54,13 @@ public class KrcdtErOtkAtd extends KrcdtDaySyaErrorAtd implements Serializable {
 //	
 //	public static KrcdtErOtkAtd toEntity(String id, int attendanceItemId, String cid, 
 //			String sid, String ccd, GeneralDate processDate){
-//		KrcdtErOtkAtd krcdtDaySyaErrorAtd = new KrcdtErOtkAtd();
-//		KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK = new KrcdtDaySyaErrorAtdPK(id, attendanceItemId);
-//		krcdtDaySyaErrorAtd.krcdtDaySyaErrorAtdPK = krcdtDaySyaErrorAtdPK;
-//		krcdtDaySyaErrorAtd.ccd = ccd;
-//		krcdtDaySyaErrorAtd.cid = cid;
-//		krcdtDaySyaErrorAtd.sid = cid;
-//		krcdtDaySyaErrorAtd.processDate = processDate;
-//		return krcdtDaySyaErrorAtd;
+//		KrcdtErOtkAtd krcdtErAttendanceItem = new KrcdtErOtkAtd();
+//		KrcdtErAttendanceItemPK krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK(id, attendanceItemId);
+//		krcdtErAttendanceItem.krcdtErAttendanceItemPK = krcdtErAttendanceItemPK;
+//		krcdtErAttendanceItem.ccd = ccd;
+//		krcdtErAttendanceItem.cid = cid;
+//		krcdtErAttendanceItem.sid = cid;
+//		krcdtErAttendanceItem.processDate = processDate;
+//		return krcdtErAttendanceItem;
 //	}
 }

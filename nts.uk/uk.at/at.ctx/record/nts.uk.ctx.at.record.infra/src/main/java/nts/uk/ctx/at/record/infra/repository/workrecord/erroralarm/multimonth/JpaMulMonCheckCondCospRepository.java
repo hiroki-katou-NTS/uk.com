@@ -36,7 +36,7 @@ public class JpaMulMonCheckCondCospRepository extends JpaRepository implements M
 		updateEntity.isUseFlg = newEntity.isUseFlg;
 		updateEntity.times = newEntity.times;
 		updateEntity.compareOperator = newEntity.compareOperator;
-		updateEntity.krcmtEralstCndgrp = newEntity.krcmtEralstCndgrp;
+		updateEntity.krcmtErAlAtdItemCon = newEntity.krcmtErAlAtdItemCon;
 		this.commandProxy().update(updateEntity);
 		this.getEntityManager().flush();
 	}

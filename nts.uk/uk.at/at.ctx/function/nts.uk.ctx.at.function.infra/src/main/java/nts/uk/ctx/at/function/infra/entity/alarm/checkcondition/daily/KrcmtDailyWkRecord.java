@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_CHKDAY_UDKEY")
+@Table(name = "KRCMT_DAILY_WK_RECORD_PK")
 public class KrcmtDailyWkRecord extends ContractUkJpaEntity implements Serializable  {
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class KrcmtDailyWkRecord extends ContractUkJpaEntity implements Serializa
 	
 	@ManyToOne
 	@JoinColumn(name="DAILY_ALARM_CON_ID", referencedColumnName="DAILY_ALARM_CON_ID", insertable = false, updatable = false)
-	public KfnmtAlstChkdaydition dailyAlarmCondition;
+	public KrcmtDailyAlarmCondition dailyAlarmCondition;
 	
 	@Override
 	protected Object getKey() {

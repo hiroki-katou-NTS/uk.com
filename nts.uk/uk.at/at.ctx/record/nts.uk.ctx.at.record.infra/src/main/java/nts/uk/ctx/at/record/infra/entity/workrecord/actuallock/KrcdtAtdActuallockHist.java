@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCDT_ATD_ACTUALLOCK_HIST")
+@Table(name = "KRCDT_ACTUAL_LOCK_HIST")
 public class KrcdtAtdActuallockHist extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KrcdtAtdActuallockHist extends ContractUkJpaEntity implements Seria
     
     /** The krcmt actual lock hist PK. */
     @EmbeddedId
-    protected KrcdtAtdActuallockHistPK krcdtAtdActuallockHistPK;
+    protected KrcdtActualLockHistPK krcdtActualLockHistPK;
     
     /** The target month. */
     @Column(name = "TARGET_MONTH")
@@ -61,7 +61,7 @@ public class KrcdtAtdActuallockHist extends ContractUkJpaEntity implements Seria
      */
     @Override
 	protected Object getKey() {
-		return this.krcdtAtdActuallockHistPK;
+		return this.krcdtActualLockHistPK;
 	}
     
 	/* (non-Javadoc)
@@ -71,7 +71,7 @@ public class KrcdtAtdActuallockHist extends ContractUkJpaEntity implements Seria
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((krcdtAtdActuallockHistPK == null) ? 0 : krcdtAtdActuallockHistPK.hashCode());
+		result = prime * result + ((krcdtActualLockHistPK == null) ? 0 : krcdtActualLockHistPK.hashCode());
 		return result;
 	}
 
@@ -87,10 +87,10 @@ public class KrcdtAtdActuallockHist extends ContractUkJpaEntity implements Seria
 		if (getClass() != obj.getClass())
 			return false;
 		KrcdtAtdActuallockHist other = (KrcdtAtdActuallockHist) obj;
-		if (krcdtAtdActuallockHistPK == null) {
-			if (other.krcdtAtdActuallockHistPK != null)
+		if (krcdtActualLockHistPK == null) {
+			if (other.krcdtActualLockHistPK != null)
 				return false;
-		} else if (!krcdtAtdActuallockHistPK.equals(other.krcdtAtdActuallockHistPK))
+		} else if (!krcdtActualLockHistPK.equals(other.krcdtActualLockHistPK))
 			return false;
 		return true;
 	}

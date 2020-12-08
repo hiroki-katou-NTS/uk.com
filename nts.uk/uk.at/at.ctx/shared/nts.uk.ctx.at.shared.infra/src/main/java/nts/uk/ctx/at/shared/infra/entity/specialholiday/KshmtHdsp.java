@@ -20,12 +20,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSP")
+@Table(name = "KSHST_SPECIAL_HOLIDAY")
 public class KshmtHdsp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshmtHdspPK pk;
+	public KshstSpecialHolidayPK pk;
 
 	/* 特別休暇名称 */
 	@Column(name = "SPHD_NAME")

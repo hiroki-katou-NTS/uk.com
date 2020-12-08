@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SPTMT_TREE_MENU")
+@Table(name = "CCGST_TREE_MENU")
 public class SptmtTreeMenu extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public SptmtTreeMenuPK sptmtTreeMenuPK;
+	public CcgstTreeMenuPK ccgstTreeMenuPK;
 	
 	@Column(name = "CODE")
 	public String code;
@@ -46,12 +46,12 @@ public class SptmtTreeMenu extends ContractUkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		
-		return sptmtTreeMenuPK;
+		return ccgstTreeMenuPK;
 	}
 
-	public SptmtTreeMenu(SptmtTreeMenuPK sptmtTreeMenuPK, String code, int classification, int system) {
+	public SptmtTreeMenu(CcgstTreeMenuPK ccgstTreeMenuPK, String code, int classification, int system) {
 		super();
-		this.sptmtTreeMenuPK = sptmtTreeMenuPK;
+		this.ccgstTreeMenuPK = ccgstTreeMenuPK;
 		this.code = code;
 		this.classification = classification;
 		this.system = system;

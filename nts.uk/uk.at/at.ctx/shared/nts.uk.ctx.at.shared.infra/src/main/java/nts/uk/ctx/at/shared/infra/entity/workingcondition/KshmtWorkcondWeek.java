@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKCOND_WEEK")
+@Table(name = "KSHMT_PERSONAL_DAY_OF_WEEK")
 public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -38,7 +38,7 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 
 	/** The kshmt personal day of week PK. */
 	@EmbeddedId
-	protected KshmtWorkcondWeekPK kshmtWorkcondWeekPK;
+	protected KshmtPersonalDayOfWeekPK kshmtPersonalDayOfWeekPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -61,7 +61,7 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true),
 			@JoinColumn(name = "PER_WORK_DAY_OFF_ATR", referencedColumnName = "PER_WORK_DAY_OFF_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWorkcondWeekTs> kshmtWorkcondWeekTss;
+	private List<KshmtWorkcondWeekTs> kshmtDayofweekTimeZones;
 
 	/**
 	 * Instantiates a new kshmt personal day of week.
@@ -78,7 +78,7 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWorkcondWeekPK != null ? kshmtWorkcondWeekPK.hashCode() : 0);
+		hash += (kshmtPersonalDayOfWeekPK != null ? kshmtPersonalDayOfWeekPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -93,9 +93,9 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 			return false;
 		}
 		KshmtWorkcondWeek other = (KshmtWorkcondWeek) object;
-		if ((this.kshmtWorkcondWeekPK == null && other.kshmtWorkcondWeekPK != null)
-				|| (this.kshmtWorkcondWeekPK != null
-						&& !this.kshmtWorkcondWeekPK.equals(other.kshmtWorkcondWeekPK))) {
+		if ((this.kshmtPersonalDayOfWeekPK == null && other.kshmtPersonalDayOfWeekPK != null)
+				|| (this.kshmtPersonalDayOfWeekPK != null
+						&& !this.kshmtPersonalDayOfWeekPK.equals(other.kshmtPersonalDayOfWeekPK))) {
 			return false;
 		}
 		return true;
@@ -108,28 +108,28 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWorkcondWeekPK;
+		return this.kshmtPersonalDayOfWeekPK;
 	}
 
-	public KshmtWorkcondWeek(KshmtWorkcondWeekPK kshmtWorkcondWeekPK, String sid,
-			String workTypeCode, String workTimeCode, List<KshmtWorkcondWeekTs> kshmtWorkcondWeekTss) {
+	public KshmtWorkcondWeek(KshmtPersonalDayOfWeekPK kshmtPersonalDayOfWeekPK, String sid,
+			String workTypeCode, String workTimeCode, List<KshmtWorkcondWeekTs> kshmtDayofweekTimeZones) {
 		super();
-		this.kshmtWorkcondWeekPK = kshmtWorkcondWeekPK;
+		this.kshmtPersonalDayOfWeekPK = kshmtPersonalDayOfWeekPK;
 		this.sid = sid;
 		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
-		this.kshmtWorkcondWeekTss = kshmtWorkcondWeekTss;
+		this.kshmtDayofweekTimeZones = kshmtDayofweekTimeZones;
 	}
 	
 	public SingleDaySchedule toDomain() {
 		return new SingleDaySchedule(this.workTypeCode,
-				kshmtWorkcondWeekTss.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+				kshmtDayofweekTimeZones.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.workTimeCode));
 	}
 	
 	public static KshmtWorkcondWeek toEntity(SingleDaySchedule domain,String historyId,String sid,int perWorkDayOffAtr) {
 		return new KshmtWorkcondWeek(
-				new KshmtWorkcondWeekPK(historyId, perWorkDayOffAtr),
+				new KshmtPersonalDayOfWeekPK(historyId, perWorkDayOffAtr),
 				sid, 
 				domain.getWorkTypeCode().isPresent()?domain.getWorkTypeCode().get().v():null, 
 				domain.getWorkTimeCode().isPresent()?domain.getWorkTimeCode().get().v():null,

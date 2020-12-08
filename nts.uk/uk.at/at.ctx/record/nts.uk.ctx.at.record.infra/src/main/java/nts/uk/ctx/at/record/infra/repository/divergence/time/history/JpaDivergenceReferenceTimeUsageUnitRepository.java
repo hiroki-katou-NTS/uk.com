@@ -45,7 +45,7 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 	 *
 	 * @param domain
 	 *            the domain
-	 * @return the krcmtDvgcUnitSet
+	 * @return the krcstDrtUseUnit
 	 */
 	private KrcmtDvgcUnitSet toEntity(DivergenceReferenceTimeUsageUnit domain) {
 		KrcmtDvgcUnitSet entity = this.queryProxy().find(domain.getCId(), KrcmtDvgcUnitSet.class)

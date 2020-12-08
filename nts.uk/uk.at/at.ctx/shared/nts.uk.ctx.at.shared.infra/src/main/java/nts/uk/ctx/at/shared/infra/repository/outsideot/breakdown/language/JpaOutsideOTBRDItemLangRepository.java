@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLang;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLangPK_;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLangPK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang_;
 
 /**
  * The Class JpaOutsideOTBRDItemLangRepository.
@@ -49,7 +49,7 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_OUTSIDE_LANG_BRD (KshmtOutsideLangBrd SQL)
+		// call KSHST_OVER_TIME_LANG_BRD (KshstOverTimeLangBrd SQL)
 		CriteriaQuery<KshmtOutsideDetailLang> cq = criteriaBuilder
 				.createQuery(KshmtOutsideDetailLang.class);
 
@@ -64,19 +64,19 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtOutsideDetailLang_.kshmtOutsideDetailLangPK)
-						.get(KshmtOutsideDetailLangPK_.cid), companyId));
+				.add(criteriaBuilder.equal(root.get(KshstOutsideOtBrdLang_.kshstOutsideOtBrdLangPK)
+						.get(KshstOutsideOtBrdLangPK_.cid), companyId));
 		// equal language id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtOutsideDetailLang_.kshmtOutsideDetailLangPK)
-						.get(KshmtOutsideDetailLangPK_.languageId), languageId));
+				.add(criteriaBuilder.equal(root.get(KshstOutsideOtBrdLang_.kshstOutsideOtBrdLangPK)
+						.get(KshstOutsideOtBrdLangPK_.languageId), languageId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by over time breakdown item no asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtOutsideDetailLang_.kshmtOutsideDetailLangPK)
-				.get(KshmtOutsideDetailLangPK_.brdItemNo)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshstOutsideOtBrdLang_.kshstOutsideOtBrdLangPK)
+				.get(KshstOutsideOtBrdLangPK_.brdItemNo)));
 
 		// create query
 		TypedQuery<KshmtOutsideDetailLang> query = em.createQuery(cq);

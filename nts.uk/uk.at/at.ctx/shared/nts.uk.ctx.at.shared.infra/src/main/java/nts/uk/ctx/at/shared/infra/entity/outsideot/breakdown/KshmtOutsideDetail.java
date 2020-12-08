@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OUTSIDE_DETAIL")
+@Table(name = "KSHST_OUTSIDE_OT_BRD")
 public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -37,7 +37,7 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
     
     /** The kshst over time brd PK. */
     @EmbeddedId
-    protected KshmtOutsideDetailPK kshmtOutsideDetailPK;
+    protected KshstOutsideOtBrdPK kshstOutsideOtBrdPK;
     
     /** The name. */
     @Column(name = "NAME")
@@ -69,24 +69,24 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
     /**
      * Instantiates a new kshst outside ot brd.
      *
-     * @param kshmtOutsideDetailPK the kshst outside ot brd PK
+     * @param kshstOutsideOtBrdPK the kshst outside ot brd PK
      */
-    public KshmtOutsideDetail(KshmtOutsideDetailPK kshmtOutsideDetailPK) {
-        this.kshmtOutsideDetailPK = kshmtOutsideDetailPK;
+    public KshmtOutsideDetail(KshstOutsideOtBrdPK kshstOutsideOtBrdPK) {
+        this.kshstOutsideOtBrdPK = kshstOutsideOtBrdPK;
     }
 
     /**
      * Instantiates a new kshst over time brd.
      *
-     * @param kshmtOutsideBrdPK the kshst over time brd PK
+     * @param kshstOverTimeBrdPK the kshst over time brd PK
      * @param exclusVer the exclus ver
      * @param name the name
      * @param useAtr the use atr
      * @param productNumber the product number
      */
-	public KshmtOutsideDetail(KshmtOutsideDetailPK kshmtOutsideDetailPK, int exclusVer, String name,
+	public KshmtOutsideDetail(KshstOutsideOtBrdPK kshstOutsideOtBrdPK, int exclusVer, String name,
 			short useAtr, short productNumber) {
-		this.kshmtOutsideDetailPK = kshmtOutsideDetailPK;
+		this.kshstOutsideOtBrdPK = kshstOutsideOtBrdPK;
 		this.name = name;
 		this.useAtr = useAtr;
 		this.productNumber = productNumber;
@@ -99,7 +99,7 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
      * @param brdItemNo the brd item no
      */
     public KshmtOutsideDetail(String cid, short brdItemNo) {
-        this.kshmtOutsideDetailPK = new KshmtOutsideDetailPK(cid, brdItemNo);
+        this.kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK(cid, brdItemNo);
     }
 
 
@@ -109,7 +109,7 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtOutsideDetailPK != null ? kshmtOutsideDetailPK.hashCode() : 0);
+		hash += (kshstOutsideOtBrdPK != null ? kshstOutsideOtBrdPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -123,9 +123,9 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KshmtOutsideDetail other = (KshmtOutsideDetail) object;
-		if ((this.kshmtOutsideDetailPK == null && other.kshmtOutsideDetailPK != null)
-				|| (this.kshmtOutsideDetailPK != null
-						&& !this.kshmtOutsideDetailPK.equals(other.kshmtOutsideDetailPK))) {
+		if ((this.kshstOutsideOtBrdPK == null && other.kshstOutsideOtBrdPK != null)
+				|| (this.kshstOutsideOtBrdPK != null
+						&& !this.kshstOutsideOtBrdPK.equals(other.kshstOutsideOtBrdPK))) {
 			return false;
 		}
 		return true;
@@ -136,7 +136,7 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtOutsideDetailPK;
+		return this.kshstOutsideOtBrdPK;
 	}
     
 }

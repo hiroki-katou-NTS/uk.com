@@ -93,14 +93,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_TIME_ATD")
+@Table(name = "KRCDT_DAY_TIME")
 public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KrcdtDayTimeAtdPK krcdtDayTimeAtdPK;
+	public KrcdtDayTimePK krcdtDayTimePK;
 	
 	/*----------------------日別実績の勤怠時間------------------------------*/
 	/* 総労働時間 */
@@ -1299,33 +1299,33 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayTimeAtdPK;
+		return this.krcdtDayTimePK;
 	}
 	
 	@OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayTimePremium krcdtDayTimePremium;
+	public KrcdtDayTimePremium krcdtDayPremiumTime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTimeAtd", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTimeAtd", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDayLateTime> krcdtDayLateTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTimeAtd", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTimeAtd", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDayShorttime> KrcdtDayShorttime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTimeAtd", orphanRemoval = true, fetch = FetchType.LAZY)
-	public List<KrcdtDayTimeGoout> krcdtDayTimeGoout; 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<KrcdtDayTimeGoout> krcdtDayOutingTime; 
 	
 	public static KrcdtDayTimeAtd toEntity(AttendanceTimeOfDailyPerformance attendanceTime) {
 		val entity = new KrcdtDayTimeAtd();
-		entity.krcdtDayTimeAtdPK = new KrcdtDayTimeAtdPK(attendanceTime.getEmployeeId(),
+		entity.krcdtDayTimePK = new KrcdtDayTimePK(attendanceTime.getEmployeeId(),
 				attendanceTime.getYmd());
 		entity.setData(attendanceTime);
 		return entity;
@@ -2653,7 +2653,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		
 		/*日別実績の外出時間*/
 		List<OutingTimeOfDaily> outingOfDaily = new ArrayList<>();
-		for(KrcdtDayTimeGoout outingTime : this.krcdtDayTimeGoout) {
+		for(KrcdtDayTimeGoout outingTime : this.krcdtDayOutingTime) {
 			outingOfDaily.add(outingTime.toDomain());
 		}
 		/*日別実績の勤怠時間*/
@@ -2678,9 +2678,9 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
-				this.bindDiffTime, this.diffTimeWorkTime, divergence,this.krcdtDayTimePremium == null ? new PremiumTimeOfDailyPerformance() : this.krcdtDayTimePremium.toDomain());
+				this.bindDiffTime, this.diffTimeWorkTime, divergence,this.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : this.krcdtDayPremiumTime.toDomain());
 		// 日別実績の勤怠時間
-		return new AttendanceTimeOfDailyPerformance(this.krcdtDayTimeAtdPK == null ? null : this.krcdtDayTimeAtdPK.employeeID, this.krcdtDayTimeAtdPK.generalDate,
+		return new AttendanceTimeOfDailyPerformance(this.krcdtDayTimePK == null ? null : this.krcdtDayTimePK.employeeID, this.krcdtDayTimePK.generalDate,
 				shedule, actual,
 				new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(this.aftPcLogoffTime),
 						new AttendanceTimeOfExistMinus(this.bfrPcLogonTime), new AttendanceTimeOfExistMinus(this.bfrWorkTime),
@@ -2698,12 +2698,12 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	}
 	
 	public static AttendanceTimeOfDailyPerformance toDomain(KrcdtDayTimeAtd entity,
-												   			KrcdtDayTimePremium krcdtDayTimePremium,
+												   			KrcdtDayTimePremium krcdtDayPremiumTime,
 												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
 												   			List<KrcdtDayLateTime> krcdtDayLateTime,
 												   			List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime,
 												   			List<KrcdtDayShorttime> KrcdtDayShorttime
-												   			,List<KrcdtDayTimeGoout> krcdtDayTimeGoout) {
+												   			,List<KrcdtDayTimeGoout> krcdtDayOutingTime) {
 		
 		/*日別実績の休憩時間*/
 		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordTotalTime), new AttendanceTime(entity.calToRecordTotalTime)),
@@ -3050,7 +3050,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																								  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.spRaiseSalaryOutTime10), new AttendanceTime(0))));
 		
 		List<OutingTimeOfDaily> outingOfDaily = new ArrayList<>();
-		for(KrcdtDayTimeGoout outingTime : krcdtDayTimeGoout) {
+		for(KrcdtDayTimeGoout outingTime : krcdtDayOutingTime) {
 			outingOfDaily.add(outingTime.toDomain());
 		}
 		
@@ -3089,7 +3089,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																						entity.bindDiffTime,
 																						entity.diffTimeWorkTime,
 																						divergence,
-																						entity.krcdtDayTimePremium == null ? new PremiumTimeOfDailyPerformance() : entity.krcdtDayTimePremium.toDomain());
+																						entity.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : entity.krcdtDayPremiumTime.toDomain());
 		
 		
 		
@@ -3097,8 +3097,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		
 		
 		
-		AttendanceTimeOfDailyPerformance domain = new AttendanceTimeOfDailyPerformance(entity.krcdtDayTimeAtdPK.employeeID,
-																					   entity.krcdtDayTimeAtdPK.generalDate,
+		AttendanceTimeOfDailyPerformance domain = new AttendanceTimeOfDailyPerformance(entity.krcdtDayTimePK.employeeID,
+																					   entity.krcdtDayTimePK.generalDate,
 																					   workScheduleTimeOfDaily,
 																					   actualWorkingTimeOfDaily,
 																					   new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(entity.aftPcLogoffTime),

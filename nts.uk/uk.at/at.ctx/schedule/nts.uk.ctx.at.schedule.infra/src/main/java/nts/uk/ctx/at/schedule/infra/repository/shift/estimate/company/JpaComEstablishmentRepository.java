@@ -21,17 +21,17 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishment;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCom_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceCom_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCom_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet_;
 
 /**
  * The Class JpaCompanyEstablishmentRepository.
@@ -130,13 +130,13 @@ public class JpaComEstablishmentRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtEstTimeCom_.kscmtEstTimeComPK).get(KscmtEstTimeComPK_.cid),
+				root.get(KscmtEstTimeComSet_.kscmtEstTimeComSetPK).get(KscmtEstTimeComSetPK_.cid),
 				companyId));
 
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstTimeCom_.kscmtEstTimeComPK)
-						.get(KscmtEstTimeComPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstTimeComSet_.kscmtEstTimeComSetPK)
+						.get(KscmtEstTimeComSetPK_.targetYear), targetYear));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -192,13 +192,13 @@ public class JpaComEstablishmentRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstPriceCom_.kscmtEstPriceComPK)
-						.get(KscmtEstPriceComPK_.cid), companyId));
+				.add(criteriaBuilder.equal(root.get(KscmtEstPriceComSet_.kscmtEstPriceComSetPK)
+						.get(KscmtEstPriceComSetPK_.cid), companyId));
 
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstPriceCom_.kscmtEstPriceComPK)
-						.get(KscmtEstPriceComPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstPriceComSet_.kscmtEstPriceComSetPK)
+						.get(KscmtEstPriceComSetPK_.targetYear), targetYear));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -254,13 +254,13 @@ public class JpaComEstablishmentRepository extends JpaRepository
 		
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtEstDaysCom_.kscmtEstDaysComPK).get(KscmtEstDaysComPK_.cid),
+				root.get(KscmtEstDaysComSet_.kscmtEstDaysComSetPK).get(KscmtEstDaysComSetPK_.cid),
 				companyId));
 		
 		// equal target year
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KscmtEstDaysCom_.kscmtEstDaysComPK)
-						.get(KscmtEstDaysComPK_.targetYear), targetYear));
+				.add(criteriaBuilder.equal(root.get(KscmtEstDaysComSet_.kscmtEstDaysComSetPK)
+						.get(KscmtEstDaysComSetPK_.targetYear), targetYear));
 		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -296,7 +296,7 @@ public class JpaComEstablishmentRepository extends JpaRepository
 	 */
 	public KscmtEstTimeCom toEntityTimeDefault(String companyId, int targetYear, int targetCls) {
 		KscmtEstTimeCom entity = new KscmtEstTimeCom();
-		entity.setKscmtEstTimeComPK(new KscmtEstTimeComPK(companyId, targetYear, targetCls));
+		entity.setKscmtEstTimeComSetPK(new KscmtEstTimeComSetPK(companyId, targetYear, targetCls));
 		entity.setEstCondition1stTime(DEFAULT_VALUE);
 		entity.setEstCondition2ndTime(DEFAULT_VALUE);
 		entity.setEstCondition3rdTime(DEFAULT_VALUE);
@@ -317,8 +317,8 @@ public class JpaComEstablishmentRepository extends JpaRepository
 	public KscmtEstPriceCom toEntityPriceDefault(String companyId, int targetYear,
 			int targetCls) {
 		KscmtEstPriceCom entity = new KscmtEstPriceCom();
-		entity.setKscmtEstPriceComPK(
-				new KscmtEstPriceComPK(companyId, targetYear, targetCls));
+		entity.setKscmtEstPriceComSetPK(
+				new KscmtEstPriceComSetPK(companyId, targetYear, targetCls));
 		entity.setEstCondition1stMny(DEFAULT_VALUE);
 		entity.setEstCondition2ndMny(DEFAULT_VALUE);
 		entity.setEstCondition3rdMny(DEFAULT_VALUE);
@@ -338,7 +338,7 @@ public class JpaComEstablishmentRepository extends JpaRepository
 	public KscmtEstDaysCom toEntityDaysDefault(String companyId, int targetYear,
 			int targetCls) {
 		KscmtEstDaysCom entity = new KscmtEstDaysCom();
-		entity.setKscmtEstDaysComPK(new KscmtEstDaysComPK(companyId, targetYear, targetCls));
+		entity.setKscmtEstDaysComSetPK(new KscmtEstDaysComSetPK(companyId, targetYear, targetCls));
 		entity.setEstCondition1stDays(DEFAULT_VALUE);
 		entity.setEstCondition2ndDays(DEFAULT_VALUE);
 		entity.setEstCondition3rdDays(DEFAULT_VALUE);

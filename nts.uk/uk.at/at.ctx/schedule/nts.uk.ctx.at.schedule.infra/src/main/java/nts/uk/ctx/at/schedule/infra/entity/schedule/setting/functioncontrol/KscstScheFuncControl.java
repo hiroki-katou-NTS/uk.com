@@ -155,7 +155,7 @@ public class KscstScheFuncControl extends ContractUkJpaEntity implements Seriali
 	public int searchMethodDispCls;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="scheFuncControl", orphanRemoval = true)
-	public List<KscmtFunctionConpCondition> scheFuncConditions;
+	public List<KscstScheFuncCondition> scheFuncConditions;
 	
 	@Override
 	protected Object getKey() {

@@ -11,7 +11,7 @@ import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class JpaKfnmtStampOutpItemGetMemento.
+ * The Class JpaKfnmtStampOutpItemSetGetMemento.
  */
 public class JpaStampOutpItemSetGetMemento implements StampingOutputItemSetGetMemento{
 

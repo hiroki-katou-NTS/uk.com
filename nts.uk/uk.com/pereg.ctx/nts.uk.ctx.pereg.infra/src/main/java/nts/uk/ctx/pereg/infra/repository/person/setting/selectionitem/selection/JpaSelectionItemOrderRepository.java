@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSort;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSortPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
 
 /**
  * 
@@ -53,7 +53,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	@Override
 	public void remove(String selectionId) {
-		PpemtSelectionItemSortPK pk = new PpemtSelectionItemSortPK(selectionId);
+		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionId);
 		this.commandProxy().remove(PpemtSelectionItemSort.class, pk);
 
 	}
@@ -63,7 +63,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		if (selectionIds.isEmpty()) {
 			return;
 		}
-		List<PpemtSelectionItemSortPK> keys = selectionIds.stream().map(x -> new PpemtSelectionItemSortPK(x))
+		List<PpemtSelItemOrderPK> keys = selectionIds.stream().map(x -> new PpemtSelItemOrderPK(x))
 				.collect(Collectors.toList());
 		this.commandProxy().removeAll(PpemtSelectionItemSort.class, keys);
 	}
@@ -85,7 +85,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	// to Entity:
 	private static PpemtSelectionItemSort toEntity(SelectionItemOrder domain) {
-		PpemtSelectionItemSortPK key = new PpemtSelectionItemSortPK(domain.getSelectionID());
+		PpemtSelItemOrderPK key = new PpemtSelItemOrderPK(domain.getSelectionID());
 		return new PpemtSelectionItemSort(key, domain.getHistId(), domain.getDisporder().v(),
 				domain.getInitSelection().value);
 	}
@@ -134,7 +134,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		for (SelectionItemOrder selItemOrder : lstSelOrder) {
 			PpemtSelectionItemSort selOrderUi = toEntity(selItemOrder);
 			PpemtSelectionItemSort selOrder = this.queryProxy()
-					.find(new PpemtSelectionItemSortPK(selItemOrder.getSelectionID()), PpemtSelectionItemSort.class).get();
+					.find(new PpemtSelItemOrderPK(selItemOrder.getSelectionID()), PpemtSelectionItemSort.class).get();
 			selOrder.setDispOrder(selOrderUi.dispOrder);
 			selOrder.setInitSelection(selOrderUi.initSelection);
 			lstEntity.add(selOrder);

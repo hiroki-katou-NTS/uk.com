@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
 import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcdtAnpPeriodTarget;
-import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcdtAnpPeriodTargetPK;
+import nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess.KrcmtAggrPeriodTargetPK;
 /**
  * 
  * @author phongtq
@@ -27,13 +27,13 @@ implements AggrPeriodTargetRepository{
 	StringBuilder builderString = new StringBuilder();
 	builderString.append("SELECT e");
 	builderString.append(" FROM KrcdtAnpPeriodTarget e");
-	builderString.append(" WHERE e.krcdtAnpPeriodTargetPK.aggrId = :aggrId");
+	builderString.append(" WHERE e.krcmtAggrPeriodTargetPK.aggrId = :aggrId");
 	FIND_ALL_TARGET = builderString.toString();
 	
 	builderString = new StringBuilder();
 	builderString.append("SELECT e");
 	builderString.append(" FROM KrcdtAnpPeriodTarget e");
-	builderString.append(" WHERE e.krcdtAnpPeriodTargetPK.aggrId = :aggrId");
+	builderString.append(" WHERE e.krcmtAggrPeriodTargetPK.aggrId = :aggrId");
 	FIND_EXECUTION = builderString.toString(); 
 	}
 	
@@ -50,12 +50,12 @@ implements AggrPeriodTargetRepository{
 
 	/**
 	 * 
-	 * @param krcdtAnpPeriodTarget
+	 * @param krcmtAggrPeriodTarget
 	 * @return
 	 */
-	private AggrPeriodTarget converToDomainApt(KrcdtAnpPeriodTarget krcdtAnpPeriodTarget) {
-		AggrPeriodTarget aggrPeriodTarget = AggrPeriodTarget.createFromJavaType(krcdtAnpPeriodTarget.krcdtAnpPeriodTargetPK.aggrId, 
-				krcdtAnpPeriodTarget.krcdtAnpPeriodTargetPK.employeeId, krcdtAnpPeriodTarget.state);
+	private AggrPeriodTarget converToDomainApt(KrcdtAnpPeriodTarget krcmtAggrPeriodTarget) {
+		AggrPeriodTarget aggrPeriodTarget = AggrPeriodTarget.createFromJavaType(krcmtAggrPeriodTarget.krcmtAggrPeriodTargetPK.aggrId, 
+				krcmtAggrPeriodTarget.krcmtAggrPeriodTargetPK.employeeId, krcmtAggrPeriodTarget.state);
 		return aggrPeriodTarget;
 	}
 
@@ -70,13 +70,13 @@ implements AggrPeriodTargetRepository{
 	public void updateTarget(List<AggrPeriodTarget> target) {
 		this.commandProxy().updateAll(
 				target.stream()
-						.map(c -> new KrcdtAnpPeriodTarget(new KrcdtAnpPeriodTargetPK(c.getAggrId(), c.getEmployeeId()), c.getState().value))
+						.map(c -> new KrcdtAnpPeriodTarget(new KrcmtAggrPeriodTargetPK(c.getAggrId(), c.getEmployeeId()), c.getState().value))
 						.collect(Collectors.toList()));
 	}
 	
 	private KrcdtAnpPeriodTarget convertToDbTypeApt(AggrPeriodTarget target) {
 		KrcdtAnpPeriodTarget entity = new KrcdtAnpPeriodTarget();
-		entity.krcdtAnpPeriodTargetPK = new KrcdtAnpPeriodTargetPK(target.getAggrId(), target.getEmployeeId());
+		entity.krcmtAggrPeriodTargetPK = new KrcmtAggrPeriodTargetPK(target.getAggrId(), target.getEmployeeId());
 		entity.state = target.getState().value;
 		return entity;
 	}
@@ -91,7 +91,7 @@ implements AggrPeriodTargetRepository{
 	// Update 1 item
 	@Override
 	public void updateExcution(AggrPeriodTarget target) {
-		KrcdtAnpPeriodTargetPK primaryKey = new KrcdtAnpPeriodTargetPK(target.getAggrId(),
+		KrcmtAggrPeriodTargetPK primaryKey = new KrcmtAggrPeriodTargetPK(target.getAggrId(),
 				target.getEmployeeId());
 		KrcdtAnpPeriodTarget periodTarget = this.queryProxy().find(primaryKey, KrcdtAnpPeriodTarget.class).get();
 		//status is done

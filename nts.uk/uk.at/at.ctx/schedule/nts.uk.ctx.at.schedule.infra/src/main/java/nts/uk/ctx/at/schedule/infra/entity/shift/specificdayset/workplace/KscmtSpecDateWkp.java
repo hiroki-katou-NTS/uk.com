@@ -13,17 +13,17 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SPEC_DATE_WKP")
+@Table(name = "KSMMT_WP_SPEC_DATE_SET")
 public class KscmtSpecDateWkp extends ContractUkJpaEntity implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KscmtSpecDateWkpPK kscmtSpecDateWkpPK;
+	public KsmmtWpSpecDateSetPK ksmmtWpSpecDateSetPK;
 
 	@Override
 	protected Object getKey() {
-		return kscmtSpecDateWkpPK;
+		return ksmmtWpSpecDateSetPK;
 	}
 }
 

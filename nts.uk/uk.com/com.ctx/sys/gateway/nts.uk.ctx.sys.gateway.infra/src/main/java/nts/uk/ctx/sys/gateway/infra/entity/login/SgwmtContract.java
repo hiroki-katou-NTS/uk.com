@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "SGWMT_CONTRACT")
+@Table(name = "SGWDT_CONTRACT")
 
 /**
  * Instantiates a new sgwdt contract.

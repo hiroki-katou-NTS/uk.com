@@ -41,12 +41,12 @@ public class JpaComAutoCalSettingRepository extends JpaRepository implements Com
 	@Override
 	public Optional<ComAutoCalSetting> getAllComAutoCalSetting(String companyId) {
 
-		Optional<KrcmtCalcSetCom> optKrcmtCalcSetCom = this.queryProxy().find(companyId, KrcmtCalcSetCom.class);
+		Optional<KrcmtCalcSetCom> optKshmtAutoComCalSet = this.queryProxy().find(companyId, KrcmtCalcSetCom.class);
 
-		if (!optKrcmtCalcSetCom.isPresent()) {
+		if (!optKshmtAutoComCalSet.isPresent()) {
 			return Optional.empty();
 		}
-		return Optional.of(new ComAutoCalSetting(new JpaComAutoCalSettingGetMemento(optKrcmtCalcSetCom.get())));
+		return Optional.of(new ComAutoCalSetting(new JpaComAutoCalSettingGetMemento(optKshmtAutoComCalSet.get())));
 	}
 
 }

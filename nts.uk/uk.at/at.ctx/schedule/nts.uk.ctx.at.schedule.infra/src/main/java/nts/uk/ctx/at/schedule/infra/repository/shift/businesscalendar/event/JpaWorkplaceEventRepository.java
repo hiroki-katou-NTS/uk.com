@@ -17,7 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KscmtEventWkp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KscmtEventWkpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtWorkplaceEventPK;
 
 /**
  * @author hungnm
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KscmtEve
 @Stateless
 public class JpaWorkplaceEventRepository extends JpaRepository implements WorkplaceEventRepository {
 
-	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KscmtEventWkp a WHERE a.kscmtEventWkpPK.workplaceId = :workplaceId AND a.kscmtEventWkpPK.date IN :lstDate";
+	private static final String SELECT_BY_LISTDATE = "SELECT a FROM KscmtEventWkp a WHERE a.ksmmtWorkplaceEventPK.workplaceId = :workplaceId AND a.ksmmtWorkplaceEventPK.date IN :lstDate";
 
 	@Override
 	public List<WorkplaceEvent> getWorkplaceEventsByListDate(String workplaceId, List<GeneralDate> lstDate) {
@@ -43,7 +43,7 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 
 	@Override
 	public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
-		return this.queryProxy().find(new KscmtEventWkpPK(workplaceId, date), KscmtEventWkp.class)
+		return this.queryProxy().find(new KsmmtWorkplaceEventPK(workplaceId, date), KscmtEventWkp.class)
 				.map(entity -> toDomain(entity));
 	}
 
@@ -55,7 +55,7 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 	@Override
 	public void updateEvent(WorkplaceEvent domain) {
 		Optional<KscmtEventWkp> entity = this.queryProxy()
-				.find(new KscmtEventWkpPK(domain.getWorkplaceId(), domain.getDate()), KscmtEventWkp.class);
+				.find(new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()), KscmtEventWkp.class);
 		if (entity.isPresent()) {
 			entity.get().eventName = domain.getEventName().v();
 			this.commandProxy().update(entity.get());
@@ -65,21 +65,21 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 	@Override
 	public void removeEvent(WorkplaceEvent domain) {
 		Optional<KscmtEventWkp> entity = this.queryProxy()
-				.find(new KscmtEventWkpPK(domain.getWorkplaceId(), domain.getDate()), KscmtEventWkp.class);
+				.find(new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()), KscmtEventWkp.class);
 		if (entity.isPresent()) {
 			this.commandProxy().remove(KscmtEventWkp.class,
-					new KscmtEventWkpPK(domain.getWorkplaceId(), domain.getDate()));
+					new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()));
 		}
 
 	}
 
 	private WorkplaceEvent toDomain(KscmtEventWkp entity) {
-		return WorkplaceEvent.createFromJavaType(entity.kscmtEventWkpPK.workplaceId,
-				entity.kscmtEventWkpPK.date, entity.eventName);
+		return WorkplaceEvent.createFromJavaType(entity.ksmmtWorkplaceEventPK.workplaceId,
+				entity.ksmmtWorkplaceEventPK.date, entity.eventName);
 	}
 
 	private KscmtEventWkp fromDomain(WorkplaceEvent domain) {
-		return new KscmtEventWkp(new KscmtEventWkpPK(domain.getWorkplaceId(), domain.getDate()),
+		return new KscmtEventWkp(new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()),
 				domain.getEventName().v());
 	}
 

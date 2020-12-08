@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_PTN_DEFTMCYCLE")
+@Table(name = "KFNMT_EXTRACTION_PER_UNIT")
 public class KfnmtAlstPtnDeftmcycle extends ContractUkJpaEntity implements Serializable {
 
 	/**
@@ -24,7 +24,7 @@ public class KfnmtAlstPtnDeftmcycle extends ContractUkJpaEntity implements Seria
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KfnmtAlstPtnDeftmcyclePK pk;
+	public KfnmtExtractionPerUnitPK pk;
 
 	@Column(name = "SEGMENTATION_OF_CYCLE")
 	public int segmentationOfCycle;
@@ -44,12 +44,12 @@ public class KfnmtAlstPtnDeftmcycle extends ContractUkJpaEntity implements Seria
 
 	public static KfnmtAlstPtnDeftmcycle toEntity(ExtractionPeriodUnit domain) {
 		return new KfnmtAlstPtnDeftmcycle(
-				new KfnmtAlstPtnDeftmcyclePK(domain.getExtractionId(), domain.getExtractionRange().value),
+				new KfnmtExtractionPerUnitPK(domain.getExtractionId(), domain.getExtractionRange().value),
 				domain.getSegmentationOfCycle().value);
 	}
 
 	public KfnmtAlstPtnDeftmcycle(String extractionID, int extractionRange, int segmentationOfCycle) {
-		this.pk = new KfnmtAlstPtnDeftmcyclePK(extractionID , extractionRange);
+		this.pk = new KfnmtExtractionPerUnitPK(extractionID , extractionRange);
 		this.segmentationOfCycle = segmentationOfCycle;
 	}
 	
@@ -57,7 +57,7 @@ public class KfnmtAlstPtnDeftmcycle extends ContractUkJpaEntity implements Seria
 		this.segmentationOfCycle = newEntity.segmentationOfCycle;
 	}
 
-	public KfnmtAlstPtnDeftmcycle(KfnmtAlstPtnDeftmcyclePK pk, int segmentationOfCycle) {
+	public KfnmtAlstPtnDeftmcycle(KfnmtExtractionPerUnitPK pk, int segmentationOfCycle) {
 		super();
 		this.pk = pk;
 		this.segmentationOfCycle = segmentationOfCycle;

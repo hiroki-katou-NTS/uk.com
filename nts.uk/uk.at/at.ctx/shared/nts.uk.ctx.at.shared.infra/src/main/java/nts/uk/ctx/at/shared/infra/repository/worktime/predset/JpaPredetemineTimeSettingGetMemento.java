@@ -40,7 +40,7 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtComPredTimePK().getCid();
+		return this.entity.getKshmtPredTimeSetPK().getCid();
 	}
 
 	/*
@@ -62,7 +62,7 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtComPredTimePK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtPredTimeSetPK().getWorktimeCd());
 	}
 
 	/*

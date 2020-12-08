@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_AUTOEXEC_SCOPE")
+@Table(name="KFNMT_EXECUTION_SCOPE")
 @NoArgsConstructor
 public class KfnmtAutoexecScope extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtAutoexecScopePK kfnmtExecScopePK;
+    public KfnmtExecutionScopePK kfnmtExecScopePK;
 	
 	/* 実行範囲区分 */
 	@Column(name = "EXEC_SCOPE_CLS")
@@ -42,8 +42,8 @@ public class KfnmtAutoexecScope extends ContractUkJpaEntity implements Serializa
 	public KfnmtProcessExecution procExec;
 	
 	@OneToMany(mappedBy = "execScope", cascade = CascadeType.ALL)
-    @JoinTable(name = "KFNMT_AUTOEXEC_SCOPE_ITEM")
-    public List<KfnmtAutoexecScopeItem> workplaceIdList;
+    @JoinTable(name = "KFNMT_EXEC_SCOPE_ITEM")
+    public List<KfnmtExecutionScopeItem> workplaceIdList;
 
 	
 	@Override
@@ -51,8 +51,8 @@ public class KfnmtAutoexecScope extends ContractUkJpaEntity implements Serializa
 		return this.kfnmtExecScopePK;
 	}
 
-	public KfnmtAutoexecScope(KfnmtAutoexecScopePK kfnmtExecScopePK, int execScopeCls, GeneralDate refDate,
-			List<KfnmtAutoexecScopeItem> workplaceIdList) {
+	public KfnmtAutoexecScope(KfnmtExecutionScopePK kfnmtExecScopePK, int execScopeCls, GeneralDate refDate,
+			List<KfnmtExecutionScopeItem> workplaceIdList) {
 		super();
 		this.kfnmtExecScopePK = kfnmtExecScopePK;
 		this.execScopeCls = execScopeCls;

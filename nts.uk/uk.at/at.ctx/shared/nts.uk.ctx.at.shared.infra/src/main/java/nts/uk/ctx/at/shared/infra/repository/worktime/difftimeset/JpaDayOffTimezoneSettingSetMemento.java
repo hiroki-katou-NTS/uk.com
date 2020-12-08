@@ -20,7 +20,7 @@ public class JpaDayOffTimezoneSettingSetMemento implements HDWorkTimeSheetSettin
 
 	@Override
 	public void setWorkTimeNo(Integer workTimeNo) {
-		this.entity.getKshmtWtDifHolTsPK().setWorkTimeNo(workTimeNo);
+		this.entity.getKshmtDiffTimeHolSetPK().setWorkTimeNo(workTimeNo);
 	}
 
 	@Override

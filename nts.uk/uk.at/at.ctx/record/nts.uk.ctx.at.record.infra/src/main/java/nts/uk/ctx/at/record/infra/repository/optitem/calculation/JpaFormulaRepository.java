@@ -19,9 +19,9 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfPK;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfPK_;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
 
@@ -105,9 +105,9 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 		// add conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KrcmtAnyf_.krcmtAnyfPK).get(KrcmtAnyfPK_.cid), companyId));
+				root.get(KrcmtOptItemFormula_.krcmtOptItemFormulaPK).get(KrcmtOptItemFormulaPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KrcmtAnyf_.krcmtAnyfPK).get(KrcmtAnyfPK_.optionalItemNo),
+				root.get(KrcmtOptItemFormula_.krcmtOptItemFormulaPK).get(KrcmtOptItemFormulaPK_.optionalItemNo),
 				optItemNo));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -155,7 +155,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 		// add conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KrcmtAnyf_.krcmtAnyfPK).get(KrcmtAnyfPK_.cid), companyId));
+				root.get(KrcmtOptItemFormula_.krcmtOptItemFormulaPK).get(KrcmtOptItemFormulaPK_.cid), companyId));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// Get results
@@ -172,7 +172,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	@Override
 	public Formula findById(String companyId, Integer optItemNo, String formulaId) {
 		KrcmtAnyf entity = this.queryProxy()
-				.find(new KrcmtAnyfPK(companyId, optItemNo, formulaId), KrcmtAnyf.class).get();
+				.find(new KrcmtOptItemFormulaPK(companyId, optItemNo, formulaId), KrcmtAnyf.class).get();
 		return new Formula(new JpaFormulaGetMemento(entity));
 	}
 

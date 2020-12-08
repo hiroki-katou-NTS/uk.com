@@ -37,7 +37,7 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public FixRestTimezoneSet getRestTimezone() {
-		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtWtFixBrHolTs()));
+		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtFixedHolRestSet()));
 	}
 
 	/* (non-Javadoc)
@@ -45,10 +45,10 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFixHolTs())) {
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getLstKshmtWtFixHolTs().stream()
+		return this.entity.getLstKshmtFixedHolTimeSet().stream()
 				.map(entity -> new HDWorkTimeSheetSetting(new JpaFixedHDWorkTimeSheetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

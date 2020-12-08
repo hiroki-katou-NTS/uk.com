@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_SHORTTIME_TS")
+@Table(name = "BSHMT_SCHILD_CARE_FRAME")
 public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The bshmt schild care frame PK. */
 	@EmbeddedId
-	protected KshmtShorttimeTsPK kshmtShorttimeTsPK;
+	protected BshmtSchildCareFramePK bshmtSchildCareFramePK;
 
 	
 	/** The str clock. */
@@ -46,11 +46,11 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 	/** The bshmt worktime hist item. */
 	@ManyToOne
 	@JoinColumns({
-			@JoinColumn(name = "SID", referencedColumnName = "KSHMT_SHORTTIME_HIST_ITEM.SID", insertable = false,
+			@JoinColumn(name = "SID", referencedColumnName = "BSHMT_WORKTIME_HIST_ITEM.SID", insertable = false,
 				updatable = false),
-			@JoinColumn(name = "HIST_ID", referencedColumnName = "KSHMT_SHORTTIME_HIST_ITEM.HIST_ID", insertable = false,
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "BSHMT_WORKTIME_HIST_ITEM.HIST_ID", insertable = false,
 				updatable = false) })
-	private KshmtShorttimeHistItem kshmtShorttimeHistItem;
+	private KshmtShorttimeHistItem bshmtWorktimeHistItem;
 	
 	/**
 	 * Instantiates a new bshmt schild care frame.
@@ -62,10 +62,10 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new bshmt schild care frame.
 	 *
-	 * @param kshmtShorttimeTsPK the bshmt schild care frame PK
+	 * @param bshmtSchildCareFramePK the bshmt schild care frame PK
 	 */
-	public KshmtShorttimeTs(KshmtShorttimeTsPK kshmtShorttimeTsPK) {
-		this.kshmtShorttimeTsPK = kshmtShorttimeTsPK;
+	public KshmtShorttimeTs(BshmtSchildCareFramePK bshmtSchildCareFramePK) {
+		this.bshmtSchildCareFramePK = bshmtSchildCareFramePK;
 	}
 	
 	/*
@@ -76,7 +76,7 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtShorttimeTsPK != null ? kshmtShorttimeTsPK.hashCode() : 0);
+		hash += (bshmtSchildCareFramePK != null ? bshmtSchildCareFramePK.hashCode() : 0);
 		return hash;
 	}
 
@@ -91,9 +91,9 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtShorttimeTs other = (KshmtShorttimeTs) object;
-		if ((this.kshmtShorttimeTsPK == null && other.kshmtShorttimeTsPK != null)
-				|| (this.kshmtShorttimeTsPK != null
-						&& !this.kshmtShorttimeTsPK.equals(other.kshmtShorttimeTsPK))) {
+		if ((this.bshmtSchildCareFramePK == null && other.bshmtSchildCareFramePK != null)
+				|| (this.bshmtSchildCareFramePK != null
+						&& !this.bshmtSchildCareFramePK.equals(other.bshmtSchildCareFramePK))) {
 			return false;
 		}
 		return true;
@@ -104,7 +104,7 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtShorttimeTsPK;
+		return this.bshmtSchildCareFramePK;
 	}
 
 }

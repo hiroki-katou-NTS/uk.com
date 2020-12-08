@@ -19,12 +19,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_C_ADD_HD_REG")
+@Table(name = "KSHST_WORK_REGULAR_SET")
 public class KshmtCalcCAddHdReg  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshmtCalcCAddHdRegPK kshstRegularWorkSetPK;
+	public KshstWorkRegularSetPK kshstRegularWorkSetPK;
 	
 	/** 実働のみで計算する */
 	@Column(name = "PRE_CALC_ACTUAL_OPERATION")

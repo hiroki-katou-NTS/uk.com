@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "SACCT_WKP_FUNCTION")
+@Table(name = "KASMT_WORPLACE_FUNCTION")
 public class KacmtWorkPlaceFunction extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

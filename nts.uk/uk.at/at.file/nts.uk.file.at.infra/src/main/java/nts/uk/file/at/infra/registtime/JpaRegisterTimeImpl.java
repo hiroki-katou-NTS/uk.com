@@ -41,7 +41,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 	private static final String SQL_EXPORT_SHEET_2 = "SELECT aa.EMPLOYMENT_USE_ATR,aa.WORKPLACE_USE_ATR,aa.CLASSIFICATION_USE_ATR "
 			+ "FROM  "
-			+ "KRCMT_36AGR_UNIT aa "
+			+ "KMKMT_AGREEMENT_UNIT_SET aa "
 			+ "WHERE aa.CID = ?1 ";
 
 	private static final String SQL_EXPORT_SHEET_3 = "SELECT aa.WKP_USE_ATR "
@@ -346,9 +346,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, "
 //			+ "bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
 //			+ "FROM  "
-//			+ "KRCMT_36AGR_BASIC aa "
+//			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 //			+ "JOIN  "
-//			+ "KRCMT_36AGR_TIME_COM bb "
+//			+ "KMKMT_AGREEMENTTIME_COM bb "
 //			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
 //			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 1";
 

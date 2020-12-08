@@ -22,9 +22,9 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeEr
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBus;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBusPK;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBusPK_;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBus_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsgPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsgPK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsg_;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -44,7 +44,7 @@ public class JpaWorkTypeDivTimeErrAlarmMsgRepo extends JpaRepository
 	@Override
 	public Optional<WorkTypeDivergenceTimeErrorAlarmMessage> getByDivergenceTimeNo(Integer divergenceTimeNo,
 			CompanyId cId, BusinessTypeCode workTypeCode) {
-		KrcmtDvgcEralMsgBusPK pk = new KrcmtDvgcEralMsgBusPK(cId.v(), divergenceTimeNo, workTypeCode.v());
+		KrcstDvgcwtTimeEaMsgPK pk = new KrcstDvgcwtTimeEaMsgPK(cId.v(), divergenceTimeNo, workTypeCode.v());
 
 		return this.queryProxy().find(pk, KrcmtDvgcEralMsgBus.class).map(item -> this.toDomain(item));
 	}
@@ -106,12 +106,12 @@ public class JpaWorkTypeDivTimeErrAlarmMsgRepo extends JpaRepository
 		CollectionUtil.split(divergenceTimeNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcEralMsgBus_.id).get(KrcmtDvgcEralMsgBusPK_.cid), cId));
-			predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcEralMsgBus_.id).get(KrcmtDvgcEralMsgBusPK_.worktypeCd),
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.cid), cId));
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.worktypeCd),
 					workTypeCode));
 			// dvgcTimeNo in divergenceTimeNoList
 			predicates.add(
-					root.get(KrcmtDvgcEralMsgBus_.id).get(KrcmtDvgcEralMsgBusPK_.dvgcTimeNo).in(splitData));
+					root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.dvgcTimeNo).in(splitData));
 
 			// add where to query
 			cq.where(predicates.toArray(new Predicate[] {}));
@@ -146,7 +146,7 @@ public class JpaWorkTypeDivTimeErrAlarmMsgRepo extends JpaRepository
 	 * @return the krcst dvgc time ea msg
 	 */
 	private KrcmtDvgcEralMsgBus toEntity(WorkTypeDivergenceTimeErrorAlarmMessage domain) {
-		KrcmtDvgcEralMsgBusPK pk = new KrcmtDvgcEralMsgBusPK(domain.getCId().v(), domain.getDivergenceTimeNo(),
+		KrcstDvgcwtTimeEaMsgPK pk = new KrcstDvgcwtTimeEaMsgPK(domain.getCId().v(), domain.getDivergenceTimeNo(),
 				domain.getWorkTypeCode().v());
 
 		KrcmtDvgcEralMsgBus entity = this.queryProxy().find(pk, KrcmtDvgcEralMsgBus.class)

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPDT_SAVE_TARGET_CTG")
+@Table(name = "SSPMT_TARGET_CATEGORY")
 public class SspdtSaveTargetCtg extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class SspdtSaveTargetCtg extends ContractUkJpaEntity implements Serializa
     * ID
     */
     @EmbeddedId
-    public SspdtSaveTargetCtgPk targetCategoryPk;
+    public SspmtTargetCategoryPk targetCategoryPk;
     
     @Override
     protected Object getKey()
@@ -44,7 +44,7 @@ public class SspdtSaveTargetCtg extends ContractUkJpaEntity implements Serializa
     }
     
     public static SspdtSaveTargetCtg toEntity(TargetCategory domain) {
-        return new SspdtSaveTargetCtg(new SspdtSaveTargetCtgPk(
+        return new SspdtSaveTargetCtg(new SspmtTargetCategoryPk(
         		domain.getStoreProcessingId(), 
         		domain.getCategoryId(),
         		domain.getSystemType().value));

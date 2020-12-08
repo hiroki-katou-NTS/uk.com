@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPDT_RECOVER_TARGET_COND")
+@Table(name = "SSPMT_RESTORATION_TARGET")
 public class SspdtRecoverTargetCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class SspdtRecoverTargetCond extends ContractUkJpaEntity implements Seria
 	 * ID
 	 */
 	@EmbeddedId
-	public SspdtRecoverTargetCondPk restorationTargetPk;
+	public SspmtRestorationTargetPk restorationTargetPk;
 
 	/**
 	 * 保存期間区分
@@ -124,7 +124,7 @@ public class SspdtRecoverTargetCond extends ContractUkJpaEntity implements Seria
 			}
 		}
 		return new SspdtRecoverTargetCond(
-				new SspdtRecoverTargetCondPk(domain.getDataRecoveryProcessId(), 
+				new SspmtRestorationTargetPk(domain.getDataRecoveryProcessId(), 
 				domain.getRecoveryCategory()),
 				domain.getRetentionPeriodIndicator().value,
 				recoveryTargetStartYear, recoveryTargetEndYear,

@@ -14,13 +14,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_PTN_CHKCND")
+@Table(name = "KFNMT_CHECK_CON_ITEM")
 public class KfnmtAlstPtnChkcnd extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KfnmtAlstPtnChkcndPK pk;
+	public KfnmtCheckConItemPK pk;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -34,7 +34,7 @@ public class KfnmtAlstPtnChkcnd extends ContractUkJpaEntity implements Serializa
 		return this.pk;
 	}
 
-	public KfnmtAlstPtnChkcnd(KfnmtAlstPtnChkcndPK pk) {
+	public KfnmtAlstPtnChkcnd(KfnmtCheckConItemPK pk) {
 		super();
 		this.pk = pk;
 	}

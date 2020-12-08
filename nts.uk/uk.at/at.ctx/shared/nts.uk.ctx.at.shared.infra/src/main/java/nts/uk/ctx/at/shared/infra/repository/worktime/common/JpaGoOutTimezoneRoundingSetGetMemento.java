@@ -34,7 +34,7 @@ public class JpaGoOutTimezoneRoundingSetGetMemento implements GoOutTimezoneRound
 		super();
 		this.entityMap = entities.stream().collect(Collectors.toMap(
 				entity -> RoundingTimeType
-						.valueOf(entity.getKshmtWtComGooutRoundPK().getRoundingTimeType()),
+						.valueOf(entity.getKshmtSpecialRoundOutPK().getRoundingTimeType()),
 				entity -> new GoOutTypeRoundingSet(new DeductGoOutRoundingSet(
 						new GoOutTimeRoundingSetting(
 								RoundingGoOutTimeSheet.valueOf(entity.getPubDeductMethod()),

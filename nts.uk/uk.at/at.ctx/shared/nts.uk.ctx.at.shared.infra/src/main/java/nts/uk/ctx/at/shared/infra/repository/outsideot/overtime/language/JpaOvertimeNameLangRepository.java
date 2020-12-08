@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLang;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLang;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLangPK_;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLang_;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLangPK_;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang_;
 
 /**
  * The Class JpaOvertimeNameLangRepository.
@@ -50,7 +50,7 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_OUTSIDE_LANG_NAME (KshmtOutsideLang SQL)
+		// call KSHST_OVER_TIME_LANG_NAME (KshmtOutsideLang SQL)
 		CriteriaQuery<KshmtOutsideLang> cq = criteriaBuilder
 				.createQuery(KshmtOutsideLang.class);
 
@@ -65,19 +65,19 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtOutsideLang_.kshmtOutsideLangPK)
-						.get(KshmtOutsideLangPK_.cid), companyId));
+				.add(criteriaBuilder.equal(root.get(KshstOverTimeNameLang_.kshstOverTimeNameLangPK)
+						.get(KshstOverTimeNameLangPK_.cid), companyId));
 		// equal language id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtOutsideLang_.kshmtOutsideLangPK)
-						.get(KshmtOutsideLangPK_.languageId), languageId));
+				.add(criteriaBuilder.equal(root.get(KshstOverTimeNameLang_.kshstOverTimeNameLangPK)
+						.get(KshstOverTimeNameLangPK_.languageId), languageId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by over time no asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtOutsideLang_.kshmtOutsideLangPK)
-				.get(KshmtOutsideLangPK_.overTimeNo)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshstOverTimeNameLang_.kshstOverTimeNameLangPK)
+				.get(KshstOverTimeNameLangPK_.overTimeNo)));
 
 		// create query
 		TypedQuery<KshmtOutsideLang> query = em.createQuery(cq);

@@ -26,14 +26,14 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE o.krqdtInstructOvertimePK.instructDate = :instructDate");
-		query.append(" AND o.krqdtInstructOvertimePK.targetPerson = :targetPerson");
+		query.append(" WHERE o.krqdtOvertimeInstructPK.instructDate = :instructDate");
+		query.append(" AND o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
 		FIND_FOR_TARGET_PERSON = query.toString();
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE o.krqdtInstructOvertimePK.targetPerson = :targetPerson");
-		query.append(" ORDER BY o.krqdtInstructOvertimePK.instructDate ASC");
+		query.append(" WHERE o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
+		query.append(" ORDER BY o.krqdtOvertimeInstructPK.instructDate ASC");
 		FIND_ALL_BY_TARGET_PERSON = query.toString();
 		
 	}
@@ -53,17 +53,17 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	private OverTimeInstruct convertToDomain(KrqdtInstructOvertime krqdtInstructOvertime){
-		 return OverTimeInstruct.createSimpleFromJavaType(krqdtInstructOvertime.getKrqdtInstructOvertimePK().getCid(),
-				krqdtInstructOvertime.getWorkContent(),
-				krqdtInstructOvertime.getInputDate(),
-				krqdtInstructOvertime.getKrqdtInstructOvertimePK().getTargetPerson(),
-				krqdtInstructOvertime.getKrqdtInstructOvertimePK().getInstructDate(),
-				krqdtInstructOvertime.getInstructor(),
-				krqdtInstructOvertime.getOvertimeInstructReason(),
-				krqdtInstructOvertime.getOvertimeHour(),
-				krqdtInstructOvertime.getStartClock(),
-				krqdtInstructOvertime.getEndClock());
+	private OverTimeInstruct convertToDomain(KrqdtInstructOvertime krqdtOvertimeInstruct){
+		 return OverTimeInstruct.createSimpleFromJavaType(krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getCid(),
+				krqdtOvertimeInstruct.getWorkContent(),
+				krqdtOvertimeInstruct.getInputDate(),
+				krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getTargetPerson(),
+				krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getInstructDate(),
+				krqdtOvertimeInstruct.getInstructor(),
+				krqdtOvertimeInstruct.getOvertimeInstructReason(),
+				krqdtOvertimeInstruct.getOvertimeHour(),
+				krqdtOvertimeInstruct.getStartClock(),
+				krqdtOvertimeInstruct.getEndClock());
 		
 		
 	}

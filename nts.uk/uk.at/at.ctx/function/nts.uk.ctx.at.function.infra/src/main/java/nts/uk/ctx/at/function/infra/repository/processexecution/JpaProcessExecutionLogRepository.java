@@ -36,31 +36,31 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT pel FROM KfnmtProcessExecutionLog pel ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
-			+ "WHERE pel.kfndtAutoexecLogPK.companyId = :companyId ORDER BY pel.kfndtAutoexecLogPK.execItemCd ASC ";
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
 	
 	private static final String SELECT_BY_PK = SELECT_ALL
-			+ "WHERE pel.kfndtAutoexecLogPK.companyId = :companyId "
-			+ "AND pel.kfndtAutoexecLogPK.execItemCd = :execItemCd "
-			+ "AND pel.kfndtAutoexecLogPK.execId = :execId ";
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
+			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd "
+			+ "AND pel.kfnmtProcExecLogPK.execId = :execId ";
 	
 	private static final String SELECT_BY_KEY = SELECT_ALL 
-			+ "WHERE pel.kfndtAutoexecLogPK.companyId = :companyId "
-			+ "AND pel.kfndtAutoexecLogPK.execItemCd = :execItemCd ";
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
+			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 	
 	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
-	" WHERE k.kfndtAutoexecTaskLogPK.companyId = :companyId " + " AND k.kfndtAutoexecTaskLogPK.execItemCd= :execItemCd ";
+	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
 	
 	
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
-			+ "WHERE pel.kfndtAutoexecLogPK.companyId = :companyId "
-			+ "AND pel.kfndtAutoexecLogPK.execItemCd = :execItemCd ";
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
+			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 	
 	private static final String SELECT_BY_KEY_NATIVE = "SELECT * FROM KFNDT_AUTOEXEC_LOG as pel WITH (READUNCOMMITTED)"
 			+ "WHERE pel.CID = ? "
 			+ "AND pel.EXEC_ITEM_CD = ? ";
 	private static final String DELETE_BY_EXEC_CD = " DELETE FROM KfnmtProcessExecutionLog c "
-			+ "WHERE c.kfndtAutoexecLogPK.companyId = :companyId "
-			+ "AND c.kfndtAutoexecLogPK.execItemCd = :execItemCd ";
+			+ "WHERE c.kfnmtProcExecLogPK.companyId = :companyId "
+			+ "AND c.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 	private static final String SELECT_TASK_LOG_BY_JDBC = "SELECT * FROM KFNDT_AUTOEXEC_TASK_LOG "
 			+ "WHERE CID = ? "
 			+ "AND EXEC_ITEM_CD = ? ";
@@ -86,7 +86,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	@Override
 	public void update(ProcessExecutionLog domain) {
 		KfnmtProcessExecutionLog updateData = KfnmtProcessExecutionLog.toEntity(domain);
-//		Optional<KfnmtProcessExecutionLog> oldDataOtp = this.queryProxy().find(updateData.kfndtAutoexecLogPK, KfnmtProcessExecutionLog.class);
+//		Optional<KfnmtProcessExecutionLog> oldDataOtp = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLog.class);
 //		if(!oldDataOtp.isPresent())
 //			return;
 //		KfnmtProcessExecutionLog oldData = oldDataOtp.get();
@@ -143,10 +143,10 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 					ps.setString(3, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
 					ps.setString(4, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
 					ps.setString(5, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
-					ps.setString(6, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.companyId);
-					ps.setString(7, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.execItemCd);
-					ps.setString(8, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.execId);
-					ps.setInt(9, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.taskId);
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(9, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}
@@ -190,7 +190,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 						pk.setExecId(rec.getString("EXEC_ID"));
 						pk.setTaskId(rec.getInt("TASK_ID"));
 						KfnmtExecutionTaskLog entity = new KfnmtExecutionTaskLog();
-						entity.setKfndtAutoexecTaskLogPK(pk);
+						entity.setKfnmtExecTaskLogPK(pk);
 						entity.setStatus(rec.getInt("STATUS"));
 						entity.setLastExecDateTime(rec.getGeneralDateTime("LAST_EXEC_DATETIME"));
 						entity.setLastEndExecDateTime(rec.getGeneralDateTime("LAST_END_EXEC_DATETIME"));
@@ -244,7 +244,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			statement.setString(2, execItemCd);
 			data =  new NtsResultSet(statement.executeQuery()).getList(rec -> {
 				KfnmtProcessExecutionLog entity = new KfnmtProcessExecutionLog();
-				entity.kfndtAutoexecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
+				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
 						rec.getString("EXEC_ITEM_CD"), rec.getString("EXEC_ID"));
 				entity.schCreateStart = rec.getGeneralDate("SCH_CREATE_START");
 				entity.schCreateEnd = rec.getGeneralDate("SCH_CREATE_END");

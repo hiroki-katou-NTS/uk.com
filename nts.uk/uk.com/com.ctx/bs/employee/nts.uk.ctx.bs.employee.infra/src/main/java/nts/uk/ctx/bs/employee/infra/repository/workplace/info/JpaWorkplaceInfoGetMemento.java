@@ -10,7 +10,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWkpInfor;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
 
 /**
  * The Class JpaWorkplaceInfoGetMemento.
@@ -18,15 +18,15 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWkpInfor;
 public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 
 	/** The bsymt workplace info. */
-	private BsymtWkpInfor bsymtWkpInfo;
+	private BsymtWorkplaceInfor bsymtWorkplaceInfo;
 
 	/**
 	 * Instantiates a new jpa workplace info get memento.
 	 *
 	 * @param entity the item
 	 */
-	public JpaWorkplaceInfoGetMemento(BsymtWkpInfor entity) {
-		this.bsymtWkpInfo = entity;
+	public JpaWorkplaceInfoGetMemento(BsymtWorkplaceInfor entity) {
+		this.bsymtWorkplaceInfo = entity;
 	}
 
 	/* (non-Javadoc)
@@ -34,7 +34,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.bsymtWkpInfo.getPk().getCompanyId();
+		return this.bsymtWorkplaceInfo.getPk().getCompanyId();
 	}
 
 	/* (non-Javadoc)
@@ -42,7 +42,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.bsymtWkpInfo.getPk().getWorkplaceHistoryId();
+		return this.bsymtWorkplaceInfo.getPk().getWorkplaceHistoryId();
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public String getWorkplaceId() {
-		return this.bsymtWkpInfo.getPk().getWorkplaceId();
+		return this.bsymtWorkplaceInfo.getPk().getWorkplaceId();
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public WkpCode getWorkplaceCode() {
-		return new WkpCode(this.bsymtWkpInfo.getWorkplaceCode());
+		return new WkpCode(this.bsymtWorkplaceInfo.getWorkplaceCode());
 	}
 
 	/* (non-Javadoc)
@@ -66,7 +66,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public WorkplaceName getWorkplaceName() {
-		return new WorkplaceName(this.bsymtWkpInfo.getWorkplaceName());
+		return new WorkplaceName(this.bsymtWorkplaceInfo.getWorkplaceName());
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +74,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public WorkplaceGenericName getWkpGenericName() {
-		return new WorkplaceGenericName(this.bsymtWkpInfo.getWorkplaceGeneric());
+		return new WorkplaceGenericName(this.bsymtWorkplaceInfo.getWorkplaceGeneric());
 	}
 
 	/* (non-Javadoc)
@@ -82,7 +82,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public WorkplaceDisplayName getWkpDisplayName() {
-		return new WorkplaceDisplayName(this.bsymtWkpInfo.getWorkplaceDisplayName());
+		return new WorkplaceDisplayName(this.bsymtWorkplaceInfo.getWorkplaceDisplayName());
 	}
 
 	/* (non-Javadoc)
@@ -90,7 +90,7 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 */
 	@Override
 	public OutsideWorkplaceCode getOutsideWkpCode() {
-		return new OutsideWorkplaceCode(this.bsymtWkpInfo.getWorkplaceExternalCode());
+		return new OutsideWorkplaceCode(this.bsymtWorkplaceInfo.getWorkplaceExternalCode());
 	}
 
 }

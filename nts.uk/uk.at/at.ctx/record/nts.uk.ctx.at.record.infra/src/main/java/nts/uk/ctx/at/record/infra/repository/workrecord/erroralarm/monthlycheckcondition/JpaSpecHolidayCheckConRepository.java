@@ -11,16 +11,16 @@ import nts.arc.layer.infra.data.JpaRepository;
 //import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.AgreementCheckCon36Repository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckConRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtAlstChkmonUdhdpubCon;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtSpecHolidayCheckCon;
 @Stateless
 public class JpaSpecHolidayCheckConRepository extends JpaRepository implements SpecHolidayCheckConRepository  {
 
-	private static final String SELECT_SPEC_HOLIDAY_BY_ID = " SELECT c FROM KrcmtAlstChkmonUdhdpubCon c"
+	private static final String SELECT_SPEC_HOLIDAY_BY_ID = " SELECT c FROM KrcmtSpecHolidayCheckCon c"
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 
 	@Override
 	public Optional<SpecHolidayCheckCon> getSpecHolidayCheckConById(String errorAlarmCheckID) {
-		Optional<SpecHolidayCheckCon> data = this.queryProxy().query(SELECT_SPEC_HOLIDAY_BY_ID,KrcmtAlstChkmonUdhdpubCon.class)
+		Optional<SpecHolidayCheckCon> data = this.queryProxy().query(SELECT_SPEC_HOLIDAY_BY_ID,KrcmtSpecHolidayCheckCon.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
 				.getSingle(c->c.toDomain());
 		return data;
@@ -28,14 +28,14 @@ public class JpaSpecHolidayCheckConRepository extends JpaRepository implements S
 
 	@Override
 	public void addSpecHolidayCheckCon(SpecHolidayCheckCon specHolidayCheckCon) {
-		this.commandProxy().insert(KrcmtAlstChkmonUdhdpubCon.toEntity(specHolidayCheckCon));
+		this.commandProxy().insert(KrcmtSpecHolidayCheckCon.toEntity(specHolidayCheckCon));
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void updateSpecHolidayCheckCon(SpecHolidayCheckCon specHolidayCheckCon) {
-		KrcmtAlstChkmonUdhdpubCon newEntity = KrcmtAlstChkmonUdhdpubCon.toEntity(specHolidayCheckCon);
-		KrcmtAlstChkmonUdhdpubCon updateEntity = this.queryProxy().find(specHolidayCheckCon.getErrorAlarmCheckID(), KrcmtAlstChkmonUdhdpubCon.class).get();
+		KrcmtSpecHolidayCheckCon newEntity = KrcmtSpecHolidayCheckCon.toEntity(specHolidayCheckCon);
+		KrcmtSpecHolidayCheckCon updateEntity = this.queryProxy().find(specHolidayCheckCon.getErrorAlarmCheckID(), KrcmtSpecHolidayCheckCon.class).get();
 		
 		updateEntity.compareOperator = newEntity.compareOperator;
 		updateEntity.numberDayDiffHoliday1 = newEntity.numberDayDiffHoliday1;
@@ -46,7 +46,7 @@ public class JpaSpecHolidayCheckConRepository extends JpaRepository implements S
 
 	@Override
 	public void deleteSpecHolidayCheckCon(String errorAlarmCheckID) {
-		KrcmtAlstChkmonUdhdpubCon newEntity = this.queryProxy().find(errorAlarmCheckID, KrcmtAlstChkmonUdhdpubCon.class).get();
+		KrcmtSpecHolidayCheckCon newEntity = this.queryProxy().find(errorAlarmCheckID, KrcmtSpecHolidayCheckCon.class).get();
 		this.commandProxy().remove(newEntity);
 		this.getEntityManager().flush();
 	}

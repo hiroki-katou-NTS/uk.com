@@ -45,7 +45,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKCOND_HIST_ITEM")
+@Table(name = "KSHMT_WORKING_COND_ITEM")
 public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -116,25 +116,25 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
 			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
-	private KshmtWorkcondHist kshmtWorkcondHist;
+	private KshmtWorkcondHist kshmtWorkingCond;
 
 	/** The kshmt working cond items. */
 	@JoinColumns({
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
+	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 
 	/** The kshmt per work cats. */
 	@JoinColumns({
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWorkcondCtg> kshmtWorkcondCtgs;
+	private List<KshmtWorkcondCtg> kshmtPerWorkCats;
 
 	/** The kshmt personal day of weeks. */
 	@JoinColumns({
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWorkcondWeek> kshmtWorkcondWeeks;
+	private List<KshmtWorkcondWeek> kshmtPersonalDayOfWeeks;
 
 	/**
 	 * Instantiates a new kshmt working cond item.
@@ -221,8 +221,8 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 		Optional<SingleDaySchedule> friday = Optional.empty();
 		Optional<SingleDaySchedule> saturday = Optional.empty();
 		Optional<SingleDaySchedule> sunday = Optional.empty();
-		for(KshmtWorkcondWeek entity : this.kshmtWorkcondWeeks) {
-			switch(entity.kshmtWorkcondWeekPK.getPerWorkDayOffAtr()) {
+		for(KshmtWorkcondWeek entity : this.kshmtPersonalDayOfWeeks) {
+			switch(entity.kshmtPersonalDayOfWeekPK.getPerWorkDayOffAtr()) {
 			case 0:
 				monday = Optional.of(entity.toDomain());
 				break;
@@ -259,8 +259,8 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 		Optional<SingleDaySchedule> outsideLawBreakTime = Optional.empty();
 		Optional<SingleDaySchedule> holidayAttendanceTime = Optional.empty();
 		Optional<SingleDaySchedule> publicHolidayWork = Optional.empty();
-		for(KshmtWorkcondCtg entity:this.kshmtWorkcondCtgs) {
-			switch(entity.kshmtWorkcondCtgPK.getPerWorkCatAtr()) {
+		for(KshmtWorkcondCtg entity:this.kshmtPerWorkCats) {
+			switch(entity.kshmtPerWorkCatPK.getPerWorkCatAtr()) {
 			case 0: //平日時
 				weekdayTime = entity.toDomain();
 				break;
@@ -290,7 +290,7 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime, holidayWork, holidayTime, inLawBreakTime, outsideLawBreakTime, holidayAttendanceTime, publicHolidayWork);
 		
 		//
-		ScheduleMethod scheduleMethod = (this.kshmtWorkcondScheMeth ==null?null:this.kshmtWorkcondScheMeth.toDomain());
+		ScheduleMethod scheduleMethod = (this.kshmtScheduleMethod ==null?null:this.kshmtScheduleMethod.toDomain());
 		Integer hourlyPaymentAtr = this.hourlyPayAtr ==null?null:this.hourlyPayAtr;
 		BonusPaySettingCode timeApply = this.timeApply==null?null:new BonusPaySettingCode(this.timeApply);
 		MonthlyPatternCode monthlyPattern = this.monthlyPattern==null?null:new MonthlyPatternCode(this.monthlyPattern);
@@ -329,65 +329,65 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 		}
 		
 		//
-		List<KshmtWorkcondWeek> kshmtWorkcondWeeks = new ArrayList<>();
+		List<KshmtWorkcondWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
 		//monday
 		if (domain.getWorkDayOfWeek().getMonday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getMonday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getMonday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 0)); // 月曜日
 		}
 		//tuesday
 		if (domain.getWorkDayOfWeek().getTuesday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getTuesday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getTuesday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 1)); // 火曜日
 		}
 		//wednesday
 		if (domain.getWorkDayOfWeek().getWednesday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getWednesday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getWednesday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 2)); // 水曜日
 		}
 		//thursday
 		if (domain.getWorkDayOfWeek().getThursday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getThursday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getThursday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 3)); // 木曜日
 		}
 		//friday
 		if (domain.getWorkDayOfWeek().getFriday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getFriday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getFriday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 4)); // 金曜日
 		}
 		//saturday
 		if (domain.getWorkDayOfWeek().getSaturday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getSaturday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getSaturday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 5)); // 土曜日
 		}
 		//sunday
 		if (domain.getWorkDayOfWeek().getSunday().isPresent()) {
-			kshmtWorkcondWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getSunday().get(),
+			kshmtPersonalDayOfWeeks.add(KshmtWorkcondWeek.toEntity(domain.getWorkDayOfWeek().getSunday().get(),
 					domain.getHistoryId(), domain.getEmployeeId(), 6)); // 月曜日
 		}
 		
-		List<KshmtWorkcondCtg> kshmtWorkcondCtgs = new ArrayList<>();
+		List<KshmtWorkcondCtg> kshmtPerWorkCats = new ArrayList<>();
 		//weekdayTime
-		kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getWeekdayTime(), domain.getHistoryId(), domain.getEmployeeId(), 0));//平日時
+		kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getWeekdayTime(), domain.getHistoryId(), domain.getEmployeeId(), 0));//平日時
 		//holidayWork
-		kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getHolidayWork(), domain.getHistoryId(), domain.getEmployeeId(), 1));//休日出勤時
+		kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getHolidayWork(), domain.getHistoryId(), domain.getEmployeeId(), 1));//休日出勤時
 		//holidayTime
-		kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getHolidayTime(), domain.getHistoryId(), domain.getEmployeeId(), 6));//平日時
+		kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getHolidayTime(), domain.getHistoryId(), domain.getEmployeeId(), 6));//平日時
 		//inLawBreakTime
 		if(domain.getWorkCategory().getInLawBreakTime().isPresent()) {
-			kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getInLawBreakTime().get(), domain.getHistoryId(), domain.getEmployeeId(), 2));//法内休出時
+			kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getInLawBreakTime().get(), domain.getHistoryId(), domain.getEmployeeId(), 2));//法内休出時
 		}
 		//outsideLawBreakTime
 		if(domain.getWorkCategory().getOutsideLawBreakTime().isPresent()) {
-			kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getOutsideLawBreakTime().get(), domain.getHistoryId(), domain.getEmployeeId(), 3));//法外休出時
+			kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getOutsideLawBreakTime().get(), domain.getHistoryId(), domain.getEmployeeId(), 3));//法外休出時
 		}
 		//holidayAttendanceTime
 		if(domain.getWorkCategory().getHolidayAttendanceTime().isPresent()) {
-			kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getHolidayAttendanceTime().get(), domain.getHistoryId(), domain.getEmployeeId(), 4));//祝日出勤時
+			kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getHolidayAttendanceTime().get(), domain.getHistoryId(), domain.getEmployeeId(), 4));//祝日出勤時
 		}
 		//publicHolidayWork
 		if(domain.getWorkCategory().getPublicHolidayWork().isPresent()) {
-			kshmtWorkcondCtgs.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getPublicHolidayWork().get(), domain.getHistoryId(), domain.getEmployeeId(), 2));//公休出勤時
+			kshmtPerWorkCats.add(KshmtWorkcondCtg.toEntity(domain.getWorkCategory().getPublicHolidayWork().get(), domain.getHistoryId(), domain.getEmployeeId(), 2));//公休出勤時
 		}
 		
 		return new KshmtWorkcondHistItem(
@@ -404,15 +404,15 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 				domain.getTimeApply().isPresent()?domain.getTimeApply().get().v():null,
 				domain.getMonthlyPattern().isPresent()?domain.getMonthlyPattern().get().v():null,
 				domain.getScheduleMethod().isPresent()?KshmtWorkcondScheMeth.toEntity(domain.getScheduleMethod().get(), domain.getEmployeeId(), domain.getHistoryId()):null,
-				kshmtWorkcondCtgs, kshmtWorkcondWeeks);
+				kshmtPerWorkCats, kshmtPersonalDayOfWeeks);
 	}
 
 	public KshmtWorkcondHistItem(String historyId, String sid, Integer hourlyPayAtr,
 			int scheManagementAtr, int autoStampSetAtr, int autoIntervalSetAtr, int vacationAddTimeAtr,
 			int contractTime, int laborSys, Integer hdAddTimeOneDay, Integer hdAddTimeMorning,
 			Integer hdAddTimeAfternoon, String timeApply, String monthlyPattern,
-			KshmtWorkcondScheMeth kshmtWorkcondScheMeth, List<KshmtWorkcondCtg> kshmtWorkcondCtgs,
-			List<KshmtWorkcondWeek> kshmtWorkcondWeeks) {
+			KshmtWorkcondScheMeth kshmtScheduleMethod, List<KshmtWorkcondCtg> kshmtPerWorkCats,
+			List<KshmtWorkcondWeek> kshmtPersonalDayOfWeeks) {
 		super();
 		this.historyId = historyId;
 		this.sid = sid;
@@ -428,9 +428,9 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 		this.hdAddTimeAfternoon = hdAddTimeAfternoon;
 		this.timeApply = timeApply;
 		this.monthlyPattern = monthlyPattern;
-		this.kshmtWorkcondScheMeth = kshmtWorkcondScheMeth;
-		this.kshmtWorkcondCtgs = kshmtWorkcondCtgs;
-		this.kshmtWorkcondWeeks = kshmtWorkcondWeeks;
+		this.kshmtScheduleMethod = kshmtScheduleMethod;
+		this.kshmtPerWorkCats = kshmtPerWorkCats;
+		this.kshmtPersonalDayOfWeeks = kshmtPersonalDayOfWeeks;
 	}
 
 }

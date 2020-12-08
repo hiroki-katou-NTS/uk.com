@@ -39,7 +39,7 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 			+ "LEFT JOIN BsymtTempAbsHist absHis ON e.bsymtEmployeeDataMngInfoPk.sId = absHis.sid "
 			+ "LEFT JOIN BsymtTempAbsHistItem absHisItem ON absHis.histId = absHisItem.histId "
 			+ "LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awh.hisId = awhi.hisId "
-			+ "LEFT JOIN BsymtWkpInfor wi ON wi.pk.workplaceId = awhi.workPlaceId "
+			+ "LEFT JOIN BsymtWorkplaceInfor wi ON wi.pk.workplaceId = awhi.workPlaceId "
 			+ "LEFT JOIN BsymtEmployeeDataMngInfo e ON awh.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ "LEFT JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId "
 			+ "WHERE awhi.workPlaceId IN :wplIds "

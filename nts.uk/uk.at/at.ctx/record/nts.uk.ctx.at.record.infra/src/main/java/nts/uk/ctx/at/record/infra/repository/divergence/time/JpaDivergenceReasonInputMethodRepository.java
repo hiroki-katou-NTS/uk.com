@@ -17,9 +17,9 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTimePK;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTimePK_;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 
 /**
  * The Class JpaDivergenceReasonInputMethodRepository.
@@ -50,7 +50,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 	@Override
 	public Optional<DivergenceReasonInputMethod> getDivTimeInfo(String companyId, int divTimeNo) {
 
-		KrcmtDvgcTimePK PK = new KrcmtDvgcTimePK(companyId, divTimeNo);
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(companyId, divTimeNo);
 		return this.queryProxy().find(PK, KrcmtDvgcTime.class).map(e->this.toDomain(e));
 	}
 
@@ -84,7 +84,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcTime_.id).get(KrcmtDvgcTimePK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -119,7 +119,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 	 */
 	private KrcmtDvgcTime toEntity(DivergenceReasonInputMethod domain) {
 
-		KrcmtDvgcTimePK PK = new KrcmtDvgcTimePK(domain.getCompanyId(), domain.getDivergenceTimeNo());
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getCompanyId(), domain.getDivergenceTimeNo());
 		KrcmtDvgcTime entity = this.queryProxy().find(PK, KrcmtDvgcTime.class).orElse(new KrcmtDvgcTime());
 
 		domain.saveToMemento(new JpaDivergenceReasonInputMethodSetMemento(entity));

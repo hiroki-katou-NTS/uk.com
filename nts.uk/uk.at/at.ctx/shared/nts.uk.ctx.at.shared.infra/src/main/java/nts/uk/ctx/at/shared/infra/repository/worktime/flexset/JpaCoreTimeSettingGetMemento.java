@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFlePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.
@@ -26,8 +26,8 @@ public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 	 */
 	public JpaCoreTimeSettingGetMemento(KshmtWtFle entity) {
 		super();
-		if(entity.getKshmtWtFlePK() == null){
-			entity.setKshmtWtFlePK(new KshmtWtFlePK());
+		if(entity.getKshmtFlexWorkSetPK() == null){
+			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
 		}
 		this.entity = entity;
 	}

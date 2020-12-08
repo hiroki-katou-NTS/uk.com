@@ -24,13 +24,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_DISP_CTRL")
+@Table(name = "KSCMT_SCHE_DISP_CONTROL")
 public class KscmtDispCtrl extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtDispCtrlPK kscmtDispCtrlPK;
+	public KscmtScheDispControlPK kscmtScheDispControlPK;
 
 	/** 資格表示記号 B1_14 */
 	@Column(name = "PERSON_SYQUALIFY")
@@ -64,6 +64,6 @@ public class KscmtDispCtrl extends ContractUkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return this.kscmtDispCtrlPK;
+		return this.kscmtScheDispControlPK;
 	}
 }

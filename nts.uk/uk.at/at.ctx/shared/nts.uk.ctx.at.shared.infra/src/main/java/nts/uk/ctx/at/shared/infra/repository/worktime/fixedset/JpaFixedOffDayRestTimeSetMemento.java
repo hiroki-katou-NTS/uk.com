@@ -14,9 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 
 /**
  * The Class JpaFixedOffDayRestTimeSetMemento.
@@ -33,8 +33,8 @@ public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMe
 	 */
 	public JpaFixedOffDayRestTimeSetMemento(KshmtWtFix entity) {
 		this.entity = entity;
-		if(entity.getKshmtWtFixPK() == null){
-			entity.setKshmtWtFixPK(new KshmtWtFixPK());
+		if(entity.getKshmtFixedWorkSetPK() == null){
+			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
 		}
 	}
 	
@@ -46,20 +46,20 @@ public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMe
 		List<KshmtWtFixBrHolTs> newListEntity = new ArrayList<>();
 
 		if (!CollectionUtil.isEmpty(lstTimezone)) {
-			String companyId = this.entity.getKshmtWtFixPK().getCid();
-			String workTimeCd = this.entity.getKshmtWtFixPK().getWorktimeCd();
+			String companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
+			String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
 
 			// convert map entity
-			if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFixBrHolTs())) {
-				this.entity.setLstKshmtWtFixBrHolTs(new ArrayList<>());
+			if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolRestSet())) {
+				this.entity.setLstKshmtFixedHolRestSet(new ArrayList<>());
 			}
-			Map<KshmtWtFixBrHolTsPK, KshmtWtFixBrHolTs> mapEntity = this.entity.getLstKshmtWtFixBrHolTs()
+			Map<KshmtFixedHolRestSetPK, KshmtWtFixBrHolTs> mapEntity = this.entity.getLstKshmtFixedHolRestSet()
 					.stream()
-					.collect(Collectors.toMap(item -> ((KshmtWtFixBrHolTs) item).getKshmtWtFixBrHolTsPK(),
+					.collect(Collectors.toMap(item -> ((KshmtWtFixBrHolTs) item).getKshmtFixedHolRestSetPK(),
 							Function.identity()));
 
 			for (DeductionTime time : lstTimezone) {
-				KshmtWtFixBrHolTsPK pk = new KshmtWtFixBrHolTsPK(companyId, workTimeCd, lstTimezone.indexOf(time));
+				KshmtFixedHolRestSetPK pk = new KshmtFixedHolRestSetPK(companyId, workTimeCd, lstTimezone.indexOf(time));
 				
 				// get entity existed
 				KshmtWtFixBrHolTs entity = mapEntity.get(pk) == null ? new KshmtWtFixBrHolTs(pk) : mapEntity.get(pk);
@@ -72,7 +72,7 @@ public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMe
 				newListEntity.add(entity);
 			}
 		}
-		this.entity.setLstKshmtWtFixBrHolTs(newListEntity);
+		this.entity.setLstKshmtFixedHolRestSet(newListEntity);
 	}
 
 }

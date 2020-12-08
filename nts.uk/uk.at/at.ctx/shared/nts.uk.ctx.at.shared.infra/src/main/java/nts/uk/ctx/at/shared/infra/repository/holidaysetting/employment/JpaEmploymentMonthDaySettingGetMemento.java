@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtHdpubMon
 public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDaySettingGetMemento {
 	
 	/** The list kshmt emp month day set. */
-	private List<KshmtHdpubMonthdaysEmp> listKshmtHdpubMonthdaysEmp;
+	private List<KshmtHdpubMonthdaysEmp> listKshmtEmpMonthDaySet;
 	
 	/**
 	 * Instantiates a new jpa employment month day setting get memento.
@@ -24,7 +24,7 @@ public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDa
 	 * @param entities the entities
 	 */
 	public JpaEmploymentMonthDaySettingGetMemento(List<KshmtHdpubMonthdaysEmp> entities){
-		this.listKshmtHdpubMonthdaysEmp = entities;
+		this.listKshmtEmpMonthDaySet = entities;
 	}
 
 	/* (non-Javadoc)
@@ -32,7 +32,7 @@ public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDa
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.listKshmtHdpubMonthdaysEmp.get(0).getKshmtHdpubMonthdaysEmpPK().getCid());
+		return new CompanyId(this.listKshmtEmpMonthDaySet.get(0).getKshmtEmpMonthDaySetPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDa
 	 */
 	@Override
 	public String getEmploymentCode() {
-		return this.listKshmtHdpubMonthdaysEmp.get(0).getKshmtHdpubMonthdaysEmpPK().getEmpCd();
+		return this.listKshmtEmpMonthDaySet.get(0).getKshmtEmpMonthDaySetPK().getEmpCd();
 	}
 	
 	/* (non-Javadoc)
@@ -48,7 +48,7 @@ public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDa
 	 */
 	@Override
 	public Year getManagementYear() {
-		return new Year(this.listKshmtHdpubMonthdaysEmp.get(0).getKshmtHdpubMonthdaysEmpPK().getManageYear());
+		return new Year(this.listKshmtEmpMonthDaySet.get(0).getKshmtEmpMonthDaySetPK().getManageYear());
 	}
 
 	/* (non-Javadoc)
@@ -56,9 +56,9 @@ public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDa
 	 */
 	@Override
 	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSettings() {
-		return this.listKshmtHdpubMonthdaysEmp.stream().map(e -> {
-			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtHdpubMonthdaysEmpPK().getManageYear()),
-					new Integer(e.getKshmtHdpubMonthdaysEmpPK().getMonth()),
+		return this.listKshmtEmpMonthDaySet.stream().map(e -> {
+			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtEmpMonthDaySetPK().getManageYear()),
+					new Integer(e.getKshmtEmpMonthDaySetPK().getMonth()),
 					new MonthlyNumberOfDays(e.getInLegalHd()));
 			return domain;
 		}).collect(Collectors.toList());

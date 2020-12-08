@@ -6,7 +6,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataSetMemen
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK;
 
 /**
  * The Class JpaLockOutDataSetMemento.
@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLocko
 public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	
 	/** The sgwmt lockout data. */
-	private SgwdtLockout sgwdtLockout;
+	private SgwdtLockout sgwmtLockoutData;
 
 	/**
 	 * Instantiates a new jpa lock out data set memento.
@@ -22,10 +22,10 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 * @param entity the entity
 	 */
 	public JpaLockOutDataSetMemento(SgwdtLockout entity) {
-		if (entity.getSgwdtLockoutPK() == null) {
-			entity.setSgwdtLockoutPK(new SgwdtLockoutPK());
+		if (entity.getSgwmtLockoutDataPK() == null) {
+			entity.setSgwmtLockoutDataPK(new SgwmtLockoutDataPK());
 		}
-		this.sgwdtLockout = entity;
+		this.sgwmtLockoutData = entity;
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setUserId(String userId) {
-		this.sgwdtLockout.getSgwdtLockoutPK().setUserId(userId);
+		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setUserId(userId);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLogoutDateTime(GeneralDateTime logoutDateTime) {
-		this.sgwdtLockout.getSgwdtLockoutPK().setLockoutDateTime(logoutDateTime);;
+		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setLockoutDateTime(logoutDateTime);;
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLogType(LockType logType) {
-		this.sgwdtLockout.setLockType(logType.value);
+		this.sgwmtLockoutData.setLockType(logType.value);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setContractCode(ContractCode contractCode) {
-		this.sgwdtLockout.getSgwdtLockoutPK().setContractCd(contractCode.v());
+		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setContractCd(contractCode.v());
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLoginMethod(LoginMethod loginMethod) {
-		this.sgwdtLockout.setLoginMethod(loginMethod == null ? null : loginMethod.value);
+		this.sgwmtLockoutData.setLoginMethod(loginMethod == null ? null : loginMethod.value);
 	}
 
 }

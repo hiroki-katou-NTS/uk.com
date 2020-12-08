@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistory;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistoryRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHist;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHistPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -135,7 +135,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	@Override
 	public void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted){
 		
-		this.commandProxy().remove(PpemtSelectionHist.class, new PpemtSelectionHistPK(itemToBeDeleted.identifier()));
+		this.commandProxy().remove(PpemtSelectionHist.class, new PpemtHistorySelectionPK(itemToBeDeleted.identifier()));
 		
 		List<DateHistoryItem> dateHistoryItems = domain.getDateHistoryItems();
 		
@@ -149,7 +149,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	}
 	
 	public void removeAllHistoryIds(List<String> historyIds) {
-		List<PpemtSelectionHistPK> keys = historyIds.stream().map(x -> new PpemtSelectionHistPK(x))
+		List<PpemtHistorySelectionPK> keys = historyIds.stream().map(x -> new PpemtHistorySelectionPK(x))
 				.collect(Collectors.toList());
 
 		CollectionUtil.split(keys, 1000, subKeys -> {
@@ -159,7 +159,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	}
 
 	private void addDateItem(String companyId, String selectionItemId, DateHistoryItem dateItem) {
-		PpemtSelectionHistPK key = new PpemtSelectionHistPK(dateItem.identifier());
+		PpemtHistorySelectionPK key = new PpemtHistorySelectionPK(dateItem.identifier());
 
 		PpemtSelectionHist entity = new PpemtSelectionHist(key, selectionItemId, companyId, dateItem.start(),
 				dateItem.end());
@@ -168,7 +168,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 
 	private void updateDateItem(DateHistoryItem item) {
 		Optional<PpemtSelectionHist> historyItemOpt = this.queryProxy()
-				.find(new PpemtSelectionHistPK(item.identifier()), PpemtSelectionHist.class);
+				.find(new PpemtHistorySelectionPK(item.identifier()), PpemtSelectionHist.class);
 		if (!historyItemOpt.isPresent()) {
 			throw new RuntimeException("Invalid KmnmtAffClassHistory");
 		}

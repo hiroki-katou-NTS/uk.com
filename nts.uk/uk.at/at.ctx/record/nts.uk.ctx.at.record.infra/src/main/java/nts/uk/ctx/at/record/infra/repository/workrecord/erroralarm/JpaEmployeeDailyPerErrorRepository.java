@@ -109,7 +109,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			return "KrcdtOtkErAl";
 		}
 		
-		return "KrcdtDaySyaError";
+		return "KrcdtSyainDpErList";
 	}
 
 	@Override
@@ -247,7 +247,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		List<KrcdtDaySyaErrorAtd> eai = getErAttendanceItem(entity, className);
 		
 		return entity.stream().map(c -> {
-			List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtDaySyaErrorAtdPK.iD.equals(c.id)).collect(Collectors.toList());
+			List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(c.id)).collect(Collectors.toList());
 			
 			c.setErAttendanceItem(ceai);
 			
@@ -362,7 +362,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			List<KrcdtDaySyaErrorAtd> eai = getErAttendanceItem(entities, className);
 			
 			entities.stream().forEach(e -> {
-				List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtDaySyaErrorAtdPK.iD.equals(e.id)).collect(Collectors.toList());
+				List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(e.id)).collect(Collectors.toList());
 				
 				e.setErAttendanceItem(ceai);
 			});
@@ -498,7 +498,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		List<KrcdtDaySyaErrorAtd> eai = getErAttendanceItem(entity, className);
 		
 		return entity.stream().map(c -> {
-			List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtDaySyaErrorAtdPK.iD.equals(c.id)).collect(Collectors.toList());
+			List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(c.id)).collect(Collectors.toList());
 			
 			c.setErAttendanceItem(ceai);
 			
@@ -516,7 +516,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		Class<U> cl = (Class<U>) getFrom(className);
 		CollectionUtil.split(id, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sbId -> {
 			eai.addAll(this.queryProxy()
-					.query("SELECT e FROM " + cl.getSimpleName() + " e WHERE e.krcdtDaySyaErrorAtdPK.iD in :er", cl)
+					.query("SELECT e FROM " + cl.getSimpleName() + " e WHERE e.krcdtErAttendanceItemPK.iD in :er", cl)
 					.setParameter("er", sbId)
 					.getList());
 		});

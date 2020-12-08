@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -61,7 +61,7 @@ public class JpaFlexOffdayTzOFRTimeSetSetMemento implements TimezoneOfFixedRestT
 	 */
 	public void setKeyEntity(String companyId, String worktimeCode){
 		this.entitys.forEach(entity->{
-			entity.setKshmtWtFleBrFiWekTsPK(new KshmtWtFleBrFiWekTsPK(companyId, worktimeCode));
+			entity.setKshmtFlexHaFixRestPK(new KshmtFlexHaFixRestPK(companyId, worktimeCode));
 		});
 	}
 

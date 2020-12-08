@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PPEMT_GROUP_ITEM_DF")
+@Table(name = "PPEMT_PINFO_ITEM_DF_GROUP")
 public class PpemtPInfoItemGroupDf extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

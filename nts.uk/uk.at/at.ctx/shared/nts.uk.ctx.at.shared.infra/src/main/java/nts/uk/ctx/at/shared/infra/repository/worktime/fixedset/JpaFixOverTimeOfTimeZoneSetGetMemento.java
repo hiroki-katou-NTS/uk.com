@@ -42,7 +42,7 @@ public class JpaFixOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZone
 	 */
 	@Override
 	public EmTimezoneNo getWorkTimezoneNo() {
-		return new EmTimezoneNo(this.entity.getKshmtWtFixOverTsPK().getWorktimeNo());
+		return new EmTimezoneNo(this.entity.getKshmtFixedOtTimeSetPK().getWorktimeNo());
 	}
 
 	/*

@@ -17,12 +17,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHist;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHistPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionDef;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSort;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSortPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItem;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -96,22 +96,22 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 	private void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
 		// アルゴリズム「指定会社のく選択項目定義を全て削除する」を実行する
 		// Lấy domain [PerInfoSelectionItem], Điều kiện :contractCode ＝ login
-		// contractCodePPEMT_SELECTION_HIST
-		List<PpemtSelectionDef> ppemtSelectionDef = this.entityManager
+		// contractCodePPEMT_HISTORY_SELECTION
+		List<PpemtSelectionDef> ppemtSelectionItem = this.entityManager
 				.createQuery(QUERY_HISTORY_ITEM_BY_CONTRACTCD, PpemtSelectionDef.class)
 				.setParameter("contractCd", AppContexts.user().contractCode()).getResultList();
 		// Delete domain [HistorySelection], Điều kiện: companyID ＝Input．companyID, selectionItemID ＝ 「PerInfoSelectionItem」．ID đa lấy
-		List<String> selectionItemIds = ppemtSelectionDef.stream().map(item -> item.selectionItemPk.selectionItemId)
+		List<String> selectionItemIds = ppemtSelectionItem.stream().map(item -> item.selectionItemPk.selectionItemId)
 				.collect(Collectors.toList());
-		List<PpemtSelectionHist> ppemtSelectionHists = new ArrayList<>();
+		List<PpemtSelectionHist> ppemtHistorySelections = new ArrayList<>();
 		CollectionUtil.split(selectionItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			ppemtSelectionHists.addAll(this.entityManager
+			ppemtHistorySelections.addAll(this.entityManager
 				.createQuery(QUERY_HISTORY_SELECTION, PpemtSelectionHist.class).setParameter("companyId", targetCid)
 				.setParameter("selectionItemIds", subList).getResultList());
 		});
-		List<String> histIds = ppemtSelectionHists.stream().map(item -> item.histidPK.histId)
+		List<String> histIds = ppemtHistorySelections.stream().map(item -> item.histidPK.histId)
 				.collect(Collectors.toList());
-		this.commandProxy.removeAll(ppemtSelectionHists);
+		this.commandProxy.removeAll(ppemtHistorySelections);
 		if (!histIds.isEmpty()) {
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				// Delete doman [Selection], ĐK: historyID ＝「HistorySelection」．history．historyID
@@ -129,49 +129,49 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		// 指定会社の選択項目定義を全て取得する
 		// Acquire domain model "Personal information selection item",Contractcode = Logged in contract code
 		// Acquire the domain model [HistorySelection] by Company ID = Input.Company ID zero and Selection item ID = SelectionItem.selectionitemid
-		List<PpemtSelectionHist> ppemtSelectionHistsZero = this.entityManager
+		List<PpemtSelectionHist> ppemtHistorySelectionsZero = this.entityManager
 				.createQuery(QUERY_HISTORY_SELECTION, PpemtSelectionHist.class).setParameter("companyId", sourceCid)
 				.setParameter("selectionItemIds", selectionItemIds).getResultList();
 
 		// (Set [SelectionHistory], [Seletion],[OrderSelectionAndDefaultValues])
-		List<PpemtSelectionHist> newPpemtSelectionHists = new ArrayList<>();
-		List<PpemtSelectionItem> newPpemtSelectionItems = new ArrayList<>();
-		List<PpemtSelectionItemSort> newPpemtSelectionItemSorts = new ArrayList<>();
+		List<PpemtSelectionHist> newPpemtHistorySelections = new ArrayList<>();
+		List<PpemtSelectionItem> newPpemtSelections = new ArrayList<>();
+		List<PpemtSelectionItemSort> newPpemtSelItemOrders = new ArrayList<>();
 
-		ppemtSelectionHistsZero.stream().forEach(item -> {
+		ppemtHistorySelectionsZero.stream().forEach(item -> {
 			String newHistId = IdentifierUtil.randomUniqueId();
-			List<PpemtSelectionItem> ppemtSelectionItemsZero = this.entityManager
+			List<PpemtSelectionItem> ppemtSelectionsZero = this.entityManager
 					.createQuery(QUERY_SELECTION, PpemtSelectionItem.class).setParameter("histId", item.histidPK.histId)
 					.getResultList();
-			List<PpemtSelectionItemSort> ppemtSelectionItemSortsZero = this.entityManager
+			List<PpemtSelectionItemSort> ppemtSelItemOrdersZero = this.entityManager
 					.createQuery(QUERY_SELECTION_ORDER, PpemtSelectionItemSort.class)
 					.setParameter("histId", item.histidPK.histId).getResultList();
 			// set [SelectionHistory]
-			newPpemtSelectionHists.add(new PpemtSelectionHist(new PpemtSelectionHistPK(newHistId),
+			newPpemtHistorySelections.add(new PpemtSelectionHist(new PpemtHistorySelectionPK(newHistId),
 					item.selectionItemId, targetCid, item.startDate, item.endDate));
 			
 			Map<String, String> mapSelectionId = new HashMap<>();
 			
 			// set [Seletion]
-			newPpemtSelectionItems.addAll(ppemtSelectionItemsZero.stream().map(selectionItem -> {
+			newPpemtSelections.addAll(ppemtSelectionsZero.stream().map(selectionItem -> {
 				String selectionId = IdentifierUtil.randomUniqueId();
 				mapSelectionId.put(selectionItem.selectionId.selectionId, selectionId);
-				return new PpemtSelectionItem(new PpemtSelectionItemPK(selectionId), newHistId,
+				return new PpemtSelectionItem(new PpemtSelectionPK(selectionId), newHistId,
 						selectionItem.selectionCd, selectionItem.selectionName,
 						selectionItem.externalCd, selectionItem.memo);
 			}).collect(Collectors.toList()));
 			
 			// set [OrderSelectionAndDefaultValues]
-			newPpemtSelectionItemSorts.addAll(ppemtSelectionItemSortsZero.stream()
+			newPpemtSelItemOrders.addAll(ppemtSelItemOrdersZero.stream()
 					.map(selOrderItem -> new PpemtSelectionItemSort(
-							new PpemtSelectionItemSortPK(
+							new PpemtSelItemOrderPK(
 									mapSelectionId.get(selOrderItem.selectionIdPK.selectionId)),
 							newHistId, selOrderItem.dispOrder, selOrderItem.initSelection))
 					.collect(Collectors.toList()));
 		});
 
-		this.commandProxy.insertAll(newPpemtSelectionHists);
-		this.commandProxy.insertAll(newPpemtSelectionItems);
-		this.commandProxy.insertAll(newPpemtSelectionItemSorts);
+		this.commandProxy.insertAll(newPpemtHistorySelections);
+		this.commandProxy.insertAll(newPpemtSelections);
+		this.commandProxy.insertAll(newPpemtSelItemOrders);
 	}
 }

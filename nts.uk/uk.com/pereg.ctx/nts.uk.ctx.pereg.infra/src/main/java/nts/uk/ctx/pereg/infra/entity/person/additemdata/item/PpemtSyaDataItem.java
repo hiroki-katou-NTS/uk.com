@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_SYA_DATA_ITEM")
+@Table(name = "PPEMT_EMP_INFO_ITEM_DATA")
 // 個人情報項目データ
 
 public class PpemtSyaDataItem extends ContractUkJpaEntity implements Serializable {
@@ -25,7 +25,7 @@ public class PpemtSyaDataItem extends ContractUkJpaEntity implements Serializabl
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpemtSyaDataItemPk ppemtSyaDataItemPk;
+	public PpemtEmpInfoItemDataPk ppemtEmpInfoItemDataPk;
 
 	// 保存データ状態
 
@@ -54,7 +54,7 @@ public class PpemtSyaDataItem extends ContractUkJpaEntity implements Serializabl
 	@Override
 	protected Object getKey() {
 
-		return ppemtSyaDataItemPk;
+		return ppemtEmpInfoItemDataPk;
 	}
 
 }

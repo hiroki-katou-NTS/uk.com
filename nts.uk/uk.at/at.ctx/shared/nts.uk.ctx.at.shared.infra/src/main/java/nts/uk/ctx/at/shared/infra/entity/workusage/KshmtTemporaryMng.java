@@ -21,12 +21,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KSHMT_TEMPORARY_MNG")
+@Table(name="KSHST_TEMP_WK_USE_MANAGE")
 public class KshmtTemporaryMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KshmtTemporaryMngPK id;
+	private KshstTempWkUseManagePK id;
 
 	@Column(name="USE_CLASSIFICATION")
 	private int useClassification;

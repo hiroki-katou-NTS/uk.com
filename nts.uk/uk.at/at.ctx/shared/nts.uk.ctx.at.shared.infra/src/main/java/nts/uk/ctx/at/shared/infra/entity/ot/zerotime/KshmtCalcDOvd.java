@@ -20,12 +20,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_D_OVD")
+@Table(name = "KSHST_ZERO_TIME_SET")
 public class KshmtCalcDOvd extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshmtCalcDOvdPK kshstOverDayCalcSetPK;
+	public KshstZeroTimeSetPK kshstOverDayCalcSetPK;
 	
 	/** 0時跨ぎ計算を行なう*/
 	@Column(name = "CALC_FROM_ZERO_TIME")

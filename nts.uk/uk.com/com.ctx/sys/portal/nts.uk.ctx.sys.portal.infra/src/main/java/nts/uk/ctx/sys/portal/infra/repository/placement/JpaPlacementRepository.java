@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.infra.entity.placement.SptmtPlacement;
-import nts.uk.ctx.sys.portal.infra.entity.placement.SptmtPlacementPK;
+import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 
 /**
  * @author LamDT
@@ -19,7 +19,7 @@ import nts.uk.ctx.sys.portal.infra.entity.placement.SptmtPlacementPK;
 @Stateless
 public class JpaPlacementRepository extends JpaRepository implements PlacementRepository {
 	
-	private static final String SELECT_SINGLE = "SELECT c FROM SptmtPlacement c WHERE c.sptmtPlacementPK.placementID = :placementID";
+	private static final String SELECT_SINGLE = "SELECT c FROM SptmtPlacement c WHERE c.ccgmtPlacementPK.placementID = :placementID";
 	private static final String SELECT_BY_LAYOUT = "SELECT c FROM SptmtPlacement c WHERE c.layoutID = :layoutID";
 	private static final String SELECT_BY_TOPPAGEPART = "SELECT c FROM SptmtPlacement c WHERE c.topPagePartID = :topPagePartID";
 
@@ -46,17 +46,17 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 
 	@Override
 	public void remove(String companyID, String placementID) {
-		this.commandProxy().remove(SptmtPlacement.class, new SptmtPlacementPK(companyID, placementID));
+		this.commandProxy().remove(SptmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
 		this.getEntityManager().flush();
 	}
 	
 	@Override
 	public void removeAll(String companyID, List<String> placementIDs) {
-		List<SptmtPlacementPK> listSptmtPlacementPK = new ArrayList<SptmtPlacementPK>();
+		List<CcgmtPlacementPK> listCcgmtPlacementPK = new ArrayList<CcgmtPlacementPK>();
 		for (String placementID : placementIDs) {
-			listSptmtPlacementPK.add(new SptmtPlacementPK(companyID, placementID));
+			listCcgmtPlacementPK.add(new CcgmtPlacementPK(companyID, placementID));
 		}
-		this.commandProxy().removeAll(SptmtPlacement.class, listSptmtPlacementPK);
+		this.commandProxy().removeAll(SptmtPlacement.class, listCcgmtPlacementPK);
 		this.getEntityManager().flush();
 	}
 
@@ -73,7 +73,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	@Override
 	public void update(Placement placement) {
 		SptmtPlacement newEntity = toEntity(placement);
-		SptmtPlacement updatedEntity = this.queryProxy().find(newEntity.sptmtPlacementPK, SptmtPlacement.class).get();
+		SptmtPlacement updatedEntity = this.queryProxy().find(newEntity.ccgmtPlacementPK, SptmtPlacement.class).get();
 		updatedEntity.column = newEntity.column;
 		updatedEntity.row = newEntity.row;
 		updatedEntity.width = newEntity.width;
@@ -91,7 +91,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	 */
 	private Placement toDomain(SptmtPlacement entity) {
 		return Placement.createFromJavaType(
-			entity.sptmtPlacementPK.companyID, entity.sptmtPlacementPK.placementID, entity.layoutID, entity.topPagePartID,
+			entity.ccgmtPlacementPK.companyID, entity.ccgmtPlacementPK.placementID, entity.layoutID, entity.topPagePartID,
 			entity.column, entity.row,
 			entity.externalUrl, entity.width, entity.height);
 	}
@@ -113,7 +113,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 		}
 		
 		return new SptmtPlacement(
-			new SptmtPlacementPK(domain.getCompanyID(), domain.getPlacementID()),
+			new CcgmtPlacementPK(domain.getCompanyID(), domain.getPlacementID()),
 			domain.getLayoutID(), domain.getColumn().v(), domain.getRow().v(),
 			width, height, externalUrl, domain.getToppagePartID());
 	}

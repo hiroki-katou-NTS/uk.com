@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLogRepository;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspdtRecoverLog;
-import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspdtRecoverLogPk;
+import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoverLogPk;
 
 @Stateless
 public class JpaDataRecoverLogRepository extends JpaRepository implements DataRecoveryLogRepository  {
@@ -54,7 +54,7 @@ public class JpaDataRecoverLogRepository extends JpaRepository implements DataRe
 	
 	private static SspdtRecoverLog toEntity(DataRecoveryLog domain){
 		val entity = new SspdtRecoverLog();
-		val key = new SspdtRecoverLogPk();
+		val key = new SspmtDataRecoverLogPk();
 		key.recoveryProcessId = domain.getRecoveryProcessId();
 		key.logSequenceNumber = domain.getLogSequenceNumber();
 		entity.dataRecoverLogPk = key;

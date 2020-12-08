@@ -15,13 +15,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRCMT_36AGR_MONTH")
+@Table(name="KMKMT_AGREEMENT_MONTH_SET")
 public class Krcmt36agrMonth extends ContractUkJpaEntity implements Serializable{	
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public Krcmt36agrMonthPK krcmt36agrMonthPK;
+    public KmkmtAgreementMonthSetPK kmkmtAgreementMonthSetPK;
 	
 	@Column(name ="ERROR_ONE_MONTH")
 	public int errorOneMonth;
@@ -31,7 +31,7 @@ public class Krcmt36agrMonth extends ContractUkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return this.krcmt36agrMonthPK;
+		return this.kmkmtAgreementMonthSetPK;
 	}
 
 }

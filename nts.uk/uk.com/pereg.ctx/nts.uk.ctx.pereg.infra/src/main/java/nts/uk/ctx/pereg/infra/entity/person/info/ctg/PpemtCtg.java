@@ -15,14 +15,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_CTG")
+@Table(name = "PPEMT_PER_INFO_CTG")
 
 public class PpemtCtg extends ContractUkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpemtCtgPK ppemtCtgPK;
+	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
 
 	@Basic(optional = false)
 	@Column(name = "CID")
@@ -42,6 +42,6 @@ public class PpemtCtg extends ContractUkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return ppemtCtgPK;
+		return ppemtPerInfoCtgPK;
 	}
 }

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_COM_MEDICAL")
+@Table(name = "KSHMT_MEDICAL_TIME_SET")
 public class KshmtWtComMedical extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtComMedical extends ContractUkJpaEntity implements Serializab
 
 	/** The kshmt medical time set PK. */
 	@EmbeddedId
-	protected KshmtWtComMedicalPK kshmtWtComMedicalPK;
+	protected KshmtMedicalTimeSetPK kshmtMedicalTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -62,7 +62,7 @@ public class KshmtWtComMedical extends ContractUkJpaEntity implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtComMedicalPK != null ? kshmtWtComMedicalPK.hashCode() : 0);
+		hash += (kshmtMedicalTimeSetPK != null ? kshmtMedicalTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -78,9 +78,9 @@ public class KshmtWtComMedical extends ContractUkJpaEntity implements Serializab
 			return false;
 		}
 		KshmtWtComMedical other = (KshmtWtComMedical) object;
-		if ((this.kshmtWtComMedicalPK == null && other.kshmtWtComMedicalPK != null)
-				|| (this.kshmtWtComMedicalPK != null
-						&& !this.kshmtWtComMedicalPK.equals(other.kshmtWtComMedicalPK))) {
+		if ((this.kshmtMedicalTimeSetPK == null && other.kshmtMedicalTimeSetPK != null)
+				|| (this.kshmtMedicalTimeSetPK != null
+						&& !this.kshmtMedicalTimeSetPK.equals(other.kshmtMedicalTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -93,7 +93,7 @@ public class KshmtWtComMedical extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtComMedicalPK;
+		return this.kshmtMedicalTimeSetPK;
 	}
 
 }

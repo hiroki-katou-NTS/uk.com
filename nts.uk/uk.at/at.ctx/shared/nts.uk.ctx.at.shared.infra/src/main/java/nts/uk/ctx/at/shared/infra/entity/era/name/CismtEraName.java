@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="CISMT_ERA_NAME")
+@Table(name="CISDT_ERA_NAME")
 public class CismtEraName extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMemento{
 
 	/** The kshmt week hd set. */
-	private KshmtHdpubPerWeek kshmtHdpubPerWeek;
+	private KshmtHdpubPerWeek kshmtWeekHdSet;
 	
 	/**
 	 * Instantiates a new jpa week holiday setting set memento.
@@ -25,7 +25,7 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}
-		this.kshmtHdpubPerWeek = entity;
+		this.kshmtWeekHdSet = entity;
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +41,7 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 	 */
 	@Override
 	public void setInLegalHoliday(WeekNumberOfDay inLegalHoliday) {
-		this.kshmtHdpubPerWeek.setInLegalHd(new BigDecimal(inLegalHoliday.v()));
+		this.kshmtWeekHdSet.setInLegalHd(new BigDecimal(inLegalHoliday.v()));
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 	 */
 	@Override
 	public void setOutLegalHoliday(WeekNumberOfDay outLegalHoliday) {
-		this.kshmtHdpubPerWeek.setOutLegalHd(new BigDecimal(outLegalHoliday.v()));
+		this.kshmtWeekHdSet.setOutLegalHd(new BigDecimal(outLegalHoliday.v()));
 	}
 
 	/* (non-Javadoc)
@@ -57,6 +57,6 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 	 */
 	@Override
 	public void setStartDay(DayOfWeek StartDay) {
-		this.kshmtHdpubPerWeek.setStartDay(StartDay.value);
+		this.kshmtWeekHdSet.setStartDay(StartDay.value);
 	}
 }

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporaryti
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflectPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -27,8 +27,8 @@ public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetM
 	 */
 	public JpaFlexStampReflectTZGetMemento(KshmtWtFleStmpRefTs entity) {
 		super();
-		if (entity.getKshmtWtFleStmpRefTsPK() == null) {
-			entity.setKshmtWtFleStmpRefTsPK(new KshmtWtFleStmpRefTsPK());
+		if (entity.getKshmtFlexStampReflectPK() == null) {
+			entity.setKshmtFlexStampReflectPK(new KshmtFlexStampReflectPK());
 		}
 		this.entity = entity;
 	}
@@ -66,7 +66,7 @@ public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetM
 	 */
 	@Override
 	public WorkNo getWorkNo() {
-		return new WorkNo(this.entity.getKshmtWtFleStmpRefTsPK().getWorkNo());
+		return new WorkNo(this.entity.getKshmtFlexStampReflectPK().getWorkNo());
 	}
 
 	/*
@@ -78,7 +78,7 @@ public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetM
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtWtFleStmpRefTsPK().getAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtFlexStampReflectPK().getAtr());
 	}
 
 }

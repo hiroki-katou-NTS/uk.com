@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNCT_ALST_FXITM_36AGR")
+@Table(name = "KFNMT_36AGREE_NAME_ERR")
 public class Kfnmt36AgreeName extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_TIME_GOOUT")
+@Table(name = "KRCDT_WEK_AGGR_GOOUT")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeGoout extends ContractUkJpaEntity implements Serializable {
@@ -36,7 +36,7 @@ public class KrcdtWekTimeGoout extends ContractUkJpaEntity implements Serializab
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtWekTimeGooutPK PK;
+	public KrcdtWekAggrGooutPK PK;
 	
 	/** 外出回数 */
 	@Column(name = "GOOUT_TIMES")
@@ -116,7 +116,7 @@ public class KrcdtWekTimeGoout extends ContractUkJpaEntity implements Serializab
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfWeeklyKey key, AggregateGoOut domain){
 		
-		this.PK = new KrcdtWekTimeGooutPK(
+		this.PK = new KrcdtWekAggrGooutPK(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,

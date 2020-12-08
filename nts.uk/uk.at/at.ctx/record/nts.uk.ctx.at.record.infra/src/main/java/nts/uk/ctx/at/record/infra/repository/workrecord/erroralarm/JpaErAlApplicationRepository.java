@@ -16,18 +16,18 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEr
 public class JpaErAlApplicationRepository extends JpaRepository implements ErAlApplicationRepository {
 
 	private static final String GET_ERAL_BY_CODE = " SELECT c FROM KrcmtEralApplication c "
-			+ " WHERE c.krcmtEralApplicationPK.cid = :cid" + " AND c.krcmtEralApplicationPK.errorCd = :errorCd";
+			+ " WHERE c.krcstErAlApplicationPK.cid = :cid" + " AND c.krcstErAlApplicationPK.errorCd = :errorCd";
 
 	@Override
 	public Optional<ErAlApplication> getAllErAlAppByEralCode(String companyID, String errorAlarmCode) {
 
-		List<KrcmtEralApplication> listKrcmtEralApplication = this.queryProxy()
+		List<KrcmtEralApplication> listKrcstErAlApplication = this.queryProxy()
 				.query(GET_ERAL_BY_CODE, KrcmtEralApplication.class).setParameter("cid", companyID)
 				.setParameter("errorCd", errorAlarmCode).getList();
-		if (listKrcmtEralApplication.isEmpty()) {
+		if (listKrcstErAlApplication.isEmpty()) {
 			return Optional.ofNullable(null);
 		}
-		List<Integer> listAppType = listKrcmtEralApplication.stream().map(c -> c.krcmtEralApplicationPK.appTypeCd)
+		List<Integer> listAppType = listKrcstErAlApplication.stream().map(c -> c.krcstErAlApplicationPK.appTypeCd)
 				.collect(Collectors.toList());
 
 		return Optional.of(new ErAlApplication(companyID, errorAlarmCode, listAppType));
@@ -35,7 +35,7 @@ public class JpaErAlApplicationRepository extends JpaRepository implements ErAlA
 
 	public List<ErAlApplication> getAllErAlAppByEralCode(String companyID, List<String> errorAlarmCode) {
 		String GET_ERAL_BY_CODE = " SELECT c FROM KrcmtEralApplication c "
-				+ " WHERE c.krcmtEralApplicationPK.cid = :cid" + " AND c.krcmtEralApplicationPK.errorCd in :errorCd";
+				+ " WHERE c.krcstErAlApplicationPK.cid = :cid" + " AND c.krcstErAlApplicationPK.errorCd in :errorCd";
 
 		if (errorAlarmCode.isEmpty()) {
 			return new ArrayList<>();
@@ -45,7 +45,7 @@ public class JpaErAlApplicationRepository extends JpaRepository implements ErAlA
 				.setParameter("errorCd", errorAlarmCode).getList();
 
 		return errorAlarmCode.stream().map(eralCode -> {
-			return new ErAlApplication(companyID, eralCode, eralApps.stream().map(eralApp -> eralApp.krcmtEralApplicationPK.appTypeCd)
+			return new ErAlApplication(companyID, eralCode, eralApps.stream().map(eralApp -> eralApp.krcstErAlApplicationPK.appTypeCd)
 					.collect(Collectors.toList()));
 		}).filter(eralApp -> !eralApp.getAppType().isEmpty()).collect(Collectors.toList());
 	}

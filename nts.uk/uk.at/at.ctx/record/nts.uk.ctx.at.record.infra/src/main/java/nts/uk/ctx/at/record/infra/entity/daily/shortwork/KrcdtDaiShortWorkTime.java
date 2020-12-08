@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCDT_DAY_TS_SHORTTIME")
+@Table(name = "KRCDT_DAI_SHORTTIME_TS")
 @XmlRootElement
 @NamedQueries({
 //    @NamedQuery(name = "KrcdtDaiShortWorkTime.findAll", query = "SELECT k FROM KrcdtDaiShortWorkTime k"),
@@ -87,7 +87,7 @@ public class KrcdtDaiShortWorkTime extends ContractUkJpaEntity implements Serial
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayTimeAtd krcdtDayTimeAtd;
+	public KrcdtDayTimeAtd krcdtDayTime;
     
 
     public KrcdtDaiShortWorkTime() {

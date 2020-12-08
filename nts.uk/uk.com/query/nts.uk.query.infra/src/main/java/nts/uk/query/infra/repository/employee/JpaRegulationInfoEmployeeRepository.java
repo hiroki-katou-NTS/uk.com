@@ -29,7 +29,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtSrchSyaSortCnd;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtSrchSyaSort;
-import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtSrchSyaSortPK;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
@@ -73,7 +73,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	private static final String FIND_WORKPLACE = "SELECT awh.sid, wi.workplaceCode, wi.pk.workplaceId, wi.workplaceName"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
-			+ " LEFT JOIN BsymtWkpInfor wi ON wi.pk.workplaceId = awhi.workPlaceId"
+			+ " LEFT JOIN BsymtWorkplaceInfor wi ON wi.pk.workplaceId = awhi.workPlaceId"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
 			+ " AND awh.endDate >= :refDate";
@@ -377,9 +377,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		if (sortOrderNo == null) {
 			return Collections.emptyList();
 		}
-		BsymtSrchSyaSortPK pk = new BsymtSrchSyaSortPK(comId, sortOrderNo, systemType);
+		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
 		Optional<BsymtSrchSyaSort> empOrder = this.queryProxy().find(pk, BsymtSrchSyaSort.class);
-		List<BsymtSrchSyaSortCnd> conditions = empOrder.isPresent() ? empOrder.get().getLstBsymtSrchSyaSortCnd()
+		List<BsymtSrchSyaSortCnd> conditions = empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond()
 				: Collections.emptyList();
 
 		return conditions.stream().map(cond -> {

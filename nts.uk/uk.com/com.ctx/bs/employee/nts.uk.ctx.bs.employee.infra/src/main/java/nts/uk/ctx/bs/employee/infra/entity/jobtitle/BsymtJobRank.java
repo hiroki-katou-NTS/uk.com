@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "BSYMT_JOB_RANK")
+@Table(name = "BSYMT_JOB_SEQ_MASTER")
 public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
     
     /** The bsymt job seq master PK. */
     @EmbeddedId
-    protected BsymtJobRankPK bsymtJobRankPK;
+    protected BsymtJobSeqMasterPK bsymtJobSeqMasterPK;
     
     /** The seq name. */
     @Column(name = "SEQ_NAME")
@@ -49,10 +49,10 @@ public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
     /**
      * Instantiates a new bsymt job seq master.
      *
-     * @param bsymtJobRankPK the bsymt job seq master PK
+     * @param bsymtJobSeqMasterPK the bsymt job seq master PK
      */
-    public BsymtJobRank(BsymtJobRankPK bsymtJobRankPK) {
-        this.bsymtJobRankPK = bsymtJobRankPK;
+    public BsymtJobRank(BsymtJobSeqMasterPK bsymtJobSeqMasterPK) {
+        this.bsymtJobSeqMasterPK = bsymtJobSeqMasterPK;
     }
    
     /* (non-Javadoc)
@@ -61,7 +61,7 @@ public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (bsymtJobRankPK != null ? bsymtJobRankPK.hashCode() : 0);
+        hash += (bsymtJobSeqMasterPK != null ? bsymtJobSeqMasterPK.hashCode() : 0);
         return hash;
     }
 
@@ -74,7 +74,7 @@ public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
             return false;
         }
         BsymtJobRank other = (BsymtJobRank) object;
-        if ((this.bsymtJobRankPK == null && other.bsymtJobRankPK != null) || (this.bsymtJobRankPK != null && !this.bsymtJobRankPK.equals(other.bsymtJobRankPK))) {
+        if ((this.bsymtJobSeqMasterPK == null && other.bsymtJobSeqMasterPK != null) || (this.bsymtJobSeqMasterPK != null && !this.bsymtJobSeqMasterPK.equals(other.bsymtJobSeqMasterPK))) {
             return false;
         }
         return true;
@@ -85,7 +85,7 @@ public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.bsymtJobRankPK;
+		return this.bsymtJobSeqMasterPK;
 	}
     
 }

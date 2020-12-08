@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_HDPUB_MONTHDAYS_SYA")
+@Table(name = "KSHMT_EMPLOYEE_MONTH_DAY_SET")
 public class KshmtHdpubMonthdaysSya extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KshmtHdpubMonthdaysSya extends ContractUkJpaEntity implements Seria
     
     /** The kshmt employee month day set PK. */
     @EmbeddedId
-    protected KshmtHdpubMonthdaysSyaPK kshmtHdpubMonthdaysSyaPK;
+    protected KshmtEmployeeMonthDaySetPK kshmtEmployeeMonthDaySetPK;
 
     /** The in legal hd. */
     @Column(name = "IN_LEGAL_HD")
@@ -49,7 +49,7 @@ public class KshmtHdpubMonthdaysSya extends ContractUkJpaEntity implements Seria
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtHdpubMonthdaysSyaPK != null ? kshmtHdpubMonthdaysSyaPK.hashCode() : 0);
+        hash += (kshmtEmployeeMonthDaySetPK != null ? kshmtEmployeeMonthDaySetPK.hashCode() : 0);
         return hash;
     }
 
@@ -62,7 +62,7 @@ public class KshmtHdpubMonthdaysSya extends ContractUkJpaEntity implements Seria
             return false;
         }
         KshmtHdpubMonthdaysSya other = (KshmtHdpubMonthdaysSya) object;
-        if ((this.kshmtHdpubMonthdaysSyaPK == null && other.kshmtHdpubMonthdaysSyaPK != null) || (this.kshmtHdpubMonthdaysSyaPK != null && !this.kshmtHdpubMonthdaysSyaPK.equals(other.kshmtHdpubMonthdaysSyaPK))) {
+        if ((this.kshmtEmployeeMonthDaySetPK == null && other.kshmtEmployeeMonthDaySetPK != null) || (this.kshmtEmployeeMonthDaySetPK != null && !this.kshmtEmployeeMonthDaySetPK.equals(other.kshmtEmployeeMonthDaySetPK))) {
             return false;
         }
         return true;
@@ -73,7 +73,7 @@ public class KshmtHdpubMonthdaysSya extends ContractUkJpaEntity implements Seria
      */
     @Override
     public String toString() {
-        return "entities.KshmtHdpubMonthdaysSya[ kshmtHdpubMonthdaysSyaPK=" + kshmtHdpubMonthdaysSyaPK + " ]";
+        return "entities.KshmtHdpubMonthdaysSya[ kshmtEmployeeMonthDaySetPK=" + kshmtEmployeeMonthDaySetPK + " ]";
     }
 
 	/* (non-Javadoc)
@@ -81,7 +81,7 @@ public class KshmtHdpubMonthdaysSya extends ContractUkJpaEntity implements Seria
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtHdpubMonthdaysSyaPK;
+		return this.kshmtEmployeeMonthDaySetPK;
 	}
     
 }

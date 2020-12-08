@@ -23,9 +23,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLock;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLockPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLockPK_;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLock_;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK_;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock_;
 
 /**
  * The Class JpaActualLockRepository.
@@ -56,7 +56,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	@Override
 	public void update(ActualLock actualLock) {
 		Optional<KrcdtAtdActualLock> optional = this.queryProxy().find(
-				new KrcdtAtdActualLockPK(actualLock.getCompanyId(), actualLock.getClosureId().value),
+				new KrcstActualLockPK(actualLock.getCompanyId(), actualLock.getClosureId().value),
 				KrcdtAtdActualLock.class);
 		KrcdtAtdActualLock entity = new KrcdtAtdActualLock();
 		if (optional.isPresent()) {
@@ -86,7 +86,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList
-				.add(bd.equal(root.get(KrcdtAtdActualLock_.krcdtAtdActualLockPK).get(KrcdtAtdActualLockPK_.cid), companyId));
+				.add(bd.equal(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.cid), companyId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
@@ -105,7 +105,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public Optional<ActualLock> findById(String companyId, int closureId) {
-		return this.queryProxy().find(new KrcdtAtdActualLockPK(companyId, closureId), KrcdtAtdActualLock.class)
+		return this.queryProxy().find(new KrcstActualLockPK(companyId, closureId), KrcdtAtdActualLock.class)
 				.map(c -> this.toDomain(c));
 	}
 	
@@ -137,11 +137,11 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 			// Predicate where clause
 			List<Predicate> predicateList = new ArrayList<>();
 			predicateList
-					.add(bd.equal(root.get(KrcdtAtdActualLock_.krcdtAtdActualLockPK).get(KrcdtAtdActualLockPK_.cid), companyId));
+					.add(bd.equal(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.cid), companyId));
 			
 			// in closure id
 			predicateList
-					.add(root.get(KrcdtAtdActualLock_.krcdtAtdActualLockPK).get(KrcdtAtdActualLockPK_.closureId).in(splitData));
+					.add(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.closureId).in(splitData));
 
 			// Set Where clause to SQL Query
 			cq.where(predicateList.toArray(new Predicate[] {}));
@@ -159,7 +159,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public void remove(String companyId, int closureId) {
-		this.commandProxy().remove(KrcdtAtdActualLock.class, new KrcdtAtdActualLockPK(companyId, closureId));
+		this.commandProxy().remove(KrcdtAtdActualLock.class, new KrcstActualLockPK(companyId, closureId));
 	}
 
 	/**

@@ -22,7 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtMonSelfCheck;
-import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtMonSelfCheckPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonthPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,34 +32,34 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 public class JpaConfirmationMonthRepository  extends JpaRepository implements ConfirmationMonthRepository{
     
 	private static final String DELETE_BY_PARENT_PK = "DELETE FROM KrcdtMonSelfCheck a "
-			+ "WHERE a.krcdtMonSelfCheckPK.companyID = :companyID "
-			+ "AND a.krcdtMonSelfCheckPK.employeeId = :employeeId "
-			+ "AND a.krcdtMonSelfCheckPK.closureId = :closureId "
-			+ "AND a.krcdtMonSelfCheckPK.closureDay = :closureDay "
-			+ "AND a.krcdtMonSelfCheckPK.isLastDay = :isLastDayOfMonth "
-			+ "AND a.krcdtMonSelfCheckPK.processYM = :processYM ";
+			+ "WHERE a.krcdtConfirmationMonthPK.companyID = :companyID "
+			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
+			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId "
+			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+			+ "AND a.krcdtConfirmationMonthPK.isLastDay = :isLastDayOfMonth "
+			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
 	
 	private static final String FIND_BY_SID_YM = "SELECT a FROM KrcdtMonSelfCheck a "
-			+ "WHERE a.krcdtMonSelfCheckPK.companyID = :companyId "
-			+ "AND a.krcdtMonSelfCheckPK.employeeId = :employeeId "
-			+ "AND a.krcdtMonSelfCheckPK.processYM = :processYM ";
+			+ "WHERE a.krcdtConfirmationMonthPK.companyID = :companyId "
+			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
+			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
 	
 //	private static final String FIND_BY_SOME_PROPERTY = "SELECT a FROM KrcdtMonSelfCheck a "
-//			+ "WHERE a.krcdtMonSelfCheckPK.employeeId IN :employeeIds "
-//			+ "AND a.krcdtMonSelfCheckPK.processYM = :processYM "
-//			+ "AND a.krcdtMonSelfCheckPK.closureDay = :closureDay "
-//			+ "AND a.krcdtMonSelfCheckPK.isLastDay = :isLastDayOfMonth "
-//			+ "AND a.krcdtMonSelfCheckPK.closureId = :closureId ";
+//			+ "WHERE a.krcdtConfirmationMonthPK.employeeId IN :employeeIds "
+//			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM "
+//			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+//			+ "AND a.krcdtConfirmationMonthPK.isLastDay = :isLastDayOfMonth "
+//			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId ";
 	@Override
 	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, ClosureDate closureDate, YearMonth processYM) {
-		return this.queryProxy().find(new KrcdtMonSelfCheckPK(companyID, employeeID,
+		return this.queryProxy().find(new KrcdtConfirmationMonthPK(companyID, employeeID,
 						closureId.value, closureDate.getClosureDay().v(),(closureDate.getLastDayOfMonth() ? 1 : 0), processYM.v()) , KrcdtMonSelfCheck.class).map(x -> x.toDomain());
 	}
 
 	@Override
 	public void insert(ConfirmationMonth confirmationMonth) { 
 		this.commandProxy().insert(new KrcdtMonSelfCheck(
-				new KrcdtMonSelfCheckPK(confirmationMonth.getCompanyID().v(), confirmationMonth.getEmployeeId(),
+				new KrcdtConfirmationMonthPK(confirmationMonth.getCompanyID().v(), confirmationMonth.getEmployeeId(),
 						confirmationMonth.getClosureId().value, confirmationMonth.getClosureDate().getClosureDay().v(),(confirmationMonth.getClosureDate().getLastDayOfMonth() ? 1 : 0), confirmationMonth.getProcessYM().v()),
 				confirmationMonth.getIndentifyYmd()));
 	}

@@ -24,14 +24,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCMT_DISPLAY_SETTING")
+@Table(name = "SRCDT_LOG_DISPLAY_SETTING")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcmtDisplaySetting extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SrcmtDisplaySettingPK srcmtDisplaySettingPK;
+	public SrcdtLogDisplaySettingPK srcdtLogDisplaySettingPK;
 
 	/** 会社ID */
 	@Basic(optional = false)
@@ -70,11 +70,11 @@ public class SrcmtDisplaySetting extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return srcmtDisplaySettingPK;
+		return srcdtLogDisplaySettingPK;
 	}
 
 	public LogDisplaySetting toDomain() {
-		return LogDisplaySetting.createFromJavatype(this.srcmtDisplaySettingPK.logSetId, this.cid, this.code,
+		return LogDisplaySetting.createFromJavatype(this.srcdtLogDisplaySettingPK.logSetId, this.cid, this.code,
 				this.name, this.dataType, this.recordType,
 				this.listLogSetOutputItems.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				this.systemType);
@@ -83,7 +83,7 @@ public class SrcmtDisplaySetting extends ContractUkJpaEntity implements Serializ
 	public static SrcmtDisplaySetting toEntity(LogDisplaySetting domain) {
 		Optional<DataTypeEnum> optionalDataType = Optional.ofNullable(domain.getDataType());
 		return new SrcmtDisplaySetting(
-				new SrcmtDisplaySettingPK(domain.getLogSetId()), 
+				new SrcdtLogDisplaySettingPK(domain.getLogSetId()), 
 				domain.getCid(),
 				domain.getCode().v(), 
 				domain.getName().v(),

@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfoGetMemento;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 
 /**
  * The Class JpaWindowAccountGetMemento.
@@ -26,8 +26,8 @@ public class JpaWindowAccountInfoGetMemento implements WindowsAccountInfoGetMeme
 	 */
 	public JpaWindowAccountInfoGetMemento(SgwmtSsoWinAcc typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getSgwmtSsoWinAccPK() == null) {
-			this.typedValue.setSgwmtSsoWinAccPK(new SgwmtSsoWinAccPK());
+		if (this.typedValue.getSgwmtWindowAccPK() == null) {
+			this.typedValue.setSgwmtWindowAccPK(new SgwmtWindowAccPK());
 		}
 	}
 
@@ -60,7 +60,7 @@ public class JpaWindowAccountInfoGetMemento implements WindowsAccountInfoGetMeme
 	 */
 	@Override
 	public Integer getNo() {
-		return this.typedValue.getSgwmtSsoWinAccPK().getNo();
+		return this.typedValue.getSgwmtWindowAccPK().getNo();
 	}
 
 }

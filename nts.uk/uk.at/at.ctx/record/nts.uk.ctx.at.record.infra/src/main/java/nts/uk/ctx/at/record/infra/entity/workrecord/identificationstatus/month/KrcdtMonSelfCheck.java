@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MON_SELF_CHECK")
+@Table(name = "KRCDT_CONFIRMATION_MONTH")
 public class KrcdtMonSelfCheck extends ContractUkJpaEntity implements Serializable {
 
 	/**
@@ -35,20 +35,20 @@ public class KrcdtMonSelfCheck extends ContractUkJpaEntity implements Serializab
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KrcdtMonSelfCheckPK krcdtMonSelfCheckPK;
+	public KrcdtConfirmationMonthPK krcdtConfirmationMonthPK;
 
 	@Column(name = "IDENTIFY_DATE")
 	public GeneralDate indentifyYmd;
 	
 	public ConfirmationMonth toDomain(){
-		return new ConfirmationMonth(new CompanyId(this.krcdtMonSelfCheckPK.companyID),
-				this.krcdtMonSelfCheckPK.employeeId, ClosureId.valueOf(this.krcdtMonSelfCheckPK.closureId),
-				new ClosureDate(this.krcdtMonSelfCheckPK.closureDay, (this.krcdtMonSelfCheckPK.isLastDay == 1)), new YearMonth(this.krcdtMonSelfCheckPK.processYM), this.indentifyYmd);
+		return new ConfirmationMonth(new CompanyId(this.krcdtConfirmationMonthPK.companyID),
+				this.krcdtConfirmationMonthPK.employeeId, ClosureId.valueOf(this.krcdtConfirmationMonthPK.closureId),
+				new ClosureDate(this.krcdtConfirmationMonthPK.closureDay, (this.krcdtConfirmationMonthPK.isLastDay == 1)), new YearMonth(this.krcdtConfirmationMonthPK.processYM), this.indentifyYmd);
 	}
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtMonSelfCheckPK;
+		return this.krcdtConfirmationMonthPK;
 	}
 
 }

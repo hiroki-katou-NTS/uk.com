@@ -19,15 +19,15 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame;
 public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	
 	/** The kshst workdayoff frame. */
-	private KshmtHdWorkFrame kshmtHdWorkFrame;
+	private KshmtHdWorkFrame kshstWorkdayoffFrame;
 	
 	/**
 	 * Instantiates a new jpa workdayoff frame get memento.
 	 *
-	 * @param kshmtHdWorkFrame the kshst workdayoff frame
+	 * @param kshstWorkdayoffFrame the kshst workdayoff frame
 	 */
-	public JpaWorkdayoffFrameGetMemento(KshmtHdWorkFrame kshmtHdWorkFrame) {
-		this.kshmtHdWorkFrame = kshmtHdWorkFrame;
+	public JpaWorkdayoffFrameGetMemento(KshmtHdWorkFrame kshstWorkdayoffFrame) {
+		this.kshstWorkdayoffFrame = kshstWorkdayoffFrame;
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.kshmtHdWorkFrame.getKshmtHdWorkFramePK().getCid();
+		return this.kshstWorkdayoffFrame.getKshstWorkdayoffFramePK().getCid();
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +43,7 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	 */
 	@Override
 	public NotUseAtr getUseClassification() {
-		return NotUseAtr.valueOf((int) this.kshmtHdWorkFrame.getUseAtr());
+		return NotUseAtr.valueOf((int) this.kshstWorkdayoffFrame.getUseAtr());
 	}
 
 	/* (non-Javadoc)
@@ -51,7 +51,7 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	 */
 	@Override
 	public WorkdayoffFrameNo getWorkdayoffFrameNo() {
-		return new WorkdayoffFrameNo(BigDecimal.valueOf(this.kshmtHdWorkFrame.getKshmtHdWorkFramePK().getWdoFrNo()));
+		return new WorkdayoffFrameNo(BigDecimal.valueOf(this.kshstWorkdayoffFrame.getKshstWorkdayoffFramePK().getWdoFrNo()));
 	}
 
 	/* (non-Javadoc)
@@ -59,7 +59,7 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	 */
 	@Override
 	public WorkdayoffFrameName getTransferFrameName() {
-		return new WorkdayoffFrameName(this.kshmtHdWorkFrame.getTransFrName());
+		return new WorkdayoffFrameName(this.kshstWorkdayoffFrame.getTransFrName());
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	 */
 	@Override
 	public WorkdayoffFrameName getWorkdayoffFrameName() {
-		return new WorkdayoffFrameName(this.kshmtHdWorkFrame.getWdoFrName());
+		return new WorkdayoffFrameName(this.kshstWorkdayoffFrame.getWdoFrName());
 	}
 	
 	/* (non-Javadoc)
@@ -75,6 +75,6 @@ public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	 */
 	@Override
 	public WorkdayoffFrameRole getRole() {
-		return WorkdayoffFrameRole.valueOf((int)this.kshmtHdWorkFrame.getRole());
+		return WorkdayoffFrameRole.valueOf((int)this.kshstWorkdayoffFrame.getRole());
 	}
 }

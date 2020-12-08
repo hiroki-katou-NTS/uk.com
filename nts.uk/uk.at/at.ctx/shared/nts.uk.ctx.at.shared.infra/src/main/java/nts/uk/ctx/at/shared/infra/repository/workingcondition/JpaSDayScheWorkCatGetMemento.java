@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 
 /**
  * The Class JpaSingleDayScheduleGetMemento.
@@ -33,8 +33,8 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	 *            the entity
 	 */
 	public JpaSDayScheWorkCatGetMemento(KshmtWorkcondCtg entity) {
-		if (entity.getKshmtWorkcondCtgPK() == null) {
-			entity.setKshmtWorkcondCtgPK(new KshmtWorkcondCtgPK());
+		if (entity.getKshmtPerWorkCatPK() == null) {
+			entity.setKshmtPerWorkCatPK(new KshmtPerWorkCatPK());
 		}
 		this.entity = entity;
 	}
@@ -62,10 +62,10 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<TimeZone> getWorkingHours() {
-		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkcondCtgTss())) {
+		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkCatTimeZones())) {
 			return Collections.emptyList();
 		}
-		return this.entity.getKshmtWorkcondCtgTss().stream()
+		return this.entity.getKshmtWorkCatTimeZones().stream()
 				.map(entity -> new TimeZone(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

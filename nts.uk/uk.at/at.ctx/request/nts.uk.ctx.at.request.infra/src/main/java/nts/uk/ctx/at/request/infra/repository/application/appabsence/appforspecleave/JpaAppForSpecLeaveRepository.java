@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppHdSp;
-import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppHdSpPK;
+import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppForSpecLeavePK;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppForSpecLeaveRepository{
@@ -23,12 +23,12 @@ public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppFo
 	 */
 	@Override
 	public Optional<AppForSpecLeave> getAppForSpecLeaveById(String companyId, String appId) {
-		return this.queryProxy().find(new KrqdtAppHdSpPK(companyId, appId), KrqdtAppHdSp.class)
+		return this.queryProxy().find(new KrqdtAppForSpecLeavePK(companyId, appId), KrqdtAppHdSp.class)
 				.map(c->toDomain(c));
 	}
 
 	private AppForSpecLeave toDomain(KrqdtAppHdSp entity){
-		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppHdSpPK().getAppId(),
+		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
 				entity.isMournerFlg(),
 				entity.getRelationshipCD(),
 				entity.getRelationshipReason());
@@ -41,7 +41,7 @@ public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppFo
 	}
 	private KrqdtAppHdSp toEntity(AppForSpecLeave domain){
 		val entity = new KrqdtAppHdSp();
-		entity.setKrqdtAppHdSpPK(new KrqdtAppHdSpPK(AppContexts.user().companyId(), domain.getAppID()));
+		entity.setKrqdtAppForSpecLeavePK(new KrqdtAppForSpecLeavePK(AppContexts.user().companyId(), domain.getAppID()));
 		entity.setVersion(new Long(0L));
 		entity.setMournerFlg(domain.isMournerFlag());;
 		entity.setRelationshipCD(domain.getRelationshipCD().v());;
@@ -56,7 +56,7 @@ public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppFo
 
 	@Override
 	public void deleteSpecHd(AppForSpecLeave specHd) {
-		KrqdtAppHdSpPK key = new KrqdtAppHdSpPK(AppContexts.user().companyId(), specHd.getAppID());
+		KrqdtAppForSpecLeavePK key = new KrqdtAppForSpecLeavePK(AppContexts.user().companyId(), specHd.getAppID());
 		this.commandProxy().remove(KrqdtAppHdSp.class, key);
 	}
 }

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_COMPARISON")
+@Table(name = "KSCST_EST_COMPARISON")
 public class KscmtEstComparison extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

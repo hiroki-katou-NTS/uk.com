@@ -10,11 +10,11 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_ATTENDANCE_AUT")
+@Table(name = "KRCMT_DAI_PERFORMANCE_AUT")
 public class KrcmtAttendanceAut extends ContractUkJpaEntity{
 	
 	@EmbeddedId
-	public KrcmtAttendanceAutPk pk;
+	public KrcmtDaiPerformanceAutPk pk;
 	
 	@Column(name = "AVAILABILITY")
 	public BigDecimal availability;

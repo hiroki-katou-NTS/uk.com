@@ -15,10 +15,10 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloWorkTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloWorkTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZonePK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZonePK;
 
 /**
  * The Class JpaFlowWorkTimezoneSettingSetMemento.
@@ -43,11 +43,11 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	public JpaFlowWorkTimezoneSettingSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloOverTs())) {
-			this.entity.setLstKshmtWtFloOverTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtOtTimeZone())) {
+			this.entity.setLstKshmtOtTimeZone(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtWtFloPK().getCid();
-		this.workTimeCd = this.entity.getKshmtWtFloPK().getWorktimeCd();
+		this.companyId = this.entity.getKshmtFlowWorkSetPK().getCid();
+		this.workTimeCd = this.entity.getKshmtFlowWorkSetPK().getWorktimeCd();
 	}
 
 	/*
@@ -59,18 +59,18 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	 */
 	@Override
 	public void setWorkTimeRounding(TimeRoundingSetting trSet) {
-		KshmtWtFloWorkTs timeZoneEntity = this.entity.getKshmtWtFloWorkTs();
+		KshmtWtFloWorkTs timeZoneEntity = this.entity.getKshmtFlowTimeZone();
 		if (timeZoneEntity == null) {
-			KshmtWtFloWorkTsPK pk = new KshmtWtFloWorkTsPK();
+			KshmtFlowTimeZonePK pk = new KshmtFlowTimeZonePK();
 			pk.setCid(this.companyId);
 			pk.setWorktimeCd(this.workTimeCd);
 			
 			timeZoneEntity = new KshmtWtFloWorkTs();
-			timeZoneEntity.setKshmtWtFloWorkTsPK(pk);
-			this.entity.setKshmtWtFloWorkTs(timeZoneEntity);
+			timeZoneEntity.setKshmtFlowTimeZonePK(pk);
+			this.entity.setKshmtFlowTimeZone(timeZoneEntity);
 		}
-		this.entity.getKshmtWtFloWorkTs().setUnit(trSet.getRoundingTime().value);
-		this.entity.getKshmtWtFloWorkTs().setRounding(trSet.getRounding().value);
+		this.entity.getKshmtFlowTimeZone().setUnit(trSet.getRoundingTime().value);
+		this.entity.getKshmtFlowTimeZone().setRounding(trSet.getRounding().value);
 	}
 
 	/*
@@ -82,23 +82,23 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	@Override
 	public void setLstOTTimezone(List<FlowOTTimezone> lstTzone) {
 		if (CollectionUtil.isEmpty(lstTzone)) {
-			this.entity.setLstKshmtWtFloOverTs(new ArrayList<>());
+			this.entity.setLstKshmtOtTimeZone(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtWtFloOverTs> lstEntity = this.entity.getLstKshmtWtFloOverTs();
+		List<KshmtWtFloOverTs> lstEntity = this.entity.getLstKshmtOtTimeZone();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtWtFloOverTsPK, KshmtWtFloOverTs> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtWtFloOverTs::getKshmtWtFloOverTsPK, Function.identity()));
+		Map<KshmtOtTimeZonePK, KshmtWtFloOverTs> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtWtFloOverTs::getKshmtOtTimeZonePK, Function.identity()));
 
 		// set list entity
-		this.entity.setLstKshmtWtFloOverTs(lstTzone.stream().map(domain -> {
+		this.entity.setLstKshmtOtTimeZone(lstTzone.stream().map(domain -> {
 			// newPk
-			KshmtWtFloOverTsPK pk = new KshmtWtFloOverTsPK();
+			KshmtOtTimeZonePK pk = new KshmtOtTimeZonePK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setWorktimeNo(domain.getWorktimeNo());
@@ -107,7 +107,7 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 			KshmtWtFloOverTs entity = mapEntity.get(pk);
 			if (entity == null) {
 				entity = new KshmtWtFloOverTs();
-				entity.setKshmtWtFloOverTsPK(pk);
+				entity.setKshmtOtTimeZonePK(pk);
 			}
 
 			// save to memento

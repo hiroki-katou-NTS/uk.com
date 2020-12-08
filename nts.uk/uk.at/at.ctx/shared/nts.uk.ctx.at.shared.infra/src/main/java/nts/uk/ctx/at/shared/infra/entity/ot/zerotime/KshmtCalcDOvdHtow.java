@@ -19,13 +19,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_D_OVD_HTOW")
+@Table(name = "KSHST_HD_FROM_WEEKDAY")
 public class KshmtCalcDOvdHtow extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshmtCalcDOvdHtowPK kshstOverdayHdAttSetPK;
+	public KshstHdFromWeekdayPK kshstOverdayHdAttSetPK;
 
 	/** 変更後の残業枠NO */
 	@Column(name = "OVERTIME_FRAME_NO")
@@ -40,7 +40,7 @@ public class KshmtCalcDOvdHtow extends ContractUkJpaEntity implements Serializab
 		return kshstOverdayHdAttSetPK;
 	}
 
-	public KshmtCalcDOvdHtow(KshmtCalcDOvdHtowPK kshstOverdayHdAttSetPK, BigDecimal overtimeFrameNo) {
+	public KshmtCalcDOvdHtow(KshstHdFromWeekdayPK kshstOverdayHdAttSetPK, BigDecimal overtimeFrameNo) {
 		super();
 		this.kshstOverdayHdAttSetPK = kshstOverdayHdAttSetPK;
 		this.overWorkNo = overtimeFrameNo;
@@ -59,7 +59,7 @@ public class KshmtCalcDOvdHtow extends ContractUkJpaEntity implements Serializab
 
 	public static KshmtCalcDOvdHtow toEntity(HdFromWeekday domain) {
 		return new KshmtCalcDOvdHtow(
-				new KshmtCalcDOvdHtowPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
+				new KshstHdFromWeekdayPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
 				domain.getOverWorkNo());
 	}
 }

@@ -66,7 +66,7 @@ public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 	public EmployeeDailyPerError toDomain() {
 		return new EmployeeDailyPerError(this.companyID, this.employeeId,
 				this.processingDate, this.errorCode, erAttendanceItem.stream()
-						.map(c -> c.krcdtDaySyaErrorAtdPK.attendanceItemId).collect(Collectors.toList()),
+						.map(c -> c.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()),
 				0, this.errorAlarmMessage);
 	}
 	

@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSP_ELAPSE_YEARS")
+@Table(name = "KSHST_ELAPSE_YEARS")
 public class KshmtHdspElapseYears extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshmtHdspElapseYearsPK pk;
+	public KshstElapseYearsPK pk;
 	
 	/* 特別休暇付与日数 */
 	@Column(name = "GRANTED_DAYS")
@@ -43,7 +43,7 @@ public class KshmtHdspElapseYears extends ContractUkJpaEntity implements Seriali
 		return pk;
 	}
 
-	public KshmtHdspElapseYears(KshmtHdspElapseYearsPK pk, int grantedDays, int months, int years) {
+	public KshmtHdspElapseYears(KshstElapseYearsPK pk, int grantedDays, int months, int years) {
 		
 		this.pk = pk;
 		this.grantedDays = grantedDays;

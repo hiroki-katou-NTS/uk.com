@@ -20,12 +20,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSP_GRANT")
+@Table(name = "KSHST_GRANT_REGULAR")
 public class KshmtHdspGrant extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshmtHdspGrantPK pk;
+	public KshstGrantRegularPK pk;
 
 	/* 付与するタイミングの種類 */
 	@Column(name = "TYPE_TIME")
@@ -53,7 +53,7 @@ public class KshmtHdspGrant extends ContractUkJpaEntity implements Serializable 
 		return pk;
 	}
 
-	public KshmtHdspGrant(KshmtHdspGrantPK pk, int typeTime, int grantDate, int allowDisappear, Integer interval, Integer grantedDays) {
+	public KshmtHdspGrant(KshstGrantRegularPK pk, int typeTime, int grantDate, int allowDisappear, Integer interval, Integer grantedDays) {
 		this.pk = pk;
 		this.typeTime = typeTime;
 		this.grantDate = grantDate;
@@ -71,7 +71,7 @@ public class KshmtHdspGrant extends ContractUkJpaEntity implements Serializable 
 	public static KshmtHdspGrant toEntity(GrantRegular domain){
 		FixGrantDate fixGrantDate = domain.getGrantTime() != null ? domain.getGrantTime().getFixGrantDate() : null;
 		
-		return new KshmtHdspGrant(new KshmtHdspGrantPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
+		return new KshmtHdspGrant(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
 				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval().v() : 0, 
 						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
 	}

@@ -22,9 +22,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeavePK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeavePK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet_;
 
 /**
  * The Class JpaNursingVacationSettingRepository.
@@ -90,8 +90,8 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         
         List<Predicate> predicateList = new ArrayList<>();
         
-        predicateList.add(builder.equal(root.get(KshmtHdnursingLeave_.kshmtHdnursingLeavePK)
-                .get(KshmtHdnursingLeavePK_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KnlmtNursingLeaveSet_.knlmtNursingLeaveSetPK)
+                .get(KnlmtNursingLeaveSetPK_.cid), companyId));
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
@@ -130,7 +130,7 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
      * @return the kmfmt nursing leave set
      */
     private KshmtHdnursingLeave toEntity(NursingLeaveSetting setting) {
-        Optional<KshmtHdnursingLeave> optinal = this.queryProxy().find(new KshmtHdnursingLeavePK(
+        Optional<KshmtHdnursingLeave> optinal = this.queryProxy().find(new KnlmtNursingLeaveSetPK(
                 setting.getCompanyId(), setting.getNursingCategory().value), KshmtHdnursingLeave.class);
         KshmtHdnursingLeave entity = null;
         if (optinal.isPresent()) {
@@ -153,7 +153,7 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
     private KshmtHdnursingLeave findNursingLeaveByNursingCategory(List<KshmtHdnursingLeave> listSetting,
             Integer nursingCtr) {
         return listSetting.stream()
-                .filter(entity -> entity.getKshmtHdnursingLeavePK().getNursingCtr() == nursingCtr)
+                .filter(entity -> entity.getKnlmtNursingLeaveSetPK().getNursingCtr() == nursingCtr)
                 .findFirst()
                 .get();
     }

@@ -18,13 +18,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "WWFMT_JOB_SEARCH")
+@Table(name = "WWFST_JOBTITLE_SEARCH_SET")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtJobSearch  extends ContractUkJpaEntity implements Serializable{
 	/**主キー*/
 	@EmbeddedId
-	public WwfmtJobSearchPK wwfmtJobSearchPK;
+	public WwfstJobtitleSearchSetPK wwfstJobtitleSearchSetPK;
 	
 	/**サーチ設定*/
 	@Column(name = "SEARCH_SET_FLG")
@@ -37,7 +37,7 @@ public class WwfmtJobSearch  extends ContractUkJpaEntity implements Serializable
 
 @Override
 	protected Object getKey() {
-		return wwfmtJobSearchPK;
+		return wwfstJobtitleSearchSetPK;
 	}
 
 }

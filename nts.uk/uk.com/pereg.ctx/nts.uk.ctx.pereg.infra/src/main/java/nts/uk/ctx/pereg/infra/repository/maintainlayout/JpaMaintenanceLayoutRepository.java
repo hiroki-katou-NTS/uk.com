@@ -13,7 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutMaintenance;
-import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutMaintenancePk;
+import nts.uk.ctx.pereg.infra.entity.layout.PpemtMaintenanceLayoutPk;
 
 /**
  * @author laitv
@@ -24,7 +24,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	private static final String getAllMaintenanceLayout = "select c FROM  PpemtLayoutMaintenance c Where c.companyId = :companyId ORDER BY c.layoutCode ASC";
 
-	private static final String getDetailLayout = "select c FROM  PpemtLayoutMaintenance c Where c.ppemtLayoutMaintenancePk.layoutId = :layoutId AND c.companyId = :companyId";
+	private static final String getDetailLayout = "select c FROM  PpemtLayoutMaintenance c Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId AND c.companyId = :companyId";
 
 	private static final String getDetailLayoutByCode = "select c FROM  PpemtLayoutMaintenance c Where c.layoutCode = :layoutCode  AND c.companyId = :companyId";
 
@@ -41,14 +41,14 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 	}
 
 	private static MaintenanceLayout toDomain(PpemtLayoutMaintenance entity) {
-		val domain = MaintenanceLayout.createFromJavaType(entity.companyId, entity.ppemtLayoutMaintenancePk.layoutId,
+		val domain = MaintenanceLayout.createFromJavaType(entity.companyId, entity.ppemtMaintenanceLayoutPk.layoutId,
 				entity.layoutCode, entity.layoutName);
 		return domain;
 	}
 
 	private static PpemtLayoutMaintenance toEntity(MaintenanceLayout domain) {
 		PpemtLayoutMaintenance entity = new PpemtLayoutMaintenance();
-		entity.ppemtLayoutMaintenancePk = new PpemtLayoutMaintenancePk(domain.getMaintenanceLayoutID());
+		entity.ppemtMaintenanceLayoutPk = new PpemtMaintenanceLayoutPk(domain.getMaintenanceLayoutID());
 		entity.companyId = domain.getCompanyId();
 		entity.layoutCode = domain.getLayoutCode().v();
 		entity.layoutName = domain.getLayoutName().v();
@@ -75,7 +75,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	@Override
 	public void remove(MaintenanceLayout domain) {
-		PpemtLayoutMaintenancePk pk = new PpemtLayoutMaintenancePk(domain.getMaintenanceLayoutID());
+		PpemtMaintenanceLayoutPk pk = new PpemtMaintenanceLayoutPk(domain.getMaintenanceLayoutID());
 		this.commandProxy().remove(PpemtLayoutMaintenance.class, pk);
 	}
 

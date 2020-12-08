@@ -20,24 +20,24 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
 public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGetMemento {
 
 	/** The kshmt worktime go out set. */
-	private KshmtWtComGoout kshmtWtComGoout;
+	private KshmtWtComGoout kshmtWorktimeGoOutSet;
 
 	/** The kshmt other late early. */
-	private List<KshmtWtComGooutRound> kshmtWtComGooutRounds;
+	private List<KshmtWtComGooutRound> kshmtSpecialRoundOuts;
 
 	/**
 	 * Instantiates a new jpa work timezone go out set get memento.
 	 *
-	 * @param kshmtWtComGoout
+	 * @param kshmtWorktimeGoOutSet
 	 *            the kshmt worktime go out set
-	 * @param kshmtWtComLatetime
+	 * @param kshmtOtherLateEarly
 	 *            the kshmt other late early
 	 */
-	public JpaWorkTimezoneGoOutSetGetMemento(KshmtWtComGoout kshmtWtComGoout,
-			List<KshmtWtComGooutRound> kshmtWtComGooutRounds) {
+	public JpaWorkTimezoneGoOutSetGetMemento(KshmtWtComGoout kshmtWorktimeGoOutSet,
+			List<KshmtWtComGooutRound> kshmtSpecialRoundOuts) {
 		super();
-		this.kshmtWtComGoout = kshmtWtComGoout;
-		this.kshmtWtComGooutRounds = kshmtWtComGooutRounds;
+		this.kshmtWorktimeGoOutSet = kshmtWorktimeGoOutSet;
+		this.kshmtSpecialRoundOuts = kshmtSpecialRoundOuts;
 	}
 
 	/*
@@ -49,11 +49,11 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 */
 	@Override
 	public TotalRoundingSet getTotalRoundingSet() {
-		if (this.kshmtWtComGoout == null) {
+		if (this.kshmtWorktimeGoOutSet == null) {
 			return null;
 		}
-		return new TotalRoundingSet(this.kshmtWtComGoout.getRoundingSameFrame(),
-				this.kshmtWtComGoout.getRoundingCrossFrame());
+		return new TotalRoundingSet(this.kshmtWorktimeGoOutSet.getRoundingSameFrame(),
+				this.kshmtWorktimeGoOutSet.getRoundingCrossFrame());
 	}
 
 	/*
@@ -65,11 +65,11 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 */
 	@Override
 	public GoOutTimezoneRoundingSet getDiffTimezoneSetting() {
-		if (CollectionUtil.isEmpty(this.kshmtWtComGooutRounds)) {
-			this.kshmtWtComGooutRounds = new ArrayList<>();
+		if (CollectionUtil.isEmpty(this.kshmtSpecialRoundOuts)) {
+			this.kshmtSpecialRoundOuts = new ArrayList<>();
 		}
 		return new GoOutTimezoneRoundingSet(
-				new JpaGoOutTimezoneRoundingSetGetMemento(this.kshmtWtComGooutRounds));
+				new JpaGoOutTimezoneRoundingSetGetMemento(this.kshmtSpecialRoundOuts));
 	}
 
 }

@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_D_OVD_HTOH")
+@Table(name = "KSHST_HD_FROM_HD")
 public class KshmtCalcDOvdHtoh extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshmtCalcDOvdHtohPK kshstOverDayHdSetPK;
+	public KshstHdFromHdPK kshstOverDayHdSetPK;
 
 	/** 変更後の法定内休出NO */
 	@Column(name = "LEGAL_HD_NO")
@@ -52,11 +52,11 @@ public class KshmtCalcDOvdHtoh extends ContractUkJpaEntity implements Serializab
 	}
 
 	public static KshmtCalcDOvdHtoh toEntity(HdFromHd domain) {
-		return new KshmtCalcDOvdHtoh(new KshmtCalcDOvdHtohPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
+		return new KshmtCalcDOvdHtoh(new KshstHdFromHdPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
 				domain.getCalcOverDayEnd(), domain.getStatutoryHd(), domain.getExcessHd());
 	}
 
-	public KshmtCalcDOvdHtoh(KshmtCalcDOvdHtohPK kshstOverDayHdSetPK, int calcOverDayEnd, int statutoryHd, int excessHd) {
+	public KshmtCalcDOvdHtoh(KshstHdFromHdPK kshstOverDayHdSetPK, int calcOverDayEnd, int statutoryHd, int excessHd) {
 		super();
 		this.kshstOverDayHdSetPK = kshstOverDayHdSetPK;
 		this.calcOverDayEnd = calcOverDayEnd;

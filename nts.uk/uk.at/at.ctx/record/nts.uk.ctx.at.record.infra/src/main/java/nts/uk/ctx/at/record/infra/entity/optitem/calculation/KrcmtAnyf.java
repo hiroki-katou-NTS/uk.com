@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF")
+@Table(name = "KRCMT_OPT_ITEM_FORMULA")
 public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -42,7 +42,7 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 
 	/** The krcmt opt item formula PK. */
 	@EmbeddedId
-	protected KrcmtAnyfPK krcmtAnyfPK;
+	protected KrcmtOptItemFormulaPK krcmtOptItemFormulaPK;
 
 	/** The formula name. */
 	@Column(name = "FORMULA_NAME")
@@ -61,12 +61,12 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 	private int calcAtr;
 
 	/** The krcmt formula roundings. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtAnyf", orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KrcmtAnyfRound> krcmtAnyfRounds;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtOptItemFormula", orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KrcmtAnyfRound> krcmtFormulaRoundings;
 
 	/** The krcmt calc item selections. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtAnyf", orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KrcmtAnyfItemSelect> krcmtAnyfItemSelects;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtOptItemFormula", orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KrcmtAnyfItemSelect> krcmtCalcItemSelections;
 
 	/** The krcmt formula setting. */
 	@JoinColumns({
@@ -75,7 +75,7 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
 	})
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	private KrcmtAnyfDetail krcmtAnyfDetail;
+	private KrcmtAnyfDetail krcmtFormulaSetting;
 
 
 	/**
@@ -88,11 +88,11 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcmt opt item formula.
 	 *
-	 * @param krcmtAnyfPK
+	 * @param krcmtOptItemFormulaPK
 	 *            the krcmt opt item formula PK
 	 */
-	public KrcmtAnyf(KrcmtAnyfPK krcmtAnyfPK) {
-		this.krcmtAnyfPK = krcmtAnyfPK;
+	public KrcmtAnyf(KrcmtOptItemFormulaPK krcmtOptItemFormulaPK) {
+		this.krcmtOptItemFormulaPK = krcmtOptItemFormulaPK;
 	}
 
 	/*
@@ -103,7 +103,7 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfPK != null ? krcmtAnyfPK.hashCode() : 0);
+		hash += (krcmtOptItemFormulaPK != null ? krcmtOptItemFormulaPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -118,9 +118,9 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 			return false;
 		}
 		KrcmtAnyf other = (KrcmtAnyf) object;
-		if ((this.krcmtAnyfPK == null && other.krcmtAnyfPK != null)
-				|| (this.krcmtAnyfPK != null
-						&& !this.krcmtAnyfPK.equals(other.krcmtAnyfPK))) {
+		if ((this.krcmtOptItemFormulaPK == null && other.krcmtOptItemFormulaPK != null)
+				|| (this.krcmtOptItemFormulaPK != null
+						&& !this.krcmtOptItemFormulaPK.equals(other.krcmtOptItemFormulaPK))) {
 			return false;
 		}
 		return true;
@@ -133,7 +133,7 @@ public class KrcmtAnyf extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfPK;
+		return this.krcmtOptItemFormulaPK;
 	}
 
 }

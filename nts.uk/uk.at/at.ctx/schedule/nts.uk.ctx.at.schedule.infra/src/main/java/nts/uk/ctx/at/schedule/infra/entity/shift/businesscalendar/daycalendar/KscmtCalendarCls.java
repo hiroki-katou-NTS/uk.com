@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_CALENDAR_CLS")
+@Table(name = "KSMMT_CALENDAR_CLASS")
 @Setter
 public class KscmtCalendarCls extends ContractUkJpaEntity implements Serializable {
 
@@ -25,7 +25,7 @@ public class KscmtCalendarCls extends ContractUkJpaEntity implements Serializabl
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtCalendarClsPK kscmtCalendarClsPK;
+	public KsmmtCalendarClassPK ksmmtCalendarClassPK;
 	
 	@Column(name = "WORKING_DAY_ATR")
 	public int workingDayAtr;	
@@ -33,7 +33,7 @@ public class KscmtCalendarCls extends ContractUkJpaEntity implements Serializabl
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return this.kscmtCalendarClsPK;
+		return this.ksmmtCalendarClassPK;
 	}
 	
 }

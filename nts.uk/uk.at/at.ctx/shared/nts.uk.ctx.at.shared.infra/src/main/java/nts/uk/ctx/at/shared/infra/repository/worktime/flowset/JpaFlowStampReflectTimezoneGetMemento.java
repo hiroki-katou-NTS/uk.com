@@ -30,8 +30,8 @@ public class JpaFlowStampReflectTimezoneGetMemento implements FlowStampReflectTz
 	public JpaFlowStampReflectTimezoneGetMemento(KshmtWtFloStmpRef2Ts entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloStmpRefTs())) {
-			this.entity.setLstKshmtWtFloStmpRefTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowStampReflect())) {
+			this.entity.setLstKshmtFlowStampReflect(new ArrayList<>());
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class JpaFlowStampReflectTimezoneGetMemento implements FlowStampReflectTz
 	 */
 	@Override
 	public List<StampReflectTimezone> getStampReflectTimezone() {
-		return this.entity.getLstKshmtWtFloStmpRefTs().stream()
+		return this.entity.getLstKshmtFlowStampReflect().stream()
 				.map(entity -> new StampReflectTimezone(new JpaStampReflectTimezoneGetMemento(entity)))
 				.sorted((item1, item2) -> item1.getStartTime().compareTo(item2.getStartTime()))
 				.collect(Collectors.toList());

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmp;
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmpPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionSetMemento;
@@ -72,7 +72,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	public void setEmpConditions(List<EmploymentCondition> empConditions) {
 		this.typeValues = empConditions.stream().map(item -> {
 			KrcmtAnyfCondEmp empCon = this.typeValues.stream()
-					.filter(entity -> entity.getKrcmtAnyfCondEmpPK().getEmpCd().equals(item.getEmpCd()))
+					.filter(entity -> entity.getKrcstApplEmpConPK().getEmpCd().equals(item.getEmpCd()))
 					.findFirst()
 					.orElse(null);
 			if (empCon != null) {
@@ -80,7 +80,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 				empCon.setEmpApplAtr(item.getEmpApplicableAtr().value);
 			} else {
 				// create value
-				KrcmtAnyfCondEmpPK pk = new KrcmtAnyfCondEmpPK(this.cid, this.optNo, item.getEmpCd());
+				KrcstApplEmpConPK pk = new KrcstApplEmpConPK(this.cid, this.optNo, item.getEmpCd());
 				empCon = new KrcmtAnyfCondEmp(pk);
 				empCon.setEmpApplAtr(item.getEmpApplicableAtr().value);
 			}

@@ -9,7 +9,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRankPK;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
 
 /**
  * The Class JpaSequenceMasterSetMemento.
@@ -49,12 +49,12 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		BsymtJobRankPK pk = this.typeValue.getBsymtJobRankPK();
+		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
 		if (pk == null) {
-			pk = new BsymtJobRankPK();
+			pk = new BsymtJobSeqMasterPK();
 		}
 		pk.setCid(companyId.v());
-		this.typeValue.setBsymtJobRankPK(pk);
+		this.typeValue.setBsymtJobSeqMasterPK(pk);
 	}
 
 	/*
@@ -66,12 +66,12 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setSequenceCode(SequenceCode sequenceCode) {
-		BsymtJobRankPK pk = this.typeValue.getBsymtJobRankPK();
+		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
 		if (pk == null) {
-			pk = new BsymtJobRankPK();
+			pk = new BsymtJobSeqMasterPK();
 		}
 		pk.setSeqCd(sequenceCode.v());
-		this.typeValue.setBsymtJobRankPK(pk);
+		this.typeValue.setBsymtJobSeqMasterPK(pk);
 	}
 
 	/*

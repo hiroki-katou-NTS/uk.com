@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_WORK_TS")
+@Table(name = "KSHMT_FLEX_WORK_TIME_SET")
 public class KshmtWtFleWorkTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFleWorkTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt flex work time set PK. */
 	@EmbeddedId
-	protected KshmtWtFleWorkTsPK kshmtWtFleWorkTsPK;
+	protected KshmtFlexWorkTimeSetPK kshmtFlexWorkTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -61,11 +61,11 @@ public class KshmtWtFleWorkTs extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new kshmt flex work time set.
 	 *
-	 * @param kshmtWtFleWorkTsPK the kshmt flex work time set PK
+	 * @param kshmtFlexWorkTimeSetPK the kshmt flex work time set PK
 	 */
-	public KshmtWtFleWorkTs(KshmtWtFleWorkTsPK kshmtWtFleWorkTsPK) {
+	public KshmtWtFleWorkTs(KshmtFlexWorkTimeSetPK kshmtFlexWorkTimeSetPK) {
 		super();
-		this.kshmtWtFleWorkTsPK = kshmtWtFleWorkTsPK;
+		this.kshmtFlexWorkTimeSetPK = kshmtFlexWorkTimeSetPK;
 	}
 
 	/*
@@ -76,7 +76,7 @@ public class KshmtWtFleWorkTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleWorkTsPK != null ? kshmtWtFleWorkTsPK.hashCode() : 0);
+		hash += (kshmtFlexWorkTimeSetPK != null ? kshmtFlexWorkTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -91,9 +91,9 @@ public class KshmtWtFleWorkTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtFleWorkTs other = (KshmtWtFleWorkTs) object;
-		if ((this.kshmtWtFleWorkTsPK == null && other.kshmtWtFleWorkTsPK != null)
-				|| (this.kshmtWtFleWorkTsPK != null
-						&& !this.kshmtWtFleWorkTsPK.equals(other.kshmtWtFleWorkTsPK))) {
+		if ((this.kshmtFlexWorkTimeSetPK == null && other.kshmtFlexWorkTimeSetPK != null)
+				|| (this.kshmtFlexWorkTimeSetPK != null
+						&& !this.kshmtFlexWorkTimeSetPK.equals(other.kshmtFlexWorkTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -101,7 +101,7 @@ public class KshmtWtFleWorkTs extends ContractUkJpaEntity implements Serializabl
 
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleWorkTsPK;
+		return this.kshmtFlexWorkTimeSetPK;
 	}
 
 

@@ -42,12 +42,12 @@
 //@Entity
 //@AllArgsConstructor
 //@NoArgsConstructor
-//@Table(name = "KRQMT_APP_CONFIG_WKP")
+//@Table(name = "KRQST_WP_APP_CONFIG")
 //public class KrqmtAppConfigWkp extends ContractUkJpaEntity implements Serializable {
 //	private static final long serialVersionUID = 1L;
 //
 //	@EmbeddedId
-//	public KrqmtAppConfigWkpPK krqmtAppConfigWkpPK;
+//	public KrqstWpAppConfigPK krqstWpAppConfigPK;
 //
 //	/**
 //	 * 申請時の承認者の選択
@@ -55,21 +55,21 @@
 //	@Column(name = "SELECT_OF_APPROVERS_FLG")
 //	public int selectOfApproversFlg;
 //
-//	@OneToMany(targetEntity = KrqmtAppConfigWkpDetail.class, cascade = CascadeType.ALL, mappedBy = "krqmtAppConfigWkp", orphanRemoval = true)
-//	@JoinTable(name = "KRQMT_APP_CF_DETAIL_WKP")
-//	public List<KrqmtAppConfigWkpDetail> krqmtAppConfigWkpDetails;
+//	@OneToMany(targetEntity = KrqstWpAppConfigDetail.class, cascade = CascadeType.ALL, mappedBy = "krqstWpAppConfig", orphanRemoval = true)
+//	@JoinTable(name = "KRQST_WP_APP_CF_DETAIL")
+//	public List<KrqstWpAppConfigDetail> krqstWpAppConfigDetails;
 //
 //	@Override
 //	protected Object getKey() {
-//		return krqmtAppConfigWkpPK;
+//		return krqstWpAppConfigPK;
 //	}
 //	
 //	public RequestOfEachWorkplace toOvertimeAppSetDomain(){
 //		return new RequestOfEachWorkplace(
-//				this.krqmtAppConfigWkpPK.companyId, 
-//				this.krqmtAppConfigWkpPK.workplaceId,
+//				this.krqstWpAppConfigPK.companyId, 
+//				this.krqstWpAppConfigPK.workplaceId,
 //				EnumAdaptor.valueOf(this.selectOfApproversFlg, SelectionFlg.class), 
-//				this.krqmtAppConfigWkpDetails.stream().map(x -> 
+//				this.krqstWpAppConfigDetails.stream().map(x -> 
 //					new ApprovalFunctionSetting(
 //							SettingFlg.toEnum(x.prerequisiteForpauseFlg), 
 //							new InstructionUseSetting(
@@ -82,7 +82,7 @@
 //							SettingFlg.toEnum(x.lateOrLeaveAppSettingFlg), 
 //							new ApplicationUseSetting(
 //									EnumAdaptor.valueOf(x.useAtr, UseDivision.class), 
-//									EnumAdaptor.valueOf(x.krqmtAppConfigWkpDetailPK.appType, ApplicationType.class),
+//									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class),
 //									new AppUseSetRemark(x.memo)), 
 //							Optional.of(new ApplicationDetailSetting(
 //									x.breakInputFieldDisFlg == 1? true : false, 
@@ -96,10 +96,10 @@
 //				.collect(Collectors.toList()));
 //	}
 //	public static KrqmtAppConfigWkp fromDomain(RequestOfEachWorkplace domain) {
-//		return new KrqmtAppConfigWkp(new KrqmtAppConfigWkpPK(domain.getCompanyID(), domain.getWorkPlaceID()),
+//		return new KrqmtAppConfigWkp(new KrqstWpAppConfigPK(domain.getCompanyID(), domain.getWorkPlaceID()),
 //				domain.getSelectionFlg().value, domain.getListApprovalFunctionSetting().stream().map((setting) -> {
-//					KrqmtAppConfigWkpDetail detail = new KrqmtAppConfigWkpDetail();
-//					detail.krqmtAppConfigWkpDetailPK = new KrqmtAppConfigWkpDetailPK(domain.getCompanyID(),
+//					KrqstWpAppConfigDetail detail = new KrqstWpAppConfigDetail();
+//					detail.krqstWpAppConfigDetailPK = new KrqstWpAppConfigDetailPK(domain.getCompanyID(),
 //							domain.getWorkPlaceID(), setting.getAppUseSetting().getAppType().value);
 //					detail.memo = setting.getAppUseSetting().getMemo().v();
 //					detail.useAtr = setting.getAppUseSetting().getUseDivision().value;

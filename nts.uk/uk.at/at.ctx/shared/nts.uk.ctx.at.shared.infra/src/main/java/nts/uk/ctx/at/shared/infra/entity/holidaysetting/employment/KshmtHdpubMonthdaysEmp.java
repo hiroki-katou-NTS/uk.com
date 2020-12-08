@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_HDPUB_MONTHDAYS_EMP")
+@Table(name = "KSHMT_EMP_MONTH_DAY_SET")
 public class KshmtHdpubMonthdaysEmp extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KshmtHdpubMonthdaysEmp extends ContractUkJpaEntity implements Seria
     
     /** The kshmt emp month day set PK. */
     @EmbeddedId
-    protected KshmtHdpubMonthdaysEmpPK kshmtHdpubMonthdaysEmpPK;
+    protected KshmtEmpMonthDaySetPK kshmtEmpMonthDaySetPK;
    
     /** The in legal hd. */
     @Column(name = "IN_LEGAL_HD")
@@ -49,7 +49,7 @@ public class KshmtHdpubMonthdaysEmp extends ContractUkJpaEntity implements Seria
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtHdpubMonthdaysEmpPK != null ? kshmtHdpubMonthdaysEmpPK.hashCode() : 0);
+        hash += (kshmtEmpMonthDaySetPK != null ? kshmtEmpMonthDaySetPK.hashCode() : 0);
         return hash;
     }
 
@@ -62,7 +62,7 @@ public class KshmtHdpubMonthdaysEmp extends ContractUkJpaEntity implements Seria
             return false;
         }
         KshmtHdpubMonthdaysEmp other = (KshmtHdpubMonthdaysEmp) object;
-        if ((this.kshmtHdpubMonthdaysEmpPK == null && other.kshmtHdpubMonthdaysEmpPK != null) || (this.kshmtHdpubMonthdaysEmpPK != null && !this.kshmtHdpubMonthdaysEmpPK.equals(other.kshmtHdpubMonthdaysEmpPK))) {
+        if ((this.kshmtEmpMonthDaySetPK == null && other.kshmtEmpMonthDaySetPK != null) || (this.kshmtEmpMonthDaySetPK != null && !this.kshmtEmpMonthDaySetPK.equals(other.kshmtEmpMonthDaySetPK))) {
             return false;
         }
         return true;
@@ -73,7 +73,7 @@ public class KshmtHdpubMonthdaysEmp extends ContractUkJpaEntity implements Seria
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtHdpubMonthdaysEmpPK;
+		return this.kshmtEmpMonthDaySetPK;
 	}
     
 }

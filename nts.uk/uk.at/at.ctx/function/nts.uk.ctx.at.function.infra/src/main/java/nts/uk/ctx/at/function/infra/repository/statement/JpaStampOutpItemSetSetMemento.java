@@ -10,11 +10,11 @@ import nts.uk.ctx.at.function.dom.statement.StampOutputSettingCode;
 import nts.uk.ctx.at.function.dom.statement.StampOutputSettingName;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetSetMemento;
 import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemPK;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class JpaKfnmtStampOutpItemSetMemento.
+ * The Class JpaKfnmtStampOutpItemSetSetMemento.
  */
 public class JpaStampOutpItemSetSetMemento implements StampingOutputItemSetSetMemento {
 
@@ -36,7 +36,7 @@ public class JpaStampOutpItemSetSetMemento implements StampingOutputItemSetSetMe
 		super();
 		this.entity = entity;
 		if (this.entity.getId() == null) {
-			this.entity.setId(new KfnmtStampOutpItemPK());
+			this.entity.setId(new KfnmtStampOutpItemSetPK());
 		}
 	}
 

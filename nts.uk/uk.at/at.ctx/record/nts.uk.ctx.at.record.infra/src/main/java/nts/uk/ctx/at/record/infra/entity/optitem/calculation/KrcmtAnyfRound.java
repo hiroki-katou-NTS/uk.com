@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_ANYF_ROUND")
+@Table(name = "KRCMT_FORMULA_ROUNDING")
 public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable 
 
 	/** The krcmt formula rounding PK. */
 	@EmbeddedId
-	protected KrcmtAnyfRoundPK krcmtAnyfRoundPK;
+	protected KrcmtFormulaRoundingPK krcmtFormulaRoundingPK;
 
 	/** The krcmt opt item formula. */
 	@ManyToOne
@@ -41,7 +41,7 @@ public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable 
 		@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
 		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
 		})
-	private KrcmtAnyf krcmtAnyf;
+	private KrcmtAnyf krcmtOptItemFormula;
 
 	/** The number rounding. */
 	@Column(name = "NUMBER_ROUNDING")
@@ -80,8 +80,8 @@ public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable 
 	 * @param pk the pk
 	 * @param roundingAtr the rounding atr
 	 */
-	public KrcmtAnyfRound(KrcmtAnyfPK pk , int roundingAtr) {
-		this.krcmtAnyfRoundPK = new KrcmtAnyfRoundPK(pk, roundingAtr);
+	public KrcmtAnyfRound(KrcmtOptItemFormulaPK pk , int roundingAtr) {
+		this.krcmtFormulaRoundingPK = new KrcmtFormulaRoundingPK(pk, roundingAtr);
 	}
 
 	/*
@@ -92,7 +92,7 @@ public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable 
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (krcmtAnyfRoundPK != null ? krcmtAnyfRoundPK.hashCode() : 0);
+		hash += (krcmtFormulaRoundingPK != null ? krcmtFormulaRoundingPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -107,9 +107,9 @@ public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable 
 			return false;
 		}
 		KrcmtAnyfRound other = (KrcmtAnyfRound) object;
-		if ((this.krcmtAnyfRoundPK == null && other.krcmtAnyfRoundPK != null)
-				|| (this.krcmtAnyfRoundPK != null
-						&& !this.krcmtAnyfRoundPK.equals(other.krcmtAnyfRoundPK))) {
+		if ((this.krcmtFormulaRoundingPK == null && other.krcmtFormulaRoundingPK != null)
+				|| (this.krcmtFormulaRoundingPK != null
+						&& !this.krcmtFormulaRoundingPK.equals(other.krcmtFormulaRoundingPK))) {
 			return false;
 		}
 		return true;
@@ -122,7 +122,7 @@ public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.krcmtAnyfRoundPK;
+		return this.krcmtFormulaRoundingPK;
 	}
 
 }

@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichi_ishida
  */
 @Entity
-@Table(name = "KRCMT_CALC_M_PAY_ABSN")
+@Table(name = "KRCST_MON_PAY_ABSN_DAYS")
 @NoArgsConstructor
 public class KrcmtCalcMPayAbsn extends ContractUkJpaEntity implements Serializable {
 
@@ -23,7 +23,7 @@ public class KrcmtCalcMPayAbsn extends ContractUkJpaEntity implements Serializab
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcmtCalcMPayAttnPK PK;
+	public KrcstMonPayAttnDaysPK PK;
 	
 	/**
 	 * キー取得

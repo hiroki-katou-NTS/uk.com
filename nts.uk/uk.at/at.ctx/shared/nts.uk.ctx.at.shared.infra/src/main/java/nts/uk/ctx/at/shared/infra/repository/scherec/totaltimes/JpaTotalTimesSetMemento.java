@@ -19,9 +19,9 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalCondition;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjects;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjectsPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimes;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimesPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
 
 /**
  * The Class JpaTotalTimesSetMemento.
@@ -49,9 +49,9 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		KshmtTotalTimesPK pk = entity.getKshmtTotalTimesPK();
+		KshstTotalTimesPK pk = entity.getKshstTotalTimesPK();
 		pk.setCid(companyId);
-		this.entity.setKshmtTotalTimesPK(pk);
+		this.entity.setKshstTotalTimesPK(pk);
 	}
 
 	/*
@@ -62,9 +62,9 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setTotalCountNo(Integer totalCountNo) {
-		KshmtTotalTimesPK pk = entity.getKshmtTotalTimesPK();
+		KshstTotalTimesPK pk = entity.getKshstTotalTimesPK();
 		pk.setTotalTimesNo(totalCountNo);
-		this.entity.setKshmtTotalTimesPK(pk);
+		this.entity.setKshstTotalTimesPK(pk);
 	}
 
 	/*
@@ -133,11 +133,11 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setTotalCondition(TotalCondition totalCondition) {
-		KshmtTotalCondition kshmtTotalCondition = this.entity.getTotalCondition();
+		KshmtTotalCondition kshstTotalCondition = this.entity.getTotalCondition();
 		totalCondition.saveToMemento(
-				new JpaTotalConditionSetMemento(this.entity.getKshmtTotalTimesPK().getCid(),
-						this.entity.getKshmtTotalTimesPK().getTotalTimesNo(), kshmtTotalCondition));
-		this.entity.setTotalCondition(kshmtTotalCondition);
+				new JpaTotalConditionSetMemento(this.entity.getKshstTotalTimesPK().getCid(),
+						this.entity.getKshstTotalTimesPK().getTotalTimesNo(), kshstTotalCondition));
+		this.entity.setTotalCondition(kshstTotalCondition);
 	}
 
 	/*
@@ -148,8 +148,8 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setSummaryList(SummaryList summaryList) {
-		String companyId = this.entity.getKshmtTotalTimesPK().getCid();
-		int totalTimeNo = this.entity.getKshmtTotalTimesPK().getTotalTimesNo();
+		String companyId = this.entity.getKshstTotalTimesPK().getCid();
+		int totalTimeNo = this.entity.getKshstTotalTimesPK().getTotalTimesNo();
 		
 		List<KshmtTotalSubjects> lstTotalSubjectCommand = new ArrayList<>();
 		
@@ -159,11 +159,11 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 			summaryList.getWorkTimeCodes().stream().forEach(workTimeCode -> {
 				// find entity existed
 				KshmtTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
-					KshmtTotalSubjectsPK pk = entity.getKshmtTotalSubjectsPK();
+					KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
 					return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
 							&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKINGTIME.value
 							&& pk.getWorkTypeCd().equals(workTimeCode);
-				}).findFirst().orElse(new KshmtTotalSubjects(new KshmtTotalSubjectsPK(companyId,
+				}).findFirst().orElse(new KshmtTotalSubjects(new KshstTotalSubjectsPK(companyId,
 						totalTimeNo, WorkTypeAtr.WORKINGTIME.value, workTimeCode)));
 
 				// add list total subjects
@@ -175,11 +175,11 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 			summaryList.getWorkTypeCodes().stream().forEach(workTypeCode -> {
 				// find entity existed
 				KshmtTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
-					KshmtTotalSubjectsPK pk = entity.getKshmtTotalSubjectsPK();
+					KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
 					return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
 							&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKTYPE.value
 							&& pk.getWorkTypeCd().equals(workTypeCode);
-				}).findFirst().orElse(new KshmtTotalSubjects(new KshmtTotalSubjectsPK(companyId,
+				}).findFirst().orElse(new KshmtTotalSubjects(new KshstTotalSubjectsPK(companyId,
 						totalTimeNo, WorkTypeAtr.WORKTYPE.value, workTypeCode)));
 
 				// add list total subjects

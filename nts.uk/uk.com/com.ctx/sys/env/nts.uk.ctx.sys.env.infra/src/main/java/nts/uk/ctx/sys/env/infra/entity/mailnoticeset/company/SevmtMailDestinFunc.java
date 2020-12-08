@@ -12,14 +12,14 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SEVMT_MAIL_DESTIN_FUNC")
+@Table(name = "SEVST_MAIL_DESTIN_FUNC")
 @Getter
 @Setter
 public class SevmtMailDestinFunc extends ContractUkJpaEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected SevmtMailDestinFuncPK sevmtMailDestinFuncPK;
+    protected SevstMailDestinFuncPK sevstMailDestinFuncPK;
     
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
@@ -29,14 +29,14 @@ public class SevmtMailDestinFunc extends ContractUkJpaEntity implements Serializ
 
     public SevmtMailDestinFunc() {
 	}
-	public SevmtMailDestinFunc(SevmtMailDestinFuncPK sevmtMailDestinFuncPK) {
-		this.sevmtMailDestinFuncPK = sevmtMailDestinFuncPK;
+	public SevmtMailDestinFunc(SevstMailDestinFuncPK sevstMailDestinFuncPK) {
+		this.sevstMailDestinFuncPK = sevstMailDestinFuncPK;
 	}
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (sevmtMailDestinFuncPK != null ? sevmtMailDestinFuncPK.hashCode() : 0);
+        hash += (sevstMailDestinFuncPK != null ? sevstMailDestinFuncPK.hashCode() : 0);
         return hash;
     }
 
@@ -46,7 +46,7 @@ public class SevmtMailDestinFunc extends ContractUkJpaEntity implements Serializ
             return false;
         }
         SevmtMailDestinFunc other = (SevmtMailDestinFunc) object;
-        if ((this.sevmtMailDestinFuncPK == null && other.sevmtMailDestinFuncPK != null) || (this.sevmtMailDestinFuncPK != null && !this.sevmtMailDestinFuncPK.equals(other.sevmtMailDestinFuncPK))) {
+        if ((this.sevstMailDestinFuncPK == null && other.sevstMailDestinFuncPK != null) || (this.sevstMailDestinFuncPK != null && !this.sevstMailDestinFuncPK.equals(other.sevstMailDestinFuncPK))) {
             return false;
         }
         return true;
@@ -54,12 +54,12 @@ public class SevmtMailDestinFunc extends ContractUkJpaEntity implements Serializ
 
     @Override
     public String toString() {
-        return "javaapplication1.SevmtMailDestinFunc[ sevmtMailDestinFuncPK=" + sevmtMailDestinFuncPK + " ]";
+        return "javaapplication1.SevmtMailDestinFunc[ sevstMailDestinFuncPK=" + sevstMailDestinFuncPK + " ]";
     }
 
 	@Override
 	protected Object getKey() {
-		return this.sevmtMailDestinFuncPK;
+		return this.sevstMailDestinFuncPK;
 	}
     
 }

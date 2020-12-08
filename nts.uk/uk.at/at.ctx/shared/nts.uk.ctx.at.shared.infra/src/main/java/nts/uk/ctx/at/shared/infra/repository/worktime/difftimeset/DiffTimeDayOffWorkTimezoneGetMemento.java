@@ -24,10 +24,10 @@ public class DiffTimeDayOffWorkTimezoneGetMemento
 	@Override
 	public List<HDWorkTimeSheetSetting> getWorkTimezones() {
 
-		if (this.entity.getLstKshmtWtDifHolTs() == null) {
+		if (this.entity.getLstKshmtDiffTimeHolSet() == null) {
 			return null;
 		}
-		return this.entity.getLstKshmtWtDifHolTs().stream().map(item -> {
+		return this.entity.getLstKshmtDiffTimeHolSet().stream().map(item -> {
 			return new HDWorkTimeSheetSetting(new JpaDayOffTimezoneSettingGetMemento(item));
 		}).collect(Collectors.toList());
 	}

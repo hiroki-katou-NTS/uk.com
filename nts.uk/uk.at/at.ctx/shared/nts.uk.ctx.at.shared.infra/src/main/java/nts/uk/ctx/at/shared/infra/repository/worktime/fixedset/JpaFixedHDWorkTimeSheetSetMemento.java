@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetPK;
 
 /**
  * The Class JpaFixedHDWorkTimeSheetSetMemento.
@@ -30,12 +30,12 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 *            the entity
 	 */
 	public JpaFixedHDWorkTimeSheetSetMemento(String companyId, String workTimeCd, KshmtWtFixHolTs entity) {
-		if (entity.getKshmtWtFixHolTsPK() == null) {
-			entity.setKshmtWtFixHolTsPK(new KshmtWtFixHolTsPK());
+		if (entity.getKshmtFixedHolTimeSetPK() == null) {
+			entity.setKshmtFixedHolTimeSetPK(new KshmtFixedHolTimeSetPK());
 		}
 		this.entity = entity;
-		this.entity.getKshmtWtFixHolTsPK().setCid(companyId);
-		this.entity.getKshmtWtFixHolTsPK().setWorktimeCd(workTimeCd);
+		this.entity.getKshmtFixedHolTimeSetPK().setCid(companyId);
+		this.entity.getKshmtFixedHolTimeSetPK().setWorktimeCd(workTimeCd);
 	}
 
 	/*
@@ -47,7 +47,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 */
 	@Override
 	public void setWorkTimeNo(Integer workTimeNo) {		
-		this.entity.getKshmtWtFixHolTsPK().setWorktimeNo(workTimeNo);
+		this.entity.getKshmtFixedHolTimeSetPK().setWorktimeNo(workTimeNo);
 	}
 
 	/*

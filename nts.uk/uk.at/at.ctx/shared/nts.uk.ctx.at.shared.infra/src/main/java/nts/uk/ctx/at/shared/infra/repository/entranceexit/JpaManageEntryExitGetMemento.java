@@ -12,15 +12,15 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 
 	/** The kshst manage entry exit. */
-	private KshmtGateMng kshmtGateMng;
+	private KshmtGateMng kshstManageEntryExit;
 	
 	/**
 	 * Instantiates a new jpa manage entry exit get memento.
 	 *
-	 * @param kshmtGateMng the kshst manage entry exit
+	 * @param kshstManageEntryExit the kshst manage entry exit
 	 */
-	public JpaManageEntryExitGetMemento(KshmtGateMng kshmtGateMng) {
-		this.kshmtGateMng = kshmtGateMng;
+	public JpaManageEntryExitGetMemento(KshmtGateMng kshstManageEntryExit) {
+		this.kshstManageEntryExit = kshstManageEntryExit;
 	}
 	
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.kshmtGateMng.getCid();
+		return this.kshstManageEntryExit.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 	 */
 	@Override
 	public NotUseAtr getUseCls() {
-		return NotUseAtr.valueOf(this.kshmtGateMng.getUseCls().intValue());
+		return NotUseAtr.valueOf(this.kshstManageEntryExit.getUseCls().intValue());
 	}
 
 }

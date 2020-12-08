@@ -13,10 +13,10 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name ="KRCDT_INTERIM_HD_SP_MNG")
+@Table(name ="KRCMT_INTERIM_SPE_HOLIDAY")
 public class KrcdtInterimHdSpMng extends ContractUkJpaEntity implements Serializable {
 	@EmbeddedId
-	public KrcdtInterimHdSpMngPK pk;
+	public KrcmtInterimSpeHolidayPK pk;
 
 	/** 予定実績区分 */
 	@Column(name ="MNG_ATR")	

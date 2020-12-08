@@ -23,11 +23,11 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
-//import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMComPK_;
-//import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom_;
+//import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK_;
+//import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet_;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtHdpubDPerMWkp;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtHdpubDPerMWkpPK_;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtHdpubDPerMWkp_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySetPK_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet_;
 
 /**
  * The Class JpaWorkplaceMonthDaySettingRepository.
@@ -110,28 +110,28 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		// eq company id
 		if (companyId != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubDPerMWkp_.kshmtHdpubDPerMWkpPK).get(KshmtHdpubDPerMWkpPK_.cid), companyId.v()));
+					.add(criteriaBuilder.equal(root.get(KshmtWkpMonthDaySet_.kshmtWkpMonthDaySetPK).get(KshmtWkpMonthDaySetPK_.cid), companyId.v()));
 		}
 		
 		if (workplaceId != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubDPerMWkp_.kshmtHdpubDPerMWkpPK).get(KshmtHdpubDPerMWkpPK_.wkpId),
+					root.get(KshmtWkpMonthDaySet_.kshmtWkpMonthDaySetPK).get(KshmtWkpMonthDaySetPK_.wkpId),
 					workplaceId));
 		}
 
 		if (year != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtHdpubDPerMWkp_.kshmtHdpubDPerMWkpPK).get(KshmtHdpubDPerMWkpPK_.manageYear),
+					root.get(KshmtWkpMonthDaySet_.kshmtWkpMonthDaySetPK).get(KshmtWkpMonthDaySetPK_.manageYear),
 					year.v()));
 		}
 
 		if (month != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtHdpubDPerMWkp_.kshmtHdpubDPerMWkpPK)
-							.get(KshmtHdpubDPerMWkpPK_.month), month.intValue()));
+					.add(criteriaBuilder.equal(root.get(KshmtWkpMonthDaySet_.kshmtWkpMonthDaySetPK)
+							.get(KshmtWkpMonthDaySetPK_.month), month.intValue()));
 		}
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtHdpubDPerMWkp_.kshmtHdpubDPerMWkpPK).get(KshmtHdpubDPerMWkpPK_.month)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtWkpMonthDaySet_.kshmtWkpMonthDaySetPK).get(KshmtWkpMonthDaySetPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -154,7 +154,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		}
 		
 		return result.stream()
-						.map(obj -> obj.getKshmtHdpubDPerMWkpPK().getWkpId())
+						.map(obj -> obj.getKshmtWkpMonthDaySetPK().getWkpId())
 						.distinct()
 						.collect(toList());
 	}

@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KRQMT_APP_REASON")
+@Table(name = "KRQST_APP_REASON")
 public class KrqmtAppReason  extends ContractUkJpaEntity implements Serializable{
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class KrqmtAppReason  extends ContractUkJpaEntity implements Serializable
 
 	/*主キー*/
 	@EmbeddedId
-	public KrqmtAppReasonPK krqmtAppReasonPK; 
+	public KrqstAppReasonPK krqstAppReasonPK; 
 	
 	@Column(name ="DISPORDER")
 	public int dispOrder;
@@ -37,7 +37,7 @@ public class KrqmtAppReason  extends ContractUkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return krqmtAppReasonPK;
+		return krqstAppReasonPK;
 	}
 
 }

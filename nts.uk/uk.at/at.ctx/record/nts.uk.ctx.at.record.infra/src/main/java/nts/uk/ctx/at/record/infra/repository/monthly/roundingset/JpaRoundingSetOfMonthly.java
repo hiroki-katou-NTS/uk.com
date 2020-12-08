@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonExcOutRound;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRound;
-import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRoundPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonRoundSetPK;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -124,7 +124,7 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 				.executeUpdate();
 		for (val itemRoundSet : itemRoundSets.values()){
 			KrcmtCalcMRound entityItemRound = new KrcmtCalcMRound();
-			entityItemRound.PK = new KrcmtCalcMRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
 			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
 			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
 			this.getEntityManager().persist(entityItemRound);
@@ -153,7 +153,7 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 				.executeUpdate();
 		for (val itemRoundSet : lstItemRounding){
 			KrcmtCalcMRound entityItemRound = new KrcmtCalcMRound();
-			entityItemRound.PK = new KrcmtCalcMRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
 			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
 			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
 			this.getEntityManager().persist(entityItemRound);

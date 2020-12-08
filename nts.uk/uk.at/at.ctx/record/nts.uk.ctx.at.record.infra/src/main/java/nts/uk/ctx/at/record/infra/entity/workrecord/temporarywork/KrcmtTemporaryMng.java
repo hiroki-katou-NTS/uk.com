@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name="KRCMT_TEMPORARY_MNG")
+@Table(name="KRCST_MANAGE_WORK_TEMP")
 public class KrcmtTemporaryMng extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

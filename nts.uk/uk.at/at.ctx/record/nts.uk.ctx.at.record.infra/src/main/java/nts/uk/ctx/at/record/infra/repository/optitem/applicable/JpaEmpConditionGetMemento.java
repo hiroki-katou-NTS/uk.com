@@ -71,7 +71,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	@Override
 	public List<EmploymentCondition> getEmploymentConditions() {
 		return typeValues.stream()
-				.map(item -> new EmploymentCondition(item.getKrcmtAnyfCondEmpPK().getEmpCd(), item.getEmpApplAtr()))
+				.map(item -> new EmploymentCondition(item.getKrcstApplEmpConPK().getEmpCd(), item.getEmpApplAtr()))
 				.collect(Collectors.toList());
 	}
 

@@ -37,10 +37,10 @@ public class JpaFlexHAFlowRestTzGetMemento implements FlowRestTimezoneGetMemento
 	 */
 	@Override
 	public List<FlowRestSetting> getFlowRestSet() {
-		if(CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFlWekTss())){
+		if(CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRestSets())){
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleBrFlWekTss().stream()
+		return this.entity.getKshmtFlexHaRestSets().stream()
 				.map(entity -> new FlowRestSetting(new JpaFlexHAFlowRestGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

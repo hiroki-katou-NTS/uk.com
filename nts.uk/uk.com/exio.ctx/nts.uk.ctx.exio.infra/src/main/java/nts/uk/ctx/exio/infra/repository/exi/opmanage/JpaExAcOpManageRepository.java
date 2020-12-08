@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.opmanage.OiottExAcOpMng;
-import nts.uk.ctx.exio.infra.entity.exi.opmanage.OiottExAcOpMngPk;
+import nts.uk.ctx.exio.infra.entity.exi.opmanage.OiomtExAcOpManagePk;
 import nts.uk.ctx.exio.dom.exi.opmanage.ExAcOpManageRepository;
 import nts.uk.ctx.exio.dom.exi.opmanage.ExAcOpManage;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -55,7 +55,7 @@ public class JpaExAcOpManageRepository extends JpaRepository implements ExAcOpMa
 
     @Override
     public void remove(String cid, String processId){
-        this.commandProxy().remove(OiottExAcOpMng.class, new OiottExAcOpMngPk(cid, processId)); 
+        this.commandProxy().remove(OiottExAcOpMng.class, new OiomtExAcOpManagePk(cid, processId)); 
     }
 
     private static ExAcOpManage toDomain(OiottExAcOpMng entity) {
@@ -63,7 +63,7 @@ public class JpaExAcOpManageRepository extends JpaRepository implements ExAcOpMa
     }
 
     private OiottExAcOpMng toEntity(ExAcOpManage domain) {
-        return new OiottExAcOpMng(domain.getVersion(), new OiottExAcOpMngPk(domain.getCid(), domain.getProcessId()), domain.getErrorCount(), domain.getInterruption(), domain.getProcessCount(), domain.getProcessTotalCount(), domain.getStateBehavior());
+        return new OiottExAcOpMng(domain.getVersion(), new OiomtExAcOpManagePk(domain.getCid(), domain.getProcessId()), domain.getErrorCount(), domain.getInterruption(), domain.getProcessCount(), domain.getProcessTotalCount(), domain.getStateBehavior());
     }
 
 }

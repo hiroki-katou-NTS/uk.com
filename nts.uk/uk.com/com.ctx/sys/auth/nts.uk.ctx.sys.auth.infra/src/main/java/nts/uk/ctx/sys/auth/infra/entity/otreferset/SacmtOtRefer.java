@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name="SACMT_OT_REFER")
+@Table(name="SACMT_OT_REFER_SET")
 public class SacmtOtRefer extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

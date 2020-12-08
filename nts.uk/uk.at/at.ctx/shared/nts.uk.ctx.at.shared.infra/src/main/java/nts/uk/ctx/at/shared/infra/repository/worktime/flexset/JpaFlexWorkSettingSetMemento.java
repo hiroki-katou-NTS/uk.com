@@ -22,17 +22,17 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWekPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFlePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
@@ -57,11 +57,11 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	 */
 	public JpaFlexWorkSettingSetMemento(KshmtWtFle entity, KshmtWtCom entityCommon) {
 		super();
-		if(entity.getKshmtWtFlePK() == null){
-			entity.setKshmtWtFlePK(new KshmtWtFlePK());
+		if(entity.getKshmtFlexWorkSetPK() == null){
+			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
 		}
-		if(entityCommon.getKshmtWtComPK() == null){
-			entityCommon.setKshmtWtComPK(new KshmtWtComPK());
+		if(entityCommon.getKshmtWorktimeCommonSetPK() == null){
+			entityCommon.setKshmtWorktimeCommonSetPK(new KshmtWorktimeCommonSetPK());
 		}
 		this.entity = entity;
 		this.entityCommon = entityCommon;
@@ -75,7 +75,7 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	 */
 	@Override
 	public void setcompanyId(String companyId) {
-		this.entity.getKshmtWtFlePK().setCid(companyId);
+		this.entity.getKshmtFlexWorkSetPK().setCid(companyId);
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtWtFlePK().setWorktimeCd(workTimeCode.v());
+		this.entity.getKshmtFlexWorkSetPK().setWorktimeCd(workTimeCode.v());
 	}
 
 	/*
@@ -113,10 +113,10 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSetting) {
 		if (restSetting != null) {
-			this.entity.setKshmtWtFleBrFl(
-					new KshmtWtFleBrFl(new KshmtWtFleBrFlPK(this.entity.getKshmtWtFlePK().getCid(),
-							this.entity.getKshmtWtFlePK().getWorktimeCd())));
-			restSetting.saveToMemento(new JpaFlexFlowWorkRestSettingSetMemento(this.entity.getKshmtWtFleBrFl()));
+			this.entity.setKshmtFlexRestSet(
+					new KshmtWtFleBrFl(new KshmtFlexRestSetPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
+							this.entity.getKshmtFlexWorkSetPK().getWorktimeCd())));
+			restSetting.saveToMemento(new JpaFlexFlowWorkRestSettingSetMemento(this.entity.getKshmtFlexRestSet()));
 		}
 	}
 
@@ -130,12 +130,12 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	@Override
 	public void setOffdayWorkTime(FlexOffdayWorkTime offdayWorkTime) {
 		if (offdayWorkTime != null) {
-			if (this.entity.getKshmtWtFleBrFlHol() == null) {
-				this.entity.setKshmtWtFleBrFlHol(
-						new KshmtWtFleBrFlHol(new KshmtWtFleBrFlHolPK(this.entity.getKshmtWtFlePK().getCid(),
-								this.entity.getKshmtWtFlePK().getWorktimeCd())));
+			if (this.entity.getKshmtFlexOdRtSet() == null) {
+				this.entity.setKshmtFlexOdRtSet(
+						new KshmtWtFleBrFlHol(new KshmtFlexOdRtSetPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
+								this.entity.getKshmtFlexWorkSetPK().getWorktimeCd())));
 			}
-			offdayWorkTime.saveToMemento(new JpaFlexODWorkTimeSetMemento(this.entity.getKshmtWtFleBrFlHol()));
+			offdayWorkTime.saveToMemento(new JpaFlexODWorkTimeSetMemento(this.entity.getKshmtFlexOdRtSet()));
 		}
 	}
 
@@ -179,22 +179,22 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 		}
 		
 		// check list entity empty
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFlWeks())) {
-			this.entity.setKshmtWtFleBrFlWeks(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRtSets())) {
+			this.entity.setKshmtFlexHaRtSets(new ArrayList<>());
 		}
 		
 		// convert map entity
-		Map<KshmtWtFleBrFlWekPK, KshmtWtFleBrFlWek> mapEntity = this.entity.getKshmtWtFleBrFlWeks().stream()
-				.collect(Collectors.toMap(item -> ((KshmtWtFleBrFlWek) item).getKshmtWtFleBrFlWekPK(), Function.identity()));
+		Map<KshmtFlexHaRtSetPK, KshmtWtFleBrFlWek> mapEntity = this.entity.getKshmtFlexHaRtSets().stream()
+				.collect(Collectors.toMap(item -> ((KshmtWtFleBrFlWek) item).getKshmtFlexHaRtSetPK(), Function.identity()));
 		
-		String companyId = this.entity.getKshmtWtFlePK().getCid();
-		String workTimeCd = this.entity.getKshmtWtFlePK().getWorktimeCd();
+		String companyId = this.entity.getKshmtFlexWorkSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexWorkSetPK().getWorktimeCd();
 		
-		this.entity.setKshmtWtFleBrFlWeks(lstHalfDayWorkTimezone.stream()
+		this.entity.setKshmtFlexHaRtSets(lstHalfDayWorkTimezone.stream()
 			.map(domain -> {
 				
 				// newPK
-				KshmtWtFleBrFlWekPK pk = new KshmtWtFleBrFlWekPK();
+				KshmtFlexHaRtSetPK pk = new KshmtFlexHaRtSetPK();
 				pk.setCid(companyId);
 				pk.setWorktimeCd(workTimeCd);
 				pk.setAmPmAtr(domain.getAmpmAtr().value);
@@ -222,12 +222,12 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	@Override
 	public void setLstStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
 		if (CollectionUtil.isEmpty(stampReflectTimezone)) {
-			this.entity.setKshmtWtFleStmpRefTss(new ArrayList<>());
+			this.entity.setKshmtFlexStampReflects(new ArrayList<>());
 		} else {
-			this.entity.setKshmtWtFleStmpRefTss(stampReflectTimezone.stream().map(domain -> {
+			this.entity.setKshmtFlexStampReflects(stampReflectTimezone.stream().map(domain -> {
 				KshmtWtFleStmpRefTs entity = new KshmtWtFleStmpRefTs(
-						new KshmtWtFleStmpRefTsPK(this.entity.getKshmtWtFlePK().getCid(),
-								this.entity.getKshmtWtFlePK().getWorktimeCd(), domain.getWorkNo().v(), domain.getClassification().value));
+						new KshmtFlexStampReflectPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
+								this.entity.getKshmtFlexWorkSetPK().getWorktimeCd(), domain.getWorkNo().v(), domain.getClassification().value));
 				domain.saveToMemento(new JpaFlexStampReflectTZSetMemento(entity));
 				return entity;
 			}).collect(Collectors.toList()));

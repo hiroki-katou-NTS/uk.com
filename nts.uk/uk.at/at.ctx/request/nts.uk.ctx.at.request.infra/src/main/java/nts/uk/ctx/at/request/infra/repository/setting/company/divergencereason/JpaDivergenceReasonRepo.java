@@ -20,8 +20,8 @@ public class JpaDivergenceReasonRepo extends JpaRepository implements Divergence
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FINDER_ALL);
-		query.append(" WHERE e.krqmtAppDivergenReasonPK.cid = :companyID");
-		query.append(" AND e.krqmtAppDivergenReasonPK.appType = :appType");
+		query.append(" WHERE e.krqstAppDivergenReasonPK.cid = :companyID");
+		query.append(" AND e.krqstAppDivergenReasonPK.appType = :appType");
 		FIND_FOLLOW_COMPANYID_AND_APPTYPE = query.toString();
 	}
 	@Override
@@ -43,9 +43,9 @@ public class JpaDivergenceReasonRepo extends JpaRepository implements Divergence
 		return null;
 	}
 	private DivergenceReason convertToDomain(KrqmtAppDivergenReason entity){
-		return DivergenceReason.createSimpleFromJavaType(entity.getKrqmtAppDivergenReasonPK().getCid(), 
-				entity.getKrqmtAppDivergenReasonPK().getAppType(),
-				entity.getKrqmtAppDivergenReasonPK().getReasonId(),
+		return DivergenceReason.createSimpleFromJavaType(entity.getKrqstAppDivergenReasonPK().getCid(), 
+				entity.getKrqstAppDivergenReasonPK().getAppType(),
+				entity.getKrqstAppDivergenReasonPK().getReasonId(),
 				entity.getDisporder(),
 				entity.getReasonTemp(),
 				entity.getDefaultFlg());

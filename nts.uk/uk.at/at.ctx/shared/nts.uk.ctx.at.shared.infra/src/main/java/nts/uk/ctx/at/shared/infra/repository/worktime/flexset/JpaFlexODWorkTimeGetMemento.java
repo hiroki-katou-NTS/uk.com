@@ -43,10 +43,10 @@ public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleHolTss())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHolSets())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleHolTss().stream()
+		return this.entity.getKshmtFlexHolSets().stream()
 				.map(entity -> new HDWorkTimeSheetSetting(new JpaFlexODHDWTSheetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

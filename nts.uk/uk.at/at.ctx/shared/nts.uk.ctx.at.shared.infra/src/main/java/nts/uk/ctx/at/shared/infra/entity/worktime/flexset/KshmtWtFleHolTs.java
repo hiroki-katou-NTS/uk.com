@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_HOL_TS")
+@Table(name = "KSHMT_FLEX_HOL_SET")
 public class KshmtWtFleHolTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KshmtWtFleHolTs extends ContractUkJpaEntity implements Serializable
 
 	/** The kshmt flex hol set PK. */
 	@EmbeddedId
-	protected KshmtWtFleHolTsPK kshmtWtFleHolTsPK;
+	protected KshmtFlexHolSetPK kshmtFlexHolSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -86,11 +86,11 @@ public class KshmtWtFleHolTs extends ContractUkJpaEntity implements Serializable
 	/**
 	 * Instantiates a new kshmt flex hol set.
 	 *
-	 * @param kshmtWtFleHolTsPK the kshmt flex hol set PK
+	 * @param kshmtFlexHolSetPK the kshmt flex hol set PK
 	 */
-	public KshmtWtFleHolTs(KshmtWtFleHolTsPK kshmtWtFleHolTsPK) {
+	public KshmtWtFleHolTs(KshmtFlexHolSetPK kshmtFlexHolSetPK) {
 		super();
-		this.kshmtWtFleHolTsPK = kshmtWtFleHolTsPK;
+		this.kshmtFlexHolSetPK = kshmtFlexHolSetPK;
 	}
 	
 
@@ -102,7 +102,7 @@ public class KshmtWtFleHolTs extends ContractUkJpaEntity implements Serializable
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleHolTsPK != null ? kshmtWtFleHolTsPK.hashCode() : 0);
+		hash += (kshmtFlexHolSetPK != null ? kshmtFlexHolSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -117,9 +117,9 @@ public class KshmtWtFleHolTs extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtWtFleHolTs other = (KshmtWtFleHolTs) object;
-		if ((this.kshmtWtFleHolTsPK == null && other.kshmtWtFleHolTsPK != null)
-				|| (this.kshmtWtFleHolTsPK != null
-						&& !this.kshmtWtFleHolTsPK.equals(other.kshmtWtFleHolTsPK))) {
+		if ((this.kshmtFlexHolSetPK == null && other.kshmtFlexHolSetPK != null)
+				|| (this.kshmtFlexHolSetPK != null
+						&& !this.kshmtFlexHolSetPK.equals(other.kshmtFlexHolSetPK))) {
 			return false;
 		}
 		return true;
@@ -130,7 +130,7 @@ public class KshmtWtFleHolTs extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleHolTsPK;
+		return this.kshmtFlexHolSetPK;
 	}
 	
 

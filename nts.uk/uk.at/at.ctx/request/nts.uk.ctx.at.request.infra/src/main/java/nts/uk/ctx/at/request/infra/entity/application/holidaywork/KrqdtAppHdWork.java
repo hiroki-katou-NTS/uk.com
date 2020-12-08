@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 休日出勤申請
  */
 @Entity
-@Table(name = "KRQDT_APP_HD_WORK")
+@Table(name = "KRQDT_APP_HOLIDAY_WORK")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,7 +37,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected KrqdtAppHdWorkPK krqdtAppHdWorkPK;
+    protected KrqdtAppHolidayWorkPK krqdtAppHolidayWorkPK;
     
     /**
      * 排他バージョン
@@ -119,7 +119,7 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable 
     private Integer holidayShiftNight;
     
     @OneToMany(targetEntity=KrqdtAppHdWorkTime.class, mappedBy="appHolidayWork", cascade = CascadeType.ALL)
-    @JoinTable(name = "KRQDT_APP_HD_WORK_TIME")
+    @JoinTable(name = "KRQDT_HOLIDAY_WORK_INPUT")
 	public List<KrqdtAppHdWorkTime> holidayWorkInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL)
@@ -128,7 +128,7 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable 
 
 	@Override
 	protected Object getKey() {
-		return krqdtAppHdWorkPK;
+		return krqdtAppHolidayWorkPK;
 	}
 
 	public KrqdtAppHdWork fromDomainValue(AppHolidayWork appHolidayWork){
@@ -148,15 +148,15 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable 
 		for(int i = 0; i< appHolidayWork.getHolidayWorkInputs().size(); i++){
 			HolidayWorkInput holidayWorkInputInput = appHolidayWork.getHolidayWorkInputs().get(i);
 			this.getHolidayWorkInputs().stream().filter(
-					x -> x.krqdtAppHdWorkTimePK.getAttendanceType()== holidayWorkInputInput.getAttendanceType().value 
-					&& x.krqdtAppHdWorkTimePK.getFrameNo()==holidayWorkInputInput.getFrameNo())
+					x -> x.krqdtHolidayWorkInputPK.getAttendanceType()== holidayWorkInputInput.getAttendanceType().value 
+					&& x.krqdtHolidayWorkInputPK.getFrameNo()==holidayWorkInputInput.getFrameNo())
 			.findAny()
 			.map(x -> {
 				x.fromDomainValue(holidayWorkInputInput);
 				return Optional.ofNullable(null);
 			}).orElseGet(()->{
-				KrqdtAppHdWorkTime krqdtAppOvertimeInput = new KrqdtAppHdWorkTime(
-						new KrqdtAppHdWorkTimePK(
+				KrqdtAppHdWorkTime krqdtOvertimeInput = new KrqdtAppHdWorkTime(
+						new KrqdtHolidayWorkInputPK(
 								appHolidayWork.getCompanyID(),
 								appHolidayWork.getAppID(),
 								holidayWorkInputInput.getAttendanceType().value,
@@ -165,7 +165,7 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable 
 						holidayWorkInputInput.getStartTime() == null ? null : holidayWorkInputInput.getStartTime().v(), 
 						holidayWorkInputInput.getEndTime() == null ? null : holidayWorkInputInput.getEndTime().v(), 
 						holidayWorkInputInput.getApplicationTime().v());
-				this.holidayWorkInputs.add(krqdtAppOvertimeInput);
+				this.holidayWorkInputs.add(krqdtOvertimeInput);
 				return null;
 			});
 		}
@@ -175,8 +175,8 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable 
 	
 	public AppHolidayWork toDomain(){
 		AppHolidayWork appHolidayWork = new AppHolidayWork(
-				this.krqdtAppHdWorkPK.getCid(), 
-				this.krqdtAppHdWorkPK.getAppId(), 
+				this.krqdtAppHolidayWorkPK.getCid(), 
+				this.krqdtAppHolidayWorkPK.getAppId(), 
 				this.getWorkTypeCode(), 
 				this.getWorkTimeCode(), 
 				this.getWorkClockStart1(), 

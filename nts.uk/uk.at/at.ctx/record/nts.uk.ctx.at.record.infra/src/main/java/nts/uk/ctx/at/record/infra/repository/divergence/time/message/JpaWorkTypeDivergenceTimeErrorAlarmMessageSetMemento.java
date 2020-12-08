@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBus;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBusPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
@@ -44,7 +44,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 	 */
 	@Override
 	public void setCId(CompanyId cId) {
-		KrcmtDvgcEralMsgBusPK pk = new KrcmtDvgcEralMsgBusPK();
+		KrcstDvgcwtTimeEaMsgPK pk = new KrcstDvgcwtTimeEaMsgPK();
 		pk.setCid(cId.v());
 
 		this.entity.setId(pk);

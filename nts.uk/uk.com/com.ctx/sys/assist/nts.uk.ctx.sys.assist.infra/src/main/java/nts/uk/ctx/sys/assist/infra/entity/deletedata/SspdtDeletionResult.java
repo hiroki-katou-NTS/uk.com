@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_DELETION_RESULT")
+@Table(name = "SSPDT_RESULT_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SspdtDeletionResult extends ContractUkJpaEntity implements Serializable {
@@ -29,7 +29,7 @@ public class SspdtDeletionResult extends ContractUkJpaEntity implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-    public SspdtDeletionResultPK sspdtDeletionResultPK;
+    public SspdtResultDeletionPK sspdtResultDeletionPK;
 	
 	/** The company Id. */
 	/** 会社ID */
@@ -141,14 +141,14 @@ public class SspdtDeletionResult extends ContractUkJpaEntity implements Serializ
 	
 	@Override
 	protected Object getKey() {
-		return sspdtDeletionResultPK;
+		return sspdtResultDeletionPK;
 	}
 
 	public ResultDeletion toDomain() {
 		boolean isDeletedFilesFlg = this.isDeletedFilesFlg == 1;
 		return ResultDeletion.createFromJavatype
 				(
-				this.sspdtDeletionResultPK.delId, 
+				this.sspdtResultDeletionPK.delId, 
 				this.companyID, 
 				this.delName, 
 				this.delType, 
@@ -171,7 +171,7 @@ public class SspdtDeletionResult extends ContractUkJpaEntity implements Serializ
 		int isDeletedFilesFlg = result.isDeletedFilesFlg() ? 1 : 0;
 		return new SspdtDeletionResult
 			(
-			new SspdtDeletionResultPK(result.getDelId()),
+			new SspdtResultDeletionPK(result.getDelId()),
 			result.getCompanyId(), 
 			result.getDelName().v(), 
 			result.getDelType().value,

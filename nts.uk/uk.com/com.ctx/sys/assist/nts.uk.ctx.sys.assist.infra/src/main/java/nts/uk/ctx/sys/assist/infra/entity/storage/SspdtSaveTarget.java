@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPDT_SAVE_TARGET")
+@Table(name = "SSPMT_TARGET_EMPLOYEES")
 public class SspdtSaveTarget extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class SspdtSaveTarget extends ContractUkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public SspdtSaveTargetPk targetEmployeesPk;
+    public SspmtTargetEmployeesPk targetEmployeesPk;
     
     /**
     * ビジネスネーム
@@ -57,7 +57,7 @@ public class SspdtSaveTarget extends ContractUkJpaEntity implements Serializable
     }
     
     public static SspdtSaveTarget toEntity(TargetEmployees domain) {
-        return new SspdtSaveTarget(new SspdtSaveTargetPk(domain.getStoreProcessingId(), domain.getSid()), domain.getBusinessname().v(), domain.getScd().v());
+        return new SspdtSaveTarget(new SspmtTargetEmployeesPk(domain.getStoreProcessingId(), domain.getSid()), domain.getBusinessname().v(), domain.getScd().v());
     }
 
 }

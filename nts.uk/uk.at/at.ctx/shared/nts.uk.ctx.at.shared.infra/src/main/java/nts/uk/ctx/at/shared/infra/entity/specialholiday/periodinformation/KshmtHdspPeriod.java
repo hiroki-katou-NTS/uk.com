@@ -20,12 +20,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSP_PERIOD")
+@Table(name = "KSHST_GRANT_PERIODIC")
 public class KshmtHdspPeriod extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KshmtHdspPeriodPK pk;
+	public KshstGrantPeriodicPK pk;
 
 	/* 期限指定方法 */
 	@Column(name = "TIME_CSL_METHOD")
@@ -64,7 +64,7 @@ public class KshmtHdspPeriod extends ContractUkJpaEntity implements Serializable
 	 */
 	public static KshmtHdspPeriod toEntity(GrantPeriodic domain) {
 		return new KshmtHdspPeriod(
-				new KshmtHdspPeriodPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
+				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
 				domain.getTimeSpecifyMethod().value, 
 				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDateValue() : null,
 				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDateValue() : null,
@@ -73,7 +73,7 @@ public class KshmtHdspPeriod extends ContractUkJpaEntity implements Serializable
 				domain.getLimitCarryoverDays().v());
 	}
 
-	public KshmtHdspPeriod(KshmtHdspPeriodPK pk, int timeMethod, Integer startDate,
+	public KshmtHdspPeriod(KshstGrantPeriodicPK pk, int timeMethod, Integer startDate,
 			Integer endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
 		
 		this.pk = pk;

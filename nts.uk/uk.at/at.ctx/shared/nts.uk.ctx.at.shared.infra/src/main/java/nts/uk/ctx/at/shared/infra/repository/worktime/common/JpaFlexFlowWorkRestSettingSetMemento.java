@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.JpaFlexFlowWorkRestSettingDetailSetMemento;
 
 /**
@@ -26,8 +26,8 @@ public class JpaFlexFlowWorkRestSettingSetMemento implements FlowWorkRestSetting
 	 */
 	public JpaFlexFlowWorkRestSettingSetMemento(KshmtWtFleBrFl entity) {
 		super();
-		if(entity.getKshmtWtFleBrFlPK() == null){
-			entity.setKshmtWtFleBrFlPK(new KshmtWtFleBrFlPK());
+		if(entity.getKshmtFlexRestSetPK() == null){
+			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
 		}
 		this.entity = entity;
 	}

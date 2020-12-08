@@ -23,13 +23,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQDT_APP_OVERTIME_INPUT")
+@Table(name = "KRQDT_OVERTIME_INPUT")
 public class KrqdtAppOvertimeInput extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    protected KrqdtAppOvertimeInputPK krqdtAppOvertimeInputPK;
+    protected KrqdtOvertimeInputPK krqdtOvertimeInputPK;
 	
 	@Version
 	@Column(name="EXCLUS_VER")
@@ -51,15 +51,15 @@ public class KrqdtAppOvertimeInput extends ContractUkJpaEntity implements Serial
     })
 	public KrqdtAppOvertime appOvertime;
     
-    public KrqdtAppOvertimeInput(KrqdtAppOvertimeInputPK pk , Integer startTime, Integer endTime, Integer appTime){
-    	this.krqdtAppOvertimeInputPK = pk;
+    public KrqdtAppOvertimeInput(KrqdtOvertimeInputPK pk , Integer startTime, Integer endTime, Integer appTime){
+    	this.krqdtOvertimeInputPK = pk;
     	this.startTime = startTime;
     	this.endTime = endTime;
     	this.applicationTime = appTime;
     }
 	@Override
 	protected Object getKey() {
-		return krqdtAppOvertimeInputPK;
+		return krqdtOvertimeInputPK;
 	}
 	
 	public KrqdtAppOvertimeInput fromDomainValue(OverTimeInput overTimeInput){
@@ -71,14 +71,14 @@ public class KrqdtAppOvertimeInput extends ContractUkJpaEntity implements Serial
 	
 	public OverTimeInput toDomain(){
 		return OverTimeInput.createSimpleFromJavaType(
-				this.krqdtAppOvertimeInputPK.getCid(), 
-				this.krqdtAppOvertimeInputPK.getAppId(), 
-				this.krqdtAppOvertimeInputPK.getAttendanceId(), 
-				this.krqdtAppOvertimeInputPK.getFrameNo(), 
+				this.krqdtOvertimeInputPK.getCid(), 
+				this.krqdtOvertimeInputPK.getAppId(), 
+				this.krqdtOvertimeInputPK.getAttendanceId(), 
+				this.krqdtOvertimeInputPK.getFrameNo(), 
 				this.startTime, 
 				this.endTime, 
 				this.applicationTime, 
-				this.krqdtAppOvertimeInputPK.getTimeItemTypeAtr());
+				this.krqdtOvertimeInputPK.getTimeItemTypeAtr());
 	} 
 
 }

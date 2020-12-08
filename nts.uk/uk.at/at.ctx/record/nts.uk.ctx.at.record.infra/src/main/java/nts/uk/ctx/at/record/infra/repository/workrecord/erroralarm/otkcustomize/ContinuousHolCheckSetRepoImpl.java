@@ -116,8 +116,8 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			if(!entity.krcctOtkWtNonTarget.isEmpty()){
 				this.commandProxy().removeAll(entity.krcctOtkWtNonTarget);
 			}
-			if(!entity.krcmtOtkHdCkWktpTgt.isEmpty()){
-				this.commandProxy().removeAll(entity.krcmtOtkHdCkWktpTgt);
+			if(!entity.krcctOtkWtTarget.isEmpty()){
+				this.commandProxy().removeAll(entity.krcctOtkWtTarget);
 			}
 			this.getEntityManager().flush();
 			entity.continuousDays = setting.getMaxContinuousDays().v();
@@ -136,8 +136,8 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			if(!entity.krcctOtkWtNonTarget.isEmpty()){
 				this.commandProxy().removeAll(entity.krcctOtkWtNonTarget);
 			}
-			if(!entity.krcmtOtkHdCkWktpTgt.isEmpty()){
-				this.commandProxy().removeAll(entity.krcmtOtkHdCkWktpTgt);
+			if(!entity.krcctOtkWtTarget.isEmpty()){
+				this.commandProxy().removeAll(entity.krcctOtkWtTarget);
 			}
 			this.commandProxy().remove(entity);
 		}

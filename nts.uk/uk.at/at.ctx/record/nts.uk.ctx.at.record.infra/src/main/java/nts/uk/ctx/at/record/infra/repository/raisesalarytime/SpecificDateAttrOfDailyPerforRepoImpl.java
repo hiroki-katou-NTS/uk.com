@@ -28,7 +28,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDayInfoSpecific;
-import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDayInfoSpecificPK;
+import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayClaPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
@@ -52,7 +52,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		List<KrcdtDayInfoSpecific> entities = findEntities(domain.getEmployeeId(), domain.getYmd()).getList();
 		domain.getSpecificDay().getSpecificDateAttrSheets().stream().forEach(c -> {
 			KrcdtDayInfoSpecific current = entities.stream()
-					.filter(x -> x.krcdtDayInfoSpecificPK.speDayItemNo == c.getSpecificDateItemNo().v()).findFirst()
+					.filter(x -> x.krcdtDaiSpeDayClaPK.speDayItemNo == c.getSpecificDateItemNo().v()).findFirst()
 					.orElse(null);
 			if (current != null) {
 				current.tobeSpeDay = c.getSpecificDateAttr().value;
@@ -71,16 +71,16 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	}
 
 	private KrcdtDayInfoSpecific newEntities(String employeeId, GeneralDate ymd, SpecificDateAttrSheet c) {
-		return new KrcdtDayInfoSpecific(new KrcdtDayInfoSpecificPK(employeeId, ymd, c.getSpecificDateItemNo().v()),
+		return new KrcdtDayInfoSpecific(new KrcdtDaiSpeDayClaPK(employeeId, ymd, c.getSpecificDateItemNo().v()),
 				c.getSpecificDateAttr().value);
 	}
 
 	private TypedQueryWrapper<KrcdtDayInfoSpecific> findEntities(String employeeId, GeneralDate ymd) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT s FROM KrcdtDayInfoSpecific s");
-		query.append(" WHERE s.krcdtDayInfoSpecificPK.sid = :employeeId");
-		query.append(" AND s.krcdtDayInfoSpecificPK.ymd = :ymd");
-		query.append(" ORDER BY s.krcdtDayInfoSpecificPK.speDayItemNo");
+		query.append(" WHERE s.krcdtDaiSpeDayClaPK.sid = :employeeId");
+		query.append(" AND s.krcdtDaiSpeDayClaPK.ymd = :ymd");
+		query.append(" ORDER BY s.krcdtDaiSpeDayClaPK.speDayItemNo");
 		return queryProxy().query(query.toString(), KrcdtDayInfoSpecific.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd);
 	}
@@ -90,17 +90,17 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	public List<SpecificDateAttrOfDailyPerfor> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDayInfoSpecific a ");
-		query.append("WHERE a.krcdtDayInfoSpecificPK.sid = :employeeId ");
-		query.append("AND a.krcdtDayInfoSpecificPK.ymd >= :start ");
-		query.append("AND a.krcdtDayInfoSpecificPK.ymd <= :end ");
-		query.append("ORDER BY a.krcdtDayInfoSpecificPK.ymd ");
+		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid = :employeeId ");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd >= :start ");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end ");
+		query.append("ORDER BY a.krcdtDaiSpeDayClaPK.ymd ");
 		return queryProxy().query(query.toString(), KrcdtDayInfoSpecific.class).setParameter("employeeId", employeeId)
 				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDayInfoSpecificPK.sid + c.krcdtDayInfoSpecificPK.ymd.toString()))
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
 				.entrySet().stream()
-				.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDayInfoSpecificPK.sid,
+				.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
 						c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
-						c.getValue().get(0).krcdtDayInfoSpecificPK.ymd))
+						c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
 				.collect(Collectors.toList());
 	}
 
@@ -210,7 +210,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
     }
 
 	private SpecificDateAttrSheet specificDateAttr(KrcdtDayInfoSpecific c) {
-		return new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDayInfoSpecificPK.speDayItemNo),
+		return new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDaiSpeDayClaPK.speDayItemNo),
 				EnumAdaptor.valueOf(c.tobeSpeDay, SpecificDateAttr.class));
 	}
 

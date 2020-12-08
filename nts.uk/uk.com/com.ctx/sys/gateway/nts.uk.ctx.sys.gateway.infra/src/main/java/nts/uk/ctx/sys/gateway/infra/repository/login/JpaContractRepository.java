@@ -19,7 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtContract;
-import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtContract_;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwdtContract_;
 
 /**
  * The Class JpaContractRepository.
@@ -41,7 +41,7 @@ public class JpaContractRepository extends JpaRepository implements ContractRepo
 
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(root.get(SgwmtContract_.contractCd), contractCode));
+		predicateList.add(builder.equal(root.get(SgwdtContract_.contractCd), contractCode));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 

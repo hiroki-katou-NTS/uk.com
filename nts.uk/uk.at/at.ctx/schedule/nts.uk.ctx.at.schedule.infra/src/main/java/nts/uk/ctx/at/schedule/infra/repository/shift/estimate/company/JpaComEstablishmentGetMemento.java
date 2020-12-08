@@ -54,7 +54,7 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(
-				this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComPK().getCid());
+				this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK().getCid());
 	}
 
 	/*
@@ -65,7 +65,7 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	 */
 	@Override
 	public Year getTargetYear() {
-		return new Year(this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComPK()
+		return new Year(this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK()
 				.getTargetYear());
 	}
 

@@ -55,7 +55,7 @@ public class JpaEmpEstDetailSetSetMemento implements EstimateDetailSettingSetMem
 
 		estimateTime.forEach(estimateSetting -> {
 			this.estimateTimeEmployments.forEach(entity -> {
-				if (entity.getKscmtEstTimeEmpPK()
+				if (entity.getKscmtEstTimeEmpSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
 							.saveToMemento(new JpaEmpEstTimeSetSetMemento(entity));
@@ -75,7 +75,7 @@ public class JpaEmpEstDetailSetSetMemento implements EstimateDetailSettingSetMem
 	public void setEstimatePrice(List<EstimatedPriceSetting> estimatePrice) {
 		estimatePrice.forEach(estimateSetting -> {
 			this.estimatePriceEmployments.forEach(entity -> {
-				if (entity.getKscmtEstPriceEmpPK()
+				if (entity.getKscmtEstPriceEmpSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting.saveToMemento(new JpaEmpEstPriceSetMemento(entity));
 				}
@@ -94,7 +94,7 @@ public class JpaEmpEstDetailSetSetMemento implements EstimateDetailSettingSetMem
 	public void setEstimateNumberOfDay(List<EstimateNumberOfDay> estimateNumberOfDay) {
 		estimateNumberOfDay.forEach(estimateSetting -> {
 			this.estimateDaysEmployments.forEach(entity -> {
-				if (entity.getKscmtEstDaysEmpPK()
+				if (entity.getKscmtEstDaysEmpSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
 							.saveToMemento(new JpaEmpEstDaysSetMemento(entity));

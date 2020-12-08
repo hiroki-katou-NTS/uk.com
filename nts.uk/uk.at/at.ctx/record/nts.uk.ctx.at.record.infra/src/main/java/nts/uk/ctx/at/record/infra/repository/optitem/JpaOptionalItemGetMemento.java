@@ -27,7 +27,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	private KrcmtAnyv typeValue;
 	
 	/** The krcst calc result range. */
-	private KrcmtAnyfResultRange krcmtAnyfResultRange;
+	private KrcmtAnyfResultRange krcstCalcResultRange;
 
 	/**
 	 * Instantiates a new jpa optional item get memento.
@@ -35,18 +35,18 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtAnyfResultRange... krcmtAnyfResultRangeView) {
+	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtAnyfResultRange... krcstCalcResultRangeView) {
 		
-		if(krcmtAnyfResultRangeView.length > 0) {
-			this.krcmtAnyfResultRange = krcmtAnyfResultRangeView[0];
+		if(krcstCalcResultRangeView.length > 0) {
+			this.krcstCalcResultRange = krcstCalcResultRangeView[0];
 		}
 		
 		this.typeValue = typeValue;
 	}
 	
-	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtAnyfResultRange krcmtAnyfResultRange) {
+	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtAnyfResultRange krcstCalcResultRange) {
 		this.typeValue = typeValue;
-		this.krcmtAnyfResultRange = krcmtAnyfResultRange;
+		this.krcstCalcResultRange = krcstCalcResultRange;
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getKrcmtAnyvPK().getCid());
+		return new CompanyId(this.typeValue.getKrcstOptionalItemPK().getCid());
 	}
 
 	/*
@@ -69,7 +69,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 */
 	@Override
 	public OptionalItemNo getOptionalItemNo() {
-		return new OptionalItemNo(this.typeValue.getKrcmtAnyvPK().getOptionalItemNo());
+		return new OptionalItemNo(this.typeValue.getKrcstOptionalItemPK().getOptionalItemNo());
 	}
 
 	/*
@@ -137,9 +137,9 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	@Override
 	public CalcResultRange getCalculationResultRange() {
 		return new CalcResultRange(new JpaCalcResultRangeGetMemento(
-				this.krcmtAnyfResultRange != null
-						? this.krcmtAnyfResultRange
-						: this.typeValue.getKrcmtAnyfResultRange()));
+				this.krcstCalcResultRange != null
+						? this.krcstCalcResultRange
+						: this.typeValue.getKrcstCalcResultRange()));
 	}
 
 	/* (non-Javadoc)

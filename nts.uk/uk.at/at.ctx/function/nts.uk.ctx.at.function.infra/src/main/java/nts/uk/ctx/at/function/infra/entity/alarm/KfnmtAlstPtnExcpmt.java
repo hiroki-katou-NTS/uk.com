@@ -22,13 +22,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_PTN_EXCPMT")
+@Table(name = "KFNMT_ALARM_PER_SET")
 public class KfnmtAlstPtnExcpmt extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KfnmtAlstPtnExcpmtPK pk;
+	public KfnmtAlarmPerSetPK pk;
 	
 	@Column(name = "AUTH_SET")
 	public int authSetting;
@@ -41,7 +41,7 @@ public class KfnmtAlstPtnExcpmt extends ContractUkJpaEntity implements Serializa
 	public KfnmtAlstPtn alarmPatternSet;
 	
 	@OneToMany(mappedBy="alarmPerSet", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_PTN_EXCPMTITM")
+	@JoinTable(name = "KFNMT_ALARM_PER_SET_ITEM")
 	public List<KfnmtAlstPtnExcpmtitm> alarmPerSetItems;
 	
 	@Override
@@ -49,7 +49,7 @@ public class KfnmtAlstPtnExcpmt extends ContractUkJpaEntity implements Serializa
 		return this.pk;
 	}
 
-	public KfnmtAlstPtnExcpmt(KfnmtAlstPtnExcpmtPK pk, int authSetting, List<KfnmtAlstPtnExcpmtitm> alarmPerSetItems) {
+	public KfnmtAlstPtnExcpmt(KfnmtAlarmPerSetPK pk, int authSetting, List<KfnmtAlstPtnExcpmtitm> alarmPerSetItems) {
 		super();
 		this.pk = pk;
 		this.authSetting = authSetting;
@@ -64,10 +64,10 @@ public class KfnmtAlstPtnExcpmt extends ContractUkJpaEntity implements Serializa
 	public static KfnmtAlstPtnExcpmt toEntity(AlarmPermissionSetting domain, String companyId, String alarmPatternCode) {
 		List<KfnmtAlstPtnExcpmtitm> alarmPerSetItems = domain.getRoleIds().stream()
 				.map(r -> new KfnmtAlstPtnExcpmtitm(
-						new KfnmtAlstPtnExcpmtitmPK(companyId, alarmPatternCode, r)))
+						new KfnmtAlarmPerSetItemPK(companyId, alarmPatternCode, r)))
 				.collect(Collectors.toList());
 		
-		return new KfnmtAlstPtnExcpmt(new KfnmtAlstPtnExcpmtPK(companyId, alarmPatternCode),
+		return new KfnmtAlstPtnExcpmt(new KfnmtAlarmPerSetPK(companyId, alarmPatternCode),
 				domain.isAuthSetting() ? 1 : 0, alarmPerSetItems);
 	}
 

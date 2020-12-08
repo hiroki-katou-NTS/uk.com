@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KRCMT_CALC_D_DEF")
-@NamedQuery(name="KrcmtCalcDDef.findAll", query="SELECT k FROM KrcmtCalcDDef k")
+@Table(name="KSHST_DEF_LABOR_OT_CALC")
+@NamedQuery(name="KshstDefLaborOtCalc.findAll", query="SELECT k FROM KrcmtCalcDDef k")
 public class KrcmtCalcDDef extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

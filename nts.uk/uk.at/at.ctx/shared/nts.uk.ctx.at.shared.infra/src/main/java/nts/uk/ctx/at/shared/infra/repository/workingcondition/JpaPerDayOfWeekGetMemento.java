@@ -34,7 +34,7 @@ public class JpaPerDayOfWeekGetMemento implements PersonalDayOfWeekGetMemento {
 		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
 					entity -> DayOfWeekAtr
-							.valueOf(entity.getKshmtWorkcondWeekPK().getPerWorkDayOffAtr()),
+							.valueOf(entity.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()),
 					entity -> new SingleDaySchedule(new JpaSDayScheDayOfGetMemento(entity))));
 		}
 	}

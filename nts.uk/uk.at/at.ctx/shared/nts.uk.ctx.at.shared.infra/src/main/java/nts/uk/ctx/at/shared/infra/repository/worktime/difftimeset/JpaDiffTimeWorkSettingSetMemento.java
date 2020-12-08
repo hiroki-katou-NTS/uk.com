@@ -23,9 +23,9 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
@@ -45,8 +45,8 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 	 */
 	public JpaDiffTimeWorkSettingSetMemento(KshmtWtDif entity) {
 		// case add new
-		if (entity.getKshmtWtDifPK() == null) {
-			entity.setKshmtWtDifPK(new KshmtWtDifPK());
+		if (entity.getKshmtDiffTimeWorkSetPK() == null) {
+			entity.setKshmtDiffTimeWorkSetPK(new KshmtDiffTimeWorkSetPK());
 		}
 		this.entity = entity;
 	}
@@ -59,7 +59,7 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getKshmtWtDifPK().setCid(companyId);
+		this.entity.getKshmtDiffTimeWorkSetPK().setCid(companyId);
 	}
 
 	/*
@@ -71,7 +71,7 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode employmentTimezoneCode) {
-		this.entity.getKshmtWtDifPK().setWorktimeCd(employmentTimezoneCode.v());
+		this.entity.getKshmtDiffTimeWorkSetPK().setWorktimeCd(employmentTimezoneCode.v());
 	}
 
 	/*
@@ -108,22 +108,22 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 	 */
 	@Override
 	public void setCommonSet(WorkTimezoneCommonSet commonSet) {
-		KshmtWtCom commonEntity = this.entity.getKshmtWtCom();
+		KshmtWtCom commonEntity = this.entity.getKshmtWorktimeCommonSet();
 		if (commonEntity == null) {
 			commonEntity = new KshmtWtCom();
 
 			// new pk
-			KshmtWtComPK pk = new KshmtWtComPK();
-			pk.setCid(this.entity.getKshmtWtDifPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtWtDifPK().getWorktimeCd());
+			KshmtWorktimeCommonSetPK pk = new KshmtWorktimeCommonSetPK();
+			pk.setCid(this.entity.getKshmtDiffTimeWorkSetPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd());
 			pk.setWorkFormAtr(WorkTimeDailyAtr.REGULAR_WORK.value);
 			pk.setWorktimeSetMethod(WorkTimeMethodSet.DIFFTIME_WORK.value);
 
 			// set pk
-			commonEntity.setKshmtWtComPK(pk);
+			commonEntity.setKshmtWorktimeCommonSetPK(pk);
 
 			// add entity when empty list common.
-			this.entity.getLstKshmtWtCom().add(commonEntity);
+			this.entity.getLstKshmtWorktimeCommonSet().add(commonEntity);
 		}
 		commonSet.saveToMemento(new JpaWorkTimezoneCommonSetSetMemento(commonEntity));
 	}

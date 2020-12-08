@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_SHORTTIME_HIST")
+@Table(name = "BSHMT_WORKTIME_HIST")
 public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializa
 
 	/** The bshmt worktime hist PK. */
 	@EmbeddedId
-	public KshmtShorttimeHistPK kshmtShorttimeHistPK;
+	public BshmtWorktimeHistPK bshmtWorktimeHistPK;
 	
 	/** The c id. */
 	@Column(name = "CID")
@@ -54,8 +54,8 @@ public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializa
 	public KshmtShorttimeHist() {
 		super();
 	}
-	public KshmtShorttimeHist(KshmtShorttimeHistPK kshmtShorttimeHistPK, String cid, GeneralDate startDate, GeneralDate endDate) {
-		this.kshmtShorttimeHistPK = kshmtShorttimeHistPK;
+	public KshmtShorttimeHist(BshmtWorktimeHistPK bshmtWorktimeHistPK, String cid, GeneralDate startDate, GeneralDate endDate) {
+		this.bshmtWorktimeHistPK = bshmtWorktimeHistPK;
 		this.cId = cid;
 		this.strYmd = startDate;
 		this.endYmd = endDate;
@@ -63,11 +63,11 @@ public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializa
 	/**
 	 * Instantiates a new bshmt worktime hist.
 	 *
-	 * @param kshmtShorttimeHistPK
+	 * @param bshmtWorktimeHistPK
 	 *            the bshmt worktime hist PK
 	 */
-	public KshmtShorttimeHist(KshmtShorttimeHistPK kshmtShorttimeHistPK) {
-		this.kshmtShorttimeHistPK = kshmtShorttimeHistPK;
+	public KshmtShorttimeHist(BshmtWorktimeHistPK bshmtWorktimeHistPK) {
+		this.bshmtWorktimeHistPK = bshmtWorktimeHistPK;
 	}
 
 	/*
@@ -78,7 +78,7 @@ public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializa
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtShorttimeHistPK != null ? kshmtShorttimeHistPK.hashCode() : 0);
+		hash += (bshmtWorktimeHistPK != null ? bshmtWorktimeHistPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -93,8 +93,8 @@ public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializa
 			return false;
 		}
 		KshmtShorttimeHist other = (KshmtShorttimeHist) object;
-		if ((this.kshmtShorttimeHistPK == null && other.kshmtShorttimeHistPK != null)
-				|| (this.kshmtShorttimeHistPK != null && !this.kshmtShorttimeHistPK.equals(other.kshmtShorttimeHistPK))) {
+		if ((this.bshmtWorktimeHistPK == null && other.bshmtWorktimeHistPK != null)
+				|| (this.bshmtWorktimeHistPK != null && !this.bshmtWorktimeHistPK.equals(other.bshmtWorktimeHistPK))) {
 			return false;
 		}
 		return true;
@@ -107,7 +107,7 @@ public class KshmtShorttimeHist extends ContractUkJpaEntity implements Serializa
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtShorttimeHistPK;
+		return this.bshmtWorktimeHistPK;
 	}
 
 }

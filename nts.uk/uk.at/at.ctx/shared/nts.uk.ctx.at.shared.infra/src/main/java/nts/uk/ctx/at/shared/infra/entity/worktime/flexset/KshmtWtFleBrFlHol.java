@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_BR_FL_HOL")
+@Table(name = "KSHMT_FLEX_OD_RT_SET")
 public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -35,7 +35,7 @@ public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializab
 
 	/** The kshmt flex od rt set PK. */
 	@EmbeddedId
-	protected KshmtWtFleBrFlHolPK kshmtWtFleBrFlHolPK;
+	protected KshmtFlexOdRtSetPK kshmtFlexOdRtSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -62,21 +62,21 @@ public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializab
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<KshmtWtFleBrFiHolTs> kshmtWtFleBrFiHolTss;
+	private List<KshmtWtFleBrFiHolTs> kshmtFlexOdFixRests;
 
 	/** The kshmt flex hol sets. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<KshmtWtFleHolTs> kshmtWtFleHolTss;
+	private List<KshmtWtFleHolTs> kshmtFlexHolSets;
 
 	/** The kshmt flex od rest sets. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<KshmtWtFleBrFlHolTs> kshmtWtFleBrFlHolTss;
+	private List<KshmtWtFleBrFlHolTs> kshmtFlexOdRestSets;
 
 	/**
 	 * Instantiates a new kshmt flex od rt set.
@@ -88,12 +88,12 @@ public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializab
 	/**
 	 * Instantiates a new kshmt flex od rt set.
 	 *
-	 * @param kshmtWtFleBrFlHolPK
+	 * @param kshmtFlexOdRtSetPK
 	 *            the kshmt flex od rt set PK
 	 */
-	public KshmtWtFleBrFlHol(KshmtWtFleBrFlHolPK kshmtWtFleBrFlHolPK) {
+	public KshmtWtFleBrFlHol(KshmtFlexOdRtSetPK kshmtFlexOdRtSetPK) {
 		super();
-		this.kshmtWtFleBrFlHolPK = kshmtWtFleBrFlHolPK;
+		this.kshmtFlexOdRtSetPK = kshmtFlexOdRtSetPK;
 	}
 
 	/*
@@ -104,7 +104,7 @@ public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleBrFlHolPK != null ? kshmtWtFleBrFlHolPK.hashCode() : 0);
+		hash += (kshmtFlexOdRtSetPK != null ? kshmtFlexOdRtSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -119,9 +119,9 @@ public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializab
 			return false;
 		}
 		KshmtWtFleBrFlHol other = (KshmtWtFleBrFlHol) object;
-		if ((this.kshmtWtFleBrFlHolPK == null && other.kshmtWtFleBrFlHolPK != null)
-				|| (this.kshmtWtFleBrFlHolPK != null
-						&& !this.kshmtWtFleBrFlHolPK.equals(other.kshmtWtFleBrFlHolPK))) {
+		if ((this.kshmtFlexOdRtSetPK == null && other.kshmtFlexOdRtSetPK != null)
+				|| (this.kshmtFlexOdRtSetPK != null
+						&& !this.kshmtFlexOdRtSetPK.equals(other.kshmtFlexOdRtSetPK))) {
 			return false;
 		}
 		return true;
@@ -134,7 +134,7 @@ public class KshmtWtFleBrFlHol extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleBrFlHolPK;
+		return this.kshmtFlexOdRtSetPK;
 	}
 
 }

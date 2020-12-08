@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_HD60H_EMP")
+@Table(name = "KSHST_EMP_60H_VACATION")
 public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -27,7 +27,7 @@ public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Seri
 
 	/** The kshst emp 60 h vacation PK. */
 	@EmbeddedId
-	protected KshmtHd60hEmpPK kshmtHd60hEmpPK;
+	protected KshstEmp60hVacationPK kshstEmp60hVacationPK;
 
 	/**
 	 * Instantiates a new kshst emp 60 h vacation.
@@ -39,11 +39,11 @@ public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Seri
 	/**
 	 * Instantiates a new kshst emp 60 h vacation.
 	 *
-	 * @param kshmtHd60hEmpPK
+	 * @param kshstEmp60hVacationPK
 	 *            the kshst emp 60 h vacation PK
 	 */
-	public KshmtHd60hEmp(KshmtHd60hEmpPK kshmtHd60hEmpPK) {
-		this.kshmtHd60hEmpPK = kshmtHd60hEmpPK;
+	public KshmtHd60hEmp(KshstEmp60hVacationPK kshstEmp60hVacationPK) {
+		this.kshstEmp60hVacationPK = kshstEmp60hVacationPK;
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Seri
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtHd60hEmpPK != null ? kshmtHd60hEmpPK.hashCode() : 0);
+		hash += (kshstEmp60hVacationPK != null ? kshstEmp60hVacationPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -69,9 +69,9 @@ public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Seri
 			return false;
 		}
 		KshmtHd60hEmp other = (KshmtHd60hEmp) object;
-		if ((this.kshmtHd60hEmpPK == null && other.kshmtHd60hEmpPK != null)
-				|| (this.kshmtHd60hEmpPK != null
-						&& !this.kshmtHd60hEmpPK.equals(other.kshmtHd60hEmpPK))) {
+		if ((this.kshstEmp60hVacationPK == null && other.kshstEmp60hVacationPK != null)
+				|| (this.kshstEmp60hVacationPK != null
+						&& !this.kshstEmp60hVacationPK.equals(other.kshstEmp60hVacationPK))) {
 			return false;
 		}
 		return true;
@@ -84,7 +84,7 @@ public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Seri
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshmtHd60hEmp[ kshmtHd60hEmpPK=" + kshmtHd60hEmpPK + " ]";
+		return "entity.KshmtHd60hEmp[ kshstEmp60hVacationPK=" + kshstEmp60hVacationPK + " ]";
 	}
 
 	/*
@@ -94,7 +94,7 @@ public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Seri
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtHd60hEmpPK;
+		return this.kshstEmp60hVacationPK;
 	}
 
 }

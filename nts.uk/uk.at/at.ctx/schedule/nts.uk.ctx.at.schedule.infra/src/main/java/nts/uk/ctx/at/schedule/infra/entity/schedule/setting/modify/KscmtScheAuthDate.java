@@ -19,13 +19,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SCHE_AUTH_DATE")
+@Table(name = "KSCST_SCHE_DATE_AUTHORITY")
 public class KscmtScheAuthDate  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KscmtScheAuthDatePK kscmtScheAuthDatePK;
+	public KscstScheDateAuthorityPK kscstScheDateAuthorityPK;
 	
 			/** 利用できる*/
 			@Column(name = "AVAILABLE_DATE")

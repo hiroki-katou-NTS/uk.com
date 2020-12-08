@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="KRCMT_DVGC_REF_TIME")
+@Table(name="KRCST_DRT")
 public class KrcmtDvgcRefTime extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -30,7 +30,7 @@ public class KrcmtDvgcRefTime extends ContractUkJpaEntity implements Serializabl
 
 	/** The id. */
 	@EmbeddedId
-	private KrcmtDvgcRefTimePK id;
+	private KrcstDrtPK id;
 
 	/** The alarm time. */
 	@Column(name="ALARM_TIME")

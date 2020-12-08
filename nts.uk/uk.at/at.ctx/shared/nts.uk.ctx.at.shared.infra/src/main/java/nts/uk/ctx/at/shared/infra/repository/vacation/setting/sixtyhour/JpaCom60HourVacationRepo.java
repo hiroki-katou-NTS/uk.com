@@ -20,7 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshmtHd60hCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshmtHd60hCom_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation_;
 
 /**
  * The Class JpaComSubstVacationRepo.
@@ -56,7 +56,7 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KshmtHd60hCom_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KshstCom60hVacation_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 

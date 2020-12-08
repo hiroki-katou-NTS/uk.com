@@ -43,7 +43,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	@Override
 	public void setCompanyId(String companyId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtBasicWorkClsPK().setCid(companyId);
+			item.getKscmtClassifyWorkSetPK().setCid(companyId);
 		});
 	}
 
@@ -57,7 +57,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	@Override
 	public void setClassificationCode(ClassificationCode classificationCode) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtBasicWorkClsPK().setClassifyCode(classificationCode.v());
+			item.getKscmtClassifyWorkSetPK().setClassifyCode(classificationCode.v());
 		});
 	}
 
@@ -71,7 +71,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
 			KscmtBasicWorkCls entity = new KscmtBasicWorkCls();
-			entity.getKscmtBasicWorkClsPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			entity.getKscmtClassifyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

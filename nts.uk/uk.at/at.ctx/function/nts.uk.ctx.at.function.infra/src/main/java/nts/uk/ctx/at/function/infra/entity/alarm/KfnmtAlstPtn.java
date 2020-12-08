@@ -28,23 +28,23 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_PTN")
+@Table(name = "KFNMT_ALARM_PATTERN_SET")
 public class KfnmtAlstPtn extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KfnmtAlstPtnPK pk;
+	public KfnmtAlarmPatternSetPK pk;
 
 	@Column(name = "ALARM_PATTERN_NAME")
 	public String alarmPatternName;
 
 	@OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_PTN_DEFTM")
+	@JoinTable(name = "KFNMT_CHECK_CONDITION")
 	public List<KfnmtAlstPtnDeftm> checkConList;
 
 	@OneToOne(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_PTN_EXCPMT")
+	@JoinTable(name = "KFNMT_ALARM_PER_SET")
 	public KfnmtAlstPtnExcpmt alarmPerSet;
 
 	@Override
@@ -65,7 +65,7 @@ public class KfnmtAlstPtn extends ContractUkJpaEntity implements Serializable {
 				.map(c -> KfnmtAlstPtnDeftm.toEntity(c, domain.getCompanyID(), domain.getAlarmPatternCD().v()))
 				.collect(Collectors.toList());
 		return new KfnmtAlstPtn(
-				new KfnmtAlstPtnPK(domain.getCompanyID(), domain.getAlarmPatternCD().v()),
+				new KfnmtAlarmPatternSetPK(domain.getCompanyID(), domain.getAlarmPatternCD().v()),
 				domain.getAlarmPatternName().v(), checkConList, alarmPerSet);
 	}
 

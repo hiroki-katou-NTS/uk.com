@@ -18,11 +18,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MCLOSE_ERR")
+@Table(name = "KRCDT_MCLOSE_UPD_ERR_INF")
 public class KrcdtMcloseErr extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public KrcdtMcloseErrPk pk;
+	public KrcdtMcloseUpdErrInfPk pk;
 
 	// エラーメッセージ
 	@Column(name = "ERROR_MESSAGE")
@@ -40,7 +40,7 @@ public class KrcdtMcloseErr extends ContractUkJpaEntity {
 	public KrcdtMcloseErr(String employeeId, String monthlyClosureUpdateLogId, GeneralDate actualClosureEndDate,
 			String resourceId, String errorMessage, int atr) {
 		super();
-		this.pk = new KrcdtMcloseErrPk(employeeId, monthlyClosureUpdateLogId, actualClosureEndDate, resourceId);
+		this.pk = new KrcdtMcloseUpdErrInfPk(employeeId, monthlyClosureUpdateLogId, actualClosureEndDate, resourceId);
 		this.errorMessage = errorMessage;
 		this.atr = atr;
 	}

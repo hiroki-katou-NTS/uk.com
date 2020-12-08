@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSPEV_COND_CLS")
+@Table(name = "KSHST_CLS_LIST")
 // 分類一覧
 public class KshstClassificationList extends ContractUkJpaEntity implements Serializable {
 	

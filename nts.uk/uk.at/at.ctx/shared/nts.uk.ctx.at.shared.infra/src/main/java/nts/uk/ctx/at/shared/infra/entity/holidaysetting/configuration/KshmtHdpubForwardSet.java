@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_HDPUB_FORWARD_SET")
+@Table(name = "KSHMT_FORWARD_SET_OF_PUBLIC_HD")
 public class KshmtHdpubForwardSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

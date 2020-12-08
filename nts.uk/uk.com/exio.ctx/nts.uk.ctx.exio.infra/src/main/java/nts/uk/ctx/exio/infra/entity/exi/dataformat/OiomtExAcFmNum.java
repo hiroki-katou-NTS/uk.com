@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_FM_NUM")
+@Table(name = "OIOMT_NUM_DATA_FORMAT_SET")
 public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable 
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcFmNumPk numDataFormatSetPk;
+	public OiomtNumDataFormatSetPk numDataFormatSetPk;
 
 	/**
 	 * 固定値
@@ -121,7 +121,7 @@ public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable 
 			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
 			Integer decimalFraction) {
 		super();
-		this.numDataFormatSetPk = new OiomtExAcFmNumPk(cid, sysType, conditionCode, acceptItemNum);
+		this.numDataFormatSetPk = new OiomtNumDataFormatSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.decimalDivision = decimalDivision;
 		this.effectiveDigitLength = effectiveDigitLength;

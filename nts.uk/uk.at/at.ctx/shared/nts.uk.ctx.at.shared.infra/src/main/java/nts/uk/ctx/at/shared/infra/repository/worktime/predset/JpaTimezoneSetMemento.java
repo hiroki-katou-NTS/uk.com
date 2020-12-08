@@ -36,7 +36,7 @@ public class JpaTimezoneSetMemento implements TimezoneSetMemento {
 	 */
 	@Override
 	public void setWorkNo(int workNo) {
-		this.entity.getKshmtWtComPredTsPK().setWorkNo(workNo);
+		this.entity.getKshmtWorkTimeSheetSetPK().setWorkNo(workNo);
 	}
 
 	/*

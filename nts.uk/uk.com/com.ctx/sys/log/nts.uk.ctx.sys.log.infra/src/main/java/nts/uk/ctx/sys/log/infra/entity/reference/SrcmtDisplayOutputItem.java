@@ -23,13 +23,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCMT_DISPLAY_OUTPUT_ITEM")
+@Table(name = "SRCDT_LOG_SET_OUTPUT_ITEM")
 @NoArgsConstructor
 public class SrcmtDisplayOutputItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SrcmtDisplayOutputItemPK srcmtDisplayOutputItemPK;
+	public SrcdtLogSetOutputItemPK srcdtLogSetOutputItemPK;
 	
 	/** 表示順 */
 	@Basic(optional=false)
@@ -50,26 +50,26 @@ public class SrcmtDisplayOutputItem extends ContractUkJpaEntity implements Seria
 	
 	@Override
 	protected Object getKey() {
-		return srcmtDisplayOutputItemPK;
+		return srcdtLogSetOutputItemPK;
 	}
 
 	public LogSetOutputItem toDomain() {
 		boolean isUseFlg = this.isUseFlg == 1;
-		return LogSetOutputItem.createFromJavatype(this.srcmtDisplayOutputItemPK.logSetId, this.srcmtDisplayOutputItemPK.itemNo,
+		return LogSetOutputItem.createFromJavatype(this.srcdtLogSetOutputItemPK.logSetId, this.srcdtLogSetOutputItemPK.itemNo,
 				this.displayOrder, isUseFlg, this.listLogSetItemDetails.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
 	}
 
 	public static SrcmtDisplayOutputItem toEntity(LogSetOutputItem domain) {
 		int isUseFlag = domain.isUseFlag() ? 1 : 0;
-		return new SrcmtDisplayOutputItem(new SrcmtDisplayOutputItemPK(domain.getLogSetId(), domain.getItemNo()),
+		return new SrcmtDisplayOutputItem(new SrcdtLogSetOutputItemPK(domain.getLogSetId(), domain.getItemNo()),
 				 domain.getDisplayOrder(), isUseFlag, 
 				 domain.getLogSetItemDetails().stream().map(item -> SrcmtDisplaySetDetail.toEntity(item)).collect(Collectors.toList()));
 	}
 
-	public SrcmtDisplayOutputItem(SrcmtDisplayOutputItemPK srcmtDisplayOutputItemPK, int displayOrder, 
+	public SrcmtDisplayOutputItem(SrcdtLogSetOutputItemPK srcdtLogSetOutputItemPK, int displayOrder, 
 			int isUseFlg, List<SrcmtDisplaySetDetail> listLogSetItemDetails) {
 		super();
-		this.srcmtDisplayOutputItemPK = srcmtDisplayOutputItemPK;
+		this.srcdtLogSetOutputItemPK = srcdtLogSetOutputItemPK;
 		this.displayOrder = displayOrder;
 		this.isUseFlg = isUseFlg;
 		this.listLogSetItemDetails = listLogSetItemDetails;

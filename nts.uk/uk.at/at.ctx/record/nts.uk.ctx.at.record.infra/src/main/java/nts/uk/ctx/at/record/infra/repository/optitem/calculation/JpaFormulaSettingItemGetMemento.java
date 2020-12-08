@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetail;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetailPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSettingPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.InputValue;
@@ -33,8 +33,8 @@ public class JpaFormulaSettingItemGetMemento implements FormulaSettingItemGetMem
 	 * @param settingItemOrder the setting item order
 	 */
 	public JpaFormulaSettingItemGetMemento(KrcmtAnyfDetail setting,int settingItemOrder) {
-		if(setting.getKrcmtAnyfDetailPK() == null){
-			setting.setKrcmtAnyfDetailPK(new KrcmtAnyfDetailPK());
+		if(setting.getKrcmtFormulaSettingPK() == null){
+			setting.setKrcmtFormulaSettingPK(new KrcmtFormulaSettingPK());
 		}
 		this.settingItemOrder = settingItemOrder;
 		this.setting = setting;

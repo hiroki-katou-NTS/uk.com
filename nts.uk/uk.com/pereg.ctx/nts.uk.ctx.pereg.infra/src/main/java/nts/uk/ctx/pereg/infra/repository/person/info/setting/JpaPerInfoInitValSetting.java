@@ -22,13 +22,13 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 			+ " INNER JOIN PpemtPersonInitValueSettingCtg ic" 
 			+ " ON iv.initValueSettingPk.settingId  = ic.settingCtgPk.settingId"
 			+ " INNER JOIN PpemtCtg pc" 
-			+ " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtCtgPK.perInfoCtgId"
+			+ " ON ic.settingCtgPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND pc.abolitionAtr=0" 
 			+ " INNER JOIN PpemtItem pi"
 			+ " ON ic.settingCtgPk.perInfoCtgId= pi.perInfoCtgId " 
 			+ " AND pi.abolitionAtr = 0"
 			+ " WHERE iv.companyId = :companyId" 
-			+ " AND pi.ppemtItemPK.perInfoItemDefId IS NOT NULL ORDER BY iv.settingCode ASC";
+			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId IS NOT NULL ORDER BY iv.settingCode ASC";
 
 	private static final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";

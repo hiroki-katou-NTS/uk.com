@@ -27,7 +27,7 @@ public class OiomtExOutFmTime extends ContractUkJpaEntity implements Serializabl
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExOutFmTimePk instantTimeDfsPk;
+	public OiomtInstantTimeDfsPk instantTimeDfsPk;
 
 	/**
 	 * 時分/分選択
@@ -150,7 +150,7 @@ public class OiomtExOutFmTime extends ContractUkJpaEntity implements Serializabl
 
 	public static OiomtExOutFmTime toEntity(InstantTimeDataFmSetting domain) {
 		return new OiomtExOutFmTime(
-				new OiomtExOutFmTimePk(
+				new OiomtInstantTimeDfsPk(
 						domain.getCid(), 
 						domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),

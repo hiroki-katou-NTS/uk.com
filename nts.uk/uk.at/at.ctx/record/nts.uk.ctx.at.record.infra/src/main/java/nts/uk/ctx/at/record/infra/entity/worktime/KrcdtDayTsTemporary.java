@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_TS_TEMPORARY")
+@Table(name = "KRCDT_DAI_TEMPORARY_TIME")
 public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayTsTemporaryPK krcdtDayTsTemporaryPK;
+	public KrcdtDaiTemporaryTimePK krcdtDaiTemporaryTimePK;
 
 	@Column(name = "WORK_TIMES")
 
@@ -43,7 +43,7 @@ public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayTsTemporaryPK;
+		return this.krcdtDaiTemporaryTimePK;
 	}
 
 	public TemporaryTimeOfDailyPerformance toDomain() {
@@ -52,15 +52,15 @@ public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializ
 	
 	public static TemporaryTimeOfDailyPerformance toDomain(KrcdtDayTsTemporary entity, List<KrcdtDayTsAtdStmp> timeLeavingWorks) {
 		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(
-				entity.krcdtDayTsTemporaryPK.employeeId, new WorkTimes(entity.workTimes.intValue()),
+				entity.krcdtDaiTemporaryTimePK.employeeId, new WorkTimes(entity.workTimes.intValue()),
 				KrcdtDayTsAtdStmp.toDomain(timeLeavingWorks.stream()
-						.filter(item -> item.krcdtDayTsAtdStmpPK.timeLeavingType == 1).collect(Collectors.toList())),
-				entity.krcdtDayTsTemporaryPK.ymd);
+						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 1).collect(Collectors.toList())),
+				entity.krcdtDaiTemporaryTimePK.ymd);
 		return domain;
 	}
 
 	public static KrcdtDayTsTemporary toEntity(TemporaryTimeOfDailyPerformance domain) {
-		return new KrcdtDayTsTemporary(new KrcdtDayTsTemporaryPK(domain.getEmployeeId(), domain.getYmd()),
+		return new KrcdtDayTsTemporary(new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd()),
 				domain.getAttendance().getWorkTimes().v(),
 				domain.getAttendance().getTimeLeavingWorks().stream()
 						.map(c -> KrcdtDayTsAtdStmp.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 1))

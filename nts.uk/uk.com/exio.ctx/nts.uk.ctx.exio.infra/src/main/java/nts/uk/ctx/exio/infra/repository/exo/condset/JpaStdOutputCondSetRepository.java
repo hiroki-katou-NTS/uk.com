@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtExOutCond;
-import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtExOutCondPk;
+import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSetPk;
 
 @Stateless
 public class JpaStdOutputCondSetRepository extends JpaRepository implements StdOutputCondSetRepository {
@@ -80,7 +80,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	@Override
 	public void remove(String cid, String conditionSetCd) {
-		this.commandProxy().remove(OiomtExOutCond.class, new OiomtExOutCondPk(cid, conditionSetCd));
+		this.commandProxy().remove(OiomtExOutCond.class, new OiomtStdOutputCondSetPk(cid, conditionSetCd));
 		this.getEntityManager().flush();
 	}
 
@@ -92,7 +92,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	private OiomtExOutCond toEntity(StdOutputCondSet domain) {
 		return new OiomtExOutCond(
-				new OiomtExOutCondPk(
+				new OiomtStdOutputCondSetPk(
 					domain.getCid(), 
 					domain.getConditionSetCode().v()),
 				domain.getConditionSetName().v(),

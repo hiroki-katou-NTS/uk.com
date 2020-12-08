@@ -40,7 +40,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entities.get(FIRST_ITEM_INDEX).getKshmtShorttimeHistPK().getSid();
+		return this.entities.get(FIRST_ITEM_INDEX).getBshmtWorktimeHistPK().getSid();
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	@Override
 	public List<DateHistoryItem> getHistoryItems() {
 		return this.entities.stream()
-				.map(item -> new DateHistoryItem(item.getKshmtShorttimeHistPK().getHistId(),
+				.map(item -> new DateHistoryItem(item.getBshmtWorktimeHistPK().getHistId(),
 						new DatePeriod(item.getStrYmd(), item.getEndYmd())))
 				.collect(Collectors.toList());
 	}

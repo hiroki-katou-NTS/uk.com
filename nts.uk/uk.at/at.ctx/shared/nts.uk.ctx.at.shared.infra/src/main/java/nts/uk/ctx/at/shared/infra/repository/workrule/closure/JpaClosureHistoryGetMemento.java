@@ -17,16 +17,16 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  */
 public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 
-	private KshmtClosureHist kshmtClosureHist;
+	private KshmtClosureHist kclmtClosureHist;
 
 	/**
 	 * Instantiates a new jpa closure history get memento.
 	 *
-	 * @param kshmtClosureHist
+	 * @param kclmtClosureHist
 	 *            the kclmt closure hist
 	 */
-	public JpaClosureHistoryGetMemento(KshmtClosureHist kshmtClosureHist) {
-		this.kshmtClosureHist = kshmtClosureHist;
+	public JpaClosureHistoryGetMemento(KshmtClosureHist kclmtClosureHist) {
+		this.kclmtClosureHist = kclmtClosureHist;
 	}
 
 	/*
@@ -37,7 +37,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public ClosureName getClosureName() {
-		return new ClosureName(this.kshmtClosureHist.getName());
+		return new ClosureName(this.kclmtClosureHist.getName());
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public ClosureId getClosureId() {
-		return ClosureId.valueOf(this.kshmtClosureHist.getKshmtClosureHistPK().getClosureId());
+		return ClosureId.valueOf(this.kclmtClosureHist.getKclmtClosureHistPK().getClosureId());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public YearMonth getEndDate() {
-		return YearMonth.of(this.kshmtClosureHist.getEndYM());
+		return YearMonth.of(this.kclmtClosureHist.getEndYM());
 	}
 
 	/*
@@ -70,8 +70,8 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public ClosureDate getClosureDate() {
-		return new ClosureDate(this.kshmtClosureHist.getCloseDay(),
-				this.kshmtClosureHist.getIsLastDay() == 1);
+		return new ClosureDate(this.kclmtClosureHist.getCloseDay(),
+				this.kclmtClosureHist.getIsLastDay() == 1);
 	}
 
 	/*
@@ -82,7 +82,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public YearMonth getStartDate() {
-		return YearMonth.of(this.kshmtClosureHist.getKshmtClosureHistPK().getStrYM());
+		return YearMonth.of(this.kclmtClosureHist.getKclmtClosureHistPK().getStrYM());
 	}
 
 	/*
@@ -93,7 +93,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kshmtClosureHist.getKshmtClosureHistPK().getCid());
+		return new CompanyId(this.kclmtClosureHist.getKclmtClosureHistPK().getCid());
 	}
 
 }

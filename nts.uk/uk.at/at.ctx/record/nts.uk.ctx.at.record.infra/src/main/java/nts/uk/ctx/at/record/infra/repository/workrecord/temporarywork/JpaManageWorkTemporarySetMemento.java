@@ -14,13 +14,13 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporary
  */
 public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetMemento{
 
-	private KrcmtTemporaryMng krcmtTemporaryMng;
+	private KrcmtTemporaryMng krcstManageWorkTemp;
 	
 	/**
-	 * @param krcmtTemporaryMng
+	 * @param krcstManageWorkTemp
 	 */
-	public JpaManageWorkTemporarySetMemento(KrcmtTemporaryMng krcmtTemporaryMng) {
-		this.krcmtTemporaryMng = krcmtTemporaryMng;
+	public JpaManageWorkTemporarySetMemento(KrcmtTemporaryMng krcstManageWorkTemp) {
+		this.krcstManageWorkTemp = krcstManageWorkTemp;
 	}
 
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetM
 	 */
 	@Override
 	public void setCompanyID(String companyID) {
-		this.krcmtTemporaryMng.setCid(companyID);
+		this.krcstManageWorkTemp.setCid(companyID);
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetM
 	 */
 	@Override
 	public void setMaxUsage(int maxUsage) {
-		this.krcmtTemporaryMng.setMaxUsage(new BigDecimal(maxUsage));
+		this.krcstManageWorkTemp.setMaxUsage(new BigDecimal(maxUsage));
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +44,7 @@ public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetM
 	 */
 	@Override
 	public void setTimeTreatTemporarySame(int time) {
-		this.krcmtTemporaryMng.setTimeTreatTempSame(new BigDecimal(time));
+		this.krcstManageWorkTemp.setTimeTreatTempSame(new BigDecimal(time));
 	}
 
 }

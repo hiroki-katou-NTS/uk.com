@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLE_OVER_TS")
+@Table(name = "KSHMT_FLEX_OT_TIME_SET")
 public class KshmtWtFleOverTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFleOverTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt flex ot time set PK. */
 	@EmbeddedId
-	protected KshmtWtFleOverTsPK kshmtWtFleOverTsPK;
+	protected KshmtFlexOtTimeSetPK kshmtFlexOtTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -82,11 +82,11 @@ public class KshmtWtFleOverTs extends ContractUkJpaEntity implements Serializabl
 	/**
 	 * Instantiates a new kshmt flex ot time set.
 	 *
-	 * @param kshmtWtFleOverTsPK the kshmt flex ot time set PK
+	 * @param kshmtFlexOtTimeSetPK the kshmt flex ot time set PK
 	 */
-	public KshmtWtFleOverTs(KshmtWtFleOverTsPK kshmtWtFleOverTsPK) {
+	public KshmtWtFleOverTs(KshmtFlexOtTimeSetPK kshmtFlexOtTimeSetPK) {
 		super();
-		this.kshmtWtFleOverTsPK = kshmtWtFleOverTsPK;
+		this.kshmtFlexOtTimeSetPK = kshmtFlexOtTimeSetPK;
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class KshmtWtFleOverTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFleOverTsPK != null ? kshmtWtFleOverTsPK.hashCode() : 0);
+		hash += (kshmtFlexOtTimeSetPK != null ? kshmtFlexOtTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -112,9 +112,9 @@ public class KshmtWtFleOverTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtFleOverTs other = (KshmtWtFleOverTs) object;
-		if ((this.kshmtWtFleOverTsPK == null && other.kshmtWtFleOverTsPK != null)
-				|| (this.kshmtWtFleOverTsPK != null
-						&& !this.kshmtWtFleOverTsPK.equals(other.kshmtWtFleOverTsPK))) {
+		if ((this.kshmtFlexOtTimeSetPK == null && other.kshmtFlexOtTimeSetPK != null)
+				|| (this.kshmtFlexOtTimeSetPK != null
+						&& !this.kshmtFlexOtTimeSetPK.equals(other.kshmtFlexOtTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -127,7 +127,7 @@ public class KshmtWtFleOverTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFleOverTsPK;
+		return this.kshmtFlexOtTimeSetPK;
 	}
 
 

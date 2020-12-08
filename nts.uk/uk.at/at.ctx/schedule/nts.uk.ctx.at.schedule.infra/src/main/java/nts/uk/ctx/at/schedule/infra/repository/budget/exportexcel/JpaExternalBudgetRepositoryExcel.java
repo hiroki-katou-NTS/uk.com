@@ -19,11 +19,11 @@ public class JpaExternalBudgetRepositoryExcel extends JpaRepository implements B
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KscmtExtBudget c ";
 
 	private static final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
-			+ " WHERE c.kscmtExtBudgetPk.companyId = :companyId";
+			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId";
 
 	private static ExternalBudget toDomain(KscmtExtBudget entity) {
-		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscmtExtBudgetPk.companyId,
-				entity.kscmtExtBudgetPk.externalBudgetCd, 
+		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
+				entity.kscstExternalBudgetPk.externalBudgetCd, 
 				entity.externalBudgetName, 
 				entity.budgetAtr,
 				entity.unitAtr);

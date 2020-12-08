@@ -42,14 +42,14 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_AUTOEXEC_TASK")
+@Table(name="KFNMT_EXEC_TASK_SETTING")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtExecutionTaskSettingPK kfnmtAutoexecTaskPK;
+    public KfnmtExecutionTaskSettingPK kfnmtExecTaskSettingPK;
 	
 	/* 開始日 */
 	@Column(name = "START_DATE")
@@ -189,7 +189,7 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 	
 	@Override
 	protected Object getKey() {
-		return this.kfnmtAutoexecTaskPK;
+		return this.kfnmtExecTaskSettingPK;
 	}
 	
 	/**
@@ -226,7 +226,7 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 		List<RepeatMonthDaysSelect> days =
 				this.repeatMonthDateList
 						.stream()
-							.map(x -> EnumAdaptor.valueOf(x.kfnmtAutoexecTaskDatePK.monthDay, RepeatMonthDaysSelect.class))
+							.map(x -> EnumAdaptor.valueOf(x.kfnmtRepMonthDayPK.monthDay, RepeatMonthDaysSelect.class))
 								.collect(Collectors.toList());
 		RepeatMonthSelect months =
 				new RepeatMonthSelect(this.january == 1 ? true : false,
@@ -247,8 +247,8 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 		RepeatDetailSetting detailSetting = new RepeatDetailSetting(weekly, monthly);
 		
 		return new ExecutionTaskSetting(oneDayRepInr,
-										new ExecutionCode(this.kfnmtAutoexecTaskPK.execItemCd),
-										this.kfnmtAutoexecTaskPK.companyId,
+										new ExecutionCode(this.kfnmtExecTaskSettingPK.execItemCd),
+										this.kfnmtExecTaskSettingPK.companyId,
 										this.enabledSetting == 1 ? true : false,
 										this.nextExecDateTime,
 										endDate,

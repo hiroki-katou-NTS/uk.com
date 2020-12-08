@@ -22,13 +22,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_LAYOUT_MAINTENANCE")
+@Table(name = "PPEMT_MAINTENANCE_LAYOUT")
 @Entity
 public class PpemtLayoutMaintenance extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtLayoutMaintenancePk ppemtLayoutMaintenancePk;
+	public PpemtMaintenanceLayoutPk ppemtMaintenanceLayoutPk;
 	
 	@Basic(optional = false)
 	@Column(name = "CID")
@@ -44,6 +44,6 @@ public class PpemtLayoutMaintenance extends ContractUkJpaEntity implements Seria
 
 	@Override
 	protected Object getKey() {
-		return this.ppemtLayoutMaintenancePk;
+		return this.ppemtMaintenanceLayoutPk;
 	}
 }

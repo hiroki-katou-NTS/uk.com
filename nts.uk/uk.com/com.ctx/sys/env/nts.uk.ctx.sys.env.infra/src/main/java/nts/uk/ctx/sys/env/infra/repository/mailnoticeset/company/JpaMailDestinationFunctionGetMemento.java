@@ -39,7 +39,7 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	 */
 	@Override
 	public UserInfoItem getSettingItem() {
-		return UserInfoItem.valueOf(this.lstEntity.get(0).getSevmtMailDestinFuncPK().getSettingItem());
+		return UserInfoItem.valueOf(this.lstEntity.get(0).getSevstMailDestinFuncPK().getSettingItem());
 	}
 
 	/*

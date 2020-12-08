@@ -9,11 +9,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KRCMT_HDSP_BASIC")
+@Table(name="KRCMT_SPECIAL_LEAVE_INFO")
 public class KrcmtHdspBasic extends ContractUkJpaEntity {
 	
 	@EmbeddedId
-	public KrcmtHdspBasicPK key;
+	public KrcmtSpecialLeaveInfoPK key;
     
 	@Column(name = "CID")
     public String cID;

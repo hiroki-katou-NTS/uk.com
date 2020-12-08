@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 //複数月のチェック条件(連続)
 @Entity
-@Table(name = "KRCMT_ALST_CHKMLT_UDCONT")
+@Table(name = "KRCMT_MUL_MON_COND_CONT")
 @NoArgsConstructor
 public class KrcmtAlstChkmltUdcont extends ContractUkJpaEntity implements Serializable {
 
@@ -40,12 +40,12 @@ public class KrcmtAlstChkmltUdcont extends ContractUkJpaEntity implements Serial
 	@Column(name = "CONTINUOUS_MONTH")
 	public int continousMonth;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtAlstChkmltUdcont", orphanRemoval=true)
-	public KrcmtEralstCndgrp krcmtEralstCndgrp;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonCondCont", orphanRemoval=true)
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUd krcmtAlstChkmltUd;
+	public KrcmtAlstChkmltUd krcmtMulMonAlarmCheck;
 	
 	@Override
 	protected Object getKey() {
@@ -63,15 +63,15 @@ public class KrcmtAlstChkmltUdcont extends ContractUkJpaEntity implements Serial
 		return new MulMonthCheckCondContinue(this.errorAlarmCheckID, 
 				this.isUseFlg == 1 ? true : false,
 				this.continousMonth,
-				this.krcmtEralstCndgrp.toDomain(this.krcmtEralstCndgrp, null, null));
+				this.krcmtErAlAtdItemCon.toDomain(this.krcmtErAlAtdItemCon, null, null));
 	}
 
 	public KrcmtAlstChkmltUdcont(String errorAlarmCheckID, int isUseFlg, int continousMonth,
-			KrcmtEralstCndgrp krcmtEralstCndgrp) {
+			KrcmtEralstCndgrp krcmtErAlAtdItemCon) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.isUseFlg = isUseFlg;
 		this.continousMonth = continousMonth;
-		this.krcmtEralstCndgrp = krcmtEralstCndgrp;
+		this.krcmtErAlAtdItemCon = krcmtErAlAtdItemCon;
 	}
 }

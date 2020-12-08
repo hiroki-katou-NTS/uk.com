@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcmtCalcMSetDefEmp;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcmtCalcMSetDefEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpDeforMCalSetPK;
 
 /**
  * The Class JpaEmpDeforLaborMonthActCalSetRepository.
@@ -36,8 +36,8 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 
 		// Transfer data
 		entity.transfer(domain);
-		entity.setKrcmtCalcMSetDefEmpPK(
-				new KrcmtCalcMSetDefEmpPK(domain.getComId(), domain.getEmploymentCode().v()));
+		entity.setKrcstEmpDeforMCalSetPK(
+				new KrcstEmpDeforMCalSetPK(domain.getComId(), domain.getEmploymentCode().v()));
 
 		// Insert into DB
 		this.commandProxy().insert(entity);
@@ -54,7 +54,7 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(EmpDeforLaborMonthActCalSet domain) {
 		// Get info
-		KrcmtCalcMSetDefEmpPK pk = new KrcmtCalcMSetDefEmpPK(domain.getComId(),
+		KrcstEmpDeforMCalSetPK pk = new KrcstEmpDeforMCalSetPK(domain.getComId(),
 				domain.getEmploymentCode().toString());
 		
 		this.queryProxy().find(pk, KrcmtCalcMSetDefEmp.class).ifPresent(e -> {
@@ -76,7 +76,7 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<EmpDeforLaborMonthActCalSet> find(String cid, String empCode) {
 		// Get info
-		KrcmtCalcMSetDefEmpPK pk = new KrcmtCalcMSetDefEmpPK(cid, empCode);
+		KrcstEmpDeforMCalSetPK pk = new KrcstEmpDeforMCalSetPK(cid, empCode);
 		
 		return this.queryProxy().find(pk, KrcmtCalcMSetDefEmp.class).map(c -> toDomain(c));
 
@@ -92,7 +92,7 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void remove(String cid, String empCode) {
 		
-		this.queryProxy().find(new KrcmtCalcMSetDefEmpPK(cid, empCode),
+		this.queryProxy().find(new KrcstEmpDeforMCalSetPK(cid, empCode),
 				KrcmtCalcMSetDefEmp.class)
 			.ifPresent(entity -> this.commandProxy().remove(entity));
 
@@ -100,8 +100,8 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 
 	private EmpDeforLaborMonthActCalSet toDomain (KrcmtCalcMSetDefEmp e) {
 		
-		return EmpDeforLaborMonthActCalSet.of(new EmploymentCode(e.getKrcmtCalcMSetDefEmpPK().getEmpCd()),
-				e.getKrcmtCalcMSetDefEmpPK().getCid(), 
+		return EmpDeforLaborMonthActCalSet.of(new EmploymentCode(e.getKrcstEmpDeforMCalSetPK().getEmpCd()),
+				e.getKrcstEmpDeforMCalSetPK().getCid(), 
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());

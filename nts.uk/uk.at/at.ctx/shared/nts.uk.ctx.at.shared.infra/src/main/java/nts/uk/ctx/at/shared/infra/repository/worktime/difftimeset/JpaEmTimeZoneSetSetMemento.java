@@ -19,7 +19,7 @@ public class JpaEmTimeZoneSetSetMemento implements EmTimeZoneSetSetMemento {
 
 	@Override
 	public void setEmploymentTimeFrameNo(EmTimeFrameNo no) {
-		this.entity.getKshmtWtDifWorkTsPK().setTimeFrameNo(no.v());
+		this.entity.getKshmtDtWorkTimeSetPK().setTimeFrameNo(no.v());
 	}
 
 	@Override

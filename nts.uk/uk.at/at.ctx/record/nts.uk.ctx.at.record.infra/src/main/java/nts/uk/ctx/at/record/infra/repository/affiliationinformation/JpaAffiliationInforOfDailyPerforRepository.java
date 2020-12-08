@@ -27,7 +27,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDayAffInfo;
-import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDayAffInfoPK;
+import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
@@ -46,15 +46,15 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		StringBuilder builderString = new StringBuilder();
 //		builderString.append("DELETE ");
 //		builderString.append("FROM KrcdtDayAffInfo a ");
-//		builderString.append("WHERE a.krcdtDayAffInfoPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDayAffInfoPK.ymd = :ymd ");
+//		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
 //		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDayAffInfo a ");
-		builderString.append("WHERE a.krcdtDayAffInfoPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDayAffInfoPK.ymd = :ymd ");
+		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
 	}
 
@@ -100,9 +100,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	private KrcdtDayAffInfo toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
 		val entity = new KrcdtDayAffInfo();
 
-		entity.krcdtDayAffInfoPK = new KrcdtDayAffInfoPK();
-		entity.krcdtDayAffInfoPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
-		entity.krcdtDayAffInfoPK.ymd = affiliationInforOfDailyPerfor.getYmd();
+		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
+		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
+		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
 		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null
 				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() : null;
 		entity.businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
@@ -124,7 +124,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 //    			.setParameter("employeeId", employeeId)
 //				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 		Optional<AffiliationInforOfDailyPerfor> data = Optional.empty();
-		String sql = "select * from KRCDT_DAY_AFF_INFO"
+		String sql = "select * from KRCDT_DAI_AFFILIATION_INF"
 				+ " where SID = ?"
 				+ " and YMD = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -159,8 +159,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// KrcdtDayAffInfo data = dataOpt.isPresent() ? dataOpt.get() :
 		// new KrcdtDayAffInfo();
 		// if(!dataOpt.isPresent()){
-		// data.krcdtDayAffInfoPK = new
-		// KrcdtDayAffInfoPK(domain.getEmployeeId(), domain.getYmd());
+		// data.krcdtDaiAffiliationInfPK = new
+		// KrcdtDaiAffiliationInfPK(domain.getEmployeeId(), domain.getYmd());
 		// }
 		// data.bonusPayCode = domain.getBonusPaySettingCode() == null ? null :
 		// domain.getBonusPaySettingCode().v();
@@ -252,7 +252,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAY_AFF_INFO");
+		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAI_AFFILIATION_INF");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		

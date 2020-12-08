@@ -17,13 +17,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_WEB_MENU")
+@Table(name = "CCGST_WEB_MENU")
 public class SptmtWebMenu extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public SptmtWebMenuPK sptmtWebMenuPK;
+	public CcgstWebMenuPK ccgstWebMenuPK;
 	
 	@Column(name = "WEB_MENU_NAME")
 	public String webMenuName;
@@ -36,6 +36,6 @@ public class SptmtWebMenu extends ContractUkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {		
-		return sptmtWebMenuPK;
+		return ccgstWebMenuPK;
 	}
 }

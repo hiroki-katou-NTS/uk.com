@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_TS_ATD")
+@Table(name = "KRCDT_DAI_LEAVING_WORK")
 public class KrcdtDayTsAtd extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtDayTsAtdPK krcdtDayTsAtdPK;
+	public KrcdtDaiLeavingWorkPK krcdtDaiLeavingWorkPK;
 
 	@Column(name = "WORK_TIMES")
 	public Integer workTimes;
@@ -42,7 +42,7 @@ public class KrcdtDayTsAtd extends ContractUkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return this.krcdtDayTsAtdPK;
+		return this.krcdtDaiLeavingWorkPK;
 	}
 	
 	public TimeLeavingOfDailyPerformance toDomain() {
@@ -50,16 +50,16 @@ public class KrcdtDayTsAtd extends ContractUkJpaEntity implements Serializable {
 	}
 
 	public static TimeLeavingOfDailyPerformance toDomain(KrcdtDayTsAtd entity, List<KrcdtDayTsAtdStmp> timeLeavingWorks) {
-		TimeLeavingOfDailyPerformance domain = new TimeLeavingOfDailyPerformance(entity.krcdtDayTsAtdPK.employeeId,
+		TimeLeavingOfDailyPerformance domain = new TimeLeavingOfDailyPerformance(entity.krcdtDaiLeavingWorkPK.employeeId,
 				new WorkTimes(entity.workTimes),
 				KrcdtDayTsAtdStmp.toDomain(timeLeavingWorks.stream()
-						.filter(item -> item.krcdtDayTsAtdStmpPK.timeLeavingType == 0).collect(Collectors.toList())),
-				entity.krcdtDayTsAtdPK.ymd);
+						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 0).collect(Collectors.toList())),
+				entity.krcdtDaiLeavingWorkPK.ymd);
 		return domain;
 	}
 
 	public static KrcdtDayTsAtd toEntity(TimeLeavingOfDailyPerformance domain) {
-		return new KrcdtDayTsAtd(new KrcdtDayTsAtdPK(domain.getEmployeeId(), domain.getYmd()),
+		return new KrcdtDayTsAtd(new KrcdtDaiLeavingWorkPK(domain.getEmployeeId(), domain.getYmd()),
 				domain.getAttendance().getWorkTimes().v(),
 				domain.getAttendance().getTimeLeavingWorks().stream()
 						.map(c -> KrcdtDayTsAtdStmp.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 0))

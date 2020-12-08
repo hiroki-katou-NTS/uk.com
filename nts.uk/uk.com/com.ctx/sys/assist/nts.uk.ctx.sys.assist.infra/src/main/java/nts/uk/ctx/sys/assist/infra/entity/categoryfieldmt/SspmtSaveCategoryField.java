@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_SAVE_CATEGORY_FIELD")
+@Table(name = "SSPMT_CATEGORY_FIELD_MT")
 public class SspmtSaveCategoryField extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class SspmtSaveCategoryField extends ContractUkJpaEntity implements Seria
 	 * ID
 	 */
 	@EmbeddedId
-	public SspmtSaveCategoryFieldPk categoryFieldMtPk;
+	public SspmtCategoryFieldMtPk categoryFieldMtPk;
 
 	/**
 	 * テーブル日本語名
@@ -712,7 +712,7 @@ public class SspmtSaveCategoryField extends ContractUkJpaEntity implements Seria
 
 	public static SspmtSaveCategoryField toEntity(CategoryFieldMt domain) {
 		return new SspmtSaveCategoryField(
-				new SspmtSaveCategoryFieldPk(domain.getCategoryId(), domain.getTableNo(), domain.getSystemType().value),
+				new SspmtCategoryFieldMtPk(domain.getCategoryId(), domain.getTableNo(), domain.getSystemType().value),
 				domain.getTableJapanName(), domain.getTableEnglishName(), domain.getTimeStopDelete(),
 				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(), domain.getClsKeyQuery4(),
 				domain.getClsKeyQuery5(), domain.getClsKeyQuery6(), domain.getClsKeyQuery7(), domain.getClsKeyQuery8(),

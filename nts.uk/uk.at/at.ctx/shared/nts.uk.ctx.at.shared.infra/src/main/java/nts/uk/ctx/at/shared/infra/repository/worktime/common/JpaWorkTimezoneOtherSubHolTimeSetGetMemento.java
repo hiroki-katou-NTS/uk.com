@@ -49,7 +49,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetGetMemento
 	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtComHdcomPK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtSubstitutionSetPK().getWorktimeCd());
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetGetMemento
 	@Override
 	public CompensatoryOccurrenceDivision getOriginAtr() {
 		return CompensatoryOccurrenceDivision
-				.valueOf(this.entity.getKshmtWtComHdcomPK().getOriginAtr());
+				.valueOf(this.entity.getKshmtSubstitutionSetPK().getOriginAtr());
 	}
 
 }

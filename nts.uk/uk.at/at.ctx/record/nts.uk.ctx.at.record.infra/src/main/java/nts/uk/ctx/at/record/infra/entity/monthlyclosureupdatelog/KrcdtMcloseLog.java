@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MCLOSE_LOG")
+@Table(name = "KRCDT_MCLOSURE_UPD_LOG")
 public class KrcdtMcloseLog extends ContractUkJpaEntity {
 
 	// ID

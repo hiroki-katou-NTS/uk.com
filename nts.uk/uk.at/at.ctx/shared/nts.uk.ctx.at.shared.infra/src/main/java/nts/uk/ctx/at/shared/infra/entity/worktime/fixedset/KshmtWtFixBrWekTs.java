@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FIX_BR_WEK_TS")
+@Table(name = "KSHMT_FIXED_HALF_REST_SET")
 public class KshmtWtFixBrWekTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtFixBrWekTs extends ContractUkJpaEntity implements Serializab
 
 	/** The kshmt fixed half rest set PK. */
 	@EmbeddedId
-	protected KshmtWtFixBrWekTsPK kshmtWtFixBrWekTsPK;
+	protected KshmtFixedHalfRestSetPK kshmtFixedHalfRestSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -58,7 +58,7 @@ public class KshmtWtFixBrWekTs extends ContractUkJpaEntity implements Serializab
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFixBrWekTsPK != null ? kshmtWtFixBrWekTsPK.hashCode() : 0);
+		hash += (kshmtFixedHalfRestSetPK != null ? kshmtFixedHalfRestSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -73,9 +73,9 @@ public class KshmtWtFixBrWekTs extends ContractUkJpaEntity implements Serializab
 			return false;
 		}
 		KshmtWtFixBrWekTs other = (KshmtWtFixBrWekTs) object;
-		if ((this.kshmtWtFixBrWekTsPK == null && other.kshmtWtFixBrWekTsPK != null)
-				|| (this.kshmtWtFixBrWekTsPK != null
-						&& !this.kshmtWtFixBrWekTsPK.equals(other.kshmtWtFixBrWekTsPK))) {
+		if ((this.kshmtFixedHalfRestSetPK == null && other.kshmtFixedHalfRestSetPK != null)
+				|| (this.kshmtFixedHalfRestSetPK != null
+						&& !this.kshmtFixedHalfRestSetPK.equals(other.kshmtFixedHalfRestSetPK))) {
 			return false;
 		}
 		return true;
@@ -88,7 +88,7 @@ public class KshmtWtFixBrWekTs extends ContractUkJpaEntity implements Serializab
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFixBrWekTsPK;
+		return this.kshmtFixedHalfRestSetPK;
 	}
 
 }

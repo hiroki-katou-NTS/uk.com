@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_HD_SUB_MNG")
+@Table(name = "KRCMT_INTERIM_ABS_MNG")
 public class KrcdtInterimHdSubMng extends ContractUkJpaEntity implements Serializable{
 
 	/**暫定振休管理データID	 */

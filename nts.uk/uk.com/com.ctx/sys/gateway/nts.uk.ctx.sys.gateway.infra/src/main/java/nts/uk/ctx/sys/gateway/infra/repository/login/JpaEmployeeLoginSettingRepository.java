@@ -19,7 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtEmployeeLogin;
-import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtEmployeeLogin_;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet_;
 
 /**
  * The Class JpaEmployeeLoginSettingRepository.
@@ -40,7 +40,7 @@ public class JpaEmployeeLoginSettingRepository extends JpaRepository implements 
 
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(root.get(SgwmtEmployeeLogin_.contractCd), contractCode));
+		predicateList.add(builder.equal(root.get(SgwstEmployeeLoginSet_.contractCd), contractCode));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 

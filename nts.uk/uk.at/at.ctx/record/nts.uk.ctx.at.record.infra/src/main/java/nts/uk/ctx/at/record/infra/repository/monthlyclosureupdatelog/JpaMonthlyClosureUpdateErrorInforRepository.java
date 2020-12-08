@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseErr;
-import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseErrPk;
+import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdErrInfPk;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class JpaMonthlyClosureUpdateErrorInforRepository extends JpaRepository
 	public Optional<MonthlyClosureUpdateErrorInfor> getById(String monthlyClosureUpdateLogId, String employeeId,
 			GeneralDate actualClosureEndDate, String resourceId) {
 		Optional<KrcdtMcloseErr> optEntity = this.queryProxy().find(
-				new KrcdtMcloseErrPk(employeeId, monthlyClosureUpdateLogId, actualClosureEndDate, resourceId),
+				new KrcdtMcloseUpdErrInfPk(employeeId, monthlyClosureUpdateLogId, actualClosureEndDate, resourceId),
 				KrcdtMcloseErr.class);
 		if (optEntity.isPresent())
 			return Optional.of(optEntity.get().toDomain());

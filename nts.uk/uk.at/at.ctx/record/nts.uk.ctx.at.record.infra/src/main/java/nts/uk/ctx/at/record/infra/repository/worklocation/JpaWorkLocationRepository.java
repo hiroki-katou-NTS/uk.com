@@ -22,11 +22,11 @@ import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
 public class JpaWorkLocationRepository extends JpaRepository implements WorkLocationRepository {
 
 	private static final String SELECT= "SELECT c FROM KrcmtWorkLocation c";
-	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtWorkLocation c WHERE c.krcmtWorkLocationPK.companyID = :companyID AND c.krcmtWorkLocationPK.workLocationCD = :workLocationCD";
-	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krcmtWorkLocationPK.companyID = :companyID";
-	private static final String SELECT_CODE_AND_NAME = "SELECT c.krcmtWorkLocationPK.workLocationCD, c.workLocationName FROM KrcmtWorkLocation c"
-			+ " WHERE c.krcmtWorkLocationPK.companyID = :companyID AND c.krcmtWorkLocationPK.workLocationCD IN :workLocationCDs";
-	private static final String SELECT_BY_CODES = "SELECT c FROM KrcmtWorkLocation c WHERE c.krcmtWorkLocationPK.companyID = :companyID";
+	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
+	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
+	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KrcmtWorkLocation c"
+			+ " WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCDs";
+	private static final String SELECT_BY_CODES = "SELECT c FROM KrcmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
 
 	
 	@Override
@@ -50,8 +50,8 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	private WorkLocation toDomain(KrcmtWorkLocation entity) {
 		return WorkLocation.createFromJavaType(
-				entity.krcmtWorkLocationPK.companyID,
-				entity.krcmtWorkLocationPK.workLocationCD,
+				entity.kwlmtWorkLocationPK.companyID,
+				entity.kwlmtWorkLocationPK.workLocationCD,
 				entity.workLocationName,
 				entity.horiDistance, 
 				entity.vertiDistance,
@@ -78,7 +78,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 					.query(queryString, KrcmtWorkLocation.class)
 					.setParameter("companyID", companyID);
 		} else {
-			queryString += " AND c.krcmtWorkLocationPK.workLocationCD IN :workLocationCD";
+			queryString += " AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCD";
 			query = this.queryProxy()
 					.query(queryString, KrcmtWorkLocation.class)
 					.setParameter("companyID", companyID)

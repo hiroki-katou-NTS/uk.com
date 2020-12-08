@@ -21,11 +21,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_CLOSURE_STS")
+@Table(name = "KRCDT_CLOSURE_STT_MNG")
 public class KrcdtClosureSts extends ContractUkJpaEntity {
 
 	@EmbeddedId
-	public KrcdtClosureStsPk pk;
+	public KrcdtClosureSttMngPk pk;
 
 	// 実行期間
 	@Column(name = "START_DATE")
@@ -41,7 +41,7 @@ public class KrcdtClosureSts extends ContractUkJpaEntity {
 	public KrcdtClosureSts(int yearMonth, String employeeId, int closureId, ClosureDate closureDate,
 			DatePeriod period) {
 		super();
-		this.pk = new KrcdtClosureStsPk(yearMonth, employeeId, closureId, closureDate.getClosureDay().v(),
+		this.pk = new KrcdtClosureSttMngPk(yearMonth, employeeId, closureId, closureDate.getClosureDay().v(),
 				closureDate.getLastDayOfMonth() ? 1 : 0);
 		this.start = period.start();
 		this.end = period.end();

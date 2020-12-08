@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_DIF_OVER_TS")
+@Table(name = "KSHMT_DT_OT_TIME_SET")
 public class KshmtWtDifOverTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -29,7 +29,7 @@ public class KshmtWtDifOverTs extends ContractUkJpaEntity implements Serializabl
 
 	/** The kshmt dt ot time set PK. */
 	@EmbeddedId
-	protected KshmtWtDifOverTsPK kshmtWtDifOverTsPK;
+	protected KshmtDtOtTimeSetPK kshmtDtOtTimeSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -90,7 +90,7 @@ public class KshmtWtDifOverTs extends ContractUkJpaEntity implements Serializabl
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtDifOverTsPK != null ? kshmtWtDifOverTsPK.hashCode() : 0);
+		hash += (kshmtDtOtTimeSetPK != null ? kshmtDtOtTimeSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -105,9 +105,9 @@ public class KshmtWtDifOverTs extends ContractUkJpaEntity implements Serializabl
 			return false;
 		}
 		KshmtWtDifOverTs other = (KshmtWtDifOverTs) object;
-		if ((this.kshmtWtDifOverTsPK == null && other.kshmtWtDifOverTsPK != null)
-				|| (this.kshmtWtDifOverTsPK != null
-						&& !this.kshmtWtDifOverTsPK.equals(other.kshmtWtDifOverTsPK))) {
+		if ((this.kshmtDtOtTimeSetPK == null && other.kshmtDtOtTimeSetPK != null)
+				|| (this.kshmtDtOtTimeSetPK != null
+						&& !this.kshmtDtOtTimeSetPK.equals(other.kshmtDtOtTimeSetPK))) {
 			return false;
 		}
 		return true;
@@ -120,7 +120,7 @@ public class KshmtWtDifOverTs extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtDifOverTsPK;
+		return this.kshmtDtOtTimeSetPK;
 	}
 
 }

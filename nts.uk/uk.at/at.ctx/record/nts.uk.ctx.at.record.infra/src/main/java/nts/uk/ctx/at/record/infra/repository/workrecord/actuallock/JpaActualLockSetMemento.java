@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.actuallock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockSetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLock;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLockPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
@@ -20,8 +20,8 @@ public class JpaActualLockSetMemento implements ActualLockSetMemento {
 	
 	public JpaActualLockSetMemento(KrcdtAtdActualLock typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getKrcdtAtdActualLockPK() == null) {
-			this.typedValue.setKrcdtAtdActualLockPK(new KrcdtAtdActualLockPK());
+		if (this.typedValue.getKrcstActualLockPK() == null) {
+			this.typedValue.setKrcstActualLockPK(new KrcstActualLockPK());
 		}
 	}
 
@@ -32,7 +32,7 @@ public class JpaActualLockSetMemento implements ActualLockSetMemento {
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.typedValue.getKrcdtAtdActualLockPK().setCid(companyId);
+		this.typedValue.getKrcstActualLockPK().setCid(companyId);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class JpaActualLockSetMemento implements ActualLockSetMemento {
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
-		this.typedValue.getKrcdtAtdActualLockPK().setClosureId(closureId.value);
+		this.typedValue.getKrcstActualLockPK().setClosureId(closureId.value);
 	}
 
 	/**

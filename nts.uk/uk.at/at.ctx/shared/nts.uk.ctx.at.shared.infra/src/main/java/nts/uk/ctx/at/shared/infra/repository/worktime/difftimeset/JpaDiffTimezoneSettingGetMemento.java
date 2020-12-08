@@ -30,9 +30,9 @@ public class JpaDiffTimezoneSettingGetMemento implements DiffTimezoneSettingGetM
 
 	@Override
 	public List<EmTimeZoneSet> getEmploymentTimezones() {
-		return this.entity.getLstKshmtWtDifWorkTs().stream()
-				.filter(item -> item.getKshmtWtDifWorkTsPK().getAmPmAtr() == this.type).map(item -> {
-					return new EmTimeZoneSet(new EmTimeFrameNo(item.getKshmtWtDifWorkTsPK().getTimeFrameNo()),
+		return this.entity.getLstKshmtDtWorkTimeSet().stream()
+				.filter(item -> item.getKshmtDtWorkTimeSetPK().getAmPmAtr() == this.type).map(item -> {
+					return new EmTimeZoneSet(new EmTimeFrameNo(item.getKshmtDtWorkTimeSetPK().getTimeFrameNo()),
 							new TimeZoneRounding(new TimeWithDayAttr(item.getTimeStr()),
 									new TimeWithDayAttr(item.getTimeEnd()), new TimeRoundingSetting(
 											Unit.valueOf(item.getUnit()), Rounding.valueOf(item.getRounding()))));
@@ -41,8 +41,8 @@ public class JpaDiffTimezoneSettingGetMemento implements DiffTimezoneSettingGetM
 
 	@Override
 	public List<DiffTimeOTTimezoneSet> getOTTimezones() {
-		return this.entity.getLstKshmtWtDifOverTs().stream()
-				.filter(item -> item.getKshmtWtDifOverTsPK().getAmPmAtr() == this.type).map(item -> {
+		return this.entity.getLstKshmtDtOtTimeSet().stream()
+				.filter(item -> item.getKshmtDtOtTimeSetPK().getAmPmAtr() == this.type).map(item -> {
 					return new DiffTimeOTTimezoneSet(new JpaDiffTimeOTTimezoneGetMemento(item));
 				}).collect(Collectors.toList());
 	}

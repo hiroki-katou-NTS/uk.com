@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 
 /**
@@ -49,30 +49,30 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	public void setTimezones(List<DeductionTime> timzones) {
 		
 		// check list entity get empty
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFiWekTss())) {
-			this.entity.setKshmtWtFleBrFiWekTss(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaFixRests())) {
+			this.entity.setKshmtFlexHaFixRests(new ArrayList<>());
 		}
 		
 		// check input empty
 		if (CollectionUtil.isEmpty(timzones)) {
-			this.entity.setKshmtWtFleBrFiWekTss(new ArrayList<>());
+			this.entity.setKshmtFlexHaFixRests(new ArrayList<>());
 			return;
 		}
 		
 		// convert map entity
-		Map<KshmtWtFleBrFiWekTsPK, KshmtWtFleBrFiWekTs> mapEntity = this.entity.getKshmtWtFleBrFiWekTss().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtWtFleBrFiWekTs) entity).getKshmtWtFleBrFiWekTsPK(),
+		Map<KshmtFlexHaFixRestPK, KshmtWtFleBrFiWekTs> mapEntity = this.entity.getKshmtFlexHaFixRests().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtWtFleBrFiWekTs) entity).getKshmtFlexHaFixRestPK(),
 						Function.identity()));
 		
-		String companyId = this.entity.getKshmtWtFleBrFlWekPK().getCid();
-		String workTimeCd = this.entity.getKshmtWtFleBrFlWekPK().getWorktimeCd();
-		Integer amPmAtr = this.entity.getKshmtWtFleBrFlWekPK().getAmPmAtr();
+		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
+		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
 		
 		// set list entity
-		this.entity.setKshmtWtFleBrFiWekTss(timzones.stream().map(domain -> {
+		this.entity.setKshmtFlexHaFixRests(timzones.stream().map(domain -> {
 			
 			// newPk
-			KshmtWtFleBrFiWekTsPK pk = new KshmtWtFleBrFiWekTsPK();
+			KshmtFlexHaFixRestPK pk = new KshmtFlexHaFixRestPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setAmPmAtr(amPmAtr);

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_WORK_LOCATION")
+@Table(name = "KWLMT_WORK_LOCATION")
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -26,7 +26,7 @@ public class KrcmtWorkLocation extends ContractUkJpaEntity implements Serializab
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtWorkLocationPK krcmtWorkLocationPK;
+	public KwlmtWorkLocationPK kwlmtWorkLocationPK;
 
 	/** Work Location Name */
 	@Column(name = "WORK_LOCATION_NAME")
@@ -50,7 +50,7 @@ public class KrcmtWorkLocation extends ContractUkJpaEntity implements Serializab
 
 	@Override
 	protected Object getKey() {
-		return krcmtWorkLocationPK;
+		return kwlmtWorkLocationPK;
 	}
 
 }

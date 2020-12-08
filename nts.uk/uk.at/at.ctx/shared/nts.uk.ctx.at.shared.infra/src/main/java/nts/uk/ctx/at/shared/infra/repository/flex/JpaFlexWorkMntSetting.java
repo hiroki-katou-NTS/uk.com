@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.flex.KshmtFlexMng;
-import nts.uk.ctx.at.shared.infra.entity.flex.KshmtFlexMngPK;
+import nts.uk.ctx.at.shared.infra.entity.flex.KshstFlexWorkSettingPK;
 
 /**
  * The Class JpaFlexWorkMntSetting.
@@ -23,7 +23,7 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	@Override
 	public Optional<FlexWorkSet> find(String companyId) {
 		return this.queryProxy()
-				.find(new KshmtFlexMngPK(companyId), KshmtFlexMng.class)
+				.find(new KshstFlexWorkSettingPK(companyId), KshmtFlexMng.class)
 				.map(x -> convertToDomain(x));
 	}
 	
@@ -45,7 +45,7 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 */
 	public KshmtFlexMng convertToDbType(FlexWorkSet setting) {
 		KshmtFlexMng entity = new KshmtFlexMng();
-		KshmtFlexMngPK primaryKey = new KshmtFlexMngPK();
+		KshstFlexWorkSettingPK primaryKey = new KshstFlexWorkSettingPK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setId(primaryKey);
 		entity.setManageFlexWork(setting.getUseFlexWorkSetting().value);
@@ -66,7 +66,7 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 */
 	@Override
 	public void update(FlexWorkSet flexWorkSetting) {
-		Optional<KshmtFlexMng> optEntity = this.queryProxy().find(new KshmtFlexMngPK(flexWorkSetting.getCompanyId().v()), KshmtFlexMng.class);
+		Optional<KshmtFlexMng> optEntity = this.queryProxy().find(new KshstFlexWorkSettingPK(flexWorkSetting.getCompanyId().v()), KshmtFlexMng.class);
 		
 		KshmtFlexMng setting;
 		if (optEntity.isPresent()) {

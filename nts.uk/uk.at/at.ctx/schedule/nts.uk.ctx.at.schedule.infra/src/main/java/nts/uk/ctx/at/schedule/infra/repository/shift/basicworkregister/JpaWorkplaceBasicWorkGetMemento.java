@@ -42,7 +42,7 @@ public class JpaWorkplaceBasicWorkGetMemento implements WorkplaceBasicWorkGetMem
 	 */
 	@Override
 	public String getWorkPlaceId() {
-		return this.typeValue.get(0).getKscmtBasicWorkWkpPK().getWorkplaceId();
+		return this.typeValue.get(0).getKscmtWorkplaceWorkSetPK().getWorkplaceId();
 	}
 
 	/*

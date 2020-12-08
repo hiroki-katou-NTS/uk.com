@@ -17,7 +17,7 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 	private static final int FALSE_VALUE = 0;
 	
 	/** The kshmt forward set of public hd. */
-	private KshmtHdpubForwardSet kshmtHdpubForwardSet;
+	private KshmtHdpubForwardSet kshmtForwardSetOfPublicHd;
 	
 	/**
 	 * Instantiates a new jpa forward setting of public holiday set memento.
@@ -28,7 +28,7 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}
-		this.kshmtHdpubForwardSet = entity;
+		this.kshmtForwardSetOfPublicHd = entity;
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 	 */
 	@Override
 	public void setCompanyID(String companyID) {
-		this.kshmtHdpubForwardSet.setCid(companyID);
+		this.kshmtForwardSetOfPublicHd.setCid(companyID);
 	}
 
 	/* (non-Javadoc)
@@ -45,9 +45,9 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 	@Override
 	public void setIsTransferWhenPublicHdIsMinus(boolean isTransferWhenPublicHdIsMinus) {
 		if(isTransferWhenPublicHdIsMinus){
-			this.kshmtHdpubForwardSet.setIsPublicHdMinus(TRUE_VALUE);
+			this.kshmtForwardSetOfPublicHd.setIsPublicHdMinus(TRUE_VALUE);
 		} else {
-			this.kshmtHdpubForwardSet.setIsPublicHdMinus(FALSE_VALUE);
+			this.kshmtForwardSetOfPublicHd.setIsPublicHdMinus(FALSE_VALUE);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 	 */
 	@Override
 	public void setCarryOverDeadline(PublicHolidayCarryOverDeadline carryOverDeadline) {
-		this.kshmtHdpubForwardSet.setCarryOverDeadline(carryOverDeadline.value);
+		this.kshmtForwardSetOfPublicHd.setCarryOverDeadline(carryOverDeadline.value);
 	}
 	
 }

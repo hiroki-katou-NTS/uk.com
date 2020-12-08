@@ -49,9 +49,9 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity) {
 		super();
 		this.entity = entity;
-		this.perDayWeek = entity.getKshmtWorkcondWeeks();
-		this.perWorkCat = entity.getKshmtWorkcondCtgs();
-		this.method = entity.getKshmtWorkcondScheMeth();
+		this.perDayWeek = entity.getKshmtPersonalDayOfWeeks();
+		this.perWorkCat = entity.getKshmtPerWorkCats();
+		this.method = entity.getKshmtScheduleMethod();
 	}
 	
 
@@ -78,13 +78,13 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 		enums.put("IS00121", this.entity.getScheManagementAtr());
 		
 		//スケジュール作成方法 - 予定作成方法.基本作成方法
-		enums.put("IS00123", this.entity.getKshmtWorkcondScheMeth().getBasicCreateMethod());
+		enums.put("IS00123", this.entity.getKshmtScheduleMethod().getBasicCreateMethod());
 		//カレンダーの参照先 - 予定作成方法.営業日カレンダーによる勤務予定作成.営業日カレンダーの参照先
-		enums.put("IS00124", this.entity.getKshmtWorkcondScheMeth().getRefBusinessDayCalendar());	
+		enums.put("IS00124", this.entity.getKshmtScheduleMethod().getRefBusinessDayCalendar());	
 		//基本勤務の参照先 - 予定作成方法.営業日カレンダーによる勤務予定作成.基本勤務の参照先
-		enums.put("IS00125", this.entity.getKshmtWorkcondScheMeth().getRefBasicWork());
+		enums.put("IS00125", this.entity.getKshmtScheduleMethod().getRefBasicWork());
 		//就業時間帯の参照先 - 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先（基本作成方法＝月間パターンの場合）
-		enums.put("IS00126", this.entity.getKshmtWorkcondScheMeth().getRefWorkingHours());
+		enums.put("IS00126", this.entity.getKshmtScheduleMethod().getRefWorkingHours());
 	}
 	
 	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity, List<KshmtWorkcondCtg> perWorkCat, 
@@ -156,7 +156,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
 		if(perWorkCat == null){
-			perWorkCat = this.entity.getKshmtWorkcondCtgs();
+			perWorkCat = this.entity.getKshmtPerWorkCats();
 		}
 		
 		return new PersonalWorkCategory(new JpaPerWorkCatGetMemento(perWorkCat));
@@ -212,7 +212,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	@Override
 	public PersonalDayOfWeek getWorkDayOfWeek() {
 		if(perDayWeek == null){
-			perDayWeek = this.entity.getKshmtWorkcondWeeks();
+			perDayWeek = this.entity.getKshmtPersonalDayOfWeeks();
 		}
 		
 		return new PersonalDayOfWeek(new JpaPerDayOfWeekGetMemento(perDayWeek));
@@ -252,7 +252,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	@Override
 	public Optional<ScheduleMethod> getScheduleMethod() {
 		if(method == null){
-			method = this.entity.getKshmtWorkcondScheMeth();
+			method = this.entity.getKshmtScheduleMethod();
 		}
 		
 		return method == null ? Optional.empty() : 

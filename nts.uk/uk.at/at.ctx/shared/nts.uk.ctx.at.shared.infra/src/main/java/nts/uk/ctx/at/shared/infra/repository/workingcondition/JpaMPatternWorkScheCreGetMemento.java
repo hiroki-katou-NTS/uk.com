@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkScheduleCreGetMemento{
 	
 	/** The kshmt schedule method. */
-	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
+	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern work schedule cre get memento.
@@ -19,7 +19,7 @@ public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkSched
 	 * @param entity the entity
 	 */
 	public JpaMPatternWorkScheCreGetMemento(KshmtWorkcondScheMeth entity){
-		this.kshmtWorkcondScheMeth = entity;
+		this.kshmtScheduleMethod = entity;
 	}
 
 	/* (non-Javadoc)
@@ -33,7 +33,7 @@ public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkSched
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceType() {
 		try {
-			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtWorkcondScheMeth.getRefWorkingHours());
+			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
 		} catch (Exception e) {
 			return TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 		}

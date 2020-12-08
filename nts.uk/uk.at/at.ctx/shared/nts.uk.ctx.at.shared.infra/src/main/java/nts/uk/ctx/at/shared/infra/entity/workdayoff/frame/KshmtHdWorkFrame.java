@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_HD_WORK_FRAME")
+@Table(name = "KSHST_WORKDAYOFF_FRAME")
 public class KshmtHdWorkFrame extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
@@ -26,7 +26,7 @@ public class KshmtHdWorkFrame extends ContractUkJpaEntity implements Serializabl
     
     /** The kshst workdayoff frame PK. */
     @EmbeddedId
-    protected KshmtHdWorkFramePK kshmtHdWorkFramePK;
+    protected KshstWorkdayoffFramePK kshstWorkdayoffFramePK;
     
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
@@ -61,7 +61,7 @@ public class KshmtHdWorkFrame extends ContractUkJpaEntity implements Serializabl
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtHdWorkFramePK != null ? kshmtHdWorkFramePK.hashCode() : 0);
+        hash += (kshstWorkdayoffFramePK != null ? kshstWorkdayoffFramePK.hashCode() : 0);
         return hash;
     }
 
@@ -75,7 +75,7 @@ public class KshmtHdWorkFrame extends ContractUkJpaEntity implements Serializabl
             return false;
         }
         KshmtHdWorkFrame other = (KshmtHdWorkFrame) object;
-        if ((this.kshmtHdWorkFramePK == null && other.kshmtHdWorkFramePK != null) || (this.kshmtHdWorkFramePK != null && !this.kshmtHdWorkFramePK.equals(other.kshmtHdWorkFramePK))) {
+        if ((this.kshstWorkdayoffFramePK == null && other.kshstWorkdayoffFramePK != null) || (this.kshstWorkdayoffFramePK != null && !this.kshstWorkdayoffFramePK.equals(other.kshstWorkdayoffFramePK))) {
             return false;
         }
         return true;
@@ -86,7 +86,7 @@ public class KshmtHdWorkFrame extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtHdWorkFramePK;
+		return this.kshstWorkdayoffFramePK;
 	}
     
 }

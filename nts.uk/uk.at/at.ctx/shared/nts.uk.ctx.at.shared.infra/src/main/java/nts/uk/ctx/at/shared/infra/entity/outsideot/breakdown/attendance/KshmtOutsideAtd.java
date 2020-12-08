@@ -20,14 +20,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OUTSIDE_ATD")
+@Table(name = "KSHST_OUTSIDE_OT_BRD_ATEN")
 public class KshmtOutsideAtd extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     @EmbeddedId
-    protected KshmtOutsideAtdPK kshmtOutsideAtdPK;
+    protected KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK;
 
     /**
      * Instantiates a new kshst over time brd aten.
@@ -39,10 +39,10 @@ public class KshmtOutsideAtd extends ContractUkJpaEntity implements Serializable
     /**
      * Instantiates a new kshst over time brd aten.
      *
-     * @param kshmtOutsideBrdAtenPK the kshst over time brd aten PK
+     * @param kshstOverTimeBrdAtenPK the kshst over time brd aten PK
      */
-    public KshmtOutsideAtd(KshmtOutsideAtdPK kshmtOutsideBrdAtenPK) {
-        this.kshmtOutsideAtdPK = kshmtOutsideBrdAtenPK;
+    public KshmtOutsideAtd(KshstOutsideOtBrdAtenPK kshstOverTimeBrdAtenPK) {
+        this.kshstOutsideOtBrdAtenPK = kshstOverTimeBrdAtenPK;
     }
 
 	/*
@@ -53,7 +53,7 @@ public class KshmtOutsideAtd extends ContractUkJpaEntity implements Serializable
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshmtOutsideAtdPK != null ? kshmtOutsideAtdPK.hashCode() : 0);
+        hash += (kshstOutsideOtBrdAtenPK != null ? kshstOutsideOtBrdAtenPK.hashCode() : 0);
         return hash;
     }
 
@@ -68,9 +68,9 @@ public class KshmtOutsideAtd extends ContractUkJpaEntity implements Serializable
 			return false;
 		}
 		KshmtOutsideAtd other = (KshmtOutsideAtd) object;
-		if ((this.kshmtOutsideAtdPK == null && other.kshmtOutsideAtdPK != null)
-				|| (this.kshmtOutsideAtdPK != null
-						&& !this.kshmtOutsideAtdPK.equals(other.kshmtOutsideAtdPK))) {
+		if ((this.kshstOutsideOtBrdAtenPK == null && other.kshstOutsideOtBrdAtenPK != null)
+				|| (this.kshstOutsideOtBrdAtenPK != null
+						&& !this.kshstOutsideOtBrdAtenPK.equals(other.kshstOutsideOtBrdAtenPK))) {
 			return false;
 		}
 		return true;
@@ -83,7 +83,7 @@ public class KshmtOutsideAtd extends ContractUkJpaEntity implements Serializable
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtOutsideAtdPK;
+		return this.kshstOutsideOtBrdAtenPK;
 	}
 
 }

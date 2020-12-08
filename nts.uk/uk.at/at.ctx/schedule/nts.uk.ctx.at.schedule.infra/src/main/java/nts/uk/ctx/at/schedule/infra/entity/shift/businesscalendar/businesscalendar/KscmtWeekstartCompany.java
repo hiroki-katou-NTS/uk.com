@@ -14,19 +14,19 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_WEEKSTART_COMPANY")
+@Table(name = "KCCMT_COMPANY_START_DAY")
 public class KscmtWeekstartCompany extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtWeekstartCompanyPK kscmtWeekstartCompanyPK;
+	public KccmtCompanyStartDayPK kccmtCompanyStartDayPK;
 
 	@Column(name = "START_DAY")
 	public int startDay;
 
 	@Override
 	protected Object getKey() {
-		return kscmtWeekstartCompanyPK;
+		return kccmtCompanyStartDayPK;
 	}
 }

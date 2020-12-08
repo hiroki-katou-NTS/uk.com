@@ -28,13 +28,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXEC_LOG")
+@Table(name = "KRCDT_EXECUTION_LOG")
 public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtExecLogPK krcdtExecLogPK;
+	public KrcdtExecutionLogPK krcdtExecutionLogPK;
 	/**
 	 * エラーの有無
 	 */
@@ -66,15 +66,15 @@ public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 //	public KrcdtExec empexecutionlog;
 	
 	@OneToOne(mappedBy="executionlog", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCMT_EXEC_CASE_DETAIL")
+	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO")
 	public KrcdtCalExeSetInfor calExeSetInfor;
 	
-	public KrcdtExecLog(KrcdtExecLogPK krcdtExecLogPK, int existenceError,
+	public KrcdtExecLog(KrcdtExecutionLogPK krcdtExecutionLogPK, int existenceError,
 			GeneralDateTime executionStartDate, GeneralDateTime executionEndDate, int processStatus,
             GeneralDate periodCoverdStartDate, GeneralDate periodCoverdEndDate, String calExecutionSetInfoID,Integer isCalWhenLock
 			) {
 		super();
-		this.krcdtExecLogPK = krcdtExecLogPK;
+		this.krcdtExecutionLogPK = krcdtExecutionLogPK;
 		this.existenceError = existenceError;
 		this.executionStartDate = executionStartDate;
 		this.executionEndDate = executionEndDate;
@@ -85,11 +85,11 @@ public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
         this.isCalWhenLock = isCalWhenLock;
 	}
 	
-	public KrcdtExecLog(KrcdtExecLogPK krcdtExecLogPK, int existenceError,
+	public KrcdtExecLog(KrcdtExecutionLogPK krcdtExecutionLogPK, int existenceError,
 			GeneralDateTime executionStartDate, GeneralDateTime executionEndDate, int processStatus,
 			GeneralDate periodCoverdStartDate, GeneralDate periodCoverdEndDate) {
 		super();
-		this.krcdtExecLogPK = krcdtExecLogPK;
+		this.krcdtExecutionLogPK = krcdtExecutionLogPK;
 		this.existenceError = existenceError;
 		this.executionStartDate = executionStartDate;
 		this.executionEndDate = executionEndDate;
@@ -100,8 +100,8 @@ public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 
 	public ExecutionLog toDomain() {
 		val domain = ExecutionLog.createFromJavaType(
-				this.krcdtExecLogPK.empCalAndSumExecLogID,
-				this.krcdtExecLogPK.executionContent, 
+				this.krcdtExecutionLogPK.empCalAndSumExecLogID,
+				this.krcdtExecutionLogPK.executionContent, 
 				this.existenceError, 
 				this.executionStartDate,
 				this.executionEndDate, 
@@ -109,11 +109,11 @@ public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 				this.periodCoverdStartDate, 
 				this.periodCoverdEndDate,
                 this.isCalWhenLock == null?null:new Boolean(this.isCalWhenLock==1?true:false));
-		if (this.krcdtExecLogPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
+		if (this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
 			domain.setDailyCreationSetInfo(calExeSetInfor.toDomain());
-		} else if(this.krcdtExecLogPK.executionContent == ExecutionContent.DAILY_CALCULATION.value ) {
+		} else if(this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CALCULATION.value ) {
 			domain.setDailyCalSetInfo(calExeSetInfor.toDomain());
-		} else if(this.krcdtExecLogPK.executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT.value) {
+		} else if(this.krcdtExecutionLogPK.executionContent == ExecutionContent.REFLRCT_APPROVAL_RESULT.value) {
 			domain.setReflectApprovalSetInfo(calExeSetInfor.toDomain());
 		} else {
 			domain.setMonlyAggregationSetInfo(calExeSetInfor.toDomain());
@@ -123,12 +123,12 @@ public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtExecLogPK;
+		return this.krcdtExecutionLogPK;
 	}
 	
 	public static KrcdtExecLog toEntity(ExecutionLog domain) {
 		val entity = new KrcdtExecLog(
-				 new KrcdtExecLogPK(
+				 new KrcdtExecutionLogPK(
 					 domain.getEmpCalAndSumExecLogID(),
 					 domain.getExecutionContent().value
 					),

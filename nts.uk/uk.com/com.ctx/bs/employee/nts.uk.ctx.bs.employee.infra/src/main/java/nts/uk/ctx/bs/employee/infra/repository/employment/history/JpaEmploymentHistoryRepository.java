@@ -33,7 +33,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryTerm;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHist;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHistItem;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -50,14 +50,14 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 //			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtAffEmpHist a"
-			+ " INNER JOIN BsymtAffEmpHistItem b on a.hisId = b.hisId" + " WHERE a.sid IN :listSid "
+			+ " INNER JOIN BsymtEmploymentHistItem b on a.hisId = b.hisId" + " WHERE a.sid IN :listSid "
 			+ " AND ( a.strDate <= :end AND a.endDate >= :start ) ";
 	private static final String GET_BY_LSTSID_DATE = "SELECT c FROM BsymtAffEmpHist c where c.sid IN :lstSID" 
 			+ " AND c.strDate <= :date and c.endDate >= :date";
 
 	private static final String SELECT_DATA_REQ638 = "SELECT eht.empCode, ach.startDate , e.bsymtEmployeeDataMngInfoPk.sId, ps.bpsmtPersonPk.pId, ps.birthday "
 			+ " FROM BsymtAffEmpHist eh  "
-			+ " INNER JOIN BsymtAffEmpHistItem eht ON eh.hisId = eht.hisId "
+			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
 			+ " INNER JOIN BsymtAffCompanyHist ach ON ach.bsymtAffCompanyHistPk.sId = eht.sid "
 			+ " INNER JOIN BsymtEmployeeDataMngInfo e ON e.bsymtEmployeeDataMngInfoPk.sId = eht.sid "
 			+ " INNER JOIN BpsmtPerson ps ON  ps.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId "
@@ -68,26 +68,26 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			+ " AND ps.birthday >= :startDate AND e.companyId = :cid";
 	
 	private static final String SELECT_DATA_REQ640 = "SELECT eht "
-			+ " FROM BsymtAffEmpHistItem  eht  "
+			+ " FROM BsymtEmploymentHistItem  eht  "
 			+ " INNER JOIN BsymtAffEmpHist eh ON eh.hisId = eht.hisId "
 			+ " WHERE eh.sid IN :listSid AND eh.strDate <= :endDate AND eh.endDate >= :startDate ";
 	
 	private static final String SELECT_DATA_REQ640_2 = "SELECT eh "
 			+ " FROM BsymtAffEmpHist  eh  "
-			+ " INNER JOIN BsymtAffEmpHistItem eht ON eh.hisId = eht.hisId "
+			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
 			+ " WHERE eh.hisId IN :histIds";
 	
 	private static final String DELETE_HIST = "DELETE FROM BsymtAffEmpHist a "
 			+ " WHERE a.companyId = :companyId "
 			+ " AND a.sid = :empId "
 			+ " AND a.hisId = :histId  ";
-	private static final String DELETE_HIST_ITEM = "DELETE FROM BsymtAffEmpHistItem a "
+	private static final String DELETE_HIST_ITEM = "DELETE FROM BsymtEmploymentHistItem a "
 			+ " WHERE a.hisId = :histId"
 			+ " AND a.sid = : empId";
 	private static final String DELETE_HIST_BY_SID = "DELETE FROM BsymtAffEmpHist a "
 			+ " WHERE a.companyId = :companyId "
 			+ " AND a.sid = :empId ";
-	private static final String DELETE_HIST_ITEM_BY_SID = "DELETE FROM BsymtAffEmpHistItem a "
+	private static final String DELETE_HIST_ITEM_BY_SID = "DELETE FROM BsymtEmploymentHistItem a "
 			+ " WHERE a.sid = : empId";
 	
 	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtAffEmpHist a " 
@@ -96,24 +96,24 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtAffEmpHist a " 
 			+ " WHERE a.companyId = :companyId "
 			+ " AND a.sid IN :empIds ";
-	private static final String GET_BY_KEY = " SELECT a FROM BsymtAffEmpHistItem a "
+	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem a "
 											+ " WHERE a.hisId =:  histId "; 
 	
-	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtAffEmpHistItem a"
+	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem a"
 			+ " WHERE a.hisId IN :listHistId "; 
 	
-	private static final String GET_BY_DATE = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtAffEmpHistItem i "
+	private static final String GET_BY_DATE = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
 			+ " JOIN BsymtAffEmpHist h ON h.hisId = i.hisId AND h.sid = i.sid "
 			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
 			+ " AND h.companyId =: companyId " ;
 	
-	private static final String SPECIFY_EMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtAffEmpHistItem i "
+	private static final String SPECIFY_EMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
 			+ " JOIN BsymtAffEmpHist h ON h.hisId = i.hisId AND h.sid = i.sid "
 			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
 			+ " AND h.companyId =: companyId "
 			+ " AND h.sid =: empId  ";
 	
-	private static final String SPECIFY_LISTEMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtAffEmpHistItem i "
+	private static final String SPECIFY_LISTEMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
 			+ " JOIN BsymtAffEmpHist h ON h.hisId = i.hisId AND h.sid = i.sid "
 			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
 			+ " AND h.companyId =: companyId "
@@ -204,7 +204,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		Optional<BsymtAffEmpHist> histItem = this.queryProxy().find(itemToBeUpdated.identifier(),
 				BsymtAffEmpHist.class);
 		if (!histItem.isPresent()) {
-			throw new RuntimeException("invalid BsymtAffEmpHist");
+			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
 		updateEntity(itemToBeUpdated, histItem.get());
 		this.commandProxy().update(histItem.get());
@@ -215,7 +215,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	public void delete(String histId) {
 		Optional<BsymtAffEmpHist> histItem = this.queryProxy().find(histId, BsymtAffEmpHist.class);
 		if (!histItem.isPresent()) {
-			throw new RuntimeException("invalid BsymtAffEmpHist");
+			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
 		this.commandProxy().remove(BsymtAffEmpHist.class, histId);
 
@@ -428,12 +428,12 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmploymentHistoryItem> getEmploymentHisItem(List<String> employeeIds, DatePeriod datePeriod) {
 		
-		List<BsymtAffEmpHistItem> resultList = new ArrayList<>();
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
 		
 		// Split employeeId List if size of employeeId List is greater than 1000
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			List<BsymtAffEmpHistItem> optionDatas = this.queryProxy()
-					.query(SELECT_DATA_REQ640, BsymtAffEmpHistItem.class)
+			List<BsymtEmploymentHistItem> optionDatas = this.queryProxy()
+					.query(SELECT_DATA_REQ640, BsymtEmploymentHistItem.class)
 					.setParameter("listSid", subList)
 					.setParameter("startDate", datePeriod.start())
 					.setParameter("endDate", datePeriod.end())
@@ -445,7 +445,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				.collect(Collectors.toList());
 	}
 	
-	private EmploymentHistoryItem toDomainEmploymentHistoryItem(BsymtAffEmpHistItem entity) {
+	private EmploymentHistoryItem toDomainEmploymentHistoryItem(BsymtEmploymentHistItem entity) {
 		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
 	}
 
@@ -698,8 +698,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
                 return entity;
             });
             
-            for(BsymtAffEmpHist bsymtAffEmpHist : data) {
-                result.add(new DateHistoryItem(bsymtAffEmpHist.hisId, new DatePeriod(bsymtAffEmpHist.strDate, bsymtAffEmpHist.endDate)));
+            for(BsymtAffEmpHist bsymtEmploymentHist : data) {
+                result.add(new DateHistoryItem(bsymtEmploymentHist.hisId, new DatePeriod(bsymtEmploymentHist.strDate, bsymtEmploymentHist.endDate)));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -725,8 +725,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		}
 		return result;
 	}
-	public BsymtAffEmpHistItem toEntityHistItem(EmploymentHistoryItem employmentHistoryItem){
-			BsymtAffEmpHistItem entity =  new BsymtAffEmpHistItem(employmentHistoryItem.getHistoryId(), employmentHistoryItem.getEmployeeId(), employmentHistoryItem.getEmploymentCode().v(), employmentHistoryItem.getSalarySegment().value);	
+	public BsymtEmploymentHistItem toEntityHistItem(EmploymentHistoryItem employmentHistoryItem){
+			BsymtEmploymentHistItem entity =  new BsymtEmploymentHistItem(employmentHistoryItem.getHistoryId(), employmentHistoryItem.getEmployeeId(), employmentHistoryItem.getEmploymentCode().v(), employmentHistoryItem.getSalarySegment().value);	
 		return entity;
 	}
 
@@ -794,7 +794,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public Optional<EmploymentHistoryItem> getEmploymentHistoryItem(String histId) {
-		Optional<BsymtAffEmpHistItem> entity = this.queryProxy().query(GET_BY_KEY, BsymtAffEmpHistItem.class)
+		Optional<BsymtEmploymentHistItem> entity = this.queryProxy().query(GET_BY_KEY, BsymtEmploymentHistItem.class)
 				.setParameter("hisId", histId).getSingle();
 		EmploymentHistoryItem result = new EmploymentHistoryItem(entity.get().hisId, entity.get().sid,
 				EnumAdaptor.valueOf(entity.get().salarySegment, SalarySegment.class),
@@ -806,7 +806,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
 		List<EmploymentHistoryItem> historyItems = new ArrayList<>();
 		if(!listHistId.isEmpty()) {
-			historyItems = this.queryProxy().query(GET_BY_LIST_HISTID, BsymtAffEmpHistItem.class)
+			historyItems = this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
 					.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,  
 							 x.salarySegment == null ? null : EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
 		}
@@ -816,7 +816,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public List<EmploymentHistoryItem> getEmploymentHistoryItemByDate(String companyId, GeneralDate ymd) {
-		List<BsymtAffEmpHistItem> listEmploymentHistoryItem = this.queryProxy().query(GET_BY_DATE,BsymtAffEmpHistItem.class)
+		List<BsymtEmploymentHistItem> listEmploymentHistoryItem = this.queryProxy().query(GET_BY_DATE,BsymtEmploymentHistItem.class)
 				.setParameter("ymd", ymd)
 				.setParameter("companyId", companyId)
 				.getList();
@@ -827,7 +827,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public Optional<EmploymentHistoryItem> getByEmpIdAndDate(String companyId, GeneralDate ymd, String empId) {
 		EmploymentHistoryItem result = null;
-		Optional<BsymtAffEmpHistItem> employmentHistoryItem = this.queryProxy().query(SPECIFY_EMP_HISTORY,BsymtAffEmpHistItem.class)
+		Optional<BsymtEmploymentHistItem> employmentHistoryItem = this.queryProxy().query(SPECIFY_EMP_HISTORY,BsymtEmploymentHistItem.class)
 				.setParameter("ymd", ymd)
 				.setParameter("companyId", companyId)
 				.setParameter("empId", empId)
@@ -843,7 +843,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	public List<EmploymentHistoryItem> getByListEmpIdAndDate(String companyId, GeneralDate ymd,
 			List<String> listEmpId) {
 		
-		List<BsymtAffEmpHistItem> listEmploymentHistoryItem = this.queryProxy().query(SPECIFY_LISTEMP_HISTORY,BsymtAffEmpHistItem.class)
+		List<BsymtEmploymentHistItem> listEmploymentHistoryItem = this.queryProxy().query(SPECIFY_LISTEMP_HISTORY,BsymtEmploymentHistItem.class)
 				.setParameter("ymd", ymd)
 				.setParameter("companyId", companyId)
 				.setParameter("listEmpId", listEmpId)

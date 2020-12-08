@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WT_FLO_BR_FL")
+@Table(name = "KSHMT_FLOW_RT_SET")
 public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -35,7 +35,7 @@ public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable 
 
 	/** The kshmt flow rt set PK. */
 	@EmbeddedId
-	protected KshmtWtFloBrFlPK kshmtWtFloBrFlPK;
+	protected KshmtFlowRtSetPK kshmtFlowRtSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -64,7 +64,7 @@ public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable 
 		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = true, updatable = true)
 	})
-	private List<KshmtWtFloBrFlAllTs> lstKshmtWtFloBrFlAllTs;
+	private List<KshmtWtFloBrFlAllTs> lstKshmtFlowFlowRtSet;
 	
 	/** The lst kshmt flow fixed rt set PK. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -73,7 +73,7 @@ public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable 
 		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = true, updatable = true)
 	})
-	private List<KshmtWtFloBrFiAllTs> lstKshmtWtFloBrFiAllTs;
+	private List<KshmtWtFloBrFiAllTs> lstKshmtFlowFixedRtSet;
 
 	/**
 	 * Instantiates a new kshmt flow rt set.
@@ -90,7 +90,7 @@ public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable 
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtWtFloBrFlPK != null ? kshmtWtFloBrFlPK.hashCode() : 0);
+		hash += (kshmtFlowRtSetPK != null ? kshmtFlowRtSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -105,9 +105,9 @@ public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable 
 			return false;
 		}
 		KshmtWtFloBrFl other = (KshmtWtFloBrFl) object;
-		if ((this.kshmtWtFloBrFlPK == null && other.kshmtWtFloBrFlPK != null)
-				|| (this.kshmtWtFloBrFlPK != null
-						&& !this.kshmtWtFloBrFlPK.equals(other.kshmtWtFloBrFlPK))) {
+		if ((this.kshmtFlowRtSetPK == null && other.kshmtFlowRtSetPK != null)
+				|| (this.kshmtFlowRtSetPK != null
+						&& !this.kshmtFlowRtSetPK.equals(other.kshmtFlowRtSetPK))) {
 			return false;
 		}
 		return true;
@@ -120,7 +120,7 @@ public class KshmtWtFloBrFl extends ContractUkJpaEntity implements Serializable 
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtWtFloBrFlPK;
+		return this.kshmtFlowRtSetPK;
 	}
 
 }

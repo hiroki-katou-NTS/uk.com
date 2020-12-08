@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.mail.SgwdtUrlExecInfo;
-import nts.uk.ctx.sys.gateway.infra.entity.mail.SgwdtUrlExecInfoPk;
+import nts.uk.ctx.sys.gateway.infra.entity.mail.SgwmtUrlExecInfoPk;
 import nts.uk.shr.com.url.UrlExecInfo;
 
 @Stateless
@@ -45,7 +45,7 @@ public class JpaUrlExecInfoRepository extends JpaRepository implements UrlExecIn
 
     @Override
     public void remove(String embeddedId, String cid){
-        this.commandProxy().remove(SgwdtUrlExecInfo.class, new SgwdtUrlExecInfoPk(embeddedId, cid)); 
+        this.commandProxy().remove(SgwdtUrlExecInfo.class, new SgwmtUrlExecInfoPk(embeddedId, cid)); 
     }
 
 	@Override

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 public class JpaOutManageGetMemento implements OutManageGetMemento{
 
 	/** The krcst out manage. */
-	private KrcmtGooutMng krcmtGooutMng;
+	private KrcmtGooutMng krcstOutManage;
 	
 	/**
 	 * Instantiates a new jpa out manage get memento.
@@ -21,7 +21,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 * @param entity the entity
 	 */
 	public JpaOutManageGetMemento(KrcmtGooutMng entity) {
-		this.krcmtGooutMng = entity;
+		this.krcstOutManage = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.krcmtGooutMng.getCid();
+		return this.krcstOutManage.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 */
 	@Override
 	public MaxGoOut getMaxUsage() {
-		return new MaxGoOut(this.krcmtGooutMng.getMaxUsage().intValue());
+		return new MaxGoOut(this.krcstOutManage.getMaxUsage().intValue());
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 */
 	@Override
 	public GoingOutReason getInitValueReasonGoOut() {
-		return GoingOutReason.valueOf(this.krcmtGooutMng.getInitValueReasonGoOut().intValue());
+		return GoingOutReason.valueOf(this.krcstOutManage.getInitValueReasonGoOut().intValue());
 	}
 
 }

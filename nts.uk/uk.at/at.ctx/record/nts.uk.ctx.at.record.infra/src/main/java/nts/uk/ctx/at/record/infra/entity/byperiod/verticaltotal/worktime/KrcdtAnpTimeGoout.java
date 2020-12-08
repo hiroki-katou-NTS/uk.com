@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_ANP_TIME_GOOUT")
+@Table(name = "KRCDT_ANP_AGGR_GOOUT")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtAnpTimeGoout extends ContractUkJpaEntity implements Serializable {
@@ -36,7 +36,7 @@ public class KrcdtAnpTimeGoout extends ContractUkJpaEntity implements Serializab
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtAnpTimeGooutPK PK;
+	public KrcdtAnpAggrGooutPK PK;
 	
 	/** 外出回数 */
 	@Column(name = "GOOUT_TIMES")
@@ -112,7 +112,7 @@ public class KrcdtAnpTimeGoout extends ContractUkJpaEntity implements Serializab
 	 */
 	public void fromDomainForPersist(AttendanceTimeOfAnyPeriodKey key, AggregateGoOut domain){
 		
-		this.PK = new KrcdtAnpTimeGooutPK(
+		this.PK = new KrcdtAnpAggrGooutPK(
 				key.getEmployeeId(),
 				key.getAnyAggrFrameCode().v(),
 				domain.getGoOutReason().value);

@@ -39,10 +39,10 @@ public class JpaFlexFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneS
 	 */
 	@Override
 	public List<EmTimeZoneSet> getLstWorkingTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleWorkTss())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexWorkTimeSets())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleWorkTss().stream()
+		return this.entity.getKshmtFlexWorkTimeSets().stream()
 				.map(entity -> new EmTimeZoneSet(new JpaFlexEmTimeZoneSetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
@@ -56,10 +56,10 @@ public class JpaFlexFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneS
 	 */
 	@Override
 	public List<OverTimeOfTimeZoneSet> getLstOTTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleOverTss())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOtTimeSets())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtWtFleOverTss().stream()
+		return this.entity.getKshmtFlexOtTimeSets().stream()
 				.map(entity -> new OverTimeOfTimeZoneSet(new JpaFlexOverTimeOfTimeZoneSetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

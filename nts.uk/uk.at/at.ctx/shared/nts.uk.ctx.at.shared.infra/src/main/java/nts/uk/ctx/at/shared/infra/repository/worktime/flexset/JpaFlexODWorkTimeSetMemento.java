@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODFlWRestTzSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayHDWTSheetSetMemento;
@@ -37,8 +37,8 @@ public class JpaFlexODWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento
 	public JpaFlexODWorkTimeSetMemento(KshmtWtFleBrFlHol entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleHolTss())) {
-			this.entity.setKshmtWtFleHolTss(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHolSets())) {
+			this.entity.setKshmtFlexHolSets(new ArrayList<>());
 		}
 	}
 
@@ -49,17 +49,17 @@ public class JpaFlexODWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento
 	public void setLstWorkTimezone(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
 
 		if (CollectionUtil.isEmpty(lstWorkTimezone)) {
-			this.entity.setKshmtWtFleHolTss(new ArrayList<>());
+			this.entity.setKshmtFlexHolSets(new ArrayList<>());
 		} else {
-			if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleHolTss())) {
-				this.entity.setKshmtWtFleHolTss(new ArrayList<>());
+			if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHolSets())) {
+				this.entity.setKshmtFlexHolSets(new ArrayList<>());
 			}
-			Map<KshmtWtFleHolTsPK, KshmtWtFleHolTs> entityMap = this.entity.getKshmtWtFleHolTss().stream()
-					.collect(Collectors.toMap(KshmtWtFleHolTs::getKshmtWtFleHolTsPK, Function.identity()));
+			Map<KshmtFlexHolSetPK, KshmtWtFleHolTs> entityMap = this.entity.getKshmtFlexHolSets().stream()
+					.collect(Collectors.toMap(KshmtWtFleHolTs::getKshmtFlexHolSetPK, Function.identity()));
 			List<KshmtWtFleHolTs> lstNewEntity = lstWorkTimezone.stream().map(domain -> {
 
-				KshmtWtFleHolTsPK newPK = new KshmtWtFleHolTsPK(this.entity.getKshmtWtFleBrFlHolPK().getCid(),
-						this.entity.getKshmtWtFleBrFlHolPK().getWorktimeCd(), domain.getWorkTimeNo());
+				KshmtFlexHolSetPK newPK = new KshmtFlexHolSetPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), domain.getWorkTimeNo());
 
 				KshmtWtFleHolTs newEntity = new KshmtWtFleHolTs(newPK);
 
@@ -73,7 +73,7 @@ public class JpaFlexODWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento
 				return newEntity;
 			}).collect(Collectors.toList());
 
-			this.entity.setKshmtWtFleHolTss(lstNewEntity);
+			this.entity.setKshmtFlexHolSets(lstNewEntity);
 		}
 	}
 

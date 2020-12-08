@@ -14,15 +14,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 
 	/** The kshst manage entry exit. */
-	private KshmtGateMng kshmtGateMng;
+	private KshmtGateMng kshstManageEntryExit;
 
 	/**
 	 * Instantiates a new jpa manage entry exit set memento.
 	 *
-	 * @param kshmtGateMng the kshst manage entry exit
+	 * @param kshstManageEntryExit the kshst manage entry exit
 	 */
-	public JpaManageEntryExitSetMemento(KshmtGateMng kshmtGateMng) {
-		this.kshmtGateMng = kshmtGateMng;
+	public JpaManageEntryExitSetMemento(KshmtGateMng kshstManageEntryExit) {
+		this.kshstManageEntryExit = kshstManageEntryExit;
 	}
 	
 	/* (non-Javadoc)
@@ -31,9 +31,9 @@ public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 	@Override
 	public void setCompanyID(String companyID) {
 		if (companyID == null) {
-			this.kshmtGateMng.setCid(AppContexts.user().companyId());
+			this.kshstManageEntryExit.setCid(AppContexts.user().companyId());
 		} else {
-			this.kshmtGateMng.setCid(companyID);
+			this.kshstManageEntryExit.setCid(companyID);
 		}
 		
 		
@@ -44,7 +44,7 @@ public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 	 */
 	@Override
 	public void setUseCls(int useCls) {
-		this.kshmtGateMng.setUseCls(new BigDecimal(useCls));
+		this.kshstManageEntryExit.setUseCls(new BigDecimal(useCls));
 	}
 
 }

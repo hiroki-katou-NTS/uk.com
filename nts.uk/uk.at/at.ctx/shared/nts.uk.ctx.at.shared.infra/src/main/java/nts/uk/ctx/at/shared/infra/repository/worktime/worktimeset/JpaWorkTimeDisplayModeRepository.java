@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispModePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
 
 /**
  * The Class JpaWorkTimeDisplayModeRepository.
@@ -43,7 +43,7 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public void update(WorkTimeDisplayMode domain) {
-		KshmtWtComDispModePK pk = new KshmtWtComDispModePK(domain.getCompanyId(), domain.getWorktimeCode().v());
+		KshmtWorktimeDispModePK pk = new KshmtWorktimeDispModePK(domain.getCompanyId(), domain.getWorktimeCode().v());
 
 		Optional<KshmtWtComDispMode> op = this.queryProxy().find(pk, KshmtWtComDispMode.class);
 		if (op.isPresent()) {
@@ -63,7 +63,7 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWtComDispMode.class, new KshmtWtComDispModePK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWtComDispMode.class, new KshmtWorktimeDispModePK(companyId, workTimeCode));
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public Optional<WorkTimeDisplayMode> findByKey(String companyId, String workTimeCode) {
-		KshmtWtComDispModePK pk = new KshmtWtComDispModePK(companyId, workTimeCode);
+		KshmtWorktimeDispModePK pk = new KshmtWorktimeDispModePK(companyId, workTimeCode);
 		Optional<KshmtWtComDispMode> entity = this.queryProxy().find(pk, KshmtWtComDispMode.class);
 		return entity.isPresent()
 				? Optional.of(new WorkTimeDisplayMode(new JpaWorkTimeDisplayModeGetMemento(entity.get())))

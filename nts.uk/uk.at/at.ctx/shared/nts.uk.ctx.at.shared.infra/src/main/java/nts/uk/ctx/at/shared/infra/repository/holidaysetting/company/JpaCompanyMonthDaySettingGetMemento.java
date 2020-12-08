@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMC
 public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySettingGetMemento {
 	
 	/** The list kshmt com month day set. */
-	private List<KshmtHdpubDPerMCom> listKshmtHdpubDPerMCom;
+	private List<KshmtHdpubDPerMCom> listKshmtComMonthDaySet;
 	
 	/**
 	 * Instantiates a new jpa company month day setting get memento.
@@ -25,7 +25,7 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 * @param entity the entity
 	 */
 	public JpaCompanyMonthDaySettingGetMemento(List<KshmtHdpubDPerMCom> entities){
-		this.listKshmtHdpubDPerMCom = entities;
+		this.listKshmtComMonthDaySet = entities;
 	}
 
 	/* (non-Javadoc)
@@ -33,7 +33,7 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.listKshmtHdpubDPerMCom.get(0).getKshmtHdpubDPerMComPK().getCid());
+		return new CompanyId(this.listKshmtComMonthDaySet.get(0).getKshmtComMonthDaySetPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +41,7 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 */
 	@Override
 	public Year getManagementYear() {
-		return new Year(this.listKshmtHdpubDPerMCom.get(0).getKshmtHdpubDPerMComPK().getManageYear());
+		return new Year(this.listKshmtComMonthDaySet.get(0).getKshmtComMonthDaySetPK().getManageYear());
 	}
 
 	/* (non-Javadoc)
@@ -49,9 +49,9 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 */
 	@Override
 	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSettings() {
-		return this.listKshmtHdpubDPerMCom.stream().map(e -> {
-			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtHdpubDPerMComPK().getManageYear()),
-					new Integer(e.getKshmtHdpubDPerMComPK().getMonth()),
+		return this.listKshmtComMonthDaySet.stream().map(e -> {
+			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtComMonthDaySetPK().getManageYear()),
+					new Integer(e.getKshmtComMonthDaySetPK().getMonth()),
 					new MonthlyNumberOfDays(e.getInLegalHd()));
 			return domain;
 		}).collect(Collectors.toList());

@@ -71,7 +71,7 @@ public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMement
 	 */
 	@Override
 	public void setAmpmAtr(AmPmAtr ampmAtr) {
-		this.entity.getKshmtWtFleBrFlWekPK().setAmPmAtr(ampmAtr.value);
+		this.entity.getKshmtFlexHaRtSetPK().setAmPmAtr(ampmAtr.value);
 	}
 
 }

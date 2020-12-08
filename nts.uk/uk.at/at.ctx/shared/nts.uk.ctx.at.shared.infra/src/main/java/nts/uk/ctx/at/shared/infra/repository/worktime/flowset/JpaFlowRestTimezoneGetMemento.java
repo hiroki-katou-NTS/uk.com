@@ -30,8 +30,8 @@ public class JpaFlowRestTimezoneGetMemento implements FlowRestTimezoneGetMemento
 	public JpaFlowRestTimezoneGetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloBrFlAllTs())) {
-			this.entity.setLstKshmtWtFloBrFlAllTs(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFlowRtSet())) {
+			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class JpaFlowRestTimezoneGetMemento implements FlowRestTimezoneGetMemento
 	 */
 	@Override
 	public List<FlowRestSetting> getFlowRestSet() {
-		return this.entity.getLstKshmtWtFloBrFlAllTs().stream()
+		return this.entity.getLstKshmtFlowFlowRtSet().stream()
 				.map(entity -> new FlowRestSetting(new JpaFlowRestSettingGetMemento(entity)))
 				.sorted((item1, item2) -> item1.getFlowRestTime().compareTo(item2.getFlowRestTime()))
 				.collect(Collectors.toList());

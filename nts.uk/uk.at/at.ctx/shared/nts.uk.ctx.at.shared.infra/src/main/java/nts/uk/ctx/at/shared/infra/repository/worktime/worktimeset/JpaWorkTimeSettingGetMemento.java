@@ -46,7 +46,7 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWtPK().getCid();
+		return this.entity.getKshmtWorkTimeSetPK().getCid();
 	}
 
 	/*
@@ -58,7 +58,7 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public WorkTimeCode getWorktimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWtPK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtWorkTimeSetPK().getWorktimeCd());
 	}
 
 	/*

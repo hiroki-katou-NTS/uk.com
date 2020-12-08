@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetimeMng;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetimeMngPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtLateEarlySetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetimePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarlyPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
@@ -48,7 +48,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 */
 	@Override
 	public void setCommonSet(EmTimezoneLateEarlyCommonSet set) {		
-		this.parentEntity.getKshmtWtComLatetimeMng().setIsDeducteFromTime(BooleanGetAtr.getAtrByBoolean(set.isDelFromEmTime()));
+		this.parentEntity.getKshmtLateEarlySet().setIsDeducteFromTime(BooleanGetAtr.getAtrByBoolean(set.isDelFromEmTime()));
 	}
 
 	/*
@@ -69,11 +69,11 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 		for (OtherEmTimezoneLateEarlySet emTimezone : list) {
 			
 			// new pk
-			KshmtWtComLatetimePK newPK = this.setPrimaryKey(parentEntity, new KshmtWtComLatetimePK());
+			KshmtOtherLateEarlyPK newPK = this.setPrimaryKey(parentEntity, new KshmtOtherLateEarlyPK());
 			
 			// get entity existed
 			KshmtWtComLatetime entity = lstEntity.stream().filter(item -> {
-					KshmtWtComLatetimePK pk = item.getKshmtWtComLatetimePK();
+					KshmtOtherLateEarlyPK pk = item.getKshmtOtherLateEarlyPK();
 					
 					return pk.getCid().equals(newPK.getCid()) && pk.getWorktimeCd().equals(newPK.getWorktimeCd())
 							&& pk.getWorkFormAtr() == newPK.getWorkFormAtr()
@@ -99,21 +99,21 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 *            the parent entity
 	 */
 	private void initialEntity(KshmtWtCom parentEntity) {
-		KshmtWtComLatetimeMng entity = parentEntity.getKshmtWtComLatetimeMng();
+		KshmtWtComLatetimeMng entity = parentEntity.getKshmtLateEarlySet();
 
 		if(entity == null){
 			entity = new KshmtWtComLatetimeMng();
 		}
 		// check existed key
-		if (entity.getKshmtWtComLatetimeMngPK() == null) {
+		if (entity.getKshmtLateEarlySetPK() == null) {
 
 			// set primary key
-			KshmtWtComLatetimeMngPK pk = this.setPrimaryKey(parentEntity, new KshmtWtComLatetimeMngPK());
-			entity.setKshmtWtComLatetimeMngPK(pk);
+			KshmtLateEarlySetPK pk = this.setPrimaryKey(parentEntity, new KshmtLateEarlySetPK());
+			entity.setKshmtLateEarlySetPK(pk);
 		}
 
 		// set entity
-		parentEntity.setKshmtWtComLatetimeMng(entity);
+		parentEntity.setKshmtLateEarlySet(entity);
 	}
 
 	/**
@@ -126,24 +126,24 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 */
 	private <T> T setPrimaryKey(KshmtWtCom parentEntity, T primaryKey) {
 		
-		// KshmtWtComLatetimeMngPK
-		if (primaryKey instanceof KshmtWtComLatetimeMngPK) {
-			KshmtWtComLatetimeMngPK pk = (KshmtWtComLatetimeMngPK) primaryKey;
+		// KshmtLateEarlySetPK
+		if (primaryKey instanceof KshmtLateEarlySetPK) {
+			KshmtLateEarlySetPK pk = (KshmtLateEarlySetPK) primaryKey;
 			
-			pk.setCid(parentEntity.getKshmtWtComPK().getCid());
-			pk.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
-			pk.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
-			pk.setWorktimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
+			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			pk.setWorktimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 		}
 		
-		// KshmtWtComLatetimePK
-		if (primaryKey instanceof KshmtWtComLatetimePK) {
-			KshmtWtComLatetimePK pk = (KshmtWtComLatetimePK) primaryKey;
+		// KshmtOtherLateEarlyPK
+		if (primaryKey instanceof KshmtOtherLateEarlyPK) {
+			KshmtOtherLateEarlyPK pk = (KshmtOtherLateEarlyPK) primaryKey;
 			
-			pk.setCid(parentEntity.getKshmtWtComPK().getCid());
-			pk.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
-			pk.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
-			pk.setWorktimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
+			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			pk.setWorktimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 		}
 		return primaryKey;
 	}

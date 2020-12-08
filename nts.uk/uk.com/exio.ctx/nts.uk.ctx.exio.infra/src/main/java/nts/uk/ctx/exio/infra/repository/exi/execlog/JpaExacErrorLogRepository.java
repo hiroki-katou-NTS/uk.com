@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcErrLog;
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcErrLogPk;
+import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacErrorLogPk;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -59,7 +59,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 
     @Override
     public void remove(int logSeqNumber, String cid, String externalProcessId){
-        this.commandProxy().remove(OiodtExAcErrLog.class, new OiodtExAcErrLogPk(logSeqNumber, cid, externalProcessId)); 
+        this.commandProxy().remove(OiodtExAcErrLog.class, new OiomtExacErrorLogPk(logSeqNumber, cid, externalProcessId)); 
     }
 
 	private static ExacErrorLog toDomain(OiodtExAcErrLog entity) {
@@ -70,7 +70,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 
 	private OiodtExAcErrLog toEntity(ExacErrorLog domain) {
 		return new OiodtExAcErrLog(domain.getVersion(),
-				new OiodtExAcErrLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()),
+				new OiomtExacErrorLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()),
 				domain.getCsvErrorItemName().get(), domain.getCsvAcceptedValue().get(), domain.getErrorContents().get(),
 				domain.getRecordNumber().v(), domain.getLogRegDateTime(), domain.getItemName().get(), domain.getErrorAtr().value);
 	}

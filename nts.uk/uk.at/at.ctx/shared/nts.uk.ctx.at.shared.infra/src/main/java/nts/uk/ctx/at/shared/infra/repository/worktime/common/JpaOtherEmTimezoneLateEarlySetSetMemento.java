@@ -91,7 +91,7 @@ public class JpaOtherEmTimezoneLateEarlySetSetMemento implements OtherEmTimezone
 	 */
 	@Override
 	public void setLateEarlyAtr(LateEarlyAtr lateEarlyAtr) {
-		this.entity.getKshmtWtComLatetimePK().setLateEarlyAtr(lateEarlyAtr.value);
+		this.entity.getKshmtOtherLateEarlyPK().setLateEarlyAtr(lateEarlyAtr.value);
 	}
 
 }

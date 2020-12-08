@@ -14,12 +14,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCCT_SCHE_FUNC_DATE")
+@Table(name = "KSCST_SCHEDULE_DATE")
 public class KscctScheFuncDate extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KscctScheFuncDatePK kscctScheFuncDatePK;
+	public KscstScheduleDatePK kscstScheduleDatePK;
 	
 	/** 表示順 */
 	@Column(name = "DISPLAY_ORDER_DATE")
@@ -40,7 +40,7 @@ public class KscctScheFuncDate extends ContractUkJpaEntity implements Serializab
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return kscctScheFuncDatePK;
+		return kscstScheduleDatePK;
 	}
 	
 	

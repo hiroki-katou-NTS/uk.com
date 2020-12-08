@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_M_SET_DEF_COM")
+@Table(name = "KRCST_COM_DEFOR_M_CAL_SET")
 public class KrcmtCalcMSetDefCom extends KrcstDeforMCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */

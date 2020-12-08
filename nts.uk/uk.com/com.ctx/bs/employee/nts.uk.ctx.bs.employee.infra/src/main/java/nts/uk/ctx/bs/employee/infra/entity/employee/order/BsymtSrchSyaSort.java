@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class BsymtSrchSyaSort.
  */
 @Entity
-@Table(name="BSYMT_SRCH_SYA_SORT")
+@Table(name="BSYMT_EMPLOYEE_ORDER")
 @Getter
 @Setter
 public class BsymtSrchSyaSort extends ContractUkJpaEntity implements Serializable {
@@ -36,7 +36,7 @@ public class BsymtSrchSyaSort extends ContractUkJpaEntity implements Serializabl
 
 	/** The id. */
 	@EmbeddedId
-	private BsymtSrchSyaSortPK id;
+	private BsymtEmployeeOrderPK id;
 
 	/** The name. */
 	@Column(name="NAME")
@@ -48,14 +48,14 @@ public class BsymtSrchSyaSort extends ContractUkJpaEntity implements Serializabl
 			@JoinColumn(name = "NO", referencedColumnName = "NO", insertable = false, updatable = false), 
 			@JoinColumn(name = "SEARCH_TYPE", referencedColumnName = "SEARCH_TYPE", insertable = false, updatable = false) 
 	})
-	private List<BsymtSrchSyaSortCnd> lstBsymtSrchSyaSortCnd;
+	private List<BsymtSrchSyaSortCnd> lstBsymtEmpOrderCond;
 
 	/**
 	 * Instantiates a new bsymt employee order.
 	 *
 	 * @param id the id
 	 */
-	public BsymtSrchSyaSort(BsymtSrchSyaSortPK id) {
+	public BsymtSrchSyaSort(BsymtEmployeeOrderPK id) {
 		this.id = id;
 	}
 

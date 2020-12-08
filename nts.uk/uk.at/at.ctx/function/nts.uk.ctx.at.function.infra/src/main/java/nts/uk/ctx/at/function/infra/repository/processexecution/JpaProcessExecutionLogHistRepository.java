@@ -24,20 +24,20 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT pelh FROM KfnmtProcessExecutionLogHistory pelh ";
 	private static final String SELECT_All_BY_CID_EXECCD_EXECID = SELECT_ALL
-			+ "WHERE pelh.kfndtAutoexecLogHstPK.companyId = :companyId "
-			+ "AND pelh.kfndtAutoexecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.kfndtAutoexecLogHstPK.execId = :execId ";
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
+			+ "AND pelh.kfnmtProcExecLogHstPK.execId = :execId ";
 	private static final String SELECT_All_BY_CID_EXECCD_DATE = SELECT_ALL
-			+ "WHERE pelh.kfndtAutoexecLogHstPK.companyId = :companyId "
-			+ "AND pelh.kfndtAutoexecLogHstPK.execItemCd = :execItemCd "
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
 			+ "AND pelh.prevExecDateTime >= :prevExecDateTime AND pelh.prevExecDateTime< :nextExecDateTime ORDER BY pelh.prevExecDateTime DESC";
 	private static final String SELECT_All_BY_CID_EXECCD_DATE_RANGE = SELECT_ALL
-			+ "WHERE pelh.kfndtAutoexecLogHstPK.companyId = :companyId "
-			+ "AND pelh.kfndtAutoexecLogHstPK.execItemCd = :execItemCd "
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
 			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate ORDER BY pelh.prevExecDateTime DESC";
 	private static final String SELECT_All_BY_CID_EXECCD = SELECT_ALL
-			+ "WHERE pelh.kfndtAutoexecLogHstPK.companyId = :companyId "
-			+ "AND pelh.kfndtAutoexecLogHstPK.execItemCd = :execItemCd ";
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd ";
 	@Override
 	public Optional<ProcessExecutionLogHistory> getByExecId(String companyId, String execItemCd, String execId) {
 		return this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
@@ -140,10 +140,10 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
 					ps.setString(3, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
 					ps.setString(4, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
-					ps.setString(5, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.companyId);
-					ps.setString(6, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.execItemCd);
-					ps.setString(7, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.execId);
-					ps.setInt(8, kfnmtExecutionTaskLog.kfndtAutoexecTaskLogPK.taskId);
+					ps.setString(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}

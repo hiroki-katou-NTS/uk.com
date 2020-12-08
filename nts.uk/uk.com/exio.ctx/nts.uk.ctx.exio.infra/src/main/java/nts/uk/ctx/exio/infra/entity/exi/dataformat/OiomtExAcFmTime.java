@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_FM_TIME")
+@Table(name = "OIOMT_INS_TIME_DAT_FM_SET")
 public class OiomtExAcFmTime extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class OiomtExAcFmTime extends ContractUkJpaEntity implements Serializable
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExAcFmTimePk insTimeDatFmSetPk;
+	public OiomtInsTimeDatFmSetPk insTimeDatFmSetPk;
 
 	/**
 	 * 区切り文字設定
@@ -120,7 +120,7 @@ public class OiomtExAcFmTime extends ContractUkJpaEntity implements Serializable
 			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
 			String valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
 		super();
-		this.insTimeDatFmSetPk = new OiomtExAcFmTimePk(cid, sysType, conditionCode, acceptItemNum);
+		this.insTimeDatFmSetPk = new OiomtInsTimeDatFmSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
 		this.fixedValue = fixedValue;
 		this.hourMinSelect = hourMinSelect;

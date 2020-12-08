@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HD_SPEV_LIMIT")
+@Table(name = "KSHST_GRANT_DAY_RELP")
 // 続柄に対する上限日数
 public class KshstGrantDayRelationship extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

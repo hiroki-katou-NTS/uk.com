@@ -56,7 +56,7 @@ public class KrcdtDaySyaError extends KrcdtEmpErAlCommon implements Serializable
 		return new EmployeeDailyPerError(entities.get(0).companyID, entities.get(0).employeeId,
 				entities.get(0).processingDate, entities.get(0).errorCode, 
 				entities.get(0).erAttendanceItem == null ? new ArrayList<>() : entities.get(0).erAttendanceItem
-							.stream().map(c -> c.krcdtDaySyaErrorAtdPK.attendanceItemId)
+							.stream().map(c -> c.krcdtErAttendanceItemPK.attendanceItemId)
 							.collect(Collectors.toList()),
 				0, entities.get(0).errorAlarmMessage);
 	}

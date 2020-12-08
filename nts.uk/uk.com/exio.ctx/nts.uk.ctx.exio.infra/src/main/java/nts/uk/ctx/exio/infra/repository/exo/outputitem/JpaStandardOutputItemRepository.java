@@ -21,7 +21,7 @@ import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtCharac
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtDateDfs;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtDateDfsPk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtExOutFmTime;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtExOutFmTimePk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtInstantTimeDfsPk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumberDfs;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumberDfsPk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtTimeDfs;
@@ -157,7 +157,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
             this.commandProxy().remove(OiomtDateDfs.class, new OiomtDateDfsPk(cid, condSetCd, outItemCd));
         });
         this.getInstantTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-            this.commandProxy().remove(OiomtExOutFmTime.class, new OiomtExOutFmTimePk(cid, condSetCd, outItemCd));
+            this.commandProxy().remove(OiomtExOutFmTime.class, new OiomtInstantTimeDfsPk(cid, condSetCd, outItemCd));
         });
         this.getNumberDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
             this.commandProxy().remove(OiomtNumberDfs.class, new OiomtNumberDfsPk(cid, condSetCd, outItemCd));
@@ -237,7 +237,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 
 	@Override
 	public void register(InstantTimeDataFmSetting domain) {
-		Optional<OiomtExOutFmTime> entity = this.queryProxy().find(new OiomtExOutFmTimePk(domain.getCid(),
+		Optional<OiomtExOutFmTime> entity = this.queryProxy().find(new OiomtInstantTimeDfsPk(domain.getCid(),
 				domain.getConditionSettingCode().v(), domain.getOutputItemCode().v()), OiomtExOutFmTime.class);
 		if (entity.isPresent()) {
 			this.commandProxy().update(OiomtExOutFmTime.toEntity(domain));

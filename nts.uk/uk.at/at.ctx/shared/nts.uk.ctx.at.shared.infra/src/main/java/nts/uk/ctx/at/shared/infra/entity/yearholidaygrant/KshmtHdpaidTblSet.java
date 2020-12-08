@@ -21,13 +21,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHMT_HDPAID_TBL_SET")
+@Table(name="KSHST_GRANT_HD_TBL_SET")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtHdpaidTblSet extends ContractUkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
-    public KshmtHdpaidTblSetPK kshmtHdpaidTblSetPK;
+    public KshstGrantHdTblSetPK kshstGrantHdTblSetPK;
 
 	/* 名称 */
 	@Column(name = "YEAR_HD_NAME")
@@ -54,12 +54,12 @@ public class KshmtHdpaidTblSet extends ContractUkJpaEntity {
 	public String yearHolidayNote;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantHdTblSet", orphanRemoval = true)
-	@OrderBy("kshmtHdpaidConditionPK.conditionNo ASC")
+	@OrderBy("kshstGrantConditionPK.conditionNo ASC")
 	public List<KshmtHdpaidCondition> grantConditions;
 	
 	@Override
 	protected Object getKey() {
-		return kshmtHdpaidTblSetPK;
+		return kshstGrantHdTblSetPK;
 	}
 
 }
