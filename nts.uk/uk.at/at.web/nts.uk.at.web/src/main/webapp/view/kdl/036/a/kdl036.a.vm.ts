@@ -105,10 +105,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 dialog.alert({messageId: "Msg_1759"});
                 return;
             }
-            if (!self.checkNumberOfDays()) {
-                dialog.alert({messageId: "Msg_1758"});
-                return;
-            }
+
             const data: ParamsData = {
                 employeeId: self.employeeId,
                 daysUnit: self.daysUnit,
@@ -133,18 +130,6 @@ module nts.uk.at.view.kdl036.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
-        }
-
-        checkNumberOfDays(): boolean {
-            const self = this;
-            const required = self.substituteHolidayList().length * self.daysUnit;
-            let total = 0;
-            const selected: Array<HolidayWorkInfo> = _.orderBy(self.substituteWorkInfoList().filter(i => i.checked()), ["remainingNumber"], ['desc']);
-            for (let i = 0; i < selected.length; i++) {
-                if (total >= required) return false;
-                total += selected[i].remainingNumber;
-            }
-            return true;
         }
 
     }
