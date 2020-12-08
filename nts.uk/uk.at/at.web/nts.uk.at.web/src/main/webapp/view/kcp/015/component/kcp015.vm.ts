@@ -102,18 +102,52 @@ module nts.uk.ui.at.kcp015.shared {
             let dfd = $.Deferred<void>();
             nts.uk.ui.block.grayout();
             nts.uk.request.ajax("at", "screen/at/kcp015/get").done((data: IData) => {
-                
-                vm.visibleA31Com(data.subLeaveUseDivision == null ? vm.data.visibleA31() : ((vm.data.visibleA31() == false && data.subLeaveUseDivision == false) ? false : true));
 
-                vm.visibleA32Com(data.dvisionOfZhenxiuUse == null ? vm.data.visibleA32() : ((vm.data.visibleA32() == false && data.dvisionOfZhenxiuUse == false) ? false : true));
+                if (vm.data.visibleA31() == false) {
+                    vm.visibleA31Com(false);
+                } else if (data.subLeaveUseDivision == false) {
+                    vm.visibleA31Com(false);
+                } else {
+                    vm.visibleA31Com(true);
+                }
 
-                vm.visibleA33Com(data.clsOfAnnualHoliday == null ? vm.data.visibleA33() : ((vm.data.visibleA33() == false && data.clsOfAnnualHoliday == false) ? false : true));
+                if (vm.data.visibleA32() == false) {
+                    vm.visibleA32Com(false);
+                } else if (data.dvisionOfZhenxiuUse == false) {
+                    vm.visibleA32Com(false);
+                } else {
+                    vm.visibleA32Com(true);
+                }
 
-                vm.visibleA34Com(data.divisionOfAnnualHoliday == null ? vm.data.visibleA34() : ((vm.data.visibleA34() == false && data.divisionOfAnnualHoliday == false) ? false : true));
+                if (vm.data.visibleA33() == false) {
+                    vm.visibleA33Com(false);
+                } else if (data.clsOfAnnualHoliday == false) {
+                    vm.visibleA33Com(false);
+                } else {
+                    vm.visibleA33Com(true);
+                }
 
-                vm.visibleA35Com(data.overtimeUseCls60H == null ? vm.data.visibleA35() : ((vm.data.visibleA35() == false && data.overtimeUseCls60H == false) ? false : true));
-                
-                vm.visibleA36Com(vm.data.visibleA36());
+                if (vm.data.visibleA34() == false) {
+                    vm.visibleA34Com(false);
+                } else if (data.divisionOfAnnualHoliday == false) {
+                    vm.visibleA34Com(false);
+                } else {
+                    vm.visibleA34Com(true);
+                }
+
+                if (vm.data.visibleA35() == false) {
+                    vm.visibleA35Com(false);
+                } else if (data.overtimeUseCls60H == false) {
+                    vm.visibleA35Com(false);
+                } else {
+                    vm.visibleA35Com(true);
+                }
+
+                if (vm.data.visibleA36() == false) {
+                    vm.visibleA36Com(false);
+                } else {
+                    vm.visibleA36Com(true);
+                }
                 
                 if (!vm.visibleA31Com() && !vm.visibleA33Com() && !vm.visibleA35Com() && !vm.visibleA32Com() && !vm.visibleA34Com() && !vm.visibleA36Com()) {
                     vm.visibleA1(false);
