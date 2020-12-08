@@ -175,7 +175,7 @@ public class DisplayWorkInfoByDateSc {
 						// 応援か
 						SupportCategory.NotCheering.value,
 						// 確定済みか
-						value.get().getConfirmedATR().value, 
+						value.get().getConfirmedATR().value, //tài liệu đang để mặc định là 1 
 						// 直帰区分
 						value.get().getWorkInfo().getBackStraightAtr().value, 
 						// 直行区分

@@ -9,6 +9,7 @@ module nts.uk.at.view.ksu003.a {
 			});
 			nts.uk.ui.block.clear();
 		});
+		$(".functon-area-row2-left").focus();
 		initEvent();
 		initEvent2();
 	});
