@@ -11,45 +11,48 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetYearFromYearMonthPeriod;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 会社別年度リストを表示する
- * UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.メニュー別OCD（共通）.会社別年度リストを表示する.会社別年度リストを表示する
+ * 職場別年度リストを表示する
+ * UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.メニュー別OCD（共通）.職場別年度リストを表示する.職場別年度リストを表示する
  * @author chungnt
  *
  */
 
 @Stateless
-public class DisplayYearListByCompany {
+public class YearlyListByWorkplace {
 
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 	@Inject
 	private CompanyRepository companyRepository;
 	
-	public List<Integer> get(LaborWorkTypeAttr workTypeAttr) {
-	
-		List<Integer> result = new ArrayList<>();
+	/**
+	 * 
+	 * @param workplaceId	職場ID
+	 * @param workTypeUnit	勤務区分
+	 */
+	public List<Integer> get(String workplaceId, LaborWorkTypeAttr laborAttr) {
 		
+		List<Integer> result = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		
-		//1 call 会社別月単位労働時間
-		List<MonthlyWorkTimeSetCom> coms = this.monthlyWorkTimeSetRepo.findMonthlyWorkTimeSetComByCid(cid, workTypeAttr);
+		//1 Call 職場別月単位労働時間
+		List<MonthlyWorkTimeSetWkp> timeSetWkps = monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr);
 		
-		//2 call DS 年月期間から年度を取得
+		// 2 Call DS 年月期間から年度を取得
 		Require require = new Require(companyRepository);
-		
-		List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
+		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
 				cid,
-				coms.stream().map(m -> m.getYm()).collect(Collectors.toList()));
+				timeSetWkps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 		
-		result = list.stream().map(m -> m.v()).collect(Collectors.toList());
+		result = years.stream().map(m -> m.v()).collect(Collectors.toList());
 		
 		return result;
 	}
@@ -65,4 +68,5 @@ public class DisplayYearListByCompany {
 		}
 		
 	}
+	
 }
