@@ -23,18 +23,18 @@ module nts.uk.com.view.cli003.h.viewmodel {
             self.itemListCbb.push(new ItemModel('2', getText('Enum_Symbol_Different')));
 
             self.conditionSets = ko.observableArray((function() {
-                var list = [];
+                let list = [];
                 if (listDetailConditionSetting && listDetailConditionSetting.length > 0) {
-                    for (var i = 0; i < listDetailConditionSetting.length; i++) {
-                        var detailConditonSet = listDetailConditionSetting[i];
-                        if(detailConditonSet.condition){
-                            list.push(new DetailConSet(detailConditonSet.frame, String(detailConditonSet.sybol), detailConditonSet.condition));
+                    for (let i = 0; i < listDetailConditionSetting.length; i++) {
+                        const detailConditionSet = listDetailConditionSetting[i];
+                        if(detailConditionSet.condition){
+                            list.push(new DetailConSet(detailConditionSet.frame, String(detailConditionSet.sybol), detailConditionSet.condition));
                         }else{
                             list.push(new DetailConSet(i, '-1', ''));
                         }
                     }
                 } else {
-                    for (var i = 0; i < 5; i++) {
+                    for (let i = 0; i < 5; i++) {
                         list.push(new DetailConSet(i, '-1', ''));
                     }
                 }
@@ -56,25 +56,33 @@ module nts.uk.com.view.cli003.h.viewmodel {
         }
 
         submit() {
-            let self = this;
+            const vm = this;
             nts.uk.ui.errors.clearAll();
-            if (self.checkData()) {
+            if (vm.checkData()) { 
                 var list = [];
-                for (var i = 0; i < self.conditionSets().length; i++) {
-                    var detailConditonSet = self.conditionSets()[i];
-                    if(detailConditonSet.symbolStr() === '-1'){
-                        list.push(new ConSet(detailConditonSet.id(),
-                        '0', detailConditonSet.condition()));
+                for(const detailConditionSet of vm.conditionSets()) {
+                    if(detailConditionSet.symbolStr() === '-1'){
+                        list.push(
+                            new ConSet(
+                                detailConditionSet.id(),
+                                '0',
+                                detailConditionSet.condition()
+                            )
+                        );
                     }else{ 
-                        list.push(new ConSet(detailConditonSet.id(),
-                        detailConditonSet.symbolStr(), detailConditonSet.condition()));
+                        list.push(
+                            new ConSet(
+                                detailConditionSet.id(),
+                                detailConditionSet.symbolStr(),
+                                detailConditionSet.condition()
+                            )
+                        );
                     }
                 }
                 setShared("CLI003GParams_ListSetItemDetailReturn", list);
                 close();
             }
         }
-        
          private validateForm() {
             $(".validate_form").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -82,18 +90,17 @@ module nts.uk.com.view.cli003.h.viewmodel {
             }
             return true;
         };
-        
         checkData() {
             let self = this;
             let flgReturn = true;
             _.forEach(self.conditionSets(), function(item: DetailConSet) {
                 if (item.condition() !== '' && item.symbolStr() === '-1') {
                     flgReturn = false;
-                }if (item.condition() === '' && item.symbolStr() !== '-1') {
+                } if (item.condition() === '' && item.symbolStr() !== '-1') {
                     flgReturn = false;
+                } else {
+                    flgReturn = true; 
                 }
-                
-         
             });
             if (!flgReturn) {
                 alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')] });
@@ -104,9 +111,7 @@ module nts.uk.com.view.cli003.h.viewmodel {
             }
             return flgReturn;
         }
-
     }
-
     export class DetailConSet {
        
         id: KnockoutObservable<number>;
@@ -134,24 +139,13 @@ module nts.uk.com.view.cli003.h.viewmodel {
 
     
     export class ConSet {
-       
         id: number;
-      
         symbolStr: string;
         condition: string;
-
         constructor(id :number, symbolStr: string, condition: string) {
             this.id = id;
             this.symbolStr = symbolStr;
             this.condition = condition;
         }
     }
-
-
 }
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.ksu001.getworkactualshift;
 
@@ -45,6 +45,11 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -87,9 +92,9 @@ public class GetActualOfShift {
 	private WorkTimeSettingService workTimeSettingService;
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
-	
+
 	public ScheduleOfShiftResult getActualOfShift(ScheduleOfShiftParam param) {
-		
+
 		// step 1
 		// call 予定管理状態に応じて日別実績を取得する
 		long start = System.nanoTime();
@@ -99,8 +104,8 @@ public class GetActualOfShift {
 		Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> mapDataDaily = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
-		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");	
-		
+		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");
+
 		List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		mapDataDaily.forEach((k, v) -> {
 			if (v.isPresent()) {
@@ -112,17 +117,17 @@ public class GetActualOfShift {
 				}
 			}
 		});
-		// step 1 end 
-		
+		// step 1 end
+
 		// step 2
 		// call 日別勤怠の実績で利用する勤務情報のリストを取得する
 		List<WorkInformation> lstWorkInfo = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances);
-		
+
 		// step 3
 		// call シフトマスタと出勤休日区分の組み合わせを取得する
-		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepo,workTimeSettingService, basicScheduleService);
+		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepo,workTimeSettingService);
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(requireImpl2,AppContexts.user().companyId(), lstWorkInfo);
-		
+
 		List<ShiftMasterMapWithWorkStyle> listShiftMaster = param.listShiftMasterNotNeedGetNew;
 		List<String> listShiftMasterCodeNotNeedGetNew = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
 
@@ -136,7 +141,7 @@ public class GetActualOfShift {
 			ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(entry.getKey(), entry.getValue().isPresent() ? entry.getValue().get().value + "" : null);
 			listShiftMaster.add(shift);
 		}
-		
+
 		// step 4
 		// loop：日別実績 in 管理状態と勤務実績Map.values()
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
@@ -160,11 +165,11 @@ public class GetActualOfShift {
 						boolean y = Objects.equals(x.workTimeCode, workTimeCode);
 						return s&&y;
 					}).findFirst();
-					
+
 					if(!shiftMaster.isPresent()){
 						System.out.println("Daily : workType - workTime chua dc dang ky: " + workTypeCode + " - " + workTimeCode);
 					}
-					
+
 					ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 							.employeeId(key.getEmployeeID())
 							.date(key.getDate())
@@ -186,12 +191,12 @@ public class GetActualOfShift {
 		});
 		return new ScheduleOfShiftResult(listWorkScheduleShift, listShiftMaster);
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireCombiAndWorkHolidayImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
-		
+
 		private final String companyId = AppContexts.user().companyId();
-		
+
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;
 		@Inject
@@ -202,9 +207,7 @@ public class GetActualOfShift {
 		private WorkTimeSettingRepository workTimeSettingRepository;
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
-		@Inject
-		private BasicScheduleService basicScheduleService;
-		
+
 		@Override
 		public List<ShiftMaster> getByListEmp(String companyID, List<String> lstShiftMasterCd) {
 			List<ShiftMaster> data = shiftMasterRepo.getByListShiftMaterCd2(companyId, lstShiftMasterCd);
@@ -223,27 +226,47 @@ public class GetActualOfShift {
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
 	}
-	
-	
+
+
 	@AllArgsConstructor
 	private static class RequireDailyImpl implements DailyResultAccordScheduleStatusService.Require {
 
@@ -253,52 +276,52 @@ public class GetActualOfShift {
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
-		
+
 		public RequireDailyImpl(List<String> empIdList, DatePeriod period, DailyRecordWorkFinder dailyRecordWorkFinder,
 				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
 				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
 				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
-			
+
 			long start1 = System.nanoTime();
 			List<DailyRecordDto> sDailyRecordDtos = dailyRecordWorkFinder.find(empIdList, period);
 			workScheduleCache = NestedMapCache.preloadedAll(sDailyRecordDtos.stream(),
-					workSchedule -> workSchedule.getEmployeeId(), 
+					workSchedule -> workSchedule.getEmployeeId(),
 					workSchedule -> workSchedule.getDate());
 			System.out.println("thoi gian get data Daily " + ((System.nanoTime() - start1 )/1000000) + "ms");
-			
+
 			long start2 = System.nanoTime();
 			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(affCompanyHists.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
-			
+
 			long start3 = System.nanoTime();
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
 			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3 )/1000000) + "ms");
-			
+
 			long start4 = System.nanoTime();
 			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
 			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4 )/1000000) + "ms");
-			
+
 			long start5 = System.nanoTime();
 			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
 			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5 )/1000000) + "ms");
-			
+
 			long start6 = System.nanoTime();
 			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
 			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(listData.stream()
 					.collect(Collectors.toMap( h -> h.getWorkingConditionItem().getEmployeeId(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			System.out.println("thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6 )/1000000) + "ms");
-			
+
 			System.out.println("thoi gian get data để lưu vào Cache" + ((System.nanoTime() - start1 )/1000000) + "ms");
 		}
-		
+
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
 			Optional<DailyRecordDto> dailyRecordDto = workScheduleCache.get(empId, date);

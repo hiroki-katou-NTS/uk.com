@@ -4,6 +4,7 @@ td {
 
 #C3 {
     margin: 3px 0;
+    background-color: #F7EFD4 !important;
 }
 
 #C4 {
@@ -11,7 +12,7 @@ td {
 }
 
 #C4_3, #C4_4 {
-    width: fit-content;
+    width: auto;
     margin: 0 20px;
 }
 

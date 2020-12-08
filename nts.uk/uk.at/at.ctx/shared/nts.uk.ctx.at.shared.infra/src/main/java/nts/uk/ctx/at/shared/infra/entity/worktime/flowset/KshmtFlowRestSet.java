@@ -36,12 +36,12 @@ public class KshmtFlowRestSet extends UkJpaEntity implements Serializable {
 	private int exclusVer;
 
 	/** The is refer rest time. */
-	@Column(name = "IS_REFER_REST_TIME")
-	private int isReferRestTime;
+//	@Column(name = "IS_REFER_REST_TIME")
+//	private int isReferRestTime;
 
 	/** The is calc from schedule. */
-	@Column(name = "IS_CALC_FROM_SCHEDULE")
-	private int isCalcFromSchedule;
+//	@Column(name = "IS_CALC_FROM_SCHEDULE")
+//	private int isCalcFromSchedule;
 
 	/** The user private go out rest. */
 	@Column(name = "USER_PRIVATE_GO_OUT_REST")

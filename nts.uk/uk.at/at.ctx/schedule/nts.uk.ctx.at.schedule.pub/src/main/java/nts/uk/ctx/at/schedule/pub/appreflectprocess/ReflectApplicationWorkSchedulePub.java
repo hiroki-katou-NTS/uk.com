@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 public interface ReflectApplicationWorkSchedulePub {
 
 	//[RQ666]申請を勤務予定へ反映する
-	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus);
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus,
+			int preAppWorkScheReflectAttr);
 	
 }

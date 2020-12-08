@@ -32,9 +32,9 @@ public class CorrectDailyAttendanceService {
 			WorkInfoOfDailyAttendance workInformationBefore, WorkInfoOfDailyAttendance workInformationAfter) {
 
 		// 反映前の勤務実績の勤務種類に、[振休]または[振出]が含まれるかのチェック
-		Optional<WorkType> workType = require.findByPK(workInformationBefore.getRecordInfo().getWorkTypeCode().v());
+		Optional<WorkType> workType = require.getWorkType(workInformationBefore.getRecordInfo().getWorkTypeCode().v());
 
-		Optional<WorkType> workTypeAfter = require.findByPK(workInformationAfter.getRecordInfo().getWorkTypeCode().v());
+		Optional<WorkType> workTypeAfter = require.getWorkType(workInformationAfter.getRecordInfo().getWorkTypeCode().v());
 		if (!workType.isPresent() || !workTypeAfter.isPresent()
 				|| (workType.get().getDailyWork().getClassification() != WorkTypeClassification.Shooting
 						&& workType.get().getDailyWork().getClassification() != WorkTypeClassification.Pause)) {

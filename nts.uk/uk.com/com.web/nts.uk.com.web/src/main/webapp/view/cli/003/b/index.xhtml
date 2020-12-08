@@ -92,11 +92,11 @@
                   <table id="B2_10" data-bind="ntsGridList:{
                         height: 150,
                         width: 500,
-                        dataSource: b2_10Datasource,
-                        columns: b2_10Columns,
+                        dataSource: conditionDatasource,
+                        columns: conditionColumns,
                         columnResize: true,
                         primaryKey: 'displayItem',
-                        value: b2_10CurrentCode,
+                        value: conditionCurrentCode,
                         multiple: false,
                         }" />
                 </div>
@@ -132,17 +132,17 @@
                   <td>
                     <div id="B4_2" tabindex="2" data-bind="ntsSwitchButton: {
                         options: roundingRules, 
-                        value: b4_2SelectedRuleCode,
+                        value: operatorEmpSelectedRuleCode,
                         optionsValue: 'code',
                         optionsText: 'name',}" />
                   </td>
                 </tr>
-                <com:ko-if bind="b4_2SelectedRuleCode() === 1">
+                <com:ko-if bind="operatorEmpSelectedRuleCode() === 1">
                   <tr>
                     <td></td>
                     <td>
                       <button id="B4_3" tabindex="3"
-                        data-bind="click: openDialogForB4_3 ">#{i18n.getText('CLI003_91')}</button>
+                        data-bind="click: openDialogOperatorEmpl ">#{i18n.getText('CLI003_91')}</button>
                       <span id="B4_4" data-bind="text : operatorEmployeeCount"></span>
                     </td>
                   </tr>
@@ -163,7 +163,7 @@
                             name:'#[CLI003_15]',
                             startName: startDateNameOperator, 
                             endName:endDateNameOperator,
-                            value: b5_2dateValue}" />
+                            value: selectedEmpDateValue}" />
                       </td>
                     </com:ko-if>
 
@@ -175,7 +175,7 @@
                             name:'#[CLI003_15]',
                             startName: startDateNameOperator, 
                             endName:endDateNameOperator,
-                            value: b5_2dateValue}" />
+                            value: selectedEmpDateValue}" />
                       </td>
                     </com:ko-if>
                   </tr>
@@ -189,17 +189,17 @@
                     <td>
                       <div id="B6_2" tabindex="5" data-bind="ntsSwitchButton: {
                         options: roundingRules, 
-                        value: b6_2SelectedRuleCode,
+                        value: selectedEmpSelectedRuleCode,
                         optionsValue: 'code',
                         optionsText: 'name',}" />
                     </td>
                   </tr>
-                  <com:ko-if bind="b6_2SelectedRuleCode() === 1">
+                  <com:ko-if bind="selectedEmpSelectedRuleCode() === 1">
                     <tr>
                       <td></td>
                       <td>
                         <button id="B6_3" tabindex="6"
-                          data-bind="click: openDialogForB6_3 ">#{i18n.getText('CLI003_91')}</button>
+                          data-bind="click: openDialogTargetEmpl ">#{i18n.getText('CLI003_91')}</button>
                         <span id="B6_4" data-bind="text: targetEmployeeCount"></span>
                       </td>
                     </tr>

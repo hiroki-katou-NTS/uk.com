@@ -152,9 +152,9 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		List<ScheduleTimeSheetExport> listScheduleTimeSheetExport = ws.getWorkInfo().getScheduleTimeSheets().stream()
 				.map(c -> convertToScheduleTimeSheet(c)).collect(Collectors.toList());
 		return new ScWorkScheduleExport(ws.getEmployeeID(), ws.getYmd(),
-				ws.getWorkInfo().getScheduleInfo().getWorkTypeCode().v(),
-				ws.getWorkInfo().getScheduleInfo().getWorkTimeCode() == null ? null
-						: ws.getWorkInfo().getScheduleInfo().getWorkTimeCode().v(),
+				ws.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
+				ws.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
+						: ws.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
 				listScheduleTimeSheetExport, listShortWorkingTimeSheetExport);
 	}
 
@@ -181,7 +181,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 							a.getChildCareAttr().value,
 							a.getStartTime().v(),
 							a.getEndTime().v(),
-							a.getDeductionTime().v(),
+							a.getDeductionTime() == null ? 0 : a.getDeductionTime().v(),
 							a.getShortTime().v());
 				}).collect(Collectors.toList());
 				record.setListShortWorkingTimeSheetExport(listExport);							

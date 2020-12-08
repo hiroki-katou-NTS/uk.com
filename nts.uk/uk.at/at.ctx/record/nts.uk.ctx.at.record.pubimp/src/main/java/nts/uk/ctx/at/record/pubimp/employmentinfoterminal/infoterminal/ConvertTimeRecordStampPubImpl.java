@@ -74,7 +74,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	private TopPgAlTrRepository executionLog;
 
 	@Override
-	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData(Integer empInfoTerCode,
+	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,

@@ -183,14 +183,6 @@ public class ExtraHolidayManagementService {
 			listCompensatoryData = comDayOffManaDataRepository.getBySid(cid, employeeId);
 		}
 		
-		// 取得したデータをチェック
-		if (listLeaveData.isEmpty() && listCompensatoryData.isEmpty()) { // 取得した「振出管理データ」がEmpty AND 取得した「振休管理データ」がEmpty
-			// Input．メッセージ表示区分をチェック
-			if (messageDisplay == 1) { // 表示する場合
-				throw new BusinessException("Msg_726");
-			}
-		}
-		
 		// ドメイン「休出代休紐付け管理」を取得する (Lấy data chỉ định theo domain 「休出代休紐付け管理」 'quản lý liên quan đến đi làm ngày nghỉ và ngày nghỉ thay thế')
 		List<GeneralDate> lstOccDate = new ArrayList<GeneralDate>();
 		List<GeneralDate> lstDigestDate = new ArrayList<GeneralDate>();
@@ -426,7 +418,9 @@ public class ExtraHolidayManagementService {
 		for (CompensatoryDayOffManaData cdomdData : listCompensatoryData) {
 			// List＜休出代休紐付け管理＞を絞り込みする  Filter List＜代休管理データ＞
 			List<LeaveComDayOffManagement> lcdomList = listLeaveComDayOffManagement.stream()
-					.filter(item -> item.getAssocialInfo().getDateOfUse().compareTo(cdomdData.getDayOffDate().getDayoffDate().get()) == 0)
+					.filter(item -> cdomdData.getDayOffDate().getDayoffDate().isPresent()
+								? item.getAssocialInfo().getDateOfUse().compareTo(cdomdData.getDayOffDate().getDayoffDate().get()) == 0
+								: false)
 					.collect(Collectors.toList());
 			
 			// 絞り込みした「休出代休紐付け管理」をチェック Check "Quản lý liên kết đi làm ngày nghỉ/nghỉ bù" đã filter

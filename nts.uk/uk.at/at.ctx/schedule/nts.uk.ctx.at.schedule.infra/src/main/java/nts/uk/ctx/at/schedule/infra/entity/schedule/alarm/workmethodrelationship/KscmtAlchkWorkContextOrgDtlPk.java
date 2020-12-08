@@ -70,6 +70,13 @@ public class KscmtAlchkWorkContextOrgDtlPk {
 				TargetOrgIdenInfor.creatIdentifiWorkplace(this.targetId) : 
 				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(targetId);
 	}
-	
-	
+
+	public static boolean isEquals(KscmtAlchkWorkContextOrgDtlPk pk1, KscmtAlchkWorkContextOrgDtlPk pk2) {
+		return pk1.companyId.equals(pk2.companyId) &&
+				pk1.targetUnit == pk2.targetUnit &&
+				pk1.targetId.equals(pk2.targetId) &&
+				pk1.prevWorkMethod == pk2.prevWorkMethod &&
+				pk1.prevWorkTimeCode.equals(pk2.prevWorkTimeCode) &&
+				pk1.currentWorkTimeCode.equals(pk2.currentWorkTimeCode);
+	}
 }

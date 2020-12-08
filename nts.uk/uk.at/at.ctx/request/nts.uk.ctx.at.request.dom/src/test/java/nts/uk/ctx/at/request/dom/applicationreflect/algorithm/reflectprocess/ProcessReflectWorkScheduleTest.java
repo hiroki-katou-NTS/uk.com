@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.CheckProcessDuringLock;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -96,7 +97,7 @@ public class ProcessReflectWorkScheduleTest {
 		new Expectations() {
 			{
 				require.findAppReflectExecCond(companyId);
-				result = Optional.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, // 事前申請を勤務予定に反映する
+				result = Optional.of(new AppReflectExecCond(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, // 事前申請を勤務予定に反映する
 						NotUseAtr.NOT_USE, NotUseAtr.USE));
 			}
 		};
@@ -129,7 +130,7 @@ public class ProcessReflectWorkScheduleTest {
 			{
 				require.findAppReflectExecCond(anyString);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE));
+						.of(new AppReflectExecCond(companyId, PreApplicationWorkScheReflectAttr.REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));
 				
 				CheckProcessDuringLock.checkProcess(require, companyId, closureId, anyBoolean, (GeneralDate) any);
 				result = NotUseAtr.NOT_USE;

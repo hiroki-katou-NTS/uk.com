@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 /**
  * 勤務種別の月別実績の修正のフォーマット
  * @author tutk

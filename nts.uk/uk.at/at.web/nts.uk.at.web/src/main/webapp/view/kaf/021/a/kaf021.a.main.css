@@ -55,27 +55,26 @@
     text-align: center;
 }
 
-.red-text {
-    color: red;
+.cl-error {
+    color: #ffffff!important;
 }
 
-.black-text {
-    color: black;
+.cl-special {
+    color: black!important;
+}
+
+.cl-alarm {
+    color: #ff0000!important;
 }
 
 .bg-alarm{
-    background-color: #f6f636;
+    background-color: #f6f636!important;
 }
 
 .bg-error{
-    background-color: #fd4d4d;
+    background-color: #fd4d4d!important;
 }
 
 .bg-special{
-    background-color: #eb9152;
-}
-
-.current-month{
-    /* TODO #34213 */
-    /* background-color: #f6e92d; */
+    background-color: #eb9152!important;
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
- * 個人計
+ * 	AggregateRoot : 個人計
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.個人計
  * @author dan_pv
  *

@@ -23,7 +23,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK_;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,6 +42,10 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
+	
+	private static final String FIND_BY_COMPANYID_AND_USE_ATR = "SELECT a FROM KrcstDvgcTime a "
+			+ "WHERE a.id.cid = :companyId "
+			+ "		AND a.dvgcTimeUseSet = :dvgcTimeUseSet ";
 
 	/*
 	 * (non-Javadoc)
@@ -509,6 +513,15 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 					return new DivergenceTimeRoot(memento);
 				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DivergenceTimeRoot> findByCompanyAndUseDistination(String companyId, int useDistination) {
+		return this.queryProxy().query(FIND_BY_COMPANYID_AND_USE_ATR, KrcstDvgcTime.class)
+								.setParameter("companyId", companyId)
+								.setParameter("dvgcTimeUseSet", BigDecimal.valueOf(useDistination))
+								.getList().stream()
+								.map(t -> this.toDomain(t)).collect(Collectors.toList());
 	}
 
 }

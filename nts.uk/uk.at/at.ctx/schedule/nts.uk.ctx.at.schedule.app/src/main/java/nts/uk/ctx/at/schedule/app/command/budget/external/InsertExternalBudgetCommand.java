@@ -12,10 +12,10 @@ public class InsertExternalBudgetCommand {
 
 	private int budgetAtr;
 
-	private int unitAtr;
+//	private int unitAtr;
 
 	public ExternalBudget toDomain() {
 		return ExternalBudget.createFromJavaType(AppContexts.user().companyId(), this.externalBudgetCode,
-				this.externalBudgetName, this.budgetAtr, this.unitAtr);
+				this.externalBudgetName, this.budgetAtr);
 	}
 }

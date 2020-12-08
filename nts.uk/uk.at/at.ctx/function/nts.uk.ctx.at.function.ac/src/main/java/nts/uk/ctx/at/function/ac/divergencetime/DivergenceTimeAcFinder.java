@@ -26,4 +26,11 @@ public class DivergenceTimeAcFinder implements DivergenceTimeAdapter{
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<DivergenceTimeAdapterDto> findByCompanyAndUseDistination(String companyId, int useDistination) {
+		return this.divergenceTimePub.findByCompanyAndUseDistination(companyId, useDistination).stream()
+				.map(f -> new DivergenceTimeAdapterDto(f.getCompanyId(), f.getDivTimeId(), f.getDivTimeName()))
+				.collect(Collectors.toList());
+	}
+
 }

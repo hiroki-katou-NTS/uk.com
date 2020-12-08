@@ -16,7 +16,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1-->
-            <button tabindex="1" data-bind="click: register" class="proceed">#{i18n.getText('KSM008_12')}</button>
+            <button tabindex="1" data-bind="click: register, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KSM008_12')}</button>
         </div>
         <div id="contents-area">
             <!--A2-->
@@ -39,15 +39,23 @@
                     <tr>
                         <!--A5_1-->
                         <td style="vertical-align: top; text-align: center" rowspan="2">
-                            <button class="setting"
-                                    data-bind="click: function(){ return $parent.toScreen(alarm.code)}, attr: {tabindex:100 * $index() + 3}">#{i18n.getText('KSM008_8')}</button>
+                            <div data-bind="if : $vm.checkDisplayButton(alarm.code)">
+                                <button class="setting"
+                                        data-bind="click: function(){ return $parent.toScreen(alarm.code)},
+                                               attr: {tabindex: $index()*$index()*10 + 3}
+                                               ">
+                                    #{i18n.getText('KSM008_8')}
+                                </button>
+                            </div>
                         </td>
                         <!--A5_2_1-->
                         <!--A5_2_2-->
                         <!--A5_2_3-->
                         <td class="condition p5" colspan="2">
-                            <span class="label" data-bind="text: alarm.code"></span>
-                            <span class="label" data-bind="text: alarm.name"></span>
+                            <div style="width: 270px; display: inline-block;">
+                                <span class="label" data-bind="text: alarm.code"></span>
+                                <span class="label" data-bind="text: alarm.name"></span>
+                            </div>
                             <button tabindex="-1"
                                     data-bind="ntsHelpButton: { position: 'right top', enable: true }">?
                             </button>
@@ -58,7 +66,8 @@
                         <td style="border-top: none"></td>
                         <td data-bind="foreach: subConditions">
                             <div>
-                                <div class="label p5" data-bind="text: explanation">
+                                <div class="message-area">
+                                    <div class="label" data-bind="text: explanation"></div>
                                 </div>
                                 <div class="flex valign-center pb5">
                                     <!--A5_3_2-->
@@ -66,11 +75,15 @@
                                     <!--A5_3_3-->
                                     <input class="message" data-bind="ntsTextEditor: {value:  message.message ,
                                                             constraint: 'AlarmCheckMessage',
-                                                            required: false,
-                                                             enable:true,
-                                                             readonly: false}, attr: {tabindex: 100 * (parseInt($parent.code()) - 1) + $index() + 4}"/>
+                                                            required: true,
+                                                            enable:true,
+                                                            readonly: false},
+                                                            attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + $index() + 4,
+                                                                   id: $parent.code() + '' + subCode()
+                                                            }"/>
                                     <!--    A5_3_4-->
-                                    <button data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)}, attr: {tabindex:100 * (parseInt($parent.code()) - 1) + $index() + 5}"
+                                    <button data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)},
+                                            attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + 5}"
                                             style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
                                 </div>
                             </div>
