@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmk004.b;
+package nts.uk.screen.at.app.query.kmk004.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

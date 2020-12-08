@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmk004.b;
+package nts.uk.screen.at.app.query.kmk004.common;
 
 import java.util.ArrayList;
 import java.util.List;

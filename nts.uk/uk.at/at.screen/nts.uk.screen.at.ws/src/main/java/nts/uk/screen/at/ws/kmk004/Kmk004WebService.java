@@ -25,9 +25,11 @@ import nts.uk.screen.at.app.command.kmk.kmk004.p.UpdateWkpBasicSettingCommandHan
 import nts.uk.screen.at.app.command.kmk.kmk004.p.WkpBasicSettingCommand;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettings;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
-import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingDto;
-import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingHoursByCompany;
-import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingInput;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingHoursByCompany;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingInput;
+import nts.uk.screen.at.app.query.kmk004.common.GetUsageUnitSetting;
+import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborComDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborEmpDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborShaDto;
@@ -36,8 +38,6 @@ import nts.uk.screen.at.app.query.kmk004.p.GetComBasicSetting;
 import nts.uk.screen.at.app.query.kmk004.p.GetEmpBasicSetting;
 import nts.uk.screen.at.app.query.kmk004.p.GetShaBasicSetting;
 import nts.uk.screen.at.app.query.kmk004.p.GetWorkplaceBasicSetting;
-import nts.uk.screen.at.app.query.kmk004.s.GetUsageUnitSetting;
-import nts.uk.screen.at.app.query.kmk004.s.UsageUnitSettingDto;
 
 /**
  * 

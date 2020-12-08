@@ -10,8 +10,7 @@
 .view-f .node {
     text-align: right;
     color: #0000ff;
-    margin-top: 10px;
-    margin-bottom: -10px;
+    height: 20px;
 }
 
 .view-f .lable-input {
