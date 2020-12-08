@@ -221,7 +221,7 @@ module nts.uk.ui.calendar {
                 background-color: #EDFAC2;
 			}
             .calendar .calendar-container .month .week .day.saturday .status {
-                background-color: #9BC2E6;
+                background-color: #8bd8ff;
             }
             .calendar .calendar-container .month .week .day.sunday .status,
             .calendar .calendar-container .month .week .day.holiday .status {
