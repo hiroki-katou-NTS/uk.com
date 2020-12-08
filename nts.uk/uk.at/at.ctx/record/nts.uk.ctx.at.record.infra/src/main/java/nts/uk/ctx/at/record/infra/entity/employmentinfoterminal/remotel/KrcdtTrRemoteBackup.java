@@ -123,5 +123,9 @@ public class KrcdtTrRemoteBackup extends UkJpaEntity implements Serializable {
 		// TODO Auto-generated method stub
 		return pk;
 	}
+	
+	public String groupByString() {
+		return this.pk.timeRecordCode + this.modelName + this.romVersion + this.modelType + this.backupDate;
+	}
 
 }

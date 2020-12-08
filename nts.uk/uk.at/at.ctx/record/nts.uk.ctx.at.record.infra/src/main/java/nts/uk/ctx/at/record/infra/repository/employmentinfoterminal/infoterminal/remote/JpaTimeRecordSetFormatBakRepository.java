@@ -2,16 +2,30 @@ package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infotermina
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTerTest;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNameClassification;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNoClassification;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputRange;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputType;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NumberOfDigits;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.SettingValue;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormat;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormat.TimeRecordSetFormatBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatBak;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatBakRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.remotel.KrcdtTrRemoteBackup;
@@ -20,6 +34,10 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implements TimeRecordSetFormatBakRepository {
+	
+	private final static String FIND_CONTRACTCD = "SELECT m FROM KrcdtTrRemoteBackup m WHERE m.pk.contractCode = :contractCode ORDER BY m.pk.timeRecordCode ASC";
+	
+	private final static String FIND_CONTRACTCD_CODE = "";
 
 	@Override
 	public void insert(TimeRecordSetFormatBak timeRecordSetFormatBak) {
@@ -56,25 +74,27 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 	@Override
 	public void delete(TimeRecordSetFormatBak timeRecordSetFormatBak) {
 		this.commandProxy().removeAll(toEntity(timeRecordSetFormatBak));
-		
 	}
 
+	
 	@Override
 	public List<TimeRecordSetFormatBak> get(ContractCode contractCode) {
-		// TODO Auto-generated method stub
-		return null;
+		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD, KrcdtTrRemoteBackup.class)
+				.setParameter("contractCode", contractCode.v()).getList();
+		return toListDomain(listEntity);
 	}
 
 	@Override
 	public List<TimeRecordSetFormat> getTimeRecordSetFormat(ContractCode contractCode, EmpInfoTerminalCode code) {
-		// TODO Auto-generated method stub
-		return null;
+		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class).getList();
+		TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(listEntity);
+		return timeRecordSetFormatBak.getListTimeRecordSetFormat();
 	}
 
 	@Override
 	public Optional<TimeRecordSetFormatBak> get(ContractCode contractCode, EmpInfoTerminalCode code) {
-		// TODO Auto-generated method stub
-		return null;
+		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class).getList();
+		return Optional.ofNullable(toDomain(listEntity));
 	}
 	
 	private List<KrcdtTrRemoteBackup> toEntity(TimeRecordSetFormatBak domain) {
@@ -88,12 +108,42 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 					.collect(Collectors.toList());
 	}
 	
-	private TimeRecordSetFormatBak toDomain(List<KrcdtTrRemoteBackup> entities) {
-		return null;
+	private List<TimeRecordSetFormatBak> toListDomain(List<KrcdtTrRemoteBackup> listEntity) {
+		List<TimeRecordSetFormatBak> listTimeRecordSetFormatBak = new ArrayList<TimeRecordSetFormatBak>();
+		Map<String, List<KrcdtTrRemoteBackup>> results= listEntity.stream()
+				.collect(Collectors.groupingBy(KrcdtTrRemoteBackup::groupByString));
+		results.entrySet().stream().forEach(e -> {
+			TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(e.getValue());
+			listTimeRecordSetFormatBak.add(timeRecordSetFormatBak);
+		});
+		return listTimeRecordSetFormatBak;
 	}
 	
-	private TimeRecordSetFormatBak toDomain() {
-		return null;
+	private TimeRecordSetFormatBak toDomain(List<KrcdtTrRemoteBackup> listEntity) {
+		if (listEntity.isEmpty()) {
+			return null;
+		}
+		List<TimeRecordSetFormat> listTimeRecordSetFormat = listEntity.stream()
+				.map(x -> new TimeRecordSetFormat
+						.TimeRecordSetFormatBuilder(
+								new MajorNameClassification(x.majorName),
+								new MajorNameClassification(x.smallName),
+								new VariableName(x.pk.variableName),
+								EnumAdaptor.valueOf(x.inputType, NrlRemoteInputType.class),
+								new NumberOfDigits(x.numberDigist))
+						.settingValue(new SettingValue(x.currentValue))
+						.inputRange(new NrlRemoteInputRange(x.inputRange))
+						.rebootFlg(x.reboot == 1 ? true : false)
+						.majorNo(new MajorNoClassification(x.majorNo))
+						.smallNo(new MajorNoClassification(x.smallNo))
+						.value(new SettingValue(x.currentValue))
+						.build())
+				.collect(Collectors.toList());
+		return new TimeRecordSetFormatBak(
+				new EmpInfoTerminalCode(String.valueOf(listEntity.get(0).pk.timeRecordCode)),
+				new EmpInfoTerminalName(listEntity.get(0).modelName),
+				new NRRomVersion(listEntity.get(0).romVersion),
+				EnumAdaptor.valueOf(listEntity.get(0).modelType, ModelEmpInfoTer.class),
+				listTimeRecordSetFormat, listEntity.get(0).backupDate);
 	}
-
 }
