@@ -94,13 +94,13 @@ public class SaveExecutionTaskSettingCommandHandler
 		// 画面モードチェック
 		ExecutionTaskSetting taskSetting = command.toDomain();
 		taskSetting.setCompanyId(companyId);
+		// 登録チェック処理
+		taskSetting.validate();
 		/*
 		 * // Calculate next execution date time taskSetting.setNextExecDateTime();
 		 */
 		List<String> lstcron = this.getCron(command);
 		val cron = new CronSchedule(Arrays.asList(lstcron.get(0)));
-		// 登録チェック処理
-		taskSetting.validate();
 		GeneralDate startDate = command.getStartDate();
 		GeneralDate endDate2 = command.getEndDate();
 

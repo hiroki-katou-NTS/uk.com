@@ -1,14 +1,25 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.extern.slf4j.Slf4j;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.stopbycompany.StopByCompanyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stopbycompany.UsageStopOutputImport;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
@@ -17,13 +28,6 @@ import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.Abolition;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 //import nts.uk.shr.com.task.schedule.UkJobScheduler;
 @Stateless

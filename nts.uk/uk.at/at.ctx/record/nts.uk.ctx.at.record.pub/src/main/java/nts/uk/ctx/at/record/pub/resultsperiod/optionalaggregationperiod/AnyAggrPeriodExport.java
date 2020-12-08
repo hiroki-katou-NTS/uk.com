@@ -55,12 +55,20 @@ public class AnyAggrPeriodExport implements AnyAggrPeriod.MementoGetter, AnyAggr
 
 	@Override
 	public void setStartDate(GeneralDate startDate) {
-		this.period.newSpan(startDate, this.period.end());
+		if (this.period == null) {
+			this.period = new DatePeriod(startDate, null);
+		} else {
+			this.period.newSpan(startDate, this.period.end());
+		}
 	}
 
 	@Override
 	public void setEndDate(GeneralDate endDate) {
-		this.period.newSpan(this.period.start(), endDate);
+		if (this.period == null) {
+			this.period = new DatePeriod(null, endDate);
+		} else {
+			this.period.newSpan(this.period.start(), endDate);
+		}
 	}
 
 	@Override

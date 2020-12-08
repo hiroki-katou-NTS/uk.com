@@ -90,6 +90,7 @@ module nts.uk.at.view.kbt002.b {
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
+          console.log(response);
           vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
           vm.stdAcceptList(response.stdAcceptCondSetList);
           vm.stdOutputList(response.stdOutputCondSetList);
@@ -125,7 +126,7 @@ module nts.uk.at.view.kbt002.b {
               vm.updateList();
               vm.currentExecItem().workplaceList(res.workplaceInfos);
               vm.buildWorkplaceStr(vm.currentExecItem().workplaceList()); // B4_6, 7, 9, 10
-              vm.executionTaskWarning(vm.buildExecutionTaskWarningStr()); // B5_6
+              // vm.executionTaskWarning(vm.buildExecutionTaskWarningStr()); // B5_6
               if (vm.currentExecItem().perScheduleCls()) {
                 // vm.targetDateText('targetDateText');
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
@@ -158,6 +159,9 @@ module nts.uk.at.view.kbt002.b {
       $.when(vm.getEnumDataList(), vm.getAlarmByUser())
         .then((response) => console.log(vm.targetMonthList()))
         .always(() => vm.$blockui('clear'));
+      vm.taskSetting.subscribe(data => {
+        vm.executionTaskWarning(vm.buildExecutionTaskWarningStr());
+      });
     }
 
     /**
@@ -225,6 +229,7 @@ module nts.uk.at.view.kbt002.b {
       errors.clearAll();
       vm.isNewMode(true);
       vm.selectedExecCode('');
+      vm.taskSetting(null);
     }
 
     /**

@@ -16,6 +16,7 @@ import nts.arc.task.AsyncTaskInfoRepository;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.app.command.processexecution.ChangeExecutionTaskSettingCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.ChangeExecutionTaskSettingCommandHandler;
+import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionAutoCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.RemoveProcessExecutionCommand;
@@ -171,6 +172,7 @@ public class ProcessExecutionWebService extends WebService {
 		}
 
 		return result.get();
+//		return this.execHandler.handle(command);
 	}
 
 	@POST
