@@ -102,7 +102,7 @@
 									enable: true,
 									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
-						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A6_11 -->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
@@ -155,7 +155,7 @@
 									enable: true }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
-						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime)), visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A7_11 実績時間-->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>

@@ -107,7 +107,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									enable: true,
 									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
-						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A6_11 -->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
@@ -160,7 +160,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									enable: true }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
-						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime)), visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A7_11 実績時間-->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
 					</tr>
@@ -204,6 +204,9 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		preTime?: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
 		type?: KnockoutObservable<number>;
+		displayNo?: KnockoutObservable<string>;
+		visible?: KnockoutObservable<Boolean>;
+		backgroundColor?: KnockoutObservable<string>;
 	}
 	export interface RestTime {
 		frameNo: string;
@@ -219,5 +222,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		actualTime?: KnockoutObservable<number>;
 		type?: KnockoutObservable<number>;
 		legalClf?: KnockoutObservable<number>;
+		displayNo?: KnockoutObservable<string>;
+		visible?: KnockoutObservable<Boolean>;
+		backgroundColor?: KnockoutObservable<string>;
 	}
 }
