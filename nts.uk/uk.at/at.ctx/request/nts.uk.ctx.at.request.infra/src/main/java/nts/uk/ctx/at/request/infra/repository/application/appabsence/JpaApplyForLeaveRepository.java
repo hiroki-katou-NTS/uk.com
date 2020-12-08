@@ -11,23 +11,29 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHd;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHdPK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 
 /**
  * @author anhnm
  *
  */
 @Stateless
-public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyForLeaveRepository {
+public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyForLeaveRepository, FindAppCommonForNR<ApplyForLeave> {
     
     @Inject
     private ApplicationRepository appRepo;
@@ -136,4 +142,37 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
         
         return datas;
     }
+
+    private final static String FIND_BY_IDS = "select a from KrqdtAppHd a where a.krqdtAppHdPK.cid = :cid and a.krqdtAppHdPK.appId IN :appIds";
+	@Override
+	public List<ApplyForLeave> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = appRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.ABSENCE_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<ApplyForLeave> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = appRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr,
+				ApplicationType.ABSENCE_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<ApplyForLeave> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = appRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.ABSENCE_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+	
+	private List<ApplyForLeave> mapToDom(String companyId, List<Application> lstApp){
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return this.queryProxy().query(FIND_BY_IDS, KrqdtAppHd.class).setParameter("cid", companyId)
+				.setParameter("appIds", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+				.getList(x -> {
+					val dom = x.toDomain();
+					dom.setApplication(this.findAppId(lstApp, x.krqdtAppHdPK.getAppId()).orElse(null));
+					return dom;
+				});
+	}
 }

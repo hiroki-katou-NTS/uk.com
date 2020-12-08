@@ -37,5 +37,15 @@ public class AppStamp extends Application {
 	public AppStamp(Application application) {
 		super(application);
 	}
-	
+
+	public AppStamp(Application application, List<TimeStampApp> listTimeStampApp,
+			List<DestinationTimeApp> listDestinationTimeApp, List<TimeStampAppOther> listTimeStampAppOther,
+			List<DestinationTimeZoneApp> listDestinationTimeZoneApp) {
+		super(application);
+		this.listTimeStampApp = listTimeStampApp;
+		this.listDestinationTimeApp = listDestinationTimeApp;
+		this.listTimeStampAppOther = listTimeStampAppOther;
+		this.listDestinationTimeZoneApp = listDestinationTimeZoneApp;
+	}
+
 }

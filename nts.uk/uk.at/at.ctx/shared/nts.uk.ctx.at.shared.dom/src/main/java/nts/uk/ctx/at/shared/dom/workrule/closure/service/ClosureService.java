@@ -311,8 +311,12 @@ public class ClosureService {
 	
 	public static Closure getClosureDataByEmployee(RequireM3 require, CacheCarrier cacheCarrier, 
 			String employeeId, GeneralDate baseDate) {
-		
 		String companyId = AppContexts.user().companyId();
+		 return getClosureDataByEmployee(require, cacheCarrier, companyId, employeeId, baseDate);
+	}
+	
+	public static Closure getClosureDataByEmployee(RequireM3 require, CacheCarrier cacheCarrier, 
+			String companyId, String employeeId, GeneralDate baseDate) {
 		//Imported「（就業）所属雇用履歴」を取得する
 		Optional<BsEmploymentHistoryImport>  optBsEmploymentHist = require.employmentHistory(cacheCarrier, companyId, employeeId, baseDate);
 		if(!optBsEmploymentHist.isPresent()) {

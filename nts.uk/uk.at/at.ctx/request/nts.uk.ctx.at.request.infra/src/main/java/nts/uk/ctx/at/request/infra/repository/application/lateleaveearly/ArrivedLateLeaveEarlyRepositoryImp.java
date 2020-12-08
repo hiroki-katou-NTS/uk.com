@@ -1,29 +1,43 @@
 package nts.uk.ctx.at.request.infra.repository.application.lateleaveearly;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
-import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeavePK;
 import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateEarly;
+import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeavePK;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 
 /**
  * @author anhnm
  *
  */
 @Stateless
-public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements ArrivedLateLeaveEarlyRepository {
+public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository
+		implements ArrivedLateLeaveEarlyRepository, FindAppCommonForNR<ArrivedLateLeaveEarly> {
 	private final String SELECT_BY_CID_APPID = "SELECT * FROM KRQDT_APP_LATE_EARLY " + "WHERE CID = @companyId"
 			+ " AND APP_ID = @appId";
 
+	@Inject 
+	private ApplicationRepository applicationRepo;
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -206,4 +220,34 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		this.commandProxy().remove(KrqdtAppLateEarly.class, new KrqdtAppLateOrLeavePK(cID, appId));
 	}
 
+	private final String FIND_BY_APPID_IN = "SELECT * FROM KRQDT_APP_LATE_EARLY " + "WHERE CID = @companyId"
+			+ " AND APP_ID IN @appId";
+	@Override
+	public List<ArrivedLateLeaveEarly> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		 return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<ArrivedLateLeaveEarly> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		 return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<ArrivedLateLeaveEarly> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		 return mapToDom(companyId, lstApp);
+	}
+	
+	private List<ArrivedLateLeaveEarly> mapToDom(String companyId, List<Application> lstApp) {
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		 return new NtsStatement(FIND_BY_APPID_IN, this.jdbcProxy()).paramString("companyId", companyId)
+					.paramString("appId",  lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList())).
+					getList(x -> {
+						return KrqdtAppLateEarly.MAPPER.toEntity(x).toDomain(this.findAppId(lstApp, x.getString("APP_ID")).orElse(null));
+					});
+	}
 }

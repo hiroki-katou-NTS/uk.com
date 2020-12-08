@@ -936,7 +936,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public List<String> getAllSidByCid(String cid) {
 		List<String> listEntity = this.queryProxy().query(GET_ALL, BsymtEmployeeDataMngInfo.class)
 				.setParameter("cid", cid).getList().stream().map(x -> x.bsymtEmployeeDataMngInfoPk.sId).collect(Collectors.toList());
-
 		return listEntity;
+	}
+
+	private static final String FIND_CID_BY_SID = "SELECT e.companyId FROM BsymtEmployeeDataMngInfo e "
+			+ "WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId ";
+	@Override
+	public Optional<String> getCompanyId(String employeeId) {
+		return queryProxy().query(FIND_CID_BY_SID, String.class).setParameter("sId", employeeId)
+				.getSingle();
 	}
 }

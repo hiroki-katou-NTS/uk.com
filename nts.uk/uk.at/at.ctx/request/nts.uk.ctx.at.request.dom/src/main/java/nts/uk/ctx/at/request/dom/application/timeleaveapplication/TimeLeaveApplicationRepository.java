@@ -4,12 +4,12 @@ import java.util.Optional;
 
 public interface TimeLeaveApplicationRepository {
 
-    Optional<TimeLeaveApplication> findById(String companyId, String appId);
+	Optional<TimeLeaveApplication> findById(String companyId, String appId);
 
-    void add(TimeLeaveApplication domain);
+	void add(TimeLeaveApplication domain);
 
-    void update(TimeLeaveApplication domain);
+	void update(TimeLeaveApplication domain);
 
-    void remove(TimeLeaveApplication domain);
+	void remove(TimeLeaveApplication domain);
 
 }

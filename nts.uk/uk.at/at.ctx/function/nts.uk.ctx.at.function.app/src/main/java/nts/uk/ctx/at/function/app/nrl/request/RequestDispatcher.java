@@ -28,6 +28,9 @@ import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.app.nrlremote.SendToNRLRemote;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stamp.FuncStampCardAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stamp.StampCard;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.AuthenticateNRCommunicationQuery;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCode;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerComAbPeriod;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -77,9 +80,6 @@ public class RequestDispatcher {
 	private DefaultXDocument document;
 	
 	@Inject
-	private AuthenticateNRCommunicationQuery authenQuery;
-	
-	@Inject
 	private RQEmpInfoTerminalAdapter rqEmpInfoTerminalAdapter;
 	
 	@Inject
@@ -87,6 +87,9 @@ public class RequestDispatcher {
 
 	@Inject
 	private EmpInfoTerComAbPeriodRepository empInfoTerComAbPeriodRepo;
+	
+	@Inject
+	private FuncStampCardAdapter funcStampCardAdapter;
 	
 	/**
 	 * Ignite.
@@ -124,8 +127,10 @@ public class RequestDispatcher {
 				frame = document.unmarshal(result.toInputStream());
 			}
 			
+			RequireImpl impl = new RequireImpl(rqEmpInfoTerminalAdapter, empInfoTerminalComStatusRepo,
+					empInfoTerComAbPeriodRepo, funcStampCardAdapter);
 			//タイムレコーダの通信を認証する
-			boolean checkAuthen = authenQuery.process(contractCode, macAddr);
+			boolean checkAuthen = AuthenticateNRCommunicationQuery.process(impl, contractCode, macAddr);
 			if(!checkAuthen) {
 				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
 			}
@@ -137,8 +142,6 @@ public class RequestDispatcher {
 			}
 
 			// DS_通信状況を記録する.通信状況を記録する
-			RequireImpl impl = new RequireImpl(rqEmpInfoTerminalAdapter, empInfoTerminalComStatusRepo,
-					empInfoTerComAbPeriodRepo);
 			val status = RecordCommunicationStatus.recordStatus(impl, new ContractCode(contractCode),
 					new EmpInfoTerminalCode(empInfoTerCodeOpt.get()));
 			status.run();
@@ -160,13 +163,15 @@ public class RequestDispatcher {
 	}
 
 	@AllArgsConstructor
-	public class RequireImpl implements RecordCommunicationStatus.Require {
+	public class RequireImpl implements RecordCommunicationStatus.Require, AuthenticateNRCommunicationQuery.Require {
 
 		private final RQEmpInfoTerminalAdapter rQEmpInfoTerminalAdapter;
 
 		private final EmpInfoTerminalComStatusRepository empInfoTerminalComStatusRepo;
 
 		private final EmpInfoTerComAbPeriodRepository empInfoTerComAbPeriodRepo;
+		
+		private final FuncStampCardAdapter funcStampCardAdapter;
 
 		@Override
 		public Optional<FuncEmpInfoTerminalImport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
@@ -197,6 +202,11 @@ public class RequestDispatcher {
 		@Override
 		public void insertEmpTerStatus(EmpInfoTerminalComStatus empInfoTerComStatus) {
 			empInfoTerminalComStatusRepo.insert(empInfoTerComStatus);
+		}
+
+		@Override
+		public Optional<StampCard> getByCardNoAndContractCode(String contractCode, String stampNumber) {
+			return funcStampCardAdapter.getByCardNoAndContractCode(contractCode, stampNumber);
 		}
 		
 	}

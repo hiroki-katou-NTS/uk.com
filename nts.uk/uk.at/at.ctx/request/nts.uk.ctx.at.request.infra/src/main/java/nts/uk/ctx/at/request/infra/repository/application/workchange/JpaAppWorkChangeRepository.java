@@ -6,19 +6,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
@@ -28,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
+import nts.uk.ctx.at.request.infra.repository.application.FindAppCommonForNR;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -41,11 +46,14 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
-public class JpaAppWorkChangeRepository extends JpaRepository implements AppWorkChangeRepository {
+public class JpaAppWorkChangeRepository extends JpaRepository implements AppWorkChangeRepository, FindAppCommonForNR<AppWorkChange>   {
 
 	public static final String FIND_BY_ID = "SELECT *  "
 			+ "FROM KRQDT_APP_WORK_CHANGE as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
 			+ " WHERE a.APP_ID = @appID AND a.CID = @companyId";
+	
+	@Inject 
+	private ApplicationRepository applicationRepo;
 
 	@Override
 	public Optional<AppWorkChange> findbyID(String companyId, String appID) {
@@ -197,4 +205,38 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 		});
 	}
 
+	@Override
+	public List<AppWorkChange> findWithSidDate(String companyId, String sid, GeneralDate date) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDate(companyId, sid, date, ApplicationType.WORK_CHANGE_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<AppWorkChange> findWithSidDateApptype(String companyId, String sid, GeneralDate date,
+			GeneralDateTime inputDate, PrePostAtr prePostAtr) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDateApptype(companyId, sid, date, inputDate, prePostAtr, ApplicationType.WORK_CHANGE_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+
+	@Override
+	public List<AppWorkChange> findWithSidDatePeriod(String companyId, String sid, DatePeriod period) {
+		List<Application> lstApp = applicationRepo.findAppWithSidDatePeriod(companyId, sid, period, ApplicationType.WORK_CHANGE_APPLICATION.value);
+		return mapToDom(companyId, lstApp);
+	}
+	
+	private final String FIND_BY_APPID_IN = "SELECT *  " + 
+			" FROM KRQDT_APP_WORK_CHANGE as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID" + 
+			 "  WHERE a.APP_ID IN @appId AND a.CID = @companyId";
+	private List<AppWorkChange> mapToDom(String companyId, List<Application> lstApp) {
+		if (lstApp.isEmpty())
+			return new ArrayList<>();
+		return new NtsStatement(FIND_BY_APPID_IN, this.jdbcProxy())
+                .paramString("appId", lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList()))
+                .paramString("companyId", companyId)
+                .getList(c -> {
+                	val dom = toDomain(c);
+                	dom.setApplication(this.findAppId(lstApp, c.getString("APP_ID")).orElse(null));
+                	return dom;
+                });
+	}
 }

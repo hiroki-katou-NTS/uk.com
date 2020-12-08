@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.adapter.employeebasic;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -14,4 +15,6 @@ public interface SyEmployeeFnAdapter {
 	List<String> filterSidLstByDatePeriodAndSids(List<String> sids, DatePeriod period);
 	
 	List<String> filterSidByCidAndPeriod(String cid, DatePeriod period);
+	
+	Optional<String> getCompanyId(String employeeId);
 }
