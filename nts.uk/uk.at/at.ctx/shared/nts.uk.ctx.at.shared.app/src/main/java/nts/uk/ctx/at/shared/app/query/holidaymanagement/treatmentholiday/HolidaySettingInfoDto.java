@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.ws.holidaymanagement;
+package nts.uk.ctx.at.shared.app.query.holidaymanagement.treatmentholiday;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,5 +17,6 @@ public class HolidaySettingInfoDto {
 	public GeneralDate standardDate;
 	public int holidayCheckUnit;
 	public Integer selectedClassification;
+	public String hdDay;
 	
 }

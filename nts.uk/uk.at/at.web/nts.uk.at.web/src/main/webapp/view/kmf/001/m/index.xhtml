@@ -43,8 +43,8 @@
 								data-bind="ntsSwitchButton: {
 												name: '#[KMF001_277]',
 												options: ko.observableArray([
-					                				{ code: 0, name: '#{i18n.getText('KMF001_278')}' },
-					                				{ code: 1, name: '#{i18n.getText('KMF001_279')}' }
+					                				{ code: 1, name: '#{i18n.getText('KMF001_278')}' },
+					                				{ code: 0, name: '#{i18n.getText('KMF001_279')}' }
 					            				]),
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -125,7 +125,7 @@
 									<input tabindex="8" id="numberEditor2-MD"
 										data-bind="ntsNumberEditor: {
 											value: addHolidayValue,
-											constraint: 'FourWeekDays',
+											constraint: 'WeeklyDays',
 											name: '#[KMF001_290]',
 											required: true,
 											option: addHolidayOption,
@@ -178,7 +178,7 @@
 									<input tabindex="6" id="numberEditor-YMD"
 										data-bind="ntsNumberEditor: {
 											value: holidayValue,
-											constraint: 'NumberDayNursing',
+											constraint: 'FourWeekDays',
 											name: '#[KMF001_286]',
 											required: true,
 											option: holidayOption,
@@ -237,7 +237,7 @@
 						<!-- M8_1,M8_2,M8_3  -->
 						<tr data-bind="visible: is1week">
 							<td><div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMF001_291')}</div></td>
-							<td><label data-bind="text: startingDay"></label>　　<label data-bind="text: description">#{i18n.getText('KMF001_293')}</label></td>
+							<td><label data-bind="text: startingDay"></label>　　<label data-bind="text: $parent.description"></label></td>
 						</tr>
 						<!-- end 1 week  -->
 
