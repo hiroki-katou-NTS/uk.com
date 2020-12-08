@@ -25,9 +25,9 @@ import nts.uk.screen.at.app.command.kmk.kmk004.p.UpdateWkpBasicSettingCommandHan
 import nts.uk.screen.at.app.command.kmk.kmk004.p.WkpBasicSettingCommand;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettings;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
-import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingDto;
-import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingHoursByCompany;
-import nts.uk.screen.at.app.query.kmk004.b.DisplayMonthlyWorkingInput;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingHoursByCompany;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingInput;
 import nts.uk.screen.at.app.query.kmk004.common.GetUsageUnitSetting;
 import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborComDto;
