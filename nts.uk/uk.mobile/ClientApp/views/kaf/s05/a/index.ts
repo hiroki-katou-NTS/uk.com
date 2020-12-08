@@ -46,7 +46,7 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
         }
         if (vm.modeNew) {
-            vm.application = vm.createApplicationInsert(AppType.WORK_CHANGE_APPLICATION);
+            vm.application = vm.createApplicationInsert(AppType.OVER_TIME_APPLICATION);
         } else {
             vm.application = vm.createApplicationUpdate(vm.params.appDispInfoStartupOutput.appDetailScreenInfo);
         }
@@ -54,7 +54,7 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.user = user;
         }).then(() => {
             if (vm.modeNew) {
-                return vm.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
+                return vm.loadCommonSetting(AppType.OVER_TIME_APPLICATION);
             }
             
             return true;
