@@ -221,7 +221,7 @@ module nts.uk.ui.calendar {
                 background-color: #EDFAC2;
 			}
             .calendar .calendar-container .month .week .day.saturday .status {
-                background-color: #9BC2E6;
+                background-color: #8bd8ff;
             }
             .calendar .calendar-container .month .week .day.sunday .status,
             .calendar .calendar-container .month .week .day.holiday .status {
@@ -258,10 +258,8 @@ module nts.uk.ui.calendar {
 				background-color: #ccc;
 				border-radius: 5px;
 				padding: 5px;
-				min-width: 220px;
-				max-width: 400px;
-				min-height: 220px;
-				max-height: 400px;
+				width: 0;
+				height: 0;
 			}
 			.calendar .event-popper>.epc {
 				position: relative;
@@ -292,6 +290,10 @@ module nts.uk.ui.calendar {
 				z-index: 9;
 				position: fixed;
 				visibility: visible;
+				min-width: 220px;
+				max-width: 400px;
+				min-height: 220px;
+				max-height: 400px;
 			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -302,8 +304,12 @@ module nts.uk.ui.calendar {
 	})
 	export class SChedulerRefBindingHandler implements KnockoutBindingHandler {
 		init($$popper: HTMLElement, _valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-			$$popper.classList.add('event-popper');
+			// attach element to binding context
 			_.extend(bindingContext, { $$popper });
+
+			$$popper.classList.add('event-popper');
+
+			return { controlsDescendantBindings: true };
 		}
 	}
 
@@ -414,7 +420,15 @@ module nts.uk.ui.calendar {
 											$$popper.classList.remove('hide-arrow');
 										}
 									})
-									.then(() => $$popper.classList.add('show'));
+									.then(() => {
+										const pbound = $$popper.getBoundingClientRect();
+
+										if (pbound.top !== 0 && pbound.left !== 0) {
+											$$popper.classList.add('show');
+										} else {
+											$$popper.classList.remove('show');
+										}
+									});
 							}
 						})
 						.on('mouseout', () => {
@@ -427,6 +441,8 @@ module nts.uk.ui.calendar {
 								}).then(() => {
 									$$popper.style.top = '0px';
 									$$popper.style.left = '0px';
+
+									$$popper.classList.remove('show');
 								});
 						});
 				}
