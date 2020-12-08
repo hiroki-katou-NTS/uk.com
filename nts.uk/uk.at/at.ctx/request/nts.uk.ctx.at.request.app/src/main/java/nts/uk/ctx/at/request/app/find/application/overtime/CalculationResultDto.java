@@ -25,12 +25,13 @@ public class CalculationResultDto {
 		return new CalculationResultDto(
 				calculationResult.getFlag(),
 				calculationResult.getOverTimeZoneFlag(),
-				OverStateOutputDto.fromDomain(calculationResult.getOverStateOutput()),
+				calculationResult.getOverStateOutput() == null ? null : OverStateOutputDto.fromDomain(calculationResult.getOverStateOutput()),
 				calculationResult.getApplicationTimes()
 					.stream()
 					.map(x -> ApplicationTimeDto.fromDomain(x))
 					.collect(Collectors.toList()));
 	}
+	
 	
 
 }
