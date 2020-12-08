@@ -1,92 +1,235 @@
-import { component, Prop, Watch } from '@app/core/component';
 import { _, Vue } from '@app/provider';
-import { KafS05aStep1Component } from '../components/step1/index';
-import { KafS05aStep2Component } from '../components/step2/index';
-import { KafS05aStep3Component } from '../components/step3/index';
-import { KafS05aStep4Component } from '../components/step4/index';
+import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
-import { Kafs05Model } from '../components/common/CommonClass';
+import { KafS05Step1Component } from '../step1';
+import { KafS05Step2Component } from '../step2';
+import { KafS05Step3Component } from '../step3';
+import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 
 @component({
-    name: 'kafS05a',
+    name: 'kafs05',
     route: '/kaf/s05/a',
-    style: require('../style.scss'),
-    template: require('./index.html'),
-    resource: require('../resources.json'),
+    style: require('./style.scss'),
+    template: require('./index.vue'),
+    resource: require('./resources.json'),
+    validations: {},
     constraints: [],
     components: {
-        'kaf005_1': KafS05aStep1Component,
-        'kaf005_2': KafS05aStep2Component,
-        'kaf005_3': KafS05aStep3Component,
-        'kaf005_4': KafS05aStep4Component,
-        'step-wizard': StepwizardComponent
+        'step-wizard': StepwizardComponent,
+        'kafS05Step1Component': KafS05Step1Component,
+        'kafS05Step2Component': KafS05Step2Component,
+        'kafS05Step3Component': KafS05Step3Component
     }
+
 })
+export class KafS05Component extends KafS00ShrComponent {
 
-export class KafS05aComponent extends Vue {
-    @Prop({ default: () => ({ appID: null }) })
-    public params: {appID: string};
+    private numb: number = 1;
+    public text1: string = null;
+    public text2: string = 'step2';
+    public isValidateAll: boolean = true;
+    public user: any = null;
+    public modeNew: boolean = true;
+    public application: Application = null;
 
-    @Watch('$route')
-    public checkURL(value: any) {
-        window.location.reload();
+    @Prop() 
+    public readonly params: InitParam;
+
+    public get step() {
+        return `step_${this.numb}`;
     }
-
-    public kafs05Model: Kafs05Model = null;
-
-    private step: string = 'step1';
 
     public created() {
-        this.step = 'step1';
-        this.kafs05Model = {
-            isCreate: true, step1Start: true, resetTimeRange: 0, checkBoxValue: false, enableSendMail: false, displayBreakTimeFlg: false, employeeName: '', enteredPersonName: '', prePostSelected: 2, workState: true,
-            typeSiftVisible: true, appDate: null, workTypeCd: '', workTypeName: '', siftCD: '', siftName: '', workTypecodes: [], workTimecodes: [], selectedWorkTime: '',
-            reasonCombo: [], selectedReason: '', requiredReason: false, multilContent: '', reasonCombo2: [], selectedReason2: '', requiredReason2: false, multilContent2: '',
-            approvalSource: [], employeeID: null, employeeIDs: [], employeeList: [], selectedEmplCodes: '', employeeFlag: false, totalEmployee: '', heightOvertimeHours: null,
-            overtimeAtr: null, restTime: [], overtimeHours: [], breakTimes: [], bonusTimes: [], prePostEnable: true, displayCaculationTime: false, displayBonusTime: false, displayPrePostFlg: false,
-            restTimeDisFlg: false, typicalReasonDisplayFlg: false, displayAppReasonContentFlg: false, displayDivergenceReasonForm: false, displayDivergenceReasonInput: false,
-            workTypeChangeFlg: false, overtimeWork: [], indicationOvertimeFlg: true, calculateFlag: 0, uiType: 0, preWorkContent: null, targetDate: null, editable: true,
-            enableOvertimeInput: false, isSpr: false, resultCaculationTimeFlg: false, workTimeInput: { start: null, end: null }, appID: this.params.appID, version: 0, reflectPerState: 0, user: 0, 
-            beforeAppStatus: false, actualStatus: null, performanceExcessAtr: null, preExcessDisplaySetting: 0, overtimeSettingDataDto: null, opAppBefore: null, actualLst: null
-        };
-        if (this.$route.query.overworkatr == '0') {
-            this.pgName = 'kafS05a0';
-        } else if (this.$route.query.overworkatr == '1') {
-            this.pgName = 'kafS05a1';
-        } else if (this.$route.query.overworkatr == '2') {
-            this.pgName = 'kafS05a2';
+        const vm = this;
+        if (vm.params) {
+            vm.modeNew = false;
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+        }
+        if (vm.modeNew) {
+            vm.application = vm.createApplicationInsert(AppType.WORK_CHANGE_APPLICATION);
         } else {
-            this.pgName = 'kafS05a2';
+            vm.application = vm.createApplicationUpdate(vm.params.appDispInfoStartupOutput.appDetailScreenInfo);
+        }
+        vm.$auth.user.then((user: any) => {
+            vm.user = user;
+        }).then(() => {
+            if (vm.modeNew) {
+                return vm.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
+            }
+            
+            return true;
+        }).then((loadData: any) => {
+            if (loadData) {
+                vm.updateKaf000_A_Params(vm.user);
+                vm.updateKaf000_B_Params(vm.modeNew);
+                vm.updateKaf000_C_Params(vm.modeNew);
+                if (vm.modeNew) {
+                    return vm.$http.post('at', API.initAppNew, {});  
+                }
+                
+                return true;
+            }
+        }).then((result: any) => {
+            if (result) {
+                if (vm.modeNew) {
+                    
+                } else {
+
+                }   
+            }
+        }).catch((error: any) => {
+            vm.handleErrorCustom(error).then((result) => {
+                if (result) {
+                    vm.handleErrorCommon(error);
+                }
+            });
+        }).then(() => vm.$mask('hide'));
+    }
+
+    public kaf000BChangeDate(objectDate) {
+        const vm = this;
+        if (objectDate.startDate) {
+            if (vm.modeNew) {
+                vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                // console.log('changeDateCustom');
+            }
         }
     }
-
-    public toStep2(kafs05Model: Kafs05Model) {
-        this.step = 'step2';
-        this.kafs05Model = _.cloneWith(kafs05Model);
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        const vm = this;
+        vm.application.prePostAtr = prePostAtr;
     }
 
-    public toStep3(kafs05Model: Kafs05Model) {
-        this.step = 'step3';
-        this.kafs05Model = _.cloneWith(kafs05Model);
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        const vm = this;
+        vm.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
-    public toStep4(kafs05Model: Kafs05Model) {
-        this.step = 'step4';
-        this.kafs05Model = _.cloneWith(kafs05Model);
+    public kaf000CChangeAppReason(opAppReason) {
+        const vm = this;
+        vm.application.opAppReason = opAppReason;
     }
 
-    public backToStep1(kafs05Model: Kafs05Model) {
-        this.step = 'step1';
-        this.kafs05Model = _.cloneWith(kafs05Model);
+    public toStep(value: number) {
+        const vm = this;
+        vm.isValidateAll = vm.customValidate(vm);
+        vm.$validate();
+        if (!vm.$valid || !vm.isValidateAll) {
+
+            return;
+        }
+        vm.numb = value;
     }
 
-    public backToStep2(kafs05Model: Kafs05Model) {
-        this.step = 'step2';
-        this.kafs05Model = _.cloneWith(kafs05Model);
+    public customValidate(viewModel: any) {
+        const vm = this;
+        let validAllChild = true;
+        for (let child of viewModel.$children) {
+            let validChild = true;
+            if (child.$children) {
+                validChild = vm.customValidate(child); 
+            }
+            child.$validate();
+            if (!child.$valid || !validChild) {
+                validAllChild = false;
+            }
+        }
+
+        return validAllChild;
     }
 
-    public backToStep3(kafs05Model: Kafs05Model) {
-        this.step = 'step3';
-        this.kafs05Model = _.cloneWith(kafs05Model);
+    public register() {
+        const vm = this;
+        vm.isValidateAll = vm.customValidate(vm);
+        vm.$validate();
+        if (!vm.$valid || !vm.isValidateAll) {
+
+            return;
+        }
+        vm.$mask('show');
+        vm.$http.post('at', API.checkBeforeRegisterSample, ['Msg_260', 'Msg_261'])
+        .then((result: any) => {
+            if (result) {
+                // xử lý confirmMsg
+                return vm.handleConfirmMessage(result.data);
+            }
+        }).then((result: any) => {
+            if (result) {
+                // đăng kí 
+                return vm.$http.post('at', API.registerSample, ['Msg_15']).then(() => {
+                    return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
+                        return true;
+                    });	
+                });
+            }
+        }).then((result: any) => {
+            if (result) {
+                // gửi mail sau khi đăng kí
+                // return vm.$ajax('at', API.sendMailAfterRegisterSample);
+                return true;
+            }
+        }).catch((failData) => {
+            // xử lý lỗi nghiệp vụ riêng
+            vm.handleErrorCustom(failData).then((result: any) => {
+                if (result) {
+                    // xử lý lỗi nghiệp vụ chung
+                    vm.handleErrorCommon(failData);
+                }
+            });
+        }).then(() => {
+            vm.$mask('hide');    	
+        });
+    }
+    
+    public handleErrorCustom(failData: any): any {
+        const vm = this;
+
+        return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_26') {
+                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+                .then(() => {
+                    vm.$goto('ccg008a');
+                });
+
+                return resolve(false);		
+            }
+
+            return resolve(true);
+        });
+    }
+
+    public handleConfirmMessage(listMes: any): any {
+        const vm = this;
+
+        return new Promise((resolve) => {
+            if (_.isEmpty(listMes)) {
+                return resolve(true);
+            }
+            let msg = listMes[0];
+    
+            return vm.$modal.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+            .then((value) => {
+                if (value === 'yes') {
+                    return vm.handleConfirmMessage(_.drop(listMes)).then((result) => {
+                        if (result) {
+                            return resolve(true);    
+                        }
+
+                        return resolve(false);
+                    });
+                }
+                
+                return resolve(false);
+            });
+        });
     }
 }
+const API = {
+    initAppNew: 'at/request/application/initApp',
+    checkBeforeRegisterSample: 'at/request/application/checkBeforeSample',
+    registerSample: 'at/request/application/changeDataSample',
+    sendMailAfterRegisterSample: ''
+};
