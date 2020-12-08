@@ -389,6 +389,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
+		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 		compile(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pub', version: version)
