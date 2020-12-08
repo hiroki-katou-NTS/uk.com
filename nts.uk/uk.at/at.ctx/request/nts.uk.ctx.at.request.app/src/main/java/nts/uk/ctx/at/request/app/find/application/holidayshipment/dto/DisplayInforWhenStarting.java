@@ -6,7 +6,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
-import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
 
 /**
  * @author thanhpv
@@ -26,17 +28,15 @@ public class DisplayInforWhenStarting {
 	//振休残数情報
 	public RemainingHolidayInfor remainingHolidayInfor;
 	//振休振出申請設定
-	public WithDrawalReqSetDto drawalReqSet;
-	
+	public SubstituteHdWorkAppSetDto substituteHdWorkAppSet;
 	//振休紐付け管理区分
 	public Integer holidayManage;
-	
 	//代休紐付け管理区分
 	public Integer substituteManagement;
-	
 	//振休申請の反映
+	public VacationAppReflectOptionDto workInfoAttendanceReflect;
 	//振出申請の反映
-	
+	public SubstituteWorkAppReflectDto substituteWorkAppReflect;
 	//振休申請
 	public AbsenceLeaveAppDto absApp;
 	//振出申請

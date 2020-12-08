@@ -10,8 +10,8 @@
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
 						<div data-bind="ntsComboBox: {
 	                                        name: $i18n('KAF000_28'),
-	                                        options: workType,
-	                                        optionsValue: 'code',
+	                                        options: workTypeListWorkingDay,
+	                                        optionsValue: 'workTypeCode',
 	                                        optionsText: 'name',
 	                                        value: workTypeSelected,
 	                                        columns: [{ prop: 'name', length: 20 }],
@@ -21,7 +21,7 @@
 					<div class="row">
 						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
 						<div class="ntsControl">
-							<button class="" data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+							<button class="" data-bind="click: register" tabindex="">#{i18n.getText('KAF011_5')}</button>
 							<span data-bind="text: workTime"></span>
 						</div>
 					</div>
@@ -83,8 +83,8 @@
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
 						<div data-bind="ntsComboBox: {
 	                                        name: $i18n('KAF000_28'),
-	                                        options: workType,
-	                                        optionsValue: 'code',
+	                                        options: workTypeListHoliDay,
+	                                        optionsValue: 'workTypeCode',
 	                                        optionsText: 'name',
 	                                        value: workTypeSelected,
 	                                        columns: [{ prop: 'name', length: 20 }],
@@ -97,7 +97,7 @@
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
 							<div class="ntsControl">
-								<button class="" data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+								<button class="" data-bind="click: register" tabindex="">#{i18n.getText('KAF011_5')}</button>
 								<span data-bind="text: workTime"></span>
 							</div>
 						</div>

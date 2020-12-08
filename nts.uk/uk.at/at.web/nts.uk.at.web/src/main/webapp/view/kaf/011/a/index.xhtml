@@ -34,16 +34,15 @@
 			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
 			
-			<com:stylefile path="kaf011.a.css" />
-			
 			<com:stylefile path="../shr/kaf011.shr.css" />
+			<com:stylefile path="kaf011.a.css" />
 			
 			<com:scriptfile path="kaf011.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
-				<button class="" data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_7')}</button>
+				<button class="" data-bind="click: register" tabindex="2">#{i18n.getText('KAF011_7')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
@@ -93,19 +92,19 @@
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-											
-				<div style="margin-top: 10px;">
-					<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_18')}</div>
-					<div class="cf" data-bind="ntsSwitchButton: {
-															name:  $i18n('KAF011_18'),
-															options: __viewContext.enums.ApplicationCombination,
-															optionsValue: 'value',
-															optionsText: 'name',
-															value: selectedRuleCode,
-															required: required,
-															enable: enable }"></div>
-				</div>
-				
+				<com:ko-if bind="appCombinaDipslay">						
+					<div style="margin-top: 10px;">
+						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_18')}</div>
+						<div class="cf" data-bind="ntsSwitchButton: {
+																name:  $i18n('KAF011_18'),
+																options: __viewContext.enums.ApplicationCombination,
+																optionsValue: 'value',
+																optionsText: 'name',
+																value: appCombinaSelected,
+																required: false,
+																enable: enable }"></div>
+					</div>
+				</com:ko-if>
 				<ui:include src="../shr/index.xhtml" />
 				
 				

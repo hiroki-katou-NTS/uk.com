@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeIn
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTypeKAF011;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -56,6 +57,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -67,6 +70,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTyp
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -80,6 +85,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -164,6 +172,15 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	
+	@Inject
+	private SubstituteHdWorkAppSetRepository substituteHdWorkAppSetRepo;
+	
+	@Inject
+	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepo;
+	
+	@Inject
+	private SubLeaveAppReflectRepository subLeaveAppReflectRepo;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -885,8 +902,8 @@ public class HolidayShipmentScreenAFinder {
 		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);
 		
 		// 振休振出申請設定の取得(get setting đơn xin nghỉ bù làm bù)
-		WithDrawalReqSet withDrawalReqSet = this.getWithDrawalReqSet(companyId);
-		result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSet));
+		this.getWithDrawalReqSet(companyId, result);
+		
 		
 		//1.振出申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application làm bù (New )(có liên quan application ngày đối tượng )
 		DisplayInformationApplication applicationForWorkingDay = this.applicationForWorkingDay(
@@ -1133,11 +1150,16 @@ public class HolidayShipmentScreenAFinder {
 	 * @param companyID 会社ID
 	 * @return
 	 */
-	public WithDrawalReqSet getWithDrawalReqSet(String companyID) {
+	public void getWithDrawalReqSet(String companyID, DisplayInforWhenStarting result) {
 		// ドメインモデル「振休振出申請設定」を取得する
-		WithDrawalReqSet withDrawalReqSet = withDrawRepo.getWithDrawalReqSet().get();
-		// 取得した情報を返す
-		return withDrawalReqSet;
+		result.setSubstituteHdWorkAppSet(SubstituteHdWorkAppSetDto.fromDomain(substituteHdWorkAppSetRepo.findSettingByCompany(companyID).get()));
+		
+		// ドメインモデル「振休申請の反映」を取得する
+		result.setWorkInfoAttendanceReflect(VacationAppReflectOptionDto.fromDomain(subLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyID).get().getWorkInfoAttendanceReflect()));
+		// ドメインモデル「振出申請の反映」を取得する
+		result.setSubstituteWorkAppReflect(SubstituteWorkAppReflectDto.fromDomain(substituteWorkAppReflectRepo.findSubWorkAppReflectByCompany(companyID).get()));
+		
+		
 	}
 	
 	private WorkingConditionService.RequireM1 createImp() {
