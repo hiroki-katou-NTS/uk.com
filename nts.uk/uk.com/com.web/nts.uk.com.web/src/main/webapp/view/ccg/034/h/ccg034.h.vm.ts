@@ -4,7 +4,7 @@ module nts.uk.com.view.ccg034.h {
   import CCG034D = nts.uk.com.view.ccg034.d;
   import getText = nts.uk.resource.getText;
 
-  const MAX_FILE_SIZE_B = 10 * 1024 * 1024 ;
+  const MAX_FILE_SIZE_MB = 10;
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -53,10 +53,13 @@ module nts.uk.com.view.ccg034.h {
       vm.fileSize(vm.partData.fileSize);
 
       if (vm.fileId()) {
-        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
+        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId())
+          .done((res: any) => {
           $("#H2_2 .filenamelabel").text(res.originalName);
           vm.fileSize(Math.round(Number(res.originalSize) / 1024));
-        });
+         }).fail(() => {
+          vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_MB) ] });
+         });
       }
       $("#H1_2").focus();
     }
@@ -88,7 +91,7 @@ module nts.uk.com.view.ccg034.h {
         if (hasUpload || vm.fileId()) {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
-              if (vm.fileSize() <= MAX_FILE_SIZE_B) {
+              if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
                  // Update part data
                 vm.partData.alignHorizontal = vm.horizontalAlign();
                 vm.partData.alignVertical = vm.verticalAlign();
@@ -103,7 +106,7 @@ module nts.uk.com.view.ccg034.h {
                 // Return data
                 vm.$window.close(vm.partData);
               } else {
-                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_B / (1024 * 1024)) ] });
+                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_MB) ] });
               }
             }
           });

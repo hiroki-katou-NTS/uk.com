@@ -17,6 +17,11 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
     border: 1px groove;
     overflow: auto;
   }
+  
+  #ktg026-contents-area::before {
+    display: inline-block;
+    height: 450px;
+  }
 
   .ktg027-grid {
     display: flex;

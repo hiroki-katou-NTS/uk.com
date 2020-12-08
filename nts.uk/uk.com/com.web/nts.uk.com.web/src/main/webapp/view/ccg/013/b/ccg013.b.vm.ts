@@ -17,7 +17,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         allPart: KnockoutObservableArray<any>;
         listStandardMenu: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
-        selectedStandardMenuKey: KnockoutObservable<string>;
+        selectedStandardMenuKey: KnockoutObservable<any>;
         textOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
 
         constructor() {
@@ -36,10 +36,10 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'code', key: 'code', width: '60px', hidden: true },
+                { headerText: '', prop: 'code', key: 'code', width: '0px', hidden: true },
+                { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'index', key: 'index', width: '60px' },
-                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' },
-                { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', display: 'none' }
+                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' }
             ]);
             self.selectedStandardMenuKey = ko.observable('');
             //Follow SystemSelect
@@ -95,7 +95,35 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             }).fail(function(error) {
                 dfd.reject();
                 alert(error.message);
+            }).always(() => {
+                $('#B1_3').focus();
             });
+
+            $('.content-search')
+            .on('click', '.search-btn', () => {
+                const $grid = $('#multi-list');
+
+                // Lay danh sach cac item duoc bind vao grid
+                const items = $grid.igGrid('option', 'dataSource');
+
+                // neu co item
+                if (items && items.length) {
+                    // lay ra item dau tien
+                    const [first] = items;
+
+                    // neu ton tai item dau tien
+                    if (first) {
+                        // lay ra khoa chinh
+                        const { uniqueCode } = first;
+
+                        if (uniqueCode) {
+                            // gan khoa chinh vao danh sach selected
+                            self.selectedStandardMenuKey(uniqueCode);
+                        }
+                    }
+                }
+            });
+
             return dfd.promise();
         }
 

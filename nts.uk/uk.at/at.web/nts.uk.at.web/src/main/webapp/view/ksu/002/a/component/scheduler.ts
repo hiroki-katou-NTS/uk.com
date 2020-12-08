@@ -273,7 +273,6 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
                     background-color: #eccefb;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.diff-month .data-info,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
                     background-color: #d9d9d9;

@@ -22,7 +22,7 @@
 				<div class="container">
 					<button id="A1_1" data-bind="click: cleanForm">#{i18n.getText('CCG013_1')}</button>
 					<button id="A1_2" class="proceed" data-bind="click: addWebMenu,enable: $root.errors.isEmpty">#{i18n.getText('CCG013_2')}</button>
-					<button id="A1_3" data-bind="click: optionEDialog,enable: !isCreated() ">#{i18n.getText('CCG013_3')}</button>
+					<button id="A1_3" data-bind="click: openEDialog,enable: !isCreated() ">#{i18n.getText('CCG013_3')}</button>
 					<button id="A1_6" data-bind="click: openKdialog">#{i18n.getText('CCG013_103')}</button>
 					<button id="A1_7" data-bind="click: removeWebMenu,enable: !isCreated() " class="danger">#{i18n.getText('CCG013_6')}</button>
 					<button id="A1_9" data-bind="click: exportExcel">#{i18n.getText('CCG013_133')}</button>

@@ -10,7 +10,6 @@ module nts.uk.com.view.ccg015.b {
     updateTopPage: "/toppage/update",
     removeTopPage: "/toppage/remove"
   };
-
   @bean()
   export class ScreenModel extends ko.ViewModel {
     listTopPage: KnockoutObservableArray<Node> = ko.observableArray<Node>([]);
@@ -23,6 +22,9 @@ module nts.uk.com.view.ccg015.b {
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
     isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
+    text1: KnockoutObservable<String> = ko.observable('');
+    text2: KnockoutObservable<String> = ko.observable('');
+    text3: KnockoutObservable<String> = ko.observable('');
     button1Text: KnockoutObservable<string> = ko.observable('');
     button2Text: KnockoutObservable<string> = ko.observable('');
 
@@ -41,6 +43,7 @@ module nts.uk.com.view.ccg015.b {
         { headerText: vm.$i18n("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
         { headerText: vm.$i18n("CCG015_12"), width: "260px", key: 'nodeText', dataType: "string", formatter: _.escape }
       ]);
+      const text470px = vm.$i18n("CCG015_62").toString();
       vm.selectedId.subscribe((value: number) => {
         const isLayout2or3: boolean = (value === LayoutType.LAYOUT_TYPE_2 || value === LayoutType.LAYOUT_TYPE_3);
         vm.button1Text(isLayout2or3 ? vm.$i18n("CCG015_60") : vm.$i18n("CCG015_59"));
@@ -50,6 +53,9 @@ module nts.uk.com.view.ccg015.b {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(false);
           vm.isVisiableButton3(false);
+          vm.text1('');
+          vm.text2('');
+          vm.text3('');
         } else if (value === LayoutType.LAYOUT_TYPE_1 || value === LayoutType.LAYOUT_TYPE_2) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
@@ -58,6 +64,19 @@ module nts.uk.com.view.ccg015.b {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(true);
+          vm.text1(text470px);
+          vm.text2('');
+          vm.text3(text470px);
+        }
+        if(value === LayoutType.LAYOUT_TYPE_1){
+          vm.text1('');
+          vm.text2(text470px);
+          vm.text3('');
+        }
+        if(value === LayoutType.LAYOUT_TYPE_2) {
+          vm.text1(text470px);
+          vm.text2('');
+          vm.text3('');
         }
       });
       vm.loadTopPageList();
@@ -304,7 +323,12 @@ module nts.uk.com.view.ccg015.b {
         topPageModel: vm.topPageModelParam(),
         selectedId: vm.selectedId(),
       };
-      vm.$window.modal('/view/ccg/015/f/index.xhtml', data);
+      const size = {
+        width: Math.round(Number(window.innerWidth) * 80 / 100),
+        height: Math.round(Number(window.innerHeight) * 80 / 100),
+        resizable: true,
+      }
+      vm.$window.modal('/view/ccg/015/f/index.xhtml', data, size);
     }
   }
 
