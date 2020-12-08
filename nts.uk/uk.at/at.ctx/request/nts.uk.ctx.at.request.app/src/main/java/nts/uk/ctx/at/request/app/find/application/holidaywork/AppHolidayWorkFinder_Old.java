@@ -19,7 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto_Old;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto_Old;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -111,7 +111,7 @@ public class AppHolidayWorkFinder_Old {
 	 * @param uiType
 	 * @return
 	 */
-	public AppHdWorkDispInfoDto_Old getAppHolidayWork(String appDate,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto result){
+	public AppHdWorkDispInfoDto_Old getAppHolidayWork(String appDate,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto_Old result){
 		/*String companyID = AppContexts.user().companyId();
 		if(CollectionUtil.isEmpty(lstEmployee) && employeeID == null){
 			 employeeID = AppContexts.user().employeeId();
@@ -409,14 +409,15 @@ public class AppHolidayWorkFinder_Old {
 		String companyID = AppContexts.user().companyId();
 		
 		// 6.計算処理 : 
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
-				GeneralDate.fromString(appDate, DATE_FORMAT),
-				workTypeCD,
-				workTimeCD,
-				startTime,
-				endTime,
-				startTimeRests,
-				endTimeRests);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport();
+//		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
+//				GeneralDate.fromString(appDate, DATE_FORMAT),
+//				workTypeCD,
+//				workTimeCD,
+//				startTime,
+//				endTime,
+//				startTimeRests,
+//				endTimeRests);
 		List<OvertimeInputCaculation> breaktimeInputCaculations = new ArrayList<>();
 				
 		for (Map.Entry<Integer, TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()) {
