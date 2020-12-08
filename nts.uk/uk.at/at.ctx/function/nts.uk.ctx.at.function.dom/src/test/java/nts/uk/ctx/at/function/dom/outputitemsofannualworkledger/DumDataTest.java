@@ -16,10 +16,7 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DumDataTest {
     public static Map<String, EmployeeBasicInfoImport> lstEmployee() {
@@ -377,6 +374,16 @@ public class DumDataTest {
             dailyOutputItemList,
             "sid",
             monthlyOutputItemList
+
+    );
+    public static AnnualWorkLedgerOutputSetting outputSettingEmptyDailyAndMonthly = new AnnualWorkLedgerOutputSetting(
+            "id",
+            new OutputItemSettingCode("code"),
+            new OutputItemSettingName("name"),
+            SettingClassificationCommon.FREE_SETTING,
+            Collections.emptyList(),
+            "sid",
+            Collections.emptyList()
 
     );
     private static DailyData dailyData = new DailyData(

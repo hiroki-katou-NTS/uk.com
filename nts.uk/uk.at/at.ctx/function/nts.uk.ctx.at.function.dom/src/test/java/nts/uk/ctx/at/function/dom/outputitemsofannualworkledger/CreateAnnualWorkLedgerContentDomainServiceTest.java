@@ -45,6 +45,7 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
     private static Map<String, WorkplaceInfor> lstWorkplaceInforFail = DumDataTest.lstWorkplaceInforFail();
     private static Map<String, ClosureDateEmployment> lstClosureDateEmployment = DumDataTest.lstClosureDateEmployment();
     private static AnnualWorkLedgerOutputSetting outputSetting = DumDataTest.outputSetting;
+    private static AnnualWorkLedgerOutputSetting outputSettingFail = DumDataTest.outputSettingEmptyDailyAndMonthly;
 
     /**
      * TEST CASE :Throw exception
@@ -118,13 +119,38 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
             CreateAnnualWorkLedgerContentDomainService.getData(require, datePeriod, lstEmployeeFail,
                     outputSetting, lstWorkplaceInfor, lstClosureDateEmployment);
         });
-    }
-
-    /**
-     * TEST CASE :
+    }   /**
+     * TEST CASE :Throw exception
+     * empty list daily output
+     * empty list monthly
      */
     @Test
     public void test_04() {
+        List<String> listSid = new ArrayList<>(lstEmployee.keySet());
+        val listEmployeeStatus = Arrays.asList(
+                new StatusOfEmployee("eplId01",
+                        Arrays.asList(
+                                new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(1))
+                        )));
+        new Expectations() {
+            {
+                require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
+                result = listEmployeeStatus;
+
+            }
+        };
+
+        NtsAssert.businessException("Msg_1860", () -> {
+            CreateAnnualWorkLedgerContentDomainService.getData(require, datePeriod, lstEmployee,
+                    outputSettingFail, lstWorkplaceInfor, lstClosureDateEmployment);
+        });
+    }
+
+    /**
+     * TEST CASE : success
+     */
+    @Test
+    public void test_05() {
         List<String> listSid = new ArrayList<>(lstEmployee.keySet());
         val listEmployeeStatus = Arrays.asList(
                 new StatusOfEmployee("eplId01",

@@ -40,9 +40,10 @@ public class CreateDisplayContentWorkStatusDService {
 
         val outputItems = outputSettings.getOutputItem().parallelStream().filter(OutputItem::isPrintTargetFlag)
                 .collect(Collectors.toList());
-
+        if (outputItems.isEmpty()) {
+            throw new BusinessException("Msg_1816");
+        }
         listEmployeeStatus.parallelStream().forEach(e -> {
-            if(outputItems.size() == 0) return;
             val item = new DisplayContentWorkStatus();
             val eplInfo = mapSids.get(e.getEmployeeId());
             if (eplInfo != null) {
@@ -59,13 +60,13 @@ public class CreateDisplayContentWorkStatusDService {
                             .map(OutputItemDetailAttItem::getAttendanceItemId))
                     .distinct().collect(Collectors.toCollection(ArrayList::new));
 
-            List<AttendanceResultDto> listAttendancesz = new ArrayList<>();
+            List<AttendanceResultDto> listAttendants = new ArrayList<>();
             for (val date : e.getListPeriod()) {
                 val listValue = require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds);
                 if (listValue == null) continue;
-                listAttendancesz.addAll(listValue);
+                listAttendants.addAll(listValue);
             }
-            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendancesz.stream()
+            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendants.stream()
                     .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
                             k -> k.getAttendanceItems().stream()
                                     .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
@@ -74,7 +75,6 @@ public class CreateDisplayContentWorkStatusDService {
                 val itemValue = new ArrayList<DailyValue>();
                 allValue.forEach((key, value1) -> {
                     val listAtId = j.getSelectedAttendanceItemList();
-
                     StringBuilder character = new StringBuilder();
                     Double actualValue = 0D;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||

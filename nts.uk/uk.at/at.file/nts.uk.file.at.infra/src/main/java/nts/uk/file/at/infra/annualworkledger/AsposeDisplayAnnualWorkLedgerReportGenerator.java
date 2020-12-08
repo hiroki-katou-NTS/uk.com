@@ -40,6 +40,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
+            worksheet.setName(dataSource.getOutputSetting().getName().v());
             if (!dataSource.getLstAnnualWorkLedgerContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
                 printContents(worksheet, dataSource);
