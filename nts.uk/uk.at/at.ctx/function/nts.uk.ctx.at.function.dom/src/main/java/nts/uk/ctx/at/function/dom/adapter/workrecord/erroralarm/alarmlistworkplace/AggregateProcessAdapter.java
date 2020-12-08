@@ -20,13 +20,13 @@ public interface AggregateProcessAdapter {
                                                                     List<String> alarmCheckWkpId,
                                                                     List<String> workplaceIds);
 
-    List<AlarmListExtractInfoWorkplace> processMasterCheckSchedule(String cid, DatePeriod period,
-                                                                   List<String> alarmCheckWkpId,
-                                                                   List<String> optionalIds,
-                                                                   List<String> workplaceIds);
+    List<AlarmListExtractInfoWorkplace> processSchedule(String cid, DatePeriod period,
+                                                        List<String> alarmCheckWkpId,
+                                                        List<String> optionalIds,
+                                                        List<String> workplaceIds);
 
-    List<AlarmListExtractInfoWorkplace> processMasterCheckMonthly(String cid, YearMonth ym,
-                                                                  List<String> fixedExtractCondIds,
-                                                                  List<String> extractCondIds,
-                                                                  List<String> workplaceIds);
+    List<AlarmListExtractInfoWorkplace> processMonthly(String cid, YearMonth ym,
+                                                       List<String> fixedExtractCondIds,
+                                                       List<String> extractCondIds,
+                                                       List<String> workplaceIds);
 }

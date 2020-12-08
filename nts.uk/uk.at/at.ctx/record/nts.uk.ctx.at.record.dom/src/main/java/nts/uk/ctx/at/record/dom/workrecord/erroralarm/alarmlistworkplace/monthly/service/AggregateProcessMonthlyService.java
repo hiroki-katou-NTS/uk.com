@@ -22,7 +22,7 @@ import java.util.List;
  * @author Le Huu Dat
  */
 @Stateless
-public class AggregateProcessMasterCheckMonthlyService {
+public class AggregateProcessMonthlyService {
 
     @Inject
     private FixedExtractionMonthlyConRepository fixedExtractionMonthlyConRepo;

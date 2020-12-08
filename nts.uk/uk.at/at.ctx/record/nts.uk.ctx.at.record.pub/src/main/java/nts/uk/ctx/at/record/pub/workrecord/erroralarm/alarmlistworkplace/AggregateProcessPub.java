@@ -56,7 +56,7 @@ public interface AggregateProcessPub {
      * @param workplaceIds    List＜職場ID＞
      * @return List＜アラーム抽出結果＞
      */
-    List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckSchedule(String cid, DatePeriod period,
+    List<AlarmListExtractionInfoWorkplaceExport> processSchedule(String cid, DatePeriod period,
                                                                             List<String> alarmCheckWkpId,
                                                                             List<String> optionalIds,
                                                                             List<String> workplaceIds);
@@ -71,7 +71,7 @@ public interface AggregateProcessPub {
      * @param workplaceIds        List<職場ID＞
      * @return List＜アラームリスト抽出情報（職場）＞
      */
-    List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckMonthly(String cid, YearMonth ym,
+    List<AlarmListExtractionInfoWorkplaceExport> processMonthly(String cid, YearMonth ym,
                                                                            List<String> fixedExtractCondIds,
                                                                            List<String> extractCondIds,
                                                                            List<String> workplaceIds);

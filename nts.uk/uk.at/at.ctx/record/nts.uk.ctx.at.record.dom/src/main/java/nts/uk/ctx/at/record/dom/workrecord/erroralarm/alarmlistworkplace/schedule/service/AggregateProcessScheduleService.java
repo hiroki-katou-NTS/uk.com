@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author Le Huu Dat
  */
 @Stateless
-public class AggregateProcessMasterCheckScheduleService {
+public class AggregateProcessScheduleService {
 
     @Inject
     private EmployeeInfoByWorkplaceService employeeInfoByWorkplaceService;

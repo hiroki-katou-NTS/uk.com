@@ -98,13 +98,13 @@ public class AggregateProcessService {
                     break;
                 case SCHEDULE_DAILY:
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckSchedule(cid, getDatePeriod(category, periods),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processSchedule(cid, getDatePeriod(category, periods),
                             alarmCheckWkpId, optionalIds, workplaceIds));
                     break;
                 case MONTHLY:
                     // アルゴリズム「月次の集計処理」を実行する
                     DatePeriod periodMonthly = getDatePeriod(category, periods);
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckMonthly(cid, YearMonth.of(periodMonthly.start().year(), periodMonthly.start().month()),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMonthly(cid, YearMonth.of(periodMonthly.start().year(), periodMonthly.start().month()),
                             alarmCheckWkpId, optionalIds, workplaceIds));
                     break;
                 case APPLICATION_APPROVAL:
