@@ -25,6 +25,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -37,6 +38,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRa
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
@@ -1698,7 +1701,15 @@ public class AggregateMonthlyRecordServiceProc {
 		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
 
-	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3 {
+	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3{
+		/** 特別休暇基本情報 */
+		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
+
+//		/** 所属会社履歴 */
+//		List<AffCompanyHistImport> listAffCompanyHistImport(List listAppId, DatePeriod period);
+
+		/** 締め状態管理 */
+		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
 	public static interface RequireM7 extends InterimRemainOffPeriodCreateData.RequireM4 {

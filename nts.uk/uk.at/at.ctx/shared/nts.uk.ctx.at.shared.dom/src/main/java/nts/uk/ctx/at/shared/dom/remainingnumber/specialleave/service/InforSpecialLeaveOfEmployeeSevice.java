@@ -764,7 +764,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 	public static interface RequireM4 extends RequireM3 {
 
 		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
-
+		List<SpecialHoliday> specialHoliday(String companyID);
 		Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD);
 	}
 }

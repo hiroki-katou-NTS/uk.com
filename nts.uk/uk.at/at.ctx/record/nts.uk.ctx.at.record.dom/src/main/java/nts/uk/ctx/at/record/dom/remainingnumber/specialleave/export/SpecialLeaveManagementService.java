@@ -19,13 +19,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -53,6 +54,7 @@ public class SpecialLeaveManagementService {
 	 */
 	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(
 			RequireM5 require,
+			//AggregateMonthlyRecordServiceProc.RequireM8 require,
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
 
@@ -102,7 +104,8 @@ public class SpecialLeaveManagementService {
 						interimRemainMngMode,
 						Optional.of(param.isOverwriteFlg()),
 						overwriteInterim,
-						param.getOptBeforeResult(),
+//						param.getOptBeforeResult(),
+						Optional.empty(),
 						param.getSpecialLeaveCode());
 
 
@@ -433,8 +436,8 @@ public class SpecialLeaveManagementService {
 				paramStart.setRemainData(forOverWriteListOpt.get());
 			}
 
-			// 前回の特別休暇の集計結果←NULL
-			paramStart.setOptBeforeResult(Optional.empty());
+//			// 前回の特別休暇の集計結果←NULL
+//			paramStart.setOptBeforeResult(Optional.empty());
 
 			// 特別休暇コード
 			paramStart.setSpecialLeaveCode(specialLeaveCode);
@@ -1869,7 +1872,8 @@ public class SpecialLeaveManagementService {
 
 	}
 
-	public static interface RequireM5 extends RequireM1, RequireM2, RequireM3, RequireM4, LeaveRemainingNumber.RequireM3,nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1 {
+	public static interface RequireM5 extends RequireM1, RequireM2, RequireM3, RequireM4,
+		LeaveRemainingNumber.RequireM3,nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1{
 
 		/** 特別休暇基本情報 */
 		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);

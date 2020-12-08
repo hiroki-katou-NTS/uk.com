@@ -516,6 +516,11 @@ public class RemainNumberTempRequireService {
 		}
 
 		@Override
+		public List<SpecialHoliday> specialHoliday(String companyID) {
+			return specialHolidayRepo.findByCompanyId(companyID);
+		}
+
+		@Override
 		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
 			return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
 		}

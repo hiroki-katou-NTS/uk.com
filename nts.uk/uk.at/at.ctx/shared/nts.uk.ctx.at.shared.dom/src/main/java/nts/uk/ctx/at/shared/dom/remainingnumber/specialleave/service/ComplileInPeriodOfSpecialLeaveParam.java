@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -15,6 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class ComplileInPeriodOfSpecialLeaveParam {
