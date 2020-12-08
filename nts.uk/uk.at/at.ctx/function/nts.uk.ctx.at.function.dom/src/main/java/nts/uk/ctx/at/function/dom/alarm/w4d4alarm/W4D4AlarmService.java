@@ -20,12 +20,17 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
+
 import lombok.val;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleImport;
+import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckAdapter;
@@ -38,13 +43,19 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -232,7 +243,113 @@ public class W4D4AlarmService {
 		return result;
 
 	}
+	/**
+	 * 法内休日４週下限　４日固定
+	 */
+	private int staturoryDaysCheck = 4;
+	/**
+	 * 法外休日４週下限　０日固定
+	 */
+	private int nonStaturoryDaysCheck = 0;
 
+	public List<ExtractionResultDetail> extractCheck4W4d(String cid, List<String> lstSid,
+			DatePeriod dPeriod, 
+			FourW4DCheckCond w4dCheckCond,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapter> lstStatusEmp){
+		List<ExtractionResultDetail> lstResult = new ArrayList<>();
+	
+		// ドメインモデル「勤務種類」を取得
+		List<WorkType> workTypesHoliday = workTypeRepository.findByDepreacateAtrAndWorkTypeAtr(cid,
+				DeprecateClassification.NotDeprecated.value, WorkTypeClassification.Holiday.value);
+
+		// ドメインモデル「勤務種類」を取得 ↓
+		// 【法定内休日】勤務種類<List>を取得する
+		List<String> legalHLDWorkTypes = workTypesHoliday.stream()
+				.filter(x -> x.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay
+				&& x.getWorkTypeSetList().get(0).getHolidayAtr() == HolidayAtr.STATUTORY_HOLIDAYS)
+				.collect(Collectors.toList()).stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());				
+
+		// ドメインモデル「勤務種類」を取得 ↓
+		// 【法定外休日】勤務種類<List>を取得する
+		List<String> nonLegalHLDWorkTypes = workTypesHoliday.stream()
+				.filter(x -> x.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay
+				&& x.getWorkTypeSetList().get(0).getHolidayAtr() == HolidayAtr.NON_STATUTORY_HOLIDAYS)
+				.collect(Collectors.toList()).stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		//勤務予定
+		List<BasicScheduleImport> basicScheduleImports = new ArrayList<>();
+		if(w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults) {
+			basicScheduleImports = basicScheduleAdapter.getByEmpIdsAndPeriod(lstSid, dPeriod);	
+		}
+
+		// 日別実績の勤務情報を取得する
+		List<RecordWorkInfoFunAdapterDto> workInfos = recordWorkInfoFunAdapter.findByPeriodOrderByYmdAndEmps(lstSid,
+				dPeriod);
+		for(int ss = 0; ss <= lstSid.size(); ss++) {
+			String sid = lstSid.get(ss);			
+			//法内休日数
+			int staturoryDays = 0;
+			//法外休日数
+			int nonStaturoryDays = 0;
+			String workplaceId = "";
+			List<WorkPlaceHistImport> getWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+			if(!getWpl.isEmpty()) {
+				 WorkPlaceIdAndPeriodImport wpPeriod = getWpl.get(0).getLstWkpIdAndPeriod().get(0);
+				 workplaceId = wpPeriod.getWorkplaceId();
+			}
+			for (int i = 0; dPeriod.start().daysTo(dPeriod.end()) - i >= 0 ; i++) {
+				List<StatusOfEmployeeAdapter> lstStatusOfE = lstStatusEmp.stream().filter(x -> x.getEmployeeId() == sid).collect(Collectors.toList());
+				GeneralDate date = dPeriod.start().addDays(i);
+				if(lstStatusOfE.isEmpty()) {
+					continue;
+				}
+				List<DatePeriod> lstStatusE = lstStatusOfE.get(0).getListPeriod();
+				String workTypeCode = "";
+				for (int j = 0; j < lstStatusE.size(); j++) {
+					DatePeriod ePeriod = lstStatusE.get(j);
+					if(ePeriod.start().beforeOrEquals(date) && ePeriod.end().afterOrEquals(date)) {
+						List<RecordWorkInfoFunAdapterDto> workInfo = workInfos.stream()
+								.filter(w -> w.getEmployeeId() == sid && w.getWorkingDate().equals(date))
+								.collect(Collectors.toList());
+						if(w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults 
+								&& workInfo.isEmpty() 
+								&& !basicScheduleImports.isEmpty()) {
+							List<BasicScheduleImport> basicScheduleImport = basicScheduleImports.stream()
+									.filter(w -> w.getEmployeeId() == sid && w.getDate().equals(date))
+									.collect(Collectors.toList());
+							if(!basicScheduleImport.isEmpty()) {
+								workTypeCode = basicScheduleImport.get(0).getWorkTypeCode();
+							}
+						}
+						if(!workInfo.isEmpty()) {
+							workTypeCode = workInfo.get(0).getWorkTypeCode();
+						}
+						//法内休日数
+						if(!workTypeCode.isEmpty() && legalHLDWorkTypes.contains(workTypeCode)) {
+							staturoryDays += 1;
+						}
+						//法外休日数
+						if(!workTypeCode.isEmpty() && nonLegalHLDWorkTypes.contains(workTypeCode)) {
+							nonStaturoryDays += 1;
+						}
+					}
+				}				
+			}
+			if(staturoryDays < staturoryDaysCheck || nonStaturoryDays < nonStaturoryDaysCheck) {
+				ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(dPeriod.start(), Optional.ofNullable(dPeriod.end()));
+				ExtractionResultDetail alarmDetail = new ExtractionResultDetail(sid,
+						alarmDate, 
+						w4dCheckCond.name(),
+						TextResource.localize("KAL010_64"), 
+						GeneralDateTime.now(), 
+						Optional.ofNullable(workplaceId),
+						Optional.ofNullable(""),
+						Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(staturoryDays))));
+				lstResult.add(alarmDetail);
+			}
+		}
+		return lstResult;
+	}
 	/**
 	 * 4週4休の集計処理
 	 * 

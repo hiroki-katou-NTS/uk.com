@@ -1,7 +1,9 @@
 
 package nts.uk.ctx.at.shared.dom.alarmList.extractionResult;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
  * 
@@ -10,6 +12,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AlarmListCheckInfor {
 	/**
 	 * チェック条件のNo

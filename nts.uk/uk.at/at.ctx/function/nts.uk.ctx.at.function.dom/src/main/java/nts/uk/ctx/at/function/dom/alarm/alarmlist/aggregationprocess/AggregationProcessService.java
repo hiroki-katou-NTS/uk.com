@@ -38,8 +38,11 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmPatternExtractResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmPatternExtractResultRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.CategoryCondValueDto;
@@ -221,6 +224,8 @@ public class AggregationProcessService {
 		List<AlarmExtracResult> lstExtracResult = new ArrayList<>();
 		List<CategoryCondValueDto> lstValueDto = new ArrayList<>();
 		lstCondCate.stream().forEach(x ->{
+			List<AlarmListCheckInfor> mapCondCdCheckNoType = new ArrayList<>();
+			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory().value, x.getCode().v(), mapCondCdCheckNoType);
 			DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 			//期間条件を絞り込む TODO can xem lai voi truong hop 36
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
@@ -240,8 +245,10 @@ public class AggregationProcessService {
 						.stream().map(c -> c.getEmployeeId())
 						.collect(Collectors.toList()));
 			}
+			
 			if(!lstSidTmp.isEmpty()) {
 				List<AlarmListCheckInfor> lstCheckType = new ArrayList<>();
+				List<ResultOfEachCondition> lstResultCondition = new ArrayList<>();
 				//List<ResultOfEachCondition> lstResult = new ArrayList<>();
 				//[RQ189] 社員ID（List）と指定期間から所属職場履歴を取得
 				List<WorkPlaceHistImport> getWplByListSidAndPeriod = wpAdapter.getWplByListSidAndPeriod(lstSidTmp, datePeriod);
@@ -254,7 +261,13 @@ public class AggregationProcessService {
 				case SCHEDULE_WEEKLY:
 					
 				case SCHEDULE_4WEEK:
-					
+					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) x.getExtractionCondition();
+					FourW4DCheckCond w4d4Cond = fourW4DCheckCond.getFourW4DCheckCond();
+					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid, lstSidTmp, datePeriod, w4d4Cond
+							, getWplByListSidAndPeriod, lstStatusEmp);
+					lstResultCondition.add(w4d4CondResult);
+					AlarmListCheckInfor w4d4CheckInfor = new AlarmListCheckInfor(String.valueOf(w4d4Cond.value), AlarmListCheckType.FixCheck);
+					valuesDto.getMapCondCdCheckNoType().add(w4d4CheckInfor);
 				case SCHEDULE_MONTHLY:
 					
 				case SCHEDULE_YEAR:
@@ -288,7 +301,7 @@ public class AggregationProcessService {
 				CategoryCondValueDto valueDto = new CategoryCondValueDto(x.getCategory().value, x.getCode().v(), lstCheckType);
 				lstValueDto.add(valueDto);
 				//「アラーム抽出結果」を作成してList<アラーム抽出結果＞に追加
-				AlarmExtracResult extracResult = new AlarmExtracResult(x.getCode().v(), x.getCategory().value, new ArrayList<>());
+				AlarmExtracResult extracResult = new AlarmExtracResult(x.getCode().v(), x.getCategory().value, lstResultCondition);
 				lstExtracResult.add(extracResult);
 				//TODO 抽出処理停止フラグが立っているかチェックする(check xem có flag dừng xử lý extract hay k)
 				

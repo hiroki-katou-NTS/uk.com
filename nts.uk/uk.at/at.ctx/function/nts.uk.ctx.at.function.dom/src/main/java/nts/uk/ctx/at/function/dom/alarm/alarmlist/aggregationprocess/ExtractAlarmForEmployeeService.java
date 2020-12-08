@@ -12,6 +12,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
@@ -33,7 +35,11 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProces
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -400,6 +406,20 @@ public class ExtractAlarmForEmployeeService {
 		}
 		return new ArrayList<>();
 	}
+	
+	public ResultOfEachCondition lstRunW4d4CheckErAl(String cid, List<String> lstSid, DatePeriod dPeriod,
+			FourW4DCheckCond w4dCheckCond,List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp){
+		ResultOfEachCondition result = new ResultOfEachCondition();
+		List<ExtractionResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid, lstSid, dPeriod, w4dCheckCond, getWplByListSidAndPeriod, lstStatusEmp);
+		if(!lstDetail.isEmpty()) {
+			result.setCheckType(AlarmListCheckType.FixCheck);
+			result.setNo(String.valueOf(w4dCheckCond.value));
+			result.setLstResultDetail(lstDetail);
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * アラームリスト　日次
 	 * @param comId　会社ID
