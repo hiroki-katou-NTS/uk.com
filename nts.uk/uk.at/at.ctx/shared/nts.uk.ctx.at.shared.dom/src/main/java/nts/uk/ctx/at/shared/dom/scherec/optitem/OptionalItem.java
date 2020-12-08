@@ -90,24 +90,46 @@ public class OptionalItem extends AggregateRoot {
 		if (this.calcResultRange.hasBothLimit()) {
 			BundledBusinessException be = BundledBusinessException.newInstance();
 			be.addMessage("Msg_574");
-			switch (this.optionalItemAtr) {
-			case NUMBER:
-				if (this.calcResultRange.getNumberRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case AMOUNT:
-				if (this.calcResultRange.getAmountRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case TIME:
-				if (this.calcResultRange.getTimeRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			default:
-				throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
+			    switch (this.optionalItemAtr) {
+			    case NUMBER:
+			        if (this.calcResultRange.getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case AMOUNT:
+			        if (this.calcResultRange.getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case TIME:
+			        if (this.calcResultRange.getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    default:
+			        throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			    }
+			} else {
+			    switch (this.optionalItemAtr) {
+                case NUMBER:
+                    if (this.calcResultRange.getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case AMOUNT:
+                    if (this.calcResultRange.getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case TIME:
+                    if (this.calcResultRange.getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("unknown value of enum OptionalItemAtr");
+                }
 			}
 		}
 	}

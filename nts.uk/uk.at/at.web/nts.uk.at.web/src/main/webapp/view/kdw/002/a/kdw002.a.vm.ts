@@ -76,25 +76,27 @@ module nts.uk.at.view.kdw002.a {
                         if (self.isDaily) {
                             service.getControlOfDailyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                    self.txtItemId(cAttendanceItem.itemDailyID);
+                                    // self.txtItemId(cAttendanceItem.itemDailyID);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
                                     self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
+                                    self.roundingUnitValue(null);
                                 }
                             });
                         } else {
                             service.getControlOfMonthlyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                    self.txtItemId(cAttendanceItem.itemMonthlyId);
+                                    // self.txtItemId(cAttendanceItem.itemMonthlyId);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
                                     self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
+                                    self.roundingUnitValue(null);
                                 }
                             });
                         }
@@ -259,7 +261,7 @@ module nts.uk.at.view.kdw002.a {
                     }
                     nts.uk.ui.block.invisible();
                     service.updateDaily(AtItems).done(x => {
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                         $("#colorID").focus();
                     }).fail((fail) => {
                         if (fail) {
@@ -279,7 +281,7 @@ module nts.uk.at.view.kdw002.a {
                     nts.uk.ui.block.invisible();
                     service.updateMonthly(AtItems).done(x => {
 
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                         $("#colorID").focus();
                     }).fail((fail) => {
                         if (fail) {

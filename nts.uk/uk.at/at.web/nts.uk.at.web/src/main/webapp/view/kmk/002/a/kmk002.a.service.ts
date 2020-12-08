@@ -90,12 +90,20 @@ module nts.uk.at.view.kmk002.a {
             export interface CalcResultRangeDto {
                 upperCheck: boolean;
                 lowerCheck: boolean;
-                numberUpper: number;
-                numberLower: number;
-                amountUpper: number;
-                amountLower: number;
-                timeUpper: number;
-                timeLower: number;
+
+                numberUpperDay: number;
+                numberLowerDay: number;
+                amountUpperDay: number;
+                amountLowerDay: number;
+                timeUpperDay: number;
+                timeLowerDay: number;
+
+                numberUpperMonth: number;
+                numberLowerMonth: number;
+                amountUpperMonth: number;
+                amountLowerMonth: number;
+                timeUpperMonth: number;
+                timeLowerMonth: number;
             }
             /**
              * CalcFormulaDto

@@ -13,6 +13,10 @@
 					height : 600
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf/018/c/kaf018.c.css" />
 			<com:scriptfile path="/view/kaf/018/shr/model.js" />
@@ -37,7 +41,8 @@
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
 					<input id="kaf018-c-input" data-bind="ntsTextEditor: { 
 										name: '#{i18n.getText('KAF018_354')}',
-										value: mailSubject }" />
+										value: mailSubject,
+										constraint: 'Subject' }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell">
@@ -48,7 +53,8 @@
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
 					<textarea id="kaf018-c-textarea" data-bind="ntsMultilineEditor: { 
 										name: '#{i18n.getText('KAF018_357')}',
-										value: mailContent }" />
+										value: mailContent,
+										constraint: 'Content' }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div data-bind="if: displayUrlApprovalEmbed">
@@ -63,13 +69,13 @@
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell" style="width: 60px">
-						<button data-bind="click: updateMailTemplate">#{i18n.getText('KAF018_358')}</button>
+						<button data-bind="click: updateMailTemplate, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_358')}</button>
 					</div>
 					<div class="cell" style="padding-left: 10px">#{i18n.getText('KAF018_359')}</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" data-bind="click: sendMail">#{i18n.getText('KAF018_360')}</button>
+				<button class="x-large proceed" data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_360')}</button>
 				<button data-bind="click: close">#{i18n.getText('KAF018_361')}</button>
 			</div>
 		</ui:define>
