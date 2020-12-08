@@ -485,20 +485,18 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										oAffiliationInfoOfMonthly.get().getEmployeeId());
 							}
 							if (!monthResultCheck.isCheckResult()) {
-//								// 雇用コードが一致しなかったのでこの月別実績は処理しない - This monthly performance will not be processed 
-																			// as the employment code did not match
-//								// →次の月別実績データの処理に移行(continue) - → Move to the next monthly performance data processing (continue)
-//								yearMonth = yearMonth.addMonths(1);
-//								continue;
+								// 雇用コードが一致しなかったのでこの月別実績は処理しない - This monthly performance will not be processed 
+//																			 as the employment code did not match
+								// →次の月別実績データの処理に移行(continue) - → Move to the next monthly performance data processing (continue)
+								yearMonth = yearMonth.addMonths(1);
+								continue;
 							}
-//							//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
+							//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
 							//	社員の指定期間中の所属期間を取得する RequestList 588
-//							List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
-							//
-//							// (UK2)出勤簿を出力する
+							// (UK2)出勤簿を出力する
 							if (statusEmps.isEmpty()) {
-//								yearMonth = yearMonth.addMonths(1);
-//								continue;
+								yearMonth = yearMonth.addMonths(1);
+								continue;
 							}
 						}
 
@@ -1746,11 +1744,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 		// 	パラメータ「月初雇用コード」と取得した現在の月初雇用コードが同じ
 		// 	パラメータ「月末雇用コード」と取得した現在の月末雇用コードが同じ
-		if (!firstEmpCode.equals(empStartDate.get().getEmploymentCode())
-			|| !lastEmpCode.equals(empEndDate.get().getEmploymentCode())) {
+		if (firstEmpCode.equals(empStartDate.get().getEmploymentCode()) && lastEmpCode.equals(empEndDate.get().getEmploymentCode())) {
+			monthlyResultCheck.setEmployeeResult(true);
+			monthlyResultCheck.setCheckResult(true);
+		} else {
 			monthlyResultCheck.setEmployeeResult(true);
 			monthlyResultCheck.setCheckResult(false);
-			return monthlyResultCheck;
 		}
 		return monthlyResultCheck;
 	}
