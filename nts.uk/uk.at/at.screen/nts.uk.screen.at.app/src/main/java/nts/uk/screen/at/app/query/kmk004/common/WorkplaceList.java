@@ -48,7 +48,7 @@ public class WorkplaceList {
 
 	/**
 	 * 
-	 * @param laborWorkTypeAttr 　勤務区分
+	 * @param laborWorkTypeAttr 勤務区分
 	 * @return
 	 */
 	public List<String> get(LaborWorkTypeAttr laborWorkTypeAttr) {
