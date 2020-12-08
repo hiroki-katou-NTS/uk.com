@@ -116,9 +116,11 @@ module nts.uk.at.view.kbt002.b {
           vm.isNewMode(true);
         } else {
           // set update mode
+          vm.isNewMode(false);
           vm.$blockui("grayout");
           vm.$ajax(textUtil.format(API.selectProcExec, execItemCode))
             .then(res => {
+              vm.selectedTab(TabPanelId.TAB_1);
               vm.selectedTaskEnableSetting((res.taskSetting && res.taskSetting.enabledSetting) ? TaskEnableSettingClassificationCode.ENABLED : TaskEnableSettingClassificationCode.DISABLED); // B5_2
               vm.currentExecItem().createData(res);
               vm.taskSetting(res.taskSetting);
@@ -131,7 +133,6 @@ module nts.uk.at.view.kbt002.b {
                 // vm.targetDateText('targetDateText');
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
               }
-              vm.isNewMode(false);
             })
             .always(() => vm.$blockui("clear"));
 
@@ -160,7 +161,7 @@ module nts.uk.at.view.kbt002.b {
         .then((response) => console.log(vm.targetMonthList()))
         .always(() => vm.$blockui('clear'));
       vm.taskSetting.subscribe(data => {
-        vm.executionTaskWarning(vm.buildExecutionTaskWarningStr());
+        vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(data));
       });
     }
 
@@ -230,6 +231,14 @@ module nts.uk.at.view.kbt002.b {
       vm.isNewMode(true);
       vm.selectedExecCode('');
       vm.taskSetting(null);
+
+      //Reset screen
+      vm.currentExecItem(new ExecutionItem());
+      vm.currentExecItem().execScopeCls(0);
+      vm.currentExecItem().refDate(moment.utc().format("YYYY/MM/DD"));
+      vm.selectedTaskEnableSetting(false);
+      vm.selectedTab(TabPanelId.TAB_1);
+      vm.currentExecItem().processExecType(0);
     }
 
     /**
@@ -490,42 +499,42 @@ module nts.uk.at.view.kbt002.b {
       return targetDateStr;
     }
 
-    private buildExecutionTaskWarningStr(): string {
+    private buildExecutionTaskWarningStr(data: any): string {
       const vm = this;
       if (vm.isNewMode()) {
         return vm.$i18n("KBT002_305");
       }
-      if (!vm.taskSetting()) {
+      if (!data) {
         return vm.$i18n("KBT002_278");
       }
-      const startDate = vm.taskSetting().startDate;
-      const startTime = `${Math.floor(vm.taskSetting().startTime / 60)}:${nts.uk.text.padLeft(String(vm.taskSetting().startTime % 60), '0', 2)}`;
-      if (vm.taskSetting().repeatContent === 0) {
+      const startDate = data.startDate;
+      const startTime = `${Math.floor(data.startTime / 60)}:${nts.uk.text.padLeft(String(data.startTime % 60), '0', 2)}`;
+      if (data.repeatContent === 0) {
         return vm.$i18n("KBT002_304", [startDate, startTime]);
       }
       const params: string[] = [];
       params[0] = startDate;
       params[1] = startTime;
-      switch(vm.taskSetting().repeatContent) {
+      switch(data.repeatContent) {
         case 1: 
           params[2] = vm.$i18n("KBT002_253");
           break;
         case 2:
-          params[2] = vm.$i18n("KBT002_310", [vm.taskSetting().trueDayString]);
+          params[2] = vm.$i18n("KBT002_310", [data.trueDayString]);
           break;
         case 3:
-          params[2] = vm.$i18n("KBT002_311", [vm.taskSetting().trueMonthlyMonthString, vm.taskSetting().trueMonthlyDayString]);
+          params[2] = vm.$i18n("KBT002_311", [data.trueMonthlyMonthString, data.trueMonthlyDayString]);
           break;
       }
-      params[3] = vm.taskSetting().oneDayRepClassification === 0 
+      params[3] = data.oneDayRepClassification === 0 
                   ? ""
-                  : vm.$i18n("KBT002_307", [vm.taskSetting().oneDayRepInterval]);
-      params[4] = vm.taskSetting().endTimeCls === 0 
+                  : vm.$i18n("KBT002_307", [data.oneDayRepInterval]);
+      params[4] = data.endTimeCls === 0 
                   ? ""
-                  : vm.$i18n("KBT002_309", [`${Math.floor(vm.taskSetting().endTime / 60)}:${vm.taskSetting().endTime % 60}`]);
-      params[5] = vm.taskSetting().endDateCls === 0 
+                  : vm.$i18n("KBT002_309", [`${Math.floor(data.endTime / 60)}:${data.endTime % 60}`]);
+      params[5] = data.endDateCls === 0 
                   ? ""
-                  : vm.$i18n("KBT002_308", [vm.taskSetting().endDate]);
+                  : vm.$i18n("KBT002_308", [data.endDate]);
       return vm.$i18n("KBT002_306", params);
     }
 
