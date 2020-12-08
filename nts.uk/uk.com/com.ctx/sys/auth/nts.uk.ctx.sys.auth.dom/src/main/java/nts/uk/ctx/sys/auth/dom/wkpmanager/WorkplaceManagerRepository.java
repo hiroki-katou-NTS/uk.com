@@ -32,4 +32,6 @@ public interface WorkplaceManagerRepository {
 
 	List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod);
 
+	List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
+
 }

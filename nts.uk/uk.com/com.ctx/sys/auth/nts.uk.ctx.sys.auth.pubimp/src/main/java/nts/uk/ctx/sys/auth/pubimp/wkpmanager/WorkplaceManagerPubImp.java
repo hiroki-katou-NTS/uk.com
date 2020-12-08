@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.pubimp.wkpmanager;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
@@ -25,10 +26,22 @@ public class WorkplaceManagerPubImp implements WorkplaceManagerPub {
         List<WorkplaceManager> workplaceManagers = repository.findByPeriodAndWkpIds(wkpIds, datePeriod);
 
         return workplaceManagers.stream().map(x -> new WorkplaceManagerExport(
-                x.getWorkplaceManagerId(),
-                x.getEmployeeId(),
-                x.getWorkplaceId(),
-                x.getHistoryPeriod()
+            x.getWorkplaceManagerId(),
+            x.getEmployeeId(),
+            x.getWorkplaceId(),
+            x.getHistoryPeriod()
+        )).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WorkplaceManagerExport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
+        List<WorkplaceManager> workplaceManagers = repository.findByPeriodAndBaseDate(wkpId, baseDate);
+
+        return workplaceManagers.stream().map(x -> new WorkplaceManagerExport(
+            x.getWorkplaceManagerId(),
+            x.getEmployeeId(),
+            x.getWorkplaceId(),
+            x.getHistoryPeriod()
         )).collect(Collectors.toList());
     }
 }

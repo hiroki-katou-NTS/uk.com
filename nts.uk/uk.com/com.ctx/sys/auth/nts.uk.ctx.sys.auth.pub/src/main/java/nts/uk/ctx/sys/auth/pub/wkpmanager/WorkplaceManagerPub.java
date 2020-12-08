@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.pub.wkpmanager;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.List;
@@ -13,5 +14,10 @@ public interface WorkplaceManagerPub {
 	 * 管理者未登録を確認する
 	 */
 	List<WorkplaceManagerExport> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod);
+
+	/**
+	 * ドメインモデル「職場管理者」を取得する
+	 */
+	List<WorkplaceManagerExport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
 }
 
