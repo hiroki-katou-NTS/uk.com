@@ -129,7 +129,7 @@
                       optionsValue: 'code',
                       optionsText: 'name',
                       required: true,
-                      disable: $parent.isNewMode()
+                      enable: !$parent.isNewMode()
                     }">
                   </div>
                   <button id="B5_5" tabindex="12" class="add ml-25" data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
@@ -151,7 +151,7 @@
                         </label>
                       </div>
                       <hr />
-                      <table class="tbl-w100">
+                      <table class="tbl-w100 ml-15">
 
                         <tr>
                           <td class="w26 td-item-top">
@@ -352,7 +352,7 @@
                               </div>
                               <!-- B11_4 -->
                               <button id="B11_4" tabindex="31" class="setting small ml-7"
-                                data-bind="click: function(data, event) { $parent.openScreenJ() }, enable: true">
+                                data-bind="click: function(data, event) { $parent.openScreenJ() }, enable: aggrPeriodCls() &amp;&amp; processExecType() === 0,">
                                 #{i18n.getText('KBT002_286')}
                               </button>
                             </div>
@@ -370,7 +370,7 @@
                         </tr>
 
                         <tr>
-                          <td>
+                          <td colspan="2">
                             <!-- B12_2 -->
                             <div id="B12_2" tabindex="33" class="mb-10"
                               data-bind="ntsCheckBox: { checked: createNewEmp, enable: appRouteUpdateAtrNormal() &amp;&amp; processExecType() === 0 }">
@@ -398,11 +398,11 @@
                         </label>
                       </div>
                       <hr />
-                      <table class="tbl-w100">
+                      <table class="tbl-w100 ml-15">
                         <tr>
                           <td class="w10">
                             <!-- B13_1 -->
-                            <div id="B13_1" class="mb-10" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_272')}</div>
+                            <div id="B13_1" class="mb-10" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_272')}</div>
                           </td>
                           <td>
                             <!-- B13_2 -->
@@ -412,7 +412,7 @@
                         <tr>
                           <td class="td-item-top">
                             <!-- B14_1 -->
-                            <div id="B14_1" class="mb-10" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_174')}</div>
+                            <div id="B14_1" class="mb-10" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_174')}</div>
                           </td>
                           <td>
                             <!-- B14_2 -->
@@ -435,7 +435,7 @@
                         <tr>
                           <td class="td-item-top">
                             <!-- B15_1 -->
-                            <div id="B15_1" class="mb-10" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_176')}</div>
+                            <div id="B15_1" class="mb-10" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_176')}</div>
                           </td>
                           <td>
                             <!-- B15_2 -->
@@ -477,7 +477,7 @@
                     <div class="tab-content-2 fix-width-tab">
                       <!-- B17_1 -->
                       <div id="B17_1" tabindex="39" class="w100"
-                        data-bind="ntsCheckBox: { checked: alarmAtr, enable: processExecType() === 0 }">
+                        data-bind="ntsCheckBox: { checked: alarmAtr, enable: true }">
                         #{i18n.getText('KBT002_40')}
                       </div>
                       <hr />
@@ -485,7 +485,7 @@
                         <tr>
                           <td class="w20">
                             <!-- B17_3 -->
-                            <div id="B17_3" class="mb-10" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_287')}</div>
+                            <div id="B17_3" class="mb-10 ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_287')}</div>
                           </td>
                           <td>
                             <!-- B17_4 -->
@@ -499,7 +499,7 @@
                                 value: alarmCode,
                                 optionsText: 'alarmName',
                                 editable: false,
-                                enable: alarmAtr() &amp;&amp; processExecType() === 0,
+                                enable: alarmAtr(),
                                 columns: [
                                   { prop: 'alarmName', length: 10 }
                                 ]
@@ -510,17 +510,17 @@
                         <tr>
                           <td class="w20 td-item-top">
                             <!-- B17_6 -->
-                            <div id="B17_6" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_288')}</div>
+                            <div id="B17_6" class="ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_288')}</div>
                           </td>
                           <td>
                             <!-- B17_7 -->
                             <div id="B17_7" tabindex="43" class="w100 mb-10 pt-7"
-                              data-bind="ntsCheckBox: { checked: recreateWorkType, enable: processExecType() === 1 }">
+                              data-bind="ntsCheckBox: { checked: recreateWorkType, enable: alarmAtr() }">
                               #{i18n.getText('KBT002_191')}
                             </div>
                             <!-- B17_8 -->
                             <div id="B17_8" tabindex="44" class="mb-10"
-                              data-bind="ntsCheckBox: { checked: recreateTransfer, enable: processExecType() === 1 }">
+                              data-bind="ntsCheckBox: { checked: recreateTransfer, enable: alarmAtr() }">
                               #{i18n.getText('KBT002_192')}
                             </div>
                           </td>
@@ -528,18 +528,18 @@
                         <tr>
                           <td class="w20 td-item-top">
                             <!-- B17_9 -->
-                            <div id="B17_9" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_43')}
+                            <div id="B17_9" class="ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_43')}
                             </div>
                           </td>
                           <td>
                             <!-- B17_10 -->
                             <div id="B17_10" tabindex="45" class="w100 mb-10 pt-7"
-                              data-bind="ntsCheckBox: { checked: displayAdministrator, enable: processExecType() === 1 }">
+                              data-bind="ntsCheckBox: { checked: displayAdministrator, enable: alarmAtr() }">
                               #{i18n.getText('KBT002_312')}
                             </div>
                             <!-- B17_11 -->
                             <div id="B17_11" tabindex="46" class="mb-10"
-                              data-bind="ntsCheckBox: { checked: displayPrincipal, enable: processExecType() === 1 }">
+                              data-bind="ntsCheckBox: { checked: displayPrincipal, enable: alarmAtr() }">
                               #{i18n.getText('KBT002_313')}
                             </div>
                           </td>
@@ -550,22 +550,22 @@
                     <div class="tab-content-3 fix-width-tab">
                       <!-- B19_1 -->
                       <div id="B19_1" tabindex="47"
-                        data-bind="ntsCheckBox: { checked: stdOutputCls, enable: processExecType() === 0 }">
+                        data-bind="ntsCheckBox: { checked: stdOutputCls, enable: true }">
                         #{i18n.getText('KBT002_221')}
                       </div>
                       <hr />
                       <div class="row-inline mb-10">
                         <!-- B19_4 -->
-                        <div id="B19_4" class="fix-width-form-label ml-35" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_300')}</div>
+                        <div id="B19_4" class="fix-width-form-label ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_300')}</div>
                         <!-- B19_10 -->
-                        <div id="B19_10" class="ml-94" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_301')}</div>
+                        <div id="B19_10" class="ml-94" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_301')}</div>
                       </div>
                       <!-- B19_5 B19_11 -->
                       <div id="swap-list-1" class="ml-35 fix-move-button"
                         data-bind="ntsSwapList: {
                           height: 280,
                           dataSource: $parent.stdOutputList,
-                          disableMoveButton: false,
+                          disableMoveButton: !stdOutputCls(),
                           primaryKey: 'conditionSetCode',
                           columns: $parent.columns,
                           value: $parent.currentStdOutputList,
@@ -574,27 +574,27 @@
                           draggable: true,
                           multipleDrag: { left: true, right: false },
                           innerDrag: { left: false, right: true },
-                          outerDrag: { left: true, right: true } 
+                          outerDrag: { left: true, right: true },
                         }">
                       </div>
                       <!-- B20_1 -->
                       <div id="B20_1" tabindex="49"
-                        data-bind="ntsCheckBox: { checked: stdAcceptCls, enable: processExecType() === 0 }">
+                        data-bind="ntsCheckBox: { checked: stdAcceptCls, enable: true }">
                         #{i18n.getText('KBT002_223')}
                       </div>
                       <hr />
                       <div class="row-inline mb-10">
                         <!-- B20_4 -->
-                        <div id="B20_4" class="fix-width-form-label ml-35" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_300')}</div>
+                        <div id="B20_4" class="fix-width-form-label ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_300')}</div>
                         <!-- B20_10 -->
-                        <div id="B20_10" class="ml-94" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_301')}</div>
+                        <div id="B20_10" class="ml-94" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_301')}</div>
                       </div>
                       <!-- B20_5 B20_11 -->
                       <div id="swap-list-2" class="ml-35 fix-move-button"
                         data-bind="ntsSwapList: {
                           height: 280,
                           dataSource: $parent.stdAcceptList,
-                          disableMoveButton: false,
+                          disableMoveButton: !stdAcceptCls(),
                           primaryKey: 'conditionSetCode',
                           columns: $parent.columns,
                           value: $parent.currentStdAcceptList,
@@ -603,7 +603,7 @@
                           draggable: true,
                           multipleDrag: { left: true, right: false },
                           innerDrag: { left: false, right: true },
-                          outerDrag: { left: true, right: true } 
+                          outerDrag: { left: true, right: true },
                         }">
                       </div>
                     </div>
@@ -616,7 +616,7 @@
                       <hr />
                       <div class="row-inline w100 mb-10">
                         <!-- B21_3 -->
-                        <div id="B21_3" class="ml-35" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_296')}</div>
+                        <div id="B21_3" class="ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_296')}</div>
                         <!-- B21_4 -->
                         <div id="B21_4" tabindex="52" class="middle ml-10"
                           data-bind="ntsComboBox: {
@@ -628,7 +628,7 @@
                             value: storagePattern,
                             optionsText: 'name',
                             editable: false,
-                            enable: true,
+                            enable: storageCls,
                             columns: [
                               { prop: 'code', length: 4 },
                               { prop: 'name', length: 20 },
@@ -642,7 +642,7 @@
                       <hr />
                       <div class="row-inline w100 mb-10">
                         <!-- B22_3 -->
-                        <div id="B22_3" class="ml-35" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_297')}</div>
+                        <div id="B22_3" class="ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_297')}</div>
                         <!-- B22_4 -->
                         <div id="B22_4" tabindex="54" class="middle ml-10"
                           data-bind="ntsComboBox: {
@@ -654,7 +654,7 @@
                             value: deletionPattern,
                             optionsText: 'name',
                             editable: false,
-                            enable: true,
+                            enable: deletionCls,
                             columns: [
                               { prop: 'code', length: 4 },
                               { prop: 'name', length: 20 },
@@ -668,16 +668,16 @@
                       <hr />
                       <div class="row-inline mb-10">
                         <!-- B24_1 -->
-                        <div id="B24_1" class="fix-width-form-label ml-35" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_300')}</div>
+                        <div id="B24_1" class="fix-width-form-label ml-35" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_300')}</div>
                         <!-- B25_1 -->
-                        <div id="B25_1" class="ml-94" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_301')}</div>
+                        <div id="B25_1" class="ml-94" data-bind="ntsFormLabel: {}">#{i18n.getText('KBT002_301')}</div>
                       </div>
                       <!-- B24_2 B25_2 -->
                       <div id="swap-list-3" class="ml-35 fix-move-button"
                         data-bind="ntsSwapList: {
                           height: 280,
                           dataSource: $parent.indexReconList,
-                          disableMoveButton: false,
+                          disableMoveButton: !indexReconCls(),
                           primaryKey: 'categoryNo',
                           columns: $parent.indexReconColumns,
                           value: $parent.currentIndexReconList,
@@ -686,11 +686,11 @@
                           draggable: true,
                           multipleDrag: { left: true, right: false },
                           innerDrag: { left: false, right: true },
-                          outerDrag: { left: true, right: true } 
+                          outerDrag: { left: true, right: true },
                         }">
                       </div>
                       <!-- B26_1 -->
-                      <div id="B26_1" tabindex="57" class="ml-29" data-bind="ntsCheckBox: { checked: indexReconUpdateStats, enable: true }">#{i18n.getText('KBT002_325')}</div>
+                      <div id="B26_1" tabindex="57" class="ml-29" data-bind="ntsCheckBox: { checked: indexReconUpdateStats, enable: indexReconCls }">#{i18n.getText('KBT002_325')}</div>
                     </div>
                     <div class="help-btn-container" data-bind="visible : $parent.selectedTab() === 'tab-1'">
                       <button

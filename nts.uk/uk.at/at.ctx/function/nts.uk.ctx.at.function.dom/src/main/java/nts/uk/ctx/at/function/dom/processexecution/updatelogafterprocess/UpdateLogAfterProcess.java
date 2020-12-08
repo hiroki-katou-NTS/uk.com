@@ -411,7 +411,7 @@ public class UpdateLogAfterProcess {
 			// ◆実行項目 = 「データ保存」
 			else if (processExecutionTask == ProcessExecutionTask.SAVE_DATA) {
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
 			}
 
 			// ドメインモデル「更新処理自動実行ログ」を更新する

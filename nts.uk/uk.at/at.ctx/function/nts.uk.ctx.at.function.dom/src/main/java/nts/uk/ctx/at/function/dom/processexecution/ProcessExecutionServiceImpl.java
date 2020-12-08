@@ -42,7 +42,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		Optional<GeneralDateTime> oNextExecEndScheduleDateTime = execTaskSet.getEndScheduleId()
 				// ・次回実行日時（1日の繰り返しスケジュールID）
 				.map(endScheduleId -> this.scheduler.getNextFireTime(endScheduleId))
-				.orElse(null);
+				.orElse(Optional.empty());
 		
 		// 「次回実行日時（スケジュールID）」をチェックする
 		if (!oNextExecScheduleDateTime.isPresent()) {

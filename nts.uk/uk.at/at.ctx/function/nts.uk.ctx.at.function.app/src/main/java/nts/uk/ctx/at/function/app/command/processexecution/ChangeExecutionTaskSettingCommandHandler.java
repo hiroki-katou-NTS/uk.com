@@ -85,7 +85,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// sheet 補足資料⑤
 				// compare system date and system time
 				GeneralDate startDate = command.getStartDate();
-				GeneralDate endDate = command.getEndDate();
+				GeneralDate endDate = command.getRepeatContent() == 0 ? null : command.getEndDate();
 				Integer timeSystem = GeneralDateTime.now().minutes() + GeneralDateTime.now().hours() * 60;
 				if (startDate.before(GeneralDate.today())) {
 					if (command.getStartTime() < timeSystem) {

@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
@@ -31,5 +30,14 @@ public class EmpBasicInfoAdapterImpl implements EmpBasicInfoAdapter {
 							item.getRetirementDate());
 				}).collect(Collectors.toList());
 		return lstPerson;
+	}
+
+	@Override
+	public List<EmpBasicInfoImport> getEmpBasicInfo(String companyId, List<String> employeeIds) {
+		return this.personEmpBasicInfoPub.getEmpBasicInfo(companyId, employeeIds).stream().map(item -> {
+			return new EmpBasicInfoImport(item.getPersonId(), item.getEmployeeId(), item.getBusinessName(),
+					item.getGender(), item.getBirthday(), item.getEmployeeCode(), item.getJobEntryDate(),
+					item.getRetirementDate());
+		}).collect(Collectors.toList());
 	}
 }
