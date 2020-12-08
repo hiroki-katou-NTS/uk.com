@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetDestinationCopy {
-	// 就業情報端末Repository.[5] 端末コードの含まないリスト取得する 
+	//	就業情報端末Repository.[5] 端末コードの含まないリスト取得する 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
 	@Inject
@@ -34,10 +34,10 @@ public class GetDestinationCopy {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyID = AppContexts.user().companyId();
 		// get the Selected Employment Information Terminal
-		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
-				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
-		if (!empInfoTer.isPresent())
-			return null;
+//		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
+//				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
+//		if (!empInfoTer.isPresent())
+//			return null;
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.getEmpInfoTerminalNotIncludeCode(contractCode, new EmpInfoTerminalCode(empInforTerCode));
 		if(null == empInfoTerList)
 			return null;

@@ -2,7 +2,7 @@ module knr002.f.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getDestinationCopyList: "screen/at/destinationcopy/getdestinationcopylist",
+        getRecoveryTargeTertList: "screen/at/recoverytargetter/getAll",
     };
 
     /**
@@ -10,7 +10,7 @@ module knr002.f.service {
     * 
     * 
     */
-   export function getDestinationCopyList(empInfoTerCode: any): JQueryPromise<any> {
-    return ajax(paths.getDestinationCopyList+ "/" + empInfoTerCode);
+   export function getRecoveryTargeTertList(modelEmpInfoTer: number): JQueryPromise<any> {
+    return ajax(paths.getRecoveryTargeTertList+ "/" + modelEmpInfoTer);
 }
 }

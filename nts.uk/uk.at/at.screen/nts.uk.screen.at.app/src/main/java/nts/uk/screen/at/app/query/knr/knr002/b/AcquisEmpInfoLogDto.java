@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class AcquisEmpInfoLogDto {
-	// 就業情報端末コード
+	//	就業情報端末コード
 	private String empInfoTerCode;
 	//	前回通信成功日時
-	private String sTime;
+	private String preTimeSuccDate;
 	//	最新通信成功日時
-	private String eTime;
+	private String lastestTimeSuccDate;
 }

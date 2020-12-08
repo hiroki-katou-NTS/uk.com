@@ -1,14 +1,18 @@
 module knr002.f {
-    import blockUI = nts.uk.ui.block;
+    import blockUI = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import alertError = nts.uk.ui.alertError;
     import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
 
     export module viewmodel{
         export class ScreenModel{
 			empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
-            modelEmpInfoTer: KnockoutObservable<string>;
+            modelEmpInfoTer: KnockoutObservable<number>;
+            modelEmpInfoTerName: KnockoutObservable<string>;
             lastSuccessDate: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
             recoveryTargetList: KnockoutObservableArray<RecoveryTarget>;
@@ -17,11 +21,12 @@ module knr002.f {
             
             constructor(){
                 var self = this;
-                self.empInfoTerCode = ko.observable("0001");
-                self.empInfoTerName = ko.observable("Name 1");
-                self.modelEmpInfoTer = ko.observable("NRL-1");
-                self.lastSuccessDate = ko.observable("2020/12/12 12:12:12");
-                self.workLocationName = ko.observable("WLN 1");
+                self.empInfoTerCode = ko.observable("");
+                self.empInfoTerName = ko.observable("");
+                self.modelEmpInfoTer = ko.observable(0);
+                self.modelEmpInfoTerName = ko.observable("");
+                self.lastSuccessDate = ko.observable("");
+                self.workLocationName = ko.observable("");
                 self.recoveryTargetList = ko.observableArray<RecoveryTarget>([]);
                 self.selectedList = ko.observableArray<string>([]);       
             }
@@ -33,18 +38,30 @@ module knr002.f {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
-                service.getDestinationCopyList(self.empInfoTerCode()).done((data)=>{
+                self.empInfoTerCode(getShared('KNR002F_empInfoTerCode'));
+                self.empInfoTerName(getShared('KNR002F_empInfoTerName'));
+                self.modelEmpInfoTer(getShared('KNR002F_modelEmpInfoTer'));
+                self.lastSuccessDate(getShared('KNR002F_lastSuccessDate'));
+                
+                if(!self.modelEmpInfoTer()){
+                    self.modelEmpInfoTer(7);
+                    self.empInfoTerCode("0001");
+                    self.empInfoTerName("isn't the shared name");
+                    self.modelEmpInfoTerName("wrong")
+                    self.lastSuccessDate("9999/99/99 99:99:99")
+                }
+                           
+                service.getRecoveryTargeTertList(self.modelEmpInfoTer()).done((data)=>{
                     if(data.length < 0){
                         //do something
                     }else{
                         let recoveryTargetTempList = [];
                         for(let item of data){
-                            let recoveryTargetTemp = new RecoveryTarget(item.empInfoTerCode, item.empInfoTerName, self.getModelName(8), item.workLocationName, false);
+                            let recoveryTargetTemp = new RecoveryTarget(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()), item.workLocationName, false);
                             recoveryTargetTempList.push(recoveryTargetTemp);
                         }
                         self.recoveryTargetList(recoveryTargetTempList);
                         self.bindDestinationCopyList();
-                        //$("#F4").igGrid("option", "dataSource", self.destinationCopyList());
                     }
                 });
                 blockUI.clear();   																			
@@ -101,13 +118,13 @@ module knr002.f {
         class RecoveryTarget{
             empInfoTerCode: string;
             empInfoTerName: string;
-            modelEmpInfoTer: string;
+            modelEmpInfoTerName: string;
             workLocationName: string;
             availability: boolean;
-            constructor(empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTer: string, workLocationName: string, availability: boolean){
+            constructor(empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTerName: string, workLocationName: string, availability: boolean){
                 this.empInfoTerCode = empInfoTerCode;
                 this.empInfoTerName = empInfoTerName;
-                this.modelEmpInfoTer = modelEmpInfoTer;
+                this.modelEmpInfoTerName = modelEmpInfoTerName;
                 this.workLocationName = workLocationName;
                 this.availability = availability;
             }

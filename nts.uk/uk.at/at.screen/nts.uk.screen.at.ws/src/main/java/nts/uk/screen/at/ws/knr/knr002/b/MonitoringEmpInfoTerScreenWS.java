@@ -24,8 +24,7 @@ public class MonitoringEmpInfoTerScreenWS {
 
 	@POST
 	@Path("getInPeriod")
-	public List<AcquisEmpInfoLogDto> getInPeriod(AcquisEmpInfoLogDto dto) {
-		
-		return this.acquisitionEmpInfoLogList.getInPeriod(dto.getEmpInfoTerCode(), dto.getETime(), dto.getETime());
+	public List<AcquisEmpInfoLogDto> getInPeriod(AcquisEmpInfoLogDto dto) {		
+		return this.acquisitionEmpInfoLogList.getInPeriod(dto.getEmpInfoTerCode(), dto.getPreTimeSuccDate(), dto.getLastestTimeSuccDate());
 	}
 }

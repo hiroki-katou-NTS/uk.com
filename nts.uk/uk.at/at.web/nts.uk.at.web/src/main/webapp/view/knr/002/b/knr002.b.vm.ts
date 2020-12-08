@@ -23,10 +23,17 @@ module knr002.b {
             
             constructor(){
                 var self = this;
-                var today = new Date();
+                let today = new Date();
+                let year = today.getFullYear();
+                let month = self.fillZero(`${today.getMonth() + 1}`);
                 var date = today.getDate();
-                var sSystemDateTime = `${today.getFullYear()}/${today.getMonth() + 1}/${date- 1} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-                var eSystemDateTime = `${today.getFullYear()}/${today.getMonth() + 1}/${date} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+                let hours = self.fillZero(`${today.getHours()}`);
+                let minutes = self.fillZero(`${today.getMinutes()}`);
+                let seconds = self.fillZero(`${today.getSeconds()}`);
+                
+
+                var sSystemDateTime = `${year}/${month}/${self.fillZero(`${date - 1}`)} ${hours}:${minutes}:${seconds}`;
+                var eSystemDateTime = `${year}/${month}/${self.fillZero(`${date}`)} ${hours}:${minutes}:${seconds}`;
                 self.sTime =  ko.observable(sSystemDateTime);
                 self.eTime =  ko.observable(eSystemDateTime);
                 self.selectedLog = ko.observable(null);
@@ -61,7 +68,6 @@ module knr002.b {
                             cell4.css("color", "#FF2D2D");
                             cell5.css("color", "#FF2D2D");
                         }
-                        cell5.css('border-right', '1px solid black');
                     }, 1);
                     return value;
                 };          
@@ -74,39 +80,16 @@ module knr002.b {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
-
+                //getShared from A Screen
                 self.empInfoTerCode(getShared('KNR002B_empInfoTerCode'));
                 self.empInfoTerName(getShared('KNR002B_empInfoTerName'));
                 self.modelEmpInfoTer(getShared('KNR002B_modelEmpInfoTer'));
                 self.workLocationName(getShared('KNR002B_workLocationName'));
                 self.lastSuccessDate(getShared('KNR002B_lastSuccessDate'));
                 self.status(getShared('KNR002B_status'));
+                // load List Log in the Period
+                self.loadLogInPeriod(self.empInfoTerCode(), self.sTime(), self.eTime()); 
 
-                service.getInPeriod(self.empInfoTerCode(), self.sTime(), self.eTime()).done((data) => {
-                    if(data.length <= 0){
-                        //do something
-                    } else {
-                        let displayLogListTemp = [];
-                        for (let i = 0; i < data.length; i++) { 
-                            try {
-                                var sDay = new Date(data[i].sTime).getDay();
-                                var eDay = new Date(data[i].eTime).getDay();
-                                let displayLog = new DisplayLog(`${data[i].sTime}${self.getDayOfWeek(sDay)}`, data[i].sTime, `${data[i].eTime}${self.getDayOfWeek(eDay)}`, data[i].eTime);
-                                switch(sDay){
-                                    case 6: displayLog.id = `${i}_sta`; break;
-                                    case 0: displayLog.id = `${i}_sun`; break;
-                                    default: displayLog.id = `${i}`;
-                                }
-                                displayLogListTemp.push(displayLog);
-                            } catch (error) {
-                                console.log("Can't convert string to date");
-                            }                              
-                        }
-                         self.displayLogList(displayLogListTemp);
-                    }
-                    $('#B6_1').focus();
-                });
-                blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
             }
@@ -120,11 +103,8 @@ module knr002.b {
                 if(self.hasError()){
                     return;
                 }
-                console.log("the start time: ", self.sTime());
-                console.log("the end time: ", self.eTime());
                 //process
-                
-                $('#B6_1').focus();
+                self.loadLogInPeriod(self.empInfoTerCode(), self.sTime(), self.eTime()); 
             } 
 
             /**
@@ -134,6 +114,42 @@ module knr002.b {
             private cancel_Dialog(): any {
                 let self = this;
                 nts.uk.ui.windows.close();
+            }
+            /**
+             * load Data
+             */
+            private loadLogInPeriod(empInfoTerCode: string, sTime: string, eTime: string): void{
+                var self = this;
+                
+                service.getInPeriod(empInfoTerCode, sTime, eTime).done((data) => {
+                    if(data.length <= 0){
+                        //do something
+                        self.displayLogList([]);
+                    } else {
+                        let displayLogListTemp = [];
+                        for (let i = 0; i < data.length; i++) { 
+                            try {
+                                var sDay = new Date(data[i].preTimeSuccDate).getDay();
+                                var eDay = new Date(data[i].eTime).getDay();
+                                let displayLog = new DisplayLog(`${self.getDate(data[i].preTimeSuccDate)}${self.getDayOfWeek(sDay)}`,
+                                                                 self.getTime(data[i].preTimeSuccDate),
+                                                                 `${self.getDate(data[i].lastestTimeSuccDate)}${self.getDayOfWeek(eDay)}`,
+                                                                 self.getTime(data[i].lastestTimeSuccDate));
+                                switch(sDay){
+                                    case 6: displayLog.id = `${i}_sta`; break;
+                                    case 0: displayLog.id = `${i}_sun`; break;
+                                    default: displayLog.id = `${i}`;
+                                }
+                                displayLogListTemp.push(displayLog);
+                            } catch (error) {
+                                console.log("Can't convert string to date");
+                            }                              
+                        }
+                         self.displayLogList(displayLogListTemp);
+                    }    
+                });
+                $('#B6_1').focus();
+                blockUI.clear();  
             }
              /**
              * Check Input Errors
@@ -172,6 +188,24 @@ module knr002.b {
                     case 6: return '（土）';
                     default : return '';
                 }
+            }
+            /**
+             * get Date to Display
+             */
+            private getDate(dateTime: String): string{
+                return dateTime.substr(0, 10);
+            }
+            /**
+             * get Time to Display
+             */
+            private getTime(dateTime: String): string{
+                return dateTime.substr(11, 5);
+            }
+            /**
+             * fill '0' character to datetime
+             */
+            private fillZero(str: string): string{
+                return str.length == 2? str : `0${str}`;
             }
         }
 

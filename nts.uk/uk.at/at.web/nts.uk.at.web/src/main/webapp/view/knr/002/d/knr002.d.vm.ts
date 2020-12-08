@@ -10,19 +10,19 @@ module knr002.d {
         export class ScreenModel{
 			empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
-            destinationCopyList: KnockoutObservableArray<DestinationCopy>;
-            currentCodeList: Array<ItemModel>;
+            destinationCopyList: KnockoutObservableArray<EmpInfoTerminal>;
+            //currentCodeList: Array<ItemModel>;
             selectableCodeList: Array<ItemModel>;
-            isCancel: boolean;
+            //isCancel: boolean;
             
             constructor(){
                 var self = this;
                 self.empInfoTerCode = ko.observable('');
                 self.empInfoTerName = ko.observable('');
-                self.destinationCopyList = ko.observableArray<DestinationCopy>([]);
-                self.currentCodeList = [];
+                self.destinationCopyList = ko.observableArray<EmpInfoTerminal>([]);
+                //self.currentCodeList = [];
                 self.selectableCodeList = [];
-                self.isCancel = false;
+                //self.isCancel = false;
             }
             /**
              * Start Page
@@ -32,46 +32,66 @@ module knr002.d {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
+                // get Shared from C
                 let empInfoTerCodeShr = getShared('KNR002D_empInfoTerCode');
                 let empInfoTerNameShr = getShared('KNR002D_empInfoTerName');
-                if(empInfoTerCodeShr)
-                    self.empInfoTerCode(empInfoTerCodeShr);
-                if(empInfoTerNameShr)
-                    self.empInfoTerName(empInfoTerNameShr);
-
-                self.currentCodeList = self.isCancel ? self.selectableCodeList : getShared('KNR002D_currentCodeList');
-                if(!self.empInfoTerCode()){
-                    self.empInfoTerCode('0001');
-                    self.empInfoTerName("isn't the shared code");
-                }
-                service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                    if(data.length <= 0 ){
-                        //do something
-                    } else {
-                        let desCopyTempList = [];
-                        if(!self.currentCodeList){
-                            for(let item of data){
-                                let desCopyTemp = new DestinationCopy(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
-                                desCopyTempList.push(desCopyTemp);
-                            } 
-                        } else {
-                            for(let item of data){                             
-                                let desCopyTemp = new DestinationCopy(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
-                                desCopyTemp.availability = false; 
-                                _.forEach(self.currentCodeList, e => {
-                                    if(desCopyTemp.empInfoTerCode == e.code){
-                                        desCopyTemp.availability = true; 
-                                        return;
-                                    }
-                                });
-                                desCopyTempList.push(desCopyTemp);
-                            }  
-                        }                    
-                        self.destinationCopyList(desCopyTempList);
-                        self.bindDestinationCopyList();
+                self.empInfoTerCode(empInfoTerCodeShr? empInfoTerCodeShr : '');
+                self.empInfoTerName(empInfoTerNameShr? empInfoTerNameShr : '');
+                // get Shared from A
+                let empInfoTerList = getShared('KNR002D_empInfoTerList');
+                console.log("the shared: ", empInfoTerList);
+                if(empInfoTerList){
+                    
+                //    self.destinationCopyList(empInfoTerList.filter(e => {
+                //        e.empInfoTerCode != self.empInfoTerCode();
+                //    }));
+                    let desCopyTempList = [];
+                    for(let e of empInfoTerList){
+                        if(e.empInfoTerCode != self.empInfoTerCode())
+                            desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
+                    };
+                    self.destinationCopyList(desCopyTempList);
+                    self.bindDestinationCopyList();   
+                }else{
+                    //self.currentCodeList = self.isCancel ? self.selectableCodeList : getShared('KNR002D_currentCodeList');
+                    if(self.empInfoTerCode() == ''){
+                        self.empInfoTerCode('0001');
+                        self.empInfoTerName("isn't the shared");
                     }
-                    $('$D5_1').focus();
-                });
+                    service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
+                        if(data.length <= 0 ){
+                            //do something
+                        } else {
+                            let desCopyTempList = [];
+                            // if(!self.currentCodeList){
+                            //     for(let item of data){
+                            //         let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
+                            //         desCopyTempList.push(desCopyTemp);
+                            //     } 
+                            // } else {
+                            //     for(let item of data){                             
+                            //         let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
+                            //         desCopyTemp.availability = false; 
+                            //         _.forEach(self.currentCodeList, e => {
+                            //             if(desCopyTemp.empInfoTerCode == e.code){
+                            //                 desCopyTemp.availability = true; 
+                            //                 return;
+                            //             }
+                            //         });
+                            //         desCopyTempList.push(desCopyTemp);
+                            //     }  
+                            // }       
+                            for(let item of data){
+                                let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
+                                desCopyTempList.push(desCopyTemp);
+                            }   
+                            self.destinationCopyList(desCopyTempList);
+                            self.bindDestinationCopyList();
+                        }                       
+                    });
+                }
+
+                $('#D5_1').focus();
                 blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
@@ -140,7 +160,7 @@ module knr002.d {
                 }	
             }
         }
-        class DestinationCopy{
+        class EmpInfoTerminal{
             empInfoTerCode: string;
             empInfoTerName: string;
             modelEmpInfoTer: string;

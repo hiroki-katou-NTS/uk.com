@@ -11,8 +11,8 @@ module knr002.b.service {
     export function getInPeriod(empInfoTerCode: string, sTime: string, eTime: string): JQueryPromise<any> {
         const dto = {
             empInfoTerCode: empInfoTerCode,
-            sTime: sTime,
-            eTime: eTime
+            preTimeSuccDate: sTime,
+            lastestTimeSuccDate: eTime
         };
         return ajax(paths.getInPeriod, dto);
     }
