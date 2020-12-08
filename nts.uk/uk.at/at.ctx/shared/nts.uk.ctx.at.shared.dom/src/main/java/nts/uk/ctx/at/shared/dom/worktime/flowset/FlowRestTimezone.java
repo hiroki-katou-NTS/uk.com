@@ -6,19 +6,16 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class FlowRestTimezone.
@@ -155,9 +152,12 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 	}
 	
 	/** 設定以降の時間を含めて流動設定を取得 */
-	public List<FlowRestSetting> getFlowRestSet(TimeSpanForDailyCalc oneDayRange) {
+	public List<FlowRestSetting> getFlowRestSet(TimeSpanForDailyCalc oneDayRange, PredetermineTimeSetForCalc predetermineForCalc) {
 		
-		List<FlowRestSetting> flowRestSet = this.flowRestSets;
+		List<FlowRestSetting> flowRestSet = this.flowRestSets.stream()
+															.sorted((c1, c2) -> c1.getFlowPassageTime().compareTo(c2.getFlowPassageTime()))
+															.map(c -> new FlowRestSetting(c.getFlowRestTime(), c.getFlowPassageTime()))
+															.collect(Collectors.toList());
 		
 		/** ○設定以降の休憩を使用するか確認 */
 		if (this.useHereAfterRestSet) {
@@ -166,16 +166,18 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 //			val flowPassTime = this.flowRestSets.stream().map(c -> c.getFlowPassageTime()).collect(Collectors.toList());
 			
 			/** ○パラメータ「日別実績の出退勤」から最大の計算範囲を取得 */
+			val calcRange = (predetermineForCalc.getStartOneDayTime().valueAsMinutes() + predetermineForCalc.getOneDayRange().valueAsMinutes())
+							 	- oneDayRange.getStart().valueAsMinutes();
 			
 			/** ○出退勤の間の時間を超過するまで休憩設定を作成 */
-			flowRestSet.addAll(createRestSetToOverAttendanceLeave(oneDayRange));
+			flowRestSet.addAll(createRestSetToOverAttendanceLeave(calcRange));
 		} 
 		
 		return flowRestSet;
 	}
 	
 	/** ○出退勤の間の時間を超過するまで休憩設定を作成 */
-	private List<FlowRestSetting> createRestSetToOverAttendanceLeave(TimeSpanForDailyCalc oneDayRange) {
+	private List<FlowRestSetting> createRestSetToOverAttendanceLeave(int calcRange) {
 		
 		List<FlowRestSetting> restSets = new ArrayList<>();
 		
@@ -185,17 +187,18 @@ public class FlowRestTimezone extends WorkTimeDomainObject implements Cloneable{
 											.orElse(new AttendanceTime(0));
 		
 		/** ○休憩設定が作成される可能性のある範囲を計算 */
-		val restRange = oneDayRange.getEnd().backByMinutes(maxRestTime.valueAsMinutes());
+		val restRange = calcRange - maxRestTime.valueAsMinutes();
 		
 		/** ○休憩範囲に含まれる流動休憩の数を計算 */
-		val restTimes = restRange.valueAsMinutes() / this.hereAfterRestSet.getFlowPassageTime().valueAsMinutes();
+		val restTimes = restRange / this.hereAfterRestSet.getFlowPassageTime().valueAsMinutes();
+		val toCreate = Math.abs(10 - this.flowRestSets.size() - restTimes);
 		
 		/** ○最大時間を保持 */
 		AttendanceTime maxRestTimeCopy = new AttendanceTime(maxRestTime.valueAsMinutes());
 		
 		val restTime = this.hereAfterRestSet.getFlowRestTime();
 		
-		for(int i = 0; i < restTimes; i++) {
+		for(int i = 0; i < toCreate; i++) {
 			
 			val passageTime = this.hereAfterRestSet.getFlowPassageTime().addMinutes(maxRestTimeCopy.valueAsMinutes());
 			

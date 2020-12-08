@@ -553,7 +553,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				oneDayOfRange,
 				attendanceLeaveWork,
-				predetermineTimeSetForCalc, lateTimeSheet);
+				predetermineTimeSetForCalc, lateTimeSheet, this);
 		//計上用
 		val recordTimeSheet = DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(
 				DeductionAtr.Appropriate,
@@ -562,7 +562,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				oneDayOfRange,
 				attendanceLeaveWork,
-				predetermineTimeSetForCalc, lateTimeSheet);
+				predetermineTimeSetForCalc, lateTimeSheet, this);
 	
 		return new DeductionTimeSheet(
 				dedTimeSheet,
@@ -1011,7 +1011,7 @@ public class CalculationRangeOfOneDay {
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @return 就業時間内時間枠
 	 */
-	private WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRange(
+	public WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRange(
 			WorkType todayWorkType,
 			IntegrationOfDaily integrationOfDaily,
 			FlowWorkSetting flowWorkSetting,

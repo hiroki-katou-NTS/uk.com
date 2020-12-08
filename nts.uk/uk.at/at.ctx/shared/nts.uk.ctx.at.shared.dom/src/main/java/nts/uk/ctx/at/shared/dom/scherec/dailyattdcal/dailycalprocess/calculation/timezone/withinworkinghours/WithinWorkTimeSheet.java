@@ -94,6 +94,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	//private Optional<TimevacationUseTimeOfDaily> outingVacationUseTime = Optional.empty();
 	
 	private Map<GoingOutReason,TimevacationUseTimeOfDaily> outingVacationUseTime = new HashMap<>();
+	{
+		outingVacationUseTime.put(GoingOutReason.PRIVATE, TimevacationUseTimeOfDaily.defaultValue());
+		outingVacationUseTime.put(GoingOutReason.COMPENSATION, TimevacationUseTimeOfDaily.defaultValue());
+		outingVacationUseTime.put(GoingOutReason.PUBLIC, TimevacationUseTimeOfDaily.defaultValue());
+		outingVacationUseTime.put(GoingOutReason.UNION, TimevacationUseTimeOfDaily.defaultValue());
+	}
 	
 	//休暇使用合計残時間未割当
 	private Finally<AttendanceTime> timeVacationAdditionRemainingTime = Finally.of(new AttendanceTime(0));

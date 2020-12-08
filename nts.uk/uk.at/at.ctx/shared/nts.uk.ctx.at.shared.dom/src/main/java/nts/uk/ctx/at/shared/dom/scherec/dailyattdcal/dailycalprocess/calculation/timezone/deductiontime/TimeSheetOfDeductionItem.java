@@ -335,6 +335,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 							return collectionBreakTime(compareTimeSheet,this);
 						}
 					}
+					//外出入れる
+					map.add(this);
+					//休憩を入れる
+					map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.replaceTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
+					return map;
 				}
 			}
 			//外出入れる
@@ -693,28 +698,26 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 	 * @return　外出丸め設定
 	 */
 	private Optional<TimeRoundingSetting> goOutingRoundingActual(WorkTimezoneGoOutSet goOutSet,ActualWorkTimeSheetAtr actualAtr,DeductionAtr dedAtr,TimeRoundingSetting rounding){
-		Optional<TimeRoundingSetting> returnValue = Optional.empty();
+		
 		if(goOutSet.getTotalRoundingSet().getSetSameFrameRounding().isRoundingAndTotal()) {
 			switch(actualAtr) {
 			//就業時間内
 			case WithinWorkTime:
-				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
-				break;
+				return goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
 			//残業
 			case EarlyWork://早出
 			case OverTimeWork://普通
 			case StatutoryOverTimeWork://法内
-				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
-				break;
+				return goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
 			//休出
 			case HolidayWork:
-				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getPubHolWorkTimezone(),rounding);
-				break;
+				return goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getPubHolWorkTimezone(),rounding);
 			default:
 				throw new RuntimeException("Unknown ActualAtr:"+actualAtr);
 			}
 		}
-		return returnValue;
+		
+		return Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
 	}
 	
 	/**

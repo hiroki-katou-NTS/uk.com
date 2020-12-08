@@ -27,6 +27,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
@@ -558,7 +560,8 @@ public class DeductionTimeSheet {
 			TimeSpanForDailyCalc oneDayOfRange,
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
-			List<LateTimeSheet> lateTimeSheet) {
+			List<LateTimeSheet> lateTimeSheet,
+			CalculationRangeOfOneDay calcRange) {
 
 		// 固定休憩か流動休憩か確認する
 		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED
@@ -575,11 +578,8 @@ public class DeductionTimeSheet {
 			
 			/** シフトから計算 */
 			return createDedctionTimeSheetFlow(
-					dedAtr,
-					todayWorkType,
-					integrationOfWorkTime,
-					integrationOfDaily,
-					oneDayOfRange, lateTimeSheet);
+					dedAtr, todayWorkType, integrationOfWorkTime, integrationOfDaily,
+					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange);
 			
 		}
 	}
@@ -587,7 +587,7 @@ public class DeductionTimeSheet {
 	/** 控除時間帯の作成 */
 	private static List<TimeSheetOfDeductionItem> createDedctionTimeSheetFlow(DeductionAtr deductionAtr, WorkType workType, 
 			IntegrationOfWorkTime workTime, IntegrationOfDaily dailyRecord, TimeSpanForDailyCalc oneDayOfRange, 
-			List<LateTimeSheet> lateTimeSheet) {
+			List<LateTimeSheet> lateTimeSheet, PredetermineTimeSetForCalc predetermineForCalc, CalculationRangeOfOneDay calcRange) {
 		
 		/** ○計算範囲の取得 */
 		
@@ -603,25 +603,22 @@ public class DeductionTimeSheet {
 		
 		/** ○流動休憩時間帯を取得 */
 		val flowRestTimeSheet = workTime.getFlowWorkRestTimezone(workType)
-										.map(c -> c.getFlowRestTimezone().getFlowRestSet(oneDayOfRange))
+										.map(c -> c.getFlowRestTimezone().getFlowRestSet(oneDayOfRange, predetermineForCalc))
 										.orElseGet(() -> new ArrayList<>());
 		
 		/** △休憩計算開始時刻を取得 */
-		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange, workType);
+		val timeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(1);
+		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange, workType,
+				timeLeave, calcRange, dailyRecord, predetermineForCalc);
 		
 		val fluidCalc = new DeductionTotalTimeForFluidCalc(startBreakTime);
-		val timeLeave = dailyRecord.getAttendanceLeave().flatMap(c -> {
-			if (c.getAttendanceLeavingWork(2).isPresent()) {
-				return c.getAttendanceLeavingWork(2);
-			}
-			return c.getAttendanceLeavingWork(1);
-		});
 		
 		val restTimeSheet = flowRestTimeSheet.stream().map(ts -> {
 			
 			/** △流動休憩時間帯の作成 */
-			return fluidCalc.createDeductionFluidRestTime(timeLeave, fluidCalc.getBreakStartTime(), 
-					ts, fluidCalc.getDeductionTotal(), correctedDeductionTimeSheet, workTime, workType);
+			return fluidCalc.createDeductionFluidRestTime(calcRange.getAttendanceLeavingWork(),
+							fluidCalc.getBreakStartTime(), ts, fluidCalc.getDeductionTotal(), 
+							correctedDeductionTimeSheet, workTime, workType, startBreakTime);
 		}).collect(Collectors.toList());
 		
 		/** ○控除時間帯(List)に休憩時間帯リストを追加 */
@@ -636,23 +633,31 @@ public class DeductionTimeSheet {
 
 	/** △休憩計算開始時刻を取得 */
 	private static TimeWithDayAttr getStartBreakTime(List<LateTimeSheet> lateTimeSheet, 
-			IntegrationOfWorkTime workTime, TimeSpanForDailyCalc oneDayOfRange, WorkType workType) {
+			IntegrationOfWorkTime workTime, TimeSpanForDailyCalc oneDayOfRange, WorkType workType, 
+			Optional<TimeLeavingWork> timeLeave, CalculationRangeOfOneDay calcRange,
+			IntegrationOfDaily integrationOfDaily, PredetermineTimeSetForCalc predetermineTimeSet) {
 		
 		/** 遅刻が存在するか確認 */
 		if(lateTimeSheet.isEmpty()) {
 			
+			val startTime = timeLeave.flatMap(c -> c.getAttendanceTime()).orElse(oneDayOfRange.getStart());
+			
 			if (workTime.getWorkTimeSetting().getWorkTimeDivision().isFlow()) { /** 流動勤務の場合 */
 				
+				/** 計算範囲を判断 */
+				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType,
+						integrationOfDaily, workTime.getFlowWorkSetting().get(), 
+						getTimeLeaveWork(integrationOfDaily), predetermineTimeSet);
+				
 				/** 計算開始時刻を取得 */
-				return oneDayOfRange.getStart();
+				return within.getTimeSheet().getStart();
 			} else if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) { /** フレックス勤務用　の場合 */
 				
 				/** ○就業時間帯の計算開始時刻を取得 */
-				val startTime = workTime.getFirstStartTimeOfFlex(workType);
+				val preTimeStart = workTime.getFirstStartTimeOfFlex(workType);
 				
 				/** ○出勤時刻と計算開始時刻から休憩計算開始時刻を判断 */
-				return oneDayOfRange.getStart().compareTo(startTime) >= 0 
-							? oneDayOfRange.getStart() : startTime;
+				return startTime.compareTo(preTimeStart) >= 0 ? startTime : preTimeStart;
 			} else {
 				
 				/** フレックス勤務、流動勤務ではない場合はthrow Exception*/
@@ -667,6 +672,18 @@ public class DeductionTimeSheet {
 							.orElseGet(() -> new TimeWithDayAttr(0)))
 				.max((c1, c2) -> c1.compareTo(c2))
 				.get();
+	}
+
+	private static nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork getTimeLeaveWork(
+			IntegrationOfDaily integrationOfDaily) {
+		val timeLeaving = integrationOfDaily.getAttendanceLeave().get();
+		val timeLeave1 = timeLeaving.getAttendanceLeavingWork(1);
+		val timeLeave2 = timeLeaving.getAttendanceLeavingWork(2);
+		val attendance = timeLeave1.flatMap(c -> c.getAttendanceStamp());
+		val leave = timeLeave2.isPresent() ? timeLeave2.flatMap(c -> c.getLeaveStamp()) 
+										: timeLeave1.flatMap(c -> c.getLeaveStamp());
+		
+		return new TimeLeavingWork(new WorkNo(1), attendance.orElse(null), leave.orElse(null));
 	}
 
 	/**
