@@ -184,9 +184,9 @@ module nts.uk.ui.com.sample.fullcalendar {
             template:
                 `<div class="fc-editor-container">
                     <div class="toolbar">
-                        <!--<svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
+                        <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Email">
                             <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
-                        </svg>-->
+                        </svg>
                         <svg width="20" height="20" viewBox="0 0 24 24" focusable="false" title="Edit" data-bind="click: edit, timeClick: -1">
                             <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
                         </svg>
@@ -208,7 +208,7 @@ module nts.uk.ui.com.sample.fullcalendar {
                 </style>`
         })
         export class FullCalendarEventDetail extends ko.ViewModel {
-            constructor(private data: any) {
+            constructor(private params: any) {
                 super();
             }
 
@@ -217,11 +217,17 @@ module nts.uk.ui.com.sample.fullcalendar {
             }
 
             remove() {
+                const vm = this;
+                const { params } = vm;
 
+                params.remove();
             }
 
             close() {
-                
+                const vm = this;
+                const { params } = vm;
+
+                params.close();
             }
         }
 
