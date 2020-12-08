@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayCheckUnit;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.StartDateClassification;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
@@ -37,9 +38,9 @@ public class HolidaySettingInfo {
 	private String calSettingScreenName;
 	
 	/**
-	 * 曜日
+	 * 起算曜日
 	 */
-	private Optional<WeekStart> weekStart;
+	private Optional<DayOfWeek> weekStart;
 	
 	/**
 	 * 起算日区分
@@ -47,7 +48,7 @@ public class HolidaySettingInfo {
 	private Optional<StartDateClassification> startDateClassification;
 
 	public HolidaySettingInfo(Optional<TreatmentHoliday> treatmentHoliday, Optional<HolidayCheckUnit> holidayCheckUnit,
-			String calSettingScreenName, Optional<WeekStart> weekStart,
+			String calSettingScreenName, Optional<DayOfWeek> weekStart,
 			Optional<StartDateClassification> startDateClassification) {
 		super();
 		this.treatmentHoliday = treatmentHoliday;

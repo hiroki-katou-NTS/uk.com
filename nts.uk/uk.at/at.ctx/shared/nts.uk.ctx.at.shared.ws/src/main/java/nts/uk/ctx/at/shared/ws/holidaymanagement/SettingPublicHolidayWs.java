@@ -40,7 +40,7 @@ public class SettingPublicHolidayWs extends WebService {
 	@POST
 	public HolidaySettingInfoDto getData() {
 		String companyId  = AppContexts.user().companyId();
-		HolidaySettingInfoDto data = startProcessTreatmentHoliday.startProcess(companyId);
+		HolidaySettingInfoDto data = HolidaySettingInfoDto.convertToDomain(startProcessTreatmentHoliday.startProcess(companyId));
 		/*if(!data.getTreatmentHoliday().isPresent()){
 			return null; 
 		}
