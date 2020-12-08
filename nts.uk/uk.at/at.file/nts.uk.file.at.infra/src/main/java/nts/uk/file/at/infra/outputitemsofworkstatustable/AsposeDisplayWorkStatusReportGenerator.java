@@ -47,6 +47,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
+            worksheet.setName(dataSource.getTitle());
             settingPage(worksheet, dataSource);
             printContents(worksheet, dataSource);
             worksheets.setActiveSheetIndex(0);
