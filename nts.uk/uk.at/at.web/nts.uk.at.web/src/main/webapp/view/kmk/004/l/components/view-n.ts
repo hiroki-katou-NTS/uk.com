@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk004.l {
 						<div class="header_content">
 							<div data-bind="component: {
 								name: 'view-l-basic-setting',
-								params: params
+								params: paramL
 							}"></div>
 						</div>
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
@@ -114,6 +114,9 @@ module nts.uk.at.view.kmk004.l {
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 
+		paramL: IParam;
+		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		
 		constructor(private params: IParam){
 			super();
 		}
@@ -154,46 +157,37 @@ module nts.uk.at.view.kmk004.l {
 
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
-			vm.params = {sidebarType : "Com_Employment", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
+			vm.paramL = {isLoadData: vm.isLoadData, sidebarType : "Com_Employment", wkpId: ko.observable(''), empCode :ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null}
 			vm.selectedYear
 			.subscribe(() => {
 				if(vm.selectedYear != null) {
 					vm.existYear(true);
 				}
 			});
-		}
-
-		mounted() {
-			const vm = this;
-			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
-				vm.employeeList($('#empt-list-setting').getDataList());
-				if (vm.employeeList().length > 0) {
-					vm.selectedCode(vm.employeeList()[0].code);
-				}
-
-				vm.selectedCode.subscribe((newValue) => {
-					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
-						vm.currentItemName("");
-						return;
-					}
-					
+			
+			vm.selectedCode.subscribe((newValue) => {
 					let selectedItem = _.find(vm.employeeList(), emp => {
 						return emp.code == newValue;
 					});
-					
-					if (selectedItem) {
-						vm.currentItemName(selectedItem.name);
-						vm.params.empCode = newValue;
-						vm.params.titleName = vm.currentItemName();
-					}
-				});
-				vm.selectedCode.valueHasMutated();
+				vm.currentItemName(selectedItem ? selectedItem.name : '');
+				vm.paramL.empCode(newValue);
+				vm.paramL.titleName = vm.currentItemName();
 			});
+			
+			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
+				vm.employeeList($('#empt-list-setting').getDataList());
+				vm.selectedCode(vm.employeeList()[0].code);
+			});
+		}
+
+		mounted() {
 		}
 		
 		openViewP() {
 			let vm = this;
-			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {
+				vm.isLoadData(true);
+			});
 		}
 	}
 }

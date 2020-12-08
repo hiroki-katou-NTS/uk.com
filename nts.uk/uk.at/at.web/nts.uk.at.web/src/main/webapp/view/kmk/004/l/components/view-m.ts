@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk004.l {
 							<div class="header_content">
 								<div data-bind="component: {
 									name: 'view-l-basic-setting',
-									params: params
+									params: paramL
 								}"></div>
 							</div>
 							<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
@@ -92,14 +92,16 @@ module nts.uk.at.view.kmk004.l {
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<tree.UnitAlreadySettingModel>;
 		treeGrid: tree.TreeComponentOption;
+		workplaces: [];
 		selectedItemText: KnockoutObservable<string> = ko.observable('');
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
-		param :  KnockoutObservable<IParam> = ko.observable();
+		paramL: IParam;
+		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		
-		constructor(private params: IParam){
+		constructor(public params: IParam){
 			super();
 		}
 		
@@ -123,33 +125,34 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-			vm.params = {sidebarType : "Com_Workplace", wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
+			vm.paramL = {isLoadData: vm.isLoadData, sidebarType : "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null}
 			vm.selectedYear
 			.subscribe(() => {
 				if(vm.selectedYear != null) {
 					vm.existYear(true);
 				}
 			});
+			vm.selectedId.subscribe((data) => {
+				let selectedItem: UnitModel = _.find(vm.workplaces, ['id', data]);
+				vm.selectedItemText(selectedItem ? selectedItem.name : '');
+				vm.paramL.wkpId(data);
+				vm.paramL.titleName = vm.selectedItemText();
+			});
+			
+			$('#workplace-list').ntsTreeComponent(vm.treeGrid).done(() => {
+				vm.workplaces = $('#workplace-list').getDataList();
+				vm.selectedId.valueHasMutated();
+			});
 		}
 
 		mounted() {
-			const vm = this;
-			$('#workplace-list').ntsTreeComponent(vm.treeGrid).done(() => {
-				vm.selectedId.subscribe((data) => {
-					let workplaces = $('#workplace-list').getDataList();
-					let selectedItem: UnitModel = _.find(workplaces, ['id', data]);
-					vm.selectedItemText(selectedItem ? selectedItem.name : '');
-					vm.params.wkpId = data;
-					
-					vm.params.titleName = vm.selectedItemText();
-				});
-				vm.selectedId.valueHasMutated();
-			});
 		}
 		
 		openViewP() {
 			let vm = this;
-			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', vm.params)
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {
+				vm.isLoadData(true);
+			});
 		}
 	}
 }

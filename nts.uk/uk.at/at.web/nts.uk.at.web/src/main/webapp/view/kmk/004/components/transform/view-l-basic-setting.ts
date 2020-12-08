@@ -86,7 +86,27 @@ module nts.uk.at.view.kmk004 {
 				padding: 3px 10px;
 				text-align: center;
             }
-
+			
+			.table-view th:nth-child(1) {
+				width: 134px;
+			}
+			
+			.table-view th:nth-child(2) {
+				width: 134px;
+			}
+			
+			.table-view th:nth-child(3) {
+				width: 134px;
+			}
+			
+			.table-view th:nth-child(4) {
+				width: 67px;
+			}
+			
+			.table-view th:nth-child(5) {
+				width: 60px;
+			}
+			
             .table-view tr, .table-view td {
                 border: solid grey 1px;
 				padding: 3px 10px;
@@ -106,17 +126,52 @@ module nts.uk.at.view.kmk004 {
 		visibleL4: KnockoutObservable<boolean> = ko.observable(false);
 
 		screenData = new TransformScreenData();
+		
+		isLoadData: KnockoutObservable<boolean>;
 
 		constructor(private params: IParam) {
 			super();
 			const vm = this;
-			vm.params = {sidebarType : 'Com_Company', wkpId: '', empCode :'', empId: '', titleName:'', deforLaborTimeComDto: null, settingDto: null}
+			
+			if (vm.params.sidebarType == 'Com_Company') {
+				vm.loadData();
+				}
+			
+			if (vm.params.sidebarType == 'Com_Workplace') {
+				vm.params.wkpId.subscribe((data: any) => {
+					if (data != '') {
+						vm.loadData();
+					}
+				});
+			}
+
+			if (vm.params.sidebarType == 'Com_Employment') {
+				vm.params.empCode.subscribe((data: any) => {
+					if (data != '') {
+						vm.loadData();
+					}
+				});
+			}
+
+			if (vm.params.sidebarType == 'Com_Person') {
+				vm.params.empId.subscribe((data: any) => {
+					if (data != '') {
+						vm.loadData();
+					}
+				});
+			}
+			
+			vm.isLoadData = vm.params.isLoadData;
+			vm.isLoadData.subscribe((value: boolean) => {
+				if(value){
+					vm.loadData();
+					vm.isLoadData(false);		
+				}
+			});
 			
 		}
 
 		mounted() {
-			const vm = this;
-			vm.loadData();
 		}
 
 		loadData() {
@@ -125,15 +180,14 @@ module nts.uk.at.view.kmk004 {
 
 			//会社
 			if (vm.params.sidebarType == 'Com_Company') {
-				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING, ).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING).done((data: IResponse) => {
 					vm.bindingData(data);
-
 				}).always(() => vm.$blockui("clear"));
 			}
-	
+
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
-				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.wkpId)).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.wkpId())).done((data: IResponse) => {
 					vm.bindingData(data);
 				}).always(() => vm.$blockui("clear"));
 
@@ -141,7 +195,7 @@ module nts.uk.at.view.kmk004 {
 
 			//雇用
 			if (vm.params.sidebarType == 'Com_Employment') {
-				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empCode)).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empCode())).done((data: IResponse) => {
 					vm.bindingData(data);
 				}).always(() => vm.$blockui("clear"));
 
@@ -149,7 +203,7 @@ module nts.uk.at.view.kmk004 {
 
 			//社員
 			if (vm.params.sidebarType == 'Com_Person') {
-				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empId)).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empId())).done((data: IResponse) => {
 					vm.bindingData(data);
 				}).always(() => vm.$blockui("clear"));
 			}
@@ -166,19 +220,19 @@ module nts.uk.at.view.kmk004 {
 				vm.visibleL4(false);
 			}
 		}
-		
+
 		toHHMM(min_num: number) {
-		    var hours   = Math.floor(min_num / 60);
-		    var minutes = Math.floor(min_num - (hours * 60));
+			var hours = Math.floor(min_num / 60);
+			var minutes = Math.floor(min_num - (hours * 60));
 			var hoursStr = String(hours);
-			var minutesStr =String(minutes);
-			
-		    if (hours   < 10) {hoursStr   = "0" + hours;}
-		    if (minutes < 10) {minutesStr = "0" + minutes;}
-		    
-		    return hoursStr +':' + minutesStr;
+			var minutesStr = String(minutes);
+
+			if (hours < 10) { hoursStr = "0" + hours; }
+			if (minutes < 10) { minutesStr = "0" + minutes; }
+
+			return hoursStr + ':' + minutesStr;
 		}
-		
+
 	}
 
 }

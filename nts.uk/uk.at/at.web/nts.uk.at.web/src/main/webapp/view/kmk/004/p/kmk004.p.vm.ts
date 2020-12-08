@@ -4,6 +4,15 @@ module nts.uk.at.view.kmk004.p {
 
 	export interface IParam extends IResponse {
 		sidebarType: SIDEBAR_TYPE;
+		wkpId: KnockoutObservable<string>;
+		empCode: KnockoutObservable<string>;
+		empId: KnockoutObservable<string>;
+		titleName: string;
+		isLoadData: KnockoutObservable<boolean>;
+	}
+	
+	export interface IParamL {
+		sidebarType: SIDEBAR_TYPE;
 		wkpId: string;
 		empCode: string;
 		empId: string;
@@ -59,7 +68,7 @@ module nts.uk.at.view.kmk004.p {
 
 		screenData = new TransformScreenData();
 
-		constructor(private params: IParam) {
+		constructor(private params: IParamL) {
 			super();
 			if(params){			
 				var vm = this;
@@ -107,7 +116,7 @@ module nts.uk.at.view.kmk004.p {
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
-				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.wkpId)).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + vm.params.wkpId).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
@@ -121,7 +130,7 @@ module nts.uk.at.view.kmk004.p {
 
 			//雇用
 			if (vm.params.sidebarType == 'Com_Employment') {
-				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empCode)).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + vm.params.empCode).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
@@ -136,7 +145,7 @@ module nts.uk.at.view.kmk004.p {
 
 			//社員
 			if (vm.params.sidebarType == 'Com_Person') {
-				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + ko.toJS(vm.params.empId)).done((data: IResponse) => {
+				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + vm.params.empId).done((data: IResponse) => {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
@@ -452,12 +461,21 @@ module nts.uk.at.view.kmk004.p {
 			this.settingDto.update(param.settingDto);
 		}
 
-		add(param: IParam) {
+		add(param: IParamL) {
 			this.sidebarType = param.sidebarType;
-			this.wkpId = param.wkpId;
-			this.empCode = param.empCode;
-			this.empId = param.empId;
 			this.titleName = param.titleName;
+			
+			if(param.sidebarType == 'Com_Workplace') {
+				this.wkpId = param.wkpId;
+			}
+			
+			if(param.sidebarType == 'Com_Employment') {
+				this.empCode = param.empCode;
+			}
+			
+			if(param.sidebarType == 'Com_Person') {
+				this.empId = param.empId;
+			}
 		}
 
 	}
