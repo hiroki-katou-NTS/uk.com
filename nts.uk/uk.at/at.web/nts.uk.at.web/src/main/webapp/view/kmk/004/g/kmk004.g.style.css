@@ -31,17 +31,16 @@
 	text-align: center;
 }
 
-#expand-list th, #expand-list tr> td {
+#expand-list th, #expand-list tr>td {
 	border: solid grey 1px;
-	
-	
 }
 
 #expand-list th:first-child, #expand-list tr>td:first-child {
 	padding: 3px;
 }
 
-#expand-list th:not(:first-child), #expand-list tr> td:not(:first-child) {
+#expand-list th:not(:first-child), #expand-list tr>td:not(:first-child)
+	{
 	padding: 3px 10px;
 	min-width: 60px;
 	max-width: 100px;
@@ -70,7 +69,23 @@
 	padding: 20px !important;
 }
 
-
 #employee-list {
-	padding: 30px 20px 0px 0px ;
+	padding: 30px 20px 0px 0px;
+}
+
+#year-list_grid col:first-child {
+	width: 20px !important;
+	text-align: center;
+}
+
+#year-list_grid_displayContainer {
+	max-width: 103px !important;
+}
+
+#year-list_grid_container table {
+	max-width: 120px !important;
+}
+
+#year-list_grid_container {
+	width: 120px !important;
 }

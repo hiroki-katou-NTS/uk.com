@@ -327,3 +327,20 @@
 .node {
 	color: #0000ff;
 }
+
+#list-box_grid col:first-child {
+	width: 20px !important;
+	text-align: center;
+}
+
+#list-box_grid_displayContainer {
+	max-width: 103px !important;
+}
+
+#list-box_grid_container table {
+	max-width: 120px !important;
+}
+
+#list-box_grid_container {
+	width: 120px !important;
+}

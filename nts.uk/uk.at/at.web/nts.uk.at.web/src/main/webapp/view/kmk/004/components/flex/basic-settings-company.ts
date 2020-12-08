@@ -26,28 +26,30 @@ const template = `
 				<td data-bind="text:screenData().comFlexMonthActCalSet().insufficSet.period + 'ヵ月'"></td>
 				<td data-bind="text:getCarryforwardSetText()"></td>
 			</tr>
-		</table>
-		<table style="width: 760px;" class="basic-settings">
-			<tr class="bg-green">
-				<th data-bind="i18n: 'KMK004_258'"></th>
-				<th data-bind="i18n: 'KMK004_262' , visible: screenMode== 'Com_Company' "></th>
-			</tr>
-			<tr>
-				<td data-bind="text:getAggrMethodText()"></td>
-				<td data-bind="text:getReferenceText(), visible: screenMode== 'Com_Company'"></td>
-			</tr>
-		</table>
-		<table style="width: 760px;" class="basic-settings">
-			<tr class="bg-green">
-				<th colspan='2' data-bind="i18n: 'KMK004_259'"></th>
-				<th data-bind="i18n: 'KMK004_261'"></th>
-			</tr>
-			<tr>
-				<td data-bind="text:getIncludeOverTimeText()"></td>
-				<td data-bind="text:getIncludeIllegalHdwk()"></td>
-				<td data-bind="text:getAggregateSetText()"></td>
-			</tr>
-		</table>
+		</table >
+		<div style="width:auto; margin-top: -1px;">
+			<table style="width: 100%;" class="basic-settings">
+				<tr class="bg-green">
+					<th data-bind="i18n: 'KMK004_258'"></th>
+					<th data-bind="i18n: 'KMK004_262' , visible: screenMode== 'Com_Company' "></th>
+				</tr>
+				<tr>
+					<td data-bind="text:getAggrMethodText()"></td>
+					<td data-bind="text:getReferenceText(), visible: screenMode== 'Com_Company'"></td>
+				</tr>
+			</table>
+			<table style="width: 100%;" class="basic-settings">
+				<tr class="bg-green">
+					<th colspan='2' data-bind="i18n: 'KMK004_259'"></th>
+					<th data-bind="i18n: 'KMK004_261'"></th>
+				</tr>
+				<tr>
+					<td data-bind="text:getIncludeOverTimeText()"></td>
+					<td data-bind="text:getIncludeIllegalHdwk()"></td>
+					<td data-bind="text:getAggregateSetText()"></td>
+				</tr>
+			</table>
+		</div>
 	</div>
 	`;
 const COMPONENT_NAME = 'basic-settings-company';
@@ -85,32 +87,32 @@ class BasicSettingsCompany extends ko.ViewModel {
 	}
 
 	getCarryforwardSetText() {
-		let vm = this
+		let vm = this;
 		return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.carryforwardSet]).name);
 	}
 
 	getAggrMethodText() {
-		let vm = this
+		let vm = this;
 		return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().comFlexMonthActCalSet().aggrMethod]).name);
 	}
 
 	getReferenceText() {
-		let vm = this
+		let vm = this;
 		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
 	}
 
 	getIncludeOverTimeText() {
-		let vm = this
+		let vm = this;
 		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
 	}
 
 	getIncludeIllegalHdwk() {
-		let vm = this
+		let vm = this;
 		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
 	}
 
 	getAggregateSetText() {
-		let vm = this
+		let vm = this;
 		return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().comFlexMonthActCalSet().legalAggrSet.aggregateSet]).name);
 	}
 
