@@ -185,8 +185,17 @@ export class CmmS45BComponent extends Vue {
                     storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
                     // self.isDisPreP = 
+                    let selectedTemp = self.selectedValue;
+                    self.selectedValue = '-1';
                     self.convertAppInfo(self.data);
                     self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    self.$nextTick(() => {
+                        if (_.find(self.lstAppType, (i: any) => i.code == selectedTemp)) {
+                            self.selectedValue = selectedTemp;
+                        } else {
+                            self.selectedValue = '-1';
+                        }
+                    });
                     // self.disableB24 = data.appStatusCount.unApprovalNumber == 0 ? true : false;
                     self.disableB24 = !self.isEmptyApprovalList();
                 }).catch(() => {
