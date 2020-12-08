@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmk004.s;
+package nts.uk.screen.at.app.query.kmk004.common;
 
 import java.util.Optional;
 
