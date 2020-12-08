@@ -24,13 +24,13 @@
             id="A12"
             tabindex="1"
             data-bind="click: registerWorkingTime, text: $vm.$i18n('KMK017_2')"
-          ></button>
+          />
           <button
             id="A13"
             tabindex="2"
             class="danger"
-            data-bind="click: deleteWorkingTime, text: $vm.$i18n('KMK017_3')"
-          ></button>
+            data-bind="click: deleteWorkingTime, text: $vm.$i18n('KMK017_3'), enable: workplaceWorkingTimeList().length &gt; 0"
+          />
         </div>
         <div id="contents-area" class="cf">
           <div class="container">
@@ -40,7 +40,7 @@
             <div class="pull-right pullRight">
               <div class="label">
                 <!-- A3_1 -->
-                <div data-bind="text: $i18n('KMK017_5')"></div>
+                <div data-bind="text: workplaceName"></div>
                 <hr />
               </div>
               <div class="panel-a4-a5">
@@ -55,23 +55,19 @@
                       id="A42"
                       tabindex="3"
                       data-bind="click: openDialogKDL001, text: $i18n('KMK017_5')"
-                    >
-                      Add
-                    </button>
+                    />
                     <button
                       id="A43"
                       tabindex="4"
                       data-bind="click: deleteWorkingTimeRow, text: $i18n('KMK017_6'), enable: workplaceWorkingTimeList().length &gt; 0"
-                    >
-                      Remove
-                    </button>
+                    />
                   </div>
-                  <div class="grid-list">
+                  <div class="grid-list" tabindex="6">
                     <!-- A5_1-->
                     <table
-                      id="grid-list"
+                      id="grid-list"                      
                       data-bind="ntsGridList: {
-                        height: 350,
+                        height: 285,
                         options: workplaceWorkingTimeList,
                         optionsValue: 'code',
                         columns: gridListHeader,

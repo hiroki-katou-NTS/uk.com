@@ -1,6 +1,7 @@
 .pullLeft {
   width: 452px;
   padding: 20px;
+  padding-bottom: 0;
 }
 
 .pullRight {
@@ -19,5 +20,5 @@
 }
 
 .button-a423 {
-  margin: 15px 0;
+  margin: 10px 0;
 }

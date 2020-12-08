@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-import { data } from "jquery";
-
 module nts.uk.at.view.kmk017.a {
 
   const API_PATH = {
@@ -19,6 +17,7 @@ module nts.uk.at.view.kmk017.a {
 
     //grid list  
     gridListHeader: KnockoutObservableArray<NtsGridListColumn>;
+    usageClassification: KnockoutObservable<boolean> = ko.observable(true);
 
     //kcp004
     multiSelectedId: KnockoutObservable<any>;
@@ -31,13 +30,46 @@ module nts.uk.at.view.kmk017.a {
     workplaceWorkingTimeList: KnockoutObservableArray<ItemModel> = ko.observableArray(null);
     workplaceSelectedCode: KnockoutObservableArray<any> = ko.observableArray(null);
     workplaceDataSource: KnockoutObservableArray<any> = ko.observableArray(null);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+
+    //kdl001>
+    kml001selectedCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
+    workplaceTimeSetting: KnockoutObservableArray<string> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
       const vm = this;
 
+      vm.KCP001Init();
+      vm.getWorkTimeSetting();
+    }
+
+    created(params: any) {
+      const vm = this;
+    }
+
+    //after render is ok
+    mounted() {
+      const vm = this;
+      $('#kcp004').focusTreeGridComponent();
+    }
+
+    getWorkTimeSetting() {
+      const vm = this;
+      vm.$ajax(API_PATH.getWorkTimeSetting).done((data) => {
+        if (!data) return;
+        vm.workplaceTimeSetting(data);
+        _.forEach(data, (x) => {
+          vm.kml001selectedCodeList.push(x.workTimeCode);
+        })
+      });
+    }
+
+    KCP001Init() {
+      const vm = this;
+      vm.$blockui('grayout');
       vm.baseDate = ko.observable(new Date());
-      vm.multiSelectedId = ko.observableArray([]);
+      vm.multiSelectedId = ko.observable(null);
       vm.alreadySettingList = ko.observableArray([]);
       vm.kcp004Grid = {
         isShowAlreadySet: true,
@@ -51,134 +83,198 @@ module nts.uk.at.view.kmk017.a {
         isDialog: false,
         alreadySettingList: vm.alreadySettingList,
         maxRows: 10,
-        tabindex: 6,
+        tabindex: 3,
         systemType: 2, // 個人情報 1;  就業 2; 給与 3; 人事 4;  管理者 5;
         restrictionOfReferenceRange: true,
+        height: 500,
         //width: 380,
       };
 
-      $('#kcp004').ntsTreeComponent(vm.kcp004Grid);
-      vm.workplaceDataSource($('#kcp004').getDataList());
+      $.when($('#kcp004').ntsTreeComponent(vm.kcp004Grid)).then(() => {
+        vm.workplaceDataSource($('#kcp004').getDataList());
+        vm.multiSelectedId.subscribe((newWorkplaceId) => { 
+          vm.getWorkingHoursDetails(newWorkplaceId);
+        });
 
-      vm.gridListHeader = ko.observableArray([
-        { headerText: 'コード', key: 'code', width: 70 },
-        { headerText: '名称', key: 'name', width: 120 },
-        { headerText: '就業時刻', key: 'workingTime1', width: 120 },
-        { headerText: '就業時刻2', key: 'workingTime2', width: 150 },
-        { headerText: '備考', key: 'remarks', width: 160 },
-      ]);
-
-      vm.multiSelectedId.subscribe((newWorkplaceId) => {
-        vm.findWorkPlaceName(newWorkplaceId);
-        /*  console.log(newWorkplaceId);
-         var data1 = $('#kcp004').getRowSelected();
-         console.log(data1);
-         */
+        vm.$blockui('hide');
+        const wp = $('#kcp004').getRowSelected();
+        if (wp.length > 0 && wp[0].id !== '') {
+          vm.getWorkingHoursDetails(wp[0].id);
+        }
       });
-
-      vm.workplaceWorkingTimeList([
-        { code: '001', name: '名称A900-1730', workingTime1: '9:00 ~ 17:00', workingTime2: '就業時刻', remarks: '就業時刻' }
-      ]);
 
       vm.$ajax(API_PATH.getMultipleWork).done((data) => {
-        console.log(data);
-      });
-      vm.$ajax(API_PATH.getWorkTimeWorkplace).done((data) => {
-        console.log(data);
-      });
-      vm.$ajax(API_PATH.getWorkTimeSetting).done((data) => {
-        console.log(data);
+        if (data) {
+          vm.usageClassification(data.useATR);
+        }
       });
 
-    }
-
-    created(params: any) {
-      const vm = this;
-    }
-
-    //after render is ok
-    mounted() {
-      const vm = this;
-      //$('#kcp004').focusTreeGridComponent();
+      vm.gridListHeader = ko.observableArray([
+        { headerText: vm.$i18n('KMK017_7'), key: 'code', width: 70 },
+        { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
+        { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
+        { headerText: vm.$i18n('KMK017_10'), key: 'workingTime2', width: 150, hidden: vm.usageClassification() },
+        { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 160 },
+      ]);
 
     }
-
     //A4_2
     openDialogKDL001() {
       const vm = this;
+      nts.uk.ui.windows.setShared('kml001multiSelectMode', true);
+      nts.uk.ui.windows.setShared('kml001selectAbleCodeList', vm.kml001selectedCodeList());
+      nts.uk.ui.windows.setShared('kml001selectedCodeList', []);
+      nts.uk.ui.windows.setShared('kml001isSelection', []);
 
-      vm.$window.storage('kml001multiSelectMode', true);
-      vm.$window.storage('kml001selectAbleCodeList', []);
-      vm.$window.storage('kml001selectedCodeList', []);
-      vm.$window.storage('kml001isSelection', []);
+      nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", {
+        title: "割増項目の設定",
+        dialogClass: "no-close"
+      })
+        .onClosed(function () {
+          let kml001selectedTimes = nts.uk.ui.windows.getShared("kml001selectedTimes");
+          const KDL001_IsCancel = nts.uk.ui.windows.getShared("KDL001_IsCancel");
 
-      vm.$window.modal('/view/kdl/001/a/index.xhtml').then(() => {
-        //const kml001selectedCodeList = vm.$window.storage('kml001selectedCodeList');
-        vm.$window.storage('kml001selectedCodeList').then((result) => {
-          if (!_.isNil(result) && result.length > 0) {
-            let tempList = vm.workplaceWorkingTimeList();
-            _.forEach(result, (x) => {
-              tempList.push({ code: '001', name: '名称A900-1730', workingTime1: '9:00 ~ 17:00', workingTime2: '就業時刻', remarks: '就業時刻' });
+          if (!_.isNil(kml001selectedTimes) && kml001selectedTimes.length > 0) {
+            vm.$blockui('show');
+            let tempList: Array<any> = [], workplaceListItems = vm.workplaceWorkingTimeList();
+            //remove duplicate
+            _.forEach(kml001selectedTimes, (x) => {
+              let found = _.some(vm.workplaceWorkingTimeList(), ['code', x.selectedWorkTimeCode]);
+              if (!found) tempList.push(x);
             });
 
-            tempList = _.orderBy(tempList, 'code', 'asc');
+            _.forEach(tempList, (x) => {
+              if (!_.isNil(x.selectedWorkTimeCode) && x.selectedWorkTimeCode.length > 0) {
+                let remark: any = _.find(vm.workplaceTimeSetting(), (o: any) => o.workTimeCode === x.selectedWorkTimeCode);
+                workplaceListItems.push({
+                  code: x.selectedWorkTimeCode,
+                  name: x.selectedWorkTimeName,
+                  workingTime1: vm.workingTimeFormat(x.first.start, x.first.end),
+                  workingTime2: vm.workingTimeFormat(x.second.start, x.second.end),
+                  remarks: !_.isNil(remark) ? remark.note : '',
+                });
+              }
+            });
 
+            workplaceListItems = _.orderBy(workplaceListItems, 'code', 'asc');
             vm.workplaceWorkingTimeList([]);
-            vm.workplaceWorkingTimeList(tempList);
+            vm.workplaceWorkingTimeList(workplaceListItems);
+            vm.$blockui('hide');
           }
         });
-      });
+    }
+
+    convertNumberToTime(time: number) {
+      let intHour = _.floor(time / 60, 0);
+      let intMinute = time % 60;
+      return (intHour < 10 ? '0' + intHour : intHour) + ':' + (intMinute < 10 ? '0' + intMinute : intMinute);
+    }
+
+    workingTimeFormat(start: number, end: number) {
+      const vm = this;
+      if (start === null && end === null) return '';
+      return vm.convertNumberToTime(start) + ' ~ ' + vm.convertNumberToTime(end);
     }
 
     //A4_3
     deleteWorkingTimeRow() {
       const vm = this;
-      vm.workplaceWorkingTimeList().shift();
+      let workplaceWorkingTimeList = vm.workplaceWorkingTimeList();
+      workplaceWorkingTimeList = workplaceWorkingTimeList.filter((x) => !_.includes(vm.workplaceSelectedCode(), x.code));
+      vm.workplaceWorkingTimeList([]);
+      vm.workplaceWorkingTimeList(workplaceWorkingTimeList);
     }
 
     registerWorkingTime() {
       const vm = this;
 
       const workPlace = $('#kcp004').getRowSelected();
+      if (vm.workplaceWorkingTimeList().length === 0) {
+        vm.$dialog.error({ messageId: 'Msg_1911' }).then(() => {
+          return;
+        });
+      } else {
+        vm.$blockui('show');
 
-      vm.$ajax(API_PATH.registerWorkingTime, {
-        workplaceId: workPlace.workplaceId,
-        workTimeCodes: []
-      }).done((data) => {
-        console.log(data);
-      }).fail((error) => { console.log(error); });
+        let workTimeCodes: Array<string> = [];
+        _.forEach(vm.workplaceWorkingTimeList(), (x) => workTimeCodes.push(x.code));
+
+        vm.$ajax(vm.isNewMode() ? API_PATH.registerWorkingTime : API_PATH.updateWorkingTime, {
+          workplaceId: workPlace[0].id,
+          workTimeCodes: workTimeCodes
+        }).done((data) => {
+          vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+            vm.getWorkingHoursDetails(workPlace[0].id);
+            vm.isNewMode(false);
+            vm.$blockui('hide');
+          });
+        }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
+      }
     }
 
     deleteWorkingTime() {
       const vm = this;
-
       const workPlace = $('#kcp004').getRowSelected();
 
-      vm.$ajax(API_PATH.deleteWorkingTime, {
-        workplaceId: workPlace.workplaceId,
-        workTimeCodes: []
-      }).done((data) => {
-        console.log(data);
-      }).fail((error) => { console.log(error); });
+      vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result) => {
+        if (result === 'yes') {
+          vm.$blockui('show');
+          vm.$ajax(API_PATH.deleteWorkingTime, {
+            workplaceId: workPlace[0].id
+          }).done((data) => {
+            vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+              vm.getWorkingHoursDetails(workPlace[0].id);
+              vm.isNewMode(true);
+              vm.$blockui('hide');
+            });
+          }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
+        }
+      });
     }
 
     getWorkingHoursDetails(workplaceId: string) {
       const vm = this;
+      vm.$blockui('show');
+
+      vm.findElement(vm.workplaceDataSource(), workplaceId);
+
       vm.$ajax(API_PATH.getWorkingHoursDetails, { workplaceId: workplaceId }).done((data) => {
         if (!_.isNil(data)) {
-          let wpTimeDetails = _.orderBy(data, 'code', 'asc');
-        }
-      }).fail((error) => { console.log(error); });
+          let wpTimeDetails: Array<any> = _.orderBy(data, 'workTimeCode', 'asc');
+
+          vm.workplaceWorkingTimeList([]);
+          _.forEach(wpTimeDetails, (x) => {
+            vm.workplaceWorkingTimeList.push({
+              code: x.workTimeCode,
+              name: x.workTimeName,
+              workingTime1: vm.workingTimeFormat(x.timezone1.startTime, x.timezone1.endTime),
+              workingTime2: vm.workingTimeFormat(x.timezone2.startTime, x.timezone2.endTime),
+              remarks: x.note,
+            });
+          })
+
+          vm.isNewMode(false); //edit
+        } else
+          vm.isNewMode(true);
+        vm.$blockui('hide');
+      }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
+
+      if (vm.isNewMode())
+        $('#kcp004').focusTreeGridComponent();
+      else
+        $('.grid-list').focus();
     }
 
-    findWorkPlaceName(wpId: string) {
-      const vm = this;
 
-      let wpFound = _.find(vm.workplaceDataSource(), (x) => wpId === x.id);
-      vm.workplaceName(null);
-      if (!_.isNil(wpFound)) {
-        vm.workplaceName(wpFound.name);
-      }
+    findElement(listItems:Array<any>, wpId: string) {
+      const vm = this;      
+      _.forEach(listItems, (x) => {
+        if (wpId === x.id) {
+          vm.workplaceName(x.name);
+        } else if(x.children.length > 0) {
+          vm.findElement(x.children, wpId);
+        }
+      });
     }
   }
 
