@@ -49,25 +49,19 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		created() {
 			const vm = this;
-			vm.LoadSetting();
-			let command = {sIDs: [], appDate: []};
-			vm.$ajax(APIKAF011.start, command).then((data: DisplayInforWhenStarting)=>{
-				vm.displayInforWhenStarting = data;
-				vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
-				vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
-				vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
-				vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
-			});
-			
-		}
-		
-		LoadSetting(){
-			const vm = this;
 			let empLst: Array<string> = [];
 			let	dateLst: Array<string> = [];
 			vm.$blockui("grayout");
 			vm.loadData(empLst, dateLst, vm.appType()).then((loadDataFlag: any) => {
-			
+				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: loadDataFlag}).then((data: DisplayInforWhenStarting) =>{
+					vm.displayInforWhenStarting = data;
+					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
+					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
+					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
+					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
+				}).always(() => {
+					vm.$blockui("hide"); 
+				});
 			}).fail((failData: any) => {
 				console.log(failData);
 				if (failData.messageId === "Msg_43") {
@@ -76,7 +70,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				} else {
 					vm.$dialog.error(failData);
 				}
-			}).always(() => {vm.$blockui("hide"); });
+				vm.$blockui("hide"); 
+			});
+			
+			
 		}
 		
 		mounted() {

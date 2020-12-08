@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveChangeA
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
@@ -79,7 +80,9 @@ public class HolidayShipmentWebService extends WebService {
 		return this.screenAFinder.startPageARefactor(
 				AppContexts.user().companyId(), 
 				CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
-				param.getAppDate());
+				param.getAppDate(),
+				param.getAppDispInfoStartup()
+				);
 	}
 
 	@POST
@@ -212,6 +215,8 @@ class StartPageARefactorParam {
 	//申請者リスト<Optional>
 	private List<String> sIDs;
 	//申請対象日リスト<Optional>
+	private AppDispInfoStartupDto appDispInfoStartup;
+	
 	private List<GeneralDate> appDate;
 }
 

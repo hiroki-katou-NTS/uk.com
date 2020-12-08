@@ -891,12 +891,12 @@ public class HolidayShipmentScreenAFinder {
 	}
 	
 	// 1.振休振出申請（新規）起動処理
-	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
+	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst, AppDispInfoStartupDto appDispInfoStartup) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst, true, Optional.empty(), Optional.empty());
-		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
+		result.setAppDispInfoStartup(appDispInfoStartup);
+		AppDispInfoStartupOutput appDispInfoStartupOutput = appDispInfoStartup.toDomain();
 		
 		//振休管理チェック (Check quản lý nghỉ bù)
 		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);
