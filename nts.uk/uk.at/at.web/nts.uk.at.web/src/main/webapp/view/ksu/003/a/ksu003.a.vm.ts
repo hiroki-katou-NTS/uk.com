@@ -1490,8 +1490,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FIXED) { // 10
 
 						}
-
-						if (self.dataScreen003A().canModified == 0 || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1) { // [※3]=〇 ※4 x x
+						// đang để tạm là 1
+						if (self.dataScreen003A().canModified == 1 || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1) { // [※3]=〇 ※4 x x
 							middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0));
@@ -1530,8 +1530,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								})
 							}}
 						} else {
+							// đang để tạm
+							if (_.isNil(dataMid.worktimeCode) || dataMid.worktimeCode == "") {
+								middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0)); // ※9 x
+								checkColor.worktimeCode = 0;
+								self.lstDis.push({
+									empId: self.lstEmpId[i].empId
+								})
+							}
 							
-							middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+							/*middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
 							checkColor.startTime2 = 0;
 							checkColor.endTime2 = 0;
@@ -1545,7 +1553,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							checkColor.worktimeCode = 0;
 							self.lstDis.push({
 								empId: self.lstEmpId[i].empId
-							})
+							})*/
 						}
 						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null &&
 							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime === 0) { // ※8
