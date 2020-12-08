@@ -391,9 +391,17 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<MonthlyApprovalStatusAttendanceRecord> listMonthlyApproval = new ArrayList<MonthlyApprovalStatusAttendanceRecord>();
 		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(companyId);
 		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(sIds, request.getEndDate());
+		
 		monthlyValues.stream().forEach(i -> {
+			GeneralDate dateCheckApproval = i.isLastDayOfMonth() ? i.getYearMonth().lastGeneralDate() : GeneralDate.ymd(i.getYearMonth().year(),
+					i.getYearMonth().month(),
+					i.getClouseDate());
 			ApprovalStatus approvalMonth = monthlyApprovalProcess.monthlyApprovalCheck(companyId, i.getEmployeeId(),
-					i.getYearMonth().v(), i.getClosureId(), request.getEndDate(), approvalProcOp, listShareAff);
+					i.getYearMonth().v(),
+					i.getClosureId(),
+					dateCheckApproval,
+					approvalProcOp,
+					listShareAff);
 			if (approvalMonth.equals(ApprovalStatus.APPROVAL)) {
 				MonthlyApprovalStatusAttendanceRecord monthlyApproval = new MonthlyApprovalStatusAttendanceRecord();
 				monthlyApproval.setYm(i.getYearMonth());
@@ -996,7 +1004,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								//	表示  - if display 
 								//	月の承認済状況を編集する - Edit the approved status of the month
 								listMonthlyApproval.forEach(i -> {
-									if(i.getEmployeeId() == employeeId && i.isApprovedFlag()) {
+									if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag()) {
 										attendanceRecRepEmpData.setApprovalStatus(true);
 									}
 								});
