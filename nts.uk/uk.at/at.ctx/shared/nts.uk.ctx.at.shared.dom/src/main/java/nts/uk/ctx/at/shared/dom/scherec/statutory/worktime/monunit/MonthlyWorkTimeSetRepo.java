@@ -35,6 +35,7 @@ public interface MonthlyWorkTimeSetRepo {
 	
 	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
 	
+	public List<MonthlyWorkTimeSetCom> findMonthlyWorkTimeSetComByCid(String cid, LaborWorkTypeAttr laborAttr);
 	/**
 	 * @author chungnt
 	 * Find by Cid

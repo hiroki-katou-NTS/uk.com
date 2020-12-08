@@ -26,7 +26,7 @@ public class GetYearFromYearMonthPeriod {
 	 * @param yearMonth	年月(List)
 	 * @return			年度(List)
 	 */
-	public List<Year> getYearFromYearMonthPeriod(Require require, String cid, List<YearMonth> yearMonths) {
+	public static List<Year> getYearFromYearMonthPeriod(Require require, String cid, List<YearMonth> yearMonths) {
 		List<Year> result = new ArrayList<>();
 		
 		Optional<Company> company = require.find(cid);
@@ -57,7 +57,7 @@ public class GetYearFromYearMonthPeriod {
 	 * @param yearMonthPeriod		年月期間
 	 * @return
 	 */
-	private boolean judgeWhetherYearMonthListIncludes(List<YearMonth> yearMonths, YearMonthPeriod yearMonthPeriod) {
+	private static boolean judgeWhetherYearMonthListIncludes(List<YearMonth> yearMonths, YearMonthPeriod yearMonthPeriod) {
 		
 		List<YearMonth> s = new ArrayList<>();
 		
