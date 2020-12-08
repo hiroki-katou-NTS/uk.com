@@ -94,6 +94,7 @@ public class PrintContentOfApp {
 	/**
 	 * 休日出勤の印刷内容
 	 */
+	private Optional<PrintContentOfHolidayWork> opPrintContentOfHolidayWork;
 	
 	/**
 	 * 勤務変更申請の印刷内容

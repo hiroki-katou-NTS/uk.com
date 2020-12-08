@@ -18,15 +18,15 @@ module nts.uk.at.view.kaf010.shr.header.viewmodel {
 					</colgroup>
 					<thead>
 						<tr>
-						<!--B2_9 年月ラベル-->
-						<th class="kaf005_overtimeAgreement_header"
-							data-bind="text: $i18n('KAF010_171')"></th>
-						<!--B2_10  限度ラベル-->
-						<th class="kaf005_overtimeAgreement_header"
-							data-bind="text: $i18n('KAF010_172')"></th>
-						<!--B2_11 実績ラベル-->
-						<th class="kaf005_overtimeAgreement_header"
-							data-bind="text: $i18n('KAF010_173')"></th>
+							<!--B2_9 年月ラベル-->
+							<th class="kaf005_overtimeAgreement_header"
+								data-bind="text: $i18n('KAF010_171')"></th>
+							<!--B2_10  限度ラベル-->
+							<th class="kaf005_overtimeAgreement_header"
+								data-bind="text: $i18n('KAF010_172')"></th>
+							<!--B2_11 実績ラベル-->
+							<th class="kaf005_overtimeAgreement_header"
+								data-bind="text: $i18n('KAF010_173')"></th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: overTimeWork">
@@ -36,10 +36,10 @@ module nts.uk.at.view.kaf010.shr.header.viewmodel {
 								data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_15  限度ラベル-->
 							<td
-								data-bind="text: limitTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(limitTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_16 実績ラベル-->
 							<td
-								data-bind="text: actualTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(actualTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 						</tr>
 					</tbody>
 				</table>

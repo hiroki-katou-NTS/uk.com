@@ -21,11 +21,12 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColo
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -132,7 +133,7 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		//01-02_時間外労働を取得	huytodo common change param?
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		Optional<AgreeOverTimeOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
+		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
 		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput.orElse(null));
 		
 		//1-1.休日出勤申請（新規）起動時初期データを取得する
@@ -189,7 +190,7 @@ public class HolidayServiceImpl implements HolidayService {
 		//	事前申請・実績の時間超過をチェックする
 		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(EnumAdaptor.valueOf(prePostAtr.value, PrePostAtr.class), 
 				Optional.ofNullable(preApplicationTime), 
-				applicationTimes.isEmpty() ? Optional.empty() : Optional.ofNullable(applicationTimes.get(0)), 
+				!applicationTimes.isEmpty() ? Optional.ofNullable(applicationTimes.get(0)) : Optional.empty(), 
 				Optional.ofNullable(actualApplicationTime));
 		
 		
@@ -303,10 +304,18 @@ public class HolidayServiceImpl implements HolidayService {
 	public CheckBeforeOutputMulti checkBeforeRegisterMulti(boolean require, String companyId, List<String> empList,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
 		CheckBeforeOutputMulti checkBeforeOutputMulti = new CheckBeforeOutputMulti();
-		//2-1.新規画面登録前の処理(複数人) huytodo  common
+		
+		//2-1.新規画面登録前の処理(複数人) 
+		CheckBeforeRegisMultiEmpOutput checkBeforeRegisMultiEmpOutput = processBeforeRegister.processBeforeRegisterMultiEmp(companyId, 
+				empList, appHolidayWork.getApplication(), 
+				null, appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		checkBeforeOutputMulti.setApprovalRootContentMap(checkBeforeRegisMultiEmpOutput.getMapEmpContentAppr());
+		checkBeforeOutputMulti.setErrorEmpBusinessName(checkBeforeRegisMultiEmpOutput.getEmpErrorName());
 		
 		//3.個別エラーチェック(複数人)
-		checkBeforeOutputMulti = commonHolidayWorkAlgorithm.individualErrorCheckMulti(require, companyId, empList, appHdWorkDispInfoOutput, appHolidayWork);
+		checkBeforeOutputMulti.setConfirmMsgOutputMap(
+				commonHolidayWorkAlgorithm.individualErrorCheckMulti(require, companyId, empList, appHdWorkDispInfoOutput, appHolidayWork)
+				);
 		
 		return checkBeforeOutputMulti;
 	}
@@ -374,7 +383,7 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		//01-02_時間外労働を取得	huytodo common change param?
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		Optional<AgreeOverTimeOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
+		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
 		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput.orElse(null));
 		
 		//	取得した「休日出勤申請」．「申請」．事前事後区分をチェックする

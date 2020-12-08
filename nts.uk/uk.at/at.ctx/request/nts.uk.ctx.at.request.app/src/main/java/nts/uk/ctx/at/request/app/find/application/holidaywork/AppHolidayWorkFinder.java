@@ -180,7 +180,8 @@ public class AppHolidayWorkFinder {
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = param.getAppHdWorkDispInfoDto().toDomain();
 		
 		//	勤務種類・就業時間帯選択時に表示するデータを取得する
-		HdSelectWorkDispInfoOutput hdSelectWorkDispInfoOutput = holidayWorkService.selectWork(param.getCompanyId(), param.getDateList().isEmpty() ? GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE) : null, 
+		HdSelectWorkDispInfoOutput hdSelectWorkDispInfoOutput = holidayWorkService.selectWork(param.getCompanyId(), 
+				!param.getDateList().isEmpty() ? GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE) : null, 
 				new WorkTypeCode(param.getWorkTypeCode()), new WorkTimeCode(param.getWorkTimeCode()), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput(), appHdWorkDispInfoOutput.getHolidayWorkAppSet());
@@ -197,7 +198,7 @@ public class AppHolidayWorkFinder {
 		
 		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(param.getCompanyId(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
-				Optional.ofNullable(param.getDateList().isEmpty() ? GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE) : null), 
+				Optional.ofNullable(!param.getDateList().isEmpty() ? GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE) : null), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getPrePostAtr(), 
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(), 
 				appHolidayWork.isPresent() ? appHolidayWork.get().getApplicationTime() : null, 

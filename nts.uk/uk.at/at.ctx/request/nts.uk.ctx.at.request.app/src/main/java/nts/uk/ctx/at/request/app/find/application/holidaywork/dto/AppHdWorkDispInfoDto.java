@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppReflectOtHdWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceReasonSelectDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.OverTimeWorkHoursDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.OvertimeWorkFrameDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.WorkdayoffFrameDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
@@ -68,7 +69,7 @@ public class AppHdWorkDispInfoDto {
 	/**
 	 * 申請用時間外労働時間
 	 */
-	private AgreeOverTimeDto otWorkHoursForApplication;
+	private OverTimeWorkHoursDto otWorkHoursForApplication;
 	
 	/**
 	 * 申請表示情報
@@ -100,7 +101,7 @@ public class AppHdWorkDispInfoDto {
 					.stream()
 					.map(overtimeFrame -> OvertimeWorkFrameDto.fromDomain(overtimeFrame))
 					.collect(Collectors.toList()), 
-				domain.getOtWorkHoursForApplication() != null ? AgreeOverTimeDto.fromDomain(domain.getOtWorkHoursForApplication()) : null, 
+				domain.getOtWorkHoursForApplication() != null ? OverTimeWorkHoursDto.fromDomain(domain.getOtWorkHoursForApplication()) : null, 
 				AppDispInfoStartupDto.fromDomain(domain.getAppDispInfoStartupOutput()), 
 				domain.getComboDivergenceReason().isPresent() ? DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().get()) : null, 
 				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)));

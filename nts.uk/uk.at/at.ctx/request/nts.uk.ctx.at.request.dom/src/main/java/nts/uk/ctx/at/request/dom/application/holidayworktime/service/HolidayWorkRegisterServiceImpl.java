@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,11 +53,12 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 	
 	@Override
 	public ProcessResult register(String companyId, AppHolidayWork appHolidayWork, AppTypeSetting appTypeSetting, 
-			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, List<ApprovalPhaseStateImport_New> lstApproval) {
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
 		Application application = appHolidayWork.getApplication();
 		
 		//	2-2.新規画面登録時承認反映情報の整理
-		applicationApprovalService.insertApp(application, lstApproval);
+		applicationApprovalService.insertApp(application, 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appHolidayWork.getApplication().getEmployeeID(), application);
 		appHolidayWorkRepository.add(appHolidayWork);
 		

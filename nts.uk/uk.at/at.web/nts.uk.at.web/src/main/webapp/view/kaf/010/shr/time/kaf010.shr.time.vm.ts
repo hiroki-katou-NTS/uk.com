@@ -101,10 +101,11 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
 									value: start,
-									constraint:'TimeWithDayAttr',
+									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
+									mode: 'time',
 									enable: true,
-									option: {width: '85px', timeWithDay: true}}" /></td>
+									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
 						<td class="right-content" data-bind="visible: $parent.application().prePostAtr() == 1"></td>
 						<!--A6_11 -->
@@ -154,6 +155,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									value: applicationTime, 
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
+									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: true }" />
 						</td>

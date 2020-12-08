@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.command.application.overtime.AgreeOverTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.AppReflectOtHdWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.DivergenceReasonSelectCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.OverTimeWorkHoursCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.OvertimeWorkFrameCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkdayoffFrameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetCommand;
@@ -71,7 +71,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 申請用時間外労働時間
 	 */
-	private AgreeOverTimeCommand otWorkHoursForApplication;
+	private OverTimeWorkHoursCommand otWorkHoursForApplication;
 	
 	/**
 	 * 申請表示情報

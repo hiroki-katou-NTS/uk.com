@@ -34,10 +34,10 @@
 								data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_15  限度ラベル-->
 							<td
-								data-bind="text: limitTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(limitTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_16 実績ラベル-->
 							<td
-								data-bind="text: actualTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(actualTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 						</tr>
 					</tbody>
 				</table>

@@ -114,13 +114,13 @@ public class HolidayWorkWebService extends WebService{
 	}
 	
 	@POST
-	@Path("checkBeforeRegister")
+	@Path("checkBeforeUpdate")
 	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeUpdate param) {
 		return appHolidayWorkFinder.checkBeforeUpdate(param);
 	}
 	
 	@POST
-	@Path("register")
+	@Path("update")
 	public ProcessResult update(UpdateCommand param) {
 		return updateCommandHandler.handle(param);
 	}

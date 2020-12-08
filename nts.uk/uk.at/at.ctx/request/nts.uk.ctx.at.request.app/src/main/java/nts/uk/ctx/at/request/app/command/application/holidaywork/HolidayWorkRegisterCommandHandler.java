@@ -39,10 +39,7 @@ public class HolidayWorkRegisterCommandHandler extends CommandHandlerWithResult<
 		return holidayWorkRegisterService.register(param.getCompanyId(), 
 				appHolidayWork, 
 				param.getAppTypeSetting().toDomain(), 
-				param.getAppHdWorkDispInfo().toDomain(), 
-				!param.getApprovalPhaseState().isEmpty() ? 
-						param.getApprovalPhaseState().stream().map(approval -> approval.toDomain()).collect(Collectors.toList())
-						: Collections.emptyList()
+				param.getAppHdWorkDispInfo().toDomain()
 				);
 	}
 	

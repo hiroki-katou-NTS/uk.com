@@ -24,15 +24,13 @@ public interface HolidayWorkRegisterService {
 	 * @param appHolidayWork
 	 * @param appTypeSetting
 	 * @param appHdWorkDispInfoOutput
-	 * @param lstApproval
 	 * @return
 	 */
 	public ProcessResult register(
 			String companyId,
 			AppHolidayWork appHolidayWork,
 			AppTypeSetting appTypeSetting, 
-			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
-			List<ApprovalPhaseStateImport_New> lstApproval
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput
 			);
 	
 	/**

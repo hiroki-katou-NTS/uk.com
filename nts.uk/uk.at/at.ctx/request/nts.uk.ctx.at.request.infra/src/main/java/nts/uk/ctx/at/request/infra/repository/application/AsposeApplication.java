@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOf
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
+import nts.uk.ctx.at.request.infra.repository.application.holidaywork.AsposeAppHolidayWork;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.overtime.AsposeAppOverTime;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
@@ -62,6 +63,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeAppOverTime asposeAppOverTime;
+	
+	@Inject
+	private AsposeAppHolidayWork asposeAppHolidayWork;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -165,6 +169,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
             printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case HOLIDAY_WORK_APPLICATION:
+			asposeAppHolidayWork.printAppHolidayWorkContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B27");
+			remarkLabel = worksheet.getCells().get("B30");
+			reasonContent = worksheet.getCells().get("D27");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case STAMP_APPLICATION:
 			if (mode.value == 0) {
@@ -209,7 +218,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "application/KAF009_template.xlsx";
 		case HOLIDAY_WORK_APPLICATION:
-			return "";
+			return "application/KAF010_template.xlsx";
 		case STAMP_APPLICATION:
 			return "";
 		case ANNUAL_HOLIDAY_APPLICATION:

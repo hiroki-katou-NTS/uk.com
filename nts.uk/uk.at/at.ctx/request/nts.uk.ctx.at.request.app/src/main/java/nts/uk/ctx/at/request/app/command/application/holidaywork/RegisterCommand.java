@@ -41,4 +41,6 @@ public class RegisterCommand {
 	 * 承認ルートインスタンス
 	 */
 	public List<ApprovalPhaseStateForAppDto> approvalPhaseState;
+	
+	//huytodo xoa approvalPhaseState
 }

@@ -110,14 +110,20 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		entity.workTypeCode = domain.getWorkInformation().getWorkTypeCode().v();
 		entity.workTimeCode = domain.getWorkInformation().getWorkTimeCode().v();
 		
-		ReasonDivergence reasonDivergence = domain.getApplicationTime().getReasonDissociation().orElse(Collections.emptyList()).get(0);
-		entity.divergenceTimeNo = reasonDivergence.getDiviationTime();
-		entity.divergenceCode = reasonDivergence.getReasonCode().v();
-		entity.divergenceReason = reasonDivergence.getReason().v();	
 		
-		entity.overtimeNight = domain.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight().v()).orElse(null);
-		entity.totalNight = domain.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide().v()).orElse(null);
+		List<ReasonDivergence> reasonDivergenceList = domain.getApplicationTime().getReasonDissociation().orElse(Collections.emptyList());
+		if(!reasonDivergenceList.isEmpty()) {
+			ReasonDivergence reasonDivergence = reasonDivergenceList.get(0);
+			entity.divergenceTimeNo = reasonDivergence.getDiviationTime();
+			entity.divergenceCode = reasonDivergence.getReasonCode().v();
+			entity.divergenceReason = reasonDivergence.getReason().v();	
+		}
+		
 		if (domain.getApplicationTime().getOverTimeShiftNight().isPresent()) {
+			entity.overtimeNight = domain.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ?
+					domain.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : null;
+			entity.totalNight = domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightOutSide() != null ?
+					domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightOutSide().v() : null;
 			if (!CollectionUtil.isEmpty(domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes())) {
 				domain.getApplicationTime()
 							.getOverTimeShiftNight()

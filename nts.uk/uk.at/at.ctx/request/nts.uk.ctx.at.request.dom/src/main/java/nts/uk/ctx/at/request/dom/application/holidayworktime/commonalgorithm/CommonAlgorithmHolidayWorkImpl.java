@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
@@ -324,9 +325,9 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	}
 
 	@Override
-	public CheckBeforeOutputMulti individualErrorCheckMulti(boolean require, String companyId, List<String> empList,
+	public Map<String, List<ConfirmMsgOutput>> individualErrorCheckMulti(boolean require, String companyId, List<String> empList,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
-		CheckBeforeOutputMulti checkBeforeOutputMulti = new CheckBeforeOutputMulti();
+		Map<String, List<ConfirmMsgOutput>> confirmMsgOutputMap = new HashMap<String, List<ConfirmMsgOutput>>();
 		
 		//12.マスタ勤務種類、就業時間帯データをチェック
 		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(companyId,
@@ -375,7 +376,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			//	事前申請・実績超過チェック
 			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
 			if(employeeInfo.isPresent()) {
-				checkBeforeOutputMulti.getConfirmMsgOutputMap().put(employeeInfo.get().getBussinessName(), confirmMsgOutputs);
+				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), confirmMsgOutputs);
 			}
 			
 			//	申請時の乖離時間をチェックする
@@ -432,7 +433,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	    			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
 	        
 		});
-		return checkBeforeOutputMulti;
+		return confirmMsgOutputMap;
 	}
 	
 	@Override
@@ -457,8 +458,11 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		int totalTime = 0;
 		totalTime += applicationTime.getApplicationTime().stream().mapToInt(appTime -> appTime.getApplicationTime().v()).sum();
 		if(applicationTime.getOverTimeShiftNight().isPresent()) {
-			totalTime += applicationTime.getOverTimeShiftNight().get().getOverTimeMidNight().v();
+			if(applicationTime.getOverTimeShiftNight().get().getOverTimeMidNight() != null) {
+				totalTime += applicationTime.getOverTimeShiftNight().get().getOverTimeMidNight().v();
+			}
 			totalTime += applicationTime.getOverTimeShiftNight().get().getMidNightHolidayTimes().stream()
+								.filter(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime() != null)
 								.mapToInt(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).sum();
 		}
 		if(totalTime <= 0) {
@@ -520,12 +524,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		List<String> messageContentList = new ArrayList<String>();
 		
 		List<Integer> overtimeFrameNoList = outDateApplication.getExcessStateDetail().stream()
-							.filter(excessStateDetail -> excessStateDetail.getType().equals(AttendanceType_Update.NORMALOVERTIME) 
-									&& excessStateDetail.getExcessState().equals(excessState))
+							.filter(excessStateDetail -> AttendanceType_Update.NORMALOVERTIME.equals(excessStateDetail.getType()) 
+									&& excessState.equals(excessStateDetail.getExcessState()))
 							.map(excessStateDetail -> excessStateDetail.getFrame().v()).collect(Collectors.toList());
 		List<Integer> workdayoffFrameNoList = outDateApplication.getExcessStateDetail().stream()
-							.filter(excessStateDetail -> excessStateDetail.getType().equals(AttendanceType_Update.BREAKTIME) && 
-									excessStateDetail.getExcessState().equals(excessState))
+							.filter(excessStateDetail -> AttendanceType_Update.BREAKTIME.equals(excessStateDetail.getType()) && 
+									excessState.equals(excessStateDetail.getExcessState()))
 							.map(excessStateDetail -> excessStateDetail.getFrame().v()).collect(Collectors.toList());
 		
 		appHdWorkDispInfoOutput.getOvertimeFrameList().stream()
@@ -556,11 +560,11 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			}
 		});
 		
-		if(outDateApplication.getFlex().equals(excessState)) {
+		if(excessState.equals(outDateApplication.getFlex())) {
 			messageContentList.add(TextResource.localize("KAF005_63"));
 		}
 		
-		if(outDateApplication.getOverTimeLate().equals(excessState)) {
+		if(excessState.equals(outDateApplication.getOverTimeLate())) {
 			messageContentList.add(TextResource.localize("KAF005_65"));
 		}
 		
