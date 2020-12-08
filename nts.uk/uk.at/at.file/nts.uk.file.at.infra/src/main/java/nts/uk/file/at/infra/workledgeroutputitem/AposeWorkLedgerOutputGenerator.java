@@ -37,6 +37,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
+            worksheet.setName(dataSource.getTitle());
             if (!dataSource.getListContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
                 printContents(worksheet, dataSource);
@@ -58,7 +59,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
+        pageSetup.setHeader(1, "&9&\"ＭＳ フォントサイズ\""
                 + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
@@ -87,7 +88,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.clearContents(count,0,cells.getMaxRow(),15);
             }
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-            cells.get(count, 6).setValue(TextResource.localize("KWR004_205") +
+            cells.get(count, 6).setValue(TextResource.localize("KWR005_303") +
                     TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
