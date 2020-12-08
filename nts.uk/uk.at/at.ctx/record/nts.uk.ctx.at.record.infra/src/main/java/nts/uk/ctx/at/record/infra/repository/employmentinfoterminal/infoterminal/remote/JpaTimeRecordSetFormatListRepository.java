@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal.remote;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,6 +89,12 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 		return new TimeRecordSetFormatList(new EmpInfoTerminalCode(lstEntity.get(0).pk.timeRecordCode),
 				new EmpInfoTerminalName(lstEntity.get(0).empInfoTerName), new NRRomVersion(lstEntity.get(0).romVersion),
 				ModelEmpInfoTer.valueOf(lstEntity.get(0).modelEmpInfoTer), lstTRSetFormats);
+	}
+	
+	private List<TimeRecordSetFormatList> toListDomain(List<KrcmtTrRemoteSetting> listEntity) {
+		List<TimeRecordSetFormatList> listTimeRecordSetFormatList = new ArrayList<TimeRecordSetFormatList>();
+		
+		return null;
 	}
 
 	@Override
