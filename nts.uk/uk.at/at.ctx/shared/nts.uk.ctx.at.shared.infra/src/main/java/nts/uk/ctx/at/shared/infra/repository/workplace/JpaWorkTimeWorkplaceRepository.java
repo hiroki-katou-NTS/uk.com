@@ -55,6 +55,18 @@ public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements Wor
 
     @Override
     public void add(WorkTimeWorkplace domain) {
+        List<KshmtWorkTimeWorkplace> listEntity = this.queryProxy().query(FIND_BY_CID_AND_WKPID, KshmtWorkTimeWorkplace.class)
+            .setParameter("companyId", domain.getCompanyID())
+            .setParameter("workplaceId", domain.getWorkplaceID())
+            .getList();
+        if (listEntity.size() > 0){
+            List<KshmtWorkTimeWorkplacePK> pks = listEntity.stream().map(x ->
+                new KshmtWorkTimeWorkplacePK(x.kshmtWorkTimeWorkplacePK.companyID,
+                    x.kshmtWorkTimeWorkplacePK.workplaceID,
+                    x.kshmtWorkTimeWorkplacePK.workTimeID)).collect(Collectors.toList());
+            this.commandProxy().removeAll(KshmtWorkTimeWorkplace.class,pks);
+            this.getEntityManager().flush();
+        }
         this.commandProxy().insertAll(KshmtWorkTimeWorkplace.toEntity(domain));
     }
 
