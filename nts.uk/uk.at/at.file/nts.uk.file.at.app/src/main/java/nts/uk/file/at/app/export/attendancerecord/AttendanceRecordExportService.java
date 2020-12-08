@@ -1305,8 +1305,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						sum = Double.parseDouble(sum.toString()) - Double.parseDouble(i.value().toString());
 				}
 			}
-			if (sum.equals(0.0))
-				return "";
 
 			Integer sumInt;
 			Double sumDouble;
@@ -1321,17 +1319,25 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			case 1:
 			case 2:
 			case 15:
+				if (sum.equals(0.0))
+					return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0:00" : "";
 				sumInt = sum.intValue();
 				return this.convertMinutesToHours(sumInt.toString(), zeroDisplayType, false);
 			case 7:
 			case 8:
+				if (sum.equals(0.0))
+					return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0.0回" : "";
 				sumDouble = sum.doubleValue();
 				return sumDouble.toString() + "回";
 			case 12:
+				if (sum.equals(0.0))
+					return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0.0日" : "";
 				sumDouble = sum.doubleValue();
 				return sumDouble.toString() + "日";
 			case 13:
 			case 16:
+				if (sum.equals(0.0))
+					return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0" : "";
 				sumInt = sum.intValue();
 				DecimalFormat format = new DecimalFormat("###,###,###");
 				return format.format(sum.intValue());
@@ -1503,14 +1509,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		int subStrTimesB = b.indexOf("回");
 
 		if (subStrTimesA >= 0 && subStrTimesB >= 0) {
-			Double countA = a.substring(0, subStrTimesA - 1).isEmpty()
-							? Double.parseDouble(a.substring(0, subStrTimesA - 1))
-							: Double.parseDouble(a.substring(0, subStrTimesA));
+			Double countA = Double.parseDouble(a.substring(0, subStrTimesA));
+			Double countB = Double.parseDouble(b.substring(0, subStrTimesB));
 
-			Double countB = b.substring(0, subStrTimesB - 1).isEmpty()
-							? Double.parseDouble(b.substring(0, subStrTimesB - 1))
-							: Double.parseDouble(b.substring(0, subStrTimesB));
-		
 			Double totalCount = countA + countB;
 			return String.format("%.1f",totalCount.doubleValue()) + "回";
 		}
@@ -1520,14 +1521,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		int subStrDaysAmountB = b.indexOf("日");
 
 		if (subStrDaysAmountA >= 0 && subStrDaysAmountB >= 0) {
-			Double countA = a.substring(0, subStrDaysAmountA - 1).isEmpty()
-					? Double.parseDouble(a.substring(0, subStrDaysAmountA - 1))
-					: Double.parseDouble(a.substring(0, subStrDaysAmountA));
+			Double countA = Double.parseDouble(a.substring(0, subStrDaysAmountA));
+			Double countB = Double.parseDouble(b.substring(0, subStrDaysAmountB));
 
-			Double countB = b.substring(0, subStrDaysAmountB - 1).isEmpty()
-							? Double.parseDouble(b.substring(0, subStrDaysAmountB - 1))
-							: Double.parseDouble(b.substring(0, subStrDaysAmountB));
-		
 			Double totalCount = countA + countB;
 			return String.format("%.1f",totalCount.doubleValue()) + "日";
 		}
@@ -1561,35 +1557,44 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	private String convertString(ItemValue item, List<WorkType> workTypeList, List<WorkTimeSetting> workTimeSettingList,
 			List<AttendanceType> attendanceTypeList, NameUseAtr nameUseAtr, ZeroDisplayType zeroDisplayType) {
 		final String value = item.getValue();
-		if (item.getValueType() == null || item.getValue() == null)
-//			return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0.0": "";
+		if (item.getValueType() == null)
 			return "";
 		switch (item.getValueType()) {
 
 		case TIME:
 		case CLOCK:
 		case TIME_WITH_DAY:
+			if (item.getValue() == null)
+				return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0:00" : "";
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			return this.convertMinutesToHours(value.toString(), zeroDisplayType, true);
 		case COUNT:
 		case COUNT_WITH_DECIMAL:
+			if (item.getValue() == null)
+				return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0.0 回" : "";
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat formatTime = new DecimalFormat("###.##");
 			return formatTime.format(Double.parseDouble(value.toString())) + "回";
 		case AMOUNT_NUM:
 		case AMOUNT:
+			if (item.getValue() == null)
+				return "";
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Double.parseDouble(value));
 		case DAYS:
+			if (item.getValue() == null)
+				return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0 日" : "";
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			DecimalFormat formatDay = new DecimalFormat("###.##");
 			return formatDay.format(Double.parseDouble(value.toString())) + "日";
 		case CODE:
+			if (item.getValue() == null)
+				return "";
 			if (!attendanceTypeList.isEmpty()) {
 				AttendanceType attendance = attendanceTypeList.stream()
 						.filter(e -> e.getAttendanceItemId() == item.getItemId()).collect(Collectors.toList()).get(0);
