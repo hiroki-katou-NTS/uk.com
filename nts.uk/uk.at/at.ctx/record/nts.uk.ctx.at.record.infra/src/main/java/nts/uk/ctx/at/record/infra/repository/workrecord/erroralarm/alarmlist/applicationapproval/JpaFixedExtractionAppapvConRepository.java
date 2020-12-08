@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplac
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -33,5 +34,10 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
         return this.queryProxy().query(SELECT_BY_IDS, KrcmtWkpfxexAppapvCon.class)
                 .setParameter("ids", ids)
                 .getList(KrcmtWkpfxexAppapvCon::toDomain);
+    }
+
+    @Override
+    public List<FixedExtractionAppapvCon> getBy(List<String> ids, boolean useAtr) {
+        return new ArrayList<>();
     }
 }

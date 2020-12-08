@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.applicationapproval;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.CheckItemAppapv;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvItemsRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.applicationapproval.KrcmtWkpfxexAppapvItm;
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplac
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -20,5 +22,10 @@ public class JpaFixedExtractionAppapvItemsRepository extends JpaRepository imple
     public List<FixedExtractionAppapvItems> getAll() {
         return this.queryProxy().query(SELECT_ALL_FXEX_APPAPV_ITM, KrcmtWkpfxexAppapvItm.class)
                 .getList(KrcmtWkpfxexAppapvItm::toDomain);
+    }
+
+    @Override
+    public List<FixedExtractionAppapvItems> getBy(List<CheckItemAppapv> nos) {
+        return new ArrayList<>();
     }
 }

@@ -32,6 +32,8 @@ import java.util.Optional;
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.就業機能.アラーム_職場別.アルゴリズム.集計処理.集計処理
  * 集計処理
+ *
+ * @author Le Huu Dat
  */
 @Stateless
 public class AggregateProcessService {
