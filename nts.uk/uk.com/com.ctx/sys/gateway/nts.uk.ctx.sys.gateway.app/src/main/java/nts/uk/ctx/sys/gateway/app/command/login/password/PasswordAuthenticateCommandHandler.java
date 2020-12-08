@@ -58,7 +58,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		
 		// ビルトインユーザ
 		if (require.getBuiltInUser(tenantCode, companyId).authenticate(employeeCode, password)) {
-			return Authentication.asBuiltInUser();
+			return Authentication.asBuiltInUser(tenantCode, companyId);
 		}
 		
 		// パスワード認証
@@ -77,8 +77,8 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		if (authen.isBuiltInUser()) {
 			loginBuiltInUser.login(
 					require,
-					authen.getIdentified().getTenantCode(),
-					authen.getIdentified().getCompanyId());
+					authen.getTenantCodeForBuiltInUser(),
+					authen.getCompanyIdForBuiltInUser());
 			
 			return AtomTask.none();
 		}
@@ -107,14 +107,16 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	static class Authentication implements LoginCommandHandlerBase.AuthenticationResult {
 		
 		private boolean isBuiltInUser;
+		private String tenantCodeForBuiltInUser;
+		private String companyIdForBuiltInUser;
 		private AuthenticateEmployeePasswordResult authenResult;
 		
 		public static Authentication of(AuthenticateEmployeePasswordResult authenResult) {
-			return new Authentication(false, authenResult);
+			return new Authentication(false, null, null, authenResult);
 		}
 		
-		public static Authentication asBuiltInUser() {
-			return new Authentication(true, null);
+		public static Authentication asBuiltInUser(String tenantCode, String companyId) {
+			return new Authentication(true, tenantCode, companyId, null);
 		}
 
 		@Override

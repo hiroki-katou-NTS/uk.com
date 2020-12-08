@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import lombok.Getter;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 
 /**
  * システム構成
@@ -43,7 +44,8 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 		log.info("[INIT START] nts.uk.shr.com.system.config.SystemConfiguration");
 		
 		this.systemName = this.getValue("SystemName").asString().orElse("");
-		this.installationType = this.getValue("InstallationType").asEnum(InstallationType.class).get();
+		this.installationType = UKServerSystemProperties.isCloud()
+				? InstallationType.CLOUD : InstallationType.ON_PREMISES;
 		this.installedProducts = this.loadInstalledProducts();
 		this.pathToManual = this.getValue("PathToManual").asString().orElse("");
 		this.batchServerAddress = this.getValue("BatchServer").asString();

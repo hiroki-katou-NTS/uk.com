@@ -3,6 +3,9 @@ package nts.uk.ctx.sys.auth.pubimp.role.authorize;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -16,6 +19,8 @@ import nts.uk.ctx.sys.auth.pub.role.authorize.AuthorizePub;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager.RoleIdSetter;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AuthorizePubImp implements AuthorizePub {
 
 	@Inject

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class SgwmtTenantAuthenticate extends UkJpaEntity {
 	
 	@Id
-	@Column(name="TENANT_CD")
+	@Column(name="CONTRACT_CD")
 	private String tenantCode;
 	
 	@Column(name="TENANT_PASSWORD")

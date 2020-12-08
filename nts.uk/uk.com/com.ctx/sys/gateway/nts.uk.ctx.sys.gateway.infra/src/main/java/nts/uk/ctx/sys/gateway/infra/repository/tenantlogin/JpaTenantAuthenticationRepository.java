@@ -17,9 +17,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.tenantlogin.SgwmtTenantAuthenticate;
 public class JpaTenantAuthenticationRepository extends JpaRepository implements TenantAuthenticationRepository {
 	
 	private final String BASIC_SELECT 
-					= "select INS_DATE, INS_CCD, INS_SCD, INS_PG, UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG, "
-							+ "TENANT_CD, TENANT_PASSWORD, START_DATE, END_DATE "
-					+ "from SGWMT_TENANT_AUTHENTICATION ";
+					= "select * from SGWMT_TENANT_AUTHENTICATION ";
 	
 	private SgwmtTenantAuthenticate fromDomain(TenantAuthentication domain) {
 		return new SgwmtTenantAuthenticate(
@@ -47,7 +45,7 @@ public class JpaTenantAuthenticationRepository extends JpaRepository implements 
 	@Override
 	public Optional<TenantAuthentication> find(String tenantCode) {
 		String query = BASIC_SELECT 
-				+ "where TENANT_CD = @tenantCode ";
+				+ "where CONTRACT_CD = @tenantCode ";
 		return this.forTenantDatasource(tenantCode, (em ->{
 			return this.jdbcProxy(em) .query(query)
 					.paramString("tenantCode", tenantCode)
@@ -58,7 +56,7 @@ public class JpaTenantAuthenticationRepository extends JpaRepository implements 
 	@Override
 	public Optional<TenantAuthentication> find(String tenantCode, GeneralDate Date) {
 		String query = BASIC_SELECT 
-				+ "where TENANT_CD = @tenantCode "
+				+ "where CONTRACT_CD = @tenantCode "
 				+ "and START_DATE <= @startDate "
 				+ "and END_DATE >= @endDate ";
 		

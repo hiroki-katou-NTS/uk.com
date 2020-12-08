@@ -53,7 +53,6 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		
 		if (entity.isPresent()) {
 			KmkmtAgeementOperationSetting data = entity.get();
-			data.contractCD = AppContexts.user().contractCode();
 			data.startingMonth = agreementOperationSetting.getStartingMonth().value;
 			data.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
 			data.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
@@ -78,7 +77,6 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 
 		entity.kmkmtAgeementOperationSettingPK = new KmkmtAgeementOperationSettingPK();
 		entity.kmkmtAgeementOperationSettingPK.companyId = agreementOperationSetting.getCompanyId();
-		entity.contractCD =  AppContexts.user().contractCode();
 		entity.startingMonth = agreementOperationSetting.getStartingMonth().value;
 		entity.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
 		entity.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();

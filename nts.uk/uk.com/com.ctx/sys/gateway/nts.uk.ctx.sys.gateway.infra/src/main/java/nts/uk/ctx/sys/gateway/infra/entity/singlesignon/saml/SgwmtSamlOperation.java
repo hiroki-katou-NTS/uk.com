@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class SgwmtSamlOperation extends UkJpaEntity {
 
 	@Id
-	@Column(name="TENANT_CD")
+	@Column(name="CONTRACT_CD")
 	private String tenantCode;
 	
 	@Column(name="USE_SAML_SSO")

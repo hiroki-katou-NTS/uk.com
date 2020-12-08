@@ -9,16 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="SGWMT_SAML_USER_ASSOCIATION")
-public class SgwmtIdpUserAssociatation extends UkJpaEntity {
-	
-	@Column(name="TENANT_CD")
-	private String tenantCode;
+public class SgwmtIdpUserAssociatation extends ContractUkJpaEntity {
 	
 	@Column(name="CID")
 	private String companyId;
@@ -33,7 +30,7 @@ public class SgwmtIdpUserAssociatation extends UkJpaEntity {
 	public static final JpaEntityMapper<SgwmtIdpUserAssociatation> MAPPER = new JpaEntityMapper<>(SgwmtIdpUserAssociatation.class);
 	
 	public IdpUserAssociation toDomain() {
-		return new IdpUserAssociation(tenantCode, companyId, employeeId, idpUserName);
+		return new IdpUserAssociation(getContractCd(), companyId, employeeId, idpUserName);
 	}
 
 	@Override

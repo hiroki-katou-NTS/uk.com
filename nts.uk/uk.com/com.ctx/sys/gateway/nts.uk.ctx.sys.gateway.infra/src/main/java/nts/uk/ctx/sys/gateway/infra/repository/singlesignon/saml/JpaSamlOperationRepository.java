@@ -16,9 +16,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlOperation;
 public class JpaSamlOperationRepository extends JpaRepository implements SamlOperationRepository {
 	
 	private final String BASIC_SELECT 
-					= "select INS_DATE, INS_CCD, INS_SCD, INS_PG, UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG, "
-							+ "TENANT_CD, USE_SAML_SSO, REALM_NAME, IDP_REDIRECT_URL "
-					+ "from SGWMT_SAML_OPERATION ";
+					= "select * from SGWMT_SAML_OPERATION ";
 	
 	private SgwmtSamlOperation fromDomain(SamlOperation domain) {
 		return new SgwmtSamlOperation(
@@ -46,7 +44,7 @@ public class JpaSamlOperationRepository extends JpaRepository implements SamlOpe
 	@Override
 	public Optional<SamlOperation> find(String tenantCode) {
 		String query = BASIC_SELECT 
-				+ "where TENANT_CD = @tenantCode ";
+				+ "where CONTRACT_CD = @tenantCode ";
 		return new NtsStatement(query, this.jdbcProxy())
 				.paramString("tenantCode", tenantCode)
 				.getSingle(rec -> SgwmtSamlOperation.MAPPER.toEntity(rec).toDomain());

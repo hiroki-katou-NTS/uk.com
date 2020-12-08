@@ -1124,6 +1124,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pubimp')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ws')
 
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ac')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
