@@ -123,7 +123,7 @@ export class KdlS36Component extends Vue {
             e.dateOfUse = new Date(e.dateOfUse).toISOString();
         });
 
-        vm.$http.post('at', servicesPath.init,initParams).then((result: { data: ParamsData }) => {
+        vm.$http.post('at', servicesPath.init, initParams).then((result: { data: ParamsData }) => {
             vm.$mask('hide');
 
             vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
@@ -156,7 +156,7 @@ export class KdlS36Component extends Vue {
                         console.log(event);
                     }
                 }));
-                  
+
             //const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
         }).catch((error: any) => {
             vm.showError(error);
@@ -209,9 +209,8 @@ export class KdlS36Component extends Vue {
         vm.$mask('show');
         vm.$http
             .post('at', servicesPath.associate, data)
-            .then((result: {data: HolidayWorkSubHolidayLinkingMng[]}) => {
+            .then((result: { data: HolidayWorkSubHolidayLinkingMng[] }) => {
                 vm.$mask('hide');
-                //vm.setData(result.data);
                 vm.$close({
                     mngDisp: result.data
                 });
@@ -220,12 +219,6 @@ export class KdlS36Component extends Vue {
             .catch((error: any) => {
                 vm.showError(error);
             });
-    }
-
-    private setData(data: HolidayWorkSubHolidayLinkingMng[]) {
-        const vm = this;
-
-        vm.managementData.push(...data);
     }
 }
 
