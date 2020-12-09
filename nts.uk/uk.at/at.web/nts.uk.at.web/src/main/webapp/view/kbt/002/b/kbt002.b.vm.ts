@@ -163,6 +163,7 @@ module nts.uk.at.view.kbt002.b {
       vm.taskSetting.subscribe(data => {
         vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(data));
       });
+      vm.focusInput();
     }
 
     /**
@@ -679,7 +680,7 @@ module nts.uk.at.view.kbt002.b {
       command.execSetting.indexReconstruction.categoryList = vm.currentExecItem().indexReconCls() ? _.map(vm.currentIndexReconList(), item => item.categoryNo) : [];
       command.execSetting.indexReconstruction.updateStatistics = vm.currentExecItem().indexReconCls() ? vm.currentExecItem().indexReconUpdateStats() : null;
 
-      command.enableSetting = vm.selectedTaskEnableSetting();
+      command.enabledSetting = vm.selectedTaskEnableSetting() === 1;
       return command;
     }
 
@@ -1454,7 +1455,7 @@ module nts.uk.at.view.kbt002.b {
     cloudCreationFlag: boolean;
 
     /** タスク有効設定 */
-    enableSetting: boolean;
+    enabledSetting: boolean;
 
     constructor(init?: Partial<SaveUpdateProcessAutoExecutionCommand>) {
       $.extend(this, init);

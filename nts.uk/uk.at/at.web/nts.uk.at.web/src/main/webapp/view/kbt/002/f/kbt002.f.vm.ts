@@ -409,6 +409,7 @@ module nts.uk.at.view.kbt002.f {
             // logic for yes case
             if (selectedItem) {
               const command: ChangeExecutionTaskSettingCommand = new ChangeExecutionTaskSettingCommand(selectedItem.executionTaskSetting);
+              command.enabledSetting = !command.enabledSetting;
               // Update date format
               if (command.startDate) {
                 command.startDate = moment.utc(command.startDate, "YYYY/MM/DD");

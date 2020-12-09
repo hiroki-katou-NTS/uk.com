@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 
 @Data
+@Builder
 public class ChangeExecutionTaskSettingCommand {
 
 	/* 会社ID */

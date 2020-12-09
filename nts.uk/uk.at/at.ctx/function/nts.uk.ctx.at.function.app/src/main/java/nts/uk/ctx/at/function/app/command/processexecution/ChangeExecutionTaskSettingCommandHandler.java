@@ -19,6 +19,7 @@ import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
@@ -49,6 +50,9 @@ public class ChangeExecutionTaskSettingCommandHandler
 	@Inject
 	private SaveExecutionTaskSettingCommandHandler saveExecutionTaskSettingCommandHandler;
 
+	@Inject
+	private ProcessExecutionService processExecutionService;
+	
 	@Override
 	protected ExecutionTaskSettingDto handle(CommandHandlerContext<ChangeExecutionTaskSettingCommand> context) {
 		ChangeExecutionTaskSettingCommand command = context.getCommand();
@@ -66,7 +70,6 @@ public class ChangeExecutionTaskSettingCommandHandler
 				}
 				// 「実行中」以外の場合
 				executionTaskSetting[0] = command.toDomain();
-				executionTaskSetting[0].setEnabledSetting(!executionTaskSetting[0].isEnabledSetting());
 				// バッチのスケジュールを削除する
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, command.getScheduleId());
 				if (command.getEndScheduleId() != null) {
@@ -107,8 +110,8 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// INPUT「実行タスク設定．更新処理有効設定」を確認する
 				if (executionTaskSetting[0].isEnabledSetting()) {
 					// アルゴリズム「次回実行日時作成処理」を実行する
-					Optional<GeneralDateTime> nextExecDateTime = this.getNextExecDateTime(executionTaskSetting[0],
-							scheduleId);
+					Optional<GeneralDateTime> nextExecDateTime = Optional.ofNullable(this.processExecutionService
+							.processNextExecDateTimeCreation(executionTaskSetting[0]));
 					executionTaskSetting[0].setNextExecDateTime(nextExecDateTime);
 				} else {
 					// 次回実行日時をNULLとする
@@ -136,40 +139,6 @@ public class ChangeExecutionTaskSettingCommandHandler
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	private String schedule(UkJobScheduleOptions options) {
 		return this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
-	}
-
-	private Optional<GeneralDateTime> getNextExecDateTime(ExecutionTaskSetting domain, String scheduleId) {
-		// アルゴリズム「スケジュールされたバッチ処理の次回実行日時を取得する」を実行する
-		Optional<GeneralDateTime> nextExecDateTime = this.scheduler.getNextFireTime(scheduleId);
-		// 「次回実行日時（スケジュールID）」をチェックする
-		// それ以外（取得失敗、エラー等）
-		if (!nextExecDateTime.isPresent()) {
-			// 次回実行日時をNULLとする
-			return Optional.empty();
-		}
-		// 取得成功
-		// 「次回実行日時（暫定）」が「終了日＋終了時刻」を過ぎているか判定する
-		GeneralDateTime endDateTime = null;
-		if (domain.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)) {
-			GeneralDate endDate = domain.getEndDate().getEndDate().get();
-			if (domain.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)) {
-				EndTime endTime = domain.getEndTime().getEndTime().get();
-				endDateTime = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), endTime.hour(),
-						endTime.minute(), 0);
-			} else {
-				endDateTime = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0);
-			}
-		}
-		// 終了日時を過ぎていない、もしくは終了日時なし
-		if (endDateTime == null || nextExecDateTime.get().before(endDateTime)) {
-			// 次回実行日時（暫定）を「次回実行日時」として確定する
-			return nextExecDateTime;
-		}
-		// 終了日時を過ぎている
-		else {
-			// 次回実行日時をNULLとする
-			return Optional.empty();
-		}
 	}
 
 	private void performRegister(ExecutionTaskSetting domain, SaveExecutionTaskSettingCommand command)

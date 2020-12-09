@@ -213,7 +213,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 		
 		// 繰り返し間隔
 		OneDayRepeatInterval oneDayRepInr = new OneDayRepeatInterval(
-				Optional.ofNullable(EnumAdaptor.valueOf(this.oneDayRepInterval, OneDayRepeatIntervalDetail.class)),
+				Optional.ofNullable(this.oneDayRepInterval).map(data -> EnumAdaptor.valueOf(data, OneDayRepeatIntervalDetail.class)),
 				EnumAdaptor.valueOf(this.oneDayRepCls, OneDayRepeatClassification.class));
 				
 		// 終了日日付指定

@@ -119,41 +119,48 @@ module nts.uk.at.view.kbt002.c {
     private processSaveExecSetting() {
       const vm = this;
       vm.$blockui("grayout");
-      const params: ExecutionSettingDto = {
-        repeatContent: vm.selectExec(), //実行タイプ
-        oneDayRepCls: vm.selectTimeRepeat(), //1日の繰り返し
-        endTimeCls: vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0, //終了時刻
-        endDateCls: vm.selectEndDate(), //終了日
-        startDate: moment.utc(vm.curExecSetting().startDate(), "YYYY/MM/DD"), //開始日時
-        startTime: vm.curExecSetting().startTime(),
-        monday: vm.curExecSetting().monday(),
-        tuesday: vm.curExecSetting().tuesday(),
-        wednesday: vm.curExecSetting().wednesday(),
-        thursday: vm.curExecSetting().thursday(),
-        friday: vm.curExecSetting().friday(),
-        saturday: vm.curExecSetting().saturday(),
-        sunday: vm.curExecSetting().sunday(),
-        january: vm.curExecSetting().january(),
-        february: vm.curExecSetting().february(),
-        march: vm.curExecSetting().march(),
-        april: vm.curExecSetting().april(),
-        may: vm.curExecSetting().may(),
-        june: vm.curExecSetting().june(),
-        july: vm.curExecSetting().july(),
-        august: vm.curExecSetting().august(),
-        september: vm.curExecSetting().september(),
-        october: vm.curExecSetting().october(),
-        november: vm.curExecSetting().november(),
-        december: vm.curExecSetting().december(),
-        oneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
-        endDate: vm.curExecSetting().endDate() ? moment.utc(vm.curExecSetting().endDate(), "YYYY/MM/DD") : null,
-        endTime: vm.curExecSetting().endTime(),
-        repeatMonthDateList: vm.curExecSetting().repeatMonthDateList(), //日付選択
-        repeatCls: vm.curExecSetting().repeatCls(),
-        enabledSetting: vm.curExecSetting().enabledSetting(),
-        execItemCd: vm.execItemCd(),
-        newMode: vm.isNewMode
-      };
+      const params = new ExecutionSettingDto();
+      params.repeatCls = vm.curExecSetting().repeatCls();
+      params.enabledSetting = vm.curExecSetting().enabledSetting();
+      params.execItemCd = vm.execItemCd();
+      params.newMode = vm.isNewMode;
+      params.repeatContent = vm.selectExec(); //実行タイプ
+      params.startDate = moment.utc(vm.curExecSetting().startDate(), "YYYY/MM/DD"); //開始日時
+      params.startTime = vm.curExecSetting().startTime();
+
+      if (vm.selectExec() !== 0) {
+        params.oneDayRepCls = vm.selectTimeRepeat(); //1日の繰り返し
+        params.oneDayRepInterval = vm.curExecSetting().oneDayRepInterval(); //時刻指定
+        params.endTimeCls = vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0; //終了時刻
+        params.endDateCls = vm.selectEndDate(); //終了日
+        params.endDate = vm.selectEndDate() === 1 ? moment.utc(vm.curExecSetting().endDate(), "YYYY/MM/DD") : null;
+        params.endTime = vm.selectEndTime() === 1 ? vm.curExecSetting().endTime() : null;
+
+        if (vm.selectExec() === 2) {
+          params.monday = vm.curExecSetting().monday();
+          params.tuesday = vm.curExecSetting().tuesday();
+          params.wednesday = vm.curExecSetting().wednesday();
+          params.thursday = vm.curExecSetting().thursday();
+          params.friday = vm.curExecSetting().friday();
+          params.saturday = vm.curExecSetting().saturday();
+          params.sunday = vm.curExecSetting().sunday();
+        }
+
+        if (vm.selectExec() === 3) {
+          params.january = vm.curExecSetting().january();
+          params.february = vm.curExecSetting().february();
+          params.march = vm.curExecSetting().march();
+          params.april = vm.curExecSetting().april();
+          params.may = vm.curExecSetting().may();
+          params.june = vm.curExecSetting().june();
+          params.july = vm.curExecSetting().july();
+          params.august = vm.curExecSetting().august();
+          params.september = vm.curExecSetting().september();
+          params.october = vm.curExecSetting().october();
+          params.november = vm.curExecSetting().november();
+          params.december = vm.curExecSetting().december();
+        }
+      }
       vm.$ajax(API.saveExecSetting, params)
         .then(res => {
           if (res) {
@@ -268,18 +275,18 @@ module nts.uk.at.view.kbt002.c {
     }
   }
 
-  export interface ExecutionSettingDto {
+  export class ExecutionSettingDto {
     companyId?: string;
     execItemCd: string;
     startDate: any;
     startTime: number;
-    endTimeCls: number;
+    endTimeCls: number = 0;
     endTime: number;
-    oneDayRepCls: number;
+    oneDayRepCls: number = 0;
     oneDayRepInterval: number;
-    repeatCls: boolean;
+    repeatCls: boolean = false;
     repeatContent: number;
-    endDateCls: number;
+    endDateCls: number = 0;
     endDate: any;
     enabledSetting: boolean;
     monday: boolean;
@@ -301,8 +308,12 @@ module nts.uk.at.view.kbt002.c {
     october: boolean;
     november: boolean;
     december: boolean;
-    repeatMonthDateList: number[];
+    repeatMonthDateList: number[] = [];
     newMode: boolean;
+
+    constructor(init?: Partial<ExecutionSettingDto>) {
+      $.extend(this, init);
+    }
   }
 
   export class ExecutionSettingModel {

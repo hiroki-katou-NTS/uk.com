@@ -57,7 +57,7 @@ public class SaveUpdateProcessAutoExecutionCommand implements UpdateProcessAutoE
 	/**
 	 * タスク有効設定
 	 */
-	private boolean enableSetting;
+	private boolean enabledSetting;
 
 	@Override
 	public ProcessExecutionScope getExecScope() {
