@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstEstAggregateSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -29,7 +29,7 @@ public class JpaAggregateSettingRepository extends JpaRepository implements Aggr
 	 */
 	@Override
 	public Optional<AggregateSetting> findByCID(CompanyId companyId) {
-		return this.queryProxy().find(companyId, KscstEstAggregateSet.class).map(e -> toDomain(e));
+		return this.queryProxy().find(companyId, KscmtEstAggregate.class).map(e -> toDomain(e));
 	}
 
 	/*
@@ -42,8 +42,8 @@ public class JpaAggregateSettingRepository extends JpaRepository implements Aggr
 	@Override
 	public void save(AggregateSetting domain) {
 		// find entity
-		Optional<KscstEstAggregateSet> opt = this.queryProxy().find(domain.getCompanyId().v(),
-				KscstEstAggregateSet.class);
+		Optional<KscmtEstAggregate> opt = this.queryProxy().find(domain.getCompanyId().v(),
+				KscmtEstAggregate.class);
 
 		// update mode
 		if (opt.isPresent()) {
@@ -51,7 +51,7 @@ public class JpaAggregateSettingRepository extends JpaRepository implements Aggr
 		}
 		// add mode
 		else {
-			this.commandProxy().insert(toEntity(domain, new KscstEstAggregateSet()));
+			this.commandProxy().insert(toEntity(domain, new KscmtEstAggregate()));
 		}
 	}
 
@@ -62,7 +62,7 @@ public class JpaAggregateSettingRepository extends JpaRepository implements Aggr
 	 * @param entity the entity
 	 * @return the kscst est aggregate set
 	 */
-	private KscstEstAggregateSet toEntity(AggregateSetting domain, KscstEstAggregateSet entity) {
+	private KscmtEstAggregate toEntity(AggregateSetting domain, KscmtEstAggregate entity) {
 		domain.saveToMemento(new JpaAggregateSettingSetMemento(entity));
 		return entity;
 	}
@@ -73,7 +73,7 @@ public class JpaAggregateSettingRepository extends JpaRepository implements Aggr
 	 * @param entity the entity
 	 * @return the aggregate setting
 	 */
-	private AggregateSetting toDomain(KscstEstAggregateSet entity) {
+	private AggregateSetting toDomain(KscmtEstAggregate entity) {
 		AggregateSetting domain = new AggregateSetting(new JpaAggregateSettingGetMemento(entity));
 		return domain;
 	}

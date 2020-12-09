@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The primary key class for the KRCST_HOLIDAY_PRIOR_ORDER database table.
+ * The primary key class for the KRCMT_CALC_M_HD_OFFSET database table.
  * @author HoangNDH
  */
 @Embeddable

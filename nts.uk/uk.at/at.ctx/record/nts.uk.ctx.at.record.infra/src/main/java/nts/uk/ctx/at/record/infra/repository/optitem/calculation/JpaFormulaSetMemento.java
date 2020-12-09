@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRounding;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfRound;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRoundingPK;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
@@ -30,13 +30,13 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Symbol;
 public class JpaFormulaSetMemento implements FormulaSetMemento {
 
 	/** The entity. */
-	private KrcmtOptItemFormula entity;
+	private KrcmtAnyf entity;
 
 	/**
 	 * Instantiates a new jpa formula set memento.
 	 */
 	public JpaFormulaSetMemento() {
-		this.entity = new KrcmtOptItemFormula(new KrcmtOptItemFormulaPK());
+		this.entity = new KrcmtAnyf(new KrcmtOptItemFormulaPK());
 		this.entity.setKrcmtFormulaRoundings(new ArrayList<>());
 	}
 
@@ -147,7 +147,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	@Override
 	public void setMonthlyRounding(Optional<Rounding> rounding) {
 
-		KrcmtFormulaRounding monthly = new KrcmtFormulaRounding(this.entity.getKrcmtOptItemFormulaPK(),
+		KrcmtAnyfRound monthly = new KrcmtAnyfRound(this.entity.getKrcmtOptItemFormulaPK(),
 				KrcmtFormulaRoundingPK.MONTHLY_ATR);
 
 		// save to memento
@@ -166,7 +166,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	@Override
 	public void setDailyRounding(Optional<Rounding> rounding) {
 
-		KrcmtFormulaRounding daily = new KrcmtFormulaRounding(this.entity.getKrcmtOptItemFormulaPK(),
+		KrcmtAnyfRound daily = new KrcmtAnyfRound(this.entity.getKrcmtOptItemFormulaPK(),
 				KrcmtFormulaRoundingPK.DAILY_ATR);
 
 		// save to memento

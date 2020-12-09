@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_PAYOUT_SUBOFHD_MANA")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcmtPayoutSubOfHDMana extends UkJpaEntity implements Serializable{
+public class KrcmtPayoutSubOfHDMana extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

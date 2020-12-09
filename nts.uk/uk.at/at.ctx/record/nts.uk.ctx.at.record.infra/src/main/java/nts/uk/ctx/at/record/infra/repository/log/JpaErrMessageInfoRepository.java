@@ -16,7 +16,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfo;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecErrMsg;
 import nts.uk.ctx.at.record.infra.entity.log.KrcdtErrMessageInfoPK;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 @Stateless
 public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMessageInfoRepository {
 
-	private static final String SELECT_FROM_ERR_MESSAGE = "SELECT c FROM KrcdtErrMessageInfo c ";
+	private static final String SELECT_FROM_ERR_MESSAGE = "SELECT c FROM KrcdtExecErrMsg c ";
 	
 	private static final String SELECT_ERR_MESSAGE_BY_EMPID = SELECT_FROM_ERR_MESSAGE
 			+ " WHERE c.krcdtErrMessageInfoPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
@@ -44,7 +44,7 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 			+ " AND c.krcdtErrMessageInfoPK.executionContent = :executionContent "
 			+ " AND c.krcdtErrMessageInfoPK.disposalDay = :disposalDay ";
 	
-	private ErrMessageInfo toDomain(KrcdtErrMessageInfo entity) {
+	private ErrMessageInfo toDomain(KrcdtExecErrMsg entity) {
 		return new ErrMessageInfo(
 				entity.krcdtErrMessageInfoPK.employeeID,
 				entity.krcdtErrMessageInfoPK.empCalAndSumExecLogID,
@@ -55,8 +55,8 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 				);
 	}
 	
-	private KrcdtErrMessageInfo toEntity(ErrMessageInfo errMessageInfo){
-		val entity = new KrcdtErrMessageInfo();
+	private KrcdtExecErrMsg toEntity(ErrMessageInfo errMessageInfo){
+		val entity = new KrcdtExecErrMsg();
 		
 		entity.krcdtErrMessageInfoPK = new KrcdtErrMessageInfoPK();
 		entity.krcdtErrMessageInfoPK.employeeID = errMessageInfo.getEmployeeID();
@@ -71,12 +71,12 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 	
 	@Override
 	public List<ErrMessageInfo> getAllErrMessageInfoByID(String empCalAndSumExecLogID,int executionContent) {
-//		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BYID , KrcdtErrMessageInfo.class)
+//		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BYID , KrcdtExecErrMsg.class)
 //				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 //				.setParameter("executionContent", executionContent)
 //				.getList(c -> toDomain(c));
 		List<ErrMessageInfo> data = new ArrayList<>();
-		String sql = "select * from KRCDT_ERR_MESSAGE_INFO "
+		String sql = "select * from KRCDT_EXEC_ERR_MSG "
 				+ " where EMP_EXECUTION_LOG_ID  = ?"
 				+ " and EXECUTION_CONTENT = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 
 	@Override
 	public List<ErrMessageInfo> getAllErrMessageInfoByEmpID(String empCalAndSumExecLogID) {
-		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_EMPID , KrcdtErrMessageInfo.class)
+		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_EMPID , KrcdtExecErrMsg.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.getList(c -> toDomain(c));
 		return data;
@@ -111,7 +111,7 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 
 	@Override
 	public List<ErrMessageInfo> getErrMessageInfoByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
-		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_EXECONTEXT , KrcdtErrMessageInfo.class)
+		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_EXECONTEXT , KrcdtExecErrMsg.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.setParameter("executionContent", executionContent)
 				.getList(c -> toDomain(c));
@@ -137,7 +137,7 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 	@Override
 	public Optional<ErrMessageInfo> getErrMessageByID(String employeeID, String empCalAndSumExecLogID,
 			String resourceID, int executionContent, GeneralDate disposalDay) {
-		Optional<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_ALL_ID , KrcdtErrMessageInfo.class)
+		Optional<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BY_ALL_ID , KrcdtExecErrMsg.class)
 		.setParameter("employeeID", employeeID)
 		.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 		.setParameter("resourceID", resourceID)

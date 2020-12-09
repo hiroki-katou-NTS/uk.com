@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * @author dungdt
  *
@@ -21,12 +21,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_CAL_SET")
-public class KrcdtDayCalSet extends UkJpaEntity implements Serializable{
+public class KrcdtDayCalSet extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KrcdtDayCalSetPK krcdtDayCalSetPK;
 	
-	//KrcstDaiCalculationSet
+	//KrcdtDayInfoCalc
 	/*
 	//key
 	@NotNull
@@ -66,7 +66,7 @@ public class KrcdtDayCalSet extends UkJpaEntity implements Serializable{
     @NotNull
     @Column(name = "DIVERGENCE_TIME")
     public int divergenceTime;
-    //KrcstFlexAutoCalSet
+    //KrcmtCalcSetFlex
     @Basic(optional = false)
     @NotNull
     @Column(name = "FLEX_EXCESS_TIME_CAL_ATR")
@@ -75,7 +75,7 @@ public class KrcdtDayCalSet extends UkJpaEntity implements Serializable{
     @NotNull
     @Column(name = "FLEX_EXCESS_LIMIT_SET")
     public int flexExcessLimitSet;
-    //KrcstHolAutoCalSet
+    //KrcmtCalcSetHdWork
     @Basic(optional = false)
     @NotNull
     @Column(name = "HOL_WORK_TIME_CAL_ATR")
@@ -92,7 +92,7 @@ public class KrcdtDayCalSet extends UkJpaEntity implements Serializable{
     @NotNull
     @Column(name = "LATE_NIGHT_TIME_LIMIT_SET")
     public int lateNightTimeLimitSet;
-    //KrcstOtAutoCalSet
+    //KrcmtCalcSetOverTime
     @Basic(optional = false)
     @NotNull
     @Column(name = "EARLY_OVER_TIME_CAL_ATR")

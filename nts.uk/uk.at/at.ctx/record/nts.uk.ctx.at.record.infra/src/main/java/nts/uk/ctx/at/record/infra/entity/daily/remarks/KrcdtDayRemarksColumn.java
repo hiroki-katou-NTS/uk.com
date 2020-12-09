@@ -10,12 +10,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCDT_DAY_REMARKSCOLUMN")
 @NoArgsConstructor
-public class KrcdtDayRemarksColumn extends UkJpaEntity implements Serializable {
+public class KrcdtDayRemarksColumn extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/* 主キー */

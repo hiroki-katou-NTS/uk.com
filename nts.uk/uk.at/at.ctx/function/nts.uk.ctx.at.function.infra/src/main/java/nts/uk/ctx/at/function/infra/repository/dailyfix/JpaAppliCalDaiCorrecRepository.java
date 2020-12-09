@@ -10,21 +10,21 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyfix.ApplicationCall;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
-import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCall;
+import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtDayAppCall;
 import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCallPK;
 
 @Stateless
 public class JpaAppliCalDaiCorrecRepository extends JpaRepository implements IAppliCalDaiCorrecRepository{
 	
-	private static final String SELECT_NO_WHERE = "SELECT c FROM KfnmtApplicationCall c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KfnmtDayAppCall c ";
 	private static final String SELECT_BY_COM = SELECT_NO_WHERE + "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
-	private static final String DELETE_BY_COM = "DELETE FROM KfnmtApplicationCall c "
+	private static final String DELETE_BY_COM = "DELETE FROM KfnmtDayAppCall c "
 												+ "WHERE c.kfnmtApplicationCallPK.companyId = :companyId ";
 	
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ApplicationCall> findByCom(String companyId) {
-		return this.queryProxy().query(SELECT_BY_COM, KfnmtApplicationCall.class)
+		return this.queryProxy().query(SELECT_BY_COM, KfnmtDayAppCall.class)
 				.setParameter("companyId", companyId)
 				.getList().stream().map(x -> ApplicationCall.createFromJavaType(x.kfnmtApplicationCallPK.companyId, 
 																				x.kfnmtApplicationCallPK.applicationType))
@@ -40,7 +40,7 @@ public class JpaAppliCalDaiCorrecRepository extends JpaRepository implements IAp
 
 	@Override
 	public void insert(ApplicationCall appliCalDaiCorrec) {
-		this.commandProxy().insert(new KfnmtApplicationCall(new KfnmtApplicationCallPK(appliCalDaiCorrec.getCompanyId(), 
+		this.commandProxy().insert(new KfnmtDayAppCall(new KfnmtApplicationCallPK(appliCalDaiCorrec.getCompanyId(), 
 																appliCalDaiCorrec.getAppType().value)));
 	}
 

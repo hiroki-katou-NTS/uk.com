@@ -35,9 +35,9 @@ import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.FullJoinAppRootConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppFrameConfirmPK;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppPhaseConfirmPK;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtConfFrame;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtConfPhase;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtConfRoute;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
 /**
@@ -51,52 +51,52 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	private final String BASIC_SELECT = 
 			/*"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, " +
 			"phaseJoin.PHASE_ORDER, phaseJoin.APP_PHASE_ATR, phaseJoin.FRAME_ORDER, phaseJoin.APPROVER_ID, phaseJoin.REPRESENTER_ID, phaseJoin.APPROVAL_DATE " + 
-			"FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN " +
+			"FROM WWFDT_CONF_ROUTE appRoot LEFT JOIN " +
 			"(SELECT phase.ROOT_ID, phase.PHASE_ORDER, phase.APP_PHASE_ATR, " +
 			"frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE " +
-			"FROM WWFDT_APP_PHASE_CONFIRM phase " +
-			"LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame " +
+			"FROM WWFDT_CONF_PHASE phase " +
+			"LEFT JOIN WWFDT_CONF_FRAME frame " +
 			"ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER) phaseJoin " +
 			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
 			"appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, "+
 			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+
-			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
-			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
+			"FROM WWFDT_CONF_ROUTE appRoot "+
+			"LEFT JOIN WWFDT_CONF_PHASE phase "+
 			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
-			"LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame "+
+			"LEFT JOIN WWFDT_CONF_FRAME frame "+
 			"ON phase.ROOT_ID = frame.ROOT_ID "+
 			"AND phase.PHASE_ORDER = frame.PHASE_ORDER";
 	
 	private final String FIND_BY_ID = BASIC_SELECT + " WHERE appRoot.ROOT_ID = 'rootID'";
 	
 	private final String DELETE_PHASE_APPROVER = 
-			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
-			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"DELETE FROM WWFDT_CONF_PHASE WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
 			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER = 
-			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
-			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"DELETE FROM WWFDT_CONF_FRAME WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
 			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_PHASE_APPROVER_FROM_DATE = 
-			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
-			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"DELETE FROM WWFDT_CONF_PHASE WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
 			"AND appRoot.RECORD_DATE >= 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER_FROM_DATE = 
-			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
-			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"DELETE FROM WWFDT_CONF_FRAME WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
@@ -109,23 +109,23 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			" AND appRoot.RECORD_DATE = 'recordDate'";
 	
 //	private final String DELETE_APP_ROOT_CONFIRM = 
-//			"DELETE FROM WWFDT_APP_ROOT_CONFIRM  "+
+//			"DELETE FROM WWFDT_CONF_ROUTE  "+
 //			"WHERE CID = 'companyID' " +
 //			"AND EMPLOYEE_ID = 'employeeID' " +
 //			"AND ROOT_TYPE = rootType " +
 //			"AND RECORD_DATE = 'recordDate' ";
 //	
 //	private final String DELETE_PHASE_APPROVER_FOR_424 = 
-//			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
-//			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+//			"DELETE FROM WWFDT_CONF_PHASE WHERE ROOT_ID IN ( " +
+//			"SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 //			"WHERE appRoot.CID = 'companyID' " +
 //			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 //			"AND appRoot.ROOT_TYPE = rootType " +
 //			"AND appRoot.RECORD_DATE = 'recordDate' )";
 //	
 //	private final String DELETE_FRAME_APPROVER_FOR_424 = 
-//			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
-//			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+//			"DELETE FROM WWFDT_CONF_FRAME WHERE ROOT_ID IN ( " +
+//			"SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 //			"WHERE appRoot.CID = 'companyID' " +
 //			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 //			"AND appRoot.ROOT_TYPE = rootType " +
@@ -191,14 +191,14 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 
 	@Override
 	public void delete(AppRootConfirm appRootConfirm) {
-		this.commandProxy().remove(WwfdtAppRootConfirm.class, appRootConfirm.getRootID());
+		this.commandProxy().remove(WwfdtConfRoute.class, appRootConfirm.getRootID());
 	}
 	
 	@Override
 	@SneakyThrows
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
 		Connection conn = this.connection();
-		String sQue = "SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+		String sQue = "SELECT appRoot.ROOT_ID FROM WWFDT_CONF_ROUTE appRoot " +
 						"WHERE appRoot.CID = '" + companyID + "' AND appRoot.ROOT_TYPE = "
 						+ rootType +"  AND appRoot.EMPLOYEE_ID = '"+ employeeID +"' AND appRoot.RECORD_DATE = '"+date.toString("yyyy/MM/dd")+"'";
 		List<String> rootIDs = new ArrayList<>();
@@ -215,17 +215,17 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		if(!rootIDs.isEmpty()){
 			for(String rootID : rootIDs) {
 				try (PreparedStatement dStatement1 = conn
-						.prepareStatement("DELETE  FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID = ?")) {
+						.prepareStatement("DELETE  FROM WWFDT_CONF_FRAME WHERE ROOT_ID = ?")) {
 					dStatement1.setString(1, rootID);
 					dStatement1.executeUpdate();
 				}
 				try (PreparedStatement dStatement2 = conn
-						.prepareStatement("DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID = ?")) {
+						.prepareStatement("DELETE FROM WWFDT_CONF_PHASE WHERE ROOT_ID = ?")) {
 					dStatement2.setString(1, rootID);
 					dStatement2.executeUpdate();
 				}
 				try (PreparedStatement dStatement3 = conn
-						.prepareStatement("DELETE  FROM WWFDT_APP_ROOT_CONFIRM WHERE ROOT_ID = ?")) {
+						.prepareStatement("DELETE  FROM WWFDT_CONF_ROUTE WHERE ROOT_ID = ?")) {
 					dStatement3.setString(1, rootID);
 					dStatement3.executeUpdate();
 				}
@@ -233,8 +233,8 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		}
 	}
 
-	private WwfdtAppRootConfirm fromDomain(AppRootConfirm appRootConfirm){
-		return new WwfdtAppRootConfirm(
+	private WwfdtConfRoute fromDomain(AppRootConfirm appRootConfirm){
+		return new WwfdtConfRoute(
 				appRootConfirm.getRootID(), 
 				appRootConfirm.getCompanyID(), 
 				appRootConfirm.getEmployeeID(), 
@@ -245,14 +245,14 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 				appRootConfirm.getClosureDate().map(x -> x.getClosureDay().v()).orElse(null),
 				appRootConfirm.getClosureDate().map(x -> x.getLastDayOfMonth()?1:0).orElse(null),
 				appRootConfirm.getListAppPhase().stream()
-					.map(x -> new WwfdtAppPhaseConfirm(
+					.map(x -> new WwfdtConfPhase(
 							new WwfdpAppPhaseConfirmPK(
 									appRootConfirm.getRootID(), 
 									x.getPhaseOrder()), 
 							x.getAppPhaseAtr().value, 
 							null,
 							x.getListAppFrame().stream()
-								.map(y -> new WwfdtAppFrameConfirm(
+								.map(y -> new WwfdtConfFrame(
 										new WwfdpAppFrameConfirmPK(
 												appRootConfirm.getRootID(), 
 												x.getPhaseOrder(), 
@@ -407,9 +407,9 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, ");
 		sql.append(" appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, ");
 		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
-		sql.append(" FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase ");  
+		sql.append(" FROM WWFDT_CONF_ROUTE appRoot LEFT JOIN WWFDT_CONF_PHASE phase ");  
 		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
-		sql.append(" LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame ");
+		sql.append(" LEFT JOIN WWFDT_CONF_FRAME frame ");
 		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
 		sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE <= ? AND appRoot.RECORD_DATE >= ?");
 		sql.append(" AND appRoot.EMPLOYEE_ID IN (");
@@ -436,10 +436,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, ");
 		sql.append(" appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, ");
 		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
-		sql.append(" FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase ");  
+		sql.append(" FROM WWFDT_CONF_ROUTE appRoot LEFT JOIN WWFDT_CONF_PHASE phase ");  
 		sql.append(" with (index(WWFDP_APP_PHASE_CONFIRM)) ");
 		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
-		sql.append(" LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame ");
+		sql.append(" LEFT JOIN WWFDT_CONF_FRAME frame ");
 		sql.append(" with (index(WWFDP_APP_FRAME_CONFIRM)) ");
 		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
 		sql.append(" WHERE appRoot.EMPLOYEE_ID IN (");

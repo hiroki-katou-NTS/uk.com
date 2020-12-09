@@ -11,13 +11,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "BPSMT_PER_FILE_MANAGEMENT")
-public class BpsmtPersonFileManagement extends UkJpaEntity implements Serializable{
+public class BpsmtPersonFileManagement extends ContractUkJpaEntity implements Serializable{
 
 	/**
 	 * 

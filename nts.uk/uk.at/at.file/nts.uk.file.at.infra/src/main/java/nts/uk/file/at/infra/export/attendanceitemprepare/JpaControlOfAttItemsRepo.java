@@ -15,7 +15,7 @@ import nts.uk.file.at.app.export.attendanceitemprepare.ControlOfAttendanceItemsD
 public class JpaControlOfAttItemsRepo extends JpaRepository implements ControlOfAttItemsRepoExcel {
 
 	private static final String GET_ALL = "select a.ITEM_DAILY_ID, a.TIME_INPUT_UNIT, a.HEADER_BACKGROUND_COLOR "
-			+ "from KSHST_ATD_ITEM_CONTROL a where a.CID=?companyId";
+			+ "from KSHMT_DAY_ATD_CTR a where a.CID=?companyId";
 
 	@Override
 	public Map<Integer,ControlOfAttendanceItemsDtoExcel> getAllByCompanyId(String companyId) {

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.actuallock;
 
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLock;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class JpaActualLockGetMemento implements ActualLockGetMemento {
 	
 	/** The typed value. */
-	private KrcstActualLock typedValue;
+	private KrcdtAtdActualLock typedValue;
 	
 	/**
 	 * Instantiates a new jpa actual lock get memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaActualLockGetMemento(KrcstActualLock typedValue) {
+	public JpaActualLockGetMemento(KrcdtAtdActualLock typedValue) {
 		this.typedValue = typedValue;
 		if (this.typedValue.getKrcstActualLockPK() == null) {
 			this.typedValue.setKrcstActualLockPK(new KrcstActualLockPK());

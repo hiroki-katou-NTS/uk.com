@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WorkdayPatternItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscmtWeeklyWorkSet.
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_WEEKLY_WORKINGDAYS")
-public class KscmtWeeklyWorkSet extends UkJpaEntity implements Serializable {
+public class KscmtWeeklyWorkSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -46,10 +46,6 @@ public class KscmtWeeklyWorkSet extends UkJpaEntity implements Serializable {
     /** The work day div. */
     @Column(name = "WORK_DAY_ATR")
     private int workDayAtr;
-
-    /** The Contract Code. */
-    @Column(name = "CONTRACT_CD")
-    public String contractCode;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
@@ -63,8 +59,7 @@ public class KscmtWeeklyWorkSet extends UkJpaEntity implements Serializable {
         return domain.getListWorkdayPatternItem().stream().map(item ->
             new KscmtWeeklyWorkSet(
                     new KscmtWeeklyWorkSetPK(domain.getCompanyId().v(), item.getDayOfWeek().value),
-                    item.getWorkdayDivision().value,
-                    AppContexts.user().contractCode()
+                    item.getWorkdayDivision().value
             )
         ).collect(Collectors.toList());
     }

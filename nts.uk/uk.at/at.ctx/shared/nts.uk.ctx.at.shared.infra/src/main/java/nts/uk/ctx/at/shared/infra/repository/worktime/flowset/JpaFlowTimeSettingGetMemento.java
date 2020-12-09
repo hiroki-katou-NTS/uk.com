@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloHolTs;
 
 /**
  * The Class JpaFlowTimeSettingGetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
 public class JpaFlowTimeSettingGetMemento implements FlowTimeGetMemento {
 
 	/** The entity. */
-	KshmtFworkHolidayTime entity;
+	KshmtWtFloHolTs entity;
 	
 	/**
 	 * Instantiates a new jpa flow time setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowTimeSettingGetMemento(KshmtFworkHolidayTime entity) {
+	public JpaFlowTimeSettingGetMemento(KshmtWtFloHolTs entity) {
 		super();
 		this.entity = entity;
 	}

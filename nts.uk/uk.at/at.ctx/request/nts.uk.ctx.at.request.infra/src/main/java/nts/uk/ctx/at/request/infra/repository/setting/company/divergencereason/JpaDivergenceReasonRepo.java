@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonRepository;
-import nts.uk.ctx.at.request.infra.entity.setting.company.divergencereason.KrqstAppDivergenReason;
+import nts.uk.ctx.at.request.infra.entity.setting.company.divergencereason.KrqmtAppDivergenReason;
 
 @Stateless
 public class JpaDivergenceReasonRepo extends JpaRepository implements DivergenceReasonRepository {
-	private static final String FINDER_ALL ="SELECT e FROM KrqstAppDivergenReason e";
+	private static final String FINDER_ALL ="SELECT e FROM KrqmtAppDivergenReason e";
 	private static final String PLEASE ="選択してください";
 	
 	private static final String FIND_FOLLOW_COMPANYID_AND_APPTYPE;
@@ -27,7 +27,7 @@ public class JpaDivergenceReasonRepo extends JpaRepository implements Divergence
 	@Override
 	public List<DivergenceReason> getDivergenceReason(String companyID, int appType) {
 		
-//		List<DivergenceReason> divergenceReasons = this.queryProxy().query(FIND_FOLLOW_COMPANYID_AND_APPTYPE,KrqstAppDivergenReason.class)
+//		List<DivergenceReason> divergenceReasons = this.queryProxy().query(FIND_FOLLOW_COMPANYID_AND_APPTYPE,KrqmtAppDivergenReason.class)
 //				.setParameter("companyID", companyID)
 //				.setParameter("appType", appType)
 //				.getList(entity -> convertToDomain(entity));
@@ -42,7 +42,7 @@ public class JpaDivergenceReasonRepo extends JpaRepository implements Divergence
 //		return divergenceReasons;
 		return null;
 	}
-	private DivergenceReason convertToDomain(KrqstAppDivergenReason entity){
+	private DivergenceReason convertToDomain(KrqmtAppDivergenReason entity){
 		return DivergenceReason.createSimpleFromJavaType(entity.getKrqstAppDivergenReasonPK().getCid(), 
 				entity.getKrqstAppDivergenReasonPK().getAppType(),
 				entity.getKrqstAppDivergenReasonPK().getReasonId(),

@@ -21,13 +21,13 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name="KFNMT_EXEC_TASK_LOG")
 @NoArgsConstructor
 @Getter
 @Setter
-public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
+public class KfnmtExecutionTaskLog extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

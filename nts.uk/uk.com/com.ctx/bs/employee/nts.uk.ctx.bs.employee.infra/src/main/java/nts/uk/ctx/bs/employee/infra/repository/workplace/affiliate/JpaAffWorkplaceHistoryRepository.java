@@ -232,7 +232,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		
 		List<BsymtAffiWorkplaceHist> workPlaceEntities = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
-			String sql = "select * from BSYMT_AFF_WORKPLACE_HIST h"
+			String sql = "select * from BSYMT_AFF_WKP_HIST h"
 					+ " where h.SID in (" + NtsStatement.In.createParamsString(subIds) + ")"
 					+ " and h.START_DATE <= ?"
 					+ " and h.END_DATE >= ?";
@@ -353,7 +353,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<AffWorkplaceHistory> result = new ArrayList<>();
 		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_WORKPLACE_HIST WHERE  START_DATE <= ? AND END_DATE >= ? AND SID IN ("
+			String sql = "SELECT * FROM BSYMT_AFF_WKP_HIST WHERE  START_DATE <= ? AND END_DATE >= ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -415,8 +415,8 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@SneakyThrows
 	public List<String> getByWplIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate) {
 
-		String sql = "select distinct h.SID from BSYMT_AFF_WORKPLACE_HIST h"
-				+ " inner join BSYMT_AFF_WPL_HIST_ITEM i"
+		String sql = "select distinct h.SID from BSYMT_AFF_WKP_HIST h"
+				+ " inner join BSYMT_AFF_WKP_HIST_ITEM i"
 				+ " on h.HIST_ID = i.HIST_ID"
 				+ " where i.WORKPLACE_ID = ?"
 				+ " and h.START_DATE <= ? and h.END_DATE >= ?";
@@ -470,7 +470,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<AffWorkplaceHistory> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_WORKPLACE_HIST WHERE  CID = ? AND SID IN ("
+			String sql = "SELECT * FROM BSYMT_AFF_WKP_HIST WHERE  CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY SID, START_DATE DESC";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -504,7 +504,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			try (PreparedStatement statement = this.connection().prepareStatement(
-						"SELECT * from BSYMT_AFF_WORKPLACE_HIST h"
+						"SELECT * from BSYMT_AFF_WKP_HIST h"
 						+ " WHERE h.CID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")" + " ORDER BY START_DATE ASC ")) {
 				statement.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
@@ -530,7 +530,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<AffWorkplaceHistory> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 
-			String sql = "SELECT * FROM  BSYMT_AFF_WORKPLACE_HIST h" + " WHERE h.START_DATE >= ? AND SID IN (" +  NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM  BSYMT_AFF_WKP_HIST h" + " WHERE h.START_DATE >= ? AND SID IN (" +  NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
 				for (int i = 0; i < subList.size(); i++) {
@@ -560,7 +560,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@Override
 	public void addAll(Map<String, DateHistoryItem> dateHistItems) {
 		String cid = AppContexts.user().companyId();
-		String INS_SQL = "INSERT INTO BSYMT_AFF_WORKPLACE_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO BSYMT_AFF_WKP_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, CID,"
 				+ " START_DATE, END_DATE)"
@@ -605,7 +605,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@Override
 	public void updateAll(List<DateHistoryItem> items) {
 		
-		String UP_SQL = "UPDATE BSYMT_AFF_WORKPLACE_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_AFF_WKP_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
 		String cid = AppContexts.user().companyId();

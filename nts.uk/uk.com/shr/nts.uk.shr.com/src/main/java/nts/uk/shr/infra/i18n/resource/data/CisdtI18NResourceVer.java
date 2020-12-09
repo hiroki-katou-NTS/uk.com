@@ -8,17 +8,23 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "CISDT_I18N_RESOURCE_VER")
-public class CisdtI18NResourceVer {
+@Table(name = "CISMT_I18N_RESOURCE_VER")
+public class CisdtI18NResourceVer extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public CisdtI18NResourceVerPK pk;
 
 	@Column(name = "LAST_UPDATED_AT")
 	public GeneralDateTime lastUpdatedAt;
+
+	@Override
+	protected Object getKey() {
+		return pk;
+	}
 	
 }

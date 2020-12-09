@@ -24,13 +24,13 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDeta
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 //import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_PRO_EXE_LOG_MANAGE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
+public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 	/* 主キー */
 	@EmbeddedId
 	public KfnmtProcessExecutionLogManagePK kfnmtProcExecLogPK;

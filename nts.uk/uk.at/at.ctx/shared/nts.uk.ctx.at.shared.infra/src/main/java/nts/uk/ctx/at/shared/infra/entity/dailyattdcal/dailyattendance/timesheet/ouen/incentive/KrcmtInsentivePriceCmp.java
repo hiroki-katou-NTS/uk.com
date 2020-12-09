@@ -9,14 +9,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /** 会社のインセンティブ単価の設定 */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KRCMT_INSENTIVE_PRICE_CMP")
-public class KrcmtInsentivePriceCmp extends UkJpaEntity implements Serializable {
+public class KrcmtInsentivePriceCmp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

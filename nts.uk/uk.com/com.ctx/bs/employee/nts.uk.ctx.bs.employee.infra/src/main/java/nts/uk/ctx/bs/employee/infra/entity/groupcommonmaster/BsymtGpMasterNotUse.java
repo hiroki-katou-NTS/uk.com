@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * グループ会社共通マスタ項目
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "BSYMT_GPMASTER_NOTUSE")
-public class BsymtGpMasterNotUse extends UkJpaEntity implements Serializable {
+public class BsymtGpMasterNotUse extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

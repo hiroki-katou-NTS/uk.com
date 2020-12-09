@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiHolTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRestPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento{
 	
 	/** The entitys. */
-	private KshmtFlexOdRtSet entity;
+	private KshmtWtFleBrFlHol entity;
 
 	/**
 	 * Instantiates a new jpa flex OD tz OFR time set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODTzOFRTimeSetSetMemento(KshmtFlexOdRtSet entity) {
+	public JpaFlexODTzOFRTimeSetSetMemento(KshmtWtFleBrFlHol entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
@@ -50,17 +50,17 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 			if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
 				this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 			}
-			Map<KshmtFlexOdFixRestPK, KshmtFlexOdFixRest> mapEntity = this.entity.getKshmtFlexOdFixRests().stream()
-					.collect(Collectors.toMap(KshmtFlexOdFixRest::getKshmtFlexOdFixRestPK, Function.identity()));
+			Map<KshmtFlexOdFixRestPK, KshmtWtFleBrFiHolTs> mapEntity = this.entity.getKshmtFlexOdFixRests().stream()
+					.collect(Collectors.toMap(KshmtWtFleBrFiHolTs::getKshmtFlexOdFixRestPK, Function.identity()));
 
-			List<KshmtFlexOdFixRest> lstNew = new ArrayList<>();
+			List<KshmtWtFleBrFiHolTs> lstNew = new ArrayList<>();
 			for (int i = 0; i < timzones.size(); i++) {
 
 				KshmtFlexOdFixRestPK newPK = new KshmtFlexOdFixRestPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
 						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), i+1);
-				KshmtFlexOdFixRest newEntity = new KshmtFlexOdFixRest(newPK);
+				KshmtWtFleBrFiHolTs newEntity = new KshmtWtFleBrFiHolTs(newPK);
 
-				KshmtFlexOdFixRest oldEntity = mapEntity.get(newPK);
+				KshmtWtFleBrFiHolTs oldEntity = mapEntity.get(newPK);
 				if (oldEntity != null) {
 					// update
 					newEntity = oldEntity;

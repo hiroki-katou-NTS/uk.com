@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprint;
+import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampMng;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprintPK;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
@@ -27,7 +27,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcmtStampImprint a ");
+		builderString.append("FROM KrcmtStampMng a ");
 		builderString.append("WHERE a.krcdtStampReflectPK.companyId = :companyId ");
 		FIND = builderString.toString();
 	}
@@ -37,7 +37,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<StampReflectionManagement> findByCid(String companyId) {
-		return this.queryProxy().query(FIND, KrcmtStampImprint.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(FIND, KrcmtStampMng.class).setParameter("companyId", companyId)
 				.getSingle(f -> toDomain(f));
 	}
 
@@ -47,7 +47,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 	 * @param krcdtStampReflect the krcdt stamp reflect
 	 * @return the stamp reflection management
 	 */
-	private static StampReflectionManagement toDomain(KrcmtStampImprint krcdtStampReflect) {
+	private static StampReflectionManagement toDomain(KrcmtStampMng krcdtStampReflect) {
 		StampReflectionManagement stampReflectionManagement = StampReflectionManagement.createJavaType(
 				krcdtStampReflect.krcdtStampReflectPK.companyId, krcdtStampReflect.breakSwitchClass,
 				krcdtStampReflect.autoStampReflectionClass,
@@ -66,7 +66,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 @Override
 	public void update(StampReflectionManagement reflectionManagement) {
 		KrcmtStampImprintPK stampImprintPK = new KrcmtStampImprintPK(reflectionManagement.getCompanyId());
-		KrcmtStampImprint imprint = this.queryProxy().find(stampImprintPK, KrcmtStampImprint.class).get();
+		KrcmtStampMng imprint = this.queryProxy().find(stampImprintPK, KrcmtStampMng.class).get();
 		imprint.breakSwitchClass = reflectionManagement.getBreakSwitchClass().value;
 		imprint.autoStampReflectionClass = reflectionManagement.getAutoStampReflectionClass().value;
 		imprint.actualStampOfPriorityClass= reflectionManagement.getActualStampOfPriorityClass().value;
@@ -91,12 +91,12 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 		 * @param atten the atten
 		 * @return the krcmt stamp imprint
 		 */
-		private KrcmtStampImprint convertToDbType(StampReflectionManagement atten) {
-		KrcmtStampImprint newEntity = KrcmtStampImprint.toEntity(atten);
+		private KrcmtStampMng convertToDbType(StampReflectionManagement atten) {
+		KrcmtStampMng newEntity = KrcmtStampMng.toEntity(atten);
 		KrcmtStampImprintPK attSetPK = new KrcmtStampImprintPK(atten.getCompanyId());
-		Optional<KrcmtStampImprint> optUpdateEntity = this.queryProxy().find(attSetPK, KrcmtStampImprint.class);
+		Optional<KrcmtStampMng> optUpdateEntity = this.queryProxy().find(attSetPK, KrcmtStampMng.class);
 		if (optUpdateEntity.isPresent()) {
-			KrcmtStampImprint updateEntity = optUpdateEntity.get();
+			KrcmtStampMng updateEntity = optUpdateEntity.get();
 			updateEntity.breakSwitchClass = atten.getBreakSwitchClass().value;
 			updateEntity.autoStampReflectionClass = atten.getAutoStampReflectionClass().value;
 			updateEntity.actualStampOfPriorityClass = atten.getActualStampOfPriorityClass().value;

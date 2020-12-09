@@ -26,7 +26,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVAL_FRAME_DAY")
 @Builder
-public class WwfdtApprovalFrameDay extends UkJpaEntity {
+public class WwfdtApprovalFrameDay extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalFrameDayPK wwfdpApprovalFrameDayPK;

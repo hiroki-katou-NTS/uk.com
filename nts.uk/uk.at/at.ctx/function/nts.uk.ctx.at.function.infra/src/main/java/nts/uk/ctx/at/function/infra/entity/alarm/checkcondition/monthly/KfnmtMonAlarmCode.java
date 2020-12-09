@@ -13,12 +13,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 //import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
 //import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
 @Table(name = "KFNMT_MON_CHECK_PK")
-public class KfnmtMonAlarmCode extends UkJpaEntity implements Serializable {
+public class KfnmtMonAlarmCode extends ContractUkJpaEntity implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 
 /**
  * The Class JpaFlowWorkRestSettingDetailSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
 public class JpaFlowWorkRestSettingDetailSetMemento implements FlowWorkRestSettingDetailSetMemento {
 
 	/** The entity. */
-	KshmtFlowRestSet entity;
+	KshmtWtFloBrFlAll entity;
 
 	/**
 	 * Instantiates a new jpa flow work rest setting detail set memento.
@@ -25,7 +25,7 @@ public class JpaFlowWorkRestSettingDetailSetMemento implements FlowWorkRestSetti
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowWorkRestSettingDetailSetMemento(KshmtFlowRestSet entity) {
+	public JpaFlowWorkRestSettingDetailSetMemento(KshmtWtFloBrFlAll entity) {
 		super();
 		this.entity = entity;
 	}

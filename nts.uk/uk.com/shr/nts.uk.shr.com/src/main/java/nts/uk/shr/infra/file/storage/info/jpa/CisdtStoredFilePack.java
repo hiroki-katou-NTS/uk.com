@@ -6,11 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.val;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="CISDT_STORED_FILE_PACK")
-public class CisdtStoredFilePack extends UkJpaEntity {
+public class CisdtStoredFilePack extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "PACKED_ENTRY_ID")

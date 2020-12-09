@@ -13,13 +13,13 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "SACMT_ROLE")
-public class SacmtRole extends UkJpaEntity implements Serializable {
+public class SacmtRole extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,9 +42,6 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 	@Column(name = "ROLE_NAME")
 	private String name;
 
-	@Column(name = "CONTRACT_CD")
-	private String contractCode;
-
 	@Column(name = "ASSIGN_ATR")
 	private int assignAtr;
 
@@ -62,7 +59,6 @@ public class SacmtRole extends UkJpaEntity implements Serializable {
 		this.roleType = roleType;
 		this.referenceRange = referenceRange;
 		this.name = name;
-		this.contractCode = contractCode;
 		this.assignAtr = assignAtr;
 	}
 

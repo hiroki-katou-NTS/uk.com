@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.OtherEmTimezoneLateEarlySetRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarly;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarlyPK;
 
 @Stateless
@@ -24,7 +24,7 @@ public class JpaOtherEmTimezoneLateEarlySetRepository extends JpaRepository
 		pk.setWorktimeCd(worktimeCd);
 		pk.setWorktimeSetMethod(worktimeSetMethod);
 		;
-		Optional<KshmtOtherLateEarly> entity = this.queryProxy().find(pk, KshmtOtherLateEarly.class);
+		Optional<KshmtWtComLatetime> entity = this.queryProxy().find(pk, KshmtWtComLatetime.class);
 		if (!entity.isPresent())
 			return false;
 		return entity.map(x -> x.getExtractLateEarlyTime() == 1).orElse(false);

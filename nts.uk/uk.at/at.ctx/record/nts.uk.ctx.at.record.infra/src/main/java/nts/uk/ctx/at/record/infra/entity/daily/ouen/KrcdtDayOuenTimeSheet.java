@@ -23,12 +23,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCDT_DAY_TS_SUP")
-public class KrcdtDayOuenTimeSheet extends UkJpaEntity implements Serializable {
+public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

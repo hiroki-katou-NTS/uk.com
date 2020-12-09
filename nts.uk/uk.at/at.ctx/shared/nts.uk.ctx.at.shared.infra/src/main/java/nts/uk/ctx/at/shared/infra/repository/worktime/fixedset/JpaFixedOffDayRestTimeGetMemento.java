@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
 
 /**
  * The Class JpaFixedOffDayRestTimeGetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
 public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMemento {
 
 	/** The lst entity. */
-	private List<KshmtFixedHolRestSet> lstEntity;
+	private List<KshmtWtFixBrHolTs> lstEntity;
 
 	/**
 	 * Instantiates a new jpa fixed off day rest time get memento.
@@ -27,7 +27,7 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 	 * @param lstEntity
 	 *            the lst entity
 	 */
-	public JpaFixedOffDayRestTimeGetMemento(List<KshmtFixedHolRestSet> lstEntity) {
+	public JpaFixedOffDayRestTimeGetMemento(List<KshmtWtFixBrHolTs> lstEntity) {
 		super();
 		this.lstEntity = lstEntity;
 		if (CollectionUtil.isEmpty(this.lstEntity)) {
@@ -46,7 +46,7 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 	public List<DeductionTime> getLstTimezone() {
 		return this.lstEntity.stream()
 				.map(entity -> new DeductionTime(
-						new JpaFixedRestTZDeductionTimeGetMemento<KshmtFixedHolRestSet>(entity)))
+						new JpaFixedRestTZDeductionTimeGetMemento<KshmtWtFixBrHolTs>(entity)))
 				.sorted((item1, item2) -> item1.getStart().v() - item2.getStart().v())
 				.collect(Collectors.toList());
 	}

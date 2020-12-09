@@ -17,7 +17,7 @@ public class JpaOutsideOtSetRepository extends JpaRepository implements OutsideO
 
 	@Override
 	public Optional<OutsideOtSetDto> findById(String companyId) {
-		String sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_SET KOOS "
+		String sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_SET KOOS "
 				+ "WHERE KOOS.CID = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 			stmt.setString(1, companyId);

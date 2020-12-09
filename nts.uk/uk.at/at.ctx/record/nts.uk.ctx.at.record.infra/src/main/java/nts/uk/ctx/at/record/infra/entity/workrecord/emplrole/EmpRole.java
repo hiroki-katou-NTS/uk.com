@@ -8,7 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author danpv
@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "EMP_ROLE")
-public class EmpRole extends UkJpaEntity{
+public class EmpRole extends ContractUkJpaEntity{
 	
 	@EmbeddedId
 	public EmpRolePk key;

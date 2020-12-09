@@ -15,7 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
-import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
+import nts.uk.ctx.at.function.infra.entity.attendancetype.KfnctAttendanceType;
 
 /**
  * 
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
 @Stateless
 public class JpaAttendanceTypeRepository extends JpaRepository implements AttendanceTypeRepository {
 
-	private static final String SEL_ITEM_BY_TYPE = "SELECT a " + "FROM KmnmtAttendanceType a "
+	private static final String SEL_ITEM_BY_TYPE = "SELECT a " + "FROM KfnctAttendanceType a "
 			+ "WHERE a.kmnmtAttendanceTypePK.companyId = :companyId "
 			+ "AND a.kmnmtAttendanceTypePK.screenUseAtr = :screenUseAtr";
 
@@ -34,7 +34,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<AttendanceType> getItemByScreenUseAtr(String companyID, int screenUseAtr) {
-		return this.queryProxy().query(SEL_ITEM_BY_TYPE, KmnmtAttendanceType.class).setParameter("companyId", companyID)
+		return this.queryProxy().query(SEL_ITEM_BY_TYPE, KfnctAttendanceType.class).setParameter("companyId", companyID)
 				.setParameter("screenUseAtr", screenUseAtr).getList().stream()
 				.map(x -> AttendanceType.createSimpleFromJavaType(x.kmnmtAttendanceTypePK.companyId,
 						x.kmnmtAttendanceTypePK.attendanceItemId, x.kmnmtAttendanceTypePK.screenUseAtr,

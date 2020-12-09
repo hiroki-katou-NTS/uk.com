@@ -159,7 +159,6 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 
     private List<KrqdtAppTrip> toEntity(BusinessTrip domain) {
         String cid = AppContexts.user().companyId();
-        String contractCd = AppContexts.user().contractCode();
         List<KrqdtAppTrip> entities = new ArrayList<>();
         if(domain.getInfos().isEmpty()) {
             return null;
@@ -167,7 +166,6 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         domain.getInfos().stream().forEach(i -> {
             KrqdtAppTrip entity = new KrqdtAppTrip();
             entity.setKrqdtAppTripPK(new KrqdtAppTripPK(cid, domain.getAppID(), i.getDate()));
-            entity.setContractCD(contractCd);
             entity.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
             entity.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
             entity.setStartTime(domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get().v() : null);

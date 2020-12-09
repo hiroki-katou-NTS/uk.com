@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGPT_TOPPAGE_SET")
-public class CcgptTopPageSetting extends UkJpaEntity {
+public class CcgptTopPageSetting extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public CcgptTopPageSettingPK ccgptTopPageSettingPK;

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTs;
 
 /**
  * The Class JpaFlowOTTimeSettingSetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
 public class JpaFlowOTTimeSettingSetMemento implements FlowTimeSetMemento {
 
 	/** The entity. */
-	private KshmtOtTimeZone entity; 
+	private KshmtWtFloOverTs entity; 
 	
 	/**
 	 * Instantiates a new jpa flow OT time setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowOTTimeSettingSetMemento(KshmtOtTimeZone entity) {
+	public JpaFlowOTTimeSettingSetMemento(KshmtWtFloOverTs entity) {
 		super();
 		this.entity = entity;
 	}

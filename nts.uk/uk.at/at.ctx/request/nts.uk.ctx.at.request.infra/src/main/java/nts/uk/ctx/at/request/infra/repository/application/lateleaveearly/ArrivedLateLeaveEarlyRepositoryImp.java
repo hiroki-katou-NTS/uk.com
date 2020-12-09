@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLat
  */
 @Stateless
 public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements ArrivedLateLeaveEarlyRepository {
-	private final String SELECT_BY_CID_APPID = "SELECT * FROM KRQDT_APP_LATE_OR_LEAVE " + "WHERE CID = @companyId"
+	private final String SELECT_BY_CID_APPID = "SELECT * FROM KRQDT_APP_LATE_EARLY " + "WHERE CID = @companyId"
 			+ " AND APP_ID = @appId";
 
 	/*

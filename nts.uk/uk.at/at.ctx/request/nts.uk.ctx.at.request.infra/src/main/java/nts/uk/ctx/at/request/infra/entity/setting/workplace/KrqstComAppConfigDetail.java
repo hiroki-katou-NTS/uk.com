@@ -28,7 +28,7 @@
 //import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 //import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.AppUseSetRemark;
 //import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
-//import nts.uk.shr.infra.data.entity.UkJpaEntity;
+//import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 ///**
 // *  会社-申請承認機能設定
 // * @author Doan Duy Hung
@@ -39,7 +39,7 @@
 //@NoArgsConstructor
 //@Table(name = "KRQST_COM_APP_CF_DETAIL")
 //@Builder
-//public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable{
+//public class KrqstComAppConfigDetail extends ContractUkJpaEntity implements Serializable{
 //	
 //	@EmbeddedId
 //	public KrqstComAppConfigDetailPK krqstWpAppConfigDetailPK;

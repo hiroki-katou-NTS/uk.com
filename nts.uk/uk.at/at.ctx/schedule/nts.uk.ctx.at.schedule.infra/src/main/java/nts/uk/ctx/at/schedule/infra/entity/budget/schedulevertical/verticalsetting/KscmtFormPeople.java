@@ -15,13 +15,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_FORM_PEOPLE")
-public class KscmtFormPeople extends UkJpaEntity implements Serializable {
+public class KscmtFormPeople extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */
@@ -37,7 +37,7 @@ public class KscmtFormPeople extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscmtGenVertItem kscmtGenVertItemPeople;
+	public KscmtVerticalItem kscmtGenVertItemPeople;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtFormPeople", orphanRemoval = true)
 	public List<KscmtFormPeopleFunc> listPeopleFunc;

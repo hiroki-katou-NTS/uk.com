@@ -24,15 +24,15 @@ import nts.uk.shr.com.i18n.TextResource;
 public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCategoryExcelRepo {
 
 	private static final String SELECT_CATE_EXCEL = "SELECT c.CATEGORY_CD, c.CATEGORY_NAME, c.MEMO, d.TOTAL_ITEM_NO as totalItemNo, "
-				+ "(SELECT e.TOTAL_ITEM_NAME FROM KSCMT_TOTAL_EVAL_ITEM e 	"
+				+ "(SELECT e.TOTAL_ITEM_NAME FROM KSCMT_HORIZONTAL_ITEM e 	"
 				+ "WHERE e.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and e.CID = ?companyId) "
 				+ "as itemName, g.TOTAL_TIMES_NAME as totalTimesName , h.YEAR_HD_ATR,h.HAVY_HD_ATR, h.SPHD_ATR, h.HALF_DAY_ATR as halfDay "
-				+ " ,g.TOTAL_TIMES_NO as timesNo FROM KSCMT_HORI_TOTAL_CATEGORY c "
-				+ "JOIN KSCMT_TOTAL_EVAL_ORDER d on d.CID = ?companyId  and c.CID=?companyId "
-				+ "and d.CATEGORY_CD = c.CATEGORY_CD LEFT JOIN KSCST_HORI_TOTAL_CNT_SET f "
+				+ " ,g.TOTAL_TIMES_NO as timesNo FROM KSCMT_HORIZONTAL_CATEGORY c "
+				+ "JOIN KSCMT_HORIZONTAL_SORT d on d.CID = ?companyId  and c.CID=?companyId "
+				+ "and d.CATEGORY_CD = c.CATEGORY_CD LEFT JOIN KSCMT_HORIZONTAL_CNT_AGG f "
 				+ "on  f.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and f.CID = ?companyId"
 				+ " and f.CATEGORY_CD = d.CATEGORY_CD "
-				+ "LEFT JOIN KSHST_TOTAL_TIMES g on g.TOTAL_TIMES_NO = f.TOTAL_TIME_NO and g.CID=?companyId "
+				+ "LEFT JOIN KSHMT_TOTAL_TIMES g on g.TOTAL_TIMES_NO = f.TOTAL_TIME_NO and g.CID=?companyId "
 				+ "LEFT JOIN KSCST_HORI_CAL_DAYS_SET h on h.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and h.CID = ?companyId  and h.CATEGORY_CD = d.CATEGORY_CD"
 				+ " ORDER BY c.CATEGORY_CD,d.DISPORDER, f.TOTAL_TIME_NO"
 				

@@ -17,7 +17,7 @@
 //import nts.arc.enums.EnumAdaptor;
 //import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
 //import nts.uk.ctx.at.request.dom.setting.workplace.SelectionFlg;
-//import nts.uk.shr.infra.data.entity.UkJpaEntity;
+//import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 ///**
 // * 会社別申請承認設定
 // * @author Doan Duy Hung
@@ -27,7 +27,7 @@
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Table(name = "KRQST_COM_APP_CONFIG")
-//public class KrqstComAppConfig extends UkJpaEntity implements Serializable{
+//public class KrqstComAppConfig extends ContractUkJpaEntity implements Serializable{
 //	
 //	private static final long serialVersionUID = 1L;
 //	/**

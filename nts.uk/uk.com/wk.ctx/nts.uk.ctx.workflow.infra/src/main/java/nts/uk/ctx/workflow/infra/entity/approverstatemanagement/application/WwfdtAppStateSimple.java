@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVER_STATE")
 @Builder
-public class WwfdtAppStateSimple extends UkJpaEntity {
+public class WwfdtAppStateSimple extends ContractUkJpaEntity {
 	@EmbeddedId
 	public WwfdpApproverStatePK wwfdpApproverStatePK;
 	

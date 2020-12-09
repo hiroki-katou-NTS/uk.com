@@ -11,7 +11,7 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 勤務変更申請
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQDT_APP_WORK_CHANGE_BK")
-public class KrqdtAppWorkChange_Old extends UkJpaEntity implements Serializable
+public class KrqdtAppWorkChange_Old extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

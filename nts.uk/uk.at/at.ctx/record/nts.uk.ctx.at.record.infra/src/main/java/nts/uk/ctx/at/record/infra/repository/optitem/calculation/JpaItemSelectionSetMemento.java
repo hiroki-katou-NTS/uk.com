@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelect;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelectionPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.ItemSelectionSetMemento;
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceIt
 public class JpaItemSelectionSetMemento implements ItemSelectionSetMemento {
 
 	/** The item selections. */
-	private List<KrcmtCalcItemSelection> itemSelections;
+	private List<KrcmtAnyfItemSelect> itemSelections;
 
 	/** The formula pk. */
 	private KrcmtOptItemFormulaPK formulaPk;
@@ -66,7 +66,7 @@ public class JpaItemSelectionSetMemento implements ItemSelectionSetMemento {
 		items.forEach(item -> {
 
 			KrcmtCalcItemSelectionPK pk = new KrcmtCalcItemSelectionPK(this.formulaPk, item.getAttendanceItemId());
-			KrcmtCalcItemSelection entity = new KrcmtCalcItemSelection(pk);
+			KrcmtAnyfItemSelect entity = new KrcmtAnyfItemSelect(pk);
 
 			entity.setOperator(item.getOperator().value);
 			entity.setMinusSegment(this.minusSegment);

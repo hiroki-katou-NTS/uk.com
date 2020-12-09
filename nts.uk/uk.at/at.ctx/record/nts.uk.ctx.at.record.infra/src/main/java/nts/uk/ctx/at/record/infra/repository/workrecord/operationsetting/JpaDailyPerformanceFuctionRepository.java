@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformFuncRepo;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceFun;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcctAttendanceFun;
 
 /**
  * @author danpv
@@ -21,12 +21,12 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPer
 public class JpaDailyPerformanceFuctionRepository extends JpaRepository
 		implements DailyPerformFuncRepo {
 
-	private static final String GET_ALL_DAI_PER_FUNC = "SELECT df FROM KrcmtDaiPerformanceFun df ORDER BY df.displayOrder";
+	private static final String GET_ALL_DAI_PER_FUNC = "SELECT df FROM KrcctAttendanceFun df ORDER BY df.displayOrder";
 
 	@Override
 	public List<DailyPerformanceFunction> getAll() {
-		List<KrcmtDaiPerformanceFun> entities = this.queryProxy()
-				.query(GET_ALL_DAI_PER_FUNC, KrcmtDaiPerformanceFun.class).getList();
+		List<KrcctAttendanceFun> entities = this.queryProxy()
+				.query(GET_ALL_DAI_PER_FUNC, KrcctAttendanceFun.class).getList();
 		List<DailyPerformanceFunction> results = new ArrayList<>();
 		entities.forEach(ent -> results.add(
 				new DailyPerformanceFunction(ent.functionNo, ent.displayNameOfFunction, ent.descriptionOfFunction, ent.displayOrder, ent.initValue  == 1 ? true : false)));

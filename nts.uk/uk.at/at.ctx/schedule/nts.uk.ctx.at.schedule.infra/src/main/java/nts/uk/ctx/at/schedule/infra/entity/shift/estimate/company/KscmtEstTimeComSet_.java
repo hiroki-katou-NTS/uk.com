@@ -10,25 +10,25 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscmtEstTimeComSet_.
  */
-@StaticMetamodel(KscmtEstTimeComSet.class)
+@StaticMetamodel(KscmtEstTimeCom.class)
 public class KscmtEstTimeComSet_ {
 
 	/** The kscmt est time com set PK. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, KscmtEstTimeComSetPK> kscmtEstTimeComSetPK;
+	public static volatile SingularAttribute<KscmtEstTimeCom, KscmtEstTimeComSetPK> kscmtEstTimeComSetPK;
 	
 	/** The est condition 1 st time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition1stTime;
+	public static volatile SingularAttribute<KscmtEstTimeCom, Integer> estCondition1stTime;
 	
 	/** The est condition 2 nd time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition2ndTime;
+	public static volatile SingularAttribute<KscmtEstTimeCom, Integer> estCondition2ndTime;
 	
 	/** The est condition 3 rd time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition3rdTime;
+	public static volatile SingularAttribute<KscmtEstTimeCom, Integer> estCondition3rdTime;
 	
 	/** The est condition 4 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition4thTime;
+	public static volatile SingularAttribute<KscmtEstTimeCom, Integer> estCondition4thTime;
 	
 	/** The est condition 5 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition5thTime;
+	public static volatile SingularAttribute<KscmtEstTimeCom, Integer> estCondition5thTime;
 	
 }

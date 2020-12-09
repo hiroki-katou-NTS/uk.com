@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHist;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -21,7 +21,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento {
 
 	/** The kshmt working cond. */
-	private List<KshmtWorkingCond> entities;
+	private List<KshmtWorkcondHist> entities;
 
 	/** The company id. */
 	private String companyId;
@@ -35,7 +35,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 	 * @param entities
 	 *            the entity
 	 */
-	public JpaWorkingConditionSetMemento(List<KshmtWorkingCond> entities) {
+	public JpaWorkingConditionSetMemento(List<KshmtWorkcondHist> entities) {
 		entities.stream().forEach(item -> {
 			if (item.getKshmtWorkingCondPK() == null) {
 				item.setKshmtWorkingCondPK(new KshmtWorkingCondPK());
@@ -103,7 +103,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 		
 		// Add new items
 		histIds.stream().filter(item -> !entityHistIds.contains(item)).forEach(item -> {
-			KshmtWorkingCond kshmtWorkingCond = new KshmtWorkingCond();
+			KshmtWorkcondHist kshmtWorkingCond = new KshmtWorkcondHist();
 			kshmtWorkingCond.setCid(this.companyId);
 			KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(this.employeeId, item);
 			kshmtWorkingCond.setKshmtWorkingCondPK(kshmtWorkingCondPK);

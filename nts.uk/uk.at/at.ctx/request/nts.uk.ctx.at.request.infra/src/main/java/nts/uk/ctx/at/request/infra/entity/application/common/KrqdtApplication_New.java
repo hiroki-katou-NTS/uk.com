@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KRQDT_APPLICATION")
 @Builder
-public class KrqdtApplication_New extends UkJpaEntity {
+public class KrqdtApplication_New extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpApplicationPK_New krqdpApplicationPK;

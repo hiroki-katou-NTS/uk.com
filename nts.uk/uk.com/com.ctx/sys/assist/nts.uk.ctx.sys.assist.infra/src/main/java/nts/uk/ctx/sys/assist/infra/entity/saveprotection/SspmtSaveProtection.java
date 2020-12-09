@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 保存保護
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_SAVE_PROTECTION")
-public class SspmtSaveProtection extends UkJpaEntity implements Serializable {
+public class SspmtSaveProtection extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

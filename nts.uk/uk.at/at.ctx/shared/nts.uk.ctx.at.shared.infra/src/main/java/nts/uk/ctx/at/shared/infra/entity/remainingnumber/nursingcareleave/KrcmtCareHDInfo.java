@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="KRCMT_CARE_HD_INFO")
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Getter
 @Setter
-public class KrcmtCareHDInfo extends UkJpaEntity{
+public class KrcmtCareHDInfo extends ContractUkJpaEntity{
 
 	//社員ID
 	@Id

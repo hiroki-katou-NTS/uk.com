@@ -157,7 +157,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		 List < BusinessTypeOfEmployee > result = new ArrayList < > ();
 		 
 		 CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			 String sql = "SELECT * FROM KRCMT_BUS_TYPE_SYAIN WHERE HIST_ID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			 String sql = "SELECT * FROM KRCMT_BUS_TYPE_HIST_ITEM WHERE HIST_ID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 	
 		  try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			   for (int i = 0; i < subList.size(); i++) {
@@ -179,7 +179,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 
 	@Override
 	public void addAll(List<BusinessTypeOfEmployee> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_BUS_TYPE_SYAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCMT_BUS_TYPE_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, BUSINESS_TYPE_CD)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -220,7 +220,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 
 	@Override
 	public void updateAll(List<BusinessTypeOfEmployee> domains) {
-		String UP_SQL = "UPDATE KRCMT_BUS_TYPE_SYAIN SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCMT_BUS_TYPE_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " BUSINESS_TYPE_CD = BUSINESS_TYPE_CD_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
 		String updCcd = AppContexts.user().companyCode();

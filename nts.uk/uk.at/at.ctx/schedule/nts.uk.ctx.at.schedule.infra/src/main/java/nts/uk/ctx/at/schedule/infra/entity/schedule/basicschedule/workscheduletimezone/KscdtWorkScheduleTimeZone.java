@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 勤務予定時間帯
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "KSCDT_SCHE_TIMEZONE")
-public class KscdtWorkScheduleTimeZone extends UkJpaEntity implements Serializable {
+public class KscdtWorkScheduleTimeZone extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

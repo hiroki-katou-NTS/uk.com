@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTs;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
@@ -29,7 +29,7 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	private int perWorkDayOffAtr;
 
 	/** The entity. */
-	private KshmtPersonalDayOfWeek entity;
+	private KshmtWorkcondWeek entity;
 
 	/**
 	 * Instantiates a new jpa single day schedule day of set memento.
@@ -38,7 +38,7 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 *            the entity
 	 */
 	public JpaSDayScheDayOfSetMemento(String historyId, int perWorkDayOffAtr,
-			KshmtPersonalDayOfWeek entity, String employeeId) {
+			KshmtWorkcondWeek entity, String employeeId) {
 		this.historyId = historyId;
 		this.perWorkDayOffAtr = perWorkDayOffAtr;
 		if (entity.getKshmtPersonalDayOfWeekPK() == null) {
@@ -73,9 +73,9 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
-			KshmtDayofweekTimeZone entity = new KshmtDayofweekTimeZone();
-			item.saveToMemento(new JpaTimezoneSetMemento<KshmtDayofweekTimeZone>(historyId,
+		List<KshmtWorkcondWeekTs> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
+			KshmtWorkcondWeekTs entity = new KshmtWorkcondWeekTs();
+			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkcondWeekTs>(historyId,
 					this.perWorkDayOffAtr, entity));
 			return entity;
 		}).collect(Collectors.toList());

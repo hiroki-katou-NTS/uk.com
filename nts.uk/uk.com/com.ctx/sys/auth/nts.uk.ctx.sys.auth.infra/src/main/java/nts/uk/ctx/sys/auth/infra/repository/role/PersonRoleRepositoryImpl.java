@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
-import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
+import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRolePerson;
 
 @Stateless
 public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRoleRepository {
@@ -21,7 +21,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	/**
 	 * JPQL: find (without where)
 	 */
-	private static final String FIND_NO_WHERE = "SELECT e FROM SacmtPersonRole e";
+	private static final String FIND_NO_WHERE = "SELECT e FROM SacmtRolePerson e";
 
 	/**
 	 * JPQL: find by role id
@@ -35,7 +35,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 
 	@Override
 	public Optional<PersonRole> find(String roleId) {
-		SacmtPersonRole entity = this.queryProxy().query(FIND_BY_ROLE_ID, SacmtPersonRole.class)
+		SacmtRolePerson entity = this.queryProxy().query(FIND_BY_ROLE_ID, SacmtRolePerson.class)
 				.setParameter("roleId", roleId).getSingleOrNull();
 		PersonRole domain = new PersonRole();
 		if (entity != null) {
@@ -44,7 +44,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 		return Optional.of(domain);
 	}
 
-	private static PersonRole toDomain(SacmtPersonRole entity) {
+	private static PersonRole toDomain(SacmtRolePerson entity) {
 		PersonRole domain = new PersonRole();
 		domain.setRoleId(entity.getRoleId());
 		domain.setReferFutureDate(entity.isReferFutureDate());
@@ -56,7 +56,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 		List<PersonRole> result = new ArrayList<>();
 		if(roleIds != null){
 			CollectionUtil.split(roleIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				result.addAll(this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtPersonRole.class)
+				result.addAll(this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtRolePerson.class)
 					.setParameter("roleIds", subList).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList()));
 			});
 		}
@@ -69,19 +69,19 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 
 	@Override
 	public void update(PersonRole personRole) {
-		SacmtPersonRole updateEntity = this.queryProxy().find(personRole.getRoleId(), SacmtPersonRole.class).get();
+		SacmtRolePerson updateEntity = this.queryProxy().find(personRole.getRoleId(), SacmtRolePerson.class).get();
 		updateEntity.setReferFutureDate(personRole.getReferFutureDate());
 		this.commandProxy().update(updateEntity);
 	}
 
 	@Override
 	public void remove(String roleId) {	
-			this.commandProxy().remove(SacmtPersonRole.class, roleId);
+			this.commandProxy().remove(SacmtRolePerson.class, roleId);
 	}
 
 	
-	private static SacmtPersonRole  toEntity(PersonRole personRole){
-		SacmtPersonRole entity = new SacmtPersonRole();
+	private static SacmtRolePerson  toEntity(PersonRole personRole){
+		SacmtRolePerson entity = new SacmtRolePerson();
 		entity.setRoleId(personRole.getRoleId());
 		entity.setReferFutureDate(personRole.getReferFutureDate());
 		return entity;

@@ -15,13 +15,13 @@ import nts.uk.ctx.at.request.dom.setting.company.request.stamp.GoOutTypeDisplayC
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampDisplayControl;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.SupportFrameDispNumber;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name="KRQST_STAMP_REQUEST_SET")
-public class KrqstStampRequestSetting extends UkJpaEntity {
+public class KrqstStampRequestSetting extends ContractUkJpaEntity {
 	
 	@Id
 	@Column(name="CID")

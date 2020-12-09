@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name ="KRCMT_ANNLEA_MAX")
-public class KrcmtAnnLeaMax extends UkJpaEntity{
+public class KrcmtAnnLeaMax extends ContractUkJpaEntity{
 	
 	@Id
     @Column(name = "SID")

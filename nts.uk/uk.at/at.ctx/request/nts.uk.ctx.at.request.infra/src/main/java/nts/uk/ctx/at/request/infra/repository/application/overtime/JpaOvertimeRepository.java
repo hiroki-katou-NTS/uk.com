@@ -31,7 +31,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtTime36UpLimitPerMonth;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtYear36OverMonth;
@@ -115,10 +115,10 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 	}
 
 	private KrqdtAppOvertime toEntity(AppOverTime domain) {
-		List<KrqdtOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream().map(item -> {
+		List<KrqdtAppOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream().map(item -> {
 			KrqdtOvertimeInputPK pk = new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 					item.getAttendanceType().value, item.getFrameNo(), item.getTimeItemTypeAtr().value);
-			return new KrqdtOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(),
+			return new KrqdtAppOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(),
 					item.getEndTime() == null ? null : item.getEndTime().v(),
 					item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 		}).collect(Collectors.toList());
@@ -207,7 +207,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 		Set<KrqdtYear36OverMonth> lstYear36OverMonth = new HashSet<KrqdtYear36OverMonth>();
 		Set<KrqdtTime36UpLimitPerMonth> lstAverageTimeLst = new HashSet<KrqdtTime36UpLimitPerMonth>();
-		Set<KrqdtOvertimeInput> lstKrqdtOvertimeInput = new HashSet<KrqdtOvertimeInput>();
+		Set<KrqdtAppOvertimeInput> lstKrqdtOvertimeInput = new HashSet<KrqdtAppOvertimeInput>();
 		Set<KrqdtAppOvertimeDetail> lstkrqdtAppOvertimeDetail = new HashSet<KrqdtAppOvertimeDetail>();
 		Set<KrqdtAppOvertime> lstKrqdtAppOvertime = new HashSet<KrqdtAppOvertime>();
 
@@ -220,7 +220,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 					+ "detail.EXCEPTION_LIMIT_ERROR_TIME, detail.ACTUAL_TIME_YEAR, detail.LIMIT_TIME_YEAR, detail.REG_APPLICATION_TIME, detail.REG_ACTUAL_TIME, detail.REG_LIMIT_TIME, detail.REG_LIMIT_TIME_MULTI, "
 					+ "om.OVER_MONTH, " + "detm.START_YM, detm.END_YM, detm.AVE_TIME, detm.TOTAL_TIME "
 					+ "FROM KRQDT_APP_OVERTIME ot "
-					+ "LEFT JOIN KRQDT_OVERTIME_INPUT input ON ot.CID = input.CID and ot.APP_ID = input.APP_ID "
+					+ "LEFT JOIN KRQDT_APP_OVERTIME_INPUT input ON ot.CID = input.CID and ot.APP_ID = input.APP_ID "
 					+ "LEFT JOIN KRQDT_APP_OVERTIME_DETAIL detail ON ot.CID = detail.CID and ot.APP_ID = detail.APP_ID "
 					+ "LEFT JOIN KRQDT_YEAR36_OVER_MONTH om ON ot.CID = om.CID and ot.APP_ID = om.APP_ID "
 					+ "LEFT JOIN KRQDT_APP_OVERTIME_DET_M detm ON ot.CID = detm.CID and ot.APP_ID = detm.APP_ID "
@@ -272,10 +272,10 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 			// get krqdtAppOvertime
 			KrqdtAppOvertime krqdtAppOvertime = optKrqdtAppOvertime.get();
-			// get list KrqdtOvertimeInput
-			List<KrqdtOvertimeInput> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
+			// get list KrqdtAppOvertimeInput
+			List<KrqdtAppOvertimeInput> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
 					.filter(x -> x.getKrqdtOvertimeInputPK().getAppId().equals(appId)).collect(Collectors.toList());
-			// set KrqdtOvertimeInput for krqdtAppOvertime
+			// set KrqdtAppOvertimeInput for krqdtAppOvertime
 			krqdtAppOvertime.setOvertimeInputs(lstKrqdtOvertimeInputFilter);
 			// get KrqdtAppOvertimeDetail
 			Optional<KrqdtAppOvertimeDetail> optKrqdtAppOvertimeDetail = lstkrqdtAppOvertimeDetail.stream()
@@ -326,8 +326,8 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				rs.getInt("AVE_TIME"), rs.getInt("TOTAL_TIME"));
 	}
 
-	private KrqdtOvertimeInput createKrqdtOvertimeInput(String cid, String appId, NtsResultRecord rs) {
-		return new KrqdtOvertimeInput(
+	private KrqdtAppOvertimeInput createKrqdtOvertimeInput(String cid, String appId, NtsResultRecord rs) {
+		return new KrqdtAppOvertimeInput(
 				new KrqdtOvertimeInputPK(cid, appId, rs.getInt("ATTENDANCE_ID"), rs.getInt("FRAME_NO"),
 						rs.getInt("TIME_ITEM_TYPE_ATR")),
 				rs.getInt("START_TIME"), rs.getInt("END_TIME"), rs.getInt("APPLICATION_TIME_INPUT"));

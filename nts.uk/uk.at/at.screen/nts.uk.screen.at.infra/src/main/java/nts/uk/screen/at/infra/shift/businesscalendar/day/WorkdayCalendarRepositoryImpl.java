@@ -17,7 +17,7 @@ public class WorkdayCalendarRepositoryImpl extends JpaRepository implements Work
 
         stringBuilder.append("SELECT NEW " + SixMonthsCalendarWorkPlaceScreenDto.class.getName());
         stringBuilder.append(" (c.ksmmtCalendarWorkplacePK.workPlaceId, c.ksmmtCalendarWorkplacePK.date , c.workingDayAtr) ");
-        stringBuilder.append("FROM KsmmtCalendarWorkplace c ");
+        stringBuilder.append("FROM KscmtCalendarWkp c ");
         stringBuilder.append("WHERE c.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ");
         stringBuilder.append("AND c.ksmmtCalendarWorkplacePK.date >= :startDate AND c.ksmmtCalendarWorkplacePK.date <= :endDate ");
         SELECT_SIXMONTHS_WORKPLACE = stringBuilder.toString();

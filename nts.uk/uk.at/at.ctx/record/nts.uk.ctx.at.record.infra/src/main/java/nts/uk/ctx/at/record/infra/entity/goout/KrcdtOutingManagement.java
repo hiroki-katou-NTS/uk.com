@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.goout.OutingManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 外出管理
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_OUTING_MANAGEMENT")
-public class KrcdtOutingManagement extends UkJpaEntity implements Serializable {
+public class KrcdtOutingManagement extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

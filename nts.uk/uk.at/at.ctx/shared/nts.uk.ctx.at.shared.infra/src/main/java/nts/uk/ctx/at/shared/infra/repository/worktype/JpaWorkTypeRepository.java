@@ -624,7 +624,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	/**
-	 * Insert workType to KSHMT_WORKTYPE
+	 * Insert workType to KSHMT_WKTP
 	 */
 	@Override
 	public void add(WorkType workType) {

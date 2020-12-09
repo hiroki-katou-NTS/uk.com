@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The primary key class for the KSHST_FLEX_WORK_SETTING database table.
+ * The primary key class for the KSHMT_FLEX_MNG database table.
  * 
  */
 @Embeddable

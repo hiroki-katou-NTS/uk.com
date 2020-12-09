@@ -22,5 +22,5 @@ public class SgwmtLockoutDataPK_ {
 	public static volatile SingularAttribute<SgwmtLockoutDataPK, String> contractCd;
 	
 	/** The lockout date time. */
-    public static volatile SingularAttribute<SgwmtLockoutData, GeneralDateTime> lockoutDateTime;
+    public static volatile SingularAttribute<SgwdtLockout, GeneralDateTime> lockoutDateTime;
 }

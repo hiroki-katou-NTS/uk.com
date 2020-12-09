@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SACMT_ROLE_INDIVI_GRANT")
-public class SacmtRoleIndiviGrant extends UkJpaEntity implements Serializable {
+public class SacmtRoleIndiviGrant extends ContractUkJpaEntity implements Serializable {
     
 	private static final long serialVersionUID = 1L;
 	

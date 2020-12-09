@@ -5,12 +5,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-23T17:54:14")
-@StaticMetamodel(KshmtFlexStampReflect.class)
+@StaticMetamodel(KshmtWtFleStmpRefTs.class)
 public class KshmtFlexStampReflect_ { 
 
-    public static volatile SingularAttribute<KshmtFlexStampReflect, KshmtFlexStampReflectPK> kshmtFlexStampReflectPK;
-    public static volatile SingularAttribute<KshmtFlexStampReflect, Integer> startTime;
-    public static volatile SingularAttribute<KshmtFlexStampReflect, Integer> endTime;
-    public static volatile SingularAttribute<KshmtFlexStampReflect, Integer> exclusVer;
+    public static volatile SingularAttribute<KshmtWtFleStmpRefTs, KshmtFlexStampReflectPK> kshmtFlexStampReflectPK;
+    public static volatile SingularAttribute<KshmtWtFleStmpRefTs, Integer> startTime;
+    public static volatile SingularAttribute<KshmtWtFleStmpRefTs, Integer> endTime;
+    public static volatile SingularAttribute<KshmtWtFleStmpRefTs, Integer> exclusVer;
 
 }

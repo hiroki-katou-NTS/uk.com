@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name="KFNMT_LAST_EXEC_DATETIME")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtLastExecDateTime extends UkJpaEntity implements Serializable{
+public class KfnmtLastExecDateTime extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

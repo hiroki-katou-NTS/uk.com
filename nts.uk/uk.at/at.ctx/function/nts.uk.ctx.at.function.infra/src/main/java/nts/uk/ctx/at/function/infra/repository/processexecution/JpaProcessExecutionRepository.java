@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionScope;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtAutoexecScope;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecution;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionPK;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionSetting;
@@ -61,7 +61,7 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		this.commandProxy().remove(KfnmtProcessExecution.class,kfnmtProcExecPK);
 	}
 	
-	private KfnmtExecutionScope setScope(KfnmtExecutionScope old, KfnmtExecutionScope update) {
+	private KfnmtAutoexecScope setScope(KfnmtAutoexecScope old, KfnmtAutoexecScope update) {
 		old.execScopeCls = update.execScopeCls;
 		old.refDate = update.refDate;
 		return old;

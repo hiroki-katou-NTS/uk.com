@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SRCDT_NVARCHAR_RAW_VALUE")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtNvarcharRawValue extends UkJpaEntity {
+public class SrcdtNvarcharRawValue extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
@@ -32,10 +32,10 @@ public class SrcdtNvarcharRawValue extends UkJpaEntity {
 	public String value;
 
 	@OneToOne(mappedBy = "rawNvarcharValueBefore")
-	public SrcdtDataCorrectionLog beforeLog;
+	public SrcdtDataCorrection beforeLog;
 
 	@OneToOne(mappedBy = "rawNvarcharValueAfter")
-	public SrcdtDataCorrectionLog afterLog;
+	public SrcdtDataCorrection afterLog;
 
 	@Override
 	protected Object getKey() {

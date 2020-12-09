@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * author hieult
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSHST_WORK_MANAGEMENT")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstWorkManagementMultiple extends UkJpaEntity implements Serializable {
+public class KshstWorkManagementMultiple extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

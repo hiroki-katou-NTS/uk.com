@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KWKDT_STAMP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KwkdtStamp extends UkJpaEntity implements Serializable {
+public class KwkdtStamp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
@@ -25,7 +25,7 @@ public class KwkdtStamp extends UkJpaEntity implements Serializable {
 
 //	@JoinColumn(name = "WORK_LOCATION_CD", referencedColumnName = "WORK_LOCATION_CD", insertable = false, updatable = false)
 //	@OneToOne(optional = false, cascade = CascadeType.DETACH)
-//	public KwlmtWorkLocation kwlmtWorkLocation;
+//	public KrcmtWorkLocation kwlmtWorkLocation;
 
 	@Basic(optional = false)
 	@Column(name = "SIFT_CD")

@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 承認フェーズ
  * @author hoatt
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "WWFMT_APPROVAL_PHASE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfmtApprovalPhase extends UkJpaEntity implements Serializable{
+public class WwfmtApprovalPhase extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/

@@ -16,14 +16,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayout;
+import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutNewEntry;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtNewLayoutPk;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemClsPk;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDf;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDfPk;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
-import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtg;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtItem;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,14 +34,14 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 
-	private static final String QUERY_DATA_BY_COMPANYID = "SELECT l FROM PpemtNewLayout l WHERE l.companyId = :companyId";
+	private static final String QUERY_DATA_BY_COMPANYID = "SELECT l FROM PpemtLayoutNewEntry l WHERE l.companyId = :companyId";
 	private static final String GET_LAYOUT_ITEM = "SELECT l FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String GET_LAYOUT_ITEM_DF = "SELECT l FROM PpemtLayoutItemClsDf l WHERE l.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
 
-	private static final String GET_PER_INFO_CTG = "SELECT p FROM PpemtPerInfoCtg p WHERE p.cid = :companyId";
-	private static final String GET_PER_INFO_ITEM = "Select p FROM PpemtPerInfoItem p WHERE p.perInfoCtgId= :perInfoCtgId";
+	private static final String GET_PER_INFO_CTG = "SELECT p FROM PpemtCtg p WHERE p.cid = :companyId";
+	private static final String GET_PER_INFO_ITEM = "Select p FROM PpemtItem p WHERE p.perInfoCtgId= :perInfoCtgId";
 
-	private static final String DELETE_DATA = "DELETE FROM PpemtNewLayout l WHERE l.companyId = :companyId";
+	private static final String DELETE_DATA = "DELETE FROM PpemtLayoutNewEntry l WHERE l.companyId = :companyId";
 	private static final String DELETE_LAYOUT_ITEM = "DELETE FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String DELETE_LAYOUT_ITEM_DF = "DELETE FROM PpemtLayoutItemClsDf l WHERE l.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
 
@@ -63,12 +63,12 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 		// Get company zero id
 		String companyZeroId = AppContexts.user().zeroCompanyIdInContract();
 		// Get company zero data
-		List<PpemtNewLayout> entityComZero = this.entityManager
-				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtNewLayout.class)
+		List<PpemtLayoutNewEntry> entityComZero = this.entityManager
+				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtLayoutNewEntry.class)
 				.setParameter("companyId", companyZeroId).getResultList();
 
-		List<PpemtNewLayout> entityCurrentCom = this.entityManager
-				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtNewLayout.class)
+		List<PpemtLayoutNewEntry> entityCurrentCom = this.entityManager
+				.createQuery(QUERY_DATA_BY_COMPANYID, PpemtLayoutNewEntry.class)
 				.setParameter("companyId", companyId).getResultList();
 
 		if (entityComZero.isEmpty()) {
@@ -109,7 +109,7 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 				// get layoutID
 				String layoutId = IdentifierUtil.randomUniqueId();
 				PpemtNewLayoutPk newPk = new PpemtNewLayoutPk(layoutId);
-				PpemtNewLayout newEntity = new PpemtNewLayout(newPk, companyId, entity.layoutCode,
+				PpemtLayoutNewEntry newEntity = new PpemtLayoutNewEntry(newPk, companyId, entity.layoutCode,
 						entity.layoutName);
 
 				// get get data layout item cls of company Zero
@@ -117,14 +117,14 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 						.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 						.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
-				// get data PPEMT_PER_INFO_CTG CurrentCom
-				List<PpemtPerInfoCtg> perInfoCtgCurrentCom = this.entityManager
-						.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class)
+				// get data PPEMT_CTG CurrentCom
+				List<PpemtCtg> perInfoCtgCurrentCom = this.entityManager
+						.createQuery(GET_PER_INFO_CTG, PpemtCtg.class)
 						.setParameter("companyId", companyId).getResultList();
 
-				// get data PPEMT_PER_INFO_CTG ZeroCom
-				List<PpemtPerInfoCtg> perInfoCtgCurrentZero = this.entityManager
-						.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class)
+				// get data PPEMT_CTG ZeroCom
+				List<PpemtCtg> perInfoCtgCurrentZero = this.entityManager
+						.createQuery(GET_PER_INFO_CTG, PpemtCtg.class)
 						.setParameter("companyId", companyZeroId).getResultList();
 
 				// get data layout item cls df
@@ -138,7 +138,7 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 
 				// insert data layout item cls
 				for (PpemtLayoutItemCls i : itemList) {
-					PpemtPerInfoCtg infoCtgComZero = perInfoCtgCurrentZero.stream()
+					PpemtCtg infoCtgComZero = perInfoCtgCurrentZero.stream()
 							.filter(e -> e.ppemtPerInfoCtgPK.perInfoCtgId.equals(i.categoryId))
 							.findFirst().orElse(null);
 
@@ -154,18 +154,18 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 							.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
 							.collect(Collectors.toList());
 
-					// get data PPEMT_PER_INFO_CTG currentCom
-					List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
-							.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+					// get data PPEMT_CTG currentCom
+					List<PpemtItem> perInfoItemCurrentCom = this.entityManager
+							.createQuery(GET_PER_INFO_ITEM, PpemtItem.class)
 							.setParameter("perInfoCtgId", categoryID).getResultList();
 
-					// get data PPEMT_PER_INFO_CTG ZeroCom
-					List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
-							.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+					// get data PPEMT_CTG ZeroCom
+					List<PpemtItem> perInfoItemzeroCom = this.entityManager
+							.createQuery(GET_PER_INFO_ITEM, PpemtItem.class)
 							.setParameter("perInfoCtgId", i.categoryId).getResultList();
 
 					for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
-						PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
+						PpemtItem infoItemZero = perInfoItemzeroCom.stream()
 								.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId
 										.equals(layoutItem.itemDfID))
 								.findFirst().orElse(null);
@@ -197,7 +197,7 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 					// get layoutID
 					String layoutId = IdentifierUtil.randomUniqueId();
 					PpemtNewLayoutPk newPk = new PpemtNewLayoutPk(layoutId);
-					PpemtNewLayout newEntity = new PpemtNewLayout(newPk, companyId,
+					PpemtLayoutNewEntry newEntity = new PpemtLayoutNewEntry(newPk, companyId,
 							entity.layoutCode, entity.layoutName);
 
 					// get get data layout item cls of company Zero
@@ -206,14 +206,14 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 							.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId)
 							.getResultList();
 
-					// get data PPEMT_PER_INFO_CTG CurrentCom
-					List<PpemtPerInfoCtg> perInfoCtgCurrentCom = this.entityManager
-							.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class)
+					// get data PPEMT_CTG CurrentCom
+					List<PpemtCtg> perInfoCtgCurrentCom = this.entityManager
+							.createQuery(GET_PER_INFO_CTG, PpemtCtg.class)
 							.setParameter("companyId", companyId).getResultList();
 
-					// get data PPEMT_PER_INFO_CTG ZeroCom
-					List<PpemtPerInfoCtg> perInfoCtgCurrentZero = this.entityManager
-							.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class)
+					// get data PPEMT_CTG ZeroCom
+					List<PpemtCtg> perInfoCtgCurrentZero = this.entityManager
+							.createQuery(GET_PER_INFO_CTG, PpemtCtg.class)
 							.setParameter("companyId", companyZeroId).getResultList();
 
 					// get data layout item cls df
@@ -228,7 +228,7 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 
 					// insert data layout item cls
 					for (PpemtLayoutItemCls i : itemList) {
-						PpemtPerInfoCtg infoCtgComZero = perInfoCtgCurrentZero.stream()
+						PpemtCtg infoCtgComZero = perInfoCtgCurrentZero.stream()
 								.filter(e -> e.ppemtPerInfoCtgPK.perInfoCtgId.equals(i.categoryId))
 								.findFirst().orElse(null);
 
@@ -245,18 +245,18 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 								.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
 								.collect(Collectors.toList());
 
-						// get data PPEMT_PER_INFO_CTG currentCom
-						List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
-								.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+						// get data PPEMT_CTG currentCom
+						List<PpemtItem> perInfoItemCurrentCom = this.entityManager
+								.createQuery(GET_PER_INFO_ITEM, PpemtItem.class)
 								.setParameter("perInfoCtgId", categoryID).getResultList();
 
-						// get data PPEMT_PER_INFO_CTG ZeroCom
-						List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
-								.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+						// get data PPEMT_CTG ZeroCom
+						List<PpemtItem> perInfoItemzeroCom = this.entityManager
+								.createQuery(GET_PER_INFO_ITEM, PpemtItem.class)
 								.setParameter("perInfoCtgId", i.categoryId).getResultList();
 
 						for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
-							PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
+							PpemtItem infoItemZero = perInfoItemzeroCom.stream()
 									.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId
 											.equals(layoutItem.itemDfID))
 									.findFirst().orElse(null);
@@ -289,16 +289,16 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 		return Collections.emptyMap();
 	}
 
-	private String checkCategoryCd(List<PpemtPerInfoCtg> list, PpemtPerInfoCtg item) {
-		for (PpemtPerInfoCtg value : list) {
+	private String checkCategoryCd(List<PpemtCtg> list, PpemtCtg item) {
+		for (PpemtCtg value : list) {
 			if (value.categoryCd.equals(item.categoryCd))
 				return value.ppemtPerInfoCtgPK.perInfoCtgId;
 		}
 		return null;
 	}
 
-	private String checkItemDfId(List<PpemtPerInfoItem> list, PpemtPerInfoItem item) {
-		for (PpemtPerInfoItem value : list) {
+	private String checkItemDfId(List<PpemtItem> list, PpemtItem item) {
+		for (PpemtItem value : list) {
 			if (value.itemCd.equals(item.itemCd))
 				return value.ppemtPerInfoItemPK.perInfoItemDefId;
 		}

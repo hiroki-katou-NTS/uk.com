@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpRegulaMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpRegMCalSet;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcmtCalcMSetRegEmp;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpRegMCalSetPK;
 
 /**
@@ -31,7 +31,7 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public void add(EmpRegulaMonthActCalSet domain) {
 		// Create new entity
-		KrcstEmpRegMCalSet entity = new KrcstEmpRegMCalSet();
+		KrcmtCalcMSetRegEmp entity = new KrcmtCalcMSetRegEmp();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -56,7 +56,7 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 		KrcstEmpRegMCalSetPK pk = new KrcstEmpRegMCalSetPK(domain.getComId(),
 				domain.getEmploymentCode().v());
 		
-		this.queryProxy().find(pk, KrcstEmpRegMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcmtCalcMSetRegEmp.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -77,7 +77,7 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 		// Get info
 		KrcstEmpRegMCalSetPK pk = new KrcstEmpRegMCalSetPK(cid, empCode);
 		
-		return this.queryProxy().find(pk, KrcstEmpRegMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcmtCalcMSetRegEmp.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -89,14 +89,14 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void remove(String cid, String empCode) {
-		Optional<KrcstEmpRegMCalSet> optEntity = this.queryProxy().find(new KrcstEmpRegMCalSetPK(cid, empCode),
-				KrcstEmpRegMCalSet.class);
-		KrcstEmpRegMCalSet entity = optEntity.get();
+		Optional<KrcmtCalcMSetRegEmp> optEntity = this.queryProxy().find(new KrcstEmpRegMCalSetPK(cid, empCode),
+				KrcmtCalcMSetRegEmp.class);
+		KrcmtCalcMSetRegEmp entity = optEntity.get();
 		this.commandProxy().remove(entity);
 
 	}
 
-	private EmpRegulaMonthActCalSet toDomain (KrcstEmpRegMCalSet e) {
+	private EmpRegulaMonthActCalSet toDomain (KrcmtCalcMSetRegEmp e) {
 		
 		return EmpRegulaMonthActCalSet.of(new EmploymentCode(e.getKrcstEmpRegMCalSetPK().getEmpCd()), 
 				e.getKrcstEmpRegMCalSetPK().getCid(), 

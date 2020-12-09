@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog_;
 
 /**
@@ -27,12 +27,12 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog
 @Transactional
 public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepository {
 	//hoatt
-	private static final String DELETE_LOG = "DELETE FROM SgwmtLoginLog c"
+	private static final String DELETE_LOG = "DELETE FROM SgwdtLoginLog c"
 			 + " WHERE c.userId = :userId"
 			 + " AND c.successOrFailure = :successOrFail"
 			 + " AND c.operationSection = :operation";
 	//hoatt
-	private static final String DELETE_LIST_LOG = "DELETE FROM SgwmtLoginLog c"
+	private static final String DELETE_LIST_LOG = "DELETE FROM SgwdtLoginLog c"
 			 + " WHERE c.userId IN :lstUserId"
 			 + " AND c.successOrFailure = :successOrFail"
 			 + " AND c.operationSection = :operation";
@@ -49,8 +49,8 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwmtLoginLog> query = builder.createQuery(SgwmtLoginLog.class);
-		Root<SgwmtLoginLog> root = query.from(SgwmtLoginLog.class);
+		CriteriaQuery<SgwdtLoginLog> query = builder.createQuery(SgwdtLoginLog.class);
+		Root<SgwdtLoginLog> root = query.from(SgwdtLoginLog.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<SgwmtLoginLog> result = em.createQuery(query).getResultList();
+		List<SgwdtLoginLog> result = em.createQuery(query).getResultList();
 		
 		//return
 		return result.isEmpty() ? 0 : result.size();
@@ -83,7 +83,7 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 	 */
 	@Override
 	public void add(LoginLog loginLog) {
-		SgwmtLoginLog entity = new SgwmtLoginLog();
+		SgwdtLoginLog entity = new SgwdtLoginLog();
 		loginLog.saveToMemento(new JpaLoginLogSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}

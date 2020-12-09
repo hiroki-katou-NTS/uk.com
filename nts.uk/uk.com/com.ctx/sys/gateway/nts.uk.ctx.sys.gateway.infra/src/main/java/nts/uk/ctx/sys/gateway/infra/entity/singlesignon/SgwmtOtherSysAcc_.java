@@ -5,12 +5,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-01T10:01:24")
-@StaticMetamodel(SgwmtOtherSysAcc.class)
+@StaticMetamodel(SgwmtSsoOtherSysAcc.class)
 public class SgwmtOtherSysAcc_ { 
 
-    public static volatile SingularAttribute<SgwmtOtherSysAcc, SgwmtOtherSysAccPK> sgwmtOtherSysAccPK;
-    public static volatile SingularAttribute<SgwmtOtherSysAcc, String> ccd;
-    public static volatile SingularAttribute<SgwmtOtherSysAcc, String> userName;
-    public static volatile SingularAttribute<SgwmtOtherSysAcc, Integer> useAtr;
+    public static volatile SingularAttribute<SgwmtSsoOtherSysAcc, SgwmtOtherSysAccPK> sgwmtOtherSysAccPK;
+    public static volatile SingularAttribute<SgwmtSsoOtherSysAcc, String> ccd;
+    public static volatile SingularAttribute<SgwmtSsoOtherSysAcc, String> userName;
+    public static volatile SingularAttribute<SgwmtSsoOtherSysAcc, Integer> useAtr;
 
 }

@@ -14,34 +14,34 @@ import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK;
  * The Class KfnmtStampOutpItemSet_.
  */
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-07-18T10:13:01")
-@StaticMetamodel(KfnmtStampOutpItemSet.class)
+@StaticMetamodel(KfnmtStampOutpItem.class)
 public class KfnmtStampOutpItemSet_ { 
 
     /** The output pos infor. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputPosInfor;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputPosInfor;
     
     /** The output set location. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputSetLocation;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputSetLocation;
     
     /** The output emboss method. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputEmbossMethod;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputEmbossMethod;
     
     /** The output ot. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputOt;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputOt;
     
     /** The output night time. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputNightTime;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputNightTime;
     
     /** The id. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, KfnmtStampOutpItemSetPK> id;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, KfnmtStampOutpItemSetPK> id;
     
     /** The stamp output set name. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, String> stampOutputSetName;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, String> stampOutputSetName;
     
     /** The output work hours. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputWorkHours;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputWorkHours;
     
     /** The output support card. */
-    public static volatile SingularAttribute<KfnmtStampOutpItemSet, BigDecimal> outputSupportCard;
+    public static volatile SingularAttribute<KfnmtStampOutpItem, BigDecimal> outputSupportCard;
 
 }

@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshstSuperHdConMed;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshmtHd60hConMed;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateSetMemento;
 
 /**
@@ -22,14 +22,14 @@ import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60
 public class JpaSuperHD60HConMedSetMemento implements SuperHD60HConMedSetMemento{
 	
 	/** The entity. */
-	private KshstSuperHdConMed entity;
+	private KshmtHd60hConMed entity;
 	
 	/**
 	 * Instantiates a new jpa super HD 60 H con med set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaSuperHD60HConMedSetMemento(KshstSuperHdConMed entity){
+	public JpaSuperHD60HConMedSetMemento(KshmtHd60hConMed entity){
 		this.entity = entity;
 	}
 	
@@ -73,7 +73,7 @@ public class JpaSuperHD60HConMedSetMemento implements SuperHD60HConMedSetMemento
 	@Override
 	public void setPremiumExtra60HRates(List<PremiumExtra60HRate> premiumExtra60HRates) {
 		premiumExtra60HRates.stream().map(domain -> {
-			KshstPremiumExt60hRate entity = new KshstPremiumExt60hRate();
+			KshmtHd60hPremiumRate entity = new KshmtHd60hPremiumRate();
 			domain.saveToMemento(
 					new JpaPremiumExtra60HRateSetMemento(entity, this.entity.getCid()));
 			return entity;

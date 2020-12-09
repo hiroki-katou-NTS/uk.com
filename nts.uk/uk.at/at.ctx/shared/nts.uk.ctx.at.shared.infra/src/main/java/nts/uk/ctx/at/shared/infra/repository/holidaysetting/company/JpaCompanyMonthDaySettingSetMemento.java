@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK;
 
 
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDay
 public class JpaCompanyMonthDaySettingSetMemento implements CompanyMonthDaySettingSetMemento{
 	
 	/** The list kshmt com month day set. */
-	private List<KshmtComMonthDaySet> listKshmtComMonthDaySet;
+	private List<KshmtHdpubDPerMCom> listKshmtComMonthDaySet;
 	
 	/** The company id. */
 	private String companyId;
@@ -29,7 +29,7 @@ public class JpaCompanyMonthDaySettingSetMemento implements CompanyMonthDaySetti
 	 *
 	 * @param entities the entities
 	 */
-	public JpaCompanyMonthDaySettingSetMemento(List<KshmtComMonthDaySet> entities){
+	public JpaCompanyMonthDaySettingSetMemento(List<KshmtHdpubDPerMCom> entities){
 		entities.stream().forEach(item -> {
 			if (item.getKshmtComMonthDaySetPK() == null) {
 				item.setKshmtComMonthDaySetPK(new KshmtComMonthDaySetPK());
@@ -61,7 +61,7 @@ public class JpaCompanyMonthDaySettingSetMemento implements CompanyMonthDaySetti
 	public void setPublicHolidayMonthSettings(List<PublicHolidayMonthSetting> publicHolidayMonthSettings) {
 		if(this.listKshmtComMonthDaySet.isEmpty()){
 			publicHolidayMonthSettings.stream().forEach(item -> {
-				KshmtComMonthDaySet entity = new KshmtComMonthDaySet();
+				KshmtHdpubDPerMCom entity = new KshmtHdpubDPerMCom();
 				entity.setKshmtComMonthDaySetPK(new KshmtComMonthDaySetPK());
 				entity.getKshmtComMonthDaySetPK().setCid(this.companyId);
 				entity.getKshmtComMonthDaySetPK().setManageYear(this.year);

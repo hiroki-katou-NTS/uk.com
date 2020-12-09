@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.HalfDayWorkCountCat;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.NotUseAtr;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstEstAggregateSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento{
 	
 	/** The kscst est aggregate set. */
-	private KscstEstAggregateSet kscstEstAggregateSet;
+	private KscmtEstAggregate kscstEstAggregateSet;
 	
 	/**
 	 * Instantiates a new jpa aggregate setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaAggregateSettingGetMemento(KscstEstAggregateSet entity){
+	public JpaAggregateSettingGetMemento(KscmtEstAggregate entity){
 		this.kscstEstAggregateSet = entity;
 	}
 

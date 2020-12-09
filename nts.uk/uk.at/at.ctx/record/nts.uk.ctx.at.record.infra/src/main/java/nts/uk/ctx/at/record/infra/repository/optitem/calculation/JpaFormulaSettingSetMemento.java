@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSetting;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetail;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingSetMemento;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
 public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento {
 
 	/** The setting. */
-	private KrcmtFormulaSetting setting;
+	private KrcmtAnyfDetail setting;
 
 	/**
 	 * Instantiates a new jpa formula setting set memento.
@@ -27,7 +27,7 @@ public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento {
 	 * @param formulaPk the formula pk
 	 */
 	public JpaFormulaSettingSetMemento(KrcmtOptItemFormulaPK formulaPk) {
-		this.setting = new KrcmtFormulaSetting(formulaPk);
+		this.setting = new KrcmtAnyfDetail(formulaPk);
 	}
 
 	/*

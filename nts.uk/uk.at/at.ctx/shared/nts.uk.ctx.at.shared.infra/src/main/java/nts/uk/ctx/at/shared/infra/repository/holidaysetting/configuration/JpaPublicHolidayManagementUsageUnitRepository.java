@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementUsageUnit;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementUsageUnitRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtPubHdMngUnitSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubUnitSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,7 +25,7 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<PublicHolidayManagementUsageUnit> findByCID(String companyId) {
-		return this.queryProxy().find(companyId, KshmtPubHdMngUnitSet.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, KshmtHdpubUnitSet.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the public holiday management usage unit
 	 */
-	private PublicHolidayManagementUsageUnit toDomain(KshmtPubHdMngUnitSet entity){
+	private PublicHolidayManagementUsageUnit toDomain(KshmtHdpubUnitSet entity){
 		PublicHolidayManagementUsageUnit domain = new PublicHolidayManagementUsageUnit(
 															entity.getIsManageSPubHd(),
 															entity.getIsManageWkpPubHd(),
@@ -66,8 +66,8 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshmt pub hd mng unit set
 	 */
-	private KshmtPubHdMngUnitSet toEntity(PublicHolidayManagementUsageUnit domain){
-		KshmtPubHdMngUnitSet e = new KshmtPubHdMngUnitSet();
+	private KshmtHdpubUnitSet toEntity(PublicHolidayManagementUsageUnit domain){
+		KshmtHdpubUnitSet e = new KshmtHdpubUnitSet();
 		e.setIsManageEmpPubHd(domain.getIsManageEmpPublicHd());
 		e.setIsManageSPubHd(domain.getIsManageEmployeePublicHd());
 		e.setIsManageWkpPubHd(domain.getIsManageWkpPublicHd());

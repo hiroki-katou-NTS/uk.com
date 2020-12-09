@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.Password;
 import nts.uk.ctx.sys.env.dom.mailserver.PopInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.SmtpInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
-import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
+import nts.uk.ctx.sys.env.infra.entity.mailserver.SevmtMailServer;
 
 /**
  * The Class JpaMailServerSetMemento.
@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
 public class JpaMailServerSetMemento implements MailServerSetMemento {
 	
 	/** The sevst mail server. */
-	private SevstMailServer sevstMailServer;
+	private SevmtMailServer sevstMailServer;
 
 	/**
 	 * Instantiates a new jpa mail server set memento.
@@ -29,7 +29,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 * @param sevstMailServer
 	 *            the sevst mail server
 	 */
-	public JpaMailServerSetMemento(SevstMailServer sevstMailServer) {
+	public JpaMailServerSetMemento(SevmtMailServer sevstMailServer) {
 		this.sevstMailServer = sevstMailServer;
 	}
 

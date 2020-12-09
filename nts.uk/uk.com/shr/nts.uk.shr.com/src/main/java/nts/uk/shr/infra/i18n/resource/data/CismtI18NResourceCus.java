@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.val;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourceItem;
 import nts.uk.shr.infra.i18n.resource.container.MessageResourceItem;
@@ -14,7 +14,7 @@ import nts.uk.shr.infra.i18n.resource.container.ProgramResourceItem;
 
 @Entity
 @Table(name = "CISMT_I18N_RESOURCE_CUS")
-public class CismtI18NResourceCus extends UkJpaEntity {
+public class CismtI18NResourceCus extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public CismtI18NResourceCusPK pk;

@@ -7,11 +7,11 @@ import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_ANNLEA_INFO")
-public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
+public class KrcmtAnnLeaBasicInfo extends ContractUkJpaEntity{
 	
 	@Id
     @Column(name = "SID")

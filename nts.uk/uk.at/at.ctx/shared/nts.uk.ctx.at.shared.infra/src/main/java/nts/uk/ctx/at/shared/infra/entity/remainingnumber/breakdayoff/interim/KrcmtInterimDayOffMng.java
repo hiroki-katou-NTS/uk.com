@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 暫定代休管理データ
  * @author do_dt
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_INTERIM_DAYOFF_MNG")
-public class KrcmtInterimDayOffMng extends UkJpaEntity implements Serializable{
+public class KrcmtInterimDayOffMng extends ContractUkJpaEntity implements Serializable{
 	/**	暫定代休管理データID */
 	@Id
 	@Column(name = "DAYOFF_MNG_ID")	

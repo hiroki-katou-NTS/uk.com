@@ -21,19 +21,16 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCDT_RESERVATION")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcdtReservation extends UkJpaEntity {
+public class KrcdtReservation extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrcdtReservationPK pk;
-	
-	@Column(name = "CONTRACT_CD")
-	public String contractCD;
 
 	@Column(name = "RESERVATION_YMD")
 	public GeneralDate date;
@@ -74,7 +71,6 @@ public class KrcdtReservation extends UkJpaEntity {
 				new KrcdtReservationPK(
 						AppContexts.user().companyId(), reservationId
 						), 
-				AppContexts.user().contractCode(), 
 				bentoReservation.getReservationDate().getDate(), 
 				bentoReservation.getReservationDate().getClosingTimeFrame().value, 
 				bentoReservation.getRegisterInfor().getReservationCardNo(), 
@@ -85,7 +81,6 @@ public class KrcdtReservation extends UkJpaEntity {
 	}
 
 	public KrcdtReservation updateFromDomain(BentoReservation bentoReservation){
-		this.contractCD = AppContexts.user().contractCode();
 		this.date = bentoReservation.getReservationDate().getDate();
 		this.frameAtr = bentoReservation.getReservationDate().getClosingTimeFrame().value;
 		this.cardNo = bentoReservation.getRegisterInfor().getReservationCardNo();

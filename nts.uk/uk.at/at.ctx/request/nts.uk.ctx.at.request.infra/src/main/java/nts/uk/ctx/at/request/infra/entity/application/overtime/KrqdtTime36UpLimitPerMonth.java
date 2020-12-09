@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQDT_APP_OVERTIME_DET_M")
-public class KrqdtTime36UpLimitPerMonth extends UkJpaEntity {
+public class KrqdtTime36UpLimitPerMonth extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpTime36UpLimitPerMonthPK pk;

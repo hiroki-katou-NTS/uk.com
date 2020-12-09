@@ -6,9 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculationGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaStampBreakCalculationGetMemento.
@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @param <T>
  *            the generic type
  */
-public class JpaStampBreakCalculationGetMemento<T extends UkJpaEntity> implements StampBreakCalculationGetMemento {
+public class JpaStampBreakCalculationGetMemento<T extends ContractUkJpaEntity> implements StampBreakCalculationGetMemento {
 
 	/** The entity. */
 	private T entity;
@@ -40,11 +40,11 @@ public class JpaStampBreakCalculationGetMemento<T extends UkJpaEntity> implement
 	 */
 	@Override
 	public boolean getUsePrivateGoOutRest() {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlowRestSet) this.entity).getUserPrivateGoOutRest());
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFloBrFlAll) this.entity).getUserPrivateGoOutRest());
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlexRestSet) this.entity).getUserPrivateGoOutRest());
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFleBrFl) this.entity).getUserPrivateGoOutRest());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -58,11 +58,11 @@ public class JpaStampBreakCalculationGetMemento<T extends UkJpaEntity> implement
 	 */
 	@Override
 	public boolean getUseAssoGoOutRest() {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlowRestSet) this.entity).getUserAssoGoOutRest());
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFloBrFlAll) this.entity).getUserAssoGoOutRest());
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlexRestSet) this.entity).getUserAssoGoOutRest());
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFleBrFl) this.entity).getUserAssoGoOutRest());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}

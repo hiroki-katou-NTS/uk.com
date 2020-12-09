@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowHalfDayWorkTimezoneGetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowHalfDayWorkTimezoneGetMemento implements FlowHalfDayWtzGetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 	
 	/**
 	 * Instantiates a new jpa flow half day work timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowHalfDayWorkTimezoneGetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowHalfDayWorkTimezoneGetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
 	}

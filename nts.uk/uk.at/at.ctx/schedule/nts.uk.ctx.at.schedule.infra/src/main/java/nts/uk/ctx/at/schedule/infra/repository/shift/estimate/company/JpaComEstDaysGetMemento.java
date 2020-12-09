@@ -14,7 +14,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateDays
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateDays;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumberOfDay;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCom;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSetPK;
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCo
 public class JpaComEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	
 	/** The estimate days company. */
-	private KscmtEstDaysComSet estimateDaysCompany;
+	private KscmtEstDaysCom estimateDaysCompany;
 	
 	
 	/**
@@ -31,7 +31,7 @@ public class JpaComEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	 *
 	 * @param estimateDaysCompany the estimate days company
 	 */
-	public JpaComEstDaysGetMemento(KscmtEstDaysComSet estimateDaysCompany) {
+	public JpaComEstDaysGetMemento(KscmtEstDaysCom estimateDaysCompany) {
 		if(estimateDaysCompany.getKscmtEstDaysComSetPK() == null){
 			estimateDaysCompany.setKscmtEstDaysComSetPK(new KscmtEstDaysComSetPK());
 		}

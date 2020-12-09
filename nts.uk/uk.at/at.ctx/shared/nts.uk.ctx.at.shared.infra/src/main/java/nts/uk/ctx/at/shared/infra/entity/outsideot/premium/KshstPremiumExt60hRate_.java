@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstPremiumExt60hRate_.
  */
-@StaticMetamodel(KshstPremiumExt60hRate.class)
+@StaticMetamodel(KshmtHd60hPremiumRate.class)
 public class KshstPremiumExt60hRate_ {
 
 	/** The kshst premium ext 60 h rate PK. */
-	public static volatile SingularAttribute<KshstPremiumExt60hRate, KshstPremiumExt60hRatePK> kshstPremiumExt60hRatePK;
+	public static volatile SingularAttribute<KshmtHd60hPremiumRate, KshstPremiumExt60hRatePK> kshstPremiumExt60hRatePK;
 	
 	/** The premium rate. */
-	public static volatile SingularAttribute<KshstPremiumExt60hRate, Integer> premiumRate;
+	public static volatile SingularAttribute<KshmtHd60hPremiumRate, Integer> premiumRate;
 	
 }

@@ -5,9 +5,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstRegLaborTime_;
 
-@StaticMetamodel(KshstShaRegLaborTime.class)
+@StaticMetamodel(KshmtLegaltimeDRegSya.class)
 public class KshstShaRegLaborTime_ extends KshstRegLaborTime_ {
 
-    public static volatile SingularAttribute<KshstShaRegLaborTime, KshstShaRegLaborTimePK> kshstShaRegLaborTimePK;
+    public static volatile SingularAttribute<KshmtLegaltimeDRegSya, KshstShaRegLaborTimePK> kshstShaRegLaborTimePK;
 
 }

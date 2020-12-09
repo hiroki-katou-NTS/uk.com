@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "WWFST_JOB_ASSIGN_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfstJobAssignSetting extends UkJpaEntity implements Serializable {
+public class WwfstJobAssignSetting extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 *

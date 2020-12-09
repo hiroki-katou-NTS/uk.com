@@ -11,13 +11,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEMT_PERSON_CTG_AUTH")
 @Entity
-public class PpemtPersonCategoryAuth extends UkJpaEntity implements Serializable {
+public class PpemtPersonCategoryAuth extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public PpemtPersonCategoryAuthPk ppemtPersonCategoryAuthPk;

@@ -9,9 +9,9 @@ import javax.persistence.metamodel.StaticMetamodel;
  * @author hoangdd
  *
  */
-@StaticMetamodel(KshstManageEntryExit.class)
+@StaticMetamodel(KshmtGateMng.class)
 public class KshstManageEntryExit_ {
-	public static volatile SingularAttribute<KshstManageEntryExit, String> cid;
-    public static volatile SingularAttribute<KshstManageEntryExit, BigDecimal> useCls;
+	public static volatile SingularAttribute<KshmtGateMng, String> cid;
+    public static volatile SingularAttribute<KshmtGateMng, BigDecimal> useCls;
 }
 

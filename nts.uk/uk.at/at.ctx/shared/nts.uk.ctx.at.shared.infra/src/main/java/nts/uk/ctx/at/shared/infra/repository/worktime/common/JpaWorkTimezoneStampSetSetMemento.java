@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaWorkTimezoneStampSetSetMemento.
@@ -26,14 +26,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSetMemento {
 
 	/** The parent entity. */
-	private KshmtWorktimeCommonSet parentEntity;
+	private KshmtWtCom parentEntity;
 	
 	/**
 	 * Instantiates a new jpa work timezone stamp set set memento.
 	 *
 	 * @param parentEntity the parent entity
 	 */
-	public JpaWorkTimezoneStampSetSetMemento(KshmtWorktimeCommonSet parentEntity) {
+	public JpaWorkTimezoneStampSetSetMemento(KshmtWtCom parentEntity) {
 		super();
 		this.parentEntity = parentEntity;
 	}

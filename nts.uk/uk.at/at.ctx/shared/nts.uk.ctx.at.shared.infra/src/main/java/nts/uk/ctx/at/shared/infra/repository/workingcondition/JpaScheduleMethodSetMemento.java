@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethodSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 
 /**
  * The Class JpaScheduleMethodSetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 
 	/** The kshmt schedule method. */
-	private KshmtScheduleMethod entity;
+	private KshmtWorkcondScheMeth entity;
 
 	/**
 	 * Instantiates a new jpa schedule method set memento.
@@ -26,7 +26,7 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaScheduleMethodSetMemento(String historyId, KshmtScheduleMethod entity) {
+	public JpaScheduleMethodSetMemento(String historyId, KshmtWorkcondScheMeth entity) {
 		this.entity = entity;
 		// Check exist
 		if (this.entity.getHistoryId() == null) {

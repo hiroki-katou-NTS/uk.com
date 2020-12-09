@@ -32,7 +32,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistCustom;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.CompanyWithEmployeeID;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;
@@ -163,7 +163,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		String sql = "select h.PID, h.SID, h.HIST_ID, h.CID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE, "
 				+ " i.RECRUIMENT_CATEGORY_CD, i.ADOPTION_DATE, i.RETIREMENT_CALC_STR_D"
 				+ " from BSYMT_AFF_COM_HIST h"
-				+ " inner join BSYMT_AFF_COM_INFO i"
+				+ " inner join BSYMT_AFF_COM_HIST_ITEM i"
 				+ " on h.HIST_ID = i.HIST_ID"
 				+ " where h.CID = ?"
 				+ " and h.SID = ?"
@@ -218,7 +218,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			String sql = "select h.PID, h.SID, h.HIST_ID, h.CID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE, "
 						+ " i.RECRUIMENT_CATEGORY_CD, i.ADOPTION_DATE, i.RETIREMENT_CALC_STR_D"
 						+ " from BSYMT_AFF_COM_HIST h"
-						+ " inner join BSYMT_AFF_COM_INFO i"
+						+ " inner join BSYMT_AFF_COM_HIST_ITEM i"
 						+ " on h.HIST_ID = i.HIST_ID"
 						+ " where h.START_DATE <= ?"
 						+ " and h.END_DATE >= ?"
@@ -377,7 +377,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			
 			String sql = "select * from BSYMT_AFF_COM_HIST h"
-					+ " inner join BSYMT_AFF_COM_INFO i"
+					+ " inner join BSYMT_AFF_COM_HIST_ITEM i"
 					+ " on h.HIST_ID = i.HIST_ID"
 					+ " where h.SID in (" + NtsStatement.In.createParamsString(subList) + ")";
 			
@@ -588,7 +588,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			
 		
 		String sql = "SELECT DISTINCT a.SID FROM BSYMT_AFF_COM_HIST a "
-				+ " INNER JOIN BSYMT_EMP_DTA_MNG_INFO b ON a.SID = b.SID" 
+				+ " INNER JOIN BSYMT_SYAIN b ON a.SID = b.SID" 
 				+ " WHERE a.SID IN ("+NtsStatement.In.createParamsString(subEmployeeIds)+") "
 				+ " AND a.START_DATE <= ?"
 				+ " AND a.END_DATE >= ?"
@@ -779,7 +779,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			String sql = "select h.PID, h.SID, h.HIST_ID, h.CID, h.DESTINATION_DATA, h.START_DATE, h.END_DATE, "
 					+ " i.RECRUIMENT_CATEGORY_CD, i.ADOPTION_DATE, i.RETIREMENT_CALC_STR_D"
 					+ " from BSYMT_AFF_COM_HIST h"
-					+ " inner join BSYMT_AFF_COM_INFO i"
+					+ " inner join BSYMT_AFF_COM_HIST_ITEM i"
 					+ " on h.HIST_ID = i.HIST_ID"
 					+ " where h.CID = ?"
 					+ " and h.SID  IN (" + NtsStatement.In.createParamsString(subList) + ")";

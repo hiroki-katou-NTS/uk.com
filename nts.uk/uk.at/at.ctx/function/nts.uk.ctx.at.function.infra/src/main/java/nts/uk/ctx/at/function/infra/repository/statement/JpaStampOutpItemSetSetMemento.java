@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.function.dom.statement.StampOutputSettingCode;
 import nts.uk.ctx.at.function.dom.statement.StampOutputSettingName;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetSetMemento;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem;
 import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaStampOutpItemSetSetMemento implements StampingOutputItemSetSetMemento {
 
 	/** The entity. */
-	private KfnmtStampOutpItemSet entity;
+	private KfnmtStampOutpItem entity;
 	
 	/** The Constant VALUE_TRUE. */
 	private static final Integer VALUE_TRUE = 1;
@@ -32,7 +32,7 @@ public class JpaStampOutpItemSetSetMemento implements StampingOutputItemSetSetMe
 	 *
 	 * @param entity the entity
 	 */
-	public JpaStampOutpItemSetSetMemento(KfnmtStampOutpItemSet entity) {
+	public JpaStampOutpItemSetSetMemento(KfnmtStampOutpItem entity) {
 		super();
 		this.entity = entity;
 		if (this.entity.getId() == null) {

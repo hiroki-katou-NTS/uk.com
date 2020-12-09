@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author sonnlb
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PPEDT_EMP_REG_HISTORY")
-public class PpedtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
+public class PpedtEmployeeRegistrationHistory extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

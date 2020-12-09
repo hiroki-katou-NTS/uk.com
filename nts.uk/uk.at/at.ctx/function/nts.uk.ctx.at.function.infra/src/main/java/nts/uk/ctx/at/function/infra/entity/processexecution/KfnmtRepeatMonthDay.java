@@ -12,12 +12,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name="KFNMT_REP_MONTH_DAY")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtRepeatMonthDay extends UkJpaEntity implements Serializable{
+public class KfnmtRepeatMonthDay extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

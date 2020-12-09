@@ -8,14 +8,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Entity
 @Table(name = "KRQST_GO_BACK_DIRECT_SET")
-public class KrqstGoBackDirectSet extends UkJpaEntity {
+public class KrqstGoBackDirectSet extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KrqstGoBackDirectSetPK krqstGoBackDirectSetPK;
 	/**

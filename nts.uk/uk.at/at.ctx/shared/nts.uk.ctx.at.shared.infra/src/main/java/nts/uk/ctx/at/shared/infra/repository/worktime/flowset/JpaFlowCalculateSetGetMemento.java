@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowCalculateSetGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowCalculateSetGetMemento implements FlowCalculateGetMemento {
 	
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 	
 	/**
 	 * Instantiates a new jpa flow calculate set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowCalculateSetGetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowCalculateSetGetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
 	}

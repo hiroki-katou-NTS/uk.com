@@ -14,7 +14,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleOrder;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 勤務予定のアラームチェック条件・サブ条件
  * KSCCT_ALCHK_CATEGORY_SUB
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCCT_ALCHK_CATEGORY_SUB")
-public class KscctAlchkCategorySub extends ContractUkJpaEntity {
+public class KscctAlchkCategorySub extends UkJpaEntity {
 	public static final JpaEntityMapper<KscctAlchkCategorySub> MAPPER = new JpaEntityMapper<>(KscctAlchkCategorySub.class);
 	
 	@EmbeddedId

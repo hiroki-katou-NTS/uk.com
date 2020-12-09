@@ -20,19 +20,19 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.holidayworktime.GoBackAtr;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime;
-import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWork;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
-import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWorkTime;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Stateless
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
-	private static final String FIND_ALL = "SELECT e FROM KrqdtAppHolidayWork e";
+	private static final String FIND_ALL = "SELECT e FROM KrqdtAppHdWork e";
 
 	private static final String FIND_BY_APPID;
-	private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppHolidayWork a"
+	private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppHdWork a"
 			+ " WHERE a.krqdtAppHolidayWorkPK.cid = :companyID"
 			+ " AND a.krqdtAppHolidayWorkPK.appId IN :lstAppID";
 	static {
@@ -45,10 +45,10 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	@Override
 	public Optional<AppHolidayWork> getAppHolidayWork(String companyID, String appID) {
 		
-		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppHolidayWork.class)
+		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppHdWork.class)
 				.setParameter("companyID", companyID).setParameter("appID", appID).getSingle( e -> convertToDomain(e));
 	}
-	private AppHolidayWork convertToDomain(KrqdtAppHolidayWork entity) {
+	private AppHolidayWork convertToDomain(KrqdtAppHdWork entity) {
 		return AppHolidayWork.createSimpleFromJavaType(entity.getKrqdtAppHolidayWorkPK().getCid(),
 				entity.getKrqdtAppHolidayWorkPK().getAppId(), entity.getWorkTypeCode(),
 				entity.getWorkTimeCode(), entity.getWorkClockStart1(), 
@@ -66,17 +66,17 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	public void Add(AppHolidayWork domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
-	private KrqdtAppHolidayWork toEntity(AppHolidayWork domain) {
-		List<KrqdtHolidayWorkInput> overtimeInputs = domain.getHolidayWorkInputs().stream()
+	private KrqdtAppHdWork toEntity(AppHolidayWork domain) {
+		List<KrqdtAppHdWorkTime> overtimeInputs = domain.getHolidayWorkInputs().stream()
 				.map(item -> {
 					KrqdtHolidayWorkInputPK pk =  new KrqdtHolidayWorkInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo());
-					return new KrqdtHolidayWorkInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() ==  null? null : item.getEndTime().v(),
+					return new KrqdtAppHdWorkTime(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() ==  null? null : item.getEndTime().v(),
 							item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
 
-		return new KrqdtAppHolidayWork(new KrqdtAppHolidayWorkPK(domain.getCompanyID(), domain.getAppID()),
+		return new KrqdtAppHdWork(new KrqdtAppHolidayWorkPK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(), domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().v(),
 				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v(),
 				domain.getWorkClock1().getStartTime() == null ? null : domain.getWorkClock1().getStartTime().v(),
@@ -93,12 +93,12 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	}
 	@Override
 	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID) {
-//		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+//		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
 //		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
 //		if(!opKrqdtAppHolidayWork.isPresent()||!opKafdtApplication.isPresent()){
 //			return Optional.ofNullable(null);
 //		}
-//		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+//		KrqdtAppHdWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
 //		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
 //		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toOvertimeAppSetDomain();
 //		appHolidayWork.setApplication(kafdtApplication.toOvertimeAppSetDomain());
@@ -109,22 +109,22 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	public void update(AppHolidayWork domain) {
 		String companyID = domain.getCompanyID();
 		String appID = domain.getAppID();
-		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
 		if(!opKrqdtAppHolidayWork.isPresent()){
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
-		KrqdtAppHolidayWork krqdtAppHolidayWork = opKrqdtAppHolidayWork.get();
+		KrqdtAppHdWork krqdtAppHolidayWork = opKrqdtAppHolidayWork.get();
 		krqdtAppHolidayWork.fromDomainValue(domain);
 		this.commandProxy().update(krqdtAppHolidayWork);
 		
 	}
 	@Override
 	public void delete(String companyID, String appID) {
-		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
 		if(!opKrqdtAppHolidayWork.isPresent()){
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
-		this.commandProxy().remove(KrqdtAppHolidayWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
+		this.commandProxy().remove(KrqdtAppHdWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
 	}
 	/**
 	 * get Application Holiday Work and Frame
@@ -135,11 +135,11 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	 */
 	@Override
 	public Optional<AppHolidayWork> getAppHolidayWorkFrame(String companyID, String appID) {
-		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
 		if(!opKrqdtAppHolidayWork.isPresent()){
 			return Optional.ofNullable(null);
 		}
-		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+		KrqdtAppHdWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
 		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
 		return Optional.of(appHolidayWork);
 	}
@@ -159,7 +159,7 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		}
 		List<AppHolidayWork> lstHd = new ArrayList<>();
 		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			lstHd.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHolidayWork.class)
+			lstHd.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHdWork.class)
 							 .setParameter("companyID", companyID)
 							 .setParameter("lstAppID", subList)
 							 .getList(c -> toDomainPlus(c)));
@@ -169,7 +169,7 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		}
 		return lstMap;
 	}
-	public AppHolidayWork toDomainPlus(KrqdtAppHolidayWork entity){
+	public AppHolidayWork toDomainPlus(KrqdtAppHdWork entity){
 		return new AppHolidayWork(null, 
 				entity.getKrqdtAppHolidayWorkPK().getCid(), 
 				entity.getKrqdtAppHolidayWorkPK().getAppId(), 

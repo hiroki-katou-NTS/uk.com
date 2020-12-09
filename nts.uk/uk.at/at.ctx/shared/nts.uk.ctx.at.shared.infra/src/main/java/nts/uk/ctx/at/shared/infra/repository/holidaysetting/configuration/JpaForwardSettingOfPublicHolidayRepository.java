@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHolidayRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtForwardSetOfPublicHd;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubForwardSet;
 
 /**
  * The Class JpaForwardSettingOfPublicHolidayRepository.
@@ -20,7 +20,7 @@ public class JpaForwardSettingOfPublicHolidayRepository extends JpaRepository im
 	 */
 	@Override
 	public Optional<ForwardSettingOfPublicHoliday> findByCID(String companyId) {
-		return this.queryProxy().find(companyId, KshmtForwardSetOfPublicHd.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, KshmtHdpubForwardSet.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -45,8 +45,8 @@ public class JpaForwardSettingOfPublicHolidayRepository extends JpaRepository im
 	 * @param domain the domain
 	 * @return the kshmt forward set of public hd
 	 */
-	private KshmtForwardSetOfPublicHd toEntity(ForwardSettingOfPublicHoliday domain){
-		KshmtForwardSetOfPublicHd entity = new KshmtForwardSetOfPublicHd();
+	private KshmtHdpubForwardSet toEntity(ForwardSettingOfPublicHoliday domain){
+		KshmtHdpubForwardSet entity = new KshmtHdpubForwardSet();
 		domain.saveToMemento(new JpaForwardSettingOfPublicHolidaySetMemento(entity));
 		return entity;
 	}
@@ -57,7 +57,7 @@ public class JpaForwardSettingOfPublicHolidayRepository extends JpaRepository im
 	 * @param entity the entity
 	 * @return the forward setting of public holiday
 	 */
-	private ForwardSettingOfPublicHoliday toDomain(KshmtForwardSetOfPublicHd entity){
+	private ForwardSettingOfPublicHoliday toDomain(KshmtHdpubForwardSet entity){
 		ForwardSettingOfPublicHoliday domain = new ForwardSettingOfPublicHoliday(
 														new JpaForwardSettingOfPublicHolidayGetMemento(entity));
 		

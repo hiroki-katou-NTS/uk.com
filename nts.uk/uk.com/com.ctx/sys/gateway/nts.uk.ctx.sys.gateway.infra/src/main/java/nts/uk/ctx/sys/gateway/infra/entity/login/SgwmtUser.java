@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class SgwmtUser.
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SGWMT_USER")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SgwmtUser extends UkJpaEntity implements Serializable {
+public class SgwmtUser extends ContractUkJpaEntity implements Serializable {
     
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -46,10 +46,6 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
     /** The login id. */
     @Column(name = "LOGIN_ID")
     private String loginId;
-    
-    /** The contract cd. */
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
     
     /** The expiration date. */
     @Column(name = "EXPIRATION_DATE")

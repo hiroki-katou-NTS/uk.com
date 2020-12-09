@@ -10,8 +10,8 @@ import java.util.List;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -21,14 +21,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezoneSettingSetMemento {
 
 	/** The entity. */
-	private KshmtPredTimeSet entity;
+	private KshmtWtComPredTime entity;
 
 	/**
 	 * Instantiates a new jpa prescribed timezone setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPrescribedTimezoneSettingSetMemento(KshmtPredTimeSet entity) {
+	public JpaPrescribedTimezoneSettingSetMemento(KshmtWtComPredTime entity) {
 		super();
 		this.entity = entity;
 	}
@@ -73,22 +73,22 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 		String companyId = this.entity.getKshmtPredTimeSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtPredTimeSetPK().getWorktimeCd();
 
-		List<KshmtWorkTimeSheetSet> lstEnttiy = this.entity.getKshmtWorkTimeSheetSets();
+		List<KshmtWtComPredTs> lstEnttiy = this.entity.getKshmtWorkTimeSheetSets();
 		if(CollectionUtil.isEmpty(lstEnttiy)){
 			lstEnttiy = new ArrayList<>();
 		}
 		
-		List<KshmtWorkTimeSheetSet> newListEntity = new ArrayList<>();
+		List<KshmtWtComPredTs> newListEntity = new ArrayList<>();
 		
 		for(TimezoneUse domain : lstTimezone) {
 			// newPK
 			KshmtWorkTimeSheetSetPK pk = new KshmtWorkTimeSheetSetPK(companyId, workTimeCd, domain.getWorkNo());
 			
 			// find entity if existed, else new entity
-			KshmtWorkTimeSheetSet entity = lstEnttiy.stream()
+			KshmtWtComPredTs entity = lstEnttiy.stream()
 					.filter(item -> item.getKshmtWorkTimeSheetSetPK().equals(pk))
 					.findFirst()
-					.orElse(new KshmtWorkTimeSheetSet(pk));
+					.orElse(new KshmtWtComPredTs(pk));
 			
 			// save to memento
 			domain.saveToMemento(new JpaTimezoneSetMemento(entity));

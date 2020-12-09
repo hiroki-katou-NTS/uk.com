@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstOverTimeNameLang_.
  */
-@StaticMetamodel(KshstOverTimeNameLang.class)
+@StaticMetamodel(KshmtOutsideLang.class)
 public class KshstOverTimeNameLang_ {
 
 	/** The kshst over time name lang PK. */
-	public static volatile SingularAttribute<KshstOverTimeNameLang, KshstOverTimeNameLangPK> kshstOverTimeNameLangPK;
+	public static volatile SingularAttribute<KshmtOutsideLang, KshstOverTimeNameLangPK> kshstOverTimeNameLangPK;
 	
 	/** The name. */
-	public static volatile SingularAttribute<KshstOverTimeNameLang, String> name;
+	public static volatile SingularAttribute<KshmtOutsideLang, String> name;
 	
 }

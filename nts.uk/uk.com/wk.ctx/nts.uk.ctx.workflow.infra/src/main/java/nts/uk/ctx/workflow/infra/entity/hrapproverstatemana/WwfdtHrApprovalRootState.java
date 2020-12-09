@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 人事承認ルートインスタンス
  * @author hoatt
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_HR_APPROVAL_ROOT_STATE")
 @Builder
-public class WwfdtHrApprovalRootState extends UkJpaEntity {
+public class WwfdtHrApprovalRootState extends ContractUkJpaEntity {
 	/**主キー*/
 	@EmbeddedId
 	public WwfdtHrApprovalRootStatePK wwfdtHrApprovalRootStatePK;

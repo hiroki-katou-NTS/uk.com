@@ -85,7 +85,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_OUTING_TIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_GOOUT Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -220,7 +220,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				Integer backNumberReflec = outingTimeSheet.getComeBack().isPresent()
 						? outingTimeSheet.getComeBack().get().getNumberOfReflectionStamp() : null;
 
-				String insertTableSQL = "INSERT INTO KRCDT_DAI_OUTING_TIME_TS ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME , OUT_STAMP_ROUDING_TIME_DAY , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_GOOUT ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME , OUT_STAMP_ROUDING_TIME_DAY , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
 						+ " OUT_ACTUAL_TIME, OUT_ACTUAL_ROUDING_TIME_DAY , OUT_ACTUAL_PLACE_CODE , OUT_ACTUAL_SOURCE_INFO , OUT_NUMBER_STAMP , BACK_STAMP_TIME , BACK_STAMP_ROUDING_TIME_DAY , BACK_STAMP_PLACE_CODE , "
 						+ " BACK_STAMP_SOURCE_INFO , BACK_ACTUAL_TIME , BACK_ACTUAL_ROUDING_TIME_DAY , BACK_ACTUAL_PLACE_CODE , BACK_ACTUAL_SOURCE_INFO , BACK_NUMBER_STAMP , OUTING_TIME_CALCULATION , "
 						+ " OUTING_TIME , OUTING_REASON ) " + "VALUES( '" + outing.getEmployeeId() + "' , '"

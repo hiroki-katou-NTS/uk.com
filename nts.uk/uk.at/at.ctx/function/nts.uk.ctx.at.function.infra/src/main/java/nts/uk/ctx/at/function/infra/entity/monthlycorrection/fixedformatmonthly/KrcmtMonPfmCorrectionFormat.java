@@ -17,12 +17,12 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCor
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatName;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyActualResults;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyPerformanceFormatCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_AUT_MON_FORM")
-public class KrcmtMonPfmCorrectionFormat extends UkJpaEntity implements Serializable  {
+public class KrcmtMonPfmCorrectionFormat extends ContractUkJpaEntity implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 	

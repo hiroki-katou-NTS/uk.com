@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcstOutManage;
+import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcmtGooutMng;
 
 /**
  * The Class JpaOutManageRepository.
@@ -22,7 +22,7 @@ public class JpaOutManageRepository extends JpaRepository implements OutManageRe
 	 */
 	@Override
 	public Optional<OutManage> findByID(String companyID) {
-		return this.queryProxy().find(companyID, KrcstOutManage.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyID, KrcmtGooutMng.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -47,7 +47,7 @@ public class JpaOutManageRepository extends JpaRepository implements OutManageRe
 	 * @param entity the entity
 	 * @return the out manage
 	 */
-	private OutManage toDomain(KrcstOutManage entity) {
+	private OutManage toDomain(KrcmtGooutMng entity) {
 		OutManage domain = new OutManage(new JpaOutManageGetMemento(entity));
 		return domain;
 	}
@@ -58,8 +58,8 @@ public class JpaOutManageRepository extends JpaRepository implements OutManageRe
 	 * @param domain the domain
 	 * @return the krcst out manage
 	 */
-	private KrcstOutManage toEntity(OutManage domain) {
-		KrcstOutManage entity = new KrcstOutManage();
+	private KrcmtGooutMng toEntity(OutManage domain) {
+		KrcmtGooutMng entity = new KrcmtGooutMng();
 		domain.saveToMemento(new JpaOutManageSetMemento(entity));
 		return entity;
 	}

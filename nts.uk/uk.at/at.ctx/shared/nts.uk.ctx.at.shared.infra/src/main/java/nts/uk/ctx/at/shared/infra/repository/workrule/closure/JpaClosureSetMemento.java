@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosure;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosurePK;
 
 /**
@@ -24,7 +24,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	
 	/** The kclmt closure. */
 	@Setter
-	private KclmtClosure kclmtClosure;
+	private KshmtClosure kclmtClosure;
 
 	/**
 	 * Instantiates a new jpa closure set memento.
@@ -32,7 +32,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 * @param kclmtClosure
 	 *            the kclmt closure
 	 */
-	public JpaClosureSetMemento(KclmtClosure kclmtClosure) {
+	public JpaClosureSetMemento(KshmtClosure kclmtClosure) {
 		if (kclmtClosure.getKclmtClosurePK() == null) {
 			kclmtClosure.setKclmtClosurePK(new KclmtClosurePK());
 		}

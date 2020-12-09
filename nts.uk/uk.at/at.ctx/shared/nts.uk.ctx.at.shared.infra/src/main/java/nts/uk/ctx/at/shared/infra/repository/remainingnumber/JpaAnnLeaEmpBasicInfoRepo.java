@@ -42,7 +42,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		List<AnnualLeaveEmpBasicInfo> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_ANNLEA_INFO WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCMT_HDPAID_BASIC WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
@@ -114,7 +114,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 
 	@Override
 	public void addAll(List<AnnualLeaveEmpBasicInfo> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_ANNLEA_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCMT_HDPAID_BASIC (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " SID, CID, WORK_DAYS_PER_YEAR, WORK_DAYS_BEFORE_INTRO,"
 				+ " GRANT_TABLE_CODE, GRANT_STANDARD_DATE)"
@@ -162,7 +162,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 
 	@Override
 	public void updateAll(List<AnnualLeaveEmpBasicInfo> domains) {
-		String UP_SQL = "UPDATE KRCMT_ANNLEA_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCMT_HDPAID_BASIC SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " WORK_DAYS_PER_YEAR = WORK_DAYS_PER_YEAR_VAL , WORK_DAYS_BEFORE_INTRO = WORK_DAYS_BEFORE_INTRO_VAL, GRANT_TABLE_CODE = GRANT_TABLE_CODE_VAL, "
 				+ " GRANT_STANDARD_DATE = GRANT_STANDARD_DATE_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";

@@ -13,16 +13,16 @@ import javax.persistence.metamodel.StaticMetamodel;
  *
  * @author hoangdd
  */
-@StaticMetamodel(KrcstManageWorkTemp.class)
+@StaticMetamodel(KrcmtTemporaryMng.class)
 public class KrcstManageWorkTemp_ {
 	
 	/** The cid. */
-	public static volatile SingularAttribute<KrcstManageWorkTemp, String> cid;
+	public static volatile SingularAttribute<KrcmtTemporaryMng, String> cid;
     
     /** The max usage. */
-    public static volatile SingularAttribute<KrcstManageWorkTemp, BigDecimal> maxUsage;
+    public static volatile SingularAttribute<KrcmtTemporaryMng, BigDecimal> maxUsage;
     
     /** The time treat temp same. */
-    public static volatile SingularAttribute<KrcstManageWorkTemp, BigDecimal> timeTreatTempSame;
+    public static volatile SingularAttribute<KrcmtTemporaryMng, BigDecimal> timeTreatTempSame;
 }
 

@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KmfmtNursingLeaveSet_.
  */
-@StaticMetamodel(KnlmtNursingLeaveSet.class)
+@StaticMetamodel(KshmtHdnursingLeave.class)
 public class KnlmtNursingLeaveSet_ {
     
     /** The kmfmtNursingLeaveSetPK. */
-    public static volatile SingularAttribute<KnlmtNursingLeaveSet, KnlmtNursingLeaveSetPK> knlmtNursingLeaveSetPK;
+    public static volatile SingularAttribute<KshmtHdnursingLeave, KnlmtNursingLeaveSetPK> knlmtNursingLeaveSetPK;
 }

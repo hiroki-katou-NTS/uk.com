@@ -19,11 +19,11 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 	private static final String SELECT_ALL_WORKTYPE_EXCEL = "SELECT a.EMP_CODE, b.NAME, a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, c.NAME,a.WORKTYPE_CODE "
 			+ "FROM KRCMT_WORKTYPE_CHANGEABLE  a "
 			+ "left join BSYMT_EMPLOYMENT b on b.CODE = a.EMP_CODE and a.CID=b.CID "
-			+ "left join KSHMT_WORKTYPE c on a.WORKTYPE_CODE = c.CD and b.CID=c.CID "
+			+ "left join KSHMT_WKTP c on a.WORKTYPE_CODE = c.CD and b.CID=c.CID "
 			+ "where a.CID=?companyId ";
 	private static final String SELECT_ALL_DEFAULT_WORKTPYE = "select a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, b.NAME,b.CD "
 			+ "from KRCMT_WORKTYPE_CHANGEABLE a "
-			+ "left join KSHMT_WORKTYPE b on a.WORKTYPE_CODE = b.CD and b.CID=?companyId "
+			+ "left join KSHMT_WKTP b on a.WORKTYPE_CODE = b.CD and b.CID=?companyId "
 			+ "where a.CID='000000000000-0000' and a.EMP_CODE='0'  ";
 	
 	@Override

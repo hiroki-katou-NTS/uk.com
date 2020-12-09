@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The primary key class for the KSHST_AGG_LABOR_SET database table.
+ * The primary key class for the KSHMT_DEFORMED_LABOR_MNG database table.
  * 
  */
 @Data

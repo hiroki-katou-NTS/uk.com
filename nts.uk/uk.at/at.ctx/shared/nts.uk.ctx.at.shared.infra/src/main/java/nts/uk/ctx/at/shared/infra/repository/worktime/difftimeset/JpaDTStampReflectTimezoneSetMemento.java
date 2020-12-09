@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifStmpRefTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaDTStampReflectTimezoneSetMemento implements StampReflectTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtDtStampReflect entity;
+	private KshmtWtDifStmpRefTs entity;
 
 	/**
 	 * Instantiates a new jpa DT stamp reflect timezone set memento.
@@ -24,7 +24,7 @@ public class JpaDTStampReflectTimezoneSetMemento implements StampReflectTimezone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDTStampReflectTimezoneSetMemento(KshmtDtStampReflect entity) {
+	public JpaDTStampReflectTimezoneSetMemento(KshmtWtDifStmpRefTs entity) {
 		this.entity = entity;
 	}
 

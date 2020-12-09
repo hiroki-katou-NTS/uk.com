@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.entranceexit;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshstManageEntryExit;
+import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshmtGateMng;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,14 +14,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 
 	/** The kshst manage entry exit. */
-	private KshstManageEntryExit kshstManageEntryExit;
+	private KshmtGateMng kshstManageEntryExit;
 
 	/**
 	 * Instantiates a new jpa manage entry exit set memento.
 	 *
 	 * @param kshstManageEntryExit the kshst manage entry exit
 	 */
-	public JpaManageEntryExitSetMemento(KshstManageEntryExit kshstManageEntryExit) {
+	public JpaManageEntryExitSetMemento(KshmtGateMng kshstManageEntryExit) {
 		this.kshstManageEntryExit = kshstManageEntryExit;
 	}
 	

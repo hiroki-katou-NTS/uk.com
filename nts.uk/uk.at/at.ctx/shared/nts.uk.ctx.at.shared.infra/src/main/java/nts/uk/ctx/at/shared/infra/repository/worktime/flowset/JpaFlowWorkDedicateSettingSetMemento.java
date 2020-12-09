@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowWorkDedicateSettingSetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowWorkDedicateSettingSetMemento implements FlWorkDedSetMemento {
 	
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 	
 	/**
 	 * Instantiates a new jpa flow work dedicate setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowWorkDedicateSettingSetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowWorkDedicateSettingSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
 	}

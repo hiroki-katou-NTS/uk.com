@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
 
     /** The insert query. */
-    private final String INSERT_QUERY = "INSERT INTO KRCMT_ERAL_SET(CID, ERROR_ALARM_CD, ERROR_ALARM_NAME, FIXED_ATR, USE_ATR, REMARK_CANCEL_ERR_INP," +
+    private final String INSERT_QUERY = "INSERT INTO KRCMT_ERAL_DAY_SET(CID, ERROR_ALARM_CD, ERROR_ALARM_NAME, FIXED_ATR, USE_ATR, REMARK_CANCEL_ERR_INP," +
         " REMARK_COLUMN_NO, ERAL_ATR, BOLD_ATR, MESSAGE_COLOR, CANCELABLE_ATR, ERROR_DISPLAY_ITEM, ERAL_CHECK_ID, CANCEL_ROLE_ID)" +
         " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 

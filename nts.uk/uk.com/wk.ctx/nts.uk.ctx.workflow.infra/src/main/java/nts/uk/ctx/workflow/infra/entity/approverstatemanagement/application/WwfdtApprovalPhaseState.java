@@ -26,7 +26,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVAL_PHASE_ST")
 @Builder
-public class WwfdtApprovalPhaseState extends UkJpaEntity {
+public class WwfdtApprovalPhaseState extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalPhaseStatePK wwfdpApprovalPhaseStatePK;
@@ -53,11 +53,11 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="ROOT_STATE_ID",referencedColumnName="ROOT_STATE_ID")
 	})
-	private WwfdtApprovalRootState wwfdtApprovalRootState;
+	private WwfdtAppInstRoute wwfdtApprovalRootState;
 	
-	@OneToMany(targetEntity=WwfdtApproverState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseState", orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(targetEntity=WwfdtAppInstApprover.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseState", orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinTable(name = "WWFDT_APPROVER_STATE")
-	public List<WwfdtApproverState> listWwfdtApprover;
+	public List<WwfdtAppInstApprover> listWwfdtApprover;
 
 	@Override
 	protected Object getKey() {
@@ -65,10 +65,10 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	}
 	
 	public static WwfdtApprovalPhaseState fromDomain(String rootStateID, ApprovalPhaseState phaseState){
-		List<WwfdtApproverState> lstApprover = new ArrayList<>();
+		List<WwfdtAppInstApprover> lstApprover = new ArrayList<>();
 		for(ApprovalFrame frame : phaseState.getListApprovalFrame()){
-			List<WwfdtApproverState> frameChild = frame.getLstApproverInfo().stream().map(x -> 
-					WwfdtApproverState.fromDomain(rootStateID, phaseState.getPhaseOrder(), frame, x))
+			List<WwfdtAppInstApprover> frameChild = frame.getLstApproverInfo().stream().map(x -> 
+					WwfdtAppInstApprover.fromDomain(rootStateID, phaseState.getPhaseOrder(), frame, x))
 					.collect(Collectors.toList());
 			lstApprover.addAll(frameChild);
 		}
@@ -85,13 +85,13 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	
 	public ApprovalPhaseState toDomain(){
 		List<ApprovalFrame> lstFrame = new ArrayList<>();
-		List<WwfdtApproverState> lstFrameEntity = this.listWwfdtApprover;
+		List<WwfdtAppInstApprover> lstFrameEntity = this.listWwfdtApprover;
 		for(int i = 1; i <= 5; i++){
 			int order = i;
-			List<WwfdtApproverState> lstFrameChild = lstFrameEntity.stream()
+			List<WwfdtAppInstApprover> lstFrameChild = lstFrameEntity.stream()
 					.filter(c -> c.wwfdpApprovrStatePK.approverOrder == order).collect(Collectors.toList());
 			if(lstFrameChild.isEmpty()) continue;
-			WwfdtApproverState entity = lstFrameChild.get(0);
+			WwfdtAppInstApprover entity = lstFrameChild.get(0);
 			List<ApproverInfor> lstApproverInfo = lstFrameChild.stream()
 					.map(c -> ApproverInfor.convert(c.wwfdpApprovrStatePK.approverId, c.approvalAtr, c.agentID, c.approvalDate, c.approvalReason, c.approverInListOrder))
 					.sorted(Comparator.comparing(ApproverInfor::getApproverInListOrder)).collect(Collectors.toList());

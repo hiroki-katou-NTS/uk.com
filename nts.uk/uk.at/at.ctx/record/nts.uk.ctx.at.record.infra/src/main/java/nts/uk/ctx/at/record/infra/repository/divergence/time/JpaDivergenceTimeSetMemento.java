@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time;
 import java.math.BigDecimal;
 import java.util.List;
 
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeSetMemento;
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtime
 public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 
 	/** The entity. */
-	private KrcstDvgcTime entity;
+	private KrcmtDvgcTime entity;
 
 	/**
 	 * Instantiates a new jpa divergence time repository set memento.
@@ -31,7 +31,7 @@ public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceTimeSetMemento(KrcstDvgcTime entity) {
+	public JpaDivergenceTimeSetMemento(KrcmtDvgcTime entity) {
 		this.entity = entity;
 	}
 

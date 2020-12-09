@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYEE_CE_SET")
-public class BsymtEmployeeCESetting extends UkJpaEntity implements Serializable {
+public class BsymtEmployeeCESetting extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

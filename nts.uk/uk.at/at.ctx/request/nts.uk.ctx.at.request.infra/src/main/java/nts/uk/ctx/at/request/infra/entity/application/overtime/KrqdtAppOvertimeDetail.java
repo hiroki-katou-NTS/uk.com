@@ -29,12 +29,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLim
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
-import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 時間外時間の詳細
@@ -43,7 +43,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQDT_APP_OVERTIME_DETAIL")
-public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable {
+public class KrqdtAppOvertimeDetail extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -158,7 +158,7 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
-	public KrqdtAppHolidayWork appHolidayWork;
+	public KrqdtAppHdWork appHolidayWork;
 
 	@Override
 	protected Object getKey() {

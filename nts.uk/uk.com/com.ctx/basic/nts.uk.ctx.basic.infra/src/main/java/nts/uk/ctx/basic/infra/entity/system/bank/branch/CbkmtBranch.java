@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author sonnh
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="CBKMT_BRANCH")
-public class CbkmtBranch extends UkJpaEntity {
+public class CbkmtBranch extends ContractUkJpaEntity {
    @EmbeddedId
    public CbkmtBranchPK ckbmtBranchPK;
    

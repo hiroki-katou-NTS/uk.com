@@ -31,7 +31,7 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
                     "                    FROM BSYMT_EMPLOYMENT  " +
                     "                    WHERE BSYMT_EMPLOYMENT.CID= ?  " +
                     "                    ) as  EM " +
-                    "RIGHT JOIN (SELECT * FROM KMFMT_RETENTION_EMP_CTR CTR WHERE CTR.CID = ? ) as EC ON EC.EMP_CTR_CD = EM.CODE" +
+                    "RIGHT JOIN (SELECT * FROM KSHMT_HDSTK_SET_EMP CTR WHERE CTR.CID = ? ) as EC ON EC.EMP_CTR_CD = EM.CODE" +
                     "" +
                     "                    ORDER BY EC.EMP_CTR_CD ASC;";
 

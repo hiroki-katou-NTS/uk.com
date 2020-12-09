@@ -32,12 +32,12 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 			"d.SID AS DSID, d.USED_DAYS AS DUSED_DAYS,",
 			"ci.SID AS CISID, ci.USE_ATR AS CIUSE_ATR, i.UPPER_LIM_SET_ART AS CIUPPER_LIM_SET_ART, i.MAX_DAY_THIS_FISCAL_YEAR AS CIMAX_DAY_THIS_FISCAL_YEAR, i.MAX_DAY_NEXT_FISCAL_YEAR as CIMAX_DAY_NEXT_FISCAL_YEAR,",
 			"cd.SID AS CDSID, cd.USED_DAYS as CDUSED_DAYS",
-			"FROM KRCMT_CARE_HD_INFO i",
-			"LEFT JOIN KRCMT_CARE_HD_DATA d",
+			"FROM KRCDT_HDNURSING_INFO i",
+			"LEFT JOIN KRCDT_CARE_HD_REMAIN d",
 			"ON i.SID = d.SID AND i.CID = '{cid}'",
 			"LEFT JOIN KRCMT_CHILD_CARE_HD_INFO ci",
 			"ON ci.SID = i.SID AND ci.CID = '{cid}'",
-			"LEFT JOIN KRCMT_CHILD_CARE_HD_DATA cd",
+			"LEFT JOIN KRCDT_CHILDCARE_HD_REMAIN cd",
 			"ON cd.SID = i.SID AND cd.CID = '{cid}'",
 			"WHERE i.SID = '{sid}'"); 
 	
@@ -120,7 +120,7 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 	public List<LeaveForCareInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds) {
 		List<LeaveForCareInfo> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_CARE_HD_INFO WHERE  CID = ?  AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_HDNURSING_INFO WHERE  CID = ?  AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
@@ -144,7 +144,7 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 	
 	@Override
 	public void addAll(String cid, List<LeaveForCareInfo> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_CARE_HD_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_HDNURSING_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " SID, CID, USE_ATR, UPPER_LIM_SET_ART, MAX_DAY_THIS_FISCAL_YEAR, MAX_DAY_NEXT_FISCAL_YEAR)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -186,7 +186,7 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 
 	@Override
 	public void updateAll(String cid, List<LeaveForCareInfo> domains) {
-		String UP_SQL = "UPDATE KRCMT_CARE_HD_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCDT_HDNURSING_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " USE_ATR = USE_ATR_VAL, UPPER_LIM_SET_ART = UPPER_LIM_SET_ART_VAL, MAX_DAY_THIS_FISCAL_YEAR = MAX_DAY_THIS_FISCAL_YEAR_VAL, MAX_DAY_NEXT_FISCAL_YEAR = MAX_DAY_NEXT_FISCAL_YEAR_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
@@ -225,12 +225,12 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 					"d.SID AS DSID, d.USED_DAYS AS DUSED_DAYS,",
 					"ci.SID AS CISID, ci.USE_ATR AS CIUSE_ATR, i.UPPER_LIM_SET_ART AS CIUPPER_LIM_SET_ART, i.MAX_DAY_THIS_FISCAL_YEAR AS CIMAX_DAY_THIS_FISCAL_YEAR, i.MAX_DAY_NEXT_FISCAL_YEAR as CIMAX_DAY_NEXT_FISCAL_YEAR,",
 					"cd.SID AS CDSID, cd.USED_DAYS as CDUSED_DAYS",
-					"FROM KRCMT_CARE_HD_INFO i",
-					"LEFT JOIN KRCMT_CARE_HD_DATA d",
+					"FROM KRCDT_HDNURSING_INFO i",
+					"LEFT JOIN KRCDT_CARE_HD_REMAIN d",
 					"ON i.SID = d.SID AND i.CID = CID_VAL",
 					"LEFT JOIN KRCMT_CHILD_CARE_HD_INFO ci",
 					"ON ci.SID = i.SID AND ci.CID = CID_VAL",
-					"LEFT JOIN KRCMT_CHILD_CARE_HD_DATA cd",
+					"LEFT JOIN KRCDT_CHILDCARE_HD_REMAIN cd",
 					"ON cd.SID = i.SID AND cd.CID = CID_VAL",
 					"WHERE i.SID IN (",  NtsStatement.In.createParamsString(subList) + ")");
 			sql = sql.replace("CID_VAL", "'"+ cid + "'");
@@ -279,12 +279,12 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 					"d.SID AS DSID, d.USED_DAYS AS DUSED_DAYS,",
 					"ci.SID AS CISID, ci.USE_ATR AS CIUSE_ATR, ci.UPPER_LIM_SET_ART AS CIUPPER_LIM_SET_ART, ci.MAX_DAY_THIS_FISCAL_YEAR AS CIMAX_DAY_THIS_FISCAL_YEAR, ci.MAX_DAY_NEXT_FISCAL_YEAR as CIMAX_DAY_NEXT_FISCAL_YEAR,",
 					"cd.SID AS CDSID, cd.USED_DAYS as CDUSED_DAYS",
-					"FROM KRCMT_CARE_HD_INFO i",
-					"LEFT JOIN KRCMT_CARE_HD_DATA d",
+					"FROM KRCDT_HDNURSING_INFO i",
+					"LEFT JOIN KRCDT_CARE_HD_REMAIN d",
 					"ON i.SID = d.SID AND i.CID = CID_VAL",
 					"LEFT JOIN KRCMT_CHILD_CARE_HD_INFO ci",
 					"ON ci.SID = i.SID AND ci.CID = CID_VAL",
-					"LEFT JOIN KRCMT_CHILD_CARE_HD_DATA cd",
+					"LEFT JOIN KRCDT_CHILDCARE_HD_REMAIN cd",
 					"ON cd.SID = i.SID AND cd.CID = CID_VAL",
 					"WHERE i.SID IN (",  NtsStatement.In.createParamsString(subList) + ")");
 			sql = sql.replace("CID_VAL", "'"+ cid + "'");

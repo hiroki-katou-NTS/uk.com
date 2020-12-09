@@ -29,9 +29,9 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory_;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
 
@@ -47,7 +47,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 */
 	@Override
 	public MasterCopyData findByCategoryNo(Integer categoryNo) {
-		Optional<SspmtMastercopyCategory> categoryEntity = this.queryProxy().find(categoryNo, SspmtMastercopyCategory.class);
+		Optional<SspctMastercopyCategory> categoryEntity = this.queryProxy().find(categoryNo, SspctMastercopyCategory.class);
 		if(categoryEntity.isPresent()) {
 			return this.toDomain(categoryEntity.get());
 		}
@@ -58,11 +58,11 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository#doCopy(java.lang.String, nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod, java.lang.String)
 	 */
 	@Override
-	public void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId, boolean isOnlyCid) {
+	public void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String cotnractCode, String companyId, boolean isOnlyCid) {
 		//case 0,1
         DataCopyHandler.DataCopyHandlerBuilder.aDataCopyHandler()
                 .withOnlyCid(isOnlyCid)
-                .withCompanyId(companyId)
+                .withCompanyId(cotnractCode, companyId)
                 .withCopyMethod(copyMethod)
                 .withEntityManager(getEntityManager())
                 .withKeys(keys)
@@ -75,9 +75,9 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	@Override
 	public MasterCopyCategory findCatByCategoryNo(Integer categoryNo) {
 		MasterCopyCategory masterCopyCategory = new MasterCopyCategory();
-		Optional<SspmtMastercopyCategory> categoryEntity = this.queryProxy().find(categoryNo, SspmtMastercopyCategory.class);
+		Optional<SspctMastercopyCategory> categoryEntity = this.queryProxy().find(categoryNo, SspctMastercopyCategory.class);
 		if(categoryEntity.isPresent()) {
-			SspmtMastercopyCategory categoryEnt = categoryEntity.get();
+			SspctMastercopyCategory categoryEnt = categoryEntity.get();
 			masterCopyCategory.setCategoryName(new MasterCopyCategoryName(categoryEnt.getCategoryName()));
 			masterCopyCategory.setCategoryNo(new MasterCopyCategoryNo(categoryNo));
 			masterCopyCategory.setOrder(new MasterCopyCategoryOrder(categoryEnt.getCategoryOrder().intValue()));
@@ -93,18 +93,18 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @param categoryEntity the category entity
 	 * @return the master copy data
 	 */
-	private MasterCopyData toDomain(SspmtMastercopyCategory categoryEntity) {
+	private MasterCopyData toDomain(SspctMastercopyCategory categoryEntity) {
 		// query dataEntites
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder.createQuery(SspmtMastercopyData.class);
-		Root<SspmtMastercopyData> root = cq.from(SspmtMastercopyData.class);
+		CriteriaQuery<SspctMastercopyData> cq = criteriaBuilder.createQuery(SspctMastercopyData.class);
+		Root<SspctMastercopyData> root = cq.from(SspctMastercopyData.class);
 		cq.select(root);
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.id).get(SspmtMastercopyDataPK_.categoryNo),
 				categoryEntity.getCategoryNo()));
 		cq.where(predicates.toArray(new Predicate[] {}));
-		List<SspmtMastercopyData> dataEntities = em.createQuery(cq).getResultList();
+		List<SspctMastercopyData> dataEntities = em.createQuery(cq).getResultList();
 		// get memento
 		JpaMasterCopyDataGetMemento memento = new JpaMasterCopyDataGetMemento(categoryEntity, dataEntities);
 		return new MasterCopyData(memento);
@@ -125,13 +125,13 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SspmtMastercopyCategory> cq = criteriaBuilder.createQuery(SspmtMastercopyCategory.class);
-		Root<SspmtMastercopyCategory> root = cq.from(SspmtMastercopyCategory.class);
+		CriteriaQuery<SspctMastercopyCategory> cq = criteriaBuilder.createQuery(SspctMastercopyCategory.class);
+		Root<SspctMastercopyCategory> root = cq.from(SspctMastercopyCategory.class);
 		
 		// Build query
 		cq.select(root);
 		
-		List<SspmtMastercopyCategory> resultList = new ArrayList<>();
+		List<SspctMastercopyCategory> resultList = new ArrayList<>();
 
 		CollectionUtil.split(masterCopyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// Add where conditions

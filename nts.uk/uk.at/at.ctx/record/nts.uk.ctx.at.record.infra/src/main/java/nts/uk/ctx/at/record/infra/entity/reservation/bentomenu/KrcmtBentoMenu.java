@@ -24,19 +24,16 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_BENTO_MENU")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtBentoMenu extends UkJpaEntity {
+public class KrcmtBentoMenu extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrcmtBentoMenuPK pk;
-	
-	@Column(name = "CONTRACT_CD")
-	public String contractCD;
 	
 	@Column(name = "RESERVATION_FRAME1_NAME")
 	public String reservationFrameName1;
@@ -90,7 +87,6 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 						AppContexts.user().companyId(),
 						bentoMenu.getHistoryID()
 				),
-				AppContexts.user().contractCode(),
 				bentoMenu.getClosingTime().getClosingTime1().getReservationTimeName().v(),
 				bentoMenu.getClosingTime().getClosingTime1().getStart().isPresent()?
 						bentoMenu.getClosingTime().getClosingTime1().getStart().get().v():null,
