@@ -182,13 +182,13 @@ module nts.uk.at.view.kwr003.b {
         if (!item.isChecked()) return;
 
         if (_.isEmpty(item.name())) {
-          $('#textName' + index).ntsError('set', {
+          $('#textName' + item.id).ntsError('set', {
             messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
           });
         }
 
         if (item.selectedTimeList().length === 0) {
-          $('#btnRow-' + index).ntsError('set', {
+          $('#btnRow-' + item.id).ntsError('set', {
             messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
           });
         }
@@ -355,7 +355,6 @@ module nts.uk.at.view.kwr003.b {
         if (answer === 'yes') {
           vm.$ajax(PATH.deleteSettingItemDetails, params)
             .done(() => {
-
               vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
                 vm.getPositionBeforeDelete();  //keep position before remove              );
                 vm.$blockui('hide');

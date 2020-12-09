@@ -13,7 +13,7 @@ module nts.uk.at.view.kwr004.c {
 
   @bean()
   class ViewModel extends ko.ViewModel {
-    
+
     oldCode: KnockoutObservable<string> = ko.observable();
     oldName: KnockoutObservable<string> = ko.observable();
 
@@ -27,23 +27,20 @@ module nts.uk.at.view.kwr004.c {
       const vm = this;
 
       vm.params({
-        settingCategory : 1,
-        settingId : null,
-        settingCode :null,
-        settingName : null
+        settingCategory: 1,
+        settingId: null,
+        settingCode: null,
+        settingName: null
       });
 
-      vm.$window.storage(KWR004_C_INPUT).then((data) => {
-        if (!_.isNil(data)) {
-          vm.oldCode(data.code);
-          vm.oldName(data.name);
-
-          vm.params().settingId = data.settingId;
-          vm.params().settingName = data.code;
-          vm.params().settingName = data.name;
-          vm.params().settingCategory = data.settingCategory;
-        }
-      });
+      if (!_.isNil(params)) {
+        vm.oldCode(params.code);
+        vm.oldName(params.name);
+        vm.params().settingId = params.settingId;
+        vm.params().settingName = params.code;
+        vm.params().settingName = params.name;
+        vm.params().settingCategory = params.settingCategory;
+      }
 
     }
 
@@ -57,30 +54,32 @@ module nts.uk.at.view.kwr004.c {
       $('#KWR004_C23').focus();
     }
 
-    proceed() {
+    proceedClone() {
       const vm = this;
+      $('.attendance-code-name').trigger('validate');
+      if (nts.uk.ui.errors.hasError()) return;
+
       vm.$blockui('show');
 
       vm.params().settingCode = vm.newCode();
       vm.params().settingName = vm.newName();
 
-      vm.$ajax(PATH.cloneSettingClassification, vm.params()).done((result) => {      
-        vm.$dialog.info( { messageId: 'Msg_15' }).then(() => {
-          vm.$window.storage(KWR004_C_OUTPUT, { code: vm.newCode(), name: vm.newName()});
+      vm.$ajax(PATH.cloneSettingClassification, vm.params()).done((result) => {
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {                  
+          vm.$window.close({ code: vm.newCode(), name: vm.newName() });
           vm.$blockui('hide');
-          vm.$window.close();
-        });       
-      }).fail((err) => {   
+        });
+      }).fail((err) => {
         vm.showError(err.messageId);
-        vm.$blockui('hide');   
-      }).always( () => vm.$blockui('hide'));     
+        vm.$blockui('hide');
+      }).always(() => vm.$blockui('hide'));
     }
 
     showError(messageId: string) {
       const vm = this;
       switch (messageId) {
         case 'Msg_1898':
-          vm.$dialog.error({ messageId: messageId }).then(() => { 
+          vm.$dialog.error({ messageId: messageId }).then(() => {
             $('#btnClose').focus();
           });
           break;
@@ -93,33 +92,9 @@ module nts.uk.at.view.kwr004.c {
     }
 
     cancel() {
-      const vm = this;
-      vm.$window.storage(KWR004_C_OUTPUT, null);
-      vm.$window.close();
-    }
-
-    /**
-     * Clones setting classification
-     */
-    cloneSettingClassification() {
-      const vm = this;
-
-      vm.$blockui('show');
-
-      vm.$ajax(PATHS.cloneSettingClassification, vm.params())
-        .done((response) => {
-          let hasErrors = vm.checkErrors();
-          if (hasErrors) {
-            vm.$window.storage(KWR004_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });
-            vm.$blockui('hide');
-            vm.$window.close();
-          }
-        })
-        .fail((error) => {
-          vm.$blockui('hide');
-        })
-        .always(() => vm.$blockui('hide'));
-    }
+      const vm = this; 
+      vm.$window.close(null);
+    }    
 
     checkErrors() {
       const vm = this;
