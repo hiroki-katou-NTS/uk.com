@@ -43,6 +43,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
@@ -695,7 +696,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					.getOverTimeAppSet()
 					.getOvertimeLeaveAppCommonSet()
 					.checkPreApplication(
-						appOverTime.getPrePostAtr(),
+						EnumAdaptor.valueOf(appOverTime.getPrePostAtr().value, PrePostInitAtr.class),
 						displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime())).orElse(Optional.empty()),
 						Optional.of(appOverTime.getApplicationTime()),
 						displayInfoOverTime.getInfoWithDateApplicationOp().map(x -> x.getApplicationTime()).orElse(Optional.empty()));

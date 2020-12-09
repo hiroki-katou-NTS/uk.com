@@ -656,7 +656,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				self.workInfo().workTime(workTime);				
 			}
 			self.workInfo().workHours1 = workHours1;
-			self.workInfo().workHours2 = workHours2;
+			if (self.visibleModel.c29()) {
+				self.workInfo().workHours2 = workHours2;				
+			}
 
 		}
 		
@@ -866,7 +868,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
-					
+					let prePost = self.application().prePostAtr();
+					if (self.application().prePostAtr() == 2 ) {
+						prePost = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+					}
 					let command = {
 						companyId: self.$user.companyId,
 						employeeId: self.$user.employeeId,
@@ -874,7 +879,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						workType: workType.code,
 						workTime: workTime.code,
 						appDispInfoStartupDto: self.appDispInfoStartupOutput(),
-						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet
+						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
+						prePost: prePost
 					};
 					self.$blockui('show')
 					self.$ajax(API.selectWorkInfo, command)
@@ -917,12 +923,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
-			if (ko.toJS(self.appDispInfoStartupOutput).appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1) {
-				command.prePostInitAtr = ko.toJS(self.application).prePostAtr;
-			} else {
-				command.prePostInitAtr = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.prePostAtr;
+			let prePostInitAtr = self.application().prePostAtr();
+			if (self.application().prePostAtr() == 2 ) {
+				prePostInitAtr = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
 			}
-
+			command.prePostInitAtr = prePostInitAtr;
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
 			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
 				let opPreAppContentDisplayLst = self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst;

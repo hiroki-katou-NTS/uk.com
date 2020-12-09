@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
@@ -90,7 +91,7 @@ public interface OvertimeService {
 			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp, 
-			PrePostAtr prePostInitAtr,
+			PrePostInitAtr prePostInitAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
@@ -112,7 +113,7 @@ public interface OvertimeService {
 			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp, 
-			PrePostAtr prePostInitAtr,
+			PrePostInitAtr prePostInitAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
@@ -272,7 +273,8 @@ public interface OvertimeService {
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
-			OvertimeAppSet overtimeAppSet
+			OvertimeAppSet overtimeAppSet,
+			PrePostInitAtr prePost
 			);
 	
 	/**
@@ -297,7 +299,8 @@ public interface OvertimeService {
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
 			OvertimeAppSet overtimeAppSet,
-			List<WorkType> worktypes
+			List<WorkType> worktypes,
+			PrePostInitAtr prePost
 			);
 	
 	// Mobile //
