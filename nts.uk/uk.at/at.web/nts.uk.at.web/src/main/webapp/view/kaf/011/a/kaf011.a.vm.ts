@@ -5,7 +5,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
-	import DisplayInforWhenStarting = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
+	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
+	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	
 	const APIKAF011 = {
         start: "at/request/application/holidayshipment/startPageARefactor"
@@ -16,14 +17,18 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		
-		displayInforWhenStarting: DisplayInforWhenStarting;
+		displayInforWhenStarting: any;
 		
 		isSendMail = ko.observable(false);
+		remainDays = ko.observable('');
 		workTypeListWorkingDay = ko.observableArray([]);
 		workTypeListHoliDay = ko.observableArray([]);
 		
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
+		
+		recruitmentApp = new RecruitmentApp()
+		absenceLeaveApp = new AbsenceLeaveApp();
 		
 		
 		
@@ -53,13 +58,16 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			let	dateLst: Array<string> = [];
 			vm.$blockui("grayout");
 			vm.loadData(empLst, dateLst, vm.appType()).then((loadDataFlag: any) => {
-				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: loadDataFlag}).then((data: DisplayInforWhenStarting) =>{
+				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: loadDataFlag}).then((data: any) =>{
 					vm.displayInforWhenStarting = data;
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
+					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
 				}).always(() => {
+					$('#functions-area').css({'display': ''});
+					$('#contents-area').css({'display': ''});
 					vm.$blockui("hide"); 
 				});
 			}).fail((failData: any) => {

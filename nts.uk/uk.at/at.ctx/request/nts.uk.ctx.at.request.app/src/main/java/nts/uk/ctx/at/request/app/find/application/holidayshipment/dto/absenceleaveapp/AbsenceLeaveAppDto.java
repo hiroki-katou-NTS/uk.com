@@ -1,68 +1,55 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentAppDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.WorkingHoursDto;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
+import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * @author sonnlb 振休申請Dto
+ * @author thanhpv
+ *
  */
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class AbsenceLeaveAppDto extends HolidayShipmentAppDto {
-
-	/**
-	 * 就業時間帯変更
-	 */
-	private int changeWorkHoursType;
-	/**
-	 * 勤務時間1
-	 */
-	private WorkingHoursDto wkTime1;
-	/**
-	 * 勤務時間2
-	 */
-	private WorkingHoursDto wkTime2;
-	/**
-	 * 消化対象振休管理
-	 */
-	private List<SubDigestionDto> subDigestions;
-
-	public static AbsenceLeaveAppDto fromDomain(AbsenceLeaveApp domain, GeneralDate appDate) {
-
-//		WorkingHoursDto WorkTime1 = WorkingHoursDto.createFromDomain(domain.getWorkTime1());
-//
-//		WorkingHoursDto WorkTime2 = WorkingHoursDto.createFromDomain(domain.getWorkTime2());
-//
-//		List<SubDigestionDto> subDigestions = domain.getSubDigestions().stream()
-//				.map(x -> SubDigestionDto.createFromDomain(x)).collect(Collectors.toList());
-//
-//		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD().v(),
-//				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD(), WorkTime1, WorkTime2,
-//				domain.getSubTargetDigestions(), subDigestions, appDate);
-
-		return null;
+public class AbsenceLeaveAppDto {
+	
+	public ApplicationDto application;
+	
+	public List<TimeZoneWithWorkNoDto> workingHours;
+	
+	public WorkInformationDto workInformation;
+	
+	public Integer workChangeUse;
+	
+	public String changeSourceHoliday;
+	
+	public AbsenceLeaveAppDto(AbsenceLeaveApp domain) {
+		this.application = ApplicationDto.fromDomain(domain);
+		this.workingHours = domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList());
+		this.workInformation = WorkInformationDto.fromDomain(domain.getWorkInformation());
+		this.workChangeUse = domain.getWorkChangeUse().value;
+		this.changeSourceHoliday = domain.getChangeSourceHoliday().map(c->c.toString()).orElse(null);
 	}
-
-	public AbsenceLeaveAppDto(String appID, String workTypeCD, int changeWorkHoursType, String workTimeCD,
-			WorkingHoursDto workTime1, WorkingHoursDto workTime2, List<SubTargetDigestion> subTargetDigestions,
-			List<SubDigestionDto> subDigestions, GeneralDate appDate) {
-		super(appID, workTypeCD, appDate, subTargetDigestions, workTimeCD);
-		this.setChangeWorkHoursType(changeWorkHoursType);
-		this.setWkTime1(workTime1);
-		this.setWkTime2(workTime2);
-		this.setSubDigestions(subDigestions);
+	
+	public AbsenceLeaveApp toDomain() {
+		return new AbsenceLeaveApp(
+				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
+				workInformation.toDomain(), 
+				NotUseAtr.valueOf(this.workChangeUse), 
+				StringUtils.isEmpty(this.changeSourceHoliday) ? Optional.empty() : Optional.of(GeneralDate.fromString(this.changeSourceHoliday, "yyyy/MM/dd")), 
+				TypeApplicationHolidays.Abs, 
+				application.toDomain());
 	}
 
 }

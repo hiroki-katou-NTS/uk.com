@@ -14,7 +14,7 @@ public class SaveHolidayShipmentCommand {
 	/**
 	 * 振休
 	 */
-	private AbsenceLeaveAppCommand absCmd;
+//	private AbsenceLeaveAppCmd absCmd;
 
 	/**
 	 * 申請組み合わせ

@@ -37,10 +37,11 @@
 			<com:stylefile path="../shr/kaf011.shr.css" />
 			<com:stylefile path="kaf011.a.css" />
 			
+			<com:scriptfile path="../shr/kaf011.shr.vm.js" />
 			<com:scriptfile path="kaf011.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" style="display: none">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<button class="" data-bind="click: register" tabindex="2">#{i18n.getText('KAF011_7')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 
@@ -51,7 +52,7 @@
 											} }" style="display: inline-block;"></div>
 			</div>
 			
-			<div id="contents-area">
+			<div id="contents-area" style="display: none">
 				<div data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
 												appType: appType,
@@ -65,7 +66,7 @@
 								<th class="bg-green" >振休残数</th>
 							</tr>
 							<tr>
-								<td data-bind="">0日</td>
+								<td data-bind="text:remainDays"></td>
 							</tr>
 						</table>
 					</div>

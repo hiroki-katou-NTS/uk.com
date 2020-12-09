@@ -1,29 +1,117 @@
 module nts.uk.at.view.kaf011 {
-	export class DisplayInforWhenStarting {
-		//振出申請起動時の表示情報
-		applicationForWorkingDay: any;
-		//申請表示情報
-		appDispInfoStartup: any;
-		//振休申請起動時の表示情報
-		applicationForHoliday: any;
-		//振休残数情報
-		remainingHolidayInfor: any;
-		//振休振出申請設定
-		substituteHdWorkAppSet: any;
-		//振休紐付け管理区分
-		holidayManage: number;
-		//代休紐付け管理区分
-		substituteManagement: number;
-		
-		//振休申請の反映
-		workInfoAttendanceReflect: any;
-		//振出申請の反映
-		substituteWorkAppReflect: any;
-		//振休申請
-		absApp: any;
-		//振出申請
-		recApp: any;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	
+	/** 振出申請 */
+	export class RecruitmentApp {
+		appID: string;
+		application: Application = new Application();
+		workInformation: WorkInformation = new WorkInformation();
+		workingHours: TimeZoneWithWorkNo[] = [];
+		workingHoursDispLay1: TimeZoneWithWorkNo = new TimeZoneWithWorkNo(1, this.collectWorkingHours);
+		workingHoursDispLay2: TimeZoneWithWorkNo = new TimeZoneWithWorkNo(2, this.collectWorkingHours);
+		constructor(){}
+		update(param: any){
+			let self = this;
+			self.appID = param.appID;
+			self.application.update(param.application);
+			self.workInformation.update(param.workInformation);
+			self.workingHours = param.workingHours;
+			let e1 = _.find(param.workingHours, { 'workNo': 1});
+			if(e1) {
+				self.workingHoursDispLay1.update(e1);	
+			}
+			let e2 = _.find(param.workingHours, { 'workNo': 2});
+			if(e2) {
+				self.workingHoursDispLay2.update(e2);	
+			}
+			
+		}
+		collectWorkingHours(){
+			let self = this;
+			self.workingHours = [];
+			if(self.workingHoursDispLay1.timeZone.startTime() && self.workingHoursDispLay1.timeZone.endTime()){
+				self.workingHours.push(self.workingHoursDispLay1);
+			}
+			if(self.workingHoursDispLay2.timeZone.startTime() && self.workingHoursDispLay2.timeZone.endTime()){
+				self.workingHours.push(self.workingHoursDispLay2);
+			}
+		}
 	}
 	
+	/** 振休申請 */	
+	export class AbsenceLeaveApp extends RecruitmentApp {
+		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
+		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
+		constructor(){
+			super();
+		}
+		update(param: any){
+			let self = this;
+			super.update(param);
+			self.workChangeUse(param.workChangeUse);
+			self.changeSourceHoliday(param.changeSourceHoliday);
+		}
+	}
 	
+	export class Application{
+		prePostAtr: KnockoutObservable<number> = ko.observable(0);
+		employeeIDLst: string[] = [];
+		appType: number = AppType.COMPLEMENT_LEAVE_APPLICATION;
+		appDate: KnockoutObservable<string> = ko.observable('');
+		opAppStandardReasonCD: KnockoutObservable<number> = ko.observable(null);
+		opAppReason: KnockoutObservable<string> = ko.observable('');
+		constructor(){}
+		update(param: any){
+			let self = this;
+			self.prePostAtr(param.prePostAtr);
+			self.appDate(param.appDate);
+			self.opAppStandardReasonCD(param.opAppStandardReasonCD);
+			self.opAppReason(param.opAppReason);
+		}
+	}
+	
+	export class WorkInformation {
+		workType: KnockoutObservable<string> = ko.observable('');
+		workTime: KnockoutObservable<string> = ko.observable('');
+		constructor(){}
+		update(param: any){
+			let self = this;
+			self.workType(param.workType);
+			self.workTime(param.workTime);
+		}
+	}
+	
+	export class TimeZoneWithWorkNo {
+		workNo: number;
+		timeZone: TimeZone;
+		constructor(workNo: number, collectWorkingHours: (() => void)){
+			let self = this;
+			self.workNo = workNo;
+			self.timeZone = new TimeZone(collectWorkingHours)
+		}
+		update(param: any){
+			let self = this;
+			self.timeZone.update(param.timeZone);
+		}
+	}
+	
+	export class TimeZone {
+		startTime: KnockoutObservable<number> = ko.observable();
+		endTime: KnockoutObservable<number> = ko.observable();
+		constructor(private collectWorkingHours: (() => void)){
+			let self = this;
+			self.startTime.subscribe(() => {
+				self.collectWorkingHours();
+			});
+			self.endTime.subscribe(() => {
+				self.collectWorkingHours();
+			});
+		}
+		update(param: any){
+			let self = this;
+			self.startTime(param.startTime);
+			self.endTime(param.endTime);
+		}
+	}
+
 }

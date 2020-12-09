@@ -195,16 +195,16 @@ public class HolidayShipmentScreenBFinder {
 			clearRecApp(screenInfo);
 			// アルゴリズム「振休申請と関連付けた振出情報の取得」を実行する
 			AbsenceLeaveAppDto absApp = screenInfo.getAbsApp();
-			absApp.getSubDigestions().forEach(x -> {
-				if (x.getPayoutMngDataID() != null) {
-					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
-					// làm domain 振出データID指定
-				} else {
-					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
-					// làm domain 暫定振出管理データ
-
-				}
-			});
+//			absApp.getSubDigestions().forEach(x -> {
+//				if (x.getPayoutMngDataID() != null) {
+//					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
+//					// làm domain 振出データID指定
+//				} else {
+//					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
+//					// làm domain 暫定振出管理データ
+//
+//				}
+//			});
 
 		}
 	}
@@ -293,7 +293,7 @@ public class HolidayShipmentScreenBFinder {
 
 		String companyID = AppContexts.user().companyId();
 		ApplicationMetaOutput recAppOutput = detailService.getDetailAppCommonSet(companyID, recruitmentApp.getAppID());
-		screenInfo.setRecApp(RecruitmentAppDto.fromDomain(recruitmentApp, recAppOutput.getAppDate()));
+//		screenInfo.setRecApp(RecruitmentAppDto.fromDomain(recruitmentApp, recAppOutput.getAppDate()));
 
 	}
 
@@ -301,7 +301,7 @@ public class HolidayShipmentScreenBFinder {
 
 		String companyID = AppContexts.user().companyId();
 		ApplicationMetaOutput absAppOutput = detailService.getDetailAppCommonSet(companyID, absenceLeaveApp.getAppID());
-		screenInfo.setAbsApp(AbsenceLeaveAppDto.fromDomain(absenceLeaveApp, absAppOutput.getAppDate()));
+//		screenInfo.setAbsApp(AbsenceLeaveAppDto.fromDomain(absenceLeaveApp, absAppOutput.getAppDate()));
 
 	}
 	
@@ -395,7 +395,8 @@ public class HolidayShipmentScreenBFinder {
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMngOpt.get().getAbsenceLeaveAppID());
 			if (absAppOpt.isPresent()) {
 				ApplicationMetaOutput absAppOutput = detailService.getDetailAppCommonSet(companyID, absAppOpt.get().getAppID());
-				return Optional.of(AbsenceLeaveAppDto.fromDomain(absAppOpt.get(), absAppOutput.getAppDate()));
+//				return Optional.of(AbsenceLeaveAppDto.fromDomain(absAppOpt.get(), absAppOutput.getAppDate()));
+				return Optional.empty();
 			}
 		}
 		return Optional.empty();
@@ -407,7 +408,8 @@ public class HolidayShipmentScreenBFinder {
 			Optional<RecruitmentApp> recAppOpt = recRepo.findByID(compltLeaveSimMngOpt.get().getRecAppID());
 			if(recAppOpt.isPresent()) {
 				ApplicationMetaOutput recAppOutput = detailService.getDetailAppCommonSet(companyID, recAppOpt.get().getAppID());
-				return Optional.of(RecruitmentAppDto.fromDomain(recAppOpt.get(), recAppOutput.getAppDate()));
+//				return Optional.of(RecruitmentAppDto.fromDomain(recAppOpt.get(), recAppOutput.getAppDate()));
+				return Optional.empty();
 			}
 		}
 		return Optional.empty();

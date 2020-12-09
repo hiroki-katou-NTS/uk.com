@@ -642,7 +642,7 @@ public class HolidayShipmentScreenAFinder {
 	private void setWkTimeInfoForAbsApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
 		AbsenceLeaveAppDto absAppOutPut = output.getAbsApp();
 		if (absAppOutPut != null) {
-			setSelectedWkTimeInfo(companyID, WkTimeCD, absAppOutPut);
+//			setSelectedWkTimeInfo(companyID, WkTimeCD, absAppOutPut);
 		}
 
 	}
@@ -650,7 +650,7 @@ public class HolidayShipmentScreenAFinder {
 	private void setWkTimeInfoForRecApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
 		RecruitmentAppDto recAppOutPut = output.getRecApp();
 		if (recAppOutPut != null) {
-			setSelectedWkTimeInfo(companyID, WkTimeCD, recAppOutPut);
+//			setSelectedWkTimeInfo(companyID, WkTimeCD, recAppOutPut);
 		}
 	}
 
