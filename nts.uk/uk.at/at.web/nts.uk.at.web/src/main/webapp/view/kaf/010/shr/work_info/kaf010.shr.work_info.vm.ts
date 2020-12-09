@@ -68,16 +68,16 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 					</div>
 				</div>
 			</div>
-			<div class="table" style="margin-top: 87px">
-				<div style="width: 113px" class="cell valign-top cm-column2" data-bind="visible: managementMultipleWorkCyclescheck()">
+			<div class="table">
+				<div style="width: 113px" class="cell valign-top cm-column2">
 					<!--A4_8 勤務時間ラベル-->
-					<div class="lblTitle" data-bind="text: $i18n('KAF010_339'), ntsFormLabel: {required: false}"
+					<div class="lblTitle" data-bind="text: $i18n('KAF010_339'), ntsFormLabel: {required: false}, visible: managementMultipleWorkCyclescheck()"
 						style="margin-right: 6px"></div>
 				</div>
 				<div class="cell valign-center">
-					<div data-bind="visible: managementMultipleWorkCyclescheck()">
+					<div class="row-cell-margin" data-bind="visible: managementMultipleWorkCyclescheck()">
 						<!-- A4_12 -->
-						<input tabindex="10" class="row-cell-margin inputTime-kaf005 right-content" id="inpStartTime2"
+						<input tabindex="10" class="inputTime-kaf005 right-content" id="inpStartTime2"
 							data-bind="ntsTimeWithDayEditor: { 
 								name: '#[KAF010_335]',
 								constraint:'TimeWithDayAttr',
@@ -87,7 +87,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 								required: false }" />
 						<label class="valign-center link-label-kaf005" data-bind=", text: $i18n('KAF010_39')"></label>
 					</div>
-					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: isGoWorkAtr, text: $i18n('KAF010_3')}, visible: workTimeCheckBoxVisible()"></div>
+					<div style="width: 133px; margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: isGoWorkAtr, text: $i18n('KAF010_3')}, visible: workTimeCheckBoxVisible()"></div>
 				</div>
 				<div class="cell valign-center">
 					<div class="row-cell-margin" data-bind="visible: managementMultipleWorkCyclescheck()">
