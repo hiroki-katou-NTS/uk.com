@@ -753,9 +753,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		
 
 		VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
-		vPageBreaks.add(endReportPageBreak + (startNewPage + 1 ));
+		vPageBreaks.add(endReportPageBreak + (MAX_ROW_PER_EMPL * page + 1));
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-		hPageBreaks.add(endReportPageBreak + (startNewPage + 1 ));
+		hPageBreaks.add(endReportPageBreak + (MAX_ROW_PER_EMPL * page + 1));
 
  		return startNewPage;
 	}
