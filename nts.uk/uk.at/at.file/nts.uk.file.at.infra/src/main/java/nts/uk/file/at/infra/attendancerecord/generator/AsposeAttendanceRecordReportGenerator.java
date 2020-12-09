@@ -303,10 +303,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final String DAILY_TITLE_FIX_RIGHT = "V9:AO10";
 	
 	/** The report DAILY_TITLE_FIX_RIGHT_FM */
-	private static final String DAILY_TITLE_FIX_RIGHT_FM = "Z9:AS10";
+	private static final String DAILY_TITLE_FIX_RIGHT_FM = "Z9:AW10";
 	
 	/** The report DAILY_TITLE_FIX_RIGHT_FS */
-	private static final String DAILY_TITLE_FIX_RIGHT_FS = "AD9:AW10";
+	private static final String DAILY_TITLE_FIX_RIGHT_FS = "AD9:BE10";
 	
 	/** The report daily title start row */
 	private static final int DAILY_TITLE_START_ROW = 9;
