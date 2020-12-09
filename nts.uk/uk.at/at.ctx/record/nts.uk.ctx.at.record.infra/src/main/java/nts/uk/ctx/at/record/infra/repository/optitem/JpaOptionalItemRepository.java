@@ -31,8 +31,8 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRangePK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyvPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
@@ -101,7 +101,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@SneakyThrows
 	public List<OptionalItem> findAll(String companyId) {
 		try (val stmt = this.connection()
-				.prepareStatement("select * from KRCMT_ANYV KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+				.prepareStatement("select * from KRCMT_ANYV KOI LEFT JOIN KRCMT_CALC_RESULT_RANGE KCRR "
 						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
 						+ "where KOI.CID = ? ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
@@ -119,16 +119,34 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setNote(rec.getString("ITEM_NOTE"));
 				item.setDescription(rec.getString("ITEM_DESCRIP"));
 
-				KrcstCalcResultRange range = new KrcstCalcResultRange();
-				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
-				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
-				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
-				range.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
-				range.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
-				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
-				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
-				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
+				KrcmtCalcResultRange range = new KrcmtCalcResultRange();
+				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				
+				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
+				    range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+				    
+				    range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
+				    range.setUpperDayNumberRange(rec.getBigDecimal("UPPER_DAY_NUMBER_RANGE"));
+				    range.setUpperdayAmountRange(rec.getInt("UPPER_DAY_AMOUNT_RANGE"));
+				    range.setUpperMonTimeRange(rec.getInt("UPPER_MON_TIME_RANGE"));
+				    range.setUpperMonNumberRange(rec.getBigDecimal("UPPER_MON_NUMBER_RANGE"));
+				    range.setUpperMonAmountRange(rec.getInt("UPPER_MON_AMOUNT_RANGE"));
+				} else {
+				    range.setUpperLimitAtr(0);
+				}
+				
+				if (rec.getInt("LOWER_LIMIT_ATR") != null) {
+				    range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+				    
+				    range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
+				    range.setLowerDayNumberRange(rec.getBigDecimal("LOWER_DAY_NUMBER_RANGE"));
+				    range.setLowerDayAmountRange(rec.getInt("LOWER_DAY_AMOUNT_RANGE"));
+				    range.setLowerMonTimeRange(rec.getInt("LOWER_MON_TIME_RANGE"));
+				    range.setLowerMonNumberRange(rec.getBigDecimal("LOWER_MON_NUMBER_RANGE"));
+				    range.setLowerMonAmountRange(rec.getInt("LOWER_MON_AMOUNT_RANGE"));
+				} else {
+				    range.setLowerLimitAtr(0);
+				}
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
@@ -149,7 +167,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
-		Join<KrcmtAnyv, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Join<KrcmtAnyv, KrcmtCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -173,7 +191,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream()
 				.map(item -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcstCalcResultRange) item[1])))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcmtCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -194,7 +212,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		}
 
 		try (val stmt = this.connection()
-				.prepareStatement("select * from KRCMT_ANYV KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+				.prepareStatement("select * from KRCMT_ANYV KOI LEFT JOIN KRCMT_CALC_RESULT_RANGE KCRR "
 						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
 						+ "where KOI.CID = ? and KOI.OPTIONAL_ITEM_NO in ("
 						+ NtsStatement.In.createParamsString(optionalitemNos)
@@ -217,16 +235,33 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
                 item.setNote(rec.getString("ITEM_NOTE"));
                 item.setDescription(rec.getString("ITEM_DESCRIP"));
 
-				KrcstCalcResultRange range = new KrcstCalcResultRange();
-				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
-				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
-				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
-				range.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
-				range.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
-				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
-				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
-				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
+				KrcmtCalcResultRange range = new KrcmtCalcResultRange();
+				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
+                    range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+                    
+                    range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
+                    range.setUpperDayNumberRange(rec.getBigDecimal("UPPER_DAY_NUMBER_RANGE"));
+                    range.setUpperdayAmountRange(rec.getInt("UPPER_DAY_AMOUNT_RANGE"));
+                    range.setUpperMonTimeRange(rec.getInt("UPPER_MON_TIME_RANGE"));
+                    range.setUpperMonNumberRange(rec.getBigDecimal("UPPER_MON_NUMBER_RANGE"));
+                    range.setUpperMonAmountRange(rec.getInt("UPPER_MON_AMOUNT_RANGE"));
+                } else {
+                    range.setUpperLimitAtr(0);
+                }
+                
+                if (rec.getInt("LOWER_LIMIT_ATR") != null) {
+                    range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+                    
+                    range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
+                    range.setLowerDayNumberRange(rec.getBigDecimal("LOWER_DAY_NUMBER_RANGE"));
+                    range.setLowerDayAmountRange(rec.getInt("LOWER_DAY_AMOUNT_RANGE"));
+                    range.setLowerMonTimeRange(rec.getInt("LOWER_MON_TIME_RANGE"));
+                    range.setLowerMonNumberRange(rec.getBigDecimal("LOWER_MON_NUMBER_RANGE"));
+                    range.setLowerMonAmountRange(rec.getInt("LOWER_MON_AMOUNT_RANGE"));
+                } else {
+                    range.setLowerLimitAtr(0);
+                }
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
@@ -254,7 +289,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
-		Join<KrcmtAnyv, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Join<KrcmtAnyv, KrcmtCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -278,7 +313,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream()
 				.map(item -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcstCalcResultRange) item[1])))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcmtCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -303,7 +338,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
-		Join<KrcmtAnyv, KrcstCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Join<KrcmtAnyv, KrcmtCalcResultRange> joinRoot = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -327,7 +362,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream()
 				.map(item -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcstCalcResultRange) item[1])))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) item[0], (KrcmtCalcResultRange) item[1])))
 				.collect(Collectors.toList());
 	}
 
@@ -352,7 +387,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcmtAnyv> root = cq.from(KrcmtAnyv.class);
-		Join<KrcmtAnyv, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange,
+		Join<KrcmtAnyv, KrcmtCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange,
 				JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -370,7 +405,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Get results
 		return result.stream()
 				.map(c -> new OptionalItem(
-						new JpaOptionalItemGetMemento((KrcmtAnyv) c.get(0), (KrcstCalcResultRange) c.get(1))))
+						new JpaOptionalItemGetMemento((KrcmtAnyv) c.get(0), (KrcmtCalcResultRange) c.get(1))))
 				.collect(Collectors.toList());
 	}
 
@@ -426,7 +461,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	public List<CalFormulasItemExportData> findAllCalFormulasItem(String companyId, String languageId) {
 		try (val stmt = this.connection().prepareStatement(
 				"SELECT ec.EMP_CD , oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oi.EMP_CONDITION_ATR FROM "
-						+ "KRCMT_ANYV oi " + "LEFT JOIN KRCST_CALC_RESULT_RANGE rr ON oi.CID = rr.CID "
+						+ "KRCMT_ANYV oi " + "LEFT JOIN KRCMT_CALC_RESULT_RANGE rr ON oi.CID = rr.CID "
 						+ "AND oi.OPTIONAL_ITEM_NO = rr.OPTIONAL_ITEM_NO "
 						+ "LEFT JOIN KRCST_APPL_EMP_CON ec ON rr.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO AND rr.CID = ec.CID"
 						+ "where oi.CID = ? AND ec.EMP_CD IS NOT NULL ORDER BY oi.OPTIONAL_ITEM_NO ASC")) {

@@ -69,7 +69,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             applicationContents: ko.observableArray([]),
             code: ko.observable(''),
-            name: ko.observable('')
+            name: ko.observable(''),
+            appDispInfoStartupOutput: ko.observable(null)
         });
         isSendMail: KnockoutObservable<Boolean>;
         application: KnockoutObservable<Application>;
@@ -112,7 +113,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     let contents: Array<OptionalItemApplicationContent> = [];
                     applicationDto.application.optionalItems.forEach((item: any) => {
                         let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo});
-                        let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo});
+                        let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo + 640});
                         if (optionalItem != null) {
                             contents.push({
                                 optionalItemName: optionalItem.optionalItemName,
@@ -141,6 +142,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                         applicationContents: ko.observableArray(_.sortBy(contents, ["dispOrder"])),
                         code: code,
                         name: name,
+                        appDispInfoStartupOutput: ko.observable(vm.appDispInfoStartupOutput())
                     });
                     vm.printContent.opOptionalItemOutput = ko.toJS({
                         code: vm.dataFetch().code,
@@ -197,7 +199,11 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                         vm.$dialog.info({messageId: "Msg_15"});
                     }
                 }).fail(err => {
-                    vm.$dialog.error(err);
+                    if (err && err.messageId) {
+                        if (err.messageId == "Msg_236" || err.messageId == "Msg_324" || err.messageId == "Msg_237" || err.messageId == "Msg_238") {
+                            vm.$dialog.error(err);
+                        }
+                    }
                 }).always(() => {
                     vm.$blockui("hide");
                 });
@@ -209,6 +215,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>,
         code: KnockoutObservable<string>,
         name: KnockoutObservable<string>,
+        appDispInfoStartupOutput: KnockoutObservable<any>
     }
 
     const PATH_API = {

@@ -53,48 +53,60 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 
     @Override
     public void setUpperLimit(CalcRangeCheck upper) {
-        this.upperCheck = upper == CalcRangeCheck.SET ? true : false;
+        this.upperCheck = upper == CalcRangeCheck.SET;
     }
 
 
     @Override
     public void setLowerLimit(CalcRangeCheck lower) {
-        this.lowerCheck = lower == CalcRangeCheck.SET ? true : false;
+        this.lowerCheck = lower == CalcRangeCheck.SET;
     }
 
 
     @Override
     public void setNumberRange(Optional<NumberRange> range) {
-        if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-            this.numberLower = range.get().getLowerLimit().get().v();
+        if (range.isPresent()
+                && range.get().getDailyTimesRange().isPresent()
+                && range.get().getDailyTimesRange().get().getLowerLimit().isPresent()) {
+            this.numberLower = range.get().getDailyTimesRange().get().getLowerLimit().get().v().doubleValue();
 
         }
-        if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-            this.numberUpper = range.get().getUpperLimit().get().v();
+        if (range.isPresent()
+                && range.get().getDailyTimesRange().isPresent()
+                && range.get().getDailyTimesRange().get().getUpperLimit().isPresent()) {
+            this.numberUpper = range.get().getDailyTimesRange().get().getUpperLimit().get().v().doubleValue();
         }
     }
 
 
     @Override
     public void setTimeRange(Optional<TimeRange> range) {
-        if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-            this.timeLower = range.get().getLowerLimit().get().v().intValue();
+        if (range.isPresent()
+                && range.get().getDailyTimeRange().isPresent()
+                && range.get().getDailyTimeRange().get().getLowerLimit().isPresent()) {
+            this.timeLower = range.get().getDailyTimeRange().get().getLowerLimit().get().v();
 
         }
-        if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-            this.timeUpper = range.get().getUpperLimit().get().v().intValue();
+        if (range.isPresent()
+                && range.get().getDailyTimeRange().isPresent()
+                && range.get().getDailyTimeRange().get().getUpperLimit().isPresent()) {
+            this.timeUpper = range.get().getDailyTimeRange().get().getUpperLimit().get().v();
         }
     }
 
 
     @Override
     public void setAmountRange(Optional<AmountRange> range) {
-        if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
-            this.amountLower = range.get().getLowerLimit().get().v().intValue();
+        if (range.isPresent()
+                && range.get().getDailyAmountRange().isPresent()
+                && range.get().getDailyAmountRange().get().getLowerLimit().isPresent()) {
+            this.amountLower = range.get().getDailyAmountRange().get().getLowerLimit().get().v();
 
         }
-        if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
-            this.amountUpper = range.get().getUpperLimit().get().v().intValue();
+        if (range.isPresent()
+                && range.get().getDailyAmountRange().isPresent()
+                && range.get().getDailyAmountRange().get().getUpperLimit().isPresent()) {
+            this.amountUpper = range.get().getDailyAmountRange().get().getUpperLimit().get().v();
         }
     }
 }

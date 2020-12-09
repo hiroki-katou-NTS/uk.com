@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk002.a {
                     var cols = $("#tbl-master-list").igGrid("option", "columns");
                     if ($("#tbl-master-list").igGrid("option", "columns").length == 4) {
                         //add columns otherLanguageName   
-                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, formatter: _.escape };
+                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, hidden: true, formatter: _.escape };
                         cols.splice(2, 0, newColumn);
                         $("#tbl-master-list").igGrid("option", "columns", cols);
                         $("#tbl-master-list").igGrid("option", "dataSource", lstOptItem());
@@ -225,19 +225,31 @@ module nts.uk.at.view.kmk002.a {
 
                 this.selectedClac.subscribe((vl) => {
                     if (vl) {
-                        if($('#inp-upper-amount').is(':enabled')){
-                            $('#inp-upper-amount').ntsEditor('validate');
+                        if($('#inp-upper-amount-day').is(':enabled')){
+                            $('#inp-upper-amount-day').ntsEditor('validate');
                         }
-                        if($('#inp-upper-number').is(':enabled')){
-                            $('#inp-upper-number').ntsEditor('validate');
+                        if($('#inp-upper-number-day').is(':enabled')){
+                            $('#inp-upper-number-day').ntsEditor('validate');
                         }
-                        if($('#inp-upper-time').is(':enabled')){
-                            $('#inp-upper-time').ntsEditor('validate');
+                        if($('#inp-upper-time-day').is(':enabled')){
+                            $('#inp-upper-time-day').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-amount-month').is(':enabled')){
+                            $('#inp-upper-amount-month').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-number-month').is(':enabled')){
+                            $('#inp-upper-number-month').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-time-month').is(':enabled')){
+                            $('#inp-upper-time-month').ntsEditor('validate');
                         }
                     } else {
-                        $('#inp-upper-amount').ntsError('clear');
-                        $('#inp-upper-number').ntsError('clear');
-                        $('#inp-upper-time').ntsError('clear');
+                        $('#inp-upper-amount-day').ntsError('clear');
+                        $('#inp-upper-number-day').ntsError('clear');
+                        $('#inp-upper-time-day').ntsError('clear');
+                        $('#inp-upper-amount-month').ntsError('clear');
+                        $('#inp-upper-number-month').ntsError('clear');
+                        $('#inp-upper-time-month').ntsError('clear');
                     }
                 })
             }
@@ -1127,55 +1139,95 @@ module nts.uk.at.view.kmk002.a {
         class CalculationResultRange {
             upperCheck: KnockoutObservable<boolean>;
             lowerCheck: KnockoutObservable<boolean>;
-            numberUpper: KnockoutObservable<number>;
-            numberLower: KnockoutObservable<number>;
-            amountUpper: KnockoutObservable<number>;
-            amountLower: KnockoutObservable<number>;
-            timeUpper: KnockoutObservable<number>;
-            timeLower: KnockoutObservable<number>;
+
+            numberUpperDay: KnockoutObservable<number>;
+            numberLowerDay: KnockoutObservable<number>;
+            amountUpperDay: KnockoutObservable<number>;
+            amountLowerDay: KnockoutObservable<number>;
+            timeUpperDay: KnockoutObservable<number>;
+            timeLowerDay: KnockoutObservable<number>;
+
+            numberUpperMonth: KnockoutObservable<number>;
+            numberLowerMonth: KnockoutObservable<number>;
+            amountUpperMonth: KnockoutObservable<number>;
+            amountLowerMonth: KnockoutObservable<number>;
+            timeUpperMonth: KnockoutObservable<number>;
+            timeLowerMonth: KnockoutObservable<number>;
 
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
-                this.numberUpper = ko.observable(null);
-                this.numberLower = ko.observable(null);
-                this.amountUpper = ko.observable(null);
-                this.amountLower = ko.observable(null);
-                this.timeUpper = ko.observable(null);
-                this.timeLower = ko.observable(null);
+
+                this.numberUpperDay = ko.observable(null);
+                this.numberLowerDay = ko.observable(null);
+                this.amountUpperDay = ko.observable(null);
+                this.amountLowerDay = ko.observable(null);
+                this.timeUpperDay = ko.observable(null);
+                this.timeLowerDay = ko.observable(null);
+
+                this.numberUpperMonth = ko.observable(null);
+                this.numberLowerMonth = ko.observable(null);
+                this.amountUpperMonth = ko.observable(null);
+                this.amountLowerMonth = ko.observable(null);
+                this.timeUpperMonth = ko.observable(null);
+                this.timeLowerMonth = ko.observable(null);
                 
                 this.upperCheck.subscribe(vl => {
                     if (vl) {
-                        if($('#inp-upper-amount').is(':enabled')){
-                            $('#inp-upper-amount').ntsEditor('validate');
+                        if($('#inp-upper-amount-day').is(':enabled')){
+                            $('#inp-upper-amount-day').ntsEditor('validate');
                         }
-                        if($('#inp-upper-number').is(':enabled')){
-                            $('#inp-upper-number').ntsEditor('validate');
+                        if($('#inp-upper-number-day').is(':enabled')){
+                            $('#inp-upper-number-day').ntsEditor('validate');
                         }
-                        if($('#inp-upper-time').is(':enabled')){
-                            $('#inp-upper-time').ntsEditor('validate');
+                        if($('#inp-upper-time-day').is(':enabled')){
+                            $('#inp-upper-time-day').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-amount-month').is(':enabled')){
+                            $('#inp-upper-amount-month').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-number-month').is(':enabled')){
+                            $('#inp-upper-number-month').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-time-month').is(':enabled')){
+                            $('#inp-upper-time-month').ntsEditor('validate');
                         }
                     } else {
-                        $('#inp-upper-amount').ntsError('clear');
-                        $('#inp-upper-number').ntsError('clear');
-                        $('#inp-upper-time').ntsError('clear');
+                        $('#inp-upper-amount-day').ntsError('clear');
+                        $('#inp-upper-number-day').ntsError('clear');
+                        $('#inp-upper-time-day').ntsError('clear');
+                        $('#inp-upper-amount-month').ntsError('clear');
+                        $('#inp-upper-number-month').ntsError('clear');
+                        $('#inp-upper-time-month').ntsError('clear');
                     }
                 });
                 this.lowerCheck.subscribe(vl => {
                     if (vl) {
-                        if($('#inp-upper-amount').is(':enabled')){
-                            $('#inp-lower-amount').ntsEditor('validate');
+                        if($('#inp-upper-amount-day').is(':enabled')){
+                            $('#inp-lower-amount-day').ntsEditor('validate');
                         }
-                        if($('#inp-lower-number').is(':enabled')){
-                            $('#inp-lower-number').ntsEditor('validate');
+                        if($('#inp-lower-number-day').is(':enabled')){
+                            $('#inp-lower-number-day').ntsEditor('validate');
                         }
-                        if($('#inp-lower-time').is(':enabled')){
-                            $('#inp-lower-time').ntsEditor('validate');
+                        if($('#inp-lower-time-day').is(':enabled')){
+                            $('#inp-lower-time-day').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-amount-month').is(':enabled')){
+                            $('#inp-lower-amount-month').ntsEditor('validate');
+                        }
+                        if($('#inp-lower-number-month').is(':enabled')){
+                            $('#inp-lower-number-month').ntsEditor('validate');
+                        }
+                        if($('#inp-lower-time-month').is(':enabled')){
+                            $('#inp-lower-time-month').ntsEditor('validate');
                         }
                     } else {
-                        $('#inp-lower-amount').ntsError('clear');
-                        $('#inp-lower-number').ntsError('clear');
-                        $('#inp-lower-time').ntsError('clear');
+                        $('#inp-lower-amount-day').ntsError('clear');
+                        $('#inp-lower-number-day').ntsError('clear');
+                        $('#inp-lower-time-day').ntsError('clear');
+                        $('#inp-lower-amount-month').ntsError('clear');
+                        $('#inp-lower-number-month').ntsError('clear');
+                        $('#inp-lower-time-month').ntsError('clear');
                     }
                 });
             }
@@ -1187,12 +1239,18 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.upperCheck()
                     || self.lowerCheck()
-                    || !!self.numberUpper()
-                    || !!self.numberLower()
-                    || !!self.amountUpper()
-                    || !!self.amountLower()
-                    || !!self.timeUpper()
-                    || !!self.timeLower();
+                    || !!self.numberUpperDay()
+                    || !!self.numberLowerDay()
+                    || !!self.amountUpperDay()
+                    || !!self.amountLowerDay()
+                    || !!self.timeUpperDay()
+                    || !!self.timeLowerDay()
+                    || !!self.numberUpperMonth()
+                    || !!self.numberLowerMonth()
+                    || !!self.amountUpperMonth()
+                    || !!self.amountLowerMonth()
+                    || !!self.timeUpperMonth()
+                    || !!self.timeLowerMonth();
             }
 
             /**
@@ -1201,14 +1259,20 @@ module nts.uk.at.view.kmk002.a {
             public validateInput(): void {
                 let self = this;
                 if (self.upperCheck()) {
-                    $('#inp-upper-amount').ntsEditor('validate');
-                    $('#inp-upper-number').ntsEditor('validate');
-                    $('#inp-upper-time').ntsEditor('validate');
+                    $('#inp-upper-amount-day').ntsEditor('validate');
+                    $('#inp-upper-number-day').ntsEditor('validate');
+                    $('#inp-upper-time-day').ntsEditor('validate');
+                    $('#inp-upper-amount-month').ntsEditor('validate');
+                    $('#inp-upper-number-month').ntsEditor('validate');
+                    $('#inp-upper-time-month').ntsEditor('validate');
                 }
                 if (self.lowerCheck()) {
-                    $('#inp-lower-amount').ntsEditor('validate');
-                    $('#inp-lower-number').ntsEditor('validate');
-                    $('#inp-lower-time').ntsEditor('validate');
+                    $('#inp-lower-amount-day').ntsEditor('validate');
+                    $('#inp-lower-number-day').ntsEditor('validate');
+                    $('#inp-lower-time-day').ntsEditor('validate');
+                    $('#inp-lower-amount-month').ntsEditor('validate');
+                    $('#inp-lower-number-month').ntsEditor('validate');
+                    $('#inp-lower-time-month').ntsEditor('validate');
                 }
             }
 
@@ -1219,12 +1283,20 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 self.upperCheck(false);
                 self.lowerCheck(false);
-                self.numberUpper(null);
-                self.numberLower(null);
-                self.amountUpper(null);
-                self.amountLower(null);
-                self.timeUpper(null);
-                self.timeLower(null);
+
+                self.numberUpperDay(null);
+                self.numberLowerDay(null);
+                self.amountUpperDay(null);
+                self.amountLowerDay(null);
+                self.timeUpperDay(null);
+                self.timeLowerDay(null);
+
+                self.numberUpperMonth(null);
+                self.numberLowerMonth(null);
+                self.amountUpperMonth(null);
+                self.amountLowerMonth(null);
+                self.timeUpperMonth(null);
+                self.timeLowerMonth(null);
 
                 // clear error
                 self.clearError();
@@ -1234,60 +1306,126 @@ module nts.uk.at.view.kmk002.a {
              * Clear input error
              */
             private clearError(): void {
-                $('#inp-upper-amount').ntsError('clear');
-                $('#inp-upper-number').ntsError('clear');
-                $('#inp-upper-time').ntsError('clear');
-                $('#inp-lower-amount').ntsError('clear');
-                $('#inp-lower-number').ntsError('clear');
-                $('#inp-lower-time').ntsError('clear');
+                $('#inp-upper-amount-day').ntsError('clear');
+                $('#inp-upper-number-day').ntsError('clear');
+                $('#inp-upper-time-day').ntsError('clear');
+                $('#inp-lower-amount-day').ntsError('clear');
+                $('#inp-lower-number-day').ntsError('clear');
+                $('#inp-lower-time-day').ntsError('clear');
+                $('#inp-upper-amount-month').ntsError('clear');
+                $('#inp-upper-number-month').ntsError('clear');
+                $('#inp-upper-time-month').ntsError('clear');
+                $('#inp-lower-amount-month').ntsError('clear');
+                $('#inp-lower-number-month').ntsError('clear');
+                $('#inp-lower-time-month').ntsError('clear');
             }
 
             /**
              * Convert dto to view model
              */
-            public fromDto(dto: CalcResultRangeDto): void {
+            public fromDto(dto: any): void {
                 let self = this;
                 self.upperCheck(dto.upperCheck);
                 self.lowerCheck(dto.lowerCheck);
-                self.numberUpper(dto.numberUpper);
-                self.numberLower(dto.numberLower);
-                self.timeUpper(dto.timeUpper);
-                self.timeLower(dto.timeLower);
-                self.amountUpper(dto.amountUpper);
-                self.amountLower(dto.amountLower);
+
+                self.numberUpperDay(dto.numberRange.dailyNumberRange.upperLimit);
+                self.numberLowerDay(dto.numberRange.dailyNumberRange.lowerLimit);
+                self.timeUpperDay(dto.timeRange.dailyTimeRange.upperLimit);
+                self.timeLowerDay(dto.timeRange.dailyTimeRange.lowerLimit);
+                self.amountUpperDay(dto.amountRange.dailyAmountRange.upperLimit);
+                self.amountLowerDay(dto.amountRange.dailyAmountRange.lowerLimit);
+
+                self.numberUpperMonth(dto.numberRange.monthlyNumberRange.upperLimit);
+                self.numberLowerMonth(dto.numberRange.monthlyNumberRange.lowerLimit);
+                self.timeUpperMonth(dto.timeRange.monthlyTimeRange.upperLimit);
+                self.timeLowerMonth(dto.timeRange.monthlyTimeRange.lowerLimit);
+                self.amountUpperMonth(dto.amountRange.monthlyAmountRange.upperLimit);
+                self.amountLowerMonth(dto.amountRange.monthlyAmountRange.lowerLimit);
             }
 
             /**
              * Convert view model to dto
              */
-            public toDto(calcResultRangeStash: CalcResultRangeDto): CalcResultRangeDto {
+            public toDto(calcResultRangeStash: CalcResultRangeDto) {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
                 dto.lowerCheck = self.lowerCheck();
 
                 if (self.upperCheck()) {
-                    dto.numberUpper = self.numberUpper();
-                    dto.amountUpper = self.amountUpper();
-                    dto.timeUpper = self.timeUpper();
+                    dto.numberUpperDay = self.numberUpperDay();
+                    dto.amountUpperDay = self.amountUpperDay();
+                    dto.timeUpperDay = self.timeUpperDay();
+
+                    dto.numberUpperMonth = self.numberUpperMonth();
+                    dto.amountUpperMonth = self.amountUpperMonth();
+                    dto.timeUpperMonth = self.timeUpperMonth();
                 } else {
                     // get stored data from stash
-                    dto.numberUpper = calcResultRangeStash.numberUpper;
-                    dto.amountUpper = calcResultRangeStash.amountUpper;
-                    dto.timeUpper = calcResultRangeStash.timeUpper;
+                    dto.numberUpperDay = calcResultRangeStash.numberUpperDay;
+                    dto.amountUpperDay = calcResultRangeStash.amountUpperDay;
+                    dto.timeUpperDay = calcResultRangeStash.timeUpperDay;
+
+                    dto.numberUpperMonth = calcResultRangeStash.numberUpperMonth;
+                    dto.amountUpperMonth = calcResultRangeStash.amountUpperMonth;
+                    dto.timeUpperMonth = calcResultRangeStash.timeUpperMonth;
                 }
 
                 if (self.lowerCheck()) {
-                    dto.numberLower = self.numberLower();
-                    dto.amountLower = self.amountLower();
-                    dto.timeLower = self.timeLower();
+                    dto.numberLowerDay = self.numberLowerDay();
+                    dto.amountLowerDay = self.amountLowerDay();
+                    dto.timeLowerDay = self.timeLowerDay();
+
+                    dto.numberLowerMonth = self.numberLowerMonth();
+                    dto.amountLowerMonth = self.amountLowerMonth();
+                    dto.timeLowerMonth = self.timeLowerMonth();
                 } else {
                     // get stored data from stash
-                    dto.numberLower = calcResultRangeStash.numberLower;
-                    dto.amountLower = calcResultRangeStash.amountLower;
-                    dto.timeLower = calcResultRangeStash.timeLower;
+                    dto.numberLowerDay = calcResultRangeStash.numberLowerDay;
+                    dto.amountLowerDay = calcResultRangeStash.amountLowerDay;
+                    dto.timeLowerDay = calcResultRangeStash.timeLowerDay;
+
+                    dto.numberLowerMonth = calcResultRangeStash.numberLowerMonth;
+                    dto.amountLowerMonth = calcResultRangeStash.amountLowerMonth;
+                    dto.timeLowerMonth = calcResultRangeStash.timeLowerMonth;
                 }
-                return dto;
+
+                let output = {
+                    upperCheck: dto.upperCheck,
+                    lowerCheck: dto.lowerCheck,
+                    numberRange: {
+                        dailyNumberRange: {
+                            upperLimit: dto.numberUpperDay,
+                            lowerLimit: dto.numberLowerDay
+                        },
+                        monthlyNumberRange: {
+                            upperLimit: dto.numberUpperMonth,
+                            lowerLimit: dto.numberLowerMonth
+                        }
+                    },
+                    timeRange: {
+                        dailyTimeRange: {
+                            upperLimit: dto.timeUpperDay,
+                            lowerLimit: dto.timeLowerDay
+                        },
+                        monthlyTimeRange: {
+                            upperLimit: dto.timeUpperMonth,
+                            lowerLimit: dto.timeLowerMonth
+                        }
+                    },
+                    amountRange: {
+                        dailyAmountRange: {
+                            upperLimit: dto.amountUpperDay,
+                            lowerLimit: dto.amountLowerDay
+                        },
+                        monthlyAmountRange: {
+                            upperLimit: dto.amountUpperMonth,
+                            lowerLimit: dto.amountLowerMonth
+                        }
+                    }
+                };
+                
+                return output;
             }
         }
 
@@ -1552,6 +1690,12 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
                             } else {
                                 self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
+                            }
+                        } else {
+                            if (res.optionalItem.performanceAtr === 0) {
+                                self.optionalItem.monthlyUnit(null);
+                            } else {
+                                self.optionalItem.dailyUnit(null);
                             }
                         }
 
