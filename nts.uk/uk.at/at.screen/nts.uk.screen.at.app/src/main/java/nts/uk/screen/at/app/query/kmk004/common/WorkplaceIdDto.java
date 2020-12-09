@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
  */
 
 @AllArgsConstructor
-public class YearDto {
+public class WorkplaceIdDto {
 
-	public int year;
+	public String WorkplaceId;
 	
 }

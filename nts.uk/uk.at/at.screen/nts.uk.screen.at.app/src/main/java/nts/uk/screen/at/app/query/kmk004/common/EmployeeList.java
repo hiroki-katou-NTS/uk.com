@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kmk004.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -50,9 +51,9 @@ public class EmployeeList {
 	 * @param laborWorkTypeAttr 　勤務区分
 	 * @return
 	 */
-	public List<String> get(LaborWorkTypeAttr laborWorkTypeAttr) {
+	public List<EmployeeIdDto> get(LaborWorkTypeAttr laborWorkTypeAttr) {
 
-		List<String> result = new ArrayList<>();
+		List<EmployeeIdDto> result = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		
 		Require require = new Require(monthlyWorkTimeSetShaRepo,
@@ -62,7 +63,11 @@ public class EmployeeList {
 				shaDeforLaborMonthActCalSetRepo,
 				shaFlexMonthActCalSetRepo);
 
-		result = GetSettingStatusForEachEmployee.getSettingStatusForEachEmployee(require, cid, laborWorkTypeAttr);
+		List<String> sids = GetSettingStatusForEachEmployee.getSettingStatusForEachEmployee(require, cid, laborWorkTypeAttr);
+		
+		result = sids.stream().map(m -> {
+			return new EmployeeIdDto(m);
+		}).collect(Collectors.toList());
 		
 		return result;
 	}
