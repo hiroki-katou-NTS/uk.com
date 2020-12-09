@@ -3,6 +3,7 @@ package nts.uk.file.at.infra.workledgeroutputitem;
 import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerDisplayContent;
@@ -25,7 +26,6 @@ import java.util.Locale;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
-    private static final String REPORT_FILE_NAME = "KWR005_勤務状況表";;
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
     private static final int NUMBER_ROW_OF_PAGE = 50;
@@ -41,12 +41,10 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
             if (!dataSource.getListContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
                 printContents(worksheet, dataSource);
-//                removeTemplate(worksheet);
             }
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            String fileName = REPORT_FILE_NAME;
-
+            String fileName = dataSource.getTitle() + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
             reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
         } catch (Exception e) {
             throw new RuntimeException(e);
