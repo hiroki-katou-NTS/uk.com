@@ -134,23 +134,23 @@ ul#list-box-search {
   display: inline;
 }
 div#user-image {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  width: 28px;
 }
 
-#avatar_id {
+#avatar_id_ccg020 {
   background-color: #eeeeee;
-  font-size: 12px;
+  font-size: 11px;
   color: blue;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid rgb(51 54 136);
-  width: 10%;
-  padding: 4px;
+  text-align: center;
+  border: 1px solid #333688;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  display: inline;
-  position: relative;
-  bottom: 2px;
-  padding: 4px 1px 4px 1px;
+  padding: 2px;
 }
 
 #header #menu-header #logo-area > #user-info {

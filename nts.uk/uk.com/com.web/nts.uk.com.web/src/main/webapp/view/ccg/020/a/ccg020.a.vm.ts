@@ -73,7 +73,11 @@ module nts.uk.com.view.ccg020.a {
       vm.getListMenu();
       vm.isDisplayWarning();
       vm.isDisplayNewNoticeFunc();
-      vm.$nextTick(() => vm.getAvatar());
+      $('#user-image').ready(() => {
+        $('#user-image').removeClass('ui-icon ui-icon-person');
+        vm.$nextTick(() => vm.getAvatar());
+      });
+      
       $('#radio-search-category').on('click', () => {
         vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
       });
@@ -86,12 +90,11 @@ module nts.uk.com.view.ccg020.a {
       vm.$ajax(API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
-          if (vm.avatarInfo().fileId) {
+          if (vm.avatarInfo().fileId && vm.avatarInfo().fileId !== null) {
             $('<img/>')
               .attr('id', 'img-avatar')
               .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
               .appendTo($userImage);
-            $userImage.removeClass('ui-icon ui-icon-person');
             const $icon = $('#user')
               .find('.user-settings')
               .find('.ui-icon-caret-1-s');
@@ -100,9 +103,8 @@ module nts.uk.com.view.ccg020.a {
           } else {
             $userImage.ready(() => {
               $('<div/>')
-                .addClass('avatar')
-                .attr('id', 'avatar_id')
-                .text($('#user-name').text().substring(0, 2))
+                .attr('id', 'avatar_id_ccg020')
+                .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
                 .appendTo($userImage);
             });
           }

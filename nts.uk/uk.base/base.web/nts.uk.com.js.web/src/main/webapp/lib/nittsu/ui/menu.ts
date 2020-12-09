@@ -205,7 +205,7 @@ module nts.uk.ui.menu {
             });
             
             nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function(userName: any) {
-                let $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
+                let $userImage = $("<div/>").attr("id", "user-image").appendTo($user);
                 $userImage.css("margin-right", "6px").on(constants.CLICK, function() {
                     // TODO: Jump to personal profile.
                 });
