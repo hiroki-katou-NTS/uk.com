@@ -229,14 +229,15 @@ module nts.uk.com.view.ccg003.c {
         }
         vm.employeeInfoId().push(getShared('CDL009Output'));
         vm.$blockui('show');
-        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId()).then((response: EmployeeInfo[]) => {
-          if (response) {
-            const employeeInfoId = _.map(response, x => x.sid)
-            const employeeName = _.map(response, x => x.bussinessName);
-            vm.employeeInfoId(employeeInfoId);
-            vm.employeeName(employeeName);
-          }
-        })
+        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId())
+          .then((response: EmployeeInfo[]) => {
+            if (response) {
+              const employeeInfoId = _.map(response, x => x.sid)
+              const employeeName = _.map(response, x => x.bussinessName);
+              vm.employeeInfoId(employeeInfoId);
+              vm.employeeName(employeeName);
+            }
+          })
           .always(() => vm.$blockui('hide'));
       });
     }
