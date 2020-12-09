@@ -14,6 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
@@ -28,6 +29,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRe
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimeContentOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -59,6 +64,15 @@ public class CollectAchievementImpl implements CollectAchievement {
 
 	@Inject
 	private WorkTimeSettingRepository WorkTimeRepository;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
 	public List<TimePlaceOutput> createTimePlace(int type) {
 		List<TimePlaceOutput> list = new ArrayList<>();
@@ -421,10 +435,6 @@ public class CollectAchievementImpl implements CollectAchievement {
 		}
 		// INPUT．申請対象日リストを先頭から最後へループする
 		for(GeneralDate loopDate : dateLst) {
-			// INPUT．申請種類をチェックする
-//			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
-//				continue;
-//			}
 			// 実績の取得
 			ActualContentDisplay actualContentDisplay = this.getAchievement(companyID, employeeID, loopDate);
 			// 取得した実績をOutput「表示する実績内容」に追加する
@@ -447,6 +457,31 @@ public class CollectAchievementImpl implements CollectAchievement {
 			if(appType == ApplicationType.ABSENCE_APPLICATION) {
 				// AppAbsence appAbsence = appAbsenceRepository.getAbsenceById(companyID, "").get();
 				// result.add(appAbsence);
+			}
+			if(appType == ApplicationType.OVER_TIME_APPLICATION) {
+				// ドメインモデル「申請」を取得(Lấy domain[Application])
+				Optional<String> opPreAppID = applicationRepository.getNewestPreAppIDByEmpDate(employeeID, loopDate, appType);
+				if(opPreAppID.isPresent()) {
+					// ドメインモデル「残業申請」を取得する(Lấy domain「残業申請」 )
+					Optional<AppOverTime> opAppOverTime = appOverTimeRepository.find(companyID, opPreAppID.get());
+					result.add(new PreAppContentDisplay(loopDate, opAppOverTime, Optional.empty()));
+				} else {
+					result.add(new PreAppContentDisplay(loopDate, Optional.empty(), Optional.empty()));
+				}
+				continue;
+			}
+			
+			if(appType == ApplicationType.HOLIDAY_WORK_APPLICATION) {
+				// ドメインモデル「申請」を取得(Lấy domain[Application])
+				Optional<String> opPreAppID = applicationRepository.getNewestPreAppIDByEmpDate(employeeID, loopDate, appType);
+				if(opPreAppID.isPresent()) {
+					// ドメインモデル「休日出勤申請」を取得する(lấy domain「休日出勤申請」 )
+					Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.find(companyID, opPreAppID.get());
+					result.add(new PreAppContentDisplay(loopDate, Optional.empty(), opAppHolidayWork));
+				} else {
+					result.add(new PreAppContentDisplay(loopDate, Optional.empty(), Optional.empty()));
+				}
+				continue;
 			}
 		}
 		return result;
