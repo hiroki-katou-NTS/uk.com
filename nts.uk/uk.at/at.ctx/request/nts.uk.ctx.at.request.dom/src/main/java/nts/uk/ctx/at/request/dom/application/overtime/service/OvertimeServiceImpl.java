@@ -534,10 +534,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		Optional<WorkTimeCode> workTimeCodeOp = Optional.of(workTimeCode);
 		WorkHours workHoursSPR = new WorkHours();
 		if (startTimeSPR.isPresent()) {
-			workHoursSPR.setStartTimeOp1(Optional.of(new TimeWithDayAttr(startTimeSPR.get())));
+			workHoursSPR.setStartTimeOp1(startTimeSPR.flatMap(x -> Optional.of(new TimeWithDayAttr(x))));
 		}
 		if (endTimeSPR.isPresent()) {
-			workHoursSPR.setEndTimeOp1(Optional.of(new TimeWithDayAttr(endTimeSPR.get())));
+			workHoursSPR.setEndTimeOp1(endTimeSPR.flatMap(x -> Optional.of(new TimeWithDayAttr(x))));
 		}
 		WorkHours workHoursActual = new WorkHours();
 		if (actualContentDisplay.isPresent()) {
@@ -545,16 +545,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 			if (actualContentDisplay.get().getOpAchievementDetail().isPresent()) {
 				AchievementDetail achievementDetail = actualContentDisplay.get().getOpAchievementDetail().get();
 				if (achievementDetail.getOpWorkTime().isPresent()) {
-					workHoursActual.setStartTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime().get())));
+					workHoursActual.setStartTimeOp1(achievementDetail.getOpWorkTime().flatMap(x -> Optional.of(new TimeWithDayAttr(x))));
 				}
 				if (achievementDetail.getOpLeaveTime().isPresent()) {
-					workHoursActual.setEndTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpLeaveTime().get())));
+					workHoursActual.setEndTimeOp1(achievementDetail.getOpLeaveTime().flatMap(x -> Optional.of(new TimeWithDayAttr(x))));
 				}
 				if (achievementDetail.getOpWorkTime2().isPresent()) {
-					workHoursActual.setStartTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime2().get())));
+					workHoursActual.setStartTimeOp2(achievementDetail.getOpWorkTime2().flatMap(x -> Optional.of(new TimeWithDayAttr(x))));
 				}
 				if (achievementDetail.getOpDepartureTime2().isPresent()) {
-					workHoursActual.setEndTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpDepartureTime2().get())));
+					workHoursActual.setEndTimeOp2(achievementDetail.getOpDepartureTime2().flatMap(x -> Optional.of(new TimeWithDayAttr(x))));
 				}
 				
 			}
