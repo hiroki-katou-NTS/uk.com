@@ -26,6 +26,9 @@ module nts.uk.at.view.ccg008.e.screenModel {
         new ItemModel('8', '60')
     ]);
     }
+    mounted(){
+      $('#combo-box').focus();
+    }
 
     onClickDecision(){
       const vm = this;

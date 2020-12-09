@@ -26,21 +26,15 @@ module nts.uk.at.view.ktg026.a.viewmodel {
 
     employeesOvertime: EmployeesOvertimeDisplay = new EmployeesOvertimeDisplay();
 
-    created() {
+    created(param: any) {
       const vm = this;
       vm.$blockui('grayout');
-      vm.employeeId = (__viewContext as any).user.employeeId;
       vm.employeeName = ko.observable('');
       vm.dataTable = ko.observableArray([]);
       let targetDate = null;
       const cache = windows.getShared('cache');
-      vm.$window.storage('KTG026_PARAM').then((data: any) => {
-        if (data) {
-          vm.employeeId = data.employeeId;
-          targetDate = data.targetDate;
-        }
-      });
-
+      vm.employeeId = param.employeeId;
+      targetDate = param.targetDate;
       const currentOrNextMonth = !!cache ? cache.currentOrNextMonth : 1; // 1: 従業員参照モード 2: 上長参照モード
 
       const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
@@ -60,54 +54,6 @@ module nts.uk.at.view.ktg026.a.viewmodel {
             vm.displayDataTable(response);
             const targetYear = cache.currentOrNextMonth === 1 ? response.yearIncludeThisMonth : response.yearIncludeNextMonth;
             vm.targetYear(targetYear.toString());
-          }
-        })
-        .fail(err => {
-          vm.$dialog.alert(err);
-        })
-        .always(() => vm.$blockui('clear'));
-    }
-
-    mounted() {
-      const vm = this;
-      vm.targetYear.subscribe(year => {
-        vm.$blockui('grayout');
-        const processingYm = vm.employeesOvertime.closingPeriod ? vm.employeesOvertime.closingPeriod.processingYm : moment().format('YYYYMM');
-        const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
-          employeeId: vm.employeeId,
-          closingId: vm.employeesOvertime.closureID,
-          targetYear: Number(year),
-          processingYm: processingYm
-        });
-
-        vm.extractOvertime(requestBody);
-      });
-    }
-
-    private onRefreshToppage() {
-      const vm = this;
-      vm.$blockui('grayout');
-      const cache = windows.getShared('cache');
-      const processingYm = vm.employeesOvertime.closingPeriod ? vm.employeesOvertime.closingPeriod.processingYm : moment().format('YYYYMM');
-      const targetYear = cache.currentOrNextMonth === 1 ? vm.employeesOvertime.yearIncludeThisMonth : vm.employeesOvertime.yearIncludeNextMonth;
-      const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
-        employeeId: vm.employeeId,
-        closingId: vm.employeesOvertime.closureID,
-        targetYear: targetYear,
-        processingYm: processingYm
-      });
-
-      vm.extractOvertime(requestBody);
-    }
-
-    private extractOvertime(requestBody: Ktg026BodyParmas): void {
-      const vm = this;
-      vm.$blockui('grayout');
-      // 指定する年と指定する社員の時間外時間と超過回数の取得
-      vm.$ajax('at', API.extractOvertime, requestBody)
-        .then((response: EmployeesOvertimeDisplay) => {
-          if (!!response) {
-            vm.displayDataTable(response);
           }
         })
         .fail(err => {
