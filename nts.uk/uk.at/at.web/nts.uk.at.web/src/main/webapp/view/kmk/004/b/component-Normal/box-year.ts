@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk004.b {
                 rows: 5,
                 columns: [
                     { key: 'statusValue', length: 1 },
-                    { key: 'value', length: 4 }
+                    { key: 'nameYear', length: 4 }
                 ]}"></div>
         </div>
         <div class="node" data-bind="i18n: 'KMK004_212'"></div>
@@ -51,10 +51,10 @@ module nts.uk.at.view.kmk004.b {
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-            const faceData: IYear[] = [{status: true, statusValue : '＊', value: 2017+'年度'},
-            {status: false, statusValue : '', value: 2016 +'年度'}
-            ,{status: true, statusValue : '', value: 2018+'年度'}
-            ,{status: true, statusValue : '', value: 2020+'年度'}];
+            const faceData: IYear[] = [{status: true, statusValue : '＊', value: 2017, nameYear: '2017年度'},
+            {status: false, statusValue : '', value: 2016, nameYear: '2016年度'}
+            ,{status: true, statusValue : '', value: 2018, nameYear: '2018年度'}
+            ,{status: true, statusValue : '', value: 2020, nameYear: '2020年度'}];
             // const faceData: IYear[] = [];
 
             if (faceData.length > 0) {
@@ -70,6 +70,7 @@ module nts.uk.at.view.kmk004.b {
         status: boolean;
         statusValue: string;
         value: number;
+        nameYear: string;
     }
 
     // export class Year {
