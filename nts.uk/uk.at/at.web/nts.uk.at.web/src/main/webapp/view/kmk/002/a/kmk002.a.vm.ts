@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk002.a {
                     var cols = $("#tbl-master-list").igGrid("option", "columns");
                     if ($("#tbl-master-list").igGrid("option", "columns").length == 4) {
                         //add columns otherLanguageName   
-                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, formatter: _.escape };
+                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, hidden: true, formatter: _.escape };
                         cols.splice(2, 0, newColumn);
                         $("#tbl-master-list").igGrid("option", "columns", cols);
                         $("#tbl-master-list").igGrid("option", "dataSource", lstOptItem());

@@ -19,12 +19,14 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.event.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItemsRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOtherRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemPolicy;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUpdateDomainEvent;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultRangeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
@@ -64,6 +66,9 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 
     @Inject
     private OptionalItemService optItemService;
+    
+    @Inject
+    private CalcResultRangeRepository calcRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,6 +89,9 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 
 		// Get optional item no
 		int optionalItemNo = command.getOptionalItemNo().v();
+		
+		// Get calc result range
+		CalcResultRange calResult = command.getCalculationResultRange();
 
 		// Map to list domain Formula
 		List<Formula> formulas = command.getFormulas().stream().map(item -> {
@@ -116,6 +124,9 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 		    
 			// update optional item.
 			this.optItemRepo.update(dom);
+			
+			// update result range
+			this.calcRepo.update(companyId, optionalItemNo, calResult);
 			
 			// update control unit item
 			if (dom.getPerformanceAtr().equals(PerformanceAtr.MONTHLY_PERFORMANCE)) {

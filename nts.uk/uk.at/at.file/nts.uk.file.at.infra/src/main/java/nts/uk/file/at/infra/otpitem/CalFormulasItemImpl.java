@@ -741,19 +741,19 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		}
 		
-		if(!langId.equals(LANG_JA)) {
-		    data.put(CalFormulasItemColumn.KMK002_100, MasterCellData.builder()
-	                .columnId(CalFormulasItemColumn.KMK002_100)
-	                .value(object[30] != null ? object[30].toString(): "")
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-	                .build());
-		}else {
-			data.put(CalFormulasItemColumn.KMK002_100, MasterCellData.builder()
-	                .columnId(CalFormulasItemColumn.KMK002_100)
-	                .value("")
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-	                .build());
-		}
+//		if(!langId.equals(LANG_JA)) {
+//		    data.put(CalFormulasItemColumn.KMK002_100, MasterCellData.builder()
+//	                .columnId(CalFormulasItemColumn.KMK002_100)
+//	                .value(object[30] != null ? object[30].toString(): "")
+//	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+//	                .build());
+//		}else {
+//			data.put(CalFormulasItemColumn.KMK002_100, MasterCellData.builder()
+//	                .columnId(CalFormulasItemColumn.KMK002_100)
+//	                .value("")
+//	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+//	                .build());
+//		}
 		return MasterData.builder().rowData(data).build();
 	}
 

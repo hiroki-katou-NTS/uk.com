@@ -46,9 +46,13 @@ public class MonthlyTimeRange {
      * @return true, if is invalid range
      */
     public boolean isInvalidRange() {
-        if (this.lowerLimit.get().greaterThan(this.upperLimit.get())) {
-            return true;
+        if (this.lowerLimit.isPresent() && this.upperLimit.isPresent()) {
+            if (this.lowerLimit.get().greaterThan(this.upperLimit.get())) {
+                return true;
+            }
+            return false;
+        } else {
+            return false;
         }
-        return false;
     }
 }

@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.infra.repository.optitem.JpaCalcResultRangeGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -155,5 +157,9 @@ public class KrcmtCalcResultRange extends ContractUkJpaEntity implements Seriali
 	@Override
 	protected Object getKey() {
 		return this.krcstCalcResultRangePK;
+	}
+	
+	public CalcResultRange toDomain() {
+	    return new CalcResultRange(new JpaCalcResultRangeGetMemento(this));
 	}
 }
