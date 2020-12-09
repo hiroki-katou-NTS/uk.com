@@ -11,7 +11,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SPTST_STANDARD_WIDGET")
+@Table(name = "SPTMT_STANDARD_WIDGET")
 public class SptmtStandardWidget extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 

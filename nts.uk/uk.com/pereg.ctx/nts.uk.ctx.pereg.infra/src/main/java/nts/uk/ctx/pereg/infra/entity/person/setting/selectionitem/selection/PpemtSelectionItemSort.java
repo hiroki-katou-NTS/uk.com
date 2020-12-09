@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_SEL_ITEM_ORDER")
+@Table(name = "PPEMT_SELECTION_ITEM_SORT")
 public class PpemtSelectionItemSort extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

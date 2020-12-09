@@ -93,7 +93,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_TIME")
+@Table(name = "KRCDT_DAY_TIME_ATD")
 public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

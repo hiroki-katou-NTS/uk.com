@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_WKP_PATTERN_ITEM")
+@Table(name = "KSCMT_PAIR_PATRN_WKP")
 public class KscmtPairPatrnWkp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -44,7 +44,7 @@ public class KscmtPairPatrnWkp extends ContractUkJpaEntity implements Serializab
 	private KscmtPairGrpWkp kscmtWkpPattern;
 
 	@OneToMany(targetEntity=KscmtPairWkp.class, cascade = CascadeType.ALL, mappedBy = "kscmtWkpPatternItem", orphanRemoval = true)
-	@JoinTable(name = "KSCMT_WKP_WORK_PAIR_SET")
+	@JoinTable(name = "KSCMT_PAIR_WKP")
 	public List<KscmtPairWkp> kscmtWkpWorkPairSet;
 
 	@Override

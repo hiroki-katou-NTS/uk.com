@@ -64,7 +64,7 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 		
 		List<KrcmtBossCheckNotJob> lstKrcstAppProUseJbSet;
 		{
-			String sql = "select * from KRCST_APP_PRO_USE_JB_SET"
+			String sql = "select * from KRCMT_BOSS_CHECK_NOT_JOB"
 					+ " where CID = ?";
 			try (val stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, companyId);

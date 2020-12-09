@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_APP_PRO_USE_JB_SET")
+@Table(name = "KRCMT_BOSS_CHECK_NOT_JOB")
 public class KrcmtBossCheckNotJob extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

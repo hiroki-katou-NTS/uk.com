@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_INTERIM_REMAIN_MNG")
+@Table(name = "KRCDT_INTERIM_REMAIN_MNG")
 public class KrcdtInterimRemainMng extends ContractUkJpaEntity implements Serializable{
 	/**残数管理データID	 */
 	@Id

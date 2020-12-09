@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @NoArgsConstructor
-@Table(name = "KFNMT_HD_REMAIN_MANAGE")
+@Table(name = "KFNMT_RPT_REMLST_OUTITEM")
 public class KfnmtRptRemlstOutitem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -144,7 +144,7 @@ public class KfnmtRptRemlstOutitem extends ContractUkJpaEntity implements Serial
 	public int nursingCareLeave;
 
 	@OneToMany(targetEntity = KfnmtRptRemlstOuthdsp.class, cascade = CascadeType.ALL, mappedBy = "kfnmtHdRemainManage", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KFNMT_SPECIAL_HOLIDAY")
+	@JoinTable(name = "KFNMT_RPT_REMLST_OUTHDSP")
 	public List<KfnmtRptRemlstOuthdsp> kfnmtSpecialHolidays;
 
 	@Override

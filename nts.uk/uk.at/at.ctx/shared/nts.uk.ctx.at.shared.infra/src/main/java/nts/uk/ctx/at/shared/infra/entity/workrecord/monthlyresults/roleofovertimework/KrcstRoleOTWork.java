@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name="KRCST_ROLE_OT_WORK")
+@Table(name="KRCMT_OV_ROLE_OVER")
 public class KrcstRoleOTWork extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

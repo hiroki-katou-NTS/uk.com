@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_WORK_DEF_LABOR_SET")
+@Table(name = "KSHMT_CALC_C_ADD_HD_DEF")
 public class KshstWorkDepLaborSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_EXTRACTION_PER_UNIT")
+@Table(name = "KFNMT_ALST_PTN_DEFTMCYCLE")
 public class KfnmtAlstPtnDeftmcycle extends ContractUkJpaEntity implements Serializable {
 
 	/**

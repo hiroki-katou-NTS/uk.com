@@ -37,7 +37,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_ER_AL_CON_GROUP")
+@Table(name = "KRCMT_ERALST_CNDEXPIPTCHK")
 public class KrcmtEralstCndexpiptchk extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

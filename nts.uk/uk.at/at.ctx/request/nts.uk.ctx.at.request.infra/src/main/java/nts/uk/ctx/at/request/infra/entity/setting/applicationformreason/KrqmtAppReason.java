@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KRQST_APP_REASON")
+@Table(name = "KRQMT_APP_REASON")
 public class KrqmtAppReason  extends ContractUkJpaEntity implements Serializable{
 	/**
 	 * 

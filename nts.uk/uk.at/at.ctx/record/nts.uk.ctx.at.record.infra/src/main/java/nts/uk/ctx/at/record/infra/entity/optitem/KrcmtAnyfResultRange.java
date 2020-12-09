@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCST_CALC_RESULT_RANGE")
+@Table(name = "KRCMT_ANYF_RESULT_RANGE")
 public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

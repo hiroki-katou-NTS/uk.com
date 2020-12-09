@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_RVSLEA_TIME_RM_HIST")
+@Table(name = "KRCDT_HDSTK_REM_HIST_GRA")
 public class KrcdtReserveLeaveTimeRemainHist extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

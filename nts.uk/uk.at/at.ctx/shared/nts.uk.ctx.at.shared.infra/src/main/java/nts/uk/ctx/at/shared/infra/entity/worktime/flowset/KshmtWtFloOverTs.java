@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "KSHMT_OT_TIME_ZONE")
+@Table(name = "KSHMT_WT_FLO_OVER_TS")
 public class KshmtWtFloOverTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

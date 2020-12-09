@@ -236,7 +236,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 		List<AffClassHistItem> result = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIS_ITEM" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST_ITEM" 
 						+ " WHERE  HIST_ID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {

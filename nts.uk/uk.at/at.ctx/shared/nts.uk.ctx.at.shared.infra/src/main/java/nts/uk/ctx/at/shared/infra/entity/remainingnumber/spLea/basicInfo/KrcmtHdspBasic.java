@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KRCMT_SPECIAL_LEAVE_INFO")
+@Table(name="KRCMT_HDSP_BASIC")
 public class KrcmtHdspBasic extends ContractUkJpaEntity {
 	
 	@EmbeddedId

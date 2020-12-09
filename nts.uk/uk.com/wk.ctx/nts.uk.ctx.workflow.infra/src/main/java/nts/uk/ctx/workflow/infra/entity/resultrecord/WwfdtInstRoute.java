@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_ROOT_INSTANCE")
+@Table(name="WWFDT_INST_ROUTE")
 public class WwfdtInstRoute extends ContractUkJpaEntity {
 	
 	@Id
@@ -45,7 +45,7 @@ public class WwfdtInstRoute extends ContractUkJpaEntity {
 	private Integer rootType;
 	
 	@OneToMany(targetEntity=WwfdtInstPhase.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootInstance", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_PHASE_INSTANCE")
+	@JoinTable(name = "WWFDT_INST_PHASE")
 	public List<WwfdtInstPhase> listWwfdtAppPhaseInstance;
 
 	@Override

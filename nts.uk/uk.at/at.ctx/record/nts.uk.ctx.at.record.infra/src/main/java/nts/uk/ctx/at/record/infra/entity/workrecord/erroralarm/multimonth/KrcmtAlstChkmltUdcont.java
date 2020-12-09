@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 //複数月のチェック条件(連続)
 @Entity
-@Table(name = "KRCMT_MUL_MON_COND_CONT")
+@Table(name = "KRCMT_ALST_CHKMLT_UDCONT")
 @NoArgsConstructor
 public class KrcmtAlstChkmltUdcont extends ContractUkJpaEntity implements Serializable {
 

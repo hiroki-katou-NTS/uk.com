@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_DATE_DATA_FORM_SET")
+@Table(name = "OIOMT_EX_AC_FM_DATE")
 public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

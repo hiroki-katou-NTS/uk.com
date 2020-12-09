@@ -66,7 +66,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		List<KrcdtDayTsAtdSche> scheduleTimes;
 		try (PreparedStatement sqlSchedule = this.connection().prepareStatement(
-				"select * from KRCDT_WORK_SCHEDULE_TIME"
+				"select * from KRCDT_DAY_TS_ATD_SCHE"
 				+ " where SID = ? and YMD = ?")) {
 			sqlSchedule.setString(1, employeeId);
 			sqlSchedule.setDate(2, Date.valueOf(ymd.localDate()));
@@ -84,7 +84,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		Optional<KrcdtDayInfoPerWork> workInfo;
 		try (PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
-				"select * from KRCDT_DAI_PER_WORK_INFO"
+				"select * from KRCDT_DAY_INFO_PER_WORK"
 				+ " where SID = ? and YMD = ?")) {
 			sqlWorkInfo.setString(1, employeeId);
 			sqlWorkInfo.setDate(2, Date.valueOf(ymd.localDate()));
@@ -304,7 +304,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			}   
 			List<KrcdtDayTsAtdSche> schedules = new ArrayList<>();
 			try (PreparedStatement stmtSche = this.connection().prepareStatement(
-					"select * from KRCDT_WORK_SCHEDULE_TIME"
+					"select * from KRCDT_DAY_TS_ATD_SCHE"
 					+ " where SID = ? and YMD = ?")) {
 				stmtSche.setString(1, domain.getEmployeeId());
 				stmtSche.setDate(2, Date.valueOf(domain.getYmd().localDate()));
@@ -337,7 +337,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	private Optional<KrcdtDayInfoPerWork> findKrcdtDaiPerWorkInfoWithJdbc(String employeeId, GeneralDate ymd) {
 		
 		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
-				"select * from KRCDT_DAI_PER_WORK_INFO"
+				"select * from KRCDT_DAY_INFO_PER_WORK"
 				+ " where SID = ? and YMD = ?")) {
 			stmtFindById.setString(1, employeeId);
 			stmtFindById.setDate(2, Date.valueOf(ymd.toLocalDate()));
@@ -366,7 +366,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
 		entity.version = rec.getLong("EXCLUS_VER");
 		try (PreparedStatement stmtSche = this.connection().prepareStatement(
-					"select * from KRCDT_WORK_SCHEDULE_TIME"
+					"select * from KRCDT_DAY_TS_ATD_SCHE"
 					+ " where SID = ? and YMD = ?")) {
 			stmtSche.setString(1, pk.employeeId);
 			stmtSche.setDate(2, Date.valueOf(pk.ymd.toLocalDate()));
@@ -589,7 +589,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@SneakyThrows
 	public long getVer(String employeeId, GeneralDate date) {
 		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
-				"select EXCLUS_VER from KRCDT_DAI_PER_WORK_INFO"
+				"select EXCLUS_VER from KRCDT_DAY_INFO_PER_WORK"
 				+ " where SID = ? and YMD = ?")) {
 			stmtFindById.setString(1, employeeId);
 			stmtFindById.setDate(2, Date.valueOf(date.toLocalDate()));

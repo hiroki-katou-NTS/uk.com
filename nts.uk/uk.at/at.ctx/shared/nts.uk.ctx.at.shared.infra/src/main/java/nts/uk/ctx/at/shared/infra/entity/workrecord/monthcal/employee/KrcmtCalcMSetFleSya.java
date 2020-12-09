@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstFlexMCalSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCST_SHA_FLEX_M_CAL_SET")
+@Table(name = "KRCMT_CALC_M_SET_FLE_SYA")
 public class KrcmtCalcMSetFleSya extends KrcstFlexMCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -12,7 +12,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGPT_MYPAGE")
+@Table(name = "SPTMT_MYPAGE")
 public class CcgptMyPage extends ContractUkJpaEntity {
 	
 	@EmbeddedId

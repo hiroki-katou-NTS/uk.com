@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_PUBLIC_HD_SET")
+@Table(name = "KSHMT_HDPUB_SET")
 public class KshmtHdpubSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_AGGR_ABSN_DAYS")
+@Table(name = "KRCDT_WEK_DAYS_ABSENCE")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekDaysAbsence extends ContractUkJpaEntity implements Serializable {

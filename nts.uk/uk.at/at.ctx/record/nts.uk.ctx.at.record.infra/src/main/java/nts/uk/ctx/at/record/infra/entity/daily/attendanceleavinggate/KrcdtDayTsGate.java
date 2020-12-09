@@ -25,8 +25,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name = "KRCDT_DAY_LEAVE_GATE")
-// @NamedQuery(name="KrcdtDayLeaveGate.findAll", query="SELECT k FROM
+@Table(name = "KRCDT_DAY_TS_GATE")
+// @NamedQuery(name="KrcdtDayTsGate.findAll", query="SELECT k FROM
 // KrcdtDayTsGate k")
 public class KrcdtDayTsGate extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

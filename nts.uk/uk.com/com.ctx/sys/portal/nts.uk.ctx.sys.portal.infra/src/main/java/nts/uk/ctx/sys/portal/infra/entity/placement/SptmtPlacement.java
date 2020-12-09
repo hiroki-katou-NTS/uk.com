@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGMT_PLACEMENT")
+@Table(name = "SPTMT_PLACEMENT")
 public class SptmtPlacement extends ContractUkJpaEntity {
 
 	@EmbeddedId

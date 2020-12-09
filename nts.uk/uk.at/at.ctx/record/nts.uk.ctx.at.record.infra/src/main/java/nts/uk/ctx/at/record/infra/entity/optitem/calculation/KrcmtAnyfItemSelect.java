@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_ITEM_SELECTION")
+@Table(name = "KRCMT_ANYF_ITEM_SELECT")
 public class KrcmtAnyfItemSelect extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTST_WIDGET_DISPLAY")
+@Table(name = "SPTMT_WIDGET_DISPLAY")
 public class SptmtWidgetDisplay extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

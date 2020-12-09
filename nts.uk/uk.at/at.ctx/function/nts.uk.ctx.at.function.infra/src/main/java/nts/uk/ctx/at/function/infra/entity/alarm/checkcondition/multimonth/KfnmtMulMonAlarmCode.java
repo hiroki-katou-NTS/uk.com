@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KFNMT_MUL_MON_CHECK_PK")
+@Table(name = "KFNMT_ALST_CHKMLT_UDKEY")
 public class KfnmtMulMonAlarmCode extends ContractUkJpaEntity implements Serializable {
 
 

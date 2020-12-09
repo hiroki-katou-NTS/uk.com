@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author hieult
  */
 @Entity
-@Table(name = "KRQDT_APP_LATE_OR_LEAVE")
+@Table(name = "KRQDT_APP_LATE_EARLY")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

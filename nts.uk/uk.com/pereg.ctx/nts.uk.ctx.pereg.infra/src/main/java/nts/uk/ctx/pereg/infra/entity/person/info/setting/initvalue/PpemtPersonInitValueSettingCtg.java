@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEMT_PER_INIT_SET_CTG")
+@Table(name = "PPEMT_ENTRY_INIT_CTG")
 public class PpemtPersonInitValueSettingCtg extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

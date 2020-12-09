@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_OTHER_LATE_EARLY")
+@Table(name = "KSHMT_WT_COM_LATETIME")
 public class KshmtWtComLatetime extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

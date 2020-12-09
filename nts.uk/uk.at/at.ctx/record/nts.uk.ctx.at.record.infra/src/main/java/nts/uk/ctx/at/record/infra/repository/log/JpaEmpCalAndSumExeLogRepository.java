@@ -111,7 +111,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public boolean checkStopByID(String empCalAndSumExecLogID) {
 		Optional<EmpCalAndSumExeLog> data = Optional.empty();
-		String sql = "select EMP_EXECUTION_LOG_ID,EXECUTED_STATUS from KRCDT_EMP_EXECUTION_LOG"
+		String sql = "select EMP_EXECUTION_LOG_ID,EXECUTED_STATUS from KRCDT_EXEC"
 				+ " where EMP_EXECUTION_LOG_ID = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, empCalAndSumExecLogID);

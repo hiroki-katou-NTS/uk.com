@@ -27,7 +27,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_PROC_EXEC_LOG_HIST")
+@Table(name="KFNDT_AUTOEXEC_LOG_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity implements Serializable{
@@ -90,7 +90,7 @@ public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity impleme
 	public Integer errorBusiness;
 	
 	@OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL)
-    @JoinTable(name = "KFNMT_EXEC_TASK_LOG")
+    @JoinTable(name = "KFNDT_AUTOEXEC_TASK_LOG")
     public List<KfnmtExecutionTaskLog> taskLogList;
 	
 	@Override

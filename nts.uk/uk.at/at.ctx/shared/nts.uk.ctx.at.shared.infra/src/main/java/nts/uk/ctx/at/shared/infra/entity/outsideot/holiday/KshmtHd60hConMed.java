@@ -24,7 +24,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_SUPER_HD_CON_MED")
+@Table(name = "KSHMT_HD60H_CON_MED")
 public class KshmtHd60hConMed extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

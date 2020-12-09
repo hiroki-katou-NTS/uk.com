@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_TEMPORARY_TIME")
+@Table(name = "KRCDT_DAY_TS_TEMPORARY")
 public class KrcdtDayTsTemporary extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

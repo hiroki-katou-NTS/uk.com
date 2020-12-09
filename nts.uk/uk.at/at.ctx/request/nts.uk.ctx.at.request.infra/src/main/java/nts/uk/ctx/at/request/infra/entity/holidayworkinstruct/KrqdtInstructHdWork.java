@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 * @author loivt
 */
 @Entity
-@Table(name = "KRQDT_HOLIDAY_INSTRUCT")
+@Table(name = "KRQDT_INSTRUCT_HD_WORK")
 @Getter
 @Setter
 @AllArgsConstructor

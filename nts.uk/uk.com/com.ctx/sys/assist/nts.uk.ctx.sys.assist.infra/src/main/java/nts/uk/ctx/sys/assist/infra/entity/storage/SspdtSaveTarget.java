@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_TARGET_EMPLOYEES")
+@Table(name = "SSPDT_SAVE_TARGET")
 public class SspdtSaveTarget extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

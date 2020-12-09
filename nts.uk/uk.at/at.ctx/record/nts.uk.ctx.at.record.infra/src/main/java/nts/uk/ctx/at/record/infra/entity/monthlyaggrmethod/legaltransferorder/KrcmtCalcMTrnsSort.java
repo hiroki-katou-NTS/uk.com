@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichi_ishida
  */
 @Entity
-@Table(name = "KRCST_MONSET_LGL_TRNS_SET")
+@Table(name = "KRCMT_CALC_M_TRNS_SORT")
 @NoArgsConstructor
 public class KrcmtCalcMTrnsSort extends ContractUkJpaEntity implements Serializable {
 

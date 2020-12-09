@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KMLST_PREMIUM_SET")
+@Table(name="KSCMT_PER_COST_PREMI_RATE")
 public class KscmtPerCostPremiRate extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmlspPremiumSetPK kmlspPremiumSet;
@@ -45,11 +45,11 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity{
 	private KmlmtPersonCostCalculation kmlmtPersonCostCalculation;
 	
 	@OneToOne(targetEntity = KscmtPremiumItem.class, mappedBy = "kmlstPremiumSet")
-	@JoinTable(name = "KMNMT_PREMIUM_ITEM")
+	@JoinTable(name = "KSCMT_PREMIUM_ITEM")
 	public KscmtPremiumItem kmnmtPremiumItem;
 	
 	@OneToMany(targetEntity = KscmtPerCostPremium.class, cascade = CascadeType.ALL, mappedBy = "kmlstPremiumSet", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KMLDT_PREMIUM_ATTENDANCE")
+	@JoinTable(name = "KSCMT_PER_COST_PREMIUM")
 	public List<KscmtPerCostPremium> kmldtPremiumAttendances;
 	
 	@Override

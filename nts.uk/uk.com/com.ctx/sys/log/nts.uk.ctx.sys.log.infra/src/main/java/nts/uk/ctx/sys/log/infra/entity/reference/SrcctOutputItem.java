@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCMT_LOG_OUTPUT_ITEM")
+@Table(name = "SRCCT_OUTPUT_ITEM")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcctOutputItem extends UkJpaEntity implements Serializable {

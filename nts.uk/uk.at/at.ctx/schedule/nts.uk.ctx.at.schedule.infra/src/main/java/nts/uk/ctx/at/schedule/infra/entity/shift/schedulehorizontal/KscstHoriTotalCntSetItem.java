@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_HORI_TOTAL_CNT_SET")
+@Table(name = "KSCMT_HORIZONTAL_CNT_AGG")
 public class KscstHoriTotalCntSetItem extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

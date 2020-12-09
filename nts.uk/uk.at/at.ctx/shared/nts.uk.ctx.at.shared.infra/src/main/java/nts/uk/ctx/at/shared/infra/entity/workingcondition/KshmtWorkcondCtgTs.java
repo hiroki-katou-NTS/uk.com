@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_WORK_CAT_TIME_ZONE")
+@Table(name = "KSHMT_WORKCOND_CTG_TS")
 public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 
 	/** The Constant serialVersionUID. */

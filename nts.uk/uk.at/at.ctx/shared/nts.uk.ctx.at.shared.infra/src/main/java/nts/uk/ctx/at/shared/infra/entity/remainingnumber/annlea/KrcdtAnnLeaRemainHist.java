@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANNLEA_REMAIN_HIST")
+@Table(name = "KRCDT_HDPAID_REM_HIST")
 public class KrcdtAnnLeaRemainHist extends ContractUkJpaEntity implements Serializable{
 	
 	@EmbeddedId

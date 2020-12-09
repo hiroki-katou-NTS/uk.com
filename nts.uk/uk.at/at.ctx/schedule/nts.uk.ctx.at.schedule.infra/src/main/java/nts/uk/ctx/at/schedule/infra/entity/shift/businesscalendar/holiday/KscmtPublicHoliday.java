@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSMMT_PUBLIC_HOLIDAY")
+@Table(name = "KSCMT_PUBLIC_HOLIDAY")
 public class KscmtPublicHoliday extends ContractUkJpaEntity implements Serializable {
 
 	/**

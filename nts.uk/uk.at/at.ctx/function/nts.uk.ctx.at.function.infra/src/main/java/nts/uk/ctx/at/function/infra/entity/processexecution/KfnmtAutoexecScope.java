@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_EXECUTION_SCOPE")
+@Table(name="KFNMT_AUTOEXEC_SCOPE")
 @NoArgsConstructor
 public class KfnmtAutoexecScope extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class KfnmtAutoexecScope extends ContractUkJpaEntity implements Serializa
 	public KfnmtProcessExecution procExec;
 	
 	@OneToMany(mappedBy = "execScope", cascade = CascadeType.ALL)
-    @JoinTable(name = "KFNMT_EXEC_SCOPE_ITEM")
+    @JoinTable(name = "KFNMT_AUTOEXEC_SCOPE_ITEM")
     public List<KfnmtExecutionScopeItem> workplaceIdList;
 
 	

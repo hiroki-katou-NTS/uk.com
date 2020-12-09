@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORK_TIME_SET")
+@Table(name = "KSHMT_WT")
 @AllArgsConstructor
 public class KshmtWt extends ContractUkJpaEntity implements Serializable {
 

@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_LEAVEEARLYTIME")
+@Table(name = "KRCDT_DAY_TIME_LEAVEEARLY")
 public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

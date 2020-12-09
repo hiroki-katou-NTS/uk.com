@@ -332,7 +332,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(
 				" (closure.kclmtClosurePK.cid, closure.kclmtClosurePK.closureId , closure.useClass, closure.closureMonth, '',emp.kclmpClosureEmploymentPK.employmentCD) ");
 		builderString.append("FROM KshmtClosure closure JOIN ");
-		builderString.append("KclmtClosureEmployment emp ");
+		builderString.append("KshmtClosureEmp emp ");
 		builderString.append("WHERE emp.kclmpClosureEmploymentPK.companyId = :companyId ");
 		builderString.append("AND emp.kclmpClosureEmploymentPK.employmentCD IN :emptcd ");
 		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
@@ -538,7 +538,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 //		builderString = new StringBuilder();
 //		builderString.append("SELECT w FROM BsymtWkpInfo w JOIN ");
-//		builderString.append("BsymtWorkplaceHist a ");
+//		builderString.append("BsymtWkpHist a ");
 //		builderString.append("ON w.bsymtWorkplaceInfoPK.wkpid = a.bsymtWorkplaceHistPK.wkpid ");
 //		builderString.append("AND w.bsymtWorkplaceInfoPK.cid = a.bsymtWorkplaceHistPK.cid ");
 //		builderString.append("AND w.bsymtWorkplaceInfoPK.historyId = a.bsymtWorkplaceHistPK.historyId ");
@@ -1905,7 +1905,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					builderString.append("SELECT c.CLOSURE_ID , c.USE_ATR, c.CLOSURE_MONTH, emp.EMPLOYMENT_CD ");
 					builderString.append("FROM KSHMT_CLOSURE c JOIN ");
 					builderString.append(
-							"KCLMT_CLOSURE_EMPLOYMENT emp ON c.CID = emp.CID AND c.CLOSURE_ID = emp.CLOSURE_ID ");
+							"KSHMT_CLOSURE_EMP emp ON c.CID = emp.CID AND c.CLOSURE_ID = emp.CLOSURE_ID ");
 					builderString.append("WHERE emp.CID = ? AND c.USE_ATR = 1 ");
 					builderString.append("AND emp.EMPLOYMENT_CD IN ( ").append(joinParam(subList)).append(")");
 

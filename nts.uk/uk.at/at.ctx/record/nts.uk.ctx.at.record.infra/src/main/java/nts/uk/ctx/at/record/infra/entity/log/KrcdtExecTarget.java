@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EMP_EXE_TARGET")
+@Table(name = "KRCDT_EXEC_TARGET")
 public class KrcdtExecTarget extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class KrcdtExecTarget extends ContractUkJpaEntity implements Serializable
 	public KrcdtEmpExeTargetPK krcdtEmpExeTargetPK;
 
 	@OneToMany(mappedBy="empExeTarget", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCDT_EMP_EXE_TARGET_STT")
+	@JoinTable(name = "KRCDT_EXEC_TARGET_STS")
 	public List<KrcdtExecTargetSts> lstEmpExeTargetStt;
 	
 	@Override

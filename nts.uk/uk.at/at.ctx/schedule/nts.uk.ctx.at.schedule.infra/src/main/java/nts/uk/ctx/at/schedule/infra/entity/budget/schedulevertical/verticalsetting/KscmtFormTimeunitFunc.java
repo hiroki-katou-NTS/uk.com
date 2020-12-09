@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORM_TIMEUNIT_FUNC")
+@Table(name = "KSCMT_FORM_TIMEUNIT_FUNC")
 public class KscmtFormTimeunitFunc extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

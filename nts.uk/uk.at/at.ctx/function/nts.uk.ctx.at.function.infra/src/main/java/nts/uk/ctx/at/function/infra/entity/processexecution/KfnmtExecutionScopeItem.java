@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_EXEC_SCOPE_ITEM")
+@Table(name="KFNMT_AUTOEXEC_SCOPE_ITEM")
 @NoArgsConstructor
 public class KfnmtExecutionScopeItem extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;

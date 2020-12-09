@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQST_URL_EMBEDDED")
+@Table(name = "KRQMT_URL_EMBEDDED")
 public class KrqmtUrlEmbedded extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

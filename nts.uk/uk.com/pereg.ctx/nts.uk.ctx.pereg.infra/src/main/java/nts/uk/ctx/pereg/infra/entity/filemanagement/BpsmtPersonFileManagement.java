@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "BPSMT_PER_FILE_MANAGEMENT")
+@Table(name = "BPSMT_FILE_MANAGEMENT")
 public class BpsmtPersonFileManagement extends ContractUkJpaEntity implements Serializable{
 
 	/**

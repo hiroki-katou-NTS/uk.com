@@ -23,7 +23,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_EXEC_TASK_LOG")
+@Table(name="KFNDT_AUTOEXEC_TASK_LOG")
 @NoArgsConstructor
 @Getter
 @Setter

@@ -141,7 +141,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	@SneakyThrows
 	private List<WorkTypeOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAY_INFO_BUS");
 		query.append(" WHERE SID IN ( " + subEmp + ")");
 		query.append(" AND YMD <= ? AND YMD >= ? ");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -177,7 +177,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAY_INFO_BUS");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){

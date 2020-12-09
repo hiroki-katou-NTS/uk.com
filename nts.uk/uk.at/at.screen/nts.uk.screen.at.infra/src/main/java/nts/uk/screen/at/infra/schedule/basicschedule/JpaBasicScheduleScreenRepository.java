@@ -218,7 +218,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		String sqlQuery = 
 				"select KSHMT_WKTP.CD, KSHMT_WKTP.NAME, KSHMT_WKTP.ABNAME, KSHMT_WKTP.SYNAME, KSHMT_WKTP.MEMO,"
 				+ " KSHMT_WKTP.WORK_ATR, KSHMT_WKTP.ONE_DAY_CLS, KSHMT_WKTP.MORNING_CLS, KSHMT_WKTP.AFTERNOON_CLS"
-				+ " from KSHMT_WKTP left join KSHMT_WORKTYPE_ORDER"
+				+ " from KSHMT_WKTP left join KSHMT_WKTP_SORT"
 				+ " on KSHMT_WKTP.CID = KSHMT_WKTP_SORT.CID and KSHMT_WKTP.CD = KSHMT_WKTP_SORT.WORKTYPE_CD "
 				+ sqlQueryWhere;
 		try {

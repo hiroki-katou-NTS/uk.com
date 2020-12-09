@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCST_FORMULA_DISPORDER")
+@Table(name = "KRCMT_ANYF_SORT")
 public class KrcmtAnyfSort extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

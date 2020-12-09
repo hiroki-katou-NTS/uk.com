@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class BsymtSrchSyaSort.
  */
 @Entity
-@Table(name="BSYMT_EMPLOYEE_ORDER")
+@Table(name="BSYMT_SRCH_SYA_SORT")
 @Getter
 @Setter
 public class BsymtSrchSyaSort extends ContractUkJpaEntity implements Serializable {

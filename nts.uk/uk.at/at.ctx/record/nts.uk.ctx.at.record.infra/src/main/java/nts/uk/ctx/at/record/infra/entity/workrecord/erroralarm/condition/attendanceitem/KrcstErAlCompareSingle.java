@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_ERAL_COMPARE_SINGLE")
+@Table(name = "KRCMT_ERALST_CNDEXPTGT")
 public class KrcstErAlCompareSingle extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

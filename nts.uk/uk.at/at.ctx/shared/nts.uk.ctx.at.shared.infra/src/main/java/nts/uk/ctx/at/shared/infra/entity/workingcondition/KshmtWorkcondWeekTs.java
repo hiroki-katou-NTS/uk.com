@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_DAYOFWEEK_TIME_ZONE")
+@Table(name = "KSHMT_WORKCOND_WEEK_TS")
 public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 
 

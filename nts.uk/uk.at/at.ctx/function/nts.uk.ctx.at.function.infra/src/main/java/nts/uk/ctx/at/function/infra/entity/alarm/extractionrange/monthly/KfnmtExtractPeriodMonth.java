@@ -23,7 +23,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeft
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_EXTRACT_PER_MONTH")
+@Table(name = "KFNMT_ALST_PTN_DEFTMMON")
 @NoArgsConstructor
 public class KfnmtExtractPeriodMonth extends ContractUkJpaEntity implements Serializable{
 	

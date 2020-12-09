@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYMT_EMPLOYEE_LICENSE")
+@Table(name = "BSYMT_LICENSE")
 public class BsymtLicense extends ContractUkJpaEntity implements Serializable {
 	
 	/**

@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_ACCEPT_CD_CONVERT")
+@Table(name = "OIOMT_EX_AC_CD_CONV")
 public class OiomtExAcCdConv extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public class OiomtExAcCdConv extends ContractUkJpaEntity implements Serializable
 	public int acceptWithoutSetting;
 
 	@OneToMany(targetEntity = OiomtExAcCdConvDtl.class, cascade = CascadeType.ALL, mappedBy = "oiomtAcceptCdConvert", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "OIOMT_CD_CONVERT_DETAILS")
+	@JoinTable(name = "OIOMT_EX_AC_CD_CONV_DTL")
 	public List<OiomtExAcCdConvDtl> oiomtCdConvertDetails;
 
 	@Override

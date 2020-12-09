@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_DATE_RANGE_ITEM")
+@Table(name = "PPEMT_ITEM_DATE_RANGE")
 public class PpemtItemDateRange extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

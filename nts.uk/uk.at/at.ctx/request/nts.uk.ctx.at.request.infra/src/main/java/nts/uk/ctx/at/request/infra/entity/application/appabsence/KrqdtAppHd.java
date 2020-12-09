@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRQDT_APP_FOR_LEAVE")
+@Table(name = "KRQDT_APP_HD")
 @Setter
 @Getter
 @AllArgsConstructor

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_WORK_FLEX_SET")
+@Table(name = "KSHMT_CALC_C_ADD_HD_FLE")
 public class KshmtCalcCAddHdFle  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

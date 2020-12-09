@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSMMT_CALENDAR_COMPANY")
+@Table(name = "KSCMT_CALENDAR_COM")
 @Setter
 public class KscmtCalendarCom extends ContractUkJpaEntity implements Serializable {
 	

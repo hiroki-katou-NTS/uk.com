@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="KMNMT_ATTENDANCE_TYPE")
+@Table(name="KFNCT_ATTENDANCE_TYPE")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnctAttendanceType extends ContractUkJpaEntity implements Serializable{

@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_TOTAL_TIMES")
+@Table(name = "KRCDT_WEK_TIME_TOTALCOUNT")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeTotalcount extends ContractUkJpaEntity implements Serializable {

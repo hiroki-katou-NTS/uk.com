@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="KRCST_DRT_USE_UNIT")
+@Table(name="KRCMT_DVGC_UNIT_SET")
 public class KrcmtDvgcUnitSet extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

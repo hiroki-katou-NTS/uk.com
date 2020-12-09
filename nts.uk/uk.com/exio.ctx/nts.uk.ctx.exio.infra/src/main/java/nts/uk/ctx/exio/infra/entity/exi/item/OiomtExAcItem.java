@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_STD_ACCEPT_ITEM")
+@Table(name = "OIOMT_EX_AC_ITEM")
 public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

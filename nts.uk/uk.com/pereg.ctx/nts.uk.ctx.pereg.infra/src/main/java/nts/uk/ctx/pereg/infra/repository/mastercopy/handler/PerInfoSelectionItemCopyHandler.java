@@ -21,7 +21,7 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySe
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionDef;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSort;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItem;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionDef;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,13 +37,13 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 	private static final String QUERY_HISTORY_SELECTION = "SELECT p FROM PpemtSelectionHist p WHERE p.companyId = :companyId AND p.selectionItemId IN :selectionItemIds";
 	
 	/** The Constant QUERY_SELECTION. */
-	private static final String QUERY_SELECTION = "SELECT s FROM PpemtSelectionItem s WHERE s.histId = :histId";
+	private static final String QUERY_SELECTION = "SELECT s FROM PpemtSelectionDef s WHERE s.histId = :histId";
 	
 	/** The Constant QUERY_SELECTION_ORDER. */
 	private static final String QUERY_SELECTION_ORDER = "SELECT o FROM PpemtSelectionItemSort o WHERE o.histId = :histId";
 	
 	/** The Constant DELETE_SELECTION. */
-	private static final String DELETE_SELECTION = "DELETE FROM PpemtSelectionItem s WHERE s.histId IN :histIds";
+	private static final String DELETE_SELECTION = "DELETE FROM PpemtSelectionDef s WHERE s.histId IN :histIds";
 	
 	/** The Constant DELETE_SELECTION_ORDER. */
 	private static final String DELETE_SELECTION_ORDER = "DELETE FROM PpemtSelectionItemSort o WHERE o.histId IN :histIds";
@@ -115,7 +115,7 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		if (!histIds.isEmpty()) {
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				// Delete doman [Selection], ĐK: historyID ＝「HistorySelection」．history．historyID
-				this.entityManager.createQuery(DELETE_SELECTION, PpemtSelectionItem.class)
+				this.entityManager.createQuery(DELETE_SELECTION, PpemtSelectionDef.class)
 					.setParameter("histIds", subList)
 					.executeUpdate();
 				
@@ -135,13 +135,13 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 
 		// (Set [SelectionHistory], [Seletion],[OrderSelectionAndDefaultValues])
 		List<PpemtSelectionHist> newPpemtHistorySelections = new ArrayList<>();
-		List<PpemtSelectionItem> newPpemtSelections = new ArrayList<>();
+		List<PpemtSelectionDef> newPpemtSelections = new ArrayList<>();
 		List<PpemtSelectionItemSort> newPpemtSelItemOrders = new ArrayList<>();
 
 		ppemtHistorySelectionsZero.stream().forEach(item -> {
 			String newHistId = IdentifierUtil.randomUniqueId();
-			List<PpemtSelectionItem> ppemtSelectionsZero = this.entityManager
-					.createQuery(QUERY_SELECTION, PpemtSelectionItem.class).setParameter("histId", item.histidPK.histId)
+			List<PpemtSelectionDef> ppemtSelectionsZero = this.entityManager
+					.createQuery(QUERY_SELECTION, PpemtSelectionDef.class).setParameter("histId", item.histidPK.histId)
 					.getResultList();
 			List<PpemtSelectionItemSort> ppemtSelItemOrdersZero = this.entityManager
 					.createQuery(QUERY_SELECTION_ORDER, PpemtSelectionItemSort.class)
@@ -156,7 +156,7 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 			newPpemtSelections.addAll(ppemtSelectionsZero.stream().map(selectionItem -> {
 				String selectionId = IdentifierUtil.randomUniqueId();
 				mapSelectionId.put(selectionItem.selectionId.selectionId, selectionId);
-				return new PpemtSelectionItem(new PpemtSelectionPK(selectionId), newHistId,
+				return new PpemtSelectionDef(new PpemtSelectionPK(selectionId), newHistId,
 						selectionItem.selectionCd, selectionItem.selectionName,
 						selectionItem.externalCd, selectionItem.memo);
 			}).collect(Collectors.toList()));

@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_AC_SCREEN_COND_SET")
+@Table(name = "OIOMT_EX_AC_SCREEN_COND")
 public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

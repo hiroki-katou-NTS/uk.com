@@ -12,7 +12,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTST_OPTIONAL_WIDGET")
+@Table(name = "SPTMT_OPTIONAL_WIDGET")
 public class SptmtOptionalWidget  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

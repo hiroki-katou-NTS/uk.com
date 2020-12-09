@@ -80,7 +80,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MON_MERGE")
+@Table(name = "KRCDT_MON_TIME_ATD")
 public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */

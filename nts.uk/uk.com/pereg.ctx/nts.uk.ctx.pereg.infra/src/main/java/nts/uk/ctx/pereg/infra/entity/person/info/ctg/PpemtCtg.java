@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_PER_INFO_CTG")
+@Table(name = "PPEMT_CTG")
 
 public class PpemtCtg extends ContractUkJpaEntity implements Serializable {
 

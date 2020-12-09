@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYMT_EMPLOYEE_CE_SET")
+@Table(name = "BSYMT_SYAINCD_EDIT")
 public class BsymtEmployeeCESetting extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

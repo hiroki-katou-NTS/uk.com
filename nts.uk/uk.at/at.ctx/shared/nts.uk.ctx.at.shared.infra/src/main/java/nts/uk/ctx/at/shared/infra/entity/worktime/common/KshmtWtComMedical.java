@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_MEDICAL_TIME_SET")
+@Table(name = "KSHMT_WT_COM_MEDICAL")
 public class KshmtWtComMedical extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

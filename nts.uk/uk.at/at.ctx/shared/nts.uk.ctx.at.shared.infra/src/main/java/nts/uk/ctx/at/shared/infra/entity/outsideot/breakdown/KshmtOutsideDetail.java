@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OUTSIDE_OT_BRD")
+@Table(name = "KSHMT_OUTSIDE_DETAIL")
 public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

@@ -370,7 +370,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public void updateAll(List<PersonInfoItemData> domains) {
-		String UP_SQL = "UPDATE PPEMT_PER_INFO_ITEM_DATA"
+		String UP_SQL = "UPDATE PPEMT_PER_DATA_ITEM"
 				+ " SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " RECORD_ID = RECORD_ID_VAL, PER_INFO_DEF_ID = PER_INFO_DEF_ID_VAL, SAVE_DATA_ATR = SAVE_DATA_ATR_VAL,"
 				+ " STRING_VAL = STRING_VAL_VAL, INT_VAL = INT_VAL_VAL, DATE_VAL = DATE_VAL_VAL "

@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_EXCOUT_TIME")
+@Table(name = "KRCDT_WEK_TIME_OUTSIDE")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeOutside extends ContractUkJpaEntity implements Serializable {

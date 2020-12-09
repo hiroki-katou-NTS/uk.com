@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_DIFF_TIME_WORK_SET")
+@Table(name = "KSHMT_WT_DIF")
 public class KshmtWtDif extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

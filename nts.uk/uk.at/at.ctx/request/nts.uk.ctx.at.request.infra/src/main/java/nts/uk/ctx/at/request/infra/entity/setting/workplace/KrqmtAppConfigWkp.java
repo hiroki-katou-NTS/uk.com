@@ -42,7 +42,7 @@
 //@Entity
 //@AllArgsConstructor
 //@NoArgsConstructor
-//@Table(name = "KRQST_WP_APP_CONFIG")
+//@Table(name = "KRQMT_APP_CONFIG_WKP")
 //public class KrqmtAppConfigWkp extends ContractUkJpaEntity implements Serializable {
 //	private static final long serialVersionUID = 1L;
 //
@@ -56,7 +56,7 @@
 //	public int selectOfApproversFlg;
 //
 //	@OneToMany(targetEntity = KrqstWpAppConfigDetail.class, cascade = CascadeType.ALL, mappedBy = "krqstWpAppConfig", orphanRemoval = true)
-//	@JoinTable(name = "KRQST_WP_APP_CF_DETAIL")
+//	@JoinTable(name = "KRQMT_APP_CF_DETAIL_WKP")
 //	public List<KrqstWpAppConfigDetail> krqstWpAppConfigDetails;
 //
 //	@Override

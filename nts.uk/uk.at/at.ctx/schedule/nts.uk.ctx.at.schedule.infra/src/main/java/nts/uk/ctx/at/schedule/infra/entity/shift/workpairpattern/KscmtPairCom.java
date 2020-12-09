@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_COM_WORK_PAIR_SET")
+@Table(name = "KSCMT_PAIR_COM")
 public class KscmtPairCom extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CCGST_MENU_BAR")
+@Table(name = "SPTMT_MENU_BAR")
 public class SptmtMenuBar extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

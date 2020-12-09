@@ -221,7 +221,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
 		String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-				+ " from BSYMT_EMP_DTA_MNG_INFO"
+				+ " from BSYMT_SYAIN"
 				+ " where SID = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, sId);
@@ -416,7 +416,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " from BSYMT_SYAIN"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and CID = ? and DEL_STATUS_ATR = 0 ORDER BY SCD ASC";
 			
@@ -657,7 +657,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(sId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " from BSYMT_SYAIN"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and DEL_STATUS_ATR = 0";
 			
@@ -844,7 +844,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " from BSYMT_SYAIN"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and DEL_STATUS_ATR != 0";
 			
@@ -881,7 +881,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "SELECT SID, SCD"
-					+ " FROM BSYMT_EMP_DTA_MNG_INFO"
+					+ " FROM BSYMT_SYAIN"
 					+ " WHERE SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {

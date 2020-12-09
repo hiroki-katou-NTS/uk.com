@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author loivt
  */
 @Entity
-@Table(name = "KRQDT_APP_EMPLOY_WORKTYPE")
+@Table(name = "KRQMT_APP_WKTP_EMP")
 @Getter
 @Setter
 @AllArgsConstructor

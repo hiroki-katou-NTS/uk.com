@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCDT_ACTUAL_LOCK_HIST")
+@Table(name = "KRCDT_ATD_ACTUALLOCK_HIST")
 public class KrcdtAtdActuallockHist extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

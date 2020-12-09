@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author loivt
  */
 @Entity
-@Table(name = "KRQDT_OVERTIME_INSTRUCT")
+@Table(name = "KRQDT_INSTRUCT_OVERTIME")
 @Getter
 @Setter
 @AllArgsConstructor

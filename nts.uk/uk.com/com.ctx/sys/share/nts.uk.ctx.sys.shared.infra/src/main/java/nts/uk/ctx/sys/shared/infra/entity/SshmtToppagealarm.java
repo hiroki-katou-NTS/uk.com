@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_TOPPAGE_ALARM_SET")
+@Table(name = "SSHMT_TOPPAGEALARM")
 public class SshmtToppagealarm extends ContractUkJpaEntity implements Serializable {
 	
 	@Id

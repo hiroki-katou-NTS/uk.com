@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author thanhnx
  */
 @Entity
-@Table(name = "KRCST_FLEX_SHORTAGE_LIMIT")
+@Table(name = "KSHMT_CALC_M_FLEX_CAR_MAX")
 @NoArgsConstructor
 public class KshmtCalcMFlexCarMax extends ContractUkJpaEntity implements Serializable {
 

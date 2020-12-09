@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSCST_PER_COST_EXTRA_ITEM")
+@Table(name = "KSCMT_PER_COST_EXTRA_ITEM")
 public class KscmtPerCostExtraItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

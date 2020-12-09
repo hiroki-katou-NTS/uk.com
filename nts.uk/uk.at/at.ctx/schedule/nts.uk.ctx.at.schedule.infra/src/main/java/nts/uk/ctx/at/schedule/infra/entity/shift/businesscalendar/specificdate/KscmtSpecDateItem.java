@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Setter
-@Table(name = "KSMST_SPECIFIC_DATE_ITEM")
+@Table(name = "KSCMT_SPEC_DATE_ITEM")
 public class KscmtSpecDateItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_AC_OP_MANAGE")
+@Table(name = "OIOTT_EX_AC_OP_MNG")
 public class OiottExAcOpMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

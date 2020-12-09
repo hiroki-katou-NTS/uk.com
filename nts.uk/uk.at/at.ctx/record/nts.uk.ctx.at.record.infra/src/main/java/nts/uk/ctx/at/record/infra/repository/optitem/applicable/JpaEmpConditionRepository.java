@@ -117,7 +117,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		List<KrcmtAnyfCondEmp> result = new ArrayList<>();
 		CollectionUtil.split(optionalItemNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
-			String sql = "select * from KRCST_APPL_EMP_CON"
+			String sql = "select * from KRCMT_ANYF_COND_EMP"
 					+ " where CID = ?"
 					+ " and OPTIONAL_ITEM_NO in (" + NtsStatement.In.createParamsString(subList) + ")";
 			

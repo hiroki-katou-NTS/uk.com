@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MCLOSE_UPD_PER_LOG")
+@Table(name = "KRCDT_MCLOSE_TARGET")
 public class KrcdtMcloseTarget extends ContractUkJpaEntity {
 
 	@EmbeddedId

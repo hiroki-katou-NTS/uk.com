@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SRCDT_ITEM_INFO_LOG")
+@Table(name = "SRCDT_PER_ITEM_INFO")
 public class SrcdtPerItemInfo extends ContractUkJpaEntity {
 
 	@Column(name = "CID")

@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_AFFILIATION_INF")
+@Table(name = "KRCDT_DAY_AFF_INFO")
 public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

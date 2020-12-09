@@ -53,7 +53,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AL_CHECK_COND_CATE")
+@Table(name = "KFNMT_ALST_CHK")
 public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implements Serializable {
 
 	/**

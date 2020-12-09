@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCST_APPL_EMP_CON")
+@Table(name = "KRCMT_ANYF_COND_EMP")
 public class KrcmtAnyfCondEmp extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

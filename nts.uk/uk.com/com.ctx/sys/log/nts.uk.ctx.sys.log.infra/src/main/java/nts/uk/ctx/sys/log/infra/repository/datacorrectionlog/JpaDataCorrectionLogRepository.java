@@ -261,7 +261,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			// SQLServer
 			String sql = "select OPERATION_ID, USER_ID , TARGET_DATA_TYPE,  ITEM_ID, YMD_KEY," // primary Key
 					+ " SID, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR,  ITEM_NAME, VIEW_VALUE_BEFORE, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER" // other
-					+ " from SRCDT_DATA_CORRECTION_LOG" //table name
+					+ " from SRCDT_DATA_CORRECTION" //table name
 					+ " with(index(SRCDI_DATA_CORRECTION_LOG2))";//hint
 			//TODO：ログ照会レスポンス改善
 			//一時対応として、出力するログ自体を減らすため、修正区分を指定
@@ -668,7 +668,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			// SQLServer
 			String sql = "select top 1000 OPERATION_ID, USER_ID , TARGET_DATA_TYPE,  ITEM_ID, YMD_KEY," // primary Key
 					+ " SID, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR,  ITEM_NAME, VIEW_VALUE_BEFORE, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER" // other
-					+ " from SRCDT_DATA_CORRECTION_LOG" //table name
+					+ " from SRCDT_DATA_CORRECTION" //table name
 					+ " with(index(SRCDI_DATA_CORRECTION_LOG2))";//hint
 			//TODO：ログ照会レスポンス改善
 			//一時対応として、出力するログ自体を減らすため、修正区分を指定
@@ -977,7 +977,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			// SQLServer
 			String sql = "SELECT OPERATION_ID, USER_ID , TARGET_DATA_TYPE,  ITEM_ID, YMD_KEY," // primary Key
 					+ " SID, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR,  ITEM_NAME, VIEW_VALUE_BEFORE, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER" // other
-					+ " FROM SRCDT_DATA_CORRECTION_LOG" //table name
+					+ " FROM SRCDT_DATA_CORRECTION" //table name
 					+ " WITH(INDEX(SRCDI_DATA_CORRECTION_LOG2))";//hint
 			//TODO：ログ照会レスポンス改善
 			//一時対応として、出力するログ自体を減らすため、修正区分を指定

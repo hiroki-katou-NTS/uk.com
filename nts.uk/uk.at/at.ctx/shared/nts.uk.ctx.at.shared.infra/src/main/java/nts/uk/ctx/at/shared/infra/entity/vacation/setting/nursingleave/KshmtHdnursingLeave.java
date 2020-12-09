@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KNLMT_NURSING_LEAVE_SET")
+@Table(name = "KSHMT_HDNURSING_LEAVE")
 public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

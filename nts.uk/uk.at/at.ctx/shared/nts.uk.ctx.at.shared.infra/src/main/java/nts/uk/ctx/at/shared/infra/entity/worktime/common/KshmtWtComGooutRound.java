@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_SPECIAL_ROUND_OUT")
+@Table(name = "KSHMT_WT_COM_GOOUT_ROUND")
 public class KshmtWtComGooutRound extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

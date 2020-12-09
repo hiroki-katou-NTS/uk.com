@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_COM_DRT_HIST")
+@Table(name = "KRCMT_DVGC_REF_HIST_COM")
 public class KrcmtDvgcRefHistCom extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

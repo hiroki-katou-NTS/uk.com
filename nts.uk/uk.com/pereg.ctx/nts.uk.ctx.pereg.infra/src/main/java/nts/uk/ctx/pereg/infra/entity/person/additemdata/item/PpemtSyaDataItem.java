@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_EMP_INFO_ITEM_DATA")
+@Table(name = "PPEMT_SYA_DATA_ITEM")
 // 個人情報項目データ
 
 public class PpemtSyaDataItem extends ContractUkJpaEntity implements Serializable {

@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author loivt
  */
 @Entity
-@Table(name = "KRQST_APP_DIVERGEN_REASON")
+@Table(name = "KRQMT_APP_DIVERGEN_REASON")
 @Getter
 @Setter
 @AllArgsConstructor

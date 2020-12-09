@@ -49,7 +49,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ER_AL_ATD_ITEM_CON")
+@Table(name = "KRCMT_ERALST_CNDGRP")
 public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

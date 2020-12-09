@@ -204,7 +204,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		Optional<BsymtAffEmpHist> histItem = this.queryProxy().find(itemToBeUpdated.identifier(),
 				BsymtAffEmpHist.class);
 		if (!histItem.isPresent()) {
-			throw new RuntimeException("invalid BsymtEmploymentHist");
+			throw new RuntimeException("invalid BsymtAffEmpHist");
 		}
 		updateEntity(itemToBeUpdated, histItem.get());
 		this.commandProxy().update(histItem.get());
@@ -215,7 +215,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	public void delete(String histId) {
 		Optional<BsymtAffEmpHist> histItem = this.queryProxy().find(histId, BsymtAffEmpHist.class);
 		if (!histItem.isPresent()) {
-			throw new RuntimeException("invalid BsymtEmploymentHist");
+			throw new RuntimeException("invalid BsymtAffEmpHist");
 		}
 		this.commandProxy().remove(BsymtAffEmpHist.class, histId);
 

@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_CONFIRMATION_MONTH")
+@Table(name = "KRCDT_MON_SELF_CHECK")
 public class KrcdtMonSelfCheck extends ContractUkJpaEntity implements Serializable {
 
 	/**

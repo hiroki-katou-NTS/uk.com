@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_INTERIM_BREAK_MNG")
+@Table(name = "KRCDT_INTERIM_HDWK_MNG")
 public class KrcdtInterimHdwkMng extends ContractUkJpaEntity implements Serializable{
 	/**暫定休出管理データID	 */
 	@Id

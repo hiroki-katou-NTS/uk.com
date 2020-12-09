@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_STAMP_IMPRINT")
+@Table(name = "KRCMT_STAMP_MNG")
 public class KrcmtStampMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

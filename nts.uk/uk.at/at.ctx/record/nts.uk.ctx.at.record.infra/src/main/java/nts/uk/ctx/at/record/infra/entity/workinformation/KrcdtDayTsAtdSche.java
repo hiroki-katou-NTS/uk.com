@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_WORK_SCHEDULE_TIME")
+@Table(name = "KRCDT_DAY_TS_ATD_SCHE")
 public class KrcdtDayTsAtdSche extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

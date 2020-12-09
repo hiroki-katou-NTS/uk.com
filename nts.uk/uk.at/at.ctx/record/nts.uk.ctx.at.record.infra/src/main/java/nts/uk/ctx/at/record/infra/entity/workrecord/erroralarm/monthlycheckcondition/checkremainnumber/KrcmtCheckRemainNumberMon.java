@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_CHECK_REMAIN_MON")
+@Table(name = "KRCMT_ALST_CHKMON_UDREMOP")
 public class KrcmtCheckRemainNumberMon extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 

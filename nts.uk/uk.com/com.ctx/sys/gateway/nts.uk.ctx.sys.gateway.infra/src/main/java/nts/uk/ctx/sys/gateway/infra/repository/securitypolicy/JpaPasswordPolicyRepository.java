@@ -45,7 +45,7 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 				.find(passwordPolicy.getContractCode().v(), SgwmtPasswordPolicy.class);
 		
 		if (sgwstPasswordPolicyOPtional.isPresent()) {
-			SgwstPasswordPolicy sgwstPasswordPolicy = sgwstPasswordPolicyOPtional.get();
+			SgwmtPasswordPolicy sgwstPasswordPolicy = sgwstPasswordPolicyOPtional.get();
 			sgwstPasswordPolicy.notificationPasswordChange = passwordPolicy.getNotificationPasswordChange().v().intValue();
 			sgwstPasswordPolicy.loginCheck = passwordPolicy.isLoginCheck();
 			sgwstPasswordPolicy.initialPasswordChange = passwordPolicy.isInitialPasswordChange();

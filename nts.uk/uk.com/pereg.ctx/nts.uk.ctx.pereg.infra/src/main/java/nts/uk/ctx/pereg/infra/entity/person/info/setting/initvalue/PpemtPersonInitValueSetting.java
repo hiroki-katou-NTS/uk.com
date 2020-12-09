@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEMT_PER_INIT_SET")
+@Table(name = "PPEMT_ENTRY_INIT")
 public class PpemtPersonInitValueSetting extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

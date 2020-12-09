@@ -114,7 +114,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 	@SneakyThrows
 	public List<TimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 
-		String sql = "select * from KRCDT_MON_MERGE"
+		String sql = "select * from KRCDT_MON_TIME_ATD"
 				+ " where SID = ?"
 				+ " and YM = ?"
 				+ " order by START_YMD";
@@ -185,7 +185,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		String sql = "select * from KRCDT_MON_MERGE"
+		String sql = "select * from KRCDT_MON_TIME_ATD"
 				+ " where SID in @emps"
 				+ " and YM in @yms";
 		
@@ -353,7 +353,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 	@SneakyThrows
 	public long getVer(String employeeId, YearMonth yearMonth, int closureId, int closureDate, boolean lastOfMonth) {
 		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
-				"SELECT EXCLUS_VER from KRCDT_MON_MERGE"
+				"SELECT EXCLUS_VER from KRCDT_MON_TIME_ATD"
 				+ " WHERE SID = ? AND YM = ? AND CLOSURE_ID = ? AND CLOSURE_DAY = ? AND IS_LAST_DAY = ?")) {
 			stmtFindById.setString(1, employeeId);
 			stmtFindById.setInt(2, yearMonth.v());

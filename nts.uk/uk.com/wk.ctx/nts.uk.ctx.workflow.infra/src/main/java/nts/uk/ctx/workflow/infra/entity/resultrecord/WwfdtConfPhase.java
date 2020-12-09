@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_PHASE_CONFIRM")
+@Table(name="WWFDT_CONF_PHASE")
 public class WwfdtConfPhase extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -40,7 +40,7 @@ public class WwfdtConfPhase extends ContractUkJpaEntity {
 	private WwfdtConfRoute wwfdtAppRootConfirm;
 	
 	@OneToMany(targetEntity=WwfdtConfFrame.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppPhaseConfirm", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_FRAME_CONFIRM")
+	@JoinTable(name = "WWFDT_CONF_FRAME")
 	public List<WwfdtConfFrame> listWwfdtAppFrameConfirm;
 
 	@Override

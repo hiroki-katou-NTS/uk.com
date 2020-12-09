@@ -22,7 +22,7 @@
 //@Entity
 //@AllArgsConstructor
 //@NoArgsConstructor
-//@Table(name = "KRQST_WP_APP_CF_DETAIL")
+//@Table(name = "KRQMT_APP_CF_DETAIL_WKP")
 //public class KrqstWpAppConfigDetail  extends ContractUkJpaEntity implements Serializable{
 //	
 //	@EmbeddedId

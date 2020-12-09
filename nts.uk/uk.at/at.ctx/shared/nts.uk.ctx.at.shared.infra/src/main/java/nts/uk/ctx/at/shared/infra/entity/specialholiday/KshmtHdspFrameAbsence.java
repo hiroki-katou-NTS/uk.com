@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_SPHD_ABSENCE")
+@Table(name = "KSHMT_HDSP_FRAME_ABSENCE")
 public class KshmtHdspFrameAbsence extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */

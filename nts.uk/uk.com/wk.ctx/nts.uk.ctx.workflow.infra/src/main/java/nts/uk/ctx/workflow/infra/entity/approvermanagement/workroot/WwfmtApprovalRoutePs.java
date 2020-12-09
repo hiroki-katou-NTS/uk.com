@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "WWFMT_PS_APPROVAL_ROOT")
+@Table(name = "WWFMT_APPROVAL_ROUTE_PS")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtApprovalRoutePs extends ContractUkJpaEntity implements Serializable {

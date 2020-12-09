@@ -21,7 +21,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "BSYMT_EMP_ORDER_COND")
+@Table(name = "BSYMT_SRCH_SYA_SORT_CND")
 public class BsymtSrchSyaSortCnd extends JpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

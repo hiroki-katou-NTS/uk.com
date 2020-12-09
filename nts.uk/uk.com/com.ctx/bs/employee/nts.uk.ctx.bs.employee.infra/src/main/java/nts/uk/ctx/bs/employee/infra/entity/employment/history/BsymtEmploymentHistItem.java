@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class BsymtEmploymentHistItem.
  */
 @Entity
-@Table(name = "BSYMT_EMPLOYMENT_HIS_ITEM")
+@Table(name = "BSYMT_AFF_EMP_HIST_ITEM")
 public class BsymtEmploymentHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

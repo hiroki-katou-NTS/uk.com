@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name="SRCDT_LOGIN_RECORD")
+@Table(name="SRCDT_LOGIN_CORRECTION")
 @Getter
 @Setter
 public class SrcdtLoginCorrection extends ContractUkJpaEntity implements Serializable {

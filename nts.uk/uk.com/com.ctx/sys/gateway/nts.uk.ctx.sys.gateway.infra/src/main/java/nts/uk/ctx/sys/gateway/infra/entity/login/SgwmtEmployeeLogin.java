@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "SGWST_EMPLOYEE_LOGIN_SET")
+@Table(name = "SGWMT_EMPLOYEE_LOGIN")
 
 /**
  * Instantiates a new sgwst employee login set.

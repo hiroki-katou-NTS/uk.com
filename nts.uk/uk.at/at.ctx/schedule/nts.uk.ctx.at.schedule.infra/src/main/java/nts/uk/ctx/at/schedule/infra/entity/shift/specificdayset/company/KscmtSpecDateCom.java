@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSMMT_COM_SPEC_DATE_SET")
+@Table(name = "KSCMT_SPEC_DATE_COM")
 public class KscmtSpecDateCom extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

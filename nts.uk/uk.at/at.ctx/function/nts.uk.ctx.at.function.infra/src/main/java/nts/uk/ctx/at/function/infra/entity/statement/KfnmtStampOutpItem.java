@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  * The Class KfnmtStampOutpItem.
  */
 @Entity
-@Table(name="KFNMT_STAMP_OUTP_ITEM_SET")
+@Table(name="KFNMT_STAMP_OUTP_ITEM")
 @Getter
 @Setter
 public class KfnmtStampOutpItem extends ContractUkJpaEntity implements Serializable {

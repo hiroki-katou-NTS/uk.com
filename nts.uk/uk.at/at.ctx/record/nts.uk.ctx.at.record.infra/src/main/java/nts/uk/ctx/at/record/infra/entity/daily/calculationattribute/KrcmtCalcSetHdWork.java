@@ -24,24 +24,24 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCST_HOL_AUTO_CAL_SET")
+@Table(name = "KRCMT_CALC_SET_HD_WORK")
 @XmlRootElement
 @NamedQueries({
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findAll", query = "SELECT k FROM KrcmtCalcSetHdWork k"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByInsDate", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insDate = :insDate"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByInsCcd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insCcd = :insCcd"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByInsScd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insScd = :insScd"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByInsPg", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insPg = :insPg"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByUpdDate", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updDate = :updDate"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByUpdCcd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updCcd = :updCcd"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByUpdScd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updScd = :updScd"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByUpdPg", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updPg = :updPg"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByExclusVer", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.exclusVer = :exclusVer"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByHolWorkTimeId", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.holWorkTimeId = :holWorkTimeId"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByHolWorkTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.holWorkTimeCalAtr = :holWorkTimeCalAtr"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByHolWorkTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.holWorkTimeLimitSet = :holWorkTimeLimitSet"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByLateNightTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.lateNightTimeCalAtr = :lateNightTimeCalAtr"),
-//    @NamedQuery(name = "KrcstHolAutoCalSet.findByLateNightTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.lateNightTimeLimitSet = :lateNightTimeLimitSet")
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findAll", query = "SELECT k FROM KrcmtCalcSetHdWork k"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByInsDate", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByInsCcd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByInsScd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByInsPg", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByUpdDate", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByUpdCcd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByUpdScd", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByUpdPg", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByExclusVer", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByHolWorkTimeId", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.holWorkTimeId = :holWorkTimeId"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByHolWorkTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.holWorkTimeCalAtr = :holWorkTimeCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByHolWorkTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.holWorkTimeLimitSet = :holWorkTimeLimitSet"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByLateNightTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.lateNightTimeCalAtr = :lateNightTimeCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetHdWork.findByLateNightTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetHdWork k WHERE k.lateNightTimeLimitSet = :lateNightTimeLimitSet")
 	})
 public class KrcmtCalcSetHdWork extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;

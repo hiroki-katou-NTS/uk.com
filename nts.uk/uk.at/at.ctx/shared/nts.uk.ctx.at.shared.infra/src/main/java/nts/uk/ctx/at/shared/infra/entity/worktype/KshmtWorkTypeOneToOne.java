@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTyp
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KSHMT_WORKTYPE")
+@Table(name="KSHMT_WKTP")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtWorkTypeOneToOne extends ContractUkJpaEntity implements Serializable{

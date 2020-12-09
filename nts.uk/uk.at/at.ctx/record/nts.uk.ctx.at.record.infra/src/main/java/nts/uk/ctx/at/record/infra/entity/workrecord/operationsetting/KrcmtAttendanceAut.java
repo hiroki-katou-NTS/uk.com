@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_DAI_PERFORMANCE_AUT")
+@Table(name = "KRCMT_ATTENDANCE_AUT")
 public class KrcmtAttendanceAut extends ContractUkJpaEntity{
 	
 	@EmbeddedId

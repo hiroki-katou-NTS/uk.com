@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_COMPARE_RANGE")
+@Table(name = "KRCMT_ALST_CHKMON_UDREMVR")
 public class KrcmtAlstChkmonUdremvr extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

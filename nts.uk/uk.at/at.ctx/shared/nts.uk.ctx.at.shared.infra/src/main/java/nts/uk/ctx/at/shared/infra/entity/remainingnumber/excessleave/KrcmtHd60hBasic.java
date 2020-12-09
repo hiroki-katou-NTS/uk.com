@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_EXCESS_LEAVE_INFO")
+@Table(name = "KRCMT_HD60H_BASIC")
 public class KrcmtHd60hBasic extends ContractUkJpaEntity{
 
     @Column(name = "CID")

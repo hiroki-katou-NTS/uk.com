@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APPROVER_STATE")
+@Table(name="WWFDT_APP_INST_APPROVER")
 @Builder
 public class WwfdtAppInstApprover extends ContractUkJpaEntity {
 	/**主キー*/

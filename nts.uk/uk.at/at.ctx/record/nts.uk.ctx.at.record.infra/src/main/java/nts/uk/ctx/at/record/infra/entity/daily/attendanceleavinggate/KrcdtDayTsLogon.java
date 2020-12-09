@@ -21,8 +21,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name = "KRCDT_DAY_PC_LOGON_INFO")
-// @NamedQuery(name="KrcdtDayPcLogonInfo.findAll", query="SELECT k FROM
+@Table(name = "KRCDT_DAY_TS_LOGON")
+// @NamedQuery(name="KrcdtDayTsLogon.findAll", query="SELECT k FROM
 // KrcdtDayTsLogon k")
 public class KrcdtDayTsLogon extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

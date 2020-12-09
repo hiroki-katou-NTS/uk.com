@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KCLMT_CLOSURE_EMPLOYMENT")
+@Table(name="KSHMT_CLOSURE_EMP")
 public class KshmtClosureEmp extends ContractUkJpaEntity{
 	
 	@EmbeddedId

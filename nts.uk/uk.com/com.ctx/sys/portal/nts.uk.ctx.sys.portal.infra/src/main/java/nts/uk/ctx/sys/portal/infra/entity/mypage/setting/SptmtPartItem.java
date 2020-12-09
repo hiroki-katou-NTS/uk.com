@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "CCGMT_PART_ITEM_SET")
+@Table(name = "SPTMT_PART_ITEM")
 public class SptmtPartItem extends ContractUkJpaEntity {
 
 	@EmbeddedId

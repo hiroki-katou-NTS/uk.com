@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_TIME_PER_SET")
+@Table(name = "KSCMT_EST_TIME_SYA")
 public class KscmtEstTimeSya extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

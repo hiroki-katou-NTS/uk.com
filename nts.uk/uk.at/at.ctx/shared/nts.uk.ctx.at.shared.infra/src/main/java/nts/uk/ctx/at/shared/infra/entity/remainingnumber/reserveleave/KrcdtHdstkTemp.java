@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "KRCMT_INTERIM_RESERVE_MNG")
+@Table(name = "KRCDT_HDSTK_TEMP")
 public class KrcdtHdstkTemp extends ContractUkJpaEntity{
 	/**
 	 * 暫定積立年休管理データID

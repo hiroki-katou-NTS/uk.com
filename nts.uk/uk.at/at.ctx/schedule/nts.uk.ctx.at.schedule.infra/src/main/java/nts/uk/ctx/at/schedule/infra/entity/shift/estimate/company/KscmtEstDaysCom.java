@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_DAYS_COM_SET")
+@Table(name = "KSCMT_EST_DAYS_COM")
 public class KscmtEstDaysCom extends ContractUkJpaEntity  implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

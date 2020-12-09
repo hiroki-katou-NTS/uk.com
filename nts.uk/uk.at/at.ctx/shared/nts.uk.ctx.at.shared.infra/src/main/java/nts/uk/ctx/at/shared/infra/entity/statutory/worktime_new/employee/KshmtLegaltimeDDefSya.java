@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstTrans
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_SHA_TRANS_LAB_TIME")
+@Table(name = "KSHMT_LEGALTIME_D_DEF_SYA")
 public class KshmtLegaltimeDDefSya extends KshstTransLabTime implements Serializable {
 	
 	/** The Constant serialVersionUID. */

@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_OUTING_TIME")
+@Table(name = "KRCDT_DAY_TIME_GOOUT")
 public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

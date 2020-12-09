@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ERR_MESSAGE_INFO")
+@Table(name = "KRCDT_EXEC_ERR_MSG")
 public class KrcdtExecErrMsg extends ContractUkJpaEntity implements Serializable {
 	
 	/**

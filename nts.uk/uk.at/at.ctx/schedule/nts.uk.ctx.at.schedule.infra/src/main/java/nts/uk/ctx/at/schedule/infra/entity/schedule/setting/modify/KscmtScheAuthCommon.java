@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_SCHE_COMMON_AUTHOR")
+@Table(name = "KSCMT_SCHE_AUTH_COMMON")
 public class KscmtScheAuthCommon extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

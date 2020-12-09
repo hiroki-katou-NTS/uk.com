@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SEVST_MAIL_DESTIN_FUNC")
+@Table(name = "SEVMT_MAIL_DESTIN_FUNC")
 @Getter
 @Setter
 public class SevmtMailDestinFunc extends ContractUkJpaEntity implements Serializable{

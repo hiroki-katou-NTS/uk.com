@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_GRANT_CONDITION")
+@Table(name="KSHMT_HDPAID_CONDITION")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtHdpaidCondition extends ContractUkJpaEntity {

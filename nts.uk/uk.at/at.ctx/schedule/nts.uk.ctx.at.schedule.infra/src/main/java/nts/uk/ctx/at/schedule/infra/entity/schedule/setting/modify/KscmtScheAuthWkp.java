@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_SCHE_PER_WORKPLACE")
+@Table(name = "KSCMT_SCHE_AUTH_WKP")
 public class KscmtScheAuthWkp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

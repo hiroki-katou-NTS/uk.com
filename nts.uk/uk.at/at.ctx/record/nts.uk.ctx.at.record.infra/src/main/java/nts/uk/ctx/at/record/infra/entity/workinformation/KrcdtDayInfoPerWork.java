@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_PER_WORK_INFO")
+@Table(name = "KRCDT_DAY_INFO_PER_WORK")
 public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

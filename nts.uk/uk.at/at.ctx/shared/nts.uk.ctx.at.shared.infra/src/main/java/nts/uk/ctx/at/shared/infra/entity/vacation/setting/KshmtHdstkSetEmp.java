@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KMFMT_RETENTION_EMP_CTR")
+@Table(name = "KSHMT_HDSTK_SET_EMP")
 public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

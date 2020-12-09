@@ -61,7 +61,7 @@ public class PersonSelectionItemImpl extends JpaRepository implements PersonSele
 				+ " AND hs.CID = ?companyId"
 				+ " AND CONVERT ( DATETIME, ?date, 111 ) <= hs.END_DATE"
 				+ " INNER JOIN PPEMT_SELECTION_ITEM_SORT so ON hs.HIST_ID = so.HIST_ID"
-				+ " INNER JOIN PPEMT_SELECTION_ITEM ss ON so.HIST_ID = ss.HIST_ID" 
+				+ " INNER JOIN PPEMT_SELECTION_DEF ss ON so.HIST_ID = ss.HIST_ID" 
 				+ " AND so.SELECTION_ID = ss.SELECTION_ID"
 				+ " WHERE" 
 				+ " si.CONTRACT_CD = ?contractCd" 

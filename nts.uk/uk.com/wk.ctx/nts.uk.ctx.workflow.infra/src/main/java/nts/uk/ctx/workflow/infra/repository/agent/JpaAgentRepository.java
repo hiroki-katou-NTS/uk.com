@@ -231,7 +231,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		List<Agent> results = new ArrayList<>();
 		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "select * from CMMMT_AGENT"
+			String sql = "select * from WWFMT_AGENT"
 					+ " where CID = ?"
 					+ " and SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and START_DATE <= ?"
@@ -303,7 +303,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	@SneakyThrows
 	public Optional<Agent> find(String companyId, String employeeId, String requestId) {
 		
-		String sql = "select * from CMMMT_AGENT"
+		String sql = "select * from WWFMT_AGENT"
 				+ " where CID = ?"
 				+ " and SID = ?"
 				+ " and REQUEST_ID = ?";
@@ -372,7 +372,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return NtsStatement.In.split(listApprover, approverIds -> {
 			
 			String agentSidColumn = "AGENT_SID" + agentType;
-			String sql = "select * from CMMMT_AGENT"
+			String sql = "select * from WWFMT_AGENT"
 					+ " where CID = ?"
 					+ " and " + agentSidColumn + " in (" + NtsStatement.In.createParamsString(approverIds) + ")"
 					+ " and START_DATE <= ?"

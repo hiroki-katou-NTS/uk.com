@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @AllArgsConstructor
-@Table(name = "BSYMT_EMPLOYMENT_HIST")
+@Table(name = "BSYMT_AFF_EMP_HIST")
 public class BsymtAffEmpHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

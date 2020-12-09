@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EXAC_EXE_RESULT_LOG")
+@Table(name = "OIODT_EX_AC_EXEC_LOG")
 public class OiodtExAcExecLog extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

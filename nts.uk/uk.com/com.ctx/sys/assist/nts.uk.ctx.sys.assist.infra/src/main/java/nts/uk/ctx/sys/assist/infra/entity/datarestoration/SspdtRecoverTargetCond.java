@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_RESTORATION_TARGET")
+@Table(name = "SSPDT_RECOVER_TARGET_COND")
 public class SspdtRecoverTargetCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

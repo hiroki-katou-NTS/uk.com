@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_RESULT_LOG_DELETION")
+@Table(name = "SSPDT_DELETION_RESULT_LOG")
 @NoArgsConstructor
 public class SspdtDeletionResultLog extends ContractUkJpaEntity implements Serializable {
 

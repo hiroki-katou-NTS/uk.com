@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @Entity
-@Table(name = "CMMMT_AGENT")
+@Table(name = "WWFMT_AGENT")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtAgent extends ContractUkJpaEntity implements Serializable {

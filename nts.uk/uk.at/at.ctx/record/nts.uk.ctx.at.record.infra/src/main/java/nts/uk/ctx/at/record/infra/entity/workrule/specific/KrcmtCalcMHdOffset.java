@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KRCST_HOLIDAY_PRIOR_ORDER")
+@Table(name="KRCMT_CALC_M_HD_OFFSET")
 public class KrcmtCalcMHdOffset extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

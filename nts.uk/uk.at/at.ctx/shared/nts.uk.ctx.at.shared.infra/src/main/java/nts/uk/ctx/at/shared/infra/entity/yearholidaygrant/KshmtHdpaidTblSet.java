@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_GRANT_HD_TBL_SET")
+@Table(name="KSHMT_HDPAID_TBL_SET")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtHdpaidTblSet extends ContractUkJpaEntity {

@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HD_FROM_HD")
+@Table(name = "KSHMT_CALC_D_OVD_HTOH")
 public class KshmtCalcDOvdHtoh extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCST_MON_FLEX_AGGR_SET")
+@Table(name = "KRCMT_CALC_M_FLEX_BAK")
 @NoArgsConstructor
 public class KrcmtCalcMFlexBak extends ContractUkJpaEntity implements Serializable {
 

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_FIXED_STAMP_REFLECT")
+@Table(name = "KSHMT_WT_FIX_STMP_REF_TS")
 public class KshmtWtFixStmpRefTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "BSHMT_SCHILD_CARE_FRAME")
+@Table(name = "KSHMT_SHORTTIME_TS")
 public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -46,9 +46,9 @@ public class KshmtShorttimeTs extends ContractUkJpaEntity implements Serializabl
 	/** The bshmt worktime hist item. */
 	@ManyToOne
 	@JoinColumns({
-			@JoinColumn(name = "SID", referencedColumnName = "BSHMT_WORKTIME_HIST_ITEM.SID", insertable = false,
+			@JoinColumn(name = "SID", referencedColumnName = "KSHMT_SHORTTIME_HIST_ITEM.SID", insertable = false,
 				updatable = false),
-			@JoinColumn(name = "HIST_ID", referencedColumnName = "BSHMT_WORKTIME_HIST_ITEM.HIST_ID", insertable = false,
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "KSHMT_SHORTTIME_HIST_ITEM.HIST_ID", insertable = false,
 				updatable = false) })
 	private KshmtShorttimeHistItem bshmtWorktimeHistItem;
 	

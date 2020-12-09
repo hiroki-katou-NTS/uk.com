@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class SevmtUseContactSya.
  */
 @Entity
-@Table(name = "SEVST_USE_CONTACT_SET")
+@Table(name = "SEVMT_USE_CONTACT_SYA")
 @Getter
 @Setter
 public class SevmtUseContactSya extends ContractUkJpaEntity implements Serializable {

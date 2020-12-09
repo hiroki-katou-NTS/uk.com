@@ -36,7 +36,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKING_COND")
+@Table(name = "KSHMT_WORKCOND_HIST")
 public class KshmtWorkcondHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

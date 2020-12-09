@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KSHST_AGG_LABOR_SET")
+@Table(name="KSHMT_DEFORMED_LABOR_MNG")
 public class KshmtDeformedLaborMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

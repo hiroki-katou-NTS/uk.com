@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCDT_LOG_SET_OUTPUT_ITEM")
+@Table(name = "SRCMT_DISPLAY_OUTPUT_ITEM")
 @NoArgsConstructor
 public class SrcmtDisplayOutputItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class BsymtAffClassHist.
  */
 @Entity
-@Table(name = "BSYMT_AFF_CLASS_HISTORY")
+@Table(name = "BSYMT_AFF_CLASS_HIST")
 public class BsymtAffClassHist extends ContractUkJpaEntity{
 
 	/** The history id. */

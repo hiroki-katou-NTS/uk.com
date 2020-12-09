@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name="KSHST_MANAGE_ENTRY_EXIT")
+@Table(name="KSHMT_GATE_MNG")
 public class KshmtGateMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

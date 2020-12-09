@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="SGWMT_OTHER_SYS_ACC")
+@Table(name="SGWMT_SSO_OTHER_SYS_ACC")
 public class SgwmtSsoOtherSysAcc extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KMNMT_PREMIUM_ITEM")
+@Table(name="KSCMT_PREMIUM_ITEM")
 public class KscmtPremiumItem extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KmnmpPremiumItemPK kmnmpPremiumItemPK;

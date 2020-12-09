@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KACMT_EMPLOYMENT_ROLE")
+@Table(name = "KACMT_ROLE_ATTENDANCE")
 @Setter
 public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializable {
 

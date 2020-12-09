@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_PRED_TIME_SET")
+@Table(name = "KSHMT_WT_COM_PRED_TIME")
 @AllArgsConstructor
 public class KshmtWtComPredTime extends ContractUkJpaEntity implements Serializable {
 

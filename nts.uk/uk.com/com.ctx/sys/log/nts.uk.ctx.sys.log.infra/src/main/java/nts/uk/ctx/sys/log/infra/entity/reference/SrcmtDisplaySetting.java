@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author: hiep.th
  */
 @Entity
-@Table(name = "SRCDT_LOG_DISPLAY_SETTING")
+@Table(name = "SRCMT_DISPLAY_SETTING")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcmtDisplaySetting extends ContractUkJpaEntity implements Serializable {

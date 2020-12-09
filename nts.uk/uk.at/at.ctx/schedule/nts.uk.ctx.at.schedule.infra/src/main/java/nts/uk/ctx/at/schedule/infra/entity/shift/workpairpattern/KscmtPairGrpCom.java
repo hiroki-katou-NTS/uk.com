@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_COM_PATTERN")
+@Table(name = "KSCMT_PAIR_GRP_COM")
 public class KscmtPairGrpCom extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,7 +43,7 @@ public class KscmtPairGrpCom extends ContractUkJpaEntity implements Serializable
 	public String note;
 
 	@OneToMany(targetEntity=KscmtPairPatrnCom.class, cascade = CascadeType.ALL, mappedBy = "kscmtComPattern", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "KSCMT_COM_PATTERN_ITEM")
+	@JoinTable(name = "KSCMT_PAIR_PATRN_COM")
 	public List<KscmtPairPatrnCom> kscmtComPatternItem;
 
 	@Override

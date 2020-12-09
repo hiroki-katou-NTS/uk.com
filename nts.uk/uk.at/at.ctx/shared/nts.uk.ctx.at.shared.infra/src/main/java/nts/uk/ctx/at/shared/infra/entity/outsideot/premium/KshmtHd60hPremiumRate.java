@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_PREMIUM_EXT60H_RATE")
+@Table(name = "KSHMT_HD60H_PREMIUM_RATE")
 public class KshmtHd60hPremiumRate implements Serializable {
     
     /** The Constant serialVersionUID. */

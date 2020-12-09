@@ -167,7 +167,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		BshmtWorktimeHistPK key = new BshmtWorktimeHistPK(sid, histItem.identifier());
 		Optional<KshmtShorttimeHist> existItem = this.queryProxy().find(key, KshmtShorttimeHist.class);
 		if (!existItem.isPresent()){
-			throw new RuntimeException("Invalid BshmtWorktimeHist");
+			throw new RuntimeException("Invalid KshmtShorttimeHist");
 		}
 		updateEntity(histItem, existItem.get());
 		this.commandProxy().update(existItem.get());
@@ -340,7 +340,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	public List<ShortWorkTimeHistory> getBySidsAndCid(String cid, List<String> sids) {
 		List<ShortWorkTimeHistory> shortWorkTimeHistory = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+			String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
 					+" ORDER BY SID, STR_YMD";
 			
 

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_SELECTION_ITEM")
+@Table(name = "PPEMT_SELECTION_DEF")
 public class PpemtSelectionDef extends ContractUkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;

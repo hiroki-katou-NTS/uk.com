@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KWKDT_STAMP_CARD")
+@Table(name = "KRCMT_STAMP_CARD")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KrcmtStampCard extends ContractUkJpaEntity implements Serializable {

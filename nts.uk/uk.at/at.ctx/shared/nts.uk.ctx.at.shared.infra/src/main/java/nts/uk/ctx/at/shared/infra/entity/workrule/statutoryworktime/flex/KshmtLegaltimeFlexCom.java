@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KSHST_FLX_GET_PRWK_TIME")
+@Table(name = "KSHMT_LEGALTIME_FLEX_COM")
 @NoArgsConstructor
 public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serializable {
 

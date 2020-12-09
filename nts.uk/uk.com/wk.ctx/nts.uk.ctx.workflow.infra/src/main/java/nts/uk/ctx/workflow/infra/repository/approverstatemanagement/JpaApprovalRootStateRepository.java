@@ -290,17 +290,17 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				"phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, approver.APPROVER_ORDER, " +
 				"approver.APPROVER_ID, approver.APPROVAL_ATR, approver.CONFIRM_ATR, approver.AGENT_ID, " +
 				"approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE, approver.APPROVER_LIST_ORDER " +
-				"FROM WWFDT_APPROVAL_ROOT_STATE root " +
-				"LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID " +
-				"LEFT JOIN WWFDT_APPROVER_STATE approver ON phase.ROOT_STATE_ID = approver.ROOT_STATE_ID AND phase.PHASE_ORDER = approver.PHASE_ORDER " +
+				"FROM WWFDT_APP_INST_ROUTE root " +
+				"LEFT JOIN WWFDT_APP_INST_PHASE phase ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID " +
+				"LEFT JOIN WWFDT_APP_INST_APPROVER approver ON phase.ROOT_STATE_ID = approver.ROOT_STATE_ID AND phase.PHASE_ORDER = approver.PHASE_ORDER " +
 				"WHERE root.ROOT_STATE_ID IN " +
 				"( " +
 				"	SELECT DISTINCT c.ROOT_STATE_ID FROM " +
 				"		( " +
-				"		SELECT a.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE a WHERE a.APPROVER_ID = 'approverID' " +
+				"		SELECT a.ROOT_STATE_ID FROM WWFDT_APP_INST_APPROVER a WHERE a.APPROVER_ID = 'approverID' " +
 				"		UNION ALL " +
-				"		SELECT b.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE b WHERE b.APPROVER_ID IN " +
-				"		( SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate') " +
+				"		SELECT b.ROOT_STATE_ID FROM WWFDT_APP_INST_APPROVER b WHERE b.APPROVER_ID IN " +
+				"		( SELECT c.SID FROM WWFMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate') " +
 				"	) c " +
 				"	WHERE c.ROOT_STATE_ID IN (rootStateIDs) " +
 				") " ;
@@ -819,7 +819,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		GeneralDate baseDate = GeneralDate.today();
 		String SELECT = "SELECT COUNT (*) FROM ( "
 				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APP_INST_APPROVER APS " + "INNER JOIN " + "WWFDT_APPROVAL_FRAME AF "
+				+ "FROM WWFDT_APP_INST_APPROVER APS " + "INNER JOIN " + "WWFDT_APP_INST_FRAME AF "
 				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
 				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
 				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "

@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SRCDT_DATA_HISTORY_LOG")
+@Table(name = "SRCDT_PER_HISTORY_DATA")
 public class SrcdtPerHistoryData extends ContractUkJpaEntity {
 
 	@Column(name = "CID")

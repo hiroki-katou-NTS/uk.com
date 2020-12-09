@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KRCMT_PAYOUT_MANA_DATA")
+@Table(name="KRCDT_PAYOUT_MNG")
 public class KrcdtPayoutMng extends ContractUkJpaEntity{
 	
 	@Id

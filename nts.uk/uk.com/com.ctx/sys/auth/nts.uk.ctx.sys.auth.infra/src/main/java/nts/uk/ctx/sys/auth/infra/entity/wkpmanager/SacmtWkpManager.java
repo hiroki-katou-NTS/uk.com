@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_WORKPLACE_MANAGER")
+@Table(name = "SACMT_WKP_MANAGER")
 public class SacmtWkpManager extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

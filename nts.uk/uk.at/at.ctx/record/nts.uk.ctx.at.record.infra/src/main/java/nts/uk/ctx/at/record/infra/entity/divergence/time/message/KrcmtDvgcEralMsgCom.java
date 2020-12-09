@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="KRCST_DVGC_TIME_EA_MSG")
+@Table(name="KRCMT_DVGC_ERAL_MSG_COM")
 public class KrcmtDvgcEralMsgCom extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_YEAR_HD_GRANT_TBL")
+@Table(name="KSHMT_HDPAID_GRANT_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstGrantHdTbl extends ContractUkJpaEntity {

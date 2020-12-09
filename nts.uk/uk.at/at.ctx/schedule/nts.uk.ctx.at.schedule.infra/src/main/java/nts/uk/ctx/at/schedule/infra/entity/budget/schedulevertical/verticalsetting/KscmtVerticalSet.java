@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_GEN_VERT_SET")
+@Table(name = "KSCMT_VERTICAL_SET")
 public class KscmtVerticalSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

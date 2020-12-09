@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_EXTERNAL_BUDGET")
+@Table(name = "KSCMT_EXT_BUDGET")
 public class KscmtExtBudget extends ContractUkJpaEntity{
 
 	@EmbeddedId

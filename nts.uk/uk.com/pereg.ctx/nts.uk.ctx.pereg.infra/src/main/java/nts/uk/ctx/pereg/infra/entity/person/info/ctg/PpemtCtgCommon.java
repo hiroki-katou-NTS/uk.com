@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_PER_INFO_CTG_CM")
+@Table(name = "PPEMT_CTG_COMMON")
 public class PpemtCtgCommon extends UkJpaEntity implements Serializable {
 	
     private static final long serialVersionUID = 1L;

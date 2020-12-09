@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name = "SRCDT_DATA_CORRECTION_LOG")
+@Table(name = "SRCDT_DATA_CORRECTION")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SrcdtDataCorrection extends ContractUkJpaEntity {

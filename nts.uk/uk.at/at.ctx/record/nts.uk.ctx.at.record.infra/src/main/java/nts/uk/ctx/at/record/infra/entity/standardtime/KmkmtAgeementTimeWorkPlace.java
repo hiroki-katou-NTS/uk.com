@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KMKMT_AGREEMENTTIME_WPL")
+@Table(name = "KRCMT_36AGR_TIME_WKP")
 public class KmkmtAgeementTimeWorkPlace extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

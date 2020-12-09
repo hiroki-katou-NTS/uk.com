@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KSCMT_WORKPLACE_WORK_SET")
+@Table(name = "KSCMT_BASIC_WORK_WKP")
 public class KscmtBasicWorkWkp extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

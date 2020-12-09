@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_DATA_RECOVERY_MNG")
+@Table(name = "SSPTT_RECOVERY_MNG")
 public class SspttRecoveryMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

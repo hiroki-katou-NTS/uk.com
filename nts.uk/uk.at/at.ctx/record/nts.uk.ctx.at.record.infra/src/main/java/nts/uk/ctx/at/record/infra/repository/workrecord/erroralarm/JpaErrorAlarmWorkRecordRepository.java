@@ -517,35 +517,35 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 
 	private String buildJDBCSelectErAlBusinessType() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_BUSINESS_TYPE", "BUSINESS_TYPE_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_BUSINESS_TYPE", "BUSINESS_TYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlJobTittle() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_JOB_TITLE", "JOB_ID");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_JOB_TITLE", "JOB_ID");
 	}
 
 	private String buildJDBCSelectErAlEmployment() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_EMPLOYMENT", "EMPTCD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_EMPLOYMENT", "EMPTCD");
 	}
 
 	private String buildJDBCSelectErAlCLassification() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_CLASS", "CLSCD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_CLASS", "CLSCD");
 	}
 
 	private String buildJDBCSelectErAlWtPlan() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WT_PLAN", "WORKTYPE_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTP_PLAN", "WORKTYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlWtActual() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WT_ACTUAL", "WORKTYPE_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTP_ACTUAL", "WORKTYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlWhPlan() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WH_PLAN", "WORK_TIME_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTM_PLAN", "WORK_TIME_CD");
 	}
 
 	private String buildJDBCSelectErAlWhActual() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WH_ACTUAL", "WORK_TIME_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTM_ACTUAL", "WORK_TIME_CD");
 	}
 
 	@SneakyThrows

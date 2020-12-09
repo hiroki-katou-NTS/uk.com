@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EXECUTION_LOG")
+@Table(name = "KRCDT_EXEC_LOG")
 public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class KrcdtExecLog extends ContractUkJpaEntity implements Serializable {
 //	public KrcdtExec empexecutionlog;
 	
 	@OneToOne(mappedBy="executionlog", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO")
+	@JoinTable(name = "KRCMT_EXEC_CASE_DETAIL")
 	public KrcdtCalExeSetInfor calExeSetInfor;
 	
 	public KrcdtExecLog(KrcdtExecutionLogPK krcdtExecutionLogPK, int existenceError,

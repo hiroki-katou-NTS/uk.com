@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SRCDT_CTG_CORRECTION_LOG")
+@Table(name = "SRCDT_PER_CTG_CORRECTION")
 public class SrcdtPerCtgCorrection extends ContractUkJpaEntity {
 
 	@Column(name = "CID")

@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_GRANT_DATE_TBL")
+@Table(name = "KSHMT_HDSP_GRANT_TBL")
 public class KshmtHdspGrantTbl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */

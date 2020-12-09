@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_FSTAMP_REFLECT_TIME")
+@Table(name = "KSHMT_WT_FLO_STMP_REF2_TS")
 public class KshmtWtFloStmpRef2Ts extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

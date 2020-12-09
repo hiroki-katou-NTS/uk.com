@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 休日出勤申請
  */
 @Entity
-@Table(name = "KRQDT_APP_HOLIDAY_WORK")
+@Table(name = "KRQDT_APP_HD_WORK")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -119,7 +119,7 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable 
     private Integer holidayShiftNight;
     
     @OneToMany(targetEntity=KrqdtAppHdWorkTime.class, mappedBy="appHolidayWork", cascade = CascadeType.ALL)
-    @JoinTable(name = "KRQDT_HOLIDAY_WORK_INPUT")
+    @JoinTable(name = "KRQDT_APP_HD_WORK_TIME")
 	public List<KrqdtAppHdWorkTime> holidayWorkInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL)

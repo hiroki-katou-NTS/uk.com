@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_MONTHLY_CORRECT_CON")
+@Table(name = "KRCMT_ERAL_MON_SET")
 public class KrcmtEralMonSet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

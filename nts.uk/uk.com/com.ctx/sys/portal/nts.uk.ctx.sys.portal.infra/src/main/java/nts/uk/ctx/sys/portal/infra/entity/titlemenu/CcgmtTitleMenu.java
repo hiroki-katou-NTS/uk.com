@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * author hieult
  */
 @Entity
-@Table(name = "CCGMT_TITLEMENU")
+@Table(name = "SPTMT_TITLEMENU")
 @AllArgsConstructor
 @NoArgsConstructor
 public class CcgmtTitleMenu extends ContractUkJpaEntity implements Serializable {

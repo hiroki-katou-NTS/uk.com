@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_DEFAULT_ROLE_SET")
+@Table(name = "SACMT_ROLESET_DEFAULT")
 public class SacmtRolesetDefault extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

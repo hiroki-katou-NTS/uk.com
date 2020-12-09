@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KSHST_FLEX_WORK_SETTING")
+@Table(name="KSHMT_FLEX_MNG")
 public class KshmtFlexMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

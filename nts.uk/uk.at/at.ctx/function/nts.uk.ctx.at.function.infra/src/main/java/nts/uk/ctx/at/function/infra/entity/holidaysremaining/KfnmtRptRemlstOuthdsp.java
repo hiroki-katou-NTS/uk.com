@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_SPECIAL_HOLIDAY")
+@Table(name = "KFNMT_RPT_REMLST_OUTHDSP")
 public class KfnmtRptRemlstOuthdsp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

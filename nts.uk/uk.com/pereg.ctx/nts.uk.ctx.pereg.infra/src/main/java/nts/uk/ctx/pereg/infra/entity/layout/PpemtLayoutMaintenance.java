@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_MAINTENANCE_LAYOUT")
+@Table(name = "PPEMT_LAYOUT_MAINTENANCE")
 @Entity
 public class PpemtLayoutMaintenance extends ContractUkJpaEntity implements Serializable {
 

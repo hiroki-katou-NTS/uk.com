@@ -43,7 +43,7 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PROC_EXEC")
+@Table(name = "KFNMT_AUTOEXEC")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serializable {
@@ -57,11 +57,11 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serial
 	public String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
 	public KfnmtAutoexecScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
 	public KfnmtProcessExecutionSetting execSetting;
 
 	/* 実行種別 */

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SGWMT_URL_TASK_INCRE")
+@Table(name = "SGWDT_URL_TASK_INCRE")
 public class SgwdtUrlTaskIncre extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

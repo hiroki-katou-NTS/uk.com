@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CD_CONVERT_DETAILS")
+@Table(name = "OIOMT_EX_AC_CD_CONV_DTL")
 public class OiomtExAcCdConvDtl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

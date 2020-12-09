@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_FRAME_INSTANCE")
+@Table(name="WWFDT_INST_FRAME")
 public class WwfdtInstFrame extends ContractUkJpaEntity {
 	
 	@EmbeddedId
@@ -42,7 +42,7 @@ public class WwfdtInstFrame extends ContractUkJpaEntity {
 	private WwfdtInstPhase wwfdtAppPhaseInstance;
 	
 	@OneToMany(targetEntity=WwfdtInstApprove.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppFrameInstance", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_APPROVE_INSTANCE")
+	@JoinTable(name = "WWFDT_INST_APPROVE")
 	public List<WwfdtInstApprove> listWwfdtAppApproveInstance;
 
 	@Override

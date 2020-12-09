@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALARM_PATTERN_SET")
+@Table(name = "KFNMT_ALST_PTN")
 public class KfnmtAlstPtn extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -40,11 +40,11 @@ public class KfnmtAlstPtn extends ContractUkJpaEntity implements Serializable {
 	public String alarmPatternName;
 
 	@OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_CHECK_CONDITION")
+	@JoinTable(name = "KFNMT_ALST_PTN_DEFTM")
 	public List<KfnmtAlstPtnDeftm> checkConList;
 
 	@OneToOne(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALARM_PER_SET")
+	@JoinTable(name = "KFNMT_ALST_PTN_EXCPMT")
 	public KfnmtAlstPtnExcpmt alarmPerSet;
 
 	@Override

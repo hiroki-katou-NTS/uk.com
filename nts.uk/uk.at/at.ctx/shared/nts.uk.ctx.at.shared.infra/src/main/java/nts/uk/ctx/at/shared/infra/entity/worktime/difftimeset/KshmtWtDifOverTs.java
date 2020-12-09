@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_DT_OT_TIME_SET")
+@Table(name = "KSHMT_WT_DIF_OVER_TS")
 public class KshmtWtDifOverTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

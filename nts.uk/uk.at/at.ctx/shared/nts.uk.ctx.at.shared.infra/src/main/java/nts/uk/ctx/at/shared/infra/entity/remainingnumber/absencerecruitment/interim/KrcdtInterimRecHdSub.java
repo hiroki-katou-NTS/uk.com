@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_INTERIM_REC_ABS")
+@Table(name = "KRCDT_INTERIM_REC_HD_SUB")
 public class KrcdtInterimRecHdSub extends ContractUkJpaEntity implements Serializable{
 	/**	 */
 	@EmbeddedId

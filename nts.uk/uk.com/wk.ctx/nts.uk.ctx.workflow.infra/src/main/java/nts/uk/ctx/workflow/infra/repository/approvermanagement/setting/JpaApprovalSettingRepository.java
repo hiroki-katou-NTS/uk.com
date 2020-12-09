@@ -82,8 +82,8 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 
 	@Override
 	public void updateForUnit(ApprovalSetting appro) {
-		WwfstApprovalSetting entity = toEntity(appro);
-		WwfstApprovalSetting entityUpdate = this.queryProxy().find(entity.companyId, WwfstApprovalSetting.class).get();
+		WwfmtApprovalSetting entity = toEntity(appro);
+		WwfmtApprovalSetting entityUpdate = this.queryProxy().find(entity.companyId, WwfmtApprovalSetting.class).get();
 		entityUpdate.cmpUnitSet = entity.cmpUnitSet;
 		entityUpdate.wkpUnitSet = entity.wkpUnitSet;
 		entityUpdate.syaUnitSet = entity.syaUnitSet;

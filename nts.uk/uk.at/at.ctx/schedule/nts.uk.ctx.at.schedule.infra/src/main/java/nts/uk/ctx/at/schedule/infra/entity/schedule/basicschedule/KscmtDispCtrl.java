@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SCHE_DISP_CONTROL")
+@Table(name = "KSCMT_DISP_CTRL")
 public class KscmtDispCtrl extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

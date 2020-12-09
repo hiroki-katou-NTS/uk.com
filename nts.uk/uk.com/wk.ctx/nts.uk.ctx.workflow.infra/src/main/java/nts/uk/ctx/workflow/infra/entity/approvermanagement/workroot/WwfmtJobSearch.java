@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "WWFST_JOBTITLE_SEARCH_SET")
+@Table(name = "WWFMT_JOB_SEARCH")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfmtJobSearch  extends ContractUkJpaEntity implements Serializable{

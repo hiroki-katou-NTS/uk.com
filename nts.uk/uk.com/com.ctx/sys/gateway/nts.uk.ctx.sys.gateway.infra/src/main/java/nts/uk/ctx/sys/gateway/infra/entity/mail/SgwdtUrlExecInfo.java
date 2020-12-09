@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SGWMT_URL_EXEC_INFO")
+@Table(name = "SGWDT_URL_EXEC_INFO")
 public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -91,7 +91,7 @@ public class SgwdtUrlExecInfo extends ContractUkJpaEntity implements Serializabl
         return urlExecInfoPk;
     }
     @OneToMany(targetEntity=SgwdtUrlTaskIncre.class, mappedBy="urlExecInfo", cascade = CascadeType.ALL)
-    @JoinTable(name = "SGWMT_URL_TASK_INCRE")
+    @JoinTable(name = "SGWDT_URL_TASK_INCRE")
 	public List<SgwdtUrlTaskIncre> taskIncrement;
     
     public UrlExecInfo toDomain() {

@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_STD_ACCEPT_COND_SET")
+@Table(name = "OIOMT_EX_AC_COND")
 public class OiomtExAcCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

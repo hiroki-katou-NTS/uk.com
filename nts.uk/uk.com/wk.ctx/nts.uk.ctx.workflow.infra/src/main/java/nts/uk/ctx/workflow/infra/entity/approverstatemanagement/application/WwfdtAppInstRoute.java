@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APPROVAL_ROOT_STATE")
+@Table(name="WWFDT_APP_INST_ROUTE")
 @Builder
 public class WwfdtAppInstRoute extends ContractUkJpaEntity {
 	
@@ -42,7 +42,7 @@ public class WwfdtAppInstRoute extends ContractUkJpaEntity {
 	public GeneralDate recordDate;
 	
 	@OneToMany(targetEntity=WwfdtApprovalPhaseState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootState", orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinTable(name = "WWFDT_APPROVAL_PHASE_ST")
+	@JoinTable(name = "WWFDT_APP_INST_PHASE")
 	public List<WwfdtApprovalPhaseState> listWwfdtPhase;
 
 	@Override

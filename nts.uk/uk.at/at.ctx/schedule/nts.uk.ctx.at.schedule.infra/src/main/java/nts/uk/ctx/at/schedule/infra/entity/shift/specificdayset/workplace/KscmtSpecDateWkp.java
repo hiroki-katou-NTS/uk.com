@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSMMT_WP_SPEC_DATE_SET")
+@Table(name = "KSCMT_SPEC_DATE_WKP")
 public class KscmtSpecDateWkp extends ContractUkJpaEntity implements Serializable {
 
 

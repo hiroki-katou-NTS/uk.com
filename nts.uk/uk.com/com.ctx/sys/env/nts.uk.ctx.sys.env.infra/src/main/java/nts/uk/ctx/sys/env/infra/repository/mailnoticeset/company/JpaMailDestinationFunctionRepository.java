@@ -123,7 +123,7 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 
 		List<SevmtMailDestinFunc> listSevstMailDestinFunc;
 
-		String sql = "select * from SEVST_MAIL_DESTIN_FUNC"
+		String sql = "select * from SEVMT_MAIL_DESTIN_FUNC"
 				+ " where CID = ?"
 				+ " and FUNCTION_ID = ?"
 				+ " and SEND_SET = ?";

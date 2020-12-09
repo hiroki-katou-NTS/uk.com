@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KMLDT_PREMIUM_ATTENDANCE")
+@Table(name="KSCMT_PER_COST_PREMIUM")
 public class KscmtPerCostPremium extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;

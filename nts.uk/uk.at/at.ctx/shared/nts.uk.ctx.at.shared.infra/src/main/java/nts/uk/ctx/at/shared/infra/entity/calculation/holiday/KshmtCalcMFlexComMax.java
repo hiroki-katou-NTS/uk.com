@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="KSHST_INSUFF_FLEX_MNT")
+@Table(name="KSHMT_CALC_M_FLEX_COM_MAX")
 public class KshmtCalcMFlexComMax extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

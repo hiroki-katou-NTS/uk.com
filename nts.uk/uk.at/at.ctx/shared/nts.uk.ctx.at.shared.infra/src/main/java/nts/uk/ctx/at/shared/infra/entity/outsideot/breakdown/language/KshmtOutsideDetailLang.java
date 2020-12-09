@@ -23,7 +23,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OUTSIDE_OT_BRD_LANG")
+@Table(name = "KSHMT_OUTSIDE_DETAIL_LANG")
 public class KshmtOutsideDetailLang extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

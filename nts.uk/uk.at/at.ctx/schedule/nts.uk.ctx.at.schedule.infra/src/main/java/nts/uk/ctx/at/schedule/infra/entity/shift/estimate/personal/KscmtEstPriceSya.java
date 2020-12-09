@@ -35,7 +35,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_PRICE_PER_SET")
+@Table(name = "KSCMT_EST_PRICE_SYA")
 public class KscmtEstPriceSya extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

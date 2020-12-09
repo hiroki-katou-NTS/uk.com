@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  *
  */
 @Entity
-@Table(name = "KRQDT_APP_LATE_OR_LEAVE")
+@Table(name = "KRQDT_APP_LATE_EARLY")
 @Getter
 @Setter
 @AllArgsConstructor

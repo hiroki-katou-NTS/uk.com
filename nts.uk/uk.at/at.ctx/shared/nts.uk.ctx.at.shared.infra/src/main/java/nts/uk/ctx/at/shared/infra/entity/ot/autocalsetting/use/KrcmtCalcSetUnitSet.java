@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Getter
 @Entity
-@Table(name = "KSHMT_AUTO_USE_UNIT_SET")
+@Table(name = "KRCMT_CALC_SET_UNIT_SET")
 public class KrcmtCalcSetUnitSet extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */

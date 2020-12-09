@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCST_EST_ALARM_COLOR")
+@Table(name = "KSCMT_EST_ALARM_COLOR")
 public class KscmtEstAlarmColor extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALEX_PROCESS_STATUS")
+@Table(name = "KFNDT_ALST_EXCSTATUS")
 public class KfnmtAlarmListExtraProcessStatus  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

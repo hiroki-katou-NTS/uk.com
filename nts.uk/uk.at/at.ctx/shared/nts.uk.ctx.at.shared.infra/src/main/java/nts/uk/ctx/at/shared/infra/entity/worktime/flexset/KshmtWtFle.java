@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @Entity
-@Table(name = "KSHMT_FLEX_WORK_SET")
+@Table(name = "KSHMT_WT_FLE")
 public class KshmtWtFle extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

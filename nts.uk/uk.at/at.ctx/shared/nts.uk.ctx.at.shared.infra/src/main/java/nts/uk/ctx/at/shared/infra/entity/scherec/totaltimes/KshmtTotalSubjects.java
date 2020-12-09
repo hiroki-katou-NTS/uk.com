@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_TOTAL_SUBJECTS")
+@Table(name = "KSHMT_TOTAL_SUBJECTS")
 public class KshmtTotalSubjects extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

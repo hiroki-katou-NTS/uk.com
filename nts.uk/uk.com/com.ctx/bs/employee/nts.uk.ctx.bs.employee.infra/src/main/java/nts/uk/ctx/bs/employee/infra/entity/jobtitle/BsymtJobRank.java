@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "BSYMT_JOB_SEQ_MASTER")
+@Table(name = "BSYMT_JOB_RANK")
 public class BsymtJobRank extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */

@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KCCMT_COMPANY_START_DAY")
+@Table(name = "KSCMT_WEEKSTART_COMPANY")
 public class KscmtWeekstartCompany extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

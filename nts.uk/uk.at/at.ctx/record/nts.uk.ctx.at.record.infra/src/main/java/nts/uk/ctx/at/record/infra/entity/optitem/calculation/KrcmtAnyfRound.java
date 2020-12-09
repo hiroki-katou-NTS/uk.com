@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_FORMULA_ROUNDING")
+@Table(name = "KRCMT_ANYF_ROUND")
 public class KrcmtAnyfRound extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

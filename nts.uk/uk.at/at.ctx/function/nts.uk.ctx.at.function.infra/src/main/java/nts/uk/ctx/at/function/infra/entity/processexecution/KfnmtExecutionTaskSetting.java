@@ -42,7 +42,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_EXEC_TASK_SETTING")
+@Table(name="KFNMT_AUTOEXEC_TASK")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Serializable{

@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KRCST_WK_HOUR_LIMIT_CTRL")
+@Table(name="KRCMT_CALC_D_TOTALTIME")
 public class KrcmtCalcDTotaltime extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

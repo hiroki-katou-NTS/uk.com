@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCST_ACTUAL_LOCK")
+@Table(name = "KRCDT_ATD_ACTUAL_LOCK")
 
 public class KrcdtAtdActualLock extends ContractUkJpaEntity implements Serializable {
 	

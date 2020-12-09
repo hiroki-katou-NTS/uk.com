@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KCLMT_CLOSURE_HIST")
+@Table(name = "KSHMT_CLOSURE_HIST")
 public class KshmtClosureHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

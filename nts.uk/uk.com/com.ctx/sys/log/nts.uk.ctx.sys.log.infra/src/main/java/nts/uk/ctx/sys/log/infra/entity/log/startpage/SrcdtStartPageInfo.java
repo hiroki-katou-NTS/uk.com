@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SRCDT_START_PAGE_LOG_INFO")
+@Table(name = "SRCDT_START_PAGE_INFO")
 public class SrcdtStartPageInfo extends ContractUkJpaEntity {
 
 	@Id

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_DT_HALF_REST_TIME")
+@Table(name = "KSHMT_WT_DIF_BR_WEK_TS")
 public class KshmtWtDifBrWekTs extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

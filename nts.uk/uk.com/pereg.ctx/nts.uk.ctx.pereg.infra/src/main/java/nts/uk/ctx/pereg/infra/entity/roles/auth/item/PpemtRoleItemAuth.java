@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_PERSON_ITEM_AUTH")
+@Table(name = "PPEMT_ROLE_ITEM_AUTH")
 @Entity
 public class PpemtRoleItemAuth extends ContractUkJpaEntity implements Serializable {
 

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name="SGWMT_LOGIN_LOG")
+@Table(name="SGWDT_LOGIN_LOG")
 @Getter
 @Setter
 public class SgwdtLoginLog extends ContractUkJpaEntity implements Serializable {

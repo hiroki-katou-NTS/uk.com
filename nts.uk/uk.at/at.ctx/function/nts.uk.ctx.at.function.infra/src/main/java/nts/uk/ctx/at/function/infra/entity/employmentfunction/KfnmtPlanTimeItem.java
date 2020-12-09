@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "KFNST_PLAN_TIME_ITEM")
+@Table(name = "KFNMT_PLAN_TIME_ITEM")
 public class KfnmtPlanTimeItem extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

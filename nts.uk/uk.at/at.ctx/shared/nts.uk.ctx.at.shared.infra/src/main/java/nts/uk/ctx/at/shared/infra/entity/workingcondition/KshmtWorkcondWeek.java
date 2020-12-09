@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_PERSONAL_DAY_OF_WEEK")
+@Table(name = "KSHMT_WORKCOND_WEEK")
 public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

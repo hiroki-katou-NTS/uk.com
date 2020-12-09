@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Setter
 @Entity
-@Table(name = "KSCMT_EST_DAYS_EMP_SET")
+@Table(name = "KSCMT_EST_DAYS_EMP")
 public class KscmtEstDaysEmp extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

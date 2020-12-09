@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "KSHST_ATD_ITEM_CONTROL")
+@Table(name = "KSHMT_DAY_ATD_CTR")
 public class KshstControlOfAttendanceItems extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

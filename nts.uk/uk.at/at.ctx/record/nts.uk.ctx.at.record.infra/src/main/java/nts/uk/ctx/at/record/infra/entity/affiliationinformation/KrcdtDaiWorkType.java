@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_WORKTYPE")
+@Table(name = "KRCDT_DAY_INFO_BUS")
 public class KrcdtDaiWorkType extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

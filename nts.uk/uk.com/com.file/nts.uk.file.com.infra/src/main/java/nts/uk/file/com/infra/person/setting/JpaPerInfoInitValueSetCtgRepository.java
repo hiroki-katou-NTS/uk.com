@@ -416,7 +416,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00019' AND ctg.CATEGORY_CD = 'CS00075' AND dateset20.SPHD_CD = 21");
 
 	     //  -- CODE_NAME");
-	     exportSQL.append("  LEFT JOIN PPEMT_SELECTION_ITEM selection ON initsetitem.STRING_VAL = selection.SELECTION_ID");
+	     exportSQL.append("  LEFT JOIN PPEMT_SELECTION_DEF selection ON initsetitem.STRING_VAL = selection.SELECTION_ID");
 	     exportSQL.append("  AND itemcm.SELECTION_ITEM_REF_TYPE = 2"); 
 	     exportSQL.append(" ) TABLE_RESULT");
 	     exportSQL.append(" ORDER BY TABLE_RESULT.ROW_INDEX");

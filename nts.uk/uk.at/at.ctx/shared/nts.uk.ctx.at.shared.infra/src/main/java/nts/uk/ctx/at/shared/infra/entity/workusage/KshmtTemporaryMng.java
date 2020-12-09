@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="KSHST_TEMP_WK_USE_MANAGE")
+@Table(name="KSHMT_TEMPORARY_MNG")
 public class KshmtTemporaryMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

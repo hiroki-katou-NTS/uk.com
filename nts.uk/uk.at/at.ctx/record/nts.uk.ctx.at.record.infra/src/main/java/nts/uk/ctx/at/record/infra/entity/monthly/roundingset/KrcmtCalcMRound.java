@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCST_MON_ITEM_ROUND")
+@Table(name = "KRCMT_CALC_M_ROUND")
 @NoArgsConstructor
 public class KrcmtCalcMRound extends ContractUkJpaEntity implements Serializable {
 

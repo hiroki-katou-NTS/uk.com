@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_FIXED_COND_MONTHLY")
+@Table(name = "KRCMT_ALST_CHKMON_FIXED")
 public class KrcmtFixedExtraMon extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

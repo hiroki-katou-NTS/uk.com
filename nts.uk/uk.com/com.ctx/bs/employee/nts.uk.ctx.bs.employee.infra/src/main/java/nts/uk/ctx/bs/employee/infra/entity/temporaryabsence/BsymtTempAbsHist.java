@@ -20,7 +20,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "BSYMT_TEMP_ABS_HISTORY")
+@Table(name = "BSYMT_TEMP_ABS_HIST")
 @Getter
 public class BsymtTempAbsHist extends ContractUkJpaEntity implements Serializable {
 

@@ -124,7 +124,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 //    			.setParameter("employeeId", employeeId)
 //				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 		Optional<AffiliationInforOfDailyPerfor> data = Optional.empty();
-		String sql = "select * from KRCDT_DAI_AFFILIATION_INF"
+		String sql = "select * from KRCDT_DAY_AFF_INFO"
 				+ " where SID = ?"
 				+ " and YMD = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -252,7 +252,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAI_AFFILIATION_INF");
+		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAY_AFF_INFO");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		

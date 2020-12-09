@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGST_STANDARD_MENU")
+@Table(name = "SPTMT_STANDARD_MENU")
 public class SptmtStandardMenu extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * 

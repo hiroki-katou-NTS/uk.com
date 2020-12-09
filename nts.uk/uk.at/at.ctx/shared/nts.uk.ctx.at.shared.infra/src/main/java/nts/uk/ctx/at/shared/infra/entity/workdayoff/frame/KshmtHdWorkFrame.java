@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_WORKDAYOFF_FRAME")
+@Table(name = "KSHMT_HD_WORK_FRAME")
 public class KshmtHdWorkFrame extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */

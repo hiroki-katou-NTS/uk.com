@@ -27,7 +27,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PRO_EXE_LOG_MANAGE")
+@Table(name = "KFNDT_AUTOEXEC_MNG")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {

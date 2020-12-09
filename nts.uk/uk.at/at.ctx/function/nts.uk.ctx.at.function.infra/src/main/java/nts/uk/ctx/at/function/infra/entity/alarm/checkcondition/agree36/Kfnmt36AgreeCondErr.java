@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KFNMT_36AGREE_COND_ERR")
+@Table(name = "KFNMT_ALST_CHK_36AGR_ERAL")
 public class Kfnmt36AgreeCondErr extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

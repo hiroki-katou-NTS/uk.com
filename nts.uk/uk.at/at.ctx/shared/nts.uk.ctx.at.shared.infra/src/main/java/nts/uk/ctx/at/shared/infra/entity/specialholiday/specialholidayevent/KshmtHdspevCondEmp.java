@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_EMPLOYMENT_LIST")
+@Table(name = "KSHMT_HDSPEV_COND_EMP")
 // 雇用一覧
 public class KshmtHdspevCondEmp extends ContractUkJpaEntity implements Serializable {
 	

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 //複数月のチェック条件(該当月数)
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_MUL_MON_COND_COSP")
+@Table(name = "KRCMT_ALST_CHKMLT_UDCCRSP")
 public class KrcmtAlstChkmltUdccrsp extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

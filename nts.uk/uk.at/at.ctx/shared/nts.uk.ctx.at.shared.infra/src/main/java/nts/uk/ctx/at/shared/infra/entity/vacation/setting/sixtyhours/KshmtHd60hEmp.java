@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHST_EMP_60H_VACATION")
+@Table(name = "KSHMT_HD60H_EMP")
 public class KshmtHd60hEmp extends KshstSixtyHourVacationSetting implements Serializable {
 
 	/** The Constant serialVersionUID. */

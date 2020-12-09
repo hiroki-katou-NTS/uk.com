@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SRCDT_LOG_BASIC_INFO")
+@Table(name = "SRCDT_BASIC_INFO")
 public class SrcdtBasicInfo extends ContractUkJpaEntity {
 
 	@Id

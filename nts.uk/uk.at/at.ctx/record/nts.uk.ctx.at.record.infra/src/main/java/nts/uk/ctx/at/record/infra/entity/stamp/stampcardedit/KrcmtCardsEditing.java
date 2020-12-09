@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_EDITING_CARDS")
+@Table(name = "KRCMT_CARDS_EDITING")
 public class KrcmtCardsEditing extends ContractUkJpaEntity{
 	
 	@Id

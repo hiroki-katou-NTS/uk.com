@@ -24,32 +24,32 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCST_OT_AUTO_CAL_SET")
+@Table(name = "KRCMT_CALC_SET_OVER_TIME")
 @XmlRootElement
 @NamedQueries({
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findAll", query = "SELECT k FROM KrcmtCalcSetOverTime k"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsDate", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insDate = :insDate"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsCcd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insCcd = :insCcd"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsScd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insScd = :insScd"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsPg", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insPg = :insPg"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdDate", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updDate = :updDate"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdCcd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updCcd = :updCcd"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdScd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updScd = :updScd"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdPg", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updPg = :updPg"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByExclusVer", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.exclusVer = :exclusVer"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByOverTimeWorkId", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.overTimeWorkId = :overTimeWorkId"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyOverTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyOverTimeCalAtr = :earlyOverTimeCalAtr"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyOverTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyOverTimeLimitSet = :earlyOverTimeLimitSet"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyMidOtCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyMidOtCalAtr = :earlyMidOtCalAtr"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyMidOtLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyMidOtLimitSet = :earlyMidOtLimitSet"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalOverTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalOverTimeCalAtr = :normalOverTimeCalAtr"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalOverTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalOverTimeLimitSet = :normalOverTimeLimitSet"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalMidOtCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalMidOtCalAtr = :normalMidOtCalAtr"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalMidOtLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalMidOtLimitSet = :normalMidOtLimitSet"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalOverTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalOverTimeCalAtr = :legalOverTimeCalAtr"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalOverTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalOverTimeLimitSet = :legalOverTimeLimitSet"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalMidOtCalAtr = :legalMidOtCalAtr"),
-//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalMidOtLimitSet = :legalMidOtLimitSet")
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findAll", query = "SELECT k FROM KrcmtCalcSetOverTime k"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByInsDate", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByInsCcd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByInsScd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByInsPg", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByUpdDate", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByUpdCcd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByUpdScd", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByUpdPg", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByExclusVer", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByOverTimeWorkId", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.overTimeWorkId = :overTimeWorkId"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByEarlyOverTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyOverTimeCalAtr = :earlyOverTimeCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByEarlyOverTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyOverTimeLimitSet = :earlyOverTimeLimitSet"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByEarlyMidOtCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyMidOtCalAtr = :earlyMidOtCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByEarlyMidOtLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.earlyMidOtLimitSet = :earlyMidOtLimitSet"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByNormalOverTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalOverTimeCalAtr = :normalOverTimeCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByNormalOverTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalOverTimeLimitSet = :normalOverTimeLimitSet"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByNormalMidOtCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalMidOtCalAtr = :normalMidOtCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByNormalMidOtLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.normalMidOtLimitSet = :normalMidOtLimitSet"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByLegalOverTimeCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalOverTimeCalAtr = :legalOverTimeCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByLegalOverTimeLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalOverTimeLimitSet = :legalOverTimeLimitSet"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByLegalMidOtCalAtr", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalMidOtCalAtr = :legalMidOtCalAtr"),
+//    @NamedQuery(name = "KrcmtCalcSetOverTime.findByLegalMidOtLimitSet", query = "SELECT k FROM KrcmtCalcSetOverTime k WHERE k.legalMidOtLimitSet = :legalMidOtLimitSet")
 	})
 public class KrcmtCalcSetOverTime extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -128,13 +128,13 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("          FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
 		sql.append("                   SUBJECT,");
 		sql.append("                   CONTENT ");
-		sql.append("               FROM KRQMT_MAIL_OT_INSTRUCTION");
+		sql.append("               FROM KRQMT_MAIL_OT_INSTRUCT");
 		sql.append("               WHERE CID = ?cid) moi");
 		sql.append("               ON moi.ROW_NUMBER = clo.ROW_NUMBER");
 		sql.append("          FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
 		sql.append("                   MAIL_TITLE, ");
 		sql.append("                   MAIL_BODY");
-		sql.append("               FROM KRQST_REMAND_MAIL");
+		sql.append("               FROM KRQMT_REMAND_MAIL");
 		sql.append("               WHERE CID = ?cid) krm");
 		sql.append("               ON krm.ROW_NUMBER = clo.ROW_NUMBER");
 		sql.append("          FULL JOIN ");
@@ -375,7 +375,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("            REASON_TEMP,");
 		sql.append("            DEFAULT_FLG,");
 		sql.append("            DISPORDER");
-		sql.append("            FROM KRQST_APP_REASON");
+		sql.append("            FROM KRQMT_APP_REASON");
 		sql.append("            WHERE CID = ?cid AND APP_TYPE IN ( 0, 1, 2, 4, 6, 10)");
 		sql.append("            ) r");
 		sql.append("            ) ar");
@@ -568,7 +568,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		selectJob.append("  FROM (SELECT DISTINCT JOB_ID, JOB_CD, CID ");
 		selectJob.append("  FROM BSYMT_JOB_INFO WHERE CID = ?cid) i ");
 		selectJob.append("  RIGHT JOIN (SELECT * FROM ");
-		selectJob.append("        WWFST_JOBTITLE_SEARCH_SET");
+		selectJob.append("        WWFMT_JOB_SEARCH");
 		selectJob.append("        WHERE CID = ?cid) j ON j.CID = i.CID AND j.JOB_ID = i.JOB_ID ) k ");
 		selectJob.append("  ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");
 		selectJob.append("  ORDER BY CASE WHEN k.JOB_CD IS NULL OR w.JOB_NAME IS NULL THEN 1 ELSE 0 END ASC, k.JOB_CD ");

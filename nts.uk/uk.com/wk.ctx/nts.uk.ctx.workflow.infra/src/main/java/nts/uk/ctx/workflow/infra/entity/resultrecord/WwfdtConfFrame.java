@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_FRAME_CONFIRM")
+@Table(name="WWFDT_CONF_FRAME")
 public class WwfdtConfFrame extends ContractUkJpaEntity {
 	
 	@EmbeddedId

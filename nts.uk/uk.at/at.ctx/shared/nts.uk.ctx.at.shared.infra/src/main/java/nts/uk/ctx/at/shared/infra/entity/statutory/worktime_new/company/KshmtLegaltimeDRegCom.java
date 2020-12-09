@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstRegLa
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHST_COM_REG_LABOR_TIME")
+@Table(name = "KSHMT_LEGALTIME_D_REG_COM")
 public class KshmtLegaltimeDRegCom extends KshstRegLaborTime implements Serializable {
 
 	/** The Constant serialVersionUID. */

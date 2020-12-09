@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_CHECK_CONDITION")
+@Table(name = "KFNMT_ALST_PTN_DEFTM")
 public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -59,7 +59,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	public KfnmtAlstPtn alarmPatternSet;
 
 	@OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_CHECK_CON_ITEM")
+	@JoinTable(name = "KFNMT_ALST_PTN_CHKCND")
 	public List<KfnmtAlstPtnChkcnd> checkConItems;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -79,7 +79,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	
 	
 	@OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_EXTRACT_PER_MONTH")
+	@JoinTable(name = "KFNMT_ALST_PTN_DEFTMMON")
 	public List<KfnmtExtractPeriodMonth> listExtractPerMonth;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

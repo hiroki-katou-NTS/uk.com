@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class SgwdtLockout.
  */
 @Entity
-@Table(name="SGWMT_LOCKOUT_DATA")
+@Table(name="SGWDT_LOCKOUT")
 @Getter
 @Setter
 public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {

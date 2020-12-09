@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KWLMT_WORK_LOCATION")
+@Table(name = "KRCMT_WORK_LOCATION")
 @AllArgsConstructor
 @NoArgsConstructor
 

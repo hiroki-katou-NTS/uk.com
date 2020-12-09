@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_PREMIUM_TIME")
+@Table(name = "KRCDT_DAY_TIME_PREMIUM")
 public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -63,7 +63,7 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 	@Column(name = "PREMIUM_TIME10")
 	public int premiumTime10;
 	
-	@OneToOne(mappedBy="KrcdtDayPremiumTime", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy="KrcdtDayTimePremium", fetch = FetchType.LAZY)
 	//public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	public KrcdtDayTimeAtd krcdtDayTime;
 	

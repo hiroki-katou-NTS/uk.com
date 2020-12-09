@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MCLOSE_UPD_ERR_INF")
+@Table(name = "KRCDT_MCLOSE_ERR")
 public class KrcdtMcloseErr extends ContractUkJpaEntity {
 
 	@EmbeddedId

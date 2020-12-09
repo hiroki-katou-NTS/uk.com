@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KRCDT_TEMP_CARE_DATA")
+@Table(name = "KRCDT_INTERIM_CARE")
 public class KrcdtInterimCare extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

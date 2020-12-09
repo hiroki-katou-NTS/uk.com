@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_CLOSURE_STT_MNG")
+@Table(name = "KRCDT_CLOSURE_STS")
 public class KrcdtClosureSts extends ContractUkJpaEntity {
 
 	@EmbeddedId

@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.KshmtAutoCalSet;
 @Setter
 @Getter
 @Entity
-@Table(name = "KSHMT_AUTO_WKP_JOB_CAL")
+@Table(name = "KRCMT_CALC_SET_WKP_JOB")
 public class KrcmtCalcSetWkpJob extends KshmtAutoCalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */

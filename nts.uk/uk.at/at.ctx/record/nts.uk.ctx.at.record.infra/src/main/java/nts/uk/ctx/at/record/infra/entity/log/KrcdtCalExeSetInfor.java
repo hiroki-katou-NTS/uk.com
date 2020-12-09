@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCST_CAL_EXE_SET_INFO")
+@Table(name = "KRCMT_EXEC_CASE_DETAIL")
 public class KrcdtCalExeSetInfor extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

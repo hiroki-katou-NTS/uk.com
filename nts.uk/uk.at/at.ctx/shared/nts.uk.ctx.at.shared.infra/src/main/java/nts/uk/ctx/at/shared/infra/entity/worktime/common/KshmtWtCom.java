@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_WORKTIME_COMMON_SET")
+@Table(name = "KSHMT_WT_COM")
 public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -166,7 +166,7 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
 			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
-	private KshmtWtComGoout KshmtWorktimeGoOutSet;
+	private KshmtWtComGoout KshmtWtComGoout;
 
 	/**
 	 * Instantiates a new kshmt worktime common set.

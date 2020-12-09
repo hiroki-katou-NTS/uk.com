@@ -15,7 +15,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRQDT_APP_FOR_SPEC_LEAVE")
+@Table(name = "KRQDT_APP_HD_SP")
 @Getter
 @Setter
 @AllArgsConstructor

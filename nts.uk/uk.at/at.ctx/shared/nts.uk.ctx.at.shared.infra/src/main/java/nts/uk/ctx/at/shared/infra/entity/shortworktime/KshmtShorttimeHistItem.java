@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "BSHMT_WORKTIME_HIST_ITEM")
+@Table(name = "KSHMT_SHORTTIME_HIST_ITEM")
 public class KshmtShorttimeHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SEVST_USER_INFO_USEMETHOD")
+@Table(name = "SEVMT_USE_CONTACT_COM")
 @Getter
 @Setter
 public class SevmtUseContactCom extends ContractUkJpaEntity implements Serializable {

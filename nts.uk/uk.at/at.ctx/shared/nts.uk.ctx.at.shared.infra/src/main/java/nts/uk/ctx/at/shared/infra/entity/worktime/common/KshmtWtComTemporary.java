@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_TEMP_WORKTIME_SET")
+@Table(name = "KSHMT_WT_COM_TEMPORARY")
 public class KshmtWtComTemporary extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

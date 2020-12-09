@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_AGGR_BNSPY_TIME")
+@Table(name = "KRCDT_WEK_TIME_BONUS_PAY")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeBonusPay extends ContractUkJpaEntity implements Serializable {

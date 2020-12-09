@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCST_EST_COM_SET")
+@Table(name = "KSCMT_EST_COMMON")
 public class KscmtEstCommon extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

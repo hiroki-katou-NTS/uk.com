@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_FLEX_HA_RT_SET")
+@Table(name = "KSHMT_WT_FLE_BR_FL_WEK")
 public class KshmtWtFleBrFlWek extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

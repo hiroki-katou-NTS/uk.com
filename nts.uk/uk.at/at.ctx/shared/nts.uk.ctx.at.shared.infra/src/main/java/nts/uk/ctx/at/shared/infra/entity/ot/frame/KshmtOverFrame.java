@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OVERTIME_FRAME")
+@Table(name = "KSHMT_OVER_FRAME")
 public class KshmtOverFrame extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */

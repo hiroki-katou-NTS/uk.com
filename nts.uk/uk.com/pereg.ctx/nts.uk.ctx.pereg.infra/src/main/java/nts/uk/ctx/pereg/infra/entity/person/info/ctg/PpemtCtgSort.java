@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PPEMT_PER_INFO_CTG_ORDER")
+@Table(name = "PPEMT_CTG_SORT")
 
 public class PpemtCtgSort extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

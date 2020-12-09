@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KALMT_ANNUAL_PAID_LEAVE")
+@Table(name = "KSHMT_HDPAID_SET")
 public class KshmtHdpaidSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

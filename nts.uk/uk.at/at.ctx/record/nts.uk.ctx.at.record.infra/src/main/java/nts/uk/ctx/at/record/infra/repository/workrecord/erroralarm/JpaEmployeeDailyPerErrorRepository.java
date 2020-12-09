@@ -109,7 +109,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			return "KrcdtOtkErAl";
 		}
 		
-		return "KrcdtSyainDpErList";
+		return "KrcdtDaySyaError";
 	}
 
 	@Override

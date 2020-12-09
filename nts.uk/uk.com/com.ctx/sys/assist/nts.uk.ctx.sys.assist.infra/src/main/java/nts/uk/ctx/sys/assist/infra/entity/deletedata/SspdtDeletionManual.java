@@ -22,7 +22,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_MANUAL_SET_DELETION")
+@Table(name = "SSPDT_DELETION_MANUAL")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SspdtDeletionManual extends ContractUkJpaEntity implements Serializable {

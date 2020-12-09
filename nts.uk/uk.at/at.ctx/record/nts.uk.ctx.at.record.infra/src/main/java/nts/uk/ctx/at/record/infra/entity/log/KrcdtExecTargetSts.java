@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_EMP_EXE_TARGET_STT")
+@Table(name = "KRCDT_EXEC_TARGET_STS")
 public class KrcdtExecTargetSts extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

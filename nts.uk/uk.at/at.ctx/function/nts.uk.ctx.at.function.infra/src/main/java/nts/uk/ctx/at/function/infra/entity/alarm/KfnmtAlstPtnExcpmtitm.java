@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALARM_PER_SET_ITEM")
+@Table(name = "KFNMT_ALST_PTN_EXCPMTITM")
 public class KfnmtAlstPtnExcpmtitm extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

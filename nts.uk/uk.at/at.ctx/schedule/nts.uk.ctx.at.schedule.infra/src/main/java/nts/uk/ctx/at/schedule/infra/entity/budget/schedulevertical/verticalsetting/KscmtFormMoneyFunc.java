@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORM_MONEY_FUNC")
+@Table(name = "KSCMT_FORM_MONEY_FUNC")
 public class KscmtFormMoneyFunc extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

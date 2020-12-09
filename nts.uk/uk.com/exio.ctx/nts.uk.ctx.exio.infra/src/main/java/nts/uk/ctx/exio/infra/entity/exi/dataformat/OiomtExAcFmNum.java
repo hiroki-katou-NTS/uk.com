@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_NUM_DATA_FORMAT_SET")
+@Table(name = "OIOMT_EX_AC_FM_NUM")
 public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

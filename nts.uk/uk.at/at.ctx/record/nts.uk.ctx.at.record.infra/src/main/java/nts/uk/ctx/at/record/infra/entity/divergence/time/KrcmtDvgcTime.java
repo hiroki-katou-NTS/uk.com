@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_DVGC_TIME")
+@Table(name = "KRCMT_DVGC_TIME")
 public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

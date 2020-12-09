@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  */
 @Entity
-@Table(name="KRCCT_OTK_VACATION_CK")
-//@NamedQuery(name="KrcctOtkVacationCk.findAll", query="SELECT k FROM KrcmtOtkHdCk k")
+@Table(name="KRCMT_OTK_HD_CK")
+//@NamedQuery(name="KrcmtOtkHdCk.findAll", query="SELECT k FROM KrcmtOtkHdCk k")
 public class KrcmtOtkHdCk extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

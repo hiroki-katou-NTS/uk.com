@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  *
  */
 @Entity
-@Table(name = "PPEMT_PER_INFO_ITEM_DATA")
+@Table(name = "PPEMT_PER_DATA_ITEM")
 @AllArgsConstructor
 @NoArgsConstructor
 public class PpemtPerDataItem extends ContractUkJpaEntity {

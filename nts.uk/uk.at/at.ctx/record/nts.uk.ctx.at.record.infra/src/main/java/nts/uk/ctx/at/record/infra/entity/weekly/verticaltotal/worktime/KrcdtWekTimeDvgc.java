@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_WEK_AGGR_DIVG_TIME")
+@Table(name = "KRCDT_WEK_TIME_DVGC")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializable {

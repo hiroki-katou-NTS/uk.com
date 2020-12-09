@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "SSPDT_EMPLOYEES_DELETION")
+@Table(name = "SSPDT_DELETION_EMPLOYEES")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SspdtDeletionEmployees extends ContractUkJpaEntity implements Serializable {

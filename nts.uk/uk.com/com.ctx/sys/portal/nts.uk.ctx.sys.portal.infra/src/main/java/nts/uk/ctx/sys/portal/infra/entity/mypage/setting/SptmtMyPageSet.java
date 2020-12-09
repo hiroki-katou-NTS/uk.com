@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "CCGMT_MY_PAGE_SET")
+@Table(name = "SPTMT_MY_PAGE_SET")
 public class SptmtMyPageSet extends ContractUkJpaEntity {
 
 	@Id
