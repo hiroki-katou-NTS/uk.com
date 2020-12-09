@@ -2379,7 +2379,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 			// ※15-3 = ×　AND　
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
-			let c18_1 = true;
+			let c18_1 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak == NotUseAtr.USE;
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
@@ -2403,17 +2403,58 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			visibleModel.c29(c29);
 
 			// 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
-			let c30_1 = true;
+			let c30_1 = false;
+			// ※16 = ○　AND																											
+			// 「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定内休出 があるの場合																											
+			let c30_2 = false;
+			// ※16 = ○　AND																											
+			// 「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定外休出 があるの場合																											
+			let c30_3 = false;
+			
+			let c30_4 = false;
+			
+			if (!_.isNil(self.dataSource.calculationResultOp)) {
+				if (!_.isEmpty(self.dataSource.calculationResultOp.applicationTimes)) {
+					let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].applicationTime, (i: OvertimeApplicationSetting) => i.attendanceType == AttendanceType.BREAKTIME);
+					if (!_.isNil(result)) {
+						c30_1 = true;
+					}
+					
+					if (!_.isNil(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight)) {
+						if (!_.isEmpty(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes)) {
+							
+							{	
+								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+								if (!_.isNil(result)) {
+									c30_2 = true;
+								}
+							}
+							
+							{	
+								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+								if (!_.isNil(result)) {
+									c30_3 = true;
+								}
+							}
+							
+							{	
+								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+								if (!_.isNil(result)) {
+									c30_4 = true;
+								}
+							}
+						}
+					}
+					
+				}
+				
+				
+			}
 			visibleModel.c30_1(c30_1);
-
-			let c30_2 = true;
 			visibleModel.c30_2(c30_2);
-
-			let c30_3 = true;
 			visibleModel.c30_3(c30_3);
-
-			let c30_4 = true;
 			visibleModel.c30_4(c30_4);
+
 
 			// let c30 = c30_1 || c30_2 || c30_3 || c30_4;
 			// visibleModel.c30(c30);
