@@ -39,17 +39,17 @@ public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSe
 	 */
 	@Override
 	public void setTotalRoundingSet(TotalRoundingSet set) {
-		if (this.entity.getKshmtWorktimeGoOutSet() == null) {			
+		if (this.entity.getKshmtWtComGoout() == null) {			
 			KshmtWorktimeGoOutSetPK pk = new KshmtWorktimeGoOutSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 			KshmtWtComGoout entity = new KshmtWtComGoout();
 			entity.setKshmtWorktimeGoOutSetPK(pk);
-			this.entity.setKshmtWorktimeGoOutSet(entity);
+			this.entity.setKshmtWtComGoout(entity);
 		}
-		this.entity.getKshmtWorktimeGoOutSet().setRoundingSameFrame(set.getSetSameFrameRounding().value);
-		this.entity.getKshmtWorktimeGoOutSet().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
+		this.entity.getKshmtWtComGoout().setRoundingSameFrame(set.getSetSameFrameRounding().value);
+		this.entity.getKshmtWtComGoout().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
 	}
 
 	/*

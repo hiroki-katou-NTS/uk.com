@@ -49,7 +49,7 @@ public class PpemtPInfoItemGroup extends ContractUkJpaEntity implements Serializ
 	
 	public PpemtPInfoItemGroup copy(String companyId, IdContainer.IdGenerator groupItemIds) {
 		
-		String copiedGroupItemId = groupItemIds.generateFor(ppemtGroupItemPk.groupItemId);
+		String copiedGroupItemId = groupItemIds.generateFor(ppemtPinfoItemGroupPk.groupItemId);
 		
 		return new PpemtPInfoItemGroup(
 				new PpemtPInfoItemGroupPk(copiedGroupItemId),

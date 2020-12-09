@@ -42,7 +42,7 @@ public class PpemtCtgSort extends ContractUkJpaEntity implements Serializable {
 
 	public PpemtCtgSort copy(String targetCompanyId, IdContainer.IdsMap idsMap) {
 		
-		val pk = new PpemtCtgPK(idsMap.getFor(ppemtCtgPK.perInfoCtgId));
+		val pk = new PpemtPerInfoCtgPK(idsMap.getFor(ppemtPerInfoCtgPK.perInfoCtgId));
 		return new PpemtCtgSort(pk, targetCompanyId, disporder);
 	}
 }

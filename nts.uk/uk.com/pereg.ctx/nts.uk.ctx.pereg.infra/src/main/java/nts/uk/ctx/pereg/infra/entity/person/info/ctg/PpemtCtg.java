@@ -57,7 +57,7 @@ public class PpemtCtg extends ContractUkJpaEntity implements Serializable {
 	 */
 	public PpemtCtg copy(String targetCompanyId, IdContainer.IdGenerator ids) {
 		
-		val pk = new PpemtCtgPK(ids.generateFor(ppemtCtgPK.perInfoCtgId));
+		val pk = new PpemtPerInfoCtgPK(ids.generateFor(ppemtPerInfoCtgPK.perInfoCtgId));
 		
 		return new PpemtCtg(
 				pk,

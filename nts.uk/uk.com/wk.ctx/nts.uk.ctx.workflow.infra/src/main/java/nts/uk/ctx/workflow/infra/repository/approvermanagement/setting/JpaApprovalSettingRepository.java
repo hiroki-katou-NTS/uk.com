@@ -47,7 +47,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	public void update(ApprovalSetting appro) {
 		WwfmtApprovalSetting entity = toEntity(appro);
 		WwfmtApprovalSetting oldEntity = this.queryProxy().find(entity.companyId, WwfmtApprovalSetting.class).get();
-		oldEntity.principalApprovalFlg = entity.principalApprovalFlg;
+		oldEntity.selfApprovalAtr = entity.selfApprovalAtr;
 		this.commandProxy().update(oldEntity);
 	}
 	/**
@@ -57,7 +57,10 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	 * @author yennth
 	 */
 	private ApprovalSetting toDomainApproval(WwfmtApprovalSetting entity){
-		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, entity.principalApprovalFlg);
+		ApproverRegisterSet approverRegsterSet = new ApproverRegisterSet(EnumAdaptor.valueOf(entity.cmpUnitSet, UseClassification.class),
+				EnumAdaptor.valueOf(entity.wkpUnitSet, UseClassification.class),
+				EnumAdaptor.valueOf(entity.syaUnitSet, UseClassification.class));
+		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, approverRegsterSet, BooleanUtils.toBoolean(entity.selfApprovalAtr));
 		return domain;
 	}
 	

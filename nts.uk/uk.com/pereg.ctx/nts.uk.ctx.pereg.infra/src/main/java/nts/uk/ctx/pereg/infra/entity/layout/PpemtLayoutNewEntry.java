@@ -52,10 +52,10 @@ public class PpemtLayoutNewEntry extends ContractUkJpaEntity implements Serializ
 	 */
 	public PpemtLayoutNewEntry copy(String targetCompanyId, IdContainer.IdGenerator layoutIds) {
 		
-		String copiedLayoutId = layoutIds.generateFor(ppemtLayoutNewEntryPk.layoutId);
+		String copiedLayoutId = layoutIds.generateFor(ppemtNewLayoutPk.layoutId);
 		
 		return new PpemtLayoutNewEntry(
-				new PpemtLayoutNewEntryPk(copiedLayoutId),
+				new PpemtNewLayoutPk(copiedLayoutId),
 				targetCompanyId,
 				layoutCode,
 				layoutName);

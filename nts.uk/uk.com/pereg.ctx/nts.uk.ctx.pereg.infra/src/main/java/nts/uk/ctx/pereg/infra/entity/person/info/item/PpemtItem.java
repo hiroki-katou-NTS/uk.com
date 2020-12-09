@@ -62,11 +62,11 @@ public class PpemtItem extends ContractUkJpaEntity implements Serializable {
 	 */
 	public PpemtItem copy(IdContainer.IdsMap categoryIds, IdContainer.IdGenerator itemIds) {
 		
-		String copiedItemId = itemIds.generateFor(ppemtItemPK.perInfoItemDefId);
+		String copiedItemId = itemIds.generateFor(ppemtPerInfoItemPK.perInfoItemDefId);
 		String copiedCategoryId = categoryIds.getFor(perInfoCtgId);
 		
 		return new PpemtItem(
-				new PpemtItemPK(copiedItemId),
+				new PpemtPerInfoItemPK(copiedItemId),
 				copiedCategoryId,
 				itemCd,
 				itemName,

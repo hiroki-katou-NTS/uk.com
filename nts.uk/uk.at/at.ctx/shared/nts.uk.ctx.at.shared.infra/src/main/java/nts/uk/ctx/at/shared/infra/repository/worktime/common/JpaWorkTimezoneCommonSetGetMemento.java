@@ -113,7 +113,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneGoOutSet getGoOutSet() {
-		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(this.entity.getKshmtWorktimeGoOutSet(),
+		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(this.entity.getKshmtWtComGoout(),
 				this.entity.getKshmtSpecialRoundOuts()));
 	}
 

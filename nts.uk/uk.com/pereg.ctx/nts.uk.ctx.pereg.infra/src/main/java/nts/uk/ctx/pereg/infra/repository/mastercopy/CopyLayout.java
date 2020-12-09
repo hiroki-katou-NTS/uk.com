@@ -84,7 +84,7 @@ public class CopyLayout {
 	private void deleteAll(String companyId) {
 		
 		val targetLayoutIds = findAllPpemtLayoutNewEntry(companyId).stream()
-				.map(e -> e.ppemtLayoutNewEntryPk.layoutId)
+				.map(e -> e.ppemtNewLayoutPk.layoutId)
 				.collect(toList());
 		
 		val tables = new String[] {

@@ -55,11 +55,11 @@ public class PpemtItemSort extends ContractUkJpaEntity implements Serializable {
 	 */
 	public PpemtItemSort copy(IdContainer idContainer) {
 
-		String copiedItemId = idContainer.getItemIds().getFor(ppemtItemPK.perInfoItemDefId);
+		String copiedItemId = idContainer.getItemIds().getFor(ppemtPerInfoItemPK.perInfoItemDefId);
 		String copiedCategoryId = idContainer.getCategoryIds().getFor(perInfoCtgId);
 		
 		return new PpemtItemSort(
-				new PpemtItemPK(copiedItemId),
+				new PpemtPerInfoItemPK(copiedItemId),
 				copiedCategoryId,
 				disporder,
 				displayOrder);

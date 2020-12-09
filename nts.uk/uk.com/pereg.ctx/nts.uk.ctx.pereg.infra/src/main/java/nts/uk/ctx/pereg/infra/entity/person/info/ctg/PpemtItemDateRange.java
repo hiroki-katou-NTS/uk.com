@@ -46,10 +46,10 @@ public class PpemtItemDateRange extends ContractUkJpaEntity implements Serializa
 	
 	public PpemtItemDateRange copy(IdContainer idContainer) {
 		
-		String copiedCategoryId = idContainer.getCategoryIds().getFor(ppemtCtgPK.perInfoCtgId);
+		String copiedCategoryId = idContainer.getCategoryIds().getFor(ppemtPerInfoCtgPK.perInfoCtgId);
 		
 		return new PpemtItemDateRange(
-				new PpemtCtgPK(copiedCategoryId),
+				new PpemtPerInfoCtgPK(copiedCategoryId),
 				idContainer.getItemIds().getFor(startDateItemId),
 				idContainer.getItemIds().getFor(endDateItemId),
 				idContainer.getItemIds().getFor(dateRangeItemId));
