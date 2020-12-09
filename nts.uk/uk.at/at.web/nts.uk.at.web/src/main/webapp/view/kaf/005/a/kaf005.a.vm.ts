@@ -78,9 +78,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 					});
 					vm.application().prePostAtr.subscribe(value => {
-						if (_.isEmpty(value)) {
+						if (!_.isNil(value)) {
 							if (vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 0) {
-								vm.visibleModel.c15_3(!ko.toJS(vm.visibleModel.c15_3));								
+								if (value == 1) {
+									vm.visibleModel.c15_3(true);									
+								} else {
+									vm.visibleModel.c15_3(false);									
+								}
 							}
 						}
 					});
@@ -2138,9 +2142,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// （「事前事後区分」が表示する　AND　「事前事後区分」が「事後」を選択している）　OR
 			// （「事前事後区分」が表示しない　AND　「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
 			let c15_3 = false;
-			visibleModel.c15_3(c15_3);
+			// visibleModel.c15_3(c15_3);
 			if (res.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {
-				c15_3 = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr == 1;
+				
+				let prePost = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
+				if (prePost == 1) {
+					c15_3 = true;					
+				} else {
+					c15_3 = false;
+				}
+				visibleModel.c15_3(c15_3);
+			} else {
+				let prePost = self.application().prePostAtr();
+				if (prePost == 1) {
+					c15_3 = true;					
+				} else {
+					c15_3 = false;
+				}
 				visibleModel.c15_3(c15_3);
 			}
 			
