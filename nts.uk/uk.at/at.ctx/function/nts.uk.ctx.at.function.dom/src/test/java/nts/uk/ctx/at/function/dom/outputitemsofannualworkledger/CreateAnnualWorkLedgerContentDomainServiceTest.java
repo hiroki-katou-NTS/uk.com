@@ -439,6 +439,18 @@ public class CreateAnnualWorkLedgerContentDomainServiceTest {
                 )
         );
     }
+    /**
+     * TEST CASE :Throw exception
+     * - Domain = null;
+     */
+    @Test
+    public void test_06() {
+
+        NtsAssert.businessException("Msg_1860", () -> {
+            CreateAnnualWorkLedgerContentDomainService.getData(require, datePeriod, lstEmployee,
+                    null, lstWorkplaceInfor, lstClosureDateEmployment);
+        });
+    }
     public static YearMonthPeriod convertPeriod(DatePeriod datePeriod, int closureDay) {
         YearMonth startYearMonth = YearMonth.of(datePeriod.start().year(), datePeriod.start().month());
         YearMonth endYearMonth = YearMonth.of(datePeriod.end().year(), datePeriod.end().month());

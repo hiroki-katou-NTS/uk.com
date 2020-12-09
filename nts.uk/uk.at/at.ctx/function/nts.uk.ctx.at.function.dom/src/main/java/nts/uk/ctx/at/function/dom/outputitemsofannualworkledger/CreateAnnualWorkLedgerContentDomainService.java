@@ -33,6 +33,9 @@ public class CreateAnnualWorkLedgerContentDomainService {
     public static List<AnnualWorkLedgerContent> getData(Require require, DatePeriod datePeriod, Map<String, EmployeeBasicInfoImport> lstEmployee,
                                                         AnnualWorkLedgerOutputSetting outputSetting, Map<String, WorkplaceInfor> lstWorkplaceInfor,
                                                         Map<String, ClosureDateEmployment> lstClosureDateEmployment) {
+        if (outputSetting == null) {
+            throw new BusinessException("Msg_1860");
+        }
         List<AnnualWorkLedgerContent> result = new ArrayList<>();
 
         List<String> listSid = new ArrayList<>(lstEmployee.keySet());

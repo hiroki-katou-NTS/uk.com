@@ -301,4 +301,17 @@ public class CreateDisplayContentWorkStatusDSTest {
 
     }
 
+    /**
+     * TEST CASE :Throw exception
+     * - domain : null
+     */
+    @Test
+    public void test_07() {
+
+        NtsAssert.businessException("Msg_1816", () -> {
+            CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod, employeeInfors,
+                    null, workPlaceInfo);
+        });
+    }
+
 }

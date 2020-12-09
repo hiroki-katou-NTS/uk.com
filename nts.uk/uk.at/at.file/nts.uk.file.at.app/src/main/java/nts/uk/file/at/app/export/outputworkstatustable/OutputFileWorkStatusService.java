@@ -73,7 +73,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // TODO DANG QA
         val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
         val basedateNow = GeneralDate.today();
-        if(!cl.isPresent() ||cl.get().getHistoryByBaseDate(basedateNow) == null){
+        if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
             throw new BusinessException("Còn QA");
         }
         val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
@@ -147,6 +147,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     private DatePeriod getFromClosureDate(YearMonth yearMonth, ClosureDate closureDate) {
         Integer closureDay = closureDate.getClosureDay().v();
         val baseDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay);
+        if (closureDay.equals(baseDate.lastDateInMonth())) {
+            return new DatePeriod(baseDate.addDays(-baseDate.lastDateInMonth()), baseDate);
+        }
         return new DatePeriod(baseDate.addMonths(-1).addDays(1), baseDate);
     }
 
