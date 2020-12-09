@@ -30,7 +30,6 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -64,6 +63,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -211,7 +211,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 		ZeroDisplayType zeroDisplayType = ZeroDisplayType.valueOf(request.getCondition().getZeroDisplayType());
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
-		TaskDataSetter setter = context.getDataSetter();
 		// Get layout info
 
 		List<Employee> unknownEmployeeList = new ArrayList<>();
@@ -955,9 +954,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	
 						attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
 						attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
-						YearMonth yearMonthExport = closureDate.getLastDayOfMonth() ? yearMonth
-								: yearMonth.addMonths(1);
-						attendanceRecRepEmpData.setReportYearMonth(yearMonthExport.toString());
+						attendanceRecRepEmpData.setReportYearMonth(yearMonth.toString());
 	
 						/**
 						 * Need information
@@ -971,7 +968,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							//	表示  - if display 
 							//	月の承認済状況を編集する - Edit the approved status of the month
 							listMonthlyApproval.forEach(i -> {
-									if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag() && i.getYm().equals(yearMonthExport)) {
+									if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag() && i.getYm().equals(yearMonth)) {
 									attendanceRecRepEmpData.setApprovalStatus(true);
 								}
 							});
@@ -1011,7 +1008,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
 										WorkingSystem.class).nameId));
 						attendanceRecRepEmpData
-								.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
+								.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
 						// ver8 file report . add deadline B8_17 B8_18
 						attendanceRecRepEmpData.setLastDayOfMonth(closureDate.getLastDayOfMonth());
 						attendanceRecRepEmpData.setClosureDay(closureDate.getClosureDay().v());
@@ -1512,7 +1509,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		case CLOCK:
 		case TIME_WITH_DAY:
 			if (item.getValue() == null)
-				return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0:00" : "";
+				return zeroDisplayType == ZeroDisplayType.DISPLAY && !item.getValueType().equals(ValueType.TIME_WITH_DAY) ? "0:00" : "";
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			return this.convertMinutesToHours(value.toString(), zeroDisplayType, true);
