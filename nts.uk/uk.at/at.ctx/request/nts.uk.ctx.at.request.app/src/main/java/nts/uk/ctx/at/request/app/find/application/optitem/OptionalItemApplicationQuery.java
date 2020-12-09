@@ -121,11 +121,15 @@ public class OptionalItemApplicationQuery {
                 Integer amountLower = null;
                 Integer amountUpper = null;
                 Integer amount = inputOptionalItem.getAmount();
-                if (range.getAmountRange().isPresent() && range.getAmountRange().get().getLowerLimit().isPresent()) {
-                    amountLower = range.getAmountRange().get().getLowerLimit().get().v();
+                if (range.getAmountRange().isPresent()
+                        && range.getAmountRange().get().getDailyAmountRange().isPresent()
+                        && range.getAmountRange().get().getDailyAmountRange().get().getLowerLimit().isPresent()) {
+                    amountLower = range.getAmountRange().get().getDailyAmountRange().get().getLowerLimit().get().v();
                 }
-                if (range.getAmountRange().isPresent() && range.getAmountRange().get().getUpperLimit().isPresent()) {
-                    amountUpper = range.getAmountRange().get().getUpperLimit().get().v();
+                if (range.getAmountRange().isPresent()
+                        && range.getAmountRange().get().getDailyAmountRange().isPresent()
+                        && range.getAmountRange().get().getDailyAmountRange().get().getUpperLimit().isPresent()) {
+                    amountUpper = range.getAmountRange().get().getDailyAmountRange().get().getUpperLimit().get().v();
                 }
                 if ((range.getLowerLimit().isSET() && amountLower != null && amountLower.compareTo(amount) > 0)
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {
@@ -138,17 +142,21 @@ public class OptionalItemApplicationQuery {
                 register = true;
             }
             if (inputOptionalItem.getTimes() != null) {
-                Double numberLower = null;
-                Double numberUpper = null;
+                BigDecimal numberLower = null;
+                BigDecimal numberUpper = null;
                 BigDecimal times = inputOptionalItem.getTimes();
-                if (range.getNumberRange().isPresent() && range.getNumberRange().get().getLowerLimit().isPresent()) {
-                    numberLower = range.getNumberRange().get().getLowerLimit().get().v();
+                if (range.getNumberRange().isPresent()
+                        && range.getNumberRange().get().getDailyTimesRange().isPresent()
+                        && range.getNumberRange().get().getDailyTimesRange().get().getLowerLimit().isPresent()) {
+                    numberLower = range.getNumberRange().get().getDailyTimesRange().get().getLowerLimit().get().v();
                 }
-                if (range.getNumberRange().isPresent() && range.getNumberRange().get().getUpperLimit().isPresent()) {
-                    numberUpper = range.getNumberRange().get().getUpperLimit().get().v();
+                if (range.getNumberRange().isPresent()
+                        && range.getNumberRange().get().getDailyTimesRange().isPresent()
+                        && range.getNumberRange().get().getDailyTimesRange().get().getUpperLimit().isPresent()) {
+                    numberUpper = range.getNumberRange().get().getDailyTimesRange().get().getUpperLimit().get().v();
                 }
-                if ((range.getLowerLimit().isSET() && numberLower != null && numberLower.compareTo(times.doubleValue()) > 0)
-                        || (range.getUpperLimit().isSET() && numberUpper != null && numberUpper.compareTo(times.doubleValue()) < 0)) {
+                if ((range.getLowerLimit().isSET() && numberLower != null && numberLower.compareTo(times) > 0)
+                        || (range.getUpperLimit().isSET() && numberUpper != null && numberUpper.compareTo(times) < 0)) {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
                 if (unit.isPresent() && (times.doubleValue() % unit.get().doubleValue() != 0)) {
@@ -161,11 +169,15 @@ public class OptionalItemApplicationQuery {
                 Integer timeLower = null;
                 Integer timeUpper = null;
                 Integer time = inputOptionalItem.getTime();
-                if (range.getTimeRange().isPresent() && range.getTimeRange().get().getLowerLimit().isPresent()) {
-                    timeLower = range.getTimeRange().get().getLowerLimit().get().v();
+                if (range.getTimeRange().isPresent()
+                        && range.getTimeRange().get().getDailyTimeRange().isPresent()
+                        && range.getTimeRange().get().getDailyTimeRange().get().getLowerLimit().isPresent()) {
+                    timeLower = range.getTimeRange().get().getDailyTimeRange().get().getLowerLimit().get().v();
                 }
-                if (range.getTimeRange().isPresent() && range.getTimeRange().get().getUpperLimit().isPresent()) {
-                    timeUpper = range.getTimeRange().get().getUpperLimit().get().v();
+                if (range.getTimeRange().isPresent()
+                        && range.getTimeRange().get().getDailyTimeRange().isPresent()
+                        && range.getTimeRange().get().getDailyTimeRange().get().getUpperLimit().isPresent()) {
+                    timeUpper = range.getTimeRange().get().getDailyTimeRange().get().getUpperLimit().get().v();
                 }
                 if ((range.getLowerLimit().isSET() && timeLower != null && timeLower.compareTo(time) > 0)
                         || (range.getUpperLimit().isSET() && timeUpper != null && timeUpper.compareTo(time) < 0)) {
