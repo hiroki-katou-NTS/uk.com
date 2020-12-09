@@ -237,9 +237,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
               <!-- A2_6 -->
               <div class="dashed80"></div>
               <!-- A3_3 -->
-              <div class="label non-statutory-bg-color" data-bind="style: { width: $component.genWidthByTime(agreementTime)}"></div>
+              <div class="label non-statutory-bg-color" data-bind="style: { width: nonStatutoryTime}"></div>
               <!-- A3_4 -->
-              <div class="label time-outside-bg-color" data-bind="style: { width: $component.genWidthByTime(legalUpperTime)}"></div> 
+              <div class="label time-outside-bg-color" data-bind="style: { width: legalTime}"></div> 
             </td>
           </tr>
         </tbody>
@@ -283,6 +283,8 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             dataItem.agreementTime = item.agreementTime.agreementTime;
             dataItem.legalUpperTime =
               item.agreMax.agreementTime - item.agreementTime.agreementTime;
+            dataItem.nonStatutoryTime = item.agreementTime.agreementTime >= 6000 ? '200px' : vm.genWidthByTime(item.agreementTime.agreementTime);
+            dataItem.legalTime = item.agreementTime.agreementTime >= 6000 ? '0px' : vm.genWidthByTime(dataItem.legalUpperTime);
             dataItem.status = item.state;
             lstTemp.push(dataItem);
           });
@@ -309,6 +311,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
 
     // format number to HM
     public genTime(data: any) {
+      if(data >= 6000){
+        return formatById("Clock_Short_HM", 6000);
+      }
       return formatById("Clock_Short_HM", data);
     }
 
@@ -366,6 +371,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             dataItem.agreementTime = item.agreementTime.agreementTime;
             dataItem.legalUpperTime =
               item.agreMax.agreementTime - item.agreementTime.agreementTime;
+            dataItem.nonStatutoryTime = item.agreementTime.agreementTime >= 6000 ? '200px' : vm.genWidthByTime(item.agreementTime.agreementTime);
+            dataItem.legalTime = item.agreementTime.agreementTime >= 6000 ? '0px' : vm.genWidthByTime(dataItem.legalUpperTime);
+            dataItem.status = item.state;
             dataItem.status = item.state;
             lstTemp.push(dataItem);
           });
@@ -446,6 +454,10 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     agreementTime: any;
     // name
     businessName: string;
+    // 法定外時間のグラフ
+    nonStatutoryTime: string
+    // 法定内時間のグラフ
+    legalTime: string;
     constructor(init?: Partial<CurrentClosingPeriod>) {
       $.extend(this, init);
     }
