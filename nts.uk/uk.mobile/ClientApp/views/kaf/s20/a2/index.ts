@@ -205,9 +205,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     return item.itemNo == controlAttendance.itemDailyID - 640;
                 });
 
-                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder } = optionalItem;
-                const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-
+                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder } = optionalItem;
+                const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
+        
                 const { amount, times, time } = item;
 
                 vm.optionalItemApplication.push({
@@ -231,7 +231,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     dispOrder
                 });
             });
-            vm.optionalItemApplication.sort((a,b) => a.dispOrder - b.dispOrder);
+            vm.optionalItemApplication.sort((a, b) => a.dispOrder - b.dispOrder);
         }
 
         vm.$auth.user.then((user: any) => {
@@ -264,23 +264,27 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 return optionalItem.optionalItemNo == itemNo;
                             });
                             let controlAttendance = controlAttendances.find((controlAttendance) => {
-            
+
                                 return itemNo == controlAttendance.itemDailyID - 640;
                             });
 
                             const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description } = optionalItem;
-                            const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-                            
+                            const { lowerCheck, upperCheck, amountRange, numberRange, timeRange } = calcResultRange;
+                            const { dailyAmountRange } = amountRange;
+
+                            const { dailyNumberRange } = numberRange;
+                            const { dailyTimeRange } = timeRange;
+
                             if (vm.mode) {
                                 vm.optionalItemApplication.push({
                                     lowerCheck,
                                     upperCheck,
-                                    amountLower,
-                                    amountUpper,
-                                    numberLower,
-                                    numberUpper,
-                                    timeLower,
-                                    timeUpper,
+                                    amountLower: dailyAmountRange.lowerLimit,
+                                    amountUpper: dailyAmountRange.upperLimit,
+                                    numberLower: dailyNumberRange.lowerLimit,
+                                    numberUpper: dailyNumberRange.upperLimit,
+                                    timeLower: dailyTimeRange.lowerLimit,
+                                    timeUpper: dailyTimeRange.upperLimit,
                                     amount: null,
                                     number: null,
                                     time: null,

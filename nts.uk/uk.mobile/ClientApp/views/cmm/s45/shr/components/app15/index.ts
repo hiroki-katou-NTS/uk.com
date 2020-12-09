@@ -81,9 +81,9 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                         return item.itemNo == controlAttendance.itemDailyID - 640;
                     });
 
-                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder } = optionalItem;
-                    const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-
+                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder, } = optionalItem;
+                    const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
+    
                     const { amount, times, time } = item;
 
                     vm.optionalItemApplication.push({
@@ -130,7 +130,7 @@ export interface ISettings {
 export interface IAppDetail {
     application: ISettings;
     controlOfAttendanceItems: IControlOfAttendanceItemsDto[];
-    optionalItems: IOptionalItemDto[];
+    optionalItems: any[];
 }
 
 export interface IOptionalItems {

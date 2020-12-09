@@ -7,13 +7,25 @@ export interface IOptionalItem {
 
 export interface IOptionalItemDto {
     calcResultRange: {
-        amountLower: null;
-        amountUpper: null;
+        amountRange: {
+            dailyAmountRange: {
+                lowerLimit: number | null;
+                upperLimit: number | null;
+            }
+        }
+        numberRange: {
+            dailyNumberRange: {
+                lowerLimit: number | null;
+                upperLimit: number | null;
+            }
+        }
+        timeRange:{
+            dailyTimeRange: {
+                lowerLimit: number | null;
+                upperLimit: number | null;
+            }
+        }
         lowerCheck: true;
-        numberLower: null;
-        numberUpper: null;
-        timeLower: number | null;
-        timeUpper: number | null;
         upperCheck: boolean;
     };
     description: string | null;
@@ -49,14 +61,14 @@ export interface IOptItemSet {
 }
 
 export interface OptionalItemApplication {
-    amountLower: null;
-    amountUpper: null;
-    lowerCheck: true;
-    numberLower: null;
-    numberUpper: null;
+    amountLower: number | null;
+    amountUpper: number | null;
+    lowerCheck: boolean | null;
+    numberLower: number | null;
+    numberUpper: number | null;
     timeLower: number | null;
     timeUpper: number | null;
-    upperCheck: boolean;
+    upperCheck: boolean | null;
     unit: string;
     inputUnitOfTimeItem: number | null;
     optionalItemName: string;
@@ -83,7 +95,7 @@ export interface IParams {
             optionalItems: optionalItems[];
         }
         controlOfAttendanceItems: IControlOfAttendanceItemsDto[];
-        optionalItems: IOptionalItemDto[];
+        optionalItems: any[];
     };
     appDispInfoStartupOutput: IAppDispInfoStartupOutput;
 }
