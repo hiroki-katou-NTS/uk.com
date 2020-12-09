@@ -3,27 +3,42 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
   @component({
     name: "layout2-component",
     template: `
-      <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
-        <span data-bind="if: url.indexOf('.xhtml') > -1">
-          <iframe style="width:450px" data-bind="attr: { src: url }" />
-        </span>
-        <span data-bind="if: url.indexOf('.js') > -1">
-          <div data-bind="attr:{ id: 'WG' + $index() }">
-            <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
-          </div>
-        </span>
-      </div>
+      <span data-bind="if: $component.isLayout == 2">
+        <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
+          <span data-bind="if: url.indexOf('.xhtml') > -1">
+            <iframe style="width:450px" data-bind="attr: { src: url }" />
+          </span>
+          <span data-bind="if: url.indexOf('.js') > -1">
+            <div data-bind="attr:{ id: 'WG2-' + $index() }">
+              <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
+            </div>
+          </span>
+        </div>
+      </span>
+
+      <span data-bind="if: $component.isLayout == 3">
+        <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
+          <span data-bind="if: url.indexOf('.xhtml') > -1">
+            <iframe style="width:450px" data-bind="attr: { src: url }" />
+          </span>
+          <span data-bind="if: url.indexOf('.js') > -1">
+            <div data-bind="attr:{ id: 'WG3-' + $index() }">
+              <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
+            </div>
+          </span>
+        </div>
+      </span>
     `,
   })
   export class Layout2ComponentViewModel extends ko.ViewModel {
-    lstWidgetLayout: KnockoutObservableArray<ItemLayout> = ko.observableArray(
-      []
-    );
+    lstWidgetLayout: KnockoutObservableArray<ItemLayout> = ko.observableArray([]);
+    isLayout: number;
 
     created(param: any) {
       const vm = this;
       const layout2 = param.item();
       const origin: string = window.location.origin;
+      vm.isLayout = param.isLayout;
       let dataLayout: ItemLayout[] = [];
       vm.lstWidgetLayout([]);
       if (layout2) {
@@ -82,32 +97,110 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
 
     mounted() {
       const vm = this;
-      if ($('#WG0')) {
-        $('#WG0').resizable({
+      if ($('#WG2-0')) {
+        $('#WG2-0').resizable({
           grid: [10000, 1]
         });
+        $('#WG2-0').resize(() => {
+          const wg0 = document.getElementById('WG2-0');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
       }
-      if ($('#WG1')) {
-        $('#WG1').resizable({
+      if ($('#WG2-1')) {
+        $('#WG2-1').resizable({
           grid: [10000, 1]
         });
+        $('#WG2-1').resize(() => {
+          const wg0 = document.getElementById('WG2-1');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
       }
-      if($('#WG2')) {
-        $('#WG2').resizable({
+      if ($('#WG2-2')) {
+        $('#WG2-2').resizable({
           grid: [10000, 1]
         });
+        $('#WG2-2').resize(() => {
+          const wg0 = document.getElementById('WG2-2');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
       }
 
-      if($('#WG3')) {
-        $('#WG3').resizable({
+      if ($('#WG2-3')) {
+        $('#WG2-3').resizable({
           grid: [10000, 1]
         });
+        $('#WG2-3').resize(() => {
+          const wg0 = document.getElementById('WG2-3');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
       }
 
-      if($('#WG4')) {
-        $('#WG4').resizable({
+      if ($('#WG2-4')) {
+        $('#WG2-4').resizable({
           grid: [10000, 1]
         });
+        $('#WG2-4').resize(() => {
+          const wg0 = document.getElementById('WG2-4');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
+      }
+
+      if ($('#WG3-0')) {
+        $('#WG3-0').resizable({
+          grid: [10000, 1]
+        });
+        $('#WG3-0').resize(() => {
+          const wg0 = document.getElementById('WG3-0');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
+      }
+      if ($('#WG3-1')) {
+        $('#WG3-1').resizable({
+          grid: [10000, 1]
+        });
+        $('#WG3-1').resize(() => {
+          const wg0 = document.getElementById('WG3-1');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
+      }
+      if ($('#WG3-2')) {
+        $('#WG3-2').resizable({
+          grid: [10000, 1]
+        });
+        $('#WG3-2').resize(() => {
+          const wg0 = document.getElementById('WG3-2');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
+      }
+
+      if ($('#WG3-3')) {
+        $('#WG3-3').resizable({
+          grid: [10000, 1]
+        });
+        $('#WG3-3').resize(() => {
+          const wg0 = document.getElementById('WG3-3');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
+      }
+
+      if ($('#WG3-4')) {
+        $('#WG3-4').resizable({
+          grid: [10000, 1]
+        });
+        $('#WG3-4').resize(() => {
+          const wg0 = document.getElementById('WG3-4');
+          const wg0Child = wg0.firstElementChild.firstElementChild as any;
+          wg0Child.style.height = '100%';
+        })
       }
       
       
@@ -127,8 +220,6 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           observer.observe(targetNode, config);
         }
       });
-
-      
     }
   }
 

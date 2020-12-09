@@ -13,7 +13,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
     padding-top: 5px;
     padding-left: 5px;
     width: 445x;
-    height: 100%;
+    height: 450px;
     border: 1px groove;
     overflow: auto;
   }
