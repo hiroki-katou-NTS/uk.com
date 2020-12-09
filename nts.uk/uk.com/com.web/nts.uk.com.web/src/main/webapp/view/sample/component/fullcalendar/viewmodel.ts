@@ -14,6 +14,8 @@ Knockout.jsで下記要件を満たせるなら、変更したいとのことで
 `;
 
 module nts.uk.ui.com.sample.fullcalendar {
+    const { randomId } = nts.uk.util;
+
     const F_DATE = 'YYYY-MM-DDTHH:mm:00';
 
     @bean()
@@ -24,14 +26,16 @@ module nts.uk.ui.com.sample.fullcalendar {
             end: moment().subtract(2, 'day').set('hour', 10).set('minute', 30).toDate(),//"2020-11-25T10:30:00.000Z",
             backgroundColor: "#ff5050",
             extendedProps: {
-                id: '2222333'
+                id: randomId(),
+                relateId: randomId()
             }
         }, {
             title: 'Conference',
             start: moment().set('hour', 8).set('minute', 30).toDate(),
             end: moment().set('hour', 9).set('minute', 30).toDate(),
             extendedProps: {
-                id: '000001',
+                id: randomId(),
+                relateId: randomId(),
                 descriptions: SAMPLE_DESCRIPTION.trim()
             }
         }, {
@@ -39,7 +43,8 @@ module nts.uk.ui.com.sample.fullcalendar {
             start: moment().set('hour', 9).set('minute', 30).toDate(),
             end: moment().set('hour', 14).set('minute', 0).toDate(),
             extendedProps: {
-                id: '000002',
+                id: randomId(),
+                relateId: randomId(),
                 descriptions: SAMPLE_DESCRIPTION.trim()
             }
         }]);
@@ -48,25 +53,29 @@ module nts.uk.ui.com.sample.fullcalendar {
             title: 'UK就業・詳細設計',
             backgroundColor: '#ffc000',
             extendedProps: {
-                id: '000003'
+                id: '',
+                relateId: randomId()
             }
         }, {
             title: 'UK就業機能強化・テスト設計',
             backgroundColor: '#ff5050',
             extendedProps: {
-                id: '000004'
+                id: '',
+                relateId: randomId()
             }
         }, {
             title: 'UKプロジェクト・概要設計',
             backgroundColor: '#5b9bd5',
             extendedProps: {
-                id: '000005'
+                id: '',
+                relateId: randomId()
             }
         }, {
             title: 'UKプロジェクト・統合テスト',
             backgroundColor: '#92d050',
             extendedProps: {
-                id: '000006'
+                id: '',
+                relateId: randomId()
             }
         }]);
 
