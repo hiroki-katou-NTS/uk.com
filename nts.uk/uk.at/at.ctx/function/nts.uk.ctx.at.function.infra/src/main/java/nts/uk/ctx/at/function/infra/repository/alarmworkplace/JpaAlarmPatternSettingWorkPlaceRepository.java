@@ -48,8 +48,17 @@ public class JpaAlarmPatternSettingWorkPlaceRepository extends JpaRepository imp
             .setParameter("companyId", domain.getCompanyID())
             .setParameter("alarmPatternCode", domain.getAlarmPatternCD().v()).getSingle().get();
 
-        updateEntity.fromEntity(newEntity);
-        this.commandProxy().update(updateEntity);
+        this.commandProxy().remove(KfnmtALstWkpPtn.class,updateEntity.pk);
+        this.getEntityManager().flush();
+
+        this.commandProxy().insert(newEntity);
+
+//        updateEntity.fromEntity(newEntity);
+//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.size());
+//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.get(0).checkConItems.size());
+//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.get(0).pk.alarmPatternCD);
+//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.get(0).pk.category);
+//        this.commandProxy().update(updateEntity);
     }
 
     @Override
@@ -67,6 +76,6 @@ public class JpaAlarmPatternSettingWorkPlaceRepository extends JpaRepository imp
     @Override
     public Optional<AlarmPatternSettingWorkPlace> getBy(String cid, AlarmPatternCode alarmPatternCode) {
         return this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtALstWkpPtn.class)
-            .setParameter("companyId", cid).setParameter("alarmPatternCode", alarmPatternCode).getSingle(KfnmtALstWkpPtn::toDomain);
+            .setParameter("companyId", cid).setParameter("alarmPatternCode", alarmPatternCode.v()).getSingle(KfnmtALstWkpPtn::toDomain);
     }
 }

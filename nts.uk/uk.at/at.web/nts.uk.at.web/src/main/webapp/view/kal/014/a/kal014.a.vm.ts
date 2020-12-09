@@ -223,7 +223,8 @@ module nts.uk.at.kal014.a {
                     vm.alarmPatterSet().update(data.alarmPatternCD,data.alarmPatternName,checkCon,listSelected);
                     dfd.resolve();
                 })
-                .fail(()=>{
+                .fail((error: any)=>{
+                    vm.$dialog.error(error);
                     dfd.reject();
                 }).always(()=>{
                     vm.$blockui("hide");
@@ -432,7 +433,9 @@ module nts.uk.at.kal014.a {
                         case vm.workPalceCategory.MASTER_CHECK_DAILY:
                         case vm.workPalceCategory.SCHEDULE_DAILY:
                         case vm.workPalceCategory.APPLICATION_APPROVAL:
-                            element.extractionDaily();
+                            element.extractionDaily().updateExtractionPeriodDaily(result.shareData.strSpecify,result.shareData.strMonth,result.shareData.strPreviousDay,
+                                result.shareData.strDay,result.shareData.endSpecify,result.shareData.endMonth,result.shareData.endPreviousDay,result.shareData.endDay);
+                            element.updateDisplayTxt(vm.buildExtracDay(element.extractionDaily()));
                             break
                         // 月次
                         case vm.workPalceCategory.MONTHLY:
@@ -750,7 +753,21 @@ module nts.uk.at.kal014.a {
             this.endMakeToDay(_.isNil(data) ? null : data.endDay == 0);
         }
 
-        updateExtractionPeriodDaily(){
+        updateExtractionPeriodDaily(strSpecify: number,strMonth: number,strPreviousDay: number, strDay: number,
+                                    endSpecify: number,endMonth: number,endPreviousDay:number,  endDay: number ){
+            this.strSpecify(strSpecify);
+            this.strMonth(strMonth);
+            this.strCurrentMonth(strMonth == 0);
+            this.strPreviousDay(strPreviousDay);
+            this.strMakeToDay(strDay == 0);
+            this.strDay(strDay);
+
+            this.endSpecify(endSpecify);
+            this.endMonth(endMonth);
+            this.endCurrentMonth(endMonth == 0);
+            this.endPreviousDay(endPreviousDay);
+            this.endDay(endDay);
+            this.endMakeToDay(endDay == 0);
 
         }
     }
@@ -949,34 +966,34 @@ module nts.uk.at.kal014.a {
         companyId: string;
     }
 
-    enum StartSpecify{
+    export enum StartSpecify{
         // 実行日からの日数を指定する
         DAYS = 0,
         // 締め日を指定する
         MONTH = 1
     }
 
-    enum EndSpecify{
+    export enum EndSpecify{
         // 実行日からの日数を指定する
         DAYS = 0,
         // 締め日を指定する
         MONTH = 1
     }
 
-    enum SpecifyStartMonth{
+    export enum SpecifyStartMonth{
         // 締め開始月を指定する
         DESIGNATE_CLOSE_START_MONTH = 1,
         // 固定の月度を指定する
         SPECIFY_FIXED_MOON_DEGREE = 2
     }
 
-    enum SpecifyEndMonth{
+    export enum SpecifyEndMonth{
         // 締め開始月を指定する
         DESIGNATE_CLOSE_START_MONTH = 1,
         // 固定の月度を指定する
         SPECIFY_FIXED_MOON_DEGREE = 2
     }
-    enum PreviousClassification {
+    export enum PreviousClassification {
 
         /*** 前 */
         BEFORE = 0,

@@ -18,6 +18,7 @@
         </com:EnumScript>
         <com:stylefile path="styles.css"/>
         <com:scriptfile path="/view/kal/014/common/common.js"/>
+        <com:scriptfile path="/view/kal/014/a/kal014.a.vm.js"/>
         <com:scriptfile path="kal014.c.vm.js"/>
     </ui:define>
     <ui:define name="content">
@@ -77,7 +78,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="cell valign-center" style="width: 50px">
+                        <div class="cell valign-center" style="width: 58px">
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_1 -->
@@ -88,7 +89,7 @@
                              optionValue: 'value',
                              optionText: 'name',
                              group: 'endRadio'},
-                             style: {marginLeft: vm.isScheduleDaily()?'15px':''}
+                             style: {marginLeft: $vm.isScheduleDaily()?'15px':''}
                              ">
                             </div>
                         </div>
@@ -163,7 +164,7 @@
                             <!-- C3_10 -->
                             <span class="label" id="C3_10">#{i18n.getText('KAL014_48')}</span>
                         </div>
-                        <div class="cell valign-center" style="width: 89px">
+                        <div class="cell valign-center" style="width: 99px">
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_3 -->

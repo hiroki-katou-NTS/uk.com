@@ -1,6 +1,9 @@
 module nts.uk.at.kal014.c {
 
     import common=nts.uk.at.kal014.common;
+    import StartSpecify = nts.uk.at.kal014.a.StartSpecify;
+    import EndSpecify = nts.uk.at.kal014.a.EndSpecify;
+    import PreviousClassification = nts.uk.at.kal014.a.PreviousClassification;
 
     @bean()
     export class Kal014CViewModel extends ko.ViewModel {
@@ -23,7 +26,7 @@ module nts.uk.at.kal014.c {
             const vm = this;
             vm.workPalceCategory = common.WORKPLACE_CATAGORY;
             vm.CLASSIFICATION = common.CLASSIFICATION;
-            vm.initModalData(params);
+
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
@@ -31,22 +34,21 @@ module nts.uk.at.kal014.c {
             vm.classifications = ko.observableArray([
                 new BoxModel(0, '')
             ]);
-            vm.strSelected = ko.observable(0);
-            vm.endSelected = ko.observable(0);
             vm.dateSpecify = ko.observableArray([
-                {value: 0, name: vm.$i18n("KAL014_44")},
-                {value: 1, name: ""}
+                {value: StartSpecify.DAYS, name: vm.$i18n("KAL014_44")},
+                {value: StartSpecify.MONTH, name: ""}
             ]);
             vm.monthSpecify = ko.observableArray([
-                {value: 0, name: vm.$i18n("KAL014_49")},
-                {value: 1, name: ""}
+                {value: EndSpecify.DAYS, name: vm.$i18n("KAL014_49")},
+                {value: EndSpecify.MONTH, name: ""}
             ]);
             vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
+
+            vm.initModalData(params);
         }
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
             (vm.modalDTO.categoryId.subscribe((id)=>{
                 vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
             }));
@@ -89,7 +91,9 @@ module nts.uk.at.kal014.c {
          * @return type void         *
          * */
         cancel_Dialog(): any {
-            nts.uk.ui.windows.close();
+            const vm = this;
+            vm.$window.close({
+            });
         }
 
         /**
@@ -98,8 +102,14 @@ module nts.uk.at.kal014.c {
          * @return type void         *
          * */
         decide(): any {
-            var vm = this;
-            if (vm.checkPeriod()) {
+            const vm = this;
+            let checkResult = vm.checkPeriod();
+            if (!_.isNil(checkResult)) {
+                vm.$dialog.error({messageId: checkResult}).done(()=>{
+                    return;
+                })
+
+            } else {
                 let shareData = {
                     alarmCategory: vm.modalDTO.categoryId(),
                     alarmCategoryName: vm.modalDTO.categoryName(),
@@ -118,6 +128,7 @@ module nts.uk.at.kal014.c {
                     shareData
                 });
             }
+
         }
 
         /**
@@ -125,78 +136,64 @@ module nts.uk.at.kal014.c {
          *
          * @return type void               *
          * */
-        checkPeriod(): boolean {
+        checkPeriod(): string {
             var vm = this;
             let mockStartCategory = "Same day";
             let mockEndCategory = "Closing end date";
-            //TODO mockStartCategory ,mockEndCategory ->master data
             if (vm.modalDTO.categoryId() === vm.workPalceCategory.SCHEDULE_DAILY ||
                 vm.modalDTO.categoryId() === vm.workPalceCategory.APPLICATION_APPROVAL ||
                 vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_DAILY) {
-                /*
-                * (a）開始区分＝「当日」　AND　終了区分＝「当日」
-                * TODO [Same day] will be change with data master data.
-                *
-                */
-                if (mockStartCategory === 'Same day' && mockEndCategory === 'Same day') {
+
+                // (a）開始区分＝「当日」　AND　終了区分＝「当日」
+                if (vm.strSelected() === StartSpecify.DAYS
+                    && vm.endSelected() === EndSpecify.DAYS) {
                     /**
                      * ①開始の前後区分＝「後」　AND　終了の前後区分＝「前」
                      */
-                    if (vm.modalDTO.beforeAndAfterStart === vm.CLASSIFICATION.AHEAD && vm.modalDTO.beforeAndAfterEnd === vm.CLASSIFICATION.BEFORE) {
-                        vm.$dialog.error({messageId: "Msg_812"}).then(() => {
-                            return false;
-                        });
+                    if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.AHEAD
+                        && vm.modalDTO.beforeAndAfterEnd() === PreviousClassification.BEFORE) {
+                        return "Msg_812";
                     }
                     /**
                      * ②開始の前後区分＝「前」　AND　終了の前後区分＝「前」 　AND　開始の日数　＜　終了の日数
                      */
-                    else if ((vm.modalDTO.beforeAndAfterStart === vm.CLASSIFICATION.BEFORE && vm.modalDTO.beforeAndAfterEnd === vm.CLASSIFICATION.BEFORE) && (vm.modalDTO.numberOfDayFromStart < vm.modalDTO.numberOfDayFromEnd)) {
-                        vm.$dialog.error({messageId: "Msg_812"}).then(() => {
-                            return false;
-                        });
+                    else if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.BEFORE
+                            && vm.modalDTO.beforeAndAfterEnd() === PreviousClassification.BEFORE
+                            && vm.modalDTO.numberOfDayFromStart() < vm.modalDTO.numberOfDayFromEnd()) {
+                        return "Msg_812";
                     }
                     /**
                      * ③開始の前後区分＝「後」　AND　終了の前後区分＝「後」
                      */
-                    else if ((vm.modalDTO.beforeAndAfterStart === vm.CLASSIFICATION.AHEAD && vm.modalDTO.beforeAndAfterEnd === vm.CLASSIFICATION.AHEAD) && (vm.modalDTO.numberOfDayFromStart > vm.modalDTO.numberOfDayFromEnd)) {
-                        vm.$dialog.error({messageId: "Msg_812"}).then(() => {
-                            return false;
-                        });
-                    } else {
-                        return true;
+                    else if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.AHEAD
+                        && vm.modalDTO.beforeAndAfterEnd() === PreviousClassification.AHEAD
+                        && vm.modalDTO.numberOfDayFromStart() > vm.modalDTO.numberOfDayFromEnd()) {
+                        return "Msg_812";
+                        // ④開始の前後区分＝「前」　AND　終了の前後区分＝「後」
+                    } else if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.BEFORE
+                        && vm.modalDTO.beforeAndAfterEnd() === PreviousClassification.AHEAD) {
+                        return null
                     }
                 }
                 /**
                  * (b）開始区分＝「当日」　AND　終了区分＝「締め終了日」
                  AND　終了の月数＝当月
-                 * TODO ['Same day' and 'Closing end date' will be change to the master data]
                  */
-                else if ((mockStartCategory === "Same day" && mockEndCategory === "Closing end date") && vm.modalDTO.endMonth() === 0) {
-                    vm.$dialog.error({messageId: "Msg_813"}).then(() => {
-                        return false;
-                    });
+                else if ((vm.strSelected() === StartSpecify.DAYS
+                        && vm.endSelected() === StartSpecify.MONTH) && vm.modalDTO.endMonth() === 0) {
+                    return "Msg_813";
                 }
                 /**
                  * (c）開始区分＝「締め開始日」　AND　終了区分＝「締め終了日」
                  AND　開始の月数　＞　終了の月数
-                 * TODO ['closing start date' and 'Closing end date' will be change to the master data]
                  */
-                else if ((mockStartCategory === "closing start date" && mockEndCategory === "Closing end date") && vm.modalDTO.startMonth() > vm.modalDTO.endMonth) {
-                    vm.$dialog.error({messageId: "Msg_812"}).then(() => {
-                        return false;
-                    });
-                } else {
-                    return true;
+                else if ((vm.strSelected() === StartSpecify.MONTH && vm.endSelected() === StartSpecify.MONTH)
+                    && vm.modalDTO.startMonth() > vm.modalDTO.endMonth()) {
+                    return "Msg_812";
                 }
             }
-            /*5	月次		(a)	開始月　<　終了月*/
-            else if (vm.modalDTO.categoryId() === vm.workPalceCategory.MONTHLY && vm.modalDTO.startMonth() < vm.modalDTO.endMonth) {
-                vm.$dialog.error({messageId: "Msg_812"}).then(() => {
-                    return false;
-                });
-            } else {
-                return true;
-            }
+
+            return null;
         }
     }
 
@@ -207,10 +204,10 @@ module nts.uk.at.kal014.c {
         startMonth: KnockoutObservable<any>;
         endMonth: KnockoutObservable<any>;
         classification: any;
-        numberOfDayFromStart: any;
-        numberOfDayFromEnd: any;
-        beforeAndAfterStart: any;
-        beforeAndAfterEnd: any;
+        numberOfDayFromStart:  KnockoutObservable<any>;
+        numberOfDayFromEnd: KnockoutObservable<any>;
+        beforeAndAfterStart: KnockoutObservable<any>;
+        beforeAndAfterEnd: KnockoutObservable<any>;
 
         constructor() {
             this.categoryId = ko.observable('');

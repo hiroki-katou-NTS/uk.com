@@ -44,7 +44,7 @@ public class AddAlarmPatternSettingWorkPlaceCommandHandler extends CommandHandle
 
         List<CheckCondition> checkConList = command.toDomain();
 
-        AlarmPatternSettingWorkPlace domain = new AlarmPatternSettingWorkPlace(
+        AlarmPatternSettingWorkPlace domain = AlarmPatternSettingWorkPlace.create(
             checkConList,
             command.getAlarmPatternCD(),
             AppContexts.user().companyId(),

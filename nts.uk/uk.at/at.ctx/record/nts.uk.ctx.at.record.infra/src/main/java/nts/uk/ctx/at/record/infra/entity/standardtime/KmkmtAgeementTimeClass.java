@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KMKMT_AGREEMENTTIME_CLASS")
+@Table(name = "	KMKMT_AGREEMENTTIME_CLASS")
 public class KmkmtAgeementTimeClass extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

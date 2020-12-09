@@ -2,10 +2,13 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
@@ -138,6 +141,11 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
         this.pk = pk;
         this.contractCode = AppContexts.user().contractCode();
         this.checkConItems = checkConItems;
+        System.out.println("assignDayStart : "+assignDayStart);
+        System.out.println("assignDatelineStart : "+assignDatelineStart);
+        System.out.println("assignDatelineEnd : "+assignDatelineEnd);
+        System.out.println("assignDayEnd : "+assignDayEnd);
+
         this.kfnmtAssignDayStart = assignDayStart;
         this.kfnmtAssignDatelineStart = assignDatelineStart;
         this.kfnmtAssignDatelineEnd = assignDatelineEnd;
@@ -145,7 +153,6 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     }
 
     public CheckCondition toDomain() {
-
         RangeToExtract extractPeriod = null;
         if (this.pk.category == WorkplaceCategory.MONTHLY.value) {
             extractPeriod = kfnmtAssignNumofMon.toDomain();
@@ -156,6 +163,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
         } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value ||
             this.pk.category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
             extractPeriod = new ExtractionPeriodDaily(
+
                 // Start day
                 toStartDate(),
                 // End day
@@ -214,24 +222,21 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
             );
         } else if (category == WorkplaceCategory.MASTER_CHECK_DAILY.value || category == WorkplaceCategory.SCHEDULE_DAILY.value ||
             category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
-
+            val daily = ((ExtractionPeriodDaily) domain.getRangeToExtract());
             return new KfnmtWkpCheckCondition(
                 new KfnmtWkpCheckConditionPK(AppContexts.user().companyId(), patternCD, category),
                 domain.getCheckConditionLis().stream().map(
                     x -> new KfnmtPtnMapCat(buildCheckConItemPK(domain, x.v(), companyId, patternCD)))
                     .collect(Collectors.toList()),
 
-                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate().getStrDays().isPresent() ?
-                    KfnmtAssignDayStart.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate(), patternCD, category) : null,
-
-                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate().getStrMonth().isPresent() ?
-                    KfnmtAssignDatelineStart.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getStartDate(), patternCD, category) : null,
-
-                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate().getEndDays().isPresent() ?
-                    KfnmtAssignDayEnd.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate(), patternCD, category) : null,
-
-                ((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate().getEndMonth().isPresent() ?
-                    KfnmtAssignDatelineEnd.toEntity(((ExtractionPeriodDaily) domain.getRangeToExtract()).getEndDate(), patternCD, category) : null
+                    daily.getStartDate().getStartSpecify() == StartSpecify.DAYS ?
+                    KfnmtAssignDayStart.toEntity(daily.getStartDate(), patternCD, category) : null,
+                    daily.getStartDate().getStartSpecify() == StartSpecify.MONTH ?
+                    KfnmtAssignDatelineStart.toEntity(daily.getStartDate(), patternCD, category) : null,
+                    daily.getEndDate().getEndSpecify() == EndSpecify.DAYS ?
+                    KfnmtAssignDayEnd.toEntity(daily.getEndDate(), patternCD, category) : null,
+                    daily.getEndDate().getEndSpecify() == EndSpecify.MONTH ?
+                    KfnmtAssignDatelineEnd.toEntity(daily.getEndDate(), patternCD, category) : null
 
             );
         } else {
@@ -276,8 +281,9 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                 this.kfnmtAssignMonthEnd = null;
             }
 
-        } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || entity.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value ||
-            entity.pk.category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
+        } else if (entity.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value
+                || entity.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value
+                || entity.pk.category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
             if (entity.kfnmtAssignDayStart != null) {
                 if (this.kfnmtAssignDayStart == null) {
                     this.kfnmtAssignDayStart = new KfnmtAssignDayStart();
@@ -319,12 +325,11 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                 this.kfnmtAssignDatelineEnd = null;
 
             }
+            this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
+            entity.checkConItems.forEach( item ->{
+                if(!this.checkConItems.contains(item)) this.checkConItems.add(item);
+            });
         }
-
-        this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
-        entity.checkConItems.forEach(item -> {
-            if (!this.checkConItems.contains(item)) this.checkConItems.add(item);
-        });
 
     }
 

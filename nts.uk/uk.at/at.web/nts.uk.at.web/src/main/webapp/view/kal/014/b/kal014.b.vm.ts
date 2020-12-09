@@ -70,7 +70,9 @@ module nts.uk.at.kal014.b {
          * @return type void         *
          * */
         cancel_Dialog(): any {
-            nts.uk.ui.windows.close();
+            const vm = this;
+            vm.$window.close({
+            });
         }
 
         /**

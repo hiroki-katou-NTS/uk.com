@@ -79,6 +79,7 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
         this.alarmPatternName = entity.alarmPatternName;
         this.checkConList.removeIf(c -> !entity.checkConList.contains(c));
         entity.checkConList.forEach(e -> {
+
             Optional<KfnmtWkpCheckCondition> checkCon = this.checkConList.stream().filter(c -> c.pk.equals(e.pk))
                 .findFirst();
             if (checkCon.isPresent()) {

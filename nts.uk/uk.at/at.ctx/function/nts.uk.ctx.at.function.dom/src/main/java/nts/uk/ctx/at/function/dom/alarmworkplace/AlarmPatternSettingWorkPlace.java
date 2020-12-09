@@ -43,13 +43,18 @@ public class AlarmPatternSettingWorkPlace extends AggregateRoot {
 	public AlarmPatternSettingWorkPlace(List<CheckCondition> checkConList, String alarmPatternCD, String companyID,
                                         AlarmPermissionSetting alarmPerSet, String alarmPatternName) {
 		super();
-		if(checkConList.isEmpty())
-			throw new BusinessException("Msg_811");
 		this.checkConList = checkConList;
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
 		this.companyID = companyID;
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
+	}
+
+	public static AlarmPatternSettingWorkPlace create(List<CheckCondition> checkConList, String alarmPatternCD, String companyID,
+										AlarmPermissionSetting alarmPerSet, String alarmPatternName) {
+		if(checkConList.isEmpty())
+			throw new BusinessException("Msg_811");
+		return  new AlarmPatternSettingWorkPlace(checkConList,alarmPatternCD,companyID,alarmPerSet,alarmPatternName);
 	}
 
 	public boolean selectedCheckCodition() {
