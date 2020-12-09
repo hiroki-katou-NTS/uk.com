@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfo
 @Getter
 public class TimeRecordSetUpdateList extends NRLMachineInfo implements DomainAggregate {
 
-	// タイムレコード設定更新
+	// 	タイムレコード設定更新
 	private final List<TimeRecordSetUpdate> lstTRecordSetUpdate;
 
 	public TimeRecordSetUpdateList(EmpInfoTerminalCode empInfoTerCode, EmpInfoTerminalName empInfoTerName,
@@ -24,6 +24,13 @@ public class TimeRecordSetUpdateList extends NRLMachineInfo implements DomainAgg
 			List<TimeRecordSetUpdate> lstTRecordSetUpdate) {
 		super(empInfoTerCode, empInfoTerName, romVersion, modelEmpInfoTer);
 		this.lstTRecordSetUpdate = lstTRecordSetUpdate;
+	}
+	
+	public boolean isWaitingReqRecovery(Integer severalItems) {
+		if (lstTRecordSetUpdate.size() == severalItems) {
+			return true;
+		}
+		return false;
 	}
 
 }
