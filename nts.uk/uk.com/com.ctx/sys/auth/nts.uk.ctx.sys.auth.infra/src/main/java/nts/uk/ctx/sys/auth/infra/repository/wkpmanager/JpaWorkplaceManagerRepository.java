@@ -61,6 +61,9 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ "WHERE wm.CID  =:companyId" + ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) "
 			+ "FOR [FUNCTION_NO] IN ([1],[2],[3]) " + ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC";
 
+	private static final String FIND_BY_WKP_AND_BASEDATE = "SELECT wm FROM SacmtWorkplaceManager wm "
+		+ " WHERE wm.workplaceId = :workplaceId " + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate ";
+
 	private static final String WORKPLACE_SELECT_ALL_CID;
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -200,15 +203,24 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	}
 
 	@Override
-	public List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpId, DatePeriod datePeriod) {
+	public List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod) {
 		List<WorkplaceManager> resultList = new ArrayList<>();
-		CollectionUtil.split(wkpId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_AND_WKPS, SacmtWorkplaceManager.class)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())
 				.setParameter("lstWkpId", subList).getList(c -> c.toDomain()));
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
+
+			return this.queryProxy().query(FIND_BY_WKP_AND_BASEDATE, SacmtWorkplaceManager.class)
+				.setParameter("workplaceId", wkpId)
+				.setParameter("baseDate", baseDate)
+				.getList(c -> c.toDomain());
 	}
 
 	private WorkPlaceSelectionExportData toReportDataTable(NtsResultRecord rec,

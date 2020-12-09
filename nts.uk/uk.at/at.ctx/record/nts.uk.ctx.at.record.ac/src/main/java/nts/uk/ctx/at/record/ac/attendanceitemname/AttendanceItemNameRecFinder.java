@@ -25,6 +25,18 @@ public class AttendanceItemNameRecFinder implements AttendanceItemNameAdapter{
 	}
 
 	@Override
+	public Map<Integer, String> getAttendanceItemNameAsMapName(int typeOfAttendanceItem) {
+		return this.attendanceItemPub.getAttendanceItemName(typeOfAttendanceItem).stream()
+				.collect(Collectors.toMap(c -> c.getAttendanceItemId(), c -> c.getAttendanceItemName()));
+	}
+
+	@Override
+	public Map<Integer, String> getAttendanceItemNameAsMapName(String cid, int typeOfAttendanceItem) {
+		return this.attendanceItemPub.getAttendanceItemName(cid, typeOfAttendanceItem).stream()
+				.collect(Collectors.toMap(c -> c.getAttendanceItemId(), c -> c.getAttendanceItemName()));
+	}
+
+	@Override
 	public List<MonthlyAttendanceItemNameDto> getMonthlyAttendanceItemName(List<Integer> dailyAttendanceItemIds) {
 		List<MonthlyAttendanceItemNameDto> data = attendanceItemPub.getAttendanceItemName(dailyAttendanceItemIds, 2)
 				.stream()

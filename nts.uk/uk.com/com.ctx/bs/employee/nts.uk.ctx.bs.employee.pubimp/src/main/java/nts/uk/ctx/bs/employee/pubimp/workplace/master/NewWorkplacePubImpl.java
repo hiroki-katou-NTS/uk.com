@@ -821,6 +821,22 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		
 		return result;
 	}
+	
+	@Override
+	public List<AffWorkplaceHistoryItemExport3> getWorkHisItemfromWkpIdsAndBaseDate(List<String> workPlaceIds, GeneralDate baseDate) {
+		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWkpHistItemRepo.getAffWrkplaHistItemByListWkpIdAndDate(baseDate, workPlaceIds);
+
+		if (affWrkPlcItems.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		List<AffWorkplaceHistoryItemExport3> result = affWrkPlcItems.stream().map(item -> {
+			return new AffWorkplaceHistoryItemExport3(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
+					item.getNormalWorkplaceId(), item.getWorkLocationCode().isPresent() ? item.getWorkLocationCode().get().toString() : null);
+		}).collect(Collectors.toList());
+
+		return result;
+	}
 
 
 	@Override
@@ -860,7 +876,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	}
 
 	@Override
-	public List<WorkplaceInformationExport> getCidAndPeriod(String companyId, DatePeriod datePeriod) {
+	public List<WorkplaceInformationExport> getByCidAndPeriod(String companyId, DatePeriod datePeriod) {
 
 		//[No.647]期間に対応する職場構成を取得する
 		List<WorkPlaceConfigExport> workPlaceConfigLst = workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod);
@@ -885,4 +901,5 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				)
 			).collect(Collectors.toList());
 	}
+
 }

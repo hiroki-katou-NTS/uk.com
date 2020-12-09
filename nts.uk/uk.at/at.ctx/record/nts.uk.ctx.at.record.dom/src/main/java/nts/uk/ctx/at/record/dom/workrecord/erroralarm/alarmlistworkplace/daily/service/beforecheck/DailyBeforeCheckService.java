@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedCheckDayItems;
@@ -11,10 +13,15 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck.unregistedstamp.UnregistedStampCardService;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.group.AffWorkplaceGroupImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.group.SharedAffWorkplaceGroupAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック（日別）.アルゴリズム.マスタチェック(日別)の集計処理.チェック前の取得するデータ
@@ -32,6 +39,12 @@ public class DailyBeforeCheckService {
     private GetStampCardQuery getStampCardQuery;
     @Inject
     private StampDakokuRepository stampDakokuRepo;
+    @Inject
+    private SharedTempAbsenceAdapter sharedTempAbsenceAdapter;
+    @Inject
+    private SharedAffWorkplaceGroupAdapter sharedAffWorkplaceGroupAdapter;
+    @Inject
+    private ExBudgetDailyAdapter exBudgetDailyAdapter;
 
     /**
      * チェック前の取得するデータ
@@ -65,8 +78,8 @@ public class DailyBeforeCheckService {
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.LEAVE.equals(x.getFixedCheckDayItems()))) {
             // 社員（List）と期間から休職休業を取得する
-            // TODO Q&A 36518
-            data.setEmpLeaves(new ArrayList<>());
+            TempAbsenceImport tempAbsence = sharedTempAbsenceAdapter.getTempAbsence(cid, period, employeeIds);
+            data.setTempAbsence(tempAbsence);
         }
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.CARD_UNREGISTERD_STAMP.equals(x.getFixedCheckDayItems()))) {
@@ -78,9 +91,15 @@ public class DailyBeforeCheckService {
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.PLAN_NOT_REGISTERED_PEOPLE.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.PLAN_NOT_REGISTERED_TIME.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.PLAN_NOT_REGISTERED_AMOUNT.equals(x.getFixedCheckDayItems()))) {
+            // ドメインモデル「職場グループ所属情報」を取得する
+            List<AffWorkplaceGroupImport> wpGroups = sharedAffWorkplaceGroupAdapter.getByListWkpIds(cid, workplaceIds);
+            List<String> wpGroupIds = wpGroups.stream().map(AffWorkplaceGroupImport::getWKPGRPID).distinct().collect(Collectors.toList());
+            List<TargetOrgIdenInforImport> targetOrgs = wpGroupIds.stream().map(x ->
+                    new TargetOrgIdenInforImport(1, Optional.empty(), Optional.of(x)))
+                    .collect(Collectors.toList());
             // ドメインモデル「日次の外部予算実績」を取得
-            // TODO Q&A 36545
-            data.setDailyExtBudgets(new ArrayList<>());
+            List<ExBudgetDailyImport> exBudgetDailies = exBudgetDailyAdapter.getByLstTargetOrgAndPeriod(targetOrgs, period);
+            data.setExBudgetDailies(exBudgetDailies);
         }
 
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.STAMPING_BEFORE_JOINING.equals(x.getFixedCheckDayItems()) ||

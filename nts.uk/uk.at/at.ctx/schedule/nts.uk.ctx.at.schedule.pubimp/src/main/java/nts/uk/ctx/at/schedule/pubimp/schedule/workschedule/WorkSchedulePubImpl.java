@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.BreakTimeOfDailyAttdExport;
@@ -44,6 +45,14 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 		return Optional.empty();
 	}
 
+	@Override
+	public List<WorkScheduleExport> getList(List<String> sids, DatePeriod period) {
+
+		List<WorkSchedule> data = workScheduleRepository.getList(sids, period);
+		return data.stream().map(this::convertToWorkSchedule).collect(Collectors.toList());
+
+	}
+
 	private WorkScheduleExport convertToWorkSchedule(WorkSchedule data) {
 		
 		TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd = null;
@@ -61,6 +70,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				)).collect(Collectors.toList());
 
 		WorkScheduleExport workScheduleExport = new WorkScheduleExport(
+				data.getEmployeeID(),
 				data.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
 				data.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
 						: data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),

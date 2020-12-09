@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.function.pub.attendanceitemname;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Value
+@Getter
+@AllArgsConstructor
 public class AttendanceItemExport {
 	
 	private int attendanceItemId;

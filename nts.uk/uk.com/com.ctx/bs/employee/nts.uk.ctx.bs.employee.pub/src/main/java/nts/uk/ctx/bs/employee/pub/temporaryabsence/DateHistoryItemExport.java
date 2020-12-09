@@ -7,13 +7,10 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class DateHistoryItemExport {
 
-    public String historyId;
-    public GeneralDate startDate;
-    public GeneralDate endDate;
-
+    private String historyId;
+    private GeneralDate startDate;
+    private GeneralDate endDate;
 }

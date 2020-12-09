@@ -5,7 +5,7 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
 >
 <body>
-<ui:composition template="../../../../master/dialogsidebar.xhtml">
+<ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="sidebar-head">
         <com:ValidatorScript>
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode
@@ -22,15 +22,18 @@
         <!--I1-->
         <ul class="navigator" tabindex="1">
             <!--I_1-->
-            <li  data-bind="click: onCompanySelect"><a tabindex="-1" data-id="0"  href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}
+            <li  data-bind="click: onCompanySelect, visible: $vm.$user.role.isInCharge.attendance">
+                <a tabindex="-1" data-id="0" id="panel-1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}
             </a></li>
             <!--I1_2-->
-            <li data-bind="click: onOrganizationSelect"><a tabindex="-1" data-id="1" href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('KSM008_184')}
+            <li data-bind="click: onOrganizationSelect">
+                <a tabindex="-1" data-id="1" id="panel-2" href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('KSM008_184')}
             </a></li>
         </ul>
     </ui:define>
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel">
+        <div id="tabpanel-1" role="tabpanel" data-bind="visible:  $vm.$user.role.isInCharge.attendance">
+            <com:ko tag="if" bind="$vm.$user.role.isInCharge.attendance">
             <div class="sidebar-content-header custom-header" >
                 <div>
                     <span class="title">#{i18n.getText('Com_Company')}</span>
@@ -51,12 +54,14 @@
                     <div class="label class-padding-btm-5"
                          data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
                     </div>
-                    <!-- I4_1-->
-                    <div class="label warning color-black"
-                         style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div>
-                    <!-- I4_2-->
-                    <div class="label warning color-black" style="padding-top: 0;white-space: pre-wrap;"
-                         data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
+
+                    <div class="label warning color-black">
+                        <!-- I4_1-->
+                        <div >#{i18n.getText('KSM008_189')}</div>
+                        <!-- I4_2-->
+                        <div style="padding-top: 0;white-space: pre-wrap;"
+                             data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
+                    </div>
                 </div>
                 <div class="table" style="margin-top: 8px;">
                     <div class="cell valign-top">
@@ -104,7 +109,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_3 -->
-                                <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.iScreenWorkingHour.workHour, enable: false}"/>
+                                <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.iScreenWorkingHour.workHour, enable: true, readonly: true}"/>
                             </div>
                         </div>
                         <div class="table" style="margin-top: 7px;">
@@ -124,6 +129,7 @@
                     </div>
                 </div>
             </div>
+            </com:ko>
         </div>
         <div id="tabpanel-2" role="tabpanel">
             <ui:include src="../j/index.xhtml" />

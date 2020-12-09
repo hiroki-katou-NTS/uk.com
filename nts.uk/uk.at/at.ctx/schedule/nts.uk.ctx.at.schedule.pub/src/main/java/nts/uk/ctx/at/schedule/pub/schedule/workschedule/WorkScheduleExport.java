@@ -17,6 +17,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class WorkScheduleExport  {
+
+	private String employeeId;
 	
 	private String workTyle;
 	
@@ -31,9 +33,10 @@ public class WorkScheduleExport  {
 	
 	private List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = new ArrayList<>();
 
-	public WorkScheduleExport(String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
+	public WorkScheduleExport(String employeeId, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd,List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily) {
 		super();
+		this.employeeId = employeeId;
 		this.workTyle = workTyle;
 		this.workTime = workTime;
 		this.goStraightAtr = goStraightAtr;

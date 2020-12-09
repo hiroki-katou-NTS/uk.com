@@ -22,7 +22,7 @@ public enum AverageTime {
     /* 残業時間合計 */
     TOTAL_OVERTIME_HOURS(5, "残業時間合計"),
     /* 休出時間合計 */
-    TOTAL_VÂCTION_HOURS(6, "休出時間合計"),
+    TOTAL_VACATION_HOURS(6, "休出時間合計"),
     /* 深夜合計（内、外） */
     TOTAL_LATE_NIGHT(7, "深夜合計（内、外）"),
     /* フレックス時間 */

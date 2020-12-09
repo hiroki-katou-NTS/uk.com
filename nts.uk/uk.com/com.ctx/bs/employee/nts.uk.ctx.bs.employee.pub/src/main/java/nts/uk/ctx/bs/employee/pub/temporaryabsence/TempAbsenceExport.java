@@ -5,11 +5,12 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter
+/**
+ * @author Le Huu Dat
+ */
 @AllArgsConstructor
+@Getter
 public class TempAbsenceExport {
-
-    private List<EmployeeLeaveHistoryExport> leaveHists;
-    private List<TempAbsenceHisItemDto> leaveHistItems;
-
+    private List<TempAbsenceHistoryExport> histories;
+    private List<TempAbsenceHisItemExport> historyItem;
 }

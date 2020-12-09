@@ -30,6 +30,8 @@ public interface WorkplaceManagerRepository {
 	//Export Data
 	List<WorkPlaceSelectionExportData> findAllWorkPlaceSelection(String companyId, List<WorkPlaceFunction> functionNo);
 
-	List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpId, DatePeriod datePeriod);
+	List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod);
+
+	List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
 
 }

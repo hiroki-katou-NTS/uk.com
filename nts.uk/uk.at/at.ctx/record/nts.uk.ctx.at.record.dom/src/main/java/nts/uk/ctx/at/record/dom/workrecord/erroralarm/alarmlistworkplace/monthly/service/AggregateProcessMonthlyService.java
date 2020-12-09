@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service;
 
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.ArbitaryExtractCondCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.beforemonthlyaggregate.BeforeMonthlyAggregateService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.beforemonthlyaggregate.MonthlyCheckDataDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.FixedExtractCondCheckService;
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Le Huu Dat
  */
 @Stateless
-public class AggregateProcessMasterCheckMonthlyService {
+public class AggregateProcessMonthlyService {
 
     @Inject
     private FixedExtractionMonthlyConRepository fixedExtractionMonthlyConRepo;
@@ -32,18 +32,20 @@ public class AggregateProcessMasterCheckMonthlyService {
     private BeforeMonthlyAggregateService beforeMonthlyAggregateService;
     @Inject
     private FixedExtractCondCheckService fixedExtractCondCheckService;
+    @Inject
+    private ArbitaryExtractCondCheckService arbitaryExtractCondCheckService;
 
     /**
      * 月次の集計処理
      *
      * @param cid                 会社ID
-     * @param period              年月
+     * @param ym                  年月
      * @param fixedExtractCondIds List＜固定抽出条件ID＞
      * @param extractCondIds      List＜任意抽出条件ID＞
      * @param workplaceIds        List<職場ID＞
      * @return List＜アラームリスト抽出情報（職場）＞
      */
-    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> fixedExtractCondIds,
+    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, YearMonth ym, List<String> fixedExtractCondIds,
                                                              List<String> extractCondIds, List<String> workplaceIds) {
         // ドメインモデル「アラームリスト（職場）月次の固定抽出条件」を取得
         List<FixedExtractionMonthlyCon> fixExtractMonthlyCons = fixedExtractionMonthlyConRepo.getBy(fixedExtractCondIds, true);
@@ -52,18 +54,15 @@ public class AggregateProcessMasterCheckMonthlyService {
         List<ExtractionMonthlyCon> extractMonthlyCons = extractionMonthlyConRepo.getBy(extractCondIds, true);
 
         // 月次の集計する前のデータを準備
-        MonthlyCheckDataDto data = beforeMonthlyAggregateService.prepareData(workplaceIds, period, fixExtractMonthlyCons, extractMonthlyCons);
-
-        // チェック条件をチェック
-        // TODO Q&A 36924
+        MonthlyCheckDataDto data = beforeMonthlyAggregateService.prepareData(workplaceIds, ym);
 
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
 
         // 固定抽出条件をチェック
-        alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), fixExtractMonthlyCons,
-                YearMonth.of(period.start().year(), period.start().month()), data.getClosures()));
+        alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), fixExtractMonthlyCons, ym, data.getClosures()));
 
         // 任意抽出条件をチェック
+        alarmListResults.addAll(arbitaryExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), extractMonthlyCons, ym, data.getAttendanceTimeOfMonthlies()));
 
         // リスト「アラーム抽出結果（職場別）」を返す。
         return alarmListResults;

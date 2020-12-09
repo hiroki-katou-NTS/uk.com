@@ -3,7 +3,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
 >
     <div class="sidebar-content-header">
-        <span class="title" data-bind="text: $i18n('Com_Company')"/>
+        <span class="title" data-bind="text: $i18n('KSM008_50')"/>
         <!-- D2_1 -->
         <a class="goback" tabindex="2"
            data-bind="text: $i18n('KSM008_51'), ntsLinkButton: { jump: backButton }"/>
@@ -20,15 +20,17 @@
         <div class="padding-15">
             <div>
                 <!-- D3_1 -->
-                <span class="label"  style="margin-top: 7px;" data-bind="text: conditionCodeAndName"/>
+                <span class="label"  style="margin-top: 7px;; margin-bottom: 7px;" data-bind="text: conditionCodeAndName"/>
                 <!-- D3_2 -->
                 <button tabindex="6"
                         data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
             </div>
-            <!-- D5_1 -->
-            <div class="label-warning" style="padding: 10px 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
-            <!-- D5_2 -->
-            <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
+            <div class="label-warning" >
+                <!-- D5_1 -->
+                <div data-bind="text: $i18n('KSM008_56')" />
+                <!-- D5_2 -->
+                <div style="white-space: pre-wrap;" data-bind="text: conditionDescription"/>
+            </div>
             <div class="cell valign-center" style="padding-top: 5px">
                 <!-- E1_1 -->
                 <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_77') }"/>
@@ -39,11 +41,10 @@
                 <!-- E1_4 -->
                 <span class="title" data-bind="text: workplaceName"/>
             </div>
-        </div>
-        <div>
             <!-- E2 -->
             <hr/>
         </div>
+
         <div class="table margin-15">
             <div class="cell">
                 <!-- E3 -->

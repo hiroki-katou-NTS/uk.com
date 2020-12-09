@@ -2,7 +2,7 @@ module nts.uk.at.kal011.c {
 
     const PATH_API = {
         //TODO wrote api path
-        sendEmail: "",
+        sendEmail: "at/function/alarm/alarm-list/send-email",
         getWorkPlace: "",
     }
 
@@ -120,7 +120,28 @@ module nts.uk.at.kal011.c {
             const vm = this;
             vm.$blockui("invisible");
             let command = {
-                //TODO write params matching with server side logic
+                workplaceIds: [
+                    "00000000-0000-0000-0000-000000000110"
+                ],
+                listValueExtractAlarmDto: [
+                    {
+                        guid: "dc3c8915-b1d2-411a-b8ad-e106751d81bc",
+                        workplaceID: "1b70774e-8e1c-4b4d-a71d-153261886c74",
+                        hierarchyCd: "",
+                        workplaceName: "第一開発部",
+                        employeeID: "0117dcfc-200b-46e8-a734-d87f1d563b82",
+                        employeeCode: "000001",
+                        employeeName: "0110の社員1",
+                        alarmValueDate: "2019/01/01",
+                        category: 5,
+                        categoryName: "日次",
+                        alarmItem: "6666",
+                        alarmValueMessage: "勤務種類:土曜休日,日曜休日 　計画所定労働時間 + 早退控除時間1 ≠ 323:43",
+                        comment: "24",
+                        checkedValue: "00:00"
+                    }
+                ],
+                currentAlarmCode : null
             };
             vm.$ajax(PATH_API.sendEmail, command).done((data) => {
                 vm.$dialog.info({messageId: "Msg_207"})

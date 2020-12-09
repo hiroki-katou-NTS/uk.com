@@ -195,7 +195,7 @@ module nts.uk.ui.calendar {
                 text-align: center;
             }
             .calendar .calendar-container .month .week .day .status span {
-                color: gray;
+                color: #404040;
                 font-size: 9px;
 				font-weight: 600;
 				display: block;
@@ -232,9 +232,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffff00;
 			}
             .calendar .calendar-container .month:not(.title) .week .day.holiday .status,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status,
-            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status span {
+            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span {
                 color: #f00;
 			}
             .calendar .calendar-container .month .week .day .data-info {
@@ -246,7 +244,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffffff;
 			}
 			.calendar .calendar-container .month .week .day.diff-month .data-info {
-				background-color: #d9d9d9;
+				background-color: #ddddd2;
 			}
 			.calendar .event-popper {
 				top: 0px;

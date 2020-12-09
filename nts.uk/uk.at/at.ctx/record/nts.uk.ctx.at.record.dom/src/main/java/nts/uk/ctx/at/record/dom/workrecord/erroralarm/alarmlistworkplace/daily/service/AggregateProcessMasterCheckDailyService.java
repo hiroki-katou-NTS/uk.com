@@ -67,8 +67,8 @@ public class AggregateProcessMasterCheckDailyService {
 
         // チェック処理
         // 取得したList＜アラーム抽出結果（職場別）＞を返す
-        return dailyCheckService.process(cid, empInfosByWpMap, data.getPersonInfos(), data.getEmpLeaves(),
-                data.getUnregistedStampCardsByWpMap(), data.getDailyExtBudgets(),
+        return dailyCheckService.process(cid, empInfosByWpMap, data.getPersonInfos(), data.getTempAbsence(),
+                data.getUnregistedStampCardsByWpMap(), data.getExBudgetDailies(),
                 period, fixedExtractDayCons, fixedExtractDayItems, data.getStampsByEmpMap());
     }
 }

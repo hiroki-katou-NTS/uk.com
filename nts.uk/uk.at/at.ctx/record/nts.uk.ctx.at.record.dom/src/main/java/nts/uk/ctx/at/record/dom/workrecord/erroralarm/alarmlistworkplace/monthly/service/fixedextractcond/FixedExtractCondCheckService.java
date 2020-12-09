@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided.MonthlyUndecidedCheckService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -44,18 +45,18 @@ public class FixedExtractCondCheckService {
      */
     public List<AlarmListExtractionInfoWorkplaceDto> check(String cid, Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
                                                            List<FixedExtractionMonthlyCon> fixExtractMonthlyCons,
-                                                           YearMonth ym, List<Object> closures) {
+                                                           YearMonth ym, List<ClosureResultDto> closures) {
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
         List<FixedCheckMonthlyItemName> nos = fixExtractMonthlyCons.stream().map(FixedExtractionMonthlyCon::getNo)
                 .collect(Collectors.toList());
         // ドメインモデル「アラームリスト（職場）月次の固定抽出項目」を取得
         List<FixedExtractionMonthlyItems> items = fxedExtractionMonthlyItemsRepo.getBy(nos);
 
-        // 取得した「アラームリスト（職場）月次の固定抽出項目」をループする
-        for (FixedExtractionMonthlyItems item : items) {
+        // Input．List＜アラームリスト（職場）月次の固定抽出条件＞をループする
+        for (FixedExtractionMonthlyCon fixCond : fixExtractMonthlyCons) {
             List<ExtractResultDto> extractResults = new ArrayList<>();
             // Noをチェック
-            switch (item.getNo()) {
+            switch (fixCond.getNo()) {
                 case MONTHLY_UNDECIDED:
                     // 月次データ未確定をチェックする
                     extractResults = monthlyUndecidedCheckService.check(cid, empInfosByWpMap, closures, ym);
@@ -66,8 +67,7 @@ public class FixedExtractCondCheckService {
             if (CollectionUtil.isEmpty(extractResults)) continue;
 
             // 「アラームリスト抽出情報（職場）」の値をセット
-            // TODO Q&A 37098
-            alarmListResults.add(new AlarmListExtractionInfoWorkplaceDto(null, 4, extractResults));
+            alarmListResults.add(new AlarmListExtractionInfoWorkplaceDto(fixCond.getErrorAlarmWorkplaceId(), 4, extractResults));
         }
 
         // List＜アラームリスト抽出情報（職場）＞を返す

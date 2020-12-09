@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.pub.temporaryabsence;
+package nts.uk.ctx.at.shared.dom.adapter.temporaryabsence;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class EmployeeLeaveHistoryExport {
+public class TempAbsenceHistoryImport {
 
     /**
      * 会社ID
@@ -22,6 +22,6 @@ public class EmployeeLeaveHistoryExport {
     /**
      * 期間
      */
-    private List<DateHistoryItemExport> dateHistoryItems;
+    private List<DateHistoryItemImport> dateHistoryItems;
 
 }

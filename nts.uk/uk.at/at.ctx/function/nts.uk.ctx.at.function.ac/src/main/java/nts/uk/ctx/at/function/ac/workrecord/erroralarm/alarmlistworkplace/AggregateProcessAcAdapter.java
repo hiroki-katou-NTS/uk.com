@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.ac.workrecord.erroralarm.alarmlistworkplace;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
@@ -42,12 +43,20 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
     }
 
     @Override
-    public List<AlarmListExtractInfoWorkplace> processMasterCheckSchedule(String cid, DatePeriod period,
-                                                                          List<String> alarmCheckWkpId,
-                                                                          List<String> optionalIds,
-                                                                          List<String> workplaceIds) {
-        return convert(aggregateProcessPub.processMasterCheckSchedule(cid, period, alarmCheckWkpId, optionalIds, workplaceIds));
+    public List<AlarmListExtractInfoWorkplace> processSchedule(String cid, DatePeriod period,
+                                                               List<String> fixedExtractCondIds,
+                                                               List<String> extractCondIds,
+                                                               List<String> workplaceIds) {
+        return convert(aggregateProcessPub.processSchedule(cid, period, fixedExtractCondIds, extractCondIds, workplaceIds));
 
+    }
+
+    @Override
+    public List<AlarmListExtractInfoWorkplace> processMonthly(String cid, YearMonth ym,
+                                                              List<String> fixedExtractCondIds,
+                                                              List<String> extractCondIds,
+                                                              List<String> workplaceIds) {
+        return convert(aggregateProcessPub.processMonthly(cid, ym, fixedExtractCondIds, extractCondIds, workplaceIds));
     }
 
     private List<AlarmListExtractInfoWorkplace> convert(List<AlarmListExtractionInfoWorkplaceExport> data) {

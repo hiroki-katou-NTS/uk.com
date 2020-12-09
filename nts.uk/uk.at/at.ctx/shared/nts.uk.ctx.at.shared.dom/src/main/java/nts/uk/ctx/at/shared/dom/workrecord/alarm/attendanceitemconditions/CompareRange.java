@@ -57,4 +57,9 @@ public class CompareRange<V> implements CheckConditions<V> {
                 return false;
         }
     }
+
+    @Override
+    public boolean isSingleValue() {
+        return false;
+    }
 }
