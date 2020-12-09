@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  */
 @AllArgsConstructor
 @Getter
-public class EmploymentEstimateAmount implements  DomainAggregate{
+public class EstimateAmountForEmployment implements  DomainAggregate{
 	
 	/** 雇用コード*/
 	private final  EmploymentCode employmentCode;

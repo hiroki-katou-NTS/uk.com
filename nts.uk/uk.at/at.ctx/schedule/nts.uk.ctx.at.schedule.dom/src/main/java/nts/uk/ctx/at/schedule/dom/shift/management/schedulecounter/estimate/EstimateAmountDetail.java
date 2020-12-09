@@ -10,9 +10,9 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 @Value
 public class EstimateAmountDetail implements DomainValue{
 	/** 年間目安金額 */
-	private EstimateAmounts yearEstimatePrice;
+	private final EstimateAmountList yearEstimatePrice;
 	
 	/** 月度目安金額*/
-	private EstimateAmounts monthEstimatePrice;
+	private final EstimateAmountList monthEstimatePrice;
 
 }		

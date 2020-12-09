@@ -21,13 +21,13 @@ public class EstimatePriceDetailTest {
 	
 	@Test
 	public void create_estimatePrices_success() {
-		val yearEstimatePrice = EstimateAmounts.create(Arrays.asList(
+		val yearEstimatePrice = EstimateAmountList.create(Arrays.asList(
 				  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 				));
 		
-		val monthEstimatePrice = EstimateAmounts.create(Arrays.asList(
+		val monthEstimatePrice = EstimateAmountList.create(Arrays.asList(
 				  EstimateAmountByCondition.create(new EstimateAmountNo(1), 1000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(2), 2000)
 				, EstimateAmountByCondition.create(new EstimateAmountNo(3), 3000)
@@ -49,8 +49,8 @@ public class EstimatePriceDetailTest {
 		}
 		
 		/**　年間目安金額を作成する*/
-		public static EstimateAmounts createYearEstimatePrices() {
-			return EstimateAmounts.create(Arrays.asList(
+		public static EstimateAmountList createYearEstimatePrices() {
+			return EstimateAmountList.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
@@ -58,8 +58,8 @@ public class EstimatePriceDetailTest {
 		}
 		
 		/**　月度目安金額を作成する*/
-		public static EstimateAmounts createMonthEstimatePrices() {
-			return EstimateAmounts.create(Arrays.asList(
+		public static EstimateAmountList createMonthEstimatePrices() {
+			return EstimateAmountList.create(Arrays.asList(
 					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 1000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 2000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 3000)

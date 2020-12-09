@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.estimate;
 
 import java.util.Optional;
 
-public interface UsageSettingReposity {
+public interface UsageSettingRepository {
 
 	/**
 	 * 

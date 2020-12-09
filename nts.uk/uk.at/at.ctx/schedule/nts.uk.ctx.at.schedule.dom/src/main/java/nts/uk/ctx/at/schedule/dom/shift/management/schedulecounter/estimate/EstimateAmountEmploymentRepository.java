@@ -5,20 +5,20 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
-public interface EmploymentEstimateAmountRepository {
+public interface EstimateAmountEmploymentRepository {
 	/**
 	 * 
 	 * @param cid 会社ID
 	 * @param employEstimateAmount 雇用の目安金額
 	 */
-	void insert(String cid, EmploymentEstimateAmount employEstimateAmount);
+	void insert(String cid, EstimateAmountForEmployment employEstimateAmount);
 	
 	/**
 	 * 
 	 * @param cid 会社ID
 	 * @param employEstimateAmount 雇用の目安金額
 	 */
-	void update(String cid, EmploymentEstimateAmount employEstimateAmount);
+	void update(String cid, EstimateAmountForEmployment employEstimateAmount);
 	
 	/**
 	 * 
@@ -34,7 +34,7 @@ public interface EmploymentEstimateAmountRepository {
 	 * @param employmentCd 雇用コード
 	 * @return
 	 */
-	Optional<EmploymentEstimateAmount> getEmploymentEstimateAmount(String cid, EmploymentCode employmentCd);
+	Optional<EstimateAmountForEmployment> getEmploymentEstimateAmount(String cid, EmploymentCode employmentCd);
 
 	
 	/**
@@ -42,7 +42,7 @@ public interface EmploymentEstimateAmountRepository {
 	 * @param cid 会社ID
 	 * @return
 	 */
-	List<EmploymentEstimateAmount> getAllEmploymentEstimateAmount(String cid);
+	List<EstimateAmountForEmployment> getAllEmploymentEstimateAmount(String cid);
 	
 	/**
 	 * 

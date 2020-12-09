@@ -38,7 +38,7 @@ public class RegisterCompanyEstimatePriceServiceTest {
 			}
 		};
 		
-		val ceAmount = new CompanyEstimateAmount(detail);
+		val ceAmount = new EstimateAmountForCompany(detail);
 		
 		NtsAssert.atomTask(
 				
@@ -55,7 +55,7 @@ public class RegisterCompanyEstimatePriceServiceTest {
 	 * 期待: 会社の目安金額: 変更, 目安金額の扱い: 変更
 	 */
 	@Test
-	public void update(@Mocked CompanyEstimateAmount ceAmountExist) {
+	public void update(@Mocked EstimateAmountForCompany ceAmountExist) {
 		
 		new Expectations() {
 			{
@@ -95,7 +95,7 @@ public class RegisterCompanyEstimatePriceServiceTest {
 			}
 		};
 		
-		val ceAmount = new CompanyEstimateAmount(detail);
+		val ceAmount = new EstimateAmountForCompany(detail);
 		
 		NtsAssert.atomTask(
 				

@@ -19,7 +19,7 @@ public class RegisterCompanyEstimateAmountService {
 	 * @return
 	 */
 	public static AtomTask regiter(Require require, EstimateAmountDetail detail, HandingOfEstimateAmount heAmount) {
-		Optional<CompanyEstimateAmount> ceAmountOpt = require.getCompanyEstimateAmount();
+		Optional<EstimateAmountForCompany> ceAmountOpt = require.getCompanyEstimateAmount();
 		Optional<HandingOfEstimateAmount> heAmountExist = require.getHandingOfEstimateAmount();
 		
 		return AtomTask.of(() -> {
@@ -27,7 +27,7 @@ public class RegisterCompanyEstimateAmountService {
 				ceAmountOpt.get().update(detail);
 				require.updateCompanyEstimateAmount(ceAmountOpt.get());
 			}else {
-				require.insertCompanyEstimateAmount(new CompanyEstimateAmount(detail));
+				require.insertCompanyEstimateAmount(new EstimateAmountForCompany(detail));
 			}
 			
 			if(heAmountExist.isPresent()) {
@@ -41,13 +41,13 @@ public class RegisterCompanyEstimateAmountService {
 	
 	public static interface Require{
 		/** [R-1]  会社の目安金額を取得する  */
-		Optional<CompanyEstimateAmount> getCompanyEstimateAmount();
+		Optional<EstimateAmountForCompany> getCompanyEstimateAmount();
 		
 		/** [R-2] 会社の目安金額を新規する */
-		void insertCompanyEstimateAmount(CompanyEstimateAmount ceAmount);
+		void insertCompanyEstimateAmount(EstimateAmountForCompany ceAmount);
 		
 		/**	[R-3] 会社の目安金額を変更する*/
-		void updateCompanyEstimateAmount(CompanyEstimateAmount ceAmount);
+		void updateCompanyEstimateAmount(EstimateAmountForCompany ceAmount);
 		
 		/**　[R-4]  目安金額の扱いを取得する*/
 		Optional<HandingOfEstimateAmount> getHandingOfEstimateAmount();

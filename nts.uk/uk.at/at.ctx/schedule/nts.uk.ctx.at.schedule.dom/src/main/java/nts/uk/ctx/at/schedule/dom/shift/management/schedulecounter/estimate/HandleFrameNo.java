@@ -13,6 +13,6 @@ public class HandleFrameNo implements DomainValue{
 	private final EstimateAmountNo estimateAmountNo;
 	
 	/** 背景色 */
-	private ColorCode backgroundColor;
+	private final ColorCode backgroundColor;
 
 }

@@ -12,7 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyEstimateAmount implements DomainAggregate{	
+public class EstimateAmountForCompany implements DomainAggregate{	
 	/**　目安金額詳細　*/
 	private EstimateAmountDetail detail;
 	
@@ -21,7 +21,7 @@ public class CompanyEstimateAmount implements DomainAggregate{
 	 * @param detail 目安金額詳細
 	 */
 	public void update(EstimateAmountDetail detail) {
-		this.detail = new EstimateAmountDetail(detail.getYearEstimatePrice(), detail.getMonthEstimatePrice());
+		this.detail = detail;
 	}
 	
 }

@@ -22,7 +22,7 @@ public class CompanyEstimateAmountTest {
 	@Test
 	public void testUpdate() {
 		val detail = Helper.createEstDetailPrice();
-        val ceAmount = new CompanyEstimateAmount();
+        val ceAmount = new EstimateAmountForCompany();
         
         ceAmount.update(detail);
         
@@ -35,16 +35,16 @@ public class CompanyEstimateAmountTest {
 			return new EstimateAmountDetail(Helper.createYearEstAmount(), Helper.createMonthEstAmount());
 		}
 
-		public static EstimateAmounts createYearEstAmount() {
-			return EstimateAmounts.create(Arrays.asList(EstimateAmountByCondition.create(
+		public static EstimateAmountList createYearEstAmount() {
+			return EstimateAmountList.create(Arrays.asList(EstimateAmountByCondition.create(
 					  new EstimateAmountNo(1), 90000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
 					));
 		}
 
-		public static EstimateAmounts createMonthEstAmount() {
-			return EstimateAmounts.create(Arrays.asList(EstimateAmountByCondition.create(
+		public static EstimateAmountList createMonthEstAmount() {
+			return EstimateAmountList.create(Arrays.asList(EstimateAmountByCondition.create(
 					  new EstimateAmountNo(1), 1000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 2000)
 					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 3000)
