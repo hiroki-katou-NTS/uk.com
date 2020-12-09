@@ -87,7 +87,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       const $userImage = $('#user-image');
       vm.$blockui('grayout');
-      vm.$ajax(API.getAvatar)
+      vm.$ajax('com', API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
           if (vm.avatarInfo().fileId && vm.avatarInfo().fileId !== null) {
@@ -223,7 +223,7 @@ module nts.uk.com.view.ccg020.a {
         searchCategory: vm.searchCategory(),
         contents: vm.valueSearch()
       });
-      vm.$ajax(API.saveHistorySearch, command)
+      vm.$ajax('com', API.saveHistorySearch, command)
         .then(() => vm.get10LastResults())
         .always(() => vm.$blockui('clear'));
     }
@@ -231,7 +231,7 @@ module nts.uk.com.view.ccg020.a {
     private removeHistoryResult(command: GeneralSearchHistoryCommand) {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.removeHistorySearch, command)
+      vm.$ajax('com', API.removeHistorySearch, command)
         .then(() => vm.get10LastResults())
         .always(() => vm.$blockui('clear'));
     }
@@ -240,7 +240,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       $('#list-box-search').remove();
       vm.$blockui('grayout');
-      vm.$ajax(`${API.get10LastResults}/${vm.searchCategory()}`)
+      vm.$ajax('com', `${API.get10LastResults}/${vm.searchCategory()}`)
         .then((response) => {
           vm.dataDisplay(response);
           vm.displayResultSearchHistory();
@@ -301,7 +301,7 @@ module nts.uk.com.view.ccg020.a {
     private isDisplayWarning() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.isDisplayWarning)
+      vm.$ajax('com', API.isDisplayWarning)
         .then((response) => {
           vm.$blockui('clear');
           vm.isDisplayWarningMsg(response);
@@ -312,7 +312,7 @@ module nts.uk.com.view.ccg020.a {
     private isDisplayNewNoticeFunc() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.isDisplayNewNotice)
+      vm.$ajax('com', API.isDisplayNewNotice)
         .then((response) => {
           vm.$blockui('clear');
           vm.isDisplayNewNotice(response);
@@ -323,7 +323,7 @@ module nts.uk.com.view.ccg020.a {
     private checkCanSearchManual() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.checkSearchManual)
+      vm.$ajax('com', API.checkSearchManual)
         .then((response) => {
           vm.$blockui('clear');
           if (response) {

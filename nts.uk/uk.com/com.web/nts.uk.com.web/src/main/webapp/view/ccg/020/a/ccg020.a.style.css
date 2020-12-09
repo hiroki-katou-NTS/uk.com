@@ -1,31 +1,22 @@
 #message {
   display: inline-block;
 }
-
 .img {
   width: 20px;
   position: relative;
   top: 5px;
   padding-left: 20px;
 }
-
 #search-bar {
   display: inline-block;
 }
-
-/* #header #menu-header #logo-area > #user-info {
-  top: -10px;
-} */
-
 #search-bar button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
 }
-
 #popup-search-category .ntsRadioBox {
   display: block;
   color: black;
 }
-
 #search-icon {
   background-size: auto !important;
   top: 10px;
@@ -33,7 +24,6 @@
   cursor: pointer;
   left: 5px;
 }
-
 .result-search {
   display: block;
   line-height: 2;
@@ -41,31 +31,26 @@
   padding-right: 10px;
   width: 163px;
 }
-
 #popup-result, #popup-search {
   min-width: 182px;
   padding: 0;
 }
-
 ul#list-box-search {
   list-style-type: none;
   margin: 0;
   padding: 0;
   cursor: context-menu;
 }
-
 #list-box {
   display: grid;
   color: black;
 }
-
 .img-timer {
   width: 30px;
   background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
   background-repeat: no-repeat;
   display: block;  /* may not need this, but I've found I do */
 }
-
 .icon-close:hover {
   background-color:	#F2F2F2;
   border-radius: 50%;
@@ -75,7 +60,6 @@ ul#list-box-search {
   width: 14px;
   opacity: 0.5;
 }
-
 .result-search-history {
   height: 25px;
   margin: auto;
@@ -85,11 +69,9 @@ ul#list-box-search {
   width: 162px;
   color: black;
 }
-
 .result-search-history:hover {
   background-color: #F2F2F2;
 }
-
 .text-li {
   padding-left: 35px;  /* width of the image plus a little extra padding */
   background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
@@ -108,15 +90,12 @@ ul#list-box-search {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 #search-bar .ntsControl .nts-input.enterkey {
   background-image: none;
 }
-
 #popup-search-category label.ntsRadioBox {
   padding: 5px;
 }
-
 #popup-search-category {
   width: 150px;
 }
@@ -140,7 +119,6 @@ div#user-image {
   height: 22px;
   width: 28px;
 }
-
 #avatar_id_ccg020 {
   background-color: #eeeeee;
   font-size: 11px;
@@ -152,17 +130,14 @@ div#user-image {
   border-radius: 50%;
   padding: 2px;
 }
-
 #header #menu-header #logo-area > #user-info {
   position: absolute;
   top: -10px;
   right: 0px;
 }
-
 div#operation-info {
   display: none;
 }
-
 #new-notice-msg {
   position: relative;
   right: 15px;
