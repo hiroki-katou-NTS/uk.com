@@ -854,7 +854,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				output.getAppDispInfoStartup()
 					.getAppDispInfoWithDateOutput()
 					.getOpPreAppContentDisplayLst()
-					.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+					.flatMap(y -> y.getApOptional())
+					.map(z -> z.getApplicationTime())
 					.orElse(null),
 				output.getInfoWithDateApplicationOp()
 					.map(x -> x.getApplicationTime().orElse(null))
@@ -947,7 +949,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				output.getAppDispInfoStartup()
 					.getAppDispInfoWithDateOutput()
 					.getOpPreAppContentDisplayLst()
-					.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+					.flatMap(y -> y.getApOptional())
+					.map(z -> z.getApplicationTime())
 					.orElse(null),
 				output.getInfoWithDateApplicationOp()
 					.map(x -> x.getApplicationTime().orElse(null))
@@ -1031,7 +1035,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appDispInfoStartupOutput
 					.getAppDispInfoWithDateOutput()
 					.getOpPreAppContentDisplayLst()
-					.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
+					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+					.flatMap(y -> y.getApOptional())
+					.map(z -> z.getApplicationTime())
 					.orElse(null),
 					selectWorkOutput.getApplicationTime(),
 				workContent);
@@ -1264,10 +1270,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 					EnumAdaptor.valueOf(prePost, PrePostInitAtr.class),
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet(),
 					displayInfoOverTime.getAppDispInfoStartup()
-						.getAppDispInfoWithDateOutput()
-						.getOpPreAppContentDisplayLst()
-						.map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime()).orElse(null))
-						.orElse(null),
+					.getAppDispInfoWithDateOutput()
+					.getOpPreAppContentDisplayLst()
+					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+					.flatMap(y -> y.getApOptional())
+					.map(z -> z.getApplicationTime())
+					.orElse(null),
 					displayInfoOverTime.getInfoWithDateApplicationOp()
 						.map(x -> x.getApplicationTime().orElse(null))
 						.orElse(null),
