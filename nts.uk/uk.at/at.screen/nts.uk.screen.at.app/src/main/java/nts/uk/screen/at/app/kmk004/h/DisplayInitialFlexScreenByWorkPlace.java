@@ -42,7 +42,7 @@ public class DisplayInitialFlexScreenByWorkPlace {
 		if (!result.getWkpIds().isEmpty()) {
 			// 3.職場を選択する（フレックス勤務）
 			result.setSelectWorkPlaceFlex(
-					this.selectWorkPlaceFlex.selectWorkPlaceFlex(result.getWkpIds().get(0), LaborWorkTypeAttr.FLEX));
+					this.selectWorkPlaceFlex.selectWorkPlaceFlex(result.getWkpIds().get(0).WorkplaceId, LaborWorkTypeAttr.FLEX));
 		}
 
 		return result;
