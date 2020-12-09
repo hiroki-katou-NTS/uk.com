@@ -869,8 +869,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
 					let prePost = self.application().prePostAtr();
-					if (self.application().prePostAtr() == 2 ) {
-						prePost = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+					if (self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
+						prePost = self.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr;
 					}
 					let command = {
 						companyId: self.$user.companyId,
@@ -923,11 +923,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
-			let prePostInitAtr = self.application().prePostAtr();
-			if (self.application().prePostAtr() == 2 ) {
-				prePostInitAtr = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+			let prePost = self.application().prePostAtr();
+			if (self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
+				prePost = self.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr;
 			}
-			command.prePostInitAtr = prePostInitAtr;
+			command.prePostInitAtr = prePost;
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
 			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
 				let opPreAppContentDisplayLst = self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst;

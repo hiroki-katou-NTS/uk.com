@@ -294,11 +294,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			param1.dateOp = self.application().appDate();
 			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
 			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
-			// todo
 			let prePost = self.application().prePostAtr();
-			if (self.application().prePostAtr() == 2 ) {
-				prePost = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+			if (self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
+				prePost = self.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr;
 			}
+			
 			let command = {
 				companyId: param1.companyId,
 				dateOp: param1.dateOp,
@@ -2034,9 +2034,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
+					
 					let prePost = self.application().prePostAtr();
-					if (self.application().prePostAtr() == 2 ) {
-						prePost = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+					if (self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
+						prePost = self.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr;
 					}
 					
 					let command = {
@@ -2253,11 +2254,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
-			let prePostInitAtr = self.application().prePostAtr();
-			if (self.application().prePostAtr() == 2 ) {
-				prePostInitAtr = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+			let prePost = self.application().prePostAtr();
+			if (self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
+				prePost = self.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr;
 			}
-			command.prePostInitAtr = prePostInitAtr;
+			command.prePostInitAtr = prePost;
 
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
 			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
