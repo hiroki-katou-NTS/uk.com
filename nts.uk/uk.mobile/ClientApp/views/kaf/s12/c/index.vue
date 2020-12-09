@@ -1,5 +1,5 @@
 <template>
-<div class="kafs12a3">
+<div class="kafs12c">
     <h3>Hello {{title | i18n}} component!</h3>
     <nts-text-editor
         name='title'
