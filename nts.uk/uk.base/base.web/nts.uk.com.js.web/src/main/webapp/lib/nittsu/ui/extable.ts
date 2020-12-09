@@ -4295,7 +4295,7 @@ module nts.uk.ui.exTable {
                 let isValid, message;
                 if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
                     isValid = false;
-                    message = uk.resource.getMessage('MsgB_1', [ "時間" ]);
+                    message = uk.resource.getMessage('MsgB_1', [ vtor.columnText || "時間" ]);
                 } else if (!_.isUndefined(value) && !_.isEmpty(value)) {
                     if (vtor.actValid === internal.TIME) {
                         isValid = isTimeClock(value);
@@ -4317,6 +4317,12 @@ module nts.uk.ui.exTable {
                         isValid = isNumber(value, vtor.max, vtor.min);
                         message = "MESSAGE_DEFINE_NEED";
                         formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
+                    } else if (vtor.actValid === internal.TEXT) {
+                        let stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
+                        let res = stringValidator.validate(value);
+                        isValid = res.isValid;
+                        formatValue = res.parsedValue;
+                        message = res.errorMessage;
                     } else {
                         isValid = true;
                         formatValue = value;
@@ -4380,7 +4386,7 @@ module nts.uk.ui.exTable {
          */
         export function mandate($grid: HTMLElement, columnKey: any, innerIdx: any) {
             let visibleColumns = helper.getVisibleColumnsOn($grid);
-            let actValid, dataType, max, min, required;
+            let actValid, dataType, max, min, required, columnText, primitiveValue;
             _.forEach(visibleColumns, function(col: any) {
                 if (col.key === columnKey) {
                     if (!col.dataType) return false;
@@ -4397,18 +4403,24 @@ module nts.uk.ui.exTable {
                         required = constraints.required ? constraints.required : col.required;
                         return false;
                     }
+                    
                     max = col.max;
                     min = col.min;
                     required = col.required;
+                    columnText = col.headerText;
+                    primitiveValue = col.primitiveValue;
                     return false; 
                 }
             });
+            
             if (actValid)
                 return {
                     actValid: actValid,
                     max: max,
                     min: min,
-                    required: required
+                    required: required,
+                    columnText: columnText,
+                    primitiveValue: primitiveValue
                 };
         }
         
