@@ -454,7 +454,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 						worksheet.getCells().deleteColumns(58, 28, true);
 					}
 					
-					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
+//					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
 					if (dataSource.getMode() == EXPORT_EXCEL) {
 						pageSetup.setZoom(100);
 						startNewPage += MAX_ROW_PER_EMPL;
