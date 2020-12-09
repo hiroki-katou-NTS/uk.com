@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  */
 public interface AgreementTimeAdapter {
 	
-	public List<AgreementTimeImport> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth, ClosureId closureId);
+	public List<AgreementTimeImport_Old> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth, ClosureId closureId);
 	
 	public Optional<AgreeTimeYearImport> getYear(String companyId, String employeeId, YearMonthPeriod period, GeneralDate criteria);
 	
@@ -61,5 +61,18 @@ public interface AgreementTimeAdapter {
 			GeneralDate baseDate,
 			ScheRecAtr scheRecAtr
 			);
+	
+	/**
+	 * RequestList599
+	 * refactor 5
+	 * @param companyId
+	 * @param employeeId
+	 * @param averageMonth
+	 * @param criteria
+	 * @param scheRecAtr
+	 * @return
+	 */
+	public AgreementTimeImport getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+				GeneralDate criteria, ScheRecAtr scheRecAtr);
 	
 }

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.ac.record.agreement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -11,16 +10,16 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeBreakdownExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfMonthlyExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeYearImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -51,7 +50,7 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 //	private GetAgreementPeriodPub getAgreementPeriodPub;
 	
 	@Override
-	public List<AgreementTimeImport> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth,
+	public List<AgreementTimeImport_Old> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId) {
 		
 		/** TODO: 36協定時間対応により、コメントアウトされた */
@@ -183,10 +182,14 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 //	}
 
 	/** TODO: 36協定時間対応により、コメントアウトされた */
-//	@Override
-//	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-//			GeneralDate criteria, ScheRecAtr scheRecAtr) {
-//		return getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
-//	}
+	@Override
+	public AgreementTimeImport getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+			GeneralDate criteria, ScheRecAtr scheRecAtr) {
+		AgreementTimeExport agreementTimeExport = getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
+//		return new AgreementTimeImport(
+//				agreementTimeExport.getAgreementTimeYear().orElseGet(null), 
+//				agreementTimeExport.getAgreMaxAverageTimeMulti().orElse(null));
+		return null;
+	}
 
 }
