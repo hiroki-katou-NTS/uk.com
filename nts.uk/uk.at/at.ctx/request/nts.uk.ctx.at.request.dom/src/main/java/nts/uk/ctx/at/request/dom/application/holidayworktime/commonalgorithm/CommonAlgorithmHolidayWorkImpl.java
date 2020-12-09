@@ -330,9 +330,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		Map<String, List<ConfirmMsgOutput>> confirmMsgOutputMap = new HashMap<String, List<ConfirmMsgOutput>>();
 		
 		//12.マスタ勤務種類、就業時間帯データをチェック
-		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(companyId,
-				appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
-				appHolidayWork.getWorkInformation().getWorkTimeCode().v());
+//		CheckWorkingInfoResult checkWorkingInfoResult = 
+		otherCommonAlgorithm.checkWorkingInfo(companyId,
+					appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
+					appHolidayWork.getWorkInformation().getWorkTimeCode().v());
 		
 		//03-06_計算ボタンチェック
 		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 
@@ -479,7 +480,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		Optional<AppHolidayWork> appHolidayWorkOp = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
 		
 		OverStateOutput overStateOutput = appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet()
-				.checkPreApplication(appHolidayWork.getApplication().getPrePostAtr(), 
+				.checkPreApplication(EnumAdaptor.valueOf(appHolidayWork.getApplication().getPrePostAtr().value, PrePostInitAtr.class), 
 						Optional.ofNullable(appHolidayWorkOp.isPresent() ? appHolidayWorkOp.get().getApplicationTime() : null), 
 						Optional.ofNullable(appHolidayWork.getApplicationTime()), 
 						appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime());

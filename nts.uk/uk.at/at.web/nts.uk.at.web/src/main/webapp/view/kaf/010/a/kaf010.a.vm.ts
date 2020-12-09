@@ -89,7 +89,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					});
 					// ※17
 					vm.application().prePostAtr.subscribe(value => {
-						console.log('trigger')
+						if(vm.mode() == MODE.MULTiPLE_AGENT){
+							return;
+						}
 						if (value == 0) {
 							console.log('trigger1')
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
@@ -128,7 +130,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						vm.bindWorkInfo(vm.dataSource, true);
 						vm.bindRestTime(vm.dataSource);
 						vm.bindHolidayTime(vm.dataSource, 1);
-						vm.bindOverTime(vm.dataSource);
+						vm.bindOverTime(vm.dataSource, 1);
 						vm.itemControlHandler();
 						vm.setComboDivergenceReason(vm.dataSource);
 
@@ -150,7 +152,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 						}
 						
-						if (vm.application().prePostAtr() == 0) {
+						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT) {
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);
@@ -698,7 +700,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 
 			self.holidayTime(holidayTimeArray);
-			self.setColorForHolidayTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 1, self.dataSource);
+			// self.setColorForHolidayTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 1, self.dataSource);
 		}
 
 		setColorForHolidayTime(isCalculation: Boolean, dataSource: AppHdWorkDispInfo) {
@@ -1029,7 +1031,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 
 			self.overTime(overTimeArray);
-			self.setColorForOverTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 1, self.dataSource);
+			// self.setColorForOverTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 1, self.dataSource);
 		}
 
 		setColorForOverTime(isCalculation: Boolean, dataSource: AppHdWorkDispInfo) {
@@ -1139,6 +1141,21 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			self.restTime(restTimeArray);
 		}
 
+		openDialogKdl005() {
+			const self = this;
+			nts.uk.ui.windows.setShared( 'KDL005_DATA', {
+				employeeIds: self.employeeIdLst,
+				baseDate: self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate,
+            }, true);
+
+			if(self.mode()==MODE.MULTiPLE_AGENT){
+				nts.uk.ui.windows.sub.modal('/view/kdl/005/a/multi.xhtml').onClosed( function(): any {})
+			}else{
+				nts.uk.ui.windows.sub.modal('/view/kdl/005/a/single.xhtml').onClosed( function(): any {})
+			}
+
+		}
+
 		openDialogKdl003() {
 			const self = this;
 			nts.uk.ui.windows.setShared( 'parentCodes', {
@@ -1148,7 +1165,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 selectedWorkTimeCode: self.workInfo().workTime().code
             }, true);
 
-			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml' ).onClosed( function(): any {
+			nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed( function(): any {
                 //view all code of selected item 
                 let childData = nts.uk.ui.windows.getShared('childData');
                 if (childData) {
@@ -1191,7 +1208,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							self.bindWorkInfo(self.dataSource);
 							self.bindRestTime(self.dataSource);
 							self.bindHolidayTime(self.dataSource, 1);
-							self.bindOverTime(self.dataSource);
+							self.bindOverTime(self.dataSource, 1);
 
 							
 						})
@@ -1204,7 +1221,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
                 }
             })
-
 		}
 
 		getBreakTimes() {
@@ -1256,7 +1272,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					self.bindWorkInfo(self.dataSource, true);
 					self.bindRestTime(self.dataSource);
 					self.bindHolidayTime(self.dataSource, 1);
-					self.bindOverTime(self.dataSource);
+					self.bindOverTime(self.dataSource, 1);
 				})
 				.fail(() => {})
 				.always(() => self.$blockui('hide'));
