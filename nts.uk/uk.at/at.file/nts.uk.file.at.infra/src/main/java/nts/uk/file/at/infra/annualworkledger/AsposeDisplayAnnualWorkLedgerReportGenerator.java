@@ -4,6 +4,7 @@ import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerContent;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerExportDataSource;
@@ -25,7 +26,6 @@ import java.util.Locale;
 public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsReportGenerator
         implements DisplayAnnualWorkLedgerReportGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR004.xlsx";
-    private static final String REPORT_FILE_NAME = "年間勤務台帳";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
@@ -49,7 +49,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
 
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            String fileName = REPORT_FILE_NAME;
+            String fileName = dataSource.getOutputSetting().getName().v() + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
             if (dataSource.getMode() == EXPORT_EXCEL) {
                 // save as excel file
                 reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
