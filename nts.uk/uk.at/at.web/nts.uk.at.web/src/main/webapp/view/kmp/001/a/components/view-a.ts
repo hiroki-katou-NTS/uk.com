@@ -51,10 +51,48 @@ module nts.uk.at.view.kmp001.a {
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
 		public stampCardEdit: share.StampCardEdit = new share.StampCardEdit();
 		public textInput: KnockoutObservable<string> = ko.observable('');
-		public methodEdit:KnockoutObservable<boolean> = ko.observable(false);
+		public methodEdit: KnockoutObservable<boolean> = ko.observable(false);
 
 		created() {
 			const vm = this;
+
+			$(window).click(() => {
+				var stampInput = ko.toJS(vm.textInput);
+				if (stampInput != '') {
+					if (!ko.unwrap(vm.methodEdit)) {
+						var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
+
+						if (s > 0) {
+							switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
+								case 1:
+									for (var i = 0; i < s; i++) {
+										stampInput = "0" + stampInput;
+									}
+									vm.textInput(stampInput);
+									break;
+								case 2:
+									for (var i = 0; i < s; i++) {
+										stampInput = stampInput + "0";
+									}
+									vm.textInput(stampInput);
+									break;
+								case 3:
+									for (var i = 0; i < s; i++) {
+										stampInput = " " + stampInput;
+									}
+									vm.textInput(stampInput);
+									break;
+								case 4:
+									for (var i = 0; i < s; i++) {
+										stampInput = stampInput + " ";
+									}
+									vm.textInput(stampInput);
+									break;
+							}
+						}
+					}
+				}
+			});
 
 			vm.model.code
 				.subscribe((c: string) => {
@@ -203,34 +241,6 @@ module nts.uk.at.view.kmp001.a {
 					vm.validate()
 						.then((valid: boolean) => {
 							if (valid) {
-								if (!ko.unwrap(vm.methodEdit)){
-									var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
-
-									if (s > 0) {
-										switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
-											case 1:
-												for (var i = 0; i < s; i++) {
-													stampInput = "0" + stampInput;
-												}
-												break;
-											case 2:
-												for (var i = 0; i < s; i++) {
-													stampInput = stampInput + "0";
-												}
-												break;
-											case 3:
-												for (var i = 0; i < s; i++) {
-													stampInput = " " + stampInput;
-												}
-												break;
-											case 4:
-												for (var i = 0; i < s; i++) {
-													stampInput = stampInput + " ";
-												}
-												break;
-										}
-									}
-								}
 
 								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
 
@@ -252,7 +262,7 @@ module nts.uk.at.view.kmp001.a {
 										$('.ip-stamp-card').blur();
 										setTimeout(() => {
 											vm.$dialog.error({ messageId: err.messageId });
-										},50 );
+										}, 50);
 									})
 									.always(() => vm.$blockui("clear"));
 							}
