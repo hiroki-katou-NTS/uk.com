@@ -8,7 +8,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 
 /**
  * 勤務変更申請基本データ
@@ -20,7 +20,7 @@ public class WorkChangeBasicData {
 	/**
 	 * ドメインモデル「勤務変更申請設定」より取得する
 	 */
-	private Optional<AppWorkChangeSet_Old> workChangeCommonSetting;
+	private Optional<AppWorkChangeSet> workChangeCommonSetting;
 	/**
 	 * 申請者名
 	 */

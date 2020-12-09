@@ -25,6 +25,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         textName: KnockoutObservable<string> = ko.observable(null);
         tooltip: KnockoutObservable<string> = ko.observable(null);
         selectedLinkButtonCom: KnockoutObservable<number> = ko.observable(0);
+        KEY = 'nts.uk.characteristics.ksu001Data';
         selectedLinkButtonWkp: KnockoutObservable<number> = ko.observable(0);
         flag: boolean = true;
         dataToStick: any = null;
@@ -42,8 +43,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         listPageComIsEmpty: boolean = false;
         listPageWkpIsEmpty: boolean = false;
         
-        KEY : string = 'USER_INFOR';
-
         constructor() {
             let self = this;
             
