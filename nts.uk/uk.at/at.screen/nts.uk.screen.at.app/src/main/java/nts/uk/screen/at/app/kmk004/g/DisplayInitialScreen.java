@@ -20,14 +20,22 @@ public class DisplayInitialScreen {
 	private GetUsageUnitSetting getUsageUnit;
 
 	@Inject
+	private DisplayFlexBasicSettingByCompany displayFlexBasicSettingByCompany;
+
+	@Inject
 	private DisplayYearListByCompany displayYearListByCompany;
 
-	public void displayInitialScreen() {
-		// 1. 利用単位の設定を取得する
-		this.getUsageUnit.get();
-		// 2. 会社別基本設定（フレックス勤務）を表示する
+	public DisplayInitialScreenDto displayInitialScreen() {
 
+		DisplayInitialScreenDto result = new DisplayInitialScreenDto();
+		// 1. 利用単位の設定を取得する
+		result.setUsageUnitSetting(this.getUsageUnit.get());
+		// 2. 会社別基本設定（フレックス勤務）を表示する
+		result.setDisplayFlexBasicSettingByCompanyDto(
+				this.displayFlexBasicSettingByCompany.displayFlexBasicSettingByCompany());
 		// 3. 会社別年度リストを表示する
-		this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX);
+		result.setCompanies(this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX));
+
+		return result;
 	}
 }
