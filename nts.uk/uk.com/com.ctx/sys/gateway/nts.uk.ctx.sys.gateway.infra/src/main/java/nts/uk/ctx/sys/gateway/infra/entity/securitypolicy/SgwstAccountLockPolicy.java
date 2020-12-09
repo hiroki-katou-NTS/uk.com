@@ -11,11 +11,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SGWMT_ACC_LOCK_POLICY")
-public class SgwstAccountLockPolicy implements Serializable {
+public class SgwstAccountLockPolicy extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id

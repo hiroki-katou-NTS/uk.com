@@ -10,11 +10,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SGWMT_PASSWORD_POLICY")
-public class SgwmtPasswordPolicy  implements Serializable {
+public class SgwmtPasswordPolicy extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
