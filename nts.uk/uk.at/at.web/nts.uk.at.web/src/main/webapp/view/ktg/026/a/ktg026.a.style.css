@@ -12,7 +12,7 @@
   border: 1px groove;
 }
 .grid {
-  display: grid;
+  display: block;
 }
 .block {
   display: block;
@@ -141,7 +141,7 @@ table thead tr th {
   height: 385px;
 }
 .mh-195 {
-  max-height: 195px;
+  height: 195px;
 }
 .h-350 {
   height: 350px;
