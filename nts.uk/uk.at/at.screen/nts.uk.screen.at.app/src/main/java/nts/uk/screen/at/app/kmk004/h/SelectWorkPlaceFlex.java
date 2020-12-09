@@ -10,7 +10,7 @@ import nts.uk.screen.at.app.query.kmk004.common.YearlyListByWorkplace;
  * 
  * @author sonnlb
  * 
- *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.H：職場別法定労働時間の登録（フレックス勤務）.メニュー別OCD.職場を選択する（フレックス勤務）.職場を選択する
+ *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.H：職場別法定労働時間の登録（フレックス勤務）.メニュー別OCD.職場を選択する（フレックス勤務）
  *
  */
 @Stateless
