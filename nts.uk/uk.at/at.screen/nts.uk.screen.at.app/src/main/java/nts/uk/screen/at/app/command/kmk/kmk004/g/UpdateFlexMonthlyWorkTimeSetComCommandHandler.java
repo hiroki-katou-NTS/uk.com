@@ -11,11 +11,11 @@ import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthly
 /**
  * 
  * @author sonnlb
- *
- *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.G：会社別法定労働時間の登録（フレックス勤務）.メニュー別OCD.会社別月単位労働時間（フレックス勤務）を登録する
+ * 
+ *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.G：会社別法定労働時間の登録（フレックス勤務）.メニュー別OCD.会社別月単位労働時間（フレックス勤務）を更新する
  */
 @Stateless
-public class RegisterMonthlyWorkTimeSetComCommandHandler extends CommandHandler<SaveMonthlyWorkTimeSetComCommand> {
+public class UpdateFlexMonthlyWorkTimeSetComCommandHandler extends CommandHandler<SaveMonthlyWorkTimeSetComCommand> {
 
 	@Inject
 	private SaveMonthlyWorkTimeSetComCommandHandler saveHandler;
