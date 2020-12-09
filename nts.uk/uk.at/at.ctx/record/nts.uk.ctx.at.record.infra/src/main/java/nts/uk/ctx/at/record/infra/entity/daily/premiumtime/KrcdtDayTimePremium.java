@@ -63,7 +63,7 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 	@Column(name = "PREMIUM_TIME10")
 	public int premiumTime10;
 	
-	@OneToOne(mappedBy="KrcdtDayTimePremium", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy="krcdtDayPremiumTime", fetch = FetchType.LAZY)
 	//public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	public KrcdtDayTimeAtd krcdtDayTime;
 	
