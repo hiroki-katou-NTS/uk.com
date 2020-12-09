@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DailyValue;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.OutPutWorkStatusContent;
@@ -30,7 +31,6 @@ import java.util.stream.Collectors;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGenerator implements DisplayWorkStatusReportGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR003.xlsx";
-    private static final String REPORT_FILE_NAME = "勤務状況表";
     private static final String DAY_OF_WEEK_FORMAT_JP = "E";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
@@ -52,7 +52,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             printContents(worksheet, dataSource);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            String fileName = REPORT_FILE_NAME;
+            String fileName = dataSource.getTitle() + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
             if (dataSource.getMode() == EXPORT_EXCEL) {
                 // save as excel file
                 reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
