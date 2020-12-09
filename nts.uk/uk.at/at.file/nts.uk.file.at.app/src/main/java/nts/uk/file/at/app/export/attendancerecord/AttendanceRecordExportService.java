@@ -225,7 +225,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
 
 		List<String> wplIds = new ArrayList<>();
-		String invidual = "";
 		List<String> empIDs = request.getEmployeeList().stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
 
 		GeneralDate startTime = request.getStartDate().addMonths(-1);
@@ -972,7 +971,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							//	表示  - if display 
 							//	月の承認済状況を編集する - Edit the approved status of the month
 							listMonthlyApproval.forEach(i -> {
-										if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag()) {
+									if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag() && i.getYm().equals(yearMonthExport)) {
 									attendanceRecRepEmpData.setApprovalStatus(true);
 								}
 							});
@@ -1038,28 +1037,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				}
 			} else {
 				nullDataEmployeeList.add(employee);
-				// If closure not found
-				String info = "\n " + employee.employeeCode + " " + employee.employeeName;
-				if (info.length() + invidual.length() > 164) {
-					if (!invidual.contains("\n..."))
-						invidual = invidual.concat("\n...");
-				} else {
-					invidual = invidual.concat(info);
-				}
 			}
 		}
 
-		// set invidual to client
-		if (!invidual.isEmpty()) {
-			setter.setData("invidual", invidual);
-		}
 		if (distinctEmployeeListAfterSort.size() <= nullDataEmployeeList.size()) {
 			// If real data of employee isn't exist
-			if (!invidual.isEmpty()) {
-				exceptions.addMessage("Msg_1269", invidual);
-			} else {
-				exceptions.addMessage("Msg_37");
-			}
+			exceptions.addMessage("Msg_37");
 			exceptions.throwExceptions();
 
 		} else {
