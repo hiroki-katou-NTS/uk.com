@@ -36,7 +36,9 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAgg
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
@@ -502,6 +504,24 @@ public class ExtractAlarmForEmployeeService {
 		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
 		return masterCheckAggregationProcessService.aggregate(comId, checkCondition,
 				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
+	}
+	
+	/**
+	 * アラームリスト　マスタチェック
+	 * @param cid
+	 * @param lstSid
+	 * @param dPeriod
+	 * @param w4dCheckCond
+	 * @param getWplByListSidAndPeriod
+	 * @param lstStatusEmp
+	 * @param lstResultCondition
+	 * @param lstCheckType
+	 */
+	public void extractMasterCheckArAl(String cid, List<String> lstSid, DatePeriod dPeriod,	MasterCheckAlarmCheckCondition masterCheckAlarm
+			,List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp
+			,List<ResultOfEachCondition> lstResultCondition,List<AlarmListCheckInfor> lstCheckType) {
+		
+		
 	}
 
 	private void fillWorkPlaceForCategory(List<EmployeeSearchDto> employees, List<String> employeeIds,

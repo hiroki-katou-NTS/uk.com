@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.mastercheck;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

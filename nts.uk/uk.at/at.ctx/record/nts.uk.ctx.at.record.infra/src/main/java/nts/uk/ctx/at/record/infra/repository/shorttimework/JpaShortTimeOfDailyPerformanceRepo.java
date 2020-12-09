@@ -108,18 +108,23 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds)
-								.setParameter("start", ymd.start())
-								.setParameter("end", ymd.end()).getList().stream()
-								.collect(Collectors.groupingBy(
-										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
-								.entrySet().stream()
-								.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
-												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
-												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
-								.collect(Collectors.toList()));
+			h(ymd, result, tQuery, empIds);
 		});
 		return result;
+	}
+
+	private void h(DatePeriod ymd, List<ShortTimeOfDailyPerformance> result,
+			TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery, List<String> empIds) {
+		result.addAll(tQuery.setParameter("employeeId", empIds)
+							.setParameter("start", ymd.start())
+							.setParameter("end", ymd.end()).getList().stream()
+							.collect(Collectors.groupingBy(
+									c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+							.entrySet().stream()
+							.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+											c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+											c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+							.collect(Collectors.toList()));
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -148,19 +153,24 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		query.append("AND a.krcdtDaiShortWorkTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-								.getList().stream()
-								.filter(c -> p.get(c.krcdtDaiShortWorkTimePK.sid).contains(c.krcdtDaiShortWorkTimePK.ymd))
-								.collect(Collectors.groupingBy(
-										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
-								.entrySet().stream()
-								.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
-												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
-												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
-								.collect(Collectors.toList()));
+			k(result, tQuery, p);
 		});
 		return result;
+	}
+
+	private void k(List<ShortTimeOfDailyPerformance> result, TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery,
+			Map<String, List<GeneralDate>> p) {
+		result.addAll(tQuery.setParameter("employeeId", p.keySet())
+							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+							.getList().stream()
+							.filter(c -> p.get(c.krcdtDaiShortWorkTimePK.sid).contains(c.krcdtDaiShortWorkTimePK.ymd))
+							.collect(Collectors.groupingBy(
+									c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+							.entrySet().stream()
+							.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+											c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+											c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+							.collect(Collectors.toList()));
 	}
 
 }

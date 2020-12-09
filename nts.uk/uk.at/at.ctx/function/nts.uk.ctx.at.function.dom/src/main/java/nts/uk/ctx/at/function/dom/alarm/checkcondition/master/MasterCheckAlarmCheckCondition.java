@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck;
+package nts.uk.ctx.at.function.dom.alarm.checkcondition.master;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,13 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MasterCheckAlarmCheckCondition extends ExtractionCondition {
-	
+	/**
+	 * チェック条件ID
+	 */
 	private String alarmCheckId;
-
+	/**
+	 * マスタチェックの固定抽出条件ID
+	 */
 	private List<String> errorAlarmCheckId;
 	
 	private List<Integer> fixedMasterCheckCondition = new ArrayList<Integer>();

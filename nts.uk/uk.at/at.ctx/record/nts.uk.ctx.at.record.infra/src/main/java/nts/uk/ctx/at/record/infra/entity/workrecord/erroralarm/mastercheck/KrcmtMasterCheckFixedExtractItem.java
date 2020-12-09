@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.mastercheck;
+
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,10 +11,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmAtr;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedCheckItem;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -44,11 +47,10 @@ public class KrcmtMasterCheckFixedExtractItem extends UkJpaEntity {
 	
 	public MasterCheckFixedExtractItem toDomain() {
 		return new MasterCheckFixedExtractItem(
-				this.no,
+				EnumAdaptor.valueOf(this.no, MasterCheckFixedCheckItem.class),
 				new ErrorAlarmMessageMSTCHK(this.initMessage),
 				EnumAdaptor.valueOf(this.elAlAtr, ErrorAlarmAtr.class),
-				MasterCheckFixedCheckItem.fromName(this.name)
-				);
+				new FixConWorkRecordName(this.name));
 		
 	}
 }

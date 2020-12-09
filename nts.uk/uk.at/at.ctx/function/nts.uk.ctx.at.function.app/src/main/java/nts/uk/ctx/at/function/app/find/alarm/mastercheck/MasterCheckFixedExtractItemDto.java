@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.app.find.alarm.mastercheck;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItem;
 
 @Getter
 @NoArgsConstructor
@@ -26,10 +26,10 @@ public class MasterCheckFixedExtractItemDto {
 	
 	public static MasterCheckFixedExtractItemDto fromDomain(MasterCheckFixedExtractItem domain) {
 		return new MasterCheckFixedExtractItemDto(
-				domain.getNo(),
+				domain.getNo().value,
 				domain.getInitMessage().v(),
 				domain.getErAlAtr().value,
-				domain.getName().name
+				domain.getName().v()
 				);
 	}
 }

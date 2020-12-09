@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck;
 
 /**
  * ER/AL区分

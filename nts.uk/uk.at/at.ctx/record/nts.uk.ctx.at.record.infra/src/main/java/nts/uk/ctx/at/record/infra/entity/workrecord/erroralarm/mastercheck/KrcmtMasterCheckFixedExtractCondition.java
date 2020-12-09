@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.mastercheck;
+
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -8,8 +10,10 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -46,17 +50,18 @@ public class KrcmtMasterCheckFixedExtractCondition extends UkJpaEntity {
 	
 	public static KrcmtMasterCheckFixedExtractCondition toEntity(MasterCheckFixedExtractCondition domain) {
 		return new KrcmtMasterCheckFixedExtractCondition(
-				new KrcmtMasterCheckFixedExtractConditionPK(domain.getErrorAlarmCheckId(), domain.getNo()),
+				new KrcmtMasterCheckFixedExtractConditionPK(domain.getErrorAlarmCheckId(), domain.getNo().value),
 				AppContexts.user().contractCode(),
-				domain.getMessage().v(), domain.isUseAtr()?1:0
+				domain.getMessage().isPresent() ? domain.getMessage().get().v() : "",
+				domain.isUseAtr()?1:0
 				);
 	}
 	
 	public MasterCheckFixedExtractCondition toDomain() {
 		return new MasterCheckFixedExtractCondition(
 					this.pk.getErAlId(),
-					this.pk.getNo(),
-					new ErrorAlarmMessageMSTCHK(this.message),
+					EnumAdaptor.valueOf(this.pk.getNo(), MasterCheckFixedCheckItem.class),
+					Optional.ofNullable(new ErrorAlarmMessageMSTCHK(this.message)),
 					this.useAtr==1?true:false
 				);
 	}

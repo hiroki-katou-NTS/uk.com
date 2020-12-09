@@ -13,24 +13,32 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckAlarmCheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * マスタチェックのアラームチェック条件
+ * @author do_dt
+ *
+ */
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MSTCHK_LINKCON")
 public class KrcmtMasterCheckAlarmCheckCondition extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * マスタチェックの固定抽出条件のID
+	 */
 	@Id
 	@Column(name = "ALARM_CHK_ID")
 	public String alarmCheckId;
 	
 	@Column(name = "CID")
 	public String companyId;
-
+	/**
+	 * アラームチェック条件コード
+	 */
 	@Column(name = "AL_CHECK_COND_CATE_CD")
 	public String code;
 

@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -48,16 +49,17 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.ErrorAlarmMessage;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckAlarmCheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -422,16 +424,16 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						fixedMasterCheckExtConDto.setErrorAlarmCheckId(masterCheckAlarmCheckCondition.getAlarmCheckId());
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
 								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
-								fixedMasterCheckExtConDto.getNo(),
-								new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage()),
+								EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
+								Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
 								fixedMasterCheckExtConDto.isUseAtr()
 								);
 						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);
 					}else {
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
 								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
-								fixedMasterCheckExtConDto.getNo(),
-								new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage()),
+								EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
+								Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
 								fixedMasterCheckExtConDto.isUseAtr()
 								);
 						fixedMasterCheckConditionRepo.updateMasterCheckFixedCondition(fixedMasterCheckExtCon);
@@ -617,8 +619,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						fixedMasterCheckExtConDto.setErrorAlarmCheckId(errorAlarmCheckId);
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
 								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
-								fixedMasterCheckExtConDto.getNo(),
-								new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage()),
+								EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
+								Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
 								fixedMasterCheckExtConDto.isUseAtr()
 								);
 						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);

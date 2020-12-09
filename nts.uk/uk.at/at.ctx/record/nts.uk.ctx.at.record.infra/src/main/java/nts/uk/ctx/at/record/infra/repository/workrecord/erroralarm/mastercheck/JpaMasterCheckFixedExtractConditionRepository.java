@@ -1,19 +1,22 @@
-package nts.uk.ctx.at.function.infra.repository.alarm.mastercheck;
+package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.mastercheck;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckFixedExtractCondition;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckFixedExtractConditionPK;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.mastercheck.KrcmtMasterCheckFixedExtractCondition;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.mastercheck.KrcmtMasterCheckFixedExtractConditionPK;
 
 @Stateless
 public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
@@ -36,7 +39,9 @@ public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
 		});
 		
 		return results.stream().map(a -> new MasterCheckFixedExtractCondition(
-					a.getPk().getErAlId(), a.getPk().getNo(), new ErrorAlarmMessageMSTCHK(a.getMessage()), 
+					a.getPk().getErAlId(), 
+					EnumAdaptor.valueOf(a.getPk().getNo(), MasterCheckFixedCheckItem.class), 
+					Optional.ofNullable(new ErrorAlarmMessageMSTCHK(a.getMessage())), 
 					a.getUseAtr() == 0 ? false : true))
 				.collect(Collectors.toList());
 	}

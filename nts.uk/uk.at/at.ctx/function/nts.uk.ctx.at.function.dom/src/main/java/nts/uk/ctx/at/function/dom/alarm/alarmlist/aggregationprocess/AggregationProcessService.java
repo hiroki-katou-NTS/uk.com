@@ -22,6 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.SyCompanyRecordFuncAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
@@ -62,7 +64,8 @@ public class AggregationProcessService {
 	private ManagedParallelWithContext parallelManager;
 	@Inject
 	private AlarmPatternSettingRepository alPatternSettingRepo;
-	
+	@Inject
+	private AlarmListPersonServiceAdapter extractAlarmService;
 	@Inject
 	private ExtractAlarmForEmployeeService extractService;
 	
@@ -249,7 +252,6 @@ public class AggregationProcessService {
 			if(!lstSidTmp.isEmpty()) {
 				List<AlarmListCheckInfor> lstCheckType = new ArrayList<>();
 				List<ResultOfEachCondition> lstResultCondition = new ArrayList<>();
-				//List<ResultOfEachCondition> lstResult = new ArrayList<>();
 				//[RQ189] 社員ID（List）と指定期間から所属職場履歴を取得
 				List<WorkPlaceHistImport> getWplByListSidAndPeriod = wpAdapter.getWplByListSidAndPeriod(lstSidTmp, datePeriod);
 				//[RQ588]社員の指定期間中の所属期間を取得する
@@ -291,7 +293,14 @@ public class AggregationProcessService {
 				case MAN_HOUR_CHECK:
 					
 				case MASTER_CHECK:
-					
+					MasterCheckAlarmCheckCondition masterCheck = (MasterCheckAlarmCheckCondition) x.getExtractionCondition();
+					extractAlarmService.extractMasterCheckResult(cid, lstSidTmp, 
+							datePeriod, 
+							masterCheck.getErrorAlarmCheckId(), 
+							getWplByListSidAndPeriod, 
+							lstStatusEmp, 
+							lstResultCondition,
+							lstCheckType);
 					default:
 						
 				
@@ -315,7 +324,14 @@ public class AggregationProcessService {
 			
 		
 	}
-	
+	/**
+	 * アラーム（トップページ）永続化の処理
+	 * @param alarmResult
+	 * @param lstSid
+	 * @param lstCheckType
+	 * @param lstCategoryPeriod
+	 * @param patternName
+	 */
 	private void createAlarmToppage(AlarmPatternExtractResult alarmResult,//今回のアラーム結果
 			List<String> lstSid, 
 			List<CategoryCondValueDto> lstCheckType,

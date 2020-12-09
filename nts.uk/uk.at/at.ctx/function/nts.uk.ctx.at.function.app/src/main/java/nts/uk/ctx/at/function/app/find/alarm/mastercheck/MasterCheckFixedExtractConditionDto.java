@@ -2,8 +2,8 @@ package nts.uk.ctx.at.function.app.find.alarm.mastercheck;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmAtr;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 
 @Data
 @AllArgsConstructor
@@ -25,8 +25,8 @@ public class MasterCheckFixedExtractConditionDto {
 		return new MasterCheckFixedExtractConditionDto(
 				domain.getErrorAlarmCheckId(),
 				"",
-				domain.getNo(),
-				domain.getMessage().v(),
+				domain.getNo().value,
+				domain.getMessage().isPresent() ? domain.getMessage().get().v() : "",
 				domain.isUseAtr(),
 				ErrorAlarmAtr.OTH.value
 				);

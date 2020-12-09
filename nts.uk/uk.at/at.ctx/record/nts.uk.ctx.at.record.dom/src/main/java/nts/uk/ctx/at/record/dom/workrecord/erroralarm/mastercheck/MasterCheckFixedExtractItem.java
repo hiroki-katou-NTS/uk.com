@@ -1,7 +1,8 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
 
 /**
  * マスタチェックの固有抽出項目
@@ -9,16 +10,16 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class MasterCheckFixedExtractItem extends AggregateRoot {
 
-	private int no;
+	private MasterCheckFixedCheckItem no;
 	
 	private ErrorAlarmMessageMSTCHK initMessage;
 	
 	private ErrorAlarmAtr erAlAtr;
 	
-	private MasterCheckFixedCheckItem name;
+	private FixConWorkRecordName name;
 
-	public MasterCheckFixedExtractItem(int no, ErrorAlarmMessageMSTCHK initMessage, ErrorAlarmAtr erAlAtr,
-			MasterCheckFixedCheckItem name) {
+	public MasterCheckFixedExtractItem(MasterCheckFixedCheckItem no, ErrorAlarmMessageMSTCHK initMessage, ErrorAlarmAtr erAlAtr,
+			FixConWorkRecordName name) {
 		this.no = no;
 		this.initMessage = initMessage;
 		this.erAlAtr = erAlAtr;

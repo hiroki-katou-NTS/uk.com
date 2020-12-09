@@ -33,10 +33,10 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstan
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckAlarmCheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedCheckItem;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
+/*import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedCheckItem;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;*/
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -67,8 +67,8 @@ public class MasterCheckAggregationProcessService {
 	@Inject
 	private WorkLocationAdapter workLocationAdapter;
 	
-	@Inject
-	private MasterCheckFixedExtractConditionRepository fixedExtractConditionRepo;
+	/*@Inject
+	private MasterCheckFixedExtractConditionRepository fixedExtractConditionRepo;*/
 	
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annualLeaveEmpBasicInfoRepo;
@@ -110,11 +110,11 @@ public class MasterCheckAggregationProcessService {
 			return new ArrayList<String>();
 		}).flatMap(c -> c.stream()).distinct().collect(Collectors.toList());
 		
-		// ドメインモデル「マスタチェックの固定抽出条件」を取得する
-		List<MasterCheckFixedExtractCondition> fixedExtractCond = fixedExtractConditionRepo.findAll(erAlCheckIds, true);
-		
+				
 		// マスタチェックの固定抽出条件のアラーム値を生成する↓
 		List<ValueExtractAlarm> result = Collections.synchronizedList(new ArrayList<>());
+		/*// ドメインモデル「マスタチェックの固定抽出条件」を取得する
+		List<MasterCheckFixedExtractCondition> fixedExtractCond = fixedExtractConditionRepo.findAll(erAlCheckIds, true);
 		parallel.forEach(CollectionUtil.partitionBySize(filteredEmpIds, 100), empList -> {
 			synchronized(this) {
 				if (shouldStop.get()) return;
@@ -161,11 +161,11 @@ public class MasterCheckAggregationProcessService {
 						break;
 				}
 			});
-		});
+		});*/
 		
 		return result;
 	}
-	
+	/*
 	private void idCodeConfirm(List<String> empIds, MasterCheckFixedExtractCondition fixedExtractCond, 
 			List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
 		String contractCode = AppContexts.user().contractCode();
@@ -424,5 +424,5 @@ public class MasterCheckAggregationProcessService {
 					TextResource.localize("KAL010_576", workTypeCode), fixedExtractCond.getMessage().v(), alarmContent);
 			extractAlarms.add(alarm);
 		});
-	}
+	}*/
 }
