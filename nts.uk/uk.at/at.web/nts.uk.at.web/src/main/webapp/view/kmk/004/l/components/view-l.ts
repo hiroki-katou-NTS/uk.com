@@ -7,9 +7,9 @@ module nts.uk.at.view.kmk004.l {
 	<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Company'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
+		<button class="proceed" data-bind="enable: enable, i18n: 'KMK004_225'"></button>
 		<button data-bind="visible: false, i18n: 'KMK004_226'"></button>
-		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+		<button class="danger" data-bind="enable: enable, i18n: 'KMK004_227'"></button>
 	</div>
 	<div class="view-l">
 				<div class="header-l">
@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk004.l {
 					<button id = "btn_year" data-bind="click: openQDialog, i18n: 'KMK004_233'"></button>
 					<div class="div_row"> 
 								
-								<div class= "box-year" data-bind="component: {
+								<div class= "box-year" id= "lisboxL6_4" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
@@ -64,6 +64,7 @@ module nts.uk.at.view.kmk004.l {
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(true);
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		enable: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(private params: IParam){
 			super();
@@ -76,13 +77,13 @@ module nts.uk.at.view.kmk004.l {
 			.subscribe(() => {
 				if(vm.selectedYear != null) {
 					vm.existYear(true);
+					vm.enable(true);
 				}
 			});
-		
 		}
 
 		mounted() {
-			
+				$('#lisboxL6_4').focus();
 		}
 		
 		openViewP() {

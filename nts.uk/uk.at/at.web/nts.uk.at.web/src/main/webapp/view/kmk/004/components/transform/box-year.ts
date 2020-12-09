@@ -1,6 +1,6 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004.l {
+module nts.uk.at.view.kmk004.components {
 
     interface Params {
         selectedYear: KnockoutObservable<number | null>;
@@ -11,14 +11,14 @@ module nts.uk.at.view.kmk004.l {
         <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
                 options: itemList,
-                optionsValue: 'value',
-                optionsText: 'value',
+                optionsValue: 'year',
+                optionsText: 'year',
                 multiple: false,
                 value: selectedYear,
                 rows: 5,
                 columns: [
                     { key: 'statusValue', length: 1 },
-                    { key: 'value', length: 4 }
+                    { key: 'year', length: 4 }
                 ]}"></div>
         </div>
         <div class="note color-attendance" data-bind="i18n: 'KMK004_212'"></div>
@@ -51,15 +51,14 @@ module nts.uk.at.view.kmk004.l {
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-            const faceData: IYear[] = [{status: true, statusValue : '＊', value: 2017},
-            {status: false, statusValue : '', value: 2016}
-            ,{status: true, statusValue : '', value: 2018}
-            ,{status: true, statusValue : '', value: 2020}];
-            // const faceData: IYear[] = [];
+            const years: IYear[] = [{status: true, statusValue : '＊', year: 2017},
+            {status: false, statusValue : '', year: 2016}
+            ,{status: true, statusValue : '', year: 2018}
+            ,{status: true, statusValue : '', year: 2020}];
 
-            if (faceData.length > 0) {
-                vm.itemList(_.orderBy(faceData, ['value'], ['desc']));
-                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].value);
+            if (years.length > 0) {
+                vm.itemList(_.orderBy(years, ['year'], ['desc']));
+                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
             } else {
                 vm.selectedYear(null);
             }
@@ -69,7 +68,7 @@ module nts.uk.at.view.kmk004.l {
     export interface IYear {
         status: boolean;
         statusValue: string;
-        value: number;
+        year: number;
     }
 
     // export class Year {
