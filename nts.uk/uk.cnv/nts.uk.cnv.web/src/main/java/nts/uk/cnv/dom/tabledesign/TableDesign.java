@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.tabledesign;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import nts.uk.cnv.dom.tabledefinetype.UkDataType;
 @AllArgsConstructor
 @Getter
 public class TableDesign {
+	private Optional<TableDesignVer> ver;
 	private String name;
 	private String id;
 	private String comment;
@@ -28,7 +30,7 @@ public class TableDesign {
 	}
 
 	public String createSimpleTableSql(TableDefineType defineType) {
-		return createTableSql(defineType, false, false);
+		return createTableSql(defineType, false, true);
 	}
 
 	public String createFullTableSql(TableDefineType defineType) {
@@ -50,7 +52,7 @@ public class TableDesign {
 				indexList.stream()
 				.map(idx -> idx.getCreateDdl(name))
 				.collect(Collectors.toList()));
-			index = index + ";";
+			index = index + ";\r\n";
 		}
 
 		String comments = "";
@@ -62,7 +64,7 @@ public class TableDesign {
 			this.columns.stream()
 				.forEach(col -> commentList.add(define.columnCommentDdl(name, col.getName(), col.getComment())));
 
-			comments = String.join("\r\n", commentList);
+			comments = String.join("\r\n", commentList) + "\r\n";
 		}
 
 		String rls = "";
@@ -73,9 +75,9 @@ public class TableDesign {
 		return "CREATE TABLE " + this.name + "(\r\n" +
 						columnContaint(define) +
 						tableContaint +
-					");\r\n\r\n" +
-					index + "\r\n" +
-					comments + "\r\n" +
+					");\r\n" +
+					index +
+					comments +
 					rls;
 	}
 

@@ -68,7 +68,7 @@ public class TableDesignerService {
 
 	public String exportDdl(TableDesignExportDto params) {
 		RequireImpl require = new RequireImpl(ukTableDesignRepository);
-		return exportDdlService.exportDdl(require, params.getTableName(), params.getType());
+		return exportDdlService.exportDdl(require, params.getTableName(), params.getType(), params.isWithComment());
 	}
 
 	@RequiredArgsConstructor
@@ -79,6 +79,11 @@ public class TableDesignerService {
 		@Override
 		public Optional<TableDesign> find(String tablename) {
 			return tableDesignRepository.find(tablename);
+		}
+
+		@Override
+		public List<TableDesign> findAll() {
+			return tableDesignRepository.getAll();
 		}
 	}
 
@@ -93,7 +98,10 @@ public class TableDesignerService {
 				List<Map<String, String>> createTableSql = readFile(folder.toString(), params.getType(), false);
 
 				for (Map<String, String> ddl : createTableSql) {
-					UkTableDesignImportCommand command = new UkTableDesignImportCommand(ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType());
+					UkTableDesignImportCommand command = new UkTableDesignImportCommand(
+							ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType(),
+							params.getBranch(), params.getDate()
+							);
 					handler.handle(command);
 					result.increment();
 				}
@@ -122,7 +130,10 @@ public class TableDesignerService {
 				for (Map<String, String> ddl : createTableSql) {
 
 					inProcessingSql = ddl.get("CREATE TABLE");
-					UkTableDesignImportCommand command = new UkTableDesignImportCommand(ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType());
+					UkTableDesignImportCommand command = new UkTableDesignImportCommand(
+							ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType(),
+							params.getBranch(), params.getDate()
+						);
 
 					TransactionService.newTran(() -> {
 						handler.handle(command);
@@ -148,26 +159,37 @@ public class TableDesignerService {
 		return result;
 	};
 
-	public int exportToFile(ExportToFileDto params) {
-		int total = 0;
+	public void exportToFile(ExportToFileDto params) {
 		RequireImpl require = new RequireImpl(ukTableDesignRepository);
 
 		//フォルダを取得する
 		File folder = new File(params.getPath().replace("\\\\", "\\").replace("\"", ""));
 
-		if(!folder.exists()) {
+		if(folder.isDirectory() && !folder.exists()) {
 			throw new BusinessException("フォルダが存在しません。");
 		}
 
+		if (params.isOneFile()) {
+			exportOneFile(params, require, folder);
+		}
+		else {
+			exportMultipleFile(params, require, folder);
+		}
+
+		return;
+	}
+
+	private void exportMultipleFile(ExportToFileDto params, RequireImpl require, File folder) {
 		List<GetUkTablesDto> tableList = ukTableDesignRepository.getAllTableList();
 
+		int total = 1;
 		for (GetUkTablesDto table : tableList) {
 			String fileName = folder.getPath() + "\\" + table.getTableName() + ".sql";
 			File file = new File(fileName);
 			try {
 				FileWriter fileWriter = new FileWriter(file);
 
-				String ddl = exportDdlService.exportDdl(require, table.getTableName(), params.getType());
+				String ddl = exportDdlService.exportDdl(require, table.getTableName(), params.getType(), params.isWithComment());
 
 				folder.createNewFile();
 				file.createNewFile();
@@ -175,18 +197,39 @@ public class TableDesignerService {
 
 				fileWriter.close();
 
-				total += 1;
 				System.out.println("テーブル名[" + table.getTableName() + "]を出力しました。[" + total + "/" + tableList.size() + "]");
-
 			}
 			catch(Exception ex) {
-				total += 1;
 				System.out.println("テーブル名[" + table.getTableName() + "]の出力に失敗しました。[" + total + "/" + tableList.size() + "]:" + ex.getMessage());
 			}
+			total++;
 		}
 
-		return total;
+		return;
 	};
+
+	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder) {
+		String fileName = folder.isFile()
+			? folder.getAbsolutePath()
+			: folder.getPath() + "\\" + "all.sql";
+		File file = new File(fileName);
+
+		try {
+			FileWriter fileWriter = new FileWriter(file);
+			String ddl = exportDdlService.exportDdlAll(require, params.getType(), params.isWithComment());
+
+			folder.createNewFile();
+			file.createNewFile();
+			fileWriter.write(ddl);
+
+			fileWriter.close();
+
+			System.out.println("ファイル[" + fileName + "]を出力しました。");
+		}
+		catch(Exception ex) {
+			System.out.println("ファイル[" + fileName + "]の出力に失敗しました。");
+		}
+	}
 
 
 	public ImportFromFileResult importErpFromFile(ImportFromFileDto params) {

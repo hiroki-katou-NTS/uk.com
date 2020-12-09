@@ -3,13 +3,14 @@ package nts.uk.cnv.infra.entity.uktabledesign;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -23,6 +24,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
+import nts.uk.cnv.dom.tabledesign.TableDesignVer;
 
 @Getter
 @Entity
@@ -32,9 +34,8 @@ import nts.uk.cnv.dom.tabledesign.TableDesign;
 public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "TABLE_ID")
-	private String tableId;
+	@EmbeddedId
+	public ScvmtUkTableDesignPk pk;
 
 	@Column(name = "NAME")
 	private String name;
@@ -85,6 +86,6 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 			));
 		}
 
-		return new TableDesign(name, tableId, comment, createDate, updateDate, cols, idxs);
+		return new TableDesign(Optional.of(new TableDesignVer(pk.getBranch(), pk.getDate())), name, pk.getTableId(), comment, createDate, updateDate, cols, idxs);
 	}
 }

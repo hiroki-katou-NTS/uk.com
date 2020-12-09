@@ -6,4 +6,6 @@ import lombok.Data;
 public class ExportToFileDto {
 	String path;
 	String type;
+	boolean withComment;
+	boolean oneFile;
 }

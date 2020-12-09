@@ -12,5 +12,6 @@ public interface UkTableDesignRepository {
 	boolean exists(String tableName);
 
 	Optional<TableDesign> find(String tablename);
-	public List<GetUkTablesDto> getAllTableList();
+	List<TableDesign> getAll();
+	List<GetUkTablesDto> getAllTableList();
 }

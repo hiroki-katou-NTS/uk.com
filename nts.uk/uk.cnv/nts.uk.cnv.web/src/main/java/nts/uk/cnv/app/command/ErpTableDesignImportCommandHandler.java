@@ -29,6 +29,7 @@ public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableD
 			AtomTask at;
 			try {
 				at = TableDesignImportService.regist(
+						null,
 						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));

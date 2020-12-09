@@ -27,6 +27,8 @@ public class ScvmtUkIndexColumns extends JpaEntity implements Serializable {
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
+    	@PrimaryKeyJoinColumn(name = "BRANCH", referencedColumnName = "BRANCH"),
+    	@PrimaryKeyJoinColumn(name = "DATE", referencedColumnName = "DATE"),
     	@PrimaryKeyJoinColumn(name = "NAME", referencedColumnName = "NAME")
     })
 	public ScvmtUkIndexDesign indexdesign;

@@ -56,7 +56,7 @@ public class TableDesignImportServiceTest {
 		String comment = "COMMENT ON COLUMN BCMMT_COMPANY.CID IS '会社ID'";
 
 		try {
-			AtomTask task = TableDesignImportService.regist(require, ddl, createIndex, comment, "uk");
+			AtomTask task = TableDesignImportService.regist(null, require, ddl, createIndex, comment, "uk");
 			task.run();
 		} catch (JSQLParserException e) {
 			fail();

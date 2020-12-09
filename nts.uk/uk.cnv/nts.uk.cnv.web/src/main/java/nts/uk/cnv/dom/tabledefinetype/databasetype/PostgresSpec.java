@@ -145,30 +145,30 @@ public class PostgresSpec implements DatabaseSpec{
 
 		// 行レベルセキュリティの有効化
 		String policyEnable =
-				"ALTER TABLE " + tableName +" ENABLE ROW LEVEL SECURITY;\r\n";
+				"ALTER TABLE " + tableName +" ENABLE ROW LEVEL SECURITY;";
 
 		// 全権持ちユーザ(postgres)には全アクセスを許可
 		String policyForAdmin =
 				  "CREATE POLICY admin_select_employee ON " + tableName + "\r\n"
 				+ "  FOR ALL\r\n"
 				+ "  TO PUBLIC\r\n"
-				+ "  USING (current_user = 'postgres');\r\n";
+				+ "  USING (current_user = 'postgres');";
 
 		// それ以外のユーザにはセッション変数のcontractCodeと一致する行のみ全権限を与える
 		String policyForOthers =
 				  "CREATE POLICY company_select_employee ON " + tableName+ "\r\n"
 				+ "  FOR ALL\r\n"
 				+ "  TO PUBLIC\r\n"
-				+ "  USING (" + Constants.ContractCodeParamName + " = current_setting('app.contractCode', TRUE));\r\n";
+				+ "  USING (" + Constants.ContractCodeParamName + " = current_setting('app.contractCode', TRUE));";
 
 		// 特定のロール(c0010,c0020)に対して特定のアクセス権限を許可
 		String policyGrant =
-				"GRANT SELECT, INSERT, UPDATE, DELETE on " + tableName + " TO " + Constants.rlsUserName + ";\r\n";
+				"GRANT SELECT, INSERT, UPDATE, DELETE on " + tableName + " TO " + Constants.rlsUserName + ";";
 
 		return policyEnable + "\r\n"
 				+ policyForAdmin + "\r\n"
 				+ policyForOthers + "\r\n"
-				+ policyGrant;
+				+ policyGrant + "\r\n";
 	}
 
 }

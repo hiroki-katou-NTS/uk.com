@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class TableDesignExportDto {
 	String tableName;
 	String type;
+	boolean withComment;
 }

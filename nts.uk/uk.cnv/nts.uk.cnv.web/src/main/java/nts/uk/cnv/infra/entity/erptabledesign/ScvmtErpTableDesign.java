@@ -3,6 +3,7 @@ package nts.uk.cnv.infra.entity.erptabledesign;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -62,6 +63,6 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, new ArrayList<>());
+		return new TableDesign(Optional.empty(), tableId, name, comment, createDate, updateDate, cols, new ArrayList<>());
 	}
 }

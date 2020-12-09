@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -28,6 +29,7 @@ import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
+import nts.uk.cnv.dom.tabledesign.TableDesignVer;
 
 @Stateless
 public class TableDesignImportService {
@@ -38,7 +40,7 @@ public class TableDesignImportService {
 	 * @param type SQL文がどのRDBMSかを指定する
 	 * @throws JSQLParserException
 	 */
-	public static AtomTask regist(Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
+	public static AtomTask regist(TableDesignVer ver, Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
 		TableDefineType typeDefine;
 		if("uk".equals(type)) {
 			typeDefine = new UkDataType();
@@ -46,14 +48,16 @@ public class TableDesignImportService {
 		else {
 			typeDefine = DatabaseType.valueOf(type).spec();
 		}
-		TableDesign tableDesign = ddlToDomain(createTable, createIndexes, comment, typeDefine);
+		TableDesign tableDesign = ddlToDomain(ver, createTable, createIndexes, comment, typeDefine);
 
 		return AtomTask.of(() -> {
 			require.regist(tableDesign);
 		});
 	}
 
-	private static TableDesign ddlToDomain(String createTable, String createIndexes, String comment, TableDefineType typeDefine) throws JSQLParserException {
+	private static TableDesign ddlToDomain(
+		TableDesignVer ver,
+		String createTable, String createIndexes, String comment, TableDefineType typeDefine) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
 
 		boolean isClusteredPK = true;
@@ -81,14 +85,16 @@ public class TableDesignImportService {
 		}
 
 		if (createTableSt instanceof CreateTable) {
-			return toDomain( (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, isClusteredPK);
+			return toDomain(ver, (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, isClusteredPK);
 		}
 
 		throw new JSQLParserException();
 	}
 
 	@SuppressWarnings("unchecked")
-	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
+	private static TableDesign toDomain(
+			TableDesignVer ver,
+			CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
 			String comment, Map<String, Boolean> indexClusteredMap, boolean isClusteredPK) {
 		GeneralDateTime now = GeneralDateTime.now();
 
@@ -117,89 +123,13 @@ public class TableDesignImportService {
 		int id = 1;
 		for (Iterator<ColumnDefinition> colmnDef =  statement.getColumnDefinitions().iterator(); colmnDef.hasNext();) {
 			ColumnDefinition col = colmnDef.next();
-			String columnComment =
-					commentMap.containsKey(col.getColumnName())
-					? commentMap.get(col.getColumnName())
-					: "";
 
 			if(isFixedColumn(col.getColumnName())) {
 				continue;
 			}
 
-			List<String> specs = col.getColumnSpecs();
-			List<Integer> args;
-			if (col.getColDataType().getArgumentsStringList() != null && col.getColDataType().getArgumentsStringList().size() > 0) {
-				args = col.getColDataType().getArgumentsStringList().stream()
-						.map(arg ->  Integer.parseInt(arg))
-						.collect(Collectors.toList());
-			}
-			else {
-				args = new ArrayList<>();
-			}
+			ColumnDesign newItem = createColumnDesign(commentMap, typeDefine, pk, uk, col, id);
 
-			Integer[] argsArray = new Integer[args.size()];
-			DataType type = typeDefine.parse(col.getColDataType().getDataType().toUpperCase(), args.toArray(argsArray));
-
-			boolean nullable = (specs == null)
-					? false
-					: !String.join(" ", specs).contains("NOT NULL");
-
-			String defaultValue = (specs == null)
-				? ""
-				: specs.stream().anyMatch(arg-> arg.equals("DEFAULT"))
-					? specs.get(specs.indexOf("DEFAULT") + 1).toString()
-					: "";
-
-			String check = (specs == null)
-				? ""
-				: specs.stream().anyMatch(arg-> arg.equals("CHECK"))
-					? "CHECK " + specs.get(specs.indexOf("CHECK") + 1).toString()
-					: "";
-
-			int maxLength = 0;
-			int scale = 0;
-
-			switch(type) {
-			case REAL:
-				scale = Integer.parseInt(args.get(1).toString());
-			case INT:
-				defaultValue = defaultValue.replaceAll("'", "");
-			case CHAR:
-			case VARCHAR:
-			case NCHAR:
-			case NVARCHAR:
-				maxLength = (args.size() > 0)
-					? Integer.parseInt(args.get(0).toString())
-					: 0;
-				break;
-			case BOOL:
-				defaultValue = defaultValue.replaceAll("'", "")
-											.replaceAll("true", "1")
-											.replaceAll("True", "1")
-											.replaceAll("false", "0")
-											.replaceAll("False", "0");
-				break;
-			case DATE:
-			case DATETIME:
-			case DATETIMEMS:
-				defaultValue = defaultValue.replaceAll("'NULL'", "NULL");
-			case GUID:
-				break;
-			}
-
-			ColumnDesign newItem = new ColumnDesign(
-					id,
-					col.getColumnName(),
-					type,
-					maxLength, scale, nullable,
-					pk.containsKey(col.getColumnName()),
-					pk.containsKey(col.getColumnName()) ? pk.get(col.getColumnName()) : 0,
-					uk.containsKey(col.getColumnName()),
-					uk.containsKey(col.getColumnName()) ? uk.get(col.getColumnName()) : 0,
-					defaultValue,
-					columnComment,
-					check
-			);
 			columns.add(newItem);
 			id++;
 		}
@@ -211,8 +141,94 @@ public class TableDesignImportService {
 				? commentMap.get(table.getName())
 				: "";
 
-		TableDesign result = new TableDesign(table.getName(), table.getName(), tableComment, now, now, columns, indexes);
+		Optional<TableDesignVer> tableDesignVer =
+			(ver == null ) ? Optional.empty() : Optional.of(ver);
+		TableDesign result = new TableDesign(tableDesignVer, table.getName(), table.getName(), tableComment, now, now, columns, indexes);
 		return result;
+	}
+
+	private static ColumnDesign createColumnDesign(Map<String, String> commentMap, TableDefineType typeDefine,
+			Map<String, Integer> pk, Map<String, Integer> uk, ColumnDefinition col, int id) {
+		String columnComment =
+				commentMap.containsKey(col.getColumnName())
+				? commentMap.get(col.getColumnName())
+				: "";
+
+
+		List<String> specs = col.getColumnSpecs();
+		List<Integer> args;
+		if (col.getColDataType().getArgumentsStringList() != null && col.getColDataType().getArgumentsStringList().size() > 0) {
+			args = col.getColDataType().getArgumentsStringList().stream()
+					.map(arg ->  Integer.parseInt(arg))
+					.collect(Collectors.toList());
+		}
+		else {
+			args = new ArrayList<>();
+		}
+
+		Integer[] argsArray = new Integer[args.size()];
+		DataType type = typeDefine.parse(col.getColDataType().getDataType().toUpperCase(), args.toArray(argsArray));
+
+		boolean nullable = (specs == null)
+				? false
+				: !String.join(" ", specs).contains("NOT NULL");
+
+		String defaultValue = (specs == null)
+			? ""
+			: specs.stream().anyMatch(arg-> arg.equals("DEFAULT"))
+				? specs.get(specs.indexOf("DEFAULT") + 1).toString()
+				: "";
+
+		String check = (specs == null)
+			? ""
+			: specs.stream().anyMatch(arg-> arg.equals("CHECK"))
+				? "CHECK " + specs.get(specs.indexOf("CHECK") + 1).toString()
+				: "";
+
+		int maxLength = 0;
+		int scale = 0;
+
+		switch(type) {
+		case REAL:
+			scale = Integer.parseInt(args.get(1).toString());
+		case INT:
+			defaultValue = defaultValue.replaceAll("'", "");
+		case CHAR:
+		case VARCHAR:
+		case NCHAR:
+		case NVARCHAR:
+			maxLength = (args.size() > 0)
+				? Integer.parseInt(args.get(0).toString())
+				: 0;
+			break;
+		case BOOL:
+			defaultValue = defaultValue.replaceAll("'", "")
+										.replaceAll("true", "1")
+										.replaceAll("True", "1")
+										.replaceAll("false", "0")
+										.replaceAll("False", "0");
+			break;
+		case DATE:
+		case DATETIME:
+		case DATETIMEMS:
+			defaultValue = defaultValue.replaceAll("'NULL'", "NULL");
+		case GUID:
+			break;
+		}
+
+		return new ColumnDesign(
+				id,
+				col.getColumnName(),
+				type,
+				maxLength, scale, nullable,
+				pk.containsKey(col.getColumnName()),
+				pk.containsKey(col.getColumnName()) ? pk.get(col.getColumnName()) : 0,
+				uk.containsKey(col.getColumnName()),
+				uk.containsKey(col.getColumnName()) ? uk.get(col.getColumnName()) : 0,
+				defaultValue,
+				columnComment,
+				check
+		);
 	}
 
 	private static Map<String, String> createComment(String commentBlock) {

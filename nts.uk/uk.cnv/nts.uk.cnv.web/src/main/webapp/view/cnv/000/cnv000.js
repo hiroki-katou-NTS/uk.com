@@ -18,7 +18,9 @@ $(function () {
 		$('#result').val('');
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/importfromfile", {
 			path: $('#folderpath_import').val(),
-			type: $('[name="ddl_type_import"]:checked').val()
+			type: $('[name="ddl_type_import"]:checked').val(),
+			branch: $('#branch').text(),
+			date: $('#verDate').text()
 		})).done(function (res) {
 			console.log(res);
 			if (typeof res === "undefined") {
@@ -41,7 +43,11 @@ $(function () {
 		$('#result').val('');
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exporttofile", {
 			path: $('#folderpath_export').val(),
-			type: $('[name="ddl_type_export"]:checked').val()
+			type: $('[name="ddl_type_export"]:checked').val(),
+			withComment:
+				$('#withComment').prop('checked') ? true : false,
+			oneFile:
+				($('[name="oneOrMultiple"]:checked').val() === "true") ? true : false
 		})).done(function (res) {
 			console.log(res);
 			if (typeof res === "undefined") {

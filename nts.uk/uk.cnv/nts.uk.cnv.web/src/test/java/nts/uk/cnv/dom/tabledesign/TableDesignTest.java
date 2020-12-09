@@ -79,6 +79,7 @@ public class TableDesignTest {
 		indexes.add(new Indexes("[INDEX_NAME]", "INDEX", false, Arrays.asList("[COLUMN_NAME_2]"), new ArrayList<>()));
 
 		return new TableDesign(
+					null,
 					"[TABLE_NAME]", "", "[TABLE_COMMENT]",
 					GeneralDateTime.now(), GeneralDateTime.now(),
 					cols,

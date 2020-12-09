@@ -46,7 +46,9 @@ $(function () {
 		$('#result').val('');
 		$.ajax(ajaxOption.buildWithDataType("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", "text", {
 			tableName: $('#tablename').val(),
-			type: $('[name="tabledesign_type"]:checked').val()
+			type: $('[name="tabledesign_type"]:checked').val(),
+			withComment:
+				$('#withComment').prop('checked') ? true : false
 		})).done(function (res) {
 			console.log(res);
 			$('#tabledesign').val(res);

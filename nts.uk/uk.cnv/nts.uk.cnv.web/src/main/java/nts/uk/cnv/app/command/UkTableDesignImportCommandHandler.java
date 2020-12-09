@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.service.TableDesignImportService;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
+import nts.uk.cnv.dom.tabledesign.TableDesignVer;
 import nts.uk.cnv.dom.tabledesign.UkTableDesignRepository;
 
 @Stateless
@@ -29,6 +30,7 @@ public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDes
 			AtomTask at;
 			try {
 				at = TableDesignImportService.regist(
+						new TableDesignVer(command.getBranch(), command.getDate()),
 						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));

@@ -35,42 +35,71 @@
 			<legend>UK</legend>
 			<table>
 				<tr>
-					<td>
+					<td colspan="2">
 						<div class="form-label required">
 							<label>import元フォルダ：</label>
 						</div>
 					</td>
 					<td style="width:30px;"></td>
-					<td>
+					<td colspan="2">
 						<div class="form-label required">
 							<label>export先フォルダ：</label>
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td colspan="2">
 						<input type="text" id="folderpath_import" style="width: 340px;" class="nts-editor nts-input reset-element">
 						<button id="import">import</button>
 					</td>
 					<td></td>
-					<td>
+					<td colspan="2">
 						<input type="text" id="folderpath_export" style="width:340px;" class="nts-editor nts-input reset-element"/>
 						<button id="export">export</button>
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td style="width:80px;">
 						RDBMS:
+					</td>
+					<td>
 						<input type="radio" id="uk_import" name="ddl_type_import" value="uk" checked="checked" style="font-size:80%">UK
 						<input type="radio" id="mssql_import" name="ddl_type_import" value="sqlserver" style="font-size:80%">SqlServer
 						<input type="radio" id="pg_import" name="ddl_type_import" value="postgres" style="font-size:80%">Postgres
 					</td>
 					<td></td>
-					<td>
+					<td style="width:80px;">
 						RDBMS:
+					</td>
+					<td>
 						<input type="radio" id="uk_export" name="ddl_type_export" value="uk" checked="checked" style="font-size:80%">UK
 						<input type="radio" id="mssql_export" name="ddl_type_export" value="sqlserver" style="font-size:80%">SqlServer
 						<input type="radio" id="pg_export" name="ddl_type_export" value="postgres" style="font-size:80%">Postgres
+					</td>
+				</tr>
+				<tr>
+					<td>Branch：</td>
+					<td>
+						<input type="text" id="branch" style="width: 240px;" class="nts-editor nts-input reset-element">
+					</td>
+					<td></td>
+					<td>
+						出力ファイル:
+					</td>
+					<td>
+						<input type="radio" id="oneFile" name="oneOrMultiple" value="true" checked="checked" style="font-size:80%">1ファイル
+						<input type="radio" id="multiple" name="oneOrMultiple" value="false" style="font-size:80%">テーブルごと
+					</td>
+				</tr>
+				<tr>
+					<td>Ver日付：</td>
+					<td>
+						<input type="text" id="verDate" style="width: 120px;" class="nts-editor nts-input reset-element">
+					</td>
+					<td></td>
+					<td></td>
+					<td>
+						<input type="checkbox" id="withComment" value="true">コメントを出力する
 					</td>
 				</tr>
 			</table>

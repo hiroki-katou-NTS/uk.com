@@ -14,26 +14,17 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Getter
 @Embeddable
-public class ScvmtUkIndexColumnsPk implements Serializable {
+public class ScvmtUkTableDesignPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "TABLE_ID")
-	public String tableId;
+	private String tableId;
 
 	@Column(name = "BRANCH")
 	private String branch;
 
 	@Column(name = "DATE")
 	private GeneralDate date;
-
-	@Column(name = "NAME")
-	private String name;
-
-	@Column(name = "ID")
-	private int id;
-
-	@Column(name = "COLUMN_NAME")
-	private String columnName;
 
 }
