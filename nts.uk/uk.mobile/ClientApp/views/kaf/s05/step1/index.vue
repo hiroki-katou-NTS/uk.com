@@ -35,8 +35,8 @@
         <span class="textSize uk-text-dark-gray">{{ "KAFS09_4" | i18n }}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary">{{model.work.workType.code}}</span>
-          <span>Name's Work Type</span>
+          <span class="badge badge-secondary">{{workInfo.workType.code}}</span>
+          <span>{{workInfo.workType.name}}</span>
         </button>
 
         <!-- A4_3 -->
@@ -47,10 +47,10 @@
           class="btn btn-selection mt-2 mb-2"
         >
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary">Code's Work Time</span>
-          <span>Name's Work Time</span>
+          <span class="badge badge-secondary">{{workInfo.workTime.code}}</span>
+          <span>{{workInfo.workTime.name}}</span>
           <!-- A4_3_2 -->
-          <span class="d-block mt-1">Time's Work Time</span>
+          <span class="d-block mt-1">{{workInfo.workTime.time}}</span>
         </button>
       </div>
     </div>
@@ -63,8 +63,8 @@
       </div>
       <!-- A7_2 -->
       <div v-if="true" class="card-body">
-        <nts-time-range-input v-if="true" v-model="valueWorkHours1" />
-        <nts-time-range-input v-else disabled v-model="valueWorkHours1" />
+        <nts-time-range-input v-if="true" v-model="workHours1" />
+        <nts-time-range-input v-else disabled v-model="workHours1" />
       </div>
     </div>
 
@@ -76,8 +76,8 @@
       </div>
       <!-- A7_2 -->
       <div v-if="true" class="card-body">
-        <nts-time-range-input v-if="true" v-model="valueWorkHours2" />
-        <nts-time-range-input v-else disabled v-model="valueWorkHours2" />
+        <nts-time-range-input v-if="true" v-model="workHours2" />
+        <nts-time-range-input v-else disabled v-model="workHours2" />
       </div>
     </div>
 
