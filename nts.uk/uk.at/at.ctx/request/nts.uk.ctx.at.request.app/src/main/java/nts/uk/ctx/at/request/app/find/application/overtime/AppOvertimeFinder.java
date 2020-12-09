@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -164,7 +165,8 @@ public class AppOvertimeFinder {
 				CollectionUtil.isEmpty(param.worktypes) ? Collections.emptyList() : param.worktypes
 						.stream()
 						.map(x -> x.toDomain(param.companyId))
-						.collect(Collectors.toList())
+						.collect(Collectors.toList()),
+				EnumAdaptor.valueOf(param.prePost, PrePostInitAtr.class)		
 				);
 		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
 	}
@@ -190,7 +192,9 @@ public class AppOvertimeFinder {
 				startTimeSPR,
 				endTimeSPR,
 				param.appDispInfoStartupDto.toDomain(),
-				param.overtimeAppSet.toDomain(param.companyId));
+				param.overtimeAppSet.toDomain(param.companyId),
+				EnumAdaptor.valueOf(param.prePost, PrePostInitAtr.class)
+				);
 		
 		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
 	}
@@ -206,7 +210,7 @@ public class AppOvertimeFinder {
 				companyId,
 				param.employeeId,
 				dateOp,
-				EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class),
+				EnumAdaptor.valueOf(param.prePostInitAtr, PrePostInitAtr.class),
 				param.overtimeLeaveAppCommonSet.toDomain(),
 				param.advanceApplicationTime == null ? null : param.advanceApplicationTime.toDomain(),
 				param.achieveApplicationTime == null ? null : param.achieveApplicationTime.toDomain(),

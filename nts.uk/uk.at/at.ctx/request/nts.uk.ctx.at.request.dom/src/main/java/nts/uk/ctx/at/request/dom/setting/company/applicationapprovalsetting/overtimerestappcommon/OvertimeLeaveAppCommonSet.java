@@ -110,7 +110,7 @@ public class OvertimeLeaveAppCommonSet {
 	 * @return
 	 */
 	public ExcessStatusOutput checkExcessStatus(
-			PrePostAtr prePostInitAtr,
+			PrePostInitAtr prePostInitAtr,
 			Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp) {
 		ExcessStatusOutput output =  new ExcessStatusOutput();
@@ -297,7 +297,7 @@ public class OvertimeLeaveAppCommonSet {
 	 * @return 
 	 */
 	public ExcessStatusAchivementOutput checkExcessStatusAchivement(
-			PrePostAtr prePostInitAtr,
+			PrePostInitAtr prePostInitAtr,
 			Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp) {
 		ExcessStatusAchivementOutput output =  new ExcessStatusAchivementOutput();
@@ -462,9 +462,9 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param prePostInitAtr
 	 * @return
 	 */
-	private Boolean checkActualTime(PrePostAtr prePostInitAtr) {
+	private Boolean checkActualTime(PrePostInitAtr prePostInitAtr) {
 		// INPUT．「事前事後区分」をチェックする
-		if (prePostInitAtr == PrePostAtr.PREDICT) return false;
+		if (prePostInitAtr == PrePostInitAtr.PREDICT) return false;
 		return this.isPerformanceExcessAtr();
 	}
 	/**
@@ -473,9 +473,9 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param overtimeAppAtr
 	 * @return
 	 */
-	public Boolean checkOvertimeAppAtr(PrePostAtr prePostInitAtr) {
+	public Boolean checkOvertimeAppAtr(PrePostInitAtr prePostInitAtr) {
 		// INPUT．「事前事後区分」をチェックする
-		if (prePostInitAtr == PrePostAtr.PREDICT) return false;
+		if (prePostInitAtr == PrePostInitAtr.PREDICT) return false;
 		// @「事前超過表示設定」をチェックする
 		return this.isPreExcessDisplaySetting();
 	}
@@ -489,7 +489,7 @@ public class OvertimeLeaveAppCommonSet {
 	 * @return
 	 */
 	public OverStateOutput checkPreApplication(
-			PrePostAtr prePostInitAtr,
+			PrePostInitAtr prePostInitAtr,
 			Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp,
 			Optional<ApplicationTime> achiveOp

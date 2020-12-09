@@ -294,6 +294,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			param1.dateOp = self.application().appDate();
 			param1.overtimeAppAtr = self.getOverTimeAtrByUrl();
 			param1.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+			// todo
+			let prePost = self.application().prePostAtr();
+			if (self.application().prePostAtr() == 2 ) {
+				prePost = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+			}
 			let command = {
 				companyId: param1.companyId,
 				dateOp: param1.dateOp,
@@ -302,7 +307,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				startTimeSPR: param1.startTimeSPR,
 				endTimeSPR: param1.endTimeSPR,
 				overTimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
-				worktypes: self.dataSource.infoBaseDateOutput.worktypes
+				worktypes: self.dataSource.infoBaseDateOutput.worktypes,
+				prePost: prePost
 			}
 			self.$ajax(API.changeDate, command)
 				.done((res: DisplayInfoOverTime) => {
@@ -734,8 +740,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				if (workHoursDto) {
 					workHours1.start(workHoursDto.startTimeOp1);
 					workHours1.end(workHoursDto.endTimeOp1);
-					workHours2.start(workHoursDto.startTimeOp2);
-					workHours2.end(workHoursDto.endTimeOp2);
+					if (self.visibleModel.c29()) {
+						workHours2.start(workHoursDto.startTimeOp2);
+						workHours2.end(workHoursDto.endTimeOp2);						
+					}
 				}
 
 			}
@@ -2026,7 +2034,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
 					self.workInfo().workTime(workTime);
-					
+					let prePost = self.application().prePostAtr();
+					if (self.application().prePostAtr() == 2 ) {
+						prePost = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+					}
 					
 					let command = {
 						companyId: self.$user.companyId,
@@ -2035,7 +2046,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						workType: workType.code,
 						workTime: workTime.code,
 						appDispInfoStartupDto: self.appDispInfoStartupOutput(),
-						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet
+						overtimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
+						prePost: prePost
 					};
 					self.$blockui('show')
 					self.$ajax(API.selectWorkInfo, command)
@@ -2138,12 +2150,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 
 			// 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．フレックス時間表示区分」= true
-			let c17 = res.infoBaseDateOutput.quotaOutput.flexTimeClf
+			let c17 = res.infoBaseDateOutput.quotaOutput.flexTimeClf;
 			visibleModel.c17(c17);
 
 			// ※15-3 = ×　AND　
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
-			let c18_1 = true;
+			let c18_1 = true; 
+			// res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.before;
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
@@ -2163,7 +2176,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 
 			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-			let c29 = c7 && true;
+			let c29 = c7 && res.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 			visibleModel.c29(c29);
 
 			// 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
@@ -2240,11 +2253,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
-			if (ko.toJS(self.appDispInfoStartupOutput).appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1) {
-				command.prePostInitAtr = ko.toJS(self.application).prePostAtr;
-			} else {
-				command.prePostInitAtr = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.prePostAtr;
+			let prePostInitAtr = self.application().prePostAtr();
+			if (self.application().prePostAtr() == 2 ) {
+				prePostInitAtr = self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
 			}
+			command.prePostInitAtr = prePostInitAtr;
 
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
 			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {

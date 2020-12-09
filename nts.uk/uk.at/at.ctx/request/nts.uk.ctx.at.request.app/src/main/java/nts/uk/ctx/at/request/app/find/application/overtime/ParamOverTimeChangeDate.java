@@ -27,5 +27,7 @@ public class ParamOverTimeChangeDate {
 	
 	public List<WorkTypeCommandBase> worktypes = Collections.emptyList();
 	
+	public Integer prePost;
+	
 	
 }

@@ -38,5 +38,7 @@ public class ParamSelectWork {
 	
 	public OvertimeAppSetCommand overtimeAppSet;
 	
+	public Integer prePost;
+	
 	
 }
