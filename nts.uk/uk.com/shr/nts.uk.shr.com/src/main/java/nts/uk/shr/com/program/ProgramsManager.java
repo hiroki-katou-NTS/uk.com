@@ -3363,6 +3363,21 @@ public class ProgramsManager {
             "KWR003_300",
             "/view/kwr/003/c/index.xhtml");
 	/**
+	 * KWR004
+	 */
+	public static final Program KWR004A = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR004A,
+            "KWR004_1",
+            "/view/kwr/004/a/index.xhtml");
+	public static final Program KWR004B = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR004B,
+            "KWR004_2",
+            "/view/kwr/004/b/index.xhtml");
+	public static final Program KWR004C = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR004C,
+            "KWR004_3",
+            "/view/kwr/004/c/index.xhtml");
+	/**
 	 * KWR005
 	 */
 	public static final Program KWR005A = new Program(WebAppId.AT,
