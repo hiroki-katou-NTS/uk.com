@@ -6,11 +6,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.workledgeroutputitem.*;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.WorkStatusOutputDto;
+import nts.uk.ctx.at.function.app.query.workledgeroutputitem.BeginMonthOfCompany;
 import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetBeginMonthOfCompanyQuery;
 import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetOutputSettingOfWorkLedgerQuery;
 import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetSettingDetailWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingIdParams;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingParams;
 
@@ -54,7 +54,7 @@ public class WorkLedgerOutputItemWebService extends WebService {
 
     @Path("005/a/beginningmonth")
     @POST
-    public Integer getBeginMonthOfCompany() {
+    public BeginMonthOfCompany getBeginMonthOfCompany() {
         return getBeginMonthOfCompanyQuery.getBeginMonthOfCompany();
     }
 

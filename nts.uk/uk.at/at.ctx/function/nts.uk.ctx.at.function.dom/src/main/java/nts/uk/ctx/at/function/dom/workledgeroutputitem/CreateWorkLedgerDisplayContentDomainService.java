@@ -59,14 +59,14 @@ public class CreateWorkLedgerDisplayContentDomainService {
         val baseDate = datePeriod.end();
         // ② = call() 基準日で社員の雇用と締め日を取得する
         val closureDateEmploymentList = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
-        // ③ 取得する(会社ID)
-        val attIds = require.getAggregableMonthlyAttId(cid);
         val closureDayMap = closureDateEmploymentList.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
         val monthlyOutputItems = workLedgerOutputItem.getOutputItemList();
 
         if (monthlyOutputItems == null ||monthlyOutputItems.isEmpty()) {
             throw new BusinessException("Msg_1926");
         }
+        // ③ 取得する(会社ID)
+        val attIds = require.getAggregableMonthlyAttId(cid);
         val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
         // ④ Call 会社の月次項目を取得する
@@ -88,7 +88,6 @@ public class CreateWorkLedgerDisplayContentDomainService {
                     item.setWorkplaceName(wplInfo.getWorkPlaceName());
                 } else return;
             } else return;
-
             List<MonthlyRecordValueImport> listAttendances = new ArrayList<>();
             val closureDay = closureDayMap.get(e.getEmployeeId()).getClosure().getClosureHistories()
                     .get(0).getClosureDate().getClosureDay().v();
@@ -98,7 +97,6 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
                 listAttendances.addAll(require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
                         yearMonthPeriod, listAttIds).get(e.getEmployeeId()));
-
             }
             Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendances.stream()
                     .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
@@ -108,21 +106,18 @@ public class CreateWorkLedgerDisplayContentDomainService {
             for (val att : monthlyOutputItems) {
                 val monthlyValues = new ArrayList<MonthlyValue>();
                 val value = attName.getOrDefault(att.getAttendanceId(), null);
-                if (value == null) continue;
+                if (value == null|| value.getTypeOfAttendanceItem()== null) continue;
                 val attribute = convertMonthlyToAttForms(value.getTypeOfAttendanceItem());
                 allValue.forEach((key, values) -> {
                     val valueSub = values.getOrDefault(att.getAttendanceId(), null);
-                    boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE ||
-                            attribute == CommonAttributesOfForms.WORKING_HOURS;
+                    boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE || attribute == CommonAttributesOfForms.WORKING_HOURS;
                     if (valueSub != null) {
                         monthlyValues.add(new MonthlyValue(
                                 valueSub.itemId(),
                                 !isCharacter ? valueSub.doubleOrDefault() : null,
                                 key,
                                 isCharacter ? valueSub.stringOrDefault() : null
-                        ));
-                    }
-
+                        ));}
                 });
                 double total = monthlyValues.stream().filter(x -> x.getActualValue() != null && checkAttId(attIds, x.getAttId()))
                         .mapToDouble(MonthlyValue::getActualValue).sum();

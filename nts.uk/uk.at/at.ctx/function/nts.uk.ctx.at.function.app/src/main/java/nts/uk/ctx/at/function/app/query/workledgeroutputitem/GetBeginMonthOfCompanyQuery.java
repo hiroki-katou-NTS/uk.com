@@ -20,9 +20,13 @@ public class GetBeginMonthOfCompanyQuery {
     @Inject
     private CompanyAdapter companyAdapter;
 
-    public Integer getBeginMonthOfCompany() {
+    public BeginMonthOfCompany getBeginMonthOfCompany() {
         // 会社の期首月を取得する (Request List108)
         CompanyDto companyDto = companyAdapter.getFirstMonth(AppContexts.user().companyId());
-        return companyDto != null ? companyDto.getStartMonth() : null;
+        Integer startMonth = null;
+        if (companyDto != null) {
+            startMonth = companyDto.getStartMonth();
+        }
+        return new BeginMonthOfCompany(startMonth);
     }
 }
