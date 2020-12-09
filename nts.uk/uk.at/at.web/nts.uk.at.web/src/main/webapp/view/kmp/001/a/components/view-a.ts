@@ -224,54 +224,56 @@ module nts.uk.at.view.kmp001.a {
 				model: IModel = ko.toJS(vm.model),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
-			var stampInput = ko.toJS(vm.textInput);
+			setTimeout(() => {
+				var stampInput = ko.toJS(vm.textInput);
 
-			if (ko.unwrap(vm.model.code) != '') {
+				if (ko.unwrap(vm.model.code) != '') {
 
-				/*if (ko.toJS(vm.model.stampCardDto).length > 0) {
-					const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
-					stampInput = stamp.stampNumber;
-				} else {
-					stampInput = ko.toJS(vm.textInput);
-				}*/
+					/*if (ko.toJS(vm.model.stampCardDto).length > 0) {
+						const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
+						stampInput = stamp.stampNumber;
+					} else {
+						stampInput = ko.toJS(vm.textInput);
+					}*/
 
-				if (stampInput == '') {
-					vm.$dialog.info({ messageId: "Msg_1679" });
-				} else {
-					vm.validate()
-						.then((valid: boolean) => {
-							if (valid) {
+					if (stampInput == '') {
+						vm.$dialog.info({ messageId: "Msg_1679" });
+					} else {
+						vm.validate()
+							.then((valid: boolean) => {
+								if (valid) {
 
-								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
+									const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
 
-								vm.$ajax(KMP001A_API.ADD, commandNew)
-									.then(() => {
-										if (ko.unwrap(vm.methodEdit)) {
-											vm.$errors('clear');
-										}
-										vm.$dialog.info({ messageId: 'Msg_15' });
-									})
-									.then(() => vm.$blockui("invisible"))
-									.then(() => vm.textInput(''))
-									.then(() => vm.reloadData(index))
-									.then(() => vm.model.code.valueHasMutated())
-									.fail((err: any) => {
-										if (ko.unwrap(vm.methodEdit)) {
-											vm.$errors('clear');
-										}
-										$('.ip-stamp-card').blur();
-										setTimeout(() => {
-											vm.$dialog.error({ messageId: err.messageId });
-										}, 50);
-									})
-									.always(() => vm.$blockui("clear"));
-							}
-						});
+									vm.$ajax(KMP001A_API.ADD, commandNew)
+										.then(() => {
+											if (ko.unwrap(vm.methodEdit)) {
+												vm.$errors('clear');
+											}
+											vm.$dialog.info({ messageId: 'Msg_15' });
+										})
+										.then(() => vm.$blockui("invisible"))
+										.then(() => vm.textInput(''))
+										.then(() => vm.reloadData(index))
+										.then(() => vm.model.code.valueHasMutated())
+										.fail((err: any) => {
+											if (ko.unwrap(vm.methodEdit)) {
+												vm.$errors('clear');
+											}
+											$('.ip-stamp-card').blur();
+											setTimeout(() => {
+												vm.$dialog.error({ messageId: err.messageId });
+											}, 50);
+										})
+										.always(() => vm.$blockui("clear"));
+								}
+							});
+					}
 				}
-			}
-			$(document).ready(function () {
-				$('.ip-stamp-card').focus();
-			});
+				$(document).ready(function () {
+					$('.ip-stamp-card').focus();
+				});
+			}, 100);
 		}
 
 		reloadData(selectedIndex: number = 0) {
