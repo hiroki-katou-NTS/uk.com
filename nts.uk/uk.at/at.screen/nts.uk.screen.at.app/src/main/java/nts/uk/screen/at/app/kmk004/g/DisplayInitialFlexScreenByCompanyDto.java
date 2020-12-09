@@ -10,7 +10,7 @@ import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DisplayInitialScreenDto {
+public class DisplayInitialFlexScreenByCompanyDto {
 
 	// 利用単位
 	UsageUnitSettingDto usageUnitSetting;

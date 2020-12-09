@@ -14,20 +14,28 @@ import nts.uk.screen.at.app.query.kmk004.common.GetUsageUnitSetting;
  *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.G：会社別法定労働時間の登録（フレックス勤務）.メニュー別OCD.会社別法定労働時間の登録（フレックス勤務）の初期画面を表示する
  */
 @Stateless
-public class DisplayInitialScreen {
+public class DisplayInitialFlexScreenByCompany {
 
 	@Inject
 	private GetUsageUnitSetting getUsageUnit;
 
 	@Inject
+	private DisplayFlexBasicSettingByCompany displayFlexBasicSettingByCompany;
+
+	@Inject
 	private DisplayYearListByCompany displayYearListByCompany;
 
-	public void displayInitialScreen() {
-		// 1. 利用単位の設定を取得する
-		this.getUsageUnit.get();
-		// 2. 会社別基本設定（フレックス勤務）を表示する
+	public DisplayInitialFlexScreenByCompanyDto displayInitialScreen() {
 
+		DisplayInitialFlexScreenByCompanyDto result = new DisplayInitialFlexScreenByCompanyDto();
+		// 1. 利用単位の設定を取得する
+		result.setUsageUnitSetting(this.getUsageUnit.get());
+		// 2. 会社別基本設定（フレックス勤務）を表示する
+		result.setDisplayFlexBasicSettingByCompanyDto(
+				this.displayFlexBasicSettingByCompany.displayFlexBasicSettingByCompany());
 		// 3. 会社別年度リストを表示する
-		this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX);
+		result.setCompanies(this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX));
+
+		return result;
 	}
 }
