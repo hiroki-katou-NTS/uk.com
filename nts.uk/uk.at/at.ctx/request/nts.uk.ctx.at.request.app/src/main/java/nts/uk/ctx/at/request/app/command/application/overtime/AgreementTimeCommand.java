@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport_Old;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,8 +18,8 @@ public class AgreementTimeCommand {
 	/** エラーメッセージ */
 	public String errorMessage;
 	
-	public AgreementTimeImport toDomain() {
-		return new AgreementTimeImport(
+	public AgreementTimeImport_Old toDomain() {
+		return new AgreementTimeImport_Old(
 				employeeId,
 				Optional.ofNullable(confirmed.toDomain()),
 				Optional.ofNullable(afterAppReflect.toDomain()),

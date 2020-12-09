@@ -15,7 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingOutput;
@@ -69,16 +69,16 @@ public class AgreementTimeServiceImpl implements AgreementTimeService {
 		// 翌月=取得した当月.AddMonths(1)
 		YearMonth nextMonth = currentMonth.addMonths(1);
 		
-		AgreementTimeImport detailCurrentMonth = null;
-		AgreementTimeImport detailNextMonth = null;
+		AgreementTimeImport_Old detailCurrentMonth = null;
+		AgreementTimeImport_Old detailNextMonth = null;
 		
 		// 36協定時間の取得
-		List<AgreementTimeImport> detailCurrentMonthLst = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID), currentMonth, closure.getClosureId());
+		List<AgreementTimeImport_Old> detailCurrentMonthLst = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID), currentMonth, closure.getClosureId());
 		if(!CollectionUtil.isEmpty(detailCurrentMonthLst)){
 			detailCurrentMonth = detailCurrentMonthLst.get(0);
 		}
 		// 36協定時間の取得
-		List<AgreementTimeImport> detailNextMonthLst = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID), nextMonth, closure.getClosureId());
+		List<AgreementTimeImport_Old> detailNextMonthLst = agreementTimeAdapter.getAgreementTime(companyID, Arrays.asList(employeeID), nextMonth, closure.getClosureId());
 		if(!CollectionUtil.isEmpty(detailNextMonthLst)){
 			detailNextMonth = detailNextMonthLst.get(0);
 		}
