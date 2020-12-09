@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
+import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 
 /**
  * 
@@ -18,7 +19,7 @@ public class DisplayInitialFlexScreenByWorkPlaceDto {
 	// フレックス勤務所定労働時間取得
 	private GetFlexPredWorkTimeDto getFlexPredWorkTime;
 	// 職場リスト
-	private List<String> wkpIds;
+	private List<WorkplaceIdDto> wkpIds;
 	// 職場を選択する
 	private SelectWorkPlaceFlexDto selectWorkPlaceFlex;
 }
