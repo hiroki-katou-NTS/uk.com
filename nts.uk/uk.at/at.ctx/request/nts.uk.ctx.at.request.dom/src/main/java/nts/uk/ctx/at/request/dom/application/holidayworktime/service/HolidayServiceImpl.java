@@ -15,7 +15,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -188,7 +187,8 @@ public class HolidayServiceImpl implements HolidayService {
 		List<ApplicationTime> applicationTimes = commonOverTimeHoliday.calculator(companyId, employeeId, date.get() , workContent.getWorkTypeCode(), workContent.getWorkTimeCode(), 
 				workContent.getTimeZones(), workContent.getBreakTimes());
 		//	事前申請・実績の時間超過をチェックする
-		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(EnumAdaptor.valueOf(prePostAtr.value, PrePostAtr.class), 
+		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(
+				EnumAdaptor.valueOf(prePostAtr.value, PrePostInitAtr.class), 
 				Optional.ofNullable(preApplicationTime), 
 				!applicationTimes.isEmpty() ? Optional.ofNullable(applicationTimes.get(0)) : Optional.empty(), 
 				Optional.ofNullable(actualApplicationTime));
@@ -420,7 +420,7 @@ public class HolidayServiceImpl implements HolidayService {
 			Optional<AppHolidayWork> appHolidayWorkPre = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
 			
 			OverStateOutput overStateOutput = appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().checkPreApplication(
-					EnumAdaptor.valueOf(appHolidayWork.getApplication().getPrePostAtr().value, PrePostAtr.class), 
+					EnumAdaptor.valueOf(appHolidayWork.getApplication().getPrePostAtr().value, PrePostInitAtr.class), 
 					Optional.ofNullable(appHolidayWorkPre.isPresent() ? appHolidayWorkPre.get().getApplicationTime() : null), 
 					Optional.ofNullable(appHolidayWork.getApplicationTime()),
 					Optional.of(actualApplicationTime)

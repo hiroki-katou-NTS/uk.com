@@ -46,7 +46,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF010_10')}</button>
-				<button data-bind="click: testzz, visible: referenceButton()">#{i18n.getText('KAF010_340')}</button>
+				<button data-bind="click: openDialogKdl005, visible: referenceButton()">#{i18n.getText('KAF010_340')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
@@ -64,7 +64,7 @@
 											params: {
 												overTimeWork: overTimeWork
 											}
-											}"></div>
+											}, visible: mode() != 2"></div>
 
 				<div class="table">
 					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
@@ -79,7 +79,7 @@
 										appType: appType,
 										application: application,
 										appDispInfoStartupOutput: appDispInfoStartupOutput
-									}}"></div>
+									}}, visible: mode() != 2"></div>
 				</div>
 				<div data-bind="component: { name: 'kaf000-a-component3',
 											params: {
@@ -118,7 +118,7 @@
 											params: {
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div> 
+											} }, visible: mode() != 2"></div> 
 			</div>
 		</ui:define>
 	</ui:composition>
