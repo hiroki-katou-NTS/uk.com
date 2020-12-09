@@ -46,7 +46,7 @@
             <div class="textEditor">
               <input
                 id="KWR003_C23"
-                class="code"
+                class="code new-code-name"
                 tabindex="1"
                 data-bind="ntsTextEditor: {
                       value: newCode, 
@@ -56,7 +56,8 @@
                     }"
               />
               <input
-                class="name"
+                class="name new-code-name"
+                id="KWR003_C24"
                 tabindex="2"
                 data-bind="ntsTextEditor: {
                       value: newName,
@@ -72,10 +73,10 @@
           <button
             id="proceedDialog" 
             tabindex="3"
-            data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR003_304')"
-            class="proceed large"
+            data-bind="click: cloneAttendance, enable: $root.errors.isEmpty, text: $i18n('KWR003_304')"
+            class="proceed x-large"
           />
-          <button id="closeDialog" tabindex="4" data-bind="click: cancel, text: $i18n('KWR003_305')" />
+          <button id="closeDialog" tabindex="4" class="large" data-bind="click: cancel, text: $i18n('KWR003_305')" />
         </div>
       </ui:define>
     </ui:composition>
