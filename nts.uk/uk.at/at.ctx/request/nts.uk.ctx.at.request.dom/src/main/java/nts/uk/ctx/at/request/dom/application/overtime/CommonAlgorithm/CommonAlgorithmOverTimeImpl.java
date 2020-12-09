@@ -697,7 +697,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					.getOvertimeLeaveAppCommonSet()
 					.checkPreApplication(
 						EnumAdaptor.valueOf(appOverTime.getPrePostAtr().value, PrePostInitAtr.class),
-						displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional().map(y -> y.getApplicationTime())).orElse(Optional.empty()),
+						displayInfoOverTime
+							.getAppDispInfoStartup()
+							.getAppDispInfoWithDateOutput()
+							.getOpPreAppContentDisplayLst()
+							.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+							.flatMap(y -> y.getApOptional())
+							.flatMap(z -> Optional.of(z.getApplicationTime())),
 						Optional.of(appOverTime.getApplicationTime()),
 						displayInfoOverTime.getInfoWithDateApplicationOp().map(x -> x.getApplicationTime()).orElse(Optional.empty()));
 			

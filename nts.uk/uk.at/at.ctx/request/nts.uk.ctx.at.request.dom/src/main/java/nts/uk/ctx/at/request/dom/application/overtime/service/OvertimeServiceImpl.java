@@ -712,11 +712,18 @@ public class OvertimeServiceImpl implements OvertimeService {
 			
 		}
 		// 事前申請・実績の時間超過をチェックする
-		OverStateOutput overStateOutput = infoNoBaseDate.getOverTimeAppSet().getOvertimeLeaveAppCommonSet().checkPreApplication(
-				EnumAdaptor.valueOf(appOverTime.getPrePostAtr().value, PrePostInitAtr.class),
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()).map(y -> Optional.of(y.getApplicationTime())).orElse(Optional.empty()),
-				Optional.of(appOverTime.getApplicationTime()),
-				Optional.empty()); // QA #112633
+		OverStateOutput overStateOutput = infoNoBaseDate.getOverTimeAppSet()
+				.getOvertimeLeaveAppCommonSet()
+				.checkPreApplication(
+					EnumAdaptor.valueOf(appOverTime.getPrePostAtr().value, PrePostInitAtr.class),
+					appDispInfoStartupOutput
+							.getAppDispInfoWithDateOutput()
+							.getOpPreAppContentDisplayLst()
+							.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+							.flatMap(y -> y.getApOptional())
+							.flatMap(z -> Optional.of(z.getApplicationTime())),
+					Optional.of(appOverTime.getApplicationTime()),
+					Optional.empty()); // QA #112633
 		
 		// OUTPUT「残業申請の表示情報」をセットして取得した「残業申請」と一緒に返す
 		displayInfoOverTime.setAppDispInfoStartup(appDispInfoStartupOutput);
@@ -985,10 +992,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 													workTimeCode,
 													startTimeSPR,
 													endTimeSPR,
-													Optional.ofNullable(appDispInfoStartupOutput.getAppDispInfoWithDateOutput()
-																			.getOpActualContentDisplayLst()
-																			.map(x -> x.get(0))
-																			.orElse(null)),
+													appDispInfoStartupOutput.getAppDispInfoWithDateOutput()
+														.getOpActualContentDisplayLst()
+														.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0))),
 													overtimeAppSet);
 		
 		
