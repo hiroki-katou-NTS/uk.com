@@ -38,9 +38,9 @@ public class YearlyListByWorkplace {
 	 * @param workplaceId	職場ID
 	 * @param workTypeUnit	勤務区分
 	 */
-	public List<Integer> get(String workplaceId, LaborWorkTypeAttr laborAttr) {
+	public List<YearDto> get(String workplaceId, LaborWorkTypeAttr laborAttr) {
 		
-		List<Integer> result = new ArrayList<>();
+		List<YearDto> result = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		
 		//1 Call 職場別月単位労働時間
@@ -52,7 +52,9 @@ public class YearlyListByWorkplace {
 				cid,
 				timeSetWkps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 		
-		result = years.stream().map(m -> m.v()).collect(Collectors.toList());
+		result = years.stream().map(m -> {
+			return new YearDto(m.v());
+		}).collect(Collectors.toList());
 		
 		return result;
 	}

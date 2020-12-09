@@ -38,10 +38,10 @@ public class YearListByEmployee {
 	 * @param sid		　社員ID
 	 * @param laborAttr	　勤務区分
 	 */
-	public List<Integer> get(String sid, LaborWorkTypeAttr laborAttr){
+	public List<YearDto> get(String sid, LaborWorkTypeAttr laborAttr){
 		
 		String cid = AppContexts.user().companyId();
-		List<Integer> result = new ArrayList<>();
+		List<YearDto> result = new ArrayList<>();
 		
 		//1 Call 社員別月単位労働時間
 		List<MonthlyWorkTimeSetSha> timeSetShas = monthlyWorkTimeSetRepo.findEmployee(cid, sid, laborAttr);
@@ -52,7 +52,9 @@ public class YearListByEmployee {
 		List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, cid,
 				timeSetShas.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 
-		result = list.stream().map(m -> m.v()).collect(Collectors.toList());
+		result = list.stream().map(m -> {
+			return new YearDto(m.v());
+		}).collect(Collectors.toList());
 		
 		return result;
 	}
