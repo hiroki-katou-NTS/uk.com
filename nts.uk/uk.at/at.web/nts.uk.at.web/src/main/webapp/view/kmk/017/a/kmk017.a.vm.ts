@@ -35,6 +35,7 @@ module nts.uk.at.view.kmk017.a {
     //kdl001>
     kml001selectedCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
     workplaceTimeSetting: KnockoutObservableArray<string> = ko.observableArray([]);
+    kml001ExcludedCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
@@ -121,8 +122,17 @@ module nts.uk.at.view.kmk017.a {
     //A4_2
     openDialogKDL001() {
       const vm = this;
+      let newSelectedCodeList:Array<string> = [];
+      let selectedCodeList:Array<string> = [];
+
+      _.forEach(vm.workplaceWorkingTimeList(), (x) => {
+        selectedCodeList.push(x.code);
+      });
+
+      newSelectedCodeList = vm.kml001selectedCodeList().filter((x) => !_.includes(selectedCodeList, x));
+
       nts.uk.ui.windows.setShared('kml001multiSelectMode', true);
-      nts.uk.ui.windows.setShared('kml001selectAbleCodeList', vm.kml001selectedCodeList());
+      nts.uk.ui.windows.setShared('kml001selectAbleCodeList', newSelectedCodeList);
       nts.uk.ui.windows.setShared('kml001selectedCodeList', []);
       nts.uk.ui.windows.setShared('kml001isSelection', []);
 
@@ -189,10 +199,13 @@ module nts.uk.at.view.kmk017.a {
       const vm = this;
 
       const workPlace = $('#kcp004').getRowSelected();
-      if (vm.workplaceWorkingTimeList().length === 0) {
-        vm.$dialog.error({ messageId: 'Msg_1911' }).then(() => {
-          return;
+      if (vm.workplaceWorkingTimeList().length === 0) {        
+        //$('#grid-list').ntsError('set', {messageId:"Msg_1911"});
+        //$('.grid-list').focus();
+        vm.$errors("#grid-list", "Msg_1911").then((valid: boolean) => {         
+          $('.grid-list').focus();
         });
+        return;
       } else {
         vm.$blockui('show');
 
@@ -208,7 +221,9 @@ module nts.uk.at.view.kmk017.a {
             vm.isNewMode(false);
             vm.$blockui('hide');
           });
-        }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
+        })
+        .fail((error) => { console.log(error); })
+        .always(() => vm.$blockui('hide'));
       }
     }
 
@@ -227,7 +242,9 @@ module nts.uk.at.view.kmk017.a {
               vm.isNewMode(true);
               vm.$blockui('hide');
             });
-          }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
+          })
+          .fail((error) => { console.log(error); })
+          .always(() => vm.$blockui('hide'));
         }
       });
     }
