@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessage;
 import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessagePK;
 import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessageRead;
 import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessageReadPK;
+import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessageTgt;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -111,6 +112,11 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	public void update(MessageNotice msg) {
 		SptdtInfoMessage entity = toEntity(msg);
 		SptdtInfoMessage oldEntity = this.queryProxy().find(entity.getPk(), SptdtInfoMessage.class).get();
+
+		this.commandProxy().removeAll(SptdtInfoMessageTgt.class
+				, oldEntity.getSptdtInfoMessageTgts().stream().map(x -> x.getPk()).collect(Collectors.toList()));
+
+		this.getEntityManager().flush();
 		oldEntity.setContractCd(AppContexts.user().contractCode());
 		oldEntity.setCompanyId(AppContexts.user().companyId());
 		oldEntity.setStartDate(entity.getStartDate());
@@ -118,6 +124,9 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		oldEntity.setUpdateDate(GeneralDateTime.now());
 		oldEntity.setMessage(entity.getMessage());
 		oldEntity.setDestination(entity.getDestination());
+		oldEntity.setTargetInformation(entity.getTargetInformation());
+
+		this.getEntityManager().flush();
 		// Update entity
 		this.commandProxy().update(oldEntity);
 	}

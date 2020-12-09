@@ -13,7 +13,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     padding-top: 5px;
     padding-left: 5px;
     width: 445x;
-    height: 100%;
+    height: 450px;
     border: 1px solid #B1B1B1;
   }
   #contents-area::before {
