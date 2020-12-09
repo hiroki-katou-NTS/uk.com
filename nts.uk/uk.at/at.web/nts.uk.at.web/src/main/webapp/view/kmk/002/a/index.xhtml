@@ -40,7 +40,7 @@
                   <!-- Print Excel -->
                   <button tabindex="1" id="print-button"
                      data-bind="click: function(){ $vm.exportExcel()}">#{i18n.getText('KMK002_99')}</button>
-                  <div tabindex="1" id="switch-language"></div>
+                  <div tabindex="1" id="switch-language" data-bind="visible: false"></div>
                </div>
             </div>
             <div id="contents-area" style="display: none" data-bind="visible: true" class="fixed-flex-layout">

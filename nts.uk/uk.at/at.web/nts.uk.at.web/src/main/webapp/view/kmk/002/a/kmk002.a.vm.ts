@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk002.a {
                     var cols = $("#tbl-master-list").igGrid("option", "columns");
                     if ($("#tbl-master-list").igGrid("option", "columns").length == 4) {
                         //add columns otherLanguageName   
-                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, formatter: _.escape };
+                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, hidden: true, formatter: _.escape };
                         cols.splice(2, 0, newColumn);
                         $("#tbl-master-list").igGrid("option", "columns", cols);
                         $("#tbl-master-list").igGrid("option", "dataSource", lstOptItem());
@@ -1328,12 +1328,12 @@ module nts.uk.at.view.kmk002.a {
                 self.upperCheck(dto.upperCheck);
                 self.lowerCheck(dto.lowerCheck);
 
-                self.numberUpperDay(dto.numberRange.dailyNumbeRange.upperLimit);
-                self.numberLowerDay(dto.numberRange.dailyNumbeRange.lowerLimit);
+                self.numberUpperDay(dto.numberRange.dailyNumberRange.upperLimit);
+                self.numberLowerDay(dto.numberRange.dailyNumberRange.lowerLimit);
                 self.timeUpperDay(dto.timeRange.dailyTimeRange.upperLimit);
                 self.timeLowerDay(dto.timeRange.dailyTimeRange.lowerLimit);
-                self.amountUpperDay(dto.amountRange.dailyamountRange.upperLimit);
-                self.amountLowerDay(dto.amountRange.dailyamountRange.lowerLimit);
+                self.amountUpperDay(dto.amountRange.dailyAmountRange.upperLimit);
+                self.amountLowerDay(dto.amountRange.dailyAmountRange.lowerLimit);
 
                 self.numberUpperMonth(dto.numberRange.monthlyNumberRange.upperLimit);
                 self.numberLowerMonth(dto.numberRange.monthlyNumberRange.lowerLimit);
@@ -1394,7 +1394,7 @@ module nts.uk.at.view.kmk002.a {
                     upperCheck: dto.upperCheck,
                     lowerCheck: dto.lowerCheck,
                     numberRange: {
-                        dailyNumbeRange: {
+                        dailyNumberRange: {
                             upperLimit: dto.numberUpperDay,
                             lowerLimit: dto.numberLowerDay
                         },
@@ -1414,7 +1414,7 @@ module nts.uk.at.view.kmk002.a {
                         }
                     },
                     amountRange: {
-                        dailyamountRange: {
+                        dailyAmountRange: {
                             upperLimit: dto.amountUpperDay,
                             lowerLimit: dto.amountLowerDay
                         },

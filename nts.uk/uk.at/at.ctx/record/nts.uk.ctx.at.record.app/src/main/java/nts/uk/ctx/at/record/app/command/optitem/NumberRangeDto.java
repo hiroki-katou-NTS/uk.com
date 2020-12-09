@@ -14,13 +14,13 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.NumberRange;
 @AllArgsConstructor
 public class NumberRangeDto {
 
-    private DailyTimesRangeDto dailyNumbeRange;
+    private DailyTimesRangeDto dailyNumberRange;
     
     private MonthlyTimesRangeDto monthlyNumberRange;
     
     public NumberRange toDomain() {
         return new NumberRange(
-                Optional.ofNullable(dailyNumbeRange.toDomain()), 
+                Optional.ofNullable(dailyNumberRange.toDomain()), 
                 Optional.ofNullable(monthlyNumberRange.toDomain())
                 );
     }
