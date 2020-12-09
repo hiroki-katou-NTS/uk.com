@@ -10,7 +10,11 @@ import javax.ejb.TransactionAttributeType;
 @Stateless
 public interface AutoExecutionPreparationPub {
 	
-	void autoStoragePrepare(String patternCode, List<String> empIds);
+	AutoPrepareDataExport autoStoragePrepare(String patternCode);
 	
-	void autoDeletionPrepare(String patternCode);
+	void updateTargetEmployee(String storeProcessingId, String patternCode, List<String> empIds);
+	
+	AutoPrepareDataExport autoDeletionPrepare(String patternCode);
+	
+	void updateEmployeeDeletion(String delId, List<String> empIds);
 }

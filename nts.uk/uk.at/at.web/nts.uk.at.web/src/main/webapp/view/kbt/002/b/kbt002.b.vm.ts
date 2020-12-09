@@ -269,7 +269,8 @@ module nts.uk.at.view.kbt002.b {
                 vm.$nextTick(() => {
                   vm.focusInput();
                 });
-              });
+              })
+              .then(() => vm.selectedExecCode(command.execItemCode));
           })
           .fail((error: any) => {
             vm.showMessageError(error);

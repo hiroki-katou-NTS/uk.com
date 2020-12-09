@@ -66,5 +66,10 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_STORE, SspmtManualSetOfDataSave.class)
 				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> toDomain(c));
 	}
+	
+	@Override
+	public void update(ManualSetOfDataSave domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
 
 }

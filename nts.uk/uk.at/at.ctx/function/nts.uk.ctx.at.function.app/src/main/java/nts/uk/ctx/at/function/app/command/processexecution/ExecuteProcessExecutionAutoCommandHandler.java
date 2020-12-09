@@ -64,6 +64,7 @@ import nts.uk.ctx.at.function.dom.indexreconstruction.TableName;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.CaculateFragRate;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgTableRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
+import nts.uk.ctx.at.function.dom.processexecution.AuxiliaryPatternCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
@@ -306,6 +307,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
 	@Inject
 	private ServerExternalOutputAdapter serverExternalOutputAdapter;
+
+	@Inject
+	private AutoExecutionPreparationAdapter autoExecutionPreparationAdapter;
 
 	@Override
 	public boolean keepsTrack() {
@@ -866,9 +870,16 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //				}
 //			}
 		}
+		// データの保存
+		if (this.dataStorage(execId, companyId, procExec, procExecLog)) {
+			return true;
+		}
 		
-		
-		
+		// データの削除
+		if (this.dataDeletion(execId, companyId, procExec, procExecLog)) {
+			return true;
+		}
+
 		// インデックス再構成
 		this.indexReconstruction(execId, companyId, procExec, procExecLog);
 		return false;
@@ -3873,15 +3884,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			hasError = true;
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする
-		Optional<ProcessExecutionLog> optProcLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId, 
+		Optional<ProcessExecutionLog> optProcLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
 				procExec.getExecItemCode().v(), execId);
 		if (optProcLog.isPresent()) {
-			for (ExecutionTaskLog task: optProcLog.get().getTaskLogList()) {
+			for (ExecutionTaskLog task : optProcLog.get().getTaskLogList()) {
 				if (task.getStatus().isPresent() && task.getStatus().get().equals(EndStatus.FORCE_END)) {
-					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId, 
+					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId,
 							execId, procExec, procExecLog, hasOutputError, hasError, errorMessage);
 				} else {
-					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId, 
+					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId,
 							execId, procExec, procExecLog, hasException, hasError, errorMessage);
 				}
 			}
@@ -3901,7 +3912,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	private boolean dataStorage(String execId, String companyId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog) {
 		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
-		boolean checkStopExec = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.SAVE_DATA, procExec, procExecLog);
@@ -3915,7 +3925,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			return true;
 		}
 
-		// TODO
+		// アルゴリズム「自動削除準備」を実行する
+		this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.SAVE_DATA, companyId,
+				execId, procExec, procExecLog, false, false, errorMessage);
 		return false;
 	}
 
@@ -3931,7 +3945,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	private boolean dataDeletion(String execId, String companyId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog) {
 		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
-		boolean checkStopExec = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.DELETE_DATA, procExec, procExecLog);
@@ -3945,7 +3958,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			return true;
 		}
 
-		// TODO
+		// アルゴリズム「自動削除準備」を実行する
+		this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.DELETE_DATA, companyId,
+				execId, procExec, procExecLog, false, false, errorMessage);
 		return false;
 	}
 

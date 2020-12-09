@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public interface AutoExecutionPreparationAdapter {
 
-	void autoStoragePrepare(String patternCode, List<String> empIds);
+	void autoStoragePrepare(UpdateProcessAutoExecution domain);
 
-	void autoDeletionPrepare(String patternCode);
+	void autoDeletionPrepare(UpdateProcessAutoExecution domain);
 }
 

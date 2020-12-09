@@ -9,12 +9,11 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting.ManualSetDeletionService;
 import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSetting;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSettingRepository;
@@ -32,16 +31,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
-public class AutoDeletionPreparationCommandHandler extends CommandHandler<String> {
+public class AutoDeletionPreparationCommandHandler extends CommandHandlerWithResult<String, ManualSetDeletion> {
 
 	@Inject
 	private DataDeletionPatternSettingRepository dataDeletionPatternSettingRepository;
 
-	@Inject
-	private ManualSetDeletionService manualSetDeletionService;
-
 	@Override
-	protected void handle(CommandHandlerContext<String> context) {
+	protected ManualSetDeletion handle(CommandHandlerContext<String> context) {
 		String patternCd = context.getCommand();
 		// ドメインモデル「削除パターン設定」を取得する
 		Optional<DataDeletionPatternSetting> optPatternSet = this.dataDeletionPatternSettingRepository
@@ -91,15 +87,13 @@ public class AutoDeletionPreparationCommandHandler extends CommandHandler<String
 			boolean disableYear = annualReferYear == null;
 			Integer startYear = disableYear ? null : today.addYears(annualReferYear).year();  // （システム日付（今年）　ー　データ削除のパターン設定.年次参照年）
 			Integer endYear = disableYear ? null : today.year(); // システム日付（年）
-			ManualSetDeletion manualSet = ManualSetDeletion.createFromJavatype(delId, AppContexts.user().companyId(),
+			return ManualSetDeletion.createFromJavatype(delId, AppContexts.user().companyId(),
 					delName, saveBeforeDelete, passwordAvailability, password, presenceOfEmployee, practitioner,
 					suppleExplanation, refDate, executionDateTime, dayStartDate, dayEndDate,
 					Integer.parseInt(monthStartDate), Integer.parseInt(monthEndDate), startYear, endYear, delType,
 					patternCd, categories);
-			this.dataDeletionPatternSettingRepository.add(patternSetting);
-			// アルゴリズム「サーバ手動削除処理」を実行する
-			this.manualSetDeletionService.start(manualSet);
 		}
+		return null;
 	}
 
 	private Integer getTargetYear(Optional<TargetYear> targetYear) {
