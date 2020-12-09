@@ -418,27 +418,22 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				
 				extractionCondition = command.getMasterCheckAlarmCheckCondition() == null ? null
 						: new MasterCheckAlarmCheckCondition(IdentifierUtil.randomUniqueId());
-				
+					
+				List<MasterCheckFixedExtractCondition> lstCondition = new ArrayList<>();
 				for(MasterCheckFixedExtractConditionDto fixedMasterCheckExtConDto : command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition()) {
-					if(fixedMasterCheckExtConDto.getErrorAlarmCheckId() == null || fixedMasterCheckExtConDto.getErrorAlarmCheckId().equals("")) {
+					if(fixedMasterCheckExtConDto.getErrorAlarmCheckId() == null 
+							|| fixedMasterCheckExtConDto.getErrorAlarmCheckId().equals("")) {
 						fixedMasterCheckExtConDto.setErrorAlarmCheckId(masterCheckAlarmCheckCondition.getAlarmCheckId());
-						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
-								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
-								EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
-								Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
-								fixedMasterCheckExtConDto.isUseAtr()
-								);
-						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);
-					}else {
-						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
-								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
-								EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
-								Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
-								fixedMasterCheckExtConDto.isUseAtr()
-								);
-						fixedMasterCheckConditionRepo.updateMasterCheckFixedCondition(fixedMasterCheckExtCon);
 					}
+					MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
+							fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
+							EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
+							Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
+							fixedMasterCheckExtConDto.isUseAtr()
+							);
+					lstCondition.add(fixedMasterCheckExtCon);
 				}
+				fixedMasterCheckConditionRepo.persist(lstCondition);
 				break;
 			default:
 				break;

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.experimental.var;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -77,5 +78,33 @@ public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
 	public void deleteMasterCheckFixedCondition(String errorAlarmCheckId) {
 		this.getEntityManager().createQuery(DELETE_MASTER_CHECK_FIXED_CON_BY_ID)
 		.setParameter("erAlId", errorAlarmCheckId).executeUpdate();
+	}
+
+	@Override
+	public void persist(List<MasterCheckFixedExtractCondition> condition) {
+		List<KrcmtMasterCheckFixedExtractCondition> lstAdd = new ArrayList<>();
+		List<KrcmtMasterCheckFixedExtractCondition> lstUpd = new ArrayList<>();
+		condition.stream().forEach(x -> {
+			KrcmtMasterCheckFixedExtractConditionPK pk = new KrcmtMasterCheckFixedExtractConditionPK(x.getErrorAlarmCheckId(), x.getNo().value);
+			KrcmtMasterCheckFixedExtractCondition entity = this.getEntityManager().find(KrcmtMasterCheckFixedExtractCondition.class, pk);
+			if(entity == null) {
+				entity = new KrcmtMasterCheckFixedExtractCondition();
+				entity.getPk().setErAlId(x.getErrorAlarmCheckId());
+				entity.getPk().setNo(x.getNo().value);
+				entity.setMessage(x.getMessage().isPresent() ? x.getMessage().get().v() : "");
+				entity.setUseAtr(x.isUseAtr() ? 1 : 0);
+				lstAdd.add(entity);
+			} else {
+				entity.setMessage(x.getMessage().isPresent() ? x.getMessage().get().v() : "");
+				entity.setUseAtr(x.isUseAtr() ? 1 : 0);
+				lstUpd.add(entity);
+			}
+		});
+		if(!lstAdd.isEmpty()) {
+			this.getEntityManager().persist(lstAdd);	
+		}
+		if(!lstUpd.isEmpty()) {
+			this.commandProxy().update(lstUpd);	
+		}
 	}
 }

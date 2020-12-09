@@ -13,5 +13,7 @@ public interface MasterCheckFixedExtractConditionRepository {
 	void updateMasterCheckFixedCondition(MasterCheckFixedExtractCondition masterCheckFixedCondition);
 	
 	void deleteMasterCheckFixedCondition(String errorAlarmCheckId);
+	
+	void persist(List<MasterCheckFixedExtractCondition> condition);
 
 }

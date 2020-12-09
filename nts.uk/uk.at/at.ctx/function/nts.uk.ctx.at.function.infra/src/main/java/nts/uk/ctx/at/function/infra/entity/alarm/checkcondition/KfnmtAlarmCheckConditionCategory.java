@@ -50,7 +50,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.Kfnmt
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 
+ * カテゴリ別アラームチェック条件
  * @author HungTT
  *
  */
