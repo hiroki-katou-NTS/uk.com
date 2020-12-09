@@ -49,7 +49,7 @@ public class PublicHdCfmService {
         List<ExtractResultDto> results = new ArrayList<>();
 
         // ドメインモデル「公休設定」を取得する。
-        Optional<PublicHolidaySetting> publicHdSettingOpt = publicHolidaySettingRepo.findByCID(cid);
+        Optional<PublicHolidaySetting> publicHdSettingOpt = publicHolidaySettingRepo.get(cid);
 
         // Object＜公休設定＞をチェックする。
         if (!publicHdSettingOpt.isPresent()) {
