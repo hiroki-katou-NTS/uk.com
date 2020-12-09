@@ -90,8 +90,14 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomai
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -719,47 +725,24 @@ public class ScheduleCreatorExecutionTransaction {
 					// 出退勤。退勤。打刻。時間。時刻変更手段＝実打刻
 					// 出退勤。遅刻を取り消した＝False
 					// 出退勤。早退を取り消した＝False
-					if (integrationOfDaily.getAttendanceLeave().isPresent()
-							&& !integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().isEmpty()) {
-						for (TimezoneUse y : prepareWorkOutput.getScheduleTimeZone()) {
-							int i = 0;
-							if (y.getWorkNo() == 2) {
-								i = 1;
-							}
-							integrationOfDaily.getAttendanceLeave().get().setTimeLeavingWorks(
-									integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
-											.sorted((a, b) -> a.getWorkNo().compareTo(b.getWorkNo()))
-											.collect(Collectors.toList()));
-							if (i == 0 || (i == 1 && integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
-									.size() > 1)) {
-								TimeLeavingWork x = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
-										.get(i);
-								integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().get(i)
-										.setWorkNo(new WorkNo(y.getWorkNo()));
-								if (x.getAttendanceStamp().isPresent()
-										&& x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
-									x.getAttendanceStamp().get().getStamp().get().getTimeDay()
-											.setTimeWithDay(Optional.ofNullable(y.getStart()));
-									x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-											.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-								}
-								if (x.getLeaveStamp().isPresent()
-										&& x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
-									x.getLeaveStamp().get().getStamp().get().getTimeDay()
-											.setTimeWithDay(Optional.ofNullable(y.getEnd()));
-									x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-											.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-								}
-								x.setCanceledLate(false);
-								x.setCanceledEarlyLeave(false);
-							}
-						}
-						if (integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1
-								&& prepareWorkOutput.getScheduleTimeZone().size() < 2) {
-							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().remove(1);
-						}
+					List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+					for (TimezoneUse y : prepareWorkOutput.getScheduleTimeZone()) {
+						TimeActualStamp actualStart = new TimeActualStamp(null,
+								new WorkStamp(new WorkTimeInformation(
+										new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+										y.getStart()), Optional.empty()),
+								0);
+						TimeActualStamp actualEnd = new TimeActualStamp(null,
+								new WorkStamp(new WorkTimeInformation(
+										new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()), y.getEnd()),
+										Optional.empty()),
+								0);
+						timeLeavingWorks.add(new TimeLeavingWork(new WorkNo(y.getWorkNo()), actualStart, actualEnd));
 					}
-					;
+					integrationOfDaily.setAttendanceLeave(timeLeavingWorks.isEmpty() ? Optional.empty()
+							: Optional.of(new TimeLeavingOfDailyAttd(timeLeavingWorks,
+									new WorkTimes(timeLeavingWorks.size()))));
+					
 					// 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
 					// 編集状態あり
 					if (!attendanceItemIdList.isEmpty()) {
