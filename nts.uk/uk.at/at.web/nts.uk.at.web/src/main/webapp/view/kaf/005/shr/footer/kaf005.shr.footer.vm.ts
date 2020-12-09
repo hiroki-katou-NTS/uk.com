@@ -22,13 +22,14 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92', [messageInfos()[0].titleInput()])"></div>
 		</div>
 		<div class="cell valign-center">
-			<input style="width: 445px" data-bind="ntsTextEditor: {
-														value: messageInfos()[0].valueInput,
-														constraint: 'DivergenceReason',
-														option: {
-															textalign: 'left'
-															}
-														}" />
+			<input data-bind="ntsTextEditor: {
+											value: messageInfos()[0].valueInput,
+											constraint: 'DivergenceReason',
+											option: {
+												textalign: 'left',
+												width: '445px'
+												}
+											}" />
 		</div>
 	</div>
 	
@@ -54,11 +55,12 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_92', [messageInfos()[1].titleInput()])"></div>
 		</div>
 		<div class="cell valign-center">
-			<input style="width: 445px" data-bind="ntsTextEditor: {
+			<input data-bind="ntsTextEditor: {
 														value: messageInfos()[1].valueInput,
 														constraint: 'DivergenceReason',
 														option: {
-															textalign: 'left'
+															textalign: 'left',
+															width: '445px'
 															}
 														}" />
 		</div>
@@ -66,7 +68,6 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	
 </div>
-
 
 	`
 	@component({
