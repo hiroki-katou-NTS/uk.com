@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTerTest;
+
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNameClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNoClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
