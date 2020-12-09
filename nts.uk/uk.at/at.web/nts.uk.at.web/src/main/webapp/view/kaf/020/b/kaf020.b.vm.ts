@@ -76,12 +76,12 @@ module nts.uk.at.view.kaf020.b {
                         unit: optionalItem.unit,
                         inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
                         description: optionalItem.description,
-                        timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
-                        timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
-                        amountLower: optionalItem.calcResultRange.amountLower,
-                        amountUpper: optionalItem.calcResultRange.amountUpper,
-                        numberLower: optionalItem.calcResultRange.numberLower,
-                        numberUpper: optionalItem.calcResultRange.numberUpper,
+                        timeUpper: optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit) : null,
+                        timeLower: optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit) : null,
+                        amountLower: optionalItem.calcResultRange.amountRange.dailyAmountRange.lowerLimit,
+                        amountUpper: optionalItem.calcResultRange.amountRange.dailyAmountRange.upperLimit,
+                        numberLower: optionalItem.calcResultRange.numberRange.dailyNumberRange.lowerLimit,
+                        numberUpper: optionalItem.calcResultRange.numberRange.dailyNumberRange.upperLimit,
                         upperCheck: optionalItem.calcResultRange.upperCheck,
                         lowerCheck: optionalItem.calcResultRange.lowerCheck,
                         time: ko.observable(''),
@@ -187,12 +187,24 @@ module nts.uk.at.view.kaf020.b {
     interface OptionalItem {
         itemNo: number,
         calcResultRange: {
-            timeUpper: number
-            timeLower: number,
-            amountLower: number,
-            amountUpper: number,
-            numberLower: number,
-            numberUpper: number,
+            timeRange: {
+                dailyTimeRange: {
+                    upperLimit: number,
+                    lowerLimit: number,
+                },
+            },
+            numberRange: {
+                dailyNumberRange: {
+                    upperLimit: number,
+                    lowerLimit: number,
+                },
+            },
+            amountRange: {
+                dailyAmountRange: {
+                    upperLimit: number,
+                    lowerLimit: number,
+                },
+            },
             upperCheck: boolean,
             lowerCheck: boolean,
         },
