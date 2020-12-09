@@ -29,12 +29,12 @@ public class EstimatePricesTest {
 	public void create_estimatePrices_Msg_1869() {
 		NtsAssert.businessException("Msg_1869", () -> {
 			EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(4), 110000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(5), 110000)
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(90000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(100000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(4), new EstimateAmount(110000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(5), new EstimateAmount(110000))
 				    
 					)
 			);
@@ -50,10 +50,10 @@ public class EstimatePricesTest {
 	public void create_estimatePrices_Msg_1870() {
 		NtsAssert.businessException("Msg_1870", () -> {
 			EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(4), 110000)
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(90000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(4), new EstimateAmount(110000))
 					));
 		});
 	}
@@ -67,9 +67,9 @@ public class EstimatePricesTest {
 	public void create_estimatePrices_Msg_1871() {
 		NtsAssert.businessException("Msg_1871", () -> {
 			EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 100000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), 110000)
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(90000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(100000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(110000))
 					));
 		});
 	}
@@ -83,9 +83,9 @@ public class EstimatePricesTest {
 	public void create_estimatePrices_Msg_147() {
 		NtsAssert.businessException("Msg_147", () -> {
 			EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), 120000)
-				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(90000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(120000))
+				    , EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
 					));
 		});
 	}
@@ -94,9 +94,9 @@ public class EstimatePricesTest {
 	@Test
 	public void create_estimatePrices_success() {
 		val estimatePrise = EstimateAmountList.create(Arrays.asList(
-				  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
-				, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
-				, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
+				  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(90000))
+				, EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(100000))
+				, EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
 				));
 		
 		assertThat(estimatePrise.getEstimatePrices())
@@ -110,9 +110,9 @@ public class EstimatePricesTest {
 		
 		public static EstimateAmountList createEstimatePrices() {
 			return EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1), 90000)
-					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
-					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(90000))
+					, EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(100000))
+					, EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(110000))
 					));
 		}
 	}

@@ -36,18 +36,18 @@ public class CompanyEstimateAmountTest {
 		}
 
 		public static EstimateAmountList createYearEstAmount() {
-			return EstimateAmountList.create(Arrays.asList(EstimateAmountByCondition.create(
-					  new EstimateAmountNo(1), 90000)
-					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 100000)
-					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 110000)
+			return EstimateAmountList.create(Arrays.asList(
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1),  new EstimateAmount(90000))
+					, EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(100000))
+					, EstimateAmountByCondition.create(new EstimateAmountNo(3),  new EstimateAmount(110000))
 					));
 		}
 
 		public static EstimateAmountList createMonthEstAmount() {
-			return EstimateAmountList.create(Arrays.asList(EstimateAmountByCondition.create(
-					  new EstimateAmountNo(1), 1000)
-					, EstimateAmountByCondition.create(new EstimateAmountNo(2), 2000)
-					, EstimateAmountByCondition.create(new EstimateAmountNo(3), 3000)
+			return EstimateAmountList.create(Arrays.asList(
+					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(1000))
+					, EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(2000))
+					, EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(3000))
 					));
 		}
 
