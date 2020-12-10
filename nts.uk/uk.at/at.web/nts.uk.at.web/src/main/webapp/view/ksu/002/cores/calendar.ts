@@ -5,6 +5,8 @@ module nts.uk.ui.calendar {
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
 
+	const BD_SK = 'KSU_002.START_DATE';
+
 	export interface DayData<T = DataInfo> {
 		date: Date;
 		inRange: boolean;
@@ -195,7 +197,7 @@ module nts.uk.ui.calendar {
                 text-align: center;
             }
             .calendar .calendar-container .month .week .day .status span {
-                color: gray;
+                color: #404040;
                 font-size: 9px;
 				font-weight: 600;
 				display: block;
@@ -219,7 +221,7 @@ module nts.uk.ui.calendar {
                 background-color: #EDFAC2;
 			}
             .calendar .calendar-container .month .week .day.saturday .status {
-                background-color: #9BC2E6;
+                background-color: #8bd8ff;
             }
             .calendar .calendar-container .month .week .day.sunday .status,
             .calendar .calendar-container .month .week .day.holiday .status {
@@ -232,9 +234,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffff00;
 			}
             .calendar .calendar-container .month:not(.title) .week .day.holiday .status,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status,
-            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status span {
+            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span {
                 color: #f00;
 			}
             .calendar .calendar-container .month .week .day .data-info {
@@ -246,7 +246,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffffff;
 			}
 			.calendar .calendar-container .month .week .day.diff-month .data-info {
-				background-color: #d9d9d9;
+				background-color: #ddddd2;
 			}
 			.calendar .event-popper {
 				top: 0px;
@@ -258,10 +258,8 @@ module nts.uk.ui.calendar {
 				background-color: #ccc;
 				border-radius: 5px;
 				padding: 5px;
-				min-width: 220px;
-				max-width: 400px;
-				min-height: 220px;
-				max-height: 400px;
+				width: 0;
+				height: 0;
 			}
 			.calendar .event-popper>.epc {
 				position: relative;
@@ -292,6 +290,10 @@ module nts.uk.ui.calendar {
 				z-index: 9;
 				position: fixed;
 				visibility: visible;
+				min-width: 220px;
+				max-width: 400px;
+				min-height: 220px;
+				max-height: 400px;
 			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -302,8 +304,12 @@ module nts.uk.ui.calendar {
 	})
 	export class SChedulerRefBindingHandler implements KnockoutBindingHandler {
 		init($$popper: HTMLElement, _valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-			$$popper.classList.add('event-popper');
+			// attach element to binding context
 			_.extend(bindingContext, { $$popper });
+
+			$$popper.classList.add('event-popper');
+
+			return { controlsDescendantBindings: true };
 		}
 	}
 
@@ -414,7 +420,15 @@ module nts.uk.ui.calendar {
 											$$popper.classList.remove('hide-arrow');
 										}
 									})
-									.then(() => $$popper.classList.add('show'));
+									.then(() => {
+										const pbound = $$popper.getBoundingClientRect();
+
+										if (pbound.top !== 0 && pbound.left !== 0) {
+											$$popper.classList.add('show');
+										} else {
+											$$popper.classList.remove('show');
+										}
+									});
 							}
 						})
 						.on('mouseout', () => {
@@ -427,6 +441,8 @@ module nts.uk.ui.calendar {
 								}).then(() => {
 									$$popper.style.top = '0px';
 									$$popper.style.left = '0px';
+
+									$$popper.classList.remove('show');
 								});
 						});
 				}
@@ -652,7 +668,8 @@ module nts.uk.ui.calendar {
 
 		created() {
 			const vm = this;
-			const { data } = vm;
+			const { data, baseDate } = vm;
+			const { options, start } = baseDate;
 
 			const startDate = moment().startOf('week');
 			const listDates = _.range(0, 7)
@@ -662,7 +679,14 @@ module nts.uk.ui.calendar {
 					title: d.format('dddd')
 				}));
 
-			vm.baseDate.options(listDates);
+			vm.$window
+				.storage(BD_SK)
+				.then((v) => {
+					options(listDates);
+
+					return v;
+				})
+				.then(v => vm.baseDate.start(v));
 
 			ko.computed({
 				read: () => {
@@ -676,6 +700,11 @@ module nts.uk.ui.calendar {
 				},
 				owner: vm
 			});
+
+			vm.baseDate.start
+				.subscribe(c => {
+					vm.$window.storage(BD_SK, c);
+				});
 
 			vm.baseDate.model
 				.subscribe((date: string) => {

@@ -15,7 +15,8 @@ module nts.uk.at.kdp003.a {
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
 		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace',
-		REGISTER: '/at/record/stamp/employment/system/register-stamp-input'
+		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
+		NOW: '/server/time/now'
 	};
 
 	const DIALOG = {
@@ -51,7 +52,7 @@ module nts.uk.at.kdp003.a {
 			employees: ko.observableArray([]),
 			selectedId: ko.observable(undefined),
 			nameSelectArt: ko.observable(false),
-			baseDate: ko.observable(new Date())
+			baseDate: ko.observable(null)
 		};
 
 		// data option for tabs button A5
@@ -70,8 +71,6 @@ module nts.uk.at.kdp003.a {
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
-		buttonEmphasisArt!: KnockoutComputed<boolean>;
-
 		created() {
 			const vm = this;
 
@@ -80,22 +79,25 @@ module nts.uk.at.kdp003.a {
 				vm.showClockButton.company(value === null);
 			});
 
+			vm.$ajax('at', API.NOW)
+				.then((c) => {
+					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss.zzzZ').toDate();
+
+					vm.employeeData.baseDate(date);
+				});
+
 			// reload employee list after change baseDate
-			vm.employeeData.baseDate.subscribe(() => {
+			vm.employeeData.baseDate.subscribe((d: Date) => {
+				if (!_.isDate(d)) {
+					return;
+				}
+
 				vm.$window.storage(KDP003_SAVE_DATA)
 					.then((data: undefined | StorageData) => {
 						if (data) {
 							vm.loadEmployees(data);
 						}
 					});
-			});
-
-			vm.buttonEmphasisArt = ko.computed({
-				read: () => {
-					const fss = ko.unwrap(vm.fingerStampSetting);
-
-					return (fss.stampSetting || {}).buttonEmphasisArt;
-				}
 			});
 		}
 
@@ -312,19 +314,12 @@ module nts.uk.at.kdp003.a {
 						clearState();
 					}
 				})
-				.then(() => {
-					if (ko.unwrap(vm.buttonEmphasisArt)) {
-						return vm.$ajax('at', API.HIGHTLIGHT);
-					}
-
-					return $.Deferred()
-						.resolve({
-							departure: false,
-							goingToWork: false,
-							goOut: false,
-							turnBack: false
-						});
-				})
+				.then(() => ({
+					departure: false,
+					goingToWork: false,
+					goOut: false,
+					turnBack: false
+				}))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
 				.then(() => vm.loadEmployees(storage)) as JQueryPromise<any>;
@@ -333,6 +328,11 @@ module nts.uk.at.kdp003.a {
 		private loadEmployees(storage: StorageData) {
 			const vm = this;
 			const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
+
+			if (!baseDate) {
+				return;
+			}
+
 			const params = {
 				baseDate: moment(baseDate).toISOString(),
 				companyId: (storage || {}).CID || '',
@@ -505,19 +505,12 @@ module nts.uk.at.kdp003.a {
 			const reloadSetting = () =>
 				$.Deferred()
 					.resolve(true)
-					.then(() => {
-						if (ko.unwrap(vm.buttonEmphasisArt)) {
-							return vm.$ajax('at', API.HIGHTLIGHT);
-						}
-
-						return $.Deferred()
-							.resolve({
-								departure: false,
-								goingToWork: false,
-								goOut: false,
-								turnBack: false
-							});
-					})
+					.then(() => ({
+						departure: false,
+						goingToWork: false,
+						goOut: false,
+						turnBack: false
+					}))
 					.then((data: any) => {
 						const oldData = ko.unwrap(buttonPage.stampToSuppress);
 

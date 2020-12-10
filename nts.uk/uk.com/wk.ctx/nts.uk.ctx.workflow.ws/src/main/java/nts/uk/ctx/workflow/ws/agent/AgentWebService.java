@@ -38,9 +38,6 @@ public class AgentWebService extends WebService {
 	private EmployeeAdapter employeeAdapter;
 
 	@Inject
-	private SendMailToApproverCommandHandler sendMailToApproverCommandHandler;
-
-	@Inject
 	private AgentReportExportService exportService;
 
 	@Path("find/{employeeId}")
@@ -96,15 +93,9 @@ public class AgentWebService extends WebService {
 		return CollectionUtil.isEmpty(result) ? null : result.get(0);
 	}
 
-	@Path("sendMail")
-	@POST
-	public void sendEmail(SendEmailCommand command) {
-		this.sendMailToApproverCommandHandler.handle(command);
-	}
-
 	@POST
 	@Path("report/generate")
-	public ExportServiceResult generate(List<LinkedHashMap<String, String>> query) {
+	public ExportServiceResult generate(List<Map<String, String>> query) {
 		return this.exportService.start(query);
 	}
 }

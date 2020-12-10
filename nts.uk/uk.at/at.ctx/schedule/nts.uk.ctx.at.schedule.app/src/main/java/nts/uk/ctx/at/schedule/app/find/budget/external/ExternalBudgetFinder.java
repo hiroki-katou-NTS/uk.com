@@ -78,13 +78,12 @@ public class ExternalBudgetFinder {
      * author: Hoang Yen
      */
     public List<ExternalBudgetDto> findByAtr(ParamExternalBudget param){
-//		String companyId = AppContexts.user().companyId();
-//		return this.externalBudgetRepo.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
-//				.stream()
-//				.map(x -> {
-//					return new ExternalBudgetDto(x.getExternalBudgetCd().toString(), x.getExternalBudgetName().toString(), param.getBudgetAtr(), param.getUnitAtr());
-//				}).collect(Collectors.toList());
-        return null;
+		String companyId = AppContexts.user().companyId();
+		return this.externalBudgetRepo.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
+				.stream()
+				.map(x -> {
+					return new ExternalBudgetDto(x.getExternalBudgetCd().toString(), x.getExternalBudgetName().toString(), param.getBudgetAtr(), param.getUnitAtr());
+				}).collect(Collectors.toList());
     }
     
     
