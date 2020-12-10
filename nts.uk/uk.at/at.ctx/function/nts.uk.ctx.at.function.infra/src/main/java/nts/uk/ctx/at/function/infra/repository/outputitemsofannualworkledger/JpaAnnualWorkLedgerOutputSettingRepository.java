@@ -174,15 +174,16 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         if (!CollectionUtil.isEmpty(entityItem)) {
             this.commandProxy().removeAll(entityItem);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KfnmtRptYrRecItem.fromDomain(outputSetting));
+
         }
+        this.commandProxy().insertAll(KfnmtRptYrRecItem.fromDomain(outputSetting));
         val entityCont = this.queryProxy().query(FIND_DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
                 .setParameter("settingId", settingId).getList();
         if (!CollectionUtil.isEmpty(entityCont)) {
             this.commandProxy().removeAll(entityCont);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KfnmtRptYrRecDispCont.fromDomain(outputSetting));
         }
+        this.commandProxy().insertAll(KfnmtRptYrRecDispCont.fromDomain(outputSetting));
     }
 
     @Override

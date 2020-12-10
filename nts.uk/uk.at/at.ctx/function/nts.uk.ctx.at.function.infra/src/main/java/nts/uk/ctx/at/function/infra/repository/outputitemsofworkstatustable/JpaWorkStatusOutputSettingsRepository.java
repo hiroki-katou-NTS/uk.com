@@ -176,16 +176,16 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         if (!CollectionUtil.isEmpty(entityItem)) {
             this.commandProxy().removeAll(entityItem);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings));
         }
+        this.commandProxy().insertAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings));
         val entityConst = this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
                 .setParameter("settingId", settingId)
                 .getList();
         if (!CollectionUtil.isEmpty(entityConst)) {
             this.commandProxy().removeAll(entityConst);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings));
         }
+        this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings));
 
     }
 
