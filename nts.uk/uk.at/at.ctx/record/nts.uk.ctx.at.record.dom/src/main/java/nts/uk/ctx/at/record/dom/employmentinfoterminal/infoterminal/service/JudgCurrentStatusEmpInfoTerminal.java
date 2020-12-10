@@ -2,8 +2,11 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ComState;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
@@ -29,10 +32,12 @@ public class JudgCurrentStatusEmpInfoTerminal {
 		// 1: get(契約コード、就業情報端末コードList): List<就業情報端末通信状況>
 		List<EmpInfoTerminalCode> empInfoTerCodeList = empInfoTerList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
 		List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus = require.get(contractCode, empInfoTerCodeList);
+		Map<EmpInfoTerminalCode, Optional<GeneralDateTime>> mapSignalLastTime = listEmpInfoTerminalComStatus.stream()
+										.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> Optional.ofNullable(e.getSignalLastTime())));
 		int totalNumberOfTer = empInfoTerCodeList.size();
 		
 		List<ComState> listComstate = empInfoTerList.stream()
-										.map(e -> ComState.createComState(e.getEmpInfoTerCode(), judgmentComStatus(listEmpInfoTerminalComStatus, e.getEmpInfoTerCode(), e.getIntervalTime())))
+										.map(e -> ComState.createComState(e.getEmpInfoTerCode(), judgmentComStatus(listEmpInfoTerminalComStatus, e.getEmpInfoTerCode(), e.getIntervalTime()), mapSignalLastTime.get(e.getEmpInfoTerCode())))
 										.collect(Collectors.toList());
 		List<StateCount> listStateCount = new ArrayList<StateCount>();
 		

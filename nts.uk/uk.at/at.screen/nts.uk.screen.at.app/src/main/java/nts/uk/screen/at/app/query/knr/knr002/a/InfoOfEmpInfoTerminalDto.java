@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GetListInfoOfEmpInfoTerminalDto {
+public class InfoOfEmpInfoTerminalDto {
 	
 	private int numOfRegTerminals;
 	

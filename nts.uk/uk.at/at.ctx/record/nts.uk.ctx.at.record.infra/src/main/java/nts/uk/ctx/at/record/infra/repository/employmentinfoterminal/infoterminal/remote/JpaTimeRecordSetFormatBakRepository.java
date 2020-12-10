@@ -8,13 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
-
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNameClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNoClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
@@ -23,7 +21,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputT
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NumberOfDigits;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.SettingValue;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormat;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormat.TimeRecordSetFormatBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatBak;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatBakRepository;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -16,4 +17,6 @@ public interface EmpInfoTerminalComStatusAdapter {
 	
 	// [1] 削除する
 	void delete(EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport);
+	
+	List<EmpInfoTerminalComStatusImport> get(ContractCode contractCode, List<EmpInfoTerminalCode> listEmpInfoTerCode);
 }

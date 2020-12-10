@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal;
 
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,6 +33,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public class JpaTimeRecordReqSettingRepository extends JpaRepository implements TimeRecordReqSettingRepository {
 
 	private static final String GET_BY_KEY;
+	
+    private static final String GET_CONTRACTCD_CODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode = :code";
+
+    private static final String GET_CONTRACTCD_LISTCODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode IN :listCode";
 
 	static {
 
@@ -65,7 +70,8 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		try (PreparedStatement statement = this.connection().prepareStatement(GET_BY_KEY)) {
 			statement.setString(1, contractCode.v());
 			statement.setString(2, empInfoTerCode.v());
-			return createTimeReqSetting(statement.executeQuery());
+            List<TimeRecordReqSetting> listFullData = createTimeReqSetting(statement.executeQuery());
+            return getOneByList(listFullData);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -73,7 +79,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	}
 
 	@SneakyThrows
-	private Optional<TimeRecordReqSetting> createTimeReqSetting(ResultSet rs) {
+    private List<TimeRecordReqSetting> createTimeReqSetting(ResultSet rs) {
 		List<TimeRecordReqSetting> listFullData = new ArrayList<>();
 		while (rs.next()) {
 			TimeRecordReqSetting req = new TimeRecordReqSetting.ReqSettingBuilder(
@@ -103,10 +109,14 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 			listFullData.add(req);
 		}
 
-		if (listFullData.isEmpty())
-			return Optional.empty();
-
-		List<WorkTimeCode> wTimeCode = listFullData.stream().flatMap(x -> x.getWorkTimeCodes().stream()).distinct()
+        if (listFullData.isEmpty()) {
+            return Collections.emptyList();
+        } 
+        return listFullData;
+	}
+	
+    private Optional<TimeRecordReqSetting> getOneByList(List<TimeRecordReqSetting> listFullData) {
+    	List<WorkTimeCode> wTimeCode = listFullData.stream().flatMap(x -> x.getWorkTimeCodes().stream()).distinct()
 				.collect(Collectors.toList());
 		List<WorkTypeCode> wTypeCode = listFullData.stream().flatMap(x -> x.getWorkTypeCodes().stream()).distinct()
 				.collect(Collectors.toList());
@@ -124,7 +134,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 								.reservationReceive(reqTemp.isReservationReceive())
 								.applicationReceive(reqTemp.isApplicationReceive()).timeSetting(reqTemp.isTimeSetting())
 								.build());
-	}
+    }
 
 	@Override
 	public void updateSetting(TimeRecordReqSetting setting) {
@@ -141,4 +151,52 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 				setting.isReservationReceive() ? 1 : 0, setting.isApplicationReceive() ? 1 : 0,
 				setting.isRemoteSetting() ? 1 : 0, setting.isReboot() ? 1 : 0);
 	}
+
+	@Override
+	public List<TimeRecordReqSetting> get(ContractCode contractCode, List<EmpInfoTerminalCode> listCode) {
+        try (PreparedStatement statement = this.connection().prepareStatement(GET_CONTRACTCD_LISTCODE)) {
+            statement.setString(1, contractCode.v());
+            statement.setArray(2, (Array) listCode);
+            return createTimeReqSetting(statement.executeQuery());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+	}
+	
+    private TimeRecordReqSetting getByContractCodeAndCode(ContractCode contractCode, EmpInfoTerminalCode code) {
+        try (PreparedStatement statement = this.connection().prepareStatement(GET_CONTRACTCD_CODE)) {
+            statement.setString(1, contractCode.v());
+            statement.setString(2, code.v());
+            List<TimeRecordReqSetting> listFullData = createTimeReqSetting(statement.executeQuery());
+            return getOneByList(listFullData).get();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+	@Override
+	public List<EmployeeId> getEmployeeIdList(ContractCode contractCode, EmpInfoTerminalCode code) {
+        TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+        return timeRecordReqSetting.getEmployeeIds();
+	}
+
+	@Override
+	public List<WorkTypeCode> getWorkTypeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
+        TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+        return timeRecordReqSetting.getWorkTypeCodes();
+	}
+
+	@Override
+	public List<WorkTimeCode> getWorkTimeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
+        TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+        return timeRecordReqSetting.getWorkTimeCodes();
+	}
+
+	@Override
+	public List<Integer> getbentoMenuFrameNumbers(ContractCode contractCode, EmpInfoTerminalCode code) {
+        TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+        return timeRecordReqSetting.getBentoMenuFrameNumbers();
+	}
+
+	
 }
