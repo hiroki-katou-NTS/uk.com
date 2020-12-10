@@ -74,7 +74,7 @@
                   </span>
                   <span v-if="item.lowerCheck">
                     <span v-if="item.optionalItemAtr == 0 && item.timeLower != null">
-                      {{ item.timeLower | timewd }}
+                      {{ item.timeLower | timedr }}
                     </span>
                     <span v-if="item.optionalItemAtr == 1">
                       {{ item.numberLower }}
@@ -88,7 +88,7 @@
                   </span>
                   <span v-if="item.upperCheck">
                     <span v-if="item.optionalItemAtr == 0 && item.timeUpper != null">
-                      {{ item.timeUpper | timewd }}
+                      {{ item.timeUpper | timedr }}
                     </span>
                     <span v-if="item.optionalItemAtr == 1">
                       {{ item.numberUpper }}
