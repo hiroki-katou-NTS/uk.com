@@ -32,11 +32,11 @@ public class EstimateAmountList implements DomainValue{
 			throw new BusinessException("Msg_1870");
 		}
 		
-		if(estimateAmount.get(0).getEstimateAmountNo().v() != 1 ) {
+		if(!estimateAmount.isEmpty() && estimateAmount.get(0).getEstimateAmountNo().v() != 1 ) {
 			throw new BusinessException("Msg_1871");
 		}
 		
-		estimateAmount.stream().reduce(null, (pre, next) -> {
+		estimateAmount.stream().reduce(estimateAmount.get(0), (pre, next) -> {
 
 			if (pre.getEstimateAmountNo().v() >= next.getEstimateAmountNo().v()) {
 				throw new BusinessException("Msg_1871");
@@ -46,7 +46,7 @@ public class EstimateAmountList implements DomainValue{
 				throw new BusinessException("Msg_147");
 			}
 
-			return null;
+			return next;
 		});
 		
 		return new EstimateAmountList(estimateAmount);
