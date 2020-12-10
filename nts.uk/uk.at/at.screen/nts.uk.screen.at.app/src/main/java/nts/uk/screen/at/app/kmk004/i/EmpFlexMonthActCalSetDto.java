@@ -11,6 +11,7 @@ import nts.uk.screen.at.app.kmk004.h.ShortageFlexSettingDto;
  * 
  * @author sonnlb
  *
+ *         雇用別フレックス勤務集計方法
  */
 @Data
 public class EmpFlexMonthActCalSetDto extends FlexMonthWorkTimeAggrSetDto {
