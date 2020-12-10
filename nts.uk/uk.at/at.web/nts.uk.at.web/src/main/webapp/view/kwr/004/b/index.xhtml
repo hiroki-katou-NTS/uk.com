@@ -25,8 +25,7 @@
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
           nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
-        </com:ValidatorScript>        
-      
+        </com:ValidatorScript>
       </ui:define>
 
       <ui:define name="content">
@@ -37,7 +36,7 @@
               tabindex="1"
               id="btnB11"
               class="normal"
-              data-bind="text: $i18n('KWR004_51'), click: addNewRow, enable: isEnableAddButton"
+              data-bind="text: $i18n('KWR004_51'), click: addNewRow"
             />
             <!-- B1_2 -->
             <button
@@ -114,7 +113,7 @@
                 ></div>
                 <div class="textEditor">
                   <input
-                    class="code"
+                    class="code attendance-code-name"
                     tabindex="7"
                     id="KWR004_B32"
                     data-bind="ntsTextEditor: {
@@ -126,7 +125,7 @@
                     }"
                   />
                   <input
-                    class="name"
+                    class="name attendance-code-name"
                     tabindex="8"
                     id="KWR004_B33"
                     data-bind="ntsTextEditor: {
@@ -148,9 +147,9 @@
                   <table id="multiGridList" width="100%" tabindex="-1">
                     <colgroup>
                       <col width="35px" />
-                      <col width="150px" />
-                      <col width="240px" />
-                      <col width="250px" />
+                      <col width="105px" />
+                      <col width="230px" />
+                      <col width="305px" />
                     </colgroup>
                     <thead>
                       <tr>
@@ -193,7 +192,7 @@
                         <td>
                           <input
                             tabindex="-1"
-                            size="14"
+                            size="9"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
@@ -222,7 +221,9 @@
                             <button
                               tabindex="10"
                               class="btn-B4331"
-                              data-bind="text: $vm.$i18n('KWR004_67'), click: function(data) { $vm.openDialogKDL(data) }"
+                              data-bind="attr: { id: 'btnRow-' + id },
+                              text: $vm.$i18n('KWR004_67'), 
+                              click: function(data) { $vm.openDialogKDL(data) }"
                             />
                             <div
                               id="combo-box"
@@ -243,7 +244,12 @@
                             ></div>
                           </div>
                         </td>
-                        <td><span class="limited-label" data-bind="text: selectionItem"></span></td>
+                        <td>
+                          <span
+                            class="limited-label"
+                            data-bind="text: selectionItem"
+                          ></span>
+                        </td>
                       </tr>
                     </tbody>
                   </table>

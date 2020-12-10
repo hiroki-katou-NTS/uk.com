@@ -33,7 +33,7 @@ module nts.uk.at.view.kwr004.a {
     settingId: KnockoutObservable<string> = ko.observable(null);
 
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
-    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
+    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(1);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
     settingListItems1: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -70,7 +70,7 @@ module nts.uk.at.view.kwr004.a {
       vm.enum = __viewContext.enums.SettingClassificationCommon;
 
       let companyId: string = vm.$user.companyId,
-          employeeId: string = vm.$user.employeeId;
+        employeeId: string = vm.$user.employeeId;
       const storageKey: string = KWR004_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
       vm.storageKey(storageKey);
 
@@ -246,15 +246,12 @@ module nts.uk.at.view.kwr004.a {
         itemSelection: vm.rdgSelectedId()
       }
 
-      vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
-          vm.$window.storage(KWR004_B_OUTPUT).then((data: any) => {         
-            if (!_.isNil(data)) {
-              vm.getSettingListItems(vm.rdgSelectedId(), data.code);
-            }
-            $('#btnExportExcel').focus();
-          });
-        });
+      vm.$window.modal('/view/kwr/004/b/index.xhtml', params).then((data) => {
+        if (!_.isNil(data)) {
+          nts.uk.ui.errors.hasError();
+          vm.getSettingListItems(vm.rdgSelectedId(), data.code);
+        }
+        $('#btnExportExcel').focus();
       });
     }
 
@@ -287,10 +284,13 @@ module nts.uk.at.view.kwr004.a {
       vm.$ajax(PATH.getPermission51)
         .done((result) => {
           if (result) {
-            if (result.hasAuthority) {
-              vm.allowFreeSetting(result.hasAuthority);
-              vm.itemListSetting.push({ id: vm.enum[1].value, name: vm.$i18n('KWR004_15') });
-            }
+            vm.allowFreeSetting(result.hasAuthority);
+            vm.itemListSetting.push({
+              id: vm.enum[1].value,
+              name: vm.$i18n('KWR004_15'),
+              enable: result.hasAuthority
+            });
+
             //システム日付の月　＜　期首月　
             if (_.toInteger(result.startMonth) > _.toInteger(moment().format('MM'))) {
               endDate = moment(currentYear + '/' + result.startMonth + '/01').toDate();
@@ -453,7 +453,7 @@ module nts.uk.at.view.kwr004.a {
     getWorkScheduleOutputConditions() {
       const vm = this;
       const key = vm.storageKey();
-      vm.$window.storage(key).then((data: any) => {      
+      vm.$window.storage(key).then((data: any) => {
         if (!_.isNil(data)) {
           let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
           let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);

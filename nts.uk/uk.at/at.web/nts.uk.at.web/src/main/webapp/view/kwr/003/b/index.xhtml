@@ -31,7 +31,7 @@
               tabindex="1"
               id="btnB11"
               class="normal"
-              data-bind="text: $i18n('KWR003_201'), click: newSetting, enable: isEnableAddButton"
+              data-bind="text: $i18n('KWR003_201'), click: newSetting"
             />
             <!-- B1_2 -->
             <button
@@ -52,7 +52,7 @@
               tabindex="4"
               id="btnB14"
               class="danger"
-              data-bind="text: $i18n('KWR003_205'), click: deteleSetting, enable: isEnableDeleteButton"
+              data-bind="text: $i18n('KWR003_205'), click: deleteSetting, enable: isEnableDeleteButton"
             />
             <!-- B1_2 -->
             <button
@@ -108,7 +108,7 @@
                 ></div>
                 <div class="textEditor">
                   <input
-                    class="code"
+                    class="code attendance-input"
                     tabindex="7"
                     id="KWR003_B42"
                     data-bind="ntsTextEditor: {
@@ -120,7 +120,7 @@
                     }"
                   />
                   <input
-                    class="name"
+                    class="name attendance-input"
                     id="KWR003_B43"
                     tabindex="8"
                     data-bind="ntsTextEditor: {
@@ -142,9 +142,9 @@
                   <table id="multiGridList">
                     <colgroup>
                       <col width="35px" />
-                      <col width="190px" />
                       <col width="160px" />
-                      <col width="250px" />
+                      <col width="160px" />
+                      <col width="300px" />
                     </colgroup>
                     <thead>
                       <tr>
@@ -178,12 +178,12 @@
                         <td class="text-center">
                           <input
                             tabindex="-1"
-                            size="19"
+                            size="16"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
                                     value: name,
-                                    required: true,
+                                    required: isChecked,
                                     name: $vm.$i18n('KWR003_215'),
                                     constraint: 'FormOutputItemName'
                                   }"
@@ -200,11 +200,13 @@
                               value: setting
                             }"
                           ></div>
-                          <button
-                            data-bind="text: $vm.$i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
+                          <button 
+                            data-bind="attr: { id: 'btnRow-' + id }, 
+                            text: $vm.$i18n('KWR003_216'), 
+                            click: function(data) { $vm.openDialogKDL(data) }"
                           />
                         </td>
-                        <td><span class="limited-label"  data-bind="text: selectionItem"></span></td>
+                        <td data-bind="{css: 'choose-text-' + id}"><span class="limited-label"  data-bind="text: selectionItem"></span></td>
                       </tr>
                     </tbody>
                   </table>

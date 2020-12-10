@@ -250,17 +250,12 @@ module nts.uk.at.view.kwr003.a {
         }
       }
 
-      vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
-          vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
-            if (data) {
-              nts.uk.ui.errors.clearAll();
-              vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
-            }
-            //settingListItems
-          });
-          $('#btnExportExcel').focus();
-        });
+      vm.$window.modal('/view/kwr/003/b/index.xhtml', params).then((result) => {
+        if (result) {
+          nts.uk.ui.errors.clearAll();
+          vm.getSettingListWorkStatus(vm.rdgSelectedId(), result);
+        }
+        $('#btnExportExcel').focus();
       });
     }
 
@@ -405,7 +400,7 @@ module nts.uk.at.view.kwr003.a {
         vm.$blockui('grayout');
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
           vm.$blockui('hide');
-        }).fail((err) => {        
+        }).fail((err) => {
           vm.$dialog.error({ messageId: err.messageId }).then(() => { //'Msg_1816' 
             vm.$blockui('hide');
             if (mode === 1)
@@ -468,12 +463,12 @@ module nts.uk.at.view.kwr003.a {
 
     getItemSelection() {
       const vm = this;
-
       vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR003_105') });
-
+      //vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR003_106'), enable: true });
       vm.$ajax(PATH.checkDailyAuthor, { roleId: vm.$user.role.attendance }).done((permission) => {
         vm.isPermission51(permission);
-        if (vm.isPermission51()) vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR003_106') });
+        vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR003_106'), enable: permission });
+        //vm.itemSelection()[1].enable = vm.isPermission51();
       });
     }
   }

@@ -29,6 +29,9 @@ public class CreateDisplayContentWorkStatusDService {
                                                                              List<EmployeeInfor> employeeInfoList,
                                                                              WorkStatusOutputSettings outputSettings,
                                                                              List<WorkPlaceInfo> workPlaceInfo) {
+        if (outputSettings == null) {
+            throw new BusinessException("Msg_1816");
+        }
         val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
 

@@ -12,7 +12,7 @@
         <com:scriptfile set="IGNITE" />
         <com:EnumScript>
           nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon
-        </com:EnumScript>      
+        </com:EnumScript>
 
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -125,13 +125,13 @@
                                   click: showDialogScreenB, text: $i18n('KWR004_17')"
                       />
                     </div>
-                    <com:ko-if bind="allowFreeSetting">
-                      <div class="item item-2">
-                        <!-- A5_4_2 - KWR004_106-->
-                        <div
-                          tabindex="8"
-                          id="KWR004_106"
-                          data-bind="ntsComboBox: {
+
+                    <div class="item item-2">
+                      <!-- A5_4_2 - KWR004_106-->
+                      <div
+                        tabindex="8"
+                        id="KWR004_106"
+                        data-bind="ntsComboBox: {
                           name: $i18n('KWR004_18'),
                           options:  settingListItems2,
                           optionsValue: 'code',
@@ -139,21 +139,20 @@
                           value: freeSelectedCode,
                           optionsText: 'name',
                           editable: false,
-                          enable: !isEnableSelectedCode(),
+                          enable: !isEnableSelectedCode() &amp;&amp; allowFreeSetting,
                           required: true,
                           selectFirstIfNull: true,
                           columns: [
                             { prop: 'code', length: 2 },
                             { prop: 'name', length: 10 },
                           ]}"
-                        ></div>
-                        <!-- A5_3_3-->
-                        <button
-                          tabindex="9"
-                          data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB, text: $i18n('KWR004_19')"
-                        />
-                      </div>
-                    </com:ko-if>
+                      ></div>
+                      <!-- A5_3_3-->
+                      <button
+                        tabindex="9"
+                        data-bind="enable: !isEnableSelectedCode() &amp;&amp; allowFreeSetting , click: showDialogScreenB, text: $i18n('KWR004_19')"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
