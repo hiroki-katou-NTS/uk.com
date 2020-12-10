@@ -1,11 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kwr003.c {
-  //import common = nts.uk.at.view.kwr003.common; 
-  const KWR003_OUTPUT = 'KWR003_OUTPUT';
-  const KWR003_B13 = 'KWR003_B_DATA';
-  const KWR003_C_INPUT = 'KWR003_C_DATA';
-  const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
   const PATHS = {
     cloneSettingClassification: 'at/function/kwr/003/c/duplicate'
@@ -24,29 +19,27 @@ module nts.uk.at.view.kwr003.c {
 
     constructor(params: any) {
       super();
-      const vm = this;      
+      const vm = this;
     }
 
     created(params: any) {
       const vm = this;
-     
-      vm.params({     
+
+      vm.params({
         settingCategory: 0, //設定区分
         settingId: null, //複製元の設定ID
         settingCode: null,//複製先_コード
         settingName: null//複製先_名称
       });
 
-      vm.$window.storage(KWR003_C_INPUT).then((data) => {
-        if (!_.isNil(data)) {
-          vm.oldCode(data.code);
-          vm.oldName(data.name);          
-          vm.params().settingId = data.settingId;
-          vm.params().settingCode = data.code;
-          vm.params().settingName = data.name;
-          vm.params().settingCategory = data.settingCategory;
-        }
-      });
+      if (!_.isNil(params)) {
+        vm.oldCode(params.code);
+        vm.oldName(params.name);
+        vm.params().settingId = params.settingId;
+        vm.params().settingCode = params.code;
+        vm.params().settingName = params.name;
+        vm.params().settingCategory = params.settingCategory;
+      }
     }
 
     mounted() {
@@ -55,15 +48,16 @@ module nts.uk.at.view.kwr003.c {
       $('#KWR003_C23').focus();
     }
 
-    proceed() {
-      const vm = this;      
+    cloneAttendance() {
+      const vm = this;
+      $(".new-code-name").trigger("validate");
+      if (nts.uk.ui.errors.hasError()) return;
       vm.cloneSettingClassification();
     }
 
     cancel() {
       const vm = this;
-      vm.$window.storage(KWR003_C_OUTPUT, null);
-      vm.$window.close();
+      vm.$window.close(null);
     }
 
     /**
@@ -77,16 +71,20 @@ module nts.uk.at.view.kwr003.c {
       vm.params().settingName = vm.newName();
 
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
-        .done((response) => { vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() }); 
+        .done((response) => {
+          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+            let setShare = {
+              code: vm.newCode(),
+              name: vm.newName()
+            };
+            vm.$window.close(setShare);
             vm.$blockui('hide');
-            vm.$window.close();
-          });          
+          });
         })
-        .fail((error) => {      
+        .fail((error) => {
           //データが先に削除された - 1903    
           //コードの重複 - Msg_1753
-          $('#KWR003_C23').ntsError('set', { messageId: error.messageId });            
+          $('#KWR003_C23').ntsError('set', { messageId: error.messageId });
         })
         .always(() => vm.$blockui('hide'));
     }

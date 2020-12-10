@@ -1,10 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kwr003.b {
   const NUM_ROWS = 10;
-  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
-  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
-  const KWR003_C_INPUT = 'KWR003_C_DATA';
-  const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
   const PATH = {
     getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
@@ -65,7 +61,7 @@ module nts.uk.at.view.kwr003.b {
       //get output info
       vm.getWorkStatusTableOutput();
 
-      vm.getSettingList();
+      vm.getSettingList(params);
 
       vm.currentCodeList.subscribe((newValue: any) => {
         nts.uk.ui.errors.clearAll();
@@ -109,17 +105,6 @@ module nts.uk.at.view.kwr003.b {
       vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
       vm.shareParam.attribute.selected = vm.comboSelected();
       vm.shareParam.selectedTime = vm.tableSelected();
-
-      vm.shareParam.attribute.attributeList = [
-        new AttendaceType(1, vm.$i18n('KWR002_141')),
-        new AttendaceType(2, vm.$i18n('KWR002_142')),
-        new AttendaceType(3, vm.$i18n('KWR002_143')),
-        /* new AttendaceType(4, vm.$i18n('KWR002_180')),
-        new AttendaceType(5, vm.$i18n('KWR002_181')),
-        new AttendaceType(6, vm.$i18n('KWR002_182')),
-        new AttendaceType(7, vm.$i18n('KWR002_183')) */
-      ]
-
       vm.shareParam.attendanceItems = vm.diligenceProjects();
       vm.shareParam.diligenceProjectList = vm.diligenceProjects();
 
@@ -148,11 +133,19 @@ module nts.uk.at.view.kwr003.b {
       }
 
       row.isChecked.subscribe((value: boolean) => {
+        nts.uk.ui.errors.clearAll();
         vm.settingListItemsDetails.valueHasMutated();
       });
 
+      /* row.name.subscribe((value) => {
+        vm.settingListItemsDetails.valueHasMutated();
+      });
+      */
       row.setting.subscribe((value) => {
-        //vm.settingListItemsDetails.valueHasMutated();
+        row.selectedTimeList([]);
+        row.selectionItem(null);
+        row.selectedTime = -1;
+        vm.settingListItemsDetails.valueHasMutated();
       });
 
       vm.settingListItemsDetails.push(row);
@@ -181,17 +174,33 @@ module nts.uk.at.view.kwr003.b {
      */
     registerSetting() {
       const vm = this;
-
       //register or update
-      vm.saveOrUpdateSetting();
+      $(".attendance-input").trigger("validate");
 
-      //sort by name with desc
-      let listItemsDetails: Array<any> = [];
-      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
-      vm.createListItemAfterSorted(listItemsDetails);
-      //change to update status
-      vm.isNewMode(false);
+      _.forEach(vm.settingListItemsDetails(), (item, index) => {
 
+        if (!item.isChecked()) return;
+
+        if (_.isEmpty(item.name())) {
+          $('#textName' + item.id).ntsError('set', {
+            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
+          });
+        }
+
+        if (item.selectedTimeList().length === 0) {
+          $('#btnRow-' + item.id).ntsError('set', {
+            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
+          });
+        }
+      });
+
+      if (nts.uk.ui.errors.hasError()) return;
+
+      vm.saveOrUpdateSetting().done(() => {
+        let listItemsDetails: Array<any> = [];
+        listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+        vm.createListItemAfterSorted(listItemsDetails);
+      });
     }
 
     settingAttendance() {
@@ -205,14 +214,15 @@ module nts.uk.at.view.kwr003.b {
       vm.attendance(returnAttendance);
     }
 
-    saveOrUpdateSetting() {
+    saveOrUpdateSetting(): JQueryPromise<void> {
       const vm = this;
+      let dfd = $.Deferred<void>();
 
       let params: DataOutputDto = new DataOutputDto(),
         outputItemList: Array<OutputItemList> = [];
 
       _.forEach(vm.settingListItemsDetails(), (item) => {
-        if (item.name() && item.selectedTimeList().length > 0) {
+        if (!_.isEmpty(item.name()) && item.selectedTimeList().length > 0) {
           let outputItem = new OutputItemList();
           outputItem.rank = item.id;
           outputItem.name = item.name();
@@ -229,7 +239,6 @@ module nts.uk.at.view.kwr003.b {
             });
           });
           outputItem.selectedAttItemList = outputItemDetails;
-
           outputItemList.push(outputItem);
         }
       });
@@ -248,29 +257,29 @@ module nts.uk.at.view.kwr003.b {
         vm.loadSettingList(reloadParams);
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.settingAttendance();
+          vm.isNewMode(false);
           vm.$blockui('hide');
+          dfd.resolve();
           $('#KWR003_B43').focus();
         });
-      })
-        .fail((error) => {
-          switch (error.messageId) {
-            case 'Msg_1903':
-              vm.$dialog.error({  messageId: error.messageId }).then(() => {
-                reloadParams.code = null;
-                vm.loadSettingList(reloadParams);
-                $('#btnB11').focus();
-              });             
-              break;
+      }).fail((error) => {
+        switch (error.messageId) {
+          case 'Msg_1903':
+            vm.$dialog.error({ messageId: error.messageId }).then(() => {
+              reloadParams.code = null;
+              vm.loadSettingList(reloadParams);
+              $('#btnB11').focus();
+            });
+            break;
 
-            case 'Msg_1753':
-              $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
-              break;
-          } 
+          case 'Msg_1753':
+            $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
+            break;
+        }
+        vm.$blockui('hide');
+      }).always(() => vm.$blockui('hide'));
 
-          vm.$blockui('hide');
-
-        })
-        .always(() => vm.$blockui('hide'));
+      return dfd.promise();
     }
 
     /**
@@ -311,7 +320,7 @@ module nts.uk.at.view.kwr003.b {
       let tempListItem: Array<SettingForPrint> = [];
 
       _.forEach(listItemsDetails, (x: any) => {
-        if (!_.isNil(x.name)) {
+        if (!_.isEmpty(x.name)) {
           let newItem: SettingForPrint = new SettingForPrint(
             x.id,
             x.name,
@@ -322,45 +331,65 @@ module nts.uk.at.view.kwr003.b {
             x.selected,
             x.selectedTime
           );
-          tempListItem.push(newItem);
+          vm.addRowItem(newItem);
         }
       });
 
-      _.forEach(tempListItem, (x: SettingForPrint) => {
-        vm.addRowItem(x);
-      });
+      let beginItems = vm.settingListItemsDetails().length;
+      //if beginItems is less then NUM_ROWS | 10
+      for (let i = beginItems; i < NUM_ROWS; i++) {
+        let newItem: SettingForPrint = new SettingForPrint(i, null, 1, null, false);
+        vm.addRowItem(newItem);
+      }
     }
 
     /**
-     * Detele setting
+     * Delete setting
      */
-    deteleSetting() {
+    deleteSetting() {
       const vm = this;
 
       vm.$blockui('show');
-      const params = {
-        settingId: vm.settingId() //該当する設定ID
-      };
-
+      const params = { settingId: vm.settingId() }; //該当する設定ID
       vm.$dialog.confirm({ messageId: 'Msg_18' }).then((answer: string) => {
         if (answer === 'yes') {
           vm.$ajax(PATH.deleteSettingItemDetails, params)
             .done(() => {
               vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-                vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
+                vm.getPositionBeforeDelete();  //keep position before remove              );
                 vm.$blockui('hide');
               })
             })
             .always(() => {
               vm.$blockui('hide');
             })
-            .fail((error) => {
-
-            });
+            .fail((error) => { });
         } else {
           vm.$blockui('hide');
         }
       });
+    }
+
+    getPositionBeforeDelete() {
+      const vm = this;
+      let newSelectedCode = null;
+
+      let index = _.findIndex(vm.settingListItems(), (x) => x.code === vm.currentCodeList());
+      if (vm.settingListItems().length > 1) {
+        if (index === vm.settingListItems().length - 1)
+          index = index - 1;
+        else
+          index = index + 1;
+        newSelectedCode = vm.settingListItems()[index].code;
+      }
+
+      let newSettingListItems = _.filter(vm.settingListItems(), (x) => x.code !== vm.currentCodeList());
+      vm.settingListItems([]);
+      if (newSettingListItems.length > 0) {
+        vm.settingListItems(newSettingListItems);
+        vm.currentCodeList(newSelectedCode);
+      } else
+        vm.newSetting();
     }
 
     /**
@@ -394,17 +423,13 @@ module nts.uk.at.view.kwr003.b {
         settingId: selectedObj.id //複製元の設定ID 
       }
 
-      vm.$window.storage(KWR003_C_INPUT, params).then(() => {
-        vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
-          vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
-            if (_.isNil(data)) {
-              return;
-            }
-            //reload the work status table
-            params = { ...data, standOrFree: vm.settingCategory() };
-            vm.loadSettingList(params)
-          });
-        });
+      vm.$window.modal('/view/kwr/003/c/index.xhtml', params).then((result) => {
+        if (_.isNil(result)) {
+          return;
+        }
+        //reload the work status table
+        params = { ...result, standOrFree: vm.settingCategory() };
+        vm.loadSettingList(params)
       });
 
       $('#KWR003_B43').focus();
@@ -414,9 +439,8 @@ module nts.uk.at.view.kwr003.b {
      * Close dialog
      */
     closeDialog() {
-      const vm = this;
-      vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
-      vm.$window.close();
+      const vm = this;      
+      vm.$window.close(vm.attendance());
     }
 
     /**
@@ -451,35 +475,36 @@ module nts.uk.at.view.kwr003.b {
             let dataItemsWithOperation: Array<selectedItemList> = [];
             let selectedItemText = null;
             //remove duplicate if yes
-            let attendanceItemList = _.filter(x.attendanceItemList, (element: any, index, self) => {
-              return index === _.findIndex(self, (d: any) => element.attendanceItemId === d.attendanceItemId);
-            });
-
-            //get selected items: 選択項目\
-            if (x.independentCalClassic === 2) {
-              _.forEach(attendanceItemList, (element: any) => {
-                let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId);
-                if (!_.isNil(findObj)) {
-                  dataItemsWithOperation.push({
-                    itemId: element.attendanceItemId,
-                    indicatesNumber: element.attendanceItemId,
-                    name: findObj.name,
-                    operator: (element.operatorName === 'ADDITION') ? '+' : '-'
-                  });
-                }
+            if (x.attendanceItemList.length > 0) {
+              let attendanceItemList = _.filter(x.attendanceItemList, (element: any, index, self) => {
+                return index === _.findIndex(self, (d: any) => element.attendanceItemId === d.attendanceItemId);
               });
+              //get selected items: 選択項目
+              if (x.independentCalClassic === 2) {
+                _.forEach(attendanceItemList, (element: any) => {
+                  let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId);
+                  if (!_.isNil(findObj)) {
+                    dataItemsWithOperation.push({
+                      itemId: element.attendanceItemId,
+                      indicatesNumber: element.attendanceItemId,
+                      name: findObj.name,
+                      operator: (element.operatorName === 'ADDITION') ? '+' : '-'
+                    });
+                  }
+                });
 
-              selectedItemText = vm.createDataSelection(dataItemsWithOperation);
-            } else {
-              let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === attendanceItemList[0].attendanceItemId);
-              //if (!_.isNil(findObj)) selectedItemText = findObj.name;
-              selectedItemText = !_.isNil(findObj) ? findObj.name : '';
-              dataItemsWithOperation.push({
-                itemId: attendanceItemList[0].attendanceItemId,
-                indicatesNumber: attendanceItemList[0].attendanceItemId,
-                name: selectedItemText, //findObj.name
-                operator: 1
-              });
+                selectedItemText = vm.createDataSelection(dataItemsWithOperation);
+              } else {
+                let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === attendanceItemList[0].attendanceItemId);
+                //if (!_.isNil(findObj)) selectedItemText = findObj.name;
+                selectedItemText = !_.isNil(findObj) ? findObj.name : '';
+                dataItemsWithOperation.push({
+                  itemId: attendanceItemList[0].attendanceItemId,
+                  indicatesNumber: attendanceItemList[0].attendanceItemId,
+                  name: selectedItemText, //findObj.name
+                  operator: 1
+                });
+              }
             }
 
             let newItem: SettingForPrint = new SettingForPrint(
@@ -497,12 +522,6 @@ module nts.uk.at.view.kwr003.b {
           //re-order the list
           listItemsDetails = vm.orderListItemsByField(listItemsDetails);
           vm.createListItemAfterSorted(listItemsDetails);
-        }
-
-        //if beginItems is less then NUM_ROWS | 10
-        for (let i = beginItems; i < NUM_ROWS; i++) {
-          let newItem: SettingForPrint = new SettingForPrint(i, null, 1, null, false);
-          vm.addRowItem(newItem);
         }
 
         vm.$blockui('hide');
@@ -541,10 +560,7 @@ module nts.uk.at.view.kwr003.b {
       });
 
       if (selectionItem.length > 0) {
-        dataSelection = _.join(selectionItem, ' ');
-        /* if (dataSelection.length > 20) {
-          dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
-        } */
+        dataSelection = _.join(selectionItem, '');
       }
 
       return dataSelection;
@@ -578,12 +594,11 @@ module nts.uk.at.view.kwr003.b {
 
     getWorkStatusTableOutput() {
       const vm = this;
-      
+
       vm.$blockui('show');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
-      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {
-        //vm.workStatusTableOutputItem(result);
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {        
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
             vm.diligenceProjects.push(new DiligenceProject(
@@ -599,14 +614,13 @@ module nts.uk.at.view.kwr003.b {
       }).always(() => vm.$blockui('hide'));
     }
 
-    getSettingList() {
+    getSettingList(params: any) {
       const vm = this;
-      vm.$window.storage(KWR003_B_INPUT).then((data: any) => {
-        if (!data) return;
-        vm.settingCategory(data.standOrFree);
-        vm.settingId(data.settingId);
-        vm.loadSettingList(data);
-      });
+
+      if (!params) return;
+      vm.settingCategory(params.standOrFree);
+      vm.settingId(params.settingId);
+      vm.loadSettingList(params);
     }
 
     loadSettingList(params: any) {
@@ -614,6 +628,8 @@ module nts.uk.at.view.kwr003.b {
       let listWorkStatus: Array<any> = [];
 
       vm.$blockui('grayout');
+      //sort by code with asc
+      vm.settingListItems([]);
 
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).then((data) => {
         if (!_.isNil(data) && data.length > 0) {
@@ -622,8 +638,6 @@ module nts.uk.at.view.kwr003.b {
             listWorkStatus.push(new ItemModel(code, _.trim(item.settingName), item.settingId));
           });
 
-          //sort by code with asc
-          vm.settingListItems([]);
           listWorkStatus = _.orderBy(listWorkStatus, ['code'], ['asc']);
           vm.settingListItems(listWorkStatus);
 
@@ -634,7 +648,7 @@ module nts.uk.at.view.kwr003.b {
           }
 
           vm.currentCodeList(code);
-          
+
         } else {
           //create new the settings list
           vm.newSetting();
@@ -665,7 +679,11 @@ module nts.uk.at.view.kwr003.b {
       vm.shareParam.itemNameLine.name = row.name();
       vm.shareParam.attribute.selected = row.selected; //setting Category
       vm.shareParam.selectedTime = row.selectedTime;
-
+      vm.shareParam.attribute.attributeList = [
+        new AttendaceType(1, vm.$i18n('KWR002_141')),
+        new AttendaceType(2, vm.$i18n('KWR002_142')),
+        new AttendaceType(3, vm.$i18n('KWR002_143')),
+      ];
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
@@ -694,10 +712,10 @@ module nts.uk.at.view.kwr003.b {
           listItem.name = findAttendanceName.attendanceItemName;
           listItem.operator = '+'; //+
           vm.settingListItemsDetails()[index].selectedTimeList.push(listItem);
-
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
-          $('#textName' + row.id).focus();        
+
+          if (vm.settingListItemsDetails()[index].isChecked()) $('#textName' + row.id).focus();
         } else {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
@@ -740,16 +758,12 @@ module nts.uk.at.view.kwr003.b {
           //clear error on input
           if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
           let dataSelection: string = vm.createDataSelection(attendanceItem.selectedTimeList);
-
           if (index > -1) {
             vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
             vm.settingListItemsDetails()[index].selected = attendanceItem.attribute.selected;
-            $('#textName' + row.id).focus();
-            /*  if (!attendanceItem.itemNameLine.name) {
-               $('#textName' + row.id).ntsError('set', { messageId: "MsgB_1" });              
-             } */
+            if (vm.settingListItemsDetails()[index].isChecked()) $('#textName' + row.id).focus();
           }
         } else {
           vm.settingListItemsDetails()[index].name(null);
@@ -761,15 +775,26 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
-
     selectAllChange(newValue: boolean) {
       const vm = this;
 
       if (newValue === null) return;
-
       _.forEach(vm.settingListItemsDetails(), (row, index) => {
         row.isChecked(newValue);
       })
+    }
+
+    checkValidateInput() {
+      const vm = this;
+      if (!!vm.attendanceCode()) {
+        $('#KWR003_B42').ntsError('set', { messageId: 'MsgB_1' });
+        return false;
+      }
+
+      if (!!vm.attendanceName()) {
+        $('#KWR003_B43').ntsError('set', { messageId: 'MsgB_1' });
+        return false;
+      }
     }
   }
 
