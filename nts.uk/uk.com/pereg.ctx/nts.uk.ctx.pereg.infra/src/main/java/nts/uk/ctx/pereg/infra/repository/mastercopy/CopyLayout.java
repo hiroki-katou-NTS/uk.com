@@ -87,6 +87,8 @@ public class CopyLayout {
 				.map(e -> e.ppemtNewLayoutPk.layoutId)
 				.collect(toList());
 		
+		if (targetLayoutIds.isEmpty()) return;
+		
 		val tables = new String[] {
 				"PPEMT_LAYOUT_NEW_ENTRY",
 				"PPEMT_LAYOUT_ITEM_CLS",
