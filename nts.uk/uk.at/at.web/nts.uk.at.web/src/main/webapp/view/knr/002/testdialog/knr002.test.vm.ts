@@ -18,7 +18,7 @@ module knr002.test {
             //B_Dialog
             empInfoTerCode_B: KnockoutObservable<string>;
             empInfoTerName_B: KnockoutObservable<string>;
-            modelEmpInfoTer_B: KnockoutObservable<string>;
+            modelEmpInfoTerName_B: KnockoutObservable<string>;
             workLocationName_B: KnockoutObservable<string>;
             lastSuccessDate_B: KnockoutObservable<string>;
             status: KnockoutObservable<string>;
@@ -31,6 +31,13 @@ module knr002.test {
             empInfoTerCode_F: KnockoutObservable<string>;
             empInfoTerName_F: KnockoutObservable<string>;
             modelEmpInfoTer_F: KnockoutObservable<number>;
+            lastSuccessDate_F: KnockoutObservable<string>;
+            empInfoTerList_F: KnockoutObservableArray<any>;
+            //G_Dialog
+            empInfoTerCode_G: KnockoutObservable<string>;
+            empInfoTerName_G: KnockoutObservable<string>;
+            modelEmpInfoTerName_G: KnockoutObservable<string>;
+            workLocationName_G: KnockoutObservable<string>;
 
 
             
@@ -41,7 +48,7 @@ module knr002.test {
                 //B_Dialog
                 self.empInfoTerCode_B = ko.observable("0002");
                 self.empInfoTerName_B = ko.observable("Name 2B_Shared");
-                self.modelEmpInfoTer_B = ko.observable("NRL-2B");
+                self.modelEmpInfoTerName_B = ko.observable("NRL-2B");
                 self.workLocationName_B = ko.observable("Work Location 2B");
                 self.lastSuccessDate_B = ko.observable("2020/12/12 12:12:12");
                 self.status = ko.observable("Normal");
@@ -62,6 +69,19 @@ module knr002.test {
                 self.empInfoTerCode_F = ko.observable("0002");
                 self.empInfoTerName_F = ko.observable("Name 2F_Shared");
                 self.modelEmpInfoTer_F = ko.observable(9);
+                self.lastSuccessDate_F = ko.observable("2020/12/12 12:12:12");
+                self.empInfoTerList_F = ko.observableArray([new EmpInfoTerminal("0001", "Name1", "NRL-1", "WLN 1"), 
+                                                            new EmpInfoTerminal("0002", "Name2", "NRL-2", "WLN 2"), 
+                                                            new EmpInfoTerminal("0003", "Name3", "NRL-3", "WLN 3"), 
+                                                            new EmpInfoTerminal("0004", "Name4", "NRL-4", "WLN 4"),
+                                                            new EmpInfoTerminal("0005", "Name5", "NRL-5", "WLN 5")]);
+
+
+                // G_Dialog
+                self.empInfoTerCode_G = ko.observable("0002");
+                self.empInfoTerName_G = ko.observable("Name 2F_Shared");
+                self.modelEmpInfoTerName_G = ko.observable("NRL-G");
+                self.workLocationName_G = ko.observable("Work Location 2G");
             }
 
             public startPage(): JQueryPromise<void>{
@@ -79,7 +99,7 @@ module knr002.test {
                 blockUI.invisible();
                 setShared('KNR002B_empInfoTerCode', self.empInfoTerCode_B());
                 setShared('KNR002B_empInfoTerName', self.empInfoTerName_B());
-                setShared('KNR002B_modelEmpInfoTer', self.modelEmpInfoTer_B());
+                setShared('KNR002B_modelEmpInfoTer', self.modelEmpInfoTerName_B());
                 setShared('KNR002B_workLocationName', self.workLocationName_B());
                 setShared('KNR002B_lastSuccessDate', self.lastSuccessDate_B());
                 setShared('KNR002B_status', self.status());
@@ -116,9 +136,13 @@ module knr002.test {
             private test_F_Dialog(): void{
                 var self = this;
                 blockUI.invisible();
+                // setShared from E
                 setShared('KNR002F_empInfoTerCode', self.empInfoTerCode_F());
                 setShared('KNR002F_empInfoTerName', self.empInfoTerName_F());
                 setShared('KNR002F_modelEmpInfoTer', self.modelEmpInfoTer_F());
+                setShared('KNR002F_lastSuccessDate', self.lastSuccessDate_F());
+                // setShare from A
+                setShared('KNR002F_empInfoTerList', self.empInfoTerList_F());
                 modal('/view/knr/002/f/index.xhtml', { title: 'F_Screen', }).onClosed(() => {
                 
                 blockUI.clear();
@@ -129,6 +153,13 @@ module knr002.test {
              * 
              */
             private test_G_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                setShared('KNR002G_empInfoTerCode', self.empInfoTerCode_G());
+                setShared('KNR002G_empInfoTerName', self.empInfoTerName_G());
+                setShared('KNR002G_modelEmpInfoTer', self.modelEmpInfoTerName_G());
+                setShared('KNR002G_workLocationName', self.workLocationName_G());
+
                 modal('/view/knr/002/g/index.xhtml', { title: 'G_Screen', }).onClosed(() => {
                     blockUI.clear();
                 });

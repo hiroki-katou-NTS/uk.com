@@ -33,10 +33,9 @@ public class AcquisEmpInfoLog {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		GeneralDateTime start = GeneralDateTime.fromString(sTime, "yyyy/MM/dd HH:mm:ss");
 		GeneralDateTime end = GeneralDateTime.fromString(eTime, "yyyy/MM/dd HH:mm:ss");
-		System.out.println("Starttime: " + start);
 		List<EmpInfoTerComAbPeriod> getInPeriod = this.empInfoTerComAbPeriodRepo.getInPeriod(contractCode,
 				new EmpInfoTerminalCode(empInfoTerCode), start, end);
-		if (null == getInPeriod) {
+		if (getInPeriod.size() <= 0) {
 			return null;
 		}
 		return getInPeriod.stream().map(e -> {

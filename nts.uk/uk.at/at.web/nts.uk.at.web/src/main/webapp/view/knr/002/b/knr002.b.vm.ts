@@ -104,7 +104,10 @@ module knr002.b {
                     return;
                 }
                 //process
-                self.loadLogInPeriod(self.empInfoTerCode(), self.sTime(), self.eTime()); 
+                let sDateTime = self.toDate(new Date(self.sTime()));
+                let eDateTime = self.toDate(new Date(self.eTime()));
+               
+                self.loadLogInPeriod(self.empInfoTerCode(), sDateTime, eDateTime); 
             } 
 
             /**
@@ -112,7 +115,7 @@ module knr002.b {
              * 閉じるボタン
              */
             private cancel_Dialog(): any {
-                let self = this;
+                //let self = this;
                 nts.uk.ui.windows.close();
             }
             /**
@@ -122,18 +125,18 @@ module knr002.b {
                 var self = this;
                 
                 service.getInPeriod(empInfoTerCode, sTime, eTime).done((data) => {
-                    if(data.length <= 0){
-                        //do something
+                    if(!data){
+                        //do something                 
                         self.displayLogList([]);
                     } else {
                         let displayLogListTemp = [];
                         for (let i = 0; i < data.length; i++) { 
                             try {
                                 var sDay = new Date(data[i].preTimeSuccDate).getDay();
-                                var eDay = new Date(data[i].eTime).getDay();
+                                var eDay = new Date(data[i].lastestTimeSuccDate).getDay();
                                 let displayLog = new DisplayLog(`${self.getDate(data[i].preTimeSuccDate)}${self.getDayOfWeek(sDay)}`,
                                                                  self.getTime(data[i].preTimeSuccDate),
-                                                                 `${self.getDate(data[i].lastestTimeSuccDate)}${self.getDayOfWeek(eDay)}`,
+                                                                `${self.getDate(data[i].lastestTimeSuccDate)}${self.getDayOfWeek(eDay)}`,
                                                                  self.getTime(data[i].lastestTimeSuccDate));
                                 switch(sDay){
                                     case 6: displayLog.id = `${i}_sta`; break;
@@ -145,7 +148,8 @@ module knr002.b {
                                 console.log("Can't convert string to date");
                             }                              
                         }
-                         self.displayLogList(displayLogListTemp);
+
+                        self.displayLogList(displayLogListTemp);
                     }    
                 });
                 $('#B6_1').focus();
@@ -206,6 +210,19 @@ module knr002.b {
              */
             private fillZero(str: string): string{
                 return str.length == 2? str : `0${str}`;
+            }
+            /**
+             * to Date
+             */
+            private toDate(dateToString: Date): string{
+                let self = this;
+                let year = dateToString.getFullYear();
+                let month = self.fillZero(`${dateToString.getMonth() + 1}`);
+                var date = dateToString.getDate();
+                let hours = self.fillZero(`${dateToString.getHours()}`);
+                let minutes = self.fillZero(`${dateToString.getMinutes()}`);
+                let seconds = self.fillZero(`${dateToString.getSeconds()}`);
+                return `${year}/${month}/${self.fillZero(`${date}`)} ${hours}:${minutes}:${seconds}`;
             }
         }
 

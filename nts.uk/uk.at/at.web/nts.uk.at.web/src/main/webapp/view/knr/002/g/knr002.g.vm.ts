@@ -6,19 +6,17 @@ module knr002.g {
 
     export module viewmodel{
         export class ScreenModel{
-			empInfoTerCode: KnockoutObservable<string>;
+            empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
-            destinationCopyList: KnockoutObservableArray<DestinationCopy>;
-            selectedList: KnockoutObservableArray<string>;
-            modelEmpInfoTer: KnockoutObservable<number>;
+            modelEmpInfoTerName: KnockoutObservable<string>;
+            workLocationName: KnockoutObservable<string>;
             
             constructor(){
                 var self = this;
-                self.empInfoTerCode = ko.observable("0001");
-                self.empInfoTerName = ko.observable("Name =￣ω￣=");
-                self.destinationCopyList = ko.observableArray<DestinationCopy>([]);
-                self.selectedList = ko.observableArray<string>([]);
-                self.modelEmpInfoTer = ko.observable(0);
+                self.empInfoTerCode = ko.observable("");
+                self.empInfoTerName = ko.observable("");
+                self.modelEmpInfoTerName = ko.observable("");
+                self.workLocationName = ko.observable("");
             }
             /**
              * Start Page
@@ -28,20 +26,8 @@ module knr002.g {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
-                service.getDestinationCopyList(self.empInfoTerCode()).done((data)=>{
-                    if(data.length < 0){
-                        //do something
-                    }else{
-                        let desCopyTempList = [];
-                        for(let item of data){
-                            let desCopyTemp = new DestinationCopy(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName, false);
-                            desCopyTempList.push(desCopyTemp);
-                        }
-                        self.destinationCopyList(desCopyTempList);
-                        self.bindDestinationCopyList();
-                        //$("#F4").igGrid("option", "dataSource", self.destinationCopyList());
-                    }
-                });
+                //load process
+                
                 $('#G11_1').focus();
                 blockUI.clear();   																			
                 dfd.resolve();											
@@ -58,33 +44,7 @@ module knr002.g {
                     default : return '';
                 }	
             }
-            /**
-             * bind table D3_2
-             */
-            private bindDestinationCopyList(): void{
-                let self = this;
-                $("#F4").ntsGrid({
-                    height: 168,
-                    dataSource: self.destinationCopyList(),
-                    primaryKey: 'empInfoTerCode',
-                    virtualization: true,
-                    virtualizationMode: 'continuous',
-                    hidePrimaryKey: false,
-                    columns: [
-                        { headerText: '', key: 'availability', dataType: 'boolean', width: ' 35px', ntsControl: 'Checkbox' },
-                        { headerText: getText('KNR002_238'), key: 'empInfoTerCode', dataType: 'string', width: 60},
-                        { headerText: getText('KNR002_239'), key: 'empInfoTerName', dataType: 'string', width: 200},
-                        { headerText: getText('KNR002_240'), key: 'modelEmpInfoTer', dataType: 'string', width: 70},
-                        { headerText: getText('KNR002_241'), key: 'workLocationName', dataType: 'string', width: 200},
-                    ],
-                    features: [{
-                        name: 'Selection',
-                        mode: 'row',
-                        multipleSelection: true
-                    }],
-                    ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
-                });
-            }
+            
             /**
              * cancel_Dialog
              */

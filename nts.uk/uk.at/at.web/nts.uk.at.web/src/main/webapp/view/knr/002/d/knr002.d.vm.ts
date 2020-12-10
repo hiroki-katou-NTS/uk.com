@@ -39,17 +39,14 @@ module knr002.d {
                 self.empInfoTerName(empInfoTerNameShr? empInfoTerNameShr : '');
                 // get Shared from A
                 let empInfoTerList = getShared('KNR002D_empInfoTerList');
-                console.log("the shared: ", empInfoTerList);
-                if(empInfoTerList){
-                    
-                //    self.destinationCopyList(empInfoTerList.filter(e => {
-                //        e.empInfoTerCode != self.empInfoTerCode();
-                //    }));
-                    let desCopyTempList = [];
+               
+                if(empInfoTerList){                   
+                   let desCopyTempList = [];
                     for(let e of empInfoTerList){
                         if(e.empInfoTerCode != self.empInfoTerCode())
                             desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
                     };
+                    //desCopyTempList = self.fillBlankRecord(desCopyTempList, 5);
                     self.destinationCopyList(desCopyTempList);
                     self.bindDestinationCopyList();   
                 }else{
@@ -59,7 +56,7 @@ module knr002.d {
                         self.empInfoTerName("isn't the shared");
                     }
                     service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                        if(data.length <= 0 ){
+                        if(!data){
                             //do something
                         } else {
                             let desCopyTempList = [];
@@ -85,6 +82,7 @@ module knr002.d {
                                 let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
                                 desCopyTempList.push(desCopyTemp);
                             }   
+                           // desCopyTempList = self.fillBlankRecord(desCopyTempList, 5);
                             self.destinationCopyList(desCopyTempList);
                             self.bindDestinationCopyList();
                         }                       
@@ -102,7 +100,7 @@ module knr002.d {
             private bindDestinationCopyList(): void{
                 let self = this;
                 $("#D3_2").ntsGrid({
-                    height: 168,
+                    height: 169,
                     dataSource: self.destinationCopyList(),
                     primaryKey: 'empInfoTerCode',
                     virtualization: true,
@@ -112,7 +110,7 @@ module knr002.d {
                         { headerText: '', key: 'availability', dataType: 'boolean', width: ' 35px', ntsControl: 'Checkbox' },
                         { headerText: getText('KNR002_105'), key: 'empInfoTerCode', dataType: 'string', width: 60},
                         { headerText: getText('KNR002_106'), key: 'empInfoTerName', dataType: 'string', width: 200},
-                        { headerText: getText('KNR002_107'), key: 'modelEmpInfoTer', dataType: 'string', width: 70},
+                        { headerText: getText('KNR002_107'), key: 'modelEmpInfoTerName', dataType: 'string', width: 70},
                         { headerText: getText('KNR002_108'), key: 'workLocationName', dataType: 'string', width: 200},
                     ],
                     features: [{
@@ -129,7 +127,7 @@ module knr002.d {
              */
             private copy(): any {
                 let self = this;
-                self.isCancel = false;
+                //self.isCancel = false;
                 // Process
                 nts.uk.ui.windows.close();
             }
@@ -139,7 +137,7 @@ module knr002.d {
              */
             private cancel_Dialog(): any {
                 let self = this;
-                self.isCancel = true;
+                //self.isCancel = true;
                 self.selectableCodeList = [];
                 _.forEach(self.destinationCopyList(), e => {
                     if(e.availability)
@@ -159,17 +157,31 @@ module knr002.d {
                     default : return '';
                 }	
             }
+            /**
+             * fill blank record to Grid
+             */
+            private fillBlankRecord(arr: Array<any>, maxLen: number): any{
+                let recordTotal = arr.length;
+                if(recordTotal < maxLen){
+                    let blankRecords = maxLen - recordTotal;
+                    for(let i = 0; i < blankRecords; i++){
+                        let displayLog = new EmpInfoTerminal(" ", " ", " ", " ");
+                        arr.push(displayLog);
+                    }
+                }
+                return arr;
+            }
         }
         class EmpInfoTerminal{
             empInfoTerCode: string;
             empInfoTerName: string;
-            modelEmpInfoTer: string;
+            modelEmpInfoTerName: string;
             workLocationName: string;
             availability: boolean;
-            constructor(empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTer: string, workLocationName: string){
+            constructor(empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTerName: string, workLocationName: string){
                 this.empInfoTerCode = empInfoTerCode;
                 this.empInfoTerName = empInfoTerName;
-                this.modelEmpInfoTer = modelEmpInfoTer;
+                this.modelEmpInfoTerName = modelEmpInfoTerName;
                 this.workLocationName = workLocationName;
                 this.availability = false;
             }

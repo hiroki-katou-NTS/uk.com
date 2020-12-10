@@ -15,7 +15,7 @@ module knr002.f {
             modelEmpInfoTerName: KnockoutObservable<string>;
             lastSuccessDate: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
-            recoveryTargetList: KnockoutObservableArray<RecoveryTarget>;
+            recoveryTargetList: KnockoutObservableArray<any>;
             selectedList: KnockoutObservableArray<string>;
            
             
@@ -27,7 +27,7 @@ module knr002.f {
                 self.modelEmpInfoTerName = ko.observable("");
                 self.lastSuccessDate = ko.observable("");
                 self.workLocationName = ko.observable("");
-                self.recoveryTargetList = ko.observableArray<RecoveryTarget>([]);
+                self.recoveryTargetList = ko.observableArray<EmpInfoTerminal>([]);
                 self.selectedList = ko.observableArray<string>([]);       
             }
             /**
@@ -38,10 +38,13 @@ module knr002.f {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
+                // get Shared from E
                 self.empInfoTerCode(getShared('KNR002F_empInfoTerCode'));
                 self.empInfoTerName(getShared('KNR002F_empInfoTerName'));
                 self.modelEmpInfoTer(getShared('KNR002F_modelEmpInfoTer'));
                 self.lastSuccessDate(getShared('KNR002F_lastSuccessDate'));
+                //get Share from A
+                let empInfoTerList = getShared('KNR002F_empInfoTerList');
                 
                 if(!self.modelEmpInfoTer()){
                     self.modelEmpInfoTer(7);
@@ -50,15 +53,35 @@ module knr002.f {
                     self.modelEmpInfoTerName("wrong")
                     self.lastSuccessDate("9999/99/99 99:99:99")
                 }
-                           
+                         
                 service.getRecoveryTargeTertList(self.modelEmpInfoTer()).done((data)=>{
-                    if(data.length < 0){
-                        //do something
-                    }else{
+                    if(!data || data.leng <= 0 ){
                         let recoveryTargetTempList = [];
-                        for(let item of data){
-                            let recoveryTargetTemp = new RecoveryTarget(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()), item.workLocationName, false);
-                            recoveryTargetTempList.push(recoveryTargetTemp);
+                        for(let i = 0; i < 5; i++){
+                            recoveryTargetTempList.push(new EmpInfoTerminal(" ", " ", " "));
+                        }
+                        self.recoveryTargetList(recoveryTargetTempList);
+                        self.bindDestinationCopyList();
+                    }else{
+                        let recoveryTargetTempList = [];                                         
+                        if(empInfoTerList){
+                            let keyMap: any = {};
+                            _.forEach(empInfoTerList, e => {
+                                keyMap[e.empInfoTerCode] = e;
+                            });  
+                            for(let item of data){
+                                let recoveryTargetTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()));                         
+                                let currentItem = keyMap[item.empInfoTerCode];
+                                if (currentItem) {
+                                    recoveryTargetTemp.workLocationName = currentItem.workLocationName;
+                                }
+                                
+                                recoveryTargetTempList.push(recoveryTargetTemp);
+                            }
+                        }else{
+                            for(let item of data){
+                                let recoveryTargetTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()));                         
+                                recoveryTargetTempList.push(recoveryTargetTemp);
                         }
                         self.recoveryTargetList(recoveryTargetTempList);
                         self.bindDestinationCopyList();
@@ -108,25 +131,38 @@ module knr002.f {
              */
             private getModelName(modelEmpInfoTer: Number): string{
                 switch(modelEmpInfoTer){
-                    case 7: return 'NRL_1';
-                    case 8: return 'NRL_2';
-                    case 9: return 'NRL_M';
+                    case 7: return getText('KNR002_251');
+                    case 8: return getText('KNR002_252');
+                    case 9: return getText('KNR002_253');
                     default : return '';
                 }	
             }
+            /**
+             * fill blank record to Grid
+             */
+            private fillBlankRecord(arr: Array<any>, maxLen: number): any{
+                let recordTotal = arr.length;
+                if(recordTotal < maxLen){
+                    let blankRecords = maxLen - recordTotal;
+                    for(let i = 0; i < blankRecords; i++){
+                        let displayLog = new EmpInfoTerminal(" ", " ", " ");
+                        arr.push(displayLog);
+                    }
+                }
+                return arr;
+            }
         }
-        class RecoveryTarget{
+        class EmpInfoTerminal{
             empInfoTerCode: string;
             empInfoTerName: string;
             modelEmpInfoTerName: string;
             workLocationName: string;
             availability: boolean;
-            constructor(empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTerName: string, workLocationName: string, availability: boolean){
+            constructor(empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTerName: string){
                 this.empInfoTerCode = empInfoTerCode;
                 this.empInfoTerName = empInfoTerName;
                 this.modelEmpInfoTerName = modelEmpInfoTerName;
-                this.workLocationName = workLocationName;
-                this.availability = availability;
+                this.availability = false;
             }
         }
     }
