@@ -77,6 +77,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
             throw new BusinessException("Còn QA");
         }
         val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
+
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
         // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
@@ -147,8 +148,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     private DatePeriod getFromClosureDate(YearMonth yearMonth, ClosureDate closureDate) {
         Integer closureDay = closureDate.getClosureDay().v();
         val baseDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay);
-        if (closureDay.equals(baseDate.lastDateInMonth())) {
-            return new DatePeriod(baseDate.addDays(-baseDate.lastDateInMonth()), baseDate);
+        val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), baseDate.lastDateInMonth());
+        if (closureDate.getLastDayOfMonth()) {
+            return new DatePeriod(baseDate, date);
         }
         return new DatePeriod(baseDate.addMonths(-1).addDays(1), baseDate);
     }
