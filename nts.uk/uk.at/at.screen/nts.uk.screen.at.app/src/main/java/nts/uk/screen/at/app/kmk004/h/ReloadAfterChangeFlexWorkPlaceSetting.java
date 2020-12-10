@@ -25,7 +25,7 @@ public class ReloadAfterChangeFlexWorkPlaceSetting {
 		ReloadAfterChangeFlexWorkPlaceSettingDto result = new ReloadAfterChangeFlexWorkPlaceSettingDto();
 
 		// 職場別基本設定（フレックス勤務）を表示する
-		result.setDisplayFlexBasicSettingByWokPlace(
+		result.setDisplayFlexBasicSettingByWorkPlace(
 				this.displayFlexBasicSettingByWorkPlace.displayFlexBasicSettingByWokPlace(wkpId));
 		// 職場リストを表示する
 		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.FLEX));
