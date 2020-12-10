@@ -36,9 +36,9 @@ public class EstimateAmountList implements DomainValue{
 			throw new BusinessException("Msg_1871");
 		}
 		
-		estimateAmount.stream().reduce(estimateAmount.get(0), (pre, next) -> {
+		estimateAmount.stream().reduce((pre, next) -> {
 
-			if (pre.getEstimateAmountNo().v() >= next.getEstimateAmountNo().v()) {
+			if (pre.getEstimateAmountNo().v() != (next.getEstimateAmountNo().v() - 1)) {
 				throw new BusinessException("Msg_1871");
 			}
 

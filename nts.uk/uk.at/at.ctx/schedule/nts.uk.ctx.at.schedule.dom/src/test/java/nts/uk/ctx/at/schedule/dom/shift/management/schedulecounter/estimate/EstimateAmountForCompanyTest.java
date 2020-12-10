@@ -11,7 +11,7 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 @RunWith(JMockit.class)
-public class CompanyEstimateAmountTest {
+public class EstimateAmountForCompanyTest {
 	
 	@Test
 	public void getters() {
@@ -37,17 +37,17 @@ public class CompanyEstimateAmountTest {
 
 		public static EstimateAmountList createYearEstAmount() {
 			return EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1),  new EstimateAmount(90000))
-					, EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(100000))
-					, EstimateAmountByCondition.create(new EstimateAmountNo(3),  new EstimateAmount(110000))
+					  new EstimateAmountByCondition(new EstimateAmountNo(1),  new EstimateAmount(90000))
+					, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(100000))
+					, new EstimateAmountByCondition(new EstimateAmountNo(3),  new EstimateAmount(110000))
 					));
 		}
 
 		public static EstimateAmountList createMonthEstAmount() {
 			return EstimateAmountList.create(Arrays.asList(
-					  EstimateAmountByCondition.create(new EstimateAmountNo(1), new EstimateAmount(1000))
-					, EstimateAmountByCondition.create(new EstimateAmountNo(2), new EstimateAmount(2000))
-					, EstimateAmountByCondition.create(new EstimateAmountNo(3), new EstimateAmount(3000))
+					  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(1000))
+					, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(2000))
+					, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(3000))
 					));
 		}
 

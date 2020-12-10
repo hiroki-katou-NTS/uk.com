@@ -18,5 +18,12 @@ public class EstimateAmountForEmployment implements  DomainAggregate{
 	
 	/**　目安金額詳細　*/
 	private EstimateAmountDetail detail;
-
+	
+	/**
+	 * 変更する
+	 * @param detail 目安金額詳細
+	 */
+	public void update(EstimateAmountDetail detail) {
+		this.detail = detail;
+	}
 }

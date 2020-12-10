@@ -14,15 +14,4 @@ public class EstimateAmountByCondition implements DomainObject{
 	
 	/** 目安金額 */
 	private final EstimateAmount  estimateAmount;
-
-/**
- * [C-1] 作る
- * @param estimateAmountNo 目安金額枠NO
- * @param estimatePrice 目安金額
- * @return
- */
-public static EstimateAmountByCondition create(EstimateAmountNo estimateAmountNo, EstimateAmount estimateAmount) {
-	return new EstimateAmountByCondition(estimateAmountNo, estimateAmount);
-}
-
 }

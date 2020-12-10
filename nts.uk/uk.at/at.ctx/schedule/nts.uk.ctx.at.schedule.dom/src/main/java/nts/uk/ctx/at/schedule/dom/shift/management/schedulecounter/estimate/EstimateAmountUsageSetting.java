@@ -11,7 +11,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Getter
 @AllArgsConstructor
-public class UsageSetting implements DomainAggregate{
+public class EstimateAmountUsageSetting implements DomainAggregate{
 	/** 会社ID */
 	private final String cid;
 	
