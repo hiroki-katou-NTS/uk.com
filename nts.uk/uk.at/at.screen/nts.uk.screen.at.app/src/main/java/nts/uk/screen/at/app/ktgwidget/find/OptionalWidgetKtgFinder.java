@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveGrantDetails;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -453,21 +454,32 @@ public class OptionalWidgetKtgFinder {
 //								.getAggSpecialLeaveResult();
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
-						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails();
-						for (SpecialLeaveGrantDetails items : lstSpeLeaveGrantDetails) {
-							if (items.getGrantDate().afterOrEquals(startDate) && items.getGrantDate().beforeOrEquals(endDate)) {
-								date = items.getGrantDate();
-								showAfter = true;
-							}
+
+						// 要修正 jinno
+						//List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails();
+//						for (SpecialLeaveGrantDetails items : lstSpeLeaveGrantDetails) {
+//							if (items.getGrantDate().afterOrEquals(startDate) && items.getGrantDate().beforeOrEquals(endDate)) {
+//								date = items.getGrantDate();
+//								showAfter = true;
+//							}
+//						}
+						List<SpecialLeaveGrantRemainingData> lstSpeLeaveGrantDetails
+							= inPeriodOfSpecialLeave.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingList();
+
+						// double before =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
+						double before =  inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+								.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDayNumberOfRemain().v();
+
+						// double after =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()?inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
+						double after = 0.0;
+						if ( inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+								.getRemainingNumber().getSpecialLeaveWithMinus()
+								.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent() ) {
+
+							after = inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+								.getRemainingNumber().getSpecialLeaveWithMinus()
+								.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
 						}
-						double before =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
-						//double before =  inPeriodOfSpecialLeave.get
-
-
-						double after =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()?inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
-
-
-
 						sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after, date, showAfter));
 					}
 					dto.setSPHDRamainNo(sPHDRamainNos);

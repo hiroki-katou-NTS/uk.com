@@ -33,9 +33,9 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 @Stateless
 public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfSpecialLeaveAdapter {
 
-//	@Inject
-//	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
-//
+	@Inject
+	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
+
 //	@Inject
 //	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 //
@@ -83,13 +83,49 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 //				.getAggSpecialLeaveResult();
 		if (specialLeave == null)
 			return null;
+
+		// 要修正 jinno
+//		return new SpecialVacationImported(
+//				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(),
+//				0.0,
+//				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
+//						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
+//				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
+//						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(),
+//				0.0, 0.0, 0.0, 0.0);
+
+		double use_before =  specialLeave.getAsOfPeriodEnd()
+				.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
+				.getUsedNumberBeforeGrant().getUseDays().getUseDays().v();
+
+		double remain_before =  specialLeave.getAsOfPeriodEnd()
+				.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
+				.getRemainingNumberBeforeGrant().getDayNumberOfRemain().v();
+
+		double use_after = 0.0;
+		double remain_after = 0.0;
+		boolean existAfter = specialLeave.getAsOfPeriodEnd()
+				.getRemainingNumber().getSpecialLeaveWithMinus()
+				.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent();
+		if ( existAfter ) {
+//			remain_after = specialLeave.getAsOfPeriodEnd()
+//				.getRemainingNumber().getSpecialLeaveWithMinus()
+//				.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
+			use_after = specialLeave.getAsOfPeriodEnd()
+					.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
+					.getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v();
+			remain_after = specialLeave.getAsOfPeriodEnd()
+					.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
+					.getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
+		}
+
 		return new SpecialVacationImported(
-				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(),
+				// 要修正 jinno
+				//specialLeave.getAsOfPeriodEnd().getRemainingNumber().getSpecialLeaveWithMinus().
 				0.0,
-				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
-				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(),
+				0.0,
+				existAfter? use_after : use_before,
+				existAfter? remain_after : remain_before,
 				0.0, 0.0, 0.0, 0.0);
 	}
 
