@@ -2267,7 +2267,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 				}
-			item.backgroundColor(backgroundColor);
+			if (item.applicationTime() > 0) {
+				item.backgroundColor(backgroundColor);				
+			}	
 
 			});
 		}
