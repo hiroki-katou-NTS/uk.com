@@ -8,8 +8,8 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.context.AppContexts;
+import nts.arc.layer.dom.DomainObject;
+import nts.gul.text.StringUtil;
 
 /**
  * The Class OutputItemDailyWorkSchedule.
@@ -17,11 +17,12 @@ import nts.uk.shr.com.context.AppContexts;
  */
 // 日別勤務表の出力項目
 @Getter
-public class OutputItemDailyWorkSchedule extends AggregateRoot{
-	
-	/** The company ID. */
-	// 会社ID
-	private String companyID;
+public class OutputItemDailyWorkSchedule extends DomainObject {
+
+	/**
+	 * 出力レイアウトID
+	 */
+	private String layoutId;
 	
 	/** The item code. */
 	// コード
@@ -46,26 +47,27 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	/** The remark input no. */
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
+
+	// 文字の大きさ
+	private FontSizeEnum fontSize;
 	
-	private static final String MAX_ATTENDANCE_ITEM = "48";
-	
+	private static final String MAX_ATTENDANCE_ITEM_BIG_SIZE = "48";
+	private static final String MAX_ATTENDANCE_ITEM_SMALL_SIZE = "60";
+
 	/**
 	 * Instantiates a new output item daily work schedule.
 	 *
 	 * @param memento the memento
 	 */
 	public OutputItemDailyWorkSchedule(OutputItemDailyWorkScheduleGetMemento memento) {
-		if (memento.getCompanyID() == null) {
-			this.companyID = AppContexts.user().companyId();
-		} else {
-			this.companyID = memento.getCompanyID();
-		}
 		this.itemCode = memento.getItemCode();
 		this.itemName = memento.getItemName();
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
 		this.lstRemarkContent = memento.getLstRemarkContent();
 		this.workTypeNameDisplay = memento.getWorkTypeNameDisplay();
 		this.remarkInputNo = memento.getRemarkInputNo();
+		this.layoutId = memento.getLayoutId();
+		this.fontSize = memento.getFontSize();
 	}
 	
 	/**
@@ -74,18 +76,18 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(OutputItemDailyWorkScheduleSetMemento memento) {
-		if (this.companyID == null) {
-			this.companyID = AppContexts.user().companyId();
+		if (!StringUtil.isNullOrEmpty(this.layoutId, true)) {
+			memento.setLayoutId(this.layoutId);
 		}
-		memento.setCompanyID(this.companyID);
 		memento.setItemCode(this.itemCode);
 		memento.setItemName(this.itemName);
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setLstRemarkContent(this.lstRemarkContent);
 		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
 		memento.setRemarkInputNo(this.remarkInputNo);
+		memento.setFontSize(this.fontSize);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
@@ -93,12 +95,20 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	public void validate() {
 		super.validate();
 		// execute algorithm アルゴリズム「登録チェック処理」を実行する to check C7_8 exist element?
-		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
+		if ( this.lstDisplayedAttendance == null || this.lstDisplayedAttendance.isEmpty()) {
 			throw new BusinessException("Msg_880");
 		}
+
+		// check max display item 
+		int numberDisplayItem = fontSize == FontSizeEnum.SMALL ? 60 : 48;
 		
-		if (this.lstDisplayedAttendance.size() > 48) {
-			throw new BusinessException("Msg_1297", new String[]{MAX_ATTENDANCE_ITEM});
+		// error message 
+		String[] errString = fontSize == FontSizeEnum.SMALL
+				? new String[] { MAX_ATTENDANCE_ITEM_SMALL_SIZE }
+				: new String[] { MAX_ATTENDANCE_ITEM_BIG_SIZE };
+
+		if (this.lstDisplayedAttendance.size() > numberDisplayItem) {
+			throw new BusinessException("Msg_1297", errString);
 		}
 	}
 }

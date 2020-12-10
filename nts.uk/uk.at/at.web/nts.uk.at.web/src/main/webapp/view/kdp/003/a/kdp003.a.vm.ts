@@ -15,7 +15,8 @@ module nts.uk.at.kdp003.a {
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
 		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace',
-		REGISTER: '/at/record/stamp/employment/system/register-stamp-input'
+		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
+		NOW: '/server/time/now'
 	};
 
 	const DIALOG = {
@@ -51,7 +52,7 @@ module nts.uk.at.kdp003.a {
 			employees: ko.observableArray([]),
 			selectedId: ko.observable(undefined),
 			nameSelectArt: ko.observable(false),
-			baseDate: ko.observable(new Date())
+			baseDate: ko.observable(null)
 		};
 
 		// data option for tabs button A5
@@ -70,7 +71,6 @@ module nts.uk.at.kdp003.a {
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
-
 		created() {
 			const vm = this;
 
@@ -79,8 +79,19 @@ module nts.uk.at.kdp003.a {
 				vm.showClockButton.company(value === null);
 			});
 
+			vm.$ajax('at', API.NOW)
+				.then((c) => {
+					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss.zzzZ').toDate();
+
+					vm.employeeData.baseDate(date);
+				});
+
 			// reload employee list after change baseDate
-			vm.employeeData.baseDate.subscribe(() => {
+			vm.employeeData.baseDate.subscribe((d: Date) => {
+				if (!_.isDate(d)) {
+					return;
+				}
+
 				vm.$window.storage(KDP003_SAVE_DATA)
 					.then((data: undefined | StorageData) => {
 						if (data) {
@@ -96,13 +107,22 @@ module nts.uk.at.kdp003.a {
 
 			$(window).trigger('resize');
 
-			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
-				.then((data: FingerStampSetting) => {
-					if (data) {
-						vm.fingerStampSetting(data);
-					}
-				})
+			return $.Deferred()
+				.resolve(true)
 				.then(() => storage(KDP003_SAVE_DATA))
+				.then((storageData: undefined | StorageData) => {
+					if (storageData !== undefined) {
+						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+							.then((data: FingerStampSetting) => {
+								if (data) {
+									vm.fingerStampSetting(data);
+								}
+							})
+							.then(() => storageData);
+					}
+
+					return storageData;
+				})
 				.then((storageData: undefined | StorageData) => {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
@@ -249,6 +269,20 @@ module nts.uk.at.kdp003.a {
 			return $.Deferred()
 				.resolve(ko.toJS(vm.fingerStampSetting))
 				.then((data: FingerStampSetting) => {
+					if (!data.stampSetting || !data.stampResultDisplay) {
+						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+							.then((data: FingerStampSetting) => {
+								if (data) {
+									vm.fingerStampSetting(data);
+								}
+
+								return data;
+							});
+					}
+
+					return data;
+				})
+				.then((data: FingerStampSetting) => {
 					if (data) {
 						const { stampSetting, stampResultDisplay } = data;
 
@@ -280,7 +314,12 @@ module nts.uk.at.kdp003.a {
 						clearState();
 					}
 				})
-				.then(() => vm.$ajax('at', API.HIGHTLIGHT))
+				.then(() => ({
+					departure: false,
+					goingToWork: false,
+					goOut: false,
+					turnBack: false
+				}))
 				.then((data: share.StampToSuppress) => vm.buttonPage.stampToSuppress(data))
 				// <<ScreenQuery>>: 打刻入力(氏名選択)で社員の一覧を取得する
 				.then(() => vm.loadEmployees(storage)) as JQueryPromise<any>;
@@ -289,6 +328,11 @@ module nts.uk.at.kdp003.a {
 		private loadEmployees(storage: StorageData) {
 			const vm = this;
 			const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
+
+			if (!baseDate) {
+				return;
+			}
+
 			const params = {
 				baseDate: moment(baseDate).toISOString(),
 				companyId: (storage || {}).CID || '',
@@ -458,16 +502,24 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
-			const reloadSetting = () => vm.$ajax('at', API.HIGHTLIGHT)
-				.then((data: any) => {
-					const oldData = ko.unwrap(buttonPage.stampToSuppress);
+			const reloadSetting = () =>
+				$.Deferred()
+					.resolve(true)
+					.then(() => ({
+						departure: false,
+						goingToWork: false,
+						goOut: false,
+						turnBack: false
+					}))
+					.then((data: any) => {
+						const oldData = ko.unwrap(buttonPage.stampToSuppress);
 
-					if (!_.isEqual(data, oldData)) {
-						buttonPage.stampToSuppress(data);
-					} else {
-						buttonPage.stampToSuppress.valueHasMutated();
-					}
-				});
+						if (!_.isEqual(data, oldData)) {
+							buttonPage.stampToSuppress(data);
+						} else {
+							buttonPage.stampToSuppress.valueHasMutated();
+						}
+					});
 
 			// case: 社員一覧(A2)を選択していない場合
 			if (selectedId === undefined && nameSelectArt === true) {
@@ -589,7 +641,7 @@ module nts.uk.at.kdp003.a {
 		virtual: false
 	})
 	export class MessageErrorBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => KnockoutObservable<f.Message | string | null | undefined>, __: KnockoutAllBindingsAccessor, vm: ComponentViewModel): void {
+		update(element: any, valueAccessor: () => KnockoutObservable<f.Message | string | null | undefined>, __: KnockoutAllBindingsAccessor, vm: nts.uk.ui.vm.ViewModel): void {
 			const $el = $(element);
 			const msg = ko.unwrap(valueAccessor());
 
@@ -701,24 +753,7 @@ module nts.uk.at.kdp003.a {
 	}
 
 	const DEFAULT_SETTING: FingerStampSetting = {
-		"stampSetting": {
-			"buttonEmphasisArt": true,
-			"historyDisplayMethod": null,
-			"correctionInterval": 60,
-			"textColor": "#000",
-			"backGroundColor": "#cccccc",
-			"resultDisplayTime": 360,
-			"pageLayouts": [],
-			"cid": "",
-			"nameSelectArt": false,
-			"passwordRequiredArt": true,
-			"employeeAuthcUseArt": false,
-			"authcFailCnt": 10
-		},
-		"stampResultDisplay": {
-			"companyId": "",
-			"notUseAttr": 1,
-			"displayItemId": []
-		}
+		stampSetting: null,
+		stampResultDisplay: null
 	};
 }

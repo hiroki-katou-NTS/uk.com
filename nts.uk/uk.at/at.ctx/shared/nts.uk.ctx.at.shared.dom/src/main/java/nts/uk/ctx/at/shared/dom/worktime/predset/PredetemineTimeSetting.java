@@ -5,13 +5,17 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -248,13 +252,51 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 
 
 	/**
+	 * 勤務時間範囲を取得する
+	 * @param atr 午前午後区分
+	 * @return 勤務可能な時間帯
+	 */
+	public TimeSpanForCalc getWorkableTimeSpan(AmPmAtr atr) {
+
+		switch( atr ) {
+			case ONE_DAY:
+				return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
+			case AM:
+				return new TimeSpanForCalc( this.startDateClock, this.prescribedTimezoneSetting.getMorningEndTime() );
+			case PM:
+				return new TimeSpanForCalc( this.prescribedTimezoneSetting.getAfternoonStartTime(), this.getEndDateClock() );
+		}
+
+		throw new RuntimeException("Out of range. " + atr);
+	}
+
+	/**
 	 * 1日の勤務時間範囲
 	 * Gets the one day span.
 	 * @return the one day span
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
-		return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
+		return this.getWorkableTimeSpan(AmPmAtr.ONE_DAY);
 	}
+
+	/**
+	 * 午前の勤務時間範囲
+	 * Get the half day of AM span.
+	 * @return
+	 */
+	public TimeSpanForCalc getHalfDayOfAmSpan() {
+		return this.getWorkableTimeSpan(AmPmAtr.AM);
+	}
+
+	/**
+	 * 午後の勤務時間範囲
+	 * Get the half day of PM span.
+	 * @return
+	 */
+	public TimeSpanForCalc getHalfDayOfPmSpan() {
+		return this.getWorkableTimeSpan(AmPmAtr.PM);
+	}
+
 
 	/**
 	 * Gets the predetermine end time.
@@ -265,6 +307,16 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
 	}
 
+
+	/**
+	 * 2回勤務を使用するか
+	 * @return
+	 */
+	public boolean isUseShiftTwo() {
+		return this.prescribedTimezoneSetting.isUseShiftTwo();
+	}
+
+
 	/**
 	 * 勤務NOに対応した時間帯を取得する
 	 * Gets the time sheet of.
@@ -274,6 +326,43 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	public Optional<TimezoneUse> getTimeSheetOf(int workNo) {
 		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
 	}
+
+
+	/**
+	 * 午前午後区分に応じた所定時間帯
+	 * @param atr 午前午後区分
+	 * @return 所定時間帯リスト
+	 */
+	public List<TimezoneUse> getTimezoneByAmPmAtr(AmPmAtr atr) {
+
+		List<TimezoneUse> timezones = Collections.emptyList();
+		switch( atr ) {
+			case ONE_DAY:	// 1日
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZone();
+				break;
+			case AM:		// 午前
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInAm();
+				break;
+			case PM:		// 午後
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInPm();
+				break;
+		}
+
+		return timezones;
+
+	}
+
+	/**
+	 * 午前午後区分に応じた所定時間帯(計算時間帯)
+	 * @param atr 午前午後区分
+	 * @return 所定時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getTimezoneByAmPmAtrForCalc(AmPmAtr atr) {
+
+		return this.getTimezoneByAmPmAtr(atr).stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
+
+	}
+
 
 	/**
 	 * Restore data.

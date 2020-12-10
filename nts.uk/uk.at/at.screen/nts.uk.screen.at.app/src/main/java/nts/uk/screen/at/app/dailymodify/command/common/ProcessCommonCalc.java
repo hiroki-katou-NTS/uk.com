@@ -40,7 +40,7 @@ public class ProcessCommonCalc {
 		final Set<Object> seen = new HashSet<>();
 		return t -> seen.add(keyExtractor.apply(t));
 	}
-	
+
 	public static List<Pair<String, GeneralDate>> itemInGroupChange(List<IntegrationOfDaily> domainDailyNew,
 			List<DailyModifyResult> resultOlds) {
 		List<DailyRecordDto> dtoNews = domainDailyNew.stream().map(x -> DailyRecordDto.from(x))
@@ -53,7 +53,7 @@ public class ProcessCommonCalc {
 		return checkEditedItems(resultOlds, resultNews);
 
 	}
-	
+
 	public static List<Pair<String, GeneralDate>> checkEditedItems(List<DailyModifyResult> resultOlds,
 			List<DailyModifyResult> resultNews) {
 		List<Pair<String, GeneralDate>> editedDate = new ArrayList<>();
@@ -70,7 +70,7 @@ public class ProcessCommonCalc {
 		});
 		return editedDate;
 	}
-	
+
 	public static Map<Pair<String, GeneralDate>, List<ItemValue>> mapTo(List<DailyModifyResult> source) {
 		return source.stream()
 				.collect(Collectors.groupingBy(r -> Pair.of(r.getEmployeeId(), r.getDate()),
@@ -79,7 +79,7 @@ public class ProcessCommonCalc {
 										.filter(c -> DPText.TMP_DATA_CHECK_ITEMS.contains(c.getItemId()))
 										.collect(Collectors.toList()))));
 	}
-	
+
 	public static List<ItemValue> getFrom(Map<Pair<String, GeneralDate>, List<ItemValue>> source,
 			Pair<String, GeneralDate> key) {
 		if (source.containsKey(key)) {
@@ -87,7 +87,7 @@ public class ProcessCommonCalc {
 		}
 		return null;
 	}
-	
+
 	public static Map<Integer, List<DPItemValue>> convertErrorToType(
 			Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError,
 			Map<Integer, List<DPItemValue>> resultErrorMonth) {
@@ -120,7 +120,7 @@ public class ProcessCommonCalc {
 
 		return mapResult;
 	}
-	
+
 	public static List<DailyRecordWorkCommand> createCommands(String sid, List<DailyRecordDto> lstDto,
 			List<DailyModifyQuery> querys) {
 		if (querys.isEmpty())
@@ -138,7 +138,7 @@ public class ProcessCommonCalc {
 
 	public static DailyRecordWorkCommand createCommand(String sid, DailyRecordDto dto, DailyModifyQuery query) {
 		if (query == null) {
-			return DailyRecordWorkCommand.open().withData(dto).forEmployeeIdAndDate(dto.employeeId(), dto.getDate())
+			return DailyRecordWorkCommand.open().forEmployeeIdAndDate(dto.employeeId(), dto.getDate()).withData(dto)
 					.fromItems(Collections.emptyList());
 		}
 		DailyRecordWorkCommand command = DailyRecordWorkCommand.open().forEmployeeId(query.getEmployeeId())
@@ -147,7 +147,7 @@ public class ProcessCommonCalc {
 		command.getEditState().updateDatas(convertTo(sid, query));
 		return command;
 	}
-	
+
 	public static List<EditStateOfDailyAttd> convertTo(String sid, DailyModifyQuery query) {
 		List<EditStateOfDailyAttd> editData = query.getItemValues().stream().map(x -> {
 			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.getItemId(), query.getBaseDate(),
@@ -156,7 +156,7 @@ public class ProcessCommonCalc {
 		}).collect(Collectors.toList());
 		return editData;
 	}
-	
+
 	public static ItemFlex convertMonthToItem(MonthlyRecordWorkDto monthDto, DPMonthValue monthValue) {
 		ItemFlex itemResult = new ItemFlex();
 		MonthlyModifyResult result = MonthlyModifyResult.builder()

@@ -6,15 +6,16 @@ import java.util.List;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 public interface IntermediateDataPub {
 	
@@ -291,4 +292,23 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public List<String> findEmpRequest610(String approverID, DatePeriod period, Integer rootType);
+	
+	/**
+	 * RequestList 672
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.Export.中間データ版."[No.672](中間データ版)承認対象者と期間から承認過程を取得する".[No.672](中間データ版)承認対象者と期間から承認過程を取得する
+	 * @param employeeIDLst
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootStateExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
+	
+	/**
+	 * RequestList 673
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.Export.中間データ版.月別."[No.673](中間データ版)承認対象者と期間から承認過程を取得する（月別）".[No.673](中間データ版)承認対象者と期間から承認過程を取得する（月別）
+	 * @param employeeID
+	 * @param period
+	 * @return
+	 */
+	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period);
 }

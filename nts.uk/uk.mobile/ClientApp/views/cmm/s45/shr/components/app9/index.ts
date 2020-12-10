@@ -214,8 +214,11 @@ export class CmmS45ComponentsApp9Component extends Vue {
                     });
                 }
             }).catch(() => {
-                vm.$mask('hide');
+                vm.$emit('loading-complete');
             });
+        });
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.$emit('loading-complete');
         });
     }
 

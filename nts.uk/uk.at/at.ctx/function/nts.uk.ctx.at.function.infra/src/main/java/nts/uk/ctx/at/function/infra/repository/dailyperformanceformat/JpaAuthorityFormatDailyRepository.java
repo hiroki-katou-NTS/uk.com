@@ -22,6 +22,8 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 
 	private static final String FIND_DETAIL;
 
+	private static final String FIND_DETAIL_WITH_SHEET_NO;
+
 	private static final String UPDATE_BY_KEY;
 
 	private static final String DEL_BY_KEY;
@@ -43,8 +45,12 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
-		builderString.append("AND a.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ");
 		FIND_DETAIL = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(FIND_DETAIL);
+		builderString.append("AND a.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ");
+		FIND_DETAIL_WITH_SHEET_NO = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KfnmtAuthorityDailyItem a ");
@@ -81,10 +87,9 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,
-			BigDecimal sheetNo) {
+	public List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(FIND_DETAIL, KfnmtAuthorityDailyItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).setParameter("sheetNo", sheetNo)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
 				.getList(f -> toDomain(f));
 	}
 
@@ -148,6 +153,16 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		entity.displayOrder = authorityFomatDaily.getDisplayOrder();
 
 		return entity;
+	}
+
+	@Override
+	public List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId,
+			DailyPerformanceFormatCode dailyPerformanceFormatCode, BigDecimal sheetNo) {
+		return this.queryProxy().query(FIND_DETAIL_WITH_SHEET_NO, KfnmtAuthorityDailyItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
+				.setParameter("sheetNo", sheetNo)
+				.getList(f -> toDomain(f));
 	}
 
 }

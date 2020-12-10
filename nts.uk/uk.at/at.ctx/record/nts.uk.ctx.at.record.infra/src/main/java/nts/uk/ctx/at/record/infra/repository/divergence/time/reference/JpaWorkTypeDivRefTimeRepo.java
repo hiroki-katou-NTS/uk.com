@@ -17,13 +17,13 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt_;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

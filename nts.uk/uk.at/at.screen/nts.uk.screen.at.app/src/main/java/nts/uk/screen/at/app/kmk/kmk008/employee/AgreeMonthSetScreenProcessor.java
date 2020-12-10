@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.kmk.kmk008.employee;
 
-import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
@@ -22,18 +20,15 @@ public class AgreeMonthSetScreenProcessor {
 
     public List<AgreementMonthSettingDto> find(Request requestMonth) {
 
-        YearMonth yearMonth = YearMonth.of(GeneralDate.today().addYears(-3).year(),GeneralDate.today().month());
         List<AgreementMonthSetting> data = monthSettingRepository.find(requestMonth.getEmployeeId());
-        data = data.stream().filter(x ->  x.getYearMonthValue().v() >= yearMonth.v() ).collect(Collectors.toList());
 
         return AgreementMonthSettingDto.setData(data);
     }
 
     public List<EmployeeMonthSettingDto> findAll(RequestEmployee requestMonth) {
 
-        YearMonth yearMonth = YearMonth.of(GeneralDate.today().addYears(-3).year(),GeneralDate.today().month());
         List<AgreementMonthSetting> data = monthSettingRepository.findByListEmployee(requestMonth.getEmployeeIds());
-        data = data.stream().filter(x ->  x.getYearMonthValue().v() >= yearMonth.v() ).collect(Collectors.toList());
+
         Map<String, List<AgreementMonthSetting>> mapData = data.stream().collect(Collectors.groupingBy(AgreementMonthSetting::getEmployeeId));
 
         return EmployeeMonthSettingDto.setData(mapData,requestMonth.getEmployeeIds());

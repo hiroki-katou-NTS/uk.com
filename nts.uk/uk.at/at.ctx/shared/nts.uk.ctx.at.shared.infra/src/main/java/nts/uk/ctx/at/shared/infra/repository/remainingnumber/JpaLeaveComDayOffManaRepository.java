@@ -200,14 +200,14 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 					.setParameter("lstOccDate", lstOccDate)
 					.setParameter("lstDigestDate", lstDigestDate)
 					.getList();
-		} else if (lstOccDate.isEmpty()) {
+		} else if (lstOccDate.isEmpty() && !lstDigestDate.isEmpty()) {
 			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDigestDate");
 			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)
 					.setParameter("lstDigestDate", lstDigestDate)
 					.getList();
 		}
-		else if (lstDigestDate.isEmpty()) {
+		else if (!lstOccDate.isEmpty() && lstDigestDate.isEmpty()) {
 			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate");
 			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)

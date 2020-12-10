@@ -88,10 +88,10 @@ module nts.uk.at.view.kaf018.share.model {
         urlApprovalEmbed: KnockoutObservable<boolean>;
         urlDayEmbed: KnockoutObservable<boolean>;
         urlMonthEmbed: KnockoutObservable<boolean>;
-        mailType: number;
+        mailType: ApprovalStatusMailType;
         editMode: KnockoutObservable<boolean>;
 
-        constructor(mailType: number, mailSubject: string, mailContent: string, urlApprovalEmbed: number, urlDayEmbed: number, urlMonthEmbed: number, editMode: number) {
+        constructor(mailType: ApprovalStatusMailType, mailSubject: string, mailContent: string, urlApprovalEmbed: number, urlDayEmbed: number, urlMonthEmbed: number, editMode: number) {
             this.mailType = mailType;
             this.mailSubject = ko.observable(mailSubject);
             this.mailContent = ko.observable(mailContent);
@@ -101,6 +101,33 @@ module nts.uk.at.view.kaf018.share.model {
             this.editMode = ko.observable(editMode == 0 ? false : true);
         }
     }
+
+	export enum ApprovalStatusMailType {
+		/**
+		 * 申請承認未承認
+		 */
+		APP_APPROVAL_UNAPPROVED = 0,
+		/**
+		 * 日別未確認（本人）
+		 */
+		DAILY_UNCONFIRM_BY_PRINCIPAL = 1,
+		/**
+		 * 日別未確認（確認者）
+		 */
+		DAILY_UNCONFIRM_BY_CONFIRMER = 2,
+		/**
+		 * 月別未確認（本人）
+		 */
+		MONTHLY_UNCONFIRM_BY_PRINCIPAL = 5,
+		/**
+		 * 月別未確認（確認者）
+		 */
+		MONTHLY_UNCONFIRM_BY_CONFIRMER = 3,
+		/**
+		 * 就業確認
+		 */
+		WORK_CONFIRMATION = 4,
+	}
 
     export class IdentityProcessUseSet {
         useIdentityOfMonth: KnockoutObservable<boolean>;
@@ -121,12 +148,26 @@ module nts.uk.at.view.kaf018.share.model {
     }
 
     export class UseSetting {
-        //月別確認を利用する
-        monthlyConfirm: boolean;
-        //上司確認を利用する
-        useBossConfirm: boolean;
-        //本人確認を利用する
-        usePersonConfirm: boolean;
+		/**
+		 * 月別本人確認を利用する
+		 */
+		monthlyIdentityConfirm: boolean;
+		/**
+		 * 月別確認を利用する
+		 */
+		monthlyConfirm: boolean;
+		/**
+		 * 上司確認を利用する
+		 */
+		useBossConfirm: boolean;
+		/**
+		 * 本人確認を利用する
+		 */
+		usePersonConfirm: boolean;
+		/**
+		 * 就業確定を利用する
+		 */
+		employmentConfirm: boolean;
     }
 
     export class CellColor {

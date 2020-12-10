@@ -125,8 +125,8 @@ import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.getprocessingdate.GetProcessingDate;
@@ -234,7 +234,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     @Inject
     private WkTypeInfoChangePeriod wkTypeInfoChangePeriod;
     @Inject
-    private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
     @Inject
     private ListEmpAutoExec listEmpAutoExec;
     @Inject
@@ -1832,7 +1832,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             //INPUT．「勤務種別変更時に再作成」をチェックする
                             if (procExec.getExecSetting().getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE) && !check) {
                                 //<<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
-                                List<BusinessTypeOfEmpDto> listBusinessTypeOfEmpDto = businessTypeOfEmpHisAdaptor.findByCidSidBaseDate(companyId, Arrays.asList(empLeader), datePeriod);
+								List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(Arrays.asList(empLeader), datePeriod);
                                 //勤務種別情報変更期間を求める
                                 listDatePeriodWorktype = wkTypeInfoChangePeriod.getWkTypeInfoChangePeriod(empLeader, datePeriod, listBusinessTypeOfEmpDto, true);
                             }

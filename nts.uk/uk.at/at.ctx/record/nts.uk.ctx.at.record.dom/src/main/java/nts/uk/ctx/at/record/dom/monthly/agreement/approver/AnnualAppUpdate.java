@@ -55,7 +55,7 @@ public class AnnualAppUpdate {
 		val app = optApp.get();
 
 		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(require, cid, applicantId, GeneralDate.today());
+		val setting = AgreementDomainService.getBasicSet(require, cid, app.getApplicantsSID(), GeneralDate.today());
 		val oneYear = setting.getOneYear();
 
 		// $エラー結果

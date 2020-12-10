@@ -1,25 +1,23 @@
 package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.workmethodrelationship;
 
+import lombok.Value;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtlPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpPk;
+import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-
-import lombok.Value;
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipComRepo;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpPk;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -66,9 +64,18 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	@Override
 	public void update(String companyId, WorkMethodRelationshipCompany domain) {
 		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(companyId, domain);
-		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
-		
+		workContext.contractCd = AppContexts.user().contractCode();
 		this.commandProxy().update(workContext);
+
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
+
+		List<KscmtAlchkWorkContextCmpDtl> entities = getWithWorkMethodDtl(companyId, domain.getWorkMethodRelationship().getPrevWorkMethod());
+		for (KscmtAlchkWorkContextCmpDtl item : entities) {
+			if (workContextDtlList.stream().noneMatch(x -> KscmtAlchkWorkContextCmpDtlPk.isEquals(item.pk, x.pk))) {
+				this.commandProxy().remove(KscmtAlchkWorkContextCmpDtl.class, item.pk);
+			}
+		}
+
 		this.commandProxy().updateAll(workContextDtlList);
 	}
 
@@ -106,8 +113,8 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
 				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
-		this.commandProxy().remove(workContext);
-		this.commandProxy().removeAll(workContextDtlList);
+		this.commandProxy().remove(KscmtAlchkWorkContextCmp.class, workContext.get().pk);
+		this.commandProxy().removeAll(KscmtAlchkWorkContextCmpDtl.class, workContextDtlList.stream().map(i -> i.pk).collect(Collectors.toList()));
 		
 	}
 
@@ -147,11 +154,6 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 		 WorkMethodRelationshipCompany domain = toDomain(Arrays.asList(workContext.get()), workContextDtlList).get(0);
 		return Optional.of(domain);
 		
-	}
-
-	@Override
-	public Optional<WorkMethodRelationshipCompany> getByCode(String companyId, String code) {
-		return Optional.empty();
 	}
 
 	@Override
@@ -202,7 +204,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 			
 			List<KscmtAlchkWorkContextCmpDtl> dtlList = 
 					workContextDtlList.stream()
-					.filter( dtl -> dtl.pk.prevWorkTimeCode == wContext.pk.prevWorkTimeCode)
+					.filter( dtl -> dtl.pk.prevWorkTimeCode.equals(wContext.pk.prevWorkTimeCode))
 					.collect(Collectors.toList());
 			
 			return wContext.toDomain(dtlList);
@@ -224,6 +226,22 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
 		return new Entities(workContextList, workContextDtlList); 
+	}
+
+	private List<KscmtAlchkWorkContextCmpDtl> getWithWorkMethodDtl(String companyId, WorkMethod prevWorkMethod) {
+
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE ?
+				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() :
+				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
+
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList =
+				new NtsStatement(SELECT_ONE_WORK_CONTEXT_DTL, this.jdbcProxy())
+						.paramString("companyId", companyId)
+						.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
+						.paramString("prevWorkTimeCode", prevWorkTimeCode)
+						.getList(KscmtAlchkWorkContextCmpDtl.mapper);
+		return workContextDtlList;
+
 	}
 	
 	@Value

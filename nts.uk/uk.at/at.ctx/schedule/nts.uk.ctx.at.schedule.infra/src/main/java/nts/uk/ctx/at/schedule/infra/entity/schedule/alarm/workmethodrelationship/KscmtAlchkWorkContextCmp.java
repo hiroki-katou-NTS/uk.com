@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -51,12 +52,12 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 	public static KscmtAlchkWorkContextCmp fromDomain(String companyId, WorkMethodRelationshipCompany domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
-			
+
 		return new KscmtAlchkWorkContextCmp(
-					KscmtAlchkWorkContextCmpPk.fromDomain(companyId, domain), 
-					relationship.getSpecifiedMethod().value, 
-					relationship.getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
-			
+				KscmtAlchkWorkContextCmpPk.fromDomain(companyId, domain),
+				relationship.getSpecifiedMethod().value,
+				relationship.getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
+
 	}
 	
 	public WorkMethodRelationshipCompany toDomain(List<KscmtAlchkWorkContextCmpDtl> dtlList) {

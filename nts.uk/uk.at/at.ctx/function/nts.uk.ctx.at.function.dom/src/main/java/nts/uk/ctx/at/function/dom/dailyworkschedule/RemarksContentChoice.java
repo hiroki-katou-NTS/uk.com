@@ -53,6 +53,15 @@ public enum RemarksContentChoice {
 	/** The exceed by application. */
 	// 事前申請超過
 	EXCEED_BY_APPLICATION(10, "Enum_ExceedByApplication", "Enum_ExceedByApplication_Short"),
+
+	// 乖離理由
+	DIVERGENCE_REASON(11, "Enum_DivergenceReason", "Enum_DivergenceReason_Short"),
+
+	// 乖離エラー
+	DEVIATION_ERROR(12, "Enum_DeviationError", "Enum_DeviationError_Short"),
+
+	// 乖離アラーム
+	DEVIATION_ALARM(13, "Enum_DeviationAlarm", "Enum_DeviationAlarm_Short"),
 	
 	/** Added enum by HoangNDH for exporting excel, not exist on design EAP */
 	// 遅刻

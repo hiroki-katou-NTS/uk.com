@@ -1,6 +1,5 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-    let KEY = 'USER_INFOR';
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewAB: new ksu001.ab.viewmodel.ScreenModel(),
@@ -24,21 +23,27 @@ module nts.uk.at.view.ksu001.a {
             $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
 
             if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
-                $('#tableButton1 button').addClass('disabledShiftControl');
-            } else {
-                $('#tableButton1 button').removeClass('disabledShiftControl');
-            }
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            } 
 
             if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                $('#tableButton2 button').addClass('disabledShiftControl');
-            } else {
-                $('#tableButton2 button').removeClass('disabledShiftControl');
+                $('.ntsButtonTableButton').addClass('nowithContent');
             }
-
+            
+            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'copyPaste') {
+                setTimeout(() => {
+                    __viewContext.viewModel.viewA.setCoppyStyler();
+                }, 800);
+            }
+            
+            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
+            
             $(window).resize(function() {
-                __viewContext.viewModel.viewA.setHeightScreen();
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
+                __viewContext.viewModel.viewA.setHeightScreen();
             });
 
             nts.uk.ui.block.clear();

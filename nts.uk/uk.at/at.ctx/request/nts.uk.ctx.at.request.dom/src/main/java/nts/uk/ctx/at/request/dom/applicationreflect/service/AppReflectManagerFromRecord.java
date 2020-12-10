@@ -31,7 +31,7 @@ public interface AppReflectManagerFromRecord {
 	void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
 			ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting );
 	/**
-	 * 申請の取得
+	 * 申請の取得_OLD
 	 * @param sid 社員ID
 	 * @param datePeriod 期間
 	 * @param exeType 実行種別
@@ -50,4 +50,12 @@ public interface AppReflectManagerFromRecord {
 			InformationSettingOfEachApp reflectSetting, DatePeriod appDatePeriod);
 	
 	void reflectApplication(List<String> lstID);
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請反映.申請反映Mgrクラス.アルゴリズム.申請の取得.申請の取得
+	 * @param sid
+	 * @param datePeriod
+	 * @param exeType
+	 * @return
+	 */
+	List<Application> getAppsForReflect(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
 }

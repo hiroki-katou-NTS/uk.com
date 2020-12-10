@@ -11,14 +11,7 @@ import java.util.List;
  * @author HoangDD
  */
 public interface OutputItemDailyWorkScheduleGetMemento {
-	
-	/**
-	 * Gets the company ID.
-	 *
-	 * @return the company ID
-	 */
-	String getCompanyID();
-	
+
 	/**
 	 * Gets the item code.
 	 *
@@ -60,4 +53,18 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	 * @return the remark input no
 	 */
 	RemarkInputContent getRemarkInputNo();
+	
+	/**
+	 * Gets the font size.
+	 *
+	 * @return the font size
+	 */
+	FontSizeEnum getFontSize();
+	
+	/**
+	 * Gets the layout id.
+	 *
+	 * @return the layout id
+	 */
+	String getLayoutId();
 }

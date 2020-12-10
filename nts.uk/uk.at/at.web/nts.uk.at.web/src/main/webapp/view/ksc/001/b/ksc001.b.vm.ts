@@ -452,9 +452,9 @@ module nts.uk.at.view.ksc001.b {
 					self.overwriteConfirmedData( false );
 				}
 
-				//fix screen on 1280
+				//fix screen on 1280 & 1366
 				if( window.outerWidth <= 1400 ) {
-					$( '#contents-area' ).addClass( 'fix-2180' );
+					$( '#contents-area' ).addClass( 'fix-1360' );
 				}
 
 				return dfd.promise();

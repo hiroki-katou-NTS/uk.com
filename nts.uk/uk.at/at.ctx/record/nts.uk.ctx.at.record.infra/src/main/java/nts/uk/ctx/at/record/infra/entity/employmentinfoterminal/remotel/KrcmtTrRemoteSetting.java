@@ -43,11 +43,24 @@ public class KrcmtTrRemoteSetting extends UkJpaEntity implements Serializable {
 	public int modelEmpInfoTer;
 
 	/**
+	 * 大項目NO
+	 */
+	@Column(name = "MAJOR_NO")
+	public Integer majorNo;
+	
+	/**
 	 * 大項目名称
 	 */
 	@Column(name = "MAJOR_NAME")
 	public String majorClassification;
+	
 
+	/**
+	 * 小項目NO
+	 */
+	@Column(name = "SMALL_NO")
+	public Integer smallNo;
+	
 	/**
 	 * 小項目名称
 	 */

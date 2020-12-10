@@ -1,12 +1,10 @@
 package nts.uk.screen.at.ws.kaf.kaf021;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.kaf021.query.SpecialProvisionOfAgreementQuery;
 import nts.uk.screen.at.app.kaf021.query.a.EmployeeAgreementTimeDto;
-import nts.uk.screen.at.app.kaf021.query.a.SpecialProvisionOfAgreementSelectionQuery;
 import nts.uk.screen.at.app.kaf021.query.a.StartupInfo;
 import nts.uk.screen.at.app.kaf021.query.c_d.SpecialProvisionOfAgreementAppListDto;
-import nts.uk.screen.at.app.kaf021.query.c_d.SpecialProvisionOfAgreementAppListQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -24,43 +22,53 @@ import java.util.List;
 public class Kaf021WebService extends WebService {
 
     @Inject
-    private SpecialProvisionOfAgreementSelectionQuery kaf021A_query;
-    @Inject
-    private SpecialProvisionOfAgreementAppListQuery kaf021CD_query;
+    private SpecialProvisionOfAgreementQuery query;
 
     @POST
     @Path("init")
     public StartupInfo init() {
-        return this.kaf021A_query.initStarup();
+        return this.query.initStarup();
     }
 
     @POST
     @Path("get-current-month")
     public List<EmployeeAgreementTimeDto> getCurrentMonth(EmployeeInfoParam param) {
-        return this.kaf021A_query.getEmloyeeInfoForCurrentMonth(param.getEmployees());
+        return this.query.getEmloyeeInfoForCurrentMonth(param.getEmployees());
     }
 
     @POST
     @Path("get-next-month")
     public List<EmployeeAgreementTimeDto> getNextMonth(EmployeeInfoParam param) {
-        return this.kaf021A_query.getEmloyeeInfoForNextMonth(param.getEmployees());
+        return this.query.getEmloyeeInfoForNextMonth(param.getEmployees());
     }
 
     @POST
     @Path("get-year")
     public List<EmployeeAgreementTimeDto> getYear(EmployeeInfoParam param) {
-        return this.kaf021A_query.getEmloyeeInfoForYear(param.getEmployees());
+        return this.query.getEmloyeeInfoForYear(param.getEmployees());
     }
 
     @POST
     @Path("init-display")
     public SpecialProvisionOfAgreementAppListDto initDisplay(SpecialProvisionOfAgreementAppParam param) {
-        return this.kaf021CD_query.initDisplay(param.getStatus());
+        return this.query.initDisplay(param.getStatus());
     }
 
     @POST
     @Path("search")
     public SpecialProvisionOfAgreementAppListDto search(SpecialProvisionOfAgreementAppParam param) {
-        return this.kaf021CD_query.search(param.getStartDate(), param.getEndDate(), param.getStatus());
+        return this.query.search(param.getStartDate(), param.getEndDate(), param.getStatus());
+    }
+
+    @POST
+    @Path("init-display-approve")
+    public SpecialProvisionOfAgreementAppListDto initDisplayApprove(SpecialProvisionOfAgreementAppParam param) {
+        return this.query.initDisplayApprove(param.getStatus());
+    }
+
+    @POST
+    @Path("search-approve")
+    public SpecialProvisionOfAgreementAppListDto searchApprove(SpecialProvisionOfAgreementAppParam param) {
+        return this.query.searchApprove(param.getStartDate(), param.getEndDate(), param.getStatus());
     }
 }

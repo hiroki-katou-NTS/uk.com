@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -10,10 +9,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStam
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
  * 
@@ -34,7 +31,7 @@ public interface ReflectStampDomainService {
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			Optional<CalAttrOfDailyPerformance> calcOfDaily,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
-			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag);
+			RecreateFlag recreateFlag);
 
 	// 2.打刻を取得して反映する 
 	// fixbug 105926
@@ -44,7 +41,7 @@ public interface ReflectStampDomainService {
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			Optional<CalAttrOfDailyPerformance> calcOfDaily,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
-			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag);
+			RecreateFlag recreateFlag);
 	
 	// 2.打刻を取得して反映する  (new)
 	/**

@@ -179,8 +179,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(
 				employeeId,
 				baseDate,
-				lstWorkType,
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null,
+				appDate,
+				lstWorkType.isEmpty() ? Collections.emptyList() : lstWorkType,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : Collections.emptyList(),
 				archievementDetail.isPresent() ? archievementDetail.get() : null);
 
 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.base;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * 時間休暇種類
@@ -48,5 +49,21 @@ public enum TimezoneToUseHourlyHoliday {
 	 */
 	public static TimezoneToUseHourlyHoliday getAfterWorking(WorkNo workNo) {
 		return (workNo.v() == 2) ? WORK_NO2_AFTER : WORK_NO1_AFTER;
+	}
+	
+	/**
+	 * 外出理由を指定
+	 * @param goOutReason 外出理由
+	 * @return
+	 */
+	public static TimezoneToUseHourlyHoliday getDuringWorking (GoingOutReason goOutReason) {
+		switch(goOutReason) {
+		case PRIVATE:
+			return TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE;
+		case UNION:
+			return TimezoneToUseHourlyHoliday.GOINGOUT_UNION;
+		default:
+			throw new RuntimeException("時間休暇は私用、組合しかない。");
+		}
 	}
 }

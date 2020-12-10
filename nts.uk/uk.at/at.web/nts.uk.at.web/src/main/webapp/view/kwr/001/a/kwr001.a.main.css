@@ -52,12 +52,21 @@
 .td-right .row {
 	display: flex;
 	align-items: center;
-	margin-top:  5px;
+	margin-top:  12px;
 	margin-bottom:  5px;
 	margin-left: 15px;
 }
 
+.nts-switch-button {
+	width: 80px;
+}
+
 #combo-box{
+	margin-left: 55px;
+	margin-right: 5px;
+}
+
+#combo-box-free-setting {
 	margin-left: 55px;
 	margin-right: 5px;
 }
@@ -101,8 +110,7 @@ hr {
 }
 
 .type-page-brake {
-	max-width: 100px;
-	margin-left: 22px;
+	margin-left: 36px;
 }
 
 .td-right .right .panel.panel-frame {
@@ -115,7 +123,7 @@ hr {
 }
 
 #output-setting-content {
-	height: 445px;
+	height: 510px;
 }
 
 #btnSetErrorAlarmCd {
@@ -123,7 +131,7 @@ hr {
 }
 
 #output-format {
-	margin-left: 55px;
+	margin-left: 67px;
 }
 
 #nts-component-list {
@@ -143,6 +151,22 @@ hr {
 	padding: 10px !important;
 }
 .work-place-accum {
-	width:330px;
-	margin-left:35px;
+	width: 298px;
+	margin-left: 30px;
+}
+
+.ntsRadioBox span.label {
+	padding-left: 3px;
+}
+
+.pt-7 {
+	padding-top: 7px !important;
+}
+
+.zero-display-type {
+	margin-left: 44px;
+}
+
+.display-type {
+	margin-left: 67px;
 }

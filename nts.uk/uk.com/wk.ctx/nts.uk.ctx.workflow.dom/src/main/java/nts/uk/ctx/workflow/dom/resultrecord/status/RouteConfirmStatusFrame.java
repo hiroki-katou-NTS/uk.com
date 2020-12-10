@@ -108,14 +108,19 @@ public class RouteConfirmStatusFrame {
 	 * 代行者に承認された
 	 * @return
 	 */
-	public boolean hasConfirmedByRepresenter(List<AgentInfoOutput> representRequesterIds) {
+	public boolean hasConfirmedByRepresenter(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		if(!isRepresent) {
 			return false;
 		}
-		List<String> representerIDLst = representRequesterIds.stream().filter(x -> employeeIds.contains(x.getAgentID()))
-				.map(x -> x.getApproverID()).collect(Collectors.toList());
+		List<String> approverIDLst = representRequesterIds.stream().filter(x -> approverId.equals(x.getApproverID()))
+				.map(x -> x.getAgentID()).collect(Collectors.toList());
 		
-		return hasApproved() && representerIDLst.contains(approvedEmployeeId.get());
+		boolean isLoginIsRepresenter = approverIDLst.stream().filter(x -> employeeIds.contains(x)).findAny().isPresent();
+		if(!isLoginIsRepresenter) {
+			return false;
+		}
+		
+		return hasApproved() && approvedEmployeeId.get().equals(approverId);
 	}
 	
 	public boolean hasApprovedByOther(String approverId) {
@@ -127,7 +132,10 @@ public class RouteConfirmStatusFrame {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedByApprover() {
-		return hasApproved() && employeeIds.contains(approvedEmployeeId.get());
+	public boolean hasApprovedByApprover(String approverId) {
+		if(isRepresent) {
+			return false;
+		}
+		return hasApproved() && approvedEmployeeId.get().equals(approverId);
 	}
 }

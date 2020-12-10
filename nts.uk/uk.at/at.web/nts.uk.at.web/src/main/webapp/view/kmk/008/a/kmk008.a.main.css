@@ -1,6 +1,10 @@
 #contents-area {
-	width: 850px !important;
-	height: 600px !important;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+#contents-area-inner {
+	width: 780px;
 }
 
 .panel-row {
@@ -17,6 +21,7 @@
 	border: 2px solid #B1B1B1;
 	border-radius: 7px;
 	margin-left: 10px;
+	margin-bottom: 5px;
 	width: 729px;
 }
 
@@ -77,7 +82,7 @@
 
 .btn-unit-setting {
 	margin-top: 10px;
-	width: 100%;
+	width: calc(100% - 15px);
 }
 
 .btn-deformed-labor {
@@ -103,7 +108,7 @@
 
 .caret-kmk008 {
 	text-align: center;
-	margin: 3px;
+	margin: 3px 3px 3px -5px;
 }
 
 .master_setting_caret.caret-right:after {
@@ -135,6 +140,13 @@
 
 #A4_13 {
 	margin-top: 40px;
+	height: 30px;
+	padding: 3px 7px;
+	margin-bottom: 3px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	text-align: center;
+	width: calc(100% - 15px);
 }
 
 #A4_16 {
