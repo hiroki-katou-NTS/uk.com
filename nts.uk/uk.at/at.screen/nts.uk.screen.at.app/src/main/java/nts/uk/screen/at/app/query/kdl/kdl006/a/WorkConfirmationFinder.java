@@ -54,29 +54,29 @@ public class WorkConfirmationFinder {
 
 	@Inject
 	private ClosureRepository closureRepository;
-	
+
 	@Inject
 	private UserAuthAdapter userAuthAdapter;
-	
+
 	@Inject
 	private RoleAdaptor roleAdaptor;
-	
+
 	@Inject
 	private WorkPlaceAuthorityRepository workPlaceAuthRepo;
-	
+
 	@Inject
 	private AuthWorkPlaceAdapter authWorkPlaceAdapter;
-	
+
 	@Inject
 	private WorkplaceAdapter WorkplaceExportService;
-	
+
 	@Inject
 	private EmploymentConfirmedRepository employmentConfirmedRepo;
-	
+
 	@Inject
 	private EmployeeInformationRepository employeeInformationRepo;
-	
-	@Inject 
+
+	@Inject
 	private RecordDomRequireService requireService;
 
 	public List<ClosureInforDto> DisplayOfWorkConfirmationDialog() {
@@ -86,7 +86,7 @@ public class WorkConfirmationFinder {
 			return null;
 		}
 		List<ClosureInforDto> closureList = new ArrayList<>();
-		
+
 		for (Closure closure : lstClosure) {
 			List<DatePeriod> lstDatePeriod = closure.getPeriodByYearMonth(closure.getClosureMonth().getProcessingYm());
 			Optional<ClosureHistory> closureHistory = closure.getHistoryByYearMonth(closure.getClosureMonth().getProcessingYm());
@@ -101,9 +101,9 @@ public class WorkConfirmationFinder {
 			}
 		}
 		closureList.sort(Comparator.comparing(ClosureInforDto::getClosureId));
-		
-		return closureList; 
-		
+
+		return closureList;
+
 //		Optional<ClosureInforDto> closure = closureList.stream().filter(c-> c.getClosureId() == closureId).findFirst();
 //		if(closure.isPresent()) {
 //			return new WorkConfirmationDto(closureList, this.getWorkPlace(closure.get()));
@@ -111,18 +111,18 @@ public class WorkConfirmationFinder {
 //			return new WorkConfirmationDto(closureList, this.getWorkPlace(closureList.get(0)));
 //		}
 	}
-	
+
 	public List<WorkPlaceConfirmDto> getWorkPlace(ClosureInforDto closure) {
 		String cid = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		RequireImpl require = new RequireImpl(closureRepository, userAuthAdapter, roleAdaptor, workPlaceAuthRepo, authWorkPlaceAdapter, authWorkPlaceAdapter, requireService);
-		
+
 		List<String> workplace = GetListWorkplacesByEmpsService.get(require, cid, employeeId, Optional.of(closure.closureId));
-		
+
 		List<WorkplaceInfoImport> listWorkplaceInfo = WorkplaceExportService.getWorkplaceInfoByWkpIds(cid, workplace, closure.end);
-		
+
 		List<EmploymentConfirmed> employmentConfirmedList = employmentConfirmedRepo.get(cid, workplace, ClosureId.valueOf(closure.closureId), new YearMonth(closure.yearMonth));
-		
+
 		EmployeeInformationQuery param = EmployeeInformationQuery.builder()
 				.employeeIds(employmentConfirmedList.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()))
 				.referenceDate(closure.end)
@@ -133,11 +133,11 @@ public class WorkConfirmationFinder {
 				.toGetPosition(false)
 				.toGetWorkplace(false)
 				.build();
-		
+
 		List<EmployeeInformation> employeeInformationList = employeeInformationRepo.find(param);
-		
+
 		List<WorkPlaceConfirmDto> workPlaceConfirmList = new ArrayList<>();
-		
+
 		for (WorkplaceInfoImport workplaceInfor : listWorkplaceInfo) {
 			Optional<EmploymentConfirmed> employmentConfirmed = employmentConfirmedList.stream().filter(c->c.getWorkplaceId().equals(workplaceInfor.getWorkplaceId())).findFirst();
 			String confirmEmployeeName = null;
@@ -149,38 +149,38 @@ public class WorkConfirmationFinder {
 			}
 			workPlaceConfirmList.add(
 					new WorkPlaceConfirmDto(
-							workplaceInfor.getWorkplaceId(), 
-							workplaceInfor.getWorkplaceDisplayName(), 
-							employmentConfirmed.isPresent() ? true : false, 
-							employmentConfirmed.isPresent() ? employmentConfirmed.get().getEmployeeId():null, 
-							confirmEmployeeName, 
+							workplaceInfor.getWorkplaceId(),
+							workplaceInfor.getWorkplaceDisplayName(),
+							employmentConfirmed.isPresent() ? true : false,
+							employmentConfirmed.isPresent() ? employmentConfirmed.get().getEmployeeId():null,
+							confirmEmployeeName,
 							employmentConfirmed.isPresent() ? Optional.of(employmentConfirmed.get().getDate()) : Optional.empty()));
 		}
 		return workPlaceConfirmList;
 	}
-	
+
 	@AllArgsConstructor
 	private class RequireImpl implements GetListWorkplacesByEmpsService.Require {
-		
+
 		private ClosureRepository closureRepository;
-		
+
 		private UserAuthAdapter userAuthAdapter;
-		
+
 		private RoleAdaptor roleAdaptor;
-		
+
 		private WorkPlaceAuthorityRepository workPlaceAuthRepo;
-		
+
 		private AuthWorkPlaceAdapter authWorkPlaceAdapter;
-		
+
 		private AuthWorkPlaceAdapter workPlaceAdapter;
-		
+
 		private RecordDomRequireService requireService;
-		
+
 		@Override
 		public Optional<String> getUserID(String employeeId) {
 			return userAuthAdapter.getUserIDByEmpID(employeeId);
 		}
-		
+
 		@Override
 		public Optional<RollInformation> getRole(String userID, int roleType, GeneralDate referenceDate, String companyId) {
 			RoleInformationImport dataImport =  roleAdaptor.getRoleIncludCategoryFromUserID(userID, roleType, referenceDate, companyId);
@@ -189,7 +189,7 @@ public class WorkConfirmationFinder {
 			}
 			return Optional.of(new RollInformation(dataImport.getRoleCharge(), dataImport.getRoleId()));
 		}
-		
+
 		@Override
 		public Optional<WorkPlaceAuthorityDto> getWorkAuthority(String roleId, String companyId, Integer functionNo) {
 			Optional<WorkPlaceAuthority> result = workPlaceAuthRepo.getWorkPlaceAuthorityById(companyId, roleId, functionNo);
@@ -198,7 +198,7 @@ public class WorkConfirmationFinder {
 			}
 			return Optional.empty();
 		}
-		
+
 		@Override
 		public OptionalInt getEmployeeReferenceRange(String roleId) {
 			OptionalInt result = roleAdaptor.findEmpRangeByRoleID(roleId);
@@ -209,28 +209,28 @@ public class WorkConfirmationFinder {
 			List<String> result = authWorkPlaceAdapter.getListWorkPlaceIDNoWkpAdmin(employeeID, empRange, referenceDate);
 			return result;
 		}
-		
+
 		@Override
 		public List<WorkplaceManagerDto> getWorkplaceManager(String employeeID, GeneralDate baseDate) {
 			List<WorkplaceManagerImport> dataImport = authWorkPlaceAdapter.findListWkpManagerByEmpIdAndBaseDate(employeeID, baseDate);
 			if (dataImport.isEmpty()) {
 				return new ArrayList<>();
 			}
-			
+
 			List<WorkplaceManagerDto> result = dataImport.stream().map(i -> {
 				WorkplaceManagerDto export = new WorkplaceManagerDto(i.getWorkplaceManagerId(), i.getEmployeeId(), i.getWorkplaceId(), i.getHistoryPeriod());
 				return export;
 			}).collect(Collectors.toList());
-			
+
 			return result;
 		}
-		
+
 		@Override
 		public List<AffWorkplaceHistoryItemImport> getAffiliatedEmployees(String workplaceId, GeneralDate baseDate) {
 			List<AffWorkplaceHistoryItemImport> listWkpItem =  workPlaceAdapter.getWorkHisItemfromWkpIdAndBaseDate(workplaceId, baseDate);
 			return listWkpItem;
 		}
-		
+
 		@Override
 		public List<ClosureInformation> getProcessCloseCorrespondToEmps(List<String> sIds, GeneralDate baseDate) {
 			List<ClosureInformation> result = new ArrayList<>();
@@ -243,12 +243,12 @@ public class WorkConfirmationFinder {
 			}
 			return result;
 		}
-		
+
 		@Override
 		public List<ClosureInfo> getCurrentMonthForAllClosure() {
 			return ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
 		}
-		
+
 		//指定した締めの当月期間を算出する
 		@Override
 		public Optional<DatePeriod> getCurrentMonthPeriod(Integer closureId) {

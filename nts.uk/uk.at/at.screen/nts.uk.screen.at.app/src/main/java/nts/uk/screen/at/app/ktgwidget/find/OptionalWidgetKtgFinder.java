@@ -446,11 +446,11 @@ public class OptionalWidgetKtgFinder {
 								systemDate,
 								specialHoliday.getSpecialHolidayCode().v(),
 								false, false,
-								new ArrayList<>(), new ArrayList<>(), Optional.empty());
+								new ArrayList<>(), new ArrayList<>());
 						InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave
 							= SpecialLeaveManagementService
-								.complileInPeriodOfSpecialLeave(require, cacheCarrier, param)
-								.getAggSpecialLeaveResult();
+								.complileInPeriodOfSpecialLeave(require, cacheCarrier, param);
+//								.getAggSpecialLeaveResult();
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
 						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails();
@@ -461,7 +461,13 @@ public class OptionalWidgetKtgFinder {
 							}
 						}
 						double before =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
+						//double before =  inPeriodOfSpecialLeave.get
+
+
 						double after =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()?inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
+
+
+
 						sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after, date, showAfter));
 					}
 					dto.setSPHDRamainNo(sPHDRamainNos);
