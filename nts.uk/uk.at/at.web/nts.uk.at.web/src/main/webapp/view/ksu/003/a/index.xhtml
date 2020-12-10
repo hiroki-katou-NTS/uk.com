@@ -31,14 +31,14 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A1_1" class="proceed">#{i18n.getText('KSU003_2')}</button>
-				<button id="A1_2" class=" marginleft15px" data-bind="click: openKdl003Dialog">#{i18n.getText('KSU003_3')}</button>
+				<button id="A1_2" class=" marginleft15px" >#{i18n.getText('KSU003_3')}</button>
 				<button id="A1_3" class="create  marginleft15px" data-bind="click: openGDialog">#{i18n.getText('KSU003_4')}</button>
 				<button id="A1_4" class="close" data-bind="click: closeDialog">#{i18n.getText('KSU003_5')}</button>
 			</div>
 			<div id="functon-area-row2">
-				<div id="functon-area-row2-left" style="margin-top: 10px">
+				<div id="functon-area-row2-left" data-bind="hasfocus: true" style="margin-top: 10px">
 					<!-- A2_1 -->
-					<div id="period-setting" class="panel panel-frame">
+					<div id="period-setting"  data-bind="hasfocus: true" class="panel panel-frame">
 						<!-- A2_1_1 -->
 						<div id="prev-button">
 							<button id="prev-all" class="small" data-bind=" click: prevAllDay, enable:checkPrv()">

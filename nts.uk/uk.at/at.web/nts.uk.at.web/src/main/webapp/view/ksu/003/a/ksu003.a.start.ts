@@ -3,13 +3,13 @@ module nts.uk.at.view.ksu003.a {
 		let screenModel = new viewmodel.ScreenModel();
 		screenModel.startPage().done(function() {
 			__viewContext.bind(screenModel);
+			$("#prev-all").focus();
 			nts.uk.ui.block.grayout();
 			$(window).resize(function() {
 				screenModel.setPositionButonDownAndHeightGrid();
 			});
 			nts.uk.ui.block.clear();
 		});
-		$(".functon-area-row2-left").focus();
 		initEvent();
 		initEvent2();
 	});
