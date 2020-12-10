@@ -30,13 +30,13 @@ public class Ccg008WebService {
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
+
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
-	
+
 	@Inject
 	private WorkClosureQueryProcessor workClosureQueryProcessor;
-	
+
 	@POST
 	@Path("get-cache")
 	public Ccg008Dto cache() {
@@ -49,7 +49,7 @@ public class Ccg008WebService {
 		Ccg008Dto result = new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth());
 		return result;
 	}
-	
+
 	@POST
 	@Path("get-closure")
 	public List<ClosureResultModel> closure() {

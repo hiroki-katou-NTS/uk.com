@@ -52,15 +52,15 @@ public interface GrantDateTblRepository {
 	 */
 	void delete(String companyId, int specialHolidayCode, String grantDateCode);
 
-//	/**
-//	 * Find all Grant Date Table data by Special Holiday Code
-//	 * @param companyId
-//	 * @param specialHolidayCode
-//	 * @return
-//	 */
-//	List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode);
-//
-//
+	/**
+	 * Find all Grant Date Table data by Special Holiday Code
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @return
+	 */
+	List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode);
+
+
 ////	/**
 ////	 * đối ứng cho màn cps003
 ////	 * Find Grant Date by Code
@@ -86,13 +86,13 @@ public interface GrantDateTblRepository {
 //	 * @param specialHolidayCode
 //	 */
 //	void changeAllProvision(int specialHolidayCode);
-//
-////	/**
-////	 * get 特別休暇付与テーブル with 規定のテーブルとする: True
-////	 * @param companyId
-////	 * @param specialHolidayCode
-////	 * @return
-////	 */
-////	Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode);
+
+//	/**
+//	 * get 特別休暇付与テーブル with 規定のテーブルとする: True
+//	 * @param companyId
+//	 * @param specialHolidayCode
+//	 * @return
+//	 */
+//	Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode);
 
 }

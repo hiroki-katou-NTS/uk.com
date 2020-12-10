@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -241,34 +242,52 @@ public class ClassInfo {
 				  if ( str != null ) {
 					  if ( str.contains("private ") || str.contains("protected ") ||  str.contains("public ")  ) {
 
-						  if ( !str.contains("{ ") ) { // 関数は除く
+						  if ( !str.contains("{ ") && !str.contains("(") ) { // 関数は除く
 
 							  MemberInfo memberInfo = new MemberInfo();
 
+							  String memberString = str;
 							  if ( str.contains("private ") ) {
 								  memberInfo.setPrivate_(true);
+								  memberString = memberString.replace("private ", "");
 							  }
 							  if ( str.contains("protected ") ) {
 								  memberInfo.setProtected_(true);
+								  memberString = memberString.replace("protected ", "");
 							  }
 							  if ( str.contains("public ") ) {
 								  memberInfo.setPublic_(true);
+								  memberString = memberString.replace("public ", "");
 							  }
 							  if ( str.contains("final ") ) {
 								  memberInfo.setFinal_(true);
+								  memberString = memberString.replace("final ", "");
 							  }
 							  if ( str.contains("static ") ) {
 								  memberInfo.setStatic_(true);
+								  memberString = memberString.replace("static ", "");
 							  }
-
-							  String memberString = str.replace("private ", "").replace("protected ", "").replace("public ", "").replace("final ", "").replace("static ", "").trim();
 
 							  // 型
 							  int beginIndexSpace = memberString.indexOf(" ");
 							  if ( 0 < beginIndexSpace) {
 								  String memberType = memberString.substring(0, beginIndexSpace).trim();
+								  if ( memberType.contains("Optional<")) {
+									  memberInfo.setOptional(true);
+
+
+
+
+
+
+
+
+								  }
+
+
 								  memberInfo.setMemberType(memberType);
 								  memberString = memberString.substring(beginIndexSpace).trim();
+
 							  }
 
 							  // 名前

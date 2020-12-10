@@ -299,6 +299,19 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	}
 
+	/**
+	 * Find all Grant Date Table data by Special Holiday Code
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @return
+	 */
+	@Override
+	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode){
+
+		// 要修正 jinno
+		return new ArrayList<GrantDateTbl>();
+	}
+
 //	@Override
 //	public void changeAllProvision(int specialHolidayCode) {
 //		String companyId = AppContexts.user().companyId();
