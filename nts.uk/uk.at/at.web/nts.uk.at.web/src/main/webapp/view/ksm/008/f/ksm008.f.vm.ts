@@ -364,9 +364,12 @@ module nts.uk.at.ksm008.f {
                         if (!_.isEmpty(data.empsCanNotSameHolidays)) {
                             let empsCanNotSameHolidays = new Array<string>();
                             _.each(data.empsCanNotSameHolidays, (dataId: string) => {
-                                empsCanNotSameHolidays.push(_.find(vm.selectableEmployeeList(), i => {
+                                let personInfo = _.find(vm.selectableEmployeeList(), i => {
                                     return i.id == dataId
-                                }).code)
+                                });
+                                if (!_.isEmpty(personInfo)) {
+                                    empsCanNotSameHolidays.push(personInfo.code)
+                                }
                             });
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
@@ -470,6 +473,7 @@ module nts.uk.at.ksm008.f {
 
         setNewMode() {
             const vm = this;
+            vm.selectedTargetCode([]);
 
             //clear data
             vm.selectedCode('');
@@ -643,15 +647,13 @@ module nts.uk.at.ksm008.f {
                     workplaceGroupId: vm.workplaceGroupId
                 })
                 .done(data => {
-                    if (!_.isEmpty(data)) {
-                        data = _.orderBy(data, ['employeeCode'], ['asc']);
+                    data = _.orderBy(data, ['employeeCode'], ['asc']);
 
-                        vm.selectableEmployeeList(data.map((item: any) => {
-                            return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
-                        }));
+                    vm.selectableEmployeeList(data.map((item: any) => {
+                        return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
+                    }));
 
-                        vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
-                    }
+                    vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
 
                     dfd.resolve();
                 })

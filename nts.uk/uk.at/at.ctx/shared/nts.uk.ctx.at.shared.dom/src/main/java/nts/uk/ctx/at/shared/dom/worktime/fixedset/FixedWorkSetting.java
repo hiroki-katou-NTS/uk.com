@@ -311,8 +311,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 */
 	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSet(WorkType workType) {
 		return this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).isPresent()
-					?this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
-					:Collections.emptyList();
+					? this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
+					: Collections.emptyList();
 	}
 
 	/**
@@ -388,7 +388,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @param atr 午前午後区分
 	 * @return 残業時間帯リスト(午前午後区分指定)
 	 */
-	private List<TimeSpanForCalc> getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr atr) {
+	public List<TimeSpanForCalc> getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr atr) {
 
 		// 勤務時間帯設定を取得する
 		// ※半日用シフトを使用しない場合は1日を利用する

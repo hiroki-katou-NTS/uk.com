@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 850, height: 720 };</script>
+			<script>var dialogSize = { width: 800, height: 720 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
@@ -15,6 +15,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kmk/003/base/fixedtablekdl045/fixedtablekdl045.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kdl045.a.main.css" />
 			<com:scriptfile path="kdl045.a.service.js" />
 			<com:scriptfile path="kdl045.a.vm.js" />
@@ -23,7 +24,7 @@
 
 		<ui:define name="content">
 			 <div id="contents-area">
-			 	<TABLE id = "table1" width="830px">
+			 	<TABLE id = "table1" width="757px" style="margin-left: 15px">
 			 		<tr >
 			 			<td>
 			 				<!-- A1_1 -->
@@ -31,92 +32,123 @@
 			 			</td>
 			 			<td>
 			 				<!-- A1_2 -->
-			 				<div>A00000000011</div>
+			 				<div><span data-bind="text: employee().employeeInfo.employeeCode"></span></div>
 			 			</td>
-			 			<td>
+			 			<td style="padding-right: 10px;width: 200px">
 			 				<!-- A1_3 -->
-			 				<div>日通　純一郎</div>
+			 				<div><span data-bind="text: employee().employeeInfo.employeeName"></span></div>
 			 			</td>
 			 			<td></td>
 			 			<td></td>
 			 			<td></td>
 			 		</tr>
 			 		<tr style="border-bottom: 1px solid #ccc;">
-			 			<td>
+			 			<td style="width: 130px">
 			 				<!-- A1_4 -->
 			 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_3')}</div>
 			 			</td>
 			 			<td colspan="2">
 			 				<!-- A1_5 -->
-			 				<div>2020/4/19 (日)</div>
+			 				<div><span data-bind="html: basedate"></span></div>
 			 			</td>
-			 			<td>
+			 			<td style="width: 90px">
 			 				<!-- A1_6 -->
-			 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_4')}</div>
+			 				<com:ko-if bind="isDisableA1_7() == true">
+			 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_4')}</div>
+			 				</com:ko-if>
 			 			</td>
 			 			<td>
 			 				<!-- A1_7 -->
-			 				<div>時間帯</div>
+			 				<com:ko-if bind="isDisableA1_7() == true">
+			 					<div><span data-bind="text: assignmentMethodName()"></span></div>
+		 					</com:ko-if>
 			 			</td>
 			 			<td>
-			 				<!-- A1_8 -->
-			 				<button data-bind="ntsHelpButton: {textId: 'KDL045_5', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'bottom center' }">#{i18n.getText('KDL045_5')}</button>
-			 			</td>
+			 				<!-- A1_8 --><!-- A1_9 --><!-- A1_10 -->
+			 				<com:ko-if bind="isDisableA1_8() == true">
+								<button tabindex="1" class="show-popup1">#{i18n.getText('KDL045_5')}</button>
+								<div class="popup-area1 popup-area popup-panel popup-color">
+									<com:ko bind="listDetail()" tag="foreach">
+										<span data-bind="text: $data"></span><br />
+									</com:ko>
+								</div>
+							</com:ko-if>
+							<com:ko-if bind="isTextDisableA1_8() == true">
+								<span data-bind="text: listDetail()[0]"></span>
+							</com:ko-if>
+							<com:ko-if bind="isTextDisableA1_8() == false &amp;&amp; isDisableA1_8() == false">
+								<div style="width: 90px"></div>
+							</com:ko-if>
+						</td>
 			 		</tr>
 			 	</TABLE>
-					<div id="tab-panel"
+					<div tabindex="2" id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, height : 530}">
 							<div class="tab-content-1" >
 								<table id ="table2" >
 									<tr>
-										<td rowspan="2">
+										<td style="width: 120px" rowspan="2">
 											<!-- A4_1 -->
 											<div data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KDL045_8')}</div>
 										</td>
 										<td rowspan="2">
 											<!-- A4_2 -->
-											<button >#{i18n.getText('KDL045_9')}</button>
+											<button tabindex="3" id ="a4-2" data-bind="click: openDialogKDL003 , enable: isEnableA4_2">#{i18n.getText('KDL045_9')}</button>
 										</td>
-										<td >
-											<!-- A4_3 -->
-											<div>#{i18n.getText('KDL045_10')}</div>
-										</td>
-										<td >
-											<!-- A4_4 --> <!-- A4_5 -->
-											<div>001　　勤務表示名称</div>
-										</td>
+										<com:ko-if bind="isExistWorkType() == true  &amp;&amp; isDisableA4_6() == true">
+											<td >
+												<!-- A4_3 -->
+												<div>#{i18n.getText('KDL045_10')}</div>
+											</td>
+											<td >
+												<!-- A4_4 --> <!-- A4_5 -->
+												<div><span data-bind="text: workType()"></span>　　<span data-bind="text: workTypeName()"></span></div>
+											</td>
+										</com:ko-if>
+										<com:ko-if bind="isExistWorkType() == true  &amp;&amp; isDisableA4_6() == false">
+											<td style="padding-top: 5px;">
+												<!-- A4_3 -->
+												<div>#{i18n.getText('KDL045_10')}</div>
+											</td>
+											<td >
+												<!-- A4_4 --> <!-- A4_5 -->
+												<div><span data-bind="text: workType()"></span>　　<span data-bind="text: workTypeName()"></span></div>
+											</td>
+										</com:ko-if>
 									</tr>
+									<com:ko-if bind="isDisableA4_6() == true">
 									<tr>
-										<td >
-											<!-- A4_6 -->
-											<div>#{i18n.getText('KDL045_11')}</div>
-										</td>
-										<td >
-											<!-- A4_7 --> <!-- A4_8 -->
-											<div>001　　就業時間帯名</div>
-										</td>
+											<td >
+												<!-- A4_6 -->
+												<div>#{i18n.getText('KDL045_11')}</div>
+											</td>
+											<td >
+												<!-- A4_7 --> <!-- A4_8 -->
+												<div><span data-bind="text: workTime()"></span>　　<span data-bind="text: workTimeName()"></span></div>
+											</td>
 									</tr>
+									</com:ko-if>
 								</table>
 								<!-- A5 -->
-								<div class="panel panel-frame" style="width:745px; height: 330px">
+								<div class="panel panel-frame" style="width:704px; height: 330px">
 									<div class="block-left" >
 										<table id="table-3" width="360px">
 											<tr>
-												<td>
+												<td width="100px">
 													<!-- A5_1 -->
 													<div data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KDL045_12')}</div>
 												</td>
-												<td>
+												<td width="110px">
 													<!-- A5_2 -->
-													<div data-bind="ntsCheckBox: { checked: true, text: '#{i18n.getText('KDL045_13')}' }"></div>
+													<div tabindex="4" data-bind="ntsCheckBox: { checked: directAtr,enable:isEnableA5_2, text: '#{i18n.getText('KDL045_13')}' }"></div>
 												</td>
 												<td>
 													<!-- A5_3 -->
-													<div data-bind="ntsCheckBox: { checked: true, text: '#{i18n.getText('KDL045_14')}' }"></div>
+													<div tabindex="5" data-bind="ntsCheckBox: { checked: bounceAtr,enable:isEnableA5_3, text: '#{i18n.getText('KDL045_14')}' }"></div>
 												</td>
 											</tr>
 											<tr>
-												<td colspan="3" class ="table-left-td ">
+												<td colspan="3" style="padding-top: 15px;" class ="table-left-td ">
 													<table>
 														<tr>
 															<td>
@@ -124,18 +156,24 @@
 																<div style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
 															</td>
 															<td style="padding-left: 15px">
-																<!-- A5_5 --><!-- A5_6 --> <!-- A5_7 -->
-																<div data-bind="ntsTimeRangeEditor: {required: true,
-																	enable: false,
-										                            inputFormat: 'time',
-										                            startTimeNameId: '#[KDL045_17]',
-										                            endTimeNameId: '#[KDL045_18]',
-										                            startConstraint: 'TimeWithDayAttr',
-										                            endConstraint: 'TimeWithDayAttr',
-										                            paramId: 'KDL045_16',
-										                            value: timeRange1Value
-										                                }
-										                            "/>
+																<com:ko-if bind="canModified == true">
+																	<!-- A5_5 --><!-- A5_6 --> <!-- A5_7 -->
+																	<div tabindex="6" id = "a5-5" data-bind="ntsTimeRangeEditor: {required: true,
+																		enable: isEnableA5_5,
+											                            inputFormat: 'time',
+											                            startTimeNameId: '#[KDL045_17]',
+											                            endTimeNameId: '#[KDL045_18]',
+											                            startConstraint: 'TimeWithDayAttr',
+											                            endConstraint: 'TimeWithDayAttr',
+											                            paramId: 'KDL045_16',
+											                            value: timeRange1Value
+											                                }
+											                            "/>
+									                            </com:ko-if>
+									                            <com:ko-if bind="canModified == false">
+																	<!-- A10_1 -->     
+																	<span style="padding-left: 28px;" data-bind="text: timeA10_1()"></span>　
+									                            </com:ko-if>
 															</td>
 														</tr>
 													</table>
@@ -144,26 +182,36 @@
 											<tr>
 												<td colspan="3" class ="table-left-td ">
 													<table>
-														<tr>
-															<td>
-																<!-- A5_8 --> 
-																<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>  
-															</td>
-															<td style="padding-left: 15px">
-																<!-- A5_9 --><!-- A5_10 --> <!-- A5_11 -->
-																<div data-bind="ntsTimeRangeEditor: {required: true,
-																	enable: false,
-										                            inputFormat: 'time',
-										                            startTimeNameId: '#[KDL045_21]',
-										                            endTimeNameId: '#[KDL045_22]',
-										                            startConstraint: 'TimeWithDayAttr',
-										                            endConstraint: 'TimeWithDayAttr',
-										                            paramId: 'KDL045_20',
-										                            value: timeRange2Value
-										                                }
-										                            "/>
-															</td>
-														</tr>
+														
+															<tr>
+															<com:ko-if bind="isShowTimeRange2 == true">		
+																<td>
+																	<!-- A5_8 --> 
+																	<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>  
+																</td>
+																<td style="padding-left: 15px">
+																	<com:ko-if bind="canModified == true">
+																		<!-- A5_9 --><!-- A5_10 --> <!-- A5_11 -->     
+																		<div tabindex="8" id="a5-9" data-bind="ntsTimeRangeEditor: {required: true,
+																			enable: isEnableA5_9,
+												                            inputFormat: 'time',
+												                            startTimeNameId: '#[KDL045_21]',
+												                            endTimeNameId: '#[KDL045_22]',
+												                            startConstraint: 'TimeWithDayAttr',
+												                            endConstraint: 'TimeWithDayAttr',
+												                            paramId: 'KDL045_20',
+												                            value: timeRange2Value
+												                                }
+												                            "/>
+										                            </com:ko-if>
+										                            <com:ko-if bind="canModified == false">
+																		<!-- A10_2 -->     
+																		<span style="padding-left: 28px;" data-bind="text: timeA10_2()"></span>　
+										                            </com:ko-if>
+																</td>
+																</com:ko-if>
+															</tr>
+														
 													</table>
 												</td>
 											</tr>
@@ -177,20 +225,20 @@
 												<!-- A5_13 --> <!-- A5_14 -->
 												<td colspan="3" class ="table-left-td ">
 													<div  style="float: left;"> #{i18n.getText('KDL045_24')}</div> 
-													<div style="padding-left: 130px;" > 0:00 </div>
+													<div style="padding-left: 130px;" > <span data-bind="text: dayShiftTime() "></span> </div>
 												</td>
 											</tr>
 											<tr>
 												<!-- A5_15 --> <!-- A5_16 -->
 												<td colspan="3" class ="table-left-td ">
 													<div style="float: left;"> #{i18n.getText('KDL045_25')}</div> 
-													<div style="padding-left: 130px;" > 0:31 </div>
+													<div style="padding-left: 130px;" > <span data-bind="text: nightShiftTime() "></span> </div>
 												</td>
 											</tr>
 										</table>
 									</div>
 									<div class="block-right" >
-										<table>
+										<table style="margin-top: 5px;margin-left: 10px;">
 											<tr>
 												<td>
 													<!-- A5_18 -->
@@ -198,25 +246,50 @@
 												</td>
 											</tr>
 											<tr>
-												<td style="padding-left: 30px;">
-													<!-- A5_19 ~ A5_25 -->
-													<div data-bind="ntsFixTableCustomKdl045: {option: timeRange }"></div>
-												</td>
+												<com:ko-if bind="fixBreakTime() == true">
+													<td style="padding-left: 30px;padding-top: 10px;">
+														<!-- A5_19 ~ A5_25 -->
+														<com:ko-if bind="canModified == true">
+															<div id = "kdl045" data-bind="ntsFixTableCustomKdl045: {option: timeRange() }"></div>
+														</com:ko-if>
+														<com:ko-if bind="canModified == false">
+															<table id="single-list" data-bind="ntsGridList: {								
+																height: 215,
+																width : 220,
+																dataSource: listDataA11,
+																primaryKey: 'breakFrameNo',
+																columns: columnsA11,
+																features: [{name: 'Switch', optionsValue: 'breakFrameNo', optionsText: 'name'}],
+																multiple: false,
+																value: currentNo
+															}"></table>
+														</com:ko-if>
+													</td>
+												</com:ko-if>
 											</tr>
 											<tr>
-												<td style="padding-left: 30px;">
-													<!-- A5_26 -->
-													<div > #{i18n.getText('KDL045_34')}</div>
-												</td>
+												<com:ko-if bind="fixBreakTime() == true">
+													<td style="padding-top: 10px ">
+														<!-- A5_26 -->
+														<div style= "width: 320px;"> #{i18n.getText('KDL045_34')}</div>
+													</td>
+												</com:ko-if>
 											</tr>
-											
+											<tr>
+												<com:ko-if bind="fixBreakTime() == false">
+													<td id="displayA5_27">
+														<!-- A5_27 -->
+														<div>#{i18n.getText('KDL045_67')}</div>
+													</td>
+												</com:ko-if>
+											</tr>
 										</table>
 									</div>
 								</div>
 							</div>
 							<div class="tab-content-2"  height ="530px">
 								<div class ="block-left-2">
-									<table id="table4" width="460px">
+									<table id="table4">
 										<tr>
 											<td>
 												<!-- A8_1 -->
@@ -225,76 +298,483 @@
 										</tr>
 										<tr>
 											<td id ="table6-fixsize">
-												<table id= "table6" width="420px" >
+												<table id= "table6" width="394px" >
 													<tr>
-														<td class ="color-grid"></td>
+														<td class ="color-grid" width="75px"></td>
 														<!-- A8_3 -->
-														<td class ="color-grid" style="font-weight: bold;"> #{i18n.getText('KDL045_38')}</td>
+														<td class ="color-grid" width="125px" style="font-weight: bold;"> #{i18n.getText('KDL045_38')}</td>
 														<!-- A8_4 -->
-														<td class ="color-grid" style="font-weight: bold;"> #{i18n.getText('KDL045_39')}</td>
+														<td class ="color-grid" width="85px" style="font-weight: bold;"> #{i18n.getText('KDL045_39')}</td>
 													</tr>
 													<tr>
 														<!-- A8_5_1 -->
 														<td class ="color-grid">#{i18n.getText('KDL045_51')}</td>
 														<!-- A8_6_1 -->
-														<td> 8:30 ~ 9:00</td>
+														<td><span data-bind="text: atWork1"></span></td>
 														<!-- A8_7_1 -->
-														<td> 
-															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														<td > 
+															<div class="size-a87"><span data-bind="text: atWork1A87() "></span></div>
+															<div style="float: left;">
+																<com:ko-if bind="atWork1showA9() == true">
+																<button tabindex="12" class="show-popup-atwork1 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div class="popup-atwork1 popup-area popup-panel popup-color">
+																	<table class = "table-popup">
+																		<tr>
+																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp; atWork1A9[0].timeAbbyakLeaveDisplay != ''">
+																				<!-- A9_1_1 -->
+																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<!-- A9_1_2 -->
+																				<td>(<span data-bind="text: atWork1A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp;  atWork1A9[0].timeOffDisplay != ''">
+																				<!-- A9_2_1 -->
+																				<td>#{i18n.getText('KDL045_58')}</td>
+																				<!-- A9_2_2 -->
+																				<td>(<span data-bind="text: atWork1A9[0].timeOffDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp; atWork1A9[0].excessPaidHolidayDisplay != ''">
+																				<!-- A9_3_1 -->
+																				<td>#{i18n.getText('KDL045_59')}</td>
+																				<!-- A9_3_2 -->
+																				<td>(<span data-bind="text: atWork1A9[0].excessPaidHolidayDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp;  atWork1A9[0].childNursingLeaveDisplay != ''">
+																				<!-- A9_4_1 -->
+																				<td>#{i18n.getText('KDL045_60')}</td>
+																				<!-- A9_4_2 -->
+																				
+																				<td>(<span data-bind="text: atWork1A9[0].childNursingLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork1A9.length>0 &amp;&amp;  atWork1A9[0].nursingCareLeaveDisplay != ''">
+																				<!-- A9_5_1 -->
+																				<td>#{i18n.getText('KDL045_61')}</td>
+																				<!-- A9_5_2 -->
+																				<td>(<span data-bind="text: atWork1A9[0].nursingCareLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<!-- A9_6 -->
+																			<com:ko-if bind="atWork1showA9_6 == true">
+																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
+																			</com:ko-if>
+																		</tr>
+																		<com:ko bind=" atWork1A9" tag="foreach">
+																			<tr>
+																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																					<!-- A9_6_1 -->
+																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<!-- A9_6_2 -->
+																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																				</com:ko-if>
+																			</tr>
+																		</com:ko>
+																	</table>
+																</div>
+																</com:ko-if>
+															</div>
 														</td>
 													</tr>
 													<tr>
 														<!-- A8_5_2 -->
 														<td class ="color-grid">#{i18n.getText('KDL045_52')}</td>
 														<!-- A8_6_2 -->
-														<td> 8:30 ~ 9:00</td>
+														<td> <span data-bind="text: offWork1"></span></td>
 														<!-- A8_7_2 -->
-														<td> 
-															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														<td > 
+															<div class="size-a87"><span data-bind="text: offWork1A87() "></span></div>
+															<div>
+																<com:ko-if bind="offWork1showA9() == true">
+																<button tabindex="13" class="show-popup-offwork1 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div class="popup-offwork1 popup-area popup-panel popup-color">
+																	<table class = "table-popup">
+																		<tr>
+																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].timeAbbyakLeaveDisplay != ''">
+																				<!-- A9_1_1 -->
+																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<!-- A9_1_2 -->
+																				<td>(<span data-bind="text: offWork1A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].timeOffDisplay != ''">
+																				<!-- A9_2_1 -->
+																				<td>#{i18n.getText('KDL045_58')}</td>
+																				<!-- A9_2_2 -->
+																				<td>(<span data-bind="text: offWork1A9[0].timeOffDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].excessPaidHolidayDisplay != ''">
+																				<!-- A9_3_1 -->
+																				<td>#{i18n.getText('KDL045_59')}</td>
+																				<!-- A9_3_2 -->
+																				<td>(<span data-bind="text: offWork1A9[0].excessPaidHolidayDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].childNursingLeaveDisplay != ''">
+																				<!-- A9_4_1 -->
+																				<td>#{i18n.getText('KDL045_60')}</td>
+																				<!-- A9_4_2 -->
+																				<td>(<span data-bind="text: offWork1A9[0].childNursingLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork1A9.length>0 &amp;&amp; offWork1A9[0].nursingCareLeaveDisplay != ''">
+																				<!-- A9_5_1 -->
+																				<td>#{i18n.getText('KDL045_61')}</td>
+																				<!-- A9_5_2 -->
+																				<td>(<span data-bind="text: offWork1A9[0].nursingCareLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<!-- A9_6 -->
+																			<com:ko-if bind="offWork1showA9_6 == true">
+																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
+																			</com:ko-if>
+																		</tr>
+																		<com:ko bind="offWork1A9" tag="foreach">
+																			<tr>
+																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																					<!-- A9_6_1 -->
+																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<!-- A9_6_2 -->
+																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																				</com:ko-if>
+																			</tr>
+																		</com:ko>
+																	</table>
+																</div>
+																</com:ko-if>
+															</div>
 														</td>
 													</tr>
 													<tr>
 														<!-- A8_5_3 -->
 														<td class ="color-grid">#{i18n.getText('KDL045_53')}</td>
 														<!-- A8_6_3 -->
-														<td> 8:30 ~ 9:00</td>
+														<td> <span data-bind="text: atWork2"></span></td>
 														<!-- A8_7_3 -->
 														<td> 
-															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+															<div class="size-a87"><span data-bind="text: atWork2A87() "></span></div>
+															<div>
+																<com:ko-if bind="atWork2showA9() == true">
+																<button tabindex="14" class="show-popup-atwork2 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div class="popup-atwork2 popup-area popup-panel popup-color">
+																	<table class = "table-popup">
+																		<tr>
+																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].timeAbbyakLeaveDisplay != ''">
+																				<!-- A9_1_1 -->
+																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<!-- A9_1_2 -->
+																				<td>(<span data-bind="text: atWork2A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].timeOffDisplay != ''">
+																				<!-- A9_2_1 -->
+																				<td>#{i18n.getText('KDL045_58')}</td>
+																				<!-- A9_2_2 -->
+																				<td>(<span data-bind="text: atWork2A9[0].timeOffDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].excessPaidHolidayDisplay != ''">
+																				<!-- A9_3_1 -->
+																				<td>#{i18n.getText('KDL045_59')}</td>
+																				<!-- A9_3_2 -->
+																				<td>(<span data-bind="text: atWork2A9[0].excessPaidHolidayDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].childNursingLeaveDisplay != ''">
+																				<!-- A9_4_1 -->
+																				<td>#{i18n.getText('KDL045_60')}</td>
+																				<!-- A9_4_2 -->
+																				<td>(<span data-bind="text: atWork2A9[0].childNursingLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="atWork2A9.length>0 &amp;&amp; atWork2A9[0].nursingCareLeaveDisplay != ''">
+																				<!-- A9_5_1 -->
+																				<td>#{i18n.getText('KDL045_61')}</td>
+																				<!-- A9_5_2 -->
+																				<td>(<span data-bind="text: atWork2A9[0].nursingCareLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<!-- A9_6 -->
+																			<com:ko-if bind="atWork2showA9_6 == true">
+																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
+																			</com:ko-if>
+																		</tr>
+																		<com:ko bind="atWork2A9" tag="foreach">
+																			<tr>
+																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																					<!-- A9_6_1 -->
+																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<!-- A9_6_2 -->
+																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																				</com:ko-if>
+																			</tr>
+																		</com:ko>
+																	</table>
+																</div>
+																</com:ko-if>
+															</div>
 														</td>
 													</tr>
 													<tr>
 														<!-- A8_5_4 -->
 														<td class ="color-grid">#{i18n.getText('KDL045_54')}</td>
 														<!-- A8_6_4 -->
-														<td> 8:30 ~ 9:00</td>
+														<td> <span data-bind="text: offWork2"></span></td>
 														<!-- A8_7_4 -->
 														<td> 
-															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+															<div class="size-a87"><span data-bind="text: offWork2A87() "></span></div>
+															<div>
+																<com:ko-if bind="offWork2showA9() == true">
+																<button tabindex="15" class="show-popup-offwork2 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div class="popup-offwork2 popup-area popup-panel popup-color">
+																	<table class = "table-popup">
+																		<tr>
+																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].timeAbbyakLeaveDisplay != ''">
+																				<!-- A9_1_1 -->
+																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<!-- A9_1_2 -->
+																				<td>(<span data-bind="text: offWork2A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].timeOffDisplay != ''">
+																				<!-- A9_2_1 -->
+																				<td>#{i18n.getText('KDL045_58')}</td>
+																				<!-- A9_2_2 -->
+																				<td>(<span data-bind="text: offWork2A9[0].timeOffDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].excessPaidHolidayDisplay != ''">
+																				<!-- A9_3_1 -->
+																				<td>#{i18n.getText('KDL045_59')}</td>
+																				<!-- A9_3_2 -->
+																				<td>(<span data-bind="text: offWork2A9[0].excessPaidHolidayDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].childNursingLeaveDisplay != ''">
+																				<!-- A9_4_1 -->
+																				<td>#{i18n.getText('KDL045_60')}</td>
+																				<!-- A9_4_2 -->
+																				<td>(<span data-bind="text: offWork2A9[0].childNursingLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="offWork2A9.length>0 &amp;&amp; offWork2A9[0].nursingCareLeaveDisplay != ''">
+																				<!-- A9_5_1 -->
+																				<td>#{i18n.getText('KDL045_61')}</td>
+																				<!-- A9_5_2 -->
+																				<td>(<span data-bind="text: offWork2A9[0].nursingCareLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<!-- A9_6 -->
+																			<com:ko-if bind="offWork2showA9_6 == true">
+																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
+																			</com:ko-if>
+																		</tr>
+																		<com:ko bind="offWork2A9" tag="foreach">
+																			<tr>
+																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																					<!-- A9_6_1 -->
+																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<!-- A9_6_2 -->
+																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																				</com:ko-if>
+																			</tr>
+																		</com:ko>
+																	</table>
+																</div>
+																</com:ko-if>
+															</div>
 														</td>
 													</tr>
 													<tr>
 														<!-- A8_5_5 -->
 														<td class ="color-grid">#{i18n.getText('KDL045_55')}</td>
-														<!-- A8_6_5 -->
+														<!-- A8_6_5 --> <!-- A8_6_5_1 -->
 														<td>
-															<div class="size-a86"> 8:30 ~ 9:00</div><div> <button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'bottom center' }"><img src="icon15.png" /></button></div>
+															<div class="size-a86"> <span data-bind="text: privateTime"></span></div>
+															<com:ko-if bind="isDisableA8_6_5_1 == true">
+																<button tabindex="10" class="show-popup-privatetimea867"><i data-bind="ntsIcon: { no: 15, width: 25, height: 20 }"></i></button>
+																<div class="popup-privatetimea867 popup-area popup-panel popup-color">
+																	<com:ko bind="listPrivateTime" tag="foreach">
+																		<span data-bind="text: $data"></span><br />
+																	</com:ko>
+																</div>
+															</com:ko-if>
 														</td>
 														<!-- A8_7_5 -->
 														<td> 
-															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+															<div class="size-a87"><span data-bind="text: privateTimeA87() "></span></div>
+															<div>
+																<com:ko-if bind="privateTimeshowA9() == true">
+																<button tabindex="16" class="show-popup-privatetime button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div class="popup-privatetime popup-area popup-panel popup-color">
+																	<table class = "table-popup">
+																		<tr>
+																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp;  privateTimeA9[0].timeAbbyakLeaveDisplay != ''">
+																				<!-- A9_1_1 -->
+																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<!-- A9_1_2 -->
+																				<td>(<span data-bind="text: privateTimeA9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].timeOffDisplay != ''">
+																				<!-- A9_2_1 -->
+																				<td>#{i18n.getText('KDL045_58')}</td>
+																				<!-- A9_2_2 -->
+																				<td>(<span data-bind="text: privateTimeA9[0].timeOffDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].excessPaidHolidayDisplay != ''">
+																				<!-- A9_3_1 -->
+																				<td>#{i18n.getText('KDL045_59')}</td>
+																				<!-- A9_3_2 -->
+																				<td>(<span data-bind="text: privateTimeA9[0].excessPaidHolidayDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].childNursingLeaveDisplay != ''">
+																				<!-- A9_4_1 -->
+																				<td>#{i18n.getText('KDL045_60')}</td>
+																				<!-- A9_4_2 -->
+																				<td>(<span data-bind="text: privateTimeA9[0].childNursingLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="privateTimeA9.length>0 &amp;&amp; privateTimeA9[0].nursingCareLeaveDisplay != ''">
+																				<!-- A9_5_1 -->
+																				<td>#{i18n.getText('KDL045_61')}</td>
+																				<!-- A9_5_2 -->
+																				<td>(<span data-bind="text: privateTimeA9[0].nursingCareLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<!-- A9_6 -->
+																			<com:ko-if bind="privateTimeshowA9_6 == true">
+																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
+																			</com:ko-if>
+																		</tr>
+																		<com:ko bind="privateTimeA9" tag="foreach">
+																			<tr>
+																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																					<!-- A9_6_1 -->
+																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<!-- A9_6_2 -->
+																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																				</com:ko-if>
+																			</tr>
+																		</com:ko>	
+																	</table>
+																</div>
+																</com:ko-if>
+															</div>
 														</td>
 													</tr>
 													<tr>
 														<!-- A8_5_6 -->
 														<td class ="color-grid">#{i18n.getText('KDL045_56')}</td>
-														<!-- A8_6_6 -->
+														<!-- A8_6_6 --><!-- A8_6_6_1 -->
 														<td>
-															<div class="size-a86"> 8:30 ~ 9:00</div><div> <button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'bottom center' }"><img src="icon15.png" /></button></div>
+															<div class="size-a86"> <span data-bind="text: unionTime"></span></div>
+															<com:ko-if bind="isDisableA8_6_6_1 == true">
+																<button tabindex="11" class="show-popup-uniontimea867"><i data-bind="ntsIcon: { no: 15, width: 25, height: 20 }"></i></button>
+																<div class="popup-uniontimea867 popup-area popup-panel popup-color">
+																	<com:ko bind="listUnionTime" tag="foreach">
+																		<span data-bind="text: $data"></span><br />
+																	</com:ko>
+																</div>
+															</com:ko-if>
 														</td>
 														<!-- A8_7_6 -->
-														<td> 
-															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														<td > 
+															<div class="size-a87"><span data-bind="text: unionTimeA87() "></span></div>
+															<div>
+																<com:ko-if bind="unionTimeshowA9() == true">
+																<button tabindex="17" class="show-popup-uniontime button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div class="popup-uniontime popup-area popup-panel popup-color">
+																	<table class = "table-popup">
+																		<tr>
+																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp;  unionTimeA9[0].timeAbbyakLeaveDisplay != ''">
+																				<!-- A9_1_1 -->
+																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<!-- A9_1_2 -->
+																				<td>(<span data-bind="text: unionTimeA9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].timeOffDisplay != ''">
+																				<!-- A9_2_1 -->
+																				<td>#{i18n.getText('KDL045_58')}</td>
+																				<!-- A9_2_2 -->
+																				<td>(<span data-bind="text: unionTimeA9[0].timeOffDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].excessPaidHolidayDisplay != ''">
+																				<!-- A9_3_1 -->
+																				<td>#{i18n.getText('KDL045_59')}</td>
+																				<!-- A9_3_2 -->
+																				<td>(<span data-bind="text: unionTimeA9[0].excessPaidHolidayDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].childNursingLeaveDisplay != ''">
+																				<!-- A9_4_1 -->
+																				<td>#{i18n.getText('KDL045_60')}</td>
+																				<!-- A9_4_2 -->
+																				<td>(<span data-bind="text: unionTimeA9[0].childNursingLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<com:ko-if bind="unionTimeA9.length>0 &amp;&amp; unionTimeA9[0].nursingCareLeaveDisplay != ''">
+																				<!-- A9_5_1 -->
+																				<td>#{i18n.getText('KDL045_61')}</td>
+																				<!-- A9_5_2 -->
+																				<td>(<span data-bind="text: unionTimeA9[0].nursingCareLeaveDisplay "></span>)</td>
+																			</com:ko-if>
+																		</tr>
+																		<tr>
+																			<!-- A9_6 -->
+																			<com:ko-if bind="unionTimeshowA9_6 == true">
+																				<td colspan="2">#{i18n.getText('KDL045_62')}</td>
+																			</com:ko-if>
+																		</tr>
+																		<com:ko bind="unionTimeA9" tag="foreach">
+																			<tr>
+																				<com:ko-if bind="specialHolidayDisplay != '' ">
+																					<!-- A9_6_1 -->
+																					<td><span data-bind="text: textKDL045_63 "></span></td>
+																					<!-- A9_6_2 -->
+																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																				</com:ko-if>
+																			</tr>
+																		</com:ko>		
+																	</table>
+																</div>
+																</com:ko-if>
+															</div>
 														</td>
 													</tr>
 												</table>
@@ -308,31 +788,62 @@
 										</tr>
 									</table>
 								</div>
+								<com:ko-if bind="showLineA8_10 == true">
 								<div class ="block-right-2">
-									<table id="table5" width="260px">
+									<table id="table5" >
 										<tr>
+											<com:ko-if bind="showChildCare == true">
 											<td>
 												<!-- A8_11 -->
 												<div data-bind="ntsFormLabel: {}">
 													#{i18n.getText('KDL045_41')}</div>
 											</td>
+											</com:ko-if>
 										</tr>
 										<tr>
-												<!-- A8_12 --> <!-- A8_13 -->
-												<td class ="table-left-td ">
-													<div  style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
-													<div style="padding-left: 70px;" > 9:00 ~ 10:30 </div>
+											<com:ko-if bind="showChildCare == true">
+											<!-- A8_12 --> <!-- A8_13 -->
+											<td class ="table-left-td ">
+												<div  style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
+												<div style="padding-left: 70px;" > <span data-bind="text: childcareNo1"></span> </div>
+											</td>
+											</com:ko-if>
+										</tr>
+										<tr>
+											<com:ko-if bind="showChildCare == true">
+											<!-- A8_14 --> <!-- A8_15 -->
+											<td class ="table-left-td ">
+												<div style="float: left;"> #{i18n.getText('KDL045_19')}</div> 
+												<div style="padding-left: 70px;" > <span data-bind="text: childcareNo2"></span> </div>
+											</td>
+											</com:ko-if>
+										</tr>
+										<com:ko-if bind="showNursing == true">
+											<tr>
+												<td>
+													<!-- A8_16 -->
+													<div data-bind="ntsFormLabel: {}">
+														#{i18n.getText('KDL045_42')}</div>
 												</td>
 											</tr>
 											<tr>
-												<!-- A8_14 --> <!-- A8_15 -->
+												<!-- A8_17 --> <!-- A8_18 -->
 												<td class ="table-left-td ">
-													<div style="float: left;"> #{i18n.getText('KDL045_19')}</div> 
-													<div style="padding-left: 70px;" > 15:30 ~ 17:30 </div>
+													<div  style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
+													<div style="padding-left: 70px;" > <span data-bind="text: nursingNo1"></span> </div>
 												</td>
 											</tr>
+											<tr>
+												<!-- A8_19 --> <!-- A8_20 -->
+												<td class ="table-left-td ">
+													<div style="float: left;"> #{i18n.getText('KDL045_19')}</div> 
+													<div style="padding-left: 70px;" > <span data-bind="text: nursingNo2"></span> </div>
+												</td>
+											</tr>
+										</com:ko-if>
 									</table>
 								</div>
+								</com:ko-if>
 							</div> 
 						</div>
 				<!-- <div id="content">
@@ -357,8 +868,13 @@
 				</div> -->
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="0" class="x-large proceed" >#{i18n.getText('KDL045_43')}</button>
-				<button tabindex="0" data-bind="click: closeDialog">#{i18n.getText('KDL045_44')}</button>
+				<com:ko-if bind="canModified == true">
+					<button  tabindex="18" class="x-large proceed" data-bind="click: buttonDecision" >#{i18n.getText('KDL045_43')}</button>
+					<button tabindex="19" data-bind="click: closeDialog">#{i18n.getText('KDL045_44')}</button>
+				</com:ko-if>
+				<com:ko-if bind="canModified == false">
+					<button id ="closeDialog-2" tabindex="20" data-bind="click: closeDialog">#{i18n.getText('KDL045_45')}</button>
+				</com:ko-if>
 			</div>
 		</ui:define> 
 	</ui:composition>

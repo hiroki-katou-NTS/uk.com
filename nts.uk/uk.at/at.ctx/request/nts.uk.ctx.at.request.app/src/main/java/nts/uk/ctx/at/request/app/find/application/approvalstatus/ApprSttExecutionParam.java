@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 
 /**
@@ -21,4 +22,6 @@ public class ApprSttExecutionParam {
 	private String endDate;
 	private List<DisplayWorkplace> wkpInfoLst;
 	private InitDisplayOfApprovalStatus initDisplayOfApprovalStatus;
+	private List<String> employmentCDLst;
+	private ApprSttComfirmSet apprSttComfirmSet;
 }

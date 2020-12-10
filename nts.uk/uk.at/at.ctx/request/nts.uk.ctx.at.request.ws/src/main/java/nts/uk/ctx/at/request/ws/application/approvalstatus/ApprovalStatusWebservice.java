@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttMailDest
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSendMailInfoDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSendMailInfoParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineSetDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
@@ -125,6 +126,12 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("getApprovalStatusActivation")
 	public ApprSttSpecDeadlineDto getApprovalStatusActivation(Integer selectClosureId){
 		return finder.getApprovalStatusActivation(selectClosureId);
+	}
+	
+	@POST
+	@Path("changeClosure/{selectClosureId}")
+	public ApprSttSpecDeadlineSetDto changeClosure(@PathParam("selectClosureId") Integer selectClosureId){
+		return finder.changeClosure(selectClosureId);
 	}
 	
 	@POST

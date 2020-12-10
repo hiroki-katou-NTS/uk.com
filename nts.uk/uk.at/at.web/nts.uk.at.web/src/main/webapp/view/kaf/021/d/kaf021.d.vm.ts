@@ -353,12 +353,11 @@ module nts.uk.at.kaf021.d {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
-                if (vm.isApprovedByApprover(data.approvalStatus) && vm.isApprovedByConfirmer(data.confirmStatus)) {
+                if (!vm.isEnableApproval(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
                     cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
                 }
 
-                if ((vm.isApprovedByApprover(data.approvalStatus) && vm.isApprovedByConfirmer(data.confirmStatus)) ||
-                    (vm.isDenyByApprover(data.approvalStatus) && vm.isDenyByConfirmer(data.confirmStatus))) {
+                if (!vm.isEnableDeny(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
                     cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
                 }
 
@@ -541,24 +540,58 @@ module nts.uk.at.kaf021.d {
             return true;
         }
 
-        // ※8
-        isApprovedByApprover(approvalStatus: common.ApprovalStatusEnum) {
-            return approvalStatus == common.ApprovalStatusEnum.APPROVED;
+        // ※13
+        isEnableApproval(approvalStatus: common.ApprovalStatusEnum, confirmStatus: common.ConfirmationStatusEnum,
+            canApprove: boolean, canConfirm: boolean) {
+            if (canApprove && !canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            if (!canApprove && canConfirm) {
+                if (confirmStatus == common.ConfirmationStatusEnum.CONFIRMED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            if (canApprove && canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        // ※9
-        isDenyByApprover(approvalStatus: common.ApprovalStatusEnum) {
-            return approvalStatus == common.ApprovalStatusEnum.DENY;
-        }
-
-        // ※10
-        isApprovedByConfirmer(confirmStatus: common.ConfirmationStatusEnum) {
-            return confirmStatus == common.ConfirmationStatusEnum.CONFIRMED;
-        }
-
-        // ※11
-        isDenyByConfirmer(confirmStatus: common.ConfirmationStatusEnum) {
-            return confirmStatus == common.ConfirmationStatusEnum.DENY;
+        // ※14
+        isEnableDeny(approvalStatus: common.ApprovalStatusEnum, confirmStatus: common.ConfirmationStatusEnum,
+            canApprove: boolean, canConfirm: boolean) {
+            if (canApprove && !canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.UNAPPROVED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (!canApprove && canConfirm) {
+                if (confirmStatus == common.ConfirmationStatusEnum.UNCONFIRMED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (canApprove && canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.UNAPPROVED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
         }
     }
 

@@ -6,20 +6,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
-import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppAbsenceStartInfoDto {
@@ -51,7 +51,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 休暇残数情報
 	 */
-	public RemainVacationInfo remainVacationInfo;
+	public RemainVacationInfoDto remainVacationInfo;
 	
 	/**
 	 * 就業時間帯表示フラグ
@@ -100,7 +100,7 @@ public class AppAbsenceStartInfoDto {
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.hdAppSet = HolidayApplicationSettingDto.fromDomain(absenceStartInfoOutput.getHdAppSet());
 		result.displayReason = absenceStartInfoOutput.getDisplayReason() == null ? null : DisplayReasonDto.fromDomain(absenceStartInfoOutput.getDisplayReason());
-		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();
+		result.remainVacationInfo = RemainVacationInfoDto.fromDomain(absenceStartInfoOutput.getRemainVacationInfo());
 		result.workHoursDisp = absenceStartInfoOutput.isWorkHoursDisp();
 		result.workTypeLst = CollectionUtil.isEmpty(absenceStartInfoOutput.getWorkTypeLst()) ? Collections.emptyList() : absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
 		result.workTimeLst = absenceStartInfoOutput.getWorkTimeLst().stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList());
@@ -118,8 +118,8 @@ public class AppAbsenceStartInfoDto {
 				appDispInfoStartupOutput.toDomain(), 
 				vacationApplicationReflect.toDomain(companyId),
 				hdAppSet.toDomain(companyId), 
-				displayReason.toDomain(), 
-				remainVacationInfo, 
+				displayReason == null ? null : displayReason.toDomain(), 
+				remainVacationInfo.toDomain(), 
 				workHoursDisp, 
 				CollectionUtil.isEmpty(workTypeLst) ? Collections.emptyList() : workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				CollectionUtil.isEmpty(workTimeLst) ? Collections.emptyList() : workTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 

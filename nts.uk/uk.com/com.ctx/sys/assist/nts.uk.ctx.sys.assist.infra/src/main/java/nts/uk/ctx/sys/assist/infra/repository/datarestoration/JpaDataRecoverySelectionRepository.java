@@ -14,13 +14,13 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoverySelectionRepository
 @Stateless
 public class JpaDataRecoverySelectionRepository extends JpaRepository implements DataRecoverySelectionRepository {
 
-	private final String SELECT_FILE_RECOVERY_SELECTION_SAVE = "SELECT r.patternCode, r.saveName, m.suppleExplanation, r.saveStartDatetime, r.saveForm, "
+	private static final String SELECT_FILE_RECOVERY_SELECTION_SAVE = "SELECT r.patternCode, r.saveName, m.suppleExplanation, r.saveStartDatetime, r.saveForm, "
 			+ "r.targetNumberPeople, r.saveFileName, r.fileId,  r.storeProcessingId FROM SspmtResultOfSaving  r "
 			+ "INNER JOIN SspmtManualSetOfDataSave m on r.storeProcessingId = m.storeProcessingId "
 			+ "where r.cid = :companyId and r.saveStartDatetime >= :startDate and r.saveStartDatetime <= :endDate and "
 			+ "r.deletedFiles = 0 AND r.fileId IS NOT NULL AND r.saveStatus = 0";
 
-	private final String SELECT_FILE_RECOVERY_SELECTION_DELETE = "SELECT r.delCode, r.delName, m.supplementExplanation, r.startDateTimeDel, r.delType, "
+	private static final String SELECT_FILE_RECOVERY_SELECTION_DELETE = "SELECT r.delCode, r.delName, m.supplementExplanation, r.startDateTimeDel, r.delType, "
 			+ "r.numberEmployees, r.fileName, r.fileId, r.sspdtResultDeletionPK.delId FROM SspdtResultDeletion  r "
 			+ "INNER JOIN SspdtManualSetDeletion m on r.sspdtResultDeletionPK.delId = m.sspdtManualSetDeletionPK.delId "
 			+ "where r.companyID = :companyId and r.startDateTimeDel >= :startDate and r.startDateTimeDel <= :endDate and "

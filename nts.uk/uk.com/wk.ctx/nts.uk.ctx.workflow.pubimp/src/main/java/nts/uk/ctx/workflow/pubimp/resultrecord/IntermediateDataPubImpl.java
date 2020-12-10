@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.pubimp.resultrecord;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -25,6 +27,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
@@ -67,10 +71,15 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationMonthExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalFormExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -657,5 +666,119 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	@Override
 	public List<String> findEmpRequest610(String approverID, DatePeriod period, Integer rootType) {
 		return appRootInstanceRepository.findEmpLstByRq610(approverID, period, EnumAdaptor.valueOf(rootType, RecordRootType.class));
+	}
+
+	@Override
+	public List<ApprovalRootStateExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType) {
+		String companyID = AppContexts.user().companyId();
+		List<ApprovalRootState> approvalRootStateLst = new ArrayList<>();
+		RecordRootType recordRootType = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		// 対象者と期間から承認ルート中間データを取得する
+		List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+				employeeIDLst, 
+				period, 
+				recordRootType);
+		// INPUT．対象者社員IDの先頭から最後へループ
+		for(AppRootInstancePeriod appRootInstancePeriod : appRootInstancePeriodLst) {
+			List<GeneralDate> dateLst = period.datesBetween();
+			// INPUT．期間の開始日から終了日へループ
+			for(GeneralDate dateLoop : dateLst) {
+				// 対象日の承認ルート中間データを取得する
+				AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(dateLoop, appRootInstancePeriod.getAppRootInstanceLst());
+				if(appRootInstance==null) {
+					continue;
+				}
+				// 対象日の就業実績確認状態を取得する
+				AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, appRootInstancePeriod.getEmployeeID(), dateLoop, recordRootType);
+				// 中間データから承認ルートインスタンスに変換する
+				ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+				approvalRootStateLst.add(approvalRootState);
+			}
+		}
+		return approvalRootStateLst.stream().map(root -> new ApprovalRootStateExport(
+					root.getRootStateID(),
+					root.getRootType().value,
+					root.getApprovalRecordDate(),
+					root.getEmployeeID(),
+					root.getListApprovalPhaseState()
+					.stream()
+					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+					.map(x -> {
+						return new ApprovalPhaseStateExport(
+								x.getPhaseOrder(),
+								EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+								EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+								x.getListApprovalFrame()
+								.stream()
+								.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+								.map(y -> {
+									return new ApprovalFrameExport(
+											y.getFrameOrder(), 
+											y.getLstApproverInfo().stream().map(z -> { 
+												return new ApproverStateExport(
+														z.getApproverID(), 
+														EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+														z.getAgentID(),
+														"", 
+														"",
+														"", 
+														"",
+														z.getApprovalDate(),
+														z.getApprovalReason(),
+														z.getApproverInListOrder());
+											}).collect(Collectors.toList()), 
+											y.getConfirmAtr().value,
+											y.getAppDate());
+								}).collect(Collectors.toList()));
+					}).collect(Collectors.toList())
+				)).collect(Collectors.toList());
+	}
+
+	@Override
+	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
+		String companyID = AppContexts.user().employeeId();
+		// ドメインモデル「就業実績確認状態」を取得する
+		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
+		// ドメインモデル「中間データ」を取得する
+		AppRootInstance appRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, appRootConfirm.getRecordDate(), 
+				RecordRootType.CONFIRM_WORK_BY_MONTH).get();
+		// 中間データから承認ルートインスタンスに変換する
+		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+		return new ApprovalRootStateExport(
+					approvalRootState.getRootStateID(),
+					approvalRootState.getRootType().value,
+					approvalRootState.getApprovalRecordDate(),
+					approvalRootState.getEmployeeID(),
+					approvalRootState.getListApprovalPhaseState()
+					.stream()
+					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+					.map(x -> {
+						return new ApprovalPhaseStateExport(
+								x.getPhaseOrder(),
+								EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+								EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+								x.getListApprovalFrame()
+								.stream()
+								.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+								.map(y -> {
+									return new ApprovalFrameExport(
+											y.getFrameOrder(), 
+											y.getLstApproverInfo().stream().map(z -> { 
+												return new ApproverStateExport(
+														z.getApproverID(), 
+														EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+														z.getAgentID(),
+														"", 
+														"",
+														"", 
+														"",
+														z.getApprovalDate(),
+														z.getApprovalReason(),
+														z.getApproverInListOrder());
+											}).collect(Collectors.toList()), 
+											y.getConfirmAtr().value,
+											y.getAppDate());
+								}).collect(Collectors.toList()));
+					}).collect(Collectors.toList()));
 	}
 }

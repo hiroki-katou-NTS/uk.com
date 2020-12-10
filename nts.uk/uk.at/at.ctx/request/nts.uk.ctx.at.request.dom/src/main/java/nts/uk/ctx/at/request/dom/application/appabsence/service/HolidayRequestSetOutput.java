@@ -19,11 +19,6 @@ public class HolidayRequestSetOutput {
 	 */
 	private HolidayApplicationSetting hdAppSet;
 	
-//	/**
-//	 * 申請理由表示
-//	 */
-//	private List<DisplayReason> displayReasonLst;
-	
 	/**
 	 * 休暇申請の反映
 	 */

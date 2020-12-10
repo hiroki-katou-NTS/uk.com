@@ -21,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -63,6 +65,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -73,6 +77,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -709,8 +714,28 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return;
 		}
 		// 法定区分をチェックする
-		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
-		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeApp.isOneDay()) {
+				return workTypeApp.getDailyWork().getOneDay()==WorkTypeClassification.HolidayWork;
+			}
+			// 午前と午後
+			else {
+				return workTypeApp.getDailyWork().getMorning()==WorkTypeClassification.HolidayWork || 
+						workTypeApp.getDailyWork().getAfternoon()==WorkTypeClassification.HolidayWork;
+			}
+		}).findFirst().orElse(null);
+		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeActual.isOneDay()) {
+				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.Holiday;
+			}
+			// 午前と午後
+			else {
+				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.Holiday || 
+						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.Holiday;
+			}
+		}).findFirst().orElse(null);
 		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
 			return;
 		}
@@ -733,6 +758,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// メッセージを表示する(Msg_1648)を表示する
 		throw new BusinessException("Msg_1648", date.toString(), msgParam);
+	}
+	
+	@Override
+	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
+			, TimeDigestiveUnit superHolidayUnit, TimeDigestiveUnit substituteHoliday
+			, TimeDigestiveUnit annualLeaveUnit, TimeDigestiveUnit childNursingUnit
+			, TimeDigestiveUnit nursingUnit, TimeDigestiveUnit pendingUnit) {
+		// to do // KAF006: -PhuongDV domain fix pending
+		//時間代休 = 0 AND 60H超休 = 0 AND 時間年休 = 0 AND 子の看護時間 = 0 AND 介護時間 = 0 AND 時間特別休暇 = 0
+		if (timeDigestApplication.getChildTime().minute() == 0
+				&& timeDigestApplication.getNursingTime().minute() == 0
+				&& timeDigestApplication.getOvertime60H().minute() == 0
+				&& timeDigestApplication.getTimeAnualLeave().minute() == 0
+				&& timeDigestApplication.getTimeOff().minute() == 0
+				&& timeDigestApplication.getTimeSpecialVacation().minute() == 0) {
+			throw new BusinessException("Msg_511");
+		}
+		
+		// -PhuongDV- --Continue
+		return;
 	}
 	
 	private WorkingConditionService.RequireM1 createRequireM1() {

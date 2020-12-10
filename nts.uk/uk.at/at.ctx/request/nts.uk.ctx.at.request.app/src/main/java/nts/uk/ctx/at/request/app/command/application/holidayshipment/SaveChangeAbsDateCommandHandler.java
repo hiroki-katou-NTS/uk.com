@@ -1,18 +1,46 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+<<<<<<< HEAD
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+=======
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.text.IdentifierUtil;
+>>>>>>> TeamD/Refactor5/KAF006_New
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+<<<<<<< HEAD
+=======
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+>>>>>>> TeamD/Refactor5/KAF006_New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+<<<<<<< HEAD
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+=======
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
+>>>>>>> TeamD/Refactor5/KAF006_New
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,7 +63,7 @@ public class SaveChangeAbsDateCommandHandler
 	@Inject
 	private OtherCommonAlgorithm ortherAl;
 	@Inject
-	private HdAppSetRepository repoHdAppSet;
+	private HolidayApplicationSettingRepository repoHdAppSet;
 	@Inject
 	private InterimRemainDataMngCheckRegister checkRegister;
 	@Inject
@@ -49,6 +77,7 @@ public class SaveChangeAbsDateCommandHandler
 //		AbsenceLeaveAppCmd absCmd = command.getAbsCmd();
 		String companyID = AppContexts.user().companyId();
 		String sID =   command.getAppCmd().getEmployeeID();
+<<<<<<< HEAD
 //		String oldAppID = absCmd.getAppID();
 //		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
 //		String appReason = errorCheckBeforeReg(command, absCmd);
@@ -78,6 +107,54 @@ public class SaveChangeAbsDateCommandHandler
 //			if (hdSet.getFurikyuName() != null) {
 //				appName = hdSet.getFurikyuName().v();
 //			}
+=======
+		String oldAppID = absCmd.getAppID();
+		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
+		String appReason = errorCheckBeforeReg(command, absCmd);
+		
+		//4.社員の当月の期間を算出する
+		PeriodCurrentMonth cls =  this.ortherAl.employeePeriodCurrentMonthCalculate(companyID, sID, GeneralDate.today());
+		
+		// アルゴリズム「詳細画面申請データを取得する」を実行する
+		Application oldApp =  getDetailApp(absCmd.getAppID());
+		//実績の取得
+		// AchievementOutput achievement = afinder.getAchievement(companyID, sID, oldApp.getAppDate());
+		
+		//ドメインモデル「休暇申請設定」を取得する
+		Optional<HolidayApplicationSetting> hdAppSetOpt =  repoHdAppSet.findSettingByCompanyId(companyID);
+		
+		boolean chkSubHoliday = false;
+		boolean chkPause = false;
+		boolean chkAnnual = false;
+		boolean chkFundingAnnual = false;
+		boolean chkSpecial = true;
+		boolean chkPublicHoliday = false;
+		boolean chkSuperBreak = true;
+		String appName = "";
+		if (hdAppSetOpt.isPresent()) {
+			HolidayApplicationSetting hdSet = hdAppSetOpt.get();
+//			chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;// 休暇申請設定．振休残数不足登録できる
+//			appName = hdSet.getHolidayApplicationTypeDisplayName()
+//					.stream()
+//					.filter(i -> i.getHolidayApplicationType() == HolidayAppType.REST_TIME)
+//					.findFirst()
+//					.map(i -> i.getDisplayName().v())
+//					.orElse("");
+		}
+		
+//		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,
+//				new DatePeriod(cls.getStartDate(), cls.getStartDate().addYears(1).addDays(-1)), false,
+//				command.getAbsCmd().getAppDate(),
+//				new DatePeriod(command.getAbsCmd().getAppDate(), command.getAbsCmd().getAppDate()), true,
+//				Collections.emptyList(), Collections.emptyList(),getAppData(command,sID,achievement,oldApp) , chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual, chkSpecial,
+//				chkPublicHoliday, chkSuperBreak);
+		
+		//登録時の残数チェック
+//		EarchInterimRemainCheck check =  checkRegister.checkRegister(inputParam);
+		
+//		if(check.isChkSubHoliday() ==true || check.isChkPause()==true || check.isChkAnnual() ==true || check.isChkFundingAnnual() ==true || check.isChkSpecial()==true){
+//			throw new BusinessException("Msg_1409", appName);
+>>>>>>> TeamD/Refactor5/KAF006_New
 //		}
 //		
 ////		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,

@@ -12,7 +12,7 @@ public interface TableListRepository {
 	List<TableList> getByOffsetAndNumber(String storeProcessingId, int offset, int number);
 	List<TableList> getByProcessingId(String storeProcessingId);
 	List<TableList> getBySystemTypeAndStorageId(int systemType,String StorageId);
-	List<TableList> getBySystemTypeAndRecoverId(int systemType,String recoverId);
+	List<TableList> getBySystemTypeAndRecoverId(int systemType,String storageId);
 	void getDataDynamic(TableList tableList, List<String> targetEmployeesSid, List<String> headerCsv3, FileGeneratorContext generatorContext);
 	List<String> getAllColumnName(String tableName);
 	boolean isPresent(TableList domain);

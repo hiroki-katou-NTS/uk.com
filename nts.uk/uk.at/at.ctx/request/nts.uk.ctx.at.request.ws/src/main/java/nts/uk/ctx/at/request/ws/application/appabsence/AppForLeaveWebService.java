@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckReg
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
@@ -41,21 +42,18 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getAllAppForLeave")
-	public AppAbsenceStartInfoDto getAppForLeaveAll(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getAppForLeaveAll(DisplayAllScreenParam param) {
 		return this.appForLeaveFinder.getAllDisplay(param);
 	}
 	@POST
 	@Path("findChangeAppdate")
-	public AppAbsenceStartInfoDto findChangeAppdate(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto findChangeAppdate(DisplayAllScreenParam param) {
 		return this.appForLeaveFinder.getChangeAppDate(
-				param.getStartAppDate(),
-				param.isDisplayHalfDayValue(),
-				param.getEmployeeID(),
-				param.getWorkTypeCode(),
-				param.getHolidayType(),
-				param.getAlldayHalfDay(),
-				param.getPrePostAtr(),
-				param.getAppAbsenceStartInfoDto());
+				param.getCompanyID(),
+				param.getStartInfo(),
+				param.getAppDates(),
+				param.getHolidayAppType(),
+				param.getAppWithDate());
 	}
 	@POST
 	@Path("getChangeAllDayHalfDay")

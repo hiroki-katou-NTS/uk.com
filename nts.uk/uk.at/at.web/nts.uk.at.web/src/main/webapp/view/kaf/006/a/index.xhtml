@@ -6,6 +6,7 @@
 <body>
     <ui:composition template="../../../../master/base.xhtml">
         <ui:define name="htmlHead">
+            <com:scriptfile set="IGNITE" />
             <com:ValidatorScript>
                 nts.uk.shr.com.time.TimeWithDayAttr
                 nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeOffPrimitive
@@ -30,6 +31,7 @@
             <com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
             <com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
             <com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/kaf006.shr.vm.js" />
             <com:scriptfile path="/view/kaf/006/a/kaf006.a.vm.js" />
             <com:scriptfile path="/view/kaf/006/shr/component1/kaf006.shr.component1.js" />
             <com:scriptfile path="/view/kaf/006/shr/component2/kaf006.shr.component2.js" />
@@ -113,7 +115,7 @@
                                                                             appType: appType,
                                                                             application: application,
                                                                             workTypeLst: workTypeLst,
-                                                                            selectedWorkType: selectedWorkType
+                                                                            selectedWorkTypeCD: selectedWorkTypeCD
                                                                         } }, 
                                                                         visible: selectedType() === 0 || selectedType() === 2 || selectedType() === 4 || selectedType() === 5">
                 </div>
@@ -123,7 +125,7 @@
                                                                             appType: appType,
                                                                             application: application,
                                                                             workTypeLst: workTypeLst,
-                                                                            selectedWorkType: selectedWorkType
+                                                                            selectedWorkTypeCD: selectedWorkTypeCD
                                                                         } }, 
                                                                         visible: selectedType() === 6">
                 </div>
@@ -133,7 +135,7 @@
                                                                             appType: appType,
                                                                             application: application,
                                                                             workTypeLst: workTypeLst,
-                                                                            selectedWorkType: selectedWorkType,
+                                                                            selectedWorkTypeCD: selectedWorkTypeCD,
                                                                             dateSpecHdRelationLst: dateSpecHdRelationLst,
                                                                             selectedDateSpec: selectedDateSpec
                                                                         } }, 
@@ -145,7 +147,7 @@
                                                                             appType: appType,
                                                                             application: application,
                                                                             workTypeLst: workTypeLst,
-                                                                            selectedWorkType: selectedWorkType
+                                                                            selectedWorkTypeCD: selectedWorkTypeCD
                                                                         } }, 
                                                                         visible: selectedType() === 1">
                 </div>
