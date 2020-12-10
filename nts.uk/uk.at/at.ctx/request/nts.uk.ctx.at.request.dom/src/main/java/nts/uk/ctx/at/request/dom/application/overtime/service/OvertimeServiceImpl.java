@@ -693,7 +693,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					overrideSet = OverrideSet.TIME_OUT_PRIORITY;
 				}
 			}
-			preActualColorCheck.checkStatus(
+			ApplicationTime archievement = preActualColorCheck.checkStatus(
 					companyId,
 					appOverTime.getEmployeeID(),
 					appOverTime.getAppDate().getApplicationDate(),
@@ -702,14 +702,33 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode()).orElse(null),
 					overrideSet, // 退勤時刻優先設定
 					Optional.empty(),
-					Collections.emptyList(), // check again
+					appOverTime.getBreakTimeOp()
+							   .orElse(Collections.emptyList())
+							   .stream()
+							   .map(x -> new DeductionTime(x.getTimeZone().getStartTime(), x.getTimeZone().getEndTime()))
+							   .collect(Collectors.toList()),
 					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)));
+			
+			// 「申請日に関係する情報」を作成する #113175
+			InfoWithDateApplication infoWithDateApplication = new InfoWithDateApplication();
+			infoWithDateApplication.setApplicationTime(Optional.ofNullable(archievement));
+			infoOptional = Optional.of(infoWithDateApplication);
 		}
 		// 取得した「残業申請」をチェックする
 		Optional<OvertimeApplicationSetting> resultOp = appOverTime.getApplicationTime().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME).findFirst();
 		if (resultOp.isPresent()) {
 			// ドメインモデル「休出枠」を取得する
-			
+			List<Integer> noList = new ArrayList<Integer>();
+			appOverTime.getApplicationTime().getApplicationTime().stream().forEach(item -> {
+				// 休出時間をチェックする
+				if (item.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
+					noList.add(item.getFrameNo().v());
+				}
+			});			
+			List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.getWorkdayoffFrameBy(
+					companyId,
+					noList);
+			displayInfoOverTime.setWorkdayoffFrames(workdayoffFrames);
 		}
 		// 事前申請・実績の時間超過をチェックする
 		OverStateOutput overStateOutput = infoNoBaseDate.getOverTimeAppSet()
@@ -723,7 +742,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 							.flatMap(y -> y.getApOptional())
 							.flatMap(z -> Optional.of(z.getApplicationTime())),
 					Optional.of(appOverTime.getApplicationTime()),
-					Optional.empty()); // QA #112633
+					infoOptional.flatMap(x -> x.getApplicationTime()));
 		
 		// OUTPUT「残業申請の表示情報」をセットして取得した「残業申請」と一緒に返す
 		displayInfoOverTime.setAppDispInfoStartup(appDispInfoStartupOutput);
