@@ -1283,8 +1283,13 @@ public class ScheduleCreatorExecutionTransaction {
 					workplaceHistItem, referenceBasicWork, dateInPeriod,
 					masterCache.getEmpGeneralInfo().getClassificationDto(),
 					masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
-			return new PrepareWorkOutput(new WorkInformation(basicWorkSetting.get().getWorktypeCode().v(),
-					basicWorkSetting.get().getWorkingCode().v()), null, null, Optional.empty());
+			String workType = null;
+			String workTime = null;
+			if(basicWorkSetting.isPresent()) {
+				workType = basicWorkSetting.get().getWorktypeCode() == null ? null : basicWorkSetting.get().getWorktypeCode().v();
+				workTime = basicWorkSetting.get().getWorkingCode() == null ? null : basicWorkSetting.get().getWorkingCode().v();
+			}
+			return new PrepareWorkOutput(new WorkInformation(workType, workTime), null, null, Optional.empty());
 		}
 
 		// 営業日カレンダーで勤務予定作成する TQP
