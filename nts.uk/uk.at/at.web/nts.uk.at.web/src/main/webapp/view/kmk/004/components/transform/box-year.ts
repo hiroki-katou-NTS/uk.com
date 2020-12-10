@@ -1,6 +1,6 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004.components {
+module nts.uk.at.view.kmk004.components.transform {
 
     interface Params {
         selectedYear: KnockoutObservable<number | null>;
