@@ -19,19 +19,19 @@ import nts.uk.shr.com.context.AppContexts;
 public class MonthlyWorkTimeSetEmpCommand extends MonthlyWorkTimeSetCommand {
 
 	@Getter
-	/** 社員ID */
-	private String employment;
+	/** 雇用コード */
+	private String employmentCode;
 
 	public MonthlyWorkTimeSetEmp toDomain() {
 
-		return MonthlyWorkTimeSetEmp.of(AppContexts.user().companyId(), new EmploymentCode(this.employment),
+		return MonthlyWorkTimeSetEmp.of(AppContexts.user().companyId(), new EmploymentCode(this.employmentCode),
 				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYm()),
 				this.getLaborTime().toDomain());
 	}
-	
+
 	public MonthlyWorkTimeSetEmpCommand(String empCd, int laborAttr, int ym, MonthlyLaborTimeCommand laborTime) {
 		super(laborAttr, ym, laborTime);
-		this.employment = empCd;
+		this.employmentCode = empCd;
 	}
 
 }

@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComInput;
@@ -40,6 +41,9 @@ import nts.uk.screen.at.app.query.kmk004.common.GetUsageUnitSetting;
 import nts.uk.screen.at.app.query.kmk004.common.GetYearMonthPeriod;
 import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
+import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployee;
+import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
+import nts.uk.screen.at.app.query.kmk004.common.YearlyListByWorkplace;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborComDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborEmpDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborShaDto;
@@ -128,6 +132,14 @@ public class Kmk004WebService extends WebService{
 	@Inject
 	private GetYearMonthPeriod getYearMonthPeriod;
 	
+	@Inject
+	private YearlyListByWorkplace yearlyListByWorkplace;
+	
+	@Inject
+	private YearListByEmployee yearListByEmployee;
+	
+	@Inject
+	private YearListByEmployment yearListByEmployment;
 	
 	//View S
 	@POST
@@ -207,6 +219,12 @@ public class Kmk004WebService extends WebService{
 		updateComBasicSettingCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("viewL/getListYear")
+	public List<YearDto> getComYearList() {
+		return displayYearListByCompany.get(LaborWorkTypeAttr.DEFOR_LABOR.value);
+	}
+	
 	// Workplace
 	@POST
 	@Path("viewP/wkp/basicSetting/{wkpId}")
@@ -230,6 +248,12 @@ public class Kmk004WebService extends WebService{
 	@Path("viewP/wkp/basicSetting/delete")
 	public void deleteWkpBasicSetting(WkpBasicSettingCommand command) {
 		removeWkpBasicSettingCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("viewM/getListYear/{wkpId}")
+	public List<YearDto> getWkpYearList(@PathParam("wkpId") String wkpId) {
+		return yearlyListByWorkplace.get(wkpId, LaborWorkTypeAttr.DEFOR_LABOR);
 	}
 	
 	// Employment
@@ -257,6 +281,12 @@ public class Kmk004WebService extends WebService{
 		removeEmpBasicSettingCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("viewN/getListYear/{empCode}")
+	public List<YearDto> getEmpYearList(@PathParam("empCode") String empCode) {
+		return yearListByEmployment.get(empCode, LaborWorkTypeAttr.DEFOR_LABOR);
+	}
+	
 	// Employee
 	@POST
 	@Path("viewP/sha/basicSetting/{empId}")
@@ -280,5 +310,11 @@ public class Kmk004WebService extends WebService{
 	@Path("viewP/sha/basicSetting/delete")
 	public void deleteShaBasicSetting(ShaBasicSettingCommand command) {
 		removeShaBasicSettingCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("viewO/getListYear/{empId}")
+	public List<YearDto> getemployeeYearList(@PathParam("empId") String empId) {
+		return yearListByEmployee.get(empId, LaborWorkTypeAttr.DEFOR_LABOR);
 	}
 }
