@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -33,8 +32,10 @@ public class DeleteFlexMonthlyWorkTimeSetWkpCommandHandler
 
 	@Inject
 	private CompanyRepository companyRepo;
+
 	@Inject
 	private DeleteMonthlyWorkTimeSetWkpCommandHandler deleteHandler;
+
 	@Inject
 	private WorkplaceList workplaceList;
 
