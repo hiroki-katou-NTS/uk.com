@@ -73,7 +73,7 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
     }
 
     @Override
-    public List<AlarmListExtractionInfoWorkplaceExport> process(DatePeriod period,
+    public List<AlarmListExtractionInfoWorkplaceExport> processAppApproval(DatePeriod period,
                                                                 List<String> fixedExtractCondIds,
                                                                 List<String> workplaceIds) {
         return convert(aggregateProcessAppApprovalService.process(period, fixedExtractCondIds, workplaceIds));
