@@ -22,6 +22,7 @@ public class SearchForEmployeesOfFlex {
 	private EmployeeList employeeList;
 
 	public List<EmployeeIdDto> searchForEmployeesOfFlex() {
+		// 社員リストを表示する
 		return this.employeeList.get(LaborWorkTypeAttr.FLEX);
 	}
 }
