@@ -65,8 +65,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
-					vm.recruitmentApp.workInformation.update(data.applicationForWorkingDay);
-					vm.absenceLeaveApp.workInformation.update(data.applicationForHoliday);
+					vm.recruitmentApp.bindDingScreenA(data.applicationForWorkingDay);
+					vm.absenceLeaveApp.bindDingScreenA(data.applicationForHoliday);
 					vm.comment.update(data.substituteHdWorkAppSet);
 				}).always(() => {
 					$('#functions-area').css({'display': ''});
