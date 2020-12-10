@@ -100,6 +100,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				if (_.isNil(vm.selectedWorkTypeCD()) || _.isEmpty(vm.workTypeLst())) {
 					return;
 				}
+
+
 			});
 
 			vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
@@ -396,6 +398,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		getAllAppForLeave: 'at/request/application/appforleave/getAllAppForLeave',
 		changeAppDate: 'at/request/application/appforleave/findChangeAppdate',
 		checkBeforeRegister: 'at/request/application/appforleave/checkBeforeRegister',
-		register: 'at/request/application/appforleave/insert'
+		register: 'at/request/application/appforleave/insert',
+		changeWorkType: 'at/request/application/appforleave/findChangeWorkType'
     }
 }
