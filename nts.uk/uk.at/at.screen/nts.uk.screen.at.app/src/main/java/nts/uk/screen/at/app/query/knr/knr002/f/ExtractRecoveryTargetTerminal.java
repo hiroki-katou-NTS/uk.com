@@ -27,8 +27,6 @@ public class ExtractRecoveryTargetTerminal {
 	//	就業情報端末Repository.[7] 取得する
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
-	@Inject
-	private WorkLocationRepository workPlaceRepository;
 
 	public List<ExtractRecoveryTargetTerminalDto> getRecoveryTargeTertList(int modelEmpInfoTer) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
@@ -36,30 +34,29 @@ public class ExtractRecoveryTargetTerminal {
 
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.get(contractCode,
 												ModelEmpInfoTer.valueOf(modelEmpInfoTer));
-		if (null == empInfoTerList)
+		if (empInfoTerList.size() == 0)
 			return null;
 		return empInfoTerList.stream().map(e -> {
 			ExtractRecoveryTargetTerminalDto dto = new ExtractRecoveryTargetTerminalDto();
-			String workLocationCD = e.getCreateStampInfo().getWorkLocationCd().isPresent()
-					? e.getCreateStampInfo().getWorkLocationCd().get().v()
-					: "";
-			Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
-			dto.setWorkLocationCode(workLocationCD);
+		
+			dto.setWorkLocationCode(e.getCreateStampInfo().getWorkLocationCd().isPresent()?
+									e.getCreateStampInfo().getWorkLocationCd().get().v() : "");
 			dto.setEmpInfoTerCode(e.getEmpInfoTerCode().v());
 			dto.setEmpInfoTerName(e.getEmpInfoTerName().v());
 			dto.setModelEmpInfoTer(e.getModelEmpInfoTer().value);
 			dto.setMacAddress(e.getMacAddress().v());
-			dto.setIpAddress(e.getIpAddress().isPresent() ? e.getIpAddress().get().getFullIpAddress() : "");
-			dto.setTerSerialNo(e.getTerSerialNo().isPresent() ? e.getTerSerialNo().get().v() : "");
-			dto.setWorkLocationName(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
+			dto.setIpAddress(e.getIpAddress().isPresent()?
+							 e.getIpAddress().get().getFullIpAddress() : "");
+			dto.setTerSerialNo(e.getTerSerialNo().isPresent() ?
+							   e.getTerSerialNo().get().v() : "");
 			dto.setIntervalTime(e.getIntervalTime().v());
 			dto.setOutSupport(e.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
 			dto.setReplace(e.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
-			dto.setGoOutReason(e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()
-					? e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value
-					: null);
+			dto.setGoOutReason(e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()?
+							   e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value : null);
 			dto.setEntranceExit(e.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
-			dto.setMemo(e.getEmpInfoTerMemo().isPresent() ? e.getEmpInfoTerMemo().get().v() : "");
+			dto.setMemo(e.getEmpInfoTerMemo().isPresent()?
+						e.getEmpInfoTerMemo().get().v() : "");
 			return dto;
 		}).collect(Collectors.toList());
 	}

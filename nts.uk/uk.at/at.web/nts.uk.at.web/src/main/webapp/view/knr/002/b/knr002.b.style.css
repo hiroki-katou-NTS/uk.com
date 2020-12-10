@@ -30,8 +30,6 @@
 .column-2 #logList {
 	width: 430px;
 	height: 353px;
-	border-left: 1px solid black;
-	border-bottom: 1px solid black;
 }
 .column-2 #multi-list>tbody {
 	pointer-events: none;
@@ -47,9 +45,6 @@
 
 .ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
     padding: 0 0px;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-
 }
 
 #B4_2 > div > div.seperator.datetimepairrange-component > span{

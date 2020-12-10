@@ -26,8 +26,6 @@ public class ExtractRecoveryTargetTerminalDto {
 	// シリアルＮｏ
 	private String terSerialNo;
 	// 設置場所
-	private String workLocationName;
-	// 設置場所
 	private String workLocationCode;
 	// 状態監視間隔
 	private int intervalTime;

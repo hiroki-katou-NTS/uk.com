@@ -12,5 +12,5 @@ module knr002.g.service {
     */
    export function getDestinationCopyList(empInfoTerCode: any): JQueryPromise<any> {
     return ajax(paths.getDestinationCopyList+ "/" + empInfoTerCode);
-}
+    }
 }

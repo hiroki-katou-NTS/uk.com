@@ -39,7 +39,7 @@ public class GetDestinationCopy {
 //		if (!empInfoTer.isPresent())
 //			return null;
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.getEmpInfoTerminalNotIncludeCode(contractCode, new EmpInfoTerminalCode(empInforTerCode));
-		if(null == empInfoTerList)
+		if(empInfoTerList.size() == 0)
 			return null;
 		return empInfoTerList.stream().map(e -> {
 			GetDestinationCopyDto dto = new GetDestinationCopyDto();
