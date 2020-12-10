@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
-	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+	import Application = nts.uk.at.view.kaf011.Application;
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	
@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	@bean()
 	export class Kaf011AViewModel extends Kaf000AViewModel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
-		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
+		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
 		
 		displayInforWhenStarting: any;
 		
@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
 		
-		recruitmentApp = new RecruitmentApp()
+		recruitmentApp = new RecruitmentApp();
 		absenceLeaveApp = new AbsenceLeaveApp();
 		
 		
@@ -57,8 +57,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			let empLst: Array<string> = [];
 			let	dateLst: Array<string> = [];
 			vm.$blockui("grayout");
-			vm.loadData(empLst, dateLst, vm.appType()).then((loadDataFlag: any) => {
-				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: loadDataFlag}).then((data: any) =>{
+			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
+				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting = data;
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
@@ -81,11 +81,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				vm.$blockui("hide"); 
 			});
 			
-			
+			vm.absenceLeaveApp.application.prePostAtr = vm.recruitmentApp.application.prePostAtr = vm.applicationCommon().prePostAtr;
+			vm.absenceLeaveApp.application.employeeIDLst = vm.recruitmentApp.application.employeeIDLst = vm.applicationCommon().employeeIDLst;
+			vm.absenceLeaveApp.application.opAppStandardReasonCD = vm.recruitmentApp.application.opAppStandardReasonCD = vm.applicationCommon().opAppStandardReasonCD;
+			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 		}
 		
 		mounted() {
-			const vm = this;
 		}
 		
 		register() {

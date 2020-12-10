@@ -1,5 +1,6 @@
 module nts.uk.at.view.kaf011 {
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import ApplicationCommon = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	
 	/** 振出申請 */
 	export class RecruitmentApp {
@@ -36,6 +37,7 @@ module nts.uk.at.view.kaf011 {
 				self.workingHours.push(self.workingHoursDispLay2);
 			}
 		}
+		
 	}
 	
 	/** 振休申請 */	
@@ -53,14 +55,10 @@ module nts.uk.at.view.kaf011 {
 		}
 	}
 	
-	export class Application{
-		prePostAtr: KnockoutObservable<number> = ko.observable(0);
-		employeeIDLst: string[] = [];
-		appType: number = AppType.COMPLEMENT_LEAVE_APPLICATION;
-		appDate: KnockoutObservable<string> = ko.observable('');
-		opAppStandardReasonCD: KnockoutObservable<number> = ko.observable(null);
-		opAppReason: KnockoutObservable<string> = ko.observable('');
-		constructor(){}
+	export class Application extends ApplicationCommon{
+		constructor(){
+			super(AppType.COMPLEMENT_LEAVE_APPLICATION);
+		}
 		update(param: any){
 			let self = this;
 			self.prePostAtr(param.prePostAtr);
@@ -98,13 +96,13 @@ module nts.uk.at.view.kaf011 {
 	export class TimeZone {
 		startTime: KnockoutObservable<number> = ko.observable();
 		endTime: KnockoutObservable<number> = ko.observable();
-		constructor(private collectWorkingHours: (() => void)){
+		constructor(collectWorkingHours: (() => void)){
 			let self = this;
 			self.startTime.subscribe(() => {
-				self.collectWorkingHours();
+				collectWorkingHours();
 			});
 			self.endTime.subscribe(() => {
-				self.collectWorkingHours();
+				collectWorkingHours();
 			});
 		}
 		update(param: any){

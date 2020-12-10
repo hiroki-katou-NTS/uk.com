@@ -6,12 +6,12 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">		
 			<div>
 				<com:ko-if bind="appCombinaSelected() != 2">
-					<div class="application holiday">
+					<div class="application work">
 						<div class="name">#{i18n.getText('KAF011_1')}</div>
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div data-bind="ntsDatePicker: {name: $i18n('KAF011_22'), value: date, required: true }"></div>
+							<div data-bind="ntsDatePicker: {name: $i18n('KAF011_22'), value: recruitmentApp.application.appDate, required: true }"></div>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
@@ -20,7 +20,7 @@
 		                                        options: workTypeListWorkingDay,
 		                                        optionsValue: 'workTypeCode',
 		                                        optionsText: 'name',
-		                                        value: workTypeSelected,
+		                                        value: recruitmentApp.workInformation.workType,
 		                                        columns: [{ prop: 'name', length: 20 }],
 		                                        required: required }">
 		                    </div>					
@@ -81,12 +81,12 @@
 					</div>
 				</com:ko-if>
 				<com:ko-if bind="appCombinaSelected() != 1">
-					<div class="application work">
+					<div class="application holiday">
 						<div class="name">#{i18n.getText('KAF011_2')}</div>
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div data-bind="ntsDatePicker: {name: $i18n('KAF011_22'), value: date, required: true }"></div>
+							<div data-bind="ntsDatePicker: {name: $i18n('KAF011_22'), value: recruitmentApp.application.appDate, required: true }"></div>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
@@ -95,7 +95,7 @@
 		                                        options: workTypeListHoliDay,
 		                                        optionsValue: 'workTypeCode',
 		                                        optionsText: 'name',
-		                                        value: workTypeSelected,
+		                                        value: absenceLeaveApp.workInformation.workType,
 		                                        columns: [{ prop: 'name', length: 20 }],
 		                                        required: required }">
 		                    </div>					
