@@ -133,6 +133,7 @@ module nts.uk.at.ksm008.b {
                         let lstEmployee = _.map(res.personInfos, function (item: any) {
                             return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                         });
+                        lstEmployee = _.orderBy(lstEmployee, ['code'],['asc']);
                         vm.employeeList(lstEmployee);
                         if (!reload) {
                             vm.selectedCode(lstEmployee[0].code);
@@ -169,6 +170,7 @@ module nts.uk.at.ksm008.b {
             });
 
             vm.simultanceList(lstSimultance);
+            vm.multiSelectedCode([]);
         }
 
         getListSimultaneous(code: string) {
@@ -180,12 +182,13 @@ module nts.uk.at.ksm008.b {
                    let lstEmployee = _.map(res, function (item: any) {
                        return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                    });
+                   vm.simultanceList(_.orderBy(lstEmployee, ['code'],['asc']));
                    vm.multiSelectedCode([]);
-                   vm.simultanceList(lstEmployee);
                    vm.enableDeleteBtn(true);
                    vm.screenMode = MODE.EDIT_MODE;
                } else {
                    vm.simultanceList([]);
+                   vm.multiSelectedCode([]);
                    vm.enableDeleteBtn(false);
                    vm.screenMode = MODE.NEW_MODE;
                };
@@ -235,6 +238,7 @@ module nts.uk.at.ksm008.b {
                     vm.$blockui("grayout");
                     vm.$ajax(API.delete, {sid : selectedEmployee.id}).done((res) => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.employeeList.valueHasMutated();
                             vm.selectedCode.valueHasMutated();
                         });
                     }).fail((err) => {
@@ -242,8 +246,6 @@ module nts.uk.at.ksm008.b {
                     }).always(() => {
                         vm.$blockui('clear');
                     });
-                    vm.employeeList.valueHasMutated();
-                    vm.selectedCode(selectedEmployee.code);
                 } else {
                     return;
                 }
@@ -259,6 +261,7 @@ module nts.uk.at.ksm008.b {
             let employeeSearchs: UnitModel[] = _.map(dataList, function (data: any) {
                 return {id: data.employeeId, code: data.employeeCode, name: data.employeeName, workplaceName: ''}
             });
+            employeeSearchs = _.orderBy(employeeSearchs, ['code'],['asc']);
             vm.employeeList(employeeSearchs);
             if (employeeSearchs && employeeSearchs.length > 0) {
                 vm.selectedCode(employeeSearchs[0].code);
@@ -404,15 +407,17 @@ module nts.uk.at.ksm008.b {
                 .then(() => vm.$window.storage('CDL009Output'))
                 .then((data) => {
                     if (data && data.length) {
+                        vm.$blockui("grayout");
                         vm.$ajax(API.getEmpInfo, { sids: data}).done((res) => {
                             let lstEmployee = _.map(res, function (item: any) {
                                 return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                             });
+                            lstEmployee = _.reject(lstEmployee, { code: vm.selectedCode() });
+                            vm.simultanceList(_.orderBy(_.unionBy(lstEmployee, listAfterClick, i => i.id), ['code'],['asc']));
                             vm.multiSelectedCode([]);
-                            vm.simultanceList(_.unionBy(lstEmployee, listAfterClick, i => i.id));
                         }).fail((err) => {
                             vm.$dialog.error(err);
-                        })
+                        }).always(() => { vm.$blockui('clear'); });
                     }
                 });
         }

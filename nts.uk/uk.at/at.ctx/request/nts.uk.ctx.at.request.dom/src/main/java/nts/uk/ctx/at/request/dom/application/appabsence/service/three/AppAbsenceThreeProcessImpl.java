@@ -13,8 +13,8 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -33,12 +33,12 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	private WorkTypeRepository workTypeRepository;
 	
 	@Inject
-	private HdAppSetRepository hdRep;
+	private HolidayApplicationSettingRepository hdRep;
 	
 	// 1.勤務種類を取得する（新規）
 	@Override
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID, HolidayAppType holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HdAppSet> hdAppSet) {
+			String employeeID, HolidayAppType holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HolidayApplicationSetting> hdAppSet) {
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		// アルゴリズム「勤務種類を取得する（詳細）」を実行する(thực hiện xử lý 「勤務種類を取得する（詳細）」)
 		List<WorkType> workTypes = new ArrayList<WorkType>();
@@ -46,7 +46,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 //		        .getWorkTypeDetails(appEmploymentWorkType.stream().findFirst().orElse(null), companyID, holidayType, alldayHalfDay,
 //		                displayHalfDayValue);
 		// ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示するをチェックする(kiểm tra domain ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示する): bên anh chình chưa làm.
-		if(hdAppSet.isPresent()&& hdAppSet.get().getDisplayUnselect().value == 1 ? true : false){//#102295
+		if(hdAppSet.isPresent()) { //&& hdAppSet.get().getDisplayUnselect().value == 1 ? true : false){//#102295
 			AbsenceWorkType absenceWorkType = new AbsenceWorkType("", "未選択");
 			absenceWorkTypes.add(absenceWorkType);
 		}

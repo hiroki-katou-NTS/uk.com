@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -61,8 +61,8 @@ public interface AbsenceServiceProcess {
 	 * @param subHdRemain 代休残数
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HdAppSet hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
-			boolean subHdManage, Double subVacaRemain, Double subHdRemain);
+	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+														boolean subHdManage, Double subVacaRemain, Double subHdRemain);
 	/**
 	 * @author hoatt
 	 * 振休代休優先チェック
@@ -187,7 +187,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, 
-			Integer alldayHalfDay, HdAppSet hdAppSet, boolean mode);
+			Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode);
 	
 	/**
 	 * 休暇残数チェック
