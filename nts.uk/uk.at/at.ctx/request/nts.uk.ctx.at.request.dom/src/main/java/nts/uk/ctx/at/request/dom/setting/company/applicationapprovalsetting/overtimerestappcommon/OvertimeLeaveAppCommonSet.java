@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ExcessStat
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
@@ -194,23 +195,16 @@ public class OvertimeLeaveAppCommonSet {
 					FrameNo frame = item.getFrame();
 					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime()
 																				  .stream()
-																				  .filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame)
+																				  .filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo().v() == frame.v())
 																				  .findFirst();
 					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get()
 																						  .getApplicationTime()
 																						  .stream()
-																						  .filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame)
+																						  .filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo().v() == frame.v())
 																						  .findFirst();
-					Integer time1 = 0;
-					Integer time2 = 0;
-					if (advanceResultOp.isPresent()) {
-						time1 = advanceResultOp.get().getApplicationTime().v();
-					}
-					if (subsequentOp.isPresent()) {
-						time2 = subsequentResultOp.get().getApplicationTime().v();
-					}
-					Boolean isGreater = time1 >= time2;
-					if (!isGreater) {
+					Integer	time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);					
+					Integer	time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);
+					if (isGreater(time1, time2)) {
 						item.setExcessState(ExcessState.EXCESS_ALARM);
 					}
 				}
@@ -219,18 +213,12 @@ public class OvertimeLeaveAppCommonSet {
 			outDateApplication.getExcessStateDetail().forEach(item -> {
 				if (item.getType() == AttendanceType_Update.BREAKTIME) {
 					FrameNo frame = item.getFrame();
-					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo() == frame).findFirst();
-					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo() == frame).findFirst();
-					Integer time1 = 0;
-					Integer time2 = 0;
-					if (advanceResultOp.isPresent()) {
-						time1 = advanceResultOp.get().getApplicationTime().v();
-					}
-					if (subsequentResultOp.isPresent()) {
-						time2 = subsequentResultOp.get().getApplicationTime().v();
-					}
-					Boolean isGreater = time1 >= time2;
-					if (!isGreater) {
+					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo().v() == frame.v()).findFirst();
+					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo().v() == frame.v()).findFirst();
+					Integer	time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);
+					Integer	time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);
+					
+					if (isGreater(time1, time2)) {
 						item.setExcessState(ExcessState.EXCESS_ALARM);
 					}
 				}
@@ -239,47 +227,26 @@ public class OvertimeLeaveAppCommonSet {
 			outDateApplication.getExcessStateMidnight().forEach(item -> {
 				Optional<HolidayMidNightTime> advanceResultOp = advance.getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
 				Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get().getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
-				Integer time1 = 0;
-				Integer time2 = 0;
-				if (advanceResultOp.isPresent()) {
-					time1 = advanceResultOp.get().getAttendanceTime().v();
-				}
-				if (subsequentResultOp.isPresent()) {
-					time2 = subsequentResultOp.get().getAttendanceTime().v();
-				}
-				Boolean isGreater = time1 >= time2;
-				if (!isGreater) {
+				Integer time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
+				Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
+				if (isGreater(time1, time2)) {
 					item.setExcessState(ExcessState.EXCESS_ALARM);
 				}
 			});
 			// 残業深夜の超過状態をチェックする
 			Optional<OverTimeShiftNight> overTimeShiftNightAdvance = advance.getOverTimeShiftNight();
 			Optional<OverTimeShiftNight> overTimeShiftNightAchive = subsequentOp.get().getOverTimeShiftNight();
-			Integer time1 = 0;
-			Integer time2 = 0;
-			if (overTimeShiftNightAdvance.isPresent()) {
-				time1 = overTimeShiftNightAdvance.get().getMidNightOutSide().v();
-			}
-			if (overTimeShiftNightAchive.isPresent()) {
-				time2 = overTimeShiftNightAchive.get().getMidNightOutSide().v();
-			}
-			Boolean isGreater = time1 >= time2;
-			if (!isGreater) {
+			Integer time1 = overTimeShiftNightAdvance.flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(null);
+			Integer time2 = overTimeShiftNightAchive.flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(null);
+			if (isGreater(time1, time2)) {
 				outDateApplication.setOverTimeLate(ExcessState.EXCESS_ALARM);
 			}
 			// ﾌﾚｯｸｽの超過状態をチェックする
 			Optional<AttendanceTimeOfExistMinus> attendanceTimeOfExistMinusAdvance = advance.getFlexOverTime();
 			Optional<AttendanceTimeOfExistMinus> attendanceTimeOfExistMinusAchive = subsequentOp.get().getFlexOverTime();
-			time1 = 0;
-			time2 = 0;
-			if (attendanceTimeOfExistMinusAdvance.isPresent()) {
-				time1 = attendanceTimeOfExistMinusAdvance.get().v();
-			}
-			if (attendanceTimeOfExistMinusAchive.isPresent()) {
-				time2 = attendanceTimeOfExistMinusAchive.get().v();
-			}
-			isGreater = time1 >= time2;
-			if (!isGreater) {
+			time1 = attendanceTimeOfExistMinusAdvance.map(x -> x.v()).orElse(null);
+			time2 = attendanceTimeOfExistMinusAchive.map(x -> x.v()).orElse(null);
+			if (isGreater(time1, time2)) {
 				outDateApplication.setOverTimeLate(ExcessState.EXCESS_ALARM);
 			}
 			
@@ -287,6 +254,16 @@ public class OvertimeLeaveAppCommonSet {
 		
 		
 		return output;
+	}
+	
+	public Boolean isGreater(Integer time1, Integer time2) {
+		if (time1 == null ) time1 = 0;
+		if (time2 == null ) time2 = 0;
+		if (time1 >= time2) {
+			return true;
+		}
+		
+		return false;
 	}
 	/**
 	 * Refactor5 実績の超過状態をチェックする
@@ -366,18 +343,11 @@ public class OvertimeLeaveAppCommonSet {
 			outDateApplication.getExcessStateDetail().forEach(item -> {
 				if (item.getType() == AttendanceType_Update.NORMALOVERTIME) {
 					FrameNo frame = item.getFrame();
-					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame).findFirst();
-					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo() == frame).findFirst();
-					Integer time1 = 0;
-					Integer time2 = 0;
-					if (advanceResultOp.isPresent()) {
-						time1 = advanceResultOp.get().getApplicationTime().v();
-					}
-					if (subsequentOp.isPresent()) {
-						time2 = subsequentResultOp.get().getApplicationTime().v();
-					}
-					Boolean isGreater = time1 >= time2;
-					if (!isGreater) {
+					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo().v() == frame.v()).findFirst();
+					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME && x.getFrameNo().v() == frame.v()).findFirst();
+					Integer time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);
+					Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);				
+					if (isGreater(time1, time2)) {
 						item.setExcessState(ExcessState.EXCESS_ALARM);
 					}
 				}
@@ -386,18 +356,11 @@ public class OvertimeLeaveAppCommonSet {
 			outDateApplication.getExcessStateDetail().forEach(item -> {
 				if (item.getType() == AttendanceType_Update.BREAKTIME) {
 					FrameNo frame = item.getFrame();
-					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo() == frame).findFirst();
-					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo() == frame).findFirst();
-					Integer time1 = 0;
-					Integer time2 = 0;
-					if (advanceResultOp.isPresent()) {
-						time1 = advanceResultOp.get().getApplicationTime().v();
-					}
-					if (subsequentResultOp.isPresent()) {
-						time2 = subsequentResultOp.get().getApplicationTime().v();
-					}
-					Boolean isGreater = time1 >= time2;
-					if (!isGreater) {
+					Optional<OvertimeApplicationSetting> advanceResultOp = advance.getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo().v() == frame.v()).findFirst();
+					Optional<OvertimeApplicationSetting> subsequentResultOp = subsequentOp.get().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME && x.getFrameNo().v() == frame.v()).findFirst();
+					Integer time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);
+					Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getApplicationTime())).map(x -> x.v()).orElse(null);				
+					if (isGreater(time1, time2)) {
 						item.setExcessState(ExcessState.EXCESS_ALARM);
 					}
 				}
@@ -406,47 +369,27 @@ public class OvertimeLeaveAppCommonSet {
 			outDateApplication.getExcessStateMidnight().forEach(item -> {
 				Optional<HolidayMidNightTime> advanceResultOp = advance.getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
 				Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get().getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
-				Integer time1 = 0;
-				Integer time2 = 0;
-				if (advanceResultOp.isPresent()) {
-					time1 = advanceResultOp.get().getAttendanceTime().v();
-				}
-				if (subsequentResultOp.isPresent()) {
-					time2 = subsequentResultOp.get().getAttendanceTime().v();
-				}
-				Boolean isGreater = time1 >= time2;
-				if (!isGreater) {
+				Integer time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
+				Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
+				if (isGreater(time1, time2)) {
 					item.setExcessState(ExcessState.EXCESS_ALARM);
 				}
 			});
 			// 残業深夜の超過状態をチェックする
 			Optional<OverTimeShiftNight> overTimeShiftNightAdvance = advance.getOverTimeShiftNight();
 			Optional<OverTimeShiftNight> overTimeShiftNightAchive = subsequentOp.get().getOverTimeShiftNight();
-			Integer time1 = 0;
-			Integer time2 = 0;
-			if (overTimeShiftNightAdvance.isPresent()) {
-				time1 = overTimeShiftNightAdvance.get().getMidNightOutSide().v();
-			}
-			if (overTimeShiftNightAchive.isPresent()) {
-				time2 = overTimeShiftNightAchive.get().getMidNightOutSide().v();
-			}
-			Boolean isGreater = time1 >= time2;
-			if (!isGreater) {
+			Integer time1 = overTimeShiftNightAdvance.flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(null);
+			Integer time2 = overTimeShiftNightAchive.flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(null);
+			
+			if (isGreater(time1, time2)) {
 				outDateApplication.setOverTimeLate(ExcessState.EXCESS_ALARM);
 			}
 			// ﾌﾚｯｸｽの超過状態をチェックする
 			Optional<AttendanceTimeOfExistMinus> attendanceTimeOfExistMinusAdvance = advance.getFlexOverTime();
 			Optional<AttendanceTimeOfExistMinus> attendanceTimeOfExistMinusAchive = subsequentOp.get().getFlexOverTime();
-			time1 = 0;
-			time2 = 0;
-			if (attendanceTimeOfExistMinusAdvance.isPresent()) {
-				time1 = attendanceTimeOfExistMinusAdvance.get().v();
-			}
-			if (attendanceTimeOfExistMinusAchive.isPresent()) {
-				time2 = attendanceTimeOfExistMinusAchive.get().v();
-			}
-			isGreater = time1 >= time2;
-			if (!isGreater) {
+			time1 = attendanceTimeOfExistMinusAdvance.map(x -> x.v()).orElse(null);
+			time2 = attendanceTimeOfExistMinusAchive.map(x -> x.v()).orElse(null);
+			if (isGreater(time1, time2)) {
 				outDateApplication.setOverTimeLate(ExcessState.EXCESS_ALARM);
 			}
 			

@@ -934,10 +934,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			}
 			command.prePostInitAtr = prePost;
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
-			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
-				let opPreAppContentDisplayLst = self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst;
-				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let preAppContentDisplay = opPreAppContentDisplayLst[0];
+			if (!_.isEmpty(self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst)) {
+				let opPreAppContentDispDtoLst = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
+				if (!_.isEmpty(opPreAppContentDispDtoLst)) {
+					let preAppContentDisplay = opPreAppContentDispDtoLst[0];
 					if (!_.isNil(preAppContentDisplay.apOptional)) {
 						let appOverTime = preAppContentDisplay.apOptional;
 						command.advanceApplicationTime = appOverTime.applicationTime;
@@ -2071,7 +2071,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 				}
-			item.backgroundColor(backgroundColor);
+			if (item.actualTime() > 0) {
+				item.backgroundColor(backgroundColor);
+				
+			}	
 
 			});
 			

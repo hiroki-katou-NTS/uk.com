@@ -1102,7 +1102,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 					
 				}
-			item.backgroundColor(backgroundColor);
+			if (item.actualTime() > 0) {
+				item.backgroundColor(backgroundColor);				
+			}	
 
 			});
 			
@@ -1253,7 +1255,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 					
 				}
-			item.backgroundColor(backgroundColor);
+			if (item.applicationTime() > 0) {
+				item.backgroundColor(backgroundColor);				
+			}
 
 			});
 			
@@ -2323,17 +2327,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.prePostInitAtr = prePost;
 
 			command.overtimeLeaveAppCommonSet = self.dataSource.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting;
-			if (self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst) {
-				let opPreAppContentDisplayLst = self.dataSource.appDispInfoStartup.opPreAppContentDisplayLst;
-				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let preAppContentDisplay = opPreAppContentDisplayLst[0];
+			if (!_.isEmpty(self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst)) {
+				let opPreAppContentDispDtoLst = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
+				if (!_.isEmpty(opPreAppContentDispDtoLst)) {
+					let preAppContentDisplay = opPreAppContentDispDtoLst[0];
 					if (!_.isNil(preAppContentDisplay.apOptional)) {
 						let appOverTime = preAppContentDisplay.apOptional;
 						command.advanceApplicationTime = appOverTime.applicationTime;
 					}
 				}
 			}
-			if (self.dataSource.infoWithDateApplicationOp) {
+			if (!_.isNil(self.dataSource.infoWithDateApplicationOp)) {
 				command.achieveApplicationTime = self.dataSource.infoWithDateApplicationOp.applicationTime;
 			}
 			let workContent = {} as WorkContent;
