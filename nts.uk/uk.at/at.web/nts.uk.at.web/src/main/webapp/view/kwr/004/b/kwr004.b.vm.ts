@@ -142,6 +142,9 @@ module nts.uk.at.view.kwr004.b {
       });
 
       row.independentCalcClassic.subscribe((value) => {
+        row.selectedTimeList([]);
+        row.selectionItem(null);
+        row.selectedTime = -1;
         row.dailyAttributes(value === 1 ? vm.dailyAloneAttributes() : vm.dailyCalcAttributes());
         vm.settingListItemsDetails.valueHasMutated();
       });
