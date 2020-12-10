@@ -137,10 +137,6 @@ module nts.uk.at.view.kwr003.b {
         vm.settingListItemsDetails.valueHasMutated();
       });
 
-      /* row.name.subscribe((value) => {
-        vm.settingListItemsDetails.valueHasMutated();
-      });
-      */
       row.setting.subscribe((value) => {
         row.selectedTimeList([]);
         row.selectionItem(null);
@@ -179,18 +175,32 @@ module nts.uk.at.view.kwr003.b {
 
       _.forEach(vm.settingListItemsDetails(), (item, index) => {
 
-        if (!item.isChecked()) return;
+        if (!item.isChecked()) {
+          if (!_.isEmpty(item.name()) && item.selectedTimeList().length === 0) {
+            $('#btnRow-' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
+            });
+          }
 
-        if (_.isEmpty(item.name())) {
-          $('#textName' + item.id).ntsError('set', {
-            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
-          });
-        }
+          if (_.isEmpty(item.name()) && item.selectedTimeList().length > 0) {
+            $('#textName' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
+            });
+          }
 
-        if (item.selectedTimeList().length === 0) {
-          $('#btnRow-' + item.id).ntsError('set', {
-            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
-          });
+        } else {
+
+          if (_.isEmpty(item.name())) {
+            $('#textName' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
+            });
+          }
+
+          if (item.selectedTimeList().length === 0) {
+            $('#btnRow-' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
+            });
+          }
         }
       });
 
@@ -439,7 +449,7 @@ module nts.uk.at.view.kwr003.b {
      * Close dialog
      */
     closeDialog() {
-      const vm = this;      
+      const vm = this;
       vm.$window.close(vm.attendance());
     }
 
@@ -598,7 +608,7 @@ module nts.uk.at.view.kwr003.b {
       vm.$blockui('show');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
-      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {        
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
             vm.diligenceProjects.push(new DiligenceProject(
