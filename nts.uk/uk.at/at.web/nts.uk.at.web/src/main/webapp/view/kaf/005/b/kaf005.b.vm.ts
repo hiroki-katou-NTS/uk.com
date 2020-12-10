@@ -2155,7 +2155,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						
 						// ・実績申請超過：「残業申請の表示情報．計算結果．事前申請・実績の超過状態」を確認する
 						if (!_.isNil(overStateOutput.achivementExcess)) {
-							let excessStateDetail = overStateOutput.advanceExcess.excessStateDetail;
+							let excessStateDetail = overStateOutput.achivementExcess.excessStateDetail;
 							if (!_.isEmpty(excessStateDetail)) {
 								let result = _.find(excessStateDetail, (i: ExcessStateDetail) => {
 									return i.frame == Number(item.frameNo) && i.type == AttendanceType.NORMALOVERTIME;

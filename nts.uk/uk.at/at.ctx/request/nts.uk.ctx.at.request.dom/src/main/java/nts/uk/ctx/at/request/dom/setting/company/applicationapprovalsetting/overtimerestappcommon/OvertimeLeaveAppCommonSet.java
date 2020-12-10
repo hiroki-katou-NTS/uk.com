@@ -236,8 +236,8 @@ public class OvertimeLeaveAppCommonSet {
 			// 残業深夜の超過状態をチェックする
 			Optional<OverTimeShiftNight> overTimeShiftNightAdvance = advance.getOverTimeShiftNight();
 			Optional<OverTimeShiftNight> overTimeShiftNightAchive = subsequentOp.get().getOverTimeShiftNight();
-			Integer time1 = overTimeShiftNightAdvance.flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(null);
-			Integer time2 = overTimeShiftNightAchive.flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(null);
+			Integer time1 = overTimeShiftNightAdvance.flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(null);
+			Integer time2 = overTimeShiftNightAchive.flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(null);
 			if (isGreater(time1, time2)) {
 				outDateApplication.setOverTimeLate(ExcessState.EXCESS_ALARM);
 			}
@@ -259,7 +259,7 @@ public class OvertimeLeaveAppCommonSet {
 	public Boolean isGreater(Integer time1, Integer time2) {
 		if (time1 == null ) time1 = 0;
 		if (time2 == null ) time2 = 0;
-		if (time1 >= time2) {
+		if (time1 < time2) {
 			return true;
 		}
 		
