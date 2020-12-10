@@ -46,7 +46,11 @@ public class KfnmtAssignDayStart extends UkJpaEntity implements Serializable {
         return this.pk;
     }
 
-    @OneToOne(mappedBy = "kfnmtAssignDayStart", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumns({
+            @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+            @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
+            @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
     public KfnmtWkpCheckCondition checkCondition;
 
     public StartDate toDomain() {
