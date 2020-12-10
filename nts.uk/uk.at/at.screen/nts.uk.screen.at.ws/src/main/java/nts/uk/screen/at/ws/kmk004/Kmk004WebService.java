@@ -41,6 +41,8 @@ import nts.uk.screen.at.app.query.kmk004.common.GetUsageUnitSetting;
 import nts.uk.screen.at.app.query.kmk004.common.GetYearMonthPeriod;
 import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
+import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployee;
+import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
 import nts.uk.screen.at.app.query.kmk004.common.YearlyListByWorkplace;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborComDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborEmpDto;
@@ -132,6 +134,12 @@ public class Kmk004WebService extends WebService{
 	
 	@Inject
 	private YearlyListByWorkplace yearlyListByWorkplace;
+	
+	@Inject
+	private YearListByEmployee yearListByEmployee;
+	
+	@Inject
+	private YearListByEmployment yearListByEmployment;
 	
 	//View S
 	@POST
@@ -253,6 +261,12 @@ public class Kmk004WebService extends WebService{
 		removeEmpBasicSettingCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("viewN/getListYear/{empCode}")
+	public List<YearDto> getEmpYearList(@PathParam("empCode") String empCode) {
+		return yearListByEmployment.get(empCode, LaborWorkTypeAttr.DEFOR_LABOR);
+	}
+	
 	// Employee
 	@POST
 	@Path("viewP/sha/basicSetting/{empId}")
@@ -278,7 +292,9 @@ public class Kmk004WebService extends WebService{
 		removeShaBasicSettingCommandHandler.handle(command);
 	}
 	
-	
-	
-	
+	@POST
+	@Path("viewO/getListYear/{empId}")
+	public List<YearDto> getemployeeYearList(@PathParam("empId") String empId) {
+		return yearListByEmployee.get(empId, LaborWorkTypeAttr.DEFOR_LABOR);
+	}
 }
