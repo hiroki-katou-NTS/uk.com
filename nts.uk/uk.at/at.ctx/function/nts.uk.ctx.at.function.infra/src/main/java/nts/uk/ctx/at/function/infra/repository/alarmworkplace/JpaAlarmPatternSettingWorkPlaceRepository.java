@@ -44,21 +44,12 @@ public class JpaAlarmPatternSettingWorkPlaceRepository extends JpaRepository imp
     @Override
     public void update(AlarmPatternSettingWorkPlace domain) {
         KfnmtALstWkpPtn newEntity = KfnmtALstWkpPtn.toEntity(domain);
-        KfnmtALstWkpPtn updateEntity = this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtALstWkpPtn.class)
-            .setParameter("companyId", domain.getCompanyID())
-            .setParameter("alarmPatternCode", domain.getAlarmPatternCD().v()).getSingle().get();
+        KfnmtALstWkpPtn updateEntity = this.queryProxy().find(new KfnmtALstWkpPtnPk(domain.getCompanyID(), domain.getAlarmPatternCD().v()),KfnmtALstWkpPtn.class ).orElse(null);
+        if (updateEntity != null){
+            updateEntity.fromEntity(newEntity);
+            this.commandProxy().update(updateEntity);
+        }
 
-        this.commandProxy().remove(KfnmtALstWkpPtn.class,updateEntity.pk);
-        this.getEntityManager().flush();
-
-        this.commandProxy().insert(newEntity);
-
-//        updateEntity.fromEntity(newEntity);
-//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.size());
-//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.get(0).checkConItems.size());
-//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.get(0).pk.alarmPatternCD);
-//        System.out.println(" this.checkConList:  "+ updateEntity.checkConList.get(0).pk.category);
-//        this.commandProxy().update(updateEntity);
     }
 
     @Override

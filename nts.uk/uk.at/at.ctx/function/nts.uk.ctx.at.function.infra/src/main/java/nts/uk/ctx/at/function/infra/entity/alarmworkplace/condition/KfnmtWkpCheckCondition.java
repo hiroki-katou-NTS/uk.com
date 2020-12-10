@@ -56,53 +56,25 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     @JoinTable(name = "KFNMT_PTN_MAP_CAT")
     public List<KfnmtPtnMapCat> checkConItems;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignNumofMon kfnmtAssignNumofMon;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignMonthStart kfnmtAssignMonthStart;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignMonthEnd kfnmtAssignMonthEnd;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignDayEnd kfnmtAssignDayEnd;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignDayStart kfnmtAssignDayStart;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignDatelineStart kfnmtAssignDatelineStart;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false)})
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public KfnmtAssignDatelineEnd kfnmtAssignDatelineEnd;
 
     public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems, KfnmtAssignNumofMon assignNumofMon) {
@@ -141,11 +113,6 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
         this.pk = pk;
         this.contractCode = AppContexts.user().contractCode();
         this.checkConItems = checkConItems;
-        System.out.println("assignDayStart : "+assignDayStart);
-        System.out.println("assignDatelineStart : "+assignDatelineStart);
-        System.out.println("assignDatelineEnd : "+assignDatelineEnd);
-        System.out.println("assignDayEnd : "+assignDayEnd);
-
         this.kfnmtAssignDayStart = assignDayStart;
         this.kfnmtAssignDatelineStart = assignDatelineStart;
         this.kfnmtAssignDatelineEnd = assignDatelineEnd;
