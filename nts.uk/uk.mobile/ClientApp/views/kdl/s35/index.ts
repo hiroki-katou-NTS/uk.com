@@ -88,7 +88,7 @@ export class KdlS35Component extends Vue {
 
         if (Math.max(counted, 0) === 0 && item.checked) {
             vm.$modal
-                .warn({ messageId: 'Msg_1758' })
+                .warn({ messageId: 'Msg_1761' })
                 .then(() => {
                     item.checked = false;
                 });
@@ -215,17 +215,11 @@ export class KdlS35Component extends Vue {
             .post('at', servicesPath.associate, data)
             .then((result: { data: SubWorkSubHolidayLinkingMng[] }) => {
                 vm.$mask('hide');
-                // vm.setData(result.data);
                 vm.$close({ mngDisp: result.data });
             })
             .catch((error: any) => {
                 vm.showError(error);
             });
-    }
-
-    private setData(data: SubWorkSubHolidayLinkingMng[]) {
-        const vm = this;
-        vm.managementData.push(...data);
     }
 
     private checkNumberOfDays(): boolean {
