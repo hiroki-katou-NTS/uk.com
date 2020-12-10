@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.monthly.KrcmtWkpMonFxexItm;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -16,8 +17,26 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaFixedExtractionMonthlyItemsRepository extends JpaRepository implements FixedExtractionMonthlyItemsRepository {
 
+    private static final String SELECT;
+
+    private static final String FIND_BY_NOS;
+
+    static {
+        StringBuilder builderString = new StringBuilder();
+        builderString.append(" SELECT a FROM KrcmtWkpMonFxexItm a ");
+        SELECT = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.no in :nos ");
+        FIND_BY_NOS = builderString.toString();
+
+    }
+
     @Override
     public List<FixedExtractionMonthlyItems> getBy(List<FixedCheckMonthlyItemName> nos) {
-        return new ArrayList<>();
+        return this.queryProxy().query(FIND_BY_NOS, KrcmtWkpMonFxexItm.class)
+            .setParameter("nos", nos)
+            .getList(KrcmtWkpMonFxexItm::toDomain);
     }
 }
