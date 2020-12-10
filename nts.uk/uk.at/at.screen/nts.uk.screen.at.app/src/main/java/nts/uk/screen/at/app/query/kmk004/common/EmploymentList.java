@@ -52,9 +52,9 @@ public class EmploymentList {
 	 * @param laborWorkTypeAttr 勤務区分
 	 * @return
 	 */
-	public List<EmploymentIdDto> get(LaborWorkTypeAttr laborWorkTypeAttr) {
+	public List<EmploymentCodeDto> get(LaborWorkTypeAttr laborWorkTypeAttr) {
 		
-		List<EmploymentIdDto> resutl = new ArrayList<>();
+		List<EmploymentCodeDto> resutl = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		
 		//1 Call Ds 雇用別の設定状態を取得
@@ -69,7 +69,7 @@ public class EmploymentList {
 		List<String> employmentIds = GetSettingStatusEmployment.getSettingEmployment(require, cid, laborWorkTypeAttr);
 		
 		resutl = employmentIds.stream().map(m -> {
-			return new EmploymentIdDto(m); 
+			return new EmploymentCodeDto(m); 
 		}).collect(Collectors.toList());
 		
 		return resutl;

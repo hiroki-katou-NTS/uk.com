@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularL
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.メニュー別OCD（共通）.社員リストを表示する.社員リストを表示する
  * @author chungnt
  *
  */
