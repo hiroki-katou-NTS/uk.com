@@ -39,16 +39,16 @@ public class DisplayInitialFlexScreenByEmployment {
 
 		// 職場リストを表示する
 		// input： 勤務区分 ← 2：フレックス勤務
-		result.setEmploymentCds(this.employmentList.get(LaborWorkTypeAttr.FLEX));
-		if (!result.getEmploymentCds().isEmpty()) {
-
-			// 雇用を選択する（フレックス勤務）
-			// input：
-			// 雇用コード ← 雇用リストの先頭の雇用コード
-			// 勤務区分 ← 2：フレックス勤務
-			result.setSelectWorkPlaceFlex(this.selectEmploymentFlex
-					.selectEmploymentFlex(result.getEmploymentCds().get(0).employmentId, LaborWorkTypeAttr.FLEX));
-		}
+//		result.setEmploymentCds(this.employmentList.get(LaborWorkTypeAttr.FLEX));
+//		if (!result.getEmploymentCds().isEmpty()) {
+//
+//			// 雇用を選択する（フレックス勤務）
+//			// input：
+//			// 雇用コード ← 雇用リストの先頭の雇用コード
+//			// 勤務区分 ← 2：フレックス勤務
+//			result.setSelectWorkPlaceFlex(this.selectEmploymentFlex
+//					.selectEmploymentFlex(result.getEmploymentCds().get(0).employmentId, LaborWorkTypeAttr.FLEX));
+//		}
 
 		return result;
 	}
