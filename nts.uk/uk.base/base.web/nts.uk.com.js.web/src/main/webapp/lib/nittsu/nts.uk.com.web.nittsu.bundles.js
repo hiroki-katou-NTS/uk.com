@@ -11948,7 +11948,7 @@ var nts;
                             var isValid = void 0, message = void 0;
                             if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
                                 isValid = false;
-                                message = uk.resource.getMessage('MsgB_1', ["時間"]);
+                                message = uk.resource.getMessage('MsgB_1', [vtor.columnText || "時間"]);
                             }
                             else if (!_.isUndefined(value) && !_.isEmpty(value)) {
                                 if (vtor.actValid === internal.TIME) {
@@ -11971,6 +11971,13 @@ var nts;
                                     isValid = isNumber(value, vtor.max, vtor.min);
                                     message = "MESSAGE_DEFINE_NEED";
                                     formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
+                                }
+                                else if (vtor.actValid === internal.TEXT) {
+                                    var stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
+                                    var res = stringValidator.validate(value);
+                                    isValid = res.isValid;
+                                    formatValue = res.parsedValue;
+                                    message = res.errorMessage;
                                 }
                                 else {
                                     isValid = true;
@@ -12032,7 +12039,7 @@ var nts;
                      */
                     function mandate($grid, columnKey, innerIdx) {
                         var visibleColumns = helper.getVisibleColumnsOn($grid);
-                        var actValid, dataType, max, min, required;
+                        var actValid, dataType, max, min, required, columnText, primitiveValue;
                         _.forEach(visibleColumns, function (col) {
                             if (col.key === columnKey) {
                                 if (!col.dataType)
@@ -12052,6 +12059,8 @@ var nts;
                                 max = col.max;
                                 min = col.min;
                                 required = col.required;
+                                columnText = col.headerText;
+                                primitiveValue = col.primitiveValue;
                                 return false;
                             }
                         });
@@ -12060,7 +12069,9 @@ var nts;
                                 actValid: actValid,
                                 max: max,
                                 min: min,
-                                required: required
+                                required: required,
+                                columnText: columnText,
+                                primitiveValue: primitiveValue
                             };
                     }
                     validation.mandate = mandate;
