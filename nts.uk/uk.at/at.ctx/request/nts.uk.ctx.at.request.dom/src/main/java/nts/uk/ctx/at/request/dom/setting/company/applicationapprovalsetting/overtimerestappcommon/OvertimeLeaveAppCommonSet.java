@@ -127,31 +127,34 @@ public class OvertimeLeaveAppCommonSet {
 			//　申請時間の超過状態．申請時間．type = 残業時間
 			//		　申請時間の超過状態．申請時間．frameNO = INPUT．「事後の申請時間．申請時間．frameNO」←条件：type = 残業時間
 			//		　申請時間の超過状態．申請時間．超過状態 = 超過なし
-			Optional<OvertimeApplicationSetting> normalOverTime = subsequent.getApplicationTime()
+			List<OvertimeApplicationSetting> normalOverTime = subsequent.getApplicationTime()
 																			.stream()
 																			.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
-																			.findFirst();
-			if (normalOverTime.isPresent()) {
-				OvertimeApplicationSetting result = normalOverTime.get();
-				ExcessStateDetail exStateDetail = new ExcessStateDetail(
-						result.getFrameNo(),
-						result.getAttendanceType(),
-						ExcessState.NO_EXCESS);
-				excessStateDetail.add(exStateDetail);
-			}
+																			.collect(Collectors.toList());
+			
+			normalOverTime.stream()
+						  .forEach(x -> {
+							  OvertimeApplicationSetting result = x;
+								ExcessStateDetail exStateDetail = new ExcessStateDetail(
+										result.getFrameNo(),
+										result.getAttendanceType(),
+										ExcessState.NO_EXCESS);
+								excessStateDetail.add(exStateDetail);
+						  });
 			// 申請時間の超過状態．申請時間．frameNO = INPUT．「事後の申請時間．申請時間．frameNO」←条件：type = 休出時間
-			Optional<OvertimeApplicationSetting> breakTime = subsequent.getApplicationTime()
+			List<OvertimeApplicationSetting> breakTime = subsequent.getApplicationTime()
 																	   .stream()
 																	   .filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME)
-																	   .findFirst();
-			if (breakTime.isPresent()) {
-				OvertimeApplicationSetting result = breakTime.get();
-				ExcessStateDetail exStateDetail = new ExcessStateDetail(
-						result.getFrameNo(),
-						result.getAttendanceType(),
-						ExcessState.NO_EXCESS);
-				excessStateDetail.add(exStateDetail);
-			}
+																	   .collect(Collectors.toList());
+			breakTime.stream()
+					 .forEach(x -> {
+						 OvertimeApplicationSetting result = x;
+							ExcessStateDetail exStateDetail = new ExcessStateDetail(
+									result.getFrameNo(),
+									result.getAttendanceType(),
+									ExcessState.NO_EXCESS);
+							excessStateDetail.add(exStateDetail);
+					 });
 			if (subsequent.getOverTimeShiftNight().isPresent()) {
 				
 				OverTimeShiftNight overTimeShiftNight = subsequent.getOverTimeShiftNight().get();
