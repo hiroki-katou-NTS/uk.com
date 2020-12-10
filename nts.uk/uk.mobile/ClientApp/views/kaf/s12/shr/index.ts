@@ -7,6 +7,7 @@ export class DispInfoOfTimeLeaveRequest {
     public goingBackTime = {start: null, end: null};
     public swtOutClassification: number;
     public title: string;
+    public scheduleTime: number;
 
     constructor(iDispInfoOfTimeLeaveRequest: IDispInfoOfTimeLeaveRequest) {
         this.frame = iDispInfoOfTimeLeaveRequest.frame;
@@ -16,6 +17,7 @@ export class DispInfoOfTimeLeaveRequest {
         this.goingBackTime.end = iDispInfoOfTimeLeaveRequest.endTime;
         this.swtOutClassification = iDispInfoOfTimeLeaveRequest.swtOutClassification;
         this.title = iDispInfoOfTimeLeaveRequest.title;
+        this.scheduleTime = iDispInfoOfTimeLeaveRequest.scheduleTime;
     }
 }
 
@@ -43,6 +45,7 @@ export interface  IDispInfoOfTimeLeaveRequest {
     endTime: number;
     swtOutClassification: number;
     title: string;
+    scheduleTime: number;
 }
 
 export interface ICalculationResult {
