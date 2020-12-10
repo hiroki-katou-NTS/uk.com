@@ -174,22 +174,11 @@ module nts.uk.at.view.kwr003.b {
       $(".attendance-input").trigger("validate");
 
       _.forEach(vm.settingListItemsDetails(), (item, index) => {
-
-        if (!item.isChecked()) {
-          if (!_.isEmpty(item.name()) && item.selectedTimeList().length === 0) {
-            $('#btnRow-' + item.id).ntsError('set', {
-              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
-            });
-          }
-
-          if (_.isEmpty(item.name()) && item.selectedTimeList().length > 0) {
-            $('#textName' + item.id).ntsError('set', {
-              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
-            });
-          }
-
-        } else {
-
+        if (
+          (!item.isChecked() && !_.isEmpty(item.name()) && item.selectedTimeList().length === 0)
+          || (!item.isChecked() && _.isEmpty(item.name()) && item.selectedTimeList().length > 0)
+          || item.isChecked()
+        ) {
           if (_.isEmpty(item.name())) {
             $('#textName' + item.id).ntsError('set', {
               messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]

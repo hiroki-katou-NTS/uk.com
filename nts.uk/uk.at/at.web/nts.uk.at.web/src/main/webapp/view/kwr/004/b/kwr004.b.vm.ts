@@ -138,6 +138,7 @@ module nts.uk.at.view.kwr004.b {
         row: SettingForPrint = newRow;
 
       row.isChecked.subscribe((value: boolean) => {
+        nts.uk.ui.errors.clearAll();
         vm.settingListItemsDetails.valueHasMutated();
       });
 
@@ -172,21 +173,25 @@ module nts.uk.at.view.kwr004.b {
 
       $('.attendance-code-name').trigger('validate');
       _.forEach(vm.settingListItemsDetails(), (item, index) => {
+        if (
+          (!item.isChecked() && !_.isEmpty(item.name()) && item.selectedTimeList().length === 0)
+          || (!item.isChecked() && _.isEmpty(item.name()) && item.selectedTimeList().length > 0)
+          || item.isChecked()
+        ) {
+          if (_.isEmpty(item.name())) {
+            $('#textName' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
+            });
+          }
 
-        if (!item.isChecked()) return;
-
-        if (_.isEmpty(item.name())) {
-          $('#textName' + item.id).ntsError('set', {
-            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR004_62')]
-          });
-        }
-
-        if (item.selectedTimeList().length === 0) {
-          $('#btnRow-' + item.id).ntsError('set', {
-            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR004_63')]
-          });
+          if (item.selectedTimeList().length === 0) {
+            $('#btnRow-' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
+            });
+          }
         }
       });
+
       if (nts.uk.ui.errors.hasError()) return;
 
       //order before save to database
@@ -253,7 +258,6 @@ module nts.uk.at.view.kwr004.b {
       eightItemList = vm.sortSettingListItemsDetails(eightItemList, 8);
       if (!_.isNil(eightItemList)) {
         _.forEach(eightItemList, (x) => {
-          x.independentCalcClassic(2);
           vm.settingListItemsDetails.push(x);
         });
       }
@@ -627,7 +631,7 @@ module nts.uk.at.view.kwr004.b {
           vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
           vm.settingListItemsDetails()[index].selectionItem(findAttendanceName.attendanceItemName);
-          if( row.isChecked()) $('#textName' + row.id).focus();
+          if (row.isChecked()) $('#textName' + row.id).focus();
         } else {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
@@ -676,7 +680,7 @@ module nts.uk.at.view.kwr004.b {
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
             vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute.selected);
-            if( row.isChecked()) $('#textName' + row.id).focus();
+            if (row.isChecked()) $('#textName' + row.id).focus();
           }
         } else {
           vm.settingListItemsDetails()[index].name(null);

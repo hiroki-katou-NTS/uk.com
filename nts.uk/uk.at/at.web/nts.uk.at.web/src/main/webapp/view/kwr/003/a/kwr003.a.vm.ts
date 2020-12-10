@@ -112,9 +112,9 @@ module nts.uk.at.view.kwr003.a {
         showQuickSearchTab: true,
         showAdvancedSearchTab: true,
         showBaseDate: true,
-        showClosure: true,
+        showClosure: false,
         showAllClosure: true,
-        showPeriod: true,
+        showPeriod: false,
         periodFormatYM: false,
 
         /** Required parameter */
@@ -136,14 +136,13 @@ module nts.uk.at.view.kwr003.a {
         showSameWorkplaceAndChild: true,
 
         /** Advanced search properties */
-        showEmployment: true,
-        showDepartment: false,
-        showWorkplace: true,
-        showClassification: true,
-        showJobTitle: true,
-        showWorktype: true,
-        isMutipleCheck: true,
-
+        showEmployment: true,// 雇用条件
+        showDepartment: false,// 部門条件
+        showWorkplace: true,// 職場条件
+        showClassification: true,// 分類条件
+        showJobTitle: true,// 職位条件
+        showWorktype: true,// 勤種条件
+        isMutipleCheck: true, // 選択モード
         tabindex: - 1,
         /**
         * vm-defined function: Return data from CCG001
