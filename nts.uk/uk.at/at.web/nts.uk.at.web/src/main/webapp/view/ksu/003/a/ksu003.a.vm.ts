@@ -639,12 +639,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									_.inRange(timeChart.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 
 								lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
-								if (_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+								if (!_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
 									lstTime.push({
 										start: timeChartBrk.startTime,
 										end: timeChartBrk.endTime
 									})
 								}
+								if(_.isEmpty(lstTime)){
+										lstTime.push({
+											start: timeChartBrk.startTime,
+											end: timeChartBrk.endTime
+										})
+									}
 							}
 
 							if (self.dataScreen003A().targetInfor === 1) {
@@ -654,7 +660,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									(_.inRange(timeChartBrk.startTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 										_.inRange(timeChartBrk.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 									lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
-									if (_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
+									if (!_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
+										lstTime.push({
+											start: timeChartBrk.startTime,
+											end: timeChartBrk.endTime
+										})
+									}
+									
+									if(_.isEmpty(lstTime)){
 										lstTime.push({
 											start: timeChartBrk.startTime,
 											end: timeChartBrk.endTime
@@ -788,7 +801,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									_.inRange(timeChart.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 
 								lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
-								if (_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+								if (!_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
 									lstTime.push({
 										start: timeChartBrk.startTime,
 										end: timeChartBrk.endTime
@@ -803,7 +816,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									(_.inRange(timeChartBrk.startTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 										_.inRange(timeChartBrk.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 									lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
-									if (_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
+									if (!_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
 										lstTime.push({
 											start: timeChartBrk.startTime,
 											end: timeChartBrk.endTime
@@ -842,7 +855,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									_.inRange(timeChart.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 
 								lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
-								if (_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+								if (!_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
 									lstTime.push({
 										start: timeChartBrk.startTime,
 										end: timeChartBrk.endTime
@@ -857,7 +870,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									(_.inRange(timeChartBrk.startTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 										_.inRange(timeChartBrk.endTime, 0, Math.round(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 									lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
-									if (_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
+									if (!_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
 										lstTime.push({
 											start: timeChartBrk.startTime,
 											end: timeChartBrk.endTime
@@ -2047,7 +2060,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					limitStartMax = self.dataInitStartKsu003Dto().byDateDto.dispStart;
 				}
 			} else {
-				limitStartMin = Math.round((time[index].startTimeRange.startTime.time) / 5)
+				limitStartMin = Math.round((time[0].startTimeRange.startTime.time) / 5)
 			}
 
 			if (time[index].endTimeRange != null) {
