@@ -52,6 +52,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
@@ -77,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -218,19 +220,21 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		Boolean isC1 = false;
 		Boolean isC2 = false;
 		Boolean isC3 = false;
+		// INPUT．「雇用別申請承認設定」を確認する
 		if (appEmploymentSettingOp.isPresent()) {
 			AppEmploymentSet appEmploymentSetting = appEmploymentSettingOp.get();
-			isC1 = !appEmploymentSetting.getTargetWorkTypeByAppLst().isEmpty();
-			if (!isC1) {
-				isC2 = appEmploymentSetting.getTargetWorkTypeByAppLst().get(0).isDisplayWorkType();
-				isC3 = !appEmploymentSetting.getTargetWorkTypeByAppLst().get(0).getWorkTypeLst().isEmpty();
+			isC1 = !CollectionUtil.isEmpty(appEmploymentSetting.getTargetWorkTypeByAppLst());
+			Optional<TargetWorkTypeByApp> targetWorkTypeByAppOp = appEmploymentSetting.getTargetWorkTypeByAppLst().stream().filter(x -> x.getAppType() == ApplicationType.OVER_TIME_APPLICATION).findFirst();
+			if (isC1 && targetWorkTypeByAppOp.isPresent()) {
+				isC2 = targetWorkTypeByAppOp.get().isDisplayWorkType();
+				isC3 = !CollectionUtil.isEmpty(targetWorkTypeByAppOp.get().getWorkTypeLst());
 			}
 			// 「申請別対象勤務種類」をチェックする
-			if (isC1 && isC2 && isC3) {
+			if (isC1 && isC2 && isC3 && targetWorkTypeByAppOp.isPresent()) {
 				// ドメインモデル「勤務種類」を取得して返す
-				List<WorkType> listWorkType = workTypeRepository.findByCidAndWorkTypeCodes(AppContexts.user().companyId(), appEmploymentSetting.getTargetWorkTypeByAppLst().get(0).getWorkTypeLst());
-				if (!workTypes.isEmpty()) {
-					workTypes = listWorkType.stream().filter(x -> x.isDeprecated()).collect(Collectors.toList());
+				List<WorkType> listWorkType = workTypeRepository.findByCidAndWorkTypeCodes(AppContexts.user().companyId(), targetWorkTypeByAppOp.get().getWorkTypeLst());
+				if (!CollectionUtil.isEmpty(listWorkType)) {
+					workTypes = listWorkType.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).collect(Collectors.toList());
 				}
 			}
 			
@@ -242,7 +246,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 										  .collect(Collectors.toList());
 		}
 		// 取得した「勤務種類」をチェック
-		if (workTypes.isEmpty()) throw new BusinessException("Msg_1567");
+		if (CollectionUtil.isEmpty(workTypes)) throw new BusinessException("Msg_1567");
 		return workTypes;
 	}
 	
