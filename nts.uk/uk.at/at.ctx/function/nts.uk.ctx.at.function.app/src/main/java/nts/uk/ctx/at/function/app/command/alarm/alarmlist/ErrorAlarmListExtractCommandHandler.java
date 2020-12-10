@@ -80,10 +80,7 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 
 		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
 		// パラメータ．パターンコードから「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(comId,
-				command.getAlarmCode());
-		if (!alarmPatternSetting.isPresent())
-			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
+		
 
 		List<EmployeeSearchDto> listEmpId = command.getListEmployee();
 
@@ -94,7 +91,7 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		dataSetter.setData("extracting", false);
 
 		dataSetter.setData("empCount", counter.get());
-		//カテゴリ一覧
+		/*//カテゴリ一覧
 		List<Integer> listCategory = command.getListPeriodByCategory().stream().map(x -> x.getCategory().value)
 				.collect(Collectors.toList());
 		//チェック条件
@@ -104,9 +101,10 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		List<AlarmCheckConditionByCategory> eralCate = erAlByCateRepo.findByCategoryAndCode(comId, listCategory,
 				checkConList.stream().map(c -> c.getCheckConditionList()).flatMap(List::stream)
 						.collect(Collectors.toList()));
-		int max = listEmpId.size() * eralCate.size();
+		int max = listEmpId.size() * eralCate.size();*/
+		int max = listEmpId.size() * 12;
 		//
-		ExtractedAlarmDto dto = this.extractAlarmListService.extractAlarmV2(listEmpId,
+		/*ExtractedAlarmDto dto = this.extractAlarmListService.extractAlarmV2(listEmpId,
 					command.getListPeriodByCategory(),
 					eralCate,
 					checkConList,
@@ -118,7 +116,22 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 					() -> {
 						return shouldStop(context, asyncContext);
 					}
-				);
+				);*/
+		List<String> lstSid = command.getListEmployee().stream().map(x -> x.getId()).collect(Collectors.toList());
+		ExtractedAlarmDto dto = this.extractAlarmListService.extractResultAlarm(comId,
+				command.getAlarmCode(), 
+				"",
+				command.getListPeriodByCategory(),
+				lstSid,
+				"Z",
+				finished -> {
+					counter.set(counter.get() + finished);
+					int completed = calcCompletedEmp(listEmpId, counter, max, finished).intValue();
+					dataSetter.updateData("empCount", completed >= max ? max - 1 : completed);
+				}, 
+				() -> {
+					return shouldStop(context, asyncContext);
+				});
 		dataSetter.updateData("extracting", dto.isExtracting());
 		dataSetter.setData("dataWriting", true);
 //		try {

@@ -609,7 +609,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				
 				extractionCondition = command.getMasterCheckAlarmCheckCondition() == null ? null
 						: new MasterCheckAlarmCheckCondition(errorAlarmCheckId);
-				
+				List<MasterCheckFixedExtractCondition> lstMasterCheck = new ArrayList<>();
 				for(MasterCheckFixedExtractConditionDto fixedMasterCheckExtConDto : command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition()) {
 						fixedMasterCheckExtConDto.setErrorAlarmCheckId(errorAlarmCheckId);
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
@@ -617,9 +617,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								EnumAdaptor.valueOf(fixedMasterCheckExtConDto.getNo(), MasterCheckFixedCheckItem.class),
 								Optional.of(new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage())),
 								fixedMasterCheckExtConDto.isUseAtr()
-								);
-						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);
+								);						
+						lstMasterCheck.add(fixedMasterCheckExtCon);
 				}
+				fixedMasterCheckConditionRepo.persist(lstMasterCheck);
 				break;
 			default:
 				break;

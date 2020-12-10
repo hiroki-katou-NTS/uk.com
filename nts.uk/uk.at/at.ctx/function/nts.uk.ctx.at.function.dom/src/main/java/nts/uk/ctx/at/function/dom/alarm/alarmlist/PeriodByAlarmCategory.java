@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 @AllArgsConstructor
 public class PeriodByAlarmCategory {
 	
-	AlarmCategory category;
+	int category;
 	
 	String name;
 	

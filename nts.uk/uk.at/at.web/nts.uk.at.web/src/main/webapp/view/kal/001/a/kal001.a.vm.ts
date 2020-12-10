@@ -519,7 +519,8 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName; 
-            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){   
+            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS
+                && dto.category != CATEGORY.MASTER_CHECK){   
                 this.startDate = dto.dateValue().startDate;    
                 this.endDate = dto.dateValue().endDate;    
             }

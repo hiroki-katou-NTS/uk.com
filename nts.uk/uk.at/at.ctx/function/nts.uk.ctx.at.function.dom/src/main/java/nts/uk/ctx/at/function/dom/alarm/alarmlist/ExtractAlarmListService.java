@@ -14,14 +14,27 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeBasicInfoFnImport;
+import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AlarmListResultDto;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExtractAlarmListService {
 
+	@Inject
+	private SyEmployeeFnAdapter empAdapter;
+	@Inject
+	private WorkplaceAdapter wplAdapter;
 	@Inject
 	private AggregationProcessService aggregationProcessService;
 	
@@ -129,6 +142,76 @@ public class ExtractAlarmListService {
 			// エラーメッセージ(#Msg_834)を表示する
 			throw new BusinessException("Msg_834");	
 		}
+		AlarmListResultDto alarmResult = aggregationProcessService.processAlarmListResult(cid, 
+				pattentCd,
+				pattentName,
+				lstCategoryPeriod,
+				lstSid,
+				runCode,
+				counter,
+				shouldStop);
+		result.setExtracting(alarmResult.isExtracting());
+		result.setNullData(true);
+		List<AlarmExtraValueWkReDto> lstExtractedAlarmData = new ArrayList<>();
+		//個人情報を取得
+		List<EmployeeBasicInfoFnImport> findBySIds = empAdapter.findBySIds(lstSid);
+		List<String> lstWpl = new ArrayList<>();
+		alarmResult.getLstAlarmResult().stream().forEach(x -> {
+			x.getLstResult().stream().forEach(y -> {
+				y.getLstResultDetail().stream().forEach(z -> {
+					if(z.getWpID().isPresent()) {
+						lstWpl.add(z.getWpID().get());
+					}
+				});
+			});
+		});
+		//職場情報を取得
+		List<WorkPlaceInforExport> getWorkplaceInforByWkpIds = wplAdapter.getWorkplaceInforByWkpIds(cid, lstWpl, GeneralDate.today());
+		if(alarmResult.getLstAlarmResult().isEmpty()) {
+			result.setNullData(false);
+		}
+		if(!alarmResult.getLstAlarmResult().isEmpty()) {
+			for (int a = 0; a < alarmResult.getLstAlarmResult().size(); a++) {
+				AlarmExtracResult x = alarmResult.getLstAlarmResult().get(a);
+				if(!x.getLstResult().isEmpty()) {
+					continue;
+				} 
+				for (int i = 0; i < x.getLstResult().size(); i++) {
+					ResultOfEachCondition y = x.getLstResult().get(i);
+					List<ExtractionResultDetail> lstResultDetail = y.getLstResultDetail();
+					for (int j = 0; j < lstResultDetail.size(); j++) {
+						ExtractionResultDetail z = lstResultDetail.get(j);
+						AlarmExtraValueWkReDto alarmValue = new AlarmExtraValueWkReDto();
+						EmployeeBasicInfoFnImport empInfo = findBySIds.stream().filter(e -> e.getEmployeeId().equals(z.getSID()))
+								.collect(Collectors.toList()).get(0);
+						
+						if(z.getWpID().isPresent()) {
+							List<WorkPlaceInforExport> lstWplInfo = getWorkplaceInforByWkpIds.stream().filter(d -> d.getWorkplaceId().equals(z.getWpID().get()))
+									.collect(Collectors.toList());
+							if(!lstWplInfo.isEmpty()) {
+								WorkPlaceInforExport wplInfo  = lstWplInfo.get(0);
+								alarmValue.setHierarchyCd(wplInfo.getHierarchyCode());
+								alarmValue.setWorkplaceID(wplInfo.getWorkplaceId());
+								alarmValue.setWorkplaceName(wplInfo.getWorkplaceName());
+							}
+						}
+						alarmValue.setAlarmItem(z.getAlarmName());
+						alarmValue.setAlarmValueDate(z.getPeriodDate().getStartDate().toString());
+						alarmValue.setComment(z.getComment().isPresent() ? z.getComment().get() : "");
+						alarmValue.setAlarmValueMessage(z.getAlarmContent());
+						alarmValue.setCategory(x.getCategory());
+						alarmValue.setCheckedValue(z.getCheckValue().isPresent() ? z.getCheckValue().get() : "");
+						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());
+						alarmValue.setEmployeeID(empInfo.getEmployeeId());
+						alarmValue.setEmployeeName(empInfo.getPName());
+						lstExtractedAlarmData.add(alarmValue);
+					}
+				}
+			}			
+		}
+		
+		lstExtractedAlarmData = lstExtractedAlarmData.stream().sorted((a,b) -> Integer.compare(a.getCategory(), b.getCategory()))
+				.collect(Collectors.toList());
 		return result;
 		
 	}

@@ -203,10 +203,10 @@ public class AggregationProcessService {
 	 * @param shouldStop
 	 * @return 
 	 */
-	public List<AlarmListResultDto> processAlarmListResult(String cid, String pattentCd, String pattentName,
+	public AlarmListResultDto processAlarmListResult(String cid, String pattentCd, String pattentName,
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop){
-		List<AlarmListResultDto> result = new ArrayList<>();
+		AlarmListResultDto result = new AlarmListResultDto();
 		//パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
 		Optional<AlarmPatternSetting> findByAlarmPatternCode = alPatternSettingRepo.findByAlarmPatternCode(cid, pattentCd);
 		if(!findByAlarmPatternCode.isPresent()) {
@@ -232,7 +232,7 @@ public class AggregationProcessService {
 			DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 			//期間条件を絞り込む TODO can xem lai voi truong hop 36
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
-					.filter(y -> y.getCategory() == x.getCategory())
+					.filter(y -> y.getCategory() == x.getCategory().value)
 					.collect(Collectors.toList());
 			if(!periodCheck.isEmpty()) {
 				datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),periodCheck.get(0).getEndDate());
@@ -318,6 +318,8 @@ public class AggregationProcessService {
 			
 		});
 		AlarmPatternExtractResult alarmResult = new AlarmPatternExtractResult(cid, runCode, pattentCd, pattentName, lstExtracResult);
+		result.setExtracting(true);
+		result.setLstAlarmResult(lstExtracResult);
 		//アラーム（トップページ）永続化の処理
 		this.createAlarmToppage(alarmResult, lstSid, lstValueDto, lstCategoryPeriod, pattentName);
 		return result;

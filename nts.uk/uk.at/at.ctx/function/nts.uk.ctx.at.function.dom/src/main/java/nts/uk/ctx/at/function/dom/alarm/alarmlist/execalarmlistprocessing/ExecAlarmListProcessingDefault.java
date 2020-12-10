@@ -158,7 +158,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate(), "yyyy/MM/dd");
 						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getEndDate(), "yyyy/MM/dd");
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
-								EnumAdaptor.valueOf(checkConditionTime.getCategory(),AlarmCategory.class), checkConditionTime.getCategoryName(), startDate,
+								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
 								endDate,checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.MONTHLY.value
@@ -169,7 +169,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 								.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6) + "/01", "yyyy/MM/dd").addMonths(1)
 								.addDays(-1);
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
-								EnumAdaptor.valueOf(checkConditionTime.getCategory(),AlarmCategory.class), checkConditionTime.getCategoryName(), startDate,
+								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
 								endDate,checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.AGREEMENT.value) {
@@ -179,7 +179,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 							GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getStartDate(),
 									"yyyy/MM/dd");
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
-									EnumAdaptor.valueOf(checkConditionTime.getCategory(),AlarmCategory.class), checkConditionTime.getCategoryName(), startDate,
+									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
 									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else if (checkConditionTime.getCategoryName().equals("36協定　年間")) {
@@ -192,7 +192,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 											"yyyy/MM/dd")
 									.addYears(1).addMonths(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
-									EnumAdaptor.valueOf(checkConditionTime.getCategory(),AlarmCategory.class), checkConditionTime.getCategoryName(), startDate,
+									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
 									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else {
@@ -202,7 +202,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01", "yyyy/MM/dd").addMonths(1)
 									.addDays(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
-									EnumAdaptor.valueOf(checkConditionTime.getCategory(),AlarmCategory.class), checkConditionTime.getCategoryName(), startDate,
+									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
 									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						}
