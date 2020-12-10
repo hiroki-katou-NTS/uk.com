@@ -49,7 +49,8 @@ module nts.uk.at.view.kmk004.b {
 								name: 'box-year',
 								params:{
 									selectedYear: selectedYear,
-									change: changeYear
+									change: changeYear,
+									type: type
 								}
 							}"></div>
 						</div>
@@ -85,6 +86,7 @@ module nts.uk.at.view.kmk004.b {
 		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+		public type: SIDEBAR_TYPE = 'Com_Workplace';
 
 		created(params: Params) {
 			const vm = this;

@@ -5,21 +5,23 @@ module nts.uk.at.view.kmk004.b {
     interface Params {
         selectedYear: KnockoutObservable<number | null>;
         change: KnockoutObservable<boolean>;
-        type: KnockoutObservable<string>
+        type: SIDEBAR_TYPE
     }
 
     const API = {
-        GET_YEARS_COM: 'screen/at/kmk004/viewB/com/getListYear'
+        GET_YEARS_COM: 'screen/at/kmk004/viewB/com/getListYear',
+        GET_YEARS_WORKPLACE: 'screen/at/kmk004/viewB/workPlace/getListYear',
+        GET_YEARS_EMPLOYMENT: 'screen/at/kmk004/viewB/employment/getListYear',
+        GET_YEARS_EMPLOYEE: 'screen/at/kmk004/viewB/employee/getListYear'
     };
-
     export type SIDEBAR_TYPE = null | 'Com_Company' | 'Com_Workplace' | 'Com_Employment' | 'Com_Person';
 
     const template = `
         <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
                 options: itemList,
-                optionsValue: 'value',
-                optionsText: 'value',
+                optionsValue: 'year',
+                optionsText: 'year',
                 multiple: false,
                 value: selectedYear,
                 rows: 5,
@@ -41,7 +43,7 @@ module nts.uk.at.view.kmk004.b {
         public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public change: KnockoutObservable<boolean> = ko.observable(true);
-        public type: KnockoutObservable<string> = ko.observable('Com_Company');
+        public type: SIDEBAR_TYPE;
 
         created(params: Params) {
             const vm = this;
@@ -52,55 +54,67 @@ module nts.uk.at.view.kmk004.b {
 
             vm.reloadData(0);
 
-            vm.change
-                .subscribe(() => {
-                    ko.unwrap(vm.itemList)[0].statusValue = '＊';
-                });
         }
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-            const faceData: IYear[] = [];
-            // const faceData: IYear[] = [];
 
-            if (ko.unwrap(vm.type) === 'Com_Company'){
-                vm.$ajax(API.GET_YEARS_COM + / '0')
-                .then((data: IWorkTime[]) => {
-                    if (data.length > 0) {
-                        const data1: IWorkTime[] = [];
-                        var check: boolean = true;
-
-                        if (ko.unwrap(vm.checkEmployee)) {
-                            check = false;
-                        }
-                        data.map(m => {
-                            const laborTime: ILaborTime = {
-                                legalLaborTime: m.laborTime.legalLaborTime,
-                                withinLaborTime: m.laborTime.weekAvgTime,
-                                weekAvgTime: m.laborTime.weekAvgTime
-                            };
-                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: laborTime };
-                            data1.push(s);
+            switch (vm.type) {
+                case 'Com_Company':
+                    vm.$ajax(API.GET_YEARS_COM + "/0")
+                        .then((data: any) => {
+                            _.forEach(data, ((value: any) => {
+                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                vm.itemList.push(y);
+                            }));
+                        })
+                        .then(() => {
+                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
                         });
-
-                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-                    }
-                });
-            }
-
-            if (faceData.length > 0) {
-                vm.itemList(_.orderBy(faceData, ['value'], ['desc']));
-                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].value);
-            } else {
-                vm.selectedYear(null);
+                    break
+                case 'Com_Workplace':
+                    vm.$ajax(API.GET_YEARS_WORKPLACE + "/0")
+                        .then((data: any) => {
+                            _.forEach(data, ((value: any) => {
+                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                vm.itemList.push(y);
+                            }));
+                        })
+                        .then(() => {
+                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                        });
+                    break
+                case 'Com_Employment':
+                    vm.$ajax(API.GET_YEARS_EMPLOYMENT + "/0")
+                        .then((data: any) => {
+                            _.forEach(data, ((value: any) => {
+                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                vm.itemList.push(y);
+                            }));
+                        })
+                        .then(() => {
+                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                        });
+                    break
+                case 'Com_Person':
+                    vm.$ajax(API.GET_YEARS_EMPLOYEE + "/0")
+                        .then((data: any) => {
+                            _.forEach(data, ((value: any) => {
+                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                vm.itemList.push(y);
+                            }));
+                        })
+                        .then(() => {
+                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                        });
+                    break
             }
         }
     }
 
     export interface IYear {
-        status: boolean;
         statusValue: string;
-        value: number;
+        year: number;
         nameYear: string;
     }
 

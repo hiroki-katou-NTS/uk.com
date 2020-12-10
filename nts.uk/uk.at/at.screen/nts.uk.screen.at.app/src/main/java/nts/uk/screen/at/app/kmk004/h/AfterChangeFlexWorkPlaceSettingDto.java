@@ -14,7 +14,7 @@ import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
  */
 @NoArgsConstructor
 @Data
-public class ReloadAfterChangeFlexWorkPlaceSettingDto {
+public class AfterChangeFlexWorkPlaceSettingDto {
 	
 	// 職場別基本設定（フレックス勤務）を表示する
 	DisplayFlexBasicSettingByWorkPlaceDto displayFlexBasicSettingByWorkPlace;
