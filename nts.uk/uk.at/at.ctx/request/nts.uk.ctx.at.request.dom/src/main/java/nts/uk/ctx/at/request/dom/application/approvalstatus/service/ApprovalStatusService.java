@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Workp
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public interface ApprovalStatusService {
 	/**
@@ -390,5 +392,33 @@ public interface ApprovalStatusService {
 	 */
 	public List<String> getApprSttUnapprovedAppPerson(List<String> approverIDLst, GeneralDate appDate);
 	
-	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst);
+	/**
+	 * F:承認状況社員実績起動
+	 * @param wkpID
+	 * @param paramPeriod
+	 * @param empPeriodLst
+	 * @param apprSttComfirmSet
+	 * @param yearMonth
+	 * @param closureId
+	 * @param closureDate
+	 * @return
+	 */
+	public List<ApprSttConfirmEmp> getConfirmSttByEmp(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+	
+	/**
+	 * F:承認状況取得職場社員実績一覧
+	 * @param wkpID
+	 * @param paramPeriod
+	 * @param empPeriodLst
+	 * @return
+	 */
+	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+	
+	/**
+	 * F:承認状況取得日別確認状況
+	 * @return
+	 */
+	public List<DailyConfirmOutput> createConfirmSttByDate(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
 }

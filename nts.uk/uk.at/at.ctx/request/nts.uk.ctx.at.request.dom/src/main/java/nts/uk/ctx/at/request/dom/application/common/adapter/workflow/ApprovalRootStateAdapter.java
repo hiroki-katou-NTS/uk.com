@@ -16,6 +16,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
 
 public interface ApprovalRootStateAdapter {
 	/**
@@ -167,5 +169,12 @@ public interface ApprovalRootStateAdapter {
      * @return
      */
     public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalPhaseByID(List<String> appIDLst);
+    
+    /**
+     * request 533
+     * @param empPerformMonthParamLst
+     * @return
+     */
+    public Request533Import getAppRootStatusByEmpsMonth(List<EmpPerformMonthParamAt> empPerformMonthParamLst);
     
 }

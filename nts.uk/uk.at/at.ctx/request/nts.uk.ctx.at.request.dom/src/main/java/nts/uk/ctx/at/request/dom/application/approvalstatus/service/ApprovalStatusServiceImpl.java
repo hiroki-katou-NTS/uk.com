@@ -65,6 +65,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
@@ -74,6 +75,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailT
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PeriodOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SumCountOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPerson;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPersonAndResult;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
@@ -85,12 +87,16 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceI
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.actualsituation.confirmstatusmonthly.StatusConfirmMonthImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
@@ -99,6 +105,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -129,6 +137,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 import nts.uk.shr.com.url.UrlParamAtr;
 import nts.uk.shr.com.url.UrlTaskIncre;
@@ -221,6 +230,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -2055,11 +2067,22 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		}
 		return result;
 	}
+	
+	@Override
+	public List<ApprSttConfirmEmp> getConfirmSttByEmp(String wkpID, DatePeriod paramPeriod,
+			List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		// アルゴリズム「承認状況取得職場社員実績」を実行する
+		return this.getConfirmSttByEmpLst(wkpID, paramPeriod, empPeriodLst, apprSttComfirmSet, yearMonth, closureId, closureDate);
+	}
 
 	@Override
-	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst) {
+	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		String companyID = AppContexts.user().companyId();
 		List<ApprSttConfirmEmp> apprSttConfirmEmpLst = new ArrayList<>();
 		List<EmployeeBasicInfoImport> employeeBasicInfoImportLst = workplaceAdapter.findBySIds(empPeriodLst.stream().map(x -> x.getEmpID()).collect(Collectors.toList()));
+		// 社員ID(リスト)
 		for(EmpPeriod empPeriod : empPeriodLst) {
 			// アルゴリズム「承認状況対象期間取得」を実行する
 			DatePeriod period = this.getApprSttTargetPeriod(
@@ -2068,13 +2091,138 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					paramPeriod, 
 					new DatePeriod(empPeriod.getCompanyInDate(), empPeriod.getCompanyOutDate()));
 			// imported（就業）「個人社員基本情報」を取得する(Lấy imported（就業）「個人社員基本情報」)
+			// xử lý trên UI
 			EmployeeBasicInfoImport employeeBasicInfoImport = employeeBasicInfoImportLst.stream().filter(x -> x.getEmployeeId().equals(empPeriod.getEmpID())).findAny().orElse(null);
-			// アルゴリズム「承認状況取得申請」を実行する(Thực hiện thuật toán 「承認状況取得申請」)
-			List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = this.getApprSttApplication(empPeriod.getEmpID(), period);
-			// アルゴリズム「承認状況日別状態作成」を実行する(Thực hiện thuật toán 「承認状況日別状態作成」)
-			List<ApprSttEmpDate> dateInfoLst = this.createApprSttByDate(empPeriod.getEmpID(), period, appPairLst);
-			// apprSttEmpLst.add(new ApprSttEmp(employeeBasicInfoImport.getEmployeeCode(), employeeBasicInfoImport.getPName(), empPeriod.getEmpID(), dateInfoLst));
+			// 月別本人確認を利用する
+			boolean monthConfirm = false;
+			if(apprSttComfirmSet.isMonthlyIdentityConfirm()) {
+				// 社員の現在の締めの「月別本人確認」の状態を取得する　　　　リクエストリスト　No.654
+				Optional<StatusConfirmMonthImport> opStatusConfirmMonthImport = recordWorkInfoAdapter.getConfirmStatusMonthly(
+						companyID, Arrays.asList(empPeriod.getEmpID()), yearMonth, closureId.value, false);
+				if(opStatusConfirmMonthImport.isPresent()) {
+					monthConfirm = true;
+				}
+			}
+			// 月別確認を利用する
+			boolean monthApproval = false;
+			if(apprSttComfirmSet.isMonthlyConfirm()) {
+				// imported（ワークフロー）「承認ルート状況」を取得する
+				Request533Import request533Import = approvalStateAdapter.getAppRootStatusByEmpsMonth(empPeriodLst.stream()
+						.map(x -> new EmpPerformMonthParamAt(
+								yearMonth, 
+								closureId.value, 
+								closureDate, 
+								period.end(), 
+								x.getEmpID()))
+						.collect(Collectors.toList()));
+				if(!CollectionUtil.isEmpty(request533Import.getAppRootSttMonthImportLst())) {
+					if(request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr()==2) {
+						monthApproval = true;
+					}
+				}
+			}
+			// アルゴリズム「承認状況取得日別確認状況」を実行する
+			List<DailyConfirmOutput> dailyConfirmOutputLst = this.createConfirmSttByDate(wkpID, empPeriod.getEmpID(), period, apprSttComfirmSet);
+			apprSttConfirmEmpLst.add(new ApprSttConfirmEmp(dailyConfirmOutputLst, employeeBasicInfoImport.getEmployeeCode(), employeeBasicInfoImport.getPName(), monthConfirm, monthApproval));
 		}
 		return apprSttConfirmEmpLst;
+	}
+
+	@Override
+	public List<DailyConfirmOutput> createConfirmSttByDate(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet) {
+		// 期間範囲分の日別確認（リスト）を作成する
+		List<DailyConfirmOutput> listDailyConfirm = new ArrayList<DailyConfirmOutput>();
+		SumCountOutput sumCount = new SumCountOutput();
+
+		// 上司確認を利用する
+		if (apprSttComfirmSet.isUseBossConfirm()) {
+			// アルゴリズム「承認状況取得日別上司承認状況」を実行する
+			this.getApprovalSttByDateOfBoss(employeeID, wkpID, period.start(), period.end(), listDailyConfirm, sumCount);
+		}
+		// 本人確認を利用する
+		if (apprSttComfirmSet.isUsePersonConfirm()) {
+			// アルゴリズム「承認状況取得日別本人確認状況」を実行する
+			this.getApprovalSttByDateOfPerson(employeeID, wkpID, period.start(), period.end(), listDailyConfirm, sumCount);
+		}
+		return listDailyConfirm;
+	}
+	
+	/**
+	 * 承認状況取得日別上司承認状況
+	 */
+	private void getApprovalSttByDateOfBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate,
+			List<DailyConfirmOutput> listDailyConfirm, SumCountOutput sumCount) {
+		// 会社ID
+		String cid = AppContexts.user().companyId();
+		// // Request list 113
+		// imported（ワークフロー）「承認ルート状況」を取得する
+		List<ApproveRootStatusForEmpImPort> listApproval = approvalStateAdapter.getApprovalByEmplAndDate(startDate,
+				endDate, sId, cid, 1);
+		// 承認ルートの状況
+		for (ApproveRootStatusForEmpImPort approval : listApproval) {
+			DailyConfirmOutput dailyConfirm;
+			// 日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
+			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpID().equals(wkpId)
+					&& x.getEmpID().equals(sId) && x.getTargetDate().equals(approval.getAppDate())).findFirst();
+			if (confirm.isPresent()) {
+				// 対象の日別確認（リスト）の行を対象とする
+				dailyConfirm = confirm.get();
+			} else {
+				// 日別確認（リスト）に追加する
+				dailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false, false);
+				listDailyConfirm.add(dailyConfirm);
+			}
+			// 承認ルート状況.承認状況
+			if (ApprovalStatusForEmployeeImport.APPROVED.equals(approval.getApprovalStatus())) {
+				// 上司確認 ＝確認
+				dailyConfirm.setBossConfirm(true);
+				// 上司確認件数 ＝＋１
+				sumCount.bossConfirm++;
+			} else {
+				// 上司未確認件数 ＝＋１
+				sumCount.bossUnconfirm++;
+			}
+		}
+	}
+	
+	/**
+	 * 承認状況取得日別本人確認状況
+	 */
+	private void getApprovalSttByDateOfPerson(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate,
+			List<DailyConfirmOutput> listDailyConfirm, SumCountOutput sumCount) {
+		// RequestList165
+		// imported（KAF018承認状況の照会）本人確認済みの日付を取得
+		List<GeneralDate> dateLst = recordWorkInfoAdapter.getResovleDateIdentify(sId, new DatePeriod(startDate, endDate));
+		// 確認日付
+		for (GeneralDate date : dateLst) {
+			// 日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
+			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpID().equals(wkpId)
+					&& x.getEmpID().equals(sId) && x.getTargetDate().equals(date))
+					.findFirst();
+			if (confirm.isPresent()) {
+				// 対象の日別確認（リスト）の行を対象として内容を更新するする
+				confirm.get().setPersonConfirm(true);
+			} else {
+				// 日別確認（リスト）に追加
+				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, true, false);
+				listDailyConfirm.add(newConfirm);
+			}
+			// 本人確認件数 ＝＋１
+			sumCount.personConfirm++;
+		}
+		GeneralDate tempDate = startDate;
+		while (tempDate.beforeOrEquals(endDate)) {
+			GeneralDate date = tempDate;
+			Optional<DailyConfirmOutput> confirmOtp = listDailyConfirm.stream()
+					.filter(x -> x.getTargetDate().equals(date)).findFirst();
+			if (!confirmOtp.isPresent()) {
+				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, false, false);
+				listDailyConfirm.add(newConfirm);
+			}
+			tempDate = tempDate.addDays(1);
+		}
+		// 本人未確認件数 ＝日別確認(リスト)で上司確認＝未確認、本人確認＝未確認の件数
+		sumCount.personUnconfirm = (int) listDailyConfirm.stream()
+				.filter(x -> !x.isBossConfirm() && !x.isPersonConfirm()).count();
 	}
 }

@@ -32,9 +32,11 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusF
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
@@ -188,5 +190,11 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("sendMailToDestination")
 	public SendMailResultOutput sendMailToDestination(ApprSttMailDestParam param) {
 		return approvalMailFinder.sendMailToDestination(param);
+	}
+	
+	@POST
+	@Path("getConfirmSttByEmp")
+	public List<ApprSttConfirmEmp> getConfirmSttByEmp(ConfirmSttEmpParam param) {
+		return finder.getConfirmSttByEmp(param);
 	}
 }

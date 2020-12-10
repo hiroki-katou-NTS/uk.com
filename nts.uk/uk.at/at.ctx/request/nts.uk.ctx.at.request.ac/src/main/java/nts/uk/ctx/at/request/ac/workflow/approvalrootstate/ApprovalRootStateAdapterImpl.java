@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootSttMonthImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFormImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -34,14 +35,18 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
 import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
 import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
 import nts.uk.ctx.sys.env.pub.maildestination.OutGoingMail;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
+import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFormExport;
@@ -405,6 +410,30 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 			approvalPhaseImport_NewMap.put(approvalRootContentExport.getKey(), appRootContentImport_News);
 		}
 		return approvalPhaseImport_NewMap;
+	}
+
+	@Override
+	public Request533Import getAppRootStatusByEmpsMonth(List<EmpPerformMonthParamAt> empPerformMonthParamLst) {
+		Request533Export request533Export = intermediateDataPub.getAppRootStatusByEmpsMonth(empPerformMonthParamLst.stream()
+				.map(x -> new EmpPerformMonthParam(
+						x.getYearMonth(), 
+						x.getClosureID(), 
+						x.getClosureDate(), 
+						x.getBaseDate(), 
+						x.getEmployeeID())
+				).collect(Collectors.toList()));
+		return new Request533Import(
+				request533Export.getAppRootSttMonthExportLst().stream()
+					.map(x -> new AppRootSttMonthImport(
+							x.getEmployeeID(), 
+							x.getDailyConfirmAtr(), 
+							x.getYearMonth(), 
+							x.getClosureID(), 
+							x.getClosureDate()))
+					.collect(Collectors.toList()), 
+				request533Export.isErrorFlg(), 
+				request533Export.getErrorMsgID(), 
+				request533Export.getErrorEmpLst());
 	}
 
 }

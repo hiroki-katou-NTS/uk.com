@@ -408,7 +408,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
 					}),
 					currentWkpID = ui.rowKey,
-					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID };
+					apprSttComfirmSet = vm.params.useSet,
+					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, apprSttComfirmSet };
 				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
 			}
 		}
