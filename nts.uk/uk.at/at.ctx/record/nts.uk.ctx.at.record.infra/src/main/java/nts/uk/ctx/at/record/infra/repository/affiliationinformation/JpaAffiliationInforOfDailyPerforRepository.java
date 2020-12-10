@@ -30,8 +30,8 @@ import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliat
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
@@ -79,7 +79,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String bonusPaycode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
+			String bonusPaycode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().get().v() + "'" : null;
 			String businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE,WORK_TYPE_CODE ) "
 					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
@@ -103,8 +103,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null
-				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() : null;
+		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().isPresent()
+				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().get().v() : null;
 		entity.businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
 				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() : null;
 		entity.classificationCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode() == null ? null
@@ -173,7 +173,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().update(data);
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
+		String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode().isPresent() ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().get().v() + "'" : null;
 		String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
 		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
 				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()

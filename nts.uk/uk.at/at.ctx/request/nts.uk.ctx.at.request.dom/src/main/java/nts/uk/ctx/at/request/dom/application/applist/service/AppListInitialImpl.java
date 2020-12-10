@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -72,8 +74,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
@@ -156,7 +156,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private WithdrawalAppSetRepository withdrawalAppSetRepo;
 	@Inject
-	private AppOvertimeSettingRepository appOtSetRepo;
+	private OvertimeAppSetRepository appOtSetRepo;
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
 	@Inject
@@ -1027,8 +1027,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
 		Optional<CalcStampMiss> calStampMiss = Optional.empty();
 		if (appType.equals(ApplicationType.OVER_TIME_APPLICATION)) {
-			Optional<AppOvertimeSetting> otSet = appOtSetRepo.getAppOver();
-			overrideSet = otSet.isPresent() ? otSet.get().getPriorityStampSetAtr() : overrideSet;
+			Optional<OvertimeAppSet> otSet = appOtSetRepo.findSettingByCompanyId(AppContexts.user().companyId());
+			overrideSet = otSet.isPresent() ? otSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
 		} else {
 			Optional<WithdrawalAppSet> hdSet = withdrawalAppSetRepo.getWithDraw();
 			overrideSet = hdSet.isPresent() ? hdSet.get().getOverrideSet() : overrideSet;

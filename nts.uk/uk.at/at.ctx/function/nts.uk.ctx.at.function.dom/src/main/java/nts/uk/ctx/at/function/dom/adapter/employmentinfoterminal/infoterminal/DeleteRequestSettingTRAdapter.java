@@ -4,5 +4,5 @@ import nts.arc.task.tran.AtomTask;
 
 public interface DeleteRequestSettingTRAdapter {
 
-	public AtomTask remove(Integer empInfoTerCode, String contractCode);
+	public AtomTask remove(String empInfoTerCode, String contractCode);
 }

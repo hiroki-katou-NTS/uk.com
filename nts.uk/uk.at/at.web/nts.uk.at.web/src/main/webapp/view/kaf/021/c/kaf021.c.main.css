@@ -58,7 +58,6 @@
     width: 400px;
 }
 
-
 .center-align {
     text-align: center;
 }
@@ -87,4 +86,12 @@
 
 #grid .cell-edit .medit-container{
     height: 47px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
 }

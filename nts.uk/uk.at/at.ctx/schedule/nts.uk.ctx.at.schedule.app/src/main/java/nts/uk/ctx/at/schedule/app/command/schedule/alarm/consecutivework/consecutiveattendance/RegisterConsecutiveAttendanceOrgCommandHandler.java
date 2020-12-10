@@ -40,9 +40,9 @@ public class RegisterConsecutiveAttendanceOrgCommandHandler extends CommandHandl
         MaxDaysOfConsecutiveAttendanceOrganization newMaxConsDays = new MaxDaysOfConsecutiveAttendanceOrganization(targeOrg, newConsDay);
 
         //1. get
-        Optional<MaxDaysOfConsecutiveAttendanceOrganization> oldMaxConsDays = maxDaysOfConsAttOrgRepo.get(targeOrg, companyId);
+        boolean isExists = maxDaysOfConsAttOrgRepo.exists(targeOrg, companyId);
 
-        if (oldMaxConsDays.isPresent()) {
+        if (isExists) {
             //2. isPresent == true: set
             maxDaysOfConsAttOrgRepo.update(newMaxConsDays, companyId);
         }

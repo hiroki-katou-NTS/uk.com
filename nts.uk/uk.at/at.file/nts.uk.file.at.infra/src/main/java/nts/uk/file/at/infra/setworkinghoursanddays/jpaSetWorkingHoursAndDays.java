@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegalTimeMSya;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegalTimeMEmp;
@@ -289,8 +289,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	
 	private String getStartOfWeek(String cid) {
 		
-		int startOfWeek = this.queryProxy().find(cid, KsrmtWeekRuleMng.class)
-											.map(w -> w.startOfWeek).orElse(0);
+		Optional<WeekRuleManagement> startOfWeek = this.queryProxy().find(cid, KsrmtWeekRuleMng.class)
+																	.map(w -> w.toDomain());
 		
 		return getWeekStart(startOfWeek);
 	}
@@ -2356,38 +2356,31 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return time;
 	}
 	
-	private String getWeekStart(int weekStart) {
-		String weekStartType = null;
-		WeekStart type = EnumAdaptor.valueOf(weekStart, WeekStart.class);
-		switch (type) {
+	private String getWeekStart(Optional<WeekRuleManagement> startOfWeek) {
+		if (!startOfWeek.isPresent()) {
+			return null;
+		}
+		
+		switch (startOfWeek.get().getWeekStart()) {
 			case Monday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Monday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Monday");
 			case Tuesday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Tuesday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Tuesday");
 			case Wednesday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Wednesday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Wednesday");
 			case Thursday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Thursday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Thursday");
 			case Friday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Friday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Friday");
 			case Saturday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Saturday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Saturday");
 			case Sunday:
-				weekStartType = I18NText.getText("Enum_DayOfWeek_Sunday");
-				break;
+				return I18NText.getText("Enum_DayOfWeek_Sunday");
 			case TighteningStartDate:
-				weekStartType = "締め開始日";
-				break;
+				return "締め開始日";
 			default:
-				break;
-			}
-		return weekStartType;
+				return null;
+		}
 	}
 	
 	public static String getExtraType(int value){

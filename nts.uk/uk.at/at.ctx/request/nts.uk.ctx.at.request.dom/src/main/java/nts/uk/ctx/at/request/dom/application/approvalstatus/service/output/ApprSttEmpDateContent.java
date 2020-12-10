@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 
 /**
  * refactor 5
@@ -11,25 +15,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ApprSttEmpDateContent {
-	private String dateStr;
-	
-	private int appType;
-	
-	private int prePostAtr;
+	private Application application;
 	
 	private String content;
 	
-	private String reflectedState;
+	private ReflectedState reflectedState;
 	
-	private String approvalStatus;
-	
-	private String phase1;
-	
-	private String phase2;
-	
-	private String phase3;
-	
-	private String phase4;
-	
-	private String phase5;
+	private List<PhaseApproverStt> phaseApproverSttLst;
 }

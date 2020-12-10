@@ -276,9 +276,20 @@ module nts.uk.at.kdp003.f {
 						.then(() => {
 							const cbi = '.ui-igcombo-field';
 							const cbw = '.ui-igcombo-wrapper';
-							
+
 							$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
 						});
+				});
+
+			$(vm.$el)
+				.on('keyup', '#password-input, #employee-code-inp-2', evt => {
+					if (evt.keyCode === 13) {
+						const { employeeCode, password } = vm.model;
+
+						if (!!ko.unwrap(employeeCode) && !!ko.unwrap(password)) {
+							vm.submitLogin();
+						}
+					}
 				});
 		}
 

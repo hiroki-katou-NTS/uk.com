@@ -17,10 +17,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.exceptions.OptimisticLockException;
 
 import lombok.extern.slf4j.Slf4j;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.error.ThrowableAnalyzer;
@@ -30,6 +33,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -43,16 +48,18 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.applicationreflect.manager.algorithm.employee.CreateRequireReflectionProcess;
+import nts.uk.ctx.at.request.dom.applicationreflect.manager.algorithm.employee.ReflectionProcess;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.OneDayReflectStatusOutput;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectRecordPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordIsReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkRecordReflectService;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.WorkScheduleReflectService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
@@ -97,6 +104,13 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private RemainNumberTempRequireService requireSerive;
 	@Inject
     private ExecutionLogRequestImport executionLogRequestImport;	
+	
+	@Inject
+	private CreateRequireReflectionProcess createRequireReflectionProcess;
+	
+	@Inject
+	private EmployeeRequestAdapter employeeAdapter;
+	
 	@PostConstruct
 	public void postContruct() {
 		this.self = scContext.getBusinessObject(AppReflectManager.class);
@@ -147,8 +161,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		CommonReflectPara absenceLeaveAppInfor = null;
 		CommonReflectPara recruitmentInfor = null;
 		
+		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, appInfor.getEmployeeID(), GeneralDate.today());
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
+		Application application = null;
 		switch (appInfor.getAppType()) {
 		case OVER_TIME_APPLICATION:
 			if(appInfor.getPrePostAtr() != PrePostAtr.PREDICT) {
@@ -174,6 +190,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(appGobackTmp == null) {
 				return;
 			}
+			application =  gobackInfo;
 			break;
 		case ABSENCE_APPLICATION:
 			Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceById(companyID, appInfor.getAppID());
@@ -256,33 +273,47 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(absenceData != null) {
 				absenceData.getCommonPara().setAppDate(loopDate);
 			}
-			AppReflectRecordPara appPara = new AppReflectRecordPara(appInfor.getAppType(), 
-					appInfor.getPrePostAtr(),
-					appGobackTmp,
-					overTimeTmp, 
-					workchangeData, 
-					holidayworkInfor, 
-					absenceData,
-					absenceLeaveAppInfor,
-					recruitmentInfor,
-					execuTionType);
+//			AppReflectRecordPara appPara = new AppReflectRecordPara(appInfor.getAppType(), 
+//					appInfor.getPrePostAtr(),
+//					appGobackTmp,
+//					overTimeTmp, 
+//					workchangeData, 
+//					holidayworkInfor, 
+//					absenceData,
+//					absenceLeaveAppInfor,
+//					recruitmentInfor,
+//					execuTionType);
             Boolean isCalWhenLock = this.executionLogRequestImport.isCalWhenLock(excLogId, 2);
-			//事前チェック処理
-            ScheAndRecordIsReflect checkReflectResult = checkReflect.appReflectProcessRecord(appInfor, execuTionType, loopDate,isCalWhenLock);
-			//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
-			if(appInfor.getPrePostAtr() == PrePostAtr.PREDICT
-					&& checkReflectResult.isScheReflect()) {
-				scheReflect.workscheReflect(appPara);
-			} else {
-				isSche = false;
-			}
-			//勤務実績に反映
-			if(checkReflectResult.isRecordReflect()) {
-				workRecordReflect.workRecordreflect(appPara);
-				lstDate.add(loopDate);
-			} else {
-				isRecord = false;
-			}
+          //TODO: new Process
+			Pair<Optional<OneDayReflectStatusOutput>, Optional<AtomTask>> resultAfterReflect = ReflectionProcess
+					.process(createRequireReflectionProcess.createImpl(), companyID, application, EnumAdaptor.valueOf(execuTionType.value, ExecutionType.class),
+							isCalWhenLock, loopDate, sEmpHistImport);
+			resultAfterReflect.getKey().ifPresent(x -> {
+				x.createReflectStatus(loopDate);
+			});
+			resultAfterReflect.getRight().ifPresent(x -> {
+				x.run();
+			});
+//			//事前チェック処理
+//            ScheAndRecordIsReflect checkReflectResult = checkReflect.appReflectProcessRecord(appInfor, execuTionType, loopDate,isCalWhenLock);
+//			//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
+//			if(appInfor.getPrePostAtr() == PrePostAtr.PREDICT
+//					&& checkReflectResult.isScheReflect()) {
+//				scheReflect.workscheReflect(appPara);
+//			} else {
+//				isSche = false;
+//			}
+//			//勤務実績に反映
+//			if(checkReflectResult.isRecordReflect()) {
+//				workRecordReflect.workRecordreflect(appPara);
+//				lstDate.add(loopDate);
+//			} else {
+//				isRecord = false;
+//			}
+			resultAfterReflect.getKey().ifPresent(x -> {
+				if (x.reflect())
+					appRepo.update(appInfor);
+			});
 		}
 //		if(isSche) {
 //			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
@@ -295,7 +326,6 @@ public class AppReflectManagerImpl implements AppReflectManager {
 //			appInfor.getReflectionInformation().setDateTimeReflectionReal(Optional.of(GeneralDateTime.now()));
 //			
 //		}		
-		appRepo.update(appInfor);		
 		//暫定データの登録
 		if(!lstDate.isEmpty()) {
 			lstReflectHoliday.stream().forEach(x -> {

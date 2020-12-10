@@ -44,7 +44,7 @@ public class DeleteRequestSettingTimeRecordServiceTest {
 			}
 		};
 
-		val actualResult = DeleteRequestSettingTimeRecordService.process(require, new EmpInfoTerminalCode(1),
+		val actualResult = DeleteRequestSettingTimeRecordService.process(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 
 		actualResult.run();
@@ -69,13 +69,13 @@ public class DeleteRequestSettingTimeRecordServiceTest {
 		new Expectations() {
 			{
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = Optional.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"),
+				result = Optional.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"),
 						new CompanyId("1"), "1", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()).build());
 
 			}
 		};
 
-		val actualResult = DeleteRequestSettingTimeRecordService.process(require, new EmpInfoTerminalCode(1),
+		val actualResult = DeleteRequestSettingTimeRecordService.process(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 
 		NtsAssert.atomTask(() -> actualResult, any -> require.updateSetting(any.get()));

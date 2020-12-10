@@ -59,8 +59,7 @@ public class ReturnDirectTimeCorrection {
 				//戻り.打刻.時刻.時刻変更理由.時刻変更手段←”自動セット”
 				WorkStamp stampLeav= leavWork.getLeaveStamp().map(y -> y.getStamp().orElse(null)).orElse(null);
 				x.setComeBack(Optional.of(new TimeActualStamp(null,
-						new WorkStamp(stampLeav == null ? null : stampLeav.getAfterRoundingTime(),
-								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
 										stampLeav == null ? null
 												: stampLeav.getTimeDay().getTimeWithDay().orElse(null)),
 								Optional.empty()),

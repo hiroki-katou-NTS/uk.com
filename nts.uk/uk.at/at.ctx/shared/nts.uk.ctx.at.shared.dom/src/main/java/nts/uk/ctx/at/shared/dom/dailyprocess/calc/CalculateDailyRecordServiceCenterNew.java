@@ -13,4 +13,7 @@ public interface CalculateDailyRecordServiceCenterNew {
 	//勤務予定情報を計算する - Chuyển từ record sang shared
 			//計算(会社共通のマスタを渡せる場合)
 			public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,ExecutionType reCalcAtr);
+			
+			//計算(スケジュールからの窓口)
+			public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,List<IntegrationOfDaily> integrationOfDaily);
 }

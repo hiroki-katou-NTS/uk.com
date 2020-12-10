@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting;
 
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+
 /**
  * 条件
  * @author keisuke_hoshina

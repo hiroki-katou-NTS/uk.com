@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeYearExport;
 
 /**
  * 指定期間36協定時間の取得
@@ -25,7 +25,7 @@ public interface AgreementTimeByPeriodPub {
 	 * @return 36協定上限複数月平均時間
 	 */
 	// RequestList547
-	Optional<AgreMaxAverageTimeMulti> maxAverageTimeMulti(String employeeId, GeneralDate criteria, YearMonth yearMonth);
+	Optional<AgreMaxAverageTimeMultiExport> maxAverageTimeMulti(String employeeId, GeneralDate criteria, YearMonth yearMonth);
 
 	/**
 	 * 指定年36協定年間時間の取得
@@ -36,7 +36,7 @@ public interface AgreementTimeByPeriodPub {
 	 * @return 36協定年間時間
 	 */
 	// RequestList549
-	Optional<AgreementTimeYear> timeYear(String employeeId, GeneralDate criteria, Year year);
+	Optional<AgreementTimeYearExport> timeYear(String employeeId, GeneralDate criteria, Year year);
 	
 	
 	Object getCommonSetting(String companyId, List<String> employeeId, DatePeriod criteria);

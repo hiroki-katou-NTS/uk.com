@@ -44,16 +44,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 				this.entity.getDeductionRounding());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
-	 * OtherEmTimezoneLateEarlySetGetMemento#getStampExactlyTimeIsLateEarly()
-	 */
-	@Override
-	public boolean getStampExactlyTimeIsLateEarly() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getExtractLateEarlyTime());
-	}
+
 
 	/*
 	 * (non-Javadoc)

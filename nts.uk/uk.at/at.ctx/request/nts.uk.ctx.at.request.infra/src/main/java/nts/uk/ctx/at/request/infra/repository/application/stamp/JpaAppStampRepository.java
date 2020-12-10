@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampPK;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
