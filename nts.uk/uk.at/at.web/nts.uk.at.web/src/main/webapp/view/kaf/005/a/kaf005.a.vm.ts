@@ -2095,7 +2095,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 		getFormatTime(number: number) {
 			if (_.isNil(number)) return '';
-			return (formatTime("Time_Short_HM", number));
+			return String(formatTime("Clock_Short_HM", number));
 		}
 		createVisibleModel(res: DisplayInfoOverTime) {
 			const self = this;
