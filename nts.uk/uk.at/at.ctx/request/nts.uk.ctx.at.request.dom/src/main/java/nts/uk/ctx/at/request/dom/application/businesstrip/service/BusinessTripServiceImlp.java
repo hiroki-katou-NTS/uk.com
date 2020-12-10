@@ -253,17 +253,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         String cid = AppContexts.user().companyId();
         List<WorkType> result = Collections.emptyList();
 
-        if (!appEmploymentSet.isPresent()) {
-            return result;
-        }
-
-        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet.get()
+        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = !appEmploymentSet.isPresent() ? Optional.empty() : appEmploymentSet.get()
                 .getTargetWorkTypeByAppLst()
                 .stream()
                 .filter((x ->
                         x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && x.getOpBusinessTripAppWorkType().isPresent() && x.getOpBusinessTripAppWorkType().get().value == workStyle.value
                 ))
                 .findAny();
+
         if (opTargetWorkTypeByApp.isPresent()) {
             if (opTargetWorkTypeByApp.get().isDisplayWorkType()
                     && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()

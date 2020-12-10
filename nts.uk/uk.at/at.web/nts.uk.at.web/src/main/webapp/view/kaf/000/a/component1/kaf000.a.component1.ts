@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
             <div id="kaf000-a-component1" data-bind="if: displayArea">
                 <div class="table" data-bind="if: displayMsg">
                     <div class="cell message-td-1" data-bind="text: $i18n('KAF000_1')"></div>
-                    <div class="cell message-td" data-bind="text: message"></div>
+                    <div class="cell message-td" data-bind="html: message"></div>
                 </div>
                 <div class="table" data-bind="if: displayDeadline">
                     <div class="cell message-td-1" data-bind="text: $i18n('KAF000_2')"></div>

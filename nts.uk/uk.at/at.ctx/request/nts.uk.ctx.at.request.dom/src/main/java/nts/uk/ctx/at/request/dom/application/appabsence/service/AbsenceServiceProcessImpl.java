@@ -47,14 +47,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
@@ -63,8 +60,6 @@ import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -137,7 +132,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private ReserveLeaveManagerApdater rsvLeaMngApdater;
 	
 	@Inject
-	private HdAppSetRepository hdAppSetRepository;
+	private HolidayApplicationSettingRepository hdAppSetRepository;
 	
 	@Inject
 	private DisplayReasonRepository displayRep;
@@ -404,8 +399,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         return null;
     }
 
-    @Override
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HdAppSet hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+	@Override
+	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
 			boolean subHdManage, Double subVacaRemain, Double subHdRemain) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// INPUT．「画面モード」を確認する
@@ -427,7 +422,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			}
 		}
 		result = this.checkPriorityHoliday(
-				hdAppSet.getPridigCheck(), 
+				AppliedDate.CHECK_AVAILABLE, //hdAppSet.getPridigCheck(),
 				subVacaManage, 
 				subVacaTypeUseFlg, 
 				subHdManage,
@@ -861,10 +856,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param hdAppSet 休暇申請設定
 	 * @return
 	 */
-	private List<ConfirmMsgOutput> checkContradictionAppDate(String companyID, String employeeID, GeneralDate appDate, Integer alldayHalfDay, HdAppSet hdAppSet) {
+	private List<ConfirmMsgOutput> checkContradictionAppDate(String companyID, String employeeID, GeneralDate appDate, Integer alldayHalfDay, HolidayApplicationSetting hdAppSet) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// ドメインモデル「休暇申請設定」を取得する
-		AppliedDate appliedDate = hdAppSet.getAppDateContra();
+		AppliedDate appliedDate = AppliedDate.CHECK_AVAILABLE; // hdAppSet.getAppDateContra();
 		//「申請日矛盾区分」をチェックする
 		if (appliedDate == AppliedDate.DONT_CHECK) {
 			return result;
@@ -937,7 +932,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate,
-			GeneralDate endDate, Integer alldayHalfDay, HdAppSet hdAppSet, boolean mode) {
+			GeneralDate endDate, Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// INPUT．モードをチェックする
 		if(!mode) {
