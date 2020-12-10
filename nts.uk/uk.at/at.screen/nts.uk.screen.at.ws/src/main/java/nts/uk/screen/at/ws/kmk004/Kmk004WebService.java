@@ -9,6 +9,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComInput;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.p.AddEmpBasicSettingCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.p.AddShaBasicSettingCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.p.AddWkpBasicSettingCommandHandler;
@@ -28,8 +35,11 @@ import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingHoursByCompany;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingInput;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayYearListByCompany;
 import nts.uk.screen.at.app.query.kmk004.common.GetUsageUnitSetting;
+import nts.uk.screen.at.app.query.kmk004.common.GetYearMonthPeriod;
 import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
+import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborComDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborEmpDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborShaDto;
@@ -104,6 +114,19 @@ public class Kmk004WebService extends WebService{
 	@Inject
 	private RemoveShaBasicSettingCommandHandler removeShaBasicSettingCommandHandler;
 	
+	@Inject
+	private SaveMonthlyWorkTimeSetComCommandHandler saveMonthlyWorkTimeSetComCommandHandler;
+	
+	@Inject
+	private DisplayYearListByCompany displayYearListByCompany;
+	
+	@Inject
+	private DeleteMonthlyWorkTimeSetComCommandHandler deleteMonthlyWorkTimeSetComCommandHandler;
+	
+	@Inject
+	private GetYearMonthPeriod getYearMonthPeriod;
+	
+	
 	//View S
 	@POST
 	@Path("getUsageUnitSetting")
@@ -118,12 +141,35 @@ public class Kmk004WebService extends WebService{
 		return this.basicSettings.getSetting();
 	}
 	
-	//Common
 	@POST
 	@Path("getWorkingHoursByCompany")
 	public List<DisplayMonthlyWorkingDto> getDisplayMonthlyWorkingHoursByCompany(DisplayMonthlyWorkingInput param) {
 		return this.getworking.get(param);
 	}
+	
+	@POST
+	@Path("viewB/com/monthlyWorkTime/add")
+	public void addComMonthlyWorkTime(SaveMonthlyWorkTimeSetComCommand command) {
+		saveMonthlyWorkTimeSetComCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("viewB/com/monthlyWorkTime/delete")
+	public void deleteComMonthlyWorkTime(DeleteMonthlyWorkTimeSetComInput param) {
+		YearMonthPeriod yearMonthPeriod = this.getYearMonthPeriod.get(param.year);
+		
+		DeleteMonthlyWorkTimeSetComCommand comCommand = new DeleteMonthlyWorkTimeSetComCommand(param.workType,
+				new YearMonthPeriodCommand(yearMonthPeriod.start().v(), yearMonthPeriod.end().v()));
+		
+		this.deleteMonthlyWorkTimeSetComCommandHandler.handle(comCommand);
+	}
+	
+	@POST
+	@Path("viewB/com/getListYear")
+	public List<YearDto> getListYearCom(int workTypeAttr) {
+		return displayYearListByCompany.get(workTypeAttr);
+	}
+	
 	
 	// View P
 	// Company

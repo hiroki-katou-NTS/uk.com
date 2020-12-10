@@ -287,14 +287,27 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	}
 	
 	@Override
-	public void removeCompany(String cid, int laborAttr, int year) {
+	public void removeCompany(String cid, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
 		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMCom x "
 				+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
 				+ "AND x.pk.ym <= :end "
 				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMCom.class)
 					.setParameter("cid", cid)
-					.setParameter("start", year * 100 + 01)
-					.setParameter("end", year * 100 + 12)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
@@ -312,7 +325,20 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	}
 	
 	@Override
-	public void removeEmployee(String cid, String sid, int laborAttr, int year) {
+	public void removeEmployee(String cid, String sid, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
 		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMSya x "
 				+ "WHERE x.pk.cid = :cid  "
 				+ "AND x.pk.ym >= :start "
@@ -321,8 +347,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
 					.setParameter("cid", cid)
 					.setParameter("sid", sid)
-					.setParameter("start", year * 100 + 01)
-					.setParameter("end", year * 100 + 12)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
@@ -340,7 +366,20 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	}
 	
 	@Override
-	public void removeEmployment(String cid, String empCD, int laborAttr, int year) {
+	public void removeEmployment(String cid, String empCD, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
 		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMEmp x "
 				+ "WHERE x.pk.cid = :cid  "
 				+ "AND x.pk.ym >= :start "
@@ -349,8 +388,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMEmp.class)
 					.setParameter("cid", cid)
 					.setParameter("empCD", empCD)
-					.setParameter("start", year * 100 + 01)
-					.setParameter("end", year * 100 + 12)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
@@ -368,7 +407,20 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	}
 	
 	@Override
-	public void removeWorkplace(String cid, String wkpId, int laborAttr, int year) {
+	public void removeWorkplace(String cid, String wkpId, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() < 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
 		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMWkp x "
 				+ "WHERE x.pk.cid = :cid  "
 				+ "AND x.pk.ym >= :start "
@@ -377,8 +429,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMWkp.class)
 					.setParameter("cid", cid)
 					.setParameter("wkpId", wkpId)
-					.setParameter("start", year * 100 + 01)
-					.setParameter("end", year * 100 + 12)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}

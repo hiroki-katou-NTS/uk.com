@@ -26,7 +26,7 @@ public class DeleteMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<De
 		DeleteMonthlyWorkTimeSetShaCommand cmd = context.getCommand();
 		// 1. delete (ログイン会社ID,社員ID,勤務区分,年月期間)
 		this.monthlyWorkTimeSetRepo.removeEmployee(AppContexts.user().companyId(), cmd.getEmpId(), cmd.getLaborAttr(),
-				cmd.getYm());
+				cmd.getYearMonths().toDomain());
 	}
 
 }

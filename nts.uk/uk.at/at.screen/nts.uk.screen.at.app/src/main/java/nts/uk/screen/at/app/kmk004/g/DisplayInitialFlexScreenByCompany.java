@@ -34,7 +34,7 @@ public class DisplayInitialFlexScreenByCompany {
 		result.setDisplayFlexBasicSettingByCompanyDto(
 				this.displayFlexBasicSettingByCompany.displayFlexBasicSettingByCompany());
 		// 3. 会社別年度リストを表示する
-		result.setCompanies(this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX));
+		result.setCompanies(this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX.value));
 
 		return result;
 	}

@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kmk004.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -51,9 +52,9 @@ public class EmploymentList {
 	 * @param laborWorkTypeAttr 勤務区分
 	 * @return
 	 */
-	public List<String> get(LaborWorkTypeAttr laborWorkTypeAttr) {
+	public List<EmploymentIdDto> get(LaborWorkTypeAttr laborWorkTypeAttr) {
 		
-		List<String> resutl = new ArrayList<>();
+		List<EmploymentIdDto> resutl = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		
 		//1 Call Ds 雇用別の設定状態を取得
@@ -65,7 +66,11 @@ public class EmploymentList {
 				empDeforLaborMonthActCalSetRepo,
 				empFlexMonthActCalSetRepo);
 		
-		resutl = GetSettingStatusEmployment.getSettingEmployment(require, cid, laborWorkTypeAttr);
+		List<String> employmentIds = GetSettingStatusEmployment.getSettingEmployment(require, cid, laborWorkTypeAttr);
+		
+		resutl = employmentIds.stream().map(m -> {
+			return new EmploymentIdDto(m); 
+		}).collect(Collectors.toList());
 		
 		return resutl;
 	}

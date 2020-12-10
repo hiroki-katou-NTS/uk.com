@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
@@ -33,14 +34,14 @@ public class DisplayYearListByCompany {
 	@Inject
 	private CompanyRepository companyRepository;
 	
-	public List<Integer> get(LaborWorkTypeAttr workTypeAttr) {
+	public List<YearDto> get(int workTypeAttr) {
 	
-		List<Integer> result = new ArrayList<>();
+		List<YearDto> result = new ArrayList<>();
 		
 		String cid = AppContexts.user().companyId();
 		
 		//1 call 会社別月単位労働時間
-		List<MonthlyWorkTimeSetCom> coms = this.monthlyWorkTimeSetRepo.findMonthlyWorkTimeSetComByCid(cid, workTypeAttr);
+		List<MonthlyWorkTimeSetCom> coms = this.monthlyWorkTimeSetRepo.findMonthlyWorkTimeSetComByCid(cid, EnumAdaptor.valueOf(workTypeAttr, LaborWorkTypeAttr.class));
 		
 		//2 call DS 年月期間から年度を取得
 		Require require = new Require(companyRepository);
@@ -49,7 +50,9 @@ public class DisplayYearListByCompany {
 				cid,
 				coms.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 		
-		result = list.stream().map(m -> m.v()).collect(Collectors.toList());
+		result = list.stream().map(m -> {
+			return new YearDto(m.v());
+		}).collect(Collectors.toList());
 		
 		return result;
 	}

@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kmk004.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -51,9 +52,9 @@ public class WorkplaceList {
 	 * @param laborWorkTypeAttr 勤務区分
 	 * @return
 	 */
-	public List<String> get(LaborWorkTypeAttr laborWorkTypeAttr) {
+	public List<WorkplaceIdDto> get(LaborWorkTypeAttr laborWorkTypeAttr) {
 
-		List<String> resutl = new ArrayList<>();
+		List<WorkplaceIdDto> resutl = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 
 		// 1 Call DS 職場別の設定状態を取得
@@ -64,7 +65,11 @@ public class WorkplaceList {
 				wkpDeforLaborMonthActCalSetRepo,
 				wkpFlexMonthActCalSetRepo);
 		
-		resutl = GeSettingStatusForEachWorkplace.geSettingStatusForEachWorkplace(require, cid, laborWorkTypeAttr);
+		List<String> workplaceIds = GeSettingStatusForEachWorkplace.geSettingStatusForEachWorkplace(require, cid, laborWorkTypeAttr);
+		
+		resutl = workplaceIds.stream().map(m -> {
+			return new WorkplaceIdDto(m);
+		}).collect(Collectors.toList());
 
 		return resutl;
 	}

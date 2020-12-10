@@ -25,8 +25,8 @@ public class DeleteMonthlyWorkTimeSetWkpCommandHandler extends CommandHandler<De
 
 		DeleteMonthlyWorkTimeSetWkpCommand cmd = context.getCommand();
 		// 1. delete (ログイン会社ID,職場ID,勤務区分,年月期間)
-		this.monthlyWorkTimeSetRepo.removeWorkplace(AppContexts.user().companyId(), cmd.getWorkplaceId(), cmd.getLaborAttr(),
-				cmd.getYm());
+		this.monthlyWorkTimeSetRepo.removeWorkplace(AppContexts.user().companyId(), cmd.getWorkplaceId(),
+				cmd.getLaborAttr(), cmd.getYearMonths().toDomain());
 	}
 
 }

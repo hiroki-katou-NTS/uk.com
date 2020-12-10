@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha;
 
 import lombok.Value;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
 
 /**
  * 
@@ -15,5 +16,5 @@ public class DeleteMonthlyWorkTimeSetShaCommand {
 	// 勤務区分
 	private int laborAttr;
 	// 年月期間
-	private int ym;
+	private YearMonthPeriodCommand yearMonths;
 }

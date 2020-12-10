@@ -22,10 +22,11 @@ public class DeleteMonthlyWorkTimeSetComCommandHandler extends CommandHandler<De
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteMonthlyWorkTimeSetComCommand> context) {
-		
+
 		DeleteMonthlyWorkTimeSetComCommand cmd = context.getCommand();
 		// 1. delete (ログイン会社ID,勤務区分,年月期間)
-		this.monthlyWorkTimeSetRepo.removeCompany(AppContexts.user().companyId(), cmd.getLaborAttr(), cmd.getYm());
+		this.monthlyWorkTimeSetRepo.removeCompany(AppContexts.user().companyId(), cmd.getLaborAttr(),
+				cmd.getYearMonths().toDomain());
 	}
 
 }

@@ -13,5 +13,5 @@ public class DeleteMonthlyWorkTimeSetComCommand {
 	// 勤務区分
 	private int laborAttr;
 	// 年月期間
-	private int ym;
+	private YearMonthPeriodCommand yearMonths;
 }
