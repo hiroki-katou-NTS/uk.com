@@ -1,6 +1,10 @@
 module nts.uk.at.kal011.d {
 
-    const PATH_API = {}
+    const API = {
+        extractStart: "at/function/alarm-workplace/alarm-list/extract/start",
+        extractExecute: "at/function/alarm-workplace/alarm-list/extract/execute",
+        extractUpdateStatus: "at/function/alarm-workplace/alarm-list/extract/update-status",
+    }
 
     @bean()
     export class Kal011DViewModel extends ko.ViewModel {
@@ -26,20 +30,50 @@ module nts.uk.at.kal011.d {
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
-            vm.start();
+            _.extend(window, { vm });
+            vm.extractAlarm().fail((err: any) => {
+                vm.$dialog.error(err);
+            });
         }
 
         /**
          * action perform for interval
          * @return JQueryPromise
          */
-        start(): JQueryPromise<any> {
+        extractAlarm(): JQueryPromise<any> {
             let vm = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process
             //  vm.interval = setInterval(vm.countTime, 1000, self);
-            dfd.resolve();
+
+            // vm.$ajax(API.extractStart).done((processStatusId: string) => {
+
+            // })
+
+            let parram: any = {
+                workplaceIds: [],
+                alarmPatternCode: "01",
+                categoryPeriods: [],
+                processStatusId: ""
+            }
+            vm.$ajax(API.extractExecute, parram).done((task: any) => {
+                console.log(task);
+                nts.uk.deferred.repeat(conf => conf.task(() => {
+                    return nts.uk.request.asyncTask.getInfo(task.id).done(function(res: any) {
+                        let taskData = res.taskDatas;
+                        console.log(taskData);
+                        if(res.succeeded){
+                            let data = {};
+                            
+                            dfd.resolve(data);
+                        } else if(res.failed){
+                            dfd.reject(res.error);
+                        }
+                    });
+                }).while(infor => {
+                    return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
+                }).pause(100));
+            });
             return dfd.promise();
         }
 
@@ -59,7 +93,7 @@ module nts.uk.at.kal011.d {
          */
         interruptProcess() {
             const vm = this;
-            vm.$dialog.confirm({messageId: "Msg_1412"}).then((result: 'yes' | 'cancel') => {
+            vm.$dialog.confirm({ messageId: "Msg_1412" }).then((result: 'yes' | 'cancel') => {
                 if (result === 'yes') {
                     //TODO server side logic to suspens
                     vm.dialogMode(AlarmExtraStatus.INTERRUPT);

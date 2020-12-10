@@ -5,20 +5,16 @@ import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
+import nts.uk.shr.com.i18n.TextResource;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 public class CheckConditionDto {
-    public CheckConditionDto(CheckCondition domain) {
-        this.workplaceCategory = domain.getWorkplaceCategory().value;
-        this.checkConditionLis = domain.getCheckConditionLis().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-
-    }
-
     public CheckConditionDto(WorkplaceCategory workplaceCategory, GeneralDate startDate, GeneralDate endDate) {
-        this.workplaceCategory = workplaceCategory.value;
+        this.category = workplaceCategory.value;
+        this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -26,7 +22,12 @@ public class CheckConditionDto {
     /**
      * カテゴリ
      */
-    private int workplaceCategory;
+    private int category;
+
+    /**
+     * カテゴリ: Name
+     */
+    private String categoryName;
 
     /**
      * チェック条件コード一覧

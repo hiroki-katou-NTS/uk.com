@@ -9,6 +9,8 @@ import nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist.SendEmailAlar
 import nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist.SendEmailAlarmListWorkPlaceCommandHandler;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.extractprocessstatus.CreateAlarmListExtractProcessStatusWorkplaceCommand;
 import nts.uk.ctx.at.function.app.command.alarmworkplace.extractprocessstatus.CreateAlarmListExtractProcessStatusWorkplaceCommandHandler;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.extractprocessstatus.UpdateAlarmListExtractProcessStatusWorkplaceCommand;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.extractprocessstatus.UpdateAlarmListExtractProcessStatusWorkplaceCommandHandler;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.CheckConditionDto;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceFinder;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.InitActiveAlarmListDto;
@@ -23,7 +25,7 @@ import java.util.List;
 /**
  * KAL011-アラームリスト(職場別)
  */
-@Path("at/function/alarm/alarm-list")
+@Path("at/function/alarm-workplace/alarm-list")
 @Produces("application/json")
 public class ExtractAlarmListWorkPlaceWebService extends WebService {
     @Inject
@@ -32,9 +34,10 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     private CreateAlarmListExtractProcessStatusWorkplaceCommandHandler createAlarmListExtractProcessStatusWorkplaceCommandHandler;
     @Inject
     private ExtractAlarmListWorkPlaceCommandHandler extractAlarmListWorkPlaceCommandHandler;
-
     @Inject
     private SendEmailAlarmListWorkPlaceCommandHandler sendEmailCommandHandler;
+    @Inject
+    private UpdateAlarmListExtractProcessStatusWorkplaceCommandHandler updateAlarmListExtractProcessStatusWorkplaceCommandHandler;
 
     @POST
     @Path("init")
@@ -58,6 +61,12 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     @Path("extract/execute")
     public AsyncTaskInfo extractAlarm(ExtractAlarmListWorkPlaceCommand command) {
         return extractAlarmListWorkPlaceCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("extract/update-status")
+    public void extractUpdateStatus(UpdateAlarmListExtractProcessStatusWorkplaceCommand command) {
+        updateAlarmListExtractProcessStatusWorkplaceCommandHandler.handle(command);
     }
 
     @POST

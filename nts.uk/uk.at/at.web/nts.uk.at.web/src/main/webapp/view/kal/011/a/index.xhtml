@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:com="http://xmlns.jcp.org/jsf/component"
->
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
-        <com:stylefile path="styles.css"/>
+        <com:stylefile path="kal011.a.styles.css"/>
         <com:scriptfile path="/view/kal/014/common/common.js"/>
         <com:scriptfile path="kal011.a.vm.js"/>
     </ui:define>
@@ -17,75 +17,76 @@
         <div id="functions-area">
             <div class="container">
                 <!--A1_1-->
-                <button id="A1_1" class="proceed" data-bind="click:openModal,enable: $root.errors.isEmpty"
-                        tabindex="1">#{i18n.getText('KAL011_5')}</button>
+                <button id="A1_1" tabindex="1" class="proceed" data-bind="click:openModal, enable: $root.errors.isEmpty, text: $vm.$i18n('KAL011_5')"/>
             </div>
         </div>
-        <div id="contents-area" class='fixed-flex-layout'>
-            <div id="left-content" class="fixed-flex-layout-left">
-                <div tabindex="3" id="tree-grid"></div>
-            </div>
-            <div id="right-content" class='fixed-flex-layout-right'>
-                <div class="table" style="width: 100%">
-                    <!-- A4_1 -->
-                    <div class="cell valign-center" style="width: 15%">
-                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL011_6')}</div>
-                    </div>
-                    <div class="cell valign-center">
-                        <!-- A4_2 -->
-                        <div id="B3_2" tabindex="4" data-bind="ntsComboBox: {
-                                options: alarmList,
-                                optionsValue: 'code',
-                                visibleItemsCount: 10,
-                                value: selectedCode,
-                                optionsText: 'name',
-                                enable: true,
-                                required: true,
-                                columns: [
-                                { prop: 'name', length: 5 }
-                                ]}">
+        <div id="contents-area">
+            <div class="table tbl-wrap">
+                <div class="cell valign-top">
+                     <!-- A3_1 -->
+                    <div tabindex="3" id="tree-grid"></div>
+                </div>
+                <div class="cell valign-top">
+                    <div class="table tbl-control">
+                        <div class="cell valign-center">
+                            <!-- A4_1 -->
+                            <div data-bind="ntsFormLabel: {text: $vm.$i18n('KAL011_6')}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A4_2 -->
+                            <div id="B3_2" tabindex="4" data-bind="ntsComboBox: {
+                                    options: alarmPatterns,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 10,
+                                    value: selectedCode,
+                                    optionsText: 'name',
+                                    enable: true,
+                                    required: true,
+                                    columns: [{ prop: 'name', length: 5 }]
+                                }"/>
                         </div>
                     </div>
-                </div>
-                <div class="table" style="padding-top: 15px;">
-                    <div class="cell valign-center">
-                        <!-- A5_1 -->
-                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL011_7')}</div>
+                    <div class="table tbl-control">
+                        <div class="cell valign-top">
+                            <!-- A5_1 -->
+                            <div data-bind="ntsFormLabel: {text: $vm.$i18n('KAL011_7')}"/>
+                        </div>
+                        <div class="cell valign-top">
+                            <!-- A6 -->
+                            <table id="fixed-table">
+                                <colgroup>
+                                    <col width="35px"/>
+                                    <col width="200px"/>
+                                    <col width="250px"/>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                         <!-- A6_1 -->
+                                        <th class="ui-widget-header"><div tabindex="-1" data-bind="ntsCheckBox: { checked: isAllchecked }"/></th>
+                                        <!-- A6_2 -->
+                                        <th class="ui-widget-header"><span class="label" data-bind="text: $vm.$i18n('KAL011_8')"/></th>
+                                        <!-- A6_3 -->
+                                        <th class="ui-widget-header"><span class="label" data-bind="text: $vm.$i18n('KAL011_9')"/></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <com:ko-foreach bind="itemList">
+                                        <tr>
+                                            <!-- A6_4 -->
+                                            <td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked }"/></td>
+                                            <!-- A6_5-->
+                                            <td><span data-bind="text: $data.categoryName"></span></td>
+                                            <!-- A6_6 and A6_7-->
+                                            <td class="periodTime">
+                                                <div tabindex="-1" id="daterangepicker"
+                                                    data-bind="ntsDateRangePicker: {enable: true,value: $data.dateRange,type: $data.type}"/>
+                                            </td>
+                                        </tr>
+                                    </com:ko-foreach>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="table" style="padding: 15px;width: 60%">
-                    <!-- A6 -->
-                    <table class="tableWrap" tabindex="5">
-                        <thead>
-                        <tr>
-                            <!-- A6_1 -->
-                            <th class="table_first_col">
-                                <div tabindex="-1" data-bind="ntsCheckBox: { checked: isAllchecked }"></div>
-                            </th>
-                            <!-- A6_2 -->
-                            <th><span class="label">#{i18n.getText('KAL011_8')}</span></th>
-                            <!-- A6_3 -->
-                            <th width="260px"><span class="label">#{i18n.getText('KAL011_9')}</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <com:ko-foreach bind="itemList">
-                            <tr>
-                                <!-- A6_4 -->
-                                <td>
-                                    <div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked }"></div>
-                                </td>
-                                <!-- A6_5-->
-                                <td><span data-bind="text: $data.categoryName"></span></td>
-                                <!-- A6_6 and A6_7-->
-                                <td>
-                                    <div tabindex="-1" id="daterangepicker"
-                                         data-bind="ntsDateRangePicker: {enable: true,value: $data.dateRange,type: $data.type}"/>
-                                </td>
-                            </tr>
-                        </com:ko-foreach>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

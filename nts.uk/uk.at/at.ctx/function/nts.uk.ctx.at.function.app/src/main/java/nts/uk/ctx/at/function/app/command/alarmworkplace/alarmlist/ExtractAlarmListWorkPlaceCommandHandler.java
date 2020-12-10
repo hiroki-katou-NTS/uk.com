@@ -3,12 +3,22 @@ package nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceIdName;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlaceRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPermissionSetting;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.AggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.PeriodByAlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,9 +43,12 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
 
     @Inject
     private AlarmPatternSettingWorkPlaceRepository alarmPatternSettingWorkPlaceRepo;
-
     @Inject
     private AggregateProcessService aggregateProcessService;
+    @Inject
+    private AlarmListExtractProcessStatusWorkplaceRepository alarmListExtractProcessStatusWorkplaceRepo;
+    @Inject
+    private WorkplaceAdapter workplaceAdapter;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -51,8 +64,21 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
             throw new BusinessException("Msg_504");
         }
 
+        dataSetter.setData("ctgCount", counter.get());
+        dataSetter.setData("ctgTotal", counter.get());
         // 集計処理
-        aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds(), convertPeriods(command.getCategoryPeriods()));
+        List<AlarmListExtractInfoWorkplace> alExtractInfos = aggregateProcessService.process(cid,
+                command.getAlarmPatternCode(), command.getWorkplaceIds(), convertPeriods(command.getCategoryPeriods()),
+                total -> dataSetter.updateData("ctgTotal", total),
+                finished -> {
+                    counter.set(counter.get() + finished);
+                    dataSetter.updateData("ctgCount", counter.get());
+                },
+                () -> shouldStop(cid, context, asyncContext));
+        // [No.560]職場IDから職場の情報をすべて取得する
+        List<WorkPlaceInforExport> wpInfos = workplaceAdapter.getWorkplaceInforByWkpIds(cid, command.getWorkplaceIds(), GeneralDate.today());
+
+        // 取得した職場情報一覧から「アラーム抽出結果（職場別）」にデータをマッピングする
     }
 
     /**
@@ -92,5 +118,17 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
                 .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStart(), x.getEnd()))
                 .collect(Collectors.toList());
         return periods;
+    }
+
+    private Boolean shouldStop(String cid, CommandHandlerContext<ExtractAlarmListWorkPlaceCommand> context,
+                               AsyncCommandHandlerContext<ExtractAlarmListWorkPlaceCommand> asyncContext) {
+        Optional<AlarmListExtractProcessStatusWorkplace> processStatus = this.alarmListExtractProcessStatusWorkplaceRepo
+                .getBy(cid, context.getCommand().getProcessStatusId());
+        if (processStatus.isPresent()
+                && processStatus.get().getStatus() == ExtractState.INTERRUPTION) {
+            asyncContext.finishedAsCancelled();
+            return true;
+        }
+        return false;
     }
 }

@@ -9,4 +9,5 @@ public class ExtractAlarmListWorkPlaceCommand {
     private List<String> workplaceIds;
     private String alarmPatternCode;
     private List<CategoryPeriodCommand> categoryPeriods;
+    private String processStatusId;
 }

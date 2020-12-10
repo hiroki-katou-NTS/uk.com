@@ -1,12 +1,19 @@
 module nts.uk.at.kal011.a {
 
-    import common=nts.uk.at.kal014.common;
-    const PATH_API = {}
+    import common = nts.uk.at.kal014.common;
+    const API = {
+        INIT: "at/function/alarm-workplace/alarm-list/init",
+        GET_CHECK_CONDITION: "at/function/alarm-workplace/alarm-list/get-check-conditions"
+    }
 
     @bean()
     export class Kal011AViewModel extends ko.ViewModel {
-        alarmList: KnockoutObservableArray<AlarmPattern>;
-        selectedCode: KnockoutObservable<string>;
+        employmentCode: string;
+        processingYm: number;
+        alarmPatterns: KnockoutObservableArray<AlarmPattern> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<string> = ko.observable(null);
+        conditions: KnockoutObservableArray<TableItem> = ko.observableArray([]);
+
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         isAllchecked: KnockoutObservable<boolean>;
@@ -18,19 +25,14 @@ module nts.uk.at.kal011.a {
         multiSelectedId: KnockoutObservable<any>;
         baseDate: KnockoutObservable<Date>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        treeGrid: TreeComponentOption;
+        treeGrid: any;
         processingState: KnockoutObservable<any>;
         workPalceCategory: any;
 
-        constructor(props: any) {
+        constructor() {
             super();
             const vm = this;
             vm.workPalceCategory = common.WORKPLACE_CATAGORY;
-            vm.alarmList = ko.observableArray([]);
-            for (let i = 0; i < 11; i++) {
-                vm.alarmList.push(new AlarmPattern("0" + i, "基本給" + i));
-            }
-            vm.selectedCode = ko.observable('1');
             vm.currentCodeList = ko.observableArray([]);
             vm.baseDate = ko.observable(new Date());
             vm.multiSelectedId = ko.observableArray([]);
@@ -58,7 +60,26 @@ module nts.uk.at.kal011.a {
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
+            vm.$blockui("invisible");
+            $("#fixed-table").ntsFixedTable({ width: 485 });
+            vm.init().done(() => {
+                vm.selectedCode.subscribe((code) => {
+                    vm.$blockui("invisible");
+                    vm.getCheckCondition()
+                    .fail((err: any) => {
+                        vm.$dialog.error(err);
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                });
+                vm.selectedCode.valueHasMutated();
+            }).fail((err: any) => {
+                vm.$dialog.error(err);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+
+            _.extend(window, { vm });
             // mock data
             for (let i = 0; i < 6; i++) {
                 vm.itemList.push(new TableItem(false, i, 'マスタチェック(' + i + ')', moment(vm.baseDate()).format("YYYY/MM/DD"), moment(vm.baseDate()).format("YYYY/MM/DD"), vm));
@@ -76,10 +97,47 @@ module nts.uk.at.kal011.a {
                 }
             });
 
-            vm.selectedCode.subscribe((code) => {
-                //TODO write the business logic with server side data
-                // alert(code);
-            });
+          
+        }
+
+        init(): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred();
+
+            vm.$ajax(API.INIT).done((res: InitActiveAlarmList) => {
+                if (res) {
+                    vm.employmentCode = res.employmentCode;
+                    vm.processingYm = res.processingYm;
+
+                    let parterns: Array<AlarmPattern> = [];
+                    _.each(res.alarmPatterns, (item: AlarmPatternSettingWorkPlace) => {
+                        parterns.push(new AlarmPattern(item.alarmPatternCode, item.alarmPatternName));
+                    })
+                    vm.alarmPatterns(parterns);
+                }
+                dfd.resolve();
+            }).fail((err: any) => {
+                dfd.reject(err)
+            })
+
+            return dfd.promise();
+        }
+
+        getCheckCondition(): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred();
+
+            vm.$ajax(API.GET_CHECK_CONDITION + "/" + vm.selectedCode() + "/" + vm.processingYm).done((res: Array<CheckCondition>) => {
+                console.log(res)
+                if (res) {
+                   
+                }
+                dfd.resolve();
+            }).fail((err: any) => {
+                dfd.reject(err)
+            })
+
+            return dfd.promise();
         }
 
         /*
@@ -91,8 +149,8 @@ module nts.uk.at.kal011.a {
             const vm = this;
             if (!vm.isFromParentUpdate()) {
                 let isAllSeletet = _.find(vm.itemList(), (x: TableItem) => {
-                        return x.isChecked() == false
-                    }
+                    return x.isChecked() == false
+                }
                 );
                 vm.isFromChildUpdate(true);
                 if (!!isAllSeletet) {
@@ -361,5 +419,24 @@ module nts.uk.at.kal011.a {
             }
             return 'yearmonth'
         }
+    }
+
+    interface InitActiveAlarmList {
+        employmentCode: string;
+        alarmPatterns: Array<AlarmPatternSettingWorkPlace>;
+        processingYm: number
+    }
+
+    interface AlarmPatternSettingWorkPlace {
+        alarmPatternCode: string;
+        alarmPatternName: string;
+    }
+
+    interface CheckCondition {
+        category: number;
+        categoryName: string;
+        checkConditionLis: Array<string>;
+        startDate: any;
+        endDate: any
     }
 }

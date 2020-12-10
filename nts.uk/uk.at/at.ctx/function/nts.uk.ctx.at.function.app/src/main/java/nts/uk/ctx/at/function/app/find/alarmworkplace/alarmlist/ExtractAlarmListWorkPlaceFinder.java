@@ -20,8 +20,10 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.UniversalK.就業.KAL_アラームリスト.KAL011_アラームリスト(職場別)
@@ -51,6 +53,8 @@ public class ExtractAlarmListWorkPlaceFinder {
 
         // ドメインモデル「アラームリストパターン設定(職場別)」を取得する。
         List<AlarmPatternSettingWorkPlace> alarmPatterns = alarmPatternSettingWorkPlaceRepo.findByCompanyId(cid);
+        alarmPatterns = alarmPatterns.stream().sorted(Comparator.comparing(AlarmPatternSettingWorkPlace::getAlarmPatternCD))
+                .collect(Collectors.toList());
 
         // アルゴリズム「社員IDと基準日から社員の雇用コードを取得」を実行する。
         Optional<EmploymentHistoryImported> empHistory = this.employmentAdapter.getEmpHistBySid(cid, sid,

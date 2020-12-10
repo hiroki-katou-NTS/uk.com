@@ -8,17 +8,17 @@ import nts.arc.enums.EnumAdaptor;
 public enum WorkplaceCategory {
 
     // マスタチェック(基本)
-    MASTER_CHECK_BASIC(0, "マスタチェック(基本)"),
+    MASTER_CHECK_BASIC(0, "KAL020_21"),
     // マスタチェック(職場)
-    MASTER_CHECK_WORKPLACE(1, "マスタチェック(職場)"),
+    MASTER_CHECK_WORKPLACE(1, "KAL020_210"),
     // マスタチェック(日次)
-    MASTER_CHECK_DAILY(2, "マスタチェック(日次)"),
+    MASTER_CHECK_DAILY(2, "KAL020_103"),
     // スケジュール／日次
-    SCHEDULE_DAILY(3, "スケジュール／日次"),
+    SCHEDULE_DAILY(3, "スケジュール／日次"), // TODO Q&A 37708
     // 月次
-    MONTHLY(4, "月次"),
+    MONTHLY(4, "KAL020_401"),
     // 申請承認
-    APPLICATION_APPROVAL(5, "申請承認");
+    APPLICATION_APPROVAL(5, "KAL020_501");
 
     public final int value;
     public final String nameId;

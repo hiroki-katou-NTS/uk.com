@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus;
 
+import java.util.Optional;
+
 public interface AlarmListExtractProcessStatusWorkplaceRepository {
 	
 	//List<AlarmListExtractInfoWorkplace> getAllAlListExtaProcess(String companyID);
 
-	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcessByID(String extraProcessStatusID);
+	Optional<AlarmListExtractProcessStatusWorkplace> getBy(String companyId, String id);
 
 	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcess(String companyID, GeneralDate startDate, int startTime);
 
@@ -12,9 +14,9 @@ public interface AlarmListExtractProcessStatusWorkplaceRepository {
 
 	//Optional<AlarmListExtractInfoWorkplace> getAlListExtaProcessByEndDate(String companyID, String employeeID);
 
-    void add(AlarmListExtractProcessStatusWorkplace alarmListExtraProcessStatus);
+    void add(AlarmListExtractProcessStatusWorkplace processStatus);
 
-	//void updateAlListExtaProcess(AlarmListExtractInfoWorkplace alarmListExtraProcessStatus);
+	void update(AlarmListExtractProcessStatusWorkplace processStatus);
 
 	//void deleteAlListExtaProcess(String extraProcessStatusID);
 

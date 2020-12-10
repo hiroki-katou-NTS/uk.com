@@ -3,8 +3,6 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
@@ -13,21 +11,16 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.applicationapproval.AlarmAppApprovalCheckCdt;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.basic.AlarmMasterBasicCheckCdt;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.daily.AlarmMasterDailyCheckCdt;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.monthly.AlarmMonthlyCheckCdt;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.schedule.AlarmScheduleCheckCdt;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.workplace.AlarmMasterWkpCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.就業機能.アラーム_職場別.アルゴリズム.集計処理.集計処理
@@ -46,8 +39,6 @@ public class AggregateProcessService {
     private AggregateProcessAdapter aggregateProcessAdapter;
     @Inject
     private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
-    @Inject
-    private WorkplaceAdapter workplaceAdapter;
 
     /**
      * 集計処理
@@ -57,7 +48,8 @@ public class AggregateProcessService {
      * @param workplaceIds     List<職場ID>
      * @param periods          List<カテゴリ別期間>
      */
-    public void process(String cid, String alarmPatternCode, List<String> workplaceIds, List<PeriodByAlarmCategory> periods) {
+    public List<AlarmListExtractInfoWorkplace> process(String cid, String alarmPatternCode, List<String> workplaceIds, List<PeriodByAlarmCategory> periods,
+                                                       Consumer<Integer> total, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
         // パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定(職場別)」を取得する
         Optional<AlarmPatternSettingWorkPlace> patternOpt = alarmPatternSettingWorkPlaceRepo.getBy(cid, new AlarmPatternCode(alarmPatternCode));
         if (!patternOpt.isPresent()) {
@@ -68,6 +60,7 @@ public class AggregateProcessService {
 
         // 取得した「アラームリストパターン設定(職場別)」．カテゴリ別チェック条件をループする
         List<CheckCondition> checkConList = patternOpt.get().getCheckConList();
+        counter.accept(checkConList.size());
         for (CheckCondition checkCdt : checkConList) {
             WorkplaceCategory category = checkCdt.getWorkplaceCategory();
             // ドメインモデル「カテゴリ別アラームチェック条件(職場別)」を取得する。
@@ -118,8 +111,12 @@ public class AggregateProcessService {
             alarmListExtractInfoWorkplaceRepo.addAll(alExtractInfos);
 
             // 抽出処理停止フラグが立っているかチェックする
-            // TODO
+            if (shouldStop.get()) {
+                break;
+            }
         }
+
+        return alExtractInfos;
     }
 
     private DatePeriod getDatePeriod(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {
