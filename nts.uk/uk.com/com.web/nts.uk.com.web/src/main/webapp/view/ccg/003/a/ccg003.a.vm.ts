@@ -115,6 +115,10 @@ module nts.uk.com.view.ccg003.a {
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
+
+            if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
+              $('#A4').css('border-bottom', 'unset');
+            }
           }
         })
         .fail(error => vm.$dialog.error(error))
@@ -140,7 +144,7 @@ module nts.uk.com.view.ccg003.a {
     replaceUrl(text: string): string {
       return text.replace(urlRegex, (url, b, c) => {
         const url2 = (c == 'www.') ? 'http://' + url : url;
-        return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
+        return '<a style="color: blue !important;" href="' + url2 + '" target="_blank">' + url + '</a>';
       });
     }
 
@@ -155,9 +159,10 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.anniversaries()[index()].flag) {
         return;
       }
+      const anniversary = vm.anniversaries()[index()].anniversaryNotice.displayDate;
       const command = {
         personalId: vm.anniversaries()[index()].anniversaryNotice.personalId,
-        anniversary: vm.anniversaries()[index()].anniversaryNotice.anniversary,
+        anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
         referDate: moment.utc(vm.dateValue().endDate).toISOString(),
       }
       vm.$blockui('show');

@@ -61,7 +61,7 @@ module nts.uk.com.view.ktg031.a {
       <style type="text/css" rel="stylesheet">
         #ktg031-container {
           width: 100%;
-          height: 100%;
+          height: 250px;
           display: flex;
           flex-direction: column;
           border: 1px groove;

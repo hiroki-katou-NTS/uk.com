@@ -8,12 +8,17 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     getDataWhenChangeDate: "screen/at/overtimehours/onChangeDate/",
   };
 
-  const KTG_027_Style = `#contents-area {
+  const KTG_027_Style = `
+  #contents-area {
     padding-top: 5px;
     padding-left: 5px;
     width: 445x;
-    height: 100%;
+    height: 450px;
     border: 1px solid #B1B1B1;
+  }
+  #contents-area::before {
+    display: inline-block;
+    height: 450px;
   }
   .addSign {
     background: url("../image/addSign.png");
@@ -139,7 +144,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   }
   .w-200 {
     width: 200px;
-    z-index: 100000000;
+    z-index: 1;
   }
   .inline-flex {
     display:inline-flex;
@@ -209,7 +214,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
         <thead>
           <tr>
             <!-- A2_1 -->
-            <th style="width: 133px;" data-bind="i18n: 'KTG027_7'">}/th>
+            <th style="width: 133px;" data-bind="i18n: 'Com_Person'">}/th>
             <!-- A2_2 -->
             <th data-bind="i18n: 'KTG027_4'"></th>
             <th class="w-200">
@@ -227,14 +232,14 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             <!-- A3_2 -->
             <td class="border-bot text-right"><a href="#" data-bind="text: $component.genTime(agreementTime), click:function() { $component.openKDW003($data) } "></a></td>
             <td class="pl-20 inline-flex position-relative">
-              <!-- A3_3 -->
-              <div class="label non-statutory-bg-color" data-bind="style: { width: $component.genWidthByTime(agreementTime)}"></div>
-              <!-- A3_4 -->
-              <div class="label time-outside-bg-color" data-bind="style: { width: $component.genWidthByTime(legalUpperTime)}"></div> 
               <!-- A2_5 -->
               <div class="dashed45"></div>
               <!-- A2_6 -->
               <div class="dashed80"></div>
+              <!-- A3_3 -->
+              <div class="label non-statutory-bg-color" data-bind="style: { width: nonStatutoryTime}"></div>
+              <!-- A3_4 -->
+              <div class="label time-outside-bg-color" data-bind="style: { width: legalTime}"></div> 
             </td>
           </tr>
         </tbody>
@@ -278,6 +283,8 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             dataItem.agreementTime = item.agreementTime.agreementTime;
             dataItem.legalUpperTime =
               item.agreMax.agreementTime - item.agreementTime.agreementTime;
+            dataItem.nonStatutoryTime = item.agreementTime.agreementTime >= 6000 ? '200px' : vm.genWidthByTime(item.agreementTime.agreementTime);
+            dataItem.legalTime = item.agreementTime.agreementTime >= 6000 ? '0px' : vm.genWidthByTime(dataItem.legalUpperTime);
             dataItem.status = item.state;
             lstTemp.push(dataItem);
           });
@@ -304,6 +311,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
 
     // format number to HM
     public genTime(data: any) {
+      if(data >= 6000){
+        return formatById("Clock_Short_HM", 6000);
+      }
       return formatById("Clock_Short_HM", data);
     }
 
@@ -361,6 +371,9 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             dataItem.agreementTime = item.agreementTime.agreementTime;
             dataItem.legalUpperTime =
               item.agreMax.agreementTime - item.agreementTime.agreementTime;
+            dataItem.nonStatutoryTime = item.agreementTime.agreementTime >= 6000 ? '200px' : vm.genWidthByTime(item.agreementTime.agreementTime);
+            dataItem.legalTime = item.agreementTime.agreementTime >= 6000 ? '0px' : vm.genWidthByTime(dataItem.legalUpperTime);
+            dataItem.status = item.state;
             dataItem.status = item.state;
             lstTemp.push(dataItem);
           });
@@ -382,22 +395,19 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
       const vm = this;
       let paramKTG026 = {
         companyId: companyID,
-        employeeId: item.employeeID,
+        employeeId: item.employeeId,
         targetDate: vm.year(),
         targetYear: "",
         mode: "Superior",
       };
-      vm.$window.storage("KTG026_PARAM", {
-        paramKTG026,
-      });
-      vm.$window.modal('at', '/view/ktg/026/a/superior.xhtml');
+      vm.$window.modal('at', '/view/ktg/026/a/superior.xhtml', paramKTG026);
     }
 
     // event open screen KDW003
     public openKDW003(item: any) {
       const vm = this;
       let paramKDW003 = {
-        lstEmployeeShare: item.employeeID,
+        lstEmployeeShare: item.employeeId,
         errorRefStartAtr: false,
         changePeriodAtr: true,
         screenMode: "Normal",
@@ -444,6 +454,10 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     agreementTime: any;
     // name
     businessName: string;
+    // 法定外時間のグラフ
+    nonStatutoryTime: string
+    // 法定内時間のグラフ
+    legalTime: string;
     constructor(init?: Partial<CurrentClosingPeriod>) {
       $.extend(this, init);
     }

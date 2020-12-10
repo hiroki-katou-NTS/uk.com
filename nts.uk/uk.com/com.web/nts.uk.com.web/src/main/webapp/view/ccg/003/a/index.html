@@ -8,7 +8,7 @@
       <div class="fw-right">
         <div data-bind="if: roleFlag">
           <!-- A2 メッセージ入力 -->
-          <a id="A2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
+          <a id="A2" class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
         </div>
         <div>
           <!-- A3 ☓アイコン -->
@@ -20,7 +20,7 @@
     <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
       <div id="top-title" class="bg-schedule-focus bg-accordion-1 no-border-bottom">
         <!-- ヘッダテキスト -->
-        <h3 data-bind="text: $component.$i18n('CCG003_5')" style="display:contents;"></h3>
+        <h3 data-bind="text: $component.$i18n('CCG003_5')" class="inline"></h3>
       </div>
       <div id="body-title" class="bg-accordion-1 no-border-radius pl-10">
         <div class="row-inline">
@@ -85,8 +85,17 @@
   </div>
 </div>
 <style>
-a {
-  color: blue !important;
+#A0 {
+  min-height: 150px;
+}
+#body-title {
+  border-bottom: 0;
+}
+.ccg003-a2 {
+  color: blue;
+}
+.datepicker-container {
+  z-index: 10000000 !important;
 }
 .mt-5 {
   margin-top: 5px;
@@ -182,9 +191,6 @@ a {
 .break-space {
   white-space: pre-wrap;
 }
-#A0 {
-  min-height: 150px;
-}
 .limited-label-custom {
   width: 99%;
   display: inline-block;
@@ -194,5 +200,8 @@ a {
 }
 .flex {
   display: flex;
+}
+.inline {
+  display: inline;
 }
 </style>

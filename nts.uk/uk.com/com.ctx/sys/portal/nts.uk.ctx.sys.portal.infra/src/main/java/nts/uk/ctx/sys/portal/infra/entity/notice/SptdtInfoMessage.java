@@ -79,11 +79,11 @@ public class SptdtInfoMessage extends UkJpaEntity
 
 	@OneToMany(targetEntity = SptdtInfoMessageTgt.class, cascade = CascadeType.ALL, mappedBy = "sptdtInfoMessage", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "SPTDT_INFO_MESSAGE_TGT")
-	public List<SptdtInfoMessageTgt> sptdtInfoMessageTgts;
+	private List<SptdtInfoMessageTgt> sptdtInfoMessageTgts;
 
 	@OneToMany(targetEntity = SptdtInfoMessageRead.class, cascade = CascadeType.ALL, mappedBy = "sptdtInfoMessage", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "SPTDT_INFO_MESSAGE_READ")
-	public List<SptdtInfoMessageRead> sptdtInfoMessageReads;
+	private List<SptdtInfoMessageRead> sptdtInfoMessageReads;
 
 	@Override
 	protected Object getKey() {

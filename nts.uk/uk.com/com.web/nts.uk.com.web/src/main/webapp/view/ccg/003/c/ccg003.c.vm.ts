@@ -81,6 +81,7 @@ module nts.uk.com.view.ccg003.c {
         if (vm.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
           if (!_.isNull(vm.notificationCreated().workplaceInfo)) {
             const workplaceInfo = this.notificationCreated().workplaceInfo;
+            vm.workPlaceIdList([workplaceInfo.workplaceId]);
             vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
           }
         }
@@ -157,7 +158,7 @@ module nts.uk.com.view.ccg003.c {
         const wkpList = vm.notificationCreated().targetWkps;
         vm.workPlaceTxtRefer(_.map(wkpList, wkp => wkp.workplaceName).join(COMMA));
       }
-      if (_.isEmpty(vm.workPlaceTxtRefer())) {
+      if (_.isEmpty(vm.workPlaceTxtRefer()) && !_.isNil(this.notificationCreated().workplaceInfo)) {
         const workplaceInfo = this.notificationCreated().workplaceInfo;
         vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
       }
@@ -228,14 +229,15 @@ module nts.uk.com.view.ccg003.c {
         }
         vm.employeeInfoId().push(getShared('CDL009Output'));
         vm.$blockui('show');
-        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId()).then((response: EmployeeInfo[]) => {
-          if (response) {
-            const employeeInfoId = _.map(response, x => x.sid)
-            const employeeName = _.map(response, x => x.bussinessName);
-            vm.employeeInfoId(employeeInfoId);
-            vm.employeeName(employeeName);
-          }
-        })
+        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId())
+          .then((response: EmployeeInfo[]) => {
+            if (response) {
+              const employeeInfoId = _.map(response, x => x.sid)
+              const employeeName = _.map(response, x => x.bussinessName);
+              vm.employeeInfoId(employeeInfoId);
+              vm.employeeName(employeeName);
+            }
+          })
           .always(() => vm.$blockui('hide'));
       });
     }

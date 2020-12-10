@@ -3,7 +3,7 @@
   <div id="A4">
     <div class="modal-header rounded-0 d-block p-0">
       <div class="uk-bg-teal p-2">
-        <h4 class="modal-title text-white" v-on:click="$close('')">       
+        <h4 class="modal-title text-white" v-on:click="$close('back')">       
             <i class="fas fa-angle-double-left mr-1" ></i>
             <span>{{ 'CCG003_30' | i18n }}</span>        
         </h4>

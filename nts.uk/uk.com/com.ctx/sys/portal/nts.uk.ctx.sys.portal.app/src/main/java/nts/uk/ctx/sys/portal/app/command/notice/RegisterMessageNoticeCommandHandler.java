@@ -27,6 +27,7 @@ public class RegisterMessageNoticeCommandHandler extends CommandHandler<Register
 	protected void handle(CommandHandlerContext<RegisterMessageNoticeCommand> context) {
 		try {
 			RegisterMessageNoticeCommand command = context.getCommand();
+			command.setCurrentDate();
 			// 1. get(社員ID、システム日付)
 			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorID(), command.getInputDate());
 			

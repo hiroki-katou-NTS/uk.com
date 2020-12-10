@@ -3,7 +3,6 @@ module ccg018.a1.viewmodel {
 
   export class ScreenModel extends base.viewModel.ScreenModelBase {
     date: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
-    items: KnockoutObservableArray<TopPageJobSet> = ko.observableArray([]);
     isVisible: KnockoutObservable<boolean> = ko.observable(false);
     categorySet: KnockoutObservable<number>;
     listJobTitle: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -46,7 +45,7 @@ module ccg018.a1.viewmodel {
         .then((data) => {
           const dataMap: any = {};
           for (const item of data) {
-            dataMap[item.roleSetCode] = item;
+            dataMap[item.roleSetCode] = new TopPageRoleSet(item);
           }
           const arrayTemp: TopPageRoleSet[] = _.map(vm.listRoleSet(), (x: RoleSet) => {
             const dataObj: any = dataMap[x.roleSetCd];
@@ -74,7 +73,9 @@ module ccg018.a1.viewmodel {
           });
           vm.initGrid(arrayTemp);
         })
-        .always(() => blockUI.clear());
+        .always(() => {
+          blockUI.clear();
+        });
     }
 
     findByCId(): JQueryPromise<any> {
@@ -106,7 +107,7 @@ module ccg018.a1.viewmodel {
       if (vm.$grid.data("igGrid")) {
         vm.$grid.ntsGrid("destroy");
       }
-      setTimeout(() => vm.$grid.ntsGrid({
+      vm.$grid.ntsGrid({
         // width: '970px',
         height: '400px',
         dataSource: vm.lisTopPageRoleSet(),
@@ -140,7 +141,7 @@ module ccg018.a1.viewmodel {
             dataType: 'number',
             width: '100px',
             ntsControl: 'Combobox2',
-            class: 'switch-date',
+            class: 'switch-date'
           },
           {
             headerText: nts.uk.resource.getText('CCG018_10'),
@@ -200,7 +201,15 @@ module ccg018.a1.viewmodel {
             enable: true
           }
         ]
-      }), 100);
+      });
+      const $firstItem = $('.nts-grid-control-topMenuCode-01')
+        .find('.nts-combo-container')
+        .find('.ui-igcombo-field');
+      $firstItem.ready(() => {
+        $('.nts-grid-control-topMenuCode-01')
+        .find('.nts-combo-container')
+        .find('.ui-igcombo-field').focus();
+      });
     }
 
     save() {
@@ -208,13 +217,17 @@ module ccg018.a1.viewmodel {
       if (vm.lisTopPageRoleSet().length === 0) {
         return;
       }
+      _.forEach(vm.lisTopPageRoleSet(), (item: any) => {
+        item.loginMenuCode = item.uniqueCode.length > 2 ? item.uniqueCode.slice(0, 4) : '';
+        item.system = (item.uniqueCode.slice(-2, -1));
+        item.menuClassification = (item.uniqueCode.slice(-1));
+      });
       blockUI.grayout();
       const command = ko.mapping.toJS(vm.lisTopPageRoleSet());
       service.update(command)
         .done(() => {
           blockUI.clear();
-          nts.uk.ui.dialog.info({ messageId: "Msg_15" })
-            .then(() => $('#grid2').focus());
+          nts.uk.ui.dialog.info({ messageId: "Msg_15" });
         }).fail((error) => {
           nts.uk.ui.dialog.alertError(error.message);
         }).always(() => blockUI.clear());
@@ -245,57 +258,13 @@ module ccg018.a1.viewmodel {
     private getSwitchDateLists() {
       const list: any = [];
       list.push({ value: 0, text: nts.uk.resource.getText('CCG018_44') });
-      _.range(1, 31).forEach(current => {
+      _.range(1, 32).forEach(current => {
         list.push({ value: current, text: current });
       });
       return list;
     }
   }
 
-  interface ITopPageJobSet {
-    code: string,
-    name: string,
-    loginMenuCd: string,
-    topMenuCd: string,
-    personPermissionSet: number,
-    switchingDate: number,
-    jobId: string,
-    system: number,
-    menuClassification: number
-  }
-
-  class TopPageJobSet {
-    roleSetCode: KnockoutObservable<string>;
-    name: KnockoutObservable<string>;
-    loginMenuCd: KnockoutObservable<string>;
-    topMenuCd: KnockoutObservable<string>;
-    personPermissionSet: KnockoutObservable<number>;
-    jobId: KnockoutObservable<string>;
-    system: KnockoutObservable<number>;
-    switchingDate: KnockoutObservable<number> = ko.observable(0);
-    menuClassification: KnockoutObservable<number>;
-    //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
-    uniqueCode: KnockoutObservable<string> = ko.observable('');
-    constructor(param: ITopPageJobSet) {
-      const self = this;
-      self.roleSetCode = ko.observable(param.code);
-      self.name = ko.observable(param.name);
-      self.loginMenuCd = ko.observable(param.loginMenuCd);
-      self.topMenuCd = ko.observable(param.topMenuCd);
-      self.personPermissionSet = ko.observable(param.personPermissionSet);
-      self.jobId = ko.observable(param.jobId);
-      self.switchingDate = ko.observable(param.switchingDate);
-      self.system = ko.observable(param.system);
-      self.menuClassification = ko.observable(param.menuClassification);
-      self.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.loginMenuCd, param.system, param.menuClassification));
-      self.uniqueCode.subscribe(function () {
-        //if uniqueCode = '00' return loginMenuCd = ''
-        self.loginMenuCd(self.uniqueCode().length > 2 ? self.uniqueCode().slice(0, 4) : '');
-        self.system(+(self.uniqueCode().slice(-2, -1)));
-        self.menuClassification(+(self.uniqueCode().slice(-1)));
-      });
-    }
-  }
   export class RoleSet {
     roleSetCd: string;
     roleSetName: string;
@@ -316,29 +285,25 @@ module ccg018.a1.viewmodel {
   class TopPageRoleSet {
     roleSetCode: string;
     name: string;
-    loginMenuCode: string;
     topMenuCode: string;
-    system: number;
     switchingDate: number = 0;
+    system: number;
     menuClassification: number;
+    loginMenuCode: string;
+    uniqueCode: string;
     //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
-    uniqueCode: KnockoutObservable<string> = ko.observable('');
+    // uniqueCode: KnockoutObservable<string> = ko.observable('');
 
     constructor(param: ITopPageRoleSet) {
       const vm = this;
       vm.roleSetCode = param.roleSetCode;
       vm.name = param.name;
-      vm.loginMenuCode = param.loginMenuCode;
       vm.topMenuCode = param.topMenuCode;
       vm.switchingDate = param.switchingDate;
+      vm.loginMenuCode = param.loginMenuCode;
       vm.system = param.system;
       vm.menuClassification = param.menuClassification;
-      vm.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.loginMenuCode, param.system, param.menuClassification));
-      vm.uniqueCode.subscribe(function () {
-        vm.loginMenuCode = vm.uniqueCode().length > 2 ? vm.uniqueCode().slice(0, 4) : '';
-        vm.system = +(vm.uniqueCode().slice(-2, -1));
-        vm.menuClassification = +(vm.uniqueCode().slice(-1));
-      });
+      vm.uniqueCode = nts.uk.text.format("{0}{1}{2}", param.loginMenuCode, param.system, param.menuClassification);
     }
   }
   export class IStandardMenu {

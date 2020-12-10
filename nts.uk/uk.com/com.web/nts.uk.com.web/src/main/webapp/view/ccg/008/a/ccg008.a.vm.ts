@@ -132,6 +132,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
           }, miliSeconds);
         }
       });
+
+      $('#content-top').focus()
     }
 
     callApiTopPage(vm: any) {
