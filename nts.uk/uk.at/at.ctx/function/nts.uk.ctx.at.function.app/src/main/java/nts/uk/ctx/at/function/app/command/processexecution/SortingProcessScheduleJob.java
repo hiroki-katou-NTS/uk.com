@@ -11,7 +11,6 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.scoped.request.thread.ThreadRequestContextHolder;
 import nts.arc.scoped.session.thread.ThreadSessionContextHolder;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.serialize.ObjectSerializer;
 import nts.gul.web.communicate.typedapi.FailureCause;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
@@ -60,13 +59,13 @@ public class SortingProcessScheduleJob extends UkScheduledJob {
 		
 		Optional<ExecutionTaskSetting> data = this.execSettingRepo.getByCidAndExecCd(companyId, execItemCd);
 		if(data.isPresent()) {
-			if(data.get().isRepeat()) {
-				GeneralDateTime nextFireTime = data
-						.map(e -> e.getScheduleId())
-						.flatMap(id -> this.scheduler.getNextFireTime(id))
-						.orElse(null);
-				s.setNextDate(nextFireTime);
-			}
+//			if(data.get().isRepeat()) {
+//				GeneralDateTime nextFireTime = data
+//						.map(e -> e.getScheduleId())
+//						.flatMap(id -> this.scheduler.getNextFireTime(id))
+//						.orElse(null);
+//				s.setNextDate(nextFireTime);
+//			}
 		}
 		if (this.batchServer.exists()) {
 			

@@ -23,9 +23,10 @@ public class CopyOutputCondSetCommandHandler extends CommandHandler<CopyOutCondS
 		CopyOutCondSet copy = context.getCommand();
 		int standType = copy.getStandType();
 		String cndSetCode = copy.getConditionSetCode();
-		StdOutputCondSet copyParams = new StdOutputCondSet(cId, copy.getDestinationCode(), copy.getCategoryId(), copy.getDelimiter(), copy.getItemOutputName(),
-				copy.getAutoExecution(), copy.getDestinationName(), copy.getConditionOutputName(), copy.getStringFormat());
-		stdOutputCondSetService.copy(standType, cndSetCode, copyParams);
+		// Todo nws-minhnb
+//		StdOutputCondSet copyParams = new StdOutputCondSet(cId, copy.getDestinationCode(), copy.getCategoryId(), copy.getDelimiter(), copy.getItemOutputName(),
+//				copy.getAutoExecution(), copy.getDestinationName(), copy.getConditionOutputName(), copy.getStringFormat());
+//		this.stdOutputCondSetService.copy(standType, cndSetCode, copyParams);
 		
 	}
 

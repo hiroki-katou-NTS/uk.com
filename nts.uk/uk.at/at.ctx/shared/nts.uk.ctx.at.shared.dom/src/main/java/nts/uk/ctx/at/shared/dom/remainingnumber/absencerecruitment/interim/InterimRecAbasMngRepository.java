@@ -162,5 +162,11 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period);
-	
+
+	/**
+	 * kdl035 ドメインモデル「暫定振出管理データ」を取得する
+	 * @param mngIds
+	 * @return
+	 */
+	List<InterimRecMng> getRecByIds(List<String> mngIds);
 }

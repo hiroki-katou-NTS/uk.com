@@ -1,294 +1,255 @@
+/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.kbt002.h {
-    export module viewmodel {
-        import alert = nts.uk.ui.dialog.alert;
-        import modal = nts.uk.ui.windows.sub.modal;
-        import setShared = nts.uk.ui.windows.setShared;
-        import getShared = nts.uk.ui.windows.getShared;
-        import block = nts.uk.ui.block;
-        import dialog = nts.uk.ui.dialog;
-        import getText = nts.uk.resource.getText;
-        import windows = nts.uk.ui.windows;
 
-        export class ScreenModel {
-            execLogList: KnockoutObservableArray<any>;
-            gridListColumns: KnockoutObservableArray<any>;
-            enable: KnockoutObservable<boolean>;
-            required: KnockoutObservable<boolean>;
-            dateValue: KnockoutObservable<any>;
-            startDateString: KnockoutObservable<string>;
-            endDateString: KnockoutObservable<string>;
-            constructor() {
-                let self = this;
-                self.execLogList = ko.observableArray([]);
+  const DOM_DATA_VALUE = 'data-value';
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    execLogList: KnockoutObservableArray<ExecutionLog> = ko.observableArray([]);
+    gridListColumns: KnockoutObservableArray<any>;
+    enable: KnockoutObservable<boolean> = ko.observable(true);
+    required: KnockoutObservable<boolean> = ko.observable(true);
+    dateValue: KnockoutObservable<any> = ko.observable({});
+    startDateString: KnockoutObservable<string> = ko.observable("");
+    endDateString: KnockoutObservable<string> = ko.observable("");
+    execItemCd: string;
 
-                self.enable = ko.observable(true);
-                self.required = ko.observable(true);
+    // Start page
+    created(params: any) {
+      const vm = this;
+      if (params) {
+        vm.execItemCd = params.execItemCd;
+      }
+    }
 
-                self.startDateString = ko.observable("");
-                self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({});
+    mounted() {
+      const vm = this;
+      vm.startDateString.subscribe(function (value) {
+        vm.dateValue().startDate = value;
+        vm.dateValue.valueHasMutated();
+      });
 
-                self.startDateString.subscribe(function(value) {
-                    self.dateValue().startDate = value;
-                    self.dateValue.valueHasMutated();
+      vm.endDateString.subscribe(function (value) {
+        vm.dateValue().endDate = value;
+        vm.dateValue.valueHasMutated();
+      });
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth() + 1;
+      var yyyy = today.getFullYear();
+      vm.startDateString(yyyy + "/" + mm + "/" + dd);
+      vm.endDateString(yyyy + "/" + mm + "/" + dd);
+      $("#daterangepicker").focus();
+
+      $(document).on("click", ".button-open-g", function () {
+        const key = $(this).attr(DOM_DATA_VALUE);
+        vm.openDialogG(key);
+      });
+
+      vm.initData();
+    }
+
+    closeDialog() {
+      const vm = this;
+      vm.$window.close();
+    }
+
+    loadIgrid() {
+      const vm = this;
+      // var execItemCdHeader = '<button tabindex="5" class="setting small" style="text-align: center;margin-top: 0px !important;margin-bottom: 0px !important;" onclick="$vm.openDialogG(this, \'${execItemCd}\',\'${execId}\')"  >' + vm.$i18n("KBT002_159") + '</button>';
+      $("#grid").igGrid({
+        primaryKey: "execId",
+        height: 520,
+        dataSource: vm.execLogList(),
+        autoGenerateColumns: false,
+        alternateRowStyles: false,
+        dataSourceType: "json",
+        columns: [
+          { key: "lastExecDateTime", width: "180px", height: "25px", headerText: vm.$i18n('KBT002_214'), dataType: "string", formatter: _.escape },
+          { key: "lastEndExecDateTime", width: "180px", height: "25px", headerText: vm.$i18n('KBT002_215'), dataType: "string", formatter: _.escape },
+          { key: "rangeDateTime", width: "80px", height: "25px", headerText: vm.$i18n('KBT002_216'), dataType: "string", formatter: _.escape },
+          { key: "overallStatusText", width: "70px", height: "25px", headerText: vm.$i18n('KBT002_217'), dataType: "string", formatter: _.escape },
+          { key: "errorSystemText", width: "100px", height: "25px", headerText: vm.$i18n('KBT002_218'), dataType: "string", formatter: _.escape },
+          { key: "errorBusinessText", width: "80px", height: "25px", headerText: vm.$i18n('KBT002_219'), dataType: "string", formatter: _.escape },
+          {
+            key: "execItemCd",
+            width: "45px",
+            height: "25px",
+            headerText: '',
+            dataType: "string",
+            formatter: (value: any, item: ExecutionLog) => {
+              const $button = $("<button>",
+                {
+                  "class": "setting small button-open-g", "tabindex": 5,
+                  "style": "text-align: center;margin-top: 0px !important;margin-bottom: 0px !important;",
+                  "text": vm.$i18n("KBT002_159")
                 });
-
-                self.endDateString.subscribe(function(value) {
-                    self.dateValue().endDate = value;
-                    self.dateValue.valueHasMutated();
-                });
-                var today = new Date();
-                var dd = today.getDate();
-                var mm = today.getMonth() + 1;
-                var yyyy = today.getFullYear();
-                self.startDateString(yyyy + "/" + mm + "/" + dd);
-                self.endDateString(yyyy + "/" + mm + "/" + dd);
+              $button.attr(DOM_DATA_VALUE, item["execId"]);
+              return $button[0].outerHTML;
             }
+          },
+          { key: "overallErrorText", width: "430px", height: "25px", headerText: vm.$i18n('KBT002_220'), dataType: "string", formatter: _.escape },
+          { key: "execId", dataType: "string", formatter: _.escape, hidden: true }
+        ],
+        features: [
+          {
+            name: "Updating",
+            showDoneCancelButtons: false,
+            enableAddRow: false,
+            enableDeleteRow: false,
+            editMode: 'cell',
+            columnSettings: [
+              { columnKey: "execItemCd", readOnly: true },
+              { columnKey: "lastExecDateTime", readOnly: true },
+              { columnKey: "lastEndExecDateTime", readOnly: true },
+              { columnKey: "rangeDateTime", readOnly: true },
+              { columnKey: "overallStatus", readOnly: true },
+              { columnKey: "errorSystemText", readOnly: true },
+              { columnKey: "errorBusinessText", readOnly: true },
+              { columnKey: "overallErrorText", readOnly: true },
+            ]
+          },
+          {
+            name: "Selection",
+            mode: "row",
+            multipleSelection: false,
+            multipleCellSelectOnClick: false
+          },
+          {
+            name: 'Paging',
+            pageSize: 15,
+            currentPageIndex: 0
+          },
+          {
+            name: "Sorting",
+            persist: true
+          },
+        ],
+        ntsControls: [{ name: 'execItemCd', text: 'execItemCd', controlType: 'button' }]
+      });
+    }
 
-            // Start page
-            start(): JQueryPromise<any> {
-                let self = this;
-                var dfd = $.Deferred();
-                var sharedData = nts.uk.ui.windows.getShared('inputDialogH');
-                if (sharedData) {
-                    service.getProcExecList(sharedData.execItemCd).done(data => {
-                        let execLogs = [];
-                        _.forEach(data, function(item) {
-                            execLogs.push(new ExecutionLog({ 
-                            lastExecDateTime: item.lastExecDateTime, 
-                                execItemCd: item.execItemCd, 
-                                overallStatus: item.overallStatus, 
-                                overallError: item.overallError, 
-                                execId: item.execId ,
-                                lastEndExecDateTime: item.lastEndExecDateTime,
-                                rangeDateTime: item.rangeDateTime,
-                                errorSystem: item.errorSystem,
-                                errorBusiness: item.errorBusiness,
-                                errorSystemText : item.errorSystemText,
-                                errorBusinessText : item.errorBusinessText
-                                }))
-                        });
-                        self.execLogList(execLogs);
-                        self.loadIgrid();
-                        dfd.resolve();
-                    });
-                }
-                return dfd.promise();
-            }
+    initData() {
+      const vm = this;
+      vm.$blockui("grayout");
+        service.getProcExecList(vm.execItemCd)
+          .done(data => {
+            let execLogs: ExecutionLog[] = [];
+            _.forEach(data, function (item) {
+              execLogs.push(new ExecutionLog(item));
+            });
+            vm.execLogList(execLogs);
+            vm.loadIgrid();
+          })
+          .always(() => vm.$blockui("clear"));
+    }
 
-
-            closeDialog() {
-                windows.close();
-            }
-
-            loadIgrid() {
-                let self = this;
-                var execItemCdHeader = '<button tabindex="5" class="setting small" style="text-align: center;margin-top: 0px !important;margin-bottom: 0px !important;"  onclick="openDialogG(this, \'${execItemCd}\',\'${execId}\')"  >' + getText("KBT002_159") + '</button>';
-                // var execItemCdHeader = '<button tabindex="5" class="setting small" style="margin: 0px !important;" data-bind="click: function(data, event) { openDialogG(data, event)}" data-code="${execItemCd}" >' + getText("KBT002_159") + '</button>';
-                $("#grid").igGrid({
-                    primaryKey: "execId",
-                    height: 395,
-                    dataSource: self.execLogList(),
-                    autoGenerateColumns: false,
-                    alternateRowStyles: false,
-                    dataSourceType: "json",
-                    // autoCommit: true,
-                    //virtualization: true,
-                    // rowVirtualization: false,
-                    //virtualizationMode: "continuous",
-                    //ntsControl: 'execItemCd'
-                    //, template: execItemCdHeader
-                    columns: [
-                        //ProcessExecutionLogHistory
-                        { key: "lastExecDateTime", width: "180px", height: "25px", headerText: nts.uk.resource.getText('KBT002_214'), dataType: "string", formatter: _.escape },
-                        { key: "lastEndExecDateTime", width: "180px", height: "25px", headerText: nts.uk.resource.getText('KBT002_215'), dataType: "string", formatter: _.escape },
-                        { key: "rangeDateTime", width: "80px", height: "25px", headerText: nts.uk.resource.getText('KBT002_216'), dataType: "string", formatter: _.escape },
-                        { key: "overallStatus", width: "80px", height: "25px", headerText: nts.uk.resource.getText('KBT002_217'), dataType: "string", formatter: _.escape },
-                        { key: "errorSystemText", width: "120px", height: "25px", headerText: nts.uk.resource.getText('KBT002_218'), dataType: "string", formatter: _.escape },
-                        { key: "errorBusinessText", width: "80px", height: "25px", headerText: nts.uk.resource.getText('KBT002_219'), dataType: "string", formatter: _.escape },
-                        { key: "execItemCd", width: "45px", height: "25px", headerText: '', dataType: "string", template: execItemCdHeader },
-                        { key: "overallError", width: "385px", height: "25px", headerText: nts.uk.resource.getText('KBT002_220'), dataType: "string", formatter: _.escape },
-                        { key: "execId", dataType: "string", formatter: _.escape, hidden: true }
-                    ],
-                    features: [
-                        {
-                            name: "Updating",
-                            showDoneCancelButtons: false,
-                            enableAddRow: false,
-                            enableDeleteRow: false,
-                            editMode: 'cell',
-                            columnSettings: [
-                                { columnKey: "execItemCd", readOnly: true },
-                                { columnKey: "lastExecDateTime", readOnly: true },
-                                { columnKey: "lastEndExecDateTime", readOnly: true },
-                                { columnKey: "rangeDateTime", readOnly: true },
-                                { columnKey: "overallStatus", readOnly: true },
-                                { columnKey: "errorSystemText", readOnly: true },
-                                { columnKey: "errorBusinessText", readOnly: true },
-                                { columnKey: "overallErrorText", readOnly: true },
-                            ]
-                        },
-                        {
-                            name: "Selection",
-                            mode: "row",
-                            multipleSelection: false,
-                            //  touchDragSelect: false, // this is true by default
-                            multipleCellSelectOnClick: false
-                        }, {
-                            name: 'Paging',
-                            pageSize: 10,
-                            currentPageIndex: 0
-                        },{
-                           
-                            name: "Sorting",
-                            persist: true
-                        }, 
-                        
-                    ],
-                    ntsControls: [{ name: 'execItemCd', text: 'execItemCd', click: function() { alert("Button!!"); }, controlType: 'button' }]
-                });
-
-            }
-            /*
-            openDialogG(data, event) {
-                let self = this;
-                block.grayout();
-                var execItemCd = $(event.target).data("code");
-                var execLog = _.find(self.execLogList(), function(o) { return o.execItemCd == execItemCd; });
-                setShared('inputDialogG', { execLog: execLog });
-                modal("/view/kbt/002/g/index.xhtml").onClosed(function() {
-                    block.clear();
-                });
-            }
-    */
-            search() {
-                let self = this;
-                if (!nts.uk.ui.errors.hasError()) {
-                    var today = new Date();
-                    var dd = today.getDate();
-                    var mm = today.getMonth() + 1;
-                    var yyyy = today.getFullYear();
-                    var startDateSplit = self.dateValue().startDate.split("/");
-                    var endDateSplit = self.dateValue().endDate.split("/");
-                    var yearEndDate = new Number(endDateSplit[0]);
-                    var monthEndDate = new Number(endDateSplit[1]);
-                    var dayEndDate = new Number(endDateSplit[2]);
-                    var endDate = new Date(endDateSplit[0],endDateSplit[1]-1,endDateSplit[2]);
-                    if (moment.utc(endDate,"YYYY/MM/DD").isBefore(moment.utc(today,"YYYY/MM/DD"))) {
-                        var sharedData = nts.uk.ui.windows.getShared('inputDialogH');
-                        if (sharedData) {
-                            var startDate = new Date(startDateSplit[0],startDateSplit[1]-1,startDateSplit[2]);
-                            //ProcessExecutionDateParam
-                            var param = new ProcessExecutionDateParam(sharedData.execItemCd,moment.utc(startDate,"YYYY/MM/DD"),moment.utc(endDate,"YYYY/MM/DD"));
-                            service.findListDateRange(param).done(data => {
-                                let execLogs = [];
-                                _.forEach(data, function(item) {
-                                    execLogs.push(new ExecutionLog({ 
-                                    lastExecDateTime: item.lastExecDateTime, 
-                                        execItemCd: item.execItemCd, 
-                                        overallStatus: item.overallStatus, 
-                                        overallError: item.overallError, 
-                                        execId: item.execId,
-                                        lastEndExecDateTime: item.lastEndExecDateTime,
-                                        rangeDateTime: item.rangeDateTime,
-                                        errorSystem: item.errorSystem,
-                                        errorBusiness: item.errorBusiness,
-                                        errorSystemText : item.errorSystemText,
-                                        errorBusinessText : item.errorBusinessText 
-                                    }))
-                                });
-                                $("#grid").igGrid("option", "dataSource",execLogs);
-                            });
-                        }
-                    } else {
-                       nts.uk.ui.dialog.alertError({ messageId: "Msg_1077" });
-                    }
-                    
-                }
-            }
-
+    search() {
+      const vm = this;
+      vm.$validate().then((valid: boolean) => {
+        if (valid) {
+          var today = new Date();
+          var startDateSplit = vm.dateValue().startDate.split("/");
+          var endDateSplit = vm.dateValue().endDate.split("/");
+          var endDate = new Date(endDateSplit[0], endDateSplit[1] - 1, endDateSplit[2]);
+          if (moment.utc(endDate, "YYYY/MM/DD").isBefore(moment.utc(today, "YYYY/MM/DD"))) {
+            vm.$blockui("grayout");
+            var startDate = new Date(startDateSplit[0], startDateSplit[1] - 1, startDateSplit[2]);
+            //ProcessExecutionDateParam
+            var param = new ProcessExecutionDateParam(vm.execItemCd, moment.utc(startDate, "YYYY/MM/DD"), moment.utc(endDate, "YYYY/MM/DD"));
+            service.findListDateRange(param).done(data => {
+              let execLogs: ExecutionLog[] = [];
+              _.forEach(data, function (item) {
+                execLogs.push(new ExecutionLog(item));
+              });
+              vm.execLogList(execLogs);
+              $("#grid").igGrid("option", "dataSource", execLogs);
+            }).always(() => vm.$blockui("clear"));
+          } else {
+            vm.$dialog.error({ messageId: "Msg_1077" });
+          }
         }
-
-    }
-    export interface IExecutionLog {
-        lastExecDateTime: string;
-        execItemCd: string;
-        overallStatus: string;
-        overallError: string;
-        execId: string;
-        lastEndExecDateTime: string;
-        rangeDateTime: string;
-        errorSystem :boolean;
-        errorBusiness :boolean;
-        errorSystemText : string;
-        errorBusinessText : string;
-        
+      });
     }
 
-    //        export class ExecutionLog {
-    //            lastExecDateTime:    KnockoutObservable<string> = ko.observable('');
-    //            execItemCd:          KnockoutObservable<string> = ko.observable('');
-    //            overallStatus:       KnockoutObservable<string> = ko.observable('');
-    //            overallError:        KnockoutObservable<string> = ko.observable('');
-    //            constructor(param: IExecutionLog) {
-    //                let self = this;
-    //                self.execItemCd(param.execItemCd || '');
-    //                self.overallStatus(param.overallStatus || '');
-    //                self.overallError(param.overallError);
-    //                self.lastExecDateTime(param.lastExecDateTime || '');
-    //            }
-    //        }
-    export class ExecutionLog {
-        lastExecDateTime: string;
-        execItemCd: string;
-        overallStatus: string;
-        overallError: string;
-        execId: string;
-        lastEndExecDateTime: string;
-        rangeDateTime: string;
-        errorSystem :boolean;
-        errorBusiness :boolean;
-        errorSystemText : string;
-        errorBusinessText : string;
-        constructor(param: IExecutionLog) {
-            let self = this;
-            self.execItemCd = param.execItemCd;
-            self.overallStatus = param.overallStatus;
-            self.overallError = param.overallError;
-            self.lastExecDateTime = param.lastExecDateTime;
-            self.execId = param.execId;
-            self.lastEndExecDateTime = param.lastEndExecDateTime;
-            self.rangeDateTime = param.rangeDateTime;
-            self.errorSystem = param.errorSystem;
-            self.errorBusiness = param.errorBusiness;
-            self.errorSystemText = param.errorSystemText;
-            self.errorBusinessText = param.errorBusinessText;
-        }
+    public openDialogG(execId: string) {
+      const vm = this;
+      const executionLog = _.find(vm.execLogList(), { execId: execId });
+      const param = {
+        schCreateStart: executionLog.schCreateStart,
+        schCreateEnd: executionLog.schCreateEnd,
+        dailyCreateStart: executionLog.dailyCreateStart,
+        dailyCreateEnd: executionLog.dailyCreateEnd,
+        dailyCalcStart: executionLog.dailyCalcStart,
+        dailyCalcEnd: executionLog.dailyCalcEnd,
+        reflectApprovalResultStart: executionLog.reflectApprovalResultStart,
+        reflectApprovalResultEnd: executionLog.reflectApprovalResultEnd,
+        execId: executionLog.execId,
+        execItemCd: executionLog.execItemCd,
+        overallError: executionLog.overallErrorText,
+        overallStatus: executionLog.overallStatusText,
+        taskLogList: executionLog.taskLogList
+      };
+      vm.$window.modal("/view/kbt/002/g/index.xhtml", param);
     }
-    
-    export class ProcessExecutionDateParam {
-        execItemCd: string;
-        startDate: any;
-        endDate: any;
-        constructor(execItemCd: string,startDate: any,endDate: any) {
-            let self = this;
-            self.execItemCd = execItemCd;
-            self.startDate = startDate;
-            self.endDate = endDate;
-        }
+  }
+  export class ExecutionLog {
+    lastExecDateTime: string;
+    execItemCd: string;
+    overallStatus: string;
+    overallError: string;
+    execId: string;
+    lastEndExecDateTime: string;
+    rangeDateTime: string;
+    errorSystem: boolean;
+    errorBusiness: boolean;
+    errorSystemText: string;
+    errorBusinessText: string;
+    overallStatusText: string;
+    overallErrorText: string;
+    taskLogList: any[];
+    schCreateStart: moment.Moment;
+    schCreateEnd: moment.Moment;
+    dailyCreateStart: moment.Moment;
+    dailyCreateEnd: moment.Moment;
+    dailyCalcStart: moment.Moment;
+    dailyCalcEnd: moment.Moment;
+    reflectApprovalResultStart: moment.Moment;
+    reflectApprovalResultEnd: moment.Moment;
+    constructor(param: any) {
+      this.execItemCd = param.execItemCd;
+      this.overallStatus = param.overallStatus;
+      this.overallError = param.overallError;
+      this.lastExecDateTime = moment.utc(param.lastExecDateTime).format("YYYY/MM/DD hh:mm:ss");
+      this.execId = param.execId;
+      this.lastEndExecDateTime = param.lastEndExecDateTime ? moment.utc(param.lastEndExecDateTime).format("YYYY/MM/DD hh:mm:ss") : null;
+      this.rangeDateTime = param.rangeDateTime;
+      this.errorSystem = param.errorSystem;
+      this.errorBusiness = param.errorBusiness;
+      this.errorSystemText = param.errorSystemText;
+      this.errorBusinessText = param.errorBusinessText;
+      this.overallErrorText = param.overallErrorText;
+      this.overallStatusText = param.overallStatusText;
+      this.schCreateStart = param.schCreateStart;
+      this.schCreateEnd = param.schCreateEnd;
+      this.dailyCreateStart = param.dailyCreateStart;
+      this.dailyCreateEnd = param.dailyCreateEnd;
+      this.dailyCalcStart = param.dailyCalcStart;
+      this.dailyCalcEnd = param.dailyCalcEnd;
+      this.reflectApprovalResultStart = param.reflectApprovalResultStart;
+      this.reflectApprovalResultEnd = param.reflectApprovalResultEnd;
+      this.taskLogList = param.taskLogListDto;
     }
+  }
 
-
+  export class ProcessExecutionDateParam {
+    execItemCd: string;
+    startDate: any;
+    endDate: any;
+    constructor(execItemCd: string, startDate: any, endDate: any) {
+      let vm = this;
+      vm.execItemCd = execItemCd;
+      vm.startDate = startDate;
+      vm.endDate = endDate;
+    }
+  }
 }
-
-
-function openDialogG(element, execItemCd, execId) {
-    nts.uk.ui.block.grayout();
-    nts.uk.at.view.kbt002.h.service.getLogHistory(execItemCd, execId).done(function(x) {
-        nts.uk.ui.windows.setShared('inputDialogG', { execLog: _.assign(x,{taskLogExecId: execId}) });
-        nts.uk.ui.windows.sub.modal("/view/kbt/002/g/index.xhtml").onClosed(function() {
-            nts.uk.ui.block.clear();
-        });
-    });
-}
-

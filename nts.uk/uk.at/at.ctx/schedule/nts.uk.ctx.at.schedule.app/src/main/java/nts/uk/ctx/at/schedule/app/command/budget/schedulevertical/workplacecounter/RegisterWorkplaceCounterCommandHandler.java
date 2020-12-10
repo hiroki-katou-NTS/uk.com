@@ -2,8 +2,8 @@ package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecoun
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.*;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTimeRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterSelectionRepo;
@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @Transactional
 @Stateless
-public class RegisterWorkplaceCounterCommandHandler extends CommandHandler<RegisterWorkplaceCounterCommand> {
+public class RegisterWorkplaceCounterCommandHandler extends CommandHandlerWithResult<RegisterWorkplaceCounterCommand, List<WorkplaceCounterCategory>> {
 
 	@Inject
 	private WorkplaceCounterRepo repository;
@@ -36,17 +37,19 @@ public class RegisterWorkplaceCounterCommandHandler extends CommandHandler<Regis
 	private WorkplaceCounterLaborCostAndTimeRepo laborCostAndTimeRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<RegisterWorkplaceCounterCommand> context) {
+	protected List<WorkplaceCounterCategory> handle(CommandHandlerContext<RegisterWorkplaceCounterCommand> context) {
 		RegisterWorkplaceCounterCommand command = context.getCommand();
 		WorkplaceCounter workplaceCounter = WorkplaceCounter.create(
 			command.getWorkplaceCategory().stream().map(x -> EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository,numberCounterSelectionRepo,timeZonePeopleNumberRepo,laborCostAndTimeRepo);
 
 		//1 : 登録する(Require, 職場計) : 職場計の登録結果
-		WorkplaceCounterRegisterResult atomTask = WorkplaceCounterRegister.register(require,workplaceCounter);
+		WorkplaceCounterRegisterResult result = WorkplaceCounterRegister.register(require,workplaceCounter);
 		transaction.execute(() -> {
-			atomTask.getAtomTask().run();
+			result.getAtomTask().run();
 		});
+
+		return result.getNotDetailSettingList();
 	}
 
 	@AllArgsConstructor

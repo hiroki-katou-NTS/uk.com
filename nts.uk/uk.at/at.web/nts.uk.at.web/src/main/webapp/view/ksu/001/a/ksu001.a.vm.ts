@@ -102,7 +102,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // 表示形式 ＝ 日付別(固定) = 0
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
-        KEY: string = 'USER_INFOR';
+        KEY: string = 'nts.uk.characteristics.ksu001Data';
         dataCell: any; // data để paste vào grid
         listPageInfo : any;
         targetShiftPalette : any;

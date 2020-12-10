@@ -5,20 +5,20 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPer
 
 @Data
 public class ExtractionPeriodUnitDto {
-	
+
 	private String extractionId;
-	
+
 	private int extractionRange;
-	
+
 	private int segmentationOfCycle;
-	
-	
+
+
 	public static ExtractionPeriodUnitDto fromDomain(ExtractionPeriodUnit domain){
 		ExtractionPeriodUnitDto dto = new  ExtractionPeriodUnitDto();
-		
+
 		dto.setExtractionId(domain.getExtractionId());
 		dto.setExtractionRange(domain.getExtractionRange().value);
-		dto.setSegmentationOfCycle(domain.getSegmentationOfCycle().value);	
+		dto.setSegmentationOfCycle(domain.getSegmentationOfCycle().value);
 		return dto;
 	}
 }

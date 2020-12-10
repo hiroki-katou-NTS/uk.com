@@ -310,19 +310,19 @@
                         </div>
                     </td>
                 </tr>
-                <tr class="inline-radio">
-                    <td class="color-header" id="a14_2">#{i18n.getText('KAF022_106')}</td>
-                    <td class="two-radio">
-                        <div id="a14_3" class="a5_14"
-                             data-bind="ntsRadioBoxGroup: {
-                                    options: $parent.itemListA14_3,
-                                    optionsValue: 'code',
-                                    optionsText: 'name',
-                                    value: includeConcurrentPersonel,
-                                    enable: true }">
-                        </div>
-                    </td>
-                </tr>
+                <!--<tr class="inline-radio">-->
+                    <!--<td class="color-header" id="a14_2">#{i18n.getText('KAF022_106')}</td>-->
+                    <!--<td class="two-radio">-->
+                        <!--<div id="a14_3" class="a5_14"-->
+                             <!--data-bind="ntsRadioBoxGroup: {-->
+                                    <!--options: $parent.itemListA14_3,-->
+                                    <!--optionsValue: 'code',-->
+                                    <!--optionsText: 'name',-->
+                                    <!--value: includeConcurrentPersonel,-->
+                                    <!--enable: true }">-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
             </tbody>
         </table>
     </div>
@@ -494,15 +494,15 @@
                         <div
                             data-bind="ntsCheckBox: {
                                         checked: displayFixedReason,
-                                        enable: $parent.prePostDisplayAtr() == 1
-                                }">#{i18n.getText('KAF022_61')}</div>
+                                        enable: $parent.prePostDisplayAtr() == 1 &#124;&#124; appType == 15
+                                }">#{i18n.getText('KAF022_36')}</div>
                     </td>
                     <td style="text-align: center">
                         <div
                             data-bind="ntsCheckBox: {
                                         checked: displayAppReason,
-                                        enable: $parent.prePostDisplayAtr() == 1
-                                }">#{i18n.getText('KAF022_61')}</div>
+                                        enable: $parent.prePostDisplayAtr() == 1 &#124;&#124; appType == 15
+                                }">#{i18n.getText('KAF022_36')}</div>
                     </td>
                 </tr>
             </tbody>

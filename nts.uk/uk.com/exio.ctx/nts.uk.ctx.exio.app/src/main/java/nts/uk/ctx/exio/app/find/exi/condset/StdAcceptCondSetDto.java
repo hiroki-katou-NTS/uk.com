@@ -62,14 +62,14 @@ public class StdAcceptCondSetDto {
 	private Integer deleteExistDataMethod;
 
 	public static StdAcceptCondSetDto fromDomain(StdAcceptCondSet domain) {
-		return new StdAcceptCondSetDto(domain.getSystemType().value, domain.getConditionSetCd().v(),
+		return new StdAcceptCondSetDto(domain.getSystemType().value, domain.getConditionSetCode().v(),
 				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
 				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
-				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
+				domain.getCsvDataItemLineNumber().isPresent() ? domain.getCsvDataItemLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
 				domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null,
-				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);
+				domain.getDeleteExistDataMethod().isPresent() ? domain.getDeleteExistDataMethod().get().value : null);
 	}
 
 }
