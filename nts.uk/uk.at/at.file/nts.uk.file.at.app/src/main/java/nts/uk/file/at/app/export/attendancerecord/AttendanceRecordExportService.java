@@ -359,9 +359,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				if (!singleId.isEmpty()){				
 					syncResultsDaily.addAll(attendanceService.getValueOf(Arrays.asList(emp.getKey()), emp.getValue(), singleId));
 				}
-				if (!monthlyId.isEmpty()) {
-                    syncResultsMonthly.addAll(attendanceService.getMonthlyValueOf(Arrays.asList(emp.getKey()), periodMonthly, monthlyId));
-                }
+                syncResultsMonthly.addAll(attendanceService.getMonthlyValueOf(Arrays.asList(emp.getKey()), periodMonthly, monthlyId));
 			});
 			dailyValues = new ArrayList<>(syncResultsDaily);
             monthlyValues =  new ArrayList<>(syncResultsMonthly);
@@ -402,7 +400,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 		});
 
-		
 		//	社員IDでループ - Loop by employee ID
 		for (Employee employee : distinctEmployeeListAfterSort) {
 			// Number of real data
@@ -416,9 +413,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(),
 						screenUseAtrList, 1));
 			}
+
 			if (!attItemValueResults.isEmpty()) {
 
-			// 取得した月別実績の着目社員分をループ
+				// 取得した月別実績の着目社員分をループ
 				for (MonthlyAttendanceItemValueResult monthlyValue : attItemValueResults) {
 					YearMonth yearMonth = monthlyValue.getYearMonth();
 					Integer realData = 0;
