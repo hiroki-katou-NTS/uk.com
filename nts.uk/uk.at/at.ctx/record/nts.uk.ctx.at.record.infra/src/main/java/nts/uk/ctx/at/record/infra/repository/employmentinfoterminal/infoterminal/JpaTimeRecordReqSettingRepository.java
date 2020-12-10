@@ -71,6 +71,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 			statement.setString(1, contractCode.v());
 			statement.setString(2, empInfoTerCode.v());
             List<TimeRecordReqSetting> listFullData = createTimeReqSetting(statement.executeQuery());
+            if (listFullData.isEmpty()) return Optional.empty();
             return getOneByList(listFullData);
 
 		} catch (SQLException e) {
