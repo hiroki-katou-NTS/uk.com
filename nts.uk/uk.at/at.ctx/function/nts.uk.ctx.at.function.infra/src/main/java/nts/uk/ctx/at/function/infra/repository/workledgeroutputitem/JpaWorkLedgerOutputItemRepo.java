@@ -156,8 +156,8 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         if (!CollectionUtil.isEmpty(entity)) {
             this.commandProxy().removeAll(entity);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KfnmtRptRecDispCont.fromDomain(outputSetting));
         }
+        this.commandProxy().insertAll(KfnmtRptRecDispCont.fromDomain(outputSetting));
     }
 
     @Override
