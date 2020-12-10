@@ -16,8 +16,8 @@ import java.util.Optional;
 public class AlarmListExtractProcessStatusWorkplace extends AggregateRoot {
 
     public AlarmListExtractProcessStatusWorkplace(String id, String companyID, GeneralDate startDate,
-                                                  int startTime, String employeeID, GeneralDate endDate, Integer endTime,
-                                                  ExtractState status) {
+                                                       int startTime, String employeeID, GeneralDate endDate, Integer endTime,
+                                                       ExtractState status) {
         super();
         this.id = id;
         this.companyID = companyID;

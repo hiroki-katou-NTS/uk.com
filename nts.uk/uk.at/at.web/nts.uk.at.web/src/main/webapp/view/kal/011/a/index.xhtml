@@ -35,15 +35,16 @@
                         <div class="cell valign-center">
                             <!-- A4_2 -->
                             <div id="B3_2" tabindex="4" data-bind="ntsComboBox: {
-                                    options: alarmPatterns,
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 10,
-                                    value: selectedCode,
-                                    optionsText: 'name',
-                                    enable: true,
-                                    required: true,
-                                    columns: [{ prop: 'name', length: 5 }]
-                                }"/>
+                                name: $vm.$i18n('KAL011_6'),
+                                options: alarmPatterns,
+                                optionsValue: 'code',
+                                visibleItemsCount: 10,
+                                value: alarmPatternCode,
+                                optionsText: 'name',
+                                enable: true,
+                                required: true,
+                                columns: [{ prop: 'name', length: 5 }]
+                            }"/>
                         </div>
                     </div>
                     <div class="table tbl-control">
@@ -56,13 +57,13 @@
                             <table id="fixed-table">
                                 <colgroup>
                                     <col width="35px"/>
-                                    <col width="200px"/>
+                                    <col width="150px"/>
                                     <col width="250px"/>
                                 </colgroup>
                                 <thead>
                                     <tr>
                                          <!-- A6_1 -->
-                                        <th class="ui-widget-header"><div tabindex="-1" data-bind="ntsCheckBox: { checked: isAllchecked }"/></th>
+                                        <th class="ui-widget-header" data-bind="click: checkAll"><div tabindex="-1" data-bind="ntsCheckBox: { checked: $vm.isCheckAll }"/></th>
                                         <!-- A6_2 -->
                                         <th class="ui-widget-header"><span class="label" data-bind="text: $vm.$i18n('KAL011_8')"/></th>
                                         <!-- A6_3 -->
@@ -70,16 +71,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <com:ko-foreach bind="itemList">
+                                    <com:ko-foreach bind="conditions">
                                         <tr>
                                             <!-- A6_4 -->
-                                            <td><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked }"/></td>
+                                            <td data-bind="click: function() {$vm.checkBoxAllOrNot($data)}"><div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked }"/></td>
                                             <!-- A6_5-->
                                             <td><span data-bind="text: $data.categoryName"></span></td>
                                             <!-- A6_6 and A6_7-->
                                             <td class="periodTime">
                                                 <div tabindex="-1" id="daterangepicker"
-                                                    data-bind="ntsDateRangePicker: {enable: true,value: $data.dateRange,type: $data.type}"/>
+                                                    data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRange, type: $data.type}"/>
                                             </td>
                                         </tr>
                                     </com:ko-foreach>

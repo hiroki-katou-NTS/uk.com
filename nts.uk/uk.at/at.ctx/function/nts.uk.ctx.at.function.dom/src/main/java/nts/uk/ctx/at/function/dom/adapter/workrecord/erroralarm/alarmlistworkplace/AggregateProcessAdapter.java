@@ -29,4 +29,8 @@ public interface AggregateProcessAdapter {
                                                        List<String> fixedExtractCondIds,
                                                        List<String> extractCondIds,
                                                        List<String> workplaceIds);
+
+    List<AlarmListExtractInfoWorkplace> processAppApproval(DatePeriod period,
+                                                           List<String> fixedExtractCondIds,
+                                                           List<String> workplaceIds);
 }

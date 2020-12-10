@@ -99,11 +99,13 @@ public class AggregateProcessService {
                 case MONTHLY:
                     // アルゴリズム「月次の集計処理」を実行する
                     DatePeriod periodMonthly = getDatePeriod(category, periods);
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMonthly(cid, YearMonth.of(periodMonthly.start().year(), periodMonthly.start().month()),
-                            alarmCheckWkpId, optionalIds, workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMonthly(cid, YearMonth.of(periodMonthly.start().year(),
+                            periodMonthly.start().month()), alarmCheckWkpId, optionalIds, workplaceIds));
                     break;
                 case APPLICATION_APPROVAL:
                     // アルゴリズム「申請承認の集計処理」を実行する
+                    alExtractInfos.addAll(aggregateProcessAdapter.processAppApproval(getDatePeriod(category, periods),
+                            alarmCheckWkpId, workplaceIds));
                     break;
             }
 

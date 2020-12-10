@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.alarmlistworkplace;
 
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.service.AggregateProcessAppApprovalService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.AggregateProcessMasterCheckBasicService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.AggregateProcessMasterCheckDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
@@ -30,6 +31,8 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
     private AggregateProcessScheduleService aggregateProcessScheduleService;
     @Inject
     private AggregateProcessMonthlyService aggregateProcessMonthlyService;
+    @Inject
+    private AggregateProcessAppApprovalService aggregateProcessAppApprovalService;
 
     @Override
     public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckBasic(String cid, DatePeriod period,
@@ -67,6 +70,13 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
                                                                        List<String> workplaceIds) {
         return convert(aggregateProcessMonthlyService.process(cid, ym, fixedExtractCondIds, extractCondIds, workplaceIds));
 
+    }
+
+    @Override
+    public List<AlarmListExtractionInfoWorkplaceExport> process(DatePeriod period,
+                                                                List<String> fixedExtractCondIds,
+                                                                List<String> workplaceIds) {
+        return convert(aggregateProcessAppApprovalService.process(period, fixedExtractCondIds, workplaceIds));
     }
 
     private List<AlarmListExtractionInfoWorkplaceExport> convert(List<AlarmListExtractionInfoWorkplaceDto> data) {
