@@ -113,27 +113,36 @@ module nts.uk.at.kal014.a {
                     listCtg: Array<ItemModel> =_.uniqWith(listCtgdu,_.isEqual ),
                     listCtgOld: Array<number> = _.map(vm.alarmPatterSet().checkConList(),i=>i.alarmCategory()),
                     newCtg = _.filter(listCtg, item => listCtgOld.indexOf(item.code) === -1),
+                    updateCtg = _.filter( _.map(listCtg,i=>i.code), item => listCtgOld.indexOf(item) != -1),
                     removeOld = _.filter(listCtgOld, item => _.map(listCtg,i=>i.code).indexOf(item) === -1),
                     newCtgList: Array<WkpCheckConditionDto> = [];
 
+                // Update category
+                if (updateCtg.length >0) {
+                    let newResult = _.filter(vm.alarmPatterSet().checkConList(),
+                        item => updateCtg.indexOf(item.alarmCategory()) != -1);
+                    newResult.forEach((ctg: WkpCheckConditionDto)=>{
+                        let listSelectedCode = _.map(_.filter(vm.alarmPatterSet().allCtgCdSelected(),
+                            i =>i.category === ctg.alarmCategory()   ),ctgCd => ctgCd.code);
+                        ctg.updateSelectedCd(listSelectedCode);
+
+                    });
+                    vm.alarmPatterSet().updateConditionCtg(newResult);
+                }
+
+                //  add category
                 newCtg.forEach((ctg: ItemModel)=>{
                     let listSelectedCode = _.map(_.filter(vm.alarmPatterSet().allCtgCdSelected(),
-                            i =>i.category === ctg.code   ),ctgCd => ctgCd.code);
+                        i =>i.category === ctg.code   ),ctgCd => ctgCd.code);
                     var defautData : IWkpCheckConditionDto = { alarmCategory: ctg.code, alarmCtgName: ctg.name,
                         checkConditionCodes: listSelectedCode, extractionDaily: null,listExtractionMonthly: null,singleMonth: null};
                     newCtgList.push(vm.createDataforCategory(defautData));
                 });
-                //  add category
                 if (newCtgList.length > 0){
                     vm.alarmPatterSet().addConditionCtg(newCtgList);
                 }
 
-                // Remove category
-                if (removeOld.length >0) {
-                    let newResult = _.filter(vm.alarmPatterSet().checkConList(),
-                            item => removeOld.indexOf(item.alarmCategory()) == -1);
-                    vm.alarmPatterSet().updateConditionCtg(newResult);
-                }
+
             });
 
             vm.alarmPatterSet().alarmPerSet().authSetting.subscribe((value: number)=>{
@@ -712,6 +721,10 @@ module nts.uk.at.kal014.a {
 
         updateDisplayTxt(display: string){
             this.displayText(display);
+        }
+
+        updateSelectedCd(selectedCodes: Array<string>){
+            this.checkConditionCodes(selectedCodes);
         }
 
     }

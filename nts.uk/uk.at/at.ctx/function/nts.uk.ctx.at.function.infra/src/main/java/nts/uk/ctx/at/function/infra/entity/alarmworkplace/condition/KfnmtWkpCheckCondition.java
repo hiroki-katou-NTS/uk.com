@@ -56,25 +56,25 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
     @JoinTable(name = "KFNMT_PTN_MAP_CAT")
     public List<KfnmtPtnMapCat> checkConItems;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignNumofMon kfnmtAssignNumofMon;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignMonthStart kfnmtAssignMonthStart;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignMonthEnd kfnmtAssignMonthEnd;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignDayEnd kfnmtAssignDayEnd;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignDayStart kfnmtAssignDayStart;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignDatelineStart kfnmtAssignDatelineStart;
 
-    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "checkCondition",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public KfnmtAssignDatelineEnd kfnmtAssignDatelineEnd;
 
     public KfnmtWkpCheckCondition(KfnmtWkpCheckConditionPK pk, List<KfnmtPtnMapCat> checkConItems, KfnmtAssignNumofMon assignNumofMon) {
@@ -293,6 +293,7 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
 
             }
             this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
+            System.out.println("this.checkConItems lenght:  "+ this.checkConItems.size());
             entity.checkConItems.forEach( item ->{
                 if(!this.checkConItems.contains(item)) this.checkConItems.add(item);
             });
