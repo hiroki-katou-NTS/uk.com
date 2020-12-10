@@ -36,6 +36,7 @@
 			<com:stylefile path="/view/kaf/008/shr/kaf008.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
 			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
+			<com:stylefile path="/view/kaf/010/shr/kaf010.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/b/component1/kaf000.b.component1.js" />
 			<com:scriptfile path="/view/kaf/000/b/component2/kaf000.b.component2.js" />
 			<com:scriptfile path="/view/kaf/000/b/component3/kaf000.b.component3.js" />
@@ -64,6 +65,11 @@
 			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/005/b/kaf005.b.vm.js" />
 			<com:scriptfile path="/view/kaf/000/b/kaf000.b.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/footer/kaf010.shr.footer.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
+			<com:scriptfile path="/view/kaf/010/b/kaf010.b.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -209,7 +215,10 @@
 						}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
-					APP TYPE = 6
+					<div data-bind="component: {
+						name: 'kaf010-b',
+						params: childParam
+					}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
 					<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">

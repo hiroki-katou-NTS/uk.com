@@ -31,10 +31,10 @@ public class HolidayWorkCalculationResultCmd {
 	/**
 	 * 計算済フラグ
 	 */
-	private boolean calculatedFlag;
+	private int calculatedFlag;
 	
 	public HolidayWorkCalculationResult toDomain() {
-		return new HolidayWorkCalculationResult(this.actualOvertimeStatus.toDomain(), 
-				this.applicationTime.toDomain(), this.calculatedFlag ? CalculatedFlag.CALCULATED : CalculatedFlag.UNCALCULATED);
+		return new HolidayWorkCalculationResult(this.actualOvertimeStatus.toDomain(),
+				this.applicationTime.toDomain(), this.calculatedFlag == 0 ? CalculatedFlag.CALCULATED : CalculatedFlag.UNCALCULATED);
 	}
 }

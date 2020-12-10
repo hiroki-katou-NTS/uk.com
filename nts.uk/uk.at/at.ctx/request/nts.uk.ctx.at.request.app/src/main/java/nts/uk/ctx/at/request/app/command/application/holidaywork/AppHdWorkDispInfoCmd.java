@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.app.command.application.overtime.AppReflectOtHdWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.DivergenceReasonSelectCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.OverTimeWorkHoursCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.OvertimeWorkFrameCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkdayoffFrameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetCommand;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
@@ -76,7 +76,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 申請表示情報
 	 */
-	private AppDispInfoStartupDto appDispInfoStartupOutput;
+	private AppDispInfoStartupCmd appDispInfoStartupOutput;
 	
 	/**
 	 * 乖離理由の選択肢

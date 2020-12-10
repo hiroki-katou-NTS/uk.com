@@ -47,6 +47,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidaySixProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetailRepository;
@@ -708,13 +709,13 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	 * 03-06_計算ボタンチェック
 	 */
 	@Override
-	public void calculateButtonCheck(int calculateFlg, UseAtr timeCalUse) {
+	public void calculateButtonCheck(CalculatedFlag calculateFlg, UseAtr timeCalUse) {
 		// 申請詳細設定.時刻計算利用区分=利用する
 		if (timeCalUse != UseAtr.USE) {
 			return;
 		}
 		// 計算フラグのチェック
-		if (calculateFlg == 1) {
+		if (calculateFlg == CalculatedFlag.UNCALCULATED) {
 			// 計算フラグ=1の場合:メッセージを表示する(Msg_750)
 			throw new BusinessException("Msg_750");
 		}

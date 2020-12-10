@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -24,7 +26,7 @@ public class PreAppContentDispDto {
 	}
 	
 	public PreAppContentDisplay toDomain() {
-		return new PreAppContentDisplay(GeneralDate.fromString(date, "yyyy/MM/dd"), null, null);
+		return new PreAppContentDisplay(GeneralDate.fromString(date, "yyyy/MM/dd"), null, Optional.empty());
 	}
 	
 }
