@@ -26,6 +26,9 @@ public class BuiltInUser {
 	
 	/** ビルトインユーザのユーザIDかどうかの判定に使えるようにpublic */
 	public static final String USER_ID = "BuiltInUser-UserID";
+
+	/** ビルトインユーザーの社員IDか以下略 */
+	public static final String EMPLOYEE_ID = "BuiltInUser-EmployeeID";
 	
 	public boolean authenticate(String employeeCode, String password) {
 
@@ -49,7 +52,7 @@ public class BuiltInUser {
 				tenantCode,
 				companyId,
 				companyCode,
-				"BuiltInUser-EmployeeID",
+				EMPLOYEE_ID,
 				employeeCode);
 		
 		manager.roleIdSetter()
