@@ -359,8 +359,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				if (!singleId.isEmpty()){				
 					syncResultsDaily.addAll(attendanceService.getValueOf(Arrays.asList(emp.getKey()), emp.getValue(), singleId));
 				}
-                syncResultsMonthly.addAll(attendanceService.getMonthlyValueOf(Arrays.asList(emp.getKey()), periodMonthly, monthlyId));
 			});
+			syncResultsMonthly.addAll(attendanceService.getMonthlyValueOf(empIDs, periodMonthly, monthlyId));
 			dailyValues = new ArrayList<>(syncResultsDaily);
             monthlyValues =  new ArrayList<>(syncResultsMonthly);
 		}
@@ -455,8 +455,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						if (!monthResultCheck.isEmployeeResult()) {
 							// エラーリストに「社員コード」「社員名」を書き出す
 							throw new BusinessException("Msg_1724",
-									oAffiliationInfoOfMonthly.get().getEmployeeId(),
-									oAffiliationInfoOfMonthly.get().getEmployeeId());
+									employee.getEmployeeCode(),
+									employee.getEmployeeName());
 						}
 						if (!monthResultCheck.isCheckResult()) {
 							// 雇用コードが一致しなかったのでこの月別実績は処理しない - This monthly performance will not be processed 
