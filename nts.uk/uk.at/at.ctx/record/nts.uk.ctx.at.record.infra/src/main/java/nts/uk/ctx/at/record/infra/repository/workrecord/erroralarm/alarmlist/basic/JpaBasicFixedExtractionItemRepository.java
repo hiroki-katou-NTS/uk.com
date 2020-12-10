@@ -17,7 +17,20 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaBasicFixedExtractionItemRepository extends JpaRepository implements BasicFixedExtractionItemRepository {
 
-    private static final String GET_ALL = "select f from KrcmtWkpBasicFxexItm f";
+    private static final String SELECT;
+
+    private static final String FIND_BY_NO;
+
+    static {
+        StringBuilder builderString = new StringBuilder();
+        builderString.append(" SELECT a FROM KrcmtWkpBasicFxexItm a ");
+        SELECT = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.no = :no ");
+        FIND_BY_NO = builderString.toString();
+    }
 
     @Override
     public Optional<BasicFixedExtractionItem> getByID(String id) {
@@ -26,12 +39,14 @@ public class JpaBasicFixedExtractionItemRepository extends JpaRepository impleme
 
     @Override
     public Optional<BasicFixedExtractionItem> getBy(BasicFixedCheckItem no) {
-        return Optional.empty();
+        return this.queryProxy().query(FIND_BY_NO, KrcmtWkpBasicFxexItm.class)
+            .setParameter("no", no)
+            .getSingle(KrcmtWkpBasicFxexItm::toDomain);
     }
 
     @Override
     public List<BasicFixedExtractionItem> getAll() {
-        return this.queryProxy().query(GET_ALL, KrcmtWkpBasicFxexItm.class).getList(KrcmtWkpBasicFxexItm::toDomain);
+        return this.queryProxy().query(SELECT, KrcmtWkpBasicFxexItm.class).getList(KrcmtWkpBasicFxexItm::toDomain);
     }
 
     @Override

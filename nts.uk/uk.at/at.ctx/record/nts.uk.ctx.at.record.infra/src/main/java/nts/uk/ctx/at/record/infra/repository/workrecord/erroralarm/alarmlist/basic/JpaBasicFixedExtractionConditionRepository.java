@@ -15,9 +15,27 @@ import java.util.List;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaBasicFixedExtractionConditionRepository extends JpaRepository implements BasicFixedExtractionConditionRepository {
 
-    private static final String GET_ALL = "select f from KrcmtWkpBasicFxexCon f";
+    private static final String SELECT;
 
-    private static final String GET_BY_IDS = GET_ALL + " where f.pk.id in :ids";
+    private static final String GET_BY_IDS;
+
+    private static final String FIND_BY_IDS_AND_USEATR;
+
+    static {
+        StringBuilder builderString = new StringBuilder();
+        builderString.append(" SELECT a FROM KrcmtWkpBasicFxexCon a ");
+        SELECT = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.pk.id in :ids ");
+        GET_BY_IDS = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.pk.id in :ids AND a.useAtr = :useAtr ");
+        FIND_BY_IDS_AND_USEATR = builderString.toString();
+    }
 
     @Override
     public List<BasicFixedExtractionCondition> getByID(String id) {
@@ -33,7 +51,10 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
 
     @Override
     public List<BasicFixedExtractionCondition> getBy(List<String> ids, boolean useAtr) {
-        return new ArrayList<>();
+        return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpBasicFxexCon.class)
+            .setParameter("ids", ids)
+            .setParameter("useAtr", useAtr)
+            .getList(KrcmtWkpBasicFxexCon::toDomain);
     }
 
     @Override

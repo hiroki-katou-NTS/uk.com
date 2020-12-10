@@ -19,7 +19,10 @@ module nts.uk.at.kal014.c {
         CLASSIFICATION: any;
         dateSpecify: KnockoutObservableArray<any>;
         monthSpecify: KnockoutObservableArray<any>;
-        isScheduleDaily:KnockoutObservable<boolean>;
+        isDayStart : KnockoutObservable<boolean> = ko.observable(true);
+        isDayEnd : KnockoutObservable<boolean> = ko.observable(true);
+        isMonthStart : KnockoutObservable<boolean> = ko.observable(true);
+        isMonthEnd : KnockoutObservable<boolean> = ko.observable(true);
 
         constructor(params: any) {
             super();
@@ -42,17 +45,20 @@ module nts.uk.at.kal014.c {
                 {value: EndSpecify.DAYS, name: vm.$i18n("KAL014_49")},
                 {value: EndSpecify.MONTH, name: ""}
             ]);
-            vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
 
             vm.initModalData(params);
         }
 
         created() {
             const vm = this;
-            (vm.modalDTO.categoryId.subscribe((id)=>{
-                vm.isScheduleDaily=ko.observable(vm.checkIsScheduleDaily());
-            }));
-
+            vm.strSelected.subscribe((value: number)=>{
+                vm.isDayStart(value == StartSpecify.DAYS);
+                vm.isMonthStart(value == StartSpecify.MONTH);
+            })
+            vm.endSelected.subscribe((value: number)=>{
+                vm.isDayEnd(value == EndSpecify.DAYS);
+                vm.isMonthEnd(value == EndSpecify.MONTH);
+            })
         }
 
         /**
