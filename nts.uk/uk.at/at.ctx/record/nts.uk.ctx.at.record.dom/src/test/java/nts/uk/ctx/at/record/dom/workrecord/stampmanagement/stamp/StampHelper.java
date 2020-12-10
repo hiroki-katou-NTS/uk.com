@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
  * 
@@ -52,10 +52,10 @@ public class StampHelper {
 				Optional.empty()
 				);
 	}
-	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt) {
+	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
 		return new Stamp(new ContractCode("DUMMY"),
 				new StampNumber(stampNumber),
-				GeneralDateTime.now(), 
+				dateTime, 
 				new Relieve(
 						AuthcMethod.valueOf(0), 
 						StampMeans.valueOf(0)), 

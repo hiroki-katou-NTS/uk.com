@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.shift.management.workavailability;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,11 +17,14 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabi
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDayRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -32,11 +34,12 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 初期起動の情報取得
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).G：希望参照.メニュー別OCD.初期起動の情報取得.初期起動の情報取得
- * 
+ *
  * @author quytb
  *
  */
@@ -75,7 +78,7 @@ public class Ksu001gScreenQuerry {
 			availabilityOfOneDays = Stream.of(availabilityOfOneDays, availabilityOfOneDayTmps).flatMap(x -> x.stream())
 					.collect(Collectors.toList());
 		}
-		
+
 		/** 2: List<一日分の勤務希望>.size == 0*/
 		if (CollectionUtil.isEmpty(availabilityOfOneDays)) {
 			return new ArrayList<WorkAvailabilityInfoDto>();
@@ -90,13 +93,13 @@ public class Ksu001gScreenQuerry {
 			availabilityDisplayInfoOfOneDays.forEach(x -> {
 				String method = "";
 				if (x.getDisplayInfo().getMethod().value == 0) {
-					method = "休日";
+					method = TextResource.localize("KSU001_4038");
 				}
 				if (x.getDisplayInfo().getMethod().value == 1) {
-					method = "シフト";
+					method = TextResource.localize("KSU001_4035");
 				}
 				if (x.getDisplayInfo().getMethod().value == 2) {
-					method = "時間帯";
+					method = TextResource.localize("KSU001_4036");
 				}
 
 				if (x.getDisplayInfo().getNameList().size() >= 1) {
@@ -108,7 +111,7 @@ public class Ksu001gScreenQuerry {
 												+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
 										method, x.getDisplayInfo().getNameList().get(i),
 										x.getDisplayInfo().getTimeZoneList().get(j).getStart().getInDayTimeWithFormat()
-												+ "～" + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
+												+ TextResource.localize("KSU001_4055") + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
 														.getInDayTimeWithFormat(),
 										x.getMemo().v()));
 							}
@@ -129,7 +132,7 @@ public class Ksu001gScreenQuerry {
 											+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
 									method, "",
 									x.getDisplayInfo().getTimeZoneList().get(j).getStart().getInDayTimeWithFormat()
-											+ "～" + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
+											+ TextResource.localize("KSU001_4055") + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
 													.getInDayTimeWithFormat(),
 									x.getMemo().v()));
 						}
@@ -143,7 +146,7 @@ public class Ksu001gScreenQuerry {
 					}
 				}
 			});
-			return dtos;			
+			return dtos;
 		}
 	}
 
@@ -161,12 +164,12 @@ public class Ksu001gScreenQuerry {
 		private ShiftMasterRepository shiftMasterRepo;
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
+		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepository.findByDeprecated(AppContexts.user().companyId(), workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(AppContexts.user().companyId(), workTimeCode);
 		}
 
@@ -176,15 +179,9 @@ public class Ksu001gScreenQuerry {
 		}
 
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 			return workTimeService.getPredeterminedTimezone(AppContexts.user().companyId(), workTimeCd, workTypeCd,
 					workNo);
-		}
-
-		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicService.checkWorkDay(workTypeCode);
 		}
 
 		@Override
@@ -198,6 +195,30 @@ public class Ksu001gScreenQuerry {
 		public List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList) {
 			List<String> shiftMaterCodes = shiftMasterCodeList.stream().map(x -> x.v()).collect(Collectors.toList());
 			return shiftMasterRepo.getByListShiftMaterCd2(AppContexts.user().companyId(), shiftMaterCodes);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 }

@@ -135,9 +135,9 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// 日別実績の出退勤
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 		for (Map.Entry<Integer, TimeZone> key : timeSheets.entrySet()) {
-			WorkStamp attendance = new WorkStamp(key.getValue().getStart(), key.getValue().getStart(),
+			WorkStamp attendance = new WorkStamp(key.getValue().getStart(),
 					new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET,null);
-			WorkStamp leaving = new WorkStamp(key.getValue().getEnd(), key.getValue().getEnd(),
+			WorkStamp leaving = new WorkStamp(key.getValue().getEnd(),
 					new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET,null);
 			TimeActualStamp attendanceStamp = new TimeActualStamp(attendance, attendance, key.getKey());
 			TimeActualStamp leavingStamp = new TimeActualStamp(leaving, leaving, key.getKey());

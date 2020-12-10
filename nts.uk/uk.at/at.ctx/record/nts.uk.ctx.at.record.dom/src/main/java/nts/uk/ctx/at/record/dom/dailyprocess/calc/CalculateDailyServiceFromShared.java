@@ -30,4 +30,10 @@ public class CalculateDailyServiceFromShared implements CalculateDailyRecordServ
 		return center.calculatePassCompanySetting(calcOption, integrationOfDailys, Optional.ofNullable(companyCommonSetting), reCalcAtr);
 	}
 
+	@Override
+	public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
+			List<IntegrationOfDaily> integrationOfDaily) {
+		return center.calculateForSchedule(calcOption, integrationOfDaily, Optional.empty());
+	}
+
 }

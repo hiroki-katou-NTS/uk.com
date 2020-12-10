@@ -30,8 +30,14 @@ public class EmployeeReportData {
 	/** The employment name. */
 	public String employmentName;
 	
+	/** The employment code. */
+	public String employmentCode;
+	
 	/** The position. */
 	public String position;
+	
+	/** The job title code. */
+	public String jobTitleCode;
 	
 	/** The lst detailed performance. */
 	public List<DetailedDailyPerformanceReportData> lstDetailedPerformance;

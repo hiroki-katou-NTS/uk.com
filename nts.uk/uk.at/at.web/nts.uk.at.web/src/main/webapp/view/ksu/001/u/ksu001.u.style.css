@@ -12,6 +12,7 @@
 }
 .btn-custom {
     padding: 10px 0px;
+    /* height: 36px; */
 }
 
 .fc-title {
@@ -43,7 +44,8 @@
 }
 
 .btn-extra{
-	width: 58px !important;
+    width: 58px !important;
+    height: 38px !important;
 }
 
 #line {

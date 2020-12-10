@@ -17,7 +17,7 @@ import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 public class ReloadAfterChangeFlexWorkPlaceSettingDto {
 	
 	// 職場別基本設定（フレックス勤務）を表示する
-	DisplayFlexBasicSettingByWokPlaceDto displayFlexBasicSettingByWokPlace;
+	DisplayFlexBasicSettingByWorkPlaceDto displayFlexBasicSettingByWorkPlace;
 	
 	List<WorkplaceIdDto> wkpIds;
 }

@@ -6,9 +6,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
-import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
@@ -26,7 +24,6 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.standardtime.repository.*;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
@@ -69,21 +66,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
     @Inject
     private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
     @Inject
-    private AgreementUnitSettingRepository agreementUnitSettingRepository;
-    @Inject
-    private AffClassificationAdapter affClassificationAdapter;
-    @Inject
-    private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
-    @Inject
     private AffWorkplaceAdapter affWorkplaceAdapter;
-    @Inject
-    private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
-    @Inject
-    private SyEmploymentAdapter syEmploymentAdapter;
-    @Inject
-    private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
-    @Inject
-    private Company36AgreedHoursRepository company36AgreedHoursRepo;
     @Inject
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
 
@@ -94,22 +77,32 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
                 specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo,
                 unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
-                agreementUnitSettingRepository, affClassificationAdapter,
-                affWorkplaceAdapter, syEmploymentAdapter);
+                affWorkplaceAdapter);
         List<RegisterAppSpecialProvisionMonthCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
+        List<AppCreationResult> results = new ArrayList<>();
         for (RegisterAppSpecialProvisionMonthCommand command : commands) {
             // 1ヶ月申請を登録する
             AppCreationResult result = OneMonthAppCreate.create(require, cid, sid, command.getContent().toMonthlyAppContent(),
                     command.getScreenInfo().toScreenDisplayInfo());
-            if (result.getAtomTask().isPresent()) {
-                transaction.execute(result.getAtomTask().get());
-            }
-            // get errors
+            results.add(result);
+        }
+
+        // get errors
+        for (AppCreationResult result : results){
             List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
             if (!CollectionUtil.isEmpty(errors)) {
                 errorResults.add(new ErrorResultDto(result.getEmpId(),
                         null, null, errors));
+            }
+        }
+
+        // execute
+        if (CollectionUtil.isEmpty(errorResults)) {
+            for (AppCreationResult result : results){
+                if (result.getAtomTask().isPresent()) {
+                    transaction.execute(result.getAtomTask().get());
+                }
             }
         }
 
@@ -134,10 +127,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         private UnitOfApproverRepo unitOfApproverRepo;
         private SyWorkplaceAdapter syWorkplaceAdapter;
         private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
-        private AgreementUnitSettingRepository agreementUnitSettingRepository;
-        private AffClassificationAdapter affClassificationAdapter;
         private AffWorkplaceAdapter affWorkplaceAdapter;
-        private SyEmploymentAdapter syEmploymentAdapter;
 
 
         @Override
@@ -172,12 +162,12 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
 
         @Override
         public Optional<AgreementUnitSetting> agreementUnitSetting(String companyId) {
-            return agreementUnitSettingRepository.find(companyId);
+            return require.agreementUnitSetting(companyId);
         }
 
         @Override
         public Optional<AffClassificationSidImport> affEmployeeClassification(String companyId, String employeeId, GeneralDate baseDate) {
-            return affClassificationAdapter.findByEmployeeId(companyId, employeeId, baseDate);
+            return this.require.affEmployeeClassification(companyId, employeeId, baseDate);
         }
 
         @Override
@@ -188,7 +178,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
 
         @Override
         public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
-            return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
+            return this.require.getCanUseWorkplaceForEmp(companyId, employeeId, baseDate);
         }
 
         @Override
@@ -198,7 +188,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
 
         @Override
         public Optional<SyEmploymentImport> employment(String companyId, String employeeId, GeneralDate baseDate) {
-            return syEmploymentAdapter.findByEmployeeId(companyId, employeeId, baseDate);
+            return this.require.employment(companyId, employeeId, baseDate);
         }
 
         @Override

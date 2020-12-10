@@ -10,10 +10,12 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalset
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.appovertime.KrqmtAppOvertimeFrame;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,10 +90,28 @@ public class JpaOvertimeAppSetRepository extends JpaRepository implements Overti
         if (optEntity.isPresent()) {
             KrqmtAppOvertime entity = optEntity.get();
             entity.getOvertimeFrames().removeIf(e -> e.getPk().overtimeAtr == overtimeQuotaSet.getOvertimeAppAtr().value && e.getPk().flexAtr == overtimeQuotaSet.getFlexWorkAtr().value);
+            if (overtimeQuotaSet.getOvertimeAppAtr() != OvertimeAppAtr.EARLY_NORMAL_OVERTIME) {
+                entity.getOvertimeFrames().removeIf(s -> s.getPk().overtimeAtr == OvertimeAppAtr.EARLY_NORMAL_OVERTIME.value
+                        && s.getPk().flexAtr == overtimeQuotaSet.getFlexWorkAtr().value
+                        && overtimeQuotaSet.getTargetOvertimeLimit().stream().map(OverTimeFrameNo::v).anyMatch(v -> v == s.getTargetFrame())
+                );
+            }
             this.commandProxy().update(entity);
             this.getEntityManager().flush();
         }
-        List<KrqmtAppOvertimeFrame> entities = KrqmtAppOvertimeFrame.fromDomains(companyId, Arrays.asList(overtimeQuotaSet));
+        List<KrqmtAppOvertimeFrame> entities = KrqmtAppOvertimeFrame.fromDomains(companyId, Collections.singletonList(overtimeQuotaSet));
+        if (overtimeQuotaSet.getOvertimeAppAtr() != OvertimeAppAtr.EARLY_NORMAL_OVERTIME) {
+            entities.addAll(KrqmtAppOvertimeFrame.fromDomains(
+                    companyId,
+                    Collections.singletonList(
+                            new OvertimeQuotaSetUse(
+                                    OvertimeAppAtr.EARLY_NORMAL_OVERTIME,
+                                    overtimeQuotaSet.getFlexWorkAtr(),
+                                    overtimeQuotaSet.getTargetOvertimeLimit()
+                            )
+                    )
+            ));
+        }
         this.commandProxy().insertAll(entities);
     }
 }

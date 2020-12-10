@@ -16,6 +16,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogethe
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban.KscmtAlchkBanWorkTogether;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban.KscmtAlchkBanWorkTogetherDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban.KscmtAlchkBanWorkTogetherDtlPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban.KscmtAlchkBanWorkTogetherPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
@@ -49,8 +51,17 @@ public class JpaBanWorkTogetherRepository extends JpaRepository implements BanWo
 
 	@Override
 	public void update(String companyId, BanWorkTogether banWorkTogether) {
-		this.commandProxy().update(KscmtAlchkBanWorkTogether.of(banWorkTogether, companyId));
-		this.commandProxy().updateAll(KscmtAlchkBanWorkTogetherDtl.toDetailEntityList(banWorkTogether, companyId));
+		Optional<BanWorkTogether> domain = this.get(companyId, banWorkTogether.getTargetOrg(), banWorkTogether.getCode());
+
+		if (domain.isPresent()) {
+			List<KscmtAlchkBanWorkTogetherDtlPk> dtlEntityKey = KscmtAlchkBanWorkTogetherDtl.toDetailEntityList(domain.get(), companyId)
+					.stream().map(i -> i.pk).collect(Collectors.toList());
+			this.commandProxy().removeAll(KscmtAlchkBanWorkTogetherDtl.class, dtlEntityKey);
+			this.getEntityManager().flush();
+			this.commandProxy().insertAll(KscmtAlchkBanWorkTogetherDtl.toDetailEntityList(banWorkTogether, companyId));
+			this.commandProxy().update(KscmtAlchkBanWorkTogether.of(banWorkTogether, companyId));
+		}
+
 	}
 
 	@Override
@@ -59,11 +70,11 @@ public class JpaBanWorkTogetherRepository extends JpaRepository implements BanWo
 		Optional<BanWorkTogether> domain = this.get(companyId, targetOrg, code);
 		
 		if (domain.isPresent()) {
-			this.getEntityManager().flush();
-			KscmtAlchkBanWorkTogether entity = KscmtAlchkBanWorkTogether.of(domain.get(), companyId);
-			List<KscmtAlchkBanWorkTogetherDtl> dtlEntity = KscmtAlchkBanWorkTogetherDtl.toDetailEntityList(domain.get(), companyId);
-			this.commandProxy().remove(entity);
-			this.commandProxy().removeAll(dtlEntity);
+			KscmtAlchkBanWorkTogetherPk key = KscmtAlchkBanWorkTogether.of(domain.get(), companyId).pk;
+			List<KscmtAlchkBanWorkTogetherDtlPk> dtlEntityKey = KscmtAlchkBanWorkTogetherDtl.toDetailEntityList(domain.get(), companyId)
+					.stream().map(i -> i.pk).collect(Collectors.toList());
+			this.commandProxy().remove(KscmtAlchkBanWorkTogether.class, key);
+			this.commandProxy().removeAll(KscmtAlchkBanWorkTogetherDtl.class, dtlEntityKey);
 		}
 	}
 

@@ -24,11 +24,35 @@ module nts.uk.at.view.kwr001.a {
             
             // switch button A6_2
             selectedDataOutputType: KnockoutObservable<number>;
-            
+
+            // radio button group A7_2
+            selectionType: KnockoutObservable<number> = ko.observable(0);
+            standardSettingLayoutId: string;
+            freeSettingLayoutId: string;
+            freeSettingEnabled: KnockoutObservable<boolean> = ko.observable(false);
+
+            // switch button A8_2
+            dataZeroDisplayType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR001_149") },
+                { code: 1, name: nts.uk.resource.getText("KWR001_150") }
+            ]);
+            selectedDataZeroDisplayType: KnockoutObservable<number> = ko.observable(1);
+
+            // switch button A11_2
+            dataDisplayItemType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KWR001_151") },
+                { code: 1, name: nts.uk.resource.getText("KWR001_152") }
+            ]);
+            selectedDataDisplayItemType: KnockoutObservable<number> = ko.observable(0);
+
             // dropdownlist A7_3
-            itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
+            itemListCodeTemplate: KnockoutObservableArray<OutputItemSettingDto>;
             selectedCodeA7_3: KnockoutObservable<string>;
-            
+
+            // dropdownlist A7_8
+            outputItemDailyWorkSchedules: KnockoutObservableArray<OutputItemSettingDto>;
+            selectedCodeA7_8: KnockoutObservable<string>;
+
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
             selectedCodeA9_2: KnockoutObservable<number>;
@@ -76,6 +100,8 @@ module nts.uk.at.view.kwr001.a {
             enableBtnConfigure: KnockoutObservable<boolean>;
             enableConfigErrCode: KnockoutObservable<boolean>;
             isEmployeeCharge: KnockoutObservable<boolean>;
+            enableA7_2: KnockoutObservable<boolean>;
+            enableA7_8: KnockoutObservable<boolean>;
             
             taskId: KnockoutObservable<string>;
             errorLogs : KnockoutObservableArray<EmployeeError>;
@@ -88,6 +114,8 @@ module nts.uk.at.view.kwr001.a {
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
                 self.enableBtnConfigure = ko.observable(true);
+                self.enableA7_2 = ko.observable(true);
+                self.enableA7_8 = ko.observable(false);
                 
                 self.checkedA10_2 = ko.observable(false);
                 self.checkedA10_3 = ko.observable(false);
@@ -143,6 +171,12 @@ module nts.uk.at.view.kwr001.a {
                 self.taskId = ko.observable('');
                 self.errorLogs = ko.observableArray([]);
                 self.errorLogsNoWorkplace = ko.observableArray([]);
+                self.selectionType.subscribe((value) => {
+                    self.enableA7_2(value === 0);
+                    self.enableA7_8(value === 1);
+                    nts.uk.ui.errors.clearAll();
+
+                });
                 
                 // start set variable for CCG001
                 self.ccg001ComponentOption = {
@@ -225,17 +259,19 @@ module nts.uk.at.view.kwr001.a {
                 self.selectedDataOutputType.valueHasMutated();
 
                 self.itemListCodeTemplate = ko.observableArray([]);
+                self.outputItemDailyWorkSchedules = ko.observableArray([]);
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', 'なし'),
-                    new ItemModel('1', '社員'),
-                    new ItemModel('2', '職場')
+                    new ItemModel('0', nts.uk.resource.getText("KWR001_161")),
+                    new ItemModel('1', nts.uk.resource.getText('KWR001_162')),
+                    new ItemModel('2', nts.uk.resource.getText('KWR001_163'))
                 ]);
                 
-                self.selectedCodeA9_2 = ko.observable(1);
+                self.selectedCodeA9_2 = ko.observable(0);
                 
                 self.selectedCodeA7_3 = ko.observable(''); 
+                self.selectedCodeA7_8 = ko.observable(''); 
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListConditionSet = ko.observableArray([
@@ -293,23 +329,22 @@ module nts.uk.at.view.kwr001.a {
                 $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
-                        
-                        self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
+                        if (dataService.standardSetting) {
+                            self.itemListCodeTemplate(_.sortBy(dataService.standardSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                        }
+                        if (dataService.freeSetting) {
+                            self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                        }
                         self.isEmployeeCharge(dataService.employeeCharge);
-                        switch(dataService.strReturn) {
+                        self.freeSettingEnabled(dataService.configFreeSetting);
+                        switch (dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:
                                 self.renewDataPage();
                                 break;
-                            // return screen A, don't have data characteristic
+                            // return screen A, don't have data characteristic  
                             case STRING_EMPTY:
                                 break;
-//                            case OPEN_SCREEN_C:
-//                                self.openScreenC();
-//                                break;
-//                            case "Msg_1348":
-//                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
-//                                break;
                             default:
                                 break;
                         }
@@ -339,8 +374,8 @@ module nts.uk.at.view.kwr001.a {
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOutput.personalTotal);
                     self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOutput.workplaceTotal);
                     // update spec ver 25, only hidden temporary
-                    // self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
-                    self.checkedA10_5(false);
+                    // 2020/08/13 update specs ver 34
+                    self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
                     self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOutput.grossTotal);
                     self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOutput.cumulativeWorkplace);
                     if (workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal) {
@@ -355,7 +390,12 @@ module nts.uk.at.view.kwr001.a {
                         self.checkedA10_18(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.ninthLevel);
                     }
                     self.selectedCodeA13_1(workScheduleOutputCondition.conditionSetting);
-                })
+                    self.freeSettingLayoutId = workScheduleOutputCondition.freeSettingLayoutId;
+                    self.standardSettingLayoutId = workScheduleOutputCondition.standardSelectionLayoutId;
+                    self.selectedCodeA7_8(workScheduleOutputCondition.freeSettingCode);
+                    self.selectedDataZeroDisplayType(workScheduleOutputCondition.zeroDisplayType);
+                    self.selectedDataDisplayItemType(workScheduleOutputCondition.switchItemDisplay);
+                });
             }
             
             // get data from service
@@ -403,8 +443,23 @@ module nts.uk.at.view.kwr001.a {
                 if (_.isUndefined(data)) {
                     let totalWorkplaceHierachy = new TotalWorkplaceHierachy(false, false, false, false, false, false, false, false, false);
                     let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(false, false, false, false, false, false, totalWorkplaceHierachy);
-                    let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId, userId, 0, '', 0, workScheduleSettingTotalOutput, 0, []);
-                    service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);    
+                    let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId // companyId
+                                                        , userId                                   // userId
+                                                        , 0                                        // ouptType
+                                                        , ''                                       // standard code selected
+                                                        , 0                                        // pageBreakIndicator
+                                                        , workScheduleSettingTotalOutput           // settingDetailTotalOutput
+                                                        , 0                                        // conditionSetting
+                                                        , 0                                        // selectionType
+                                                        , ''                                       // standardSelectionLayoutId
+                                                        , ''                                       // freeSettingLayoutId
+                                                        , ''                                       // freeSettingCode
+                                                        , 0                                        // zeroDisplayType
+                                                        , 0                                        // switchItemDisplay
+                                                        , null                                     // outputConditionSpecification
+                                                        , []);                                     // errorAlarmCode
+
+                    service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);
                 }
                 
                     dfd.resolve(data);
@@ -428,18 +483,47 @@ module nts.uk.at.view.kwr001.a {
             }
             openScreenC (): void {
                 let self = this;
-                let codeChoose = self.getCodeFromListCode(self.selectedCodeA7_3(), self.itemListCodeTemplate());
-                
-                nts.uk.ui.windows.setShared('KWR001_C', codeChoose, true);
+                let dataTransfer = {
+                    codeChoose: undefined,
+                    selection: self.selectionType(),
+                    layoutId: '',
+                };
+                if (self.selectionType() === ItemSelectionType.STANDARD_SELECTION) {
+                    dataTransfer.codeChoose = self.getCodeFromListCode(self.selectedCodeA7_3(), self.itemListCodeTemplate());
+                    dataTransfer.layoutId = self.standardSettingLayoutId;
+                } else {
+                    dataTransfer.codeChoose = self.getCodeFromListCode(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
+                    dataTransfer.layoutId = self.freeSettingLayoutId;
+                }
+                nts.uk.ui.windows.setShared('KWR001_C', dataTransfer, true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                         let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
-                        self.getDataStartPageService(isExist).done(function(dataService: any) {                       
-                            self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
-                            if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
-                                self.selectedCodeA7_3('');
+                        self.getDataStartPageService(isExist).done(function(dataService: any) {
+                            if (self.selectionType() === ItemSelectionType.STANDARD_SELECTION) {
+                                if (dataService.standardSetting) {
+                                    self.itemListCodeTemplate(_.sortBy(dataService.standardSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                                    if (_.isEmpty(dataService.standardSetting.outputItemDailyWorkSchedules)) {
+                                        self.selectedCodeA7_3('');
+                                    } else {
+                                        self.selectedCodeA7_3(nts.uk.ui.windows.getShared('KWR001_C'));
+                                    }
+                                } else {
+                                    self.itemListCodeTemplate([]);
+                                    self.selectedCodeA7_3('');
+                                }
                             } else {
-                                self.selectedCodeA7_3(nts.uk.ui.windows.getShared('KWR001_C'));                                
+                                if (dataService.freeSetting) {
+                                    self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                                    if (_.isEmpty(dataService.freeSetting.outputItemDailyWorkSchedules)) {
+                                        self.selectedCodeA7_8('');
+                                    } else {
+                                        self.selectedCodeA7_8(nts.uk.ui.windows.getShared('KWR001_C'));
+                                    }
+                                } else {
+                                    self.outputItemDailyWorkSchedules([]);
+                                    self.selectedCodeA7_8('');
+                                }
                             }
                         }).fail(function(error) {
                            nts.uk.ui.dialog.alertError(error);     
@@ -458,7 +542,17 @@ module nts.uk.at.view.kwr001.a {
                 }
                 return codeChoose.code;
             }
-            
+
+            private getLayoutIdFromLst(pos: string, lstCode: OutputItemSettingDto[]): string {
+                let self = this;
+                let codeChoose = _.find(lstCode, function(o) { 
+                    return pos == o.code; 
+                });
+                if (_.isUndefined(codeChoose)) {
+                    return null;
+                }
+                return codeChoose.layoutId;
+            }
             /**
              * find employee id in selected
              */
@@ -611,10 +705,18 @@ module nts.uk.at.view.kwr001.a {
             
             private validateMinimumOneChecked(): boolean {
                 let self = this;
-                
-                $('#combo-box').ntsError('check');
-                if (nts.uk.ui.errors.hasError()) {
-                    return false;
+                if (self.selectionType() === ItemSelectionType.STANDARD_SELECTION) {
+                    $('#combo-box').ntsError('check');
+                    if (nts.uk.ui.errors.hasError()) {
+                        return false;
+                    }
+                }
+
+                if (self.selectionType() === ItemSelectionType.FREE_SETTING) {
+                    $('#combo-box-free-setting').ntsError('check');
+                    if (nts.uk.ui.errors.hasError()) {
+                        return false;
+                    }
                 }
                 
                 if (self.selectedDataOutputType() == 0) {
@@ -637,10 +739,18 @@ module nts.uk.at.view.kwr001.a {
                     return false;
                 }
                 
-                if (_.isEmpty(self.selectedCodeA7_3())) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
-                    return false;
+                if (this.selectionType() === 0) {
+                    if (_.isEmpty(self.selectedCodeA7_3())) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
+                        return false;
+                    }
+                } else {
+                    if (_.isEmpty(self.selectedCodeA7_8())) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1141" });
+                        return false;
+                    }
                 }
+               
                 
                 if (_.isEmpty(self.multiSelectedCode())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_884" });
@@ -730,20 +840,41 @@ module nts.uk.at.view.kwr001.a {
                                                                             self.checkedA10_14(), self.checkedA10_15(), 
                                                                             self.checkedA10_16(), self.checkedA10_17(), 
                                                                             self.checkedA10_18());
-                    let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(self.checkedA10_2(), self.checkedA10_3(), 
-                                                                                            self.checkedA10_4(), false, 
-                                                                                            //self.checkedA10_5(), 
-                                                                                            self.checkedA10_6(), self.checkedA10_7(), 
+                    let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(self.checkedA10_2(),
+                                                                                            self.checkedA10_3(), 
+                                                                                            self.checkedA10_4(),
+                                                                                            self.checkedA10_5(), 
+                                                                                            self.checkedA10_6(),
+                                                                                            self.checkedA10_7(), 
                                                                                             totalWorkplaceHierachy);
                     
                     let codeChoose = self.getCodeFromListCode(self.selectedCodeA7_3(), self.itemListCodeTemplate());
                     let errorAlarmCode: any[];
                     
                     errorAlarmCode = data.errorAlarmCode;
-                    
-                    let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId, userId, self.selectedDataOutputType(), 
-                                                                                    codeChoose, self.selectedCodeA9_2(), 
-                                                                                    workScheduleSettingTotalOutput, self.selectedCodeA13_1(), errorAlarmCode);
+                    let selectionType = self.selectionType();
+                    let standardSelectionLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_3(), self.itemListCodeTemplate());
+                    let freeSettingLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
+                    let freeSettingCode = self.getCodeFromListCode(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
+                    let zeroDisplayType = self.selectedDataZeroDisplayType();
+                    let switchItemDisplay = self.selectedDataDisplayItemType();
+                    let outputConditionSpecification = null;
+
+                    let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId
+                                                                                        , userId
+                                                                                        , self.selectedDataOutputType()
+                                                                                        , codeChoose
+                                                                                        , self.selectedCodeA9_2()
+                                                                                        , workScheduleSettingTotalOutput
+                                                                                        , self.selectedCodeA13_1()
+                                                                                        , selectionType
+                                                                                        , standardSelectionLayoutId
+                                                                                        , freeSettingLayoutId
+                                                                                        , freeSettingCode
+                                                                                        , zeroDisplayType
+                                                                                        , switchItemDisplay
+                                                                                        , outputConditionSpecification
+                                                                                        , errorAlarmCode);
                     service.saveCharacteristic(companyId, userId, workScheduleOutputCondition); 
                     dfd.resolve();
                 })
@@ -784,6 +915,17 @@ module nts.uk.at.view.kwr001.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        class OutputItemSettingDto {
+            code: string;
+            name: string;
+            layoutId: string;
+        
+            constructor(code: string, name: string, layoutId: string) {
+                this.code = code;
+                this.name = name;
+                this.layoutId = layoutId;
             }
         }
         
@@ -863,9 +1005,36 @@ module nts.uk.at.view.kwr001.a {
             settingDetailTotalOutput: WorkScheduleSettingTotalOutput;
             conditionSetting: number;
             errorAlarmCode: string[];
-            
-            constructor(companyId: string, userId: string, outputType: number, code: string, pageBreakIndicator: number,
-                            settingDetailTotalOuput: WorkScheduleSettingTotalOutput, conditionSetting: number, errorAlarmCode?: string[]) {
+            // 項目選択区分
+            selectionType: number;
+            // 定型選択_出力レイアウトID
+            standardSelectionLayoutId: string;
+            // 自由設定_出力レイアウトID
+            freeSettingLayoutId: string;
+            // 自由設定_コード
+            freeSettingCode: string;
+            // ゼロ表示区分
+            zeroDisplayType: number;
+            // 項目表示切替
+            switchItemDisplay: number;
+            // 条件指定
+            outputConditionSpecification: OutputConditionSpecification;
+
+            constructor(companyId: string
+                , userId: string
+                , outputType: number
+                , code: string
+                , pageBreakIndicator: number
+                , settingDetailTotalOuput: WorkScheduleSettingTotalOutput
+                , conditionSetting: number
+                , selectionType: number
+                , standardSelectionLayoutId: string
+                , freeSettingLayoutId: string
+                , freeSettingCode: string
+                , zeroDisplayType: number
+                , switchItemDisplay: number
+                , outputConditionSpecification?: OutputConditionSpecification
+                , errorAlarmCode?: string[]) {
                 this.companyId = companyId;
                 this.userId = userId;
                 this.outputType = outputType;
@@ -874,7 +1043,16 @@ module nts.uk.at.view.kwr001.a {
                 this.settingDetailTotalOutput = settingDetailTotalOuput;
                 this.conditionSetting =  conditionSetting;
                 if (errorAlarmCode) {
-                    this.errorAlarmCode = errorAlarmCode;        
+                    this.errorAlarmCode = errorAlarmCode;
+                }
+                this.selectionType = selectionType;
+                this.standardSelectionLayoutId = standardSelectionLayoutId;
+                this.freeSettingLayoutId = freeSettingLayoutId,
+                this.freeSettingCode = freeSettingCode;
+                this.zeroDisplayType = zeroDisplayType;
+                this.switchItemDisplay = switchItemDisplay;
+                if (outputConditionSpecification) {
+                    this.outputConditionSpecification = outputConditionSpecification;
                 }
             }
         }
@@ -970,7 +1148,62 @@ module nts.uk.at.view.kwr001.a {
                 }
             }
         }
-        
+
+        class WorkConditionSpecification {
+            // 複数回勤務
+            workMultipleTimes: boolean;
+            // 臨時勤務
+            temporaryService: boolean;
+            // 特定日
+            specificDay: boolean;
+        }
+
+        class ExtractSupportWorkCondition {
+            // 通常勤務場所以外
+            otherNormalLocation: boolean;
+            // 所属職場以外
+            otherWorkplace: boolean;
+        }
+
+        export class ConfirmedData{
+            static EXTRACT = 0;
+            static NOT_EXTRACT = 1;
+        }
+
+        class OutputConditionSpecification {
+            // エラー・アラームの抽出
+            alarmExtraction: boolean;
+            // 確認済みのデータ抽出
+            verifiedDataExtraction: boolean;
+            // 勤務条件指定
+            workingConditionSpecification: boolean;
+            // 応援勤務を抽出
+            extractSupportWork: boolean;
+            // 勤務種類参照
+            workTypeReference: boolean;
+            // 就業時間帯参照
+            referToWorkingHours: boolean;
+            // 確認済みのデータ抽出区分
+            confirmedData: ConfirmedData;
+            // 勤務条件指定情報
+            workConditionSpecification: WorkConditionSpecification;
+            // 応援勤務を抽出条件
+            extractSupportWorkCondition: ExtractSupportWorkCondition;
+            // 勤務種類参照コード
+            workTypeReferenceCode: string[];
+            // 就業時間帯参照コード
+            workHoursReferenceCode: string[];
+            // 抽出条件のエラー・アラームコード
+            alarmCodeOfExtractionCondition: string[];
+        }
+
+        export class ItemSelectionType {
+            /** 定型選択 */
+            static STANDARD_SELECTION = 0;
+            /** 目由設定 */
+            static FREE_SETTING = 1;
+        }
+
         class EmployeeError {
             employeeCode: string;
             employeeName: string;

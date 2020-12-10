@@ -37,7 +37,7 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 		//Get work time info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		//TODO: default ContractCode "000000000000"
-		List<SendWorkTimeNameImport> lstInfo = sendNRDataAdapter.sendWorkTime(Integer.parseInt(nrlNo.trim()), "000000000000");
+		List<SendWorkTimeNameImport> lstInfo = sendNRDataAdapter.sendWorkTime(nrlNo.trim(), "000000000000");
 		StringBuilder builder = new StringBuilder();
 		for(SendWorkTimeNameImport infoName : lstInfo) {
 			builder.append(toStringObject(infoName));

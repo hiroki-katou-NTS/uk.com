@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNR;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNRPk;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.AttendanceClock;
 

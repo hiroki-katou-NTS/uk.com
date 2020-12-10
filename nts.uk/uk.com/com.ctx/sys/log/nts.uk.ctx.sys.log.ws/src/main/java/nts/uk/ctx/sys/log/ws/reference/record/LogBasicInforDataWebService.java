@@ -12,11 +12,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.log.app.find.reference.record.LogBasicInfoAllDto;
 import nts.uk.ctx.sys.log.app.find.reference.record.LogBasicInforAllExportService;
 import nts.uk.ctx.sys.log.app.find.reference.record.LogBasicInformationAllFinder;
+import nts.uk.ctx.sys.log.app.find.reference.record.LogDataExportCsv;
 import nts.uk.ctx.sys.log.app.find.reference.record.LogParams;
-/*
- * author: huannv
- */
-import nts.uk.ctx.sys.log.app.find.reference.record.LogParamsVer1;
 
 @Path("ctx/sys/log/record-reference")
 @Produces("application/json")
@@ -31,14 +28,13 @@ public class LogBasicInforDataWebService extends WebService {
 	@Path("get-log-basic-info-data-by-date")
 	public List<LogBasicInfoAllDto> getLogBasicInfoByModifyDate(LogParams logParams) {
 		// get LogbasicInfor
-		List<LogBasicInfoAllDto> lstLoginBasicInfor = logBasicInformationAllFinder.findByOperatorsAndDate(logParams);
+		List<LogBasicInfoAllDto> lstLoginBasicInfor = logBasicInformationAllFinder.findByOperatorsAndDate(logParams, 1000);
 		return lstLoginBasicInfor;
 	}
 
 	@POST
-	@Path("export-csv-screeni")
-	public ExportServiceResult generate(LogParamsVer1 query) {
+	@Path("export-csv-screen")
+	public ExportServiceResult generate(LogDataExportCsv query) {
 		return this.exportService.start(query);
 	}
-
 }

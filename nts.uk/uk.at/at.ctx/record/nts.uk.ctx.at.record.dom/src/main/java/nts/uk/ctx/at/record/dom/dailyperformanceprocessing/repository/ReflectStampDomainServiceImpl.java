@@ -13,12 +13,10 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
-import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -52,7 +50,6 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStamp
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
@@ -172,9 +169,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
 	
 	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
-	
-	@Inject
 	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
 	
 	@Inject
@@ -204,7 +198,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			Optional<CalAttrOfDailyPerformance> calcOfDaily,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
-        	Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag) {
+        	RecreateFlag recreateFlag) {
 
 		NewReflectStampOutput newReflectStampOutput = new NewReflectStampOutput();
 
@@ -886,7 +880,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			Optional<CalAttrOfDailyPerformance> calcOfDailyOpt,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDailyOpt,
-        	Optional<WorkTypeOfDailyPerformance> workTypeOfDailyOpt,RecreateFlag recreateFlag) {
+        	RecreateFlag recreateFlag) {
 		NewReflectStampOutput newReflectStampOutput = new NewReflectStampOutput();
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 		ReflectStampOutput reflectStamp = new ReflectStampOutput();
@@ -898,9 +892,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (!affInfoOfDailyOpt.isPresent()) {
 			affInfoOfDailyOpt = Optional
 					.ofNullable(this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, processingDate).get());
-		}
-		if (!workTypeOfDailyOpt.isPresent()) {
-			workTypeOfDailyOpt = this.workTypeOfDailyPerforRepository.findByKey(employeeId, processingDate);
 		}
 		if (!calcOfDailyOpt.isPresent()) {
 			calcOfDailyOpt = Optional

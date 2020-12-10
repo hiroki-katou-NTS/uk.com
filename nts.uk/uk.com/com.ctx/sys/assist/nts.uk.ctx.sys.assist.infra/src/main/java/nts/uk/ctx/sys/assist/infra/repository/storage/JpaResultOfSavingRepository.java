@@ -170,10 +170,9 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	
 	@Override
 	public List<ResultOfSaving> getByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
-		List<ResultOfSaving> list = this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspmtResultOfSaving.class)
+		return this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspmtResultOfSaving.class)
 				.setParameter("start", from)
 				.setParameter("end", to)
 				.getList(SspmtResultOfSaving::toDomain);
-		return list;
 	}
 }
