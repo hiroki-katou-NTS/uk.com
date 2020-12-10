@@ -112,8 +112,8 @@ module nts.uk.at.view.kwr003.a {
         showQuickSearchTab: true,
         showAdvancedSearchTab: true,
         showBaseDate: true,
-        showClosure: false,
-        showAllClosure: true,
+        showClosure: true,
+        showAllClosure: false,
         showPeriod: false,
         periodFormatYM: false,
 
