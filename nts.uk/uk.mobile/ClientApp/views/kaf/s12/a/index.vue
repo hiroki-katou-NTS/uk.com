@@ -1,8 +1,5 @@
 <template>
 <div class="kafs12a">
-    <h3>Hello {{title | i18n}} component!</h3>
-    <nts-text-editor
-        name='title'
-        v-model='title' />
+    <step-wizard v-bind:items="['KAFS12_1','KAFS12_2','KAFS12_3']" v-bind:selected="step"/>
 </div>
 </template>
