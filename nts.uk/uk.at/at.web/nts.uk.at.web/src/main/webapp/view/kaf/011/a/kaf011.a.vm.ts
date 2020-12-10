@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	import Application = nts.uk.at.view.kaf011.Application;
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
-	
+	import Comment = nts.uk.at.view.kaf011.Comment;
 	const APIKAF011 = {
         start: "at/request/application/holidayshipment/startPageARefactor"
     }
@@ -21,6 +21,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		isSendMail = ko.observable(false);
 		remainDays = ko.observable('');
+		comment = new Comment();
 		workTypeListWorkingDay = ko.observableArray([]);
 		workTypeListHoliDay = ko.observableArray([]);
 		
@@ -48,7 +49,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			{date: '2020/04/04(土)', number: '0.5日'},
 			{date:  '2020/04/04(土)', number: '0.5日'}
 		];
-		comment = ko.observable('123456789');
 		
 		settingCheck = ko.observable(true);
 		
@@ -65,6 +65,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
+					vm.recruitmentApp.workInformation.update(data.applicationForWorkingDay);
+					vm.absenceLeaveApp.workInformation.update(data.applicationForHoliday);
+					vm.comment.update(data.substituteHdWorkAppSet);
 				}).always(() => {
 					$('#functions-area').css({'display': ''});
 					$('#contents-area').css({'display': ''});
@@ -86,9 +89,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.opAppStandardReasonCD = vm.recruitmentApp.application.opAppStandardReasonCD = vm.applicationCommon().opAppStandardReasonCD;
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 		}
-		
-		mounted() {
-		}
+		mounted(){}
 		
 		register() {
 			

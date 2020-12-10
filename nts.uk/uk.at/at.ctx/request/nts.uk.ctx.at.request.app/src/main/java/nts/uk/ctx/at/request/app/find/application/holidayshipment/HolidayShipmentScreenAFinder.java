@@ -970,14 +970,14 @@ public class HolidayShipmentScreenAFinder {
 		
 		//取得した労働条件項目．区分別勤務．平日時．就業時間帯コードは、INPUT．就業時間帯の設定の一覧に存在するかチェックする(Check xem 'Item điều kiện lao đông.Work by classification. Weekday time.WorktimeCode đã lấy' có tồn tại ở trong INPUT.WorktimeSettingList hay không?)
 		if(workingConditionItem.isPresent()) {
-			result.setWorkTimeCode(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
+			result.setWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
 		}else {
-			result.setWorkTimeCode("");
+			result.setWorkTime("");
 			//12.マスタ勤務種類、就業時間帯データをチェック
-	        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, result.getWorkTimeCode());
+	        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, result.getWorkTime());
 	        //「職場別就業時間帯」を取得した先頭値を表示
 	        if(checkResult.isWkTimeError() && !workTimeLst.isEmpty()){
-	        	result.setWorkTimeCode(workTimeLst.get(0).getWorktimeCode().v());
+	        	result.setWorkTime(workTimeLst.get(0).getWorktimeCode().v());
 	        }
 		}
 		
@@ -989,10 +989,10 @@ public class HolidayShipmentScreenAFinder {
 		
 		if(!workTypeForWorkingDay.isEmpty()) {
 			//振出申請起動時の表示情報．初期選択勤務種類=取得した振出用勤務種類(List)の先頭の勤務種類 /(DisplayInfo khi khởi động đơn xin làm bù. InitialSelectionWorkType= worktype đầu tiên của worktype làm bù(list) đã lấy)
-			result.setWorkTypeCode(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
+			result.setWorkType(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
 		}
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
-		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getWorkTypeCode(), result.getWorkTimeCode());
+		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getWorkType(), result.getWorkTime());
 		if(prescribedTimezoneSetting != null) {
 			for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
 				if(time.getWorkNo() == 1) {
@@ -1077,7 +1077,7 @@ public class HolidayShipmentScreenAFinder {
 		result.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 		
 		//振出日の休日区分により振休の勤務種類を取得する(Acquisition of the work type of the holiday based on the holiday classification of the withdrawal date)
-		result.setWorkTypeCode(this.getWorkTypeOfTheHoliday(companyId, workTypeCD, workTypeForHoliday).orElse(null));
+		result.setWorkType(this.getWorkTypeOfTheHoliday(companyId, workTypeCD, workTypeForHoliday).orElse(null));
 		
 		return result;
 	}

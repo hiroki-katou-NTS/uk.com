@@ -11,6 +11,7 @@ module nts.uk.at.view.kaf011 {
 		workingHoursDispLay1: TimeZoneWithWorkNo = new TimeZoneWithWorkNo(1, this.collectWorkingHours);
 		workingHoursDispLay2: TimeZoneWithWorkNo = new TimeZoneWithWorkNo(2, this.collectWorkingHours);
 		constructor(){}
+		
 		update(param: any){
 			let self = this;
 			self.appID = param.appID;
@@ -27,6 +28,7 @@ module nts.uk.at.view.kaf011 {
 			}
 			
 		}
+		
 		collectWorkingHours(){
 			let self = this;
 			self.workingHours = [];
@@ -36,6 +38,11 @@ module nts.uk.at.view.kaf011 {
 			if(self.workingHoursDispLay2.timeZone.startTime() && self.workingHoursDispLay2.timeZone.endTime()){
 				self.workingHours.push(self.workingHoursDispLay2);
 			}
+		}
+		
+		openKDL003() {
+			let self = this;
+			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml', {selectedWorkTypeCode: self.workInformation.workType(), selectedWorkTimeCode: self.workInformation.workTime()});
 		}
 		
 	}
@@ -109,6 +116,25 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			self.startTime(param.startTime);
 			self.endTime(param.endTime);
+		}
+	}
+	
+	export class Comment {
+		subHolidayComment: KnockoutObservable<string> = ko.observable();
+	    subHolidayColor: KnockoutObservable<string> = ko.observable();
+	    subHolidayBold: KnockoutObservable<boolean> = ko.observable(false);
+	    subWorkComment: KnockoutObservable<string> = ko.observable();
+	    subWorkColor: KnockoutObservable<string> = ko.observable();
+	    subWorkBold: KnockoutObservable<boolean> = ko.observable(false);
+		constructor(){}
+		update(param: any){
+			let self = this;
+			self.subHolidayComment(param.subHolidayComment);
+			self.subHolidayColor(param.subHolidayColor);
+			self.subHolidayBold(param.subHolidayBold);
+			self.subWorkComment(param.subWorkComment);
+			self.subWorkColor(param.subWorkColor);
+			self.subWorkBold(param.subWorkBold);
 		}
 	}
 

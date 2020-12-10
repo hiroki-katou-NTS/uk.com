@@ -27,9 +27,9 @@
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
-							<div class="ntsControl">
-								<button class="" data-bind="click: register" tabindex="">#{i18n.getText('KAF011_5')}</button>
-								<span data-bind="text: workTime"></span>
+							<div class="ntsControl" data-bind="with: recruitmentApp" >
+								<button class="" data-bind="click: openKDL003" tabindex="">#{i18n.getText('KAF011_5')}</button>
+								<span data-bind=""></span>
 							</div>
 						</div>
 						<div class="row">
@@ -77,7 +77,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="comment" data-bind="text: comment"></div>
+						<div class="comment" data-bind="text: comment.subWorkComment, style: {color: comment.subWorkColor, 'font-weight': comment.subWorkBold()? 'bold': ''}"></div>
 					</div>
 				</com:ko-if>
 				<com:ko-if bind="appCombinaSelected() != 1">
@@ -181,7 +181,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="comment" data-bind="text: comment"></div>
+						<div class="comment" data-bind="text: comment.subHolidayComment, style: {color: comment.subHolidayColor, 'font-weight': comment.subHolidayBold()? 'bold': ''}"></div>
 					</div>
 				</com:ko-if>
 			</div>
