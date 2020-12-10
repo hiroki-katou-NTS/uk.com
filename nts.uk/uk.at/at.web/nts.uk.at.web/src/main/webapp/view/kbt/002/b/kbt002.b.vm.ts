@@ -338,8 +338,12 @@ module nts.uk.at.view.kbt002.b {
         cloudCreationFlag: vm.cloudCreationFlag()
       };
       vm.$window.modal('/view/kbt/002/c/index.xhtml', data)
-        .then(() => {
+        .then((result) => {
           vm.$blockui('clear');
+          if (result) {
+            vm.taskSetting(result);
+            vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(result));
+          }
         });
     }
 

@@ -1830,7 +1830,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 									.equals(NotUseAtr.USE) && !check) {
 								// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
 								List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(Arrays.asList(empLeader), datePeriod);
-										.findByCidSidBaseDate(companyId, Arrays.asList(empLeader), datePeriod);
 								// 勤務種別情報変更期間を求める
 								listDatePeriodWorktype = wkTypeInfoChangePeriod.getWkTypeInfoChangePeriod(empLeader, datePeriod, 
 																					listBusinessTypeOfEmpDto, true);

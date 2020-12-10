@@ -166,6 +166,8 @@ module nts.uk.at.view.kbt002.c {
           if (res) {
             vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => {
+              params.startDate = moment.utc(params.startDate).format("YYYY/MM/DD");
+              params.endDate = moment.utc(params.endDate).format("YYYY/MM/DD");
               vm.$window.close(params);
             });
           }
