@@ -36,14 +36,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_TIME_ANYITEM")
-@NamedStoredProcedureQuery(name = "SSPR_DAIKYUZAN_PRC", procedureName = "SSPR_DAIKYUZAN_PRC", parameters = {
-		@StoredProcedureParameter(name = "CID", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "SID", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "YMD", mode = ParameterMode.IN, type = Date.class),
-		@StoredProcedureParameter(name = "WorkTypeCode", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "WorkTimeCode", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "HoliWorkTimes", mode = ParameterMode.IN, type = Integer.class) },
-		resultClasses = Integer.class)
 public class KrcdtDayAnyItemValueMerge extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
