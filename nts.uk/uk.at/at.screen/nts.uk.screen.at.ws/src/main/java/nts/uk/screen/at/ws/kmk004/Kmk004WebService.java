@@ -184,6 +184,26 @@ public class Kmk004WebService extends WebService{
 		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
 	}
 	
+	//ViewC
+	@POST
+	@Path("viewB/workPlace/getListYear/{workTypeAttr}")
+	public List<YearDto> getListYearWorkPlace(@PathParam("workTypeAttr") String workTypeAttr) {
+		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	}
+	
+	//ViewD
+	@POST
+	@Path("viewB/employment/getListYear/{workTypeAttr}")
+	public List<YearDto> getListYearEmployment(@PathParam("workTypeAttr") String workTypeAttr) {
+		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	}
+	
+	//ViewE
+	@POST
+	@Path("viewB/employee/getListYear/{workTypeAttr}")
+	public List<YearDto> getListYearEmployee(@PathParam("workTypeAttr") String workTypeAttr) {
+		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	}
 	
 	// View P
 	// Company
