@@ -117,6 +117,8 @@ public class Kmk004WebService extends WebService{
 	@Inject
 	private SaveMonthlyWorkTimeSetComCommandHandler saveMonthlyWorkTimeSetComCommandHandler;
 	
+	
+	//
 	@Inject
 	private DisplayYearListByCompany displayYearListByCompany;
 	
@@ -165,9 +167,9 @@ public class Kmk004WebService extends WebService{
 	}
 	
 	@POST
-	@Path("viewB/com/getListYear")
-	public List<YearDto> getListYearCom(int workTypeAttr) {
-		return displayYearListByCompany.get(workTypeAttr);
+	@Path("viewB/com/getListYear/{workTypeAttr}")
+	public List<YearDto> getListYearCom(@PathParam("workTypeAttr") String workTypeAttr) {
+		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
 	}
 	
 	

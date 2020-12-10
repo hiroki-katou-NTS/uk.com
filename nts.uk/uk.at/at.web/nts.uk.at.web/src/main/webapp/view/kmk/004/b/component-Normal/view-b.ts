@@ -35,7 +35,8 @@ module nts.uk.at.view.kmk004.b {
 					name: 'box-year',
 					params:{
 						selectedYear: selectedYear,
-						change: changeYear
+						change: changeYear,
+						type: ko.observable('Com_Company')
 					}
 				}"></div>
 				<div tabindex="7" class= "time-work" data-bind="component: {
@@ -67,6 +68,7 @@ module nts.uk.at.view.kmk004.b {
 		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+
 
 		created(params: Params) {
 			const vm = this;

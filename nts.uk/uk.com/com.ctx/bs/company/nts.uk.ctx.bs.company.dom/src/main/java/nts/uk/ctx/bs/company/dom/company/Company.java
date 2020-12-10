@@ -134,7 +134,7 @@ public class Company extends AggregateRoot {
 	public Year getYearBySpecifying(YearMonth yearMonth) {
 		Year year = null;
 		
-		if(yearMonth.month() > this.startMonth.value ){
+		if(yearMonth.month() >= this.startMonth.value ){
 			year = new Year(yearMonth.year());
 		}else {
 			year = new Year(yearMonth.previousYear().v());

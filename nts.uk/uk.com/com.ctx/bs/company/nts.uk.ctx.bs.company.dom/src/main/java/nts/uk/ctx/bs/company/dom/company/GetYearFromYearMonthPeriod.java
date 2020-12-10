@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
@@ -37,8 +36,11 @@ public class GetYearFromYearMonthPeriod {
 					.getYearBySpecifying(yearMonths.stream().findFirst().map(m -> m).orElse(null));
 			Year endYear = company.get().getYearBySpecifying(yearMonths.get(yearMonths.size() - 1));
 			
-			@SuppressWarnings("unchecked")
-			List<Integer> years = (List<Integer>) IntStream.range(startYear.v(), endYear.v());
+			List<Integer> years = new ArrayList<>();
+			
+			for (int i = startYear.v(); i <= endYear.v(); i++){
+				years.add(i);
+			}
 			
 			for (int i = 0 ; i <= years.size() -1 ; i ++){
 				if(judgeWhetherYearMonthListIncludes(yearMonths, company.get().getPeriodTheYear(years.get(i)))){
@@ -62,7 +64,7 @@ public class GetYearFromYearMonthPeriod {
 		List<YearMonth> s = new ArrayList<>();
 		
 		yearMonths.forEach(data -> {
-			int y = data.year() + data.month();
+			int y = data.year()*100 + data.month();
 			
 			if (yearMonthPeriod.start().v() <= y && y <= yearMonthPeriod.end().v()){
 				s.add(data);
