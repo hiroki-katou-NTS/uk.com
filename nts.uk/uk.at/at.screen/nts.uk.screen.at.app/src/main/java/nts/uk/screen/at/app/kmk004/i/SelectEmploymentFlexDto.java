@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.kmk004.h;
+package nts.uk.screen.at.app.kmk004.i;
 
 import java.util.List;
 
@@ -10,14 +10,12 @@ import nts.uk.screen.at.app.query.kmk004.common.YearDto;
  * 
  * @author sonnlb
  *
- *         職場を選択する
  */
 @NoArgsConstructor
 @Data
-public class SelectWorkPlaceFlexDto {
-
-	// 職場別基本設定（フレックス勤務）を表示する
-	DisplayFlexBasicSettingByWorkPlaceDto displayFlexBasicSettingByWokPlaceDto;
+public class SelectEmploymentFlexDto {
+	// 雇用を選択する
+	EmpFlexMonthActCalSetDto empFlexMonthActCalSetDto;
 	// 職場別年度リストを表示する
 	List<YearDto> years;
 }

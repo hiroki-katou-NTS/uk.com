@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
  *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.H：職場別法定労働時間の登録（フレックス勤務）.メニュー別OCD.職場別基本設定（フレックス勤務）を表示する.職場別基本設定（フレックス勤務）を表示する
  */
 @Stateless
-public class DisplayFlexBasicSettingByWokPlace {
+public class DisplayFlexBasicSettingByWorkPlace {
 
 	@Inject
 	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
@@ -23,9 +23,9 @@ public class DisplayFlexBasicSettingByWokPlace {
 	@Inject
 	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
 
-	public DisplayFlexBasicSettingByWokPlaceDto displayFlexBasicSettingByWokPlace(String wkpId) {
+	public DisplayFlexBasicSettingByWorkPlaceDto displayFlexBasicSettingByWokPlace(String wkpId) {
 
-		DisplayFlexBasicSettingByWokPlaceDto result = new DisplayFlexBasicSettingByWokPlaceDto();
+		DisplayFlexBasicSettingByWorkPlaceDto result = new DisplayFlexBasicSettingByWorkPlaceDto();
 		// 1. get(ログイン会社ID,職場ID)
 		this.wkpFlexMonthActCalSetRepo.find(AppContexts.user().companyId(), wkpId).ifPresent(x -> {
 			result.setWkpFlexMonthActCalSet(WkpFlexMonthActCalSetDto.fromDomain(x));

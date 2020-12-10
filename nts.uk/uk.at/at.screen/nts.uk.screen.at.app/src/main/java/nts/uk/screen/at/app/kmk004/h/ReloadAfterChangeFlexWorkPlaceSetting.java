@@ -16,7 +16,7 @@ import nts.uk.screen.at.app.query.kmk004.common.WorkplaceList;
 public class ReloadAfterChangeFlexWorkPlaceSetting {
 
 	@Inject
-	private DisplayFlexBasicSettingByWokPlace displayFlexBasicSettingByWokPlace;
+	private DisplayFlexBasicSettingByWorkPlace displayFlexBasicSettingByWorkPlace;
 
 	@Inject
 	private WorkplaceList workplaceList;
@@ -26,7 +26,7 @@ public class ReloadAfterChangeFlexWorkPlaceSetting {
 
 		// 職場別基本設定（フレックス勤務）を表示する
 		result.setDisplayFlexBasicSettingByWokPlace(
-				this.displayFlexBasicSettingByWokPlace.displayFlexBasicSettingByWokPlace(wkpId));
+				this.displayFlexBasicSettingByWorkPlace.displayFlexBasicSettingByWokPlace(wkpId));
 		// 職場リストを表示する
 		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.FLEX));
 

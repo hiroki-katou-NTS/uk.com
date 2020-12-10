@@ -17,7 +17,7 @@ import nts.uk.screen.at.app.query.kmk004.common.YearlyListByWorkplace;
 public class SelectWorkPlaceFlex {
 
 	@Inject
-	private DisplayFlexBasicSettingByWokPlace displayFlexBasicSettingByWokPlace;
+	private DisplayFlexBasicSettingByWorkPlace displayFlexBasicSettingByWokPlace;
 
 	@Inject
 	private YearlyListByWorkplace yearlyListByWorkplace;
