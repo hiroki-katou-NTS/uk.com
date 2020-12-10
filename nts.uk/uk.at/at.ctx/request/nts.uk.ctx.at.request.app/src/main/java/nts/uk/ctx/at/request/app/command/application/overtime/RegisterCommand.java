@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.apptypeset.AppTypeSettingCommand;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
@@ -14,7 +15,7 @@ public class RegisterCommand {
 	
 	public AppOverTimeInsertCommand appOverTime;
 	
-	public AppDispInfoStartupDto appDispInfoStartupDto;
+	public AppDispInfoStartupCmd appDispInfoStartupDto;
 	
 	public Boolean isMail;
 

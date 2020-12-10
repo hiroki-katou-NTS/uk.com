@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
 @AllArgsConstructor
@@ -12,5 +13,5 @@ public class UpdateCommand {
 	
 	public AppOverTimeUpdateCommand appOverTime;
 	
-	public AppDispInfoStartupDto appDispInfoStartupDto;
+	public AppDispInfoStartupCmd appDispInfoStartupDto;
 }

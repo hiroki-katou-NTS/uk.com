@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetCommand;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
@@ -34,7 +35,7 @@ public class ParamSelectWork {
 	
 	public Integer endSPR;
 	
-	public AppDispInfoStartupDto appDispInfoStartupDto;
+	public AppDispInfoStartupCmd appDispInfoStartupDto;
 	
 	public OvertimeAppSetCommand overtimeAppSet;
 	

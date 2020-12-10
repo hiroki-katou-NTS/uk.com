@@ -576,7 +576,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let appOverTimeTemp = null as AppOverTime;
 
 			// validate chung KAF000
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', 
+			'#kaf000-a-component3-prePost', 
+			'#kaf000-a-component5-comboReason',
+			'#inpStartTime1',
+			'#inpEndTime1')
 				.then((isValid) => {
 					if (isValid) {
 						// validate riêng cho màn hình
@@ -1520,12 +1524,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	
 				let opPreAppContentDisplayLst = res.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
 				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let apOptional = opPreAppContentDisplayLst[0].apOptional;
+					let apOptional = opPreAppContentDisplayLst[0].apOptional as AppOverTime;
 					if (apOptional) {
 						let applicationTime = apOptional.applicationTime as ApplicationTime;
 						if (!_.isEmpty(applicationTime)) {
-							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-								let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as OverTime;
+							_.forEach(applicationTime.applicationTime, (item: OvertimeApplicationSetting) => {
+								let findOverTimeArray = _.find(overTimeArray, { frameNo: String(item.frameNo) }) as OverTime;
 	
 								if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
 									findOverTimeArray.preTime(item.applicationTime);
@@ -1911,11 +1915,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				// 申請表示情報．申請表示情報(基準日関係あり)．表示する事前申請内容．残業申請．申請時間．申請時間．申請時間
 				let opPreAppContentDisplayLst = res.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
 				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let apOptional = opPreAppContentDisplayLst[0].apOptional;
+					let apOptional = opPreAppContentDisplayLst[0].apOptional as AppOverTime;
 					if (apOptional) {
 						let applicationTime = apOptional.applicationTime;
 						if (!_.isEmpty(applicationTime)) {
-							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+							_.forEach(applicationTime.applicationTime, (item: OvertimeApplicationSetting) => {
 								let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
 	
 								if (!_.isNil(findHolidayTimeArray) && item.attendanceType == AttendanceType.BREAKTIME) {

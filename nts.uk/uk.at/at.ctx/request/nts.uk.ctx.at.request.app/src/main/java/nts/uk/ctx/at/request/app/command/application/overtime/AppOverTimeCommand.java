@@ -72,6 +72,6 @@ public class AppOverTimeCommand {
 									.map(x -> x.toDomain())
 									.collect(Collectors.toList())),
 				workInfoOp == null ? Optional.empty() : Optional.of(workInfoOp.toDomain()),
-				detailOverTimeOp == null ? Optional.empty() : Optional.of(detailOverTimeOp.toDomain(AppContexts.user().companyId(), application.getAppID())));
+				detailOverTimeOp == null ? Optional.empty() : Optional.of(detailOverTimeOp.toDomain(AppContexts.user().companyId(), application == null ? null : application.getAppID())));
 	}
 }

@@ -27,7 +27,7 @@ public class PreAppContentDispCmd {
 	public PreAppContentDisplay toDomain() {
 		return new PreAppContentDisplay(
 				GeneralDate.fromString(date, "yyyy/MM/dd"), 
-				Optional.of(apOptional.toDomain()), 
-				Optional.of(appHolidayWork.toDomain()));
+				apOptional == null ? Optional.empty() : Optional.of(apOptional.toDomain()), 
+				appHolidayWork == null ? Optional.empty() : Optional.of(appHolidayWork.toDomain()));
 	}
 }

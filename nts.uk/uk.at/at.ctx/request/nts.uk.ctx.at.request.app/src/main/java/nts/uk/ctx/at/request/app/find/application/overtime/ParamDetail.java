@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 
 public class ParamDetail {
 	
@@ -8,5 +8,5 @@ public class ParamDetail {
 	
 	public String appId;
 	
-	public AppDispInfoStartupDto appDispInfoStartup;
+	public AppDispInfoStartupCmd appDispInfoStartup;
 }

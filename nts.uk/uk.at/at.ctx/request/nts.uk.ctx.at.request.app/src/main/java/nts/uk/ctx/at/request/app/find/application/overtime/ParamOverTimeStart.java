@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkContentCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSetCommand;
@@ -22,7 +23,7 @@ public class ParamOverTimeStart {
 	
 	public Integer overtimeAppAtr;
 	
-	public AppDispInfoStartupDto appDispInfoStartupDto;
+	public AppDispInfoStartupCmd appDispInfoStartupDto;
 	
 	public Integer startTimeSPR;
 	
