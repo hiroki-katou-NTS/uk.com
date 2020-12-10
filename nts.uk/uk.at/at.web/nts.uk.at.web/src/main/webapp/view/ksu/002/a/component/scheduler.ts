@@ -295,7 +295,7 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .join,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .leave,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-time input {
-                    color: #00cc00;
+                    color: #008000;
                 }
                 .scheduler .calendar+.calendar {
                     width: 201px;
@@ -599,8 +599,8 @@ module nts.uk.ui.at.ksu002.a {
             name: COMPONENT_NAME,
             template: `
             <div class="work-type cf">
-                <div class="join" data-bind="i18n: text.wtype, attr: { title: $component.$i18n(text.wtype) }"></div>
-                <div class="leave" data-bind="i18n: text.wtime, attr: { title: $component.$i18n(text.wtime) }"></div>
+                <div class="join" data-bind="i18n: text.wtype"></div>
+                <div class="leave" data-bind="i18n: text.wtime"></div>
             </div>
             <div class="work-time cf">
                 <div class="join">

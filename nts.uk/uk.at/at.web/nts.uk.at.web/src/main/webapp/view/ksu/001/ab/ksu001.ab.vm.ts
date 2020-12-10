@@ -17,8 +17,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
         workTimeCode:KnockoutObservable<string>;
         enableListWorkType: KnockoutObservable<boolean> = ko.observable(true);
-        KEY: string = 'USER_INFOR';
-        
+        KEY: string = 'nts.uk.characteristics.ksu001Data';
         width: KnockoutObservable<number>;
         tabIndex: KnockoutObservable<number | string>;
         filter: KnockoutObservable<boolean> = ko.observable(false);
