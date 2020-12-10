@@ -32,21 +32,22 @@ public class EstimateAmountList implements DomainValue{
 			throw new BusinessException("Msg_1870");
 		}
 		
-		if(estimateAmount.get(0).getEstimateAmountNo().v() == 1 ) {
-			estimateAmount.stream().reduce(null, (pre, next) ->{
-				
-				 if(pre.getEstimateAmountNo().v() >= next.getEstimateAmountNo().v()) {
-						throw new BusinessException("Msg_1871");
-				 }
-				
-				 if(pre.getEstimateAmount().v() >= next.getEstimateAmount().v()) {
-						throw new BusinessException("Msg_147");
-				 } 
-				 
-				 return null;
-			});
-			
+		if(estimateAmount.get(0).getEstimateAmountNo().v() != 1 ) {
+			throw new BusinessException("Msg_1871");
 		}
+		
+		estimateAmount.stream().reduce(null, (pre, next) -> {
+
+			if (pre.getEstimateAmountNo().v() >= next.getEstimateAmountNo().v()) {
+				throw new BusinessException("Msg_1871");
+			}
+
+			if (pre.getEstimateAmount().v() >= next.getEstimateAmount().v()) {
+				throw new BusinessException("Msg_147");
+			}
+
+			return null;
+		});
 		
 		return new EstimateAmountList(estimateAmount);
 	}

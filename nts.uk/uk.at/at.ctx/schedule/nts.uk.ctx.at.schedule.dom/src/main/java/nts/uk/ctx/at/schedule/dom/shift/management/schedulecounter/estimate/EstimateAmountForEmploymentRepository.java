@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
-public interface EstimateAmountEmploymentRepository {
+public interface EstimateAmountForEmploymentRepository {
 	/**
 	 * 
 	 * @param cid 会社ID
