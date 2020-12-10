@@ -85,18 +85,21 @@
 								<div class="panel panel-frame">
 									<div class="panel-header">#{i18n.getText('KSM005_19')}</div>
 									<div class="panel-body">
-										<div class="button">
-											<button tabindex="9" data-bind="click: openDialogKDL03">#{i18n.getText('KSM005_23')}</button>
-										</div>
-										<div class="calendar">
-											<div class="row-1 row-flex">
-												<!--Type of work -->
-												<div class="a37 label" data-bind="text: typeOfWorkLabel"></div>
-												<div class="a3839" data-bind="text: typeOfWorkInfo"></div>
+										<div class="table">
+											<div class="cell valign-center">
+												<button tabindex="9" data-bind="click: openDialogKDL03">#{i18n.getText('KSM005_23')}</button>
 											</div>
-											<div class="row-2 row-flex">
-												<!-- Working hours -->
+											<div class="cell valign-center">
+												<!--Type of work label -->
+												<div class="a37 label" data-bind="text: typeOfWorkLabel"></div>
+												<!-- Working hours label -->
 												<div class="a310 label" data-bind="text: workingHoursLabel"></div>
+												
+											</div>
+											<div class="cell valign-center">
+												<!--Type of work -->
+												<div class="a3839" data-bind="text: typeOfWorkInfo"></div>
+												<!-- Working hours -->
 												<div class="a311312" data-bind="text: workingHoursInfo"></div>
 											</div>
 										</div>

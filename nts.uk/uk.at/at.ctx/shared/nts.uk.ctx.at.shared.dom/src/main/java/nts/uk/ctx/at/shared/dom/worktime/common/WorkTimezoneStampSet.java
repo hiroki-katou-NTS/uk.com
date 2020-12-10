@@ -22,7 +22,8 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Clonea
 
 	/** The rounding sets. */
 	// 丸め設定
-	private List<RoundingSet> roundingSets;
+	//private List<RoundingSet> roundingSets;
+	private RoundingTime roundingTime;
 
 	/** The priority sets. */
 	// 優先設定
@@ -35,7 +36,8 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Clonea
 	 *            the memento
 	 */
 	public WorkTimezoneStampSet(WorkTimezoneStampSetGetMemento memento) {
-		this.roundingSets = memento.getRoundingSet();
+		//this.roundingSets = memento.getRoundingSet();
+		this.roundingTime = memento.getRoundingTime();
 		this.prioritySets = memento.getPrioritySet();
 	}
 
@@ -46,7 +48,8 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Clonea
 	 *            the memento
 	 */
 	public void saveToMemento(WorkTimezoneStampSetSetMemento memento) {
-		memento.setRoundingSet(this.roundingSets);
+		//memento.setRoundingSet(this.roundingSets);
+		memento.setRoundingTime(this.roundingTime);
 		memento.setPrioritySet(this.prioritySets);
 	}
 
@@ -77,7 +80,8 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Clonea
 	public WorkTimezoneStampSet clone() {
 		WorkTimezoneStampSet cloned = new WorkTimezoneStampSet();
 		try {
-			cloned.roundingSets = this.roundingSets.stream().map(c -> c.clone()).collect(Collectors.toList());
+			//cloned.roundingSets = this.roundingSets.stream().map(c -> c.clone()).collect(Collectors.toList());
+			cloned.roundingTime = this.roundingTime;
 			cloned.prioritySets = this.prioritySets.stream().map(c -> c.clone()).collect(Collectors.toList());
 		}
 		catch (Exception e){

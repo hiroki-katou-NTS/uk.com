@@ -40,7 +40,7 @@ module nts.uk.com.view.cmf004.j {
     created() {
       const vm = this;
       vm.dateValue.subscribe((value: any) => {
-        if (value.startDate !== vm.baseDateValue().startDate && value.endDate !== vm.baseDateValue().endDate) {
+        if (value.startDate !== vm.baseDateValue().startDate || value.endDate !== vm.baseDateValue().endDate) {
           vm.baseDateValue({ startDate: value.startDate, endDate: value.endDate });
           vm.findSaveSet();
         }
@@ -66,6 +66,7 @@ module nts.uk.com.view.cmf004.j {
       const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
       service.findSaveSetHistory(momentFrom, momentTo)
         .then((data: SaveSetHistoryDto[]) => {
+          console.log(data);
           const res: SaveSetHistoryDto[] = [
             { rowNumber: 1, patternCode: '', saveName: 'すべて' }
           ];
@@ -74,8 +75,8 @@ module nts.uk.com.view.cmf004.j {
               x.rowNumber = i + 2;
               res.push(x);
             });
-            vm.searchItems(res);
           }
+          vm.searchItems(res);
           vm.searchValue(1);
           //Create green rowNumber column
           $("document").ready(() => {
@@ -106,37 +107,34 @@ module nts.uk.com.view.cmf004.j {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      if (arr.length > 0) {
-        const param = {
-          objects: arr,
-          from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
-          to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
-        };
-        return service.findData(param).then((data: Array<DataDto>) => {
-          console.log(data);
-          const res: DataDto[] = [];
-          if (data && data.length) {
-            _.each(data, (x, i) => {
-              x.rowNumber = i + 1;
-              x.id = nts.uk.util.randomId();
-              x.restoreCount += "人";
-              x.saveCount += "人";
-              x.startDatetime = moment.utc(x.startDatetime).format("YYYY/MM/DD HH:mm:ss");
-              x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
-              res.push(x);
-  
-              if (x.executionResult === 'Enum_SaveStatus_FAILURE') {
-                _.each(vm.columnHeadersRes, col => {
-                  vm.states.push(new State(x.id, col.key, ["red-color"]));
-                })
-              }
-              x.executionResult = nts.uk.resource.getText(x.executionResult);``
-            });
-          }
-          vm.resultItems(res);
-          vm.loadDataGrid();
-        });
-      }
+      const param = {
+        objects: arr,
+        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
+        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+      };
+      return service.findData(param).then((data: Array<DataDto>) => {
+        const res: DataDto[] = [];
+        if (data && data.length) {
+          _.each(data, (x, i) => {
+            x.rowNumber = i + 1;
+            x.id = nts.uk.util.randomId();
+            x.restoreCount += "人";
+            x.saveCount += "人";
+            x.startDatetime = moment.utc(x.startDatetime).format("YYYY/MM/DD HH:mm:ss");
+            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
+            res.push(x);
+
+            if (x.executionResult === 'Enum_SaveStatus_FAILURE') {
+              _.each(vm.columnHeadersRes, col => {
+                vm.states.push(new State(x.id, col.key, ["red-color"]));
+              })
+            }
+            x.executionResult = nts.uk.resource.getText(x.executionResult); 
+          });
+        }
+        vm.resultItems(res);
+        vm.loadDataGrid();
+      });
     }
 
     public getSearchValue(val: any): SaveSetHistoryDto {

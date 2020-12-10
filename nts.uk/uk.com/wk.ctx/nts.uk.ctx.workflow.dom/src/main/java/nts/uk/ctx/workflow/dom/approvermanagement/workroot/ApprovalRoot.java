@@ -22,16 +22,12 @@ public class ApprovalRoot implements UnduplicatableHistory<EmploymentAppHistoryI
 	private SystemAtr sysAtr;
 	/**承認ルート区分*/
 	private EmploymentRootAtr employmentRootAtr;
-	/**分岐ID*/
-	private String branchId;
 	/**履歴*/
 	private List<EmploymentAppHistoryItem> historyItems;
 	/**申請種類*/
 	private ApplicationType applicationType;
 	/**確認ルート種類*/
 	private ConfirmationRootType confirmationRootType;
-	/**任意項目申請ID*/
-	private String anyItemApplicationId;
 	/**届出ID*/
 	private Integer noticeId;
 	/**各業務エベントID*/

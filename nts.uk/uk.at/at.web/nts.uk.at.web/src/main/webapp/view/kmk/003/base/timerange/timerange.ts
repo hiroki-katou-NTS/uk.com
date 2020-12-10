@@ -199,6 +199,8 @@ module kmk003.base.timerange {
                 ko.cleanNode($(element)[0]);
                 //screenModel.bindDataToScreen(value);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                
+                $(element).data("screenModel", screenModel);
                 $('.time-range-custom').css("float", "left");
                 
                 $.fn.validateTimeRange = function() {

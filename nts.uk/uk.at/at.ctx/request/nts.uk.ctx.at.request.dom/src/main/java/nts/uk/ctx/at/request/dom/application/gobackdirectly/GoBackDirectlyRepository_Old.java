@@ -2,7 +2,11 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)」
+ * @author phuongdv
+ *
+ */
 public interface GoBackDirectlyRepository_Old {
 	// find Application by ID
 	public Optional<GoBackDirectly_Old> findByApplicationID(String companyID, String appID);

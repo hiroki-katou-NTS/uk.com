@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf022.company.viewmodel {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import setShared = nts.uk.ui.windows.setShared;
 
     import ScreenModelA = a.viewmodel.ScreenModelA;
     import ScreenModelB = b.viewmodel.ScreenModelB;
@@ -96,6 +97,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 self.viewmodelH.initData(data);
                 self.viewmodelI.initData(data);
                 self.viewmodelJ.initData(data);
+                self.viewmodelK.initData(data);
                 self.viewmodelN.initData(data);
                 self.viewmodelQ.initData(data);
                 self.viewmodelV.initData(data);
@@ -185,6 +187,9 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             }).fail(error => {
                 nts.uk.ui.dialog.alertError(error).then(() => {
                     if (error.messageId == "Msg_1751") {
+                        const appType = error.supplements.appType;
+                        const holidayAppType = error.supplements.holidayAppType;
+                        setShared("KAF022S_PARAMS", {appType: appType, holidayAppType: holidayAppType});
                         self.viewmodelA.openScreenS();
                     }
                 });

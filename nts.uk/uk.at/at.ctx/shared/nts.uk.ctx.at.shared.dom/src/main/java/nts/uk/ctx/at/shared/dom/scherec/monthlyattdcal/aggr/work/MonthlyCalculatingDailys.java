@@ -90,6 +90,23 @@ public class MonthlyCalculatingDailys {
 		this.workConditions = new HashMap<>();
 	}
 	
+	public List<IntegrationOfDaily> getDailyWorks(String sid) {
+		
+		return workInfoOfDailyMap.entrySet().stream().map(wi -> {
+
+			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(), 
+					null, affiInfoOfDailyMap.get(wi.getKey()), 
+					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(), 
+					Optional.empty(), new ArrayList<>(), 
+					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())), 
+					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(), 
+					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())), 
+					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
+					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())), 
+					new ArrayList<>());
+		}).collect(Collectors.toList());
+	}
+	
 	/**
 	 * データ取得
 	 * @param employeeId 社員ID

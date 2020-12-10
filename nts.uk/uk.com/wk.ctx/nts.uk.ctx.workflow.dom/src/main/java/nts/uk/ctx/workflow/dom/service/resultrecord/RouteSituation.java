@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.status.RouteConfirmStatus;
@@ -47,7 +48,7 @@ public class RouteSituation {
 			AppRootConfirm confirm,
 			AppRootInstance instance,
 			String approverId,
-			List<String> representRequesterIds) {
+			List<AgentInfoOutput> representRequesterIds) {
 		
 		val status = RouteConfirmStatus.create(confirm, instance)
 				.getStatusFor(approverId, representRequesterIds);

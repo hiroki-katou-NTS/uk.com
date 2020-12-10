@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
 
 /**
@@ -19,21 +20,19 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
 public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetGetMemento {
 
 	/** The rounding set. */
-	private List<RoundingSetDto> roundingSets;
+	private RoundingTimeDto roundingTime;
 
 	/** The priority set. */
 	private List<PrioritySettingDto> prioritySets;
-
+	
+	
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento#
-	 * getRoundingSet()
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento#getRoundingTime()
 	 */
 	@Override
-	public List<RoundingSet> getRoundingSet() {
-		return this.roundingSets.stream().map(item -> new RoundingSet(item)).collect(Collectors.toList());
+	public RoundingTime getRoundingTime() {
+		return new RoundingTime(this.roundingTime);
 	}
 
 	/*
@@ -47,5 +46,6 @@ public class WorkTimezoneStampSetDto implements WorkTimezoneStampSetGetMemento {
 	public List<PrioritySetting> getPrioritySet() {
 		return this.prioritySets.stream().map(item -> new PrioritySetting(item)).collect(Collectors.toList());
 	}
+
 
 }

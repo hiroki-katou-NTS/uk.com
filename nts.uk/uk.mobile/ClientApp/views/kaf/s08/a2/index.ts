@@ -37,7 +37,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: () => ({}) })
 
     //A2 nhận về là props là array table
-    @Prop({ default: () => [] }) public readonly table!: [];
+    @Prop({ default: () => [] }) public readonly actualContent!: Array<any>;
 
     //A2 nhận về props params là một Object ITimes
     @Prop({ default: () => null }) public derpartureTime!: number;
@@ -120,6 +120,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 }).then((res: any) => {
                     vm.data = res.data;
                     vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
+                    vm.businessTripActualContent.forEach(((e1) => {
+                        vm.actualContent.forEach((e2) => {
+                            if (e1.date == e2.date) {
+                                e1.opAchievementDetail = e2.opAchievementDetail;
+                            }
+                        });
+                    }));
                     vm.$mask('hide');
                 });
             }
@@ -211,7 +218,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //quay trở lại step one
     public prevStepOne() {
         const vm = this;
-        vm.$emit('prevStepOne', vm.derpartureTime, vm.returnTime, vm.appReason);
+        vm.$emit('prevStepOne', vm.derpartureTime, vm.returnTime, vm.appReason, vm.businessTripActualContent);
     }
 
     //hàm check trước khi register

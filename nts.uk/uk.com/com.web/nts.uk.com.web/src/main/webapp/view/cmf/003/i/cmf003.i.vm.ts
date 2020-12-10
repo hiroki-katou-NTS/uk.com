@@ -44,7 +44,7 @@ module nts.uk.com.view.cmf003.i {
     created() {
       const vm = this;
       vm.dateValue.subscribe((value: any) => {
-        if (value.startDate !== vm.baseDateValue().startDate && value.endDate !== vm.baseDateValue().endDate) {
+        if (value.startDate !== vm.baseDateValue().startDate || value.endDate !== vm.baseDateValue().endDate) {
           vm.baseDateValue({ startDate: value.startDate, endDate: value.endDate });
           vm.findSaveSet();
         }
@@ -78,8 +78,8 @@ module nts.uk.com.view.cmf003.i {
               x.rowNumber = i + 2;
               res.push(x);
             });
-            vm.searchItems(res);
           }
+          vm.searchItems(res);
           vm.searchValue(1);
           //Create green rowNumber column
           $("document").ready(() => {
@@ -114,33 +114,31 @@ module nts.uk.com.view.cmf003.i {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      if (arr.length > 0) {
-        const param = {
-          objects: arr,
-          from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
-          to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
-        };
-        return service.findData(param).then((data: DataDto[]) => {
-          const res: DataDto[] = [];
-          if (data && data.length) {
-            _.each(data, (x, i) => {
-              x.rowNumber = i + 1;
-              x.id = nts.uk.util.randomId();
-              x.targetNumberPeople += "人";
-              x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
-              x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
-              x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD HH:mm:ss");
-              x.save = getText("CMF003_330");
-              x.saveForm = vm.getSaveForm(Number(x.saveForm));
-              x.deleteFile = x.deletedFiles === 0 ? "1" : null;
-              x.downloadFile = x.deletedFiles === 0 ? "1" : null;
-              res.push(x);
-            });
-          }
-          vm.resultItems(res);
-          vm.loadDataGrid();
-        });
-      }
+      const param = {
+        objects: arr,
+        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
+        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+      };
+      return service.findData(param).then((data: DataDto[]) => {
+        const res: DataDto[] = [];
+        if (data && data.length) {
+          _.each(data, (x, i) => {
+            x.rowNumber = i + 1;
+            x.id = nts.uk.util.randomId();
+            x.targetNumberPeople += "人";
+            x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
+            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
+            x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD HH:mm:ss");
+            x.save = getText("CMF003_330");
+            x.saveForm = vm.getSaveForm(Number(x.saveForm));
+            x.deleteFile = x.deletedFiles === 0 ? "1" : null;
+            x.downloadFile = x.deletedFiles === 0 ? "1" : null;
+            res.push(x);
+          });
+        }
+        vm.resultItems(res);
+        vm.loadDataGrid();
+      });
     }
 
     public getSearchValue(val: any): SaveSetHistoryDto {
@@ -205,7 +203,7 @@ module nts.uk.com.view.cmf003.i {
         ]
       }).create();
 
-      $("#I6_1").ready(function() {
+      $("#I6_1").ready(function () {
         vm.updateGridUI();
         vm.updateStorageLabelPos();
       });
@@ -214,7 +212,7 @@ module nts.uk.com.view.cmf003.i {
         vm.updateStorageLabelPos();
       })
 
-      $("#I6_1 .mgrid-free").scroll(function() {
+      $("#I6_1 .mgrid-free").scroll(function () {
         vm.updateGridUI();
       });
     }
@@ -226,7 +224,7 @@ module nts.uk.com.view.cmf003.i {
 
     private updateStorageLabelPos() {
       let totalHeight = 0;
-      $("#I6_1 > div").each(function(index){
+      $("#I6_1 > div").each(function (index) {
         if (index % 2)
           totalHeight += $(this).height();
       });
@@ -267,7 +265,7 @@ module nts.uk.com.view.cmf003.i {
               const item = _.find(vm.resultItems(), { fileId: value.fileId });
               item.downloadFile = null;
               item.deleteFile = null;
-              item.deletedFiles = 1;  
+              item.deletedFiles = 1;
               vm.resultItems.valueHasMutated();
               vm.loadDataGrid();
             }).always(() => {
@@ -277,7 +275,7 @@ module nts.uk.com.view.cmf003.i {
         }
       });
     }
-    
+
     public getSaveForm(value: number): string {
       switch (value) {
         case 0: return getText('CMF003_460');

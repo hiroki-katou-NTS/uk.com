@@ -612,11 +612,11 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				this.editStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), dailyData.getEditState(), lstItem);
 				return;
 			}
-			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+			WorkStamp workStamp = new WorkStamp(
                     new TimeWithDayAttr(data.getStartTime()),
                     null,
                     TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null);
-			WorkStamp endWorkStamp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
+			WorkStamp endWorkStamp = new WorkStamp(
                     new TimeWithDayAttr(data.getEndTime()),
                     null,
                     TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null);
@@ -632,11 +632,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				if(data.isStart()) {
 					x.getStamp().ifPresent(y -> {
 						y.getTimeDay().setTimeWithDay(data.getStartTime() != null ?Optional.of( new TimeWithDayAttr(data.getStartTime())) : null);
-						y.setAfterRoundingTime(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null);
 						y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION);
 					});
 					if(!x.getStamp().isPresent() && data.getStartTime() != null) {
-						x.setStamp(Optional.ofNullable(new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+						x.setStamp(Optional.ofNullable(new WorkStamp(
 								new TimeWithDayAttr(data.getStartTime()),
 								null,
 								TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null)));
@@ -647,11 +646,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				if(data.isEnd()) {
 					x.getStamp().ifPresent(y -> {
 						y.getTimeDay().setTimeWithDay(data.getEndTime() != null ? Optional.of(new TimeWithDayAttr(data.getEndTime())) : null);
-						y.setAfterRoundingTime(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null);
 						y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION);
 					});
 					if(!x.getStamp().isPresent() && data.getEndTime() != null) {
-						x.setStamp(Optional.ofNullable(new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
+						x.setStamp(Optional.ofNullable(new WorkStamp(
 								new TimeWithDayAttr(data.getEndTime()),
 								null,
 								TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null)));
@@ -859,11 +857,11 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		TimeLeavingWork timeLeavingWork = null;
 		if(lstTimeLeavingWorks.isEmpty()) {
-			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+			WorkStamp workStamp = new WorkStamp(
                     new TimeWithDayAttr(data.getStartTime()),
                     null,
                     TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null);
-			WorkStamp endWorkStamp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
+			WorkStamp endWorkStamp = new WorkStamp(
                     new TimeWithDayAttr(data.getEndTime()),
                     null,
                     TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null);
@@ -880,7 +878,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			Optional<WorkStamp> optStamp = timeAttendanceStart.getStamp();
 			if(optStamp.isPresent()) {
 				WorkStamp stamp = optStamp.get();
-				WorkStamp stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+				WorkStamp stampTmp = new WorkStamp(
 						new TimeWithDayAttr(data.getStartTime()),
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 								TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null);
@@ -895,7 +893,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			Optional<WorkStamp> optStamp = timeAttendanceEnd.getStamp();
 			if(optStamp.isPresent()) {				
 				WorkStamp stamp = optStamp.get();
-				WorkStamp stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+				WorkStamp stampTmp = new WorkStamp(
 						new TimeWithDayAttr(data.getEndTime()),
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 								TimeChangeMeans.DIRECT_BOUNCE_APPLICATION,null);
@@ -1239,14 +1237,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			c.getAttendanceStamp().ifPresent(a -> {
 				a.getStamp().ifPresent(x -> {
 					x.getTimeDay().setTimeWithDay(Optional.empty());
-					x.setAfterRoundingTime(null);
 					x.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION);
 				});
 			});
 			c.getLeaveStamp().ifPresent(y -> {
 				y.getStamp().ifPresent(z -> {
 					z.getTimeDay().setTimeWithDay(Optional.empty());
-					z.setAfterRoundingTime(null);
 					z.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION);
 				});
 			});

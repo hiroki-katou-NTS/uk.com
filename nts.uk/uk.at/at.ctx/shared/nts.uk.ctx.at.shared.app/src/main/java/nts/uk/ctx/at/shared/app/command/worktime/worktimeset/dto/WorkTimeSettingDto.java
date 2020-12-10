@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
@@ -26,6 +27,7 @@ import nts.uk.shr.com.primitive.Memo;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 
 	/** The worktime code. */

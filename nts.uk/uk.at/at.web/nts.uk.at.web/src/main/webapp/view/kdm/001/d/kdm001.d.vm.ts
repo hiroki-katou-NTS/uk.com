@@ -5,6 +5,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
     import block = nts.uk.ui.block;
     import dialog    = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+
     export class ScreenModel {
         workCode: KnockoutObservable<string>                      = ko.observable('');
         workplaceName: KnockoutObservable<string>                 = ko.observable('');
@@ -31,6 +33,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         closureId: KnockoutObservable<number> = ko.observable(0);
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
+        baseDate: KnockoutObservable<string> = ko.observable('');
+        dataDate:KnockoutObservable<number> = ko.observable(0);
+        linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
+        isDisableOpenKDL035: KnockoutObservable<boolean> = ko.observable(true);
+        checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this;
             self.initScreen();
@@ -52,10 +60,23 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             });
             self.pickUp.subscribe((v) => {
                 self.calRemainDays();
+                if(v){
+                  self.baseDate = self.dayOff
+                }
+                if(!v && self.pause()) {
+                  self.isDisableOpenKDL035(false);
+                }else {
+                  self.isDisableOpenKDL035(true)
+                }
             });
             self.pause.subscribe((v) => {
                 self.setSplit();
                 self.calRemainDays();
+                if(v && !self.pickUp()) {
+                  self.isDisableOpenKDL035(false);
+                }else {
+                  self.isDisableOpenKDL035(true);
+                }
             });
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
@@ -65,8 +86,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             
             self.remainDays(null);
         }
-        
-        public calRemainDays(){
+
+        public oldRemainDays() {
             let self = this;
             if ((!self.pickUp() && !self.pause()) ||  (!self.occurredDays() && !self.subDays())) {
                 self.remainDays(null);
@@ -79,6 +100,16 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             if (self.remainDays() !== 0){
                 self.remainDays(self.remainDays().toFixed(1));
             }
+        }
+
+        public calRemainDays() {
+          const vm = this;
+          const value1 = !vm.pickUp() || !vm.occurredDays()? 0 : vm.occurredDays();
+          const value2 = !vm.pause() || !vm.subDays() ? 0 : vm.subDays();
+          const value3 = !vm.pause() || !vm.checkedSplit() || !vm.requiredDays() ? 0 : vm.requiredDays();
+          const value4 = !vm.pause || !vm.dataDate() ? 0 : vm.dataDate();
+          const remainDays = value1 + value4 - (value2 + value3)
+          vm.remainDays(remainDays);
         }
 
         public setSplit(){
@@ -117,6 +148,19 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public submitForm() {
             let self = this;
+            let linkingDates = [];
+            if (self.pickUp()) {
+                if (self.pause() && _.isEmpty(self.linkingDates())) {
+                    linkingDates = [moment.utc(self.dayOff()).format('YYYY-MM-DD')];
+                } else {
+                    linkingDates = self.linkingDates();
+                }
+            } else {
+                if (self.checkedSplit() && !_.isEmpty(self.linkingDates())) {
+                    linkingDates = self.linkingDates();
+                }
+            }
+
             let data = {
                 employeeId: self.employeeId(),
                 pickUp: self.pickUp(),
@@ -131,7 +175,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 checkedSplit: self.checkedSplit(),
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
-                subDays: self.subDays()
+                subDays: self.subDays(),
+                linkingDates: linkingDates
             };
             
             service.save(data).done(result => {
@@ -187,10 +232,13 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         nts.uk.ui.windows.close();
                     });
                 }
-            }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" }).then(() => {
-                    setShared('KDM001_A_PARAMS', {isSuccess: false});
-                });
+            })
+            .fail((res: any) => {
+                if (res && res.messageId === 'Msg_2017' || res.messageId === 'Msg_2018') {
+                    dialog.info(res).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
+                } else {
+                    dialog.info({ messageId: "Msg_737" }).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
+                }
             });
         }
         
@@ -200,7 +248,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 return true;
             return false;
         }
-        
+
         public createData(){
             nts.uk.ui.errors.clearAll();
             if (this.pickUp()){
@@ -227,6 +275,19 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     this.submitForm();
                 }
             }
+        }
+
+        public openKDL035() {
+            const vm = this;
+            // TODO open kdl 035
+            modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
+                // get List<振休振出紐付け管理> from KDL035
+                const linkingDates: Array<any> = getShared('linkingDates');
+                if (linkingDates.length > 0) {
+                    vm.linkingDates(linkingDates);
+                    vm.checkLinkingDates(true);
+                }
+            });
         }
     }
 }

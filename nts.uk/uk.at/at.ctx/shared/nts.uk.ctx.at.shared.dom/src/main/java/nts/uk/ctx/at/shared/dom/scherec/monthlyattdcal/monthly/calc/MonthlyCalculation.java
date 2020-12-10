@@ -172,7 +172,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		this.closureId = ClosureId.RegularEmployee;
 		this.closureDate = new ClosureDate(1, true);
 		this.procPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		this.workingConditionItem = null;
+		this.workingConditionItems = new ArrayList<>();
+		this.workingConditions = new HashMap<>();
 		this.workingSystem = WorkingSystem.REGULAR_WORK;
 		this.employee = null;
 		this.workplaceId = "empty";
@@ -187,7 +188,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		this.monthlyCalculatingDailys = new MonthlyCalculatingDailys();
 		this.workInfoOfRecordMap = new HashMap<>();
-		this.originalData = null;
+		this.originalData = Optional.empty();
 		this.attendanceTimeWeeks = new ArrayList<>();
 
 		this.startWeekNo = 0;
@@ -281,7 +282,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 「締め」 取得
 		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
 
-		val unitSetting = require.usageUnitSetting(companyId).get();
+		val unitSetting = require.usageUnitSetting(companyId).orElse(null);
+		if (unitSetting == null) return;
 		
 		// 通常勤務月別実績集計設定 （基準：期間終了日）
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK) {

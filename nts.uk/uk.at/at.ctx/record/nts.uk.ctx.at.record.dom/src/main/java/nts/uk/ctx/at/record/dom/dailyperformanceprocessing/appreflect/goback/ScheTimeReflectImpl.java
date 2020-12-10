@@ -19,8 +19,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
@@ -33,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class ScheTimeReflectImpl implements ScheTimeReflect{
@@ -261,35 +264,17 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		}		
 		//時間丁度の打刻は遅刻・早退とするをチェックする		
 		WorkTimezoneCommonSet worktimeSet = optWorkTimeSetting.get();
-		WorkTimezoneLateEarlySet lateEarlySet = worktimeSet.getLateEarlySet();
-		List<OtherEmTimezoneLateEarlySet> lstOtherClassSets = lateEarlySet.getOtherClassSets();
-		if(lstOtherClassSets.isEmpty()) {
-			return timeData;
-		}
-		OtherEmTimezoneLateEarlySet emTimezon = null;
-		if(isPre) {
-			List<OtherEmTimezoneLateEarlySet> temp = lstOtherClassSets.stream()
-					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.LATE)
-					.collect(Collectors.toList());
-			if(!temp.isEmpty()) {
-				emTimezon = temp.get(0);
-			}
-		} else {
-			List<OtherEmTimezoneLateEarlySet> temp = lstOtherClassSets.stream()
-					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.EARLY)
-					.collect(Collectors.toList());
-			if(!temp.isEmpty()) {
-				emTimezon = temp.get(0);
-			}
-		}
-		if(emTimezon != null && emTimezon.isStampExactlyTimeIsLateEarly()) {
+		WorkTimezoneStampSet stampSet = worktimeSet.getStampSet();
+		RoundingTime roundingTime = stampSet.getRoundingTime();
+
 			if(isPre) {
-				return timeData - 1;				
+				if(roundingTime.getAttendanceMinuteLaterCalculate() == NotUseAtr.USE)
+					return timeData + 1;				
 			} else {
-				return timeData + 1;
+				if(roundingTime.getLeaveWorkMinuteAgoCalculate() == NotUseAtr.USE)
+					return timeData - 1;
 			}
 
-		}
 		return timeData;
 	}
 	@Override

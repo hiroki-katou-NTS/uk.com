@@ -12,12 +12,13 @@ import java.util.List;
 public interface WorkTimezoneStampSetGetMemento {
 
 	/**
- 	 * Gets the rounding set.
+ 	 * Gets the rounding time.
  	 *
- 	 * @return the rounding set
+ 	 * @return the rounding time.
  	 */
- 	List<RoundingSet> getRoundingSet();
+	RoundingTime getRoundingTime();
 
+ 	
 	/**
 	 * Gets the priority set.
 	 *

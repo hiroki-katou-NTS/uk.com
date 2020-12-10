@@ -31,14 +31,15 @@ public class StorageHistoryFinder {
 	public List<ResultOfSavingDto> findHistory(GetDataHistoryCommand command) {
 		List<String> patternCodes = command.getObjects().stream()
 					.map(FindDataHistoryDto::getPatternCode).collect(Collectors.toList());
-		List<ResultOfSavingDto> list = resultOfSavingRepository.getResultOfSavingBySaveSetCode(patternCodes)
-				.stream()
-				.filter(s -> checkDateTime(s, command.getFrom(), command.getTo()))
-				.map(ResultOfSavingDto::fromDomain)
-				.map(this::updatePractitioner)
-				.sorted(Comparator.comparing(ResultOfSavingDto::getSaveStartDatetime))
-				.collect(Collectors.toList());
-		return list;
+		if (!patternCodes.isEmpty()) {
+			return resultOfSavingRepository.getResultOfSavingBySaveSetCode(patternCodes)
+					.stream()
+					.filter(s -> checkDateTime(s, command.getFrom(), command.getTo()))
+					.map(ResultOfSavingDto::fromDomain)
+					.map(this::updatePractitioner)
+					.sorted(Comparator.comparing(ResultOfSavingDto::getSaveStartDatetime))
+					.collect(Collectors.toList());
+		} else return Collections.emptyList();
 	}
 	
 	private ResultOfSavingDto updatePractitioner(ResultOfSavingDto dto) {
@@ -50,7 +51,7 @@ public class StorageHistoryFinder {
 	}
 	
 	private boolean checkDateTime(ResultOfSaving domain, GeneralDateTime from, GeneralDateTime to) {
-		return domain.getSaveStartDatetime().isPresent() ? domain.getSaveStartDatetime().get().after(from) : true
-				&& domain.getSaveEndDatetime().isPresent() ? domain.getSaveEndDatetime().get().before(to) : true;
+		return domain.getSaveStartDatetime().map(date -> date.after(from)).orElse(true)
+				&& domain.getSaveEndDatetime().map(date -> date.before(to)).orElse(true);
 	}
 }

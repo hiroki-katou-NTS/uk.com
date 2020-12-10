@@ -154,7 +154,7 @@ public class ProxyApplicationFinder {
             case 7:
                 return "KAF002";
             case 8:
-                return "";
+                return "KAF012";
             case 9:
                 return "KAF004";
             case 10:
@@ -163,6 +163,10 @@ public class ProxyApplicationFinder {
                 return "";
             case 12:
                 return "";
+            case 13:
+                return "";
+            case 14:
+                return "KAF021";
         }
         return null;
     }

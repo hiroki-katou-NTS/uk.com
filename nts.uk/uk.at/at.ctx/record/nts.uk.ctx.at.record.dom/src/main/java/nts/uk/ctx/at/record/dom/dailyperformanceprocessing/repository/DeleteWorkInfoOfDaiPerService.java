@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 //import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalStaOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
@@ -87,9 +86,6 @@ public class DeleteWorkInfoOfDaiPerService {
 	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
 	
 	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
-	
-	@Inject
 	private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
 	
 	@Inject
@@ -124,7 +120,7 @@ public class DeleteWorkInfoOfDaiPerService {
 		this.outingTimeOfDailyPerformanceRepository.delete(employeeId, day);
 		this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
 		this.attendanceLeavingGateOfDailyRepo.removeByKey(employeeId, day);
-		this.workTypeOfDailyPerforRepository.delete(employeeId, day);
+//		this.workTypeOfDailyPerforRepository.delete(employeeId, day);
 		this.pcLogOnInfoOfDailyRepo.removeByKey(employeeId, day);
 		// anyitem
 		// AnyItemValueOfDailyRepo

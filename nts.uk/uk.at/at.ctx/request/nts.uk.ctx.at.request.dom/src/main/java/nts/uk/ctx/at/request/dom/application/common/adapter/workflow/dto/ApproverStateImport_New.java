@@ -21,6 +21,8 @@ public class ApproverStateImport_New {
 	
 	private String approverName;
 	
+	private String agentName;
+	
 	private String representerID;
 	
 	private String representerName;
@@ -30,6 +32,8 @@ public class ApproverStateImport_New {
 	private String approvalReason;
 	
 	private String approverEmail;
+	
+	private String agentMail;
 	
 	private String representerEmail;
 	

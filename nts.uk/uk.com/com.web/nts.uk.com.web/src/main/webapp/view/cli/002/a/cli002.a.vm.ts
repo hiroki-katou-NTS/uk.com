@@ -235,6 +235,7 @@ module nts.uk.com.view.cli002.a {
           },
         ],
       });
+      $("#item-list").setupSearchScroll("igGrid", true);
     }
   }
 

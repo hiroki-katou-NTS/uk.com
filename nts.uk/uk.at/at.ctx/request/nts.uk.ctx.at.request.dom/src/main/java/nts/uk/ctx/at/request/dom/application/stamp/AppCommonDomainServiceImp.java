@@ -310,7 +310,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		listAppStampStandar.stream().forEach(item -> {
 			if (temp.getFramNo() != null) {
 				if (item.getStartTime() != null && item.getEndTime() != null) {
-					if (item.getStartTime() >= item.getEndTime()) {
+					if (item.getStartTime() > item.getEndTime()) {
 						// throw msg
 						
 						throw new BusinessException("Msg_307");
@@ -375,7 +375,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				temp.setStampAtrOther(item.getStampAtrOther());
 				
 				if (item.getStartTime() != null && item.getEndTime() != null) {
-					if (item.getStartTime() >= item.getEndTime()) {
+					if (item.getStartTime() > item.getEndTime()) {
 						// throw msg
 						
 						throw new BusinessException("Msg_307");

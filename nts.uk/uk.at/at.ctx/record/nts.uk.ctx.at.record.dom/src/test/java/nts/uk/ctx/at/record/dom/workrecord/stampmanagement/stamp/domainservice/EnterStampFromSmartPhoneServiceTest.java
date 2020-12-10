@@ -178,6 +178,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 					dateTime, stampButton,
 					Optional.of(geoCoordinate), null);
 	
-	assertThat(timeStampInputResult.stampDataReflectResult.getReflectDate()).isEmpty();
+	assertThat(timeStampInputResult.at).isNotEmpty();
+	assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();
 	}
 }

@@ -69,7 +69,7 @@
                             <td>
                               <template v-if="frame.listApprover[0].approvalAtrValue==1 || frame.listApprover[0].approvalAtrValue==2">
                                 <span class="text-break" v-if="frame.listApprover[0].agentID">
-                                  <span>{{ frame.listApprover[0].representerName }}</span>
+                                  <span>{{ frame.listApprover[0].agentName }}</span>
                                 </span>
                                 <span class="text-break" v-else>
                                   <span>{{ frame.listApprover[0].approverName }}</span>
@@ -100,7 +100,7 @@
                             </td>
                             <td>
                               <template v-if="approver.approvalAtrValue==1 || approver.approvalAtrValue==2">
-                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.representerName }}</span></span>
+                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.agentName }}</span></span>
                                 <span class="text-break" v-else><span>{{ approver.approverName }}</span></span>
                                 <br/>
                                 <p class="text-break child-font-size mb-0 pl-2" style="word-break: break-word">{{ approver.approvalReason }}</p>
@@ -126,7 +126,7 @@
           <div class="col-12 uk-bg-light-coral">
             <div class="row ml-0 mr-0 pt-1 pb-1">{{ 'CMMS45_58' | i18n }}</div>
             <hr class="mt-0 mb-0"/>
-            <div class="row ml-2 mr-2 pt-1 pb-1 text-break">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
+            <div class="row ml-2 mr-2 pt-1 pb-1" style="word-break: break-word">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
           </div>
         </div>
       </div> 
@@ -144,11 +144,18 @@
       </div>
     </div>
     <div>
+      <div v-if="currentApp=='sample'">
+        <appsample v-bind:params="appTransferData" @loading-complete='loadingComplete' />
+      </div>
+      <div v-if="currentApp!='sample'">
       <app1 v-if="appType==1" v-bind:params="{appOvertime: appDetail}" />
-      <app2 v-if="appType==2" v-bind:params="appTransferData" />
-      <app3 v-if="appType==3" v-bind:params="appTransferData"/>
-      <app4 v-if="appType==4" v-bind:params="appTransferData" />
-      <app7 v-if="appType==7" v-bind:params="appTransferData" />
+      <app2 v-if="appType==2" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app3 v-if="appType==3" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app4 v-if="appType==4" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app7 v-if="appType==7" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app9 v-if="appType==9" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app15 v-if="appType==15" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      </div>
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
@@ -158,7 +165,7 @@
       </div>
     </div>
     <div
-      class="fixed-action-btn" v-show="displayEditFloat"
+      class="fixed-action-btn" v-show="displayEditFloat && isLoadingComplete"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
     >
       <ul>

@@ -25,9 +25,11 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -92,72 +94,19 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	@Inject
 	private ApprovalSettingRepository approvalSettingRepository;
 	
+	@Inject
+	private ApprovalSettingService approvalSettingService;
+	
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, EmploymentRootAtr rootAtr, 
 			String targetType, GeneralDate standardDate, SystemAtr sysAtr, Optional<Boolean> lowerApprove) {
-		// ドメインモデル「個人別承認ルート」を取得する (Get domain "Individual approval route/Lộ trình phê duyệt cá nhân")
-		Optional<PersonApprovalRoot> opPerAppRoot = perApprovalRootRepository.findByBaseDate(companyID, employeeID, standardDate, rootAtr, targetType, sysAtr.value);
-		if(opPerAppRoot.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRoot.get().getApprovalId());
-			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
-			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
-			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
-			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
-			levelOutput.setErrorFlag(errorFlag.value);
-			ApprovalRootState approvalRootState = null;
-			if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
-				approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
-				if(errorFlag == ErrorFlag.NO_ERROR){
-					String appID = IdentifierUtil.randomUniqueId();
-					approvalRootState = ApprovalRootState.createFromFirst(
-							companyID,
-							appID,  
-							EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
-							standardDate, 
-							employeeID, 
-							approvalRootState);
-				}
-			} else {
-				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
-				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
-			}
-			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
-		}
-		// ドメインモデル「個人別承認ルート」を取得する(Get domain "Individual approval route/Lộ trình phê duyệt cá nhân")
-		Optional<PersonApprovalRoot> opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, sysAtr.value);
-		if(opPerAppRootsOfCommon.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRootsOfCommon.get().getApprovalId());
-			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
-			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
-			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
-			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
-			levelOutput.setErrorFlag(errorFlag.value);
-			ApprovalRootState approvalRootState = null;
-			if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
-				approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
-				if(errorFlag == ErrorFlag.NO_ERROR){
-					String appID = IdentifierUtil.randomUniqueId();
-					approvalRootState = ApprovalRootState.createFromFirst(
-							companyID,
-							appID,  
-							EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
-							standardDate, 
-							employeeID, 
-							approvalRootState);
-				}
-			} else {
-				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
-				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
-			}
-			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
-		}
-		// 対象者の所属職場・部門を含める上位職場・部門を取得する
-		List<String> upperIDIncludeList = this.getUpperIDIncludeSelf(companyID, employeeID, standardDate, sysAtr);
-		for (String paramID : upperIDIncludeList) {
-			// ドメインモデル「職場別承認ルート」を取得する(lấy dữ liệu domain「職場別就業承認ルート」)
-			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, paramID, standardDate, rootAtr, targetType, sysAtr.value);
-			if(opWkpAppRoot.isPresent()){
-				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRoot.get().getApprovalId());
+		// 承認単位の利用設定を取得する
+		ApproverRegisterSet setting = approvalSettingService.getSettingUseUnit(companyID, sysAtr.value);
+		if (setting.getEmployeeUnit() == UseClassification.DO_USE) {
+			// ドメインモデル「個人別承認ルート」を取得する (Get domain "Individual approval route/Lộ trình phê duyệt cá nhân")
+			Optional<PersonApprovalRoot> opPerAppRoot = perApprovalRootRepository.findByBaseDate(companyID, employeeID, standardDate, rootAtr, targetType, sysAtr.value);
+			if(opPerAppRoot.isPresent()){
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRoot.get().getApprovalId());
 				// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 				// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
@@ -182,10 +131,10 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
-			// ドメインモデル「職場別承認ルート」を取得する (Get domain "Approval Route workPlace ")
-			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, paramID, standardDate, sysAtr.value);
-			if(opWkpAppRootsOfCom.isPresent()){
-				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRootsOfCom.get().getApprovalId());
+			// ドメインモデル「個人別承認ルート」を取得する(Get domain "Individual approval route/Lộ trình phê duyệt cá nhân")
+			Optional<PersonApprovalRoot> opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, sysAtr.value);
+			if(opPerAppRootsOfCommon.isPresent()){
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRootsOfCommon.get().getApprovalId());
 				// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 				// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
@@ -210,62 +159,129 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
+			
 		}
-		// ドメインモデル「会社別承認ルート」を取得する(Get domain model "Approval Route by Company")
-		Optional<CompanyApprovalRoot> opComAppRoot = comApprovalRootRepository.findByBaseDate(companyID, standardDate, rootAtr, targetType, sysAtr.value);
-		if(opComAppRoot.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opComAppRoot.get().getApprovalId());
-			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
-			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
-			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
-			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
-			levelOutput.setErrorFlag(errorFlag.value);
-			ApprovalRootState approvalRootState = null;
-			if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
-				approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
-				if(errorFlag == ErrorFlag.NO_ERROR){
-					String appID = IdentifierUtil.randomUniqueId();
-					approvalRootState = ApprovalRootState.createFromFirst(
-							companyID,
-							appID,  
-							EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
-							standardDate, 
-							employeeID, 
-							approvalRootState);
+		if (setting.getWorkplaceUnit() == UseClassification.DO_USE) {
+			// 対象者の所属職場・部門を含める上位職場・部門を取得する
+			List<String> upperIDIncludeList = this.getUpperIDIncludeSelf(companyID, employeeID, standardDate, sysAtr);
+			for (String paramID : upperIDIncludeList) {
+				// ドメインモデル「職場別承認ルート」を取得する(lấy dữ liệu domain「職場別就業承認ルート」)
+				Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, paramID, standardDate, rootAtr, targetType, sysAtr.value);
+				if(opWkpAppRoot.isPresent()){
+					List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRoot.get().getApprovalId());
+					// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
+					LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+					// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
+					ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
+					levelOutput.setErrorFlag(errorFlag.value);
+					ApprovalRootState approvalRootState = null;
+					if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
+						approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
+						if(errorFlag == ErrorFlag.NO_ERROR){
+							String appID = IdentifierUtil.randomUniqueId();
+							approvalRootState = ApprovalRootState.createFromFirst(
+									companyID,
+									appID,  
+									EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
+									standardDate, 
+									employeeID, 
+									approvalRootState);
+						}
+					} else {
+						approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+						approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
+					}
+					return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 				}
-			} else {
-				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
-				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
+				// ドメインモデル「職場別承認ルート」を取得する (Get domain "Approval Route workPlace ")
+				Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, paramID, standardDate, sysAtr.value);
+				if(opWkpAppRootsOfCom.isPresent()){
+					List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRootsOfCom.get().getApprovalId());
+					// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
+					LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+					// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
+					ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
+					levelOutput.setErrorFlag(errorFlag.value);
+					ApprovalRootState approvalRootState = null;
+					if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
+						approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
+						if(errorFlag == ErrorFlag.NO_ERROR){
+							String appID = IdentifierUtil.randomUniqueId();
+							approvalRootState = ApprovalRootState.createFromFirst(
+									companyID,
+									appID,  
+									EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
+									standardDate, 
+									employeeID, 
+									approvalRootState);
+						}
+					} else {
+						approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+						approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
+					}
+					return new ApprovalRootContentOutput(approvalRootState, errorFlag);
+				}
 			}
-			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
+			
 		}
-		// ドメインモデル「会社別承認ルート」を取得する(Get domain model "Approval Route by Company")
-		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, sysAtr.value);
-		if(opCompanyAppRootsOfCom.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opCompanyAppRootsOfCom.get().getApprovalId());
-			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
-			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
-			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
-			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
-			levelOutput.setErrorFlag(errorFlag.value);
-			ApprovalRootState approvalRootState = null;
-			if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
-				approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
-				if(errorFlag == ErrorFlag.NO_ERROR){
-					String appID = IdentifierUtil.randomUniqueId();
-					approvalRootState = ApprovalRootState.createFromFirst(
-							companyID,
-							appID,  
-							EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
-							standardDate, 
-							employeeID, 
-							approvalRootState);
+		if (setting.getCompanyUnit() == UseClassification.DO_USE) {
+			// ドメインモデル「会社別承認ルート」を取得する(Get domain model "Approval Route by Company")
+			Optional<CompanyApprovalRoot> opComAppRoot = comApprovalRootRepository.findByBaseDate(companyID, standardDate, rootAtr, targetType, sysAtr.value);
+			if(opComAppRoot.isPresent()){
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opComAppRoot.get().getApprovalId());
+				// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
+				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+				// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
+				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
+				levelOutput.setErrorFlag(errorFlag.value);
+				ApprovalRootState approvalRootState = null;
+				if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
+					approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
+					if(errorFlag == ErrorFlag.NO_ERROR){
+						String appID = IdentifierUtil.randomUniqueId();
+						approvalRootState = ApprovalRootState.createFromFirst(
+								companyID,
+								appID,  
+								EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
+								standardDate, 
+								employeeID, 
+								approvalRootState);
+					}
+				} else {
+					approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+					approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
 				}
-			} else {
-				approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
-				approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
+				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
-			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
+			// ドメインモデル「会社別承認ルート」を取得する(Get domain model "Approval Route by Company")
+			Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, sysAtr.value);
+			if(opCompanyAppRootsOfCom.isPresent()){
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opCompanyAppRootsOfCom.get().getApprovalId());
+				// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
+				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+				// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
+				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
+				levelOutput.setErrorFlag(errorFlag.value);
+				ApprovalRootState approvalRootState = null;
+				if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
+					approvalRootState = this.createFromApprovalPhaseListConfirm(companyID, standardDate, levelOutput);
+					if(errorFlag == ErrorFlag.NO_ERROR){
+						String appID = IdentifierUtil.randomUniqueId();
+						approvalRootState = ApprovalRootState.createFromFirst(
+								companyID,
+								appID,  
+								EnumAdaptor.valueOf(Integer.valueOf(targetType)+1, RootType.class),
+								standardDate, 
+								employeeID, 
+								approvalRootState);
+					}
+				} else {
+					approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate, levelOutput);
+					approvalRootState.setRootType(RootType.EMPLOYMENT_APPLICATION);
+				}
+				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
+			}
+			
 		}
 		if(rootAtr==EmploymentRootAtr.CONFIRMATION) {
 			return new ApprovalRootContentOutput(

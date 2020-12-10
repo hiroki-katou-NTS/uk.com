@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
@@ -137,8 +136,8 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 						new InterimDayOffMng("daikyu4", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
 								new UnOffsetDay(1.0)));
 
-				require.getBreakDayOffMng(anyString, anyBoolean, (DataManagementAtr) any);
-				result = new ArrayList<>();
+//				require.getBycomDayOffID(anyString, GeneralDate.ymd(2019, 11, 10));
+//				result = new ArrayList<>();
 
 			}
 

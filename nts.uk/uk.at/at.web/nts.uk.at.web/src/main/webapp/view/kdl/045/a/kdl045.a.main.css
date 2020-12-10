@@ -1,77 +1,145 @@
-table#table1 td  {
+table#table1 td {
 	padding-bottom: 10px;
 }
+
 table#table2 {
 	margin-bottom: 10px;
-	width :450px;
+	width: 450px;
 }
+
+table#table2 td{
+	height: 27px;
+}
+
 .block-left {
-	height: 300px;
-	width: 365px;
+	height: 327px;
+	width: 357px;
 	border-right: 2px solid #ccc;
 	float: left;
 }
-.block-right{
+
+.block-right {
 	height: 300px;
-	width: 365px;
+	width: 335px;
 	float: left;
 	padding-left: 10px;
 }
+
 .table-left-td {
 	padding-left: 25px;
-    padding-top: 10px;
+	padding-top: 10px;
 }
 
-.nts-fixed-body-wrapper{
+.nts-fixed-body-wrapper {
 	height: 170px !important;
-    background: #fff;
+	background: #fff;
 }
+
 table#table4 {
 	margin-bottom: 10px;
-	width :630px;
+	width: 394px;
 }
 
 #tab-2 {
-	height: 417px;
+	width: 727px;
+	height: 418px;
 }
 
 table#table6 td {
-	height:40px;
+	height: 40px;
 	border: 2px solid #ccc;
 	padding-left: 10px;
 }
 
+.button-a88{
+    margin-left: 15px;
+}
+
 .block-left-2 {
 	height: 400px;
-	width: 465px;
-	border-right: 2px solid #ccc;
+	width: 424px;
 	float: left;
+	margin-top: 10px;
 }
-.block-right-2{
-	height: 300px;
+
+.block-right-2 {
+	height: 400px;
 	width: 265px;
 	float: left;
 	padding-left: 10px;
+	border-left: 2px solid #ccc;
+	margin-top: 10px;
 }
-#table6-fixsize{
+
+#table6-fixsize {
 	padding-left: 20px;
-    padding-top: 15px;
+	padding-top: 15px;
 }
-.size-a87{
+
+.size-a87 {
 	width: 50px;
-    float: left;
-    padding-top: 8px
+	float: left;
+	padding-top: 8px
 }
-.size-a86{
-    width: 112px;
-    float: left;
-    padding-top: 8px;
+
+.size-a86 {
+	width: 112px;
+	float: left;
+	padding-top: 8px;
 }
-#size-a89{
+
+#size-a89 {
 	padding-left: 20px;
-    padding-top: 25px;
+	padding-top: 25px;
 }
-.color-grid{
-	background-color:  #CFF1A5;'
+
+.color-grid {    
+	background-color: #CFF1A5;
 }
-	
+
+#pop-up-a1-8 {
+	width: 100px;
+}
+
+table.table-popup td {
+	border: none !important;
+	height: 30px !important;
+}
+
+.popup-color {
+	background-color: #F8EFD4 !important;
+	border-radius: 5px !important;
+	border: solid 4px #fff !important;
+}
+
+#contents-area {
+	overflow-x: hidden !important;
+}
+
+#displayA5_27 {
+    padding-left: 90px;
+    padding-top: 120px;
+}
+#single-list{
+}
+table #single-list td{
+	height : 36px;
+	text-align: center;
+}
+#single-list_name{
+	text-align: center;
+}
+
+#tab-1{
+	width: 727px;
+}
+table#table5 td{
+	height: 35px;
+}
+table#table-3 td{
+	height: 35px;
+}
+#table-3{
+	margin-left: 15px;
+    margin-top: 15px;
+}

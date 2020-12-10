@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 
@@ -107,6 +108,42 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	public List<DailyItemDto> findByAttendanceItems(String companyId, List<Integer> attendanceItems) {
+		
+		String authorityId = AppContexts.user().roles().forAttendance();
+		
+		// 日次の勤怠項目を取得する Nhận daily Attendance items
+		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository
+				.findByADailyAttendanceItems(attendanceItems, companyId);
+		
+		// 0件の場合
+		if (dailyAttendanceItems.isEmpty()) {
+			// 終了状態：取得失敗 (Trạng thái kết thúc : Acquisition failure)
+			return new ArrayList<>();
+		}
+		
+		List<AttItemName> attItemNames = this.getDailyItems(companyId, Optional.of(authorityId), attendanceItems, null);
+
+		// 取得したドメインモデル「日次の勤怠項目」（日次勤怠項目の属性、日次の勤怠項目に関連するマスタの種類、表示番号）と取得したList＜勤怠項目ID、名称＞を結合する
+		List<DailyItemDto> result = dailyAttendanceItems.stream()
+								.map(t -> {
+									Optional<AttItemName> attItemName = attItemNames.stream()
+											.filter(item -> item.getAttendanceItemId() == t.getAttendanceItemId()).findFirst();
+									return DailyItemDto.builder()
+											.displayNumber(t.getDisplayNumber())
+											.masterType(t.getMasterType().map(r -> r.value).orElse(null))
+											.attribute(t.getDailyAttendanceAtr().value)
+											.timeId(attItemName.map(at -> at.getAttendanceItemId()).orElse(null))
+											.name(attItemName.map(at -> at.getAttendanceItemName()).orElse(null))
+											.build();
+								})
+								.collect(Collectors.toList());
+
+		// List＜勤怠項目ID、名称、属性、マスタの種類。表示番号＞を渡す Trả về List <...>
+		return result;
 	}
 
 }

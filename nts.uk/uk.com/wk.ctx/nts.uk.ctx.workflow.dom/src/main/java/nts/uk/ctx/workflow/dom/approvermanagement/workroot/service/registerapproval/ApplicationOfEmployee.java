@@ -14,6 +14,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Approv
  */
 public interface ApplicationOfEmployee {
 	/**
+	 * Refactor5 02.社員の対象申請の承認ルートを取得する
+	 * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.L:未登録社員リスト.アルゴリズム."02.社員の対象申請の承認ルートを取得する"
 	 * 社員の対象申請の承認ルートを取得する(就業ルート区分(申請か、確認か、任意項目か))
 	 * @param lstCompanyRootInfor  会社別就業承認ルート
 	 * @param lstWorkpalceRootInfor 職場別就業承認ルート

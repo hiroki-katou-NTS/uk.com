@@ -18,7 +18,8 @@ public class SendTimeRecordSettingService {
 	};
 
 	// [1] 各種名称送信に変換
-	public static Optional<SendTimeRecordSetting> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+	public static Optional<SendTimeRecordSetting> send(Require require, EmpInfoTerminalCode empInfoTerCode,
+			ContractCode contractCode) {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
@@ -31,17 +32,17 @@ public class SendTimeRecordSettingService {
 	private static SendTimeRecordSetting convert(TimeRecordReqSetting setting) {
 
 		return new SendTimeRecordSetting.SettingBuilder(setting.isStampReceive(), setting.isTimeSetting(),
-				setting.isReservationReceive(), setting.isApplicationReceive(), !setting.getEmployeeIds().isEmpty())
-						.createReq7(!setting.getWorkTypeCodes().isEmpty())
-						.createReq8(!setting.getWorkTimeCodes().isEmpty()).createReq9(setting.isOverTimeHoliday())
-						.createReq10(!setting.getBentoMenuFrameNumbers().isEmpty())
+				setting.isReservationReceive(), setting.isApplicationReceive(), setting.isSendEmployeeId())
+						.createReq7(setting.isSendWorkType()).createReq8(setting.isSendWorkTime())
+						.createReq9(setting.isOverTimeHoliday()).createReq10(setting.isSendBentoMenu())
 						.createReq11(setting.isApplicationReason()).build();
 	}
 
 	public static interface Require {
 
 		// [R-1]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
+				ContractCode contractCode);
 
 	}
 

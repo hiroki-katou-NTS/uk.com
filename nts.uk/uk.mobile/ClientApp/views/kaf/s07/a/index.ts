@@ -104,7 +104,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         const self = this;
         if (self.params) {
             self.mode = false;
-            this.data = self.params;
+            self.data = self.params;
         }
         
 
@@ -124,7 +124,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
     public fetchStart() {
         const self = this;
-        self.$mask('show');
+        if (self.mode) {
+            self.$mask('show');
+        } else {
+            self.$nextTick(() => {
+                self.$mask('show');
+            });
+        }
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {

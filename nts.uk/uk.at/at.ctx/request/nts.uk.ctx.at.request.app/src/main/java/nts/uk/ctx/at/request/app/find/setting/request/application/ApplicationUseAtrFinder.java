@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApproverRegisterSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
@@ -79,8 +78,6 @@ public class ApplicationUseAtrFinder {
 	public ApproverRegisterSetDto getAppSet(String companyId){
 		Optional<ApplicationSetting> appSet = repoAppSet.getApplicationSettingByComID(companyId);
 		if(!appSet.isPresent()) return new ApproverRegisterSetDto(1, 1, 1);
-		ApproverRegisterSet c =  appSet.get().getApproverResSet();
-		return new ApproverRegisterSetDto(c.getCompanyUnit().value, 
-				c.getWorkplaceUnit().value, c.getEmployeeUnit().value);
+		return null;
 	}
 }

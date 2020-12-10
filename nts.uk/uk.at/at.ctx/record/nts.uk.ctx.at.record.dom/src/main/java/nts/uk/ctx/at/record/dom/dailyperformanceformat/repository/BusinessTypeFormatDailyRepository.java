@@ -12,6 +12,8 @@ public interface BusinessTypeFormatDailyRepository {
 	
 	List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode, BigDecimal sheetNo);
 
+	List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode);
+
 	void deleteExistData(List<Integer> attendanceItemIds);
 	
 	void deleteExistDataByCode(String businesstypeCode,String companyId,int sheetNo, List<Integer> attendanceItemIds);

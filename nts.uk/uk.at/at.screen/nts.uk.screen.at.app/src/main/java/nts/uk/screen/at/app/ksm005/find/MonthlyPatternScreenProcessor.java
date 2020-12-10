@@ -1,5 +1,13 @@
 package nts.uk.screen.at.app.ksm005.find;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -9,6 +17,11 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
@@ -16,11 +29,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 月間パターンの明細を表示する.
@@ -65,7 +73,17 @@ public class MonthlyPatternScreenProcessor {
                 }).collect(Collectors.toList());
 
 
-        WorkInformation.Require require = new RequireImpl(basicScheduleService);
+        WorkInformation.Require require = new RequireImpl(workTypeRepository);
+
+        List<String> workTypeCodes = workMonthlySettings.stream().map(MonthlyPatternDto::getWorkTypeCode)
+                .distinct().collect(Collectors.toList());
+        Map<String, String> getPossibleWorkTypeAll = workTypeFinder.getPossibleWorkType(workTypeCodes)
+                .stream().collect(Collectors.toMap(WorkTypeInfor::getWorkTypeCode, WorkTypeInfor::getName));
+
+        List<String> workingCodes = workMonthlySettings.stream().map(MonthlyPatternDto::getWorkingCode)
+                .distinct().collect(Collectors.toList());
+        Map<String, String> workTimeAll = workTimeSettingRepository.getCodeNameByListWorkTimeCd(cid, workingCodes);
+
         workMonthlySettings.forEach(x -> {
 
             // 2. set WorkStyle
@@ -77,17 +95,11 @@ public class MonthlyPatternScreenProcessor {
 
             // 3. set work type name
             // 3:勤務種類名称を取得する(ログイン会社、List<勤務種類コード>)
-            List<WorkTypeInfor> getPossibleWorkType = workTypeFinder.getPossibleWorkTypeKDL002(Arrays.asList(x.getWorkTypeCode()));
-            List<String> workTypeName = new ArrayList<>();
-            getPossibleWorkType.forEach(c -> workTypeName.add(c.getName()));
-            x.setWorkTypeName(workTypeName.size() == 0 ? null : workTypeName.get(0));
+            x.setWorkTypeName(getPossibleWorkTypeAll.getOrDefault(x.getWorkTypeCode(), null));
 
             // 4. set work time name
             // 4:就業時間帯名称を取得する(ログイン会社ID、List<就業時間帯コード>)
-            Map<String, String> listWorkTimeCodeName = workTimeSettingRepository
-                    .getCodeNameByListWorkTimeCd(cid, Arrays.asList(x.getWorkingCode()));
-            List<String> workTimeName = new ArrayList<>(listWorkTimeCodeName.values());
-            x.setWorkingName(workTimeName.size() == 0 ? null :workTimeName.get(0));
+            x.setWorkingName(workTimeAll.getOrDefault(x.getWorkingCode(), null));
         });
 
         // 6.get yearMonth
@@ -98,7 +110,7 @@ public class MonthlyPatternScreenProcessor {
 
     public WorkStyleDto findDataWorkStype(WorkTypeRequestPrams requestPrams) {
 
-        WorkInformation.Require require = new RequireImpl(basicScheduleService);
+        WorkInformation.Require require = new RequireImpl(workTypeRepository);
 
         WorkInformation information = new WorkInformation(requestPrams.getWorkTypeCode(),requestPrams.getWorkingCode());
         int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
@@ -120,16 +132,18 @@ public class MonthlyPatternScreenProcessor {
     @NoArgsConstructor
     public static class RequireImpl implements WorkInformation.Require{
 
-        @Inject
-        private BasicScheduleService basicScheduleService;
+		private final String companyId = AppContexts.user().companyId();
+
+		@Inject
+		private WorkTypeRepository workTypeRepository;
 
         @Override
-        public Optional<WorkType> findByPK(String workTypeCd) {
-            return Optional.empty();
+        public Optional<WorkType> getWorkType(String workTypeCd) {
+            return workTypeRepository.findByPK(companyId, workTypeCd);
         }
 
         @Override
-        public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
             return Optional.empty();
         }
 
@@ -139,14 +153,33 @@ public class MonthlyPatternScreenProcessor {
         }
 
         @Override
-        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
+        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
             return null;
         }
 
-        @Override
-        public WorkStyle checkWorkDay(String workTypeCode) {
-            return basicScheduleService.checkWorkDay(workTypeCode);
-        }
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
 
     }
 

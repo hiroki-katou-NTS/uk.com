@@ -30,7 +30,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	private KshstDefLaborOtCalc convertToDbType(DeformLaborOT deformLaborOT){
 		KshstDefLaborOtCalc kshstDefLaborOtCalc = new KshstDefLaborOtCalc();
 		kshstDefLaborOtCalc.setCid(deformLaborOT.getCid());
-		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc());
+		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
 		return kshstDefLaborOtCalc;
 	}
 
@@ -47,7 +47,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	@Override
 	public void update(DeformLaborOT deformLaborOT) {
 		KshstDefLaborOtCalc kshstDefLaborOtCalc = this.queryProxy().find(deformLaborOT.getCid(), KshstDefLaborOtCalc.class).get();
-		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc());
+		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
 		this.commandProxy().update(kshstDefLaborOtCalc);
 	}
 

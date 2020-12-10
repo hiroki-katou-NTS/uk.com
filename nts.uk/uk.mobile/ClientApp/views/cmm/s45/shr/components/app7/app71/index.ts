@@ -1,5 +1,6 @@
 import { Vue, _, moment } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+import { TimePoint } from '@app/utils';
 
 @component({
     name: 'cmms45shrcomponentsapp71',
@@ -43,6 +44,9 @@ export class CmmS45ShrComponentsApp71Component extends Vue {
             this.fetchData(vm.params);
         });
 
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.fetchData(vm.params);
+        });
     }
 
     public mounted() {
@@ -65,9 +69,10 @@ export class CmmS45ShrComponentsApp71Component extends Vue {
                     self.bindData();
                     self.params.appDetail = self.dataFetch;
                 }
+                self.$parent.$emit('loading-complete');
             })
             .catch((result: any) => {
-                self.$mask('hide');
+                self.$parent.$emit('loading-complete');
                 if (result.messageId) {
                     self.$modal.error({ messageId: result.messageId, messageParams: result.parameterIds });
                 } else {
@@ -87,7 +92,8 @@ export class CmmS45ShrComponentsApp71Component extends Vue {
 
         self.stampAtr = self.dataFetch.appRecordImage.appStampCombinationAtr;
         self.gooutReason = self.dataFetch.appRecordImage.appStampGoOutAtr;
-        self.timeDuration = moment(self.dataFetch.appRecordImage.attendanceTime).format('hh:mm');
+        // self.timeDuration = moment(self.dataFetch.appRecordImage.attendanceTime).format('hh:mm');
+        self.timeDuration = TimePoint.toString(self.dataFetch.appRecordImage.attendanceTime);
     }
 }
 

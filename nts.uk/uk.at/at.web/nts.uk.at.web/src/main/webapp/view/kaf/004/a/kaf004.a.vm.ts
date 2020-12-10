@@ -9,10 +9,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class KAF004AViewModel extends Kaf000AViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
         workManagementTemp: WorkManagement;
@@ -31,9 +33,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
         cancalAppDispSet: boolean = true;
 
-        created(params: any) {
+        created(params: AppInitParam) {
             const vm = this;
-
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             vm.application = ko.observable(new Application(vm.appType()));
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
             vm.workManagementTemp = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
@@ -53,13 +56,27 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             //         vm.workManagement.clearData();
             //     }
             // });
-
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
             vm.$blockui('show');
             let dates: string[] = [];
             if (ko.toJS(vm.application().appDate)) {
                 dates.push(ko.toJS(vm.application().appDate));
             }
-            vm.loadData([], [], vm.appType())
+            vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: any) => {
                     let appType = vm.appType,
                         appDates = dates,
@@ -210,6 +227,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                         // vm.application().prePostAtr(successData.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.displayInitialSegment);
                     }
+					if (!_.isEmpty(params)) {
+						if (!_.isEmpty(params.baseDate)) {
+							vm.application().appDate.valueHasMutated();
+						}
+					}
                 }).fail((failData: any) => {
                     console.log(failData);
 

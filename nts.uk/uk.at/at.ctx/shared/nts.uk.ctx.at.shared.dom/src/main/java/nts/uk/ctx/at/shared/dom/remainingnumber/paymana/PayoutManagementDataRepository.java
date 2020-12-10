@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 
 public interface PayoutManagementDataRepository {
 	
@@ -33,6 +33,8 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
 	
+	List<PayoutManagementData> getBySidAndStateAtr(String cid, String sid);
+	
 	List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid);
 	
 	void deletePayoutSubOfHDMana(String payoutId);
@@ -45,10 +47,12 @@ public interface PayoutManagementDataRepository {
 	
 	Optional<PayoutManagementData> find(String cID, String sID, GeneralDate payoutDate );
 	
+	List<PayoutManagementData> getByListPayoutDate(String cID, String sID, List<GeneralDate> listPayoutDate );
+	
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<PayoutManagementData> getBySidDatePeriod(String sid, String subOfHDID, int digestionAtr);
 	
-	// ドメイン「振出管理データ」より指定されたデータを取得する: 消化区分　≠　未消化
+	// 	ドメイン「振出管理データ」より指定されたデータを取得する: 消化区分　≠　未消化
 	List<PayoutManagementData> getBySidStateAndInSub(String sid);
 	
 	// ドメイン「振出管理データ」より指定されたデータを取得する
@@ -95,4 +99,15 @@ public interface PayoutManagementDataRepository {
 	 * @return
 	 */
 	List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state);
+	
+	List<PayoutManagementData> getAllBySid(String sid);
+	
+	/**
+	 * ドメインモデル「振出管理データ」を取得
+	 * @param sid
+	 * @param unknownDates
+	 * @return
+	 */
+	List<PayoutManagementData> getAllByUnknownDate(String sid, List<String> unknownDates);
+	
 }

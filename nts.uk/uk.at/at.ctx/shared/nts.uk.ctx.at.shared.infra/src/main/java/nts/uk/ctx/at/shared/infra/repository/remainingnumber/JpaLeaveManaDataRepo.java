@@ -31,7 +31,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaDataRepository {
 
-	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
+	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId";
 
 	private static final String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 
@@ -70,6 +70,20 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			+ " AND (l.dayOff < :dayOff OR l.dayOff is null)"
 			+ " AND (l.unUsedDays > 0 OR l.unUsedTimes >0)"
 			+ " AND l.subHDAtr = :subHDAtr ";
+	
+	// 全ての状況
+	private static final String QUERY_ALL_DATA = "SELECT l FROM KrcmtLeaveManaData l";
+	
+	private static final String QUERY_BY_SID_STATE = "SELECT l from KrcmtLeaveManaData l"
+			+ " WHERE l.cID = :cId"
+			+ " AND l.sID = :sId"
+			+ " AND l.subHDAtr = :subHDAtr"
+			+ " ORDER BY l.dayOff";
+	
+	private static final String QUERY_BY_SID_DAYOFF = "SELECT l from KrcmtLeaveManaData l"
+			+ " WHERE l.sID = :sId"
+			+ " AND l.dayOff IN :dayOffs";
+	
  	@Override
 	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
 		return (Integer) this.getEntityManager()
@@ -468,5 +482,53 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		System.out.println(records);
 		
 	}
+	
+	@Override
+	public List<LeaveManagementData> getAllData() {
+		List<KrcmtLeaveManaData> allData = this.queryProxy()
+				.query(QUERY_ALL_DATA, KrcmtLeaveManaData.class)
+				.getList();
+		
+		return allData.stream()
+				.map(i -> toDomain(i))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * ドメイン「休出管理データ」を取得する
+	 * @param cid the company Id
+	 * @param sid 社員ID
+	 * @param state 消化区分
+	 * @return List leave management data
+	 */
+	@Override
+	public List<LeaveManagementData> getBySidAndStateAtr(String cid, String sid, DigestionAtr state) {
+		return this.queryProxy().query(QUERY_BY_SID_STATE, KrcmtLeaveManaData.class)
+				.setParameter("cId", cid)
+				.setParameter("sId", sid)
+				.setParameter("subHDAtr", state.value)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * ドメインモデル「休出管理データ」を取得
+	 * @param sid 社員ID
+	 * @param dayOffs 振出データID
+	 * @return List<LeaveManagementData> List<休出管理データ＞
+	 */
+	@Override
+	public List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs) {
+		return this.queryProxy().query(QUERY_BY_SID_DAYOFF, KrcmtLeaveManaData.class)
+				.setParameter("sId", sid)
+				.setParameter("dayOffs", dayOffs)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+	
 	
 }

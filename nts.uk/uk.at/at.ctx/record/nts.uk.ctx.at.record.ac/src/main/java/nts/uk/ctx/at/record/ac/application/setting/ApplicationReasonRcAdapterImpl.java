@@ -24,8 +24,8 @@ public class ApplicationReasonRcAdapterImpl implements ApplicationReasonRcAdapte
 	@Override
 	public List<ApplicationReasonRc> getReasonByAppType(String companyId, List<Integer> lstAppType) {
 		return appReasonPub.getReasonByAppType(companyId, lstAppType).stream().map(x -> {
-			return new ApplicationReasonRc(companyId, EnumAdaptor.valueOf(x.appType, ApplicationType.class), x.reasonID,
-					x.dispOrder, x.reasonTemp, x.defaultFlg);
+			return new ApplicationReasonRc(companyId, EnumAdaptor.valueOf(x.appType, ApplicationType.class),
+					x.getReasonTemp());
 		}).collect(Collectors.toList());
 	}
 

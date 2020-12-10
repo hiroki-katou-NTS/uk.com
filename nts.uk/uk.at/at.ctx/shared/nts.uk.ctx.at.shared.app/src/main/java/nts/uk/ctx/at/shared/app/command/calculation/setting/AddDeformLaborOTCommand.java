@@ -18,6 +18,6 @@ public class AddDeformLaborOTCommand {
 	private NotUseAtr legalOtCalc;
 	
 	public DeformLaborOT toDomain(String cid){
-		return DeformLaborOT.createFromJavaType(cid, this.legalOtCalc);
+		return DeformLaborOT.createFromJavaType(cid, this.legalOtCalc.value);
 	}
 }

@@ -61,10 +61,10 @@ export class CmmS45ComponentsApp4Component extends Vue {
                 self.dataOutput = res.data;
                 self.bindStart();
                 self.params.appDetail = self.dataOutput;
-                self.$mask('hide');
+                self.$emit('loading-complete');
             }).catch((res: any) => {
                 self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-                self.$mask('hide');
+                self.$emit('loading-complete');
             });
     }
     public bindStart() {
@@ -118,8 +118,13 @@ export class CmmS45ComponentsApp4Component extends Vue {
 
     }
     public isDisplay3(params: any) {
-
-        return params.goBackApplication.dataWork != null;
+        let c1 = params.goBackApplication.isChangedWork != null;
+        let c2 = false;
+        if (c1) {
+            params.goBackApplication.isChangedWork == 0;
+        }
+        
+        return !(c1 || c2);
         // return true;
 
     }

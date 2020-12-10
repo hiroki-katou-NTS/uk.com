@@ -6,6 +6,7 @@ import * as moment from 'moment';
 @component({
     name: 'cmms45componentsapp3',
     template: require('./index.vue'),
+    style: require('./style.scss'),
     validations: {},
     directives: {
         'date': {
@@ -55,7 +56,9 @@ export class CmmS45ComponentsApp3Component extends Vue {
         }).then((res: any) => {
             this.fetchData(vm.params);
         });
-
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.$emit('loading-complete');
+        });
     }
 
     public mounted() {
@@ -86,13 +89,14 @@ export class CmmS45ComponentsApp3Component extends Vue {
                     };
                 });
                 vm.params.appDetail = res.data;
+                vm.$emit('loading-complete');
                 //vm.dataFetch = res.data.
                 //vm.bindStart();
                 //vm.params.appDetail = vm.dataFetch;
                 // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
             })
             .catch((res: any) => {
-                vm.$mask('hide');
+                vm.$emit('loading-complete');
                 if (res.messageId) {
                     vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
                 } else {

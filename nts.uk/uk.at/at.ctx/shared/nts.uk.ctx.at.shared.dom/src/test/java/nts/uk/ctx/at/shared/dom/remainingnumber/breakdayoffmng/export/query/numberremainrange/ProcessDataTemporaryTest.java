@@ -74,9 +74,11 @@ public class ProcessDataTemporaryTest {
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		// 取得したドメインモデル「暫定代休管理データ」
-		// 2019/08/25、2019/09/02、2019/09/17、2019/09/20
+		// 2019/09/01、2019/09/02、2019/09/17、2019/09/20, 2019/10/3
 		List<InterimDayOffMng> dayOffMngResult = new ArrayList<>();
 
+		dayOffMngResult.add(new InterimDayOffMng("a0", new RequiredTime(0),
+				new RequiredDay(1.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
 		dayOffMngResult.add(new InterimDayOffMng("a3", new RequiredTime(0),
 				new RequiredDay(1.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
 		dayOffMngResult.add(new InterimDayOffMng("a4", new RequiredTime(480),
@@ -87,11 +89,15 @@ public class ProcessDataTemporaryTest {
 				new RequiredDay(1.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
 		dayOffMngResult.add(new InterimDayOffMng("a7", new RequiredTime(0),
 				new RequiredDay(1.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
+		dayOffMngResult.add(new InterimDayOffMng("a9", new RequiredTime(0),
+				new RequiredDay(1.0), new UnOffsetTime(0), new UnOffsetDay(1.0)));
 
 		List<InterimRemain> interimMngResult = new ArrayList<>();
 
 		interimMngResult.add(new InterimRemain("a3", SID,
-				GeneralDate.ymd(2019, 8, 25), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 8, 30), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+		interimMngResult.add(new InterimRemain("a3", SID,
+				GeneralDate.ymd(2019, 9, 01), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 		interimMngResult.add(new InterimRemain("a4", SID, GeneralDate.ymd(2019, 9, 2),
 				CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 		interimMngResult.add(new InterimRemain("a5", SID,
@@ -99,14 +105,19 @@ public class ProcessDataTemporaryTest {
 		interimMngResult.add(new InterimRemain("a6", SID,
 				GeneralDate.ymd(2019, 9, 20), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 		interimMngResult.add(new InterimRemain("a7", SID,
-				GeneralDate.ymd(2019, 10, 3), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+				GeneralDate.ymd(2019, 9, 30), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+		interimMngResult.add(new InterimRemain("a9", SID,
+				GeneralDate.ymd(2019, 10, 01), CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 		ProcessDataTemporary.processOverride(inputParam, inputParam.getDayOffMng(), interimMngResult, dayOffMngResult);
 
 		// 置き換える後の「暫定代休管理データ」：2019/08/25、2019/09/05、2019/09/20、2019/10/03
 
-		assertThat(interimMngResult).extracting(x -> x.getYmd()).containsExactly(GeneralDate.ymd(2019, 8, 25),
-				GeneralDate.ymd(2019, 10, 3), GeneralDate.ymd(2019, 9, 5), GeneralDate.ymd(2019, 9, 20));
+		assertThat(interimMngResult).extracting(x -> x.getYmd()).containsExactly(
+				GeneralDate.ymd(2019, 8, 30),
+				GeneralDate.ymd(2019, 10, 01), 
+				GeneralDate.ymd(2019, 9, 5),
+				GeneralDate.ymd(2019, 9, 20));
 
 	}
 }

@@ -45,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -60,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporaryti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeZoneOutput;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
@@ -865,8 +865,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			inorOutStamp = new WorkStamp(
 					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
-					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
-							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
@@ -874,15 +872,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			inorOutStamp = new WorkStamp(
 					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
-					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
-							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 			break;
 		// その他 no cover
 		default:
 			inorOutStamp = new WorkStamp(
-					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
-							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
@@ -1207,17 +1201,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		switch (x.getRelieve().getStampMeans().value) {
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 			break;
 		// その他 no cover
 		default:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 			break;
 		}
@@ -1272,17 +1266,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			switch (x.getRelieve().getStampMeans().value) {
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp( processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 				break;
 			// その他 no cover
 			default:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 				break;
 			}
@@ -1510,17 +1504,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		switch (x.getRelieve().getStampMeans().value) {
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 			break;
 		// その他 no cover
 		default:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp( processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 			break;
 		}
@@ -1573,17 +1567,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			switch (x.getRelieve().getStampMeans().value) {
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 				break;
 			// その他 no cover
 			default:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 				break;
 			}
@@ -2080,12 +2074,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			switch (x.getRelieve().getStampMeans().value) {
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 				break;
 //			// ID入力 → タイムレコーダ(ID入力)
@@ -2110,7 +2104,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //				break;
 //			// その他 no cover
 			default:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 				break;
 			}
@@ -2173,12 +2167,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			switch (x.getRelieve().getStampMeans().value) {
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 				break;
 //			// ID入力 → タイムレコーダ(ID入力)
@@ -2203,7 +2197,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //				break;
 //			// その他 no cover
 			default:
-				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+				newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 				break;
 			}
@@ -2288,12 +2282,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		switch (x.getRelieve().getStampMeans().value) {
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 			break;
 //		// ID入力 → タイムレコーダ(ID入力)
@@ -2318,7 +2312,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //			break;
 //		// その他 no cover
 		default:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 			break;
 		}
@@ -2369,12 +2363,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		switch (x.getRelieve().getStampMeans().value) {
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp(processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp( processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, EngravingMethod.MOBILE_ENGRAVING);
 			break;
 //		// ID入力 → タイムレコーダ(ID入力)
@@ -2399,7 +2393,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //			break;
 //		// その他 no cover
 		default:
-			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
+			newActualStamp = new WorkStamp( processTimeOutput.getTimeOfDay(),
 					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, TimeChangeMeans.REAL_STAMP, null);
 			break;
 		}
@@ -2570,7 +2564,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 					// Copy tới 勤怠打刻 từ 打刻反映先
 
-					stampOrActualStamp.setPropertyWorkStamp(stampOrActualStamp.getAfterRoundingTime(),
+					stampOrActualStamp.setPropertyWorkStamp(
 							timePrintDestinationCopy.getTimeOfDay(), timePrintDestinationCopy.getLocationCode(),
 							timePrintDestinationCopy.getStampSourceInfo());
 
@@ -2608,12 +2602,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 									: numberMinuteTimeOfDay - modTimeOfDay + roundingTimeUnit;
 						}
 
-						stampOrActualStamp.setPropertyWorkStamp(new TimeWithDayAttr(numberMinuteTimeOfDayRounding),
+						stampOrActualStamp.setPropertyWorkStamp(
 								timePrintDestinationCopy.getTimeOfDay(), timePrintDestinationCopy.getLocationCode(),
 								timePrintDestinationCopy.getStampSourceInfo());
 
 					} else {
-						stampOrActualStamp.setPropertyWorkStamp(timePrintDestinationCopy.getTimeOfDay(),
+						stampOrActualStamp.setPropertyWorkStamp(
 								timePrintDestinationCopy.getTimeOfDay(), timePrintDestinationCopy.getLocationCode(),
 								timePrintDestinationCopy.getStampSourceInfo());
 
@@ -3046,8 +3040,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
-					stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
+			return stampSet.getRoundingTime().getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
+					stampSet.getRoundingTime().getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
 		}
 		return null;
 	}

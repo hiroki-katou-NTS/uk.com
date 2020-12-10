@@ -1,5 +1,6 @@
 .down-s {
 	margin-bottom: 15px;
+	margin-left: 30px;
 }
 
 .down-m {
@@ -14,51 +15,64 @@
 	padding: 20px;
 }
 
-#D11_3 {
-	width: 110px;
-}
-#D6{
-	margin-left:20px;
-}
-#D7{
-	margin-left:20px;
-}
-#D8{
-	margin-left:20px;
-}
-#D11{
-	margin-left:20px;
-}
-#D15{
-	margin-left:20px;
-}
-#D12{
-	margin-left:30px;
+.combo-box-payout-date{
+	min-width: 95px;
+	width: 95px;
 }
 
-#D12_4 {
-	width: 110px;
+.combo-legal-classification{
+	min-width: 114px;
+	width: 114px;
 }
 
-#D6_3 {
-	width: 110px;
+.combo-box-holiday {
+	min-width: 95px;
+	width: 95px;
 }
 
-#D7_1 {
-	width: 130px;
-	margin-left: 10px;
+.combo-box-sub-holiday {
+	min-width: 95px;
+	width: 95px;
+}
+
+.combo-box-option-sub-holiday {
+	min-width: 95px;
+	width: 95px;
 }
 
 .labelTitle {
 	width: 70px;
 }
 
-
-.ntsDatepicker {
-    width: 110px !important;
-    margin-left: 10px !important;
+.sub-label-title {
+	width: 100px;
 }
-.style {
-    min-width: 115px !important;
-    margin-left: 10px !important;
+
+.left-s {
+	margin-left: 5px;
+}
+
+.left-m {
+	margin-left: 10px;
+}
+
+.left-l {
+	margin-left: 30px;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker {
+	min-width: 90px;
+	width: 90px;
+}
+
+.margin-left-25 {
+	margin-left: 25px;
+}
+
+.margin-left-0 {
+	margin-left: 0;
+}
+
+.width-112 {
+	width: 112px;
 }
