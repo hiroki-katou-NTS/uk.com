@@ -468,12 +468,13 @@ module nts.uk.at.ksm008.c {
                     };
 
                     let index = _.findIndex(vm.listBanWorkTogether(), i => i.code == vm.selectedProhibitedCode());
+                    const lastIndex = _.findLastIndex(vm.listBanWorkTogether());
 
                     vm.$ajax(API.delete, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
-                                    let newIndex = index == 0 ? 0 : index - 1;
+                                    let newIndex = index == lastIndex ? lastIndex - 1 : index;
                                     vm.selectedProhibitedCode(vm.listBanWorkTogether()[newIndex].code);
                                 } else {
                                     vm.swithchNewMode();
