@@ -359,8 +359,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				if (!singleId.isEmpty()){				
 					syncResultsDaily.addAll(attendanceService.getValueOf(Arrays.asList(emp.getKey()), emp.getValue(), singleId));
 				}
+				syncResultsMonthly.addAll(attendanceService.getMonthlyValueOf(empIDs, periodMonthly, monthlyId));
 			});
-			syncResultsMonthly.addAll(attendanceService.getMonthlyValueOf(empIDs, periodMonthly, monthlyId));
 			dailyValues = new ArrayList<>(syncResultsDaily);
             monthlyValues =  new ArrayList<>(syncResultsMonthly);
 		}
@@ -437,7 +437,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						endDateByClosure = GeneralDate.ymd(yearMonth.year(),
 								yearMonth.month(), monthlyValue.getClouseDate());
 					}
-	
+
 					// Get start and end date of month
 					DatePeriod monthPeriod = new DatePeriod(startDateByClosure, endDateByClosure);
 	

@@ -175,9 +175,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	
 	/** The Constant REPORT_RIGHT_COL_ADDR_FS. */
 	private static final String REPORT_RIGHT_COL_ADDR_FS = "AD%d:BE%d";
-	
-	/** The Constant PRINT_TITLE_ROW. */
-	private static final String PRINT_TITLE_ROW = "$6:$7";
 
 	/** The Constant START_EMPLOYEE_DATA_ROW. */
 	private static final int START_EMPLOYEE_DATA_ROW = 1;
