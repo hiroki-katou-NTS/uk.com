@@ -223,35 +223,35 @@ module nts.uk.at.view.kmk002.a {
                 // init subscribe
                 this.initSubscribe();
 
-                this.selectedClac.subscribe((vl) => {
-                    if (vl) {
-                        if($('#inp-upper-amount-day').is(':enabled')){
-                            $('#inp-upper-amount-day').ntsEditor('validate');
-                        }
-                        if($('#inp-upper-number-day').is(':enabled')){
-                            $('#inp-upper-number-day').ntsEditor('validate');
-                        }
-                        if($('#inp-upper-time-day').is(':enabled')){
-                            $('#inp-upper-time-day').ntsEditor('validate');
-                        }
-                        if($('#inp-upper-amount-month').is(':enabled')){
-                            $('#inp-upper-amount-month').ntsEditor('validate');
-                        }
-                        if($('#inp-upper-number-month').is(':enabled')){
-                            $('#inp-upper-number-month').ntsEditor('validate');
-                        }
-                        if($('#inp-upper-time-month').is(':enabled')){
-                            $('#inp-upper-time-month').ntsEditor('validate');
-                        }
-                    } else {
-                        $('#inp-upper-amount-day').ntsError('clear');
-                        $('#inp-upper-number-day').ntsError('clear');
-                        $('#inp-upper-time-day').ntsError('clear');
-                        $('#inp-upper-amount-month').ntsError('clear');
-                        $('#inp-upper-number-month').ntsError('clear');
-                        $('#inp-upper-time-month').ntsError('clear');
-                    }
-                })
+                // this.selectedClac.subscribe((vl) => {
+                //     if (vl) {
+                //         if($('#inp-upper-amount-day').is(':enabled')){
+                //             $('#inp-upper-amount-day').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-number-day').is(':enabled')){
+                //             $('#inp-upper-number-day').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-time-day').is(':enabled')){
+                //             $('#inp-upper-time-day').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-amount-month').is(':enabled')){
+                //             $('#inp-upper-amount-month').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-number-month').is(':enabled')){
+                //             $('#inp-upper-number-month').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-time-month').is(':enabled')){
+                //             $('#inp-upper-time-month').ntsEditor('validate');
+                //         }
+                //     } else {
+                //         $('#inp-upper-amount-day').ntsError('clear');
+                //         $('#inp-upper-number-day').ntsError('clear');
+                //         $('#inp-upper-time-day').ntsError('clear');
+                //         $('#inp-upper-amount-month').ntsError('clear');
+                //         $('#inp-upper-number-month').ntsError('clear');
+                //         $('#inp-upper-time-month').ntsError('clear');
+                //     }
+                // })
             }
 
             /**
@@ -395,6 +395,13 @@ module nts.uk.at.view.kmk002.a {
                     if (self.hasChanged || value == self.performanceAtrStash) {
                         return;
                     }
+
+                    $('#inp-upper-amount-day').ntsError('clear');
+                    $('#inp-upper-number-day').ntsError('clear');
+                    $('#inp-upper-time-day').ntsError('clear');
+                    $('#inp-lower-amount-day').ntsError('clear');
+                    $('#inp-lower-number-day').ntsError('clear');
+                    $('#inp-lower-time-day').ntsError('clear');
 
                     // if has formulas
                     if (self.isFormulaSet()) {
@@ -1154,6 +1161,9 @@ module nts.uk.at.view.kmk002.a {
             timeUpperMonth: KnockoutObservable<number>;
             timeLowerMonth: KnockoutObservable<number>;
 
+            upperRequired: KnockoutObservable<boolean>;
+            lowerRequired: KnockoutObservable<boolean>;
+
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
@@ -1171,6 +1181,9 @@ module nts.uk.at.view.kmk002.a {
                 this.amountLowerMonth = ko.observable(null);
                 this.timeUpperMonth = ko.observable(null);
                 this.timeLowerMonth = ko.observable(null);
+
+                this.upperRequired = ko.observable(false);
+                this.lowerRequired = ko.observable(false);
                 
                 this.upperCheck.subscribe(vl => {
                     if (vl) {
@@ -1192,6 +1205,8 @@ module nts.uk.at.view.kmk002.a {
                         if($('#inp-upper-time-month').is(':enabled')){
                             $('#inp-upper-time-month').ntsEditor('validate');
                         }
+
+                        this.upperRequired(true);
                     } else {
                         $('#inp-upper-amount-day').ntsError('clear');
                         $('#inp-upper-number-day').ntsError('clear');
@@ -1199,6 +1214,8 @@ module nts.uk.at.view.kmk002.a {
                         $('#inp-upper-amount-month').ntsError('clear');
                         $('#inp-upper-number-month').ntsError('clear');
                         $('#inp-upper-time-month').ntsError('clear');
+
+                        this.upperRequired(false);
                     }
                 });
                 this.lowerCheck.subscribe(vl => {
@@ -1221,6 +1238,8 @@ module nts.uk.at.view.kmk002.a {
                         if($('#inp-lower-time-month').is(':enabled')){
                             $('#inp-lower-time-month').ntsEditor('validate');
                         }
+
+                        this.lowerRequired(true);
                     } else {
                         $('#inp-lower-amount-day').ntsError('clear');
                         $('#inp-lower-number-day').ntsError('clear');
@@ -1228,8 +1247,11 @@ module nts.uk.at.view.kmk002.a {
                         $('#inp-lower-amount-month').ntsError('clear');
                         $('#inp-lower-number-month').ntsError('clear');
                         $('#inp-lower-time-month').ntsError('clear');
+
+                        this.lowerRequired(false);
                     }
                 });
+                
             }
 
             /**
@@ -1498,7 +1520,7 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.isUsed(false);
                                 if ($("#description").ntsError("hasError")) {
                                     $("#description").ntsError('clear');
-                                }
+                                }  
                             }
                             if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
                                 if (self.optionalItem.calcFormulas().length > 0) {
@@ -1510,6 +1532,19 @@ module nts.uk.at.view.kmk002.a {
                                     self.optionalItem.calcResultRange.resetValue();
         
                                     self.optionalItem.checkSelectedAtr();
+                                    
+                                    $('#inp-upper-amount-day').ntsError('clear');
+                                    $('#inp-upper-number-day').ntsError('clear');
+                                    $('#inp-upper-time-day').ntsError('clear');
+                                    $('#inp-upper-amount-month').ntsError('clear');
+                                    $('#inp-upper-number-month').ntsError('clear');
+                                    $('#inp-upper-time-month').ntsError('clear');
+                                    $('#inp-lower-amount-day').ntsError('clear');
+                                    $('#inp-lower-number-day').ntsError('clear');
+                                    $('#inp-lower-time-day').ntsError('clear');
+                                    $('#inp-lower-amount-month').ntsError('clear');
+                                    $('#inp-lower-number-month').ntsError('clear');
+                                    $('#inp-lower-time-month').ntsError('clear'); 
         
                                     }).ifNo(() => {
                                         self.optionalItem.usageAtr(1)
@@ -1517,6 +1552,20 @@ module nts.uk.at.view.kmk002.a {
                                         self.optionalItem.optionalItemAtr(self.optionalItem.optionalItemAtrStash);
                                     })
                                 }
+                            }
+                            if (!vl && !self.optionalItem.hasChanged) {
+                                $('#inp-upper-amount-day').ntsError('clear');
+                                    $('#inp-upper-number-day').ntsError('clear');
+                                    $('#inp-upper-time-day').ntsError('clear');
+                                    $('#inp-upper-amount-month').ntsError('clear');
+                                    $('#inp-upper-number-month').ntsError('clear');
+                                    $('#inp-upper-time-month').ntsError('clear');
+                                    $('#inp-lower-amount-day').ntsError('clear');
+                                    $('#inp-lower-number-day').ntsError('clear');
+                                    $('#inp-lower-time-day').ntsError('clear');
+                                    $('#inp-lower-amount-month').ntsError('clear');
+                                    $('#inp-lower-number-month').ntsError('clear');
+                                    $('#inp-lower-time-month').ntsError('clear'); 
                             }
                             self.isInit = false;
                         });
