@@ -559,7 +559,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getFrameNo() == 11)
 						.findFirst();
 				if (isFlexOverOp.isPresent()) {
-					if (output.isPresent()) output = Optional.of(new ApplicationTime());
+					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
 					output.get().setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(isFlexOverOp.get().getTime())));
 				}
 				/*
@@ -572,7 +572,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				if (isOverTimeMidNightOp.isPresent()) {
 					overTimeShiftNight.setMidNightOutSide(
 							new AttendanceTime(isOverTimeMidNightOp.get().getTime()));
-					if (output.isPresent()) output = Optional.of(new ApplicationTime());
+					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
 					output.get().setOverTimeShiftNight(Optional.of(overTimeShiftNight));
 				}
 				
@@ -617,7 +617,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						StaturoryAtrOfHolidayWork.PublicHolidayWork);
 				midNightHolidayTimes.add(holidayMidNightTime);
 			}
-			if (output.isPresent()) {
+			if (!output.isPresent()) {
 				if (output.get().getOverTimeShiftNight().isPresent()) {
 					output.get().getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
 				}
