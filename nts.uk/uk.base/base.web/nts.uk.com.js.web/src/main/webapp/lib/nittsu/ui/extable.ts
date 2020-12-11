@@ -2990,8 +2990,8 @@ module nts.uk.ui.exTable {
             let currentVal = rowData[ui.columnKey],
                 origVal = gen._origDs[ui.rowIndex][ui.columnKey];
             if (innerIdx === -1) {
-                if (origVal !== ui.value && !_.isNil(origVal) && origVal !== ""
-                    && !_.isNil(ui.value) && ui.value !== "") {
+                if (origVal !== ui.value && ((!_.isNil(origVal) && origVal !== "")
+                    || (!_.isNil(ui.value) && ui.value !== ""))) {
                     oldVal = _.cloneDeep(currentVal);
                     if (exTable[f].primaryKey === ui.columnKey) {
                         if (exTable.leftmostContent) {
