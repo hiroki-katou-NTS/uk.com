@@ -254,11 +254,16 @@ public class AggregationProcessService {
 				List<ResultOfEachCondition> lstResultCondition = new ArrayList<>();
 				//[RQ189] 社員ID（List）と指定期間から所属職場履歴を取得
 				List<WorkPlaceHistImport> getWplByListSidAndPeriod = wpAdapter.getWplByListSidAndPeriod(lstSidTmp, datePeriod);
+				
 				//[RQ588]社員の指定期間中の所属期間を取得する
 				List<StatusOfEmployeeAdapter> lstStatusEmp = syCompAdapter.getAffCompanyHistByEmployee(lstSidTmp, datePeriod);
+				
 				//ループ中のカテゴリ別アラームチェック条件．カテゴリをチェック
 				switch (x.getCategory()) {
+				
 				case SCHEDULE_DAILY:
+					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
+					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();					
 					
 				case SCHEDULE_WEEKLY:
 					

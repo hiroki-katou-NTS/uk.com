@@ -16,4 +16,9 @@ public interface AlarmListPersonExtractServicePub {
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
 
+	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, 
+			List<String> errorMasterCheckId,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
 }

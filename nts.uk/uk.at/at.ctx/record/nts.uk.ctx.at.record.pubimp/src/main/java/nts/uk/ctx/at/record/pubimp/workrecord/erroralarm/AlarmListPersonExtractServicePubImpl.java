@@ -14,8 +14,10 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 @Stateless
 public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtractServicePub{
+	
 	@Inject
 	private MasterCheckService masterCheck;
+	
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
 			List<String> errorMasterCheckId,
@@ -28,4 +30,13 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 		
 	}
 
+	
+	@Override
+	public void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			List<String> errorMasterCheckId, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType) {
+		// TODO Auto-generated method stub
+		
+	}
 }

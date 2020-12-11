@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.pub.attendanceitemname.AttendanceItemExport;
 import nts.uk.ctx.at.function.pub.attendanceitemname.AttendanceItemPub;
@@ -24,4 +26,11 @@ public class AttendanceItemPubImpl implements AttendanceItemPub{
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<AttendanceItemExport> getAttendanceItem(int typeOfAttendanceItem) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(EnumAdaptor.valueOf(typeOfAttendanceItem, TypeOfItem.class))
+				.stream()
+				.map(x -> new AttendanceItemExport(x.getAttendanceItemId(), x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber()))
+				.collect(Collectors.toList());
+	}
 }
