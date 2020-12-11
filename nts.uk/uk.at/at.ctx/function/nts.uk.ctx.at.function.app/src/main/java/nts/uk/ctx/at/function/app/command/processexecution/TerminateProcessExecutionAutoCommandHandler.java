@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -135,7 +137,7 @@ public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHan
                 .lastEndExecDateTime(processExecLogMan.getLastEndExecDateTime().orElse(null))
                 .errorSystem(processExecLogMan.getErrorSystem().orElse(null))
                 .errorBusiness(processExecLogMan.getErrorBusiness().orElse(null))
-                .taskLogList(taskLogListCommand)
+                .taskLogList(Collections.emptyList())
                 .schCreateStart(scheduleCreationPeriod.map(DatePeriod::start).orElse(null))
                 .schCreateEnd(scheduleCreationPeriod.map(DatePeriod::end).orElse(null))
                 .dailyCreateStart(dailyCreationPeriod.map(DatePeriod::start).orElse(null))

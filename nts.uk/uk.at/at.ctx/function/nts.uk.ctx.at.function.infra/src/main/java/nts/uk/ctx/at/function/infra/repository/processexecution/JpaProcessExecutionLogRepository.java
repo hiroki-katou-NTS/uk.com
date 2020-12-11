@@ -170,10 +170,12 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void remove(String companyId, String execItemCd, String execId) {
-		this.getEntityManager().createQuery(DELETE_BY_EXEC_CD, KfnmtProcessExecutionLog.class)
-		.setParameter("companyId", companyId)
-		.setParameter("execItemCd", execItemCd)
-		.executeUpdate();
+//		this.getEntityManager().createQuery(DELETE_BY_EXEC_CD, KfnmtProcessExecutionLog.class)
+//		.setParameter("companyId", companyId)
+//		.setParameter("execItemCd", execItemCd)
+//		.executeUpdate();
+		
+		this.commandProxy().remove(KfnmtProcessExecutionLog.class, new KfnmtProcessExecutionLogPK(companyId, execItemCd));
 	}
 
 	@Override

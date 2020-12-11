@@ -599,7 +599,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					.lastEndExecDateTime(processExecutionLogManage.getLastEndExecDateTime().orElse(null))
 					.errorSystem(processExecutionLogManage.getErrorSystem().orElse(null))
 					.errorBusiness(processExecutionLogManage.getErrorBusiness().orElse(null))
-					.taskLogList(taskLogListCommand)
+					.taskLogList(Collections.emptyList())
 					.schCreateStart(scheduleCreationPeriod.map(DatePeriod::start).orElse(null))
 					.schCreateEnd(scheduleCreationPeriod.map(DatePeriod::end).orElse(null))
 					.dailyCreateStart(dailyCreationPeriod.map(DatePeriod::start).orElse(null))

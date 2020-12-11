@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -170,7 +171,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
                 .overallStatus(EndStatus.FORCE_END.value)
                 .lastExecDateTime(GeneralDateTime.now())
                 .lastEndExecDateTime(GeneralDateTime.now())
-                .taskLogList(taskLogListCommand)
+                .taskLogList(Collections.emptyList())
                 .build();
         ProcessExecutionLogHistory processExecutionLogHistory = ProcessExecutionLogHistory.createFromMemento(processExecutionLogHistoryCommand);
         processExecLogHistRepo.insert(processExecutionLogHistory);

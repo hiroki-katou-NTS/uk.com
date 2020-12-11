@@ -115,7 +115,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String saveFileName = null;
 			GeneralDateTime saveEndDatetime = null;
 			int deletedFiles = 0;
-			String compressedPassword = manualSetting.getCompressedPassword().v();
+			String compressedPassword = manualSetting.getCompressedPassword() != null ? 
+					manualSetting.getCompressedPassword().v() : null;
 			int targetNumberPeople = 0;
 			int saveStatus = 0;
 			String fileId = null;
