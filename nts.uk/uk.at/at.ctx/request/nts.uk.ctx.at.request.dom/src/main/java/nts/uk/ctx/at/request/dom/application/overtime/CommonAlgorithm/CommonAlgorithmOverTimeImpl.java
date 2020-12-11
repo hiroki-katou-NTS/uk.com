@@ -234,7 +234,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				// ドメインモデル「勤務種類」を取得して返す
 				List<WorkType> listWorkType = workTypeRepository.findByCidAndWorkTypeCodes(AppContexts.user().companyId(), targetWorkTypeByAppOp.get().getWorkTypeLst());
 				if (!CollectionUtil.isEmpty(listWorkType)) {
-					workTypes = listWorkType.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).sorted((x1, x2) -> x1.getWorkTypeCode().v().compareTo(x2.getWorkTypeCode().v()) ).collect(Collectors.toList());
+					workTypes = listWorkType.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated).sorted((x1, x2) -> x1.getWorkTypeCode().v().compareTo(x2.getWorkTypeCode().v())).collect(Collectors.toList());
 				}
 			}
 			
@@ -242,7 +242,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		
 		if (!(isC1 && isC2 && isC3)) {
 			// ドメインモデル「勤務種類」を取得して返す
-			workTypes = workTypeRepository.findWorkType(AppContexts.user().companyId(), 0, allDayAtrs(), halfAtrs()).stream()
+			workTypes = workTypeRepository.findWorkType(AppContexts.user().companyId(), 0, allDayAtrs(), halfAtrs())
+										  .stream()
+										  .sorted((x1, x2) -> x1.getWorkTypeCode().v().compareTo(x2.getWorkTypeCode().v()))
 										  .collect(Collectors.toList());
 		}
 		// 取得した「勤務種類」をチェック
