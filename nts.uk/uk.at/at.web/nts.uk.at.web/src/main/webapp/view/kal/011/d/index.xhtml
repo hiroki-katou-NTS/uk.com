@@ -8,65 +8,63 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
-        <script>var dialogSize = {width: 800, height: 380};</script>
-        <com:stylefile path="styles.css"/>
+        <script>var dialogSize = {width: 520, height: 280};</script>
+        <com:stylefile path="kal011.d.styles.css"/>
         <com:scriptfile path="kal011.d.vm.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="contents-area">
-            <div class="cf">
-                <div class="table" style="width: 100%">
-                    <table>
-                        <tbody>
-                        <tr>
-                            <!--D1_1-->
-                            <td><span class="label">#{i18n.getText('KAL011_27')}</span></td>
-                            <!--D1_2-->
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <!--D1_3-->
-                            <td><span class="label">#{i18n.getText('KAL011_28')}</span></td>
-                            <!--D1_4-->
-                            <td><span data-bind="text:modalDto.executionStartDateTime"></span></td>
-                        </tr>
-                        <tr>
-                            <!--D1_5-->
-                            <td><span class="label">#{i18n.getText('KAL011_29')}</span></td>
-                            <!--D1_6-->
-                            <td><span data-bind="text:modalDto.executionEndtDateTime"></span></td>
-                        </tr>
-                        <tr>
-                            <!--D1_7-->
-                            <td><span class="label">#{i18n.getText('KAL011_30')}</span></td>
-                            <!--D1_8-->
-                            <td><span data-bind="text:modalDto.elapsedTime"></span></td>
-                        </tr>
-                        <tr>
-                            <!--D1_9-->
-                            <td><span class="label">#{i18n.getText('KAL011_31')}</span></td>
-                            <!--D1_10-->
-                            <td><span data-bind="text:modalDto.processingState"></span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div id="functions-area-bottom" style="width: 98%;">
-                <!-- D2_2 -->
-                <com:ko-if bind="dialogMode() == 2 ">
-                    <button tabindex="3" class="danger"
-                            data-bind="click:interruptProcess">#{i18n.getText('KAL011_32')}</button>
-                </com:ko-if>
-                <com:ko-if bind="dialogMode() == 0 || dialogMode() == 3 ">
-                    <!-- D4_2 -->
-                    <button tabindex="3" data-bind="click:confirmProcess">#{i18n.getText('KAL011_33')}</button>
-                </com:ko-if>
-                <com:ko-if bind="dialogMode() == 1 || dialogMode() == 3 ">
-                    <!-- B4_3 -->
-                    <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL011_34')}</button>
-                </com:ko-if>
-            </div>
+            <table id="D1">
+                <colgroup>
+                    <col width="130px"/>
+                    <col width="300px"/>
+                </colgroup>
+                <tr>
+                    <!--D1_1-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_27')"/></th>
+                    <!--D1_2-->
+                    <td></td>
+                </tr>
+                <tr>
+                    <!--D1_3-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_28')"/></th>
+                    <!--D1_4-->
+                    <td><span data-bind="text: $vm.startTime"></span></td>
+                </tr>
+                <tr>
+                    <!--D1_5-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_29')"/></th>
+                    <!--D1_6-->
+                    <td><span data-bind="text: $vm.endTime"></span></td>
+                </tr>
+                <tr>
+                    <!--D1_7-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_30')"/></th>
+                    <!--D1_8-->
+                    <td><span data-bind="text:$vm.elapsedTime"></span></td>
+                </tr>
+                <tr class="last-row">
+                    <!--D1_9-->
+                    <th><span class="label" data-bind="text: $vm.$i18n('KAL011_31')"/></th>
+                    <!--D1_10-->
+                    <td><span data-bind="text:$vm.status"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div id="functions-area-bottom">
+             <!-- D2_2 -->
+             <com:ko-if bind="$vm.dialogMode() == 2 ">
+                <button tabindex="3" class="danger"
+                        data-bind="click:interruptProcess">#{i18n.getText('KAL011_32')}</button>
+            </com:ko-if>
+            <com:ko-if bind="$vm.dialogMode() == 0 || $vm.dialogMode() == 3 ">
+                <!-- D4_2 -->
+                <button tabindex="3" data-bind="click:confirmProcess">#{i18n.getText('KAL011_33')}</button>
+            </com:ko-if>
+            <com:ko-if bind="$vm.dialogMode() == 1 || $vm.dialogMode() == 3 ">
+                <!-- B4_3 -->
+                <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL011_34')}</button>
+            </com:ko-if>
         </div>
     </ui:define>
 </ui:composition>

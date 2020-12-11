@@ -19,23 +19,20 @@ module nts.uk.at.kal011.a {
         isCheckAll_Temp: boolean = false;
 
         // work place list
-        multiSelectedId: KnockoutObservable<any> = ko.observableArray([]);
+        workplaceIds: KnockoutObservable<any> = ko.observableArray([]);
         baseDate: KnockoutObservable<Date> = ko.observable(this.$date.today());
         alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
         treeGrid: any;
-        processingState: KnockoutObservable<any>;
-        workPalceCategory: any;
 
         constructor() {
             super();
             const vm = this;
 
-            vm.processingState = ko.observable(1);
             vm.treeGrid = {
                 isMultipleUse: false,
                 isMultiSelect: true,
                 startMode: 0, // WORKPLACE
-                selectedId: vm.multiSelectedId,
+                selectedId: vm.workplaceIds,
                 baseDate: vm.baseDate,
                 selectType: 3, // SELECT_FIRST_ITEM
                 isShowSelectButton: true,
@@ -80,6 +77,10 @@ module nts.uk.at.kal011.a {
 
             vm.$ajax(API.INIT).done((res: IInitActiveAlarmList) => {
                 if (res) {
+                    if (!res.processingYm){
+                        dfd.reject({messageId: "Msg_1143"});
+                        return;
+                    }
                     vm.employmentCode = res.employmentCode;
                     vm.processingYm = res.processingYm;
 
@@ -135,11 +136,13 @@ module nts.uk.at.kal011.a {
             })
         }
 
-        openModal() {
+        exportAlarmList() {
             const vm = this;
+
+            // アラームリスト出力開始前チェック
             vm.$validate("#B3_2").then((valid: boolean) => {
                 if (!valid) return;
-                if (_.isEmpty(vm.multiSelectedId())) {
+                if (_.isEmpty(vm.workplaceIds())) {
                     vm.$dialog.error({ messageId: "Msg_834" }); //TODO Q&A 37827
                     return
                 }
@@ -153,10 +156,19 @@ module nts.uk.at.kal011.a {
                     vm.$dialog.error({ messageId: "Msg_1168" });
                     return
                 }
-                let modalData = {
-                    time: moment(vm.$date.now()).format("YYYY/MM/DD:H:mm:ss"),
-                    processingState: vm.processingState(),
-                    selectedCode: vm.alarmPatternCode()
+
+                let categoryPeriods = _.map(conditionSelecteds, (condition: CheckCondition) => {
+                    return {
+                        category: condition.category,
+                        start: condition.dateRange().startDate.toISOString(),
+                        emd: condition.dateRange().endDate.toISOString()
+                    }
+                })
+
+                let modalData: any = {
+                    alarmPatternCode: vm.alarmPatternCode(),
+                    workplaceIds: vm.workplaceIds(),
+                    categoryPeriods: categoryPeriods
                 }
                 vm.$window.storage('KAL011DModalData', modalData).done(() => {
                     vm.$window.modal('/view/kal/011/d/index.xhtml')
@@ -247,10 +259,10 @@ module nts.uk.at.kal011.a {
     }
 
     class DateRangePickerModel {
-        startDate: string;
-        endDate: string;
+        startDate: any;
+        endDate: any;
 
-        constructor(startDate: string, endDate: string) {
+        constructor(startDate: any, endDate: any) {
             this.startDate = startDate;
             this.endDate = endDate;
         }

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListE
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.AggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.PeriodByAlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
@@ -130,5 +131,11 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
             return true;
         }
         return false;
+    }
+
+    private List<AlarmListExtractResultWorkplaceDto> mapToDto(List<AlarmListExtractInfoWorkplace> alExtractInfos,
+                                                              List<WorkPlaceInforExport> wpInfos){
+        
+        return null;
     }
 }

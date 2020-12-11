@@ -6,6 +6,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -21,7 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNMT_WKP_ALEX_PRO_STATUS")
-public class KfnmtWkpAlexProStatus extends UkJpaEntity implements Serializable {
+public class KfnmtWkpAlexProStatus extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,7 +70,7 @@ public class KfnmtWkpAlexProStatus extends UkJpaEntity implements Serializable {
     }
 
     public static KfnmtWkpAlexProStatus toEntity(AlarmListExtractProcessStatusWorkplace domain ) {
-        return new KfnmtWkpAlexProStatus(
+        KfnmtWkpAlexProStatus entity = new KfnmtWkpAlexProStatus(
             new KfnmtWkpAlexProStatusPk(domain.getId()),
             domain.getCompanyID(),
             domain.getStartTime(),
@@ -78,6 +80,8 @@ public class KfnmtWkpAlexProStatus extends UkJpaEntity implements Serializable {
             domain.getEndDate().isPresent() ? domain.getEndDate().get() : null,
             domain.getEndTime().isPresent() ? domain.getEndTime().get() : null
         );
+        entity.setContractCd(AppContexts.user().contractCode());
+        return entity;
     }
 
 
