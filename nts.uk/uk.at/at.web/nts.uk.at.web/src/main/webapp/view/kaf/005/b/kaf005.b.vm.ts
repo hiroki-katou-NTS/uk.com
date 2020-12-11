@@ -2477,7 +2477,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		getFormatTime(number: number) {
 			if (_.isNil(number)) return '';
-			return (formatTime("Time_Short_HM", number));
+			return (formatTime("Clock_Short_HM", number));
 		}
 		
     }
