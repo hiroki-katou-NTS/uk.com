@@ -506,13 +506,13 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			Optional<CalcStampMiss> calOptional,
 			List<DeductionTime> breakTimes,
 			Optional<ActualContentDisplay> acuActualContentDisplay) {
-		ApplicationTime output = new ApplicationTime();
+		Optional<ApplicationTime> output = Optional.empty();
 		// INPUT．「表示する実績内容．実績詳細」をチェックする
 		Optional<AchievementDetail> opAchievementDetail = acuActualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty());
 		
 		if (!(opAchievementDetail.isPresent() && opAchievementDetail.get().getTrackRecordAtr() == TrackRecordAtr.DAILY_RESULTS)) {
 			
-			return output;
+			return null;
 		}
 		AchievementDetail achievementDetail = opAchievementDetail.get();
 		// INPUT．「表示する実績内容．実績詳細」 <> empty　AND　INPUT．「表示する実績内容．実績詳細．実績スケ区分」 = 日別実績 -> true
@@ -559,7 +559,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getFrameNo() == 11)
 						.findFirst();
 				if (isFlexOverOp.isPresent()) {
-					output.setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(isFlexOverOp.get().getTime())));
+					if (output.isPresent()) output = Optional.of(new ApplicationTime());
+					output.get().setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(isFlexOverOp.get().getTime())));
 				}
 				/*
 				 ・INPUT．「表示する実績内容．実績詳細．7勤怠時間．4勤怠種類 = 残業時間」AND 「実績詳細．7勤怠時間．1枠NO = 12」がある場合：
@@ -571,7 +572,8 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				if (isOverTimeMidNightOp.isPresent()) {
 					overTimeShiftNight.setMidNightOutSide(
 							new AttendanceTime(isOverTimeMidNightOp.get().getTime()));
-					output.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+					if (output.isPresent()) output = Optional.of(new ApplicationTime());
+					output.get().setOverTimeShiftNight(Optional.of(overTimeShiftNight));
 				}
 				
 				
@@ -615,8 +617,11 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						StaturoryAtrOfHolidayWork.PublicHolidayWork);
 				midNightHolidayTimes.add(holidayMidNightTime);
 			}
-			if (output.getOverTimeShiftNight().isPresent()) {
-				output.getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
+			if (output.isPresent()) {
+				if (output.get().getOverTimeShiftNight().isPresent()) {
+					output.get().getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
+				}
+				
 			}
 		} else { // 仮計算実行＝する
 			List<DeductionTime> breakTimeList =  new ArrayList<DeductionTime>();
@@ -648,20 +653,25 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpDepartureTime2().orElse(0)).orElse(0))));
 			
 			// 1日分の勤怠時間を仮計算 (RQ23)
-			output = convertApplicationList(
+			List<ApplicationTime> outputList = convertApplicationList(
 					companyId,
 					employeeId,
 					date,
 					workTypeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()),
 					workTimeCode == null ? Optional.empty() : Optional.ofNullable(workTimeCode.v()),
 					timeZones,
-					breakTimes).get(0);
+					breakTimes);
+			if (CollectionUtil.isEmpty(outputList)) {
+				output = null;
+			} else {
+				output = Optional.of(outputList.get(0));
+			}
 			
 		}
 		
 		
 		
-		return output;
+		return output.orElse(null);
 	}
 	public List<ApplicationTime> convertApplicationList(
 			String companyId,

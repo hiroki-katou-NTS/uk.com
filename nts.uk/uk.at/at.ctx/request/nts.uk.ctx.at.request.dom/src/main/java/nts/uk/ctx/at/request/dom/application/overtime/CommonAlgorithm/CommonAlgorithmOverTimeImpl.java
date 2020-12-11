@@ -735,7 +735,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ERROR) {
 				
 				// エラーメッセージ（Msg_1746）を表示する
-				throw new BusinessException("1746", contentMsgs.toArray(new String[contentMsgs.size()])); // note handle content's message late
+				throw new BusinessException("Msg_1746", contentMsgs.toArray(new String[contentMsgs.size()])); // note handle content's message late
 			} else if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ALARM) {
 				// メッセージ（Msg_1745）をOUTPUT「確認メッセージリスト」に追加する
 				output.add(new ConfirmMsgOutput("Msg_1745", contentMsgs));
@@ -746,7 +746,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				if (overStateOutput.getAchivementExcess().isAdvanceExcessError()) {
 					List<String> contens1748 = getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess());			
 					// エラーメッセージ（Msg_1748）を表示する
-					throw new BusinessException("1748", contens1748.toArray(new String[contentMsgs.size()])); // note handle content's message late
+					throw new BusinessException("Msg_1748", contens1748.toArray(new String[contentMsgs.size()])); // note handle content's message late
 				} else {
 					// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 					if (overStateOutput.getAchivementExcess().isAdvanceExcess()) {
