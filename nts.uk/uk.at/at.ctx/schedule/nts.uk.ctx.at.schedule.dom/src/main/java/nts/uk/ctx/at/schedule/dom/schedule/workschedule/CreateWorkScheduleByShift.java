@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class CreateWorkScheduleByShift {
 			return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, "Msg_1705");
 		}
 		
-		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), new HashMap<>());
+		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), new ArrayList<>(), new HashMap<>());
 	}
 	
 	public static interface Require extends CreateWorkSchedule.Require {
