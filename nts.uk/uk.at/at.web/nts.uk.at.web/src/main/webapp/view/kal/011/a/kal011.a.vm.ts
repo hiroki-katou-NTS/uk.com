@@ -4,7 +4,9 @@ module nts.uk.at.kal011.a {
 
     const API = {
         INIT: "at/function/alarm-workplace/alarm-list/init",
-        GET_CHECK_CONDITION: "at/function/alarm-workplace/alarm-list/get-check-conditions"
+        GET_CHECK_CONDITION: "at/function/alarm-workplace/alarm-list/get-check-conditions",
+        //TODO need delete
+        EXPORT_EXCEL: "at/function/alarm-workplace/alarm-list/export-alarm-data",
     }
 
     @bean()
@@ -196,6 +198,44 @@ module nts.uk.at.kal011.a {
                     });
                 }
             });
+        }
+
+        //TODO need delete
+        exportExcel() {
+            const vm = this;
+            vm.$blockui("grayout");
+            vm.$ajax(API.EXPORT_EXCEL, {
+                alarmCode: "alarmCode1",
+                alarmName: "alarmName",
+                data: [
+                    {
+                        alarmValueMessage: "alarmValueMessage1",
+                        alarmValueDate: "alarmValueDate1",
+                        alarmItemName: "alarmItemName1",
+                        categoryName: "categoryName1",
+                        checkTargetValue: "checkTargetValue1",
+                        category: "category1",
+                        startTime: "2020/11/04",
+                        comment: "comment1",
+                        workplaceId: "workplaceId1",
+                        workplaceCode: "workplaceCode1",
+                        workplaceName: "workplaceName1"
+                    },
+                    {
+                        alarmValueMessage: "alarmValueMessage2",
+                        alarmValueDate: "alarmValueDate2",
+                        alarmItemName: "alarmItemName2",
+                        categoryName: "categoryName2",
+                        checkTargetValue: "checkTargetValue2",
+                        category: "category2",
+                        startTime: "2020/11/05",
+                        comment: "comment2",
+                        workplaceId: "workplaceId2",
+                        workplaceCode: "workplaceCode2",
+                        workplaceName: "workplaceName2"
+                    }
+                ]
+            }).then(() => vm.$blockui("clear"))
         }
     }
 
