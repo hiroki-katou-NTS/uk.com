@@ -23,7 +23,7 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			List<String> errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
+			String errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
 			List<StatusOfEmployeeAdapter> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor) {
 		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = lstWplHist.stream().map(x -> 

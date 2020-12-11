@@ -18,7 +18,7 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	private MasterCheckService masterCheck;
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			List<String> errorMasterCheckId,
+			String errorMasterCheckId,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, 

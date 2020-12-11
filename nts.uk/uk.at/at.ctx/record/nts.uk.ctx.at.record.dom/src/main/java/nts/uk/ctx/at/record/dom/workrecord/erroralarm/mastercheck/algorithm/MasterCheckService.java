@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 
 public interface MasterCheckService {
-	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod,	List<String> errorMasterCheckId
+	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod,	String errorMasterCheckId
 			,List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapterAl> lstStatusEmp
 			,List<ResultOfEachCondition> lstResultCondition,List<AlarmListCheckInfor> lstCheckType);
 }

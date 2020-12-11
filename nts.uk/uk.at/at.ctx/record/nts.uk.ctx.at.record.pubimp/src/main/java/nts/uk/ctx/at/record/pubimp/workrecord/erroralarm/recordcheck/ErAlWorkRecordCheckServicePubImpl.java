@@ -88,8 +88,9 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 				condition.getFilterByJobTitle(), condition.getFilterByEmployment(),
 				condition.getFilterByClassification(), condition.getLstBusinessTypeCode(), condition.getLstJobTitleId(),
 				condition.getLstEmploymentCode(), condition.getLstClassificationCode());
-		return this.checkService.filterEmployees(workingDate, employeeIds, filterCondition).stream().map(r -> mapTo(r))
-				.collect(Collectors.toList());
+		 List<RegulationInfoEmployeeQueryResult> result = this.checkService.filterEmployees(workingDate, employeeIds, filterCondition).stream().map(r -> mapTo(r))
+					.collect(Collectors.toList());
+		return result;
 	}
 
 	@Override

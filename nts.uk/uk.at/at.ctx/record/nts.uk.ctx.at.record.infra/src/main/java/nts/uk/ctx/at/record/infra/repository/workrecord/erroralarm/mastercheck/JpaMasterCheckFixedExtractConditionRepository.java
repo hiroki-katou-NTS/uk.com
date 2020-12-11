@@ -30,14 +30,12 @@ public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
 			+ " WHERE c.pk.erAlId = :erAlId ";
 
 	@Override
-	public List<MasterCheckFixedExtractCondition> findAll(List<String> extractConditionIds, boolean useAtr) {
-		String query = "SELECT a FROM KrcmtMasterCheckFixedExtractCondition a WHERE a.useAtr = :useAtr AND a.pk.erAlId IN :ids";
+	public List<MasterCheckFixedExtractCondition> findAll(String extractConditionIds, boolean useAtr) {
+		String query = "SELECT a FROM KrcmtMasterCheckFixedExtractCondition a WHERE a.useAtr = :useAtr AND a.pk.erAlId = :ids";
 		List<KrcmtMasterCheckFixedExtractCondition> results = new ArrayList<>();
 		
-		CollectionUtil.split(extractConditionIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			results.addAll(this.queryProxy().query(query, KrcmtMasterCheckFixedExtractCondition.class)
-					.setParameter("useAtr", useAtr).setParameter("ids", subList).getList());
-		});
+		results.addAll(this.queryProxy().query(query, KrcmtMasterCheckFixedExtractCondition.class)
+				.setParameter("useAtr", useAtr ? 1 : 0).setParameter("ids", extractConditionIds).getList());
 		
 		return results.stream().map(a -> new MasterCheckFixedExtractCondition(
 					a.getPk().getErAlId(), 

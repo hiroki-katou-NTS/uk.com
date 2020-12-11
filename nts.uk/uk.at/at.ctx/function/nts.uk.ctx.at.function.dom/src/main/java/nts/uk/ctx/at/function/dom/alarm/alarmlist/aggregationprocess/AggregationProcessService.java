@@ -38,6 +38,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
@@ -203,7 +204,7 @@ public class AggregationProcessService {
 	 * @param shouldStop
 	 * @return 
 	 */
-	public AlarmListResultDto processAlarmListResult(String cid, String pattentCd, String pattentName,
+	public AlarmListResultDto processAlarmListResult(String cid, String pattentCd, 
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop){
 		AlarmListResultDto result = new AlarmListResultDto();
@@ -212,9 +213,10 @@ public class AggregationProcessService {
 		if(!findByAlarmPatternCode.isPresent()) {
 			throw new BusinessException("Msg_2059", pattentCd);
 		}
+		AlarmPatternSetting alarmPattern = findByAlarmPatternCode.get();
 		//ドメインモデル「カテゴリ別アラームチェック条件」を取得
 		List<AlarmCheckConditionByCategory> lstCondCate = new ArrayList<>();
-		findByAlarmPatternCode.get().getCheckConList().stream().forEach(x->{
+		alarmPattern.getCheckConList().stream().forEach(x->{
 			List<AlarmCheckConditionByCategory> lstCond = checkConditionRepo.findByCategoryAndCode(cid, 
 					x.getAlarmCategory().value, 
 					x.getCheckConditionList());
@@ -234,18 +236,22 @@ public class AggregationProcessService {
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
 					.filter(y -> y.getCategory() == x.getCategory().value)
 					.collect(Collectors.toList());
-			if(!periodCheck.isEmpty()) {
+			if(!periodCheck.isEmpty() && periodCheck.get(0).getStartDate() != null) {
 				datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),periodCheck.get(0).getEndDate());
 			}
 			List<String> lstSidTmp = new ArrayList<>(lstSid);
+			AlarmCheckTargetCondition extractTargetCondition = x.getExtractTargetCondition();
 			//対象者をしぼり込む(レスポンス改善)
-			if(x.getExtractionCondition() != null) {
+			if(!extractTargetCondition.getLstBusinessTypeCode().isEmpty()
+					|| !extractTargetCondition.getLstClassificationCode().isEmpty()
+					|| !extractTargetCondition.getLstEmploymentCode().isEmpty()
+					|| !extractTargetCondition.getLstJobTitleId().isEmpty()) {
 				lstSidTmp.clear();
-				Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erCheckAdapter.filterEmployees(datePeriod
+				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod.start()
 						,lstSid
-						,Arrays.asList(x.getExtractTargetCondition()));
-				lstSidTmp.addAll(listTargetMap.get(x.getExtractTargetCondition().getId())
-						.stream().map(c -> c.getEmployeeId())
+						,x.getExtractTargetCondition());
+				
+				lstSidTmp.addAll(listTarget.stream().map(c -> c.getEmployeeId())
 						.collect(Collectors.toList()));
 			}
 			
@@ -296,7 +302,7 @@ public class AggregationProcessService {
 					MasterCheckAlarmCheckCondition masterCheck = (MasterCheckAlarmCheckCondition) x.getExtractionCondition();
 					extractAlarmService.extractMasterCheckResult(cid, lstSidTmp, 
 							datePeriod, 
-							masterCheck.getErrorAlarmCheckId(), 
+							masterCheck.getAlarmCheckId(), 
 							getWplByListSidAndPeriod, 
 							lstStatusEmp, 
 							lstResultCondition,
@@ -310,18 +316,21 @@ public class AggregationProcessService {
 				CategoryCondValueDto valueDto = new CategoryCondValueDto(x.getCategory().value, x.getCode().v(), lstCheckType);
 				lstValueDto.add(valueDto);
 				//「アラーム抽出結果」を作成してList<アラーム抽出結果＞に追加
-				AlarmExtracResult extracResult = new AlarmExtracResult(x.getCode().v(), x.getCategory().value, lstResultCondition);
-				lstExtracResult.add(extracResult);
+				if(!lstResultCondition.isEmpty()) {
+					AlarmExtracResult extracResult = new AlarmExtracResult(x.getCode().v(), x.getCategory().value, lstResultCondition);
+					lstExtracResult.add(extracResult);	
+				}
+				
 				//TODO 抽出処理停止フラグが立っているかチェックする(check xem có flag dừng xử lý extract hay k)
 				
 			}
 			
 		});
-		AlarmPatternExtractResult alarmResult = new AlarmPatternExtractResult(cid, runCode, pattentCd, pattentName, lstExtracResult);
+		AlarmPatternExtractResult alarmResult = new AlarmPatternExtractResult(cid, runCode, pattentCd, alarmPattern.getAlarmPatternName().v(), lstExtracResult);
 		result.setExtracting(true);
 		result.setLstAlarmResult(lstExtracResult);
 		//アラーム（トップページ）永続化の処理
-		this.createAlarmToppage(alarmResult, lstSid, lstValueDto, lstCategoryPeriod, pattentName);
+		this.createAlarmToppage(alarmResult, lstSid, lstValueDto, lstCategoryPeriod, alarmPattern.getAlarmPatternName().v());
 		return result;
 			
 		
@@ -341,14 +350,17 @@ public class AggregationProcessService {
 		String cid = alarmResult.getCID();
 		String runCode = alarmResult.getRunCode();
 		String pattentCd = alarmResult.getPatternCode();
-		Optional<AlarmPatternExtractResult> optAlarmPattern = alarmRepos.optAlarmPattern(cid, runCode, pattentCd); //存在しているアラーム
-		if(!optAlarmPattern.isPresent()) {
+		Optional<AlarmPatternExtractResult> optAlarmExtractResult = alarmRepos.optAlarmExtractResult(cid, runCode, pattentCd); //存在しているアラーム
+		if(!optAlarmExtractResult.isPresent() && alarmResult.getLstExtracResult().isEmpty()) {
+			return;
+		}
+		else if(!optAlarmExtractResult.isPresent()) {
 			alarmResult.setPatternName(patternName);
-			alarmRepos.addAlarmPattern(alarmResult);
+			alarmRepos.addAlarmExtractResult(alarmResult);
 		} else {
 			List<AlarmExtracResult> lstExResultInsert = new ArrayList<>();
 			List<AlarmExtracResult> lstExResultDelete = new ArrayList<>();
-			AlarmPatternExtractResult alarmPattern = optAlarmPattern.get();
+			AlarmPatternExtractResult alarmPattern = optAlarmExtractResult.get();
 			
 			//①今回のアラーム結果がデータベースに存在してない場合データベースのデータを追加
 			
@@ -463,11 +475,11 @@ public class AggregationProcessService {
 			});
 			if(!lstExResultInsert.isEmpty()) {
 				AlarmPatternExtractResult alarmInsert = new AlarmPatternExtractResult(cid, runCode, pattentCd, patternName, lstExResultInsert);
-				alarmRepos.addAlarmPattern(alarmInsert);
+				alarmRepos.addAlarmExtractResult(alarmInsert);
 			}
 			if(!lstExResultDelete.isEmpty()) {
 				AlarmPatternExtractResult alarmDelete = new AlarmPatternExtractResult(cid, runCode, pattentCd, patternName, lstExResultDelete);
-				alarmRepos.deleteAlarmPattern(alarmDelete);
+				alarmRepos.deleteAlarmExtractResult(alarmDelete);
 			}
 		}
 	}

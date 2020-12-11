@@ -91,8 +91,9 @@ public class ErAlWorkRecordCheckService {
 			AlCheckTargetCondition checkCondition) {
 		if (checkCondition == null) {
 			return new ArrayList<>();
-		}
-		return this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition)).stream()
+		}		
+		List<RegulationInfoEmployeeQueryR> result = this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition));
+		return result.stream()
 				.filter(e -> employeeIds.contains(e.getEmployeeId())).collect(Collectors.toList());
 	}
 

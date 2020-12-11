@@ -16,11 +16,11 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 @NoArgsConstructor
 public class MasterCheckAlarmCheckCondition extends ExtractionCondition {
 	/**
-	 * チェック条件ID
+	 * マスタチェックの固定抽出条件ID
 	 */
 	private String alarmCheckId;
 	/**
-	 * マスタチェックの固定抽出条件ID
+	 *  チェック条件ID
 	 */
 	private List<String> errorAlarmCheckId;
 	

@@ -120,7 +120,6 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		List<String> lstSid = command.getListEmployee().stream().map(x -> x.getId()).collect(Collectors.toList());
 		ExtractedAlarmDto dto = this.extractAlarmListService.extractResultAlarm(comId,
 				command.getAlarmCode(), 
-				"",
 				command.getListPeriodByCategory(),
 				lstSid,
 				"Z",

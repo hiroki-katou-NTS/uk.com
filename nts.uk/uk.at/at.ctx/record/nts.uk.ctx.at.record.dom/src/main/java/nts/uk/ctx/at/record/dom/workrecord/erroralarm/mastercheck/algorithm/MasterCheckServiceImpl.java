@@ -16,29 +16,19 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 @Stateless
 public class MasterCheckServiceImpl implements MasterCheckService {
-	@Inject
-	private MasterCheckFixedExtractConditionRepository masterCheckRepos;
-	@Inject
-	private MasterCheckFixedExtractItemRepository masterCheckItemRepos;
+
 	@Inject
 	private MasterCheckServiceResult checkService;
 	@Override
-	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod, List<String> errorMasterCheckId,
+	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorMasterCheckId,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
-		//ドメインモデル「マスタチェックの固定抽出条件」を取得
-		List<MasterCheckFixedExtractCondition> lstMasterCheck = masterCheckRepos.findAll(errorMasterCheckId, true);
-		List<MasterCheckFixedCheckItem> lstItemNo = lstMasterCheck.stream().map(x -> x.getNo()).collect(Collectors.toList());
-		//ドメインモデル「マスタチェックの固有抽出項目」を取得する
-		List<Integer> lstNo = lstItemNo.stream().map(x -> x.value)
-				.collect(Collectors.toList());
-		List<MasterCheckFixedExtractItem> lstMasterCheckItem = masterCheckItemRepos.getFixedMasterCheckByNo(lstNo);
-		checkService.prepareDateBeforeCheck(cid, lstSid, lstItemNo, dPeriod);
+		
+		
+		
 		checkService.extractMasterCheckResult(cid, 
 				lstSid, 
-				dPeriod,
-				lstMasterCheckItem,
-				lstMasterCheck,
+				dPeriod, errorMasterCheckId,
 				getWplByListSidAndPeriod,
 				lstStatusEmp,
 				lstResultCondition,

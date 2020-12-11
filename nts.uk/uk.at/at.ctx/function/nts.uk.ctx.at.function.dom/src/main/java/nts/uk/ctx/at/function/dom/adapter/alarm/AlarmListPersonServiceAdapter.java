@@ -22,7 +22,7 @@ public interface AlarmListPersonServiceAdapter {
 	 * @param lstCheckInfor
 	 */
 	void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			List<String> errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
+			String errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
 			List<StatusOfEmployeeAdapter> lstStatusEmp,List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor);
 }

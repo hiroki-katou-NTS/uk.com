@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface MasterCheckFixedExtractConditionRepository {
 
-	List<MasterCheckFixedExtractCondition> findAll(List<String> extractConditionIds, boolean useAtr);
+	List<MasterCheckFixedExtractCondition> findAll(String extractConditionIds, boolean useAtr);
 	
 	List<MasterCheckFixedExtractCondition> getAllFixedMasterCheckConById(String errorAlarmCheckId);
 	

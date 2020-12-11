@@ -134,7 +134,7 @@ public class ExtractAlarmListService {
 	 * @return
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public ExtractedAlarmDto extractResultAlarm(String cid, String pattentCd, String pattentName,
+	public ExtractedAlarmDto extractResultAlarm(String cid, String pattentCd, 
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
 		ExtractedAlarmDto result = new ExtractedAlarmDto();
@@ -144,7 +144,6 @@ public class ExtractAlarmListService {
 		}
 		AlarmListResultDto alarmResult = aggregationProcessService.processAlarmListResult(cid, 
 				pattentCd,
-				pattentName,
 				lstCategoryPeriod,
 				lstSid,
 				runCode,

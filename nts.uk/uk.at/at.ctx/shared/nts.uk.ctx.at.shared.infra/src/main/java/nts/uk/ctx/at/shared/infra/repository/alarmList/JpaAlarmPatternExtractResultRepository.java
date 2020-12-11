@@ -29,7 +29,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 
 	@Override
 	@SneakyThrows
-	public Optional<AlarmPatternExtractResult> optAlarmPattern(String cid, String runCode, String patternCode) {
+	public Optional<AlarmPatternExtractResult> optAlarmExtractResult(String cid, String runCode, String patternCode) {
 		String sql = "SELECT * FROM KFNDT_ALARM_EXTRAC_RESULT"
 				+ " WHERE CID = @cid"
 				+ " AND AUTORUN_CODE = @runCode"
@@ -106,7 +106,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 	}
 
 	@Override
-	public void addAlarmPattern(AlarmPatternExtractResult alarmPattern) {
+	public void addAlarmExtractResult(AlarmPatternExtractResult alarmPattern) {
 		if(alarmPattern == null || alarmPattern.getLstExtracResult().isEmpty()) {
 			return;
 		}
@@ -150,7 +150,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 	}
 
 	@Override
-	public void deleteAlarmPattern(AlarmPatternExtractResult alarmPattern) {
+	public void deleteAlarmExtractResult(AlarmPatternExtractResult alarmPattern) {
 		if(alarmPattern == null || alarmPattern.getLstExtracResult().isEmpty()) {
 			return;
 		}
