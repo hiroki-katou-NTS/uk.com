@@ -74,9 +74,11 @@ module nts.uk.at.view.kaf011 {
 		checkDisplay(){
 			let self = this;
 			if(self.displayInforWhenStarting){
-				self.dk1(self.displayInforWhenStarting.substituteManagement == 1 
-						&& self.workTypeSelected.checkH1Ver19());
+				//điều kiện hiển thị ※H1
+				self.dk1(self.displayInforWhenStarting.substituteManagement == 1 && self.workTypeSelected.checkH1Ver19());
+				// điều kiện hiển thị ※E1
 				self.dk2(self.checkE1Common() || (self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE12() && self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1));
+				// điều kiện hiển thị ※E1-1
 				self.dk3(self.checkE1Common());
 			}
 		}

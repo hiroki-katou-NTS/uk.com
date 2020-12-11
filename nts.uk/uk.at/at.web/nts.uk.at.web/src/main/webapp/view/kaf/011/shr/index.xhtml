@@ -124,8 +124,8 @@
 		                                        required: true }">
 		                    </div>					
 						</div>
-						<com:ko-if bind="dk2">
-							<div class="holidaySetting">
+						<div class="holidaySetting">
+							<com:ko-if bind="dk2">	
 								<div data-bind="ntsCheckBox: { checked: workChangeUse }">#{i18n.getText('KAF011_29')}</div>
 								<div class="ruleLine"></div>
 								<div class="row">
@@ -179,58 +179,62 @@
 										</div>
 									</div>
 								</com:ko-if>
-<!-- 								<div class="row tableRelase"> -->
-<!-- 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div> -->
-<!-- 									<div class="ntsControl"> -->
-<!-- 										<div> -->
-<!-- 											<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button> -->
-<!-- 											#{i18n.getText('KAF011_48')} -->
-<!-- 										</div> -->
-<!-- 										<div> -->
-<!-- 											<table class="table"> -->
-<!-- 												<thead> -->
-<!-- 													<tr> -->
-<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_51')}</th> -->
-<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th> -->
-<!-- 													</tr> -->
-<!-- 												</thead> -->
-<!-- 			        							<tbody data-bind="foreach: related"> -->
-<!-- 													<tr> -->
-<!-- 														<td data-bind="text: date"></td> -->
-<!-- 														<td data-bind="text: number"></td> -->
-<!-- 													</tr> -->
-<!-- 												</tbody> -->
-<!-- 											</table> -->
-<!-- 										</div> -->
-<!-- 									</div> -->
-<!-- 								</div> -->
-<!-- 								<div class="row tableRelase"> -->
-<!-- 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div> -->
-<!-- 									<div class="ntsControl"> -->
-<!-- 										<div> -->
-<!-- 											<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button> -->
-<!-- 											#{i18n.getText('KAF011_47')} -->
-<!-- 										</div> -->
-<!-- 										<div> -->
-<!-- 											<table class="table"> -->
-<!-- 												<thead> -->
-<!-- 													<tr> -->
-<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_49')}</th> -->
-<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th> -->
-<!-- 													</tr> -->
-<!-- 												</thead> -->
-<!-- 			        							<tbody data-bind="foreach: related"> -->
-<!-- 													<tr> -->
-<!-- 														<td data-bind="text: date"></td> -->
-<!-- 														<td data-bind="text: number"></td> -->
-<!-- 													</tr> -->
-<!-- 												</tbody> -->
-<!-- 											</table> -->
-<!-- 										</div> -->
-<!-- 									</div> -->
-<!-- 								</div> -->
-							</div>
-						</com:ko-if>
+							</com:ko-if>
+							<com:ko-if bind="dk1">
+								<div class="row tableRelase">
+									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
+									<div class="ntsControl">
+										<div>
+											<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
+											#{i18n.getText('KAF011_48')}
+										</div>
+										<div>
+											<table class="table">
+												<thead>
+													<tr>
+														<th class="bg-green" >#{i18n.getText('KAF011_51')}</th>
+														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
+													</tr>
+												</thead>
+			        							<tbody data-bind="foreach: subWorkSubHolidayLinkingMngList">
+													<tr>
+														<td data-bind="text: outbreakDay"></td>
+														<td data-bind="text: dayNumberUsed"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</com:ko-if>
+							<com:ko-if bind="$parent.appCombinaSelected() == 2 &amp;&amp; displayInforWhenStarting.holidayManage == 1">
+								<div class="row tableRelase">
+									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
+									<div class="ntsControl">
+										<div>
+											<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
+											#{i18n.getText('KAF011_47')}
+										</div>
+										<div>
+											<table class="table">
+												<thead>
+													<tr>
+														<th class="bg-green" >#{i18n.getText('KAF011_49')}</th>
+														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
+													</tr>
+												</thead>
+			        							<tbody data-bind="foreach: subWorkSubHolidayLinkingMngList">
+													<tr>
+														<td data-bind="text: outbreakDay"></td>
+														<td data-bind="text: dayNumberUsed"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</com:ko-if>
+						</div>
 						<div class="comment" data-bind="text: $parent.comment.subHolidayComment, style: {color: $parent.comment.subHolidayColor, 'font-weight': $parent.comment.subHolidayBold()? 'bold': ''}"></div>
 					</div>
 				</com:ko-if>
