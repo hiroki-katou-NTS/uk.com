@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
@@ -134,7 +138,7 @@ public class WorkSchedule implements DomainAggregate {
 						CalculationState.No_Calculated, 
 						NotUseAttribute.Not_use, 
 						NotUseAttribute.Not_use, 
-						DayOfWeek.valueOf(date.dayOfWeek() - 1 )), // TODO smell code. asking team process! 
+						DayOfWeek.convertFromCommonClass(date.dayOfWeekEnum())), 
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
 				new ArrayList<>(), 
 				new ArrayList<>(), 
@@ -161,14 +165,12 @@ public class WorkSchedule implements DomainAggregate {
 			) {
 		WorkSchedule workSchedule = WorkSchedule.create(require, employeeId, date, workInformation);
 		
-		// 勤怠項目ID = 勤務種類(1)
-		EditStateOfDailyAttd editStateOfDailyAttd = EditStateOfDailyAttd.createByHandCorrection(require, 1, employeeId);
+		EditStateOfDailyAttd editStateOfDailyAttd = EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.WorkType.ID, employeeId);
 		
 		List<EditStateOfDailyAttd> editStateOfDailyAttdList = new ArrayList<>( Arrays.asList(editStateOfDailyAttd) );
 		
 		if ( workInformation.getWorkTimeCodeNotNull().isPresent() ) {
-			// 勤怠項目ID = 就業時間帯(2)
-			editStateOfDailyAttdList.add( EditStateOfDailyAttd.createByHandCorrection(require, 2, employeeId) );
+			editStateOfDailyAttdList.add( EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.WorkTime.ID, employeeId) );
 		}
 		
 		return new WorkSchedule(
@@ -187,10 +189,11 @@ public class WorkSchedule implements DomainAggregate {
 	
 	/**
 	 * 出退勤時刻の値を手修正で変更する
+	 * 勤怠項目IDを指定して手修正で変更する
 	 * @param require
 	 * @param updateInfoMap 変更する情報Map
 	 */
-	public <T> void changeAttendanceTimeByHandCorrection (
+	public <T> void changeAttendanceItemValueByHandCorrection (
 			Require require,
 			Map<Integer, T > updateInfoMap) {
 		
@@ -205,9 +208,10 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	private <T> T updateValue(int updateAttendanceItemID, T value) {
 		
-		switch (updateAttendanceItemID) {
-			case 31:
-				// 出勤時刻1(31)
+		val updateAttendanceItem = WS_AttendanceItem.valueOf(updateAttendanceItemID);
+		
+		switch (updateAttendanceItem) {
+			case StartTime1 :
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 1 ).get()
 					.getAttendanceStamp().get()
@@ -216,8 +220,7 @@ public class WorkSchedule implements DomainAggregate {
 					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
 
-			case 34:
-				// 退勤時刻1(34)	
+			case EndTime1:
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 1 ).get()
 					.getLeaveStamp().get()
@@ -225,8 +228,7 @@ public class WorkSchedule implements DomainAggregate {
 					.getTimeDay()
 					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
-			case 41:
-				// 出勤時刻2(41)
+			case StartTime2:
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 2 ).get()
 					.getAttendanceStamp().get()
@@ -235,14 +237,19 @@ public class WorkSchedule implements DomainAggregate {
 					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
 				break;
 
-			case 44:
-				// 退勤時刻2(44)
+			case EndTime2:
 				this.optTimeLeaving.get()
 					.getAttendanceLeavingWork( 2 ).get()
 					.getLeaveStamp().get()
 					.getStamp().get()
 					.getTimeDay()
 					.setTimeWithDay( Optional.of( (TimeWithDayAttr) value) );
+				break;
+			case GoStraight:
+				this.workInfo.setGoStraightAtr( (NotUseAttribute) value );
+				break;
+			case BackStraight:
+				this.workInfo.setBackStraightAtr( (NotUseAttribute) value );
 				break;
 			default:
 				break;
@@ -258,35 +265,38 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> T getAttendanceItemValue(int updateAttendanceItemID) {
-		switch (updateAttendanceItemID) {
-			case 31:
-				// 出勤時刻1(31)
+		
+		val updateAttendanceItem = WS_AttendanceItem.valueOf(updateAttendanceItemID);
+		
+		switch (updateAttendanceItem) {
+			case StartTime1:
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(1).get()
 						.getAttendanceStamp().get()
 						.getStamp().get()
 						.getTimeDay().getTimeWithDay().get();
-			case 34:
-				// 退勤時刻1(34)
+			case EndTime1:
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(1).get()
 						.getLeaveStamp().get()
 						.getStamp().get()
 						.getTimeDay().getTimeWithDay().get();
-			case 41:
-				// 出勤時刻2(41)
+			case StartTime2:
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(2).get()
 						.getAttendanceStamp().get()
 						.getStamp().get()
 						.getTimeDay().getTimeWithDay().get();
-			case 44:
-				// 退勤時刻2(44)
+			case EndTime2:
 				return (T) this.optTimeLeaving.get()
 						.getAttendanceLeavingWork(2).get()
 						.getLeaveStamp().get()
 						.getStamp().get()
 						.getTimeDay().getTimeWithDay().get();
+			case GoStraight:
+				return (T) this.workInfo.getGoStraightAtr();
+			case BackStraight:
+				return (T) this.workInfo.getBackStraightAtr();
 			default:
 				return null;
 		}
@@ -300,7 +310,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param value Optional<T> 値
 	 * @return
 	 * 
-	 * note: 勤怠項目が勤務種類と就業時間帯を含まない
+	 * note: 勤怠項目が勤務種類と就業時間帯を含まない this attendance item doesn't accept work-type or work-time
 	 */
 	private <T> T updateValueByHandCorrection(Require require, int updateAttendanceItemID, T value) {
 		
@@ -462,6 +472,40 @@ public class WorkSchedule implements DomainAggregate {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * 休憩時間帯を手修正する
+	 * @param require
+	 * @param newBreakTimeList 時間帯リスト
+	 */
+	public void handCorrectBreakTimeList(Require require, List<TimeSpanForCalc> newBreakTimeList) {
+		
+		List<TimeSpanForCalc> sortedBreakTimeList = newBreakTimeList.stream()
+				.sorted(Comparator.comparingInt(TimeSpanForCalc::startValue))
+				.collect(Collectors.toList());;
+				
+		List<BreakTimeSheet> newBreakTimeSheets = new ArrayList<>(); 
+		for (int index = 0; index < sortedBreakTimeList.size(); index++) {
+			val aNewBreakTimeSheet = new BreakTimeSheet(
+					new BreakFrameNo(index + 1), 
+					sortedBreakTimeList.get(index).getStart(), 
+					sortedBreakTimeList.get(index).getEnd() );
+			
+			newBreakTimeSheets.add(aNewBreakTimeSheet);
+		}
+		
+		// update value of BreakTime
+		val newBreakTimeOfDailyAttd = new BreakTimeOfDailyAttd(BreakType.REFER_SCHEDULE, newBreakTimeSheets);
+		this.lstBreakTime = new ArrayList<BreakTimeOfDailyAttd>(Arrays.asList(newBreakTimeOfDailyAttd));
+		
+		// update EditState of BreakTime(1...size)
+		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );
+		List<WS_AttendanceItem> updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+		updatedAttendanceItemList.forEach( item -> this.lstEditState.add(
+				EditStateOfDailyAttd.createByHandCorrection(require, item.ID, this.employeeID)));
+		// update EditState of BreakTime 休憩時間
+		this.lstEditState.add(EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.BreakTime.ID, this.employeeID));
 	}
 	
 	public static interface Require extends 
