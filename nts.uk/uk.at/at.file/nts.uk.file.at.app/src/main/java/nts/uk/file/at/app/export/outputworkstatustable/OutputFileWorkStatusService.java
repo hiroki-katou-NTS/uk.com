@@ -136,6 +136,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         val result = new OutPutWorkStatusContent(
                 listRs,
                 datePeriod,
+                closureDate,
                 query.getMode(),
                 workStatusOutputSetting.getSettingName().v(),
                 companyInfo.getCompanyName(),
