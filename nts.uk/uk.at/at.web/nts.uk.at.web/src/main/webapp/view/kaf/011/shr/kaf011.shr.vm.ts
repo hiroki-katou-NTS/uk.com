@@ -16,14 +16,22 @@ module nts.uk.at.view.kaf011 {
 		workTypeList = ko.observableArray([]);
 		workTypeSelected = new WorkTypeSelected();
 		subWorkSubHolidayLinkingMngList: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
-		appDispInfoStartup: any;
-		
+		displayInforWhenStarting: any;
+		//điều kiện hiển thị ※H1
+		dk1: KnockoutObservable<boolean> = ko.observable(false);
+		// điều kiện hiển thị ※E1
+		dk2: KnockoutObservable<boolean> = ko.observable(false);
+		// điều kiện hiển thị ※E1-1
+		dk3: KnockoutObservable<boolean> = ko.observable(false);
+		//
+		dk4: KnockoutObservable<boolean> = ko.observable(false);
 		constructor(appType: number){
 			let self = this;
 			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
 				if(data){
-					self.workTypeSelected.update(_.find(self.workTypeList(), {'workTypeCode': data}));	
+					self.workTypeSelected.update(_.find(self.workTypeList(), {'workTypeCode': data}));
+					self.checkDisplay();
 				}
 			});
 			self.workInformation.workTime.subscribe((data: string) =>{
@@ -50,7 +58,7 @@ module nts.uk.at.view.kaf011 {
 			
 		}
 		
-		bindDingScreenA(data: any, appDispInfoStartup: any){
+		bindDingScreenA(data: any, displayInforWhenStarting: any){
 			let self = this;
 			_.orderBy(data.workTypeList, ['code'], ['asc'])
 			self.workTypeList(data.workTypeList);
@@ -61,9 +69,25 @@ module nts.uk.at.view.kaf011 {
 			}
 			
 			self.workInformation.update(data);
-			self.appDispInfoStartup = appDispInfoStartup;
+			self.displayInforWhenStarting = displayInforWhenStarting;
 		}
-		
+		checkDisplay(){
+			let self = this;
+			if(self.displayInforWhenStarting){
+				self.dk1(self.displayInforWhenStarting.substituteManagement == 1 
+						&& self.workTypeSelected.checkH1Ver19());
+				self.dk2(self.checkE1Common() || (self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE12() && self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1));
+				self.dk3(self.checkE1Common());
+			}
+		}
+		/**就業時間帯を反映する※1(Phản ánh worktime ※1) 勤務種類：1日の勤務区分//worktype: phân loại đi làm 1 ngày */
+		checkE1Common(): boolean{
+			let self = this;
+			return self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE11()
+					&& (self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1 
+						|| self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 2) 
+		}
+				
 		time_convert(): string{ 
 			let self = this;
 			let start = self.workingHours1.timeZone.startTime();
@@ -124,7 +148,7 @@ module nts.uk.at.view.kaf011 {
 					},
 					daysUnit: 0.5,
 					targetSelectionAtr: 1,
-					actualContentDisplayList: self.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
 					managementData: self.subWorkSubHolidayLinkingMngList()
 				});
 				nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
@@ -142,6 +166,7 @@ module nts.uk.at.view.kaf011 {
 	export class AbsenceLeaveApp extends RecruitmentApp {
 		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
 		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
+		
 		constructor(appType: number){
 			super(appType);
 		}
@@ -252,17 +277,50 @@ module nts.uk.at.view.kaf011 {
     }
 
 	export class WorkTypeSelected {
-		workAtr: KnockoutObservable<number> = ko.observable();
-		morningCls: KnockoutObservable<number> = ko.observable();
-		afternoonCls: KnockoutObservable<number> = ko.observable();
+		workAtr: number;
+		morningCls: number;
+		afternoonCls: number;
 		constructor(){}
 		update(param: any){
 			let self = this;
 			if(param){
-				self.workAtr(param.workAtr);
-				self.morningCls(param.morningCls);
-				self.afternoonCls(param.afternoonCls);	
+				self.workAtr = param.workAtr;
+				self.morningCls = param.morningCls;
+				self.afternoonCls = param.afternoonCls;	
 			}
+		}
+		checkH1Ver19(): boolean{
+			let self = this;
+			return self.workAtr == 1 && (self.morningCls == 6 || self.afternoonCls == 6);
+		}
+		/** 半日振休＋出勤系 */
+		checkE11():boolean{
+			let self = this;
+			return (self.morningCls == 8 && self.afternoonCls == 0) || (self.morningCls == 0 && self.afternoonCls == 8)
+		}
+		/** 半日振休＋休暇系 */
+		checkE12():boolean{
+			let self = this;
+			return (self.morningCls == 8 && (
+											self.afternoonCls == 1 
+											|| self.afternoonCls == 2
+											|| self.afternoonCls == 3
+											|| self.afternoonCls == 4
+											|| self.afternoonCls == 5
+											|| self.afternoonCls == 6
+											|| self.afternoonCls == 9 
+										)
+					)
+				|| (self.afternoonCls == 8 && (
+											self.morningCls == 1
+											|| self.morningCls == 2
+											|| self.morningCls == 3
+											|| self.morningCls == 4
+											|| self.morningCls == 5
+											|| self.morningCls == 6
+											|| self.morningCls == 9
+										)
+					)
 		}
     }
 

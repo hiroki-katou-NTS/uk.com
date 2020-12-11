@@ -74,7 +74,7 @@
 								</div>
 							</div>
 						</com:ko-if>
-						<com:ko-if bind="$parent.displayInforWhenStarting().substituteManagement == 1 &amp;&amp; workTypeSelected.workAtr() == 1 &amp;&amp; (workTypeSelected.morningCls() == 6 || workTypeSelected.afternoonCls() == 6)">
+						<com:ko-if bind="dk1">
 							<div class="row tableRelase">
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 								<div class="ntsControl">
@@ -105,107 +105,133 @@
 					</div>
 				</com:ko-if>
 				<com:ko-if bind="appCombinaSelected() != 1">
-					<div class="application holiday">
+					<div class="application holiday" data-bind="with: absenceLeaveApp">
 						<div class="name">#{i18n.getText('KAF011_2')}</div>
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: recruitmentApp.application.appDate, required: true }"></div>
+							<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, required: true }"></div>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
 							<div data-bind="ntsComboBox: {
 		                                        name: '#{i18n.getText('KAF000_28')}',
-		                                        options: absenceLeaveApp.workTypeList,
+		                                        options: workTypeList,
 		                                        optionsValue: 'workTypeCode',
 		                                        optionsText: 'name',
-		                                        value: absenceLeaveApp.workInformation.workType,
+		                                        value: workInformation.workType,
 		                                        columns: [{ prop: 'name', length: 20 }],
-		                                        required: required }">
+		                                        required: true }">
 		                    </div>					
 						</div>
-						<div class="holidaySetting">
-							<div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KAF011_29')}</div>
-							<div class="ruleLine"></div>
-							<div class="row">
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
-								<div class="ntsControl" data-bind="with: absenceLeaveApp" >
-									<button class="" data-bind="click: openKDL003" tabindex="">#{i18n.getText('KAF011_5')}</button>
-									<span data-bind="text: workTimeDisplay"></span>
-								</div>
-							</div>
-							<div class="row">
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_31')}</div>
-								<div class="ntsControl">
-									<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
-		                                                    constraint:'TimeWithDayAttr',
-		                                                    value: startTime1,
-		                                                    readonly: false,
-		                                                    required: required,
-		                                                    name: '#{i18n.getText('KAF011_32')}',
-		                                                    enable: enable }" />
-		                             #{i18n.getText('KAF011_37')}
-		                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
-		                                                    constraint:'TimeWithDayAttr',
-		                                                    value: endTime1,
-		                                                    readonly: false,
-		                                                    required: required,
-		                                                    name: '#{i18n.getText('KAF011_33')}',
-		                                                    enable: enable }" />
-								</div>
-							</div>
-							<div class="row tableRelase">
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
-								<div class="ntsControl">
-									<div>
-										<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
-										#{i18n.getText('KAF011_48')}
-									</div>
-									<div>
-										<table class="table">
-											<thead>
-												<tr>
-													<th class="bg-green" >#{i18n.getText('KAF011_51')}</th>
-													<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
-												</tr>
-											</thead>
-		        							<tbody data-bind="foreach: related">
-												<tr>
-													<td data-bind="text: date"></td>
-													<td data-bind="text: number"></td>
-												</tr>
-											</tbody>
-										</table>
+						<com:ko-if bind="dk2">
+							<div class="holidaySetting">
+								<div data-bind="ntsCheckBox: { checked: workChangeUse }">#{i18n.getText('KAF011_29')}</div>
+								<div class="ruleLine"></div>
+								<div class="row">
+									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
+									<div class="ntsControl" >
+										<button class="" data-bind="click: openKDL003, enable: workChangeUse" tabindex="">#{i18n.getText('KAF011_5')}</button>
+										<span data-bind="text: workTimeDisplay"></span>
 									</div>
 								</div>
-							</div>
-							<div class="row tableRelase">
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
-								<div class="ntsControl">
-									<div>
-										<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
-										#{i18n.getText('KAF011_47')}
+								<com:ko-if bind="dk3">
+									<div class="row">
+										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_31')}</div>
+										<div class="ntsControl">
+											<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+				                                                    constraint:'TimeWithDayAttr',
+				                                                    value: workingHours1.timeZone.startTime,
+				                                                    readonly: false,
+				                                                    required: true,
+				                                                    name: '#{i18n.getText('KAF011_32')}',
+				                                                    enable: workChangeUse() &amp;&amp; displayInforWhenStarting.workInfoAttendanceReflect.reflectAttendance == 1}" />
+				                             #{i18n.getText('KAF011_37')}
+				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+				                                                    constraint:'TimeWithDayAttr',
+				                                                    value: workingHours1.timeZone.endTime,
+				                                                    readonly: false,
+				                                                    required: true,
+				                                                    name: '#{i18n.getText('KAF011_33')}',
+				                                                    enable: workChangeUse() &amp;&amp; displayInforWhenStarting.workInfoAttendanceReflect.reflectAttendance == 1}" />
+										</div>
 									</div>
-									<div>
-										<table class="table">
-											<thead>
-												<tr>
-													<th class="bg-green" >#{i18n.getText('KAF011_49')}</th>
-													<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
-												</tr>
-											</thead>
-		        							<tbody data-bind="foreach: related">
-												<tr>
-													<td data-bind="text: date"></td>
-													<td data-bind="text: number"></td>
-												</tr>
-											</tbody>
-										</table>
+								</com:ko-if>
+								<com:ko-if bind="workingHours2DispLay() &amp;&amp; displayInforWhenStarting.appDispInfoStartup.managementMultipleWorkCycles == 1">
+									<div class="row">
+										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_34')}</div>
+										<div class="ntsControl">
+											<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+				                                                    constraint:'TimeWithDayAttr',
+				                                                    value: workingHours2.timeZone.startTime,
+				                                                    readonly: false,
+				                                                    required: false,
+				                                                    name: '#{i18n.getText('KAF011_35')}',
+				                                                    enable: workChangeUse() &amp;&amp; displayInforWhenStarting.workInfoAttendanceReflect.reflectAttendance == 1 }" />
+				                             #{i18n.getText('KAF011_37')}
+				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+				                                                    constraint:'TimeWithDayAttr',
+				                                                    value: workingHours2.timeZone.endTime,
+				                                                    readonly: false,
+				                                                    required: false,
+				                                                    name: '#{i18n.getText('KAF011_36')}',
+				                                                    enable: workChangeUse() &amp;&amp; displayInforWhenStarting.workInfoAttendanceReflect.reflectAttendance == 1 }" />
+										</div>
 									</div>
-								</div>
+								</com:ko-if>
+<!-- 								<div class="row tableRelase"> -->
+<!-- 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div> -->
+<!-- 									<div class="ntsControl"> -->
+<!-- 										<div> -->
+<!-- 											<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button> -->
+<!-- 											#{i18n.getText('KAF011_48')} -->
+<!-- 										</div> -->
+<!-- 										<div> -->
+<!-- 											<table class="table"> -->
+<!-- 												<thead> -->
+<!-- 													<tr> -->
+<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_51')}</th> -->
+<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th> -->
+<!-- 													</tr> -->
+<!-- 												</thead> -->
+<!-- 			        							<tbody data-bind="foreach: related"> -->
+<!-- 													<tr> -->
+<!-- 														<td data-bind="text: date"></td> -->
+<!-- 														<td data-bind="text: number"></td> -->
+<!-- 													</tr> -->
+<!-- 												</tbody> -->
+<!-- 											</table> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 								<div class="row tableRelase"> -->
+<!-- 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div> -->
+<!-- 									<div class="ntsControl"> -->
+<!-- 										<div> -->
+<!-- 											<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button> -->
+<!-- 											#{i18n.getText('KAF011_47')} -->
+<!-- 										</div> -->
+<!-- 										<div> -->
+<!-- 											<table class="table"> -->
+<!-- 												<thead> -->
+<!-- 													<tr> -->
+<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_49')}</th> -->
+<!-- 														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th> -->
+<!-- 													</tr> -->
+<!-- 												</thead> -->
+<!-- 			        							<tbody data-bind="foreach: related"> -->
+<!-- 													<tr> -->
+<!-- 														<td data-bind="text: date"></td> -->
+<!-- 														<td data-bind="text: number"></td> -->
+<!-- 													</tr> -->
+<!-- 												</tbody> -->
+<!-- 											</table> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
 							</div>
-						</div>
-						<div class="comment" data-bind="text: comment.subHolidayComment, style: {color: comment.subHolidayColor, 'font-weight': comment.subHolidayBold()? 'bold': ''}"></div>
+						</com:ko-if>
+						<div class="comment" data-bind="text: $parent.comment.subHolidayComment, style: {color: $parent.comment.subHolidayColor, 'font-weight': $parent.comment.subHolidayBold()? 'bold': ''}"></div>
 					</div>
 				</com:ko-if>
 			</div>

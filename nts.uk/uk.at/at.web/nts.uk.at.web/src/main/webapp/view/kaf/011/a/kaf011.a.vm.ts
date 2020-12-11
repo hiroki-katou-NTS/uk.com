@@ -8,7 +8,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	import Comment = nts.uk.at.view.kaf011.Comment;
-	import DisplayInforWhenStartingKAF011 = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
 	const APIKAF011 = {
         start: "at/request/application/holidayshipment/startPageARefactor"
     }
@@ -18,7 +17,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
 		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
 		
-		displayInforWhenStarting: KnockoutObservable<DisplayInforWhenStartingKAF011> = ko.observable(new DisplayInforWhenStartingKAF011());
+		displayInforWhenStarting = ko.observable(null);
 		
 		isSendMail = ko.observable(false);
 		remainDays = ko.observable('');
@@ -53,7 +52,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		settingCheck = ko.observable(true);
 		
-		created() {
+		created(params: TimeZoneWithWorkNo) {
 			const vm = this;
 			let empLst: Array<string> = [];
 			let	dateLst: Array<string> = [];
@@ -66,8 +65,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
-					vm.recruitmentApp.bindDingScreenA(data.applicationForWorkingDay, data.appDispInfoStartup);
-					vm.absenceLeaveApp.bindDingScreenA(data.applicationForHoliday, data.appDispInfoStartup);
+					vm.recruitmentApp.bindDingScreenA(data.applicationForWorkingDay, data);
+					vm.absenceLeaveApp.bindDingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
 				}).always(() => {
 					$('#functions-area').css({'display': ''});
@@ -98,5 +97,12 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		
 	}
+	export interface TimeZoneWithWorkNo {
+		employeeIDLst: string[];
+		recAppDate: string; 
+		absAppDate: string;
+		
+	}
+	
 
 }
