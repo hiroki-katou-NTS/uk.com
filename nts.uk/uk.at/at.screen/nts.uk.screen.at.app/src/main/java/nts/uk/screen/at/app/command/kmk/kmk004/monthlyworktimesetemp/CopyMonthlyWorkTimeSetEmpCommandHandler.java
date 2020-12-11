@@ -60,7 +60,7 @@ public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<Copy
 		cmd.getCopyDestinationEmploymentCodes().forEach(empCd -> {
 			// ※複写元の職場IDで取得した職場別月単位労働時間の 職場IDに複写先職場IDをセットする
 			workTimeSetEmps.forEach(emp -> {
-				emp.setEmployment(empCd);
+				emp.setEmploymentCode(empCd);
 			});
 
 			SaveMonthlyWorkTimeSetEmpCommand command = new SaveMonthlyWorkTimeSetEmpCommand(workTimeSetEmps);
