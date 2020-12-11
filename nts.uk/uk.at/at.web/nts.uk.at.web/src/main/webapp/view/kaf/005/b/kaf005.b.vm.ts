@@ -1370,11 +1370,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				// 申請表示情報．申請表示情報(基準日関係あり)．表示する事前申請内容．残業申請．申請時間．申請時間．申請時間
 				let opPreAppContentDisplayLst = res.appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
 				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let apOptional = opPreAppContentDisplayLst[0].apOptional;
+					let apOptional = opPreAppContentDisplayLst[0].apOptional as AppOverTime;
 					if (apOptional) {
 						let applicationTime = apOptional.applicationTime;
 						if (!_.isEmpty(applicationTime)) {
-							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+							_.forEach(applicationTime.applicationTime, (item: OvertimeApplicationSetting) => {
 								let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
 	
 								if (!_.isNil(findHolidayTimeArray) && item.attendanceType == AttendanceType.BREAKTIME) {
