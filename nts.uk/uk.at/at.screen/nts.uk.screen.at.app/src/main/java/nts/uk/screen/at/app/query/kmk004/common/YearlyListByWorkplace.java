@@ -47,14 +47,16 @@ public class YearlyListByWorkplace {
 		List<MonthlyWorkTimeSetWkp> timeSetWkps = monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr);
 		
 		// 2 Call DS 年月期間から年度を取得
-		Require require = new Require(companyRepository);
-		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
-				cid,
-				timeSetWkps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
-		
-		result = years.stream().map(m -> {
-			return new YearDto(m.v());
-		}).collect(Collectors.toList());
+		if(!timeSetWkps.isEmpty()) {
+			Require require = new Require(companyRepository);
+			List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
+					cid,
+					timeSetWkps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
+			
+			result = years.stream().map(m -> {
+				return new YearDto(m.v());
+			}).collect(Collectors.toList());
+		}
 		
 		return result;
 	}

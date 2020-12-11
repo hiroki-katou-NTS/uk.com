@@ -43,14 +43,16 @@ public class YearListByEmployment {
 		List<MonthlyWorkTimeSetEmp> workTimeSetEmps = workTimeSetRepo.findEmployment(cid, employmentCode, laborAttr);
 
 		// 2 Call DS 年月期間から年度を取得
-		Require require = new Require(companyRepository);
+		if(!workTimeSetEmps.isEmpty()) {
+			Require require = new Require(companyRepository);
 
-		List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, cid,
-				workTimeSetEmps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
+			List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, cid,
+					workTimeSetEmps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 
-		result = list.stream().map(m -> {
-			return new YearDto(m.v());
-		}).collect(Collectors.toList());
+			result = list.stream().map(m -> {
+				return new YearDto(m.v());
+			}).collect(Collectors.toList());
+		}
 
 		return result;
 	}

@@ -46,13 +46,15 @@ public class DisplayYearListByCompany {
 		//2 call DS 年月期間から年度を取得
 		Require require = new Require(companyRepository);
 		
-		List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
-				cid,
-				coms.stream().map(m -> m.getYm()).collect(Collectors.toList()));
-		
-		result = list.stream().map(m -> {
-			return new YearDto(m.v());
-		}).collect(Collectors.toList());
+		if(!coms.isEmpty()) {
+			List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
+					cid,
+					coms.stream().map(m -> m.getYm()).collect(Collectors.toList()));
+			
+			result = list.stream().map(m -> {
+				return new YearDto(m.v());
+			}).collect(Collectors.toList());
+		}
 		
 		return result;
 	}
