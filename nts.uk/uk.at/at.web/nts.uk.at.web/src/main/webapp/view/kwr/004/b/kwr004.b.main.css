@@ -4,8 +4,7 @@
   overflow: hidden;
 }
 .kwr-004b #content-area {
-  padding: 30px 37px;
-  /* overflow: hidden; */
+  padding: 30px 0 35px 35px;
 }
 
 .kwr-004b .nts-searchbbox-wrapper input.ntsSearchBox {
