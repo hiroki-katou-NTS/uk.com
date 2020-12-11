@@ -399,6 +399,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		changeAppDate: 'at/request/application/appforleave/findChangeAppdate',
 		checkBeforeRegister: 'at/request/application/appforleave/checkBeforeRegister',
 		register: 'at/request/application/appforleave/insert',
+		checkVacationTyingManage: 'at/request/application/appforleave/checkVacationTyingManage',
 		changeWorkType: 'at/request/application/appforleave/findChangeWorkType'
     }
 }

@@ -17,13 +17,18 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckReg
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeWorkTypeParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 @Path("at/request/application/appforleave")
 @Produces("application/json")
@@ -83,7 +88,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("findChangeWorkType")
-	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getChangeWorkType(ChangeWorkTypeParam param) {
 		return this.appForLeaveFinder.getChangeWorkType(param);
 	}
 	@POST
@@ -129,6 +134,13 @@ public class AppForLeaveWebService extends WebService{
 	@Path("checkBeforeUpdate")
 	public AbsenceCheckRegisterDto checkBeforeRegister(UpdateAppAbsenceCommand param){
 		return appForLeaveFinder.checkBeforeUpdate(param);
+	}
+	
+	@POST
+	@Path("checkVacationTyingManage")
+	public VacationCheckOutput checkVacationTyingManage(WorkTypeDto wtBefore, WorkTypeDto wtAfter,
+            List<LeaveComDayOffManaDto> leaveComDayOffMana, List<PayoutSubofHDManagementDto> payoutSubofHDManagements) {
+	    return appForLeaveFinder.checkVacationTyingManage(wtBefore, wtAfter, leaveComDayOffMana, payoutSubofHDManagements);
 	}
 }
 

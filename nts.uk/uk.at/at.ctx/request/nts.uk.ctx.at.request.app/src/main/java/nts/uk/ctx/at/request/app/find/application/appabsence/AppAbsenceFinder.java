@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AnualLeaveManag
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeWorkTypeParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.NursingCareLeaveManagementDto;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -47,6 +49,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
@@ -348,16 +353,16 @@ public class AppAbsenceFinder {
 	 * @param workTimeCode
 	 * @return
 	 */
-	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
-//		String companyID = AppContexts.user().companyId();
-//		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
-//		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
-//				companyID, 
-//				appAbsenceStartInfoOutput, 
-//				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class), 
-//				Optional.ofNullable(param.getWorkTypeCode()));
-//		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
-	    return null;
+	public AppAbsenceStartInfoDto getChangeWorkType(ChangeWorkTypeParam param) {
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getStartInfo().toDomain(companyID);
+		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
+				companyID, 
+				param.getAppDates(),
+				appAbsenceStartInfoOutput, 
+				EnumAdaptor.valueOf(param.getHolidayAppType(), HolidayAppType.class), 
+				Optional.ofNullable(param.getWorkTypeCd()));
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
 
 	/**
@@ -391,8 +396,7 @@ public class AppAbsenceFinder {
 				companyID, 
 				appAbsenceStartInfoOutput, 
 				workTypeCode, 
-				Optional.of(workTimeCode), 
-				EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
+				Optional.of(workTimeCode));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput).workTimeLst;
 	}
 
@@ -607,4 +611,12 @@ public class AppAbsenceFinder {
 		return null;
 	}
 
+	public VacationCheckOutput checkVacationTyingManage(WorkTypeDto wtBefore, WorkTypeDto wtAfter,
+            List<LeaveComDayOffManaDto> leaveComDayOffMana, List<PayoutSubofHDManagementDto> payoutSubofHDManagements) {
+	    return this.absenseProcess.checkVacationTyingManage(
+	            wtBefore.toDomain(), 
+	            wtAfter.toDomain(), 
+	            leaveComDayOffMana.stream().map(item -> item.toDomain()).collect(Collectors.toList()), 
+	            payoutSubofHDManagements.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
+	}
 }

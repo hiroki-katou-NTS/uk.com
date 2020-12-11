@@ -12,13 +12,17 @@ import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigest
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
 	/**
@@ -129,7 +133,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput workTimesChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, String workTypeCD, 
-			Optional<String> workTimeCD, HolidayAppType holidayType);
+			Optional<String> workTimeCD);
 	
 	/**
 	 * 勤務種類変更時処理
@@ -331,4 +335,16 @@ public interface AbsenceServiceProcess {
 	 * @return AppAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 */
 	public AppAbsenceStartInfoOutput getVacationActivation(String companyID, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	/**
+	 * 休暇紐付管理をチェックする
+	 * @param WorkType workType before 変更前の勤務種類
+	 * @param WorkType workType after 変更後の勤務種類
+	 * @param List<LeaveComDayOffManagement> list leaveManage 休出代休紐付け管理<List>
+	 * @param List<PayoutSubofHDManagement> list 振出振休紐付け管理<List>
+	 * @return VacationCheckOutput
+	 *         代休紐付管理をクリアする(boolean)
+	 *         振休紐付管理をクリアする(boolean)
+	 */
+	public VacationCheckOutput checkVacationTyingManage(WorkType wtBefore, WorkType wtAfter, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements);
 }
