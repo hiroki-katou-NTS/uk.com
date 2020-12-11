@@ -75,7 +75,7 @@ public class DeductionTotalTimeForFluidCalc {
 	public TimeSheetOfDeductionItem createDeductionFluidRestTime(
 			TimeLeavingOfDailyAttd timeLeave, TimeWithDayAttr goOutGetStartTime, FlowRestSetting flowBreakSet, 
 			DeductionTotalTimeLocal deductionTotal, List<TimeSheetOfDeductionItem> deductTimeSheet,
-			IntegrationOfWorkTime workTime, WorkType workType, TimeWithDayAttr dayStart) {
+			IntegrationOfWorkTime workTime, WorkType workType, TimeWithDayAttr dayStart, boolean correctWithEndTime) {
 		
 		/** △流動休憩開始までの間にある外出分、休憩をズラす */
 		val breakTime = reassignBreakTime(dayStart, goOutGetStartTime, flowBreakSet, deductionTotal, deductTimeSheet);
@@ -102,18 +102,23 @@ public class DeductionTotalTimeForFluidCalc {
 												workTime.getFlowWorkRestSettingDetail().get().getFlowRestSetting().getUseStampCalcMethod(),
 												goOutGetStartTime, deductTimeSheet);
 		}
-		
-		/** ○退勤が含まれている場合の補正 */
-		Optional<TimeSpanForDailyCalc> newTimeSpan = getLastLeave(timeLeave)
-				.flatMap(tl -> breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
-																			tl, workTime.getCommonRestSetting().getCalculateMethod(),
-																			breakTimeSheet.getTimeSheet()));
+		Optional<TimeSpanForDailyCalc> newTimeSpan;
+		if (correctWithEndTime) {
+			/** ○退勤が含まれている場合の補正 */
+			newTimeSpan = getLastLeave(timeLeave)
+					.flatMap(tl -> breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
+																				tl, workTime.getCommonRestSetting().getCalculateMethod(),
+																				breakTimeSheet.getTimeSheet()));	
+		} else {
+			newTimeSpan = Optional.empty();
+		}
 		
 		/** ○休憩時間帯を返す */
 		val corrected =	newTimeSpan.map(c -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(c, rounding, 
-					breakTimeSheet.getRecordedTimeSheet(), breakTimeSheet.getDeductionTimeSheet(),
-					breakTimeSheet.getWorkingBreakAtr(), breakTimeSheet.getGoOutReason(), breakTimeSheet.getBreakAtr(), 
-					breakTimeSheet.getShortTimeSheetAtr(), breakTimeSheet.getDeductionAtr(), breakTimeSheet.getChildCareAtr())).orElse(breakTimeSheet);
+												breakTimeSheet.getRecordedTimeSheet(), breakTimeSheet.getDeductionTimeSheet(),
+												breakTimeSheet.getWorkingBreakAtr(), breakTimeSheet.getGoOutReason(), breakTimeSheet.getBreakAtr(), 
+												breakTimeSheet.getShortTimeSheetAtr(), breakTimeSheet.getDeductionAtr(), breakTimeSheet.getChildCareAtr()))
+									.orElse(breakTimeSheet);
 
 		/** ○休憩時間帯クラスの開始時刻を退避 */
 		this.breakStartTime = corrected.getTimeSheet().getStart();

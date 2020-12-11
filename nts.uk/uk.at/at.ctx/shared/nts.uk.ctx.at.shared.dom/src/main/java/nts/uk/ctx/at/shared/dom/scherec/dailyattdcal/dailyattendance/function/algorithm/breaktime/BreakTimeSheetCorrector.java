@@ -47,7 +47,7 @@ public class BreakTimeSheetCorrector {
 		}
 		
 		/** 休憩時間帯取得 */
-		val breakTime = BreakTimeSheetGetter.get(require, personDailySetting.get(), dailyRecord);
+		val breakTime = BreakTimeSheetGetter.get(require, personDailySetting.get(), dailyRecord, false);
 		
 		/** 休憩時間帯をマージする */
 		val converter = require.createDailyConverter();

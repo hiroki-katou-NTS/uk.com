@@ -42,7 +42,7 @@ public class BreakTimeSheetGetter {
 	/** 休憩時間帯取得 */
 	public static List<BreakTimeSheet> get(RequireM1 require, 
 			ManagePerPersonDailySet personDailySetting,
-			IntegrationOfDaily domainDaily) {
+			IntegrationOfDaily domainDaily, boolean correctWithEndTime) {
 		
 		if (!domainDaily.getAttendanceLeave().isPresent()) {
 			return new ArrayList<>();
@@ -84,7 +84,7 @@ public class BreakTimeSheetGetter {
 				
 				/** 流動休憩 */
 				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(require, workType, workTimeSet, 
-						domainDaily, oneDayCalcRange, personDailySetting);
+						domainDaily, oneDayCalcRange, personDailySetting, correctWithEndTime);
 			}
 			break;
 		case FLOW: /** 流動 */
@@ -122,7 +122,8 @@ public class BreakTimeSheetGetter {
 	
 	private static List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFlexFlow(RequireM3 require, WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily,
-			CalculationRangeOfOneDay oneDayCalcRange, ManagePerPersonDailySet personDailySetting) {
+			CalculationRangeOfOneDay oneDayCalcRange, ManagePerPersonDailySet personDailySetting,
+			boolean correctWithEndTime) {
 		
 		if (!integrationOfDaily.getAttendanceLeave().isPresent()) {
 			return new ArrayList<>();
@@ -151,7 +152,7 @@ public class BreakTimeSheetGetter {
 		/** 流動休憩用の時間帯作成 */
 		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(workType, workTime, integrationOfDaily, 
 				oneDayCalcRange.getOneDayOfRange(), attendanceLeave, 
-				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet);
+				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet, correctWithEndTime);
 		
 		return timeSheet.getForDeductionTimeZoneList();
 	}
