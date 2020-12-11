@@ -25,6 +25,7 @@
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
           nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
+          nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger
         </com:ValidatorScript>
       </ui:define>
 
@@ -199,7 +200,7 @@
                                     value: name,
                                     required: isChecked,
                                     name: $vm.$i18n('KWR004_215'),
-                                    constraint: 'FormOutputItemName'
+                                    constraint: $index() &gt; 1 ? 'FormOutputItemName' : 'OutputItemNameOfAnnualWorkLedger'
                                   }"
                           />
                         </td>
