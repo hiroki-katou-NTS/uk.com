@@ -50,7 +50,8 @@ module nts.uk.at.view.kmk004.b {
 								params:{
 									selectedYear: selectedYear,
 									param: ko.observable(''),
-									type: type
+									type: type,
+									years: years
 								}
 							}"></div>
 						</div>
@@ -80,6 +81,7 @@ module nts.uk.at.view.kmk004.b {
 	export class ViewCComponent extends ko.ViewModel {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);

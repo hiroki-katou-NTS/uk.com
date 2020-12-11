@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk004.b {
 		</div>
 		<div class="content">
 			<div>
-				<button tabindex="5" data-bind="i18n: 'KMK004_233'"></button>
+				<button tabindex="5" data-bind="i18n: 'KMK004_233', click: openDialogS"></button>
 			</div>
 			<div class= "data">
 				<div class= "box-year" data-bind="component: {
@@ -36,14 +36,15 @@ module nts.uk.at.view.kmk004.b {
 					params:{
 						selectedYear: selectedYear,
 						param: ko.observable(''),
-						type: type
+						type: type,
+						years: years
 					}
 				}"></div>
 				<div tabindex="7" class= "time-work" data-bind="component: {
 					name: 'time-work',
 					params:{
 						selectedYear: selectedYear,
-						checkEmployee: checkEmployee
+						years: years
 					}
 				}"></div>
 			</div>
@@ -55,36 +56,42 @@ module nts.uk.at.view.kmk004.b {
 
 	}
 
+	const API = {
+		ADD_WORK_TIME: 'screen/at/kmk004/viewB/com/monthlyWorkTime/add',
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewB/com/monthlyWorkTime/delete'
+    };
+
 	@component({
 		name: 'view-b',
 		template
-    })
-    
+	})
+
 	export class ViewBComponent extends ko.ViewModel {
-		
+
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
-		public selectedYear: KnockoutObservable<number| null> = ko.observable(null);
-		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
+		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Company';
 
 
-		created(params: Params) {
+		created() {
 			const vm = this;
 
 			vm.selectedYear
-			.subscribe(() => {
-				if(vm.selectedYear != null) {
-					vm.existYear(true);
-				}
-			});
+				.subscribe(() => {
+					vm.$errors('clear');
+					if (vm.selectedYear != null) {
+						vm.existYear(true);
+					}
+				});
 		}
 
 		mounted() {
-			
+
 			$(document).ready(function () {
-                $('.listbox').focus();
-            });
+				$('.listbox').focus();
+			});
 		}
 
 		add() {
@@ -92,22 +99,35 @@ module nts.uk.at.view.kmk004.b {
 			vm.modeCheckChangeSetting.valueHasMutated();
 
 			$(document).ready(function () {
-                $('.listbox').focus();
-            });
+				$('.listbox').focus();
+			});
 		}
 
 		remote() {
 			$(document).ready(function () {
-                $('.listbox').focus();
-            });
+				$('.listbox').focus();
+			});
 		}
 
 		openDialogF() {
 			const vm = this;
-			const params = { type: 'Com_Company'};
+			const params = { type: 'Com_Company' };
 			vm.$window
 				.storage('KMK004F', params)
 				.then(() => vm.$window.modal('at', '/view/kmk/004/f/index.xhtml'));
 		}
-    }
+
+		openDialogS() {
+			const vm = this;
+			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
+			console.log(param);
+			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
+				if (result) {
+					vm.years.push(new IYear(result.year, true));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+				}
+			});
+		}
+	}
 }

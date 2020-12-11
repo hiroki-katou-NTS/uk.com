@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk004.b {
         selectedYear: KnockoutObservable<number | null>;
         param: KnockoutObservable<string>;
         type: SIDEBAR_TYPE
+        years:  KnockoutObservableArray<IYear>;
     }
 
     const API = {
@@ -26,7 +27,7 @@ module nts.uk.at.view.kmk004.b {
                 value: selectedYear,
                 rows: 5,
                 columns: [
-                    { key: 'statusValue', length: 1 },
+                    { key: 'isChange', length: 1 },
                     { key: 'nameYear', length: 4 }
                 ]}"></div>
         </div>
@@ -40,7 +41,7 @@ module nts.uk.at.view.kmk004.b {
 
     class BoxYear extends ko.ViewModel {
 
-        public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
+        public itemList: KnockoutObservableArray<IYear>;
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public param: KnockoutObservable<string> = ko.observable('');
         public type: SIDEBAR_TYPE;
@@ -51,6 +52,7 @@ module nts.uk.at.view.kmk004.b {
             vm.selectedYear = params.selectedYear;
             vm.param = params.param;
             vm.type = params.type;
+            vm.itemList = params.years;
 
         }
 
@@ -72,8 +74,10 @@ module nts.uk.at.view.kmk004.b {
                 case 'Com_Company':
                     vm.$ajax(API.GET_YEARS_COM)
                         .then((data: any) => {
+                            data = _.orderBy(data, ['year'], ['desc']);
+
                             _.forEach(data, ((value: any) => {
-                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                const y: IYear = new IYear(value.year);
                                 vm.itemList.push(y);
                             }));
                         })
@@ -89,8 +93,9 @@ module nts.uk.at.view.kmk004.b {
                     if (ko.unwrap(vm.param) != '') {
                         vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.unwrap(vm.param))
                             .then((data: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
                                 _.forEach(data, ((value: any) => {
-                                    const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                    const y: IYear = new IYear(value.year);
                                     vm.itemList.push(y);
                                 }));
                             })
@@ -107,8 +112,9 @@ module nts.uk.at.view.kmk004.b {
                     if (ko.unwrap(vm.param) != '') {
                         vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.unwrap(vm.param))
                             .then((data: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
                                 _.forEach(data, ((value: any) => {
-                                    const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                    const y: IYear = new IYear(value.year);
                                     vm.itemList.push(y);
                                 }));
                             })
@@ -125,8 +131,9 @@ module nts.uk.at.view.kmk004.b {
                     if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
                         vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' +  ko.unwrap(vm.param))
                             .then((data: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
                                 _.forEach(data, ((value: any) => {
-                                    const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                    const y: IYear = new IYear(value.year);
                                     vm.itemList.push(y);
                                 }));
                             })
@@ -144,32 +151,19 @@ module nts.uk.at.view.kmk004.b {
         }
     }
 
-    export interface IYear {
-        statusValue: string;
+    export class IYear {
+        isNew: boolean = false;
+        isChange: string;
         year: number;
         nameYear: string;
+
+        constructor(year: number, isNew?: boolean) {
+			this.year = year;
+            this.nameYear = year.toString() + '年度';
+			if(isNew){
+                this.isNew = isNew;
+                this.isChange = '＊';
+            }
+		}
     }
-
-    // export class Year {
-    //     status: KnockoutObservable<boolean> = ko.observable(true);
-    //     statusValue: KnockoutObservable<string> = ko.observable('');
-    //     value: KnockoutObservable<string> = ko.observable('');
-
-    //     constructor(param?: IYear) {
-    //         const md = this;
-    //         md.create(param);
-    //     }
-
-    //     public create(params?: IYear) {
-    //         const self = this;
-
-    //         if (params) {
-    //             self.status(params.status);
-    //             self.value(params.value);
-    //             if(params.status) {
-    //                 self.statusValue('*');
-    //             }
-    //         }
-    //     }
-    // }
 }

@@ -60,7 +60,8 @@ module nts.uk.at.view.kmk004.b {
 							params:{
 								selectedYear: selectedYear,
 								param: selectedEmployeeID,
-								type: type
+								type: type,
+								years: years
 							}
 						}"></div>
 					</div>
@@ -89,6 +90,7 @@ module nts.uk.at.view.kmk004.b {
 	export class ViewEComponent extends ko.ViewModel {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
 		public selectedCode: KnockoutObservable<string> = ko.observable('');
@@ -101,20 +103,20 @@ module nts.uk.at.view.kmk004.b {
 
 		created(params: Params) {
 			const vm = this;
-			vm.selectedYear
+			vm.years
 				.subscribe(() => {
-					
-					if (vm.selectedYear != null) {
-						vm.existYear(true);
-					} else{
+					console.log(ko.unwrap(vm.years).length);
+					if (ko.unwrap(vm.years).length == 0) {
 						vm.existYear(false);
+					} else {
+						vm.existYear(true);
 					}
-				});
+				})
 
 			vm.selectedCode
 				.subscribe(() => {
 					_.forEach(ko.unwrap(vm.employees), ((value: IEmployee) => {
-						if (ko.unwrap(vm.selectedCode) == value.code){
+						if (ko.unwrap(vm.selectedCode) == value.code) {
 							vm.selectedEmployeeID(value.id as string);
 						}
 					}))
