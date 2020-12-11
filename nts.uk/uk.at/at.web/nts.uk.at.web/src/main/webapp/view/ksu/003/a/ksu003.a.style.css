@@ -53,10 +53,10 @@
 }
 
 #label-display {
-	margin-left: 85px !important;
+	margin-left: 85px;
 }
 .nts-switch-button{
-	width: 80px;
+	width: 90px !important;
 }
 /* Note color A12 */
 .square {

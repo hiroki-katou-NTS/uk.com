@@ -48,6 +48,11 @@ module nts.uk.at.view.ksu003.a {
 			$('#A3_4').ntsPopup("hide");
 		});
 
+		$(window).click(function(e) {
+			if(e.target.classList[1] != "nts-combo-column-0" && e.target.classList[1] != "nts-combo-column-1" && e.target.id != "note-sort"){
+				$('#A3_4').ntsPopup("hide");
+			}
+		});
 
 	}
 	$(window).resize(function() {
@@ -58,7 +63,7 @@ module nts.uk.at.view.ksu003.a {
 			$("#note-color").css({ "margin-right": 57 + 'px !important' });
 		} else {
 			$("#note-sort").css({ "margin-left": 1043 + 'px ' });
-			$("hr-row2").css({"width" : 1237 + 'px'});
+			$("hr-row2").css({ "width": 1237 + 'px' });
 		}
 	});
 }
