@@ -1222,6 +1222,9 @@ public class ScheduleCreatorExecutionTransaction {
 			// ドメインモデル「月間勤務就業設定」を取得する
 			getMonthlySetting = workMonthlySettingRepository.findById(command.getCompanyId(),
 					command.getContent().getSpecifyCreation().getMonthlyPatternCode().get().v(), dateInPeriod);
+			if(getMonthlySetting.isPresent()) {
+				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
+			}
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合
