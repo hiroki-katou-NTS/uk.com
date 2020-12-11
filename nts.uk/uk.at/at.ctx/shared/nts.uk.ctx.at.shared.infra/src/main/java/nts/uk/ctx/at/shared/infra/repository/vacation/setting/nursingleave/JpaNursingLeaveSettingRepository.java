@@ -124,8 +124,8 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         EntityManager em = this.getEntityManager();
         
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KnlmtNursingLeaveSet> query = builder.createQuery(KnlmtNursingLeaveSet.class);
-        Root<KnlmtNursingLeaveSet> root = query.from(KnlmtNursingLeaveSet.class);
+        CriteriaQuery<KshmtHdnursingLeave> query = builder.createQuery(KshmtHdnursingLeave.class);
+        Root<KshmtHdnursingLeave> root = query.from(KshmtHdnursingLeave.class);
         
         List<Predicate> predicateList = new ArrayList<>();
         
@@ -134,13 +134,13 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
-        List<KnlmtNursingLeaveSet> result = em.createQuery(query).getResultList();
+        List<KshmtHdnursingLeave> result = em.createQuery(query).getResultList();
         if (result.isEmpty()) {
             return null;
         }
         
         // CHILD NURSING
-        KnlmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+        KshmtHdnursingLeave childNursingSetting = this.findNursingLeaveByNursingCategory(result,
         		nursingCategory);
         return new NursingLeaveSetting(
                 new JpaNursingLeaveSettingGetMemento(childNursingSetting));
@@ -196,8 +196,8 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
 		EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KnlmtNursingLeaveSet> query = builder.createQuery(KnlmtNursingLeaveSet.class);
-        Root<KnlmtNursingLeaveSet> root = query.from(KnlmtNursingLeaveSet.class);
+        CriteriaQuery<KshmtHdnursingLeave> query = builder.createQuery(KshmtHdnursingLeave.class);
+        Root<KshmtHdnursingLeave> root = query.from(KshmtHdnursingLeave.class);
 
         List<Predicate> predicateList = new ArrayList<>();
 
@@ -206,13 +206,13 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
 
         query.where(predicateList.toArray(new Predicate[]{}));
 
-        List<KnlmtNursingLeaveSet> result = em.createQuery(query).getResultList();
+        List<KshmtHdnursingLeave> result = em.createQuery(query).getResultList();
         if (result.isEmpty()) {
             return null;
         }
 
         // CHILD NURSING
-        KnlmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+        KshmtHdnursingLeave childNursingSetting = this.findNursingLeaveByNursingCategory(result,
                 nursingCategory);
         return new NursingLeaveSetting(
                 new JpaNursingLeaveSettingGetMemento(childNursingSetting));

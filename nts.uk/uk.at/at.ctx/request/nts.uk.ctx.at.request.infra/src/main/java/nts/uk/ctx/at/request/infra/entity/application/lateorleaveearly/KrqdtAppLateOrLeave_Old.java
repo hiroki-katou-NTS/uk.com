@@ -82,7 +82,7 @@ public class KrqdtAppLateOrLeave_Old  extends ContractUkJpaEntity implements Ser
 	}
 	
 	public static KrqdtAppLateOrLeave_Old toEntity(LateOrLeaveEarly domain){
-//		return new KrqdtAppLateOrLeave (
+//		return new KrqdtAppLateEarly (
 //					new KrqdtAppLateOrLeavePK(
 //							domain.getApplication().getCompanyID(), 
 //							domain.getApplication().getAppID()),

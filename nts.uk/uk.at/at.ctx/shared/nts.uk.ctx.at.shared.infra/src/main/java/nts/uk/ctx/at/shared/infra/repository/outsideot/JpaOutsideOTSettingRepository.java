@@ -56,12 +56,12 @@ import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMe
 public class JpaOutsideOTSettingRepository extends JpaRepository
 		implements OutsideOTSettingRepository {
 	
-	public static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT ost FROM KshstOutsideOtBrd ost"
+	public static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT ost FROM KshmtOutsideDetail ost"
 			+ "	WHERE ost.useAtr = :useAtr"
 			+ "		AND ost.kshstOutsideOtBrdPK.cid = :cid";
 	
 
-	public static final String FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS = "SELECT ot FROM KshstOverTime ot"
+	public static final String FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS = "SELECT ot FROM KshmtOutside ot"
 			+ "	WHERE ot.useAtr = :useAtr"
 			+ "		AND ot.kshstOverTimePK.cid = :cid";
 	
@@ -722,7 +722,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 	@Override
 	public List<Overtime> getOverTimeByCompanyIdAndUseClassification(String companyId, int useClassification) {
-		return this.queryProxy().query(FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS, KshstOverTime.class)
+		return this.queryProxy().query(FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS, KshmtOutside.class)
 				.setParameter("useAtr", useClassification)
 				.setParameter("cid", companyId)
 				.getList().stream()
@@ -732,7 +732,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 	@Override
 	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification) {
-		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstOutsideOtBrd.class)
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshmtOutsideDetail.class)
 				.setParameter("useAtr", useClassification)
 				.setParameter("cid", companyId)
 				.getList().stream()

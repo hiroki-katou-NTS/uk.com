@@ -27,7 +27,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 
 	private static final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtAttendanceAut da WHERE da.pk.roleId =:roleId";
 
-	private static final String GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO = "SELECT da FROM KrcmtDaiPerformanceAut da"
+	private static final String GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO = "SELECT da FROM KrcmtAttendanceAut da"
 			+ "	WHERE da.pk.roleId = :roleId"
 			+ "		AND da.pk.functionNo = :functionNo"
 			+ "		AND da.availability = :availability";
@@ -86,8 +86,8 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 	@Override
 	public boolean getAuthorityOfEmployee(String roleId, DailyPerformanceFunctionNo functionNo, boolean available) {
 		//	ドメインモデル「勤務実績の権限」を取得する
-		Optional<KrcmtDaiPerformanceAut> oKrcmtDaiPerformanceAut = this.queryProxy()
-				.query(GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO, KrcmtDaiPerformanceAut.class)
+		Optional<KrcmtAttendanceAut> oKrcmtDaiPerformanceAut = this.queryProxy()
+				.query(GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO, KrcmtAttendanceAut.class)
 				.setParameter("roleId", roleId)
 				.setParameter("functionNo", functionNo.v())
 				.setParameter("availability", this.bigDecimalValue(available))

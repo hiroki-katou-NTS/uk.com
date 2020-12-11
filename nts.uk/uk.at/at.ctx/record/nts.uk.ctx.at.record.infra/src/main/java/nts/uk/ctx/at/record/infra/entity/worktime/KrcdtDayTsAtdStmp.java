@@ -37,8 +37,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_TIME_LEAVING_WORK")
-public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAY_TS_ATD_STMP")
+public class KrcdtDayTsAtdStmp extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -115,12 +115,12 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDaiLeavingWork daiLeavingWork;
+	public KrcdtDayTsAtd daiLeavingWork;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDaiTemporaryTime daiTemporaryTime;
+	public KrcdtDayTsTemporary daiTemporaryTime;
 
 	public TimeLeavingWork toDomain() {
 		TimeLeavingWork domain = new TimeLeavingWork(new WorkNo(this.krcdtTimeLeavingWorkPK.workNo),
@@ -160,10 +160,10 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, TimeChangeMeans.class));
 	}
 
-	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
+	public static KrcdtDayTsAtdStmp toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
 		TimeActualStamp attendanceStamp = (domain.getAttendanceStamp() != null && domain.getAttendanceStamp().isPresent()) ? domain.getAttendanceStamp().get() : null;
 		TimeActualStamp leaveStamp = (domain.getLeaveStamp() != null && domain.getLeaveStamp().isPresent()) ? domain.getLeaveStamp().get() : null;
-		KrcdtTimeLeavingWork krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
+		KrcdtDayTsAtdStmp krcdtTimeLeavingWork = new KrcdtDayTsAtdStmp();
 		KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(employeeId, domain.getWorkNo().v(), ymd, type);
 		krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = krcdtTimeLeavingWorkPK;
 		toEntityAttendance(krcdtTimeLeavingWork, attendanceStamp);
@@ -171,7 +171,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		return krcdtTimeLeavingWork;
 	}
 	
-	private static void toEntityAttendance(KrcdtTimeLeavingWork krcdtTimeLeavingWork, TimeActualStamp attendanceStamp){
+	private static void toEntityAttendance(KrcdtDayTsAtdStmp krcdtTimeLeavingWork, TimeActualStamp attendanceStamp){
 		if (attendanceStamp != null) {
 			if(attendanceStamp.getActualStamp() != null && attendanceStamp.getActualStamp().isPresent()){
 				val actualStamp = attendanceStamp.getActualStamp().get();
@@ -218,7 +218,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		
 	}
 	
-	private static void toEntityLeave(KrcdtTimeLeavingWork krcdtTimeLeavingWork, TimeActualStamp leaveStamp){
+	private static void toEntityLeave(KrcdtDayTsAtdStmp krcdtTimeLeavingWork, TimeActualStamp leaveStamp){
 		if (leaveStamp != null) {
 			if (leaveStamp.getActualStamp() != null && leaveStamp.getActualStamp().isPresent()) {
 				WorkStamp actualStamp = leaveStamp.getActualStamp().orElse(null);
@@ -262,7 +262,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		}
 	}
 
-	public KrcdtTimeLeavingWork(KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK, 
+	public KrcdtDayTsAtdStmp(KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK, 
 			Integer attendanceActualTime, String attendanceActualPlaceCode, Integer attendanceActualSourceInfo,
 			 Integer attendanceStampTime, String attendanceStampPlaceCode,
 			Integer attendanceStampSourceInfo, Integer attendanceNumberStamp,
@@ -287,12 +287,12 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		this.leaveWorkNumberStamp = leaveWorkNumberStamp;
 	}
 
-	public static List<TimeLeavingWork> toDomain(List<KrcdtTimeLeavingWork> krcdtTimeLeavingWorks) {
+	public static List<TimeLeavingWork> toDomain(List<KrcdtDayTsAtdStmp> krcdtTimeLeavingWorks) {
 		return krcdtTimeLeavingWorks.stream().map(f -> f.toDomain()).collect(Collectors.toList());
 	};
 
-//	public static KrcdtTimeLeavingWork toEntity(TimeLeavingWork timeLeavingWork, String employeeId, GeneralDate ymd, int workNo, int type) {
-//		return new KrcdtTimeLeavingWork(new KrcdtTimeLeavingWorkPK(employeeId, workNo, ymd, type),
+//	public static KrcdtDayTsAtdStmp toEntity(TimeLeavingWork timeLeavingWork, String employeeId, GeneralDate ymd, int workNo, int type) {
+//		return new KrcdtDayTsAtdStmp(new KrcdtTimeLeavingWorkPK(employeeId, workNo, ymd, type),
 //				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getAfterRoundingTime().v(),
 //				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getTimeWithDay().v(),
 //				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getLocationCode().v(),

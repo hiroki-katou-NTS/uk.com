@@ -418,12 +418,12 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public List<InterimRecMng> getRecByIds(List<String> mngIds) {
 		if (mngIds == null || mngIds.isEmpty()) return Collections.emptyList();
 		return this.queryProxy()
-				.query("SELECT a FROM KrcmtInterimRecMng a, KrcmtInterimRemainMng b " +
+				.query("SELECT a FROM KrcdtInterimRecMng a, KrcdtInterimRemainMng b " +
                         "WHERE a.recruitmentMngId = b.remainMngId " +
                         "AND b.remainMngId in :mngIds " +
-                        "ORDER BY b.ymd", KrcmtInterimRecMng.class)
+                        "ORDER BY b.ymd", KrcdtInterimRecMng.class)
 				.setParameter("mngIds", mngIds)
-				.getList((KrcmtInterimRecMng i) -> new InterimRecMng(
+				.getList((KrcdtInterimRecMng i) -> new InterimRecMng(
 						i.recruitmentMngId,
 						i.expirationDate,
 						new OccurrenceDay(i.occurrenceDays),

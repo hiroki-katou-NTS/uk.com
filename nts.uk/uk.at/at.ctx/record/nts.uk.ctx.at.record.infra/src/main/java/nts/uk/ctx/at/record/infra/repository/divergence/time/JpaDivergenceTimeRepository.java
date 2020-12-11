@@ -43,7 +43,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
 	
-	private static final String FIND_BY_COMPANYID_AND_USE_ATR = "SELECT a FROM KrcstDvgcTime a "
+	private static final String FIND_BY_COMPANYID_AND_USE_ATR = "SELECT a FROM KrcmtDvgcTime a "
 			+ "WHERE a.id.cid = :companyId "
 			+ "		AND a.dvgcTimeUseSet = :dvgcTimeUseSet ";
 
@@ -517,7 +517,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	@Override
 	public List<DivergenceTimeRoot> findByCompanyAndUseDistination(String companyId, int useDistination) {
-		return this.queryProxy().query(FIND_BY_COMPANYID_AND_USE_ATR, KrcstDvgcTime.class)
+		return this.queryProxy().query(FIND_BY_COMPANYID_AND_USE_ATR, KrcmtDvgcTime.class)
 								.setParameter("companyId", companyId)
 								.setParameter("dvgcTimeUseSet", BigDecimal.valueOf(useDistination))
 								.getList().stream()

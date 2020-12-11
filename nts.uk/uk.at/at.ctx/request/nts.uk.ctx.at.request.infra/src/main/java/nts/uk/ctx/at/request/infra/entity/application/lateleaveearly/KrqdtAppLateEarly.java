@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppLateOrLeave extends ContractUkJpaEntity implements Serializable {
+public class KrqdtAppLateEarly extends ContractUkJpaEntity implements Serializable {
 	
 	/**
 	 * 
@@ -72,7 +72,7 @@ public class KrqdtAppLateOrLeave extends ContractUkJpaEntity implements Serializ
 		return this.krqdtAppLateOrLeavePK;
 	}
 
-	public static final JpaEntityMapper<KrqdtAppLateOrLeave> MAPPER = new JpaEntityMapper<>(KrqdtAppLateOrLeave.class);
+	public static final JpaEntityMapper<KrqdtAppLateEarly> MAPPER = new JpaEntityMapper<>(KrqdtAppLateEarly.class);
 	
 	public ArrivedLateLeaveEarly toDomain(Application application) {
 		List<LateCancelation> lateCancelation = new ArrayList<>();
