@@ -70,12 +70,14 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         OutputFileWorkStatusFileQuery query = context.getQuery();
         YearMonth targetDate = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
-        // TODO DANG QA
+        // 1:find(会社ID、ClosureId)
         val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
         val basedateNow = GeneralDate.today();
+
         if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("Còn QA");
+            throw new BusinessException("");
         }
+        // 1.1 :⑨．基準日で締め変更履歴を取得する(日付)
         val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
 
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
