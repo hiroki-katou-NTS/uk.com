@@ -1512,6 +1512,7 @@ module nts.uk.at.view.kmk002.a {
                                     self.optionalItem.checkSelectedAtr();
         
                                     }).ifNo(() => {
+                                        self.optionalItem.usageAtr(1)
                                         // get old value from stash
                                         self.optionalItem.optionalItemAtr(self.optionalItem.optionalItemAtrStash);
                                     })
