@@ -149,10 +149,21 @@ module nts.uk.at.view.kwr004.b {
         row.dailyAttributes(value === 1 ? vm.dailyAloneAttributes() : vm.dailyCalcAttributes());
         vm.settingListItemsDetails.valueHasMutated();
       });
+      
+      row.itemAttribute.subscribe((value) => {
+        row.selectedTimeList([]);
+        row.selectionItem(null);
+        row.selectedTime = -1;        
+        vm.settingListItemsDetails.valueHasMutated();
+      });
 
       vm.settingListItemsDetails.push(row);
     }
 
+    clearSetting() {
+
+    }
+    
     addNewRow() {
       const vm = this;
       //vm.addRowItem();
