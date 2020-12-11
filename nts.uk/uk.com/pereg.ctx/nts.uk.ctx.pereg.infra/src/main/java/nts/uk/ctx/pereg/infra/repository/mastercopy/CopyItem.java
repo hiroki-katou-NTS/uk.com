@@ -53,7 +53,7 @@ public class CopyItem {
 		
 		val idContainer = new IdContainer(categoryIds, itemIdGenerator.fix());
 		
-		val copiedPpemtItemSort = findAllPpemtItemSort(targetCategoryIds).stream()
+		val copiedPpemtItemSort = findAllPpemtItemSort(sourceCategoryIds).stream()
 				.map(s -> s.copy(idContainer))
 				.collect(toList());
 		
