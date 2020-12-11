@@ -491,6 +491,7 @@ module nts.uk.ui.components.fullcalendar {
         public popupPosition: PopupPosition = defaultPPosition();
 
         public newEvent: KnockoutObservable<null | EventSlim> = ko.observable(null);
+        public selectedEvents: EventSlim[] = [];
 
         public $style: KnockoutObservable<string> = ko.observable('');
 
@@ -1006,15 +1007,20 @@ module nts.uk.ui.components.fullcalendar {
                 }
             };
             const updateEvents = () => {
+                const sltds = vm.selectedEvents;
+                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(e.start) === formatDate(m.start));
+
                 const events = ko
                     .unwrap<EventRaw[]>(params.events)
                     .filter(({ extendedProps }) => extendedProps.status !== 'delete')
                     .map((m) => ({
                         ...m,
                         id: randomId(),
-                        borderColor: 'transparent',
                         start: formatDate(m.start),
                         end: formatDate(m.end),
+                        [GROUP_ID]: isSelected(m) ? SELECTED : '',
+                        [BORDER_COLOR]: isSelected(m) ? BLACK : TRANSPARENT,
+                        [DURATION_EDITABLE]: isSelected(m) ? sltds.length < 2 : true,
                         extendedProps: {
                             ...m.extendedProps,
                             status: m.extendedProps.status || 'normal'
@@ -1028,6 +1034,8 @@ module nts.uk.ui.components.fullcalendar {
                 // set new events
                 vm.calendar.setOption('events', events);
                 // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
+
+                vm.selectedEvents = [];
             };
 
             const dragger = new FC.Draggable($dg, {
@@ -1113,6 +1121,7 @@ module nts.uk.ui.components.fullcalendar {
                     const brkt = ko.unwrap(params.breakTime);
                     const className = [`fc-timegrid-slot-lane-${hour}`];
 
+                    // add breaktime class
                     if (brkt) {
                         const { startTime, endTime } = ko.unwrap(params.breakTime);
 
@@ -1182,26 +1191,16 @@ module nts.uk.ui.components.fullcalendar {
                         // remove group id
                         e.setProp(GROUP_ID, '');
 
-                        // remove background event
-                        if (e.display === BACKGROUND) {
+                        // remove new event (no save)
+                        if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
                             e.remove();
-                        } else
-                            // remove new event (no save)
-                            if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
-                                e.remove();
-                            }
+                        }
                     });
 
-                    // add background event (group)
-                    vm.calendar
-                        .addEvent({
-                            groupId: SELECTED,
-                            display: BACKGROUND,
-                            backgroundColor: TRANSPARENT
-                        });
-
+                    // get all event with border is black
                     const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
 
+                    // single select
                     if (!shift) {
                         _.each(vm.calendar.getEvents(), (e: EventApi) => {
                             e.setProp(BORDER_COLOR, TRANSPARENT);
@@ -1209,40 +1208,31 @@ module nts.uk.ui.components.fullcalendar {
 
                         event.setProp(BORDER_COLOR, BLACK);
                     } else {
+                        // multi select
                         const [first] = seletions();
 
+                        // no selections
                         if (!first) {
                             event.setProp(BORDER_COLOR, BLACK);
                         } else {
+                            // odd select
                             if (event.borderColor === BLACK) {
                                 event.setProp(BORDER_COLOR, TRANSPARENT);
-                            } else if (moment(first.start).isSame(event.start, 'date')) {
-                                event.setProp(BORDER_COLOR, BLACK);
-                            }
+                            } else
+                                // add new select
+                                if (moment(first.start).isSame(event.start, 'date')) {
+                                    event.setProp(BORDER_COLOR, BLACK);
+                                }
                         }
                     }
 
                     const selecteds = seletions();
 
                     if (!!selecteds.length) {
-                        const times: number[] = _.chain<EventSlim[]>(selecteds)
-                            .map((e: EventSlim) => [e.start.getTime(), e.end.getTime()])
-                            .reduce((p: number[], c: number[]) => [...p, ...c], [])
-                            .orderBy('asc')
-                            .value() as any;
-
-                        const group = _.find(vm.calendar.getEvents(), (e: EventApi) => e.groupId === SELECTED);
-
-                        if (group) {
-                            group.setStart(new Date(Math.min(...times)));
-                            group.setEnd(new Date(Math.max(...times)));
-
-                            group.setProp(DURATION_EDITABLE, selecteds.length === 1);
-                        }
-
+                        // group selected event & disable resizeable
                         _.each(selecteds, (e: EventApi) => {
-                            e.setProp(GROUP_ID, SELECTED);
                             e.setProp(DURATION_EDITABLE, selecteds.length === 1);
+                            e.setProp(GROUP_ID, SELECTED);
                         });
                     }
                 },
@@ -1252,26 +1242,51 @@ module nts.uk.ui.components.fullcalendar {
                         updateEvents();
                     }
 
-                    if (!!ko.unwrap(newEvent)) {
-                        arg.event.remove();
-                    }
+                    vm.selectedEvents = [];
+
+                    // clear all oll selection
+                    _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                        e.setProp(GROUP_ID, '');
+
+                        e.setProp(BORDER_COLOR, TRANSPARENT);
+                    });
+
+                    arg.event.setProp(BORDER_COLOR, BLACK);
+                    arg.event.setProp(GROUP_ID, SELECTED);
 
                     newEvent(null);
                     popupPosition.event(null);
                 },
                 eventDrop: (arg: FullCalendar.EventDropArg) => {
+                    const { start, end } = arg.event;
+                    const rels = arg.relatedEvents.map(({ start, end }) => ({ start, end }));
+
+                    vm.selectedEvents = [{ start, end }, ...rels];
+
                     // update data sources
                     mutatedEvents();
-
-                    arg.event.remove();
-
-                    _.each(arg.relatedEvents, (e: EventApi) => e.remove());
                 },
-                eventResizeStart: () => {
+                eventResizeStart: (arg: FullCalendar.EventResizeStartArg) => {
+                    vm.selectedEvents = [];
+
+                    // clear all oll selection
+                    _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                        e.setProp(GROUP_ID, '');
+
+                        e.setProp(BORDER_COLOR, TRANSPARENT);
+                    });
+
+                    arg.event.setProp(BORDER_COLOR, BLACK);
+                    arg.event.setProp(GROUP_ID, SELECTED);
+
                     newEvent(null);
                     popupPosition.event(null);
                 },
-                eventResize: () => {
+                eventResize: (arg: FullCalendar.EventResizeDoneArg) => {
+                    const { start, end } = arg.event;
+
+                    vm.selectedEvents = [{ start, end }];
+
                     // update data sources
                     mutatedEvents();
                 },
@@ -1282,22 +1297,22 @@ module nts.uk.ui.components.fullcalendar {
                     updateEvents();
 
                     // add new event from selected data
-                    vm.calendar.addEvent({
-                        id: randomId(),
-                        start: formatDate(start),
-                        end: formatDate(end),
-                        borderColor: TRANSPARENT,
-                        extendedProps: {
-                            status: 'new'
-                        }
-                    });
+                    vm.calendar
+                        .addEvent({
+                            id: randomId(),
+                            start: formatDate(start),
+                            end: formatDate(end),
+                            borderColor: BLACK,
+                            extendedProps: {
+                                status: 'new'
+                            }
+                        });
                 },
                 eventRemove: (args: FullCalendar.EventRemoveArg) => {
                     const { event } = args;
-                    const events = vm.calendar.getEvents();
 
                     // remove event from event sources
-                    _.forEach(events, (e: EventApi) => {
+                    _.forEach(vm.calendar.getEvents(), (e: EventApi) => {
                         if (e.id === event.id) {
                             e.remove();
                         }
@@ -1320,6 +1335,8 @@ module nts.uk.ui.components.fullcalendar {
                     // remove drop event
                     event.remove();
 
+                    vm.selectedEvents = [{ start, end }];
+
                     // add cloned event to datasources
                     events.push({
                         title,
@@ -1339,6 +1356,7 @@ module nts.uk.ui.components.fullcalendar {
                     const { start, end } = dateInfo;
                     const $btn = $el.find('.fc-current-day-button');
 
+                    vm.selectedEvents = [];
                     datesSet({ start, end });
 
                     if (!current.isBetween(start, end, 'date', '[)')) {
@@ -2121,6 +2139,8 @@ module nts.uk.ui.components.fullcalendar {
                         if (ko.isObservable(params.initialDate)) {
                             params.initialDate(evt.date);
                         }
+
+                        $('body>.datepicker-container').addClass('datepicker-hide');
                     });
 
                 ko.computed({
@@ -2148,13 +2168,6 @@ module nts.uk.ui.components.fullcalendar {
                 });
 
                 $el.removeAttribute('data-bind');
-
-                $('.datepicker-container')
-                    .on('mousedown', "li", (evt) => {
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                        evt.stopImmediatePropagation();
-                    });
             }
         }
 
