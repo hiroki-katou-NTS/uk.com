@@ -2,15 +2,13 @@ module knr002.g.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getDestinationCopyList: "screen/at/destinationcopy/getdestinationcopylist",
+        getTimeRecordReqSettings: "screen/at/tranfercontentsettings/gettimerecordreqsettings",
     };
 
     /**
-    * Get Destination Copy List
-    * 
-    * 
+    * Get Time Record Request Settings
     */
-   export function getDestinationCopyList(empInfoTerCode: any): JQueryPromise<any> {
-    return ajax(paths.getDestinationCopyList+ "/" + empInfoTerCode);
+   export function getTimeRecordReqSettings(empInfoTerCode: any): JQueryPromise<any> {
+    return ajax(paths.getTimeRecordReqSettings+ "/" + empInfoTerCode);
     }
 }

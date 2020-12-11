@@ -79,7 +79,7 @@ module knr002.test {
 
                 // G_Dialog
                 self.empInfoTerCode_G = ko.observable("0002");
-                self.empInfoTerName_G = ko.observable("Name 2F_Shared");
+                self.empInfoTerName_G = ko.observable("Name 2G_Shared");
                 self.modelEmpInfoTerName_G = ko.observable("NRL-G");
                 self.workLocationName_G = ko.observable("Work Location 2G");
             }
@@ -155,6 +155,7 @@ module knr002.test {
             private test_G_Dialog(): void{
                 var self = this;
                 blockUI.invisible();
+                //setShared from A
                 setShared('KNR002G_empInfoTerCode', self.empInfoTerCode_G());
                 setShared('KNR002G_empInfoTerName', self.empInfoTerName_G());
                 setShared('KNR002G_modelEmpInfoTer', self.modelEmpInfoTerName_G());
@@ -173,7 +174,7 @@ module knr002.test {
                 });
             }
 
-              /**
+            /**
              * 
              */
             private test_K_Dialog(): void{

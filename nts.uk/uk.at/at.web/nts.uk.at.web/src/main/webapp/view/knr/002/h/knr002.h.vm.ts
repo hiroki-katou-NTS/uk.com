@@ -103,7 +103,7 @@ module knr002.h {
                 blockUI.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-
+                
                 // Start component
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                     self.employeeSearchedList = ko.observableArray<ExportEmployeeSearchDto >([]);

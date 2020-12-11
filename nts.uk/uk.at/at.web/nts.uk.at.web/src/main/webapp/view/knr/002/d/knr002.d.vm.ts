@@ -56,7 +56,7 @@ module knr002.d {
                         self.empInfoTerName("isn't the shared");
                     }
                     service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                        if(!data){
+                        if(!data || data.length <= 0){
                             //do something
                         } else {
                             let desCopyTempList = [];
