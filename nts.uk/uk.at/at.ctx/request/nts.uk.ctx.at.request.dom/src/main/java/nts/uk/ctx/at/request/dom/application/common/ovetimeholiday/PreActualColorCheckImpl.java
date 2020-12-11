@@ -535,7 +535,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		
 		if (!isJudgmentCalculation) { // 仮計算実行＝しない
 			// 「申請時間<List>」をセットして返す
-			OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
+			Optional<OverTimeShiftNight> overTimeShiftNightOp = Optional.empty();
 			// 表示する実績内容．実績詳細．7勤怠時間．4勤怠種類 = 残業時間
 			
 			if (achievementDetail.getOpOvertimeLeaveTimeLst().isPresent()) {
@@ -544,19 +544,27 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.collect(Collectors.toList());
 				List<OvertimeApplicationSetting> overTimeApplicationTimes = new ArrayList<>();
 				overTimeLeaveTimes.forEach(item -> {
-					OvertimeApplicationSetting overtimeApplicationSetting = new OvertimeApplicationSetting();
-					overtimeApplicationSetting.setAttendanceType(EnumAdaptor.valueOf(item.getAttendanceType(), AttendanceType_Update.class));
-					overtimeApplicationSetting.setFrameNo(new FrameNo(item.getFrameNo()));
-					overtimeApplicationSetting.setApplicationTime(new TimeWithDayAttr(item.getTime()));
-					overTimeApplicationTimes.add(overtimeApplicationSetting);
+					if (item.getFrameNo() <= 10 && item.getTime() > 0) {
+						OvertimeApplicationSetting overtimeApplicationSetting = new OvertimeApplicationSetting();
+						overtimeApplicationSetting.setAttendanceType(EnumAdaptor.valueOf(item.getAttendanceType(), AttendanceType_Update.class));
+						overtimeApplicationSetting.setFrameNo(new FrameNo(item.getFrameNo()));
+						overtimeApplicationSetting.setApplicationTime(new TimeWithDayAttr(item.getTime()));
+						overTimeApplicationTimes.add(overtimeApplicationSetting);
+						
+					}
 					
 				});
+				
+				if (!CollectionUtil.isEmpty(overTimeApplicationTimes)) {
+					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
+					output.get().setApplicationTime(overTimeApplicationTimes);
+				}
 				/*
 				・INPUT．「表示する実績内容．実績詳細．7勤怠時間．4勤怠種類 = 残業時間」AND 「実績詳細．7勤怠時間．1枠NO = 11」がある場合：
 						　申請時間．フレックス超過時間 = 実績詳細．7勤怠時間．3時間
 				*/
 				Optional<OvertimeLeaveTime> isFlexOverOp = achievementDetail.getOpOvertimeLeaveTimeLst().get().stream()
-						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getFrameNo() == 11)
+						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value && x.getFrameNo() == 11)
 						.findFirst();
 				if (isFlexOverOp.isPresent()) {
 					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
@@ -567,13 +575,14 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 　					申請時間．就業時間外深夜時間．残業深夜時間 = 実績詳細．7勤怠時間．3時間
 				 * */
 				Optional<OvertimeLeaveTime> isOverTimeMidNightOp = achievementDetail.getOpOvertimeLeaveTimeLst().get().stream()
-						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getFrameNo() == 12)
+						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value && x.getFrameNo() == 12)
 						.findFirst();
 				if (isOverTimeMidNightOp.isPresent()) {
-					overTimeShiftNight.setMidNightOutSide(
+					overTimeShiftNightOp = Optional.of(new OverTimeShiftNight());
+					overTimeShiftNightOp.get().setMidNightOutSide(
 							new AttendanceTime(isOverTimeMidNightOp.get().getTime()));
 					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
-					output.get().setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+					output.get().setOverTimeShiftNight(overTimeShiftNightOp);
 				}
 				
 				
@@ -618,6 +627,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				midNightHolidayTimes.add(holidayMidNightTime);
 			}
 			if (!output.isPresent()) {
+				output = Optional.of(new ApplicationTime());
 				if (output.get().getOverTimeShiftNight().isPresent()) {
 					output.get().getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
 				}
