@@ -335,6 +335,7 @@ module nts.uk.at.view.kbt002.b {
       const data: any = {
         execItemCode: vm.currentExecItem().execItemCode(),
         execItemName: vm.currentExecItem().execItemName(),
+        repeatContent: vm.taskSetting() ? vm.taskSetting().repeatContent : 0,
         cloudCreationFlag: vm.cloudCreationFlag()
       };
       vm.$window.modal('/view/kbt/002/c/index.xhtml', data)

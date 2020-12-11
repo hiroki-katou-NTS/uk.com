@@ -83,16 +83,16 @@ module nts.uk.at.view.kbt002.c {
 
     getExecSetting() {
       const vm = this;
-      //FAKE-DATA
-      // vm.execItemCd('53');
-      // vm.execItemName('KBT002_C review');
-
       vm.$blockui('grayout')
         .then(() => vm.$ajax(`${API.getExecSetting}/${vm.execItemCd()}`))
         .then((item: ExecutionSettingDto) => {
           vm.$blockui('clear');
           if (item) {
             vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
+            vm.selectExec(item.repeatContent);
+            vm.selectTimeRepeat(item.oneDayRepClassification);
+            vm.selectEndDate(item.endDateCls);
+            vm.selectEndTime(item.endTimeCls);
             vm.monthDays(vm.buildMonthDaysStr());
             vm.isNewMode = false;
           } else {
@@ -129,7 +129,7 @@ module nts.uk.at.view.kbt002.c {
       params.startTime = vm.curExecSetting().startTime();
 
       if (vm.selectExec() !== 0) {
-        params.oneDayRepCls = vm.selectTimeRepeat(); //1日の繰り返し
+        params.oneDayRepClassification = vm.selectTimeRepeat(); //1日の繰り返し
         params.oneDayRepInterval = vm.curExecSetting().oneDayRepInterval(); //時刻指定
         params.endTimeCls = vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0; //終了時刻
         params.endDateCls = vm.selectEndDate(); //終了日
@@ -284,7 +284,7 @@ module nts.uk.at.view.kbt002.c {
     startTime: number;
     endTimeCls: number = 0;
     endTime: number;
-    oneDayRepCls: number = 0;
+    oneDayRepClassification: number = 0;
     oneDayRepInterval: number;
     repeatCls: boolean = false;
     repeatContent: number;

@@ -107,6 +107,8 @@ public class ChangeExecutionTaskSettingCommandHandler
 						.endClock(command.getEndTime() != null ? new EndTime(command.getEndTime()) : null).build();
 				String scheduleId = this.schedule(options);
 				String endScheduleId = this.schedule(optionsEnd);
+				executionTaskSetting[0].setScheduleId(scheduleId);
+				executionTaskSetting[0].setEndScheduleId(Optional.ofNullable(endScheduleId));
 				// INPUT「実行タスク設定．更新処理有効設定」を確認する
 				if (executionTaskSetting[0].isEnabledSetting()) {
 					// アルゴリズム「次回実行日時作成処理」を実行する
@@ -118,9 +120,6 @@ public class ChangeExecutionTaskSettingCommandHandler
 					executionTaskSetting[0].setNextExecDateTime(Optional.empty());
 				}
 				// 取得した内容をINPUT「実行タスク設定」にセットする
-				executionTaskSetting[0].setScheduleId(scheduleId);
-				executionTaskSetting[0].setEndScheduleId(Optional.ofNullable(endScheduleId));
-
 				try {
 					// 登録処理
 					this.performRegister(executionTaskSetting[0], saveCommand);
