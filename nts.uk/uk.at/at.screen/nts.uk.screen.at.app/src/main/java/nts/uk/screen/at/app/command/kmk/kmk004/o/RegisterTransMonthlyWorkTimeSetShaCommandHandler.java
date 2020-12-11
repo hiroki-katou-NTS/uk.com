@@ -30,7 +30,7 @@ public class RegisterTransMonthlyWorkTimeSetShaCommandHandler
 	private EmploymentList employmentList;
 
 	@Override
-	protected List<EmploymentCodeDto> handle(CommandHandlerContext<SaveMonthlyWorkTimeSetShaCommand> context) {
+	public List<EmploymentCodeDto> handle(CommandHandlerContext<SaveMonthlyWorkTimeSetShaCommand> context) {
 		
 		// 1: <call> 雇用別月単位労働時間を登録・更新する
 		this.saveHandler.handle(context.getCommand());

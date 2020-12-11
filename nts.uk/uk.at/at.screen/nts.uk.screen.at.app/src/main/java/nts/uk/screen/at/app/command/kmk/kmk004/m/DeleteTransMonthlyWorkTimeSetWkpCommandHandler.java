@@ -40,7 +40,7 @@ public class DeleteTransMonthlyWorkTimeSetWkpCommandHandler
 	private WorkplaceList workplaceList;
 
 	@Override
-	protected List<WorkplaceIdDto> handle(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetWkpCommand> context) {
+	public List<WorkplaceIdDto> handle(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetWkpCommand> context) {
 
 		DeleteTransMonthlyWorkTimeSetWkpCommand cmd = context.getCommand();
 

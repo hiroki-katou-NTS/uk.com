@@ -21,7 +21,7 @@ public class UpdateTransMonthlyWorkTimeSetShaCommandHandler extends CommandHandl
 	private SaveMonthlyWorkTimeSetShaCommandHandler saveHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<SaveMonthlyWorkTimeSetShaCommand> context) {
+	public void handle(CommandHandlerContext<SaveMonthlyWorkTimeSetShaCommand> context) {
 
 		// 社員別月単位労働時間（変形労働）を更新する
 		this.saveHandler.handle(context.getCommand());

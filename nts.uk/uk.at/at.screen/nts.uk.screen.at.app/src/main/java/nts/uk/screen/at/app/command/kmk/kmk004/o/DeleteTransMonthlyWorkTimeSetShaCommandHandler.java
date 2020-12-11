@@ -39,7 +39,7 @@ public class DeleteTransMonthlyWorkTimeSetShaCommandHandler
 	private EmployeeList employeeList;
 
 	@Override
-	protected List<EmployeeIdDto> handle(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetShaCommand> context) {
+	public List<EmployeeIdDto> handle(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetShaCommand> context) {
 		DeleteTransMonthlyWorkTimeSetShaCommand cmd = context.getCommand();
 
 		// 1: 年度の期間を取得(require, 会社ID, 年度)

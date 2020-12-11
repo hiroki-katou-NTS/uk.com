@@ -21,7 +21,7 @@ public class RegisterTransMonthlyWorkTimeSetComCommandHandler extends CommandHan
 	private SaveMonthlyWorkTimeSetComCommandHandler saveHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<SaveMonthlyWorkTimeSetComCommand> context) {
+	public void handle(CommandHandlerContext<SaveMonthlyWorkTimeSetComCommand> context) {
 
 		// 会社別月単位労働時間（変形労働）を登録する
 		this.saveHandler.handle(context.getCommand());

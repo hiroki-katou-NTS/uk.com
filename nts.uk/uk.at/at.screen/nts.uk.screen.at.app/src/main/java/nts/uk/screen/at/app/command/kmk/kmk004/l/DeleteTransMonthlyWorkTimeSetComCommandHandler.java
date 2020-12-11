@@ -34,7 +34,7 @@ public class DeleteTransMonthlyWorkTimeSetComCommandHandler
 	private DeleteMonthlyWorkTimeSetComCommandHandler deleteHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetComCommand> context) {
+	public void handle(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetComCommand> context) {
 
 		DeleteTransMonthlyWorkTimeSetComCommand cmd = context.getCommand();
 
