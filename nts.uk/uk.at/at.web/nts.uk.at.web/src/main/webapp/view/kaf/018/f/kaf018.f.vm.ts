@@ -479,6 +479,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
     }
 
 	const API = {
-		getConfirmSttByEmp: "at/request/application/approvalstatus/getConfirmSttByEmp",
+		getConfirmSttByEmp: "at/request/application/approvalstatus/getConfirmApprSttByEmp",
 	}
 }

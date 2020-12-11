@@ -104,6 +104,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
@@ -2069,15 +2070,15 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 	
 	@Override
-	public List<ApprSttConfirmEmp> getConfirmSttByEmp(String wkpID, DatePeriod paramPeriod,
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(String wkpID, DatePeriod paramPeriod,
 			List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		// アルゴリズム「承認状況取得職場社員実績」を実行する
-		return this.getConfirmSttByEmpLst(wkpID, paramPeriod, empPeriodLst, apprSttComfirmSet, yearMonth, closureId, closureDate);
+		return this.getConfirmApprSttByEmpLst(wkpID, paramPeriod, empPeriodLst, apprSttComfirmSet, yearMonth, closureId, closureDate);
 	}
 
 	@Override
-	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprSttConfirmEmp> apprSttConfirmEmpLst = new ArrayList<>();
@@ -2112,7 +2113,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 								yearMonth, 
 								closureId.value, 
 								closureDate, 
-								period.end(), 
+								paramPeriod.end(), 
 								x.getEmpID()))
 						.collect(Collectors.toList()));
 				if(!CollectionUtil.isEmpty(request533Import.getAppRootSttMonthImportLst())) {
@@ -2122,14 +2123,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				}
 			}
 			// アルゴリズム「承認状況取得日別確認状況」を実行する
-			List<DailyConfirmOutput> dailyConfirmOutputLst = this.createConfirmSttByDate(wkpID, empPeriod.getEmpID(), period, apprSttComfirmSet);
+			List<DailyConfirmOutput> dailyConfirmOutputLst = this.createConfirmApprSttByDate(wkpID, empPeriod.getEmpID(), period, apprSttComfirmSet);
 			apprSttConfirmEmpLst.add(new ApprSttConfirmEmp(dailyConfirmOutputLst, employeeBasicInfoImport.getEmployeeCode(), employeeBasicInfoImport.getPName(), monthConfirm, monthApproval));
 		}
 		return apprSttConfirmEmpLst;
 	}
 
 	@Override
-	public List<DailyConfirmOutput> createConfirmSttByDate(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet) {
+	public List<DailyConfirmOutput> createConfirmApprSttByDate(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet) {
 		// 期間範囲分の日別確認（リスト）を作成する
 		List<DailyConfirmOutput> listDailyConfirm = new ArrayList<DailyConfirmOutput>();
 		SumCountOutput sumCount = new SumCountOutput();
@@ -2224,5 +2225,98 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 本人未確認件数 ＝日別確認(リスト)で上司確認＝未確認、本人確認＝未確認の件数
 		sumCount.personUnconfirm = (int) listDailyConfirm.stream()
 				.filter(x -> !x.isBossConfirm() && !x.isPersonConfirm()).count();
+	}
+
+	@Override
+	public void getConfirmApprSttContent(String employeeID, List<DatePeriod> periodLst) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean getMonthConfirm(String companyID, String employeeID, ApprSttComfirmSet apprSttComfirmSet, 
+			YearMonth yearMonth, ClosureId closureId) {
+		// 「月別本人確認を取得する」を判別する
+		if(apprSttComfirmSet.isMonthlyIdentityConfirm()) {
+			// 社員の現在の締めの「月別本人確認」の状態を取得する　　　　リクエストリスト　No.654
+			Optional<StatusConfirmMonthImport> opStatusConfirmMonthImport = recordWorkInfoAdapter.getConfirmStatusMonthly(
+					companyID, Arrays.asList(employeeID), yearMonth, closureId.value, false);
+			if(opStatusConfirmMonthImport.isPresent()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean getMonthApprovalTopStatus(String employeeID, DatePeriod paramPeriod, ApprSttComfirmSet apprSttComfirmSet,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		// 月別確認を利用する
+		if(apprSttComfirmSet.isMonthlyConfirm()) {
+			// imported（ワークフロー）「承認ルート状況」を取得する
+			Request533Import request533Import = approvalStateAdapter.getAppRootStatusByEmpsMonth(
+					Arrays.asList(new EmpPerformMonthParamAt(
+							yearMonth, 
+							closureId.value, 
+							closureDate, 
+							paramPeriod.end(), 
+							employeeID)));
+			if(!CollectionUtil.isEmpty(request533Import.getAppRootSttMonthImportLst())) {
+				if(request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr()==2) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet) {
+		// 「月別実績の上長承認の状況を表示する」を判別する
+		if(apprSttComfirmSet.isMonthlyConfirm()) {
+			// 社員の月別実績の進捗過程を得る。　　　　　　　リクエストリストNo.673
+			return Optional.of(approvalStateAdapter.getAppRootInstanceMonthByEmpPeriod(employeeID, period));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void getMonthApproval(ApprSttComfirmSet apprSttComfirmSet) {
+		// 「月別実績の上長承認の状況を表示する」を判別する
+		if(apprSttComfirmSet.isMonthlyConfirm()) {
+			// アルゴリズム「社員の月別実績の進捗状況を得る」を実行する
+			this.getMonthAchievementApprover();
+		}
+	}
+
+	@Override
+	public void getMonthAchievementApprover() {
+		// ドメインモデル「承認ルート中間データ」を取得する
+		// not yet
+		// アルゴリズム「実績承認者取得」を実行する
+		this.getAchievementApprover();
+	}
+
+	@Override
+	public void getAchievementApprover() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getDayApprovalStatus() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getDayApproval() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getDayAchievementApprover() {
+		// TODO Auto-generated method stub
+		
 	}
 }

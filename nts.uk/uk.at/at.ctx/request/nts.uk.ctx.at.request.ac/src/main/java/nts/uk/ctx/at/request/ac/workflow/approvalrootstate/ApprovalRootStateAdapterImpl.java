@@ -53,6 +53,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalFormExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
@@ -434,6 +435,20 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				request533Export.isErrorFlg(), 
 				request533Export.getErrorMsgID(), 
 				request533Export.getErrorEmpLst());
+	}
+
+	@Override
+	public List<ApprovalRootStateImport_New> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst,
+			DatePeriod period, Integer rootType) {
+		return intermediateDataPub.getAppRootInstanceByEmpPeriod(employeeIDLst, period, rootType).stream()
+			.map(x -> new ApprovalRootStateImport_New(fromExport(x.getListApprovalPhaseState(), Optional.empty())))
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
+		ApprovalRootStateExport approvalRootStateExport = intermediateDataPub.getAppRootInstanceMonthByEmpPeriod(employeeID, period);
+		return new ApprovalRootStateImport_New(fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty())); 
 	}
 
 }

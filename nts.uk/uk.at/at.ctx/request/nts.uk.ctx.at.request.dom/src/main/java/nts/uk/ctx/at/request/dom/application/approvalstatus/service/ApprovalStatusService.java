@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -403,7 +405,7 @@ public interface ApprovalStatusService {
 	 * @param closureDate
 	 * @return
 	 */
-	public List<ApprSttConfirmEmp> getConfirmSttByEmp(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
 	/**
@@ -413,12 +415,66 @@ public interface ApprovalStatusService {
 	 * @param empPeriodLst
 	 * @return
 	 */
-	public List<ApprSttConfirmEmp> getConfirmSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst, ApprSttComfirmSet apprSttComfirmSet,
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
 	/**
 	 * F:承認状況取得日別確認状況
 	 * @return
 	 */
-	public List<DailyConfirmOutput> createConfirmSttByDate(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
+	public List<DailyConfirmOutput> createConfirmApprSttByDate(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
+	
+	/**
+	 * G:実績承認詳細情報取得
+	 * @param employeeID
+	 * @param periodLst
+	 */
+	public void getConfirmApprSttContent(String employeeID, List<DatePeriod> periodLst);
+	
+	/**
+	 * G:月別本人確認を取得する
+	 */
+	public boolean getMonthConfirm(String companyID, String employeeID, ApprSttComfirmSet apprSttComfirmSet, 
+			YearMonth yearMonth, ClosureId closureId);
+	
+	/**
+	 * G:月別上長承認進捗状況を取得する
+	 */
+	public boolean getMonthApprovalTopStatus(String employeeID, DatePeriod paramPeriod, ApprSttComfirmSet apprSttComfirmSet,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+	
+	/**
+	 * G:月別承認の進捗を取得する
+	 */
+	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
+	
+	/**
+	 * G:月別の承認者を取得する
+	 */
+	public void getMonthApproval(ApprSttComfirmSet apprSttComfirmSet);
+	
+	/**
+	 * G:社員の月別実績の進捗状況を得る
+	 */
+	public void getMonthAchievementApprover();
+	
+	/**
+	 * G:実績承認者取得
+	 */
+	public void getAchievementApprover();
+	
+	/**
+	 * G:日別承認の進捗を取得する
+	 */
+	public void getDayApprovalStatus();
+	
+	/**
+	 * G:日別の承認者を取得する
+	 */
+	public void getDayApproval();
+	
+	/**
+	 * G:社員の日別実績の進捗状況を得る
+	 */
+	public void getDayAchievementApprover();
 }

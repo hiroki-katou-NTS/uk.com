@@ -718,8 +718,8 @@ public class ApprovalStatusFinder {
 		return appSttService.sendMailToDestination(approvalStatusMailTemp, param.getWkpEmpMailLst());
 	}
 	
-	public List<ApprSttConfirmEmp> getConfirmSttByEmp(ConfirmSttEmpParam param) {
-		return appSttService.getConfirmSttByEmp(
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(ConfirmSttEmpParam param) {
+		return appSttService.getConfirmApprSttByEmp(
 				param.getWkpID(), 
 				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")), 
 				param.getEmpPeriodLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 

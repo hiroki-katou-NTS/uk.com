@@ -193,8 +193,8 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("getConfirmSttByEmp")
-	public List<ApprSttConfirmEmp> getConfirmSttByEmp(ConfirmSttEmpParam param) {
-		return finder.getConfirmSttByEmp(param);
+	@Path("getConfirmApprSttByEmp")
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(ConfirmSttEmpParam param) {
+		return finder.getConfirmApprSttByEmp(param);
 	}
 }
