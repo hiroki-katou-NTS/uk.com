@@ -4,20 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * @author chungnt
- *
- */
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DisplayMonthlyWorkingDto {
+public class LaborTime {
 
-	// 年月
-	private int yearMonth;
-	
-	// 労働時間
-	private LaborTime laborTime;
+	// 法定労働時間
+	public int legalLaborTime;
+	// 所定労働時間
+	public int withinLaborTime;
+	// 週平均時間
+	public int weekAvgTime;
+
 }

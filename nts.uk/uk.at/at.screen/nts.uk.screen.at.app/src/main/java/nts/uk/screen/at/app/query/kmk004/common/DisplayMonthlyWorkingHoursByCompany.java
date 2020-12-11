@@ -52,10 +52,19 @@ public class DisplayMonthlyWorkingHoursByCompany {
 		}
 
 		resutl = coms.stream().map(m -> {
-			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(),
-					new LaborTime(m.getLaborTime().getLegalLaborTime().v(),
-							m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
-							m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
+			
+			LaborTime laborTime = new LaborTime();
+			laborTime.setLegalLaborTime(m.getLaborTime().getLegalLaborTime().v());
+			
+			if(m.getLaborTime().getWithinLaborTime().isPresent()){
+				laborTime.setWithinLaborTime(m.getLaborTime().getWithinLaborTime().get().v());
+			}
+			
+			if(m.getLaborTime().getWeekAvgTime().isPresent()){
+				laborTime.setWeekAvgTime(m.getLaborTime().getWeekAvgTime().get().v());
+			}
+			
+			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(), laborTime);
 			return s;
 		}).collect(Collectors.toList());
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -22,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author chungnt
  *
  */
-
+@Stateless
 public class MonthlyWorkingHoursByEmployee {
 
 	@Inject
