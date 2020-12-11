@@ -109,7 +109,6 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                     vm.$emit('loading-complete');
                 });
                 vm.optionalItemApplication.sort((a,b) => a.dispOrder - b.dispOrder );
-                console.log(vm.optionalItemApplication);
             });
         });
     }
