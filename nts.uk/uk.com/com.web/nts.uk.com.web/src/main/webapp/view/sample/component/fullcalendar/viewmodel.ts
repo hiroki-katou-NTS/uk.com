@@ -174,7 +174,54 @@ module nts.uk.ui.com.sample.fullcalendar {
         }
 
         copyDay(from: Date, to: Date) {
-            console.log(from, to);
+            const vm = this;
+            const events = ko.unwrap(vm.events);
+
+            const exists = events.filter(({ start }) => moment(start).isSame(to, 'date'));
+
+            const processCopy = () => {
+                // change date to destination
+                const updateTime = (date: Date) => moment(to).set('hour', date.getHours()).set('minute', date.getMinutes()).toDate();
+
+                const source = ko.unwrap(events)
+                    .filter((e: any) => moment(e.start).isSame(from, 'date'))
+                    .map(({
+                        start,
+                        end,
+                        title,
+                        backgroundColor,
+                        extendedProps
+                    }) => ({
+                        start: updateTime(start),
+                        end: updateTime(end),
+                        title,
+                        backgroundColor,
+                        extendedProps: {
+                            ...extendedProps,
+                            id: randomId(),
+                            status: 'new'
+                        }
+                    }));
+
+                vm.events.push(...source);
+            };
+
+            if (exists.length) {
+                // exist data
+                vm.$dialog
+                    .confirm({ messageId: 'OVERWRITE_CONFIRM' })
+                    .then((v: 'yes' | 'no') => {
+                        if (v === 'yes') {
+                            // remove events of destionation day
+                            vm.events.remove((e: any) => moment(e.start).isSame(to, 'date'));
+
+                            processCopy();
+                        }
+                    });
+            } else {
+                // no overwrite data
+                processCopy();
+            }
         }
 
         datesSet(start: Date, end: Date) {
