@@ -70,6 +70,7 @@ public class CreateWorkScheduleTest {
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		updateInfoMap.put(31, (T) new TimeWithDayAttr(31));
+		
 		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
 				require, 
 				"empId", 
@@ -103,7 +104,7 @@ public class CreateWorkScheduleTest {
 		}};
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
-		updateInfoMap.put(31, (T) new TimeWithDayAttr(31));
+		updateInfoMap.put( WS_AttendanceItem.StartTime1.ID, (T) new TimeWithDayAttr(31));
 		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
 				require, 
 				"empId", 
@@ -115,7 +116,7 @@ public class CreateWorkScheduleTest {
 		
 		assertThat( result.get().getEmployeeId() ).isEqualTo( "empId" );
 		assertThat( result.get().getDate() ).isEqualTo( GeneralDate.ymd( 2020, 11, 1) );
-		assertThat( result.get().getAttendanceItemId().get() ).isEqualTo( 31 );
+		assertThat( result.get().getAttendanceItemId().get() ).isEqualTo( WS_AttendanceItem.StartTime1.ID );
 		assertThat( result.get().getErrorMessage() ).isEqualTo( "msg");
 		
 	}
@@ -126,18 +127,20 @@ public class CreateWorkScheduleTest {
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		// updateInfoMap.put(31, value)
-		updateInfoMap.put(34, (T) new TimeWithDayAttr(34));
-		updateInfoMap.put(41, (T) new TimeWithDayAttr(41));
-		updateInfoMap.put(44, (T) new TimeWithDayAttr(44));
+		updateInfoMap.put( WS_AttendanceItem.EndTime1.ID, (T) new TimeWithDayAttr(34));
+		updateInfoMap.put( WS_AttendanceItem.StartTime2.ID, (T) new TimeWithDayAttr(41));
+		updateInfoMap.put( WS_AttendanceItem.EndTime2.ID, (T) new TimeWithDayAttr(44));
 		
 		new Expectations() {{
 			
 			// 勤怠項目31
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 			times = 0; 
 			
 			// 勤怠項目34
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( true, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -145,7 +148,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目41
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -153,7 +157,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目44
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -178,8 +183,8 @@ public class CreateWorkScheduleTest {
 				e -> e.getAttendanceItemId().get(),
 				e -> e.getErrorMessage())
 			.containsExactly( 
-					tuple("empId", GeneralDate.ymd(2020, 11, 1), 41, "msg"),
-					tuple("empId", GeneralDate.ymd(2020, 11, 1), 44, "msg"));
+					tuple("empId", GeneralDate.ymd(2020, 11, 1), WS_AttendanceItem.StartTime2.ID, "msg"),
+					tuple("empId", GeneralDate.ymd(2020, 11, 1), WS_AttendanceItem.EndTime2.ID, "msg"));
 	}
 	
 	@Test
@@ -205,6 +210,7 @@ public class CreateWorkScheduleTest {
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				new HashMap<>());
 		
 		assertThat( result.getAtomTask() ).isEmpty();
@@ -246,6 +252,7 @@ public class CreateWorkScheduleTest {
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				new HashMap<>()));
 		
 	}
@@ -289,11 +296,13 @@ public class CreateWorkScheduleTest {
 		new Expectations() {{
 			
 			// 勤怠項目31
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 			times = 0; 
 			
 			// 勤怠項目34
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( true, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -301,7 +310,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目41
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -309,7 +319,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目44
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -322,15 +333,16 @@ public class CreateWorkScheduleTest {
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		// updateInfoMap.put(31, value)
-		updateInfoMap.put(34, (T) new TimeWithDayAttr(34));
-		updateInfoMap.put(41, (T) new TimeWithDayAttr(41));
-		updateInfoMap.put(44, (T) new TimeWithDayAttr(44));
+		updateInfoMap.put( WS_AttendanceItem.EndTime1.ID, (T) new TimeWithDayAttr(34));
+		updateInfoMap.put( WS_AttendanceItem.StartTime2.ID, (T) new TimeWithDayAttr(41));
+		updateInfoMap.put( WS_AttendanceItem.EndTime2.ID, (T) new TimeWithDayAttr(44));
 		
 		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				updateInfoMap);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
@@ -344,12 +356,12 @@ public class CreateWorkScheduleTest {
 				tuple(
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
-					Optional.of(41), 
+					Optional.of(WS_AttendanceItem.StartTime2.ID), 
 					"msg"),
 				tuple(
 					"empId",
 					GeneralDate.ymd(2020, 11, 1),
-					Optional.of(44),
+					Optional.of(WS_AttendanceItem.EndTime2.ID),
 					"msg"));
 		
 	}
@@ -372,11 +384,13 @@ public class CreateWorkScheduleTest {
 		new Expectations() {{
 			
 			// 勤怠項目31
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 			times = 0; 
 			
 			// 勤怠項目34
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( true, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -384,7 +398,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目41
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -392,7 +407,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目44
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -405,15 +421,16 @@ public class CreateWorkScheduleTest {
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		// updateInfoMap.put(31, value)
-		updateInfoMap.put(34, (T) new TimeWithDayAttr(34));
-		updateInfoMap.put(41, (T) new TimeWithDayAttr(41));
-		updateInfoMap.put(44, (T) new TimeWithDayAttr(44));
+		updateInfoMap.put( WS_AttendanceItem.EndTime1.ID, (T) new TimeWithDayAttr(34));
+		updateInfoMap.put( WS_AttendanceItem.StartTime2.ID, (T) new TimeWithDayAttr(41));
+		updateInfoMap.put( WS_AttendanceItem.EndTime2.ID, (T) new TimeWithDayAttr(44));
 		
 		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				updateInfoMap);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
@@ -427,14 +444,13 @@ public class CreateWorkScheduleTest {
 				tuple(
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
-					Optional.of(41), 
+					Optional.of(WS_AttendanceItem.StartTime2.ID), 
 					"msg"),
 				tuple(
 					"empId",
 					GeneralDate.ymd(2020, 11, 1),
-					Optional.of(44),
-					"msg"
-						));
+					Optional.of(WS_AttendanceItem.EndTime2.ID),
+					"msg"));
 		
 	}
 	
@@ -456,11 +472,13 @@ public class CreateWorkScheduleTest {
 		new Expectations() {{
 			
 			// 勤怠項目31
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 			times = 0; 
 			
 			// 勤怠項目34
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( true, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -468,7 +486,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目41
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_2.clockArea, WorkTimeZone.START_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -476,7 +495,8 @@ public class CreateWorkScheduleTest {
 							));
 			
 			// 勤怠項目44
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_2.clockArea, WorkTimeZone.END_TIME_2.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( false, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
@@ -489,15 +509,16 @@ public class CreateWorkScheduleTest {
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		// updateInfoMap.put(31, value)
-		updateInfoMap.put(34, (T) new TimeWithDayAttr(34));
-		updateInfoMap.put(41, (T) new TimeWithDayAttr(41));
-		updateInfoMap.put(44, (T) new TimeWithDayAttr(44));
+		updateInfoMap.put( WS_AttendanceItem.EndTime1.ID, (T) new TimeWithDayAttr(34));
+		updateInfoMap.put( WS_AttendanceItem.StartTime2.ID, (T) new TimeWithDayAttr(41));
+		updateInfoMap.put( WS_AttendanceItem.EndTime2.ID, (T) new TimeWithDayAttr(44));
 		
 		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				updateInfoMap);
 		
 		assertThat( result.getAtomTask() ).isEmpty();
@@ -511,12 +532,12 @@ public class CreateWorkScheduleTest {
 				tuple(
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
-					Optional.of(41), 
+					Optional.of(WS_AttendanceItem.StartTime2.ID), 
 					"msg"),
 				tuple(
 					"empId",
 					GeneralDate.ymd(2020, 11, 1),
-					Optional.of(44),
+					Optional.of(WS_AttendanceItem.EndTime2.ID),
 					"msg"
 						));
 		
@@ -536,30 +557,34 @@ public class CreateWorkScheduleTest {
 		}};
 		
 		new Expectations() {{
+			
 			// 勤怠項目31
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.START_TIME_1.clockArea, WorkTimeZone.START_TIME_1.workNo, (TimeWithDayAttr) any);
 			times = 0; 
 			
 			// 勤怠項目34
-			workInformation.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), (TimeWithDayAttr) any);
+			workInformation.containsOnChangeableWorkingTime(
+					require, WorkTimeZone.END_TIME_1.clockArea, WorkTimeZone.END_TIME_1.workNo, (TimeWithDayAttr) any);
 			result = new ContainsResult( true, 
 					Optional.of(new TimeSpanForCalc(
 							new TimeWithDayAttr(1), 
 							new TimeWithDayAttr(2))
 							));
 			
-			workSchedule.changeAttendanceTimeByHandCorrection(require, (Map<Integer, T>) any);
+			workSchedule.changeAttendanceItemValueByHandCorrection(require, (Map<Integer, T>) any);
 			}};
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		// updateInfoMap.put(31, value)
-		updateInfoMap.put(34, (T) new TimeWithDayAttr(34));
+		updateInfoMap.put( WS_AttendanceItem.EndTime1.ID, (T) new TimeWithDayAttr(34));
 		
 		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				updateInfoMap);
 		
 		assertThat( result.getErrorInformation() ).isEmpty();
@@ -594,7 +619,7 @@ public class CreateWorkScheduleTest {
 							new TimeWithDayAttr(2))
 							));
 			
-			workSchedule.changeAttendanceTimeByHandCorrection(require, (Map<Integer, T>) any);
+			workSchedule.changeAttendanceItemValueByHandCorrection(require, (Map<Integer, T>) any);
 			
 			require.correctWorkSchedule(workSchedule);
 			result = workSchedule;
@@ -610,6 +635,7 @@ public class CreateWorkScheduleTest {
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
 				workInformation, 
+				new ArrayList<>(),
 				updateInfoMap);
 		
 		assertThat( result.getErrorInformation() ).isEmpty();

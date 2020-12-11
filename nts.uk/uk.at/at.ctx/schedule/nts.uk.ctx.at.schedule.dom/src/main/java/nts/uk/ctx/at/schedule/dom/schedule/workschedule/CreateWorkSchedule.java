@@ -11,6 +11,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
@@ -37,6 +38,7 @@ public class CreateWorkSchedule {
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation,
+			List<TimeSpanForCalc> breakTimeList,
 			Map<Integer, T> updateInfoMap) {
 		
 		Optional<WorkSchedule> registedWorkSchedule = require.getWorkSchedule(employeeId, date);
@@ -56,14 +58,10 @@ public class CreateWorkSchedule {
 			workSchedule = registedWorkSchedule.get();
 		}
 		
-		// 出勤時刻1 : 31
-		// 退勤時刻1 : 34
-		// 出勤時刻2 : 41
-		// 退勤時刻2 : 44
-		if ( updateInfoMap.containsKey(31) || 
-				updateInfoMap.containsKey(34) || 
-				updateInfoMap.containsKey(41) || 
-				updateInfoMap.containsKey(44) ) {
+		if ( updateInfoMap.containsKey( WS_AttendanceItem.StartTime1.ID ) || 
+				updateInfoMap.containsKey( WS_AttendanceItem.EndTime1.ID ) || 
+				updateInfoMap.containsKey( WS_AttendanceItem.StartTime2.ID ) || 
+				updateInfoMap.containsKey( WS_AttendanceItem.EndTime2.ID) ) {
 			
 			List<ErrorInfoOfWorkSchedule> errorList = 
 					CreateWorkSchedule.checkTimeSpan(require, employeeId, date, workInformation, updateInfoMap);
@@ -73,7 +71,11 @@ public class CreateWorkSchedule {
 			}
 		}
 		
-		workSchedule.changeAttendanceTimeByHandCorrection(require, updateInfoMap);
+		workSchedule.changeAttendanceItemValueByHandCorrection(require, updateInfoMap);
+		if ( !breakTimeList.isEmpty() ) {
+			workSchedule.handCorrectBreakTimeList(require, breakTimeList);
+		}
+		
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);
 		
 		// TODO		
@@ -211,16 +213,16 @@ public class CreateWorkSchedule {
 	static enum WorkTimeZone {
 		
 		// 開始時刻１
-		START_TIME_1( 31, ClockAreaAtr.START, new WorkNo(1)),
+		START_TIME_1( WS_AttendanceItem.StartTime1.ID, ClockAreaAtr.START, new WorkNo(1)),
 
 		// 終了時刻１
-		END_TIME_1( 34, ClockAreaAtr.END, new WorkNo(1) ),
+		END_TIME_1( WS_AttendanceItem.EndTime1.ID, ClockAreaAtr.END, new WorkNo(1) ),
 		
 		// 開始時刻２ 
-		START_TIME_2 ( 41, ClockAreaAtr.START, new WorkNo(2) ),
+		START_TIME_2 ( WS_AttendanceItem.StartTime2.ID, ClockAreaAtr.START, new WorkNo(2) ),
 		
 		// 終了時刻２
-		END_TIME_2( 44, ClockAreaAtr.END, new WorkNo(2) );
+		END_TIME_2( WS_AttendanceItem.EndTime2.ID, ClockAreaAtr.END, new WorkNo(2) );
 		
 		public final int attendanceItemId;
 		
