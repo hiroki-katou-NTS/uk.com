@@ -7,4 +7,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  */
 public class PersonCostRoundingSetting extends ValueObject {
     //1: 単価＊割増率の丸め:人件費単価丸め
+
+    private UnitPriceRoundingSetting roundingOfPremium;
 }
