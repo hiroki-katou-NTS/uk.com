@@ -41,8 +41,10 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
 		builderString.append(
+				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT, ");
+		builderString.append(
 				"a.SEND_REASON_APP, a.SEND_SERVERTIME, a.RECV_ALL_STAMP, a.RECV_ALL_RESERVATION, a.RECV_ALL_APPLICATION,");
-		builderString.append("b.WORKTYPE_CD, c.WORKTIME_CD, d.RESERVE_FRAME_NO, as EMPLOYEE");
+		builderString.append("b.WORKTYPE_CD, c.WORKTIME_CD, d.RESERVE_FRAME_NO, e.SID as EMPLOYEE");
 		builderString.append(" FROM KRCMT_TR_REQUEST a");
 		builderString.append(
 				" LEFT JOIN KRCMT_TR_SEND_WORKTYPE b ON a.CONTRACT_CD = b.CONTRACT_CD AND a.TIMERECORDER_CD = b.TIMERECORDER_CD ");
