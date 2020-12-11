@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 public class LaborTime {
 
 	// 法定労働時間
-	public int legalLaborTime;
+	public Integer legalLaborTime;
 	// 所定労働時間
-	public int withinLaborTime;
+	public Integer withinLaborTime;
 	// 週平均時間
-	public int weekAvgTime;
+	public Integer weekAvgTime;
 
 }
