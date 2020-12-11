@@ -51,6 +51,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.CategoryCondValueDto;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 
 @Stateless
 public class AggregationProcessService {
