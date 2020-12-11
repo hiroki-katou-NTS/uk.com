@@ -304,6 +304,7 @@ module nts.uk.ui.components.fullcalendar {
         ctrl: KnockoutObservable<boolean>;
         shift: KnockoutObservable<boolean>;
         mouse: KnockoutObservable<boolean>;
+        delete: KnockoutObservable<boolean>;
     };
     type J_EVENT = (evt: JQueryEventObject) => void;
     type GlobalEvent = { [key: string]: J_EVENT[]; };
@@ -410,7 +411,8 @@ module nts.uk.ui.components.fullcalendar {
         alt: ko.observable(false),
         ctrl: ko.observable(false),
         shift: ko.observable(false),
-        mouse: ko.observable(false)
+        mouse: ko.observable(false),
+        delete: ko.observable(false)
     });
 
     const defaultPopupData = (): PopupData => ({
@@ -490,7 +492,6 @@ module nts.uk.ui.components.fullcalendar {
         // store popup state
         public popupPosition: PopupPosition = defaultPPosition();
 
-        public newEvent: KnockoutObservable<null | EventSlim> = ko.observable(null);
         public selectedEvents: EventSlim[] = [];
 
         public $style: KnockoutObservable<string> = ko.observable('');
@@ -627,7 +628,6 @@ module nts.uk.ui.components.fullcalendar {
                 dataEvent,
                 popupData,
                 popupPosition,
-                newEvent
             } = vm;
             const {
                 locale,
@@ -687,9 +687,8 @@ module nts.uk.ui.components.fullcalendar {
 
             // calculate time on header
             const timesSet: KnockoutComputed<number[]> = ko.computed({
-                read() {
+                read: () => {
                     const ds = ko.unwrap(datesSet);
-                    const nevt = ko.unwrap(newEvent);
                     const evts = ko.unwrap<EventRaw[]>(events);
 
                     if (ds) {
@@ -701,7 +700,7 @@ module nts.uk.ui.components.fullcalendar {
 
                         return _.range(0, diff, 1).map(m => {
                             const date = first.clone().add(m, 'day');
-                            const exists = _.filter([...evts, nevt || { start: null, end: null }], (d: EventApi) => {
+                            const exists = _.filter([...evts], (d: EventApi) => {
                                 return !d.allDay &&
                                     d.display !== 'background' &&
                                     date.isSame(d.start, 'date');
@@ -1086,6 +1085,17 @@ module nts.uk.ui.components.fullcalendar {
                     const id = el.getAttribute('data-id');
                     const unwraped = ko.unwrap<EventRaw[]>(dragItems);
 
+                    _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                        if (e.extendedProps.status === 'new' && !e.extendedProps.id) {
+                            e.remove();
+                        } else if (e.groupId === SELECTED) {
+                            e.setProp(GROUP_ID, '');
+
+                            e.setProp(BORDER_COLOR, TRANSPARENT);
+                            e.setProp(DURATION_EDITABLE, true);
+                        }
+                    });
+
                     if (id) {
                         const exist = _.find(unwraped, (e: EventRaw) => e.extendedProps.relateId === id);
 
@@ -1126,12 +1136,14 @@ module nts.uk.ui.components.fullcalendar {
                     const events = vm.calendar.getEvents();
 
                     _.each(events, (e: EventApi) => {
-                        // unselect events
-                        e.setProp(BORDER_COLOR, TRANSPARENT);
-
-                        // remove background event & new event (empty data)
-                        if (e.display === BACKGROUND || !e.extendedProps.id) {
+                        // remove new event (empty data)
+                        if (!e.extendedProps.id) {
                             e.remove();
+                        } else if (e.groupId === SELECTED) {
+                            e.setProp(GROUP_ID, '');
+                            // unselect events
+                            e.setProp(BORDER_COLOR, TRANSPARENT);
+                            e.setProp(DURATION_EDITABLE, true);
                         }
                     });
                 },
@@ -1293,9 +1305,7 @@ module nts.uk.ui.components.fullcalendar {
                     });
 
                     arg.event.setProp(BORDER_COLOR, BLACK);
-                    arg.event.setProp(GROUP_ID, SELECTED);
 
-                    newEvent(null);
                     popupPosition.event(null);
                 },
                 eventDrop: (arg: FullCalendar.EventDropArg) => {
@@ -1320,7 +1330,6 @@ module nts.uk.ui.components.fullcalendar {
                     arg.event.setProp(BORDER_COLOR, BLACK);
                     arg.event.setProp(GROUP_ID, SELECTED);
 
-                    newEvent(null);
                     popupPosition.event(null);
                 },
                 eventResize: (arg: FullCalendar.EventResizeDoneArg) => {
@@ -1334,20 +1343,26 @@ module nts.uk.ui.components.fullcalendar {
                 select: (arg: FullCalendar.DateSelectArg) => {
                     const { start, end } = arg;
 
-                    // rerender event (clear selection)
+                    // clean selection
+                    vm.calendar.unselect();
+
+                    // rerender event (deep clean selection)
                     updateEvents();
 
                     // add new event from selected data
-                    vm.calendar
+                    const event = vm.calendar
                         .addEvent({
                             id: randomId(),
                             start: formatDate(start),
                             end: formatDate(end),
-                            borderColor: BLACK,
+                            [BORDER_COLOR]: BLACK,
+                            [GROUP_ID]: SELECTED,
                             extendedProps: {
                                 status: 'new'
                             }
                         });
+
+                    console.log(event);
                 },
                 eventRemove: (args: FullCalendar.EventRemoveArg) => {
                     const { event } = args;
@@ -1540,6 +1555,8 @@ module nts.uk.ui.components.fullcalendar {
                 read: () => {
                     const id = ko.unwrap<Date>(initialDate);
 
+                    clearSelection();
+
                     vm.calendar.gotoDate(formatDate(id));
                 },
                 disposeWhenNodeIsRemoved: vm.$el
@@ -1678,7 +1695,7 @@ module nts.uk.ui.components.fullcalendar {
 
         private initalEvents() {
             const vm = this;
-            const { $el, params, dataEvent, popupPosition, newEvent } = vm;
+            const { $el, params, dataEvent, popupPosition } = vm;
 
             $($el).on('mousewheel', (evt) => {
                 if (ko.unwrap(dataEvent.shift) === true) {
@@ -1763,13 +1780,32 @@ module nts.uk.ui.components.fullcalendar {
                     dataEvent.alt(false);
                 }
 
-                if (evt.keyCode === 46) {
+                if (evt.keyCode === 46 && !ko.unwrap(dataEvent.delete)) {
+                    if (vm.calendar) {
+                        const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.groupId === SELECTED);
 
+                        if (selecteds.length) {
+                            dataEvent.delete(true);
+
+                            vm.$dialog
+                                .confirm({ messageId: 'DELETE_CONFIRM' })
+                                .then((v: 'yes' | 'no') => {
+                                    if (v === 'yes') {
+                                        const starts = selecteds.map(({ start }) => formatDate(start));
+
+                                        if (ko.isObservable(vm.params.events)) {
+                                            vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+                                        }
+                                    }
+
+                                    dataEvent.delete(false);
+                                });
+                        }
+                    }
                 }
             });
 
             vm.registerEvent('resize', () => {
-                newEvent(null);
                 popupPosition.event(null);
                 popupPosition.copyDay(null);
             });
