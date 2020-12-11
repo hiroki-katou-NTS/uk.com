@@ -2,12 +2,8 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
-import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.ExtractResult;
+import nts.arc.time.GeneralDate;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,11 +38,11 @@ public class AlarmListExtractResultWorkplaceDto {
     /**
      * 区分
      */
-    private String category;
+    private int category;
     /**
      * 開始日
      */
-    private GeneralDateTime startTime;
+    private GeneralDate startTime;
     /**
      * コメント
      */
@@ -59,7 +55,7 @@ public class AlarmListExtractResultWorkplaceDto {
     /**
      * 職場コード
      */
-    private Optional<String> workplaceCode;
+    private String workplaceCode;
 
     /**
      * 職場名

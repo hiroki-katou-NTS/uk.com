@@ -53,17 +53,16 @@
         </div>
         <div id="functions-area-bottom">
              <!-- D2_2 -->
-             <com:ko-if bind="$vm.dialogMode() == 2 ">
-                <button tabindex="3" class="danger"
-                        data-bind="click:interruptProcess">#{i18n.getText('KAL011_32')}</button>
+             <com:ko-if bind="$vm.canInterrupt()">
+                <button tabindex="3" class="danger" data-bind="click:interruptProcess, text: $vm.$i18n('KAL011_32')"/>
             </com:ko-if>
-            <com:ko-if bind="$vm.dialogMode() == 0 || $vm.dialogMode() == 3 ">
+            <com:ko-if bind="$vm.canCheckResult()">
                 <!-- D4_2 -->
-                <button tabindex="3" data-bind="click:confirmProcess">#{i18n.getText('KAL011_33')}</button>
+                <button tabindex="3" data-bind="click:checkResult, text: $vm.$i18n('KAL011_33')"/>
             </com:ko-if>
-            <com:ko-if bind="$vm.dialogMode() == 1 || $vm.dialogMode() == 3 ">
+            <com:ko-if bind="$vm.canClose()">
                 <!-- B4_3 -->
-                <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL011_34')}</button>
+                <button tabindex="4" data-bind="click:closeDialog, text: $vm.$i18n('KAL011_34')"/>
             </com:ko-if>
         </div>
     </ui:define>

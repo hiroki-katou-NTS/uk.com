@@ -15,7 +15,7 @@ module nts.uk.at.kal011.d {
         /*実行終了日時*/
         endTime: KnockoutObservable<any> = ko.observable(null);
         /*経過時間*/
-        elapsedTime: KnockoutObservable<any>;
+        elapsedTime: KnockoutObservable<any> = ko.observable(null);;
         /*処理状態*/
         status: KnockoutObservable<any> = ko.observable(null);
 
@@ -30,6 +30,10 @@ module nts.uk.at.kal011.d {
         interval: any;
 
         formatDate: string = "YYYY/MM/DD HH:mm:ss";
+
+        canInterrupt: KnockoutObservable<boolean> = ko.observable(false);
+        canCheckResult: KnockoutObservable<boolean> = ko.observable(false);
+        canClose: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             super();
@@ -48,9 +52,9 @@ module nts.uk.at.kal011.d {
             vm.interval = setInterval(vm.countTime, 1000, vm);
             vm.extractAlarm().done((data: any) => {
                 console.log(data);
-                vm.endTime(moment(vm.$date.now()).format(vm.formatDate));
 
                 vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
+                vm.setFinished();
             }).fail((err: any) => {
                 vm.$dialog.error(err);
             });
@@ -73,6 +77,10 @@ module nts.uk.at.kal011.d {
                     categoryPeriods: vm.categoryPeriods,
                     processStatusId: vm.processStatusId
                 }
+                // 抽出処理が実行中である場合
+                vm.canInterrupt(true);
+                vm.canCheckResult(false);
+                vm.canClose(false);
                 vm.$ajax(API.extractExecute, param).done((task: any) => {
                     console.log(task);
                     nts.uk.deferred.repeat(conf => conf.task(() => {
@@ -81,9 +89,17 @@ module nts.uk.at.kal011.d {
                             console.log(taskData);
                             if (res.succeeded) {
                                 let data = {};
+                                vm.canInterrupt(false);
+                                vm.canCheckResult(true);
+                                vm.canClose(false);
 
                                 dfd.resolve(data);
                             } else if (res.failed) {
+                                // 抽出処理が中断された場合													
+                                vm.canInterrupt(false);
+                                vm.canCheckResult(true);
+                                vm.canClose(true);
+
                                 dfd.reject(res.error);
                             }
                         });
@@ -91,9 +107,19 @@ module nts.uk.at.kal011.d {
                         return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
                     }).pause(1000));
                 }).fail((err: any) => {
+                    // 抽出処理が開始できない場合
+                    vm.canInterrupt(false);
+                    vm.canCheckResult(false);
+                    vm.canClose(true);
+
                     dfd.reject(err);
                 });
             }).fail((err: any) => {
+                // 抽出処理が開始できない場合
+                vm.canInterrupt(false);
+                vm.canCheckResult(false);
+                vm.canClose(true);
+
                 dfd.reject(err);
             });
 
@@ -111,39 +137,18 @@ module nts.uk.at.kal011.d {
             return dfd.promise();
         }
 
-        /**
-         * Action perform for terminate the process
-         * @return void
-         */
         interruptProcess() {
             const vm = this;
             vm.$dialog.confirm({ messageId: "Msg_1412" }).then((result: 'yes' | 'cancel') => {
                 if (result === 'yes') {
                     //TODO server side logic to suspens
                     vm.dialogMode(ExtractState.INTERRUPTION);
+                    vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
                 }
             });
         }
 
-        /**
-         * This function is responsible to close the modal         *
-         * @return type void         *
-         */
-        cancel_Dialog(): any {
-            var vm = this;
-            let modalData = {
-                isClose: true
-            }
-            vm.$window.storage('KAL011DModalData', modalData).done(() => {
-                nts.uk.ui.windows.close();
-            });
-        }
-
-        /**
-         * This function is responsible to perform modal data action
-         * @return type void         *
-         * */
-        confirmProcess(): any {
+        checkResult() {
             const vm = this;
             let modalData = {
                 selectedCode: vm.alarmPatternCode,
@@ -155,12 +160,28 @@ module nts.uk.at.kal011.d {
             })
         }
 
-        public countTime(vm: Kal011DViewModel) {
-            let timeNow = vm.$date.now();
-            let over = (timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 60 * 60) - (vm.start.getSeconds() + vm.start.getMinutes() * 60 + vm.start.getHours() * 60 * 60);
-            let time = vm.$date.today();
-            time.setSeconds(over);
-            let result = time.toISOString().substr(11, 8);
+        closeDialog() {
+            var vm = this;
+            let modalData = {
+                isClose: true
+            }
+            vm.$window.storage('KAL011DModalData', modalData).done(() => {
+                nts.uk.ui.windows.close();
+            });
+        }
+
+        setFinished() {
+            const vm = this;
+            vm.endTime(moment(vm.$date.now()).format(vm.formatDate));
+            window.clearInterval(vm.interval);
+        }
+
+        countTime(vm: Kal011DViewModel) {
+            let over = (new Date()).getTime() - vm.start.getTime()
+            let time = new Date(null);
+            time.setHours(0);
+            time.setTime(time.getTime() + over);
+            let result = moment(time).format("HH:mm:ss")
             vm.elapsedTime(result);
         }
     }
