@@ -110,7 +110,7 @@ public class JpaHolidayReposiroty implements HolidayRepository {
 		// Row 3
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT),
 				new DataEachBox(I18NText.getText("KMF001_280"), ColumnTextAlign.LEFT),
-				new DataEachBox(a27_2, ColumnTextAlign.RIGHT)));
+				new DataEachBox(a27_2, ColumnTextAlign.LEFT)));
 		
 		// Row 4
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT),
@@ -119,15 +119,15 @@ public class JpaHolidayReposiroty implements HolidayRepository {
 		// Row 5
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT),
 				new DataEachBox(I18NText.getText("KMF001_285"), ColumnTextAlign.LEFT),
-				new DataEachBox(a27_4, ColumnTextAlign.LEFT)));
+				new DataEachBox(a27_4, ColumnTextAlign.RIGHT)));
 		// Row 6
 		datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_286"), ColumnTextAlign.LEFT),
 				new DataEachBox(null, ColumnTextAlign.LEFT),
-				new DataEachBox(a27_5, ColumnTextAlign.LEFT)));
+				new DataEachBox(a27_5, ColumnTextAlign.RIGHT)));
 		// Row 7
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT),
 				new DataEachBox(I18NText.getText("KMF001_290"), ColumnTextAlign.LEFT),
-				new DataEachBox(a27_6, ColumnTextAlign.LEFT)));
+				new DataEachBox(a27_6, ColumnTextAlign.RIGHT)));
 		// Row 8
 		datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_288"), ColumnTextAlign.LEFT),
 				new DataEachBox(null, ColumnTextAlign.LEFT),

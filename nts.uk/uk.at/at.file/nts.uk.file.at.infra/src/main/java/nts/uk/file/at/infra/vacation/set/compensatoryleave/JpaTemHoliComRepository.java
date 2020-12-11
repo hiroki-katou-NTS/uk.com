@@ -95,13 +95,13 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*※8_01*/
         boolean isOccurrOTUseAtr = rs.getString("OCCURR_OT_USE_ATR").equals("1");
         /*※9*/
-        boolean isOccurrOTTimeAtr = rs.getString("OCCURR_OT_TIME_ATR").equals("1");//0：指定時間,1：一定時間
+        boolean isOccurrHDTimeAtr = rs.getString("OCCURR_HD_WORK_TIME_ATR").equals("0");//0：指定時間,1：一定時間
         /*※9_01*/
-        boolean isNotOccurrOTTimeAtr = !isOccurrOTTimeAtr;
-        /*※10*/
-        boolean isOccurrHDTimeAtr = rs.getString("OCCURR_HD_WORK_TIME_ATR").equals("1");//0：指定時間, 1：一定時間
-        /*※10_01*/
         boolean isNotOccurrHDTimeAtr = !isOccurrHDTimeAtr;
+        /*※10*/
+        boolean isOccurrOTTimeAtr = rs.getString("OCCURR_OT_TIME_ATR").equals("0");//0：指定時間, 1：一定時間
+        /*※10_01*/
+        boolean isNotOccurrOTTimeAtr = !isOccurrOTTimeAtr;
         /*A15_1*/
         String isManagementOfHolidays = CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")));
         /*A15_2*/
@@ -119,25 +119,25 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*A15_8*/
         String occurrenceSetUseType = isManagement && isOccurrHDWorkUseAtr ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("OCCURR_HD_WORK_TIME_ATR"))) : null;
         /*A15_9*/
-        String oneDayTime = isManagement && isOccurrHDWorkUseAtr && isOccurrOTTimeAtr ? rs.getString("DES_HD_WORK_ONEDAY_TIME") : null;
+        String oneDayTime = isManagement && isOccurrHDWorkUseAtr && isOccurrHDTimeAtr ? rs.getString("DES_HD_WORK_ONEDAY_TIME") : null;
         /*A15_10*/
-        String halfDayTime = isManagement && isOccurrHDWorkUseAtr && isOccurrOTTimeAtr ? rs.getString("DES_HD_WORK_HALFDAY_TIME") : null;
+        String halfDayTime = isManagement && isOccurrHDWorkUseAtr && isOccurrHDTimeAtr ? rs.getString("DES_HD_WORK_HALFDAY_TIME") : null;
         /*A15_11*/
-        String certainTime = isManagement && isOccurrHDWorkUseAtr && isNotOccurrOTTimeAtr ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_HD_WORK_TIME"))) + I18NText.getText("KMF001_222") : null;
+        String certainTime = isManagement && isOccurrHDWorkUseAtr && isNotOccurrHDTimeAtr ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_HD_WORK_TIME"))) + I18NText.getText("KMF001_222") : null;
         /*A15_12*/
         String occurrTypeVer2 = isManagement ? CommonTempHolidays.checkOcurrType(Integer.valueOf(rs.getString("OCCURR_OT_USE_ATR"))) : null;
         /*A15_13*/
         String useType = isManagement && isOccurrOTUseAtr ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("OCCURR_OT_TIME_ATR"))) : null;
         /*A15_14*/
-        String oneDayTimeV2 = isManagement && isOccurrOTUseAtr && isOccurrHDTimeAtr ? rs.getString("DES_OT_ONEDAY_TIME") : null;
+        String oneDayTimeV2 = isManagement && isOccurrOTUseAtr && isOccurrOTTimeAtr ? rs.getString("DES_OT_ONEDAY_TIME") : null;
         /*A15_15*/
-        String halfDayTimeV2 = isManagement && isOccurrOTUseAtr && isOccurrHDTimeAtr ? rs.getString("DES_OT_HALFDAY_TIME") : null;
+        String halfDayTimeV2 = isManagement && isOccurrOTUseAtr && isOccurrOTTimeAtr ? rs.getString("DES_OT_HALFDAY_TIME") : null;
         /*A15_16*/
-        String certainTimeV2 = isManagement && isOccurrOTUseAtr && isNotOccurrHDTimeAtr  ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_OT_TIME"))) + I18NText.getText("KMF001_222") : null;
+        String certainTimeV2 = isManagement && isOccurrOTUseAtr && isNotOccurrOTTimeAtr  ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_OT_TIME"))) + I18NText.getText("KMF001_222") : null;
         /*A15_17*/
-        String expDateMngMethod = CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("EXP_DATE_MNG_METHOD")));
+        String expDateMngMethod = isManagement ? CommonTempHolidays.getTextEnumTermManagement(Integer.valueOf(rs.getString("EXP_DATE_MNG_METHOD"))):null;
         /*A15_18*/
-        String linkMngAtr = CommonTempHolidays.getTextEnumTermManagement(Integer.valueOf(rs.getString("LINK_MNG_ATR")));
+        String linkMngAtr = isManagement? CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("LINK_MNG_ATR"))):null;
         datas.add(buildARow(
                 new DataEachBox(isManagementOfHolidays,ColumnTextAlign.LEFT)
                 ,new DataEachBox(subExpDateColumn,ColumnTextAlign.RIGHT)
