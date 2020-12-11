@@ -77,16 +77,16 @@ module nts.uk.at.kmk004.r {
 				};
 				let wpOption = {
 					isShowAlreadySet: false,
-					isMultipleUse: true,
-					isMultiSelect: false,
+					isMultipleUse: false,
+					isMultiSelect: true,
 					startMode: StartMode.WORKPLACE,
 					selectedId: vm.screenData().selectedCode,
 					baseDate: ko.observable(new Date()),
 					selectType: SelectionType.SELECT_BY_SELECTED_CODE,
 					isShowSelectButton: true,
 					isDialog: true,
-					alreadySettingList: vm.screenData().alreadySettingList,
-					maxRows: 10,
+					alreadySettingList: ko.observableArray([]),
+					maxRows: 12,
 					tabindex: 1,
 					systemType: 2
 				};
@@ -100,14 +100,14 @@ module nts.uk.at.kmk004.r {
 			let vm = this,
 				empOption = {
 					isShowAlreadySet: false,
-					isMultiSelect: false,
+					isMultiSelect: true,
 					listType: ListType.EMPLOYMENT,
 					selectType: SelectType.SELECT_BY_SELECTED_CODE,
 					selectedCode: vm.screenData().selectedCode,
 					isDialog: true,
 					isShowNoSelectRow: false,
-					alreadySettingList: vm.screenData().alreadySettingList,
-					maxRows: 9
+					alreadySettingList: ko.observableArray([]),
+					maxRows: 12
 				};
 			$('#employment-list').ntsListComponent(empOption);
 		}
@@ -116,18 +116,18 @@ module nts.uk.at.kmk004.r {
 			let vm = this;
 			let employeeOption = {
 				isShowAlreadySet: false,
-				isMultiSelect: false,
+				isMultiSelect: true,
 				listType: ListType.EMPLOYEE,
 				employeeInputList: vm.screenData().data,
 				selectType: SelectType.SELECT_BY_SELECTED_CODE,
 				selectedCode: vm.screenData().selectedCode,
 				isDialog: true,
 				isShowNoSelectRow: false,
-				alreadySettingList: vm.screenData().alreadySettingList,
+				alreadySettingList: ko.observableArray([]),
 				isShowWorkPlaceName: false,
 				isShowSelectAllButton: false,
 				disableSelection: false,
-				maxRows: 9
+				maxRows: 12
 			};
 
 			$('#employee-list').ntsListComponent(employeeOption);
@@ -141,12 +141,9 @@ module nts.uk.at.kmk004.r {
 	export class ScreenData {
 		data: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedCode: KnockoutObservable<string> = ko.observable();
-		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 		constructor(param?: IParam) {
 			if (param) {
 				this.data(param.data);
-				this.selectedCode(param.selectedCode);
-				this.alreadySettingList(param.alreadySettingList);
 			}
 		}
 

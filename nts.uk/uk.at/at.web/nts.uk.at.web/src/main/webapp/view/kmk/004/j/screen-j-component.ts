@@ -183,7 +183,8 @@ class ScreenJComponent extends ko.ViewModel {
 			alreadySettingList: vm.screenData().alreadySettingList,
 			isShowWorkPlaceName: true,
 			isShowSelectAllButton: false,
-			disableSelection: false
+			disableSelection: false,
+			maxRows: 12
 		});
 
 		vm.screenData().selected.subscribe((value) => {
