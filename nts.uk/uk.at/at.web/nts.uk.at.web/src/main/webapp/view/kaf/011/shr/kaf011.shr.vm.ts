@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf011 {
 	import getText = nts.uk.resource.getText;
 	/** 振出申請 */
 	export class RecruitmentApp {
+		appType: number; //0: Rec, 1: Abs
 		appID: string;
 		application: Application = new Application();
 		workingHours: TimeZoneWithWorkNo[] = [];
@@ -15,9 +16,11 @@ module nts.uk.at.view.kaf011 {
 		workTypeList = ko.observableArray([]);
 		workTypeSelected = new WorkTypeSelected();
 		subWorkSubHolidayLinkingMngList: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		appDispInfoStartup: any;
 		
-		constructor(){
+		constructor(appType: number){
 			let self = this;
+			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
 				if(data){
 					self.workTypeSelected.update(_.find(self.workTypeList(), {'workTypeCode': data}));	
@@ -47,7 +50,7 @@ module nts.uk.at.view.kaf011 {
 			
 		}
 		
-		bindDingScreenA(data: any){
+		bindDingScreenA(data: any, appDispInfoStartup: any){
 			let self = this;
 			_.orderBy(data.workTypeList, ['code'], ['asc'])
 			self.workTypeList(data.workTypeList);
@@ -58,6 +61,7 @@ module nts.uk.at.view.kaf011 {
 			}
 			
 			self.workInformation.update(data);
+			self.appDispInfoStartup = appDispInfoStartup;
 		}
 		
 		time_convert(): string{ 
@@ -82,15 +86,54 @@ module nts.uk.at.view.kaf011 {
 		
 		openKDL003() {
 			let self = this;
-			nts.uk.ui.windows.setShared('parentCodes', {selectedWorkTypeCode: self.workInformation.workType(), selectedWorkTimeCode: self.workInformation.workTime()});
-			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml');
+			nts.uk.ui.windows.setShared('parentCodes',{
+										workTypeCodes: _.map(self.workTypeList(),'workTypeCode'),
+										selectedWorkTypeCode: self.workInformation.workType(), 
+										selectedWorkTimeCode: self.workInformation.workTime()
+									});
+			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml').onClosed(() => {
+				let data = nts.uk.ui.windows.getShared('childData');
+					if(data){
+						self.workingHours1.timeZone.startTime(data.first.start);
+						self.workingHours1.timeZone.endTime(data.first.end);
+						self.workInformation.workType(data.selectedWorkTypeCode);
+						self.workInformation.workTime(data.selectedWorkTimeCode);
+						if(data.second.start && data.second.end){
+							self.workingHours2.timeZone.startTime(data.second.start);
+							self.workingHours2.timeZone.endTime(data.second.end);
+							self.workingHours2DispLay(true);	
+						}
+					}
+			});
 		}
 		
 		openKDL035() {
 			let self = this;
-			nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
-				let kdl035Result = nts.uk.ui.windows.getShared('KDL035_RESULT');
-			});
+			if(self.application.appDate() == "" ){
+				if(self.appType == 0){
+					$("#recAppDate").trigger("validate");	
+				}else{
+					$("#absAppDate").trigger("validate");	
+				}
+			}else{
+				nts.uk.ui.windows.setShared('KDL035_PARAMS', {
+					employeeId: self.application.employeeIDLst()[0],
+					period: {
+						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
+						endDate: moment(self.application.appDate()).format('YYYY/MM/DD')
+					},
+					daysUnit: 0.5,
+					targetSelectionAtr: 1,
+					actualContentDisplayList: self.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+					managementData: self.subWorkSubHolidayLinkingMngList()
+				});
+				nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
+					let data = nts.uk.ui.windows.getShared('KDL035_RESULT');
+					if(data){
+						self.subWorkSubHolidayLinkingMngList(data);
+					}
+				});
+			}
 		}
 		
 	}
@@ -99,8 +142,8 @@ module nts.uk.at.view.kaf011 {
 	export class AbsenceLeaveApp extends RecruitmentApp {
 		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
 		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
-		constructor(){
-			super();
+		constructor(appType: number){
+			super(appType);
 		}
 		update(param: any){
 			let self = this;

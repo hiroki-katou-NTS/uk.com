@@ -11,7 +11,7 @@
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, required: true }"></div>
+							<div id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, required: true }"></div>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
@@ -110,7 +110,7 @@
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: recruitmentApp.application.appDate, required: true }"></div>
+							<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: recruitmentApp.application.appDate, required: true }"></div>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>

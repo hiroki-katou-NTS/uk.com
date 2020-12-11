@@ -29,8 +29,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
 		
-		recruitmentApp = new RecruitmentApp();
-		absenceLeaveApp = new AbsenceLeaveApp();
+		recruitmentApp = new RecruitmentApp(0);
+		absenceLeaveApp = new AbsenceLeaveApp(1);
 		
 		
 		
@@ -66,8 +66,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
-					vm.recruitmentApp.bindDingScreenA(data.applicationForWorkingDay);
-					vm.absenceLeaveApp.bindDingScreenA(data.applicationForHoliday);
+					vm.recruitmentApp.bindDingScreenA(data.applicationForWorkingDay, data.appDispInfoStartup);
+					vm.absenceLeaveApp.bindDingScreenA(data.applicationForHoliday, data.appDispInfoStartup);
 					vm.comment.update(data.substituteHdWorkAppSet);
 				}).always(() => {
 					$('#functions-area').css({'display': ''});
