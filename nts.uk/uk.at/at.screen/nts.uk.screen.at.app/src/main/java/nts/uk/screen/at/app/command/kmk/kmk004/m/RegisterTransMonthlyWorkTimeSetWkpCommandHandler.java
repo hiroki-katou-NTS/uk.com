@@ -30,7 +30,7 @@ public class RegisterTransMonthlyWorkTimeSetWkpCommandHandler
 	private WorkplaceList wkp;
 
 	@Override
-	protected List<WorkplaceIdDto> handle(CommandHandlerContext<SaveMonthlyWorkTimeSetWkpCommand> context) {
+	public List<WorkplaceIdDto> handle(CommandHandlerContext<SaveMonthlyWorkTimeSetWkpCommand> context) {
 
 		// 1: <call> 職場別月単位労働時間を登録・更新する
 		this.saveHandler.handle(context.getCommand());
