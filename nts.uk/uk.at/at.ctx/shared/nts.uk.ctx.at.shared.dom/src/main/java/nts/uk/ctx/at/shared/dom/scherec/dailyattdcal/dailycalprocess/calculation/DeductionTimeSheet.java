@@ -561,7 +561,7 @@ public class DeductionTimeSheet {
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			List<LateTimeSheet> lateTimeSheet,
-			CalculationRangeOfOneDay calcRange) {
+			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
 
 		// 固定休憩か流動休憩か確認する
 		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED
@@ -579,7 +579,7 @@ public class DeductionTimeSheet {
 			/** シフトから計算 */
 			return createDedctionTimeSheetFlow(
 					dedAtr, todayWorkType, integrationOfWorkTime, integrationOfDaily,
-					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange);
+					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange, correctWithEndTime);
 			
 		}
 	}
@@ -587,7 +587,8 @@ public class DeductionTimeSheet {
 	/** 控除時間帯の作成 */
 	private static List<TimeSheetOfDeductionItem> createDedctionTimeSheetFlow(DeductionAtr deductionAtr, WorkType workType, 
 			IntegrationOfWorkTime workTime, IntegrationOfDaily dailyRecord, TimeSpanForDailyCalc oneDayOfRange, 
-			List<LateTimeSheet> lateTimeSheet, PredetermineTimeSetForCalc predetermineForCalc, CalculationRangeOfOneDay calcRange) {
+			List<LateTimeSheet> lateTimeSheet, PredetermineTimeSetForCalc predetermineForCalc, 
+			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
 		
 		/** ○計算範囲の取得 */
 		
@@ -618,7 +619,8 @@ public class DeductionTimeSheet {
 			/** △流動休憩時間帯の作成 */
 			return fluidCalc.createDeductionFluidRestTime(calcRange.getAttendanceLeavingWork(),
 							fluidCalc.getBreakStartTime(), ts, fluidCalc.getDeductionTotal(), 
-							correctedDeductionTimeSheet, workTime, workType, startBreakTime);
+							correctedDeductionTimeSheet, workTime, workType, startBreakTime, 
+							correctWithEndTime);
 		}).collect(Collectors.toList());
 		
 		/** ○控除時間帯(List)に休憩時間帯リストを追加 */

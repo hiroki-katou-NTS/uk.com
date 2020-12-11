@@ -509,7 +509,7 @@ public class CalculationRangeOfOneDay {
 				this.oneDayOfRange,
 				this.attendanceLeavingWork,
 				this.predetermineTimeSetForCalc,
-				lateTimeSheet);
+				lateTimeSheet, true);
 		
 		theDayOfWorkTimesLoop(
 				companyCommonSetting,
@@ -544,7 +544,7 @@ public class CalculationRangeOfOneDay {
 			TimeSpanForDailyCalc oneDayOfRange,
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			List<LateTimeSheet> lateTimeSheet) {
+			List<LateTimeSheet> lateTimeSheet, boolean correctWithEndTime) {
 		//控除用
 		val dedTimeSheet = DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(
 				DeductionAtr.Deduction,
@@ -553,7 +553,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				oneDayOfRange,
 				attendanceLeaveWork,
-				predetermineTimeSetForCalc, lateTimeSheet, this);
+				predetermineTimeSetForCalc, lateTimeSheet, this, correctWithEndTime);
 		//計上用
 		val recordTimeSheet = DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(
 				DeductionAtr.Appropriate,
@@ -562,7 +562,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				oneDayOfRange,
 				attendanceLeaveWork,
-				predetermineTimeSetForCalc, lateTimeSheet, this);
+				predetermineTimeSetForCalc, lateTimeSheet, this, correctWithEndTime);
 	
 		return new DeductionTimeSheet(
 				dedTimeSheet,
@@ -840,7 +840,7 @@ public class CalculationRangeOfOneDay {
 						timeLeavingForFlowWork, 
 						new WorkTimes(timeLeavingForFlowWork.size())),
 				this.predetermineTimeSetForCalc,
-				lateTimeSheet);
+				lateTimeSheet, true);
 		
 		if(betweenWorkTimeSheets.isPresent()) {
 			deductionTimeSheetCalcAfter.getForDeductionTimeZoneList().add(betweenWorkTimeSheets.get());
@@ -872,7 +872,7 @@ public class CalculationRangeOfOneDay {
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
 						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
-						new ArrayList<>())
+						new ArrayList<>(), true)
 				.getForDeductionTimeZoneList();
 		
 		/** 休憩が固定かどうかを判断する */

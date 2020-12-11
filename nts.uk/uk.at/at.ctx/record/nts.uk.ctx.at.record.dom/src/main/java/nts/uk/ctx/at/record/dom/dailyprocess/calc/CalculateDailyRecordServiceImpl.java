@@ -788,7 +788,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			Optional<IntegrationOfWorkTime> workTime, ManagePerPersonDailySet personDailySetting) {
 		
 		/** 休憩時間帯取得 */
-		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType), personDailySetting, integrationOfDaily);
+		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType), personDailySetting, integrationOfDaily, true);
 		
 		integrationOfDaily.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(correcedBreakTime)));
 		
