@@ -13,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.clock.ClockHourMinute;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -651,7 +652,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		// NULLの場合
 		// システム時刻をOUTPUT「勤務時間」に更新する
-		workHours.setEndTimeOp1(overTimeContent.getSPRTime().get().getEndTimeOp1());
+		workHours.setEndTimeOp1(Optional.of(new TimeWithDayAttr(ClockHourMinute.now().v())));
 		// OUTPUT「勤務時間」を返す
 		return workHours;
 	}
