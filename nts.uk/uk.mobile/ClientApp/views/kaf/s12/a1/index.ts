@@ -1,4 +1,3 @@
-import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
@@ -28,21 +27,38 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public mode: boolean = true;
     public user: any = null;
     public time: number = null;
-    public kafs00p1: KAFS00P1Params = {
-        scheduleDisp: true,
-        actualExcess: ExcessTimeStatus.NONE,
-        scheduleTime: null,
-        actualDisp: false,
-        preAppDisp: false,
-    };
+    // public kafs00p1: KAFS00P1Params = {
+    //     scheduleDisp: true,
+    //     actualExcess: ExcessTimeStatus.NONE,
+    //     scheduleTime: null,
+    //     actualDisp: false,
+    //     preAppDisp: false,
+    // };
 
     //mock list dispInfoOfTimeLeaveRequest
-    public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({ header: 'Header 1', frame: 0, attendanceTimeLabel: 'Attendance time label 1', startTime: null, endTime: null, swtOutClassification: 0, title: 'Title 1',scheduleTime: null});
-    public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({ header: 'Header 2', frame: 0, attendanceTimeLabel: 'Attendance time label 2', startTime: null, endTime: null, swtOutClassification: 1, title: 'Title 2',scheduleTime: null});
-    public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({ header: 'Header 3', frame: 0, attendanceTimeLabel: 'Attendance time label 3', startTime: null, endTime: null, swtOutClassification: 0, title: 'Title 3',scheduleTime: null});
-    public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({ header: 'Header 4', frame: 0, attendanceTimeLabel: 'Attendance time label 4', startTime: null, endTime: null, swtOutClassification: 1, title: 'Title 4',scheduleTime: null});
+    public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
+        header: 'Header 1', frame: 0, attendanceTimeLabel: 'Attendance time label 1', startTime: null, endTime: null, swtOutClassification: 0, title: 'Title 1', scheduleTime: null,
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+    });
+    public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({
+        header: 'Header 2', frame: 1, attendanceTimeLabel: 'Attendance time label 2', startTime: null, endTime: null, swtOutClassification: 1, title: 'Title 2', scheduleTime: null,
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+    });
+    public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({
+        header: 'Header 3', frame: 2, attendanceTimeLabel: 'Attendance time label 3', startTime: null, endTime: null, swtOutClassification: 0, title: 'Title 3', scheduleTime: null,
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+    });
+    public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({
+        header: 'Header 4', frame: 3, attendanceTimeLabel: 'Attendance time label 4', startTime: null, endTime: null, swtOutClassification: 1, title: 'Title 4', scheduleTime: null,
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+    });
 
-    public DispInfoOfTimeLeaveRequestLst = [this.DispInfoOfTimeLeaveRequest1, this.DispInfoOfTimeLeaveRequest2, this.DispInfoOfTimeLeaveRequest3, this.DispInfoOfTimeLeaveRequest4];
+    public DispInfoOfTimeLeaveRequestLst = [
+        this.DispInfoOfTimeLeaveRequest1, 
+        this.DispInfoOfTimeLeaveRequest2, 
+        this.DispInfoOfTimeLeaveRequest3, 
+        this.DispInfoOfTimeLeaveRequest4 
+    ];
 
     @Prop({ default: () => { } })
     public readonly params!: InitParam;

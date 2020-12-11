@@ -1,4 +1,5 @@
 import {Vue,_} from '@app/provider';
+import {KAFS00P1Params} from 'views/kaf/s00/sub/p1';
 
 export class DispInfoOfTimeLeaveRequest {
     public frame: number | null;
@@ -8,6 +9,7 @@ export class DispInfoOfTimeLeaveRequest {
     public swtOutClassification: number;
     public title: string;
     public scheduleTime: number;
+    public kafS00P1Params: KAFS00P1Params;
 
     constructor(iDispInfoOfTimeLeaveRequest: IDispInfoOfTimeLeaveRequest) {
         this.frame = iDispInfoOfTimeLeaveRequest.frame;
@@ -18,6 +20,7 @@ export class DispInfoOfTimeLeaveRequest {
         this.swtOutClassification = iDispInfoOfTimeLeaveRequest.swtOutClassification;
         this.title = iDispInfoOfTimeLeaveRequest.title;
         this.scheduleTime = iDispInfoOfTimeLeaveRequest.scheduleTime;
+        this.kafS00P1Params = iDispInfoOfTimeLeaveRequest.kafS00P1Params;
     }
 }
 
@@ -46,6 +49,7 @@ export interface  IDispInfoOfTimeLeaveRequest {
     swtOutClassification: number;
     title: string;
     scheduleTime: number;
+    kafS00P1Params: KAFS00P1Params;
 }
 
 export interface ICalculationResult {
