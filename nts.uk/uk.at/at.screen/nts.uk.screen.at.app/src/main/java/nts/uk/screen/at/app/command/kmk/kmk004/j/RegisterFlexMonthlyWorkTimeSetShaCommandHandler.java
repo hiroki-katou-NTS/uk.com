@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.command.kmk.kmk004.j;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -18,6 +19,7 @@ import nts.uk.screen.at.app.query.kmk004.common.EmployeeList;
  *
  *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.J：社員別法定労働時間の登録（フレックス勤務）.メニュー別OCD.社員別月単位労働時間（フレックス勤務）を登録する
  */
+@Stateless
 public class RegisterFlexMonthlyWorkTimeSetShaCommandHandler
 		extends CommandHandlerWithResult<SaveMonthlyWorkTimeSetShaCommand, List<EmployeeIdDto>> {
 
