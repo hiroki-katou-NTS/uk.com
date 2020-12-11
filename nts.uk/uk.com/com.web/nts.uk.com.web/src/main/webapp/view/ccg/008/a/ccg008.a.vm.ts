@@ -167,20 +167,19 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
     getToppage(data: DataTopPage) {
       const vm = this;
-      const origin: string = window.location.origin;
       if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
         vm.isShowButtonRefresh(true);
       }
       if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
         if (data.standardMenu.url) {
-          // show standardmenu
-          const res = "/" + data.standardMenu.url.split("web/")[1];
-          const topPageUrl = "/view/ccg/008/a/index.xhtml";
-          if (res && topPageUrl !== res.trim()) {
-            if (_.includes(data.standardMenu.url, ".at.")) {
-              nts.uk.request.jump("at", res);
-            } else {
-              nts.uk.request.jump(res);
+          if (!!data.standardMenu.url.split("web/")[1]) {
+             // show standardmenu
+            const res = "/" + data.standardMenu.url.split("web/")[1];
+            const topPageUrl = "/view/ccg/008/a/index.xhtml";
+            if (res && topPageUrl !== res.trim()) {
+              if (_.includes(data.standardMenu.url, ".at.")) {
+                nts.uk.request.jump("at", res);
+              } 
             }
           }
         }
