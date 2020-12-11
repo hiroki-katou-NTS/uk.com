@@ -93,7 +93,7 @@ public class CopyGroupItem {
 	}
 	
 	private List<PpemtPInfoItemGroupDf> findAllPpemtPInfoItemGroupDf(String companyId) {
-		return findAll("PPEMT_GROUP_ITEM", companyId, PpemtPInfoItemGroupDf.MAPPER);
+		return findAll("PPEMT_GROUP_ITEM_DF", companyId, PpemtPInfoItemGroupDf.MAPPER);
 	}
 	
 	private <E> List<E> findAll(String tableName, String companyId, JpaEntityMapper<E> mapper) {

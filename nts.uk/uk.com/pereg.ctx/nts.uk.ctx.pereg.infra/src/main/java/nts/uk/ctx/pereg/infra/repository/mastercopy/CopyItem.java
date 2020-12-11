@@ -42,11 +42,12 @@ public class CopyItem {
 	private IdContainer executeCopy() {
 		
 		// ITEM系のテーブルはCIDを持たないので、CategoryIDを使って参照、コピーする
+		val sourceCategoryIds = categoryIds.getAllIdsSource();
 		val targetCategoryIds = categoryIds.getAllIdsCopied();
 		
 		val itemIdGenerator = new IdContainer.IdGenerator();
 		
-		val copiedPpemtItem = findAllPpemtItem(targetCategoryIds).stream()
+		val copiedPpemtItem = findAllPpemtItem(sourceCategoryIds).stream()
 				.map(s -> s.copy(categoryIds, itemIdGenerator))
 				.collect(toList());
 		
