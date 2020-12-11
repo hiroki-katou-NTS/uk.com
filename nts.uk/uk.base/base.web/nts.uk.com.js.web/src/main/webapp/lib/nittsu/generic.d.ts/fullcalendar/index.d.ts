@@ -1160,7 +1160,7 @@ module FullCalendar {
         _def: EventDef;
         _instance: EventInstance | null;
         constructor(context: CalendarContext, def: EventDef, instance?: EventInstance);
-        setProp(name: string, val: string): void;
+        setProp(name: string, val: string | boolean | Date): void;
         setExtendedProp(name: string, val: any): void;
         setStart(startInput: DateInput, options?: {
             granularity?: string;

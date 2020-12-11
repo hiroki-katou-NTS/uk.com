@@ -118,7 +118,8 @@ module nts.uk.ui.com.sample.fullcalendar {
 
         breakTime: KnockoutObservable<any> = ko.observable({
             startTime: 60 * 12,
-            endTime: 60 * 13
+            endTime: 60 * 13,
+            backgroundColor: '#ddd'
         });
 
         businessHours: KnockoutObservableArray<any> = ko.observableArray([{

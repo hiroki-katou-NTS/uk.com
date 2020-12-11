@@ -13,12 +13,15 @@ module nts.uk.ui.components.fullcalendar {
         end: Date;
     }
 
+    type EventStatus = 'new' | 'delete' | 'normal';
+
     type EventRaw = EventSlim & {
         title: string;
         backgroundColor: string;
         textColor: string;
         extendedProps: Record<string, any> & {
             id: string;
+            status: EventStatus;
             relateId: string;
             description: string;
         };
@@ -33,6 +36,7 @@ module nts.uk.ui.components.fullcalendar {
     const TRANSPARENT = 'transparent';
     const SELECTED = 'selected';
     const BACKGROUND = 'background';
+    const DURATION_EDITABLE = 'durationEditable';
 
     const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
@@ -271,24 +275,7 @@ module nts.uk.ui.components.fullcalendar {
 
             const events = valueAccessor();
 
-            const employees = allBindingsAccessor.get('employees');
-            const dragItems = allBindingsAccessor.get('dragItems');
-
-            const event = allBindingsAccessor.get('event');
-            const locale = allBindingsAccessor.get('locale');
-            const editable = allBindingsAccessor.get('editable');
-            const firstDay = allBindingsAccessor.get('firstDay');
-            const scrollTime = allBindingsAccessor.get('scrollTime');
-            const initialDate = allBindingsAccessor.get('initialDate');
-            const initialView = allBindingsAccessor.get('initialView');
-            const availableView = allBindingsAccessor.get('availableView');
-            const slotDuration = allBindingsAccessor.get('slotDuration');
-            const breakTime = allBindingsAccessor.get('breakTime');
-            const businessHours = allBindingsAccessor.get('businessHours');
-            const attendanceTimes = allBindingsAccessor.get('attendanceTimes');
-            const components = allBindingsAccessor.get('components');
-
-            const params = { events, employees, dragItems, event, components, locale, initialDate, initialView, availableView, scrollTime, editable, firstDay, slotDuration, attendanceTimes, breakTime, businessHours, viewModel };
+            const params = { events, ...allBindingsAccessor(), viewModel };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -339,7 +326,11 @@ module nts.uk.ui.components.fullcalendar {
     type BussinessTime = {
         startTime: number;
         endTime: number;
-    }
+    };
+
+    type BreakTime = BussinessTime & {
+        backgroundColor: string;
+    };
 
     type BussinessHour = BussinessTime & {
         daysOfWeek: DayOfWeek[];
@@ -369,7 +360,7 @@ module nts.uk.ui.components.fullcalendar {
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DayOfWeek | KnockoutObservable<DayOfWeek>;
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
-        breakTime: BussinessTime | KnockoutObservable<undefined | BussinessTime>;
+        breakTime: BreakTime | KnockoutObservable<undefined | BreakTime>;
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
         event: {
             copyDay: (from: Date, to: Date) => void;
@@ -457,7 +448,7 @@ module nts.uk.ui.components.fullcalendar {
                 <h3 data-bind="i18n: 'よく使う作業から作業項目'"></h3>
                 <ul data-bind="foreach: { data: $component.params.dragItems, as: 'item' }">
                     <li class="title" data-bind="attr: {
-                        'data-id': _.get(item.extendedProps, 'id', ''),
+                        'data-id': _.get(item.extendedProps, 'relateId', ''),
                         'data-color': item.backgroundColor
                     }">
                         <div data-bind="style: {
@@ -481,7 +472,7 @@ module nts.uk.ui.components.fullcalendar {
                 position: $component.popupPosition.copyDay
             "></div>
         <style>${DEFAULT_STYLES}</style>
-        <style></style>`
+        <style data-bind="html: $component.$style"></style>`
     })
     export class FullCalendarComponent extends ko.ViewModel {
         // Fullcalendar instance
@@ -500,6 +491,8 @@ module nts.uk.ui.components.fullcalendar {
         public popupPosition: PopupPosition = defaultPPosition();
 
         public newEvent: KnockoutObservable<null | EventSlim> = ko.observable(null);
+
+        public $style: KnockoutObservable<string> = ko.observable('');
 
         constructor(private params: ComponentParameters) {
             super();
@@ -782,40 +775,7 @@ module nts.uk.ui.components.fullcalendar {
             dataEvent.shift.valueHasMutated();
 
             popupData.event
-                .subscribe((evt) => {
-                    if (evt) {
-                        const {
-                            id,
-                            title,
-                            start,
-                            end,
-                            backgroundColor,
-                            textColor,
-                            extendedProps
-                        } = evt;
-
-                        if (!!extendedProps.edited) {
-                            const gevents = vm.calendar.getEvents();
-                            const exist = _.find(gevents, (f: EventApi) => f.id === id);
-                            const props = _.omit(extendedProps, 'edited');
-
-                            if (exist) {
-                                exist.setEnd(end);
-                                exist.setStart(start);
-
-                                exist.setProp('title', title);
-                                exist.setProp('textColor', textColor);
-                                exist.setProp('backgroundColor', backgroundColor);
-
-                                _.each(props, (v: string, k: string) => exist.setExtendedProp(k, v));
-                            }
-
-                            // mutatedEvents();
-
-                            // newEvent(null);
-                        }
-                    }
-                });
+                .subscribe((evt) => { });
 
             popupData.copyDay
                 .subscribe((data) => {
@@ -1042,19 +1002,32 @@ module nts.uk.ui.components.fullcalendar {
             const mutatedEvents = () => {
                 if (ko.isObservable(events)) {
                     // emit event except new event (no data)
-                    events(getEvents().filter(f => !!f.extendedProps.id));
+                    events(getEvents().filter(({ extendedProps }) => !!extendedProps.id));
                 }
             };
             const updateEvents = () => {
                 const events = ko
                     .unwrap<EventRaw[]>(params.events)
+                    .filter(({ extendedProps }) => extendedProps.status !== 'delete')
                     .map((m) => ({
                         ...m,
                         id: randomId(),
-                        borderColor: 'transparent'
+                        borderColor: 'transparent',
+                        start: formatDate(m.start),
+                        end: formatDate(m.end),
+                        extendedProps: {
+                            ...m.extendedProps,
+                            status: m.extendedProps.status || 'normal'
+                        }
                     }));
 
+                // clear old events
+                vm.calendar.removeAllEvents();
+                vm.calendar.removeAllEventSources();
+
+                // set new events
                 vm.calendar.setOption('events', events);
+                // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
             };
 
             const dragger = new FC.Draggable($dg, {
@@ -1075,17 +1048,16 @@ module nts.uk.ui.components.fullcalendar {
                                 borderColor: 'transparent',
                                 extendedProps: {
                                     ...extendedProps,
-                                    id: `NEW_${randomId()}`
+                                    id: randomId(),
+                                    status: 'new'
                                 }
                             };
                         }
                     }
 
-                    return {
-                        title: el.innerText,
-                        borderColor: 'transparent',
-                        backgroundColor: el.getAttribute('data-color')
-                    };
+                    vm.$dialog.error({ messageId: 'DATA_SOURCE_NOT_FOUND' });
+
+                    return null;
                 }
             });
 
@@ -1104,9 +1076,11 @@ module nts.uk.ui.components.fullcalendar {
                     const events = vm.calendar.getEvents();
 
                     _.each(events, (e: EventApi) => {
+                        // unselect events
                         e.setProp(BORDER_COLOR, TRANSPARENT);
 
-                        if (e.display === BACKGROUND) {
+                        // remove background event & new event (empty data)
+                        if (e.display === BACKGROUND || !e.extendedProps.id) {
                             e.remove();
                         }
                     });
@@ -1136,8 +1110,18 @@ module nts.uk.ui.components.fullcalendar {
                     const { milliseconds } = opts.time;
                     const min = milliseconds / 60000;
                     const hour = Math.floor(min / 60);
+                    const brkt = ko.unwrap(params.breakTime);
+                    const className = [`fc-timegrid-slot-lane-${hour}`];
 
-                    return `fc-timegrid-slot-lane-${hour}`;
+                    if (brkt) {
+                        const { startTime, endTime } = ko.unwrap(params.breakTime);
+
+                        if (startTime <= min && min < endTime) {
+                            className.push('fc-timegrid-slot-lane-breaktime');
+                        }
+                    }
+
+                    return className.join(' ');
                 },
                 eventContent: (args: FullCalendar.EventContentArg) => {
                     const { type } = args.view;
@@ -1188,61 +1172,77 @@ module nts.uk.ui.components.fullcalendar {
                 },
                 eventClick: (args: FullCalendar.EventClickArg) => {
                     const { event } = args;
-                    const events = vm.calendar.getEvents();
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
+                    /**
+                     * Note: remove group id before change other prop
+                     */
+
+                    // remove new event (with no data) & background event
+                    _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                        // remove group id
+                        e.setProp(GROUP_ID, '');
+
+                        // remove background event
+                        if (e.display === BACKGROUND) {
+                            e.remove();
+                        } else
+                            // remove new event (no save)
+                            if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
+                                e.remove();
+                            }
+                    });
+
+                    // add background event (group)
+                    vm.calendar
+                        .addEvent({
+                            groupId: SELECTED,
+                            display: BACKGROUND,
+                            backgroundColor: TRANSPARENT
+                        });
+
+                    const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
 
                     if (!shift) {
-                        _.each(events, (e: EventApi) => {
+                        _.each(vm.calendar.getEvents(), (e: EventApi) => {
                             e.setProp(BORDER_COLOR, TRANSPARENT);
-                            e.setProp(GROUP_ID, '');
                         });
 
                         event.setProp(BORDER_COLOR, BLACK);
-                        event.setProp(GROUP_ID, SELECTED);
                     } else {
-                        const seleteds = _.filter(events, (e: EventApi) => e.borderColor !== TRANSPARENT);
-                        const [first] = seleteds;
+                        const [first] = seletions();
 
                         if (!first) {
                             event.setProp(BORDER_COLOR, BLACK);
-                            event.setProp(GROUP_ID, SELECTED);
                         } else {
-                            const exits = _.some(seleteds, (s: EventApi) => s.id === event.id);
-
-                            if (exits) {
+                            if (event.borderColor === BLACK) {
                                 event.setProp(BORDER_COLOR, TRANSPARENT);
-                                event.setProp(GROUP_ID, '');
-
-                                _.each(seleteds, (e: EventApi) => {
-                                    if (e.id !== event.id) {
-                                        event.setProp(BORDER_COLOR, BLACK);
-                                        event.setProp(GROUP_ID, SELECTED);
-                                    }
-                                });
-                            } else {
-                                if (moment(first.start).isSame(event.start, 'date')) {
-                                    event.setProp(BORDER_COLOR, BLACK);
-                                    event.setProp(GROUP_ID, SELECTED);
-                                }
+                            } else if (moment(first.start).isSame(event.start, 'date')) {
+                                event.setProp(BORDER_COLOR, BLACK);
                             }
                         }
                     }
 
-                    if (_.some(events, (e: EventApi) => e.borderColor === BLACK)) {
-                        // add background event (group)
-                        vm.calendar
-                            .addEvent({
-                                groupId: SELECTED,
-                                display: BACKGROUND,
-                                backgroundColor: TRANSPARENT,
-                                durationEditable: false
-                            });
-                    } else {
-                        // remove background event
-                        _.each(events, (e: EventApi) => {
-                            if (e.display === BACKGROUND) {
-                                e.remove();
-                            }
+                    const selecteds = seletions();
+
+                    if (!!selecteds.length) {
+                        const times: number[] = _.chain<EventSlim[]>(selecteds)
+                            .map((e: EventSlim) => [e.start.getTime(), e.end.getTime()])
+                            .reduce((p: number[], c: number[]) => [...p, ...c], [])
+                            .orderBy('asc')
+                            .value() as any;
+
+                        const group = _.find(vm.calendar.getEvents(), (e: EventApi) => e.groupId === SELECTED);
+
+                        if (group) {
+                            group.setStart(new Date(Math.min(...times)));
+                            group.setEnd(new Date(Math.max(...times)));
+
+                            group.setProp(DURATION_EDITABLE, selecteds.length === 1);
+                        }
+
+                        _.each(selecteds, (e: EventApi) => {
+                            e.setProp(GROUP_ID, SELECTED);
+                            e.setProp(DURATION_EDITABLE, selecteds.length === 1);
                         });
                     }
                 },
@@ -1278,7 +1278,19 @@ module nts.uk.ui.components.fullcalendar {
                 select: (arg: FullCalendar.DateSelectArg) => {
                     const { start, end } = arg;
 
-                    newEvent({ start, end });
+                    // rerender event (clear selection)
+                    updateEvents();
+
+                    // add new event from selected data
+                    vm.calendar.addEvent({
+                        id: randomId(),
+                        start: formatDate(start),
+                        end: formatDate(end),
+                        borderColor: TRANSPARENT,
+                        extendedProps: {
+                            status: 'new'
+                        }
+                    });
                 },
                 eventRemove: (args: FullCalendar.EventRemoveArg) => {
                     const { event } = args;
@@ -1306,7 +1318,7 @@ module nts.uk.ui.components.fullcalendar {
                     const end = moment(start).add(1, 'hour').toDate();
 
                     // remove drop event
-                    // event.remove();
+                    event.remove();
 
                     // add cloned event to datasources
                     events.push({
@@ -1315,7 +1327,11 @@ module nts.uk.ui.components.fullcalendar {
                         end,
                         textColor,
                         backgroundColor,
-                        extendedProps: extendedProps as any
+                        extendedProps: {
+                            ...extendedProps,
+                            id: randomId(),
+                            status: 'new'
+                        } as any
                     });
                 },
                 datesSet: (dateInfo) => {
@@ -1514,8 +1530,8 @@ module nts.uk.ui.components.fullcalendar {
             // set businessHours
             ko.computed({
                 read: () => {
-                    const breakTime: BussinessTime = ko.unwrap(params.breakTime) as any;
-                    const businessHours: BussinessHour[] = ko.unwrap(params.businessHours) as any;
+                    const breakTime = ko.unwrap<BreakTime>(params.breakTime);
+                    const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
 
                     if (!breakTime) {
                         vm.calendar.setOption('businessHours', businessHours.map((m) => ({
@@ -1524,7 +1540,7 @@ module nts.uk.ui.components.fullcalendar {
                             endTime: formatTime(m.endTime)
                         })));
                     } else {
-                        const { startTime, endTime } = breakTime;
+                        const { startTime, endTime, backgroundColor } = breakTime;
 
                         if (businessHours.length) {
                             const starts = businessHours.map((m) => ({
@@ -1550,6 +1566,8 @@ module nts.uk.ui.components.fullcalendar {
                                 endTime: formatTime(24 * 60)
                             }]);
                         }
+
+                        vm.$style(`.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
