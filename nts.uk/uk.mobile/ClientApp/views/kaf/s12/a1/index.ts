@@ -26,30 +26,21 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public application: Application = null;
     public mode: boolean = true;
     public user: any = null;
-    public time: number = null;
-    // public kafs00p1: KAFS00P1Params = {
-    //     scheduleDisp: true,
-    //     actualExcess: ExcessTimeStatus.NONE,
-    //     scheduleTime: null,
-    //     actualDisp: false,
-    //     preAppDisp: false,
-    // };
-
-    //mock list dispInfoOfTimeLeaveRequest
+    
     public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
-        header: 'Header 1', frame: 0, attendanceTimeLabel: 'Attendance time label 1', startTime: null, endTime: null, swtOutClassification: 0, title: 'Title 1', scheduleTime: null,
+        header: 'KAFS12_5', frame: 0, attendanceTimeLabel: 'KAFS12_6', attendanceTime: null,swtOutClassification: 0, titleOfAttendanceTime: 'KAFS12_5',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
     });
     public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({
-        header: 'Header 2', frame: 1, attendanceTimeLabel: 'Attendance time label 2', startTime: null, endTime: null, swtOutClassification: 1, title: 'Title 2', scheduleTime: null,
+        header: 'KAFS12_7', frame: 1, attendanceTimeLabel: 'KAFS12_8', attendanceTime: null, swtOutClassification: 1, titleOfAttendanceTime: 'KAFS12_7',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
     });
     public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({
-        header: 'Header 3', frame: 2, attendanceTimeLabel: 'Attendance time label 3', startTime: null, endTime: null, swtOutClassification: 0, title: 'Title 3', scheduleTime: null,
+        header: 'KAFS12_9', frame: 2, attendanceTimeLabel: 'KAFS12_10', attendanceTime: null, swtOutClassification: 0, titleOfAttendanceTime: 'KAFS12_9',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
     });
     public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({
-        header: 'Header 4', frame: 3, attendanceTimeLabel: 'Attendance time label 4', startTime: null, endTime: null, swtOutClassification: 1, title: 'Title 4', scheduleTime: null,
+        header: 'KAFS12_11', frame: 3, attendanceTimeLabel: 'KAFS12_12', attendanceTime: null, swtOutClassification: 1, titleOfAttendanceTime: 'KAFS12_11',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
     });
 

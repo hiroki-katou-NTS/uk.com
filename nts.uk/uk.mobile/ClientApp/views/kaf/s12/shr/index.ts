@@ -5,21 +5,18 @@ export class DispInfoOfTimeLeaveRequest {
     public frame: number | null;
     public header: string;
     public attendanceTimeLabel: string;
-    public goingBackTime = {start: null, end: null};
+    public attendanceTime: number | null = null;
     public swtOutClassification: number;
-    public title: string;
-    public scheduleTime: number;
+    public titleOfAttendanceTime: string;
     public kafS00P1Params: KAFS00P1Params;
 
     constructor(iDispInfoOfTimeLeaveRequest: IDispInfoOfTimeLeaveRequest) {
         this.frame = iDispInfoOfTimeLeaveRequest.frame;
         this.header = iDispInfoOfTimeLeaveRequest.header;
         this.attendanceTimeLabel = iDispInfoOfTimeLeaveRequest.attendanceTimeLabel;
-        this.goingBackTime.start = iDispInfoOfTimeLeaveRequest.startTime;
-        this.goingBackTime.end = iDispInfoOfTimeLeaveRequest.endTime;
+        this.attendanceTime = iDispInfoOfTimeLeaveRequest.attendanceTime;
         this.swtOutClassification = iDispInfoOfTimeLeaveRequest.swtOutClassification;
-        this.title = iDispInfoOfTimeLeaveRequest.title;
-        this.scheduleTime = iDispInfoOfTimeLeaveRequest.scheduleTime;
+        this.titleOfAttendanceTime = iDispInfoOfTimeLeaveRequest.titleOfAttendanceTime;
         this.kafS00P1Params = iDispInfoOfTimeLeaveRequest.kafS00P1Params;
     }
 }
@@ -44,11 +41,9 @@ export interface  IDispInfoOfTimeLeaveRequest {
     frame: number | null;
     header: string;
     attendanceTimeLabel: string;
-    startTime: number;
-    endTime: number;
+    attendanceTime: number | null;
     swtOutClassification: number;
-    title: string;
-    scheduleTime: number;
+    titleOfAttendanceTime: string;
     kafS00P1Params: KAFS00P1Params;
 }
 

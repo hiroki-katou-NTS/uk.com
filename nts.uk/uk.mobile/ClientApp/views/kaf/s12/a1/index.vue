@@ -33,17 +33,17 @@
         </div>
       </div>
       <!-- A_A5_2 -->
-      <span class="uk-text-dark-gray ml-1">{{ "KAFS12_6" | i18n }}</span>
+      <span class="uk-text-dark-gray ml-1">{{ dispInfoTimeLeaveRequest.attendanceTimeLabel | i18n }}</span>
       <!-- A_A5_3 -->
       <div class="position-relative">
         <nts-time-editor
-          v-model="time"
-          v-bind:name="'KAFS08_28'"
+          v-model="dispInfoTimeLeaveRequest.attendanceTime"
+          v-bind:name="dispInfoTimeLeaveRequest.titleOfAttendanceTime | i18n"
           time-input-type="time-with-day"
           v-bind:show-title="true"
         />
         <div class="position-absolute">
-        <kafs00-p1 v-bind:params="kafs00p1" />
+        <kafs00-p1 v-bind:params="dispInfoTimeLeaveRequest.kafS00P1Params" />
       </div>
       </div>
     </div>
