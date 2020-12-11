@@ -6,7 +6,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
-* 勤務変更申請
+* 古い勤務変更申請 (「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)」)
 */
 @AllArgsConstructor
 @Getter

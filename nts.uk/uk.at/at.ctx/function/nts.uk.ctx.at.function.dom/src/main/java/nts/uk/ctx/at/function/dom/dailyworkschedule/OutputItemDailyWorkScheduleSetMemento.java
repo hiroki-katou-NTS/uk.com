@@ -13,13 +13,6 @@ import java.util.List;
 public interface OutputItemDailyWorkScheduleSetMemento {
 	
 	/**
-	 * Sets the company ID.
-	 *
-	 * @param companyID the new company ID
-	 */
-	void setCompanyID(String companyID);
-	
-	/**
 	 * Sets the item code.
 	 *
 	 * @param itemCode the new item code
@@ -60,4 +53,18 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	 * @param remarkInputNo the new remark input no
 	 */
 	void setRemarkInputNo(RemarkInputContent remarkInputNo);
+	
+	/**
+	 * Sets the font size.
+	 *
+	 * @param fontSize the new font size
+	 */
+	void setFontSize(FontSizeEnum fontSize);
+
+	/**
+	 * Sets the layout id.
+	 *
+	 * @param layoutId the new layout id
+	 */
+	void setLayoutId(String layoutId);
 }

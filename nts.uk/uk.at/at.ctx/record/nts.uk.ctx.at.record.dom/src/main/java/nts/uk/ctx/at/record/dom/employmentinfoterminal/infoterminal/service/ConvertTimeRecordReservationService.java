@@ -92,7 +92,7 @@ public class ConvertTimeRecordReservationService {
 
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る
 	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
-			Integer terCode, String cardNumber, String message) {
+			String terCode, String cardNumber, String message) {
 		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
 
 		if (lstSidApproval.isEmpty())

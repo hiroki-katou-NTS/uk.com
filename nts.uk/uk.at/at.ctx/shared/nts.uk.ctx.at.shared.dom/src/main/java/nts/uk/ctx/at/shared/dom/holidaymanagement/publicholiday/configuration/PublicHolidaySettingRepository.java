@@ -18,7 +18,7 @@ public interface PublicHolidaySettingRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<PublicHolidaySetting> findByCID(String companyId);
+	Optional<PublicHolidaySetting> get(String companyId);
 	
 	/**
 	 * Find by CID to list.
@@ -40,5 +40,5 @@ public interface PublicHolidaySettingRepository {
 	 *
 	 * @param domain the domain
 	 */
-	void add(PublicHolidaySetting domain);
+	void insert(PublicHolidaySetting domain);
 }

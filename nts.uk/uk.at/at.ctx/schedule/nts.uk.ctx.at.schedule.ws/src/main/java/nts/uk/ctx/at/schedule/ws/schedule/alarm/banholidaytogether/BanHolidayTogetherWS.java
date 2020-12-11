@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.ws.schedule.alarm.banholidaytogether;
 
 import nts.uk.ctx.at.schedule.app.command.schedule.alarm.banholidaytogether.*;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherCodeNameDto;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherQuery;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherQueryDto;
 
@@ -9,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("banholidaytogether")
 @Produces(MediaType.APPLICATION_JSON)
@@ -27,8 +29,8 @@ public class BanHolidayTogetherWS {
 
     @POST
     @Path("getAllBanHolidayTogether")
-    public void getAllBanHolidayTogether(GetAllBanHolidayTogether param) {
-        banHolidayTogetherQuery.getAllBanHolidayTogether(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
+    public List<BanHolidayTogetherCodeNameDto> getAllBanHolidayTogether(GetAllBanHolidayTogether param) {
+        return banHolidayTogetherQuery.getAllBanHolidayTogether(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
     }
 
     @POST

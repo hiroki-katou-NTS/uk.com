@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHisto
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -42,7 +42,8 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 
 	@Override
 	public Optional<ScheduleMasterInformationDto> getScheduleMasterInformationDto(String employeeId,
-			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			GeneralDate baseDate, String exeId, EmployeeGeneralInfoImported empGeneralInfo, 
+			List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis) {
 
 		Optional<ScheduleMasterInformationDto> result = Optional.of(new ScheduleMasterInformationDto());
 
@@ -217,12 +218,13 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 */
 
 	private void acquireWorkTypeCode(String employeeId, GeneralDate baseDate,
-			Optional<ScheduleMasterInformationDto> result, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			Optional<ScheduleMasterInformationDto> result, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis) {
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		// EA No2022
-		Optional<BusinessTypeOfEmpDto> businessTypeOfEmpHis = listBusTypeOfEmpHis.stream()
-				.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getStartDate().beforeOrEquals(baseDate)
-						&& x.getEndDate().afterOrEquals(baseDate)))
+		Optional<BusinessTypeOfEmployeeHis> businessTypeOfEmpHis = listBusTypeOfEmpHis.stream()
+				.filter(x -> (x.getEmployee().getSId().equals(employeeId) 
+						&& x.getHistory().span().start().beforeOrEquals(baseDate)
+						&& x.getHistory().span().end().afterOrEquals(baseDate)))
 				.findFirst();
 
 		if (!businessTypeOfEmpHis.isPresent()) {
@@ -230,7 +232,7 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 			return;
 		}
 
-		result.get().setBusinessTypeCode(businessTypeOfEmpHis.get().getBusinessTypeCd());
+		result.get().setBusinessTypeCode(businessTypeOfEmpHis.get().getEmployee().getBusinessTypeCode().v());
 	}
 
 	/**

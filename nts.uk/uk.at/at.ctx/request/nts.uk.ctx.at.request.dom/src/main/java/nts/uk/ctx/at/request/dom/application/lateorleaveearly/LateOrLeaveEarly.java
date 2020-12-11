@@ -9,8 +9,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.Application;
 
 /**
- * 
- * @author hieult 遅刻早退取消申請
+ * 古い遅刻早退取消申請 (古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it))
+ * @author hieult
  */
 @Getter
 @AllArgsConstructor

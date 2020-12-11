@@ -43,17 +43,7 @@ public class JpaOtherEmTimezoneLateEarlySetSetMemento implements OtherEmTimezone
 		this.entity.setDeductionRounding(delTimeRoundingSet.getRounding().value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
-	 * OtherEmTimezoneLateEarlySetSetMemento#setStampExactlyTimeIsLateEarly(
-	 * boolean)
-	 */
-	@Override
-	public void setStampExactlyTimeIsLateEarly(boolean stampExactlyTimeIsLateEarly) {
-		this.entity.setExtractLateEarlyTime(BooleanGetAtr.getAtrByBoolean(stampExactlyTimeIsLateEarly));
-	}
+
 
 	/*
 	 * (non-Javadoc)

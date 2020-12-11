@@ -21,10 +21,6 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject implements
 	//控除時間丸め設定
 	private TimeRoundingSetting delTimeRoundingSet; 
 	
-	/** The stamp exactly time is late early. */
-	//時間丁度の打刻は遅刻・早退とする
-	private boolean stampExactlyTimeIsLateEarly;
-	
 	/** The grace time set. */
 	//猶予時間設定
 	private GraceTimeSetting graceTimeSet;
@@ -44,7 +40,6 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject implements
 	 */
 	public OtherEmTimezoneLateEarlySet(OtherEmTimezoneLateEarlySetGetMemento memento) {
 		this.delTimeRoundingSet = memento.getDelTimeRoundingSet();
-		this.stampExactlyTimeIsLateEarly = memento.getStampExactlyTimeIsLateEarly();
 		this.graceTimeSet = memento.getGraceTimeSet();
 		this.recordTimeRoundingSet = memento.getRecordTimeRoundingSet();
 		this.lateEarlyAtr =memento.getLateEarlyAtr();
@@ -57,7 +52,6 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject implements
 	 */
 	public void saveToMemento(OtherEmTimezoneLateEarlySetSetMemento memento){
 		memento.setDelTimeRoundingSet(this.delTimeRoundingSet);
-		memento.setStampExactlyTimeIsLateEarly(this.stampExactlyTimeIsLateEarly);
 		memento.setGraceTimeSet(this.graceTimeSet);
 		memento.setRecordTimeRoundingSet(this.recordTimeRoundingSet);
 		memento.setLateEarlyAtr(this.lateEarlyAtr);
@@ -83,7 +77,6 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject implements
 		OtherEmTimezoneLateEarlySet cloned = new OtherEmTimezoneLateEarlySet();
 		try {
 			cloned.delTimeRoundingSet = this.delTimeRoundingSet.clone();
-			cloned.stampExactlyTimeIsLateEarly = this.stampExactlyTimeIsLateEarly ? true : false ;
 			cloned.graceTimeSet = this.graceTimeSet.clone();
 			cloned.recordTimeRoundingSet = this.recordTimeRoundingSet.clone();
 			cloned.lateEarlyAtr = LateEarlyAtr.valueOf(this.lateEarlyAtr.value);

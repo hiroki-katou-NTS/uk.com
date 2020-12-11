@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -312,5 +313,12 @@ public class LateTimeOfDaily {
 			result = totalAddTime;
 		}
 		return result;
+	}
+	
+	public void resetData() {
+		this.lateTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		this.lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		this.timePaidUseTime = TimevacationUseTimeOfDaily.defaultValue();
+		this.exemptionTime = IntervalExemptionTime.defaultValue();
 	}
 }

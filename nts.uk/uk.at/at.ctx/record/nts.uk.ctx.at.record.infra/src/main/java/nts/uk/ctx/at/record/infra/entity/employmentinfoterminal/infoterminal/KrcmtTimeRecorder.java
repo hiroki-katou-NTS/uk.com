@@ -9,10 +9,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Entity
 @Table(name = "KRCMT_TIMERECORDER")
 public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
@@ -35,10 +37,28 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	public int type;
 
 	/**
-	 * IPア ド レ ス
+	 * IPア ド レ ス１
 	 */
-	@Column(name = "IP_ADDRESS")
-	public String ipAddress;
+	@Column(name = "IP_ADDRESS_1")
+	public String ipAddress1;
+	
+	/**
+	 * IPア ド レ ス２
+	 */
+	@Column(name = "IP_ADDRESS_2")
+	public String ipAddress2;
+
+	/**
+	 * IPア ド レ ス３
+	 */
+	@Column(name = "IP_ADDRESS_3")
+	public String ipAddress3;
+	
+	/**
+	 * IPア ド レ ス４
+	 */
+	@Column(name = "IP_ADDRESS_4")
+	public String ipAddress4;
 
 	/**
 	 * MACア ド レ ス
@@ -88,9 +108,22 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	@Column(name = "INVERTER_TIME")
 	public int inverterTime;
 
+	/**
+	 * 就業情報端末のメモ
+	 */
+	@Column(name = "MEMO")
+	public String memo;
+
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
+	
+//	public String getIpAddress() {
+//		if (this.ipAddress1 == null) {
+//			return null;
+//		}
+//		return this.ipAddress1 + '.' + this.ipAddress2 + '.' + this.ipAddress3 + '.' + this.ipAddress4;
+//	}
 
 }

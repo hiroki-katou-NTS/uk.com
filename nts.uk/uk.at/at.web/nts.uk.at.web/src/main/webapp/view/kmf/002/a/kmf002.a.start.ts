@@ -3,7 +3,7 @@ module nts.uk.at.view.kmf002.a {
     
     __viewContext.ready(function() {
         let mainTab = new viewmodel.ScreenModel();
-        mainTab.start_page(0).done(function(screenModel){
+        mainTab.startPage(0).done(function(screenModel){
             __viewContext.bind(screenModel);
             $ ("#managePubHD").focus();
         });

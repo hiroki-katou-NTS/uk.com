@@ -1,0 +1,26 @@
+@import url("base.css");
+
+.col_line_1, .col_line_2 {
+	display: inline-block;
+}
+
+#functions-area-bottom {
+	height: 40px;
+}
+
+.row {
+	display: flex;
+	align-items: center;
+}
+
+.checkbox_cell {
+	text-align: center;
+}
+
+.col_line_2 {
+	text-align: right;
+}
+
+#functions-area-bottom button {
+	margin-left: 0px;
+}

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
+import nts.uk.shr.com.context.AppContexts;
 
 @Embeddable
 @EqualsAndHashCode
@@ -52,12 +53,19 @@ public class KscmtAlchkWorkContextCmpDtlPk {
 		
 			 new KscmtAlchkWorkContextCmpDtlPk( 
 					companyId, 
-					prevWorkMethod.getWorkMethodClassification().value, 
+					prevWorkMethod.getWorkMethodClassification().value,
 					prevWorkTimeCode, 
 					((WorkMethodAttendance) current).getWorkTimeCode().v())
 			 
 		).collect(Collectors.toList());
 		
+	}
+
+	public static boolean isEquals(KscmtAlchkWorkContextCmpDtlPk pk1, KscmtAlchkWorkContextCmpDtlPk pk2) {
+		return pk1.companyId.equals(pk2.companyId) &&
+				pk1.prevWorkMethod == pk2.prevWorkMethod &&
+				pk1.prevWorkTimeCode.equals(pk2.prevWorkTimeCode) &&
+				pk1.currentWorkTimeCode.equals(pk2.currentWorkTimeCode);
 	}
 
 }

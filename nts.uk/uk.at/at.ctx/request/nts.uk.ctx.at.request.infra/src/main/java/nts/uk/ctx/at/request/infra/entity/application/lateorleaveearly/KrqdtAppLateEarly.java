@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
+ * 古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
  * author hieult
  */
 @Entity
@@ -29,7 +30,7 @@ public class KrqdtAppLateEarly  extends ContractUkJpaEntity implements Serializa
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
+	public KrqdtAppLateOrLeavePK_Old krqdtAppLateOrLeavePK;
 	
 	@Column(name = "ACTUAL_CANCEL_ATR")
 	public int actualCancelAtr;

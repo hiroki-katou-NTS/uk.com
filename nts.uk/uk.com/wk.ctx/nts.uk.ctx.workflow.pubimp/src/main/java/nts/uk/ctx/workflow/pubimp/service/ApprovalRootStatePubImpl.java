@@ -202,6 +202,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 															EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
 															z.getAgentID(),
 															approverName, 
+															personAdapter.getPersonInfo(z.getAgentID()).getEmployeeName(),
 															representerID, 
 															representerName,
 															z.getApprovalDate(),
@@ -271,6 +272,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
 														z.getAgentID(),
 														approverName, 
+														personAdapter.getPersonInfo(z.getAgentID()).getEmployeeName(),
 														representerID, 
 														representerName,
 														z.getApprovalDate(),
@@ -900,22 +902,15 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 												y.getFrameOrder(), 
 												y.getLstApproverInfo().stream().map(z -> {
 													String approverName = "";
-													// String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
+													String agentName = "";
 													String representerID = "";
 													String representerName = "";
-//													ApprovalRepresenterOutput approvalRepresenterOutput = 
-//															collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
-//													if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
-//														if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
-//															representerID = approvalRepresenterOutput.getListAgent().get(0);
-//															representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
-//														}
-//													}
 													return new ApproverStateExport(
 															z.getApproverID(), 
 															EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
 															z.getAgentID(),
 															approverName, 
+															agentName,
 															representerID, 
 															representerName,
 															z.getApprovalDate(),
@@ -967,6 +962,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 													EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
 													z.getAgentID(),
 													approverName, 
+													personAdapter.getPersonInfo(z.getAgentID()).getEmployeeName(),
 													representerID, 
 													representerName,
 													z.getApprovalDate(),
@@ -1036,6 +1032,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
 														z.getAgentID(),
 														approverName, 
+														personAdapter.getPersonInfo(z.getAgentID()).getEmployeeName(),
 														representerID, 
 														representerName,
 														z.getApprovalDate(),
@@ -1142,6 +1139,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 									z.getApproverID(), 
 									EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
 									z.getAgentID(), 
+									Strings.EMPTY, 
 									Strings.EMPTY, 
 									Strings.EMPTY, 
 									Strings.EMPTY, 

@@ -104,9 +104,9 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
 			List<TimeHolidayAdditionSet> timeHolidayAddition) {
 		super();
 		this.companyId = companyId;
-		this.workRecord = Optional.of(workrecord);
+		this.workRecord = Optional.ofNullable(workrecord);
 		this.referActualWorkHours = referActualWorkHours;
-		this.employeeInformation = Optional.of(employeeInformation);
+		this.employeeInformation = Optional.ofNullable(employeeInformation);
 		this.additionVacationSet = additionVacationSet;
 		this.timeHolidayAddition = timeHolidayAddition;
 	}
