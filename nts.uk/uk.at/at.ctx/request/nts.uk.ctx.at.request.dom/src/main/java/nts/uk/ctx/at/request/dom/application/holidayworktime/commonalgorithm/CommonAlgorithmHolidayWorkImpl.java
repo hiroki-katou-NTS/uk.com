@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36U
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
@@ -244,7 +245,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		//	計算ボタン未クリックチェック
 		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 
-				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag().value : 0, 
+				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag() : CalculatedFlag.UNCALCULATED, 
 				EnumAdaptor.valueOf(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		
 		//	休出時間のチェック
@@ -337,7 +338,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		
 		//03-06_計算ボタンチェック
 		commonOvertimeHoliday.calculateButtonCheck(appHdWorkDispInfoOutput.getCalculationResult().isPresent() ? 
-				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag().value : 0, 
+				appHdWorkDispInfoOutput.getCalculationResult().get().getCalculatedFlag() : CalculatedFlag.UNCALCULATED, 
 				EnumAdaptor.valueOf(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 
 		//	休出時間のチェック

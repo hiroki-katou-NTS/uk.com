@@ -103,7 +103,7 @@ public class AppHolidayWorkFinder {
 
 		// 	計算（従業員）
 		List<PreAppContentDisplay> opPreAppContentDisplayLst = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput()
-				.getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().orElse(new ArrayList<>());
+				.getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().orElse(new ArrayList<PreAppContentDisplay>());
 		Optional<AppHolidayWork> appHolidayWork = !opPreAppContentDisplayLst.isEmpty()
 				? opPreAppContentDisplayLst.get(0).getAppHolidayWork()
 				: Optional.empty();

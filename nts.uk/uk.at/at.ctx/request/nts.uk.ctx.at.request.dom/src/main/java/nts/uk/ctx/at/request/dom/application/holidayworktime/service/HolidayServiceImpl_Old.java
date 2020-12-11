@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -41,6 +42,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
@@ -776,7 +778,7 @@ public class HolidayServiceImpl_Old implements HolidayService_Old {
 				holidayWorkDomain.getWorkTypeCode().v(), 
 				holidayWorkDomain.getWorkTimeCode().v());
 		// 計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, timeCalUse);
+		commonOvertimeHoliday.calculateButtonCheck(EnumAdaptor.valueOf(calculateFlg, CalculatedFlag.class), timeCalUse);
 		// ノートの条件が満たすかチェックする
 		PreActualColorResult preActualColorResult = null;
 		if(timeCalUse != UseAtr.NOTUSE && timeInputUse == UseAtr.USE) {

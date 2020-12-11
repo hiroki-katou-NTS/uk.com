@@ -74,8 +74,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 				<colgroup>
 					<col width="109px" />
 					<col width="115px" />
-					<col width="115px" data-bind="visible: application().prePostAtr() == 1" />
-					<col width="115px" data-bind="visible: application().prePostAtr() == 1" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1 && mode() != 2" />
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1 && mode() != 2" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -85,10 +85,10 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 							data-bind="text: $i18n('KAF010_51')"></th>
 						<!--A6_4-->
 						<th class="ui-widget-header" rowspan="2"
-							data-bind="text: $i18n('KAF010_52'), visible: application().prePostAtr() == 1"></th>
+							data-bind="text: $i18n('KAF010_52'), visible: application().prePostAtr() == 1 && mode() != 2"></th>
 						<!--A6_6-->
 						<th class="ui-widget-header" rowspan="2"
-							data-bind="text: $i18n('KAF010_54'), visible: application().prePostAtr() == 1"></th>
+							data-bind="text: $i18n('KAF010_54'), visible: application().prePostAtr() == 1 && mode() != 2"></th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: holidayTime">
@@ -107,9 +107,9 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									enable: true,
 									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
-						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
 						<!--A6_11 -->
-						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -128,8 +128,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 				<colgroup>
 					<col width="109px" />
 					<col width="115px" />
-					<col width="115px" data-bind="visible: application().prePostAtr() == 1"/>
-					<col width="115px" data-bind="visible: application().prePostAtr() == 1"/>
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1 && mode() != 2"/>
+					<col width="115px" data-bind="visible: application().prePostAtr() == 1 && mode() != 2"/>
 				</colgroup>
 				<thead>
 					<tr>
@@ -137,9 +137,9 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 						<!--A7_3 申請時間ラベル-->
 						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_51')"></th>
 						<!--A7_4 事前申請ラベル-->
-						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_52'), visible: application().prePostAtr() == 1"></th>
+						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_52'), visible: application().prePostAtr() == 1 && mode() != 2"></th>
 						<!--A7_6 実績時間ラベル-->
-						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54'), visible: application().prePostAtr() == 1"></th>
+						<th class="ui-widget-header" rowspan="2" data-bind="text: $i18n('KAF005_54'), visible: application().prePostAtr() == 1 && mode() != 2"></th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: overTime">
@@ -160,9 +160,9 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									enable: true }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
-						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime)), visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
 						<!--A7_11 実績時間-->
-						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1"></td>
+						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(actualTime)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -206,7 +206,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		type?: KnockoutObservable<number>;
 		displayNo?: KnockoutObservable<string>;
 		visible?: KnockoutObservable<Boolean>;
-		backgroundColor?: KnockoutObservable<string>;
+		backgroundColor: KnockoutObservable<string>;
 	}
 	export interface RestTime {
 		frameNo: string;
@@ -218,12 +218,12 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		frameNo: KnockoutObservable<number>;
 		frameName: KnockoutObservable<string>;
 		start?: KnockoutObservable<number>;
-		preApp?: KnockoutObservable<number>;
+		preApp: KnockoutObservable<number>;
 		actualTime?: KnockoutObservable<number>;
 		type?: KnockoutObservable<number>;
 		legalClf?: KnockoutObservable<number>;
 		displayNo?: KnockoutObservable<string>;
 		visible?: KnockoutObservable<Boolean>;
-		backgroundColor?: KnockoutObservable<string>;
+		backgroundColor: KnockoutObservable<string>;
 	}
 }

@@ -78,8 +78,8 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	@Inject
 	private ExcessTimesYearAdapter excessTimesYearAdapter;
 
-	@Inject
-	private OutsideOTSettingService outsideOTSettingService;
+//	@Inject
+//	private OutsideOTSettingService outsideOTSettingService;
 
 	@Inject
 	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;

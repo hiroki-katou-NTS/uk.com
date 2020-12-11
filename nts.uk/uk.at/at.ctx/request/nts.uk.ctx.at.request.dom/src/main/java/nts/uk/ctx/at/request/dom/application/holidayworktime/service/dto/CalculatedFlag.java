@@ -7,9 +7,9 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
  */
 public enum CalculatedFlag {
 	
-	UNCALCULATED(0, "未計算"),
+	CALCULATED(0, "計算済"),
 	
-	CALCULATED(1, "計算済");
+	UNCALCULATED(1, "未計算");
 	
 	public final int value;
 	

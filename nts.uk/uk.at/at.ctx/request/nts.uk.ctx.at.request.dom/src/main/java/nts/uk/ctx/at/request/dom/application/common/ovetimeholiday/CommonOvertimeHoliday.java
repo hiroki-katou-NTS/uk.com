@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -175,7 +176,7 @@ public interface CommonOvertimeHoliday {
 	 * @param calculateFlg
 	 * @param timeCalUse 時刻計算利用区分
 	 */
-	void calculateButtonCheck(int calculateFlg, UseAtr timeCalUse);
+	void calculateButtonCheck(CalculatedFlag calculateFlg, UseAtr timeCalUse);
 	
 	/**
 	 * 03-03_３６上限チェック（月間） KAF005
