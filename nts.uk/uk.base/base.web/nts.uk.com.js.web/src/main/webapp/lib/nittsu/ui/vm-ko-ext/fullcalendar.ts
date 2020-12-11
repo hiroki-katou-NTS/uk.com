@@ -662,10 +662,21 @@ module nts.uk.ui.components.fullcalendar {
                             e.classList.add('active');
                         }
                     });
+
+                const current = moment().startOf('day');
+                const { start, end } = ko.unwrap(datesSet) || { start: new Date(), end: new Date() };
+
+                const $btn = $el.find('.fc-current-day-button');
+
+                if (!current.isBetween(start, end, 'date', '[)')) {
+                    $btn.removeAttr('disabled');
+                } else {
+                    $btn.attr('disabled', 'disabled');
+                }
             };
 
             const weekends: KnockoutObservable<boolean> = ko.observable(true);
-            const datesSet: KnockoutObservable<DatesSet | null> = ko.observable(null);
+            const datesSet: KnockoutObservable<DatesSet | null> = ko.observable(null).extend({ deferred: true, rateLimit: 100 });
 
             // emit date range to viewmodel
             datesSet.subscribe((ds) => {
@@ -823,10 +834,27 @@ module nts.uk.ui.components.fullcalendar {
                 return;
             }
 
+            const clearSelection = () => {
+                vm.selectedEvents = [];
+
+                // clear selections
+                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                    if (e.borderColor === BLACK) {
+                        console.log(e);
+                        e.setProp(GROUP_ID, '');
+
+                        e.setProp(BORDER_COLOR, TRANSPARENT);
+                        e.setProp(DURATION_EDITABLE, true);
+                    }
+                });
+            };
+
             const viewButtons: ButtonSet = {
                 'one-day': {
                     text: '日',
                     click: (evt) => {
+                        clearSelection();
+
                         if (vm.calendar.view.type !== 'timeGridDay') {
                             activeClass(evt.target);
 
@@ -842,6 +870,8 @@ module nts.uk.ui.components.fullcalendar {
                 'five-day': {
                     text: '稼働日',
                     click: (evt) => {
+                        clearSelection();
+
                         if (vm.calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== false) {
                             activeClass(evt.target);
 
@@ -857,6 +887,8 @@ module nts.uk.ui.components.fullcalendar {
                 'full-week': {
                     text: '週',
                     click: (evt) => {
+                        clearSelection();
+
                         if (vm.calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== true) {
                             activeClass(evt.target);
 
@@ -872,6 +904,8 @@ module nts.uk.ui.components.fullcalendar {
                 'full-month': {
                     text: '月',
                     click: (evt) => {
+                        clearSelection();
+
                         if (vm.calendar.view.type !== 'dayGridMonth') {
                             activeClass(evt.target);
 
@@ -887,6 +921,8 @@ module nts.uk.ui.components.fullcalendar {
                 'list-week': {
                     text: '一覧表',
                     click: (evt) => {
+                        clearSelection();
+
                         if (vm.calendar.view.type !== 'listWeek') {
                             activeClass(evt.target);
 
@@ -904,6 +940,8 @@ module nts.uk.ui.components.fullcalendar {
                 'current-day': {
                     text: '今日',
                     click: () => {
+                        clearSelection();
+
                         if (ko.isObservable(initialDate)) {
                             initialDate(new Date());
                         } else {
@@ -914,6 +952,8 @@ module nts.uk.ui.components.fullcalendar {
                 'next-day': {
                     text: '›',
                     click: () => {
+                        clearSelection();
+
                         if (ko.isObservable(initialDate)) {
                             const date = ko.unwrap(initialDate);
                             const view = ko.unwrap(initialView);
@@ -938,6 +978,8 @@ module nts.uk.ui.components.fullcalendar {
                 'preview-day': {
                     text: '‹',
                     click: () => {
+                        clearSelection();
+
                         if (ko.isObservable(initialDate)) {
                             const date = ko.unwrap(initialDate);
                             const view = ko.unwrap(initialView);
@@ -1188,9 +1230,6 @@ module nts.uk.ui.components.fullcalendar {
 
                     // remove new event (with no data) & background event
                     _.each(vm.calendar.getEvents(), (e: EventApi) => {
-                        // remove group id
-                        e.setProp(GROUP_ID, '');
-
                         // remove new event (no save)
                         if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
                             e.remove();
@@ -1202,7 +1241,8 @@ module nts.uk.ui.components.fullcalendar {
 
                     // single select
                     if (!shift) {
-                        _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                        _.each(seletions(), (e: EventApi) => {
+                            e.setProp(GROUP_ID, '');
                             e.setProp(BORDER_COLOR, TRANSPARENT);
                         });
 
@@ -1217,6 +1257,7 @@ module nts.uk.ui.components.fullcalendar {
                         } else {
                             // odd select
                             if (event.borderColor === BLACK) {
+                                event.setProp(GROUP_ID, '');
                                 event.setProp(BORDER_COLOR, TRANSPARENT);
                             } else
                                 // add new select
@@ -1356,7 +1397,6 @@ module nts.uk.ui.components.fullcalendar {
                     const { start, end } = dateInfo;
                     const $btn = $el.find('.fc-current-day-button');
 
-                    vm.selectedEvents = [];
                     datesSet({ start, end });
 
                     if (!current.isBetween(start, end, 'date', '[)')) {
