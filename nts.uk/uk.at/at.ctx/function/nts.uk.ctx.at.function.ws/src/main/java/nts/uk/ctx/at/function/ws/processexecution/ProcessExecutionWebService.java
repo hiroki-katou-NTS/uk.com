@@ -139,8 +139,8 @@ public class ProcessExecutionWebService extends WebService {
 
 	@POST
 	@Path("saveExecSetting")
-	public JavaTypeResult<String> saveExecutionSetting(SaveExecutionTaskSettingCommand command) {
-		return new JavaTypeResult<String>(this.saveExecSettingHandler.handle(command));
+	public JavaTypeResult<ExecutionTaskSettingDto> saveExecutionSetting(SaveExecutionTaskSettingCommand command) {
+		return new JavaTypeResult<ExecutionTaskSettingDto>(this.saveExecSettingHandler.handle(command));
 	}
 
 	@POST

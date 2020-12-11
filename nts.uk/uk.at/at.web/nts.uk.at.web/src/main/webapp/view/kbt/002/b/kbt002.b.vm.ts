@@ -90,7 +90,6 @@ module nts.uk.at.view.kbt002.b {
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
-          console.log(response);
           vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
           vm.stdAcceptList(response.stdAcceptCondSetList);
           vm.stdOutputList(response.stdOutputCondSetList);
@@ -158,7 +157,6 @@ module nts.uk.at.view.kbt002.b {
       const vm = this;
       vm.$blockui('grayout')
       $.when(vm.getEnumDataList(), vm.getAlarmByUser())
-        .then((response) => console.log(vm.targetMonthList()))
         .always(() => vm.$blockui('clear'));
       vm.taskSetting.subscribe(data => {
         vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(data));

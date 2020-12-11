@@ -90,7 +90,7 @@ module nts.uk.at.view.kbt002.c {
           if (item) {
             vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
             vm.selectExec(item.repeatContent);
-            vm.selectTimeRepeat(item.oneDayRepClassification);
+            vm.selectTimeRepeat((item as any).oneDayRepClassification);
             vm.selectEndDate(item.endDateCls);
             vm.selectEndTime(item.endTimeCls);
             vm.monthDays(vm.buildMonthDaysStr());
@@ -129,7 +129,7 @@ module nts.uk.at.view.kbt002.c {
       params.startTime = vm.curExecSetting().startTime();
 
       if (vm.selectExec() !== 0) {
-        params.oneDayRepClassification = vm.selectTimeRepeat(); //1日の繰り返し
+        (params as any).oneDayRepClassification = vm.selectTimeRepeat(); //1日の繰り返し
         params.oneDayRepInterval = vm.curExecSetting().oneDayRepInterval(); //時刻指定
         params.endTimeCls = vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0; //終了時刻
         params.endDateCls = vm.selectEndDate(); //終了日
@@ -166,9 +166,9 @@ module nts.uk.at.view.kbt002.c {
           if (res) {
             vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => {
-              params.startDate = moment.utc(params.startDate).format("YYYY/MM/DD");
-              params.endDate = moment.utc(params.endDate).format("YYYY/MM/DD");
-              vm.$window.close(params);
+              res.startDate = moment.utc(res.startDate).format("YYYY/MM/DD");
+              res.endDate = moment.utc(res.endDate).format("YYYY/MM/DD");
+              vm.$window.close(res);
             });
           }
         })
@@ -284,7 +284,7 @@ module nts.uk.at.view.kbt002.c {
     startTime: number;
     endTimeCls: number = 0;
     endTime: number;
-    oneDayRepClassification: number = 0;
+    oneDayRepCls: number = 0;
     oneDayRepInterval: number;
     repeatCls: boolean = false;
     repeatContent: number;

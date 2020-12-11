@@ -28,6 +28,7 @@ import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
@@ -46,7 +47,7 @@ import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
 @Stateless
 public class SaveExecutionTaskSettingCommandHandler
-		extends CommandHandlerWithResult<SaveExecutionTaskSettingCommand, String> {
+		extends CommandHandlerWithResult<SaveExecutionTaskSettingCommand, ExecutionTaskSettingDto> {
 
 	@Inject
 	private ExecutionTaskSettingRepository execTaskSettingRepo;
@@ -71,7 +72,7 @@ public class SaveExecutionTaskSettingCommandHandler
 	}
 
 	@Override
-	protected String handle(CommandHandlerContext<SaveExecutionTaskSettingCommand> context) {
+	protected ExecutionTaskSettingDto handle(CommandHandlerContext<SaveExecutionTaskSettingCommand> context) {
 		SaveExecutionTaskSettingCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
@@ -353,7 +354,7 @@ public class SaveExecutionTaskSettingCommandHandler
 			throw new BusinessException("Msg_1110");
 		}
 
-		return taskSetting.getExecItemCd().v();
+		return ExecutionTaskSettingDto.fromDomain(taskSetting);
 	}
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
