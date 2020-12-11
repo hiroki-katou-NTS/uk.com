@@ -1585,7 +1585,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		creatingWithinWorkTimeSheet.createWithinWorkTimeSheetAsFlowWork(
 				startTime,
 				deductionTimeSheet.getForDeductionTimeZoneList(),
-				integrationOfWorkTime.getFlowWorkSetting().get());
+				integrationOfWorkTime.getFlowWorkSetting().get(),
+				predetermineTimeSet);
 		
 		//時間休暇溢れ分の割り当て（流動就内）
 		creatingWithinWorkTimeSheet.allocateOverflowTimeVacation(
@@ -1731,17 +1732,31 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param startTime 開始時刻
 	 * @param forDeductionTimeZones 控除項目の時間帯
 	 * @param flowWorkSetting 流動勤務設定
+	 * @param predetermineTimeSet 計算用所定時間設定
 	 */
 	private void createWithinWorkTimeSheetAsFlowWork(
 			TimeWithDayAttr startTime,
 			List<TimeSheetOfDeductionItem> forDeductionTimeZones,
-			FlowWorkSetting flowWorkSetting) {
+			FlowWorkSetting flowWorkSetting,
+			PredetermineTimeSetForCalc predetermineTimeSet) {
+		
+		TimeWithDayAttr endTime;
+		
+		if(flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().isEmpty()) {
+			//1日の計算範囲から終了時刻を計算
+			endTime = predetermineTimeSet.getOneDayTimeSpan().getEnd();
+			//退勤時刻の補正
+			this.correctleaveTimeForFlow(endTime);
+			//就業時間内時間枠クラスを作成（更新）
+			this.createWithinWorkTimeFramesAsFlowWork(forDeductionTimeZones, endTime);
+			return;
+		}
 		
 		//残業開始となる経過時間を取得
 		AttendanceTime elapsedTime = flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().get(0).getFlowTimeSetting().getElapsedTime();
 		
 		//経過時間から終了時刻を計算
-		TimeWithDayAttr endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
+		endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
 		
 		//重複している控除項目の時間帯
 		List<TimeSheetOfDeductionItem> overlapptingDeductionTimeSheets = new ArrayList<>();
