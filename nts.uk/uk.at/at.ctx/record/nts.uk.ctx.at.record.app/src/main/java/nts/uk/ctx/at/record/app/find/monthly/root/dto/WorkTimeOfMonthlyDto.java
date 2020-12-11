@@ -157,10 +157,16 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
-		if (PLAN_ACTUAL_DIFF.equals(path)) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
 			return Optional.of(ItemValue.builder().value(budgetTimeVarience).valueType(ValueType.TIME));
+		case INTERVAL:
+			return Optional.of(ItemValue.builder().value(intervalTime).valueType(ValueType.TIME));
+		case (INTERVAL + DEDUCTION):
+			return Optional.of(ItemValue.builder().value(intervalExemptionTime).valueType(ValueType.TIME));
+		default:
+			return AttendanceItemDataGate.super.valueOf(path);
 		}
-		return AttendanceItemDataGate.super.valueOf(path);
 	}
 
 	@Override

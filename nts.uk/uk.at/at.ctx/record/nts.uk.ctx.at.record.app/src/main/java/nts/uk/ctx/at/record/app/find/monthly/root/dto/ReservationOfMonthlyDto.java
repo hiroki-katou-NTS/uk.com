@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -56,9 +57,9 @@ public class ReservationOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case AMOUNT + LAYOUT_A:
-			return Optional.of(ItemValue.builder().value(amount1).valueType(ValueType.AMOUNT));
+			return Optional.of(ItemValue.builder().value(amount1).valueType(ValueType.AMOUNT_NUM));
 		case AMOUNT + LAYOUT_B:
-			return Optional.of(ItemValue.builder().value(amount2).valueType(ValueType.NUMBER));
+			return Optional.of(ItemValue.builder().value(amount2).valueType(ValueType.AMOUNT_NUM));
 		default:
 			return Optional.empty();
 		}
@@ -70,6 +71,8 @@ public class ReservationOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 		case AMOUNT + LAYOUT_A:
 		case AMOUNT + LAYOUT_B:
 			return PropType.VALUE;
+		case RESERVATION:
+			return PropType.IDX_LIST;
 		default:
 			return PropType.OBJECT;
 		}
@@ -83,6 +86,39 @@ public class ReservationOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 		case AMOUNT + LAYOUT_B:
 			amount2 = value.valueOrDefault(0); break;
 		default:
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if(RESERVATION.equals(path)) {
+			return new ReservationNumberOfMonthlyDto();
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+	
+	@Override
+	public int size(String path) {
+		if(RESERVATION.equals(path)) {
+			return 40;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if(RESERVATION.equals(path)) {
+			return (List<T>) orders;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if(RESERVATION.equals(path)) {
+			orders = (List<ReservationNumberOfMonthlyDto>) value;
 		}
 	}
 }

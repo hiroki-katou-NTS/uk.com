@@ -203,7 +203,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		case CLOSURE_STATE:
 			closureStatus = value.valueOrDefault(0); break;
 		case (GRANT + INFO):
-			(reserveLeaveGrant) = value.valueOrDefault(0); break;
+			(reserveLeaveGrant) = value.valueOrDefault(0d); break;
 		case (GRANT + ATTRIBUTE):
 			(grantAtr) = value.valueOrDefault(false); break;
 		default:

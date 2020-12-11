@@ -28,7 +28,7 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	
 	/** 使用数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE, layout = LAYOUT_C)
-	private DayTimeUsedNumberDto useNumber;
+	private SpecialLeaveUseNumberDto useNumber;
 	
 	/** 未消化数 */
 	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_D)
@@ -41,7 +41,7 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	public static SpecialLeaveDto from(ActualSpecialLeave domain){
 		return domain == null ? null : new SpecialLeaveDto(DayAndTimeDto.from(domain.getRemain()), 
 				DayAndTimeDto.from(domain.getBeforRemainGrant()), 
-				DayTimeUsedNumberDto.from(domain.getUseNumber()), 
+				SpecialLeaveUseNumberDto.from(domain.getUseNumber()), 
 				null, 
 				DayAndTimeDto.from(domain.getAfterRemainGrant().orElse(null)));
 	}
@@ -49,7 +49,7 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	public static SpecialLeaveDto from(SpecialLeave domain){
 		return domain == null ? null : new SpecialLeaveDto(DayAndTimeDto.from(domain.getRemain()), 
 				DayAndTimeDto.from(domain.getBeforeRemainGrant()), 
-				DayTimeUsedNumberDto.from(domain.getUseNumber()), 
+				SpecialLeaveUseNumberDto.from(domain.getUseNumber()), 
 				DayAndTimeDto.from(domain.getUnDegestionNumber()), 
 				DayAndTimeDto.from(domain.getAfterRemainGrant().orElse(null)));
 	}
@@ -57,14 +57,14 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	public ActualSpecialLeave toActualDomain(){
 		return new ActualSpecialLeave(remain == null ? null : remain.toActualSpecial(), 
 									beforeRemainGrant == null ? null : beforeRemainGrant.toActualSpecial(), 
-									useNumber == null ? null : useNumber.toSpecial(),
+									useNumber == null ? null : useNumber.toDomain(),
 									Optional.ofNullable(afterRemainGrant == null ? null : afterRemainGrant.toActualSpecial()));
 	}
 	
 	public SpecialLeave toDomain(){
 		return new SpecialLeave(remain == null ? null : remain.toSpecial(), 
 				beforeRemainGrant == null ? null : beforeRemainGrant.toSpecial(), 
-				useNumber == null ? null : useNumber.toSpecial(),
+				useNumber == null ? null : useNumber.toDomain(),
 				unDegestionNumber == null ? null : unDegestionNumber.toUnDegest(),
 				Optional.ofNullable(afterRemainGrant == null ? null : afterRemainGrant.toSpecial()));
 	}
@@ -108,7 +108,7 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
 		case USAGE:
-			useNumber = (DayTimeUsedNumberDto) value; break;
+			useNumber = (SpecialLeaveUseNumberDto) value; break;
 		case REMAIN:
 			remain = (DayAndTimeDto) value; break;
 		case (REMAIN + GRANT + BEFORE):

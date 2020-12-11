@@ -50,26 +50,36 @@ public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGat
 
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
-		if (path.equals(TIME)) {
+		switch (path) {
+		case TIME:
 			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		case AMOUNT:
+			return Optional.of(ItemValue.builder().value(amount).valueType(ValueType.TIME));
+		default:
+			return AttendanceItemDataGate.super.valueOf(path);
 		}
-		return AttendanceItemDataGate.super.valueOf(path);
+		
 	}
 
 	@Override
 	public PropType typeOf(String path) {
-		if (path.equals(TIME)) {
+		switch (path) {
+		case TIME:
+		case AMOUNT:
 			return PropType.VALUE;
+		default:
+			return AttendanceItemDataGate.super.typeOf(path);
 		}
-		return AttendanceItemDataGate.super.typeOf(path);
 	}
 
 	@Override
 	public void set(String path, ItemValue value) {
-		if (path.equals(TIME)) {
+		switch (path) {
+		case TIME:
 			time = value.valueOrDefault(0);
+		case AMOUNT:
+			amount = value.valueOrDefault(0);
+		default:
 		}
 	}
-
-	
 }

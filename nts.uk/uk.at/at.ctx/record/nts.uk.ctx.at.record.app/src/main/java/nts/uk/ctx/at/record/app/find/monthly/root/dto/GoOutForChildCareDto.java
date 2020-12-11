@@ -83,6 +83,10 @@ public class GoOutForChildCareDto implements ItemConst , AttendanceItemDataGate{
 			return Optional.of(ItemValue.builder().value(times).valueType(ValueType.COUNT));
 		case TIME:
 			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(withinTime).valueType(ValueType.TIME));
+		case EXCESS_STATUTORY:
+			return Optional.of(ItemValue.builder().value(excessTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -93,6 +97,8 @@ public class GoOutForChildCareDto implements ItemConst , AttendanceItemDataGate{
 		switch (path) {
 		case COUNT:
 		case TIME:
+		case WITHIN_STATUTORY:
+		case EXCESS_STATUTORY:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -106,6 +112,10 @@ public class GoOutForChildCareDto implements ItemConst , AttendanceItemDataGate{
 			times = value.valueOrDefault(0); break;
 		case TIME:
 			time = value.valueOrDefault(0); break;
+		case WITHIN_STATUTORY:
+			withinTime = value.valueOrDefault(0); break;
+		case EXCESS_STATUTORY:
+			excessTime = value.valueOrDefault(0); break;
 		default:
 		}
 	}

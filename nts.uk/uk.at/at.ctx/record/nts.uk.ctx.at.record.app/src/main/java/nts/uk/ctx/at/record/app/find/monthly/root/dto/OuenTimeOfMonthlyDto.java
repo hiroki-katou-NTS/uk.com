@@ -57,6 +57,85 @@ public class OuenTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		
 		return domain;
 	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case FRAME:
+			return PropType.IDX_LIST;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case FRAME:
+			return new OuenWorkAggregateFrameDetailDto();
+		case OTHER:
+			return new OuenWorkAggregateDetailDto();
+		default:
+			break;
+		}
+		return null;
+	}
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case OTHER:
+			return Optional.ofNullable(this.other);
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		switch (path) {
+		case FRAME:
+			return (List<T>) this.frames;
+		default:
+			return new ArrayList<>();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case OTHER:
+			this.other = (OuenWorkAggregateDetailDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		switch (path) {
+		case FRAME:
+			this.frames = (List<OuenWorkAggregateFrameDetailDto>) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public int size(String path) {
+		switch (path) {
+		case FRAME:
+			return 99;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+	
 
 	@Getter
 	@Setter
@@ -191,83 +270,5 @@ public class OuenTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		}
 	}
 	
-	@Override
-	public PropType typeOf(String path) {
-		switch (path) {
-		case FRAME:
-			return PropType.IDX_LIST;
-		case OTHER:
-			return PropType.VALUE;
-		default:
-			return PropType.OBJECT;
-		}
-	}
-	
-	@Override
-	public AttendanceItemDataGate newInstanceOf(String path) {
-		switch (path) {
-		case FRAME:
-			return new OuenWorkAggregateFrameDetailDto();
-		case OTHER:
-			return new OuenWorkAggregateDetailDto();
-		default:
-			break;
-		}
-		return null;
-	}
-	
-	@Override
-	public Optional<AttendanceItemDataGate> get(String path) {
-		switch (path) {
-		case OTHER:
-			Optional.ofNullable(this.other);
-		default:
-			return Optional.empty();
-		}
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
-		switch (path) {
-		case FRAME:
-			return (List<T>) this.frames;
-		default:
-			return new ArrayList<>();
-		}
-	}
 
-	@Override
-	public void set(String path, AttendanceItemDataGate value) {
-		switch (path) {
-		case OTHER:
-			this.other = (OuenWorkAggregateDetailDto) value;
-			break;
-		default:
-			break;
-		}
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
-		switch (path) {
-		case FRAME:
-			this.frames = (List<OuenWorkAggregateFrameDetailDto>) value;
-			break;
-		default:
-			break;
-		}
-	}
-	
-	@Override
-	public int size(String path) {
-		switch (path) {
-		case FRAME:
-			return 99;
-		default:
-			break;
-		}
-		return AttendanceItemDataGate.super.size(path);
-	}
 }

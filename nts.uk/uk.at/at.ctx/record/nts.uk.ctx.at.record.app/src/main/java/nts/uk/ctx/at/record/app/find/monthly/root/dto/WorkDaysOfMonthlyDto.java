@@ -193,10 +193,16 @@ public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.of(ItemValue.builder().value(attendanceDays).valueType(ValueType.DAYS));
 		case (TWO_TIMES + COUNT):
 			return Optional.of(ItemValue.builder().value(twoTimesWorkTimes).valueType(ValueType.COUNT));
-		case TEMPORARY:
+		case (TEMPORARY + COUNT):
 			return Optional.of(ItemValue.builder().value(temporaryWorkTimes).valueType(ValueType.COUNT));
+		case (TEMPORARY + TIME):
+			return Optional.of(ItemValue.builder().value(temporaryWorkTime).valueType(ValueType.TIME));
 		case TRANSFER:
 			return Optional.of(ItemValue.builder().value(transferdays).valueType(ValueType.DAYS));
+		case (TIME_DIGESTION + TIME):
+			return Optional.of(ItemValue.builder().value(timeDisgestTime).valueType(ValueType.TIME));
+		case (TIME_DIGESTION + DAYS):
+			return Optional.of(ItemValue.builder().value(timeDisgestDays).valueType(ValueType.DAYS));
 		default:
 			break;
 		}
@@ -259,8 +265,11 @@ public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		case DAYS:
 		case ATTENDANCE:
 		case (TWO_TIMES + COUNT):
-		case TEMPORARY:
+		case (TEMPORARY + COUNT):
+		case (TEMPORARY + TIME):
 		case TRANSFER:
+		case (TIME_DIGESTION + TIME):
+		case (TIME_DIGESTION + DAYS):
 			return PropType.VALUE;
 		case SPECIFIC:
 			return PropType.IDX_LIST;
@@ -294,10 +303,16 @@ public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 			attendanceDays = value.valueOrDefault(0d); break;
 		case (TWO_TIMES + COUNT):
 			twoTimesWorkTimes = value.valueOrDefault(0); break;
-		case TEMPORARY:
+		case (TEMPORARY + COUNT):
 			temporaryWorkTimes = value.valueOrDefault(0); break;
+		case (TEMPORARY + TIME):
+			temporaryWorkTime = value.valueOrDefault(0); break;
 		case TRANSFER:
 			transferdays = value.valueOrDefault(0d); break;
+		case (TIME_DIGESTION + TIME):
+			timeDisgestTime = value.valueOrDefault(0); break;
+		case (TIME_DIGESTION + DAYS):
+			timeDisgestDays = value.valueOrDefault(0d); break;
 		default:
 			break;
 		}

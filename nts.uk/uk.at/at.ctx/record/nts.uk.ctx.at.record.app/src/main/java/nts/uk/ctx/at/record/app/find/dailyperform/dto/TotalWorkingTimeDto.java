@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,7 +86,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 短時間勤務時間: 日別実績の短時間勤務時間 */
 	@AttendanceItemLayout(layout = LAYOUT_K, jpPropertyName = SHORT_WORK, enumField = DEFAULT_ENUM_FIELD_NAME)
-	private ShortWorkTimeDto shortWorkTime;
+	private List<ShortWorkTimeDto> shortWorkTime;
 
 	/** 加給時間: 日別実績の加給時間 */
 	@AttendanceItemLayout(layout = LAYOUT_L, jpPropertyName = RAISING_SALARY)
@@ -181,8 +182,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.ofNullable(excessOfStatutoryTime);
 		case BREAK:
 			return Optional.ofNullable(breakTimeSheet);
-		case SHORT_WORK:
-			return Optional.ofNullable(shortWorkTime);
 		case RAISING_SALARY:
 			return Optional.ofNullable(raisingSalaryTime);
 		case HOLIDAY:
@@ -203,6 +202,8 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 			return 2;
 		case GO_OUT:
 			return 4;
+		case SHORT_WORK:
+			return 1;
 		default:
 			break;
 		}
@@ -217,6 +218,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 		case LEAVE_EARLY:
 			return PropType.IDX_LIST;
 		case GO_OUT:
+		case SHORT_WORK:
 			return PropType.ENUM_LIST;
 		case TOTAL_LABOR:
 		case TOTAL_CALC:
@@ -245,6 +247,8 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 			return (List<T>) leaveEarlyTime;
 		case GO_OUT:
 			return (List<T>) goOutTimeSheet;
+		case SHORT_WORK:
+			return (List<T>) shortWorkTime;
 		default:
 			break;
 		}
@@ -295,9 +299,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 		case BREAK:
 			this.breakTimeSheet = (BreakTimeSheetDailyPerformDto) value;
 			break;
-		case SHORT_WORK:
-			this.shortWorkTime = (ShortWorkTimeDto) value;
-			break;
 		case RAISING_SALARY:
 			this.raisingSalaryTime = (RaisingSalaryTimeDailyPerformDto) value;
 			break;
@@ -325,6 +326,9 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 		case GO_OUT:
 			goOutTimeSheet = (List<GoOutTimeSheetDailyPerformDto>) value;
 			break;
+		case SHORT_WORK:
+			this.shortWorkTime = (List<ShortWorkTimeDto>) value;
+			break;
 		default:
 			break;
 		}
@@ -340,7 +344,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 										leaveEarlyTime == null ? null : leaveEarlyTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
 										breakTimeSheet == null ? null : breakTimeSheet.clone(),
 										goOutTimeSheet == null ? null : goOutTimeSheet.stream().map(t -> t.clone()).collect(Collectors.toList()),
-										shortWorkTime == null ? null : shortWorkTime.clone(), 
+										shortWorkTime == null ? new ArrayList<>() : shortWorkTime.stream().map(t -> t.clone()).collect(Collectors.toList()), 
 										raisingSalaryTime == null ? null : raisingSalaryTime.clone(), 
 										dailyOfHoliday == null ? null : dailyOfHoliday.clone(), 
 										workTimes,
@@ -375,7 +379,10 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 										getAttendanceTime(c.getIntervalTime().getExemptionTime()), c.getWorkNo().v())),
 						BreakTimeSheetDailyPerformDto.fromBreakTimeOfDaily(domain.getBreakTimeOfDaily()),
 						ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
-						ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily()), 
+						//Arrays.asList(ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily())),
+						Arrays.asList(ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily())).stream()
+								.map(c -> (ShortWorkTimeDto) c)
+								.collect(Collectors.toList()),
 						RaisingSalaryTimeDailyPerformDto.toDto(domain.getRaiseSalaryTimeOfDailyPerfor()), 
 //						null,
 						HolidayDailyPerformDto.from(domain.getHolidayOfDaily()), 
@@ -423,7 +430,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime, (c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
-				shortWorkTime == null ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.toDomain(),
+				shortWorkTime == null | shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(0).toDomain(),
 				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
 				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)));
 		

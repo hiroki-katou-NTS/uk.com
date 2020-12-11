@@ -106,7 +106,7 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 	@Override
 	public PropType typeOf(String path) {
 		if (FAKED.equals(path)) {
-			return PropType.VALUE;
+			return PropType.IDX_LIST;
 		}
 		return super.typeOf(path);
 	}

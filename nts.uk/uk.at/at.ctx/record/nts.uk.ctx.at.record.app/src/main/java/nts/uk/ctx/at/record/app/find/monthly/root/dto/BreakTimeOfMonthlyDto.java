@@ -79,6 +79,12 @@ public class BreakTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate 
 			return Optional.of(ItemValue.builder().value(withinBreakTime).valueType(ValueType.TIME));
 		case EXCESS_STATUTORY:
 			return Optional.of(ItemValue.builder().value(excessBreakTime).valueType(ValueType.TIME));
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(breakTimes).valueType(ValueType.TIME));
+		case (WITHIN_STATUTORY + DEDUCTION):
+			return Optional.of(ItemValue.builder().value(withinDeductionTime).valueType(ValueType.TIME));
+		case (EXCESS_STATUTORY + DEDUCTION):
+			return Optional.of(ItemValue.builder().value(excessDeductionTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -90,6 +96,9 @@ public class BreakTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate 
 		case TIME:
 		case WITHIN_STATUTORY:
 		case EXCESS_STATUTORY:
+		case COUNT:
+		case (WITHIN_STATUTORY + DEDUCTION):
+		case (EXCESS_STATUTORY + DEDUCTION):
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -105,6 +114,12 @@ public class BreakTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate 
 			withinBreakTime = value.valueOrDefault(0); break;
 		case EXCESS_STATUTORY:
 			excessBreakTime = value.valueOrDefault(0); break;
+		case COUNT:
+			breakTimes = value.valueOrDefault(0); break;
+		case (WITHIN_STATUTORY + DEDUCTION):
+			withinDeductionTime = value.valueOrDefault(0); break;
+		case (EXCESS_STATUTORY + DEDUCTION):
+			excessDeductionTime = value.valueOrDefault(0); break;
 		default:
 		}
 	}

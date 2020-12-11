@@ -180,6 +180,8 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			return new VerticalTotalOfMonthlyDto();
 		case (COUNT + AGGREGATE):
 			return new TotalCountByPeriodDto();
+		case OUEN:
+			return new OuenTimeOfMonthlyDto();
 		default:
 			break;
 		}
@@ -199,6 +201,8 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			return Optional.ofNullable(verticalTotal);
 		case (COUNT + AGGREGATE):
 			return Optional.ofNullable(totalCount);
+		case OUEN:
+			return Optional.ofNullable(ouen);
 		default:
 			break;
 		}
@@ -233,6 +237,8 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			verticalTotal = (VerticalTotalOfMonthlyDto) value; break;
 		case (COUNT + AGGREGATE):
 			totalCount = (TotalCountByPeriodDto) value; break;
+		case OUEN:
+			ouen = (OuenTimeOfMonthlyDto) value; break;
 		default:
 			break;
 		}

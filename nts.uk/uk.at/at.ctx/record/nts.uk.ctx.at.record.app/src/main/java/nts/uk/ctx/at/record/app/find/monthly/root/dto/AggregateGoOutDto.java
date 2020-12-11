@@ -152,6 +152,7 @@ public class AggregateGoOutDto implements ItemConst, AttendanceItemDataGate {
 		case TOTAL:
 		case ILLEGAL:
 		case LEGAL:
+		case CORE_OUT:
 			return new TimeMonthWithCalculationDto();
 		default:
 			return null;
@@ -167,6 +168,8 @@ public class AggregateGoOutDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.ofNullable(illegalTime);
 		case LEGAL:
 			return Optional.ofNullable(legalTime);
+		case CORE_OUT:
+			return Optional.ofNullable(coreOutTime);
 		default:
 			return Optional.empty();
 		}
@@ -181,6 +184,8 @@ public class AggregateGoOutDto implements ItemConst, AttendanceItemDataGate {
 			illegalTime = (TimeMonthWithCalculationDto) value; break;
 		case LEGAL:
 			legalTime = (TimeMonthWithCalculationDto) value; break;
+		case CORE_OUT:
+			coreOutTime = (TimeMonthWithCalculationDto) value; break;
 		default:
 		}
 	}

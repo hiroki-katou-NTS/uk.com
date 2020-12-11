@@ -101,6 +101,14 @@ public class BonusPayTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGa
 			return Optional.of(ItemValue.builder().value(holWorkSpecBonus).valueType(ValueType.TIME));
 		case SPECIFIC:
 			return Optional.of(ItemValue.builder().value(specBonus).valueType(ValueType.TIME));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(within).valueType(ValueType.TIME));
+		case (WITHIN_STATUTORY + SPECIFIC):
+			return Optional.of(ItemValue.builder().value(withinSpecific).valueType(ValueType.TIME));
+		case EXCESS_STATUTORY:
+			return Optional.of(ItemValue.builder().value(excess).valueType(ValueType.TIME));
+		case (EXCESS_STATUTORY + SPECIFIC):
+			return Optional.of(ItemValue.builder().value(excessSpecific).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -113,6 +121,10 @@ public class BonusPayTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGa
 		case HOLIDAY_WORK:
 		case (HOLIDAY_WORK + SPECIFIC):
 		case SPECIFIC:
+		case WITHIN_STATUTORY:
+		case (WITHIN_STATUTORY + SPECIFIC):
+		case EXCESS_STATUTORY:
+		case (EXCESS_STATUTORY + SPECIFIC):
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -130,6 +142,14 @@ public class BonusPayTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGa
 			holWorkSpecBonus = value.valueOrDefault(0); break;
 		case SPECIFIC:
 			specBonus = value.valueOrDefault(0); break;
+		case WITHIN_STATUTORY:
+			within = value.valueOrDefault(0); break;
+		case (WITHIN_STATUTORY + SPECIFIC):
+			withinSpecific = value.valueOrDefault(0); break;
+		case EXCESS_STATUTORY:
+			excess = value.valueOrDefault(0); break;
+		case (EXCESS_STATUTORY + SPECIFIC):
+			excessSpecific = value.valueOrDefault(0); break;
 		default:
 		}
 	}
