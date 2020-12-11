@@ -28,14 +28,17 @@ public class DisplayFlexBasicSettingByCompany {
 		DisplayFlexBasicSettingByCompanyDto result = new DisplayFlexBasicSettingByCompanyDto();
 
 		String comId = AppContexts.user().companyId();
-		
+
 		// 1.get(ログイン会社ID)
 		this.getFlexRepo.find(comId).ifPresent(x -> {
 			result.setGetFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 
 		// 2.get(ログイン会社ID)
-		this.comFlexRepo.find(comId);
+
+		this.comFlexRepo.find(comId).ifPresent(x -> {
+			result.setComFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
+		});
 
 		return result;
 	}
