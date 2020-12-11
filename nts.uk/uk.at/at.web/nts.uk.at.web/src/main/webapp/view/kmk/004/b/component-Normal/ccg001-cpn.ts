@@ -28,16 +28,15 @@ module nts.uk.at.view.kmk004.b {
 			$('#com-ccg001')
 				.ntsGroupComponent({
 					/** Common properties */
-					systemType: 2, //システム区分	
+					systemType: 1,
 					showEmployeeSelection: true,
-					showQuickSearchTab: true, //クイック検索
+					showQuickSearchTab: true,
 					showAdvancedSearchTab: true,
-					showBaseDate: true, //基準日利用
-					showClosure: false, //就業締め日利用
-					showAllClosure: false, //全締め表示
-					showPeriod: false, //対象期間利用
-					periodFormatYM: true, //対象期間精度
-					maxPeriodRange: 'oneMonth', //最長期間
+					showBaseDate: true,
+					showClosure: true,
+					showAllClosure: true,
+					showPeriod: true,
+					periodFormatYM: false,
 
 					/** Required parameter */
 					baseDate: ko.observable(moment().format(DATE_FORMAT)),
@@ -49,27 +48,27 @@ module nts.uk.at.view.kmk004.b {
 					retirement: true,
 
 					/** Quick search tab options */
-					showAllReferableEmployee: true, //参照可能な社員すべて
-					showOnlyMe: true, //自分だけ
-					showSameDepartment: false,
-					showSameDepartmentAndChild: false,
-					showSameWorkplace: true, //同じ職場の社員
-					showSameWorkplaceAndChild: true, //同じ職場とその配下の社員
+					showAllReferableEmployee: true,
+					showOnlyMe: true,
+					showSameDepartment: true,
+					showSameDepartmentAndChild: true,
+					showSameWorkplace: true,
+					showSameWorkplaceAndChild: true,
 
 					/** Advanced search properties */
-					showEmployment: true, //雇用条件
-					showDepartment: false,
-					showWorkplace: true, //職場条件
-					showClassification: true, //分類条件
-					showJobTitle: true, //職位条件
-					showWorktype: false, //勤種条件
-					isMutipleCheck: true, //選択モード
+					showEmployment: true,
+					showDepartment: true,
+					showWorkplace: true,
+					showClassification: true,
+					showJobTitle: true,
+					showWorktype: true,
+					isMutipleCheck: true,
 
 					/**
 					* Self-defined function: Return data from CCG001
 					* @param: data: the data return from CCG001
 					*/
-					returnDataFromCcg001: function(data: any) {
+					returnDataFromCcg001: function (data: any) {
 
 						vm.params.employees([]);
 

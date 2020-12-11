@@ -4,15 +4,15 @@ module nts.uk.at.view.kmk004.b {
 
     interface Params {
         selectedYear: KnockoutObservable<number | null>;
-        change: KnockoutObservable<boolean>;
+        param: KnockoutObservable<string>;
         type: SIDEBAR_TYPE
     }
 
     const API = {
         GET_YEARS_COM: 'screen/at/kmk004/viewB/com/getListYear',
-        GET_YEARS_WORKPLACE: 'screen/at/kmk004/viewB/workPlace/getListYear',
-        GET_YEARS_EMPLOYMENT: 'screen/at/kmk004/viewB/employment/getListYear',
-        GET_YEARS_EMPLOYEE: 'screen/at/kmk004/viewB/employee/getListYear'
+        GET_YEARS_WORKPLACE: 'screen/at/kmk004/viewC/workPlace/getListYear',
+        GET_YEARS_EMPLOYMENT: 'screen/at/kmk004/viewD/employment/getListYear',
+        GET_YEARS_EMPLOYEE: 'screen/at/kmk004/viewE/employee/getListYear'
     };
     export type SIDEBAR_TYPE = null | 'Com_Company' | 'Com_Workplace' | 'Com_Employment' | 'Com_Person';
 
@@ -42,26 +42,35 @@ module nts.uk.at.view.kmk004.b {
 
         public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-        public change: KnockoutObservable<boolean> = ko.observable(true);
+        public param: KnockoutObservable<string> = ko.observable('');
         public type: SIDEBAR_TYPE;
 
         created(params: Params) {
             const vm = this;
 
             vm.selectedYear = params.selectedYear;
-            vm.change = params.change;
+            vm.param = params.param;
             vm.type = params.type;
 
-            vm.reloadData(0);
+        }
 
+        mounted() {
+            const vm = this;
+
+            vm.param
+                .subscribe(() => {
+                    vm.reloadData(0);
+                });
+
+            vm.param.valueHasMutated();
         }
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-
+            vm.itemList([]);
             switch (vm.type) {
                 case 'Com_Company':
-                    vm.$ajax(API.GET_YEARS_COM + "/0")
+                    vm.$ajax(API.GET_YEARS_COM)
                         .then((data: any) => {
                             _.forEach(data, ((value: any) => {
                                 const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
@@ -69,44 +78,67 @@ module nts.uk.at.view.kmk004.b {
                             }));
                         })
                         .then(() => {
-                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                            if(ko.unwrap(vm.itemList) != []){
+                                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                            }else {
+                                vm.selectedYear(null);
+                            }
                         });
                     break
                 case 'Com_Workplace':
-                    vm.$ajax(API.GET_YEARS_WORKPLACE + "/0")
-                        .then((data: any) => {
-                            _.forEach(data, ((value: any) => {
-                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
-                                vm.itemList.push(y);
-                            }));
-                        })
-                        .then(() => {
-                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                        });
+                    if (ko.unwrap(vm.param) != '') {
+                        vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.unwrap(vm.param))
+                            .then((data: any) => {
+                                _.forEach(data, ((value: any) => {
+                                    const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
                     break
                 case 'Com_Employment':
-                    vm.$ajax(API.GET_YEARS_EMPLOYMENT + "/0")
-                        .then((data: any) => {
-                            _.forEach(data, ((value: any) => {
-                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
-                                vm.itemList.push(y);
-                            }));
-                        })
-                        .then(() => {
-                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                        });
+                    if (ko.unwrap(vm.param) != '') {
+                        vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.unwrap(vm.param))
+                            .then((data: any) => {
+                                _.forEach(data, ((value: any) => {
+                                    const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
                     break
                 case 'Com_Person':
-                    vm.$ajax(API.GET_YEARS_EMPLOYEE + "/0")
-                        .then((data: any) => {
-                            _.forEach(data, ((value: any) => {
-                                const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
-                                vm.itemList.push(y);
-                            }));
-                        })
-                        .then(() => {
-                            vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                        });
+                    if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
+                        vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' +  ko.unwrap(vm.param))
+                            .then((data: any) => {
+                                _.forEach(data, ((value: any) => {
+                                    const y: IYear = { statusValue: '', year: value.year, nameYear: value.year + '年度' };
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
                     break
             }
         }

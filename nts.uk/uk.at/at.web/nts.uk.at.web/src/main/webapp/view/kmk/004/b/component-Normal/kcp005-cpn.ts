@@ -36,6 +36,7 @@ module nts.uk.at.view.kmk004.b {
                     listType: ListType.EMPLOYEE,
                     employeeInputList: vm.employees,
                     selectedCode: vm.selectedCode,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isDialog: false,
                     isShowNoSelectRow: false,
                     alreadySettingList: vm.alreadySettingList,
@@ -44,9 +45,6 @@ module nts.uk.at.view.kmk004.b {
                     disableSelection: false
                 });
 
-            vm.selectedCode.subscribe(() => {
-                console.log(ko.unwrap(vm.selectedCode));
-            })
         }
     }
 
@@ -69,7 +67,7 @@ module nts.uk.at.view.kmk004.b {
         isAlreadySetting: boolean;
     }
 
-    interface IworkPlace{
+    interface IworkPlace {
         id: string;
         code: string;
         name: string;

@@ -98,6 +98,7 @@ public class Kmk004WebService extends WebService{
 	@Inject
 	private RemoveWkpBasicSettingCommandHandler removeWkpBasicSettingCommandHandler;
 	
+	
 	/** Employment */
 	@Inject
 	private AddEmpBasicSettingCommandHandler addEmpBasicSettingCommandHandler;
@@ -123,14 +124,18 @@ public class Kmk004WebService extends WebService{
 	
 	
 	//
-	@Inject
-	private DisplayYearListByCompany displayYearListByCompany;
 	
 	@Inject
 	private DeleteMonthlyWorkTimeSetComCommandHandler deleteMonthlyWorkTimeSetComCommandHandler;
 	
 	@Inject
 	private GetYearMonthPeriod getYearMonthPeriod;
+	
+	/**
+	 * Get Years
+	 */
+	@Inject
+	private DisplayYearListByCompany displayYearListByCompany;
 	
 	@Inject
 	private YearlyListByWorkplace yearlyListByWorkplace;
@@ -179,30 +184,30 @@ public class Kmk004WebService extends WebService{
 	}
 	
 	@POST
-	@Path("viewB/com/getListYear/{workTypeAttr}")
-	public List<YearDto> getListYearCom(@PathParam("workTypeAttr") String workTypeAttr) {
-		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	@Path("viewB/com/getListYear")
+	public List<YearDto> getListYearCom() {
+		return displayYearListByCompany.get(LaborWorkTypeAttr.REGULAR_LABOR.value);
 	}
 	
 	//ViewC
 	@POST
-	@Path("viewB/workPlace/getListYear/{workTypeAttr}")
-	public List<YearDto> getListYearWorkPlace(@PathParam("workTypeAttr") String workTypeAttr) {
-		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	@Path("viewC/workPlace/getListYear/{wkpId}")
+	public List<YearDto> getListYearWorkPlace(@PathParam("wkpId") String wkpId) {
+		return yearlyListByWorkplace.get(wkpId, LaborWorkTypeAttr.REGULAR_LABOR);
 	}
 	
 	//ViewD
 	@POST
-	@Path("viewB/employment/getListYear/{workTypeAttr}")
-	public List<YearDto> getListYearEmployment(@PathParam("workTypeAttr") String workTypeAttr) {
-		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	@Path("viewD/employment/getListYear/{empCode}")
+	public List<YearDto> getListYearEmployment(@PathParam("empCode") String empCode) {
+		return yearListByEmployment.get(empCode, LaborWorkTypeAttr.REGULAR_LABOR);
 	}
 	
 	//ViewE
 	@POST
-	@Path("viewB/employee/getListYear/{workTypeAttr}")
-	public List<YearDto> getListYearEmployee(@PathParam("workTypeAttr") String workTypeAttr) {
-		return displayYearListByCompany.get(Integer.parseInt(workTypeAttr));
+	@Path("viewE/employee/getListYear/{empId}")
+	public List<YearDto> getListYearEmployee(@PathParam("empId") String empId) {
+		return yearListByEmployee.get(empId, LaborWorkTypeAttr.REGULAR_LABOR);
 	}
 	
 	// View P

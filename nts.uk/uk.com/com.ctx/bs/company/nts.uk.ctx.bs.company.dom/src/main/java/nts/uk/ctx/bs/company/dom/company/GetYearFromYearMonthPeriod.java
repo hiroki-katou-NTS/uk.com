@@ -28,6 +28,10 @@ public class GetYearFromYearMonthPeriod {
 	public static List<Year> getYearFromYearMonthPeriod(Require require, String cid, List<YearMonth> yearMonths) {
 		List<Year> result = new ArrayList<>();
 		
+		if(yearMonths.isEmpty()) {
+			return result;
+		}
+		
 		Optional<Company> company = require.find(cid);
 		yearMonths = yearMonths.stream().sorted().collect(Collectors.toList());
 

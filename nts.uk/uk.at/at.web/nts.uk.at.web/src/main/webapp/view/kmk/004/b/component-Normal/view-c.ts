@@ -49,7 +49,7 @@ module nts.uk.at.view.kmk004.b {
 								name: 'box-year',
 								params:{
 									selectedYear: selectedYear,
-									change: changeYear,
+									param: ko.observable(''),
 									type: type
 								}
 							}"></div>
@@ -58,7 +58,6 @@ module nts.uk.at.view.kmk004.b {
 							name: 'time-work',
 							params:{
 								selectedYear: selectedYear,
-								change: changeYear,
 								checkEmployee: checkEmployee
 							}
 						}"></div>
@@ -82,20 +81,13 @@ module nts.uk.at.view.kmk004.b {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
-		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+		public selectedYear: KnockoutObservable<number| null> = ko.observable(null);
 		public type: SIDEBAR_TYPE = 'Com_Workplace';
 
 		created(params: Params) {
 			const vm = this;
-			vm.selectedYear
-				.subscribe(() => {
-					if (vm.selectedYear != null) {
-						vm.existYear(true);
-					}
-				});
 
 		}
 
