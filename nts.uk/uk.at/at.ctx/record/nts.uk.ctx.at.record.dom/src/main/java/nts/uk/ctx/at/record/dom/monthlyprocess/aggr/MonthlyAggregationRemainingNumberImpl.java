@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -14,12 +17,21 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -30,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDat
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
@@ -37,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterim
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -44,12 +58,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM4;
@@ -79,6 +97,12 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -88,6 +112,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  *
  */
 @Getter
+@Stateless
 public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregationRemainingNumber {
 
 	/** 会社ID */
@@ -120,10 +145,13 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	/** 暫定残数データ上書きフラグ */
 	private boolean isOverWriteRemain;
 
+	@Inject
+	private RecordDomRequireService requireService;
 
-	public AggregateMonthlyRecordValue aggregation(
-			RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
+	public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
+
+		val require = requireService.createRequire();
 
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 
@@ -154,7 +182,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		ConcurrentStopwatches.start("12440:特別休暇：");
 
 		// 特別休暇
-		this.specialLeaveRemain(require, cacheCarrier, period, interimRemainMngMode);
+		this.specialLeaveRemain(cacheCarrier, period, interimRemainMngMode);
 
 		ConcurrentStopwatches.stop("12440:特別休暇：");
 
@@ -215,7 +243,6 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 
 		// 期間中の年休積休残数を取得
-		// Require の不整合によるエラー
 		AggrResultOfAnnAndRsvLeave aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(null, cacheCarrier,
 				this.companyId, this.employeeId, period, interimRemainMngMode,
 				// period.end(), true, isCalcAttendanceRate,
@@ -436,9 +463,11 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param period 期間
 	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 */
-//	public void specialLeaveRemain(SpecialLeaveManagementService.RequireM5 require, CacheCarrier cacheCarrier, DatePeriod period,
-	public void specialLeaveRemain(RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
+//	public void specialLeaveRemain(RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
+	public void specialLeaveRemain(CacheCarrier cacheCarrier, DatePeriod period,
 							InterimRemainMngMode interimRemainMngMode) {
+
+		val require = requireService.createRequire();
 
 		// 暫定残数データを特別休暇に絞り込む
 		List<InterimRemain> interimMng = new ArrayList<>();
@@ -475,25 +504,16 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
 					this.isOverWriteRemain, interimMng, interimSpecialData);
 
-
-			// 要修正 jinno ooooooooooooooooooooooooooooooooo
-//			//残数処理
-//			InPeriodOfSpecialLeaveResultInfor aggrResult
-//				= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
-//						require, cacheCarrier, param);
-			InPeriodOfSpecialLeaveResultInfor aggrResult = new InPeriodOfSpecialLeaveResultInfor();
-
-
-
-
-
+			//残数処理
+			InPeriodOfSpecialLeaveResultInfor aggrResult
+				= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
+						require, cacheCarrier, param);
+//			InPeriodOfSpecialLeaveResultInfor aggrResult = new InPeriodOfSpecialLeaveResultInfor();
 
 			SpecialLeaveInfo asOfPeriodEnd = aggrResult.getAsOfPeriodEnd();
 			SpecialLeaveInfo asOfStartNextDayOfPeriodEnd=aggrResult.getAsOfStartNextDayOfPeriodEnd();
 
 			SpecialLeaveInfo inPeriod = aggrResult.getAsOfPeriodEnd();
-
-
 
 			// 特別休暇月別残数データを更新
 			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(this.employeeId, this.yearMonth,
@@ -541,13 +561,14 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	}
 
 	public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(
-			RequireM7 require,
 			CacheCarrier cacheCarrier,
 			String companyId,
 			String employeeId,
 			DatePeriod period,
 			MonAggrCompanySettings comSetting,
 			MonthlyCalculatingDailys dailys){
+
+		val require = requireService.createRequire();
 
 		MonthlyAggregationRemainingNumberImpl proc= new MonthlyAggregationRemainingNumberImpl();
 

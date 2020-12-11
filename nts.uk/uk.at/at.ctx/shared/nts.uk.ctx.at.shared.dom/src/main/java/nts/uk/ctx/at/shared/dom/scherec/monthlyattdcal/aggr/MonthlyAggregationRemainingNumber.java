@@ -28,16 +28,13 @@ public interface MonthlyAggregationRemainingNumber {
 	 * @param isCalcAttendanceRate
 	 * @return
 	 */
-	AggregateMonthlyRecordValue aggregation(
-			RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
+	AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
-	Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(
-			RequireM7 require,
-			CacheCarrier cacheCarrier,
-			String companyId,
-			String employeeId,
-			DatePeriod period,
-			MonAggrCompanySettings comSetting,
-			MonthlyCalculatingDailys dailys);
+	Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
+														String companyId,
+														String employeeId,
+														DatePeriod period,
+														MonAggrCompanySettings comSetting,
+														MonthlyCalculatingDailys dailys);
 }
