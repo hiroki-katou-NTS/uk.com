@@ -101,9 +101,9 @@
           </div>
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
-            <label class="pl-4" v-if="item.optionalItemAtr == 0 && item.time != null">{{item.time | timewd}}{{item.unit}}</label>
-            <label class="pl-4" v-if="item.optionalItemAtr == 1">{{ item.number }}{{item.unit}}</label>
-            <label class="pl-4" v-if="item.optionalItemAtr == 2">{{ item.amount }}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.time != null">{{item.time | timewd}}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.number != null">{{ item.number }}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.amount != null">{{ item.amount }}{{item.unit}}</label>
           </div>
         </div>
       </div>
