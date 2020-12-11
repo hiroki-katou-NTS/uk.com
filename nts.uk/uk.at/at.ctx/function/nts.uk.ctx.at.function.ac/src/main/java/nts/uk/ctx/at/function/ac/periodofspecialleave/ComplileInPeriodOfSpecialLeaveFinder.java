@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -84,16 +84,6 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		if (specialLeave == null)
 			return null;
 
-		// 要修正 jinno
-//		return new SpecialVacationImported(
-//				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(),
-//				0.0,
-//				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-//						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
-//				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-//						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(),
-//				0.0, 0.0, 0.0, 0.0);
-
 		double use_before =  specialLeave.getAsOfPeriodEnd()
 				.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
 				.getUsedNumberBeforeGrant().getUseDays().getUseDays().v();
@@ -120,7 +110,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		}
 
 		return new SpecialVacationImported(
-				// 要修正 jinno
+				// 要修正 jinno　NO273
 				//specialLeave.getAsOfPeriodEnd().getRemainingNumber().getSpecialLeaveWithMinus().
 				0.0,
 				0.0,

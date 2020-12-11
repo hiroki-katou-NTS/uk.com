@@ -76,23 +76,21 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		GrantDaysInforByDates grantDayInfors = getGrantDays(require, cacheCarrier, cid, sid,
 				complileDate, specialHoliday, leaverBasicInfo);
 		// 「付与日数一覧」の件数をチェックする
-		// 要修正 jinno
-//		Optional<Integer> upLimiDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays() == null
-//				|| specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v() == null ? Optional.empty()
-//				: Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v());
-//
-//		if(grantDayInfors == null || grantDayInfors.getNextSpecialLeaveGrant().isEmpty()) {
-//			// 状態：「付与なし」を返す
-//			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, upLimiDays,
-//					new ArrayList<>(), false);
-//		} else {
-//			// 期限を取得する
-//			List<SpecialHolidayInfor> getDeadlineInfo = getDeadlineInfo(grantDayInfors, specialHoliday);
-//
-//			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, upLimiDays,
-//					getDeadlineInfo, false);
-//		}
-			return new InforSpecialLeaveOfEmployee();
+		Optional<Integer> upLimiDays = !specialHoliday.getGrantRegular().getLimitAccumulationDays().isPresent() ? Optional.empty()
+				: specialHoliday.getGrantRegular().getLimitAccumulationDays();
+
+		if(grantDayInfors == null || grantDayInfors.getNextSpecialLeaveGrant().isEmpty()) {
+			// 状態：「付与なし」を返す
+			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, upLimiDays,
+					new ArrayList<>(), false);
+		} else {
+			// 期限を取得する
+			List<SpecialHolidayInfor> getDeadlineInfo = getDeadlineInfo(grantDayInfors, specialHoliday);
+
+			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, upLimiDays,
+					getDeadlineInfo, false);
+		}
+			//return new InforSpecialLeaveOfEmployee();
 	}
 
 	/**
@@ -673,7 +671,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			SpecialHoliday specialHoliday) {
 		Map<String, List<SpecialHolidayInfor>> result = new HashMap<>();
 
-		// 要修正 jinno
+		// 要修正 jinno 前川さんに設計依頼
 //		TimeLimitSpecification timeSpecifyMethod = specialHoliday.getGrantPeriodic().getTimeSpecifyMethod();
 //		grantDaysInfors.stream().forEach(c ->{
 //			List<SpecialHolidayInfor> lstOutput = new ArrayList<>();

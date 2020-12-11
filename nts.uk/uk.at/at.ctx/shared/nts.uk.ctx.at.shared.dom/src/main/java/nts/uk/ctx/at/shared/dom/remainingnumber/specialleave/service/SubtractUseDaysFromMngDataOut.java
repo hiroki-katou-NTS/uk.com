@@ -19,12 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 @NoArgsConstructor
 public class SubtractUseDaysFromMngDataOut {
 
-	// 要修正 jinno
-//		/**
-//		 * 特別休暇の集計結果
-//		 */
-//		private InPeriodOfSpecialLeaveResultInfor speLeaveResult;
-
 	/**
 	 *
 	 */

@@ -29,7 +29,7 @@ public class GrantRegularDto {
 			return null;
 		}
 
-		// 要修正 jinno
+		//KMF004A 特別休暇情報の登録　実装時にこの処理を実装すること
 //		GrantTimeDto grantTimeDto = GrantTimeDto.fromDomain(grantRegular.getGrantTime() != null ? grantRegular.getGrantTime() : null);
 //
 //		return new GrantRegularDto(

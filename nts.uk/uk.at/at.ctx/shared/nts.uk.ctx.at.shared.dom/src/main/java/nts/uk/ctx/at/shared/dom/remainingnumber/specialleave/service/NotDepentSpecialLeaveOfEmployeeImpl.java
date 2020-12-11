@@ -273,7 +273,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 		//付与日数情報を取得する
 		Map<String, GrantDaysInforByDates> grantDaysInforMap = this.getGrantDays(param, speHoliday);
 
-		// 要修正 jinno
+		// 要修正 jinno　前川さんに設計依頼
 //		//期限を取得する
 //		List<GrantDaysInforByDatesInfo> grantDaysInfoLst = grantDaysInforMap.entrySet().stream()
 //				.map(c -> new GrantDaysInforByDatesInfo(c.getKey(), c.getValue().getGrantDate(),

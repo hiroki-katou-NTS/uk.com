@@ -1,5 +1,4 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +11,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.arc.time.calendar.period.DatePeriod;
 
-@NoArgsConstructor
+/**
+ *
+ */
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class ComplileInPeriodOfSpecialLeaveParam {
@@ -47,8 +49,8 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 	 * 特別休暇暫定データ
 	 */
 	List<InterimSpecialHolidayMng> interimSpecialData;
-	/**
-	 * 前回の特別休暇の集計結果情報
-	 */
-	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
+//	/**
+//	 * 前回の特別休暇の集計結果情報
+//	 */
+//	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
 }

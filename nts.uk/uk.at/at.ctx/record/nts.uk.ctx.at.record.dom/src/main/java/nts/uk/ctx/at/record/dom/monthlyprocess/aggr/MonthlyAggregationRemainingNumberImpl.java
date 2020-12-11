@@ -16,6 +16,10 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -44,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
@@ -72,6 +77,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.R
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -453,48 +459,54 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			Integer specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
 
 			// 要修正 jinno
-//			// 前回集計結果を確認する
-//			Optional<InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResult = Optional.empty();
-////			if (this.prevSpecialLeaveResultMap.containsKey(specialLeaveCode)) {
-////				prevSpecialLeaveResult = Optional.of(this.prevSpecialLeaveResultMap.get(specialLeaveCode));
-////			}
-//
-//			// マイナスなしを含めた期間内の特別休暇残を集計する
-//			// 期間内の特別休暇残を集計する
-//			ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(this.companyId,
-//					this.employeeId, period,
-//					// (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
-//					// period.end(), specialLeaveCode, true,
-//					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
-//					this.isOverWriteRemain, interimMng, interimSpecialData);
+			// 前回集計結果を確認する
+			Optional<InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResult = Optional.empty();
+//			if (this.prevSpecialLeaveResultMap.containsKey(specialLeaveCode)) {
+//				prevSpecialLeaveResult = Optional.of(this.prevSpecialLeaveResultMap.get(specialLeaveCode));
+//			}
+
+			// マイナスなしを含めた期間内の特別休暇残を集計する
+			// 期間内の特別休暇残を集計する
+			ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
+					this.companyId,
+					this.employeeId, period,
+					// (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
+					// period.end(), specialLeaveCode, true,
+					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
+					this.isOverWriteRemain, interimMng, interimSpecialData);
+
+
+			// 要修正 jinno ooooooooooooooooooooooooooooooooo
+//			//残数処理
 //			InPeriodOfSpecialLeaveResultInfor aggrResult
 //				= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
 //						require, cacheCarrier, param);
-//
-//			SpecialLeaveInfo asOfPeriodEnd = aggrResult.getAsOfPeriodEnd();
-//			SpecialLeaveInfo asOfStartNextDayOfPeriodEnd=aggrResult.getAsOfStartNextDayOfPeriodEnd();
-//
-//
-//			SpecialLeaveInfo inPeriod = aggrResult.getAsOfPeriodEnd();
-//
-//			// マイナスなしの残数・使用数を計算
-//			RemainDaysOfSpecialHoliday remainDays = inPeriod.getRemainDays();
-//			SpecialLeaveRemainNoMinus remainNoMinus = new SpecialLeaveRemainNoMinus(remainDays);
-//
-//
-//
-//			// 特別休暇月別残数データを更新
-//			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(this.employeeId, this.yearMonth,
-//					this.closureId, this.closureDate, period, specialLeaveCode, inPeriod, remainNoMinus);
-//			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
-//
-//			// 特別休暇エラーから月別残数エラー一覧を作成する
-//			this.aggregateResult.getPerErrors()
-//			.addAll(CreatePerErrorsFromLeaveErrors.fromSpecialLeave(this.employeeId, this.yearMonth,
-//					this.closureId, this.closureDate, specialLeaveCode, aggrResult.getSpecialLeaveErrors()));
-//
-//			// 集計結果を前回集計結果に引き継ぐ
-//			//this.aggregateResult.getInPeriodOfSpecialLeaveResultInforMap().put(specialLeaveCode, aggrResult);
+			InPeriodOfSpecialLeaveResultInfor aggrResult = new InPeriodOfSpecialLeaveResultInfor();
+
+
+
+
+
+
+			SpecialLeaveInfo asOfPeriodEnd = aggrResult.getAsOfPeriodEnd();
+			SpecialLeaveInfo asOfStartNextDayOfPeriodEnd=aggrResult.getAsOfStartNextDayOfPeriodEnd();
+
+			SpecialLeaveInfo inPeriod = aggrResult.getAsOfPeriodEnd();
+
+
+
+			// 特別休暇月別残数データを更新
+			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(this.employeeId, this.yearMonth,
+					this.closureId, this.closureDate, period, specialLeaveCode, new SpecialLeaveRemainNoMinus());
+			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
+
+			// 特別休暇エラーから月別残数エラー一覧を作成する
+			this.aggregateResult.getPerErrors()
+			.addAll(CreatePerErrorsFromLeaveErrors.fromSpecialLeave(this.employeeId, this.yearMonth,
+					this.closureId, this.closureDate, specialLeaveCode, aggrResult.getSpecialLeaveErrors()));
+
+			// 集計結果を前回集計結果に引き継ぐ
+			//this.aggregateResult.getInPeriodOfSpecialLeaveResultInforMap().put(specialLeaveCode, aggrResult);
 		}
 	}
 

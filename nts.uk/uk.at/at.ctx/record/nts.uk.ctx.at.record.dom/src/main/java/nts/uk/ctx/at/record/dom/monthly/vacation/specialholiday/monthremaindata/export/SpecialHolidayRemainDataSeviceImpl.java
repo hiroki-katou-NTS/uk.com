@@ -117,7 +117,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 //			}
 //		}
 //		return lstOutData;
-		// ooooo 要修正 jinno
+		// ooooo 要修正 jinno 複数期間あるときの月次データを加算する
 		return null;
 	}
 	@Override

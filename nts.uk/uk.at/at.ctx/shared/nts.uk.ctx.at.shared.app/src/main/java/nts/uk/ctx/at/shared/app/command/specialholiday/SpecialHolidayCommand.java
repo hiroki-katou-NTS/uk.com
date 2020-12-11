@@ -130,7 +130,7 @@ public class SpecialHolidayCommand {
 			return null;
 		}
 
-		// ooooo 要修正 jinno
+		//KMF004A 特別休暇情報の登録　実装時にこの処理を実装すること
 		return new GrantRegular();
 //		return GrantRegular.createFromJavaType(
 //		companyId,

@@ -47,7 +47,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveGrantDetails;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -476,26 +476,6 @@ public class ToppageStartupProcessMobFinder {
 									requireService.createRequire(), new CacheCarrier(), param);
 					boolean showAfter = false;
 					GeneralDate date = GeneralDate.today();
-
-					// 要修正 jinno
-//					List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave
-//							.getLstSpeLeaveGrantDetails();
-//
-//					for (SpecialLeaveGrantDetails items : lstSpeLeaveGrantDetails) {
-//						if (items.getGrantDate().afterOrEquals(startDate)
-//								&& items.getGrantDate().beforeOrEquals(endDate)) {
-//							date = items.getGrantDate();
-//							showAfter = true;
-//						}
-//					}
-//					double before = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
-//					double after = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-//							? inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
-//					sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after,
-//							date, showAfter));
-
-					List<SpecialLeaveGrantRemainingData> lstSpeLeaveGrantDetails
-						= inPeriodOfSpecialLeave.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingList();
 
 					// double before =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
 					double before =  inPeriodOfSpecialLeave.getAsOfPeriodEnd()

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
 
 /**
  * 特休の集計結果
