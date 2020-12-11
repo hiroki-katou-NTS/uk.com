@@ -401,6 +401,24 @@ public class CollectAchievementImpl implements CollectAchievement {
 		opWorkTypeName = workTypeRepository.findByPK(companyID, workTypeCD).map(x -> x.getName().v());
 		//ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
 		opWorkTimeName = WorkTimeRepository.findByCode(companyID, workTimeCD).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
+		// #113162
+		List<OvertimeLeaveTime> overtimeLeaveTimes = new ArrayList<OvertimeLeaveTime>();
+		if (!(recordWorkInfoImport.getOverTimeLst() == null && recordWorkInfoImport.getCalculateHolidayLst() == null)) {
+			if (recordWorkInfoImport.getOverTimeLst() != null) {
+				recordWorkInfoImport.getOverTimeLst().entrySet().forEach(x -> {
+					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v(), 0));
+				});
+			}
+			
+			if (recordWorkInfoImport.getCalculateHolidayLst() != null) {
+				recordWorkInfoImport.getCalculateHolidayLst().entrySet().forEach(x -> {
+					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v(), 1));
+				});
+			}
+			opOvertimeLeaveTimeLst = Optional.of(overtimeLeaveTimes);
+		}
+		
+		
 		AchievementDetail achievementDetail = new AchievementDetail(
 				workTypeCD,
 				workTimeCD,
