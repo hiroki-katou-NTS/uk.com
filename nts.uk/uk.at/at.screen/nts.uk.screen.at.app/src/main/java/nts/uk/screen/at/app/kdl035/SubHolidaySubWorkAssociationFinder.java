@@ -289,6 +289,7 @@ public class SubHolidaySubWorkAssociationFinder {
                         break;
                     }
                 }
+                requiredNumber = 0;
             }
         }
         return result;
