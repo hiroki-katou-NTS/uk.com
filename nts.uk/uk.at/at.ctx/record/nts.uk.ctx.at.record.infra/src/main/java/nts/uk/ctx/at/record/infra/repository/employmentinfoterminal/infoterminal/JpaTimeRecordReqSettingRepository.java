@@ -34,9 +34,9 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	private static final String GET_BY_KEY;
 	
-    private static final String GET_CONTRACTCD_CODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode = :code";
+    private static final String GET_CONTRACTCD_CODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = ? AND m.pk.timeRecordCode = ?";
 
-    private static final String GET_CONTRACTCD_LISTCODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode IN :listCode";
+    private static final String GET_CONTRACTCD_LISTCODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = ? AND m.pk.timeRecordCode IN ?";
 
 	static {
 
