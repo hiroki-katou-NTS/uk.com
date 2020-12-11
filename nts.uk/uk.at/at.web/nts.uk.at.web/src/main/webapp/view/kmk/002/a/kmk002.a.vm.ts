@@ -1577,6 +1577,8 @@ module nts.uk.at.view.kmk002.a {
                         self.selectedCode.subscribe(itemNo => {
                             if (itemNo && itemNo != 0) {
                                 self.hasSelected(true);
+                                self.optionalItem.dailyUnit();
+                                self.optionalItem.monthlyUnit();
                                 self.loadOptionalItemDetail(itemNo);
                                 // clear error.
                                 if ($('.nts-editor').ntsError("hasError")){
