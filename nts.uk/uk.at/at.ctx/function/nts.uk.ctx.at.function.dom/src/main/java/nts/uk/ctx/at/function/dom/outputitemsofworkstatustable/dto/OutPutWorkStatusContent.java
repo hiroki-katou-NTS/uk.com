@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import java.util.List;
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class OutPutWorkStatusContent {
     private List<ExportExcelDto> excelDtoList;
 
     private DatePeriod period;
-
+    private ClosureDate closureDate;
     private int mode;
     private String title;
     private String companyName;
