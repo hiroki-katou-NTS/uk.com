@@ -21,6 +21,7 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 
 @Stateless
@@ -35,6 +36,9 @@ public class PasswordAuthenticateCommandRequire {
 
 	@Inject
 	private EmployeeDataManageInfoAdapter employeeDataManageInfoAdapter;
+	
+	@Inject
+	private UserRepository userRepo;
 
 	public Require createRequire(String tenantCode) {
 
@@ -72,8 +76,7 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public Optional<User> getUserByPersonId(String personId) {
-			// TODO Auto-generated method stub
-			return null;
+			return userRepo.getByAssociatedPersonId(personId);
 		}
 
 		@Override
