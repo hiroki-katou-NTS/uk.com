@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
@@ -15,8 +16,8 @@ import nts.arc.time.GeneralDateTime;
  * AR_トップページアラームデータ
  */
 @Builder
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
 public class ToppageAlarmData extends AggregateRoot {
 
@@ -53,6 +54,7 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 発生日時
 	 */
+	@Setter
 	private GeneralDateTime occurrenceDateTime;
 	
 	/**
