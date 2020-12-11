@@ -348,8 +348,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
 		}
 		Map<String, DatePeriod> employeePeriod = service.getAffiliationDatePeriod(empIDs, periodMonthly, baseDate.get());
-		
-		
+
 		//	「日別実績」を取得する
 		List<AttendanceItemValueResult> dailyValues;
 		{
@@ -413,6 +412,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(),
 						screenUseAtrList, 1));
 			}
+			
+			DatePeriod datePeriod = employeePeriod.get(employee.getEmployeeId());
 
 			if (!attItemValueResults.isEmpty()) {
 
@@ -498,7 +499,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								.build();
 						// Get all daily result in Date
 						if (!singleIdUpper.isEmpty() || !singleIdLower.isEmpty()) {
-	                        if (dailyValuesAll.containsKey(employee.employeeId)){
+	                        if (dailyValuesAll.containsKey(employee.employeeId)
+	                        		&& closureDateTemp.afterOrEquals(datePeriod.start())
+	                        		&& closureDateTemp.beforeOrEquals(datePeriod.end())) {
 	                            List<AttendanceItemValueResult> dailyValuesByEmp = dailyValuesAll.get(employee.employeeId);
 	                            Optional<AttendanceItemValueResult> itemValueOtp = dailyValuesByEmp.stream().filter(x -> x.getWorkingDate().equals(closureDateTemp)).findFirst();
 	                            if (itemValueOtp.isPresent()) {
