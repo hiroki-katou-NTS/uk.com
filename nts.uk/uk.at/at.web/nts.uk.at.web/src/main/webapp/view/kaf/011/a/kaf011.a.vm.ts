@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	import Comment = nts.uk.at.view.kaf011.Comment;
+	import DisplayInforWhenStartingKAF011 = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
 	const APIKAF011 = {
         start: "at/request/application/holidayshipment/startPageARefactor"
     }
@@ -17,7 +18,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
 		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
 		
-		displayInforWhenStarting: any;
+		displayInforWhenStarting: KnockoutObservable<DisplayInforWhenStartingKAF011> = ko.observable(new DisplayInforWhenStartingKAF011());
 		
 		isSendMail = ko.observable(false);
 		remainDays = ko.observable('');
@@ -59,7 +60,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.$blockui("grayout");
 			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
 				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
-					vm.displayInforWhenStarting = data;
+					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);

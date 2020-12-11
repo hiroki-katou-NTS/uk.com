@@ -13,9 +13,16 @@ module nts.uk.at.view.kaf011 {
 		workingHours2DispLay: KnockoutObservable<boolean> = ko.observable(false);
 		workInformation: WorkInformation = new WorkInformation();
 		workTypeList = ko.observableArray([]);
+		workTypeSelected = new WorkTypeSelected();
+		subWorkSubHolidayLinkingMngList: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 		
 		constructor(){
 			let self = this;
+			self.workInformation.workType.subscribe((data: string)=>{
+				if(data){
+					self.workTypeSelected.update(_.find(self.workTypeList(), {'workTypeCode': data}));	
+				}
+			});
 			self.workInformation.workTime.subscribe((data: string) =>{
 				if(data){
 					self.workTimeDisplay(data + " " + self.time_convert());	
@@ -42,6 +49,7 @@ module nts.uk.at.view.kaf011 {
 		
 		bindDingScreenA(data: any){
 			let self = this;
+			_.orderBy(data.workTypeList, ['code'], ['asc'])
 			self.workTypeList(data.workTypeList);
 			self.workingHours1.timeZone.update({startTime: data.startTime, endTime: data.endTime});
 			if(data.startTime2 && data.endTime2){
@@ -76,6 +84,13 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			nts.uk.ui.windows.setShared('parentCodes', {selectedWorkTypeCode: self.workInformation.workType(), selectedWorkTimeCode: self.workInformation.workTime()});
 			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml');
+		}
+		
+		openKDL035() {
+			let self = this;
+			nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
+				let kdl035Result = nts.uk.ui.windows.getShared('KDL035_RESULT');
+			});
 		}
 		
 	}
@@ -169,6 +184,70 @@ module nts.uk.at.view.kaf011 {
 			self.subWorkComment(param.subWorkComment);
 			self.subWorkColor(param.subWorkColor);
 			self.subWorkBold(param.subWorkBold);
+		}
+	}
+	
+	export class SubWorkSubHolidayLinkingMng {
+        // 社員ID
+        employeeId: string;
+        // 逐次休暇の紐付け情報 . 発生日
+        outbreakDay: string;
+        // 逐次休暇の紐付け情報 . 使用日
+        dateOfUse: string;
+        // 逐次休暇の紐付け情報 . 使用日数
+        dayNumberUsed: number;
+        // 逐次休暇の紐付け情報 . 対象選択区分
+        targetSelectionAtr: number;
+		constructor(param: any){
+			let self = this;
+			self.employeeId = param.employeeId;
+			self.outbreakDay = param.outbreakDay;
+			self.dateOfUse = param.dateOfUse;
+			self.dayNumberUsed = param.dayNumberUsed;
+			self.targetSelectionAtr = param.targetSelectionAtr;
+		}
+    }
+
+	export class WorkTypeSelected {
+		workAtr: KnockoutObservable<number> = ko.observable();
+		morningCls: KnockoutObservable<number> = ko.observable();
+		afternoonCls: KnockoutObservable<number> = ko.observable();
+		constructor(){}
+		update(param: any){
+			let self = this;
+			if(param){
+				self.workAtr(param.workAtr);
+				self.morningCls(param.morningCls);
+				self.afternoonCls(param.afternoonCls);	
+			}
+		}
+    }
+
+	export class DisplayInforWhenStarting {
+		//振出申請起動時の表示情報
+		applicationForWorkingDay: any;
+		//申請表示情報
+		appDispInfoStartup: any;
+		//振休申請起動時の表示情報
+		applicationForHoliday: any;
+		//振休残数情報
+		remainingHolidayInfor: any;
+		//振休振出申請設定
+		substituteHdWorkAppSet: any;
+		//振休紐付け管理区分
+		holidayManage: number;
+		//代休紐付け管理区分
+		substituteManagement: number;
+		//振休申請の反映
+		workInfoAttendanceReflect: any;
+		//振出申請の反映
+		substituteWorkAppReflect: any;
+		//振休申請
+		absApp: any;
+		//振出申請
+		recApp: any;
+		constructor(){
+			
 		}
 	}
 

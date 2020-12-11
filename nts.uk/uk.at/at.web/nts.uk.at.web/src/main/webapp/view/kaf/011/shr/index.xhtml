@@ -74,31 +74,33 @@
 								</div>
 							</div>
 						</com:ko-if>
-						<div class="row tableRelase">
-							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
-							<div class="ntsControl">
-								<div>
-									<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
-									#{i18n.getText('KAF011_48')}
-								</div>
-								<div>
-									<table class="table">
-										<thead>
-											<tr>
-												<th class="bg-green" >#{i18n.getText('KAF011_51')}</th>
-												<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
-											</tr>
-										</thead>
-	        							<tbody data-bind="foreach: $parent.related">
-											<tr>
-												<td data-bind="text: date"></td>
-												<td data-bind="text: number"></td>
-											</tr>
-										</tbody>
-									</table>
+						<com:ko-if bind="$parent.displayInforWhenStarting().substituteManagement == 1 &amp;&amp; workTypeSelected.workAtr() == 1 &amp;&amp; (workTypeSelected.morningCls() == 6 || workTypeSelected.afternoonCls() == 6)">
+							<div class="row tableRelase">
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
+								<div class="ntsControl">
+									<div>
+										<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
+										#{i18n.getText('KAF011_48')}
+									</div>
+									<div>
+										<table class="table">
+											<thead>
+												<tr>
+													<th class="bg-green" >#{i18n.getText('KAF011_51')}</th>
+													<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
+												</tr>
+											</thead>
+		        							<tbody data-bind="foreach: subWorkSubHolidayLinkingMngList">
+												<tr>
+													<td data-bind="text: outbreakDay"></td>
+													<td data-bind="text: dayNumberUsed"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
-						</div>
+						</com:ko-if>
 						<div class="comment" data-bind="text: $parent.comment.subWorkComment, style: {color: $parent.comment.subWorkColor, 'font-weight': $parent.comment.subWorkBold()? 'bold': ''}"></div>
 					</div>
 				</com:ko-if>
