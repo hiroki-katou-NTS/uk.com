@@ -1,5 +1,5 @@
 #ignore project build folders
-**/build*
+**/build/*
 **/bin*
 
 #ignore node_modules
