@@ -194,7 +194,7 @@ public class ReflectAttendanceClock {
 		}
 		//実打刻を反映するなのかをチェックする
 		if(actualStampAtr == ActualStampAtr.STAMP ) {
-			ReasonTimeChange reasonTimeChangeNew = new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,EngravingMethod.TIME_RECORD_ID_INPUT);
+			ReasonTimeChange reasonTimeChangeNew = new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
 			//時刻を変更してもいいか判断する
 			boolean check = this.isCanChangeTime(cid, workStamp, reasonTimeChangeNew);
 			if(!check) {
@@ -354,7 +354,7 @@ public class ReflectAttendanceClock {
 			}else {
 				WorkStamp workStampNew = new WorkStamp();
 				WorkTimeInformation timeDay = new WorkTimeInformation(
-						new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT),
+						new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)),
 						timeWithDayAttr);
 				workStampNew.setTimeDay(timeDay);
 				workStampNew.setLocationCode(Optional.empty());
@@ -392,7 +392,7 @@ public class ReflectAttendanceClock {
 			TimeActualStamp timeActualStamp = new TimeActualStamp();
 			WorkStamp workStamp = new WorkStamp();
 			WorkTimeInformation timeDay = new WorkTimeInformation(
-					new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT),
+					new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)),
 					timeWithDayAttr);
 			workStamp.setTimeDay(timeDay);
 			workStamp.setLocationCode(Optional.empty());

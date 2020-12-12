@@ -27,7 +27,7 @@ public class AnnualAppCreate {
 	 *
 	 * @param require           @Require
 	 * @param cid               会社ID
-	 * @param empId             申請者
+	 * @param applicantId       申請者
 	 * @param appContent  		年間の 申請内容
 	 * @param screenDisplayInfo 画面表示情報
 	 * @return 申請作成結果
@@ -35,7 +35,7 @@ public class AnnualAppCreate {
 	public static AppCreationResult create(
 			Require require,
 			String cid,
-			String empId,
+			String applicantId,
 			AnnualAppContent appContent,
 			ScreenDisplayInfo screenDisplayInfo) {
 
@@ -80,7 +80,7 @@ public class AnnualAppCreate {
 
 			// $申請
 			val app = createAnnualApp(
-					empId,
+					applicantId,
 					appContent,
 					optApproverItem.get().getApproverList(),
 					optApproverItem.get().getConfirmerList(),

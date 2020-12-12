@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf022.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
     const __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModelA {
@@ -338,8 +339,9 @@ module nts.uk.at.view.kaf022.a.viewmodel {
         }
 
         openScreenS(): void {
-            let self = this;
-            modal('/view/kaf/022/s/index.xhtml');
+            modal('/view/kaf/022/s/index.xhtml').onClosed(() => {
+                setShared("KAF022S_PARAMS", undefined);
+            });
         }
     }
 

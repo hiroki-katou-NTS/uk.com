@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,10 +36,12 @@ public class WorkingHourListCompanyScreenQuery {
     public MaxDaysOfWorkTimeComListDto get(String code) {
         /*就業時間帯情報リストを取得する*/
         Optional<MaxDayOfWorkTimeCompany> maxDayOfWorkTimeCompany = maxDayOfWorkTimeCompanyRepo.get(AppContexts.user().companyId(), new MaxDayOfWorkTimeCode(code));
+        if (!maxDayOfWorkTimeCompany.isPresent()) {
+            return new MaxDaysOfWorkTimeComListDto();
+        }
         /*就業時間帯コードリスト */
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDayOfWorkTimeCompany.isPresent() && !maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
-
+        if (!maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
             workHourCodeList = maxDayOfWorkTimeCompany
                     .get()
                     .getMaxDayOfWorkTime()
@@ -50,15 +53,15 @@ public class WorkingHourListCompanyScreenQuery {
         //就業時間帯情報を取得する
         List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                 .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        // working hours list
+                // working hours list
         List<WorkingHoursDTO> workhourList = workTimeSettingList
                 .stream()
                 .map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
                 .collect(Collectors.toList());
         MaxDaysOfWorkTimeComListDto dto = new MaxDaysOfWorkTimeComListDto(
-                maxDayOfWorkTimeCompany.orElseGet(null).getCode().v(),
-                maxDayOfWorkTimeCompany.orElseGet(null).getName().v(),
-                maxDayOfWorkTimeCompany.orElseGet(null).getMaxDayOfWorkTime().getMaxDay().v(),
+                maxDayOfWorkTimeCompany.get().getCode().v(),
+                maxDayOfWorkTimeCompany.get().getName().v(),
+                maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getMaxDay().v(),
                 workhourList
         );
         return dto;
@@ -66,6 +69,9 @@ public class WorkingHourListCompanyScreenQuery {
 
     public List<MaxDayOfWorkTimeCompanyDto> getWortimeList() {
         List<MaxDayOfWorkTimeCompany> list = maxDayOfWorkTimeCompanyRepo.getAll(AppContexts.user().companyId());
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
         return list
                 .stream()
                 .map(item -> new MaxDayOfWorkTimeCompanyDto(

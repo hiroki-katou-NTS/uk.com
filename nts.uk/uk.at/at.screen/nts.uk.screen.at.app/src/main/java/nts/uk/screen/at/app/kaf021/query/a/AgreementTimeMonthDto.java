@@ -7,14 +7,18 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOf
 @Getter
 public class AgreementTimeMonthDto {
 
+    public AgreementTimeMonthDto(int yearMonth) {
+        this.yearMonth = yearMonth;
+        this.time = new AggreementTimeDto();
+        this.maxTime = new AggreementTimeDto();
+        this.status = null;
+    }
+
     public AgreementTimeMonthDto(AgreementTimeOfManagePeriod domain) {
-        AgreementTimeOfMonthly time = domain.getAgreementTime();
         this.yearMonth = domain.getYm().v();
-        this.time = time.getAgreementTime().v();
-        this.maxTime = time.getThreshold().getUpperLimit().v();
+        this.time = new AggreementTimeDto(domain.getAgreementTime());
+        this.maxTime = new AggreementTimeDto(domain.getLegalMaxTime());
         this.status = domain.getStatus().value;
-        this.error = time.getThreshold().getErAlTime().getError().v();
-        this.alarm = time.getThreshold().getErAlTime().getAlarm().v();
     }
 
     /**
@@ -23,23 +27,17 @@ public class AgreementTimeMonthDto {
     private int yearMonth;
 
     /**
-     * 36協定時間
+     * 36協定対象時間
      */
-    private Integer time;
+    private AggreementTimeDto time;
+
     /**
-     * 上限時間
+     * 法定上限対象時間
      */
-    private Integer maxTime;
+    private AggreementTimeDto maxTime;
+
     /**
      * 状態
      */
     private Integer status;
-    /**
-     * エラー時間
-     */
-    private Integer error;
-    /**
-     * アラーム時間
-     */
-    private Integer alarm;
 }

@@ -1,99 +1,147 @@
-module nts.uk.at.view.kml002.g.viewmodel {
-    import getShared = nts.uk.ui.windows.getShared;
-    export class ScreenModel {
-        unitPriceItems: KnockoutObservableArray<any>;
-        uPCd: KnockoutObservable<number>;
-        radioMethod: KnockoutObservableArray<any>;
-        selectedMethod: KnockoutObservable<number>;
-        attrLabel: KnockoutObservable<String>;
-        itemNameLabel: KnockoutObservable<String>;
-        verticalId: KnockoutObservable<number>;
-        genVertId: KnockoutObservable<number>;
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-        constructor() {
-            var self = this;
+module nts.uk.at.view.kml002.g {
 
-            var dataTranfer = nts.uk.ui.windows.getShared("KML002_A_DATA");
-            var data = dataTranfer.unitPrice;
+  const PATH = {
+    timeNumberCounterGetInfo: 'screen/at/kml002/g/getInfo',
+    timeNumberCounterRegister: 'ctx/at/schedule/budget/timeNumberCounter/register'
+  }
 
-            self.genVertId = ko.observable(dataTranfer.verticalCalCd);
-            self.verticalId = ko.observable(dataTranfer.itemId);
-            self.attrLabel = ko.observable(dataTranfer.attribute);
-            self.itemNameLabel = ko.observable(dataTranfer.itemName);
+  @bean()
+  class ViewModel extends ko.ViewModel {
+    selectableItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+    currentCodeListSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
-            self.unitPriceItems = ko.observableArray([
-                { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
-                { uPCd: 1, uPName: nts.uk.resource.getText("KML002_54") },
-                { uPCd: 2, uPName: nts.uk.resource.getText("KML002_55") },
-                { uPCd: 3, uPName: nts.uk.resource.getText("KML002_56") },
-                { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
-            ]);
+    columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+    gridHeight: KnockoutObservable<number> = ko.observable(285);
+    countingType: KnockoutObservable<number> = ko.observable(0);   
 
-            self.radioMethod = ko.observableArray([
-                { id: 0, name: nts.uk.resource.getText("KML002_62") },
-                { id: 1, name: nts.uk.resource.getText("KML002_63") },
-                { id: 2, name: nts.uk.resource.getText("KML002_64") }
-            ]);
+    limitedItems: KnockoutObservable<string> = ko.observable(null);
+    limitedNumber: KnockoutObservable<number> = ko.observable(9999);
 
-            if(data != null) {
-                self.uPCd = ko.observable(data.unitPrice);
-                self.selectedMethod = ko.observable(data.attendanceAtr);
-            } else {
-                self.uPCd = ko.observable(0);
-                self.selectedMethod = ko.observable(0);
-            }
-            
+    constructor(params: any) {
+      super();
+      const vm = this;
+      vm.columns = ko.observableArray([
+        { headerText: vm.$i18n('KML002_111'), key: 'number', width: 50, formatter: _.escape },
+        { headerText: vm.$i18n('KML002_112'), key: 'name', width: 100, formatter: _.escape },
+      ]);
+
+      vm.$window.storage('KWL002_SCREEN_G_INPUT').then((data) => {
+        if(!_.isNil(data)) {
+          vm.countingType(data.countingType);
+          if( data.countingType > 0 ) {
+            vm.limitedItems(vm.$i18n('KML002_114'));          
+            vm.limitedNumber(10);
+          }
+          vm.getTimeNumberCounter();      
         }
-
-        /**
-         * Start page.
-         */
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-
-            dfd.resolve();
-            return dfd.promise();
-        }
-
-        submit() {
-            var self = this;
-            nts.uk.ui.block.invisible();
-                
-            var item = _.find(self.unitPriceItems(), function(o) { return o.uPCd == self.uPCd(); });
-            var data = {
-                verticalCalCd: self.genVertId(),
-                verticalCalItemId: self.verticalId(),
-                unitPrice: self.uPCd(),
-                unitName: item.uPName,
-                attendanceAtr: self.selectedMethod(),
-            };
-
-            nts.uk.ui.windows.setShared("KML002_G_DATA", data);
-            nts.uk.ui.block.clear();
-            nts.uk.ui.windows.close();
-        }
-
-        cancel() {
-            var self = this;
-             nts.uk.ui.windows.close(); 
-
-        }
+      });      
     }
 
-    export interface IUnitPrice {
-        verticalId?: number;
-        unitPriceCtg?: String;
-        attendanceDecisionCls?: number;
+    created(params: any) {
+      const vm = this;
+      //_.extend(window, { vm });
+
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if(!_.isNil(msie) && msie.index > -1) vm.gridHeight(290);
     }
-    class UnitPrice {
-        verticalId: KnockoutObservable<number> = ko.observable(0);
-        unitPriceCtg: KnockoutObservable<String> = ko.observable('');
-        attendanceDecisionCls: KnockoutObservable<number> = ko.observable(0);
-        constructor(param: IUnitPrice) {
-            this.verticalId(param.verticalId || 0);
-            this.unitPriceCtg(param.unitPriceCtg || '');
-            this.attendanceDecisionCls(param.attendanceDecisionCls || 0);
-        }
+
+    mounted() {
+      const vm = this;            
+      $("#swapList-grid1").igGrid("container").focus();
+      //$('#swapList-gridArea1').attr('tabindex', '3').focus();
     }
+
+    closeDialog() {
+      const vm = this;
+      vm.$window.storage('KWL002_SCREEN_G_OUTPUT', null).then(() => {
+        vm.$window.close();
+      });
+    }
+
+    createSelectableItems( listItems: any) {
+      const vm = this;
+      var array = [];
+      _.forEach(listItems, (x) => {
+        array.push(new ItemModel(x.number, x.name));
+      });
+      vm.selectableItems(array);
+    }
+
+    proceed() {
+      const vm = this;
+
+      //G4_1「選択可能な項目」で項目はなにもない場合。
+      if (vm.selectableItems().length <= 0 && vm.currentCodeListSwap().length <= 0) {
+        vm.$dialog.error({ messageId: 'Msg_37' }).then(() => {
+          vm.$window.close();
+        })
+        return;
+      }
+
+      if (vm.currentCodeListSwap().length > vm.limitedNumber() || vm.currentCodeListSwap().length <= 0) {
+        let msgId = vm.currentCodeListSwap().length > vm.limitedNumber() ? 'Msg_1837' : 'Msg_1817';
+        //「選択された対象項目」で回数集計項目は10項目以上に選択られた。 > 10
+        //「選択された対象項目」でなにもない。 = 0
+        vm.$dialog.error({ messageId: msgId }).then(() => {
+          $('#swapList-gridArea2').attr('tabindex', '-1').focus();
+        })
+        return;
+      }
+      //エラーがない場合 - 回数集計情報を登録する
+      let selectedNoList = [];
+      _.forEach(vm.currentCodeListSwap(), (x) => {
+        selectedNoList.push(x.number);
+      });
+
+      let params = {
+        "type" : vm.countingType(),
+	      "selectedNoList": selectedNoList
+      };
+
+      vm.$blockui('show');
+      vm.$ajax(PATH.timeNumberCounterRegister, params).done(() => {
+        vm.$window.storage('KWL002_SCREEN_G_OUTPUT', vm.currentCodeListSwap()).then(() => {
+          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+            vm.$blockui('hide');
+            //vm.$window.close();
+          });
+        });
+      }).fail().always(() => vm.$blockui('hide'));      
+    }    
+
+    getTimeNumberCounter() {
+      const vm = this;      
+      vm.$blockui('show');
+      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => { 
+        if(!_.isNil(data)) {          
+          if(data.countNumberOfTimeDtos.length > 0) {
+            vm.createSelectableItems(data.countNumberOfTimeDtos);            
+          } else {
+            vm.$dialog.error({ messageId: 'Msg_37' }).then(() => {
+              vm.$blockui('hide');
+              vm.$window.close();
+            });
+          }
+
+          if(data.numberOfTimeTotalDtos.length > 0) {
+            vm.currentCodeListSwap(data.numberOfTimeTotalDtos);            
+          }
+        }        
+      })
+      .fail()
+      .always(() => vm.$blockui('hide'));
+    }
+  }
+
+  export class ItemModel {
+    number: number;
+    name: string;
+    constructor(code: number, name: string) {
+      this.number = code;
+      this.name = name;
+    }
+  }
 }

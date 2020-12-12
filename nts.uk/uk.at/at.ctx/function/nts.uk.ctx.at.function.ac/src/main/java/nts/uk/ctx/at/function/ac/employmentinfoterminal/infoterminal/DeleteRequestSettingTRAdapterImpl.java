@@ -14,7 +14,7 @@ public class DeleteRequestSettingTRAdapterImpl implements DeleteRequestSettingTR
 	private DeleteRequestSettingTimeRecordPub pub;
 
 	@Override
-	public AtomTask remove(Integer empInfoTerCode, String contractCode) {
+	public AtomTask remove(String empInfoTerCode, String contractCode) {
 		return pub.remove(empInfoTerCode, contractCode);
 	}
 

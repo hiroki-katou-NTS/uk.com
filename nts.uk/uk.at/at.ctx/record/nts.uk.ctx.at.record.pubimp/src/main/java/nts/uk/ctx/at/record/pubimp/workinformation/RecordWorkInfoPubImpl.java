@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -43,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -62,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
 @Stateless
@@ -242,9 +241,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setListShortWorkingTimeSheet(shortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets());
 			
 		}
-		List<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPer =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		Optional<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPer =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
 		List<BreakTimeSheet> listBreakTimeSheet = new ArrayList<>();
-		listBreakTimeOfDailyPer.stream().map(c->listBreakTimeSheet.addAll(c.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList());
+		listBreakTimeOfDailyPer.ifPresent(c-> listBreakTimeSheet.addAll(c.getTimeZone().getBreakTimeSheets()));
 		record.setListBreakTimeSheet(listBreakTimeSheet);
 		
 		return record;
@@ -567,10 +566,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setShortWorkingTimeSheets(shOptional.get().getShortWorkingTimeSheets());
 		}
 //		breakTimeSheets do not repo
-		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
-		if (!CollectionUtil.isEmpty(breakTimeOfDailyPerformanceLst)) {
-			List<BreakTimeSheet> breakTimeSheetsSet = 
-					breakTimeOfDailyPerformanceLst.get(0).getTimeZone().getBreakTimeSheets();
+		Optional<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		if (breakTimeOfDailyPerformanceLst.isPresent()) {
+			List<BreakTimeSheet> breakTimeSheetsSet = breakTimeOfDailyPerformanceLst.get().getTimeZone().getBreakTimeSheets();
 			record.setBreakTimeSheets(breakTimeSheetsSet);
 		}
 		

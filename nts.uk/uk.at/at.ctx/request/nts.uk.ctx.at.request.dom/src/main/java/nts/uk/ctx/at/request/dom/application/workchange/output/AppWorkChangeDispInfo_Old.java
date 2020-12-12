@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 勤務変更申請の表示情報
+ * 勤務変更申請の表示情報 (「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)」)
  * @author Doan Duy Hung
  *
  */

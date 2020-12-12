@@ -25,8 +25,7 @@ public class JpaExternalBudgetRepositoryExcel extends JpaRepository implements B
 		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
 				entity.kscstExternalBudgetPk.externalBudgetCd, 
 				entity.externalBudgetName, 
-				entity.budgetAtr,
-				entity.unitAtr);
+				entity.budgetAtr);
 		return domain;
 	}
 

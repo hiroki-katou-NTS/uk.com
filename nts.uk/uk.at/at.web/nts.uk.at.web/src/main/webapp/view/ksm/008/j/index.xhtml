@@ -6,11 +6,11 @@
     <div class="sidebar-content-header custom-header" >
         <div>
             <span class="title">#{i18n.getText('KSM008_184')}</span>
-            <a class="goback"
+            <a tabindex="-1" class="goback"
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
-            <button  data-bind="click:jScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
-            <button class="proceed" data-bind="click:jScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
-            <button class="danger" data-bind="enable:vm.isJScreenUpdateMode()?true:false,click:jScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+            <button tabindex="-1"  data-bind="click:jScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
+            <button tabindex="-1" class="proceed" data-bind="click:jScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
+            <button tabindex="-1" class="danger" data-bind="enable:vm.isJScreenUpdateMode(),click:jScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
         </div>
     </div>
     <div class="contents-area custom-class">
@@ -18,9 +18,9 @@
             <div class="label class-padding-btm-5"
                  data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
             </div>
-            <div class="label warning"
-                 style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
-            <div class="label warning" style="padding-top: 0;"
+            <div class="label warning color-black"
+                 style="padding-bottom: 0;padding-top: 0; ">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
+            <div class="label warning color-black" style="padding-top: 0;white-space: pre-wrap;"
                  data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
         </div>
         <div class="table custom_table_j1_x" >
@@ -30,7 +30,7 @@
             </div>
             <!-- j1_2-->
             <div class="cell valign-center" style="width: 4%">
-                <button id="J1_2"  tabindex="1"  data-bind="inline: true, click:openModalKDL046" class="small">#{i18n.getText('KSM008_204')}</button>
+                <button id="J1_2"  tabindex="1"  data-bind="inline: true, click:openModalKDL046">#{i18n.getText('KSM008_204')}</button>
             </div>
             <!-- j1_3-->
             <div class="cell valign-center" style="width: 9%">
@@ -69,7 +69,7 @@
                     <div class="cell valign-center">
                         <!-- J3_2 -->
                         <input tabindex="3" id="J3_2"
-                               data-bind="ntsTextEditor: {constraint: 'ConsecutiveWorkTimeCode', value: jScreenWorkingHour.code,enable: vm.isJScreenUpdateMode()?false:true, required: true, name: '#[KSM008_210]'}, style: { width: '25px', marginRight: '5px'}"/>
+                               data-bind="ntsTextEditor: {constraint: 'ConsecutiveWorkTimeCode', value: jScreenWorkingHour.code,enable: vm.isJScreenUpdateMode()?false:true, required: true, name: '#[KSM008_210]'}, style: { width: '27px', marginRight: '5px'}"/>
                     </div>
                     <div class="cell valign-center">
                         <!-- J3_3  -->
@@ -84,11 +84,11 @@
                     </div>
                     <!-- J4_2 -->
                     <div class="cell valign-center">
-                        <button  id="J4_2" tabindex="5" data-bind="click: openKdl001ModalJScreen" style="margin-right: 5px;margin-left: 28px;">#{i18n.getText('KSM008_213')}</button>
+                        <button  id="J4_2" tabindex="5" data-bind="click: openKdl001ModalJScreen" style="margin-right: 5px;margin-left: 28px;width: 48px">#{i18n.getText('KSM008_213')}</button>
                     </div>
                     <!-- J4_3-->
                     <div class="cell valign-center">
-                        <input id="J4_3" class="width-180"  data-bind="ntsTextEditor: {value: jScreenWorkingHour.workHour,enable:false,name: '#[KSM008_214]'}"/>
+                        <input style="width: 180px" data-bind="ntsTextEditor: {value: vm.jScreenWorkingHour.workHour, enable: false}"/>
                     </div>
                 </div>
                 <div class="table" style="margin-top: 7px">
@@ -99,7 +99,7 @@
                     <!-- J5_2 -->
                     <div class="cell valign-center">
                         <input tabindex="6" id="J5_2"
-                               data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '25px', marginRight: '5px',marginLeft: '28px'}"/>
+                               data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '27px', marginRight: '5px',marginLeft: '28px'}"/>
                     </div>
                     <!-- J5_3 -->
                     <div class="cell valign-center">

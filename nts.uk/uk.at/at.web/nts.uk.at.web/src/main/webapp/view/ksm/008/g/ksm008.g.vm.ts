@@ -23,25 +23,23 @@ module nts.uk.at.view.ksm008.g {
         deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
 
         // Init
-        code: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.コード
+        code: KnockoutObservable<string> = ko.observable("05"); //勤務予定のアラームチェック条件.コード
         conditionName: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.条件名
         explanation: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.サブ条件リスト.説明
         maxConsDaysCom: KnockoutObservable<number> = ko.observable(); //会社の連続出勤できる上限日数.日数.日数
 
         maxConsDaysOrg: KnockoutObservable<number> = ko.observable(); //組織の連続出勤できる上限日数.日数.日数
-        unit: KnockoutObservable<number> = ko.observable(); //対象組織情報.単位
-        workplaceId: KnockoutObservable<string> = ko.observable(""); //対象組織情報.職場ID
-        workplaceGroupId: KnockoutObservable<string> = ko.observable(""); //対象組織情報.職場グループID
+        unit: number = null; //対象組織情報.単位
+        workplaceId: string = ""; //対象組織情報.職場ID
+        workplaceGroupId: string = ""; //対象組織情報.職場グループID
         orgCode: KnockoutObservable<string> = ko.observable(""); //組織の表示情報.コード
         displayName: KnockoutObservable<string> = ko.observable(""); //組織の表示情報.表示名
 
         codeAndConditionName: KnockoutObservable<string>;
 
-        constructor(data: any) {
+        constructor() {
             super();
             const vm = this;
-
-            vm.code(data.code);
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code() + " " + vm.conditionName();
@@ -52,8 +50,6 @@ module nts.uk.at.view.ksm008.g {
             const vm = this;
 
             vm.onSelectCom();
-
-            _.extend(window, {vm});
         }
 
         mounted() {
@@ -80,21 +76,24 @@ module nts.uk.at.view.ksm008.g {
 
                         let explanation: string = "";
                         _.forEach(data.explanationList, (item) => {
-                            explanation += item;
+                            explanation += item + "\n";
                         });
+                        explanation = explanation.replace(/\\r/g, "\r");
+                        explanation = explanation.replace(/\\n/g, "\n");
                         vm.explanation(explanation);
 
                         vm.maxConsDaysCom(data.maxConsDays);
                         if (data.maxConsDays != null) {
                             vm.deleteEnable(true);
                         }
+
+                        $(".cons-day").focus();
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
-                    $(".cons-day").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -115,25 +114,22 @@ module nts.uk.at.view.ksm008.g {
             vm.$ajax(PATH_API.getStartupInfoOrg)
                 .done(data => {
                     if (data) {
-                        vm.unit(data.unit);
-                        vm.workplaceId(data.workplaceId);
-                        vm.workplaceGroupId(data.workplaceGroupId);
+                        vm.unit = data.unit;
+                        vm.workplaceId = data.workplaceId;
+                        vm.workplaceGroupId = data.workplaceGroupId;
                         vm.orgCode(data.code);
                         vm.displayName(data.displayName);
                         vm.maxConsDaysOrg(data.maxConsDays);
 
                         if (data.maxConsDays != null) {
                             vm.deleteEnable(true);
-                            $(".cons-day").focus();
-                        } else {
-                            $("#H1_2").focus();
                         }
+
+                        $(".cons-day").focus();
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
-                        $("#H1_2").focus();
-                    })
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     vm.$blockui("clear");
@@ -154,38 +150,48 @@ module nts.uk.at.view.ksm008.g {
 
             vm.$blockui("invisible");
             if (vm.isComSelected()) {
+                if (vm.maxConsDaysCom() == null) {
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.$ajax(PATH_API.registerCom, {maxConsDays: vm.maxConsDaysCom()})
                     .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             vm.deleteEnable(true);
+                            $(".cons-day").focus();
                         })
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res);
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             }
             else if (vm.isOrgSelected()) {
+                if (vm.maxConsDaysOrg() == null) {
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.$ajax(PATH_API.registerOrg,
                     {
-                        unit: vm.unit(),
-                        workplaceId: vm.workplaceId(),
-                        workplaceGroupId: vm.workplaceGroupId(),
+                        unit: vm.unit,
+                        workplaceId: vm.workplaceId,
+                        workplaceGroupId: vm.workplaceGroupId,
                         maxConsDays: vm.maxConsDaysOrg()
                     })
                     .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             vm.deleteEnable(true);
+                            $(".cons-day").focus();
                         })
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res);
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             }
@@ -206,41 +212,37 @@ module nts.uk.at.view.ksm008.g {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysCom(null);
                                     vm.deleteEnable(false);
+                                    $(".cons-day").focus();
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message);
+                                vm.$dialog.error(res);
                             })
                             .always(() => {
-                                $(".cons-day").focus();
                                 vm.$blockui("clear");
                             });
                     }
                     else if (vm.isOrgSelected()) {
                         vm.$ajax(PATH_API.deleteOrg,
                             {
-                                unit: vm.unit(),
-                                workplaceId: vm.workplaceId(),
-                                workplaceGroupId: vm.workplaceGroupId(),
+                                unit: vm.unit,
+                                workplaceId: vm.workplaceId,
+                                workplaceGroupId: vm.workplaceGroupId,
                             })
                             .done(() => {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysOrg(null);
                                     vm.deleteEnable(false);
-                                    $("#H1_2").focus();
+                                    $(".cons-day").focus();
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message).then(() => {
-                                    $(".cons-day").focus();
-                                })
+                                vm.$dialog.error(res);
                             })
                             .always(() => {
                                 vm.$blockui("clear");
                             });
                     }
-                } else {
-                    $(".cons-day").focus();
                 }
             });
         }
@@ -249,50 +251,47 @@ module nts.uk.at.view.ksm008.g {
             const vm = this;
 
             setShared("dataShareDialog046", {
-                unit: vm.unit(),
-                workplaceId: vm.workplaceId(),
-                workplaceGroupId: vm.workplaceGroupId()
+                unit: vm.unit,
+                workplaceId: vm.workplaceId,
+                workplaceGroupId: vm.workplaceGroupId
             });
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
+                $(".nts-input").ntsError("clear");
 
                 let dto: any = getShare("dataShareKDL046");
+                if (_.isEmpty(dto)) {
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 if (dto.unit === 1) {
-                    vm.unit(1);
-                    vm.workplaceGroupId(dto.workplaceGroupID);
+                    vm.unit = 1;
+                    vm.workplaceGroupId = dto.workplaceGroupID;
                     vm.orgCode(dto.workplaceGroupCode);
                     vm.displayName(dto.workplaceGroupName);
                 } else {
-                    vm.unit(0);
-                    vm.workplaceId(dto.workplaceId);
+                    vm.unit = 0;
+                    vm.workplaceId = dto.workplaceId;
                     vm.orgCode(dto.workplaceCode);
                     vm.displayName(dto.workplaceName);
                 }
 
                 vm.deleteEnable(false);
-                vm.$ajax(PATH_API.getStartupInfoOrg,
+                vm.$ajax(PATH_API.getMaxConsDays,
                     {
-                        unit: vm.unit(),
-                        workplaceId: vm.workplaceId(),
-                        workplaceGroupId: vm.workplaceGroupId()
+                        unit: vm.unit,
+                        workplaceId: vm.workplaceId,
+                        workplaceGroupId: vm.workplaceGroupId
                     })
                     .done(data => {
-                        if (data) {
-                            vm.maxConsDaysOrg(data.maxConsDays);
-
-                            if (data.maxConsDays != null) {
-                                vm.deleteEnable(true);
-                                $(".cons-day").focus();
-                            } else {
-                                $("#H1_2").focus();
-                            }
-                        }
+                        vm.maxConsDaysOrg(data);
+                        vm.deleteEnable(data != null);
+                        $(".cons-day").focus();
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
-                            $("#H1_2").focus();
-                        })
+                        vm.$dialog.error(res);
                     })
                     .always(() => {
                         vm.$blockui("clear");

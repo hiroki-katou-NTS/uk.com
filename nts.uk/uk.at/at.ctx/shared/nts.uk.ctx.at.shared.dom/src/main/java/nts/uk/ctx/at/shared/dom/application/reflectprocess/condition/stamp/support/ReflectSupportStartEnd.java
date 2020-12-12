@@ -103,7 +103,7 @@ public class ReflectSupportStartEnd {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(old.getTimeSheet().getWorkNo(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getStart()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod().orElse(null)).orElse(null)),
+									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
 							data.getTimeOfDay())),
 					old.getTimeSheet().getEnd());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
@@ -112,7 +112,7 @@ public class ReflectSupportStartEnd {
 					new WorkNo(data.getDestinationTimeApp().getEngraveFrameNo()), old.getTimeSheet().getStart(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getEnd()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod().orElse(null)).orElse(null)),
+									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
 							data.getTimeOfDay())));
 			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		}

@@ -433,10 +433,14 @@ module cmm045.shr {
 		export class columnWidth {
 			appLstAtr: boolean;
 			width: number;
+			cID: string;
+			sID: string;
 
-			constructor(appLstAtr: boolean, width: number) {
+			constructor(appLstAtr: boolean, width: number, cID: string, sID: string) {
 				this.appLstAtr = appLstAtr;
-				this.width = width
+				this.width = width;
+				this.cID = cID;
+				this.sID = sID;
 			}
 		}
     }

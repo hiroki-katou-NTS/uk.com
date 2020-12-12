@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.base;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import lombok.val;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 public class TimezoneToUseHourlyHolidayTest {
 
@@ -58,5 +60,40 @@ public class TimezoneToUseHourlyHolidayTest {
 		assertThat( result ).containsExactlyInAnyOrderEntriesOf( expected );
 
 	}
+	
+	/**
+	 * Target	: getOutingReason
+	 */
+	@Test
+	public void testGetOutingReason_exception() {
+		
+		NtsAssert.systemError(
+				() -> TimezoneToUseHourlyHoliday.getDuringWorking(GoingOutReason.PUBLIC));
+	}
+	
+	/**
+	 * Target	: getOutingReason
+	 */
+	@Test
+	public void testGetOutingReason() {
 
+		// Expected
+		val expected = new HashMap<GoingOutReason, TimezoneToUseHourlyHoliday>();
+		{
+			expected.put( GoingOutReason.PRIVATE,	TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE );
+			expected.put( GoingOutReason.UNION,	TimezoneToUseHourlyHoliday.GOINGOUT_UNION );
+			expected.put( GoingOutReason.UNION,	TimezoneToUseHourlyHoliday.GOINGOUT_UNION );
+		}
+
+		// Execute
+		val result = expected.keySet().stream()
+				.collect(Collectors.toMap( 
+						reason -> reason, 
+						reason -> TimezoneToUseHourlyHoliday.getDuringWorking(reason)));
+
+		// Assertion
+		assertThat( result ).containsExactlyInAnyOrderEntriesOf( expected );
+
+	}
+	
 }

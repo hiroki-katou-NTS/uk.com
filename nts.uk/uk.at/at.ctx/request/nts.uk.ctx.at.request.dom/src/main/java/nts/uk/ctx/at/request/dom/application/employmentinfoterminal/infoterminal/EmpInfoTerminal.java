@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -49,7 +49,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * コード
 	 */
 	@Getter
-	private final Integer empInfoTerCode;
+	private final String empInfoTerCode;
 
 	/**
 	 * シリアルNO
@@ -242,7 +242,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * コード
 		 */
-		private Integer empInfoTerCode;
+		private String empInfoTerCode;
 
 		/**
 		 * シリアルNO
@@ -275,7 +275,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		@Getter
 		private Optional<String> empInfoTerMemo;
 
-		public EmpInfoTerminalBuilder(Optional<String> ipAddress, String macAddress, Integer empInfoTerCode,
+		public EmpInfoTerminalBuilder(Optional<String> ipAddress, String macAddress, String empInfoTerCode,
 				Optional<String> terSerialNo, String empInfoTerName, String contractCode) {
 			this.ipAddress = ipAddress;
 			this.macAddress = macAddress;

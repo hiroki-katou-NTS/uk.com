@@ -48,7 +48,7 @@ public class TimeRecordSetFormatListTest {
 		TimeRecordSettingInfoDto input = new TimeRecordSettingInfoDto("00-14-22-01-23-45", "A", "012",
 				String.valueOf(ModelEmpInfoTer.NRL_1.value), lstReceptFormat, lstUpdateRecept);
 
-		TimeRecordSetFormatList actualResult = TimeRecordSetFormatList.convert(new EmpInfoTerminalCode(1234), input);
+		TimeRecordSetFormatList actualResult = TimeRecordSetFormatList.convert(new EmpInfoTerminalCode("1234"), input);
 
 		assertThat(actualResult.getLstTRSetFormat())
 				.extracting(x -> x.getMajorNo().v(), x -> x.getMajorClassification().v(), x -> x.getSmallNo().v(), x -> x.getSmallClassification().v(),

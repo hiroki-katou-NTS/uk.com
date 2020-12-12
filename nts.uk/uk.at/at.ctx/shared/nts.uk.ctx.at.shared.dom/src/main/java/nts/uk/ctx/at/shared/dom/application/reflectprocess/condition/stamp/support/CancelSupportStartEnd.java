@@ -61,7 +61,7 @@ public class CancelSupportStartEnd {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(old.getTimeSheet().getWorkNo(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getStart()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod().orElse(null)).orElse(null)),
+									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
 							null)),
 					old.getTimeSheet().getEnd());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getEngraveFrameNo(), 10));
@@ -70,7 +70,7 @@ public class CancelSupportStartEnd {
 					old.getTimeSheet().getStart(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getEnd()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod().orElse(null)).orElse(null)),
+									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
 							null)));
 			lstItemId.add(CancelAppStamp.createItemId(930, data.getEngraveFrameNo(), 10));
 		}

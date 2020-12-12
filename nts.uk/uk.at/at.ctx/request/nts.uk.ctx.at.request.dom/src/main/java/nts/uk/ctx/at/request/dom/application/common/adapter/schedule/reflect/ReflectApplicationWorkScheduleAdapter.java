@@ -7,6 +7,6 @@ import nts.arc.time.GeneralDate;
 
 public interface ReflectApplicationWorkScheduleAdapter {
 	
-	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus);
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr);
 	
 }

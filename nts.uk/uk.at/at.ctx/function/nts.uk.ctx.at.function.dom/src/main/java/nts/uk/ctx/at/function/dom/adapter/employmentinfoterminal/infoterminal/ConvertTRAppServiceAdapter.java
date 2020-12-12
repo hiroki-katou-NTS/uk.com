@@ -7,6 +7,6 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ap
 
 public interface ConvertTRAppServiceAdapter {
 
-	public  Optional<AtomTask> converData(Integer empInfoTerCode,
+	public  Optional<AtomTask> converData(String empInfoTerCode,
 			String contractCode, ApplicationReceptionDataImport recept);
 }
