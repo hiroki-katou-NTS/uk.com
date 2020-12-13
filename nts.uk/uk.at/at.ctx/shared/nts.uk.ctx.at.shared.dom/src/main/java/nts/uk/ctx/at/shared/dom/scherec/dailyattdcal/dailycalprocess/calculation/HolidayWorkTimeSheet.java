@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
@@ -157,14 +158,9 @@ public class HolidayWorkTimeSheet{
 				HolidayWorkTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
 			}
 		}
-		//大塚モードの確認
-		if (true){
-			//マイナスの乖離時間を0にする
-			for (val aftertransTime : aftertransTimeList){
-				aftertransTime.getHolidayWorkTime().get().divergenceMinusValueToZero();
-				aftertransTime.getTransferTime().get().divergenceMinusValueToZero();
-			}
-		}
+		//マイナスの乖離時間を0にする
+		HolidayWorkTimeOfDaily.divergenceMinusValueToZero(aftertransTimeList);
+
 		return aftertransTimeList;
 	}
 	

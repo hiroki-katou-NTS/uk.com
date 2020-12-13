@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
@@ -78,6 +80,10 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//申告設定
 	@Inject
 	private DeclareSetRepository declareSetRepository;
+
+	//残業枠
+	@Inject
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
 	
 //	@Inject
 //	private EmployeeWtSettingRepository employeeWtSettingRepository;
@@ -112,6 +118,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									new MidNightTimeSheet(companyId, new TimeWithDayAttr(1320),new TimeWithDayAttr(1740)),
 									flexSetRepository.findByCId(companyId).get(),
 									deformLaborOTRepository.findByCId(companyId).get(),
-									this.declareSetRepository.find(companyId));
+									this.declareSetRepository.find(companyId),
+									this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
 	}
 }

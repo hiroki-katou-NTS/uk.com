@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
@@ -89,6 +90,9 @@ public class ManagePerCompanySet {
 	/** 申告設定 */
 	Optional<DeclareSet> declareSet;
 	
+	/** 残業枠 */
+	List<OvertimeWorkFrame> overtimeFrameList;
+	
 	public ManagePerCompanySet(
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
@@ -106,7 +110,9 @@ public class ManagePerCompanySet {
 			MidNightTimeSheet midNightTimeSheet,
 			FlexSet flexSet,
 			DeformLaborOT deformLaborOT,
-			Optional<DeclareSet> declareSet) {
+			Optional<DeclareSet> declareSet,
+			List<OvertimeWorkFrame> overtimeFrameList) {
+		
 		super();
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
 		this.calculateOfTotalCons = calculateOfTotalCons;
@@ -126,5 +132,6 @@ public class ManagePerCompanySet {
 		this.flexSet = flexSet;
 		this.deformLaborOT = deformLaborOT;
 		this.declareSet = declareSet;
+		this.overtimeFrameList = overtimeFrameList;
 	}
 }

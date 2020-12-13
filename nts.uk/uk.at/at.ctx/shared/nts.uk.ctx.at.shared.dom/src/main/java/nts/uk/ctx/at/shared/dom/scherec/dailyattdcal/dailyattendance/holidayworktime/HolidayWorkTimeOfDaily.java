@@ -209,9 +209,14 @@ public class HolidayWorkTimeOfDaily {
 				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
 				for(HolidayWorkFrameTimeSheetForCalc frameTime : declareSheet.getWorkHolidayTime()) {
 					if(frameTime.getMidNightTimeSheet().isPresent()) {
-						eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime():new AttendanceTime(0));
-						// 編集状態．休出深夜に処理中の法定区分を追加する
-						calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
+						AttendanceTime declareTime =
+								holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?
+										frameTime.getMidNightTimeSheet().get().calcTotalTime() : new AttendanceTime(0);
+						if (declareTime.valueAsMinutes() > 0){
+							eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
+							// 編集状態．休出深夜に処理中の法定区分を追加する
+							calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
+						}
 					}
 				}
 			}
@@ -225,16 +230,18 @@ public class HolidayWorkTimeOfDaily {
 					if (calcRange.getWorkTypeOpt().get().isHolidayWork()){
 						// 申告休出深夜時間　←　事前計算していた深夜時間
 						AttendanceTime declareTime = calcRange.getCalcTime().getHolidayWorkMn();
-						// 休出深夜時間を追加する
-						OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
-						if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
-							HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
-							if (declareSheet.getWorkHolidayTime().size() > 0){
-								eachTime.addTime(
-										declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get(), declareTime);
-								// 編集状態．休出深夜に処理中の法定区分を追加する
-								calcRange.getEditState().getHolidayWorkMn().add(
-										declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get());
+						if (declareTime.valueAsMinutes() > 0){
+							// 休出深夜時間を追加する
+							OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
+							if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
+								HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
+								if (declareSheet.getWorkHolidayTime().size() > 0){
+									eachTime.addTime(
+											declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get(), declareTime);
+									// 編集状態．休出深夜に処理中の法定区分を追加する
+									calcRange.getEditState().getHolidayWorkMn().add(
+											declareSheet.getWorkHolidayTime().get(0).getStatutoryAtr().get());
+								}
 							}
 						}
 					}
@@ -347,7 +354,6 @@ public class HolidayWorkTimeOfDaily {
 		return returnErrorList;
 	}
 	
-	
 	/**
 	 * 自身の休出枠時間の乖離時間を計算
 	 * @return
@@ -360,6 +366,23 @@ public class HolidayWorkTimeOfDaily {
 		}
 		Finally<HolidayMidnightWork> holidayMidnight = this.holidayMidNightWork.isPresent()?Finally.of(this.holidayMidNightWork.get().calcDiverGenceTime()):this.holidayMidNightWork;
 		return new HolidayWorkTimeOfDaily(this.holidayWorkFrameTimeSheet,list,holidayMidnight,this.holidayTimeSpentAtWork);
+	}
+
+	/**
+	 * マイナスの乖離時間を0にする
+	 * @param holidayWorkFrameTimeList 休出枠時間リスト
+	 */
+	public static void divergenceMinusValueToZero(
+			List<HolidayWorkFrameTime> holidayWorkFrameTimeList){
+		
+		//大塚モードの確認
+		if (true) return;	// 仮対応として、常に0補正しない動作とする。 2020.12.10 shuichi_ishida
+		
+		//マイナスの乖離時間を0にする
+		for (val holidayWorkFrameTime : holidayWorkFrameTimeList){
+			holidayWorkFrameTime.getHolidayWorkTime().get().divergenceMinusValueToZero();
+			holidayWorkFrameTime.getTransferTime().get().divergenceMinusValueToZero();
+		}
 	}
 	
 	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)

@@ -259,7 +259,8 @@ public class OverTimeOfDaily {
 				recordReGet.getIntegrationOfDaily(), 
 				recordReGet.getStatutoryFrameNoList(),
 				declareResult,
-				true);
+				true,
+				recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
 		
 		//残業深夜時間の計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(
@@ -338,10 +339,12 @@ public class OverTimeOfDaily {
 			// 申告残業深夜時間の計算
 			AttendanceTime declareTime = OverTimeOfDaily.calcDeclareOvertimeMidnightTime(
 					overTimeSheet, autoCalcSet, declareResult);
-			midnightTime.replaceTimeWithCalc(declareTime);
-			// 編集状態．残業深夜　←　true
-			if (declareResult.getDeclareCalcRange().isPresent()){
-				declareResult.getDeclareCalcRange().get().getEditState().setOvertimeMn(true);
+			if (declareTime.valueAsMinutes() > 0){
+				midnightTime.replaceTimeWithCalc(declareTime);
+				// 編集状態．残業深夜　←　true
+				if (declareResult.getDeclareCalcRange().isPresent()){
+					declareResult.getDeclareCalcRange().get().getEditState().setOvertimeMn(true);
+				}
 			}
 		}
 		return new ExcessOverTimeWorkMidNightTime(midnightTime);
@@ -687,8 +690,6 @@ public class OverTimeOfDaily {
 		return restTime;
 	}
 
-
-
 	/**
 	 * 乖離時間のみ再計算
 	 * @return
@@ -703,6 +704,23 @@ public class OverTimeOfDaily {
 		Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeMidNight = this.excessOverTimeWorkMidNightTime.isPresent()?Finally.of(this.excessOverTimeWorkMidNightTime.get().calcDiverGenceTime())
 																																:this.excessOverTimeWorkMidNightTime;
 		return new OverTimeOfDaily(this.overTimeWorkFrameTimeSheet,OverTimeFrameList,excessOverTimeMidNight,this.irregularWithinPrescribedOverTimeWork,flexTime,this.overTimeWorkSpentAtWork);
+	}
+
+	/**
+	 * マイナスの乖離時間を0にする
+	 * @param overtimeFrameTimeList 残業枠時間リスト
+	 */
+	public static void divergenceMinusValueToZero(
+			List<OverTimeFrameTime> overtimeFrameTimeList){
+		
+		//大塚モードの確認
+		if (true) return;	// 仮対応として、常に0補正しない動作とする。 2020.12.10 shuichi_ishida
+		
+		//マイナスの乖離時間を0にする
+		for (val overtimeFrameTime : overtimeFrameTimeList){
+			overtimeFrameTime.getOverTimeWork().divergenceMinusValueToZero();
+			overtimeFrameTime.getTransferTime().divergenceMinusValueToZero();
+		}
 	}
 	
 	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
