@@ -1346,6 +1346,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DeclareCalcRange declareCalcRange = DeclareCalcRange.create(
 				companyId, workType, itgOfWorkTimeForDeclare, itgOfDailyForDeclare,
 				calcRangeRecord.get(), declareSet, predTimeSet, companyCommonSetting);
+		// 申告時間がない時、処理しない
+		if (!declareCalcRange.getAttdLeave().getAttdOvertime().isPresent() &&
+				!declareCalcRange.getAttdLeave().getLeaveOvertime().isPresent()) return result;
 		// 申告エラーチェック
 		if (declareSet.checkError(declareCalcRange.isHolidayWork(), declareCalcRange.getAttdLeave())) return result;
 		// 残業休出枠設定を調整する

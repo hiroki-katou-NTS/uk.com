@@ -148,7 +148,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					: new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 		
 		default:
-			throw new RuntimeException("unknown WorkingSystem");
+			return new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 		}
 	}
 	

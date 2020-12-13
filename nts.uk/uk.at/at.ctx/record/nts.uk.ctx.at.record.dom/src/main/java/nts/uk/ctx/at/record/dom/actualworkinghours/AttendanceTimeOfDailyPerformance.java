@@ -17,12 +17,15 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
@@ -219,6 +222,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 
 				// 手修正された項目の値を計算前に戻す
 				copyIntegrationOfDaily = afterDailyRecordDto.toDomain();
+				// マイナスの乖離時間を0にする
+				AttendanceTimeOfDailyPerformance.divergenceMinusValueToZero(copyIntegrationOfDaily);
 			}
 
 			// 手修正後の再計算
@@ -233,6 +238,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				DailyRecordToAttendanceItemConverter afterReCalcDto = forCalcDivergenceDto.setData(result);
 				afterReCalcDto.merge(itemValueList);
 				result = afterReCalcDto.toDomain();
+				// マイナスの乖離時間を0にする
+				AttendanceTimeOfDailyPerformance.divergenceMinusValueToZero(result);
 			}
 
 		}
@@ -240,6 +247,28 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		AttendanceTimeOfDailyPerformance.updateEditStateForDeclare(result, declareResult);
 		// 日別実績(Work)を返す
 		return result;	
+	}
+	
+	/**
+	 * マイナスの乖離時間を0にする
+	 * @param itgOfDaily 日別実績(Work)
+	 */
+	private static void divergenceMinusValueToZero(IntegrationOfDaily itgOfDaily){
+		
+		if (!itgOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) return;
+		AttendanceTimeOfDailyAttendance attendanceTime = itgOfDaily.getAttendanceTimeOfDailyPerformance().get();
+		TotalWorkingTime totalWorkingTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		ExcessOfStatutoryTimeOfDaily excessStatTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		// 残業枠時間
+		if (excessStatTime.getOverTimeWork().isPresent()){
+			OverTimeOfDaily overtime = excessStatTime.getOverTimeWork().get();
+			OverTimeOfDaily.divergenceMinusValueToZero(overtime.getOverTimeWorkFrameTime());
+		}
+		// 休出枠時間
+		if (excessStatTime.getWorkHolidayTime().isPresent()){
+			HolidayWorkTimeOfDaily holidayWorkTime = excessStatTime.getWorkHolidayTime().get();
+			HolidayWorkTimeOfDaily.divergenceMinusValueToZero(holidayWorkTime.getHolidayWorkFrameTime());
+		}
 	}
 	
 	/**
