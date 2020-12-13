@@ -71,10 +71,13 @@ module nts.uk.at.kal014.a {
             vm.itemsSwap = ko.observableArray([]);
             vm.columns = ko.observableArray([
                 {headerText: vm.$i18n('KAL014_22'), key: 'key', hidden: true},
+                {headerText: vm.$i18n('KAL014_22'), key: 'cssClass', hidden: true},
                 {headerText: vm.$i18n('KAL014_22'), key: 'categoryName',
                     template: "<span class='${cssClass}'>${categoryName}</span>", width: 130},
-                {headerText: vm.$i18n('KAL014_23'), key: 'code', width: 50},
-                {headerText: vm.$i18n('KAL014_24'), key: 'name', width: 150}
+                {headerText: vm.$i18n('KAL014_23'), key: 'code',
+                    template: "<span class='${cssClass}'>${code}</span>", width: 50},
+                {headerText: vm.$i18n('KAL014_24'), key: 'name',
+                    template: "<span class='${cssClass}'>${name}</span>", width: 150}
             ]);
             vm.currentCodeListSwap = ko.observableArray([]);
             vm.roundingRules = ko.observableArray([
@@ -102,6 +105,7 @@ module nts.uk.at.kal014.a {
                     // reset swap list
                     vm.itemsSwap.removeAll();
                     vm.itemsSwap(_.cloneDeep(vm.listAllCtgCode));
+
                     $("#A3_3").focus();
                 });
             });
@@ -118,9 +122,10 @@ module nts.uk.at.kal014.a {
                     newCtgList: Array<WkpCheckConditionDto> = [];
 
                 // Update category
-                if (updateCtg.length >0) {
+                if (updateCtg.length >0 || removeOld.length > 0) {
                     let newResult = _.filter(vm.alarmPatterSet().checkConList(),
-                        item => updateCtg.indexOf(item.alarmCategory()) != -1);
+                        item => updateCtg.indexOf(item.alarmCategory()) != -1
+                            && removeOld.indexOf(item.alarmCategory()) == -1);
                     newResult.forEach((ctg: WkpCheckConditionDto)=>{
                         let listSelectedCode = _.map(_.filter(vm.alarmPatterSet().allCtgCdSelected(),
                             i =>i.category === ctg.alarmCategory()   ),ctgCd => ctgCd.code);
@@ -134,7 +139,7 @@ module nts.uk.at.kal014.a {
                 newCtg.forEach((ctg: ItemModel)=>{
                     let listSelectedCode = _.map(_.filter(vm.alarmPatterSet().allCtgCdSelected(),
                         i =>i.category === ctg.code   ),ctgCd => ctgCd.code);
-                    var defautData : IWkpCheckConditionDto = { alarmCategory: ctg.code, alarmCtgName: ctg.name,
+                    let defautData : IWkpCheckConditionDto = { alarmCategory: ctg.code, alarmCtgName: ctg.name,
                         checkConditionCodes: listSelectedCode, extractionDaily: null,listExtractionMonthly: null,singleMonth: null};
                     newCtgList.push(vm.createDataforCategory(defautData));
                 });
@@ -206,7 +211,6 @@ module nts.uk.at.kal014.a {
             vm.$blockui("show");
             vm.$ajax(PATH_API.GET_SETTING_BYCODE,{patternCode: alarmCd})
                 .done((data: IAlarmPatternObject)=>{
-                    console.log(data);
                     if (!data){
                         vm.clickNewButton();
                         dfd.resolve();
@@ -224,12 +228,21 @@ module nts.uk.at.kal014.a {
                     let listSelected: Array<AlarmCheckCategoryList> = _.flatMap(data.checkConList,
                         (value: any )=>{
                         let item: Array<AlarmCheckCategoryList>  = _.filter(vm.listAllCtgCode,
-                                i=>value.checkConditionCodes.indexOf(i.code) != -1
-                                    && i.category == value.alarmCategory);
+                                i=>i.category == value.alarmCategory
+                                    && value.checkConditionCodes.indexOf(i.code) != -1);
+                        let deletedItems = _.filter(value.checkConditionCodes,
+                            (code: string) => _.map(item,item => item.code).indexOf(code) == - 1);
+
+                        _.forEach(deletedItems, (deletedItem: string) =>{
+                            let param: IAlarmCheckCategoryList = {category: value.alarmCategory, categoryName: value.alarmCtgName,
+                                code: deletedItem,name: vm.$i18n("KAL014_56"), cssClass: 'red-color'};
+                            item.push(new AlarmCheckCategoryList(param));
+                        });
                         return item;
                     });
 
-                    vm.alarmPatterSet().update(data.alarmPatternCD,data.alarmPatternName,checkCon,listSelected);
+                    vm.alarmPatterSet().update(data.alarmPatternCD,data.alarmPatternName,checkCon,_.sortBy(listSelected,
+                            i => i.code));
                     dfd.resolve();
                 })
                 .fail((error: any)=>{
@@ -427,6 +440,9 @@ module nts.uk.at.kal014.a {
             vm.$window.modal(modalPath, ko.toJS(item))
                 .then((result: any) => {
                     console.log(result);
+                    if (!result){
+                        return;
+                    }
                     let element = _.find(vm.alarmPatterSet().checkConList(), ((item)=>{
                         return item.alarmCategory() == result.shareData.alarmCategory;
                     }));
@@ -442,8 +458,8 @@ module nts.uk.at.kal014.a {
                         case vm.workPalceCategory.MASTER_CHECK_DAILY:
                         case vm.workPalceCategory.SCHEDULE_DAILY:
                         case vm.workPalceCategory.APPLICATION_APPROVAL:
-                            element.extractionDaily().updateExtractionPeriodDaily(result.shareData.strSpecify,result.shareData.strMonth,result.shareData.strPreviousDay,
-                                result.shareData.strDay,result.shareData.endSpecify,result.shareData.endMonth,result.shareData.endPreviousDay,result.shareData.endDay);
+                            element.extractionDaily().updateExtractionPeriodDaily(result.shareData.strSpecify,result.shareData.strMonth,result.shareData.strPreviousDay,result.shareData.strDay,result.shareData.strPreviousMonth,
+                                result.shareData.endSpecify,result.shareData.endMonth,result.shareData.endPreviousDay,result.shareData.endDay,result.shareData.endPreviousMonth);
                             element.updateDisplayTxt(vm.buildExtracDay(element.extractionDaily()));
                             break
                         // 月次
@@ -501,7 +517,11 @@ module nts.uk.at.kal014.a {
          * */
         clickRegister() {
             const vm = this;
-
+            // Validate logic
+            if (_.find(vm.alarmPatterSet().allCtgCdSelected(), { 'cssClass': 'red-color' })) {
+                vm.$dialog.error({ messageId: "Msg_817" });
+                return;
+            }
             vm.$validate(".nts-input",".nts-editor", ".ntsControl").then((valid: boolean) => {
                 if (!valid){
                     return;
@@ -694,7 +714,7 @@ module nts.uk.at.kal014.a {
             this.roleIds(_.isNil(data) ? [] : data);
         }
         setRoleName(name: Array<string>){
-            this.roleIdDis(_.isEmpty(name) ? "" :_.join(name, ','))
+            this.roleIdDis(_.isEmpty(name) ? "" :_.join(name, '、'))
         }
     }
 
@@ -751,7 +771,7 @@ module nts.uk.at.kal014.a {
         constructor(data: IWkpExtractionPeriodDailyDto){
             this.strSpecify(_.isNil(data)? StartSpecify.MONTH :data.strSpecify);
             this.strPreviousMonth(_.isNil(data)? PreviousClassification.BEFORE :data.strPreviousMonth);
-            this.strMonth((_.isNil(data) || data.endCurrentMonth )? 0 : data.strMonth);
+            this.strMonth((_.isNil(data) || data.strCurrentMonth )? 0 : data.strMonth);
             this.strCurrentMonth(_.isNil(data)? true :data.strCurrentMonth);
             this.strPreviousDay(_.isNil(data)? null :data.strPreviousDay);
             this.strMakeToDay(_.isNil(data)? null: data.strDay == 0);
@@ -766,14 +786,16 @@ module nts.uk.at.kal014.a {
             this.endMakeToDay(_.isNil(data) ? null : data.endDay == 0);
         }
 
-        updateExtractionPeriodDaily(strSpecify: number,strMonth: number,strPreviousDay: number, strDay: number,
-                                    endSpecify: number,endMonth: number,endPreviousDay:number,  endDay: number ){
+        updateExtractionPeriodDaily(strSpecify: number,strMonth: number,strPreviousDay: number, strDay: number,strPreviousMonth: number,
+                                    endSpecify: number,endMonth: number,endPreviousDay:number,  endDay: number,
+                                    endPreviousMonth: number){
             this.strSpecify(strSpecify);
             this.strMonth(strMonth);
             this.strCurrentMonth(strMonth == 0);
             this.strPreviousDay(strPreviousDay);
             this.strMakeToDay(strDay == 0);
             this.strDay(strDay);
+            this.strPreviousMonth(strPreviousMonth);
 
             this.endSpecify(endSpecify);
             this.endMonth(endMonth);
@@ -781,6 +803,7 @@ module nts.uk.at.kal014.a {
             this.endPreviousDay(endPreviousDay);
             this.endDay(endDay);
             this.endMakeToDay(endDay == 0);
+            this.endPreviousMonth(endPreviousMonth);
 
         }
     }
@@ -938,6 +961,7 @@ module nts.uk.at.kal014.a {
         code: string;
         // 名称
         name: string;
+        cssClass:string;
     }
 
     class AlarmCheckCategoryList {
@@ -951,12 +975,15 @@ module nts.uk.at.kal014.a {
         // 名称
         name: string;
 
+        cssClass: string = "";
+
         constructor (data: IAlarmCheckCategoryList) {
             this.key = data.category + "-"+data.code;
             this.category = data.category;
             this.categoryName = data.categoryName;
             this.code = data.code;
             this.name = data.name;
+            this.cssClass = data.cssClass;
         }
     }
 

@@ -253,52 +253,47 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
                 || entity.pk.category == WorkplaceCategory.APPLICATION_APPROVAL.value) {
             if (entity.kfnmtAssignDayStart != null) {
                 if (this.kfnmtAssignDayStart == null) {
-                    this.kfnmtAssignDayStart = new KfnmtAssignDayStart();
-                    this.kfnmtAssignDayStart.pk = new KfnmtAssignDayStartPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                    this.kfnmtAssignDayStart = entity.kfnmtAssignDayStart;
+                } else {
+                    this.kfnmtAssignDayStart.fromEntity(entity.kfnmtAssignDayStart);
                 }
-                this.kfnmtAssignDayStart.fromEntity(entity.kfnmtAssignDayStart);
             } else {
                 this.kfnmtAssignDayStart = null;
             }
 
             if (entity.kfnmtAssignDatelineStart != null) {
                 if (this.kfnmtAssignDatelineStart == null) {
-                    this.kfnmtAssignDatelineStart = new KfnmtAssignDatelineStart();
-                    this.kfnmtAssignDatelineStart.pk = new KfnmtAssignDatelineStartPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                    this.kfnmtAssignDatelineStart = entity.kfnmtAssignDatelineStart;
+                } else{
+                    this.kfnmtAssignDatelineStart.fromEntity(entity.kfnmtAssignDatelineStart);
                 }
-                this.kfnmtAssignDatelineStart.fromEntity(entity.kfnmtAssignDatelineStart);
             } else {
                 this.kfnmtAssignDatelineStart = null;
             }
 
             if (entity.kfnmtAssignDayEnd != null) {
                 if (this.kfnmtAssignDayEnd == null) {
-                    this.kfnmtAssignDayEnd = new KfnmtAssignDayEnd();
-                    this.kfnmtAssignDayEnd.pk = new KfnmtAssignDayEndPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
-
+                    this.kfnmtAssignDayEnd = entity.kfnmtAssignDayEnd;
+                } {
+                    this.kfnmtAssignDayEnd.fromEntity(entity.kfnmtAssignDayEnd);
                 }
-                this.kfnmtAssignDayEnd.fromEntity(entity.kfnmtAssignDayEnd);
+
             } else {
                 this.kfnmtAssignDayEnd = null;
             }
 
             if (entity.kfnmtAssignDatelineEnd != null) {
                 if (this.kfnmtAssignDatelineEnd == null) {
-                    this.kfnmtAssignDatelineEnd = new KfnmtAssignDatelineEnd();
-                    this.kfnmtAssignDatelineEnd.pk = new KfnmtAssignDatelineEndPk(AppContexts.user().companyId(),entity.pk.alarmPatternCD,entity.pk.category);
+                    this.kfnmtAssignDatelineEnd = entity.kfnmtAssignDatelineEnd;
+                } else{
+                    this.kfnmtAssignDatelineEnd.fromEntity(entity.kfnmtAssignDatelineEnd);
                 }
-                this.kfnmtAssignDatelineEnd.fromEntity(entity.kfnmtAssignDatelineEnd);
             } else {
                 this.kfnmtAssignDatelineEnd = null;
 
             }
-            this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
-            System.out.println("this.checkConItems lenght:  "+ this.checkConItems.size());
-            entity.checkConItems.forEach( item ->{
-                if(!this.checkConItems.contains(item)) this.checkConItems.add(item);
-            });
         }
-
+        this.checkConItems = entity.checkConItems;
     }
 
     private static KfnmtPtnMapCatPk buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {

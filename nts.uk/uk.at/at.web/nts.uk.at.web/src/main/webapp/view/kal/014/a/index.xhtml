@@ -28,7 +28,7 @@
                     data-bind="click:clickRegister, enable: $root.errors.isEmpty">#{i18n.getText('KAL014_10')}</button>
             <!--A1_4-->
             <button id="A1_4" tabindex="4" class="danger"
-                    data-bind="click:clickDeleteButton, enable :!isNewMode()">#{i18n.getText('KAL014_10')}</button>
+                    data-bind="click:clickDeleteButton, enable :!isNewMode()">#{i18n.getText('KAL014_11')}</button>
         </div>
         <div id="contents-area">
             <div class="table" style="margin-top: 8px;max-width: 100%;">
@@ -164,7 +164,7 @@
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- A8_3 -->
-                                    <button tabindex="13" style="margin-left: 15px;"
+                                    <button tabindex="13" style="margin-left: 10px;"
                                             data-bind="click:$vm.clickConfiguration,
                                             enable: alarmPerSet().authSetting()== 1">
                                         #{i18n.getText('KAL014_33')}</button>

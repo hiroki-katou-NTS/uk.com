@@ -48,7 +48,7 @@ public class KfnmtAssignDatelineEnd extends UkJpaEntity implements Serializable 
 
     //class month
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
             @JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false),

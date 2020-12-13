@@ -39,7 +39,7 @@ module nts.uk.at.kal014.b {
         }
 
         mounted(){
-            $('#B3_1').focus();
+            $('#combo-box').focus();
         }
         /**
          * This function is responsible to check start month disable enable check

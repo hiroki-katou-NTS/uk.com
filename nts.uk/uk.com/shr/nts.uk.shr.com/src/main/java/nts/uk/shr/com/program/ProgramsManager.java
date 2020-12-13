@@ -2237,9 +2237,6 @@ public class ProgramsManager {
     public static final Program KAL014C = new Program(WebAppId.AT, ProgramIdConsts.KAL014C, "KAL014_3",
             "/view/kal/014/c/index.xhtml");
 
-    /**     * KDW004     */
-    public static final Program KDW004A = new Program(WebAppId.AT, ProgramIdConsts.KDW004A, "KDW004_1",
-            "/view/kdw/004/a/index.xhtml");
     /**
      * CMM045
      */

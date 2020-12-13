@@ -12,8 +12,8 @@ module nts.uk.at.kal014.c {
         endComboMonth: KnockoutObservableArray<any>;
         strComboDay: KnockoutObservableArray<any>;
         endComboDay: KnockoutObservableArray<any>;
-        strSelected: KnockoutObservable<number> = ko.observable(0);
-        endSelected: KnockoutObservable<number> = ko.observable(0);
+        strSelected: KnockoutObservable<number> = ko.observable(null);
+        endSelected: KnockoutObservable<number> = ko.observable(null);
         workPalceCategory: any;
         dateSpecify: KnockoutObservableArray<any>;
         monthSpecify: KnockoutObservableArray<any>;
@@ -39,34 +39,47 @@ module nts.uk.at.kal014.c {
                 {value: EndSpecify.DAYS, name: vm.$i18n("KAL014_49")},
                 {value: EndSpecify.MONTH, name: ""}
             ]);
+            vm.strSelected.subscribe((value: number)=>{
+                vm.$errors("clear", ".nts-input").then(() => {
+                    vm.isDayStart(value == StartSpecify.DAYS);
+                    vm.isMonthStart(value == StartSpecify.MONTH);
 
+                    if (value == StartSpecify.MONTH){
+                        vm.modalDTO.clearDayStart();
+                    } else{
+                        vm.modalDTO.clearMonthStart()
+                    }
+                });
+
+            })
+            vm.endSelected.subscribe((value: number)=>{
+                vm.$errors("clear", ".nts-input").then(() => {
+                    vm.isDayEnd(value == EndSpecify.DAYS);
+                    vm.isMonthEnd(value == EndSpecify.MONTH);
+                    if (value == EndSpecify.MONTH){
+                        vm.modalDTO.clearDayEnd();
+                    } else{
+                        vm.modalDTO.clearMonthStart()
+                    }
+                });
+            })
+
+        }
+
+        created(params: any) {
+            const vm = this;
             vm.initModalData(params);
         }
 
-        created() {
+        mounted(){
             const vm = this;
-            vm.strSelected.subscribe((value: number)=>{
-                vm.isDayStart(value == StartSpecify.DAYS);
-                vm.isMonthStart(value == StartSpecify.MONTH);
+            if (vm.strSelected() == StartSpecify.MONTH){
+                $('#C3_9').focus();
+            } else{
+                $('#C3_5').focus();
+            }
 
-                if (value == StartSpecify.MONTH){
-                    vm.modalDTO.clearDayStart();
-                } else{
-                    vm.modalDTO.clearMonthStart()
-                }
-            })
-            vm.endSelected.subscribe((value: number)=>{
-                vm.isDayEnd(value == EndSpecify.DAYS);
-                vm.isMonthEnd(value == EndSpecify.MONTH);
-                if (value == EndSpecify.MONTH){
-                    vm.modalDTO.clearDayEnd();
-                } else{
-                    vm.modalDTO.clearMonthStart()
-                }
-            })
         }
-
-
         /**
          * This function is responsible to initialized modal data
          *
@@ -84,6 +97,8 @@ module nts.uk.at.kal014.c {
             vm.modalDTO.numberOfDayFromEnd(modalData.extractionDaily.endDay);
             vm.modalDTO.beforeAndAfterStart(modalData.extractionDaily.strPreviousDay);
             vm.modalDTO.beforeAndAfterEnd(modalData.extractionDaily.endPreviousDay);
+            vm.strSelected.valueHasMutated();
+            vm.endSelected.valueHasMutated();
         }
 
         /**
@@ -105,32 +120,37 @@ module nts.uk.at.kal014.c {
         decide(): any {
             const vm = this;
             let checkResult = vm.checkPeriod();
-            if (!_.isNil(checkResult)) {
-                vm.$dialog.error({messageId: checkResult}).done(()=>{
-                    return;
-                })
+            vm.$validate(".nts-input").then((valid: boolean) => {
+                if (valid)
+                {
+                    if (!_.isNil(checkResult)) {
+                        vm.$dialog.error({messageId: checkResult}).done(()=>{
+                            return;
+                        })
 
-            } else {
-                let shareData = {
-                    alarmCategory: vm.modalDTO.categoryId(),
-                    alarmCategoryName: vm.modalDTO.categoryName(),
-                    //Start date
-                    strSpecify: vm.strSelected(),
-                    strMonth: vm.modalDTO.startMonth(),
-                    strDay: vm.modalDTO.numberOfDayFromStart(),
-                    strPreviousDay: vm.modalDTO.beforeAndAfterStart(),
-                    strPreviousMonth: vm.endSelected() == StartSpecify.MONTH ? PreviousClassification.BEFORE : null,
-                    //End date
-                    endSpecify: vm.endSelected(),
-                    endMonth: vm.modalDTO.endMonth(),
-                    endDay: vm.modalDTO.numberOfDayFromEnd(),
-                    endPreviousDay:  vm.modalDTO.beforeAndAfterEnd(),
-                    endPreviousMonth: vm.endSelected() == EndSpecify.MONTH ? PreviousClassification.BEFORE : null
+                    } else {
+                        let shareData = {
+                            alarmCategory: vm.modalDTO.categoryId(),
+                            alarmCategoryName: vm.modalDTO.categoryName(),
+                            //Start date
+                            strSpecify: vm.strSelected(),
+                            strMonth: vm.modalDTO.startMonth(),
+                            strDay: vm.modalDTO.numberOfDayFromStart(),
+                            strPreviousDay: vm.modalDTO.beforeAndAfterStart(),
+                            strPreviousMonth: vm.strSelected() == StartSpecify.MONTH ? PreviousClassification.BEFORE : null,
+                            //End date
+                            endSpecify: vm.endSelected(),
+                            endMonth: vm.modalDTO.endMonth(),
+                            endDay: vm.modalDTO.numberOfDayFromEnd(),
+                            endPreviousDay:  vm.modalDTO.beforeAndAfterEnd(),
+                            endPreviousMonth: vm.endSelected() == EndSpecify.MONTH ? PreviousClassification.BEFORE : null
+                        }
+                        vm.$window.close({
+                            shareData
+                        });
+                    }
                 }
-                vm.$window.close({
-                    shareData
-                });
-            }
+            });
 
         }
 
@@ -208,28 +228,28 @@ module nts.uk.at.kal014.c {
             this.categoryName = ko.observable('');
             this.startMonth = ko.observable('');
             this.endMonth = ko.observable(null);
-            this.numberOfDayFromStart = ko.observable('');
-            this.numberOfDayFromEnd = ko.observable('');
-            this.beforeAndAfterStart = ko.observable('');
-            this.beforeAndAfterEnd = ko.observable('');
-        }
-
-        clearDayStart(){
             this.numberOfDayFromStart = ko.observable(null);
-            this.beforeAndAfterStart = ko.observable(null);
-        }
-
-        clearDayEnd(){
             this.numberOfDayFromEnd = ko.observable(null);
+            this.beforeAndAfterStart = ko.observable(null);
             this.beforeAndAfterEnd = ko.observable(null);
         }
 
+        clearDayStart(){
+            this.numberOfDayFromStart(null);
+            this.beforeAndAfterStart(null);
+        }
+
+        clearDayEnd(){
+            this.numberOfDayFromEnd(null);
+            this.beforeAndAfterEnd(null);
+        }
+
         clearMonthStart(){
-            this.startMonth = ko.observable(null);
+            this.startMonth(null);
         }
 
         clearMonthEnd(){
-            this.endMonth = ko.observable(null);
+            this.endMonth(null);
         }
     }
 

@@ -54,7 +54,8 @@
                                    {constraint: 'Day',
                                     value: modalDTO.numberOfDayFromStart,
                                     enable: $vm.isDayStart,
-                                    name: '#[KAL014_45]'}"/>
+                                    required: $vm.isDayStart,
+                                    name: $vm.$i18n('KAL014_45')}"/>
                         </div>
                         <div class="cell valign-center">
                             <!-- C3_6 -->
@@ -82,7 +83,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_1 -->
-                            <div  data-bind="ntsRadioButton: {
+                            <div  tabindex="5" data-bind="ntsRadioButton: {
                              checked: endSelected,
                              enable: true,
                              option: monthSpecify()[0],
@@ -99,11 +100,12 @@
                                    {constraint: 'Day',
                                     value: modalDTO.numberOfDayFromEnd,
                                     enable: $vm.isDayEnd,
-                                    name: '#[KAL014_50]'}"/>
+                                    required: $vm.isDayEnd,
+                                    name:  $vm.$i18n('KAL014_50')}"/>
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_6 -->
-                            <span class="label">#{i18n.getText('KAL014_46')}</span>
+                            <span class="label">#{i18n.getText('KAL014_51')}</span>
                         </div>
                         <div class="cell valign-center">
                             <!-- C4_7 -->
@@ -154,7 +156,7 @@
                                 columns: [
                                 { prop: 'name', length: 5 }
                                 ]},
-                                name: '#[KAL014_47]'
+                                name: $vm.$i18n('KAL014_47')
                                 ">
                             </div>
                         </div>
@@ -187,7 +189,7 @@
                                 required: true,
                                 columns: [
                                 { prop: 'name', length: 5 }
-                                ]},name: '#[KAL014_47]'">
+                                ]},name:  $vm.$i18n('KAL014_52')">
                             </div>
                         </div>
                         <div class="cell valign-center">
