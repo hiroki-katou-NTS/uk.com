@@ -52,6 +52,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.CategoryCondValueDto;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 
 @Stateless
 public class AggregationProcessService {
@@ -260,11 +262,16 @@ public class AggregationProcessService {
 				List<ResultOfEachCondition> lstResultCondition = new ArrayList<>();
 				//[RQ189] 社員ID（List）と指定期間から所属職場履歴を取得
 				List<WorkPlaceHistImport> getWplByListSidAndPeriod = wpAdapter.getWplByListSidAndPeriod(lstSidTmp, datePeriod);
+				
 				//[RQ588]社員の指定期間中の所属期間を取得する
 				List<StatusOfEmployeeAdapter> lstStatusEmp = syCompAdapter.getAffCompanyHistByEmployee(lstSidTmp, datePeriod);
+				
 				//ループ中のカテゴリ別アラームチェック条件．カテゴリをチェック
 				switch (x.getCategory()) {
+				
 				case SCHEDULE_DAILY:
+					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
+					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();					
 					
 				case SCHEDULE_WEEKLY:
 					

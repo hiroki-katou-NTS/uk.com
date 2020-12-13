@@ -25,4 +25,20 @@ public interface AlarmListPersonServiceAdapter {
 			String errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
 			List<StatusOfEmployeeAdapter> lstStatusEmp,List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor);
+	
+	/**
+	 * 日次チェック
+	 * @param cid
+	 * @param lstSid
+	 * @param dPeriod
+	 * @param errorMasterCheckId
+	 * @param lstWplHist
+	 * @param lstStatusEmp
+	 * @param lstResultCondition
+	 * @param lstCheckInfor
+	 */
+	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			List<String> errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
+			List<StatusOfEmployeeAdapter> lstStatusEmp,List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckInfor);
 }

@@ -5,4 +5,6 @@ import java.util.List;
 public interface AttendanceItemPub {
 
 	List<AttendanceItemExport> getAttendanceItemName(List<Integer> dailyAttendanceItemIds, int typeOfAttendanceItem);
+	
+	List<AttendanceItemExport> getAttendanceItem(int typeOfAttendanceItem);	
 }
