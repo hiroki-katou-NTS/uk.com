@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
@@ -7,6 +8,8 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  */
 public class PersonCostRoundingSetting extends ValueObject {
     //1: 単価＊割増率の丸め:人件費単価丸め
-
     private UnitPriceRoundingSetting roundingOfPremium;
+    //2: 単価＊時間の丸め :
+    private AmountRoundingSetting amountRoundingSetting;
+
 }
