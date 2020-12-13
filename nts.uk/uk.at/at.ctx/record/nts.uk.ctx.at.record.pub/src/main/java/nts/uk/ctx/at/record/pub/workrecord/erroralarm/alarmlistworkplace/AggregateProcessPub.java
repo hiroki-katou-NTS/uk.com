@@ -49,11 +49,11 @@ public interface AggregateProcessPub {
     /**
      * スケジュール／日次の集計処理
      *
-     * @param cid             会社ID
-     * @param period          期間
+     * @param cid                 会社ID
+     * @param period              期間
      * @param fixedExtractCondIds List＜固定抽出条件ID＞
-     * @param extractCondIds     List＜任意抽出条件ID＞
-     * @param workplaceIds    List＜職場ID＞
+     * @param extractCondIds      List＜任意抽出条件ID＞
+     * @param workplaceIds        List＜職場ID＞
      * @return List＜アラーム抽出結果＞
      */
     List<AlarmListExtractionInfoWorkplaceExport> processSchedule(String cid, DatePeriod period,
@@ -75,4 +75,16 @@ public interface AggregateProcessPub {
                                                                 List<String> fixedExtractCondIds,
                                                                 List<String> extractCondIds,
                                                                 List<String> workplaceIds);
+
+    /**
+     * 申請承認の集計処理
+     *
+     * @param period              期間
+     * @param fixedExtractCondIds List＜固定抽出条件ID＞
+     * @param workplaceIds        List<職場ID＞
+     * @return List＜アラームリスト抽出情報（職場）＞
+     */
+    List<AlarmListExtractionInfoWorkplaceExport> processAppApproval(DatePeriod period,
+                                                                    List<String> fixedExtractCondIds,
+                                                                    List<String> workplaceIds);
 }

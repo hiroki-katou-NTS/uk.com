@@ -19,16 +19,19 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListE
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.ExtractResult;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.AggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess.PeriodByAlarmCategory;
+import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -79,6 +82,8 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
         List<WorkPlaceInforExport> wpInfos = workplaceAdapter.getWorkplaceInforByWkpIds(cid, command.getWorkplaceIds(), GeneralDate.today());
 
         // 取得した職場情報一覧から「アラーム抽出結果（職場別）」にデータをマッピングする
+        List<AlarmListExtractResultWorkplaceDto> dtos = mapToDto(alExtractInfos, wpInfos);
+        dataSetter.setData("extractResult", dtos);
     }
 
     /**
@@ -130,5 +135,60 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
             return true;
         }
         return false;
+    }
+
+    private List<AlarmListExtractResultWorkplaceDto> mapToDto(List<AlarmListExtractInfoWorkplace> alExtractInfos,
+                                                              List<WorkPlaceInforExport> wpInfos) {
+        Map<String, WorkPlaceInforExport> wpInfosMap = wpInfos.stream().collect(Collectors.toMap(WorkPlaceInforExport::getWorkplaceId, x -> x));
+        List<AlarmListExtractResultWorkplaceDto> extractResultDtos = new ArrayList<>();
+        for (AlarmListExtractInfoWorkplace alExtractInfo : alExtractInfos) {
+
+            String categoryName = TextResource.localize(alExtractInfo.getWorkplaceCategory().nameId);
+            List<ExtractResult> extractResults = alExtractInfo.getExtractResults();
+            for (ExtractResult extractResult : extractResults) {
+                AlarmValueDate date = extractResult.getAlarmValueDate();
+                String dateResult = convertAlarmValueDate(date.getStartDate());
+                if (date.getEndDate().isPresent()) {
+                    dateResult += "～" + convertAlarmValueDate(date.getEndDate().get());  //TODO Q&A 37860
+                }
+                WorkPlaceInforExport wpInfo = null;
+                if (extractResult.getWorkplaceId() != null) {
+                    wpInfo = wpInfosMap.getOrDefault(extractResult.getWorkplaceId(), null);
+                }
+
+
+                AlarmListExtractResultWorkplaceDto result = new AlarmListExtractResultWorkplaceDto(
+                        extractResult.getAlarmValueMessage().v(),
+                        dateResult,
+                        extractResult.getAlarmItemName().v(),
+                        categoryName,
+                        extractResult.getCheckTargetValue().orElse(null),
+                        alExtractInfo.getWorkplaceCategory().value,
+                        GeneralDate.today(), //TODO Q&A 37860
+                        extractResult.getComment().isPresent() ? Optional.empty() : Optional.of(extractResult.getComment().get().v()),
+                        extractResult.getWorkplaceId() == null ? Optional.empty() : Optional.of(extractResult.getWorkplaceId()),
+                        wpInfo == null ? null : wpInfo.getWorkplaceCode(),
+                        wpInfo == null ? Optional.empty() : Optional.of(wpInfo.getWorkplaceName())
+                );
+                extractResultDtos.add(result);
+            }
+        }
+
+        Comparator<AlarmListExtractResultWorkplaceDto> compare = Comparator
+                .comparing(AlarmListExtractResultWorkplaceDto::getWorkplaceCode)
+                .thenComparing(AlarmListExtractResultWorkplaceDto::getCategory)
+                .thenComparing(AlarmListExtractResultWorkplaceDto::getStartTime);
+        return extractResultDtos.stream().sorted(compare).collect(Collectors.toList());
+    }
+
+    private String convertAlarmValueDate(int date) {
+        String dateStr = String.valueOf(date);
+        switch (dateStr.length()) {
+            case 6:
+                return dateStr.substring(0, 3) + "/" + dateStr.substring(4, 5);
+            case 8:
+                return dateStr.substring(0, 3) + "/" + dateStr.substring(4, 5) + "/" + dateStr.substring(6, 7);
+        }
+        return null;
     }
 }

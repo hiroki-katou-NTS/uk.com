@@ -59,6 +59,13 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
         return convert(aggregateProcessPub.processMonthly(cid, ym, fixedExtractCondIds, extractCondIds, workplaceIds));
     }
 
+    @Override
+    public List<AlarmListExtractInfoWorkplace> processAppApproval(DatePeriod period,
+                                                                  List<String> fixedExtractCondIds,
+                                                                  List<String> workplaceIds) {
+        return convert(aggregateProcessPub.processAppApproval(period, fixedExtractCondIds, workplaceIds));
+    }
+
     private List<AlarmListExtractInfoWorkplace> convert(List<AlarmListExtractionInfoWorkplaceExport> data) {
         return data.stream().map(x ->
                 new AlarmListExtractInfoWorkplace(

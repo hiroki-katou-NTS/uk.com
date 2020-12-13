@@ -15,20 +15,6 @@ import java.util.Optional;
 @Getter
 public class AlarmListExtractProcessStatusWorkplace extends AggregateRoot {
 
-    public AlarmListExtractProcessStatusWorkplace(String id, String companyID, GeneralDate startDate,
-                                                  int startTime, String employeeID, GeneralDate endDate, Integer endTime,
-                                                  ExtractState status) {
-        super();
-        this.id = id;
-        this.companyID = companyID;
-        this.startDate = startDate;
-        this.startTime = startTime;
-        this.employeeID = Optional.ofNullable(employeeID);
-        this.endDate = Optional.ofNullable(endDate);
-        this.endTime = Optional.ofNullable(endTime);
-        this.status = status;
-    }
-
     /**
      * ID
      */
@@ -62,6 +48,19 @@ public class AlarmListExtractProcessStatusWorkplace extends AggregateRoot {
      */
     private ExtractState status;
 
+    public AlarmListExtractProcessStatusWorkplace(String id, String companyID, GeneralDate startDate,
+                                                  int startTime, String employeeID, GeneralDate endDate, Integer endTime,
+                                                  ExtractState status) {
+        super();
+        this.id = id;
+        this.companyID = companyID;
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.employeeID = Optional.ofNullable(employeeID);
+        this.endDate = Optional.ofNullable(endDate);
+        this.endTime = Optional.ofNullable(endTime);
+        this.status = status;
+    }
 
     public void setEndDateAndEndTime(GeneralDate endDate, Integer endTime) {
         this.endDate = Optional.ofNullable(endDate);
