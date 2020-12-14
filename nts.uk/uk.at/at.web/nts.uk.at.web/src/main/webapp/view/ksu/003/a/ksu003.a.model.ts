@@ -473,6 +473,17 @@ module nts.uk.at.view.ksu003.a.model {
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 	}
+	
+	export class FixedWork {
+		empId: string; 
+		fixedWorkInforDto: FixedWorkInforDto; 
+		constructor(empId: string,
+			fixedWorkInforDto: FixedWorkInforDto) {
+			this.empId = empId;
+			this.fixedWorkInforDto = fixedWorkInforDto;
+
+		}
+	}
 
 	// 対象社員の勤務固定情報dto - 勤務固定情報dto
 	export class FixedWorkInforDto {
