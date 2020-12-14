@@ -2393,7 +2393,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
-			let c18 = true;
+			let c18 = c7 || c18_1;
 			visibleModel.c18(c18);
 
 
@@ -2409,7 +2409,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 
 			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-			let c29 = c7 && true;
+			let c29 = c7 && res.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 			visibleModel.c29(c29);
 
 			// 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合

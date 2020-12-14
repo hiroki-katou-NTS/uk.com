@@ -2214,7 +2214,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
-			let c18 = true;
+			let c18 = c7 || c18_1;
 			visibleModel.c18(c18);
 
 
