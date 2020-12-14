@@ -363,8 +363,8 @@ module nts.uk.ui.at.ksu002.a {
 									code: hwt ? wtimec : null,
 									name: hwt ? wtime.nameAb : null,
 									value: {
-										begin: !hwt || noD ? null : wtime.tzStart1,
-										finish: !hwt || noD ? null : wtime.tzEnd1
+										begin: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzStart1,
+										finish: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzEnd1
 									}
 								}
 							});

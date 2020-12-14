@@ -708,6 +708,7 @@ module nts.uk.ui.at.ksu002.a {
                         read: () => {
                             return context.$editable()
                                 && !(data.confirmed() || data.achievement())
+                                && data.classification() !== WORK_STYLE.HOLIDAY
                                 && !!data.wtime.code()
                                 && data.value.required() === WORKTYPE_SETTING.REQUIRED;
                         },
