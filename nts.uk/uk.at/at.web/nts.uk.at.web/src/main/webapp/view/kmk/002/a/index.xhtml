@@ -204,7 +204,7 @@
                                                       grouplength: 3,
                                                       decimallength: 2
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                      enable: enableUpperDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_26 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -217,7 +217,7 @@
                                                       option: {
                                                       grouplength: 3
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                      enable: enableUpperDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_28 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -229,7 +229,7 @@
                                                       required: isUpperRequiredDay,
                                                       inputFormat: 'time',
                                                       mode: 'time',
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                      enable: enableUpperDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -247,7 +247,7 @@
                                                       grouplength: 3,
                                                       decimallength: 2
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: enableUpperMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_32 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -260,7 +260,7 @@
                                                       option: {
                                                       grouplength: 3
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: enableUpperMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_34 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -272,7 +272,7 @@
                                                       required: isUpperRequiredMonth,
                                                       inputFormat: 'time',
                                                       mode: 'time',
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: enableUpperMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -301,7 +301,7 @@
                                                          grouplength: 3,
                                                          decimallength: 2
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                         enable: enableLowerDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_27 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -313,7 +313,7 @@
                                                          required: isLowerRequiredDay,
                                                          inputFormat: 'time',
                                                          mode: 'time',
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                         enable: enableLowerDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_29 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -326,7 +326,7 @@
                                                          option: {
                                                          grouplength: 3
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                         enable: enableLowerDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -344,7 +344,7 @@
                                                          grouplength: 3,
                                                          decimallength: 2
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: enableLowerMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_33 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -356,7 +356,7 @@
                                                          required: isLowerRequiredMonth,
                                                          inputFormat: 'time',
                                                          mode: 'time',
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: enableLowerMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_35 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -369,7 +369,7 @@
                                                          option: {
                                                          grouplength: 3
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: enableLowerMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
