@@ -29,13 +29,13 @@ import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 public class Kmk004HWebService {
 
 	@Inject
-	private DisplayInitialFlexScreenByWorkPlace displayInitialFlexScreenByWorkPlace;
+	private DisplayInitialFlexScreenByWorkPlace initScreen;
 
 	@Inject
-	private SelectWorkPlaceFlex selectWorkPlaceFlex;
+	private SelectWorkPlaceFlex selectWorkPlace;
 
 	@Inject
-	private SelectFlexYearByWorkPlace selectFlexYearByWorkPlace;
+	private SelectFlexYearByWorkPlace selectFlexYear;
 
 	@Inject
 	private RegisterFlexMonthlyWorkTimeSetWkpCommandHandler registerHandler;
@@ -47,27 +47,27 @@ public class Kmk004HWebService {
 	private DeleteFlexMonthlyWorkTimeSetWkpCommandHandler deleteHandler;
 
 	@Inject
-	private AfterCopyFlexMonthlyWorkTimeSetWkp afterCopyFlexMonthlyWorkTimeSetWkp;
+	private AfterCopyFlexMonthlyWorkTimeSetWkp afterCopy;
 
 	@Inject
-	private AfterChangeFlexWorkPlaceSetting afterChangeFlexWorkPlaceSetting;
+	private AfterChangeFlexWorkPlaceSetting afterChangeSetting;
 
 	@POST
 	@Path("init-screen")
 	public DisplayInitialFlexScreenByWorkPlaceDto initScreen() {
-		return this.displayInitialFlexScreenByWorkPlace.displayInitialFlexScreenByWorkPlace();
+		return this.initScreen.displayInitialFlexScreenByWorkPlace();
 	}
 
 	@POST
 	@Path("change-year/{wkpId}/{year}")
 	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("wkpId") String wkpId, @PathParam("year") int year) {
-		return this.selectFlexYearByWorkPlace.selectFlexYearByWorkPlace(wkpId, year);
+		return this.selectFlexYear.selectFlexYearByWorkPlace(wkpId, year);
 	}
 
 	@POST
 	@Path("change-wkpid/{wkpId}/{year}")
 	public SelectWorkPlaceFlexDto changeWkpId(@PathParam("wkpId") String wkpId) {
-		return this.selectWorkPlaceFlex.selectWorkPlaceFlex(wkpId);
+		return this.selectWorkPlace.selectWorkPlaceFlex(wkpId);
 	}
 
 	@POST
@@ -91,13 +91,13 @@ public class Kmk004HWebService {
 	@POST
 	@Path("after-copy")
 	public List<WorkplaceIdDto> afterCopy() {
-		return this.afterCopyFlexMonthlyWorkTimeSetWkp.afterCopyFlexMonthlyWorkTimeSetWkp();
+		return this.afterCopy.afterCopyFlexMonthlyWorkTimeSetWkp();
 	}
 
 	@POST
 	@Path("change-setting")
 	public AfterChangeFlexWorkPlaceSettingDto changeSetting(String wkpId) {
-		return this.afterChangeFlexWorkPlaceSetting.afterChangeFlexWorkPlaceSetting(wkpId);
+		return this.afterChangeSetting.afterChangeFlexWorkPlaceSetting(wkpId);
 	}
 
 }

@@ -29,13 +29,13 @@ import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
 public class Kmk004JWebService {
 
 	@Inject
-	private DisplayInitialFlexScreenByEmployee displayInitialFlexScreenByEmployee;
+	private DisplayInitialFlexScreenByEmployee initScreen;
 
 	@Inject
 	private SelectEmployeeFlex selectShaFlex;
 
 	@Inject
-	private SelectFlexYearByEmployee selectFlexYearByEmployee;
+	private SelectFlexYearByEmployee selectYear;
 
 	@Inject
 	private RegisterFlexMonthlyWorkTimeSetShaCommandHandler registerHandler;
@@ -47,21 +47,21 @@ public class Kmk004JWebService {
 	private DeleteFlexMonthlyWorkTimeSetShaCommandHandler deleteHandler;
 
 	@Inject
-	private AfterCopyFlexMonthlyWorkTimeSetSha afterCopyFlexMonthlyWorkTimeSetSha;
+	private AfterCopyFlexMonthlyWorkTimeSetSha afterCopy;
 
 	@Inject
-	private AfterChangeFlexEmployeeSetting afterChangeFlexEmployeeSetting;
+	private AfterChangeFlexEmployeeSetting afterChangeSetting;
 
 	@POST
 	@Path("init-screen")
 	public GetFlexPredWorkTimeDto initScreen() {
-		return this.displayInitialFlexScreenByEmployee.displayInitialFlexScreenByEmployee();
+		return this.initScreen.displayInitialFlexScreenByEmployee();
 	}
 
 	@POST
 	@Path("change-year/{sId}/{year}")
 	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("sId") String sId, @PathParam("year") int year) {
-		return this.selectFlexYearByEmployee.selectFlexYearByEmployee(sId, year);
+		return this.selectYear.selectFlexYearByEmployee(sId, year);
 	}
 
 	@POST
@@ -91,13 +91,13 @@ public class Kmk004JWebService {
 	@POST
 	@Path("after-copy")
 	public List<EmployeeIdDto> afterCopy() {
-		return this.afterCopyFlexMonthlyWorkTimeSetSha.afterCopyFlexMonthlyWorkTimeSetSha();
+		return this.afterCopy.afterCopyFlexMonthlyWorkTimeSetSha();
 	}
 
 	@POST
 	@Path("change-setting/{sId}")
 	public AfterChangeFlexEmployeeSettingDto changeSetting(@PathParam("sId") String sId) {
-		return this.afterChangeFlexEmployeeSetting.afterChangeFlexEmployeeSetting(sId);
+		return this.afterChangeSetting.afterChangeFlexEmployeeSetting(sId);
 	}
 
 }
