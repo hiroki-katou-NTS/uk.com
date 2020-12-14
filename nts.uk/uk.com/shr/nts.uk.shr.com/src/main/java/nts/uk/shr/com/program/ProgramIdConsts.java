@@ -1188,6 +1188,7 @@ public class ProgramIdConsts {
 	//スマホ②
 	public static final String KAFS05A = "KAFS05A";
 	public static final String KAFS07A = "KAFS07A";
+	public static final String KAFS20A = "KAFS20A";
 	public static final String KAFS09A = "KAFS09A";
 	public static final String KAFS05B = "KAFS05B";
 	public static final String KAFS02A = "KAFS02A";

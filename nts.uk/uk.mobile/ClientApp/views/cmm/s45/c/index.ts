@@ -13,6 +13,7 @@ import {
     CmmS45ComponentsApp5Component,
     CmmS45ComponentsApp9Component,
     CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsApp15Component,
     CmmS45ShrComponentsAppsampleComponent
 } from 'views/cmm/s45/shr/components';
 
@@ -34,6 +35,7 @@ import {
         'app5': CmmS45ComponentsApp5Component,
         'app9': CmmS45ComponentsApp9Component,
         'app7': CmmS45ShrComponentsApp7Component,
+        'app15': CmmS45ShrComponentsApp15Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -258,7 +260,7 @@ export class CmmS45CComponent extends Vue {
             self.$mask('hide');
             self.isLoadingComplete = true;
         });
-        
+
     }
 
     // kích hoạt nút xóa đơn
@@ -269,7 +271,7 @@ export class CmmS45CComponent extends Vue {
                 if (v == 'yes') {
                     self.$mask('show');
                     self.$http.post('at', API.delete, {
-                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput    
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput
                     }).then((resDelete: any) => {
                         self.$mask('hide');
                         self.$modal.info('Msg_16').then(() => {
@@ -334,9 +336,6 @@ export class CmmS45CComponent extends Vue {
                 //     self.$goto('kafs09a', self.appTransferData.appDetail);
                 // }
                 break;
-            case 9:
-                self.$goto('kafs04a',self.appTransferData.appDetail);
-                break;
             case 7:
                 if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 0) {
                     self.$goto('kafs02a', self.appTransferData.appDetail);
@@ -345,6 +344,18 @@ export class CmmS45CComponent extends Vue {
                     self.$goto('kafs02c', self.appTransferData.appDetail);
                 }
                 break;
+            case 9:
+                self.$goto('kafs04a', self.appTransferData.appDetail);
+                break;
+
+            case 15:
+                if (self.$router.currentRoute.name == 'kafs20a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs20a', self.appTransferData);
+                }
+                break;
+
             default:
                 break;
         }
