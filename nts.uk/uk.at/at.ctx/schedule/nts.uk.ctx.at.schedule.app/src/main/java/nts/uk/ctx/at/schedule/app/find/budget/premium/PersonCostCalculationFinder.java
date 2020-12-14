@@ -25,8 +25,8 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAd
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
  * @author Doan Duy Hung
+ * update by chinh.hm
  *
  */
 
@@ -61,12 +61,12 @@ public class PersonCostCalculationFinder {
 	}
 	
 	/**
-	 * get List Premium Item  by company ID
+	 * get List Premium Item  by company ID and by UseAttribute.
 	 * @return List Premium Item  by company ID
 	 */
 	public List<PremiumItemDto> findPremiumItemByCompanyID(){
 		String companyID = AppContexts.user().companyId();
-		return this.premiumItemRepository.findByCompanyID(companyID)
+		return this.premiumItemRepository.findAllIsUse(companyID)
 				.stream()
 				.map(x -> new PremiumItemDto(
 						companyID, 

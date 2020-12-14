@@ -76,7 +76,7 @@ public class PersonCostCalculationWebService extends WebService{
 	public void delete(PersonCostCalculationCommand command){
 		this.deletePersonCostCalculationSettingCommandHandler.handle(command);
 	}
-
+    // case 1:
 	@POST
 	@Path("findPremiumItemByCompanyID")
 	public List<PremiumItemDto> findPremiumItemByCompanyID(){
