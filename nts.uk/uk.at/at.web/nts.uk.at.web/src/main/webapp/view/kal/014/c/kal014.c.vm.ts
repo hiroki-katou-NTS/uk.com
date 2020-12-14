@@ -39,6 +39,12 @@ module nts.uk.at.kal014.c {
                 {value: EndSpecify.DAYS, name: vm.$i18n("KAL014_49")},
                 {value: EndSpecify.MONTH, name: ""}
             ]);
+
+
+        }
+
+        created(params: any) {
+            const vm = this;
             vm.strSelected.subscribe((value: number)=>{
                 vm.$errors("clear", ".nts-input").then(() => {
                     vm.isDayStart(value == StartSpecify.DAYS);
@@ -64,10 +70,6 @@ module nts.uk.at.kal014.c {
                 });
             })
 
-        }
-
-        created(params: any) {
-            const vm = this;
             vm.initModalData(params);
         }
 

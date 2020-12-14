@@ -23,7 +23,6 @@ module nts.uk.at.kal014.a {
         backButon: string = "/view/kal/012/a/index.xhtml";
         gridItems: KnockoutObservableArray<GridItem> = ko.observableArray([]);
         currentCode: KnockoutObservable<string> = ko.observable(null);
-        alarmPattern: AlarmPattern = new AlarmPattern('', '');
         selectedExecutePermission: KnockoutObservable<any>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -96,7 +95,6 @@ module nts.uk.at.kal014.a {
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
             vm.currentCode.subscribe((code:any)=>{
                 if (_.isNil(code)){
                     return;
@@ -440,7 +438,7 @@ module nts.uk.at.kal014.a {
             vm.$window.modal(modalPath, ko.toJS(item))
                 .then((result: any) => {
                     console.log(result);
-                    if (!result){
+                    if (_.isEmpty(result)){
                         return;
                     }
                     let element = _.find(vm.alarmPatterSet().checkConList(), ((item)=>{
