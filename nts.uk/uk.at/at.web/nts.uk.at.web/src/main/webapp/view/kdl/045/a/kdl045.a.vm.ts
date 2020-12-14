@@ -216,8 +216,10 @@ module nts.uk.at.view.kdl045.a {
 
 				if(self.employee().employeeInfo.workScheduleDto != null){
 					self.workType = ko.observable(self.employee().employeeInfo.workScheduleDto.workTypeCode);
-	                self.workTypeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTypeName);
 	                self.workTime = ko.observable(self.employee().employeeInfo.workScheduleDto.workTimeCode);
+				}
+				if(self.employee().employeeInfo.fixedWorkInforDto != null){
+	                self.workTypeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTypeName);
 	                self.workTimeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTimeName);
 				}
 

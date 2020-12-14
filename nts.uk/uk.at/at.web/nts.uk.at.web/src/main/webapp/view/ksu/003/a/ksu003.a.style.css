@@ -30,7 +30,7 @@
 }
 
 .event-button{
-	width: 325px;
+	width: 320px;
 }
 
 #functon-area-row2-center {
@@ -135,18 +135,18 @@
 	position: absolute !important;
 	content: " " !important;
 	border-top: solid transparent 15px !important;
-	border-bottom: solid transparent 6px !important;
+	border-bottom: solid transparent 25px !important;
 	border-right-style: solid !important;
-	border-right-width: 28px !important;
+	border-right-width: 25px !important;
 	border-right-color: #edfac2 !important;
 	top: 20px !important;
-	left: -28px !important;
+	left: -25px !important;
 }
 
 .tooltip-styling {
 	background-color: #edfac2 !important;
 	box-shadow: 2px 2px 2px #95A5A6;
-	top: 47px !important; left : 382.984px !important; 
+	top: 47px !important; 
 	border-radius : 20px !important;
 	border: solid 1px #cccccc !important;
 	display: inline-block !important;
@@ -191,7 +191,7 @@
 	white-space: nowrap;
 } 
 #note-sort {
-	margin-left: 1048px;
+	margin-left: 1171px;
 	margin-top: -2px !important;
 }
 
@@ -206,7 +206,6 @@ html {
 .toDown {
 	width: 15px;
 	height: 27px;
-	margin-left: -7px;
 	float: left;
 }
 

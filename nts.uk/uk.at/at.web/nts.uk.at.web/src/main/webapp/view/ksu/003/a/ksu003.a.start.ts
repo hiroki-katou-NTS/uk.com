@@ -1,10 +1,11 @@
 module nts.uk.at.view.ksu003.a {
 	__viewContext.ready(function() {
+		nts.uk.ui.block.grayout();
 		let screenModel = new viewmodel.ScreenModel();
 		screenModel.startPage().done(function() {
 			__viewContext.bind(screenModel);
 			$("#prev-all").focus();
-			nts.uk.ui.block.grayout();
+			
 			$(window).resize(function() {
 				screenModel.setPositionButonDownAndHeightGrid();
 			});

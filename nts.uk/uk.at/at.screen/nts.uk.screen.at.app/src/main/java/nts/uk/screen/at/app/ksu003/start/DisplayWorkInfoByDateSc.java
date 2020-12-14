@@ -300,7 +300,7 @@ public class DisplayWorkInfoByDateSc {
 				workScheduleDto = null;
 			}
 			
-			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0));
+			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(inforDto.getFixedWorkInforDto().size() - 1));
 			dateDtos.add(infoByDateDto);
 		};
 		

@@ -112,7 +112,7 @@ public class GetFixedWorkInformation {
 
 		// 5 List<勤務NOごとの変更可能な勤務時間帯>isPresentList
 		if (!lstNo.isEmpty()) {
-
+			TimeZoneDto startTimeRange1 = null, endTimeRange1 = null, startTimeRange2 = null, endTimeRange2 = null;
 			for (ChangeableWorkingTimeZonePerNo x : lstNo) {
 
 				// 5.1 休憩時間帯を取得する(Require):Optional<休憩時間>
@@ -182,7 +182,7 @@ public class GetFixedWorkInformation {
 //					break;
 //				}
 				// 5.7
-				TimeZoneDto startTimeRange1 = null, endTimeRange1 = null, startTimeRange2 = null, endTimeRange2 = null;
+				
 				if (x.getWorkNo().v() == 1) {
 					startTimeRange1 = new TimeZoneDto(
 							new TimeOfDayDto(x.getForStart().getStart().getDayDivision().value,
