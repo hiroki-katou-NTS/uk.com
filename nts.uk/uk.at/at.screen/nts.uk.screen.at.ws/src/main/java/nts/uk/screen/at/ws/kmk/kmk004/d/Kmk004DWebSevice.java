@@ -12,6 +12,9 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.DeleteMonthlyWorkTimeSetEmpCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.DeleteMonthlyWorkTimeSetEmpCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.MonthlyWorkTimeSetEmpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.SaveMonthlyWorkTimeSetEmpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.SaveMonthlyWorkTimeSetEmpCommandHandler;
@@ -49,6 +52,9 @@ public class Kmk004DWebSevice extends WebService {
 	@Inject
 	private SaveMonthlyWorkTimeSetEmpCommandHandler saveWorkTime;
 	
+	@Inject
+	private DeleteMonthlyWorkTimeSetEmpCommandHandler deleteWorkTime;
+	
 	@POST
 	@Path("viewd/emp/getEmploymentId")
 	public List<EmploymentCodeDto> getEmploymentCode() {
@@ -75,7 +81,7 @@ public class Kmk004DWebSevice extends WebService {
 	
 	@POST
 	@Path("viewd/emp/monthlyWorkTime/add")
-	public void getWorkTimes(WorkTimeInputViewD input) {
+	public void addWorkTimes(WorkTimeInputViewD input) {
 		List<MonthlyWorkTimeSetEmpCommand> result = input.laborTime.stream().map(m -> {
 			return new MonthlyWorkTimeSetEmpCommand(input.employmentCode, 0, input.year,
 					new MonthlyLaborTimeCommand(m, null, null));
@@ -85,4 +91,11 @@ public class Kmk004DWebSevice extends WebService {
 		this.saveWorkTime.handle(command);;
 	}
 	
+	@POST
+	@Path("viewd/emp/monthlyWorkTime/delete")
+	public void deleteWorkTimes(InputDeleteWorkTimeViewD input) {
+		DeleteMonthlyWorkTimeSetEmpCommand command = new DeleteMonthlyWorkTimeSetEmpCommand(input.employmentCode, 0,
+				new YearMonthPeriodCommand(input.startMonth, input.endMonth));
+		this.deleteWorkTime.handle(command);
+	}
 }
