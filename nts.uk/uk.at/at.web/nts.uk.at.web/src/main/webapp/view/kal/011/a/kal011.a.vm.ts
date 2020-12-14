@@ -235,7 +235,7 @@ module nts.uk.at.kal011.a {
                         workplaceName: "workplaceName2"
                     }
                 ]
-            }).then(() => vm.$blockui("clear"))
+            }).always(() => vm.$blockui("clear"))
         }
     }
 
