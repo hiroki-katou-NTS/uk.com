@@ -7,13 +7,13 @@ module nts.uk.at.view.kwr005.b {
   const KWR005_C_OUTPUT = 'KWR005_C_RETURN';
 
   const PATH = {
-    getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
-    getSettingLitsWorkStatusDetails: 'at/function/kwr/005/b/detailworkstatus',
+    getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
+    getSettingLitsWorkStatusDetails: 'at/function/kwr/005/b/detailworkledger',
     checkDailyAuthor: 'at/function/kwr/005/a/checkdailyauthor',
     deleteSettingItemDetails: 'at/function/kwr/005/b/delete',
     createSettingItemDetails: 'at/function/kwr/005/b/create',
     updateSettingItemDetails: 'at/function/kwr/005/b/update',
-    getFormInfo: 'at/screen/kwr/003/b/getinfor'
+    getFormInfo: 'at/screen/kwr/003/b/getinfor',
   };
 
   @bean()
@@ -54,10 +54,8 @@ module nts.uk.at.view.kwr005.b {
 
       const vm = this;
 
-      //get output info
-      //vm.getWorkStatusTableOutput();
-
-      vm.getSettingList();
+      vm.getWorkStatusTableOutput();
+      vm.getSettingList(params);
 
       vm.currentCodeList.subscribe((newValue: any) => {
         nts.uk.ui.errors.clearAll();
@@ -78,10 +76,6 @@ module nts.uk.at.view.kwr005.b {
         { headerText: vm.$i18n('KWR005_107'), key: 'attendanceItemId', width: 80, formatter: _.escape },
         { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 160, formatter: _.escape },
       ]);
-
-      for (let i = 0; i < 50; i++) {
-        vm.listItemsSwap.push(new AttendanceDto(i.toString(), '基本給 ' + i, i.toString()));
-      }
 
     }
 
@@ -179,20 +173,20 @@ module nts.uk.at.view.kwr005.b {
       vm.$dialog.confirm({ messageId: 'Msg_18' }).then((answer: string) => {
         if (answer === 'yes') {
           vm.$ajax(PATH.deleteSettingItemDetails, params)
-          .done(() => {
-            vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-              vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
+            .done(() => {
+              vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
+                vm.$blockui('hide');
+              })
+            })
+            .always(() => {
               vm.$blockui('hide');
             })
-          })
-          .always(() => {
-            vm.$blockui('hide');
-          })
-          .fail((error) => {
-            vm.$dialog.error({ messageId: error.messageId }).then(() => {              
-              vm.$blockui('hide');
-            })
-          });
+            .fail((error) => {
+              vm.$dialog.error({ messageId: error.messageId }).then(() => {
+                vm.$blockui('hide');
+              })
+            });
         }
       });
     }
@@ -214,23 +208,20 @@ module nts.uk.at.view.kwr005.b {
         settingId: selectedObj.id //複製元の設定ID 
       }
 
-      vm.$window.storage(KWR005_C_INPUT, params).then(() => {
-        vm.$window.modal('/view/kwr/005/c/index.xhtml').then(() => {
-          vm.$window.storage(KWR005_C_OUTPUT).then((data) => {
-            if (_.isNil(data)) {
-              return;
-            }
+      vm.$window.modal('/view/kwr/005/c/index.xhtml', ko.toJS(params)).then((data: any) => {
+        console.log(data);
+        if (_.isNil(data)) {
+          return;
+        }
 
-            let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
-            if (!_.isNil(duplicateItem)) {
-              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
-              return;
-            }
+        let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
+        if (!_.isNil(duplicateItem)) {
+          vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
+          return;
+        }
 
-            vm.settingListItems.push(data);
-            vm.currentCodeList(data.code);
-          });
-        });
+        vm.settingListItems.push(data);
+        vm.currentCodeList(data.code);
       });
 
       $('#KWR005_B53').focus();
@@ -241,14 +232,14 @@ module nts.uk.at.view.kwr005.b {
      */
     closeDialog() {
       const vm = this;
-      vm.$window.storage(KWR005_B_OUTPUT, vm.attendance());
-      vm.$window.close();
+      //vm.$window.storage(KWR005_B_OUTPUT, vm.attendance());
+      vm.$window.close(ko.toJS(vm.attendance()));
     }
 
     /**
      * Get setting list items details
      */
-    getSettingListItemsDetails(settingId: string) : Array<AttendanceDto> {
+    getSettingListItemsDetails(settingId: string): Array<AttendanceDto> {
       const vm = this;
 
       vm.currentCodeListSwap([]);
@@ -300,7 +291,7 @@ module nts.uk.at.view.kwr005.b {
           let newMode: ModelData = new ModelData();
           newMode.code(selectedObj.code);
           newMode.name(selectedObj.name);
-          newMode.settingId(selectedObj.id);          
+          newMode.settingId(selectedObj.id);
           newMode.selectedItems(vm.getSettingListItemsDetails(selectedObj.id));
           vm.mode(newMode);
         }
@@ -314,9 +305,9 @@ module nts.uk.at.view.kwr005.b {
 
       vm.$blockui('show');
 
-      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {      
-        if (result && result.listDaily) {
-          _.forEach(result.listDaily, (item) => {
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {
+        if (result && result.listMonthly) {
+          _.forEach(result.listMonthly, (item) => {
             vm.listItemsSwap.push(new AttendanceDto(
               item.attendanceItemId,
               item.attendanceItemName,
@@ -329,13 +320,12 @@ module nts.uk.at.view.kwr005.b {
       }).always(() => vm.$blockui('hide'));
     }
 
-    getSettingList() {
+    getSettingList(params: any) {
       const vm = this;
-      vm.$window.storage(KWR005_B_INPUT).then((data: any) => {
-        if (!data) return;
-        vm.settingCategory(data.standOrFree);
-        vm.loadSettingList(data);
-      });
+
+      if (!params) return;
+      vm.settingCategory(params.standOrFree);
+      vm.loadSettingList(params);
     }
 
     loadSettingList(params: any) {
