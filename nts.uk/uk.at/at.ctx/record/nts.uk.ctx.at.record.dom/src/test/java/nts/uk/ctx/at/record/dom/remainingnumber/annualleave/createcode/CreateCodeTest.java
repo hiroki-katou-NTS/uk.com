@@ -27,12 +27,15 @@ public class CreateCodeTest {
 		packageRootPathList.add("nts.uk\\uk.at\\at.ctx\\shared\\nts.uk.ctx.at.shared.dom\\src\\main\\java\\");
 		packageRootPathList.add("nts.uk\\uk.at\\at.ctx\\record\\nts.uk.ctx.at.record.dom\\src\\main\\java\\");
 
-		/** ルートクラスのパッケージ名 */
-		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
-		/** ルートクラスのクラス名 */
-		String className = "SpecialHolidayRemainData";
-		/** ルートクラスのコメント */
-		String classComment = "特別休暇月別残数データ";
+
+
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
+//		/** ルートクラスのクラス名 */
+//		String className = "SpecialHolidayRemainData";
+//		/** ルートクラスのコメント */
+//		String classComment = "特別休暇月別残数データ";
 
 //		/** ルートクラスのパッケージ名 */
 //		String packageName = "nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata";
@@ -41,13 +44,41 @@ public class CreateCodeTest {
 //		/** ルートクラスのコメント */
 //		String classComment = "特休の集計結果";
 
-
 //		/** ルートクラスのパッケージ名 */
 //		String packageName = "nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata";
 //		/** ルートクラスのクラス名 */
 //		String className = "SpecialLeaveGrantRemainingData";
 //		/** ルートクラスのコメント */
 //		String classComment = "休暇付与残数データ　";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave";
+//		/** ルートクラスのクラス名 */
+//		String className = "ReserveLeave";
+//		/** ルートクラスのコメント */
+//		String classComment = "積立年休";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave";
+//		/** ルートクラスのクラス名 */
+//		String className = "RsvLeaRemNumEachMonth";
+//		/** ルートクラスのコメント */
+//		String classComment = "積立年休月別残数データ";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave";
+//		/** ルートクラスのクラス名 */
+//		String className = "AnnualLeave";
+//		/** ルートクラスのコメント */
+//		String classComment = "年休";
+
+		/** ルートクラスのパッケージ名 */
+		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave";
+		/** ルートクラスのクラス名 */
+		String className = "AnnLeaRemNumEachMonth";
+		/** ルートクラスのコメント */
+		String classComment = "年休月別残数データ";
+
 
 		// クラス情報管理
 		ClassInfoManager classInfoManager = new ClassInfoManager(srcRootPath, packageRootPathList);
