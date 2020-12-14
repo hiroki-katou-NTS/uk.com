@@ -5,6 +5,8 @@ import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
 import { KafS05Step2Component } from '../step2';
 import { KafS05Step3Component } from '../step3';
+import { KDL002Component } from '../../../kdl/002';
+import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 
 @component({
@@ -19,7 +21,9 @@ import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s
         'step-wizard': StepwizardComponent,
         'kafS05Step1Component': KafS05Step1Component,
         'kafS05Step2Component': KafS05Step2Component,
-        'kafS05Step3Component': KafS05Step3Component
+        'kafS05Step3Component': KafS05Step3Component,
+        'worktype': KDL002Component,
+        'worktime': Kdl001Component,
     }
 
 })
@@ -71,9 +75,9 @@ export class KafS05Component extends KafS00ShrComponent {
                 command.mode = vm.modeNew;
                 command.companyId = vm.user.companyId;
                 command.employeeIdOptional = vm.user.employeeId;
-                if (url == '0') {
+                if (url == String(OvertimeAppAtr.EARLY_OVERTIME)) {
                     command.overtimeAppAtr = OvertimeAppAtr.EARLY_OVERTIME;
-                } else if (url == '1') {
+                } else if (url == String(OvertimeAppAtr.NORMAL_OVERTIME)) {
                     command.overtimeAppAtr = OvertimeAppAtr.NORMAL_OVERTIME;
                 } else {
                     command.overtimeAppAtr = OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
@@ -90,7 +94,11 @@ export class KafS05Component extends KafS00ShrComponent {
             if (result) {
                 if (vm.modeNew) {
                     vm.model = {} as Model;
-                    vm.model.displayInfoOverTime = result.displayInfoOverTime;
+                    vm.model.displayInfoOverTime = result.data.displayInfoOverTime;
+
+                    let step1: any = vm.$refs.step1;
+                    step1.loadData(vm.model.displayInfoOverTime);
+               
                 } else {
 
                 }   
@@ -249,6 +257,36 @@ export class KafS05Component extends KafS00ShrComponent {
             });
         });
     }
+
+    public openKDL002() {
+        const self = this;
+        let step1 = self.$refs.step1 as KafS05Step1Component;
+        self.$modal('worktype', {
+
+            seledtedWkTypeCDs: _.map(_.uniqBy(self.model.displayInfoOverTime.infoBaseDateOutput.worktypes, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
+            selectedWorkTypeCD: step1.getWorkType(),
+            seledtedWkTimeCDs: _.map(self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+            selectedWorkTimeCD: step1.getWorkTime(),
+            isSelectWorkTime: 1,
+        })
+        .then((f: any) => {
+            step1.setWorkCode(
+                f.selectedWorkType.workTypeCode,
+                f.selectedWorkType.name,
+                f.selectedWorkTime.code,
+                f.selectedWorkTime.name,
+                f.selectedWorkTime.workTime1,
+                self.model.displayInfoOverTime
+            );
+        })
+        .catch((err: any) => {
+            console.log(err);
+        });
+    }
+
+
+
+
 }
 const API = {
     start: 'at/request/application/overtime/mobile/start',
@@ -256,3 +294,4 @@ const API = {
     registerSample: 'at/request/application/changeDataSample',
     sendMailAfterRegisterSample: ''
 };
+
