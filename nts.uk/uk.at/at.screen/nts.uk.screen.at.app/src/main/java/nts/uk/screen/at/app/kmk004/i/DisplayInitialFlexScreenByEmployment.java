@@ -47,7 +47,7 @@ public class DisplayInitialFlexScreenByEmployment {
 			// 雇用コード ← 雇用リストの先頭の雇用コード
 			// 勤務区分 ← 2：フレックス勤務
 			result.setSelectWorkPlaceFlex(this.selectEmploymentFlex
-					.selectEmploymentFlex(result.getEmploymentCds().get(0).employmentCode, LaborWorkTypeAttr.FLEX));
+					.selectEmploymentFlex(result.getEmploymentCds().get(0).employmentCode));
 		}
 
 		return result;

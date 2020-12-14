@@ -21,7 +21,7 @@ public class AfterCopyFlexMonthlyWorkTimeSetEmp {
 	@Inject
 	private EmploymentList employmentList;
 
-	public List<EmploymentCodeDto> afterCopyFlexMonthlyWorkTimeSetWkp() {
+	public List<EmploymentCodeDto> afterCopyFlexMonthlyWorkTimeSetEmp() {
 		// 雇用リストを表示する
 		return this.employmentList.get(LaborWorkTypeAttr.FLEX);
 	}
