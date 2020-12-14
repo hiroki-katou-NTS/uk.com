@@ -2934,7 +2934,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		pageSetup.setHeader(1, "&" + settingNameFontSize + "&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
-		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&" + companyDateFontSize + "&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 		
 		Cells cells = sheet.getCells();
@@ -2946,11 +2946,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		StringBuilder builder = new StringBuilder();
 		
 		// A1_5 - update ver20
+		String printStartMonth = startMonth.month() < 10 ? ("0" + String.valueOf(startMonth.month()))
+				: String.valueOf(startMonth.month());
+		String printEndMonth = endMonth.month() < 10 ? ("0" + String.valueOf(endMonth.month()))
+				: String.valueOf(endMonth.month());
 		builder.append(TextResource.localize("KWR006_66"));
 		builder.append(" ");
-		builder.append(startMonth.year() + "/" + startMonth.month());
+		builder.append(startMonth.year() + "/" + printStartMonth);
 		builder.append(" ～ ");
-		builder.append(endMonth.year() + "/" + endMonth.month());
+		builder.append(endMonth.year() + "/" + printEndMonth);
 		
 		periodCell.setValue(builder.toString());
 	}
