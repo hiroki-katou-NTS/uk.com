@@ -433,6 +433,7 @@ module nts.uk.at.view.kwr004.b {
         selectionItem = vm.getAttendanceAttributes(dailyOrMonthly, independentCalc, selectedListItems);
         if (_.isEmpty(selectionItem)) selectedListItems = [];
         //create new row
+        let selectedTime: number = selectedListItems.length > 0 ? selectedListItems[0].attendanceItemId : -1;
         let newItem = new SettingForPrint(
           index + step, //rank
           x.name, //b4_3_2 見出し名称
@@ -442,7 +443,8 @@ module nts.uk.at.view.kwr004.b {
           x.attribute, //b4_3_3_2 - selected code
           selectedListItems, //B4_3_3_2 属性選択
           dailyAttributes, //b4_3_3_2
-          dailyOrMonthly //daily or monthly
+          dailyOrMonthly, //daily or monthly
+          selectedTime
         );
 
         vm.addRowItem(newItem);
@@ -610,9 +612,9 @@ module nts.uk.at.view.kwr004.b {
       vm.shareParam.itemNameLine.name = row.name();
       vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category      
       vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
-
-      if (row.selectedTimeList().length > 0) {
-        vm.shareParam.selectedTime = row.selectedTimeList()[0].attendanceItemId;
+      vm.shareParam.selectedTime = row.selectedTime;
+      if (!_.isNil(row.selectedTimeList())) {
+        vm.shareParam.selectedTimeList = row.selectedTimeList();
       }
 
       vm.shareParam.attribute.attributeList = [
@@ -643,7 +645,7 @@ module nts.uk.at.view.kwr004.b {
           listItem.itemId = parseInt(attendanceItem.attendanceId);
           listItem.name = findAttendanceName.attendanceItemName;
           listItem.operator = '+'; //+
-          listItem.indicatesNumber = 0;
+          listItem.indicatesNumber = findAttendanceName.findAttendanceName;
           //vm.settingListItemsDetails()[index].required(true);   
           vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
           vm.settingListItemsDetails()[index].selectedTimeList([listItem]);
@@ -875,7 +877,8 @@ module nts.uk.at.view.kwr004.b {
       itemAttribute?: number,
       selectedTimeList?: Array<any>,
       dailyAttributes?: Array<any>,
-      type: boolean = false
+      type: boolean = false,
+      selectedTime: number = -1
     ) {
       this.name(name || '');
       this.independentCalcClassic(indCalcClassic);
@@ -886,6 +889,7 @@ module nts.uk.at.view.kwr004.b {
       this.selectedTimeList(selectedTimeList || []);
       this.dailyAttributes(dailyAttributes || []);
       this.type = type;
+      this.selectedTime = selectedTime
     }
   }
 

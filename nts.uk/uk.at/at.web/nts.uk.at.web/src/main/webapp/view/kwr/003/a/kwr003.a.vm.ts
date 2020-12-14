@@ -441,12 +441,12 @@ module nts.uk.at.view.kwr003.a {
         employeeId: string = vm.$user.employeeId;
 
       let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-
+     
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
         if (!_.isNil(data)) {
           let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
           let freeCode = _.find(vm.settingListItems1(), ['code', data.freeSelectedCode]);
-          vm.rdgSelectedId(data.itemSelection); //項目選択
+          vm.rdgSelectedId(!vm.isPermission51() ? 0 : data.itemSelection); //項目選択
           vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
