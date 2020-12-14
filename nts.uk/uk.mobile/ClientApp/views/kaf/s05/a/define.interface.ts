@@ -1,4 +1,4 @@
-enum NotUseAtr {
+export enum NotUseAtr {
     Not_USE,
     USE
 }

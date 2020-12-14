@@ -1,4 +1,4 @@
-import {ParamStartMobile, OvertimeAppAtr, Model} from '../a/define.interface';
+import {ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr} from '../a/define.interface';
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -45,6 +45,43 @@ export class KafS05Component extends KafS00ShrComponent {
     public get step() {
         return `step_${this.numb}`;
     }
+
+    // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．残業休出申請共通設定．時間外表示区分」＝する
+    public get c1() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+
+        return displayOverTime.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr == NotUseAtr.USE;
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
+    public get c3() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+
+        return displayOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE;
+    }
+    // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
+    public get c4() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+
+        return !_.isEmpty(displayOverTime.infoBaseDateOutput.quotaOutput.overTimeQuotaList);
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
+    public get c5() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+
+        return displayOverTime.infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr == NotUseAtr.USE; 
+    }
+    // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．フレックス時間表示区分」= true
+    public get c6() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+
+        return displayOverTime.infoBaseDateOutput.quotaOutput.flexTimeClf;
+    }
+
 
     public created() {
         const vm = this;
