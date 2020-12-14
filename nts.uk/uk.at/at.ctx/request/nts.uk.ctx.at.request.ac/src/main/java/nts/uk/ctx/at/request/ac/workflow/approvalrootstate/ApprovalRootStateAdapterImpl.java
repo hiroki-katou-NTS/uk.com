@@ -100,7 +100,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		ApprovalRootContentExport approvalRootContentExport = approvalRootStatePub.getApprovalRoot(companyID, employeeID, appTypeValue, appDate, appID, isCreate);
 		
 		return new ApprovalRootContentImport_New(
-					new ApprovalRootStateImport_New(fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.of(mailDestCache))),
+					new ApprovalRootStateImport_New(
+							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.of(mailDestCache)),
+							approvalRootContentExport.getApprovalRootState().getApprovalRecordDate()),
 					EnumAdaptor.valueOf(approvalRootContentExport.getErrorFlag().value, ErrorFlagImport.class));
 	}
 
@@ -441,14 +443,14 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	public List<ApprovalRootStateImport_New> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst,
 			DatePeriod period, Integer rootType) {
 		return intermediateDataPub.getAppRootInstanceByEmpPeriod(employeeIDLst, period, rootType).stream()
-			.map(x -> new ApprovalRootStateImport_New(fromExport(x.getListApprovalPhaseState(), Optional.empty())))
+			.map(x -> new ApprovalRootStateImport_New(fromExport(x.getListApprovalPhaseState(), Optional.empty()), x.getApprovalRecordDate()))
 			.collect(Collectors.toList());
 	}
 
 	@Override
 	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
 		ApprovalRootStateExport approvalRootStateExport = intermediateDataPub.getAppRootInstanceMonthByEmpPeriod(employeeID, period);
-		return new ApprovalRootStateImport_New(fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty())); 
+		return new ApprovalRootStateImport_New(fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty()), approvalRootStateExport.getApprovalRecordDate()); 
 	}
 
 }

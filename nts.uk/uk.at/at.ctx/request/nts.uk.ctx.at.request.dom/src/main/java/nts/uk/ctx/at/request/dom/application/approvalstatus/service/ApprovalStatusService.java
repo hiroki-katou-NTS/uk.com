@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTy
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmpMonthDay;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttContentPrepareOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
@@ -429,7 +430,8 @@ public interface ApprovalStatusService {
 	 * @param employeeID
 	 * @param periodLst
 	 */
-	public void getConfirmApprSttContent(String employeeID, List<DatePeriod> periodLst);
+	public ApprSttConfirmEmpMonthDay getConfirmApprSttContent(String wkpID, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
 	/**
 	 * G:月別本人確認を取得する
@@ -451,30 +453,31 @@ public interface ApprovalStatusService {
 	/**
 	 * G:月別の承認者を取得する
 	 */
-	public void getMonthApproval(ApprSttComfirmSet apprSttComfirmSet);
+	public List<PhaseApproverStt> getMonthApproval(ApprSttComfirmSet apprSttComfirmSet, String employeeID, GeneralDate date, ApprovalRootStateImport_New approvalRootState);
 	
 	/**
 	 * G:社員の月別実績の進捗状況を得る
 	 */
-	public void getMonthAchievementApprover();
+	public List<PhaseApproverStt> getMonthAchievementApprover(String employeeID, GeneralDate date, ApprovalRootStateImport_New approvalRootState);
 	
 	/**
 	 * G:実績承認者取得
 	 */
-	public void getAchievementApprover();
+	public List<PhaseApproverStt> getAchievementApprover(ApprovalRootStateImport_New approvalRootState, GeneralDate date);
 	
 	/**
 	 * G:日別承認の進捗を取得する
 	 */
-	public void getDayApprovalStatus();
+	public List<ApprovalRootStateImport_New> getDayApprovalStatus(ClosureId closureId, String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
 	
 	/**
 	 * G:日別の承認者を取得する
 	 */
-	public void getDayApproval();
+	public Map<GeneralDate, List<PhaseApproverStt>> getDayApproval(ApprSttComfirmSet apprSttComfirmSet, String employeeID, String wkpID, 
+			DatePeriod period, List<ApprovalRootStateImport_New> approvalRootStateLst);
 	
 	/**
 	 * G:社員の日別実績の進捗状況を得る
 	 */
-	public void getDayAchievementApprover();
+	public Map<GeneralDate, List<PhaseApproverStt>> getDayAchievementApprover(DatePeriod period, List<ApprovalRootStateImport_New> approvalRootStateLst);
 }

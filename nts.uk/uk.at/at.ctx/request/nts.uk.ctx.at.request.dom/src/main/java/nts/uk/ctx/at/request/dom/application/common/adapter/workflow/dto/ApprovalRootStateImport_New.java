@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 /**
  * 
  * @author Doan Duy Hung
@@ -14,5 +15,7 @@ import lombok.Value;
 public class ApprovalRootStateImport_New {
 	
 	private List<ApprovalPhaseStateImport_New> listApprovalPhaseState;
+	
+	private GeneralDate date;
 	
 }

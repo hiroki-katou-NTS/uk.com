@@ -39,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayO
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmpMonthDay;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
@@ -723,6 +724,17 @@ public class ApprovalStatusFinder {
 				param.getWkpID(), 
 				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")), 
 				param.getEmpPeriodLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				param.getApprSttComfirmSet(), 
+				new YearMonth(param.getYearMonth()), 
+				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 
+				new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth()));
+	}
+	
+	public ApprSttConfirmEmpMonthDay getConfirmApprSttByEmpMonthDay(ConfirmSttEmpMonthDayParam param) {
+		return appSttService.getConfirmApprSttContent(
+				param.getWkpID(), 
+				param.getEmpID(), 
+				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")), 
 				param.getApprSttComfirmSet(), 
 				new YearMonth(param.getYearMonth()), 
 				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 

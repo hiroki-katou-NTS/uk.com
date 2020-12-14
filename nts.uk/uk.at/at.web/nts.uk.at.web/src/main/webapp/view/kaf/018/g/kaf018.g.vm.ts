@@ -2,6 +2,7 @@
 
 module nts.uk.at.view.kaf018.g.viewmodel {
 	import EmpConfirmInfo = nts.uk.at.view.kaf018.f.viewmodel.EmpConfirmInfo;
+	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 
     @bean()
     class Kaf018GViewModel extends ko.ViewModel {
@@ -29,9 +30,11 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				return false;
 			}
 		});
+		params: KAF018GParam = null;
 		
 		created(params: KAF018GParam) {
 			const vm = this;
+			vm.params = params;
 			vm.dataSource1.push(new EmpDateConfirmContent("1"));
 			vm.dataSource1.push(new EmpDateConfirmContent("2"));
 			for(let i=1; i<=18; i++) {
@@ -166,14 +169,20 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 		
 		refreshDataSource() {
 			const vm = this;
-			let empID = vm.currentEmpInfo().empID,
+			let wkpID = vm.params.currentWkpID,
 				startDate = vm.startDate,
 				endDate = vm.endDate,
-				wsParam = { empID, startDate, endDate };
+				empID = vm.params.currentEmpID,
+				apprSttComfirmSet = vm.params.apprSttComfirmSet,
+				yearMonth = vm.params.closureItem.processingYm,
+				closureId = vm.params.closureItem.closureId,
+				closureDay = vm.params.closureItem.closureDay,
+				lastDayOfMonth = vm.params.closureItem.lastDayOfMonth,
+				wsParam = { wkpID, startDate, endDate, empID, apprSttComfirmSet, yearMonth, closureId, closureDay, lastDayOfMonth };
 			vm.$blockui('show');
 			vm.createIggrid1();
 			vm.createIggrid2();
-			return vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<any>) => {
+			return vm.$ajax(API.getConfirmApprSttByEmpMonthDay, wsParam).done((data: Array<any>) => {
 //				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
 //				vm.createIggrid();
 			});
@@ -182,8 +191,11 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 
 	export interface KAF018GParam {
 		empInfoLst: Array<EmpConfirmInfo>;
+		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
+		currentWkpID: string;
+		apprSttComfirmSet: any;
 		currentEmpID: string;
 	}
 	
@@ -204,6 +216,6 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 	}
 
     const API = {
-		getApprSttStartByEmpDate: "at/request/application/approvalstatus/getApprSttStartByEmpDate",
+		getConfirmApprSttByEmpMonthDay: "at/request/application/approvalstatus/getConfirmApprSttByEmpMonthDay",
     }
 }

@@ -297,10 +297,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			const vm = this;
 			if(ui.colKey=="empName") {
 				let empInfoLst = vm.dataSource,
+					closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
+					currentWkpID = vm.currentApprSttExeDto().wkpID,
+					apprSttComfirmSet = vm.apprSttComfirmSet,
 					currentEmpID = ui.rowKey,
-					gParam: KAF018GParam = { empInfoLst, startDate, endDate, currentEmpID };
+					gParam: KAF018GParam = { empInfoLst, closureItem, startDate, endDate, currentWkpID, apprSttComfirmSet, currentEmpID };
 				vm.$window.modal('/view/kaf/018/g/index.xhtml', gParam);
 			}
 		}
