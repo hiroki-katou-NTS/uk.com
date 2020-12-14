@@ -926,7 +926,7 @@ public class ProgramsManager {
      * The Constant KDL003.
      */
     public static final Program KDL003A = new Program(WebAppId.AT, ProgramIdConsts.KDL003A, "KDL003_1",
-            "/view/kdl/003/a/index.xhtml");
+            "/view/kdl/003/a/index.xhtml"); 
 
     /**
      * The Constant KSM006.
@@ -2855,16 +2855,22 @@ public class ProgramsManager {
             "/ccg/007/e", ProgramIdConsts.CCG007H);
 
     //スマホ②
+    public static final Program KAFS04A = new Program(WebAppId.MOBI,ProgramIdConsts.KAFS04A,"KAFS04A",
+            "/kaf/s04/a");
     public static final Program KAFS05A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05A, "KAFS05A",
             "/kaf/s05/a");
     public static final Program KAFS07A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS07A, "KAFS07A",
             "/kaf/s07/a");
+    public static final Program KAFS08A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A, "KAFS08A",
+            "/kaf/s08/a");
     public static final Program KAFS09A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS09A, "KAFS09A",
             "/kaf/s09/a");
-    public static  final  Program KAFS20A = new Program(WebAppId.MOBI,ProgramIdConsts.KAFS20A,"KAFS20A",
-            "/kaf/s20/a");
+    public static final Program KAFS12A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS12A, "KAFS12A",
+            "/kaf/s12/a");
     public static final Program KAFS05B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05B, "KAFS05B",
             "/kaf/s05/b");
+    public static final Program KAFS20A = new Program(WebAppId.MOBI,ProgramIdConsts.KAFS20A,"KAFS20A",
+            "/kaf/s20/a");
     public static final Program CMMS45B = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45B, "CMMS45B",
             "/cmm/s45/b");
     public static final Program CMMS45C = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45C, "CMMS45C",
@@ -2877,8 +2883,6 @@ public class ProgramsManager {
             "/ccg/033/a");
     public static final Program KDWS03A = new Program(WebAppId.MOBI, ProgramIdConsts.KDWS03A, "",
             "/kdw/s03/a");
-    public static final Program KAFS08A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A, "KAFS08_1",
-            "kaf/s08/a");
     public static final Program KAFS08A1 = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A1, "KAFS08_2",
             "kaf/s08/a1");
     public static final Program KAFS08A2 = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A2, "KAFS08_3",
