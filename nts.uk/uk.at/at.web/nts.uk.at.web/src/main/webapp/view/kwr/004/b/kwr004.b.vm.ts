@@ -434,8 +434,9 @@ module nts.uk.at.view.kwr004.b {
         if (_.isEmpty(selectionItem)) selectedListItems = [];
         //create new row
         let selectedTime: number = selectedListItems.length > 0 ? selectedListItems[0].attendanceItemId : -1;
+  
         let newItem = new SettingForPrint(
-          index + step, //rank
+          x.rank, //rank
           x.name, //b4_3_2 見出し名称
           x.independentCalcClassic, //b4_5_1 or b4_5_2
           vm.createDataSelection(selectionItem), //b4_3_4 - display 選択項目
@@ -459,6 +460,7 @@ module nts.uk.at.view.kwr004.b {
           vm.addRowItem(newItem);
         }
       }
+ 
     }
 
     dailyOrMonthlyAttributes(type: number) {
