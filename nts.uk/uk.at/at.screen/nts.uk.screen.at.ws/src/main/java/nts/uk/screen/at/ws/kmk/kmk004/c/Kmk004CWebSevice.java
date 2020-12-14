@@ -27,11 +27,21 @@ public class Kmk004CWebSevice extends WebService{
 	@Inject
 	private WorkplaceList workplaceList;
 	
+	@Inject
+	private BasicSettingsForWorkplace baseSetting;
+	
+	
 	@POST
 	@Path("viewc/wpl/getWorkPlaceId")
 	public List<WorkplaceIdDto> getWorkPlaceId() {
 		return this.workplaceList.get(LaborWorkTypeAttr.REGULAR_LABOR);
 	}
 	
+	
+	@POST
+	@Path("viewc/wpl/getBaseSetting")
+	public DisplayBasicSettingsDto getBaseSetting(@PathParam("wkpId") String wkpId) {
+		return this.baseSetting.getSetting(wkpId);
+	}
 	
 }
