@@ -17,6 +17,7 @@ module nts.uk.at.ksm008.i {
         getStartupInfo: 'screen/at/ksm008/j/getStartupInfo',
         getWorkHoursList: 'screen/at/ksm008/j/getWorkHoursList',
         getWorkHoursDetails: 'screen/at/ksm008/j/getWorkHoursDetails',
+        getAlarmCheckConSche: 'screen/at/ksm008/j/getCheckCon'
     };
 
     @bean()
@@ -123,7 +124,9 @@ module nts.uk.at.ksm008.i {
             if (vm.$user.role.isInCharge.attendance) {
                 vm.onCompanySelect();
             } else {
-                vm.onOrganizationSelect();
+                vm.getAlarmCheckCon().then(() => {
+                    vm.onOrganizationSelect();
+                });
             }
         }
         /**
@@ -144,6 +147,21 @@ module nts.uk.at.ksm008.i {
                 }
             });
 
+        }
+
+        getAlarmCheckCon() {
+            const vm = this;
+            const screenCode = "06";
+
+            vm.$blockui("grayout");
+            return vm.$ajax(API_JSCREEN.getAlarmCheckConSche + "/" + screenCode).done((res: any) => {
+                let explanation = _.join(res.explanationList, "\n");
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(screenCode, res.conditionName, explanation.trim()));
+            }).fail((err: any) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui("clear"));
         }
 
         /**
