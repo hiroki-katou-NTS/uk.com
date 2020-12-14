@@ -62,6 +62,7 @@ module nts.uk.at.view.ktg026.a.viewmodel {
         .always(() => vm.$blockui('clear'));
     }
 
+
     private displayDataTable(data: EmployeesOvertimeDisplay): void {
       const vm = this;
       if (!!data.ymOvertimes) {

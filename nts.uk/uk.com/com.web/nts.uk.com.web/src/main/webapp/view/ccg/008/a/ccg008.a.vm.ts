@@ -59,24 +59,18 @@ module nts.uk.com.view.ccg008.a.screenModel {
               character.save("cache", data).then(() => {
                 vm.topPageCode(code);
                 character.restore("cache").then((obj: any) => {
-                  if (obj) {
-                    const endDate = moment.utc(obj.endDate, "YYYY/MM/DD");
-                    if (
-                      endDate
-                        .add(vm.topPageSetting.switchingDate)
-                        .isSameOrAfter(moment.utc(new Date(), "YYYY/MM/DD"))
-                    ) {
-                      vm.selectedSwitch(1);
-                    } else {
-                      vm.selectedSwitch(2);
-                      obj.currentOrNextMonth = 2;
+                  if(obj){
+                    if(obj.currentOrNextMonth){
+                        vm.selectedSwitch(obj.currentOrNextMonth);
+                    }else{
+                        self.selectedSwitch(null);    
                     }
-                    vm.closureSelected(obj.closureId);
-                    nts.uk.ui.windows.setShared("cache", obj);
-                  } else {
-                    vm.closureSelected(1);
-                    vm.selectedSwitch(null);
-                  }
+                    vm.closureSelected(obj.closureId)
+                    nts.uk.ui.windows.setShared('cache', obj);
+                    }else{
+                        vm.closureSelected(1);
+                        vm.selectedSwitch(null);
+                    }
                 });
               });
             });
@@ -179,7 +173,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
             if (res && topPageUrl !== res.trim()) {
               if (_.includes(data.standardMenu.url, ".at.")) {
                 nts.uk.request.jump("at", res);
-              } 
+              } else {
+                nts.uk.request.jump(res);
+              }
             }
           }
         }
