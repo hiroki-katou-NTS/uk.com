@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @AllArgsConstructor
 @Data
-public class DeleteFlexMonthlyWorkingHoursByCompanyCommand {
+public class DeleteFlexMonthlyWorkingHoursByComCommand {
 	// 年度
 	private int year;
 }

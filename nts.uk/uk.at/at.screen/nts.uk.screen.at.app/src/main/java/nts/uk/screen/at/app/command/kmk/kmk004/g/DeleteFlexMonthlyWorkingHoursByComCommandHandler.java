@@ -23,8 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
  *         UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.G：会社別法定労働時間の登録（フレックス勤務）.メニュー別OCD.会社別月単位労働時間（フレックス勤務）を削除する
  */
 @Stateless
-public class DeleteFlexMonthlyWorkingHoursByCompanyCommandHandler
-		extends CommandHandler<DeleteFlexMonthlyWorkingHoursByCompanyCommand> {
+public class DeleteFlexMonthlyWorkingHoursByComCommandHandler
+		extends CommandHandler<DeleteFlexMonthlyWorkingHoursByComCommand> {
 
 	@Inject
 	private CompanyRepository companyRepo;
@@ -32,9 +32,9 @@ public class DeleteFlexMonthlyWorkingHoursByCompanyCommandHandler
 	private DeleteMonthlyWorkTimeSetComCommandHandler deleteHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<DeleteFlexMonthlyWorkingHoursByCompanyCommand> context) {
+	protected void handle(CommandHandlerContext<DeleteFlexMonthlyWorkingHoursByComCommand> context) {
 
-		DeleteFlexMonthlyWorkingHoursByCompanyCommand cmd = context.getCommand();
+		DeleteFlexMonthlyWorkingHoursByComCommand cmd = context.getCommand();
 		// 1. 年度の期間を取得(require, 会社ID, 年度)
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
 		YearMonthPeriod yearMonths = GetThePeriodOfTheYear.getPeriodOfTheYear(require, AppContexts.user().companyId(),

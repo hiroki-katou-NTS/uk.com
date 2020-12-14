@@ -22,7 +22,7 @@ public class SelectWorkPlaceFlex {
 	@Inject
 	private YearlyListByWorkplace yearlyListByWorkplace;
 
-	public SelectWorkPlaceFlexDto selectWorkPlaceFlex(String wkpId, LaborWorkTypeAttr laborAttr) {
+	public SelectWorkPlaceFlexDto selectWorkPlaceFlex(String wkpId) {
 
 		SelectWorkPlaceFlexDto result = new SelectWorkPlaceFlexDto();
 		// 1 　職場ID＝選択中の職場ID
@@ -30,7 +30,7 @@ public class SelectWorkPlaceFlex {
 				this.displayFlexBasicSettingByWokPlace.displayFlexBasicSettingByWokPlace(wkpId));
 		// 2 　職場ID＝選択中の職場ID
 		// 勤務区分＝2：フレックス勤務
-		result.setYears(this.yearlyListByWorkplace.get(wkpId, laborAttr));
+		result.setYears(this.yearlyListByWorkplace.get(wkpId, LaborWorkTypeAttr.FLEX));
 
 		return result;
 	}

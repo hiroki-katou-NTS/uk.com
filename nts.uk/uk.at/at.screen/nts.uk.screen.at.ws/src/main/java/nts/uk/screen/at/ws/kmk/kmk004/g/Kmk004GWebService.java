@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.screen.at.app.command.kmk.kmk004.g.DeleteFlexMonthlyWorkingHoursByCompanyCommand;
-import nts.uk.screen.at.app.command.kmk.kmk004.g.DeleteFlexMonthlyWorkingHoursByCompanyCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.g.DeleteFlexMonthlyWorkingHoursByComCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.g.DeleteFlexMonthlyWorkingHoursByComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.g.RegisterFlexMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.g.UpdateFlexMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommand;
@@ -37,7 +37,7 @@ public class Kmk004GWebService {
 	private UpdateFlexMonthlyWorkTimeSetComCommandHandler updateHandler;
 
 	@Inject
-	private DeleteFlexMonthlyWorkingHoursByCompanyCommandHandler deleteHandler;
+	private DeleteFlexMonthlyWorkingHoursByComCommandHandler deleteHandler;
 
 	@Inject
 	private AfterChangeFlexCompanySetting afterChangeFlexCompanySetting;
@@ -68,13 +68,13 @@ public class Kmk004GWebService {
 
 	@POST
 	@Path("delete")
-	public void delete(DeleteFlexMonthlyWorkingHoursByCompanyCommand command) {
+	public void delete(DeleteFlexMonthlyWorkingHoursByComCommand command) {
 		this.deleteHandler.handle(command);
 	}
 
 	@POST
 	@Path("change-setting")
-	public DisplayFlexBasicSettingByCompanyDto changeSetting(DeleteFlexMonthlyWorkingHoursByCompanyCommand command) {
+	public DisplayFlexBasicSettingByCompanyDto changeSetting() {
 		return this.afterChangeFlexCompanySetting.afterChangeFlexCompanySetting();
 	}
 
