@@ -19,7 +19,7 @@ import nts.uk.screen.at.app.kmk004.h.AfterCopyFlexMonthlyWorkTimeSetWkp;
 import nts.uk.screen.at.app.kmk004.h.DisplayInitialFlexScreenByWorkPlace;
 import nts.uk.screen.at.app.kmk004.h.DisplayInitialFlexScreenByWorkPlaceDto;
 import nts.uk.screen.at.app.kmk004.h.SelectFlexYearByWorkPlace;
-import nts.uk.screen.at.app.kmk004.h.SelectEmploymentFlex;
+import nts.uk.screen.at.app.kmk004.h.SelectWorkPlaceFlex;
 import nts.uk.screen.at.app.kmk004.h.SelectWorkPlaceFlexDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
@@ -32,7 +32,7 @@ public class Kmk004HWebService {
 	private DisplayInitialFlexScreenByWorkPlace displayInitialFlexScreenByWorkPlace;
 
 	@Inject
-	private SelectEmploymentFlex selectWorkPlaceFlex;
+	private SelectWorkPlaceFlex selectWorkPlaceFlex;
 
 	@Inject
 	private SelectFlexYearByWorkPlace selectFlexYearByWorkPlace;
