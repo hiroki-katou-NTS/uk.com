@@ -639,19 +639,18 @@ module nts.uk.at.view.kwr004.b {
           listItem.name = findAttendanceName.attendanceItemName;
           listItem.operator = '+'; //+
           listItem.indicatesNumber = 0;
-
-          vm.settingListItemsDetails()[index].required(true);
+          //vm.settingListItemsDetails()[index].required(true);   
+          vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);          
           vm.settingListItemsDetails()[index].selectedTimeList([listItem]);
-          vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
           vm.settingListItemsDetails()[index].selectionItem(findAttendanceName.attendanceItemName);
           if (row.isChecked()) $('#textName' + row.id).focus();
         } else {
+          vm.settingListItemsDetails()[index].itemAttribute(-1);
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
-          vm.settingListItemsDetails()[index].selectedTime = -1;
-          vm.settingListItemsDetails()[index].itemAttribute(-1);
+          vm.settingListItemsDetails()[index].selectedTime = -1;          
           vm.settingListItemsDetails()[index].required(false);
         }
       });
@@ -697,11 +696,11 @@ module nts.uk.at.view.kwr004.b {
             if (row.isChecked()) $('#textName' + row.id).focus();
           }
         } else {
+          vm.settingListItemsDetails()[index].itemAttribute(-1);
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
-          vm.settingListItemsDetails()[index].selectedTime = -1;
-          vm.settingListItemsDetails()[index].itemAttribute(-1);
+          vm.settingListItemsDetails()[index].selectedTime = -1;          
           vm.settingListItemsDetails()[index].required(false);
         }
       });

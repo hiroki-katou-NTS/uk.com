@@ -33,7 +33,7 @@ module nts.uk.at.view.kwr004.a {
     settingId: KnockoutObservable<string> = ko.observable(null);
 
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
-    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(1);
+    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
     settingListItems1: KnockoutObservableArray<any> = ko.observableArray([]);
