@@ -12,8 +12,10 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.kmk004.d.BasicSettingsByEmployment;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
+import nts.uk.screen.at.app.query.kmk004.common.MonthlyWorkingHoursByEmployment;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
 
@@ -36,6 +38,9 @@ public class Kmk004DWebSevice extends WebService {
 	@Inject
 	private YearListByEmployment getYears;
 	
+	@Inject
+	private MonthlyWorkingHoursByEmployment workTime;
+	
 	
 	@POST
 	@Path("viewd/emp/getEmploymentId")
@@ -54,4 +59,11 @@ public class Kmk004DWebSevice extends WebService {
 	public List<YearDto> getYears(@PathParam("employmentCode") String employmentCode) {
 		return this.getYears.get(employmentCode, LaborWorkTypeAttr.DEFOR_LABOR);
 	}
+	
+	@POST
+	@Path("viewd/emp/getWorkTimes/{employmentCode}/{year}")
+	public List<DisplayMonthlyWorkingDto> getWorkTimes(@PathParam("employmentCode") String employmentCode, @PathParam("year") int year) {
+		return this.workTime.get(employmentCode, LaborWorkTypeAttr.REGULAR_LABOR, year);
+	}
+	
 }
