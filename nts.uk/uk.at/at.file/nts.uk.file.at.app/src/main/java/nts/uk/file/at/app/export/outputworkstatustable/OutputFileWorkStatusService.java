@@ -70,13 +70,16 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         OutputFileWorkStatusFileQuery query = context.getQuery();
         YearMonth targetDate = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
-        // TODO DANG QA
+        // 1:find(会社ID、ClosureId)
         val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
         val basedateNow = GeneralDate.today();
+
         if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("Còn QA");
+            throw new BusinessException("");
         }
+        // 1.1 :⑨．基準日で締め変更履歴を取得する(日付)
         val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
+
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
         // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
@@ -135,6 +138,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         val result = new OutPutWorkStatusContent(
                 listRs,
                 datePeriod,
+                closureDate,
                 query.getMode(),
                 workStatusOutputSetting.getSettingName().v(),
                 companyInfo.getCompanyName(),
@@ -147,8 +151,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     private DatePeriod getFromClosureDate(YearMonth yearMonth, ClosureDate closureDate) {
         Integer closureDay = closureDate.getClosureDay().v();
         val baseDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay);
-        if (closureDay.equals(baseDate.lastDateInMonth())) {
-            return new DatePeriod(baseDate.addDays(-baseDate.lastDateInMonth()), baseDate);
+        val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), baseDate.lastDateInMonth());
+        if (closureDate.getLastDayOfMonth()) {
+            return new DatePeriod(baseDate, date);
         }
         return new DatePeriod(baseDate.addMonths(-1).addDays(1), baseDate);
     }

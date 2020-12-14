@@ -25,6 +25,7 @@
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
           nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
+          nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger
         </com:ValidatorScript>
       </ui:define>
 
@@ -102,7 +103,7 @@
                 ></table>
               </div>
             </div>
-            <div class="pull-left">
+            <div class="pull-left pullRight">
               <div class="row d-flex">
                 <div
                   class="form-label required broken"
@@ -120,7 +121,7 @@
                       value: attendanceCode, 
                       required: true,
                       constraint: 'OutputItemSettingCode',
-                      name: $i18n('KWR004_59'),
+                      name: '#[KWR004_59]',
                       enable: isEnableAttendanceCode
                     }"
                   />
@@ -132,7 +133,7 @@
                       value: attendanceName,
                       required: true,
                       constraint: 'OutputItemSettingName',
-                      name: $i18n('KWR004_60')
+                      name: '#[KWR004_60]'
                     }"
                   />
                 </div>
@@ -147,8 +148,8 @@
                   <table id="multiGridList" width="100%" tabindex="-1">
                     <colgroup>
                       <col width="35px" />
-                      <col width="105px" />
-                      <col width="230px" />
+                      <col width="113px" />
+                      <col width="240px" />
                       <col width="305px" />
                     </colgroup>
                     <thead>
@@ -192,14 +193,14 @@
                         <td>
                           <input
                             tabindex="-1"
-                            size="9"
+                            size="10"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
                                     value: name,
-                                    required: required,
-                                    name: $vm.$i18n('KWR004_215'),
-                                    constraint: 'FormOutputItemName'
+                                    required: isChecked,
+                                    name: '#[KWR004_66]',
+                                    constraint: $index() &gt; 1 ? 'FormOutputItemName' : 'OutputItemNameOfAnnualWorkLedger'
                                   }"
                           />
                         </td>
@@ -223,6 +224,7 @@
                               class="btn-B4331"
                               data-bind="attr: { id: 'btnRow-' + id },
                               text: $vm.$i18n('KWR004_67'), 
+                              name: '#[KWR004_67]',
                               click: function(data) { $vm.openDialogKDL(data) }"
                             />
                             <div

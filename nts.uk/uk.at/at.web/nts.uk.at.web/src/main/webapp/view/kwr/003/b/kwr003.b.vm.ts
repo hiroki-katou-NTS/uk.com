@@ -137,10 +137,6 @@ module nts.uk.at.view.kwr003.b {
         vm.settingListItemsDetails.valueHasMutated();
       });
 
-      /* row.name.subscribe((value) => {
-        vm.settingListItemsDetails.valueHasMutated();
-      });
-      */
       row.setting.subscribe((value) => {
         row.selectedTimeList([]);
         row.selectionItem(null);
@@ -178,19 +174,22 @@ module nts.uk.at.view.kwr003.b {
       $(".attendance-input").trigger("validate");
 
       _.forEach(vm.settingListItemsDetails(), (item, index) => {
+        if (
+          (!item.isChecked() && !_.isEmpty(item.name()) && item.selectedTimeList().length === 0)
+          || (!item.isChecked() && _.isEmpty(item.name()) && item.selectedTimeList().length > 0)
+          || item.isChecked()
+        ) {
+          if (_.isEmpty(item.name())) {
+            $('#textName' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
+            });
+          }
 
-        if (!item.isChecked()) return;
-
-        if (_.isEmpty(item.name())) {
-          $('#textName' + item.id).ntsError('set', {
-            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_213')]
-          });
-        }
-
-        if (item.selectedTimeList().length === 0) {
-          $('#btnRow-' + item.id).ntsError('set', {
-            messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
-          });
+          if (item.selectedTimeList().length === 0) {
+            $('#btnRow-' + item.id).ntsError('set', {
+              messageId: 'MsgB_1', messageParams: [vm.$i18n('KWR003_214')]
+            });
+          }
         }
       });
 
@@ -439,7 +438,7 @@ module nts.uk.at.view.kwr003.b {
      * Close dialog
      */
     closeDialog() {
-      const vm = this;      
+      const vm = this;
       vm.$window.close(vm.attendance());
     }
 
@@ -473,7 +472,7 @@ module nts.uk.at.view.kwr003.b {
           let listItemsDetails: Array<SettingForPrint> = [];
           _.forEach(data.outputItemList, (x, index: number) => {
             let dataItemsWithOperation: Array<selectedItemList> = [];
-            let selectedItemText = null;
+            let selectedItemText = null, selectedTime: number = -1;
             //remove duplicate if yes
             if (x.attendanceItemList.length > 0) {
               let attendanceItemList = _.filter(x.attendanceItemList, (element: any, index, self) => {
@@ -498,6 +497,7 @@ module nts.uk.at.view.kwr003.b {
                 let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === attendanceItemList[0].attendanceItemId);
                 //if (!_.isNil(findObj)) selectedItemText = findObj.name;
                 selectedItemText = !_.isNil(findObj) ? findObj.name : '';
+                selectedTime = attendanceItemList[0].attendanceItemId;
                 dataItemsWithOperation.push({
                   itemId: attendanceItemList[0].attendanceItemId,
                   indicatesNumber: attendanceItemList[0].attendanceItemId,
@@ -514,11 +514,12 @@ module nts.uk.at.view.kwr003.b {
               selectedItemText,
               x.printTargetFlag,
               dataItemsWithOperation,
-              x.itemDetailAtt);
+              x.itemDetailAtt,
+              selectedTime);
 
             listItemsDetails.push(newItem);
           });
-
+        
           //re-order the list
           listItemsDetails = vm.orderListItemsByField(listItemsDetails);
           vm.createListItemAfterSorted(listItemsDetails);
@@ -598,7 +599,7 @@ module nts.uk.at.view.kwr003.b {
       vm.$blockui('show');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
-      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {        
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
             vm.diligenceProjects.push(new DiligenceProject(
@@ -675,15 +676,21 @@ module nts.uk.at.view.kwr003.b {
      */
     openDialogKDL047(row: any) {
       const vm = this;
-
+   
       vm.shareParam.itemNameLine.name = row.name();
+      vm.shareParam.itemNameLine.displayFlag = true;
       vm.shareParam.attribute.selected = row.selected; //setting Category
+
+      if (!_.isNil(row.selectedTimeList())) {
+        vm.shareParam.selectedTimeList = row.selectedTimeList();
+      }
       vm.shareParam.selectedTime = row.selectedTime;
       vm.shareParam.attribute.attributeList = [
         new AttendaceType(1, vm.$i18n('KWR002_141')),
         new AttendaceType(2, vm.$i18n('KWR002_142')),
         new AttendaceType(3, vm.$i18n('KWR002_143')),
       ];
+
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
@@ -711,7 +718,7 @@ module nts.uk.at.view.kwr003.b {
           listItem.itemId = parseInt(attendanceItem.attendanceId);
           listItem.name = findAttendanceName.attendanceItemName;
           listItem.operator = '+'; //+
-          vm.settingListItemsDetails()[index].selectedTimeList.push(listItem);
+          vm.settingListItemsDetails()[index].selectedTimeList([listItem]);         
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
 

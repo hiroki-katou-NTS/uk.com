@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.OutPutWorkSta
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.file.at.app.export.outputworkstatustable.DisplayWorkStatusReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -102,13 +103,13 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         cells.get(0, 0).setValue(TextResource.localize("KWR003_401") + date);
 
         if (content.getExcelDtoList().size() > 0) {
-            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow);
+            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow, content.getClosureDate());
             printData(worksheet, content);
         }
     }
 
-    private  void printData(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
-        boolean isWplPrinted ;
+    private void printData(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
+        boolean isWplPrinted;
         Cells cells = worksheet.getCells();
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         int pages = 1;
@@ -137,7 +138,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
             cells.merge(countRow, 0, 1, maxColumnData, true, true);
             cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-            cells.get(countRow, 0).setValue( TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
             isWplPrinted = true;
             countRow++;
             countItem++;
@@ -161,7 +162,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                             cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                             cells.merge(countRow, 0, 1, maxColumnData, true, true);
                             cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                            cells.get(countRow, 0).setValue( TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+                            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
                             countRow++;
                             countItem++;
                         }
@@ -190,7 +191,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                     cells.merge(countRow, 0, 1, maxColumnData, true, true);
                     cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                    cells.get(countRow, 0).setValue( TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+                    cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
                     countRow++;
                     countItem++;
 
@@ -220,14 +221,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                                 cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                                 cells.merge(countRow, 0, 1, maxColumnData, true, true);
                                 cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                                cells.get(countRow, 0).setValue( TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
+                                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "  " + dataSource.getWorkPlaceName());
                                 countRow++;
                                 countItem++;
                                 cells.copyRow(cells, 4, countRow);
                                 cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                                 cells.merge(countRow, 0, 1, maxColumnData, true, true);
                                 cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                                cells.get(countRow, 0).setValue( TextResource.localize("KWR003_405") + code + "   " + name);
+                                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405") + code + "   " + name);
                                 countRow++;
                                 countItem++;
                             }
@@ -276,7 +277,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         cells.get(countRow, maxColumnData - 2).getStyle()
                                 .setVerticalAlignment(TextAlignmentType.RIGHT);
                         cells.get(countRow, maxColumnData - 2).setValue(formatValue(item.getTotalOfOneLine(), null, item.getDailyValue().getAttributes(), isZeroDisplay));
-                        cells.merge(countRow, maxColumnData -2, 1, 2, true, true);
+                        cells.merge(countRow, maxColumnData - 2, 1, 2, true, true);
                         cells.get(countRow, column).getStyle().setVerticalAlignment(TextAlignmentType.RIGHT);
                         if (item.getDailyValue() == null) continue;
                         cells.get(countRow, column).setValue(formatValue(item.getDailyValue().getActualValue(), item.getDailyValue().getCharacterValue(),
@@ -304,9 +305,10 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         return null;
     }
 
-    private void printDayOfWeekHeader(Worksheet worksheet, DatePeriod datePeriod, int countRow) {
+    private void printDayOfWeekHeader(Worksheet worksheet, DatePeriod datePeriod, int countRow, ClosureDate closureDate) {
         Cells cells = worksheet.getCells();
         GeneralDate startDate = datePeriod.start();
+        val dateLastMonth = startDate.lastDateInMonth();
         cells.merge(countRow + 1, 0, 2, 3, true, true);
         val maxColumnData = MAX_COL_IN_PAGE;
         cells.get(countRow + 1, 0).setValue(TextResource.localize("KWR003_402"));
@@ -314,13 +316,22 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         cells.get(countRow + 1, maxColumnData + 4).setValue(TextResource.localize("KWR003_403"));
         cells.merge(countRow + 1, maxColumnData + 3, 2, 2, true, true);
         for (int i = 0; i < maxColumnData; i++) {
-            cells.setColumnWidth(3 + i, 3);
             GeneralDate loopDate = startDate.addDays(i);
-            cells.get(countRow + 1, i + 3).setValue(loopDate.day());
-            cells.get(countRow + 2, i + 3).setValue("("
-                    + getDayOfWeekJapan(loopDate, DAY_OF_WEEK_FORMAT_JP + ")"));
+            if (!loopDate.beforeOrEquals(datePeriod.end())) {
+                cells.setColumnWidth(3 + i, 3);
+                cells.get(countRow + 1, i + 3).setValue("");
+                cells.get(countRow + 2, i + 3).setValue("");
+            } else {
+                cells.setColumnWidth(3 + i, 3);
+
+                cells.get(countRow + 1, i + 3).setValue(loopDate.day());
+                cells.get(countRow + 2, i + 3).setValue("("
+                        + getDayOfWeekJapan(loopDate, DAY_OF_WEEK_FORMAT_JP + ")"));
+            }
+
         }
     }
+
     private String getDayOfWeekJapan(GeneralDate date, String formatDate) {
         SimpleDateFormat jp = new SimpleDateFormat(formatDate, Locale.JAPAN);
         return jp.format(date.date());
@@ -355,13 +366,13 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             case DAYS:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter2 = new DecimalFormat("#.#");
-                    rs = formatter2.format(valueDouble) +  TextResource.localize("KWR_1");
+                    rs = formatter2.format(valueDouble) + TextResource.localize("KWR_1");
                 }
                 break;
             case AMOUNT_OF_MONEY:
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter3 = new DecimalFormat("#,###");
-                    rs = formatter3.format((int) valueDouble) +  TextResource.localize("KWR_3");
+                    rs = formatter3.format((int) valueDouble) + TextResource.localize("KWR_3");
                 }
                 break;
         }
