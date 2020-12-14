@@ -243,7 +243,7 @@ module nts.uk.com.view.ccg003.a {
     // Map<個人の記念日情報、新記念日Flag> (List)
     anniversaries: KnockoutObservableArray<AnniversaryNotices> = ko.observableArray([]);
     // ロール
-    roleFlag: KnockoutObservable<boolean> = ko.observable(true);
+    roleFlag: KnockoutObservable<boolean> = ko.observable(false);
     role: KnockoutObservable<Role> = ko.observable(new Role());
     isShow: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -256,8 +256,10 @@ module nts.uk.com.view.ccg003.a {
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
-            vm.role(response.role);
-            vm.roleFlag(response.role.employeeReferenceRange !== 3);
+            if (response.role) {
+              vm.role(response.role);
+              vm.roleFlag(response.role.employeeReferenceRange !== 3);
+            }
             vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dd)'));
           }
         })
