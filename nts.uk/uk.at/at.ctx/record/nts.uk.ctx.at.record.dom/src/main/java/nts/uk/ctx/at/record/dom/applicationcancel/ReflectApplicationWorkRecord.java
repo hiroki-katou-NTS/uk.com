@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author thanh_nx
@@ -37,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 public class ReflectApplicationWorkRecord {
 
 	public static Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Require require,
-			ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
+			ExecutionType reCalcAtr, ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;
@@ -92,7 +93,7 @@ public class ReflectApplicationWorkRecord {
 
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
-				Arrays.asList(domainCorrect), Optional.empty());
+				Arrays.asList(domainCorrect), Optional.empty(), reCalcAtr);
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
@@ -148,7 +149,7 @@ public class ReflectApplicationWorkRecord {
 
 		// CalculateDailyRecordServiceCenter
 		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr);
 
 		// DailyRecordAdUpService
 		public void addAllDomain(IntegrationOfDaily domain);

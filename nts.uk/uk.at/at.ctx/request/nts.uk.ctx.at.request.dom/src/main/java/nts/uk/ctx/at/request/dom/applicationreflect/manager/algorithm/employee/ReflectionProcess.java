@@ -12,9 +12,9 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess.ProcessReflectWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess.ProcessReflectWorkSchedule;
-import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.OneDayReflectStatusOutput;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
@@ -74,7 +74,7 @@ public class ReflectionProcess {
 		/**
 		 * require{ 申請反映実行条件を取得する(会社ID) ｝
 		 */
-		public Optional<AppReflectExecCond> findAppReflectExecCond(String companyId);
+		public Optional<AppReflectExecutionCondition> findAppReflectExecCond(String companyId);
 
 		/**
 		 * 

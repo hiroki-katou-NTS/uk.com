@@ -14,10 +14,9 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.convert.ConvertApplicationToShare;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
-import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
-import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
@@ -47,16 +46,15 @@ public class ProcessReflectWorkSchedule {
 		}
 
 		// [申請反映実行条件]を取得する
-		Optional<AppReflectExecCond> appReFlectExec = require.findAppReflectExecCond(companyId);
-		
+		Optional<AppReflectExecutionCondition> appReFlectExec = require.findAppReflectExecCond(companyId);
 		/** [事前申請を勤務予定に反映する]をチェック */
-		if (!appReFlectExec.isPresent() || appReFlectExec.get().getPreAppSchedule() == PreApplicationWorkScheReflectAttr.NOT_REFLECT) {
+		if (!appReFlectExec.isPresent() || appReFlectExec.get().getApplyBeforeWorkSchedule() == NotUseAtr.NOT_USE) {
 			statusWorkSchedule.setReflectStatus(ReflectedState.REFLECTED);
 			return Pair.of(statusWorkSchedule, Optional.empty());
 		}
 
 		// [勤務予定が確定状態でも反映する]をチェック
-		if (appReFlectExec.get().getScheduleConfirm() == NotUseAtr.NOT_USE) {
+		if (appReFlectExec.get().getEvenIfScheduleConfirmed() == NotUseAtr.NOT_USE) {
 			// 事前チェック処理
 			PreCheckProcessResult preCheckProcessResult = PreCheckProcessWorkSchedule.preCheck(require, companyId,
 					application, closureId, isCalWhenLock, statusWorkSchedule, targetDate);
@@ -65,11 +63,15 @@ public class ProcessReflectWorkSchedule {
 		}
 
 		// 勤務予定に反映
-		Pair<Object, AtomTask> result = require.process(ConvertApplicationToShare.toAppliction(application), targetDate,
+		Pair<Object, AtomTask> result = require.process(execType, ConvertApplicationToShare.toAppliction(application), targetDate,
 				new ReflectStatusResultShare(ReflectedStateShare.valueOf(statusWorkSchedule.getReflectStatus().value),
-						ReasonNotReflectDailyShare.valueOf(statusWorkSchedule.getReasonNotReflectWorkRecord().value),
-						ReasonNotReflectShare.valueOf(statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
-				appReFlectExec.get().getPreAppSchedule().value);
+						statusWorkSchedule.getReasonNotReflectWorkRecord() == null ? null
+								: ReasonNotReflectDailyShare
+										.valueOf(statusWorkSchedule.getReasonNotReflectWorkRecord().value),
+						statusWorkSchedule.getReasonNotReflectWorkSchedule() == null ? null
+								: ReasonNotReflectShare
+										.valueOf(statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
+				appReFlectExec.get().getApplyBeforeWorkSchedule().value);
 		return Pair.of(statusResult((ReflectStatusResultShare) result.getLeft()), Optional.of(result.getRight()));
 
 	}
@@ -87,7 +89,7 @@ public class ProcessReflectWorkSchedule {
 		/**
 		 * require{ 申請反映実行条件を取得する(会社ID) ｝
 		 */
-		public Optional<AppReflectExecCond> findAppReflectExecCond(String companyId);
+		public Optional<AppReflectExecutionCondition> findAppReflectExecCond(String companyId);
 
 		/**
 		 * 
@@ -97,7 +99,7 @@ public class ProcessReflectWorkSchedule {
 		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType);
 
 		// ReflectApplicationWorkScheduleAdapter
-		public Pair<Object, AtomTask> process(ApplicationShare application, GeneralDate date,
+		public Pair<Object, AtomTask> process(ExecutionType executionType, ApplicationShare application, GeneralDate date,
 				ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr);
 
 	}

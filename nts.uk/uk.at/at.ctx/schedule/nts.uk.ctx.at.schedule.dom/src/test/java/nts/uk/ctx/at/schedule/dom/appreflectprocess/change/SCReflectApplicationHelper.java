@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeZoneAppShare;
@@ -52,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -144,8 +144,8 @@ public class SCReflectApplicationHelper {
 				null, breakTime, new ArrayList<>(), attendanceLeave, attTimeOpt, shortTime);
 	}
 
-	public static ReflectAppStamp createReflectAppSet() {
-		return new ReflectAppStamp("1", NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	public static StampAppReflect createReflectAppSet() {
+		return new StampAppReflect("1", NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 }
