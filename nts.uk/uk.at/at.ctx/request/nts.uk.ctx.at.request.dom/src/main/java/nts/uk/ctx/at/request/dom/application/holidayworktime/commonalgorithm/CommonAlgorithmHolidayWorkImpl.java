@@ -186,7 +186,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		//	初期表示する出退勤時刻を取得する
 		OverTimeContent overTimeContent = this.getOverTimeContent(initWork.getInitWorkTypeCd(), initWork.getInitWorkTimeCd(), actualContentDisplayList);
 		
-		WorkHours workHours = commonAlgorithmOverTime.initAttendanceTime(companyId, date, overTimeContent, holidayWorkSetting.getApplicationDetailSetting());
+		WorkHours workHours = commonAlgorithmOverTime.initAttendanceTime(companyId, date, overTimeContent, holidayWorkSetting.getApplicationDetailSetting()).orElse(null);
 		hdWorkDispInfoWithDateOutput.setWorkHours(workHours);
 		
 		//01-01_休憩時間を取得する

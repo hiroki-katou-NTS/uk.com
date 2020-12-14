@@ -244,7 +244,7 @@ public class HolidayServiceImpl implements HolidayService {
 		OverTimeContent overTimeContent = commonHolidayWorkAlgorithm.getOverTimeContent(Optional.of(workType), Optional.of(workTime), 
 				actualContentDisplayList);
 		WorkHours workHours = commonOverTimeAlgorithm.initAttendanceTime(companyId, Optional.ofNullable(date), overTimeContent, 
-				holidayWorkAppSet.getApplicationDetailSetting());
+				holidayWorkAppSet.getApplicationDetailSetting()).orElse(null);
 		hdSelectWorkDispInfoOutput.setWorkHours(workHours);
 		
 		//	休憩時間帯を取得する
