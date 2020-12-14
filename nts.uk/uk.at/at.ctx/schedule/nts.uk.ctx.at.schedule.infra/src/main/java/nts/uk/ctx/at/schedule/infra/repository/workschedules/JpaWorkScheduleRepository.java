@@ -253,7 +253,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						}
 					});
 				}
-			} else {
+			} else if(!newData.atdLvwTimes.isEmpty() || newData.wktmCd != null){
 				// If old data is empty
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 							TimeLeavingWork leavingWork = workSchedule.getOptTimeLeaving().get()
