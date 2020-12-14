@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.applicationapproval;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.CheckItemAppapv;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvItemsRepository;
@@ -38,6 +39,7 @@ public class JpaFixedExtractionAppapvItemsRepository extends JpaRepository imple
 
     @Override
     public List<FixedExtractionAppapvItems> getBy(List<CheckItemAppapv> nos) {
+        if (CollectionUtil.isEmpty(nos)) return new ArrayList<>();
         return this.queryProxy().query(FIND_BY_NOS, KrcmtWkpfxexAppapvItm.class)
             .setParameter("nos", nos)
             .getList(KrcmtWkpfxexAppapvItm::toDomain);

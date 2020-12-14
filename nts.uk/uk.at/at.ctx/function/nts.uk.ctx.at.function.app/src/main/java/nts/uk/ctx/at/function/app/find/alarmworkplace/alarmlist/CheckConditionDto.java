@@ -19,6 +19,19 @@ public class CheckConditionDto {
         this.endDate = endDate;
     }
 
+    public CheckConditionDto(WorkplaceCategory workplaceCategory, Integer startYm,  Integer endYm) {
+        this.category = workplaceCategory.value;
+        this.categoryName = TextResource.localize(workplaceCategory.nameId);
+        this.startYm = startYm;
+        this.endYm = endYm;
+    }
+
+    public CheckConditionDto(WorkplaceCategory workplaceCategory, Integer yearMonth) {
+        this.category = workplaceCategory.value;
+        this.categoryName = TextResource.localize(workplaceCategory.nameId);
+        this.yearMonth = yearMonth;
+    }
+
     /**
      * カテゴリ
      */
@@ -37,10 +50,25 @@ public class CheckConditionDto {
     /**
      * 抽出期間: Start date
      */
-    private GeneralDate startDate; //TODO
+    private GeneralDate startDate;
 
     /**
      * 抽出期間: End date
      */
-    private GeneralDate endDate; //TODO
+    private GeneralDate endDate;
+
+    /**
+     * 抽出期間: Start date
+     */
+    private Integer startYm;
+
+    /**
+     * 抽出期間: End date
+     */
+    private Integer endYm;
+
+    /**
+     * 抽出期間
+     */
+    private Integer yearMonth;
 }

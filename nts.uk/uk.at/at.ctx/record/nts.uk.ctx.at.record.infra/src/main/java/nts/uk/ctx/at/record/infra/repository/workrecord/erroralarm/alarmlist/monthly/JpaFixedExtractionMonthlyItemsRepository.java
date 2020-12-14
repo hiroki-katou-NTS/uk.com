@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.monthly;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
@@ -35,6 +36,7 @@ public class JpaFixedExtractionMonthlyItemsRepository extends JpaRepository impl
 
     @Override
     public List<FixedExtractionMonthlyItems> getBy(List<FixedCheckMonthlyItemName> nos) {
+        if (CollectionUtil.isEmpty(nos)) return new ArrayList<>();
         return this.queryProxy().query(FIND_BY_NOS, KrcmtWkpMonFxexItm.class)
             .setParameter("nos", nos)
             .getList(KrcmtWkpMonFxexItm::toDomain);

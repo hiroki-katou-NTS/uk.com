@@ -7,10 +7,9 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceIdName;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlaceRepository;
@@ -68,11 +67,9 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
         }
 
         dataSetter.setData("ctgCount", counter.get());
-        dataSetter.setData("ctgTotal", counter.get());
         // 集計処理
         List<AlarmListExtractInfoWorkplace> alExtractInfos = aggregateProcessService.process(cid,
                 command.getAlarmPatternCode(), command.getWorkplaceIds(), convertPeriods(command.getCategoryPeriods()),
-                total -> dataSetter.updateData("ctgTotal", total),
                 finished -> {
                     counter.set(counter.get() + finished);
                     dataSetter.updateData("ctgCount", counter.get());
@@ -120,7 +117,7 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
 
     private List<PeriodByAlarmCategory> convertPeriods(List<CategoryPeriodCommand> categoryPeriods) {
         List<PeriodByAlarmCategory> periods = categoryPeriods.stream()
-                .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStart(), x.getEnd()))
+                .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStartDate(), x.getEndDate(), new YearMonth(x.getYearMonth())))
                 .collect(Collectors.toList());
         return periods;
     }

@@ -160,10 +160,17 @@ module nts.uk.at.kal011.a {
                 }
 
                 let categoryPeriods = _.map(conditionSelecteds, (condition: CheckCondition) => {
-                    return {
-                        category: condition.category,
-                        start: condition.dateRange().startDate.toISOString(),
-                        emd: condition.dateRange().endDate.toISOString()
+                    if (condition.category == common.WORKPLACE_CATAGORY.MONTHLY){
+                        return {
+                            category: condition.category,
+                            yearMonth: condition.dateRange().startDate
+                        }
+                    } else {
+                        return {
+                            category: condition.category,
+                            startDate: condition.dateRange().startDate.toISOString(),
+                            endDate: condition.dateRange().endDate.toISOString()
+                        }
                     }
                 })
 
@@ -266,6 +273,7 @@ module nts.uk.at.kal011.a {
         checkConditionLis: Array<string>;
         startDate: any;
         endDate: any
+        yearMonth: number;
     }
 
     class CheckCondition {
@@ -273,6 +281,7 @@ module nts.uk.at.kal011.a {
         category: common.WORKPLACE_CATAGORY;
         categoryName: any;
         dateRange: KnockoutObservable<DateRangePickerModel>;
+        yearMonth: KnockoutObservable<number>;
         type: KnockoutObservable<string>;
 
         constructor(data: ICheckCondition) {
@@ -280,11 +289,13 @@ module nts.uk.at.kal011.a {
             this.category = data.category;
             this.categoryName = data.categoryName;
             this.dateRange = ko.observable(new DateRangePickerModel(data.startDate, data.endDate));
+            this.yearMonth = ko.observable(data.yearMonth);
             this.type = ko.observable(this.getType());
         }
 
         getType(): string {
-            if (this.category == common.WORKPLACE_CATAGORY.MONTHLY) {
+            if (this.category == common.WORKPLACE_CATAGORY.MASTER_CHECK_BASIC 
+                || this.category == common.WORKPLACE_CATAGORY.MASTER_CHECK_WORKPLACE) {
                 return 'yearmonth';
             }
             return 'date';
@@ -295,6 +306,10 @@ module nts.uk.at.kal011.a {
                 return false;
             }
             return true;
+        }
+
+        isPeriodDate(){
+            return this.category != common.WORKPLACE_CATAGORY.MONTHLY;
         }
     }
 

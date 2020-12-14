@@ -14,7 +14,7 @@ public enum WorkplaceCategory {
     // マスタチェック(日次)
     MASTER_CHECK_DAILY(2, "KAL020_103"),
     // スケジュール／日次
-    SCHEDULE_DAILY(3, "スケジュール／日次"), // TODO Q&A 37708
+    SCHEDULE_DAILY(3, "KAL020_300"),
     // 月次
     MONTHLY(4, "KAL020_401"),
     // 申請承認

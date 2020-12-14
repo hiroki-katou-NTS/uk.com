@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.schedule;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedCheckDayItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleItemsRepository;
@@ -34,6 +35,7 @@ public class JpaFixedExtractionScheduleItemsRepository extends JpaRepository imp
 
     @Override
     public List<FixedExtractionScheduleItems> getBy(List<FixedCheckDayItemName> nos) {
+        if (CollectionUtil.isEmpty(nos)) return new ArrayList<>();
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpSchedaiFxexItm.class)
             .setParameter("nos", nos)
             .getList(KrcmtWkpSchedaiFxexItm::toDomain);

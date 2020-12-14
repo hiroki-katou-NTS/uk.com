@@ -15,6 +15,8 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractI
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +50,9 @@ public class AggregateProcessService {
      * @param workplaceIds     List<職場ID>
      * @param periods          List<カテゴリ別期間>
      */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<AlarmListExtractInfoWorkplace> process(String cid, String alarmPatternCode, List<String> workplaceIds, List<PeriodByAlarmCategory> periods,
-                                                       Consumer<Integer> total, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+                                                       Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
         // パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定(職場別)」を取得する
         Optional<AlarmPatternSettingWorkPlace> patternOpt = alarmPatternSettingWorkPlaceRepo.getBy(cid, new AlarmPatternCode(alarmPatternCode));
         if (!patternOpt.isPresent()) {
@@ -60,75 +63,74 @@ public class AggregateProcessService {
 
         // 取得した「アラームリストパターン設定(職場別)」．カテゴリ別チェック条件をループする
         List<CheckCondition> checkConList = patternOpt.get().getCheckConList();
-        counter.accept(checkConList.size());
-        for (CheckCondition checkCdt : checkConList) {
+        for (PeriodByAlarmCategory ctgPeriod : periods) {
+            // 抽出処理停止フラグが立っているかチェックする
+            if (shouldStop.get()) {
+                break;
+            }
+
+            Optional<CheckCondition> checkCdtOpt = checkConList.stream().filter(x -> x.getWorkplaceCategory().value == ctgPeriod.category).findFirst();
+            if (!checkCdtOpt.isPresent()) {
+                counter.accept(1);
+                continue;
+            }
+
+            CheckCondition checkCdt = checkCdtOpt.get();
             WorkplaceCategory category = checkCdt.getWorkplaceCategory();
             // ドメインモデル「カテゴリ別アラームチェック条件(職場別)」を取得する。
-            Optional<AlarmCheckCdtWorkplaceCategory> conditionCtgOpt = alarmCheckCdtWkpCtgRepo.getBy(category,
+            List<AlarmCheckCdtWorkplaceCategory> conditionCtgs = alarmCheckCdtWkpCtgRepo.getBy(category,
                     checkCdt.getCheckConditionLis());
-
-            if (!conditionCtgOpt.isPresent()) continue;
-            AlarmCheckCdtWorkplaceCategory conditionCtg = conditionCtgOpt.get();
-
-            // Dùng hàm trong inteface
-            List<String> alarmCheckWkpId = conditionCtg.getCondition().getAlarmCheckWkpID();
-            List<String> optionalIds = conditionCtg.getCondition().getListOptionalIDs();
+            List<String> alarmCheckWkpId = new ArrayList<>();
+            List<String> optionalIds = new ArrayList<>();
+            for (AlarmCheckCdtWorkplaceCategory condCtg : conditionCtgs) {
+                alarmCheckWkpId.addAll(condCtg.getCondition().getAlarmCheckWkpID());
+                optionalIds.addAll(condCtg.getCondition().getListOptionalIDs());
+            }
 
             // ループ中のカテゴリをチェック
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid, getDatePeriod(category, periods),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid,
+                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
                             alarmCheckWkpId, workplaceIds));
                     break;
                 case MASTER_CHECK_DAILY:
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid, getDatePeriod(category, periods),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid,
+                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
                             alarmCheckWkpId, workplaceIds));
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckWorkplace(cid, getDatePeriod(category, periods),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckWorkplace(cid,
+                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
                             alarmCheckWkpId, workplaceIds));
                     break;
                 case SCHEDULE_DAILY:
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processSchedule(cid, getDatePeriod(category, periods),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processSchedule(cid,
+                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
                             alarmCheckWkpId, optionalIds, workplaceIds));
                     break;
                 case MONTHLY:
                     // アルゴリズム「月次の集計処理」を実行する
-                    DatePeriod periodMonthly = getDatePeriod(category, periods);
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMonthly(cid, YearMonth.of(periodMonthly.start().year(),
-                            periodMonthly.start().month()), alarmCheckWkpId, optionalIds, workplaceIds));
+                    alExtractInfos.addAll(aggregateProcessAdapter.processMonthly(cid, ctgPeriod.getYearMonth(), alarmCheckWkpId, optionalIds, workplaceIds));
                     break;
                 case APPLICATION_APPROVAL:
                     // アルゴリズム「申請承認の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processAppApproval(getDatePeriod(category, periods),
+                    alExtractInfos.addAll(aggregateProcessAdapter.processAppApproval(
+                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
                             alarmCheckWkpId, workplaceIds));
                     break;
             }
 
             // List＜アラーム抽出結果（職場別）＞に返す値を追加
             alarmListExtractInfoWorkplaceRepo.addAll(alExtractInfos);
-
-            // 抽出処理停止フラグが立っているかチェックする
-            if (shouldStop.get()) {
-                break;
-            }
+            counter.accept(1);
         }
 
         return alExtractInfos;
-    }
-
-    private DatePeriod getDatePeriod(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {
-        Optional<PeriodByAlarmCategory> periodOpt = periods.stream()
-                .filter(x -> x.getCategory() == category.value).findFirst();
-
-        if (!periodOpt.isPresent()) return null;
-
-        PeriodByAlarmCategory period = periodOpt.get();
-        return new DatePeriod(period.startDate, period.endDate);
     }
 
     private YearMonth getYm(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {

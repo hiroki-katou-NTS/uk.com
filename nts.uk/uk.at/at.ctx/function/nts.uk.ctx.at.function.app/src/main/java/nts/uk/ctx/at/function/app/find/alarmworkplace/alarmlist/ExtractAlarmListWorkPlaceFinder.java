@@ -3,10 +3,9 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
-import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlaceRepository;
-import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
-import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
+import nts.uk.ctx.at.function.dom.alarmworkplace.*;
 import nts.uk.ctx.at.function.dom.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
@@ -119,8 +118,9 @@ public class ExtractAlarmListWorkPlaceFinder {
                     break;
                 case MONTHLY:
                     // 期間を作成する。
-                    // TODO
-                    periods.add(new CheckConditionDto(category, GeneralDate.today(), GeneralDate.today()));
+                    SingleMonth singleMonth = (SingleMonth) checkCond.getRangeToExtract();
+                    Integer ym = YearMonth.of(processingYm.year(), singleMonth.getMonthNo()).v();
+                    periods.add(new CheckConditionDto(category, ym));
                     break;
                 case SCHEDULE_DAILY:
                     // スケジュール／日次の期間を取得する。
@@ -148,12 +148,7 @@ public class ExtractAlarmListWorkPlaceFinder {
      * @param processingYm   当月の年月
      */
     private CheckConditionDto getBasicPeriod(RangeToExtract rangeToExtract, YearMonth processingYm) {
-        // TODO
-        // 「Input．当月の年月」-「Input．開始月．抽出期間(月単位)．月数」を開始月とする
-        GeneralDate startdate = GeneralDate.today();
-        // 「Input．当月の年月」-「Input．終了月．抽出期間(月単位)．月数」を終了月とする
-        GeneralDate enddate = GeneralDate.today();
-        return new CheckConditionDto(WorkplaceCategory.MASTER_CHECK_BASIC, startdate, enddate);
+        return getYmPeriod(rangeToExtract, processingYm);
     }
 
     /**
@@ -163,12 +158,25 @@ public class ExtractAlarmListWorkPlaceFinder {
      * @param processingYm   当月の年月
      */
     private CheckConditionDto getWorkplacePeriod(RangeToExtract rangeToExtract, YearMonth processingYm) {
-        // TODO
+        return getYmPeriod(rangeToExtract, processingYm);
+    }
+
+    private CheckConditionDto getYmPeriod(RangeToExtract rangeToExtract, YearMonth processingYm) {
+        ExtractionPeriodMonthly period = (ExtractionPeriodMonthly) rangeToExtract;
         // 「Input．当月の年月」-「Input．開始月．抽出期間(月単位)．月数」を開始月とする
-        GeneralDate startdate = GeneralDate.today();
+        Optional<MonthNo> startMonthNo = period.getStartMonth().getStrMonthNo();
+        Integer startYm = null;
+        if (startMonthNo.isPresent()) {
+            startYm = YearMonth.of(processingYm.year(), startMonthNo.get().getMonthNo()).v();
+        }
+
         // 「Input．当月の年月」-「Input．終了月．抽出期間(月単位)．月数」を終了月とする
-        GeneralDate enddate = GeneralDate.today();
-        return new CheckConditionDto(WorkplaceCategory.MASTER_CHECK_WORKPLACE, startdate, enddate);
+        Optional<MonthNo> endMonthNo = period.getEndMonth().getEndMonthNo();
+        Integer endYm = null;
+        if (endMonthNo.isPresent()) {
+            endYm = YearMonth.of(processingYm.year(), endMonthNo.get().getMonthNo()).v();
+        }
+        return new CheckConditionDto(WorkplaceCategory.MASTER_CHECK_BASIC, startYm, endYm);
     }
 
     /**
@@ -180,6 +188,7 @@ public class ExtractAlarmListWorkPlaceFinder {
      */
     private CheckConditionDto getScheduleDailyPeriod(WorkplaceCategory category, RangeToExtract rangeToExtract,
                                                      YearMonth processingYm) {
+        ExtractionPeriodDaily period = (ExtractionPeriodDaily) rangeToExtract;
         // TODO
         // 開始日の指定方法をチェックする。
 

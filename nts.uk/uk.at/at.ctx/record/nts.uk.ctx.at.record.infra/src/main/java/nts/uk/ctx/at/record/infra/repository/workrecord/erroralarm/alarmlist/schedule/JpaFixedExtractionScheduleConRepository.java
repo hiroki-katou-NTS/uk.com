@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.schedule;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleConRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.schedule.KrcmtWkpSchedaiFxexCon;
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplac
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -32,6 +34,7 @@ public class JpaFixedExtractionScheduleConRepository extends JpaRepository imple
 
     @Override
     public List<FixedExtractionScheduleCon> getBy(List<String> ids, boolean useAtr) {
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpSchedaiFxexCon.class)
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)

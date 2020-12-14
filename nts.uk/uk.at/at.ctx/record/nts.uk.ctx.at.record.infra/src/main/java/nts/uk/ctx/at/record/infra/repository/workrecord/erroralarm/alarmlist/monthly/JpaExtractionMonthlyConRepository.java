@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.monthly;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyConRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.monthly.KrcmtWkpMonExtracCon;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attenda
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,9 +54,11 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
 
     @Override
     public List<ExtractionMonthlyCon> getBy(List<String> ids, boolean useAtr) {
-        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcstErAlCompareSingle.class).getSingle();
-        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcstErAlCompareRange.class).getSingle();
-        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcstErAlSingleFixed.class).getSingle();
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
+
+        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
+        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
+        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
 
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpMonExtracCon.class)
             .setParameter("ids", ids)

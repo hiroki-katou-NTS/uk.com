@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.applicationapproval;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.FixedExtractionAppapvConRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.applicationapproval.KrcmtWkpfxexAppapvCon;
@@ -33,6 +34,7 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
 
     @Override
     public List<FixedExtractionAppapvCon> getByIds(List<String> ids) {
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
         return this.queryProxy().query(SELECT_BY_IDS, KrcmtWkpfxexAppapvCon.class)
                 .setParameter("ids", ids)
                 .getList(KrcmtWkpfxexAppapvCon::toDomain);
@@ -40,6 +42,7 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
 
     @Override
     public List<FixedExtractionAppapvCon> getBy(List<String> ids, boolean useAtr) {
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
         return this.queryProxy().query(SELECT_BY_IDS_AND_USEATR, KrcmtWkpfxexAppapvCon.class)
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)

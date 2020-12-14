@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 @Data
 public class CategoryPeriodCommand {
     private int category;
-    private GeneralDate start;
-    private GeneralDate end;
+    private GeneralDate startDate;
+    private GeneralDate endDate;
+    private Integer yearMonth;
 }

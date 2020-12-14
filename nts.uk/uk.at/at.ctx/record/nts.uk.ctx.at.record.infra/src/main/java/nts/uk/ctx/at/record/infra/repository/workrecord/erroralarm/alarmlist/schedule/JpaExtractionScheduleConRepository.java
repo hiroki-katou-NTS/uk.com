@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.schedule;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleConRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.schedule.KrcmtWkpSchedaiExCon;
@@ -52,9 +53,11 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
 
     @Override
     public List<ExtractionScheduleCon> getBy(List<String> ids, boolean useAtr) {
-        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcstErAlCompareSingle.class).getSingle();
-        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcstErAlCompareRange.class).getSingle();
-        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcstErAlSingleFixed.class).getSingle();
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
+
+        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
+        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
+        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
 
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpSchedaiExCon.class)
             .setParameter("ids", ids)

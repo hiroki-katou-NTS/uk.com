@@ -11,7 +11,7 @@ public interface AlarmCheckCdtWkpCtgRepository {
 
     List<AlarmCheckCdtWorkplaceCategory> getByCategory(WorkplaceCategory category);
 
-    Optional<AlarmCheckCdtWorkplaceCategory> getBy(WorkplaceCategory category, List<AlarmCheckConditionCode> codes);
+    List<AlarmCheckCdtWorkplaceCategory> getBy(WorkplaceCategory category, List<AlarmCheckConditionCode> codes);
 
     void register(AlarmCheckCdtWorkplaceCategory domain);
 

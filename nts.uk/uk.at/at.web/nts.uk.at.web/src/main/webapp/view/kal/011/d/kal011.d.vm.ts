@@ -15,9 +15,9 @@ module nts.uk.at.kal011.d {
         /*実行終了日時*/
         endTime: KnockoutObservable<any> = ko.observable(null);
         /*経過時間*/
-        elapsedTime: KnockoutObservable<any> = ko.observable(null);;
+        elapsedTime: KnockoutObservable<any> = ko.observable("00:00:00");;
         /*処理状態*/
-        status: KnockoutObservable<any> = ko.observable(null);
+        progress: KnockoutObservable<any> = ko.observable("0");
 
         alarmPatternCode: string;
         workplaceIds: Array<string>;
@@ -28,6 +28,7 @@ module nts.uk.at.kal011.d {
         dialogMode: KnockoutObservable<number> = ko.observable(ExtractState.PROCESSING);
         // interval 1000ms request to server
         interval: any;
+        taskId: string;
 
         formatDate: string = "YYYY/MM/DD HH:mm:ss";
 
@@ -52,22 +53,17 @@ module nts.uk.at.kal011.d {
             vm.interval = setInterval(vm.countTime, 1000, vm);
             vm.extractAlarm().done((data: any) => {
                 console.log(data);
-
                 vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
-                vm.setFinished();
             }).fail((err: any) => {
                 vm.$dialog.error(err);
+            }).always(() => {
+                vm.setFinished();
             });
         }
 
-        /**
-         * action perform for interval
-         * @return JQueryPromise
-         */
         extractAlarm(): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred();
-
 
             vm.$ajax(API.extractStart).done((processStatusId: string) => {
                 vm.processStatusId = processStatusId;
@@ -78,28 +74,20 @@ module nts.uk.at.kal011.d {
                     processStatusId: vm.processStatusId
                 }
                 // 抽出処理が実行中である場合
-                vm.canInterrupt(true);
-                vm.canCheckResult(false);
-                vm.canClose(false);
+                vm.setControlStatus(ScreenMode.IN_PROGRESS);
                 vm.$ajax(API.extractExecute, param).done((task: any) => {
-                    console.log(task);
+                    vm.taskId = task.id;
                     nts.uk.deferred.repeat(conf => conf.task(() => {
-                        return nts.uk.request.asyncTask.getInfo(task.id).done(function (res: any) {
-                            let taskData = res.taskDatas;
-                            console.log(taskData);
+                        return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function (res: any) {
+                            vm.updateProgress(res.taskDatas);
                             if (res.succeeded) {
                                 let data = {};
-                                vm.canInterrupt(false);
-                                vm.canCheckResult(true);
-                                vm.canClose(false);
+                                vm.setControlStatus(ScreenMode.SUCCESSFUL);
 
                                 dfd.resolve(data);
                             } else if (res.failed) {
-                                // 抽出処理が中断された場合													
-                                vm.canInterrupt(false);
-                                vm.canCheckResult(true);
-                                vm.canClose(true);
-
+                                // 抽出処理が中断された場合
+                                vm.setControlStatus(ScreenMode.INTERRUPT);
                                 dfd.reject(res.error);
                             }
                         });
@@ -108,22 +96,26 @@ module nts.uk.at.kal011.d {
                     }).pause(1000));
                 }).fail((err: any) => {
                     // 抽出処理が開始できない場合
-                    vm.canInterrupt(false);
-                    vm.canCheckResult(false);
-                    vm.canClose(true);
+                    vm.setControlStatus(ScreenMode.NOT_START);
 
                     dfd.reject(err);
                 });
             }).fail((err: any) => {
                 // 抽出処理が開始できない場合
-                vm.canInterrupt(false);
-                vm.canCheckResult(false);
-                vm.canClose(true);
+                vm.setControlStatus(ScreenMode.NOT_START);
 
                 dfd.reject(err);
             });
 
             return dfd.promise();
+        }
+
+        updateProgress(taskDatas: Array<any>) {
+            const vm = this;
+            let progress = "";
+            let count: any = _.find(taskDatas, (task: any) => { return task.key == "ctgCount" });
+            progress += count == null ? "0" : count.valueAsString;
+            vm.progress(progress);
         }
 
         extractUpdateStatus(status: ExtractState): JQueryPromise<any> {
@@ -139,11 +131,14 @@ module nts.uk.at.kal011.d {
 
         interruptProcess() {
             const vm = this;
-            vm.$dialog.confirm({ messageId: "Msg_1412" }).then((result: 'yes' | 'cancel') => {
+            vm.$dialog.confirm({ messageId: "Msg_1412" }).then((result: string) => {
                 if (result === 'yes') {
-                    //TODO server side logic to suspens
-                    vm.dialogMode(ExtractState.INTERRUPTION);
-                    vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
+                    nts.uk.request.asyncTask.requestToCancel(vm.taskId);
+                    vm.extractUpdateStatus(ExtractState.INTERRUPTION);
+                    vm.setFinished();
+
+                    // 抽出処理が中断された場合
+                    vm.setControlStatus(ScreenMode.INTERRUPT);
                 }
             });
         }
@@ -184,13 +179,49 @@ module nts.uk.at.kal011.d {
             let result = moment(time).format("HH:mm:ss")
             vm.elapsedTime(result);
         }
+
+        setControlStatus(mode: ScreenMode) {
+            const vm = this;
+
+            switch (mode) {
+                case ScreenMode.IN_PROGRESS:
+                    // 抽出処理が実行中である場合
+                    vm.canInterrupt(true);
+                    vm.canCheckResult(false);
+                    vm.canClose(false);
+                    break;
+                case ScreenMode.INTERRUPT:
+                    // 抽出処理が中断された場合
+                    vm.canInterrupt(false);
+                    vm.canCheckResult(true);
+                    vm.canClose(true);
+                    break;
+                case ScreenMode.NOT_START:
+                    // 抽出処理が開始できない場合
+                    vm.canInterrupt(false);
+                    vm.canCheckResult(false);
+                    vm.canClose(true);
+                    break;
+                case ScreenMode.SUCCESSFUL:
+                    vm.canInterrupt(false);
+                    vm.canCheckResult(true);
+                    vm.canClose(false);
+                    break;
+            }
+        }
     }
 
-    export enum ExtractState {
+    enum ExtractState {
         SUCCESSFUL_COMPLE = 0, /**正常終了*/
         ABNORMAL_TERMI = 1, /**異常終了*/
         PROCESSING = 2, /**処理中*/
         INTERRUPTION = 3,    /**中断*/
     }
 
+    enum ScreenMode {
+        IN_PROGRESS = 1,
+        INTERRUPT = 2,
+        NOT_START = 3,
+        SUCCESSFUL = 4
+    }
 }

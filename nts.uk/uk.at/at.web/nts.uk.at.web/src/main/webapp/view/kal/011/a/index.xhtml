@@ -81,8 +81,16 @@
                                             <td><span data-bind="text: $data.categoryName"></span></td>
                                             <!-- A6_6 and A6_7-->
                                             <td class="periodTime">
-                                                <div tabindex="-1" id="daterangepicker"
+                                                <com:ko-if bind="!$data.isPeriodDate()">
+                                                    <!-- A6_7 -->
+                                                    <div data-bind="ntsDatePicker: {value: $data.yearMonth, dateType: 'yearmonth'}"></div>
+                                                </com:ko-if>
+                                                <com:ko-if bind="$data.isPeriodDate()">
+                                                    <!-- A6_6 and A6_7-->
+                                                    <div tabindex="-1" id="daterangepicker"
                                                     data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRange, type: $data.type}"/>
+                                                </com:ko-if>
+                                                
                                             </td>
                                         </tr>
                                     </com:ko-foreach>

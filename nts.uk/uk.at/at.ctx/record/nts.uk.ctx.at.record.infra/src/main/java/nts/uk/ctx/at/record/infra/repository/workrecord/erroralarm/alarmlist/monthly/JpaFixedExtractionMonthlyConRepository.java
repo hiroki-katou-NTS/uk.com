@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.monthly;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyConRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.monthly.KrcmtWkpMonFxexCon;
@@ -33,6 +34,7 @@ public class JpaFixedExtractionMonthlyConRepository extends JpaRepository implem
 
     @Override
     public List<FixedExtractionMonthlyCon> getBy(List<String> ids, boolean useAtr) {
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpMonFxexCon.class)
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)
