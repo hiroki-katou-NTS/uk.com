@@ -2,95 +2,185 @@
 
 module nts.uk.at.view.kmk004.components.transform {
 
-    interface Params {
-        selectedYear: KnockoutObservable<number | null>;
-        change: KnockoutObservable<boolean>;
-    }
+	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 
-    const template = `
+	interface Params {
+		selectedYear: KnockoutObservable<number | null>;
+		param: KnockoutObservable<string>;
+		type: SIDEBAR_TYPE
+		years: KnockoutObservableArray<IYear>;
+	}
+
+	const API = {
+		GET_YEARS_COM: 'screen/at/kmk004/viewL/getListYear',
+		GET_YEARS_WORKPLACE: 'screen/at/kmk004/viewM/getListYear',
+		GET_YEARS_EMPLOYMENT: 'screen/at/kmk004/viewN/getListYear',
+		GET_YEARS_EMPLOYEE: 'screen/at/kmk004/viewO/getListYear'
+	};
+
+	const template = `
+		<button id = "btn_year" data-bind="click: openQDialog, i18n: 'KMK004_233'"></button>
         <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
                 options: itemList,
                 optionsValue: 'year',
-                optionsText: 'year',
+                optionsText: 'yearName',
                 multiple: false,
                 value: selectedYear,
                 rows: 5,
                 columns: [
                     { key: 'statusValue', length: 1 },
-                    { key: 'year', length: 4 }
+                    { key: 'yearName', length: 4 }
                 ]}"></div>
         </div>
         <div class="note color-attendance" data-bind="i18n: 'KMK004_212'"></div>
     `;
 
-    @component({
-        name: 'box-year',
-        template
-    })
+	@component({
+		name: 'box-year',
+		template
+	})
 
-    class BoxYear extends ko.ViewModel {
+	class BoxYear extends ko.ViewModel {
 
-        public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
-        public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-        public change: KnockoutObservable<boolean> = ko.observable(true);
+		public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
+		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+		public param: KnockoutObservable<string> = ko.observable('');
+		public type: SIDEBAR_TYPE;
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
+		
+		created(params: Params) {
+			const vm = this;
 
-        created(params: Params) {
+			vm.selectedYear = params.selectedYear;
+			vm.param = params.param;
+			vm.type = params.type;
+			vm.itemList = params.years;
+		}
+
+		mounted() {
+			const vm = this;
+
+			vm.param
+				.subscribe(() => {
+					vm.reloadData(0);
+				});
+
+			vm.param.valueHasMutated();
+		}
+
+		reloadData(selectedIndex: number = 0) {
+			
             const vm = this;
+            vm.itemList([]);
+            switch (vm.type) {
+                case 'Com_Company':
+                    vm.$ajax(API.GET_YEARS_COM)
+                        .then((data: any) => {
+                            data = _.orderBy(data, ['year'], ['desc']);
 
-            vm.selectedYear = params.selectedYear;
-            vm.change = params.change;
-
-            vm.reloadData(0);
-
-            vm.change
-                .subscribe(() => {
-                    ko.unwrap(vm.itemList)[0].statusValue = '＊';
-                });
-        }
-
-        reloadData(selectedIndex: number = 0) {
-            const vm = this;
-            const years: IYear[] = [{status: true, statusValue : '＊', year: 2017},
-            {status: false, statusValue : '', year: 2016}
-            ,{status: true, statusValue : '', year: 2018}
-            ,{status: true, statusValue : '', year: 2020}];
-
-            if (years.length > 0) {
-                vm.itemList(_.orderBy(years, ['year'], ['desc']));
-                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-            } else {
-                vm.selectedYear(null);
+                            _.forEach(data, ((value: any) => {
+                                const y: IYear = new IYear(value.year);
+                                vm.itemList.push(y);
+                            }));
+                        })
+                        .then(() => {
+                            if(ko.unwrap(vm.itemList) != []){
+                                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                            }else {
+                                vm.selectedYear(null);
+                            }
+                        });
+                    break
+                case 'Com_Workplace':
+                    if (ko.unwrap(vm.param) != '') {
+                        vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.toJS(vm.param()))
+                            .then((data: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
+                                    const y: IYear = new IYear(value.year);
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
+                    break
+                case 'Com_Employment':
+                    if (ko.unwrap(vm.param) != '') {
+                        vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.toJS(vm.param()))
+                            .then((data: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
+                                    const y: IYear = new IYear(value.year);
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
+                    break
+                case 'Com_Person':
+                    if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
+                        vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' + ko.toJS(vm.param()))
+                            .then((data: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
+                                    const y: IYear = new IYear(value.year);
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
+                    break
             }
-        }
-    }
+        
+		}
 
-    export interface IYear {
-        status: boolean;
-        statusValue: string;
-        year: number;
-    }
+		openQDialog() {
+			const vm = this;
+			const param = {years: ko.unwrap(vm.itemList).map((m: IYear) => m.year)};
+			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
+				if (result) {
+					vm.years.push(new IYear(parseInt(result.year), true));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+				}
+			});
+		}
+	}
 
-    // export class Year {
-    //     status: KnockoutObservable<boolean> = ko.observable(true);
-    //     statusValue: KnockoutObservable<string> = ko.observable('');
-    //     value: KnockoutObservable<string> = ko.observable('');
+	export class IYear {
+		isNew: boolean = false;
+		isChanged: string;
+		year: number;
+		yearName: string;
 
-    //     constructor(param?: IYear) {
-    //         const md = this;
-    //         md.create(param);
-    //     }
+		constructor(year: number, isNew?: boolean) {
+			this.year = year;
+			this.yearName = year.toString() + '年度';
+			if (isNew) {
+				this.isNew = isNew;
+				this.isChanged = '＊';
+			}
+		}
+	}
 
-    //     public create(params?: IYear) {
-    //         const self = this;
-
-    //         if (params) {
-    //             self.status(params.status);
-    //             self.value(params.value);
-    //             if(params.status) {
-    //                 self.statusValue('*');
-    //             }
-    //         }
-    //     }
-    // }
 }
