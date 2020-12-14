@@ -243,16 +243,19 @@ public class HolidayServiceImpl implements HolidayService {
 		//	初期表示する出退勤時刻を取得する
 		OverTimeContent overTimeContent = commonHolidayWorkAlgorithm.getOverTimeContent(Optional.of(workType), Optional.of(workTime), 
 				actualContentDisplayList);
-		WorkHours workHours = commonOverTimeAlgorithm.initAttendanceTime(companyId, Optional.ofNullable(date), overTimeContent, 
-				holidayWorkAppSet.getApplicationDetailSetting()).orElse(null);
-		hdSelectWorkDispInfoOutput.setWorkHours(workHours);
+		Optional<WorkHours> workHours = commonOverTimeAlgorithm.initAttendanceTime(companyId, Optional.ofNullable(date), overTimeContent, 
+				holidayWorkAppSet.getApplicationDetailSetting());
+		hdSelectWorkDispInfoOutput.setWorkHours(workHours.orElse(new WorkHours()));
 		
 		//	休憩時間帯を取得する
 		Optional<AchievementDetail> achievementDetail = !actualContentDisplayList.isEmpty() ? 
 				actualContentDisplayList.get(0).getOpAchievementDetail() : Optional.empty();
 		BreakTimeZoneSetting breakTimeZoneSettingList = commonOverTimeAlgorithm.selectWorkTypeAndTime(companyId, workType, 
-				workTime, workHours.getStartTimeOp1(), workHours.getEndTimeOp1(), achievementDetail);
-		hdSelectWorkDispInfoOutput.setBreakTimeZoneSettingList(Optional.of(breakTimeZoneSettingList));
+				workTime, 
+				workHours.isPresent() ? workHours.get().getStartTimeOp1() : Optional.empty(), 
+				workHours.isPresent() ? workHours.get().getEndTimeOp1() : Optional.empty(), 
+				achievementDetail);
+		hdSelectWorkDispInfoOutput.setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));
 		
 		//07-02_実績取得・状態チェック
 		ApplicationTime actualApplicationTime = new ApplicationTime();
@@ -423,7 +426,7 @@ public class HolidayServiceImpl implements HolidayService {
 					EnumAdaptor.valueOf(appHolidayWork.getApplication().getPrePostAtr().value, PrePostInitAtr.class), 
 					Optional.ofNullable(appHolidayWorkPre.isPresent() ? appHolidayWorkPre.get().getApplicationTime() : null), 
 					Optional.ofNullable(appHolidayWork.getApplicationTime()),
-					Optional.of(actualApplicationTime)
+					Optional.ofNullable(actualApplicationTime)
 				);
 			if(appHdWorkDispInfoOutput.getCalculationResult().isPresent()) {  
 				appHdWorkDispInfoOutput.getCalculationResult().get().setActualOvertimeStatus(overStateOutput);

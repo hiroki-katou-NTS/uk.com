@@ -468,10 +468,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			let workHours1 = {} as WorkHours;
 			let workHours2 = {} as WorkHours;
 			if (!ko.toJS(self.workInfo)) {
-				workHours1.start = ko.observable(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
-				workHours1.end = ko.observable(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
-				workHours2.start = ko.observable(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
-				workHours2.end = ko.observable(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
+				workHours1.start = ko.observable(null);
+				workHours1.end = ko.observable(null);
+				workHours2.start = ko.observable(null);
+				workHours2.end = ko.observable(null);
 			} else {
 				workHours1 = self.workInfo().workHours1;
 				workHours2 = self.workInfo().workHours2;

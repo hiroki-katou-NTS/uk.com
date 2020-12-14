@@ -186,16 +186,17 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		//	初期表示する出退勤時刻を取得する
 		OverTimeContent overTimeContent = this.getOverTimeContent(initWork.getInitWorkTypeCd(), initWork.getInitWorkTimeCd(), actualContentDisplayList);
 		
-		WorkHours workHours = commonAlgorithmOverTime.initAttendanceTime(companyId, date, overTimeContent, holidayWorkSetting.getApplicationDetailSetting()).orElse(null);
-		hdWorkDispInfoWithDateOutput.setWorkHours(workHours);
+		Optional<WorkHours> workHours = commonAlgorithmOverTime.initAttendanceTime(companyId, date, overTimeContent, holidayWorkSetting.getApplicationDetailSetting());
+		hdWorkDispInfoWithDateOutput.setWorkHours(workHours.orElse(null));
 		
 		//01-01_休憩時間を取得する
 		HdWorkBreakTimeSetOutput hdWorkBreakTimeSetOutput = this.getBreakTime(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				initWork.getInitWorkTypeCd().isPresent() ? initWork.getInitWorkTypeCd().get().v() : null, 
 				initWork.getInitWorkTimeCd().isPresent() ? initWork.getInitWorkTimeCd().get().v() : null, 
-						workHours.getStartTimeOp1(), workHours.getEndTimeOp1(), 
-						UseAtr.toEnum(holidayWorkSetting.getApplicationDetailSetting().getTimeCalUse().value), 
-						hdWorkOvertimeReflect.getHolidayWorkAppReflect().getAfter().getBreakLeaveApplication().getBreakReflectAtr().value==0 ? new Boolean(false) :new Boolean(true));
+				workHours.isPresent() ? workHours.get().getStartTimeOp1() : Optional.empty(), 
+				workHours.isPresent() ? workHours.get().getEndTimeOp1() : Optional.empty(), 
+				UseAtr.toEnum(holidayWorkSetting.getApplicationDetailSetting().getTimeCalUse().value), 
+				hdWorkOvertimeReflect.getHolidayWorkAppReflect().getAfter().getBreakLeaveApplication().getBreakReflectAtr().value==0 ? new Boolean(false) :new Boolean(true));
 		hdWorkDispInfoWithDateOutput.setBreakTimeZoneSettingList(Optional.of(new BreakTimeZoneSetting(hdWorkBreakTimeSetOutput.getDeductionTimeLst())));
 		
 		//07-02_実績取得・状態チェック
@@ -203,7 +204,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				initWork.getInitWorkTypeCd().orElse(null), initWork.getInitWorkTimeCd().orElse(null), holidayWorkSetting.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 				Optional.of(holidayWorkSetting.getCalcStampMiss()), hdWorkBreakTimeSetOutput.getDeductionTimeLst(), 
 				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
-		hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.of(applicationTime));
+		hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(applicationTime));
 		
 		//10-2.代休の設定を取得する
 		SubstitutionHolidayOutput subHolidayOutput = absenceTenProcessCommon.getSettingForSubstituteHoliday(companyId, employeeId, baseDate);
@@ -691,10 +692,15 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		workContent.setWorkTimeCode(hdWorkDispInfoWithDateOutput.getInitWorkTime().isPresent()
 				? Optional.of(hdWorkDispInfoWithDateOutput.getInitWorkTime().get().v())
 				: Optional.empty());
-		TimeZone timeZoneNo1 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1().orElse(null),
-				hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1().orElse(null));
-		TimeZone timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().orElse(null),
-				hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
+		WorkHours workHours = hdWorkDispInfoWithDateOutput.getWorkHours();
+		TimeZone timeZoneNo1 = new TimeZone();
+		TimeZone timeZoneNo2 = new TimeZone();
+		if(workHours != null) {
+			timeZoneNo1 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1().orElse(null),
+					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1().orElse(null));
+			timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().orElse(null),
+					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
+		}
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
 		timeZones.add(timeZoneNo1);
 		timeZones.add(timeZoneNo2);
