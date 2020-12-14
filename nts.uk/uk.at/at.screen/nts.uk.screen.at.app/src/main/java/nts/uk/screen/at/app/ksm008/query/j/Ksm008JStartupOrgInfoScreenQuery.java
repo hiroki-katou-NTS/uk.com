@@ -7,6 +7,8 @@ import nts.uk.ctx.at.schedule.app.query.schedule.alarm.consecutivework.consecuti
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsAttOrgRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganizationRepository;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
@@ -59,6 +61,18 @@ public class Ksm008JStartupOrgInfoScreenQuery {
 
     @Inject
     MaxDaysOfContinuousWorkTimeOrganizationRepository maxDaysOfContinuousWorkTimeOrganizationRepository;
+
+    @Inject
+    private AlarmCheckConditionsQuery alarmCheckConditionsQuery;
+
+    /**
+     * コードと名称と説明を取得する
+     * @param code コード
+     * @return 勤務予定のアラームチェック条件
+     */
+    public AlarmCheckConditionsQueryDto getAlarmCheckConSche(String code) {
+        return alarmCheckConditionsQuery.getCodeNameDescription(code);
+    }
 
     /**
      * Get startup info

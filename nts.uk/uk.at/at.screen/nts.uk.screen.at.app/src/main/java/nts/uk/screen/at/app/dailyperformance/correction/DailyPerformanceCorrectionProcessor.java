@@ -759,8 +759,8 @@ public class DailyPerformanceCorrectionProcessor {
 						if (!value.isEmpty()) {
 							// convert HH:mm
 							int minute =0 ;
-							if(Integer.parseInt(value) >= 0){
-								minute = Integer.parseInt(value);
+							if(Integer.parseInt(value.equals("0.0") ? "0" : value) >= 0){
+								minute = Integer.parseInt(value.equals("0.0") ? "0" : value);
 							}else{
 								if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 									minute = 0 - ((Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / DPText.MINUTES_OF_DAY) * DPText.MINUTES_OF_DAY));

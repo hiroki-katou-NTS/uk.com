@@ -15,10 +15,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommand;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommandHandler;
-import nts.uk.ctx.at.record.app.find.optitem.OptItemEnumDto;
-import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
-import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
-import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
+import nts.uk.ctx.at.record.app.find.optitem.*;
 import nts.uk.ctx.at.record.app.find.optitem.language.OptionalItemNameOther;
 import nts.uk.ctx.at.record.app.find.optitem.language.OptionalItemNameOtherFinder;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -52,7 +49,7 @@ public class OptionalItemWs extends WebService {
 	 */
 	@POST
 	@Path("find/{itemNo}/{langId}")
-	public OptionalItemDto find(@PathParam("itemNo") Integer itemNo, @PathParam("langId") String langId) {
+	public OutputOptItemWithControl find(@PathParam("itemNo") Integer itemNo, @PathParam("langId") String langId) {
 		return this.finder.findWithLang(itemNo, langId);
 	}
 
@@ -101,4 +98,9 @@ public class OptionalItemWs extends WebService {
 		return this.optionalItemNameOtherFinder.findAllNameLangguage(langId);
 	}
 
+	@POST
+	@Path("findByListItemNo")
+	public List<OptionalItemDto> find(OptionalItemRequestDto params) {
+		return this.finder.findByListNo(params.getOptionalItemNos());
+	}
 }

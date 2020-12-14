@@ -78,7 +78,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
-import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshmtDayAtdCtr;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
@@ -181,7 +181,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_ATTENDANCE_ITEM;
 
-	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.companyID = :companyId AND c.kshstControlOfAttendanceItemsPK.itemDailyID IN :lstItem";
+	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshmtDayAtdCtr c WHERE c.kshmtDayAtdCtrPK.companyID = :companyId AND c.kshmtDayAtdCtrPK.itemDailyID IN :lstItem";
 
 	
 //	private final static String SEL_ERROR_SETTING;
@@ -942,10 +942,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			List<Integer> lstAttendanceItem) {
 		if (lstAttendanceItem.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
+		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshmtDayAtdCtr.class)
 				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem).getList().stream()
 				.map(c -> {
-					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.itemDailyID,
+					return new DPAttendanceItemControl(c.kshmtDayAtdCtrPK.itemDailyID,
 							c.inputUnitOfTimeItem, c.headerBgColorOfDailyPer != null ? c.headerBgColorOfDailyPer : "",
 							null);
 				}).collect(Collectors.toList());

@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 /**
  * 日次の勤怠項目の制御
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.Heade
  *
  */
 @Getter
+@Setter
 public class ControlOfAttendanceItems extends AggregateRoot {
 	
 	/**会社ID*/
@@ -24,9 +26,9 @@ public class ControlOfAttendanceItems extends AggregateRoot {
 	private Optional<HeaderBackgroundColor> headerBgColorOfDailyPer;
 
 	/**時間項目の入力単位*/
-	private Optional<TimeInputUnit> inputUnitOfTimeItem;
+	private Optional<BigDecimal> inputUnitOfTimeItem;
 
-	public ControlOfAttendanceItems(String companyID, int itemDailyID, HeaderBackgroundColor headerBgColorOfDailyPer, TimeInputUnit inputUnitOfTimeItem) {
+	public ControlOfAttendanceItems(String companyID, int itemDailyID, HeaderBackgroundColor headerBgColorOfDailyPer, BigDecimal inputUnitOfTimeItem) {
 		super();
 		this.companyID = companyID;
 		this.itemDailyID = itemDailyID;

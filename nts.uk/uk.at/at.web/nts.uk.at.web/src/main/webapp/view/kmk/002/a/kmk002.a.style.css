@@ -41,12 +41,18 @@
 .inp-formula-required {
 	width: 130px;
 }
-#inp-upper-number, 
-#inp-lower-number,
-#inp-upper-amount,
-#inp-upper-time,
-#inp-lower-time,
-#inp-lower-amount{
+#inp-upper-number-day, 
+#inp-lower-number-day,
+#inp-upper-amount-day,
+#inp-upper-time-day,
+#inp-lower-time-day,
+#inp-lower-amount-day,
+#inp-upper-number-month, 
+#inp-lower-number-month,
+#inp-upper-amount-month,
+#inp-upper-time-month,
+#inp-lower-time-month,
+#inp-lower-amount-month{
 	width: 110px !important;
 }
 #switch-language {
@@ -55,4 +61,8 @@
 .mask-calc-formula{
 	opacity: 0.5;
     pointer-events: none;
+}
+
+.text-center {
+	text-align: center;
 }

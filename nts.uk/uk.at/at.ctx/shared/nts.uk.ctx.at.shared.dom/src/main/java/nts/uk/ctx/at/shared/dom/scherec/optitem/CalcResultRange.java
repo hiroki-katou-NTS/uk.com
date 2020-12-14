@@ -9,6 +9,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 
 /**
@@ -103,7 +106,7 @@ public class CalcResultRange extends DomainObject {
 		switch(optionalItemAtr) {
 		case TIME:
 			if(this.timeRange.isPresent()&&calcResultOfAnyItem.getTime().isPresent()) {
-				Optional<TimeRangeValue> timeUpperLimit = this.timeRange.get().getUpperLimit();
+				Optional<AnyItemTime> timeUpperLimit = this.timeRange.get().getDailyTimeRange().get().getUpperLimit();
 				if(timeUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
 					if(calcResultOfAnyItem.getTime().get().compareTo(BigDecimal.valueOf(timeUpperLimit.get().v())) > 0) {
@@ -116,11 +119,11 @@ public class CalcResultRange extends DomainObject {
 		return BigDecimal.ZERO;
 		case NUMBER:
 			if(this.numberRange.isPresent()&&calcResultOfAnyItem.getCount().isPresent()) {
-				Optional<NumberRangeValue> numberUpperLimit = this.numberRange.get().getUpperLimit();
+				Optional<AnyItemTimes> numberUpperLimit = this.numberRange.get().getDailyTimesRange().get().getUpperLimit();
 				if(numberUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
 					if(calcResultOfAnyItem.getCount().get().compareTo(BigDecimal.valueOf(numberUpperLimit.get().v().intValue())) > 0) {
-						return BigDecimal.valueOf(numberUpperLimit.get().v());						
+						return numberUpperLimit.get().v();						
 					}else {
 						return calcResultOfAnyItem.getCount().get();
 					}	
@@ -129,7 +132,7 @@ public class CalcResultRange extends DomainObject {
 			return BigDecimal.ZERO;
 		case AMOUNT:
 			if(this.amountRange.isPresent()&&calcResultOfAnyItem.getMoney().isPresent()) {
-				Optional<AmountRangeValue> amountUpperLimit = this.amountRange.get().getUpperLimit();
+				Optional<AnyItemAmount> amountUpperLimit = this.amountRange.get().getDailyAmountRange().get().getUpperLimit();
 				if(amountUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
 					if(calcResultOfAnyItem.getMoney().get().compareTo(BigDecimal.valueOf(amountUpperLimit.get().v()))> 0 ) {
@@ -155,7 +158,7 @@ public class CalcResultRange extends DomainObject {
 		switch(optionalItemAtr) {
 		case TIME:
 			if(this.timeRange.isPresent()&&calcResultOfAnyItem.getTime().isPresent()) {
-				Optional<TimeRangeValue> timeLowerLimit = this.timeRange.get().getLowerLimit();
+				Optional<AnyItemTime> timeLowerLimit = this.timeRange.get().getDailyTimeRange().get().getLowerLimit();
 				if(timeLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
 					if(calcResultOfAnyItem.getTime().get().compareTo(BigDecimal.valueOf(timeLowerLimit.get().v()))<0) {
@@ -168,7 +171,7 @@ public class CalcResultRange extends DomainObject {
 		return BigDecimal.ZERO;
 		case NUMBER:
 			if(this.numberRange.isPresent()&&calcResultOfAnyItem.getCount().isPresent()) {
-				Optional<NumberRangeValue> numberLowerLimit = this.numberRange.get().getLowerLimit();
+				Optional<AnyItemTimes> numberLowerLimit = this.numberRange.get().getDailyTimesRange().get().getLowerLimit();
 				if(numberLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
 					if(calcResultOfAnyItem.getCount().get().compareTo(BigDecimal.valueOf(numberLowerLimit.get().v().intValue()))<0) {
@@ -181,7 +184,7 @@ public class CalcResultRange extends DomainObject {
 			return BigDecimal.ZERO;
 		case AMOUNT:
 			if(this.amountRange.isPresent()&&calcResultOfAnyItem.getMoney().isPresent()) {
-				Optional<AmountRangeValue> amountLowerLimit = this.amountRange.get().getLowerLimit();
+				Optional<AnyItemAmount> amountLowerLimit = this.amountRange.get().getDailyAmountRange().get().getLowerLimit();
 				if(amountLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
 					if(calcResultOfAnyItem.getMoney().get().compareTo(BigDecimal.valueOf(amountLowerLimit.get().v()))<0) {

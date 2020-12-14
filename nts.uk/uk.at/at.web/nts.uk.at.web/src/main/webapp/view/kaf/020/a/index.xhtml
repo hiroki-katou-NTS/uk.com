@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile path="./kaf020.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div style="margin-left: 50px; height: 400px">
+            <!--A1_1-->
+            <div class="label" style="margin-bottom: 15px">#{i18n.getText('KAF020_10')}</div>
+            <!--A2-->
+            <table id="fixed-table">
+                <colgroup>
+                    <col width="50px"/>
+                    <col width="300px"/>
+                    <col width="800px"/>
+                </colgroup>
+                <thead>
+                <tr>
+                    <!--A2_1-->
+                    <th class="ui-widget-header" style="text-align: center">#{i18n.getText('KAF020_11')}</th>
+                    <!--A2_2-->
+                    <th class="ui-widget-header">#{i18n.getText('KAF020_12')}</th>
+                    <!--A2_3-->
+                    <th class="ui-widget-header">#{i18n.getText('KAF020_13')}</th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: optionalItemAppSet, as: 'optionalItem'}">
+                <tr>
+                    <!--A3_1-->
+                    <td data-bind="text: optionalItem.code" style="text-align: center;"></td>
+                    <!--A3_2-->
+                    <td>
+                        <a class="hyperlink" href="" data-bind="text: optionalItem.name, click: function() { return $parent.detail($parent, optionalItem)}"></a>
+                    </td>
+                    <!--A3_3-->
+                    <td style="white-space: pre-wrap;" data-bind="text: optionalItem.note"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

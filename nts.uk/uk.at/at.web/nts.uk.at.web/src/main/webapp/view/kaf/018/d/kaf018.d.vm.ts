@@ -255,6 +255,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 	}
 
 	const API = {
-		getApprSttStartByEmp: "at/request/application/approvalstatus/getApprSttStartByEmp",
+		getApprSttStartByEmp: "at/screen/application/approvalstatus/getApprSttStartByEmp",
 	}
 }

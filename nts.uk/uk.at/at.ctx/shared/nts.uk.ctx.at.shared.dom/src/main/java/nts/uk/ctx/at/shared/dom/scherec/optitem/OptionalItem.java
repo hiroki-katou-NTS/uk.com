@@ -67,7 +67,19 @@ public class OptionalItem extends AggregateRoot {
 
 	/** The unit. */
 	// 単位
-	private UnitOfOptionalItem unit;
+	private Optional<UnitOfOptionalItem> unit;
+	
+	/** The Calculation Classification */
+	// 計算区分
+	private CalculationClassification calcAtr;
+	
+	/** The note */
+	// 任意項目のメモ
+	private Optional<NoteOptionalItem> note;
+	
+	/** The Description */
+	// 説明文
+	private Optional<DescritionOptionalItem> description;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
@@ -78,24 +90,46 @@ public class OptionalItem extends AggregateRoot {
 		if (this.calcResultRange.hasBothLimit()) {
 			BundledBusinessException be = BundledBusinessException.newInstance();
 			be.addMessage("Msg_574");
-			switch (this.optionalItemAtr) {
-			case NUMBER:
-				if (this.calcResultRange.getNumberRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case AMOUNT:
-				if (this.calcResultRange.getAmountRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case TIME:
-				if (this.calcResultRange.getTimeRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			default:
-				throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
+			    switch (this.optionalItemAtr) {
+			    case NUMBER:
+			        if (this.calcResultRange.getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case AMOUNT:
+			        if (this.calcResultRange.getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case TIME:
+			        if (this.calcResultRange.getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    default:
+			        throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			    }
+			} else {
+			    switch (this.optionalItemAtr) {
+                case NUMBER:
+                    if (this.calcResultRange.getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case AMOUNT:
+                    if (this.calcResultRange.getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case TIME:
+                    if (this.calcResultRange.getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("unknown value of enum OptionalItemAtr");
+                }
 			}
 		}
 	}
@@ -124,6 +158,9 @@ public class OptionalItem extends AggregateRoot {
 		this.performanceAtr = memento.getPerformanceAtr();
 		this.calcResultRange = memento.getCalculationResultRange();
 		this.unit = memento.getUnit();
+		this.calcAtr = memento.getCalcAtr();
+		this.note = memento.getNote();
+		this.description = memento.getDescription();
 	}
 
 	/**
@@ -141,6 +178,9 @@ public class OptionalItem extends AggregateRoot {
 		memento.setPerformanceAtr(this.performanceAtr);
 		memento.setCalculationResultRange(this.calcResultRange);
 		memento.setUnit(this.unit);
+		memento.setCalAtr(this.calcAtr);
+		memento.setNote(this.note);
+		memento.setDescription(this.description);
 	}
 
 	/* (non-Javadoc)
