@@ -211,7 +211,7 @@ module nts.uk.at.kal011.a {
         exportExcel() {
             const vm = this;
             vm.$blockui("grayout");
-            vm.$ajax(API.EXPORT_EXCEL, {
+            nts.uk.request.exportFile(API.EXPORT_EXCEL, {
                 alarmCode: "alarmCode1",
                 alarmName: "alarmName",
                 data: [
@@ -221,8 +221,8 @@ module nts.uk.at.kal011.a {
                         alarmItemName: "alarmItemName1",
                         categoryName: "categoryName1",
                         checkTargetValue: "checkTargetValue1",
-                        category: "category1",
-                        startTime: "2020/11/04",
+                        category: 1,
+                        startTime: moment(),
                         comment: "comment1",
                         workplaceId: "workplaceId1",
                         workplaceCode: "workplaceCode1",
@@ -234,15 +234,15 @@ module nts.uk.at.kal011.a {
                         alarmItemName: "alarmItemName2",
                         categoryName: "categoryName2",
                         checkTargetValue: "checkTargetValue2",
-                        category: "category2",
-                        startTime: "2020/11/05",
+                        category: 2,
+                        startTime: moment(),
                         comment: "comment2",
                         workplaceId: "workplaceId2",
                         workplaceCode: "workplaceCode2",
                         workplaceName: "workplaceName2"
                     }
                 ]
-            }).then(() => vm.$blockui("clear"))
+            }).always(() => vm.$blockui("clear"))
         }
     }
 

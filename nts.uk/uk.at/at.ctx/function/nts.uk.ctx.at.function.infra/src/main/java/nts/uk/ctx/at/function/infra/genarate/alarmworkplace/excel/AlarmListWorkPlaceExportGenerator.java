@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
+import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListExtractResultWorkplaceData;
 import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListWorkPlaceGenerator;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -32,7 +33,7 @@ public class AlarmListWorkPlaceExportGenerator extends AsposeCellsReportGenerato
 	private AlarmPatternSettingRepository alarmPatternSettingRepo;
 
 	@Override
-	public void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceDto> dataSource,String alarmCode,String alarmName) {
+	public void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceData> dataSource, String alarmCode, String alarmName) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			setHeaderAndHeaderColumn(reportContext,alarmCode,alarmName);
 			// set data source named "item"
@@ -54,21 +55,40 @@ public class AlarmListWorkPlaceExportGenerator extends AsposeCellsReportGenerato
 
 		String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
 			.getCompanyName();
+
+		//TODO thay mã text resource
+
+//		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0, "&9&\"MS ゴシック\"" + companyName);
+//		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KAL011_35"));
+//		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
+//		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(2,
+//			"&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n"+TextResource.localize("KAL011_36")+" &P");
+//		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
+//		cell.get(0, 0).setValue(TextResource.localize("KAL011_45",alarmCode,alarmName));
+//		cell.get(1, 0).setValue(TextResource.localize("KAL011_37"));
+//		cell.get(1, 1).setValue(TextResource.localize("KAL011_38"));
+//		cell.get(1, 2).setValue(TextResource.localize("KAL011_39"));
+//		cell.get(1, 3).setValue(TextResource.localize("KAL011_40"));
+//		cell.get(1, 4).setValue(TextResource.localize("KAL011_41"));
+//		cell.get(1, 5).setValue(TextResource.localize("KAL011_42"));
+//		cell.get(1, 6).setValue(TextResource.localize("KAL011_43"));
+//		cell.get(1, 7).setValue(TextResource.localize("KAL011_44"));
+
 		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0, "&9&\"MS ゴシック\"" + companyName);
-		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KAL011_35"));
+		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KAL011_34"));
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
 		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(2,
-			"&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n"+TextResource.localize("KAL011_36")+" &P");
+			"&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n"+TextResource.localize("KAL011_33")+" &P");
 		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
-		cell.get(0, 0).setValue(TextResource.localize("KAL011_45",alarmCode,alarmName));
-		cell.get(1, 0).setValue(TextResource.localize("KAL001_37"));
-		cell.get(1, 1).setValue(TextResource.localize("KAL001_38"));
-		cell.get(1, 2).setValue(TextResource.localize("KAL001_39"));
-		cell.get(1, 3).setValue(TextResource.localize("KAL001_40"));
-		cell.get(1, 4).setValue(TextResource.localize("KAL001_41"));
-		cell.get(1, 5).setValue(TextResource.localize("KAL001_42"));
-		cell.get(1, 6).setValue(TextResource.localize("KAL001_43"));
-		cell.get(1, 7).setValue(TextResource.localize("KAL001_44"));
+		cell.get(0, 0).setValue(TextResource.localize("KAL011_31",alarmCode,alarmName));
+		cell.get(1, 0).setValue(TextResource.localize("KAL011_30"));
+		cell.get(1, 1).setValue(TextResource.localize("KAL011_29"));
+		cell.get(1, 2).setValue(TextResource.localize("KAL011_28"));
+		cell.get(1, 3).setValue(TextResource.localize("KAL011_27"));
+		cell.get(1, 4).setValue(TextResource.localize("KAL011_26"));
+		cell.get(1, 5).setValue(TextResource.localize("KAL011_25"));
+		cell.get(1, 6).setValue(TextResource.localize("KAL011_24"));
+		cell.get(1, 7).setValue(TextResource.localize("KAL011_23"));
 	}
 
 }

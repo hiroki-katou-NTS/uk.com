@@ -46,7 +46,7 @@ module nts.uk.at.kal014.c {
         created(params: any) {
             const vm = this;
             vm.strSelected.subscribe((value: number)=>{
-                vm.$errors("clear", ".nts-input").then(() => {
+                $(".nts-input").ntsError("clear");
                     vm.isDayStart(value == StartSpecify.DAYS);
                     vm.isMonthStart(value == StartSpecify.MONTH);
 
@@ -55,20 +55,18 @@ module nts.uk.at.kal014.c {
                     } else{
                         vm.modalDTO.clearMonthStart()
                     }
-                });
 
-            })
+            });
             vm.endSelected.subscribe((value: number)=>{
-                vm.$errors("clear", ".nts-input").then(() => {
-                    vm.isDayEnd(value == EndSpecify.DAYS);
+                $(".nts-input").ntsError("clear");
+                vm.isDayEnd(value == EndSpecify.DAYS);
                     vm.isMonthEnd(value == EndSpecify.MONTH);
                     if (value == EndSpecify.MONTH){
                         vm.modalDTO.clearDayEnd();
                     } else{
                         vm.modalDTO.clearMonthStart()
                     }
-                });
-            })
+            });
 
             vm.initModalData(params);
         }

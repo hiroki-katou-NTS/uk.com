@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface AlarmListWorkPlaceGenerator {
 
-	 void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceDto> dataSource,String alarmCode,String alarmName);
+	 void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceData> dataSource,String alarmCode,String alarmName);
 
 }
