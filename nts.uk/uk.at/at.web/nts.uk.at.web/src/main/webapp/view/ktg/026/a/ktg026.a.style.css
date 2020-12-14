@@ -74,8 +74,9 @@
   display: flex;
   width: 100%;
 }
-.flex {
+.ktg026-flex {
   display: flex;
+  height: 90px;
 }
 .left65 {
   float: left;

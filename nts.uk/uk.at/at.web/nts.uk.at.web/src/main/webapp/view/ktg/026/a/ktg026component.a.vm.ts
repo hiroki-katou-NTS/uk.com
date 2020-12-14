@@ -23,10 +23,10 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
     height: 450px;
   }
 
-  .ktg027-grid {
+  .ktg026-grid {
     display: flex;
   }
-  .ktg027-block {
+  .ktg026-block {
     display: block;
   }
   .big-text {
@@ -39,7 +39,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
     border-top: 1px groove;
     border-bottom: 1px groove;
   }
-  .ktg027-mt-10 {
+  .ktg026-mt-10 {
     margin-top: 10px;
   }
   .p-10 {
@@ -86,7 +86,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
     display: flex;
     width: 100%;
   }
-  .flex {
+  .ktg026-flex {
     display: flex;
     height: 100px;
   }
@@ -202,7 +202,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
       <label id="A1_1" class="big-text" data-bind="i18n: 'KTG026_5'"></label>
     </div>
 
-    <table class="flex">
+    <table class="ktg026-flex">
       <tbody class="flex100">
         <tr class="flex100">
           <td class="p-10 left65">
@@ -215,20 +215,20 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
               showJumpButtons: true
             }"></div>
             <!-- A1_5 js-exceededNumber -->
-            <label id="A1_5" class="ktg027-grid ktg027-mt-10" data-bind="text: exceededNumber"></label>
+            <label id="A1_5" class="ktg026-grid ktg026-mt-10" data-bind="text: exceededNumber"></label>
           </td>
-          <td class="ktg027-block p-10" style="width: 50%">
+          <td class="ktg026-block p-10" style="width: 50%">
             <div class="right">
               <!-- A1_3 ■時間外労働時間 -->
-              <label id="A1_3" class="ktg027-grid non-statutory-color" data-bind="i18n: 'KTG026_2'"></label>
+              <label id="A1_3" class="ktg026-grid non-statutory-color" data-bind="i18n: 'KTG026_2'"></label>
               <!-- A1_4 ■休日労働時間 -->
-              <label id="A1_4" class="ktg027-grid time-outside-color" data-bind="i18n: 'KTG026_3'"></label>
+              <label id="A1_4" class="ktg026-grid time-outside-color" data-bind="i18n: 'KTG026_3'"></label>
             </div>
           </td>
         </tr>
     </tbody>
     </table>
-    <table class="ktg027-block pl-10 scroll relative mh-200">
+    <table class="ktg026-block pl-10 scroll relative mh-200">
       <thead>
         <tr>
           <!-- A2_1 年月-->
