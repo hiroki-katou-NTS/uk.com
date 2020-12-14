@@ -26,29 +26,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	// import formatTime = nts.uk.time.format.byId;
 	const template= `
 	<div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component1', 
+	<div data-bind="component: { name: 'kaf000-b-component1', 
 													params: {
 														appType: appType,
 														appDispInfoStartupOutput: appDispInfoStartupOutput	
 													} }"></div>
-													
+	<div data-bind="component: { name: 'kaf000-b-component3', 
+													params: {
+														appType: appType,
+														approvalReason: approvalReason,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>												
 	<div data-bind="component: { name: 'kaf010-share-header',
 											params: {
 												overTimeWork: overTimeWork
 											}
 											}"></div>												
-	<div
-		data-bind="component: { name: 'kaf000-b-component2', 
+	<div data-bind="component: { name: 'kaf000-b-component2', 
 													params: {
 														appType: appType,
-														appDispInfoStartupOutput: appDispInfoStartupOutput
-													} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component3', 
-													params: {
-														appType: appType,
-														approvalReason: approvalReason,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"></div>
 	<div class="table">
@@ -67,23 +63,22 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 													appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
 												} }"></div>
 	</div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component5', 
+	<div data-bind="component: { name: 'kaf000-b-component5', 
 													params: {
 														appType: appType,
 														application: application,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component6', 
+	<div data-bind="component: { name: 'kaf000-b-component6', 
 													params: {
 														appType: appType,
 														application: application,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"></div>
-	<div
-		data-bind="component: { name: 'kaf010-share-work-info', 
-								params: {} }"></div>
+	<div data-bind="component: { name: 'kaf010-share-work-info', 
+								params: {
+									workInfo: workInfo
+								} }"></div>
 								
 	<div data-bind="component: { name: 'kaf010-share-time',
                                 params: {
@@ -91,16 +86,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                     holidayTime: holidayTime,
                                     overTime: overTime
                                 }}"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component7', 
+	<div data-bind="component: { name: 'kaf000-b-component7', 
 													params: {
 														appType: appType,
 														application: application,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"></div>
 	<div data-bind="component: { name: 'kaf010-share-footer'}"></div>												
-	<div
-		data-bind="component: { name: 'kaf000-b-component8', 
+	<div data-bind="component: { name: 'kaf000-b-component8', 
 													params: {
 														appType: appType,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
@@ -165,11 +158,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }
         ) {
             const vm = this;
-			// vm.bindWorkInfo(null);
-			// vm.createRestTime(vm.restTime);
-			// vm.createHolidayTime(vm.holidayTime);
-			// vm.createOverTime(vm.overTime);
-			
+			vm.bindWorkInfo(null, false);
+			vm.createRestTime();
+
 			vm.appType = params.appType;
 			vm.application = params.application;
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
@@ -185,10 +176,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		
 		initAppDetail() {
             let vm = this;
-            vm.$blockui('show');
+			vm.$blockui('show');
+			console.log(vm.application());
             let command = {
 				companyId: vm.$user.companyId,
-				appId: ko.toJS(vm.application).appID,
+				applicationId: vm.application().appID(),
 				appDispInfoStartup: ko.toJS(vm.appDispInfoStartupOutput)
 			};
             return vm.$ajax(API.initAppDetail, command)
@@ -199,14 +191,43 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					vm.dataSource = res.appHdWorkDispInfoOutput;
 					// vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.bindOverTimeWorks(vm.dataSource);
-					vm.bindWorkInfo(vm.dataSource);
+					vm.bindWorkInfo(vm.dataSource, false);
 					vm.bindRestTime(vm.dataSource, 0);
 					vm.bindHolidayTime(vm.dataSource, 0);
 					vm.bindOverTime(vm.dataSource, 0);
+					vm.itemControlHandler();
+					vm.setComboDivergenceReason(vm.dataSource);
 					// vm.bindMessageInfo(vm.dataSource);
 					if (vm.isStart) {
 						vm.isStart = false;
 					}
+					vm.workInfo().workHours1.start.subscribe((value) => {
+						if (_.isNumber(value)) {
+							vm.getBreakTimes();
+						}
+					});
+
+					vm.workInfo().workHours1.end.subscribe((value) => {
+						if (_.isNumber(value)) {
+							vm.getBreakTimes();
+						}
+					});
+					
+					if (vm.application().prePostAtr() == 0) {
+						$('.table-time2 .nts-fixed-header-wrapper').width(224);
+						if (vm.holidayTime().length > 3) {
+							$('.table-time2 .nts-fixed-body-wrapper').width(208);
+						} else {
+							$('.table-time2 .nts-fixed-body-wrapper').width(225);
+						}
+						
+						$('.table-time3 .nts-fixed-header-wrapper').width(224);
+						if (vm.overTime().length > 6) {
+							$('.table-time3 .nts-fixed-body-wrapper').width(208);
+						} else {
+							$('.table-time3 .nts-fixed-body-wrapper').width(225);
+						}
+					} 
                 }
             }).fail(err => {
 				// xử lý lỗi nghiệp vụ riêng
@@ -228,7 +249,141 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		}
 
 		update(){
+			const vm = this;
+			vm.$blockui("show");
+			let appHolidayWork = vm.toAppHolidayWork();
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+				.then(isValid => {
+					if (isValid) {
+						return true;
+					}
+				})
+				.then(result => {
+					// check before 
+					let commandCheck = {
+						require: true,
+						companyId: vm.$user.companyId,
+						appHdWorkDispInfo: vm.dataSource, 
+						appHolidayWork: appHolidayWork,
+						isProxy: false
+					}
+					if(result) {
+						return vm.$ajax(API.checkBeforeUpdate, commandCheck); // chua xong
+					}
+				}).then((result: CheckBeforeOutput) => {
+					if (!_.isNil(result)) {
+						// xử lý confirmMsg
+						return vm.handleConfirmMessage(result.confirmMsgOutputs);
+					}
+				}).then((result) => {
+					if (result) {
+						let commandUpdate = {
+							companyId: vm.$user.companyId,
+							appHolidayWork: appHolidayWork,
+							appDispInfoStartupDto: vm.dataSource.appDispInfoStartupOutput, 
+						};
+						return vm.$ajax('at', API.update, commandUpdate).then(() => {
+							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+								return true;
+							});
+						});
+					}
+					
+				})
+				.done(result => {
+					
+				})
+				.fail(err => {
+					let messageId, messageParams;
+					if(err.errors) {
+						let errors = err.errors;
+						messageId = errors[0].messageId;
+					} else {
+						messageId = err.messageId;
+						messageParams = [err.parameterIds.join('、')];
+					}
+					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+				})
+				.always(() => vm.$blockui("hide"));
+		}
 
+		toAppHolidayWork(){
+			let vm = this;
+			let appHolidayWork = {} as AppHolidayWorkCmd;
+			let listApplicationTime = [] as Array<OvertimeApplicationSetting>
+			let listMidNightHolidayTimes = [];
+			let overTimeMidNight = null;
+			for (let i = 0; i < vm.holidayTime().length; i++) {
+				if (vm.holidayTime()[i].type() == 1 && !_.isNil(vm.holidayTime()[i].start())) {
+					let holidayTime = {} as OvertimeApplicationSetting;
+					holidayTime.frameNo = vm.holidayTime()[i].frameNo();
+					holidayTime.attendanceType = 1;
+					holidayTime.applicationTime = vm.holidayTime()[i].start();
+					listApplicationTime.push(holidayTime);
+				}
+				if (!_.isNil(vm.holidayTime()[i].legalClf()) && !_.isNil(vm.holidayTime()[i].start())) {
+					listMidNightHolidayTimes.push({attendanceTime: vm.holidayTime()[i].start(), legalClf: vm.holidayTime()[i].legalClf()});
+				}
+			}
+			for (let i = 0; i < vm.overTime().length; i++) {
+				if (vm.overTime()[i].type() == 0 && !_.isNil(vm.overTime()[i].applicationTime())) {
+					let overTime = {} as OvertimeApplicationSetting;
+					overTime.frameNo = vm.overTime()[i].frameNo();
+					overTime.attendanceType = 0;
+					overTime.applicationTime = vm.overTime()[i].applicationTime();
+					listApplicationTime.push(overTime);
+				}
+				if (vm.overTime()[i].type() === 100 && !_.isNil(vm.overTime()[i].applicationTime())) {
+					overTimeMidNight = vm.overTime()[i].applicationTime();
+				}
+			}
+			appHolidayWork.workInformation = {} as WorkInformationCommand;
+			appHolidayWork.workInformation.workType = vm.workInfo().workType().code;
+			appHolidayWork.workInformation.workTime = vm.workInfo().workTime().code;
+
+			appHolidayWork.applicationTime = {} as ApplicationTime;
+			appHolidayWork.applicationTime.applicationTime = listApplicationTime;
+			appHolidayWork.applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+			appHolidayWork.applicationTime.overTimeShiftNight.midNightHolidayTimes = listMidNightHolidayTimes;
+			appHolidayWork.applicationTime.overTimeShiftNight.overTimeMidNight = overTimeMidNight;
+
+			appHolidayWork.application = ko.toJS(vm.application);
+
+			appHolidayWork.workingTimeList = [] as Array<TimeZoneWithWorkNoCommand>;
+			console.log("alo 1", !_.isEmpty(vm.workInfo().workHours1));
+			if(!_.isEmpty(vm.workInfo().workHours1) && !_.isNil(vm.workInfo().workHours1.start()) && !_.isNil(vm.workInfo().workHours1.end())){
+				let workingTime1 = {} as TimeZoneWithWorkNoCommand;
+				workingTime1.workNo = 1;
+				workingTime1.timeZone = {} as TimeZoneNewDto;
+				workingTime1.timeZone.startTime = vm.workInfo().workHours1.start();
+				workingTime1.timeZone.endTime = vm.workInfo().workHours1.end();
+				appHolidayWork.workingTimeList.push(workingTime1);
+			}
+			console.log("alo 2", !_.isEmpty(vm.workInfo().workHours2));
+			if(!_.isEmpty(vm.workInfo().workHours2) && !_.isNil(vm.workInfo().workHours2.start()) && !_.isNil(vm.workInfo().workHours2.end())){
+				let workingTime2 = {} as TimeZoneWithWorkNoCommand;
+				workingTime2.workNo = 2;
+				workingTime2.timeZone = {} as TimeZoneNewDto;
+				workingTime2.timeZone.startTime = vm.workInfo().workHours2.start();
+				workingTime2.timeZone.endTime = vm.workInfo().workHours2.end();
+				appHolidayWork.workingTimeList.push(workingTime2);
+			}
+
+			appHolidayWork.goWorkAtr = vm.isGoWorkAtr();
+			appHolidayWork.backHomeAtr = vm.isBackHomeAtr();
+
+			appHolidayWork.breakTimeList = [] as Array<TimeZoneWithWorkNoCommand>;
+			for (let i = 0; i < vm.restTime().length && i < 10; i++) {
+				if(!_.isNil(vm.restTime()[i].start()) && !_.isNil(vm.restTime()[i].end())){
+					let restTime = {} as TimeZoneWithWorkNoCommand;
+					restTime.workNo = i+1;
+					restTime.timeZone = {} as TimeZoneNewDto;
+					restTime.timeZone.startTime = vm.restTime()[i].start();
+					restTime.timeZone.endTime = vm.restTime()[i].end();
+					appHolidayWork.breakTimeList.push(restTime);
+				}		
+			}
+			return appHolidayWork;
 		}
 		
 		handleErrorCommon(failData: any) {
@@ -268,144 +423,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			});
 		}
 
-		
-
-		// created(params: AppInitParam) {
-		// 	const vm = this;
-
-		// 	vm.createRestTime();
-		// 	vm.setMode(params);
-		// 	// vm.createOverTime();
-
-		// 	let empList: Array<string> = [],
-		// 		dateList: Array<string> = [];
-		// 	if (!_.isEmpty(params)) {
-		// 		if (!_.isEmpty(params.employeeIds)) {
-		// 			empList = params.employeeIds;
-		// 		}
-		// 		if (!_.isEmpty(params.baseDate)) {
-		// 			let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
-		// 			dateList = [paramDate];
-		// 			vm.application().appDate(paramDate);
-		// 			vm.application().opAppStartDate(paramDate);
-        //             vm.application().opAppEndDate(paramDate);
-		// 		}
-		// 		if (params.isAgentMode) {
-		// 			vm.isAgentMode(params.isAgentMode);
-		// 		}
-		// 	}
-		// 	vm.isSendMail = ko.observable(false);
-
-		// 	vm.$blockui("show");
-		// 	vm.loadData(empList, dateList, vm.appType())
-		// 		.then((loadDataFlag: any) => {
-		// 			vm.application().appDate.subscribe(value => {
-		// 				console.log(value);
-		// 				if (value) {
-		// 					vm.changeDate();
-		// 				}
-		// 			});
-		// 			// ※17
-		// 			vm.application().prePostAtr.subscribe(value => {
-		// 				if(vm.mode() == MODE.MULTiPLE_AGENT){
-		// 					return;
-		// 				}
-		// 				if (value == 0) {
-		// 					console.log('trigger1')
-		// 					$('.table-time2 .nts-fixed-header-wrapper').width(224);
-		// 					if (vm.holidayTime().length > 3) {
-		// 						$('.table-time2 .nts-fixed-body-wrapper').width(208);
-		// 					} else {
-		// 						$('.table-time2 .nts-fixed-body-wrapper').width(225);
-		// 					}
-							
-		// 					$('.table-time3 .nts-fixed-header-wrapper').width(224);
-		// 					if (vm.overTime().length > 6) {
-		// 						$('.table-time3 .nts-fixed-body-wrapper').width(208);
-		// 					} else {
-		// 						$('.table-time3 .nts-fixed-body-wrapper').width(225);
-		// 					}
-							
-		// 				} else {
-		// 					console.log('trigger2')
-		// 					$('.table-time2 .nts-fixed-header-wrapper').width(455);
-		// 					$('.table-time2 .nts-fixed-body-wrapper').width(455);
-		// 					$('.table-time3 .nts-fixed-header-wrapper').width(455);
-		// 					$('.table-time3 .nts-fixed-body-wrapper').width(455);
-		// 				}
-		// 			});
-		// 			if (loadDataFlag) {
-		// 				let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-		// 					command = { empList, dateList, appDispInfoStartupOutput };
-		// 				return vm.$ajax(API.startNew, command);
-		// 			}
-					
-		// 		}).then((successData: any) => {
-		// 			if (successData) {
-		// 				console.log(successData, 'res');
-		// 				vm.dataSource = successData;
-		// 				vm.bindOverTimeWorks(vm.dataSource);
-		// 				vm.bindWorkInfo(vm.dataSource, true);
-		// 				vm.bindRestTime(vm.dataSource);
-		// 				vm.bindHolidayTime(vm.dataSource, 1);
-		// 				vm.bindOverTime(vm.dataSource, 1);
-		// 				vm.itemControlHandler();
-		// 				vm.setComboDivergenceReason(vm.dataSource);
-
-		// 				vm.workInfo().workHours1.start.subscribe((value) => {
-		// 					if (_.isNumber(value)) {
-		// 						vm.getBreakTimes();
-		// 					}
-		// 				});
-
-		// 				vm.workInfo().workHours1.end.subscribe((value) => {
-		// 					if (_.isNumber(value)) {
-		// 						vm.getBreakTimes();
-		// 					}
-		// 				});
-
-		// 				if (!_.isEmpty(params)) {
-		// 					if (!_.isEmpty(params.baseDate)) {
-								
-		// 					}
-		// 				}
-						
-		// 				if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT) {
-		// 					$('.table-time2 .nts-fixed-header-wrapper').width(224);
-		// 					if (vm.holidayTime().length > 3) {
-		// 						$('.table-time2 .nts-fixed-body-wrapper').width(208);
-		// 					} else {
-		// 						$('.table-time2 .nts-fixed-body-wrapper').width(225);
-		// 					}
-							
-		// 					$('.table-time3 .nts-fixed-header-wrapper').width(224);
-		// 					if (vm.overTime().length > 6) {
-		// 						$('.table-time3 .nts-fixed-body-wrapper').width(208);
-		// 					} else {
-		// 						$('.table-time3 .nts-fixed-body-wrapper').width(225);
-		// 					}
-		// 				} 
-		// 			}
-		// 		}).fail((failData: any) => {
-		// 			if (failData.messageId === "Msg_43") {
-		// 				vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-
-		// 			} else {
-		// 				vm.$dialog.error(failData);
-		// 			}
-		// 		}).always(() => {vm.$blockui("hide"); $('#kaf000-a-component4-singleDate').focus();});
-		// }
-
 		mounted() {
 			const self = this;
 		}
 
 		itemControlHandler() {
 			const self = this;
-			console.log('star handle');
 			// ※28
-			self.managementMultipleWorkCyclescheck(self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
-			
+			self.managementMultipleWorkCyclescheck(self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);		
 			// ※27
 			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.reflectDivergence == 1 && self.dataSource.useInputDivergenceReason == true) {
 				self.inputReflectDivergenceCheck(true);
@@ -454,7 +479,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 			// ※15
 			if (!_.isNil(self.dataSource.calculationResult)) {
-				if (!_.isEmpty(self.dataSource.calculationResult.applicationTime.applicationTime)) {
+				if (!_.isEmpty(self.dataSource.calculationResult.applicationTime) 
+						&& !_.isEmpty(self.dataSource.calculationResult.applicationTime.applicationTime)) {
 					self.overTimeTableVisible(true);
 				}
 			} else {
@@ -466,8 +492,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.restTimeTableVisible2(false);
 			}
-
-			// ※20 // ※21 huytodo daikou
 		}
 		
 		// register() {
@@ -657,36 +681,68 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			self.overTimeWork(overTimeWorks);
 		}
 
-		bindWorkInfo(res: AppHdWorkDispInfo, check?: boolean) { // dummy data 
+		bindWorkInfo(res: AppHdWorkDispInfo, isSelectWork?: boolean) { // dummy data 
 			const self = this;
-			const { hdWorkDispInfoWithDateOutput } = res;
-			
-			let workHours1 = {} as WorkHours;
-			let workHours2 = {} as WorkHours;
 			if (!ko.toJS(self.workInfo)) {
-				workHours1.start = ko.observable(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
-				workHours1.end = ko.observable(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
-				workHours2.start = ko.observable(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
-				workHours2.end = ko.observable(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
-			} else {
-				workHours1 = self.workInfo().workHours1;
-				workHours2 = self.workInfo().workHours2;
-				workHours1.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
-				workHours1.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
-				workHours2.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
-				workHours2.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
+				let workInfo = {} as WorkInfo;
+				let workType = {} as Work;
+				let workTime = {} as Work;
+				let workHours1 = {} as WorkHours;
+				workHours1.start = ko.observable(null);
+				workHours1.end = ko.observable(null);
+				workHours1.start.subscribe((value) => {
+					if (_.isNumber(value)) {
+						// self.getBreakTimes();
+					}
+				})
+				workHours1.end.subscribe((value) => {
+					if (_.isNumber(value)) {
+						// self.getBreakTimes();
+					}
+				})
+				let workHours2 = {} as WorkHours;
+				workHours2.start = ko.observable(null);
+				workHours2.end = ko.observable(null);
+				workInfo.workType = ko.observable(workType);
+				workInfo.workTime = ko.observable(workTime);
+				workInfo.workHours1 = workHours1;
+				workInfo.workHours2 = workHours2;
+				self.workInfo(workInfo);
+
+				return;
 			}
-			
-			let workInfo = new WorkInfo();
-			if (check) {
-				workInfo.workType({code: hdWorkDispInfoWithDateOutput.initWorkType, name: hdWorkDispInfoWithDateOutput.initWorkTypeName});
-				workInfo.workTime({code: hdWorkDispInfoWithDateOutput.initWorkTime, name: hdWorkDispInfoWithDateOutput.initWorkTimeName});
-			} else {
-				workInfo = self.workInfo();
+			let workType = {} as Work;
+			let workTime = {} as Work;
+			let appHolidayWork = self.appHolidayWork;
+
+			if (!_.isNil(appHolidayWork.workInformation)) {
+				workType.code = appHolidayWork.workInformation.workType;
+				if (!_.isNil(workType.code)) {
+					let workTypeList = res.hdWorkDispInfoWithDateOutput.workTypeList as Array<WorkType>;
+					workTypeList.filter(item => item.workTypeCode == workType.code).map(item => workType.name = item.name);
+				}
+				workTime.code = appHolidayWork.workInformation.workTime;
+				if (!_.isNil(workTime.code)) {
+					let workTimeList = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+					workTimeList.filter(item => item.worktimeCode == workTime.code).map(item => workTime.name = item.workTimeDisplayName.workTimeName);
+				}
 			}
-			workInfo.workHours1 = workHours1;
-			workInfo.workHours2 = workHours2;
-			self.workInfo(workInfo);
+			if (!_.isEmpty(appHolidayWork.workingTimeList)) {
+				_.forEach(appHolidayWork.workingTimeList, (i: TimeZoneWithWorkNoCommand) => {
+					if (i.workNo == 1) {
+						self.workInfo().workHours1.start(i.timeZone.startTime);
+						self.workInfo().workHours1.end(i.timeZone.endTime);
+					} else if (i.workNo == 2) {
+						self.workInfo().workHours2.start(i.timeZone.startTime);
+						self.workInfo().workHours2.end(i.timeZone.endTime);
+					}
+				});
+
+			}		
+			if (!isSelectWork) {
+				self.workInfo().workType(workType);
+				self.workInfo().workTime(workTime);		
+			}
 		}
 
 		bindRestTime(res: AppHdWorkDispInfo, mode?: number) {
@@ -785,23 +841,24 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				if (!_.isNil(overTimeShiftNight)) {
 					midNightHolidayTimes = overTimeShiftNight.midNightHolidayTimes;
 				}
+				console.log(self.appHolidayWork.applicationTime.applicationTime, "holidayTime");
 				_.forEach(holidayTimeArray, (item: HolidayTime) => {
 					if (item.type() == AttendanceType.BREAKTIME) {
-						holidayTimeArray
-							.filter(holidayTime => holidayTime.frameNo() == item.frameNo())
-							.map(holidayTime => holidayTime.start(item.start()));
+						self.appHolidayWork.applicationTime.applicationTime
+							.filter(applicationTime => applicationTime.frameNo == item.frameNo() && applicationTime.attendanceType == AttendanceType.BREAKTIME)
+							.map(applicationTime => item.start(applicationTime.applicationTime));
 					} else if (item.type() == AttendanceType.MIDDLE_BREAK_TIME) {
-						holidayTimeArray
-							.filter(holidayTime => holidayTime.legalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork)
-							.map(holidayTime => holidayTime.start(item.start()));
+						midNightHolidayTimes
+							.filter(midNightHolidayTime => midNightHolidayTime.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork)
+							.map(midNightHolidayTime => item.start(midNightHolidayTime.attendanceTime));
 					} else if (item.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
-						holidayTimeArray
-							.filter(holidayTime => holidayTime.legalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork)
-							.map(holidayTime => holidayTime.start(item.start()));
+						midNightHolidayTimes
+							.filter(midNightHolidayTime => midNightHolidayTime.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork)
+							.map(midNightHolidayTime => item.start(midNightHolidayTime.attendanceTime));
 					} else if (item.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY) {
-						holidayTimeArray
-							.filter(holidayTime => holidayTime.legalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork)
-							.map(holidayTime => holidayTime.start(item.start()));
+						midNightHolidayTimes
+							.filter(midNightHolidayTime => midNightHolidayTime.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork)
+							.map(midNightHolidayTime => item.start(midNightHolidayTime.attendanceTime));
 					}
 				});
 				// B6_9
@@ -820,7 +877,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 					}
 					// B6_29, B6_36, B6_41
-					let appRoot = opPreAppContentDisplayLst[0];
+					let appRoot = opPreAppContentDisplayLst[0].appHolidayWork.applicationTime;
 						if (!_.isNil(appRoot.overTimeShiftNight)) {
 							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
@@ -933,7 +990,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 					}
 					// A6_29 A6_36 A6_41
-					let appRoot = opPreAppContentDisplayLst[0];
+					let appRoot = opPreAppContentDisplayLst[0].appHolidayWork.applicationTime;
 						if (!_.isNil(appRoot.overTimeShiftNight)) {
 							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
@@ -954,7 +1011,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 								});
 							}
 						}
-					
 					}
 				// A6_11
 				if (!_.isNil(res.hdWorkDispInfoWithDateOutput)) {
@@ -1344,9 +1400,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				// A7_9
 				let opPreAppContentDisplayLst = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
 				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let appHolidayWork = opPreAppContentDisplayLst[0].appHolidayWork;
-					if (appHolidayWork) {
-						let applicationTime = appHolidayWork.applicationTime.applicationTime;
+					let apOptional = opPreAppContentDisplayLst[0].apOptional;
+					if (apOptional) {
+						let applicationTime = apOptional.applicationTime as ApplicationTime;
 						if (!_.isEmpty(applicationTime)) {
 							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
 								overTimeArray
@@ -1549,7 +1605,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							self.dataSource.workdayoffFrameList = res.workdayoffFrameList;
 
 							self.bindOverTimeWorks(self.dataSource);
-							self.bindWorkInfo(self.dataSource);
+							self.bindWorkInfo(self.dataSource, true);
 							self.bindRestTime(self.dataSource);
 							self.bindHolidayTime(self.dataSource, 1);
 							self.bindOverTime(self.dataSource, 1);
@@ -1596,29 +1652,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					self.bindRestTime(self.dataSource);
 				})
 				.fail(() =>{})
-				.always(() => self.$blockui('hide'));
-		}
-
-		
-
-		changeDate() {
-			const self = this;
-			let param = {} as ParamHolidayWorkChangeDate;
-			param.companyId = self.$user.companyId;
-			param.dateList = [self.application().appDate()];
-			param.applicationType = AppType.HOLIDAY_WORK_APPLICATION;
-			param.appHdWorkDispInfoDto = ko.toJS(self.dataSource);
-			self.$blockui('show');
-			self.$ajax(API.changeAppDate, param)
-				.done((res: AppHdWorkDispInfo) => { 
-					self.dataSource = res;
-					self.bindOverTimeWorks(self.dataSource);
-					self.bindWorkInfo(self.dataSource, true);
-					self.bindRestTime(self.dataSource);
-					self.bindHolidayTime(self.dataSource, 1);
-					self.bindOverTime(self.dataSource, 1);
-				})
-				.fail(() => {})
 				.always(() => self.$blockui('hide'));
 		}
 
@@ -1807,6 +1840,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	interface WorkType {
 		workTypeCode: string;
 		name: string;
+	}
+	interface WorkTime {
+		worktimeCode: string;
+		workTimeDisplayName: WorkTimeDisplayName;
+	}
+	interface WorkTimeDisplayName {
+		workTimeName: string;
 	}
 	interface BreakTimeZoneSetting {
 		timeZones?: Array<TimeZone>;

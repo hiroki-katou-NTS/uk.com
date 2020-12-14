@@ -95,6 +95,27 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		updateEntity.breakTimeStart10 = entity.breakTimeStart10;
 		updateEntity.breakTimeEnd10 = entity.breakTimeEnd10;
 		
+		List<KrqdtHolidayWorkInput> holidayWorkInputs = new ArrayList<KrqdtHolidayWorkInput>();
+		
+		entity.getHolidayWorkInputs().stream().forEach(x -> {
+			Optional<KrqdtHolidayWorkInput> result = updateEntity.getHolidayWorkInputs().stream().filter(
+					a -> a.getKrqdtHolidayWorkInputPK().getAttendanceType() == x.getKrqdtHolidayWorkInputPK().getAttendanceType()
+							&& a.getKrqdtHolidayWorkInputPK().getAppId() == x.getKrqdtHolidayWorkInputPK().getAppId()
+							&& a.getKrqdtHolidayWorkInputPK().getCid() == x.getKrqdtHolidayWorkInputPK().getCid()
+							&& a.getKrqdtHolidayWorkInputPK().getFrameNo() == x.getKrqdtHolidayWorkInputPK().getFrameNo()
+					).findFirst();
+			KrqdtHolidayWorkInput krqdtHolidayWorkInput;
+			if (result.isPresent()) {
+				result.get().applicationTime = x.applicationTime;
+				krqdtHolidayWorkInput = result.get();
+			} else {
+				krqdtHolidayWorkInput = x;
+				krqdtHolidayWorkInput.contractCd = AppContexts.user().contractCode();
+			}
+			holidayWorkInputs.add(krqdtHolidayWorkInput);
+		});
+		updateEntity.setHolidayWorkInputs(holidayWorkInputs);
+		
 		this.commandProxy().update(updateEntity);
 		this.getEntityManager().flush();
 		

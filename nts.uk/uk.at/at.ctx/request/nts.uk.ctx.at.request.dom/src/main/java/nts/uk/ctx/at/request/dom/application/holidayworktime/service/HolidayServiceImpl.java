@@ -428,10 +428,11 @@ public class HolidayServiceImpl implements HolidayService {
 			if(appHdWorkDispInfoOutput.getCalculationResult().isPresent()) {  
 				appHdWorkDispInfoOutput.getCalculationResult().get().setActualOvertimeStatus(overStateOutput);
 				appHdWorkDispInfoOutput.getCalculationResult().get().setCalculatedFlag(CalculatedFlag.CALCULATED);
-			} else {
-				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult(overStateOutput, null, CalculatedFlag.CALCULATED);
-				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
 			}
+//			else {
+//				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult(overStateOutput, null, CalculatedFlag.CALCULATED);
+//				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
+//			}
 		}
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		
