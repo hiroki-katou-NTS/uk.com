@@ -123,7 +123,7 @@ module nts.uk.at.view.kmk004.b {
 			console.log(param);
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
-					vm.years.push(new IYear(result.year, true));
+					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.selectedYear(ko.unwrap(vm.years)[0].year);
 				}
