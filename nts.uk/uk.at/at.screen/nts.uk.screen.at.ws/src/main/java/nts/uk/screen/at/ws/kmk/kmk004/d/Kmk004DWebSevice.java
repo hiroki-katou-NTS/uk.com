@@ -28,9 +28,19 @@ public class Kmk004DWebSevice extends WebService {
 	@Inject
 	private EmploymentList employmentList;
 	
+	@Inject
+	private BasicSettingsByEmployment baseSetting;
+	
+	
 	@POST
 	@Path("viewd/emp/getEmploymentId")
 	public List<EmploymentCodeDto> getEmploymentCode() {
 		return this.employmentList.get(LaborWorkTypeAttr.DEFOR_LABOR);
+	}
+	
+	@POST
+	@Path("viewd/emp/getBaseSetting/{employmentCode}")
+	public DisplayBasicSettingsDto getBaseSetting(@PathParam("employmentCode") String employmentCode) {
+		return this.baseSetting.getSetting(employmentCode);
 	}
 }
