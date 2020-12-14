@@ -75,7 +75,8 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 				.getEmpInfoTerWithMac(new MacAddress(command.getMacAddress()), new ContractCode(contractCode));
 
 		// 2: [就業情報端末 not empty]:
-		if (empInfoTerminalWithMac.isPresent()) {
+		if (empInfoTerminalWithMac.isPresent()
+			&& !empInfoTerminalWithMac.get().getEmpInfoTerCode().v().equals(command.getEmpInfoTerCode())) {
 			throw new BusinessException("Msg_1931");
 		}
 		

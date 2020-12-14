@@ -11,7 +11,7 @@ module nts.uk.at.view.knr001.a {
             enableBtnDelete: KnockoutObservable<boolean>; 
             isUpdateMode: KnockoutObservable<boolean>;
             empInfoTerminalModel: KnockoutObservable<EmpInfoTerminalModel>;
-            selectedCode: KnockoutObservable<number>;
+            selectedCode: KnockoutObservable<string>;
             empInfoTerminalList: KnockoutObservableArray<EmpInfoListDto>;
             enableBtnRegist: KnockoutObservable<boolean>;
             
@@ -118,7 +118,7 @@ module nts.uk.at.view.knr001.a {
              * load Employment information terminal
              * 起動する／選択端末を変更する／削除ボタン押下後の表示処理
              */
-            private loadEmpInfoTerminal(empInfoTerCode: number): void{
+            private loadEmpInfoTerminal(empInfoTerCode: string): void{
                 let self = this;          
                 service.getDetails(empInfoTerCode).done(function(empInfoTer: any){
                     if(empInfoTer){
@@ -207,7 +207,13 @@ module nts.uk.at.view.knr001.a {
                             });   
                         });
                     }).fail(error => {
-                        $('#A3_2').ntsError('set', {messageId: error.messageId});                       
+                        if (error.messageId === "Msg_1895") {
+                            $('#A3_2').ntsError('set', {messageId: error.messageId});                       
+                        } else if (error.messageId === "Msg_1931") {
+                            $('#A3_8').ntsError('set', {messageId: error.messageId});                     
+                        } else {
+                            dialog.error({messageId: error.messageId});
+                        }
                     }).always(()=>{
                         blockUI.clear();    
                     });
@@ -227,7 +233,11 @@ module nts.uk.at.view.knr001.a {
                             });   
                         });
                     }).fail(error => {
-                        $('#A3_8').ntsError('set', {messageId: error.messageId});
+                        if (error.messageId === "Msg_1931") {
+                            $('#A3_8').ntsError('set', {messageId: error.messageId});                       
+                        } else {
+                            dialog.error({messageId: error.messageId});
+                        }
                     }).always(()=>{
                         blockUI.clear();    
                     });
@@ -550,9 +560,9 @@ module nts.uk.at.view.knr001.a {
             }
         }
         class EmpInfoListDto{
-            empInfoTerCode: number;
+            empInfoTerCode: string;
             empInfoTerName: string;
-            constructor(empInfoTerCode: number, empInfoTerName: string){
+            constructor(empInfoTerCode: string, empInfoTerName: string){
                 this.empInfoTerCode = empInfoTerCode;
                 this.empInfoTerName = empInfoTerName;
             }
