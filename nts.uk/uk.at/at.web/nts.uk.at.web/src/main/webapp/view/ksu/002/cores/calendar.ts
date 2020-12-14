@@ -5,7 +5,7 @@ module nts.uk.ui.calendar {
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
 
-	const KSU_USER_DATA = 'KSU002.USER_DATA';
+	export const KSU_USER_DATA = 'KSU002.USER_DATA';
 
 	export interface StorageData {
 		fdate: number;
