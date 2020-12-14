@@ -157,7 +157,7 @@ table thead tr th {
 }
 /* 限度エラー時間超過 */
 .exceeding-limit-error {
-  background-color: #0c0606; /* 36協定エラー */
+  background-color: #FD4D4D; /* 36協定エラー */
   color: #ffffff; /* 36協定エラー文字 */
 }
 /* 限度アラーム時間超過（特例あり） */
@@ -175,7 +175,7 @@ table thead tr th {
 }
 /* 特例限度エラー時間超過 */
 .special-exceeded-limit-error {
-  background-color: #0c0606; /* 36協定エラー */
+  background-color: #FD4D4D; /* 36協定エラー */
   color: #ffffff; /* 36協定エラー文字 */
 }
 

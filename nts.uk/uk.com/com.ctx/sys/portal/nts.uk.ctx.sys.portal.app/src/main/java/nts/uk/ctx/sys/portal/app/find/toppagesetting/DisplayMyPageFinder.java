@@ -142,7 +142,7 @@ public class DisplayMyPageFinder {
 			//	標準メニューの場合
 			if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
 				result.setMenuClassification(MenuClassification.Standard.value);
-				Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, param.getTopPageSetting().get().getLoginMenuCode(),
+				Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, displayCode.get(),
 						param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
 				if(standardMenu.isPresent()) {
 					result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
