@@ -179,7 +179,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	      exportSQL.append("           FROM");
 	      exportSQL.append("           KRCMT_ANYV oi");
 	      exportSQL.append("          WHERE");
-	      exportSQL.append("           oi.CID = '000000000000-0304' ");
+	      exportSQL.append("           oi.CID = ?companyId ");
 	      exportSQL.append("         ) AS RESULT_ONE");
 	      exportSQL.append("         GROUP BY");
 	      exportSQL.append("           RESULT_ONE.OPTIONAL_ITEM_NO");
@@ -272,7 +272,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	      exportSQL.append("                 )      ");
 	      exportSQL.append("             FROM");
 	      exportSQL.append("              KRCMT_CALC_ITEM_SELECTION cis1 ");
-	      exportSQL.append("              LEFT JOIN KRCMT_DAI_ATTENDANCE_ITEM dai ON dai.CID = cis1.CID AND dai.ATTENDANCE_ITEM_ID = cis1.ATTENDANCE_ITEM_ID AND cis1.CID = '000000000000-0304'");
+	      exportSQL.append("              LEFT JOIN KRCMT_DAI_ATTENDANCE_ITEM dai ON dai.CID = cis1.CID AND dai.ATTENDANCE_ITEM_ID = cis1.ATTENDANCE_ITEM_ID AND cis1.CID = ?companyId");
 	      exportSQL.append("             LEFT JOIN KFNMT_ATTENDANCE_LINK B ON(");
 	      exportSQL.append("             dai.ATTENDANCE_ITEM_ID = B.ATTENDANCE_ITEM_ID AND B.TYPE_OF_ITEM = 1)");
 	      exportSQL.append("             LEFT JOIN KRCST_FORMULA_DISPORDER fd1 ON cis1.OPTIONAL_ITEM_NO = fd1.OPTIONAL_ITEM_NO AND cis1.CID = fd1.CID AND        cis1.FORMULA_ID = fd1.FORMULA_ID");
@@ -309,7 +309,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	      exportSQL.append("                 )       ");
 	      exportSQL.append("             FROM");
 	      exportSQL.append("              KRCMT_CALC_ITEM_SELECTION cis2");
-	      exportSQL.append("              LEFT JOIN KRCMT_MON_ATTENDANCE_ITEM mai ON mai.CID = cis2.CID AND mai.M_ATD_ITEM_ID = cis2.ATTENDANCE_ITEM_ID AND cis2.CID = '000000000000-0304'   ");
+	      exportSQL.append("              LEFT JOIN KRCMT_MON_ATTENDANCE_ITEM mai ON mai.CID = cis2.CID AND mai.M_ATD_ITEM_ID = cis2.ATTENDANCE_ITEM_ID AND cis2.CID = ?companyId   ");
 	      exportSQL.append("             LEFT JOIN KFNMT_ATTENDANCE_LINK B1 ON( mai.M_ATD_ITEM_ID = B1.ATTENDANCE_ITEM_ID ");
 	      exportSQL.append("             AND B1.TYPE_OF_ITEM = 2");
 	      exportSQL.append("             )");
@@ -365,7 +365,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	      exportSQL.append("          LEFT JOIN KRCMT_CALC_ITEM_SELECTION cis ON fd.FORMULA_ID = cis.FORMULA_ID AND fd.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO AND cis.CID = fd.CID");
 	      exportSQL.append("          LEFT JOIN KRCMT_FORMULA_SETTING fs ON fd.FORMULA_ID = fs.FORMULA_ID  AND fd.OPTIONAL_ITEM_NO = fs.OPTIONAL_ITEM_NO");
 	      exportSQL.append("         WHERE");
-	      exportSQL.append("          oi.CID = '000000000000-0304' ");
+	      exportSQL.append("          oi.CID = ?companyId ");
 	      exportSQL.append("          ) AS RESULT_END");
 	      exportSQL.append("         GROUP BY OPTIONAL_ITEM_NO, SYMBOL, FORMULA_ATR, FORMULA_NAME, CALC_ATR, ATTENDANCE_ITEM_NAME, ATTENDANCE_ITEM_2, UPPER_LIMIT_ATR, UPPER_RANGE_DAY, UPPER_RANGE_MON, LOWER_LIMIT_ATR, LOWER_RANGE_DAY, LOWER_RANGE_MON, ITEM_DESCRIP, ITEM_NOTE, DAY_ROUNDING_UNIT, DAY_ROUNDING, MON_ROUNDING_UNIT, MON_ROUNDING, UPPER_LIMIT_ATR, CALC_ATR_2, DISPORDER,FORMULAR_FROM_FORMULAR,FORMULAR) AS RESULT_RIGHT");
 	      exportSQL.append("         ON RESULT_LEFT.OPTIONAL_ITEM_NO = RESULT_RIGHT.OPTIONAL_ITEM_NO ) AS RESULT_TOTAL");

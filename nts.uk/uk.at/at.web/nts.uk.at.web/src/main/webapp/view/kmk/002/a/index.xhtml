@@ -199,9 +199,10 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.numberUpperDay,
                                                       constraint: 'AnyItemTimes',
+                                                      required: isUpperRequiredDay,
                                                       option: {
                                                       grouplength: 3,
-                                                      decimallength: 1
+                                                      decimallength: 2
                                                       },
                                                       enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
                                        </com:ko>
@@ -212,6 +213,7 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.amountUpperDay,
                                                       constraint: 'AnyItemAmount',
+                                                      required: isUpperRequiredDay,
                                                       option: {
                                                       grouplength: 3
                                                       },
@@ -224,6 +226,7 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.timeUpperDay,
                                                       constraint: 'AnyItemTime',
+                                                      required: isUpperRequiredDay,
                                                       inputFormat: 'time',
                                                       mode: 'time',
                                                       enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
@@ -239,9 +242,10 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.numberUpperMonth,
                                                       constraint: 'AnyTimesMonth',
+                                                      required: isUpperRequiredMonth,
                                                       option: {
                                                       grouplength: 3,
-                                                      decimallength: 1
+                                                      decimallength: 2
                                                       },
                                                       enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
@@ -252,6 +256,7 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.amountUpperMonth,
                                                       constraint: 'AnyAmountMonth',
+                                                      required: isUpperRequiredMonth,
                                                       option: {
                                                       grouplength: 3
                                                       },
@@ -264,6 +269,7 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.timeUpperMonth,
                                                       constraint: 'AnyTimeMonth',
+                                                      required: isUpperRequiredMonth,
                                                       inputFormat: 'time',
                                                       mode: 'time',
                                                       enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
@@ -290,9 +296,10 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.numberLowerDay,
                                                          constraint: 'AnyItemTimes',
+                                                         required: isLowerRequiredDay,
                                                          option: {
                                                          grouplength: 3,
-                                                         decimallength: 1
+                                                         decimallength: 2
                                                          },
                                                          enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
                                        </com:ko>
@@ -303,6 +310,7 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.timeLowerDay,
                                                          constraint: 'AnyItemTime',
+                                                         required: isLowerRequiredDay,
                                                          inputFormat: 'time',
                                                          mode: 'time',
                                                          enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
@@ -314,6 +322,7 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.amountLowerDay,
                                                          constraint: 'AnyItemAmount',
+                                                         required: isLowerRequiredDay,
                                                          option: {
                                                          grouplength: 3
                                                          },
@@ -330,9 +339,10 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.numberLowerMonth,
                                                          constraint: 'AnyTimesMonth',
+                                                         required: isLowerRequiredMonth,
                                                          option: {
                                                          grouplength: 3,
-                                                         decimallength: 1
+                                                         decimallength: 2
                                                          },
                                                          enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
@@ -343,6 +353,7 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.timeLowerMonth,
                                                          constraint: 'AnyTimeMonth',
+                                                         required: isLowerRequiredMonth,
                                                          inputFormat: 'time',
                                                          mode: 'time',
                                                          enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
@@ -354,6 +365,7 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.amountLowerMonth,
                                                          constraint: 'AnyAmountMonth',
+                                                         required: isLowerRequiredMonth,
                                                          option: {
                                                          grouplength: 3
                                                          },
