@@ -57,7 +57,7 @@ public class CopyItem {
 				.map(s -> s.copy(idContainer))
 				.collect(toList());
 		
-		val copiedPpemtItemDateRange = findAllPpemtItemDateRange(targetCategoryIds).stream()
+		val copiedPpemtItemDateRange = findAllPpemtItemDateRange(sourceCategoryIds).stream()
 				.map(s -> s.copy(idContainer))
 				.collect(toList());
 

@@ -42,19 +42,19 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " WHERE si.selectionId = :selectionId";
 	
 	// selection for company
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem item"
-			+ " INNER JOIN PpemtSelectionHist his ON item.selectionItemPk.selectionItemId = his.selectionItemId" 
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionName FROM PpemtSelectionItem item"
+			+ " INNER JOIN PpemtSelectionHist his ON item.selectionId.selectionId = his.selectionItemId" 
 			+ " INNER JOIN PpemtSelectionItem se ON his.histidPK.histId = se.histId" 
 			+ " INNER JOIN PpemtSelectionItemSort order ON his.histidPK.histId = order.histId"
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
 			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
-			+ " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND item.selectionId.selectionId =:selectionItemId"
 			+ " AND his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
-	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
+	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem item"
 			+ " INNER JOIN PpemtSelectionHist his "
-			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem se"
+			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem se"
 			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelectionItemSort order"
 			+ " ON his.histidPK.histId = order.histId "
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
