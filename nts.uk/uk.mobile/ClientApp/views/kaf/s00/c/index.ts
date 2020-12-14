@@ -154,7 +154,7 @@ export interface KAFS00CParams {
     // 申請制限設定
     appLimitSetting: any;
     // 選択中の定型理由
-    opAppStandardReasonCD?: number;
+    opAppStandardReasonCD?: number | string;
     // 入力中の申請理由
     opAppReason?: string;
 }
