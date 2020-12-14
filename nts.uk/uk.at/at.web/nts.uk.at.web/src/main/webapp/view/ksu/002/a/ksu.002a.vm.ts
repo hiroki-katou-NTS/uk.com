@@ -285,7 +285,7 @@ module nts.uk.ui.at.ksu002.a {
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
 					// soft reset (only undo, redo)
-					vm.schedules.reset(!(undo || redo));
+					vm.schedules.reset(!(undo || redo) || arch === NO);
 
 					// reset data
 					_.each(schedules, (sc) => {
