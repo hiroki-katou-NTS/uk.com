@@ -1771,19 +1771,20 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			//重複している時間帯
 			Optional<TimeSpanForDailyCalc> overlapptingTime = Optional.empty();
 			overlapptingTime = item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
-			if(!overlapptingTime.isPresent()) continue;
+			if(!overlapptingTime.isPresent() && !endTime.equals(item.getTimeSheet().getStart())) continue;
 			
 			//控除時間分、終了時刻をズラす
 			if(item.getDeductionAtr().isGoOut()) {
-				endTime = endTime.forwardByMinutes(overlapptingTime.get().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
+				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
 				if(endTime.isNegative()) endTime = TimeWithDayAttr.THE_PRESENT_DAY_0000;
 			}
 			else {
-				endTime = endTime.forwardByMinutes(overlapptingTime.get().lengthAsMinutes());
+				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes());
 			}
+
 			//重複している控除項目の時間帯に追加
-			overlapptingDeductionTimeSheets.add(
-					item.replaceTimeSpan(Optional.of(new TimeSpanForDailyCalc(overlapptingTime.get().getStart(), overlapptingTime.get().getEnd()))));
+			overlapptingDeductionTimeSheets.add(item);
+			
 		}
 		//退勤時刻の補正
 		this.correctleaveTimeForFlow(endTime);
