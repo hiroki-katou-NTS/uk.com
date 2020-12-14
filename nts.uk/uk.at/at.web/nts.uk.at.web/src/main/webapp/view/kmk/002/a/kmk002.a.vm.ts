@@ -183,6 +183,11 @@ module nts.uk.at.view.kmk002.a {
             enableUnit: KnockoutComputed<boolean>;
             isCheckedFromChild = false;
 
+            isUpperRequiredDay: KnockoutComputed<boolean>;
+            isLowerRequiredDay: KnockoutComputed<boolean>;
+            isUpperRequiredMonth: KnockoutComputed<boolean>;
+            isLowerRequiredMonth: KnockoutComputed<boolean>;
+
             // stash
             optionalItemAtrStash: number;
             performanceAtrStash: number;
@@ -215,6 +220,19 @@ module nts.uk.at.view.kmk002.a {
                 this.isNumberSelected = ko.observable(false);
                 this.enableUnit = ko.computed(() => {
                     return this.isNumberSelected() || this.isAmountSelected();
+                });
+
+                this.isUpperRequiredDay = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.upperCheck() && this.performanceAtr() === 1 && this.calcResultRange.upperRequired();
+                });
+                this.isLowerRequiredDay = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.lowerCheck() && this.performanceAtr() === 1 && this.calcResultRange.lowerRequired();
+                });
+                this.isUpperRequiredMonth = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.upperCheck() && this.calcResultRange.upperRequired();
+                });
+                this.isLowerRequiredMonth = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.lowerCheck() && this.calcResultRange.lowerRequired();
                 });
 
                 // init datasource
@@ -308,6 +326,8 @@ module nts.uk.at.view.kmk002.a {
              */
             private initSubscribe(): void {
                 let self = this;
+
+                
 
                 // Event on click checkAll checkbox
                 self.checkedAllFormula.subscribe(vl => {
@@ -1328,18 +1348,19 @@ module nts.uk.at.view.kmk002.a {
              * Clear input error
              */
             private clearError(): void {
-                $('#inp-upper-amount-day').ntsError('clear');
-                $('#inp-upper-number-day').ntsError('clear');
-                $('#inp-upper-time-day').ntsError('clear');
-                $('#inp-lower-amount-day').ntsError('clear');
-                $('#inp-lower-number-day').ntsError('clear');
-                $('#inp-lower-time-day').ntsError('clear');
-                $('#inp-upper-amount-month').ntsError('clear');
-                $('#inp-upper-number-month').ntsError('clear');
-                $('#inp-upper-time-month').ntsError('clear');
-                $('#inp-lower-amount-month').ntsError('clear');
-                $('#inp-lower-number-month').ntsError('clear');
-                $('#inp-lower-time-month').ntsError('clear');
+                // $('#inp-upper-amount-day').ntsError('clear');
+                // $('#inp-upper-number-day').ntsError('clear');
+                // $('#inp-upper-time-day').ntsError('clear');
+                // $('#inp-lower-amount-day').ntsError('clear');
+                // $('#inp-lower-number-day').ntsError('clear');
+                // $('#inp-lower-time-day').ntsError('clear');
+                // $('#inp-upper-amount-month').ntsError('clear');
+                // $('#inp-upper-number-month').ntsError('clear');
+                // $('#inp-upper-time-month').ntsError('clear');
+                // $('#inp-lower-amount-month').ntsError('clear');
+                // $('#inp-lower-number-month').ntsError('clear');
+                // $('#inp-lower-time-month').ntsError('clear');
+                $('.nts-editor').ntsError('clear');
             }
 
             /**
@@ -1645,6 +1666,46 @@ module nts.uk.at.view.kmk002.a {
                 if (self.optionalItem.usageAtr() === 1 && self.langId === "ja") {
                     // validate input description
                     $("#description").ntsError("check");
+
+                    // Upper
+                    if($('#inp-upper-amount-day').is(':enabled')){
+                        $('#inp-upper-amount-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-number-day').is(':enabled')){
+                        $('#inp-upper-number-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-time-day').is(':enabled')){
+                        $('#inp-upper-time-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-amount-month').is(':enabled')){
+                        $('#inp-upper-amount-month').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-number-month').is(':enabled')){
+                        $('#inp-upper-number-month').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-time-month').is(':enabled')){
+                        $('#inp-upper-time-month').ntsEditor('validate');
+                    }
+
+                    // Lower
+                    if($('#inp-lower-amount-day').is(':enabled')){
+                        $('#inp-lower-amount-day').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-number-day').is(':enabled')){
+                        $('#inp-lower-number-day').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-time-day').is(':enabled')){
+                        $('#inp-lower-time-day').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-amount-month').is(':enabled')){
+                        $('#inp-lower-amount-month').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-number-month').is(':enabled')){
+                        $('#inp-lower-number-month').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-time-month').is(':enabled')){
+                        $('#inp-lower-time-month').ntsEditor('validate');
+                    }
                 }
 
                 // validate input optional item name
