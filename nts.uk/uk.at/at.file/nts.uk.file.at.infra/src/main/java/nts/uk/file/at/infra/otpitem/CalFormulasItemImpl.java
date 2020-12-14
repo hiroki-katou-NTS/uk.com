@@ -48,7 +48,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	      exportSQL.append("       SELECT");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.OPTIONAL_ITEM_NO, NULL) AS OPTIONAL_ITEM_NO,");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.OPTIONAL_ITEM_NAME, NULL) AS OPTIONAL_ITEM_NAME,");
-	      exportSQL.append("          RESULT_FINAL.CALC_ATR_OPT,");
+	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.CALC_ATR_OPT, NULL) AS CALC_ATR_OPT,");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.OPTIONAL_ITEM_ATR, NULL) AS OPTIONAL_ITEM_ATR,");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.UNIT_OF_OPTIONAL_ITEM, NULL) AS UNIT_OF_OPTIONAL_ITEM,");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.USAGE_ATR, NULL) AS USAGE_ATR,");
