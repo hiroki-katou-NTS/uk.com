@@ -99,6 +99,8 @@ module nts.uk.at.kal014.a {
                 if (_.isNil(code)){
                     return;
                 }
+                $("#swap-list-grid2").igGridSelection("clearSelection");
+                $("#swap-list-grid1").igGridSelection("clearSelection");
                 vm.getSelectedData(code).done(()=>{
                     // reset swap list
                     vm.itemsSwap.removeAll();
