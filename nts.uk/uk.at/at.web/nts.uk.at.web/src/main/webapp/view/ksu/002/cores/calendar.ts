@@ -269,6 +269,7 @@ module nts.uk.ui.calendar {
 			}
 			.calendar .event-popper>.epc {
 				position: relative;
+				width: 220px;
 			}
 			.calendar .event-popper:not(.hide-arrow)>.epc:before {
 				content: '';
@@ -296,10 +297,7 @@ module nts.uk.ui.calendar {
 				z-index: 9;
 				position: fixed;
 				visibility: visible;
-				min-width: 220px;
-				max-width: 400px;
-				min-height: 220px;
-				max-height: 400px;
+				width: 220px;
 			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -402,23 +400,27 @@ module nts.uk.ui.calendar {
 							const event = ko.unwrap(data.event);
 
 							if (event !== null) {
+								const { width, top, left } = element.getBoundingClientRect();
+
 								$.Deferred()
 									.resolve(true)
 									.then(() => {
-										const { width, top, left } = element.getBoundingClientRect();
-
 										$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
-
+									})
+									.then(() => {
 										const pbound = $$popper.getBoundingClientRect();
+										const epc = $($$popper).find('.epc').get(0);
+										const ebound = epc.getBoundingClientRect();
 
 										const top1 = top - 7;
-										const top2 = window.innerHeight - pbound.height - 7;
+										const top2 = window.innerHeight - ebound.height - 7;
 
 										const left1 = left + width + 7;
 										const left2 = window.innerWidth - pbound.width - 30;
 
 										$$popper.style.top = `${Math.min(top1, top2)}px`;
 										$$popper.style.left = `${Math.min(left1, left2)}px`;
+										$$popper.style.height = `${ebound.height}px`;
 
 										if (top1 >= top2 || left1 >= left2) {
 											$$popper.classList.add('hide-arrow');
@@ -447,6 +449,7 @@ module nts.uk.ui.calendar {
 								}).then(() => {
 									$$popper.style.top = '0px';
 									$$popper.style.left = '0px';
+									$$popper.style.height = '0px';
 
 									$$popper.classList.remove('show');
 								});
