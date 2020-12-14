@@ -2,19 +2,21 @@
 
 module nts.uk.at.view.kmk004.components {
 
-    interface Params {
-        selectedYear: KnockoutObservable<number | null>;
-        change: KnockoutObservable<boolean>;
-        checkEmployee: KnockoutObservable<boolean>
-    }
+	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 
-    const API = {
-        GET_WORK_TIME: 'screen/at/kmk004/getWorkingHoursByCompany'
-    };
+	interface Params {
+		selectedYear: KnockoutObservable<number | null>;
+		checkEmployee?: KnockoutObservable<boolean>
+		years: KnockoutObservableArray<IYear>;
+	}
 
-    const TYPE = 0;
+	const API = {
+		GET_WORK_TIME: 'screen/at/kmk004/getWorkingHoursByCompany'
+	};
 
-    const template = `
+	const TYPE = 0;
+
+	const template = `
         <div class="list-time">
             <table>
                 <tbody>
@@ -78,235 +80,167 @@ module nts.uk.at.view.kmk004.components {
         </div>
     `;
 
-    @component({
-        name: 'time-work',
-        template
-    })
+	@component({
+		name: 'time-work',
+		template
+	})
 
-    class ListTimeWork extends ko.ViewModel {
+	class ListTimeWork extends ko.ViewModel {
 
-        public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
-        public total: KnockoutObservable<string> = ko.observable('');
-        public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-        public change: KnockoutObservable<boolean> = ko.observable(true);
-        public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
-        public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
+		public total: KnockoutObservable<string> = ko.observable('');
+		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+		public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
+		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		public years: KnockoutObservableArray<IYear>;
+		
+		created(params: Params) {
+			const vm = this;
+			vm.selectedYear = params.selectedYear;
+			vm.years = params.years;
+			vm.checkEmployee = params.checkEmployee;
 
-        created(params: Params) {
-            const vm = this;
-            vm.selectedYear = params.selectedYear;
-            vm.change = params.change;
-            vm.checkEmployee = params.checkEmployee;
+			vm.initList(2020);
+			vm.reloadData();
 
-            vm.initList();
-            vm.reloadData();
+			vm.workTimes.subscribe((wts) => {
+				const total: number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
+				const first: string = Math.floor(total / 60) + '';
+				var last: string = total % 60 + '';
 
-            vm.workTimes.subscribe((wts) => {
-                const total: number = wts.reduce((p, c) => p += Number(c.legalLaborTime()), 0);
-                const first: string = Math.floor(total / 60) + '';
-                var last: string = total % 60 + '';
+				if (last.length < 2) {
+					last = '0' + last;
+				}
 
-                if (last.length < 2){
-                    last = '0' + last;
-                }
-                
-                vm.total(first + ':' + last);
+				vm.total(first + ':' + last);
 
-            });
+			});
 
-            vm.selectedYear
-                .subscribe(() => {
-                    vm.reloadData();
-                });
+			vm.selectedYear
+				.subscribe(() => {
+					vm.reloadData();
+				});
 
-            vm.total
-                .subscribe(() => {
-                    vm.change.valueHasMutated();
-                });
-        }
+		}
 
-        reloadData() {
-            const vm = this;
-            const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
+		reloadData() {
+			const vm = this;
+			const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
 
-            if (ko.unwrap(vm.selectedYear) != null) {
-                vm.ckeckNullYear(true);
-            }
+			if (ko.unwrap(vm.selectedYear) != null) {
+				vm.ckeckNullYear(true);
+			}
 
-            vm.$ajax(API.GET_WORK_TIME, input)
-                .then((data: IWorkTime[]) => {
-                    if (data.length > 0) {
-                        const data1: IWorkTime[] = [];
-                        var check: boolean = true;
+			vm.$ajax(API.GET_WORK_TIME, input)
+				.then((data: IWorkTime[]) => {
+					if (data.length > 0) {
+						const workTime: IWorkTime[] = [];
+						var check: boolean = true;
 
-                        if (ko.unwrap(vm.checkEmployee)) {
-                            check = false;
-                        }
-                        data.map(m => {
-                            const laborTime: ILaborTime = {
-                                legalLaborTime: m.laborTime.legalLaborTime,
-                                withinLaborTime: m.laborTime.weekAvgTime,
-                                weekAvgTime: m.laborTime.weekAvgTime
-                            };
-                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: laborTime };
-                            data1.push(s);
-                        });
+						if (ko.unwrap(vm.checkEmployee)) {
+							check = false;
+						}
+						data.map(m => {
+							const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+							workTime.push(s);
+						});
 
-                        vm.workTimes(data1.map(m => new WorkTimeL({ ...m, parrent: vm.workTimes })));
-                    }
-                });
-        }
+						vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+					}
+				});
+		}
 
-        reloadList() {
-            const vm = this;
-            const list: IWorkTime[] = [];
-
-            // ko.unwrap(vm.workTimes).map(m => {
-            //     const legalLaborTime: number = parseInt(ko.unwrap(m.legalLaborTime).replace(':', ''), 10);
-            //     const laborTime: ILaborTime = {
-            //         legalLaborTime: legalLaborTime,
-            //         withinLaborTime: null,
-            //         weekAvgTime: null
-            //     }
-            //     const a: IWorkTime = {
-            //         check: ko.unwrap(m.check),
-            //         yearMonth: ko.unwrap(m.yearMonth),
-            //         laborTime: laborTime
-            //     }
-            //     list.push(a);
-            // });
-
-            // vm.workTimes(list.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-        }
-
-        initList() {
-            const vm = this,
-                laborTime: ILaborTime = {
-                    legalLaborTime: null,
-                    withinLaborTime: null,
-                    weekAvgTime: null
-                };
+		initList(year: number) {
+			const vm = this
             var check: boolean = true;
 
             if (ko.unwrap(vm.checkEmployee)) {
                 check = false;
             }
 
-            const IWorkTime1: IWorkTime[] = [{ check: check, yearMonth: 202001, laborTime: laborTime },
-            { check: check, yearMonth: 202002, laborTime: laborTime },
-            { check: check, yearMonth: 202003, laborTime: laborTime },
-            { check: check, yearMonth: 202004, laborTime: laborTime },
-            { check: check, yearMonth: 202005, laborTime: laborTime },
-            { check: check, yearMonth: 202006, laborTime: laborTime },
-            { check: check, yearMonth: 202007, laborTime: laborTime },
-            { check: check, yearMonth: 202008, laborTime: laborTime },
-            { check: check, yearMonth: 202009, laborTime: laborTime },
-            { check: check, yearMonth: 202010, laborTime: laborTime },
-            { check: check, yearMonth: 202011, laborTime: laborTime },
-            { check: check, yearMonth: 202012, laborTime: laborTime }];
-            vm.workTimes(IWorkTime1.map(m => new WorkTimeL({ ...m, parrent: vm.workTimes })));
-        }
-    }
+            const IWorkTime1: IWorkTime[] = [{ check: check, yearMonth: year*100 +1, laborTime: 0 },
+            { check: check, yearMonth: year*100 +2, laborTime: 0 },
+            { check: check, yearMonth: year*100 +3, laborTime: 0 },
+            { check: check, yearMonth: year*100 +4, laborTime: 0 },
+            { check: check, yearMonth: year*100 +5, laborTime: 0 },
+            { check: check, yearMonth: year*100 +6, laborTime: 0 },
+            { check: check, yearMonth: year*100 +7, laborTime: 0 },
+            { check: check, yearMonth: year*100 +8, laborTime: 0 },
+            { check: check, yearMonth: year*100 +9, laborTime: 0 },
+            { check: check, yearMonth: year*100 +10, laborTime: 0 },
+            { check: check, yearMonth: year*100 +11, laborTime: 0 },
+            { check: check, yearMonth: year*100 +12, laborTime: 0 }];
+            vm.workTimes(IWorkTime1.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+		}
+	}
 }
 
 interface IWorkTime {
-    check: boolean;
-    yearMonth: number;
-    laborTime: ILaborTime;
-}
-
-interface ILaborTime {
-    legalLaborTime: number;
-    withinLaborTime: number;
-    weekAvgTime: number;
+	check: boolean;
+	yearMonth: number;
+	laborTime: number;
 }
 
 class WorkTimeL {
-    check: KnockoutObservable<boolean> = ko.observable(false);
-    yearMonth: KnockoutObservable<number | null> = ko.observable(null);
-    nameMonth: KnockoutObservable<string> = ko.observable('');
-    legalLaborTime: KnockoutObservable<number> = ko.observable(0);
+	check: KnockoutObservable<boolean> = ko.observable(false);
+	yearMonth: KnockoutObservable<number | null> = ko.observable(null);
+	nameMonth: KnockoutObservable<string> = ko.observable('');
+	legalLaborTime: KnockoutObservable<number> = ko.observable(0);
 
-    constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTimeL> }) {
-        const md = this;
+	constructor(params?: IWorkTime & { parent: KnockoutObservableArray<WorkTimeL> }) {
+		const md = this;
 
-        md.create(params);
-        this.legalLaborTime.subscribe(c => params.parrent.valueHasMutated());
-    }
+		md.create(params);
+		this.legalLaborTime.subscribe(c => params.parent.valueHasMutated());
+	}
 
-    public create(param?: IWorkTime) {
-        const md = this;
-        md.check(param.check);
-        md.yearMonth(param.yearMonth);
+	public create(param?: IWorkTime) {
+		const md = this;
+		md.check(param.check);
+		md.yearMonth(param.yearMonth);
 
-        if (param.check) {
-            // var firstLegalLabor = '0';
-            // var lastLegalLabor = param.laborTime.legalLaborTime % 60 + '';
+		if (param.check) {
+			md.legalLaborTime(param.laborTime);
+		}
 
-            // firstLegalLabor = Math.floor(param.laborTime.legalLaborTime / 60) + '';
-
-            // if (lastLegalLabor.length < 2) {
-            //     lastLegalLabor = '0' + lastLegalLabor;
-            // }
-
-            md.legalLaborTime(param.laborTime.legalLaborTime);
-        }
-
-        switch (param.yearMonth.toString().substring(4, 6)) {
-            case "01":
-                md.nameMonth('1月度')
-                break
-            case "02":
-                md.nameMonth('2月度')
-                break
-            case "03":
-                md.nameMonth('3月度')
-                break
-            case "04":
-                md.nameMonth('4月度')
-                break
-            case "05":
-                md.nameMonth('5月度')
-                break
-            case "06":
-                md.nameMonth('6月度')
-                break
-            case "07":
-                md.nameMonth('7月度')
-                break
-            case "08":
-                md.nameMonth('8月度')
-                break
-            case "09":
-                md.nameMonth('9月度')
-                break
-            case "10":
-                md.nameMonth('10月度')
-                break
-            case "11":
-                md.nameMonth('11月度')
-                break
-            case "12":
-                md.nameMonth('12月度')
-                break
-        }
-    }
+		switch (param.yearMonth.toString().substring(4, 6)) {
+			case "01":
+				md.nameMonth('1月度')
+				break
+			case "02":
+				md.nameMonth('2月度')
+				break
+			case "03":
+				md.nameMonth('3月度')
+				break
+			case "04":
+				md.nameMonth('4月度')
+				break
+			case "05":
+				md.nameMonth('5月度')
+				break
+			case "06":
+				md.nameMonth('6月度')
+				break
+			case "07":
+				md.nameMonth('7月度')
+				break
+			case "08":
+				md.nameMonth('8月度')
+				break
+			case "09":
+				md.nameMonth('9月度')
+				break
+			case "10":
+				md.nameMonth('10月度')
+				break
+			case "11":
+				md.nameMonth('11月度')
+				break
+			case "12":
+				md.nameMonth('12月度')
+				break
+		}
+	}
 }
 
-// class LaborTime {
-//     legalLaborTime: KnockoutObservable<number | null> = ko.observable(null);
-//     withinLaborTime: KnockoutObservable<number | null> = ko.observable(null);
-//     weekAvgTime: KnockoutObservable<number | null> = ko.observable(null);
-
-//     constructor(params?: ILaborTime) {
-//         const md = this;
-//         md.create(params);
-//     }
-
-//     public create(param?: ILaborTime) {
-//         const md = this;
-//         md.legalLaborTime(param.legalLaborTime);
-//         md.withinLaborTime(param.withinLaborTime);
-//         md.weekAvgTime(param.weekAvgTime);
-//     }
-// }

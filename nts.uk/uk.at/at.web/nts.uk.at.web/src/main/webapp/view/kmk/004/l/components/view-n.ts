@@ -3,6 +3,8 @@
 module nts.uk.at.view.kmk004.l {
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
 	import tree = kcp.share.tree;
+	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
+	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 
 	const template = `
 		<div class="sidebar-content-header">
@@ -42,13 +44,14 @@ module nts.uk.at.view.kmk004.l {
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 					</div>
 					<div class="content">
-						<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
 							<div class="div_row"> 
 								<div class= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
-										change: changeYear
+										param: param,
+										type: type,
+										years: years
 									}
 								}"></div>
 								
@@ -56,8 +59,7 @@ module nts.uk.at.view.kmk004.l {
 									name: 'time-work',
 									params:{
 										selectedYear: selectedYear,
-										change: changeYear,
-										checkEmployee: checkEmployee
+										years: years
 									}
 								}"></div>
 							</div>
@@ -102,7 +104,6 @@ module nts.uk.at.view.kmk004.l {
 		isShowNoSelectRow: KnockoutObservable<boolean>;
 		isMultiSelect: KnockoutObservable<boolean>;
 		employeeList: KnockoutObservableArray<UnitModel>;
-
 		isDisplayClosureSelection: KnockoutObservable<boolean>;
 		isDisplayFullClosureOption: KnockoutObservable<boolean>;
 		closureSelectionType: KnockoutObservable<number>;
@@ -110,10 +111,11 @@ module nts.uk.at.view.kmk004.l {
 		currentItemName: KnockoutObservable<string>;
 		
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
-
+		public type: SIDEBAR_TYPE = 'Com_Employment';
+		public param: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		
@@ -172,6 +174,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.currentItemName(selectedItem ? selectedItem.name : '');
 				vm.paramL.empCode(newValue);
 				vm.paramL.titleName = vm.currentItemName();
+				vm.param(newValue);
 			});
 			
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {

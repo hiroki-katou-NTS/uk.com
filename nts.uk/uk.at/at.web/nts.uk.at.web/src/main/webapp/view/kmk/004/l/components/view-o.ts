@@ -4,6 +4,8 @@ module nts.uk.at.view.kmk004.l {
 	import tree = kcp.share.tree;
 	import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
+	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
+	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 
 	const template = `
 		<div class="sidebar-content-header">
@@ -44,13 +46,14 @@ module nts.uk.at.view.kmk004.l {
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 					</div>
 					<div class="content">
-						<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
 						<div class="div_row"> 
 							<div class= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
-										change: changeYear
+										param: param,
+										type: type,
+										years: years
 									}
 								}"></div>
 								
@@ -58,8 +61,7 @@ module nts.uk.at.view.kmk004.l {
 									name: 'time-work',
 									params:{
 										selectedYear: selectedYear,
-										change: changeYear,
-										checkEmployee: checkEmployee
+										years: years
 									}
 								}"></div>
 							</div>
@@ -104,11 +106,13 @@ module nts.uk.at.view.kmk004.l {
 		currentItemName: KnockoutObservable<string>;
 
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
-		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
+		public type: SIDEBAR_TYPE = 'Com_Workplace';
+		public param: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		
 		
 		constructor(private params: IParam){
 			super();
@@ -211,7 +215,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.currentItemName(selectedItem.code + " " + selectedItem.name);
 				vm.paramL.empId(newValue);
 				vm.paramL.titleName = vm.currentItemName();
-				
+				vm.param(newValue);
 			});
 			
 		}

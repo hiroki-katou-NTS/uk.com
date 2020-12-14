@@ -2,6 +2,8 @@
 
 module nts.uk.at.view.kmk004.l {
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
+	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
+	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 	
 	const template = `
 	<div class="sidebar-content-header">
@@ -28,14 +30,16 @@ module nts.uk.at.view.kmk004.l {
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				</div>
 				<div class="content">
-					<button id = "btn_year" data-bind="click: openQDialog, i18n: 'KMK004_233'"></button>
+					
 					<div class="div_row"> 
 								
-								<div class= "box-year" id= "lisboxL6_4" data-bind="component: {
+								<div class= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
-										change: changeYear
+										param: ko.observable(''),
+										type: type,
+										years: years
 									}
 								}"></div>
 								
@@ -43,8 +47,7 @@ module nts.uk.at.view.kmk004.l {
 									name: 'time-work',
 									params:{
 										selectedYear: selectedYear,
-										change: changeYear,
-										checkEmployee: checkEmployee
+										years: years
 									}
 								}"></div>
 					</div>
@@ -59,10 +62,10 @@ module nts.uk.at.view.kmk004.l {
     
 	export class ViewLComponent extends ko.ViewModel {
 		
-		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-		public changeYear: KnockoutObservable<boolean> = ko.observable(true);
-		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public existYear: KnockoutObservable<boolean> = ko.observable(true);
+		public type: SIDEBAR_TYPE = 'Com_Company';
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		enable: KnockoutObservable<boolean> = ko.observable(false);
 		
@@ -75,15 +78,17 @@ module nts.uk.at.view.kmk004.l {
 			vm.params = {isLoadData: vm.isLoadData, sidebarType : "Com_Company", wkpId: ko.observable(''), empCode :ko.observable(''), empId: ko.observable(''), titleName:'', deforLaborTimeComDto: null, settingDto: null}
 			vm.selectedYear
 			.subscribe(() => {
+				vm.$errors('clear');
 				if(vm.selectedYear != null) {
 					vm.existYear(true);
-					vm.enable(true);
 				}
 			});
 		}
 
 		mounted() {
-				$('#lisboxL6_4').focus();
+			$(document).ready(function () {
+				$('.listbox').focus();
+			});
 		}
 		
 		openViewP() {
@@ -93,8 +98,5 @@ module nts.uk.at.view.kmk004.l {
 			});
 		}
 		
-		openQDialog() {
-			
-		}
     }
 }
