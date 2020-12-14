@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
@@ -48,7 +49,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
     public String enteredPersonSID;
 
     @Column(name = "INPUT_DATE_TIME")
-    public GeneralDate inputDate;
+    public GeneralDateTime inputDate;
 
     @Column(name = "TGT_SID")
     public String applicantsSID;
@@ -236,7 +237,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getListApproverSID().size() > 1 ? domain.getListApproverSID().get(1) : null,
                 domain.getListApproverSID().size() > 2 ? domain.getListApproverSID().get(2) : null,
                 domain.getListApproverSID().size() > 3 ? domain.getListApproverSID().get(3) : null,
-                domain.getListApproverSID().size() > 5 ? domain.getListApproverSID().get(4) : null,
+                domain.getListApproverSID().size() > 4 ? domain.getListApproverSID().get(4) : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmationStatus().value : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmDate().orElse(null) : null,
@@ -275,7 +276,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getScreenDisplayInfo().getUpperContents().getAverageTimeLimit().v(),
                 domain.getScreenDisplayInfo().getUpperContents().getOneMonthLimit().getError().v(),
                 domain.getScreenDisplayInfo().getUpperContents().getOneMonthLimit().getAlarm().v(),
-                domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getAlarm().v(),
+                domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getError().v(),
                 domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getAlarm().v(),
 
                 domain.getScreenDisplayInfo().getExceededMonth()

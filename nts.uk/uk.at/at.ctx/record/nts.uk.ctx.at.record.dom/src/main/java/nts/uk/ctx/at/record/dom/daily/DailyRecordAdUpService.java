@@ -27,9 +27,9 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 
 public interface DailyRecordAdUpService {
 	// ドメインモデル「日別実績の勤務情報」を更新する
@@ -41,14 +41,11 @@ public interface DailyRecordAdUpService {
 	// ドメインモデル「日別実績の計算区分」を更新する
 	public void adUpCalAttr(CalAttrOfDailyPerformance calAttr);
 
-	// ドメインモデル「日別実績の勤務種別」を更新する
-	public void adUpWorkType(Optional<WorkTypeOfDailyPerformance> businessType);
-
 	// ドメインモデル「日別実績の出退勤」を更新する
 	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave);
 
 	// ドメインモデル「日別実績の休憩時間帯」を更新する
-	public void adUpBreakTime(List<BreakTimeOfDailyPerformance> breakTime);
+	public void adUpBreakTime(Optional<BreakTimeOfDailyPerformance> breakTime);
 
 	// ドメインモデル「日別実績の外出時間帯」を更新する
 	public void adUpOutTime(Optional<OutingTimeOfDailyPerformance> outingTime);
@@ -85,6 +82,9 @@ public interface DailyRecordAdUpService {
 	// ドメインモデル「日別実績の備考」を更新する
 	public void adUpRemark(List<RemarksOfDailyPerform> remarks);
 
+	//ドメインモデル「スナップショット」を更新する
+	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot);
+	
 	/**
 	 * ドメインモデル「社員の日別実績エラー一覧」を更新する
 	 * 
@@ -117,9 +117,8 @@ public interface DailyRecordAdUpService {
 				Optional.of(new TimeLeavingOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x))));
 
 		// ドメインモデル「日別実績の休憩時間帯」を更新する
-		adUpBreakTime(domain.getBreakTime().stream()
-				.map(x -> new BreakTimeOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x))
-				.collect(Collectors.toList()));
+		adUpBreakTime(domain.getBreakTime()
+				.map(x -> new BreakTimeOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x)));
 
 		// ドメインモデル「日別実績の外出時間帯」を更新する
 		adUpOutTime(domain.getOutingTime()

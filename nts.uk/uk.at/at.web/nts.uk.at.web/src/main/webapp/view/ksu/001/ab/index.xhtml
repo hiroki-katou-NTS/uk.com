@@ -3,7 +3,7 @@
 		<tr>
 			<td><div id="label" class="Abc1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div></td>
 			<td>
-				<div tabindex="30" id="listWorkType" class="Abc2"
+				<div tabindex="42" id="listWorkType" class="Abc2"
 					data-bind="ntsComboBox: {
 								options: listWorkType ,
 								optionsValue: 'workTypeCode',
@@ -12,7 +12,7 @@
 								optionsText: 'name',
 								editable:  false,
 								enable: enableListWorkType ,
-								width: 300,
+								width: 420,
 								columns: [
 									{ prop: 'workTypeCode', length: 3 },
 									{ prop: 'name', length: 6 },
@@ -31,7 +31,7 @@
                             filter: filter,
                             disabled: disabled,
                             show-mode: showMode,
-                            tabindex: 0,
+                            tabindex: 43,
                             width: width,
                             check: check
                         "></div>

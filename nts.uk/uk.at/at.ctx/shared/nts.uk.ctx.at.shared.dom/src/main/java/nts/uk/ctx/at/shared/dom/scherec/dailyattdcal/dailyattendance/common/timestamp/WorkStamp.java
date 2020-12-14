@@ -35,21 +35,21 @@ public class WorkStamp extends DomainObject{
 	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans,EngravingMethod engravingMethod) {
 		super();
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, engravingMethod), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.ofNullable(engravingMethod)), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 	}
 	
 	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans) {
 		super();
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, null), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.empty()), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 	}
 	
 	
 	public void setPropertyWorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			TimeChangeMeans timeChangeMeans){
-		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, null), timeWithDay);
+		this.timeDay = new WorkTimeInformation(new ReasonTimeChange(timeChangeMeans, Optional.empty()), timeWithDay);
 		this.locationCode = Optional.ofNullable(locationCode);
 		
 	}
@@ -67,6 +67,19 @@ public class WorkStamp extends DomainObject{
 		super();
 		this.timeDay = timeDay;
 		this.locationCode = locationCode;
+	}
+	
+	/**
+	 * ＜
+	 * @param compareValue　比較値
+	 * @return
+	 */
+	public boolean lessThan(WorkStamp compareValue) {
+		if(this.getTimeDay().getTimeWithDay().isPresent() && compareValue.getTimeDay().getTimeWithDay().isPresent()) {
+			return this.getTimeDay().getTimeWithDay().get().lessThan(compareValue.getTimeDay().getTimeWithDay().get());
+		}
+
+		return false;
 	}
 	
 

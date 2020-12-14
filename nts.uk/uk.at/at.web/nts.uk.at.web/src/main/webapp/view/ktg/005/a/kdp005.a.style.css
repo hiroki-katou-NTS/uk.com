@@ -1,0 +1,67 @@
+@import url("base.css");
+
+.col_line_1, .col_line_2 {
+	display: inline-block;
+}
+
+.col_line_1 {
+	width: 150px;
+}
+
+#functions-area {
+	padding-top: 0px;
+}
+
+.button-group {
+	height: 29px;
+	width: 29px;
+	border: 0;
+	margin: 0;
+	box-shadow: none;
+	background-size: auto;
+	background-color: transparent;
+}
+
+#functions-area {
+	padding-left: 0px;
+}
+
+.col_line_2 {
+	float: right;
+	display: flex;
+}
+
+#master-wrapper div#contents-area {
+	padding: 0px;
+}
+
+#top_title {
+	border-bottom: 1px solid #B1B1B1;
+	border-left: 5px solid #0096F2;
+	height: 45px;
+	display: flex;
+}
+
+.div_line {
+	margin-top: 0px;
+	height: 40px;
+	vertical-align: middle;
+	line-height: 40px;
+}
+
+.border {
+	border-bottom: solid thin #B1B1B1;
+}
+
+#content {
+	overflow-y: auto;
+}
+
+#contents-area {
+	width: 305px;
+	margin: 0 auto;
+	border: 1px solid #B1B1B1;
+	border-top: 0;
+	height: auto !important;
+	min-height: 258px;
+}

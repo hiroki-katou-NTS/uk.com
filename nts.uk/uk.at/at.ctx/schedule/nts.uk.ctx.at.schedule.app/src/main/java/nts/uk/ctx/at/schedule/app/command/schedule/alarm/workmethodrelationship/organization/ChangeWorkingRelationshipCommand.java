@@ -16,6 +16,9 @@ public class ChangeWorkingRelationshipCommand {
 	//E1_3
 	private String workplaceGroupId;
 
+	//E4_2
+	private int typeWorkMethod;
+
 	//E4_7
 	private String workTimeCode;
 

@@ -31,5 +31,6 @@ public interface DivergenceReasonInputMethodRepository {
 	 * @param domain the domain
 	 */
 	void update(DivergenceReasonInputMethod domain);
-
+	
+	List<DivergenceReasonInputMethod> getByCidAndLstTimeInfo(String companyId, List<Integer> divTimeNos, int useClassification); 
 }

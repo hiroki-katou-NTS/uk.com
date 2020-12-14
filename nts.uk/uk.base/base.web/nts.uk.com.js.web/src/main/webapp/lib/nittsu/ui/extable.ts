@@ -831,7 +831,7 @@ module nts.uk.ui.exTable {
             
             styleInnerCell(idx: number, innerCount: number) {
                 let self = this;
-                let divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #AAB7B8",
+                let divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8",
                     incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell,
                     incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
 //                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
@@ -1422,9 +1422,9 @@ module nts.uk.ui.exTable {
                 left: left,
                 width: width,
                 height: height,
-                borderTop: "solid 1px #AAB7B8",
-                borderRight: "solid 1px #AAB7B8",
-                borderLeft: "solid 1px #AAB7B8"
+                borderTop: "solid 1px #ABB7B8",
+                borderRight: "solid 1px #ABB7B8",
+                borderLeft: "solid 1px #ABB7B8"
             };
             
             if (maxWidth) {
@@ -1445,7 +1445,7 @@ module nts.uk.ui.exTable {
                 style = wrapperStyles(top, left, options.width, options.height, maxWidth + "px"); 
             } else if (options.containerClass === BODY_PRF + LEFTMOST) {
                 style = wrapperStyles(top, left, options.width, options.height);
-                style.borderBottom = "solid 1px #AAB7B8";
+                style.borderBottom = "solid 1px #ABB7B8";
             } else {
                 style = wrapperStyles(top, left, options.width, options.height);
             }
@@ -2567,7 +2567,7 @@ module nts.uk.ui.exTable {
             
                 $editor.style.width = "calc(100% - 1px)";
                 $editor.style.backgroundColor = "#FFF";
-                $editor.style.border = "1px solid #AAB7B8";
+                $editor.style.border = "1px solid #ABB7B8";
                 $editor.appendChild($input);
                 if (selector.is($cell, "div")) {
                     $editor.style.height = "calc(100% - 2px)";
@@ -3236,7 +3236,7 @@ module nts.uk.ui.exTable {
                 sm = sticker.styleMaker;
             }
             let touched = render.gridRow($grid, rowIdx, origData, sm);
-            if (changedCells.length > 0) {
+            if (changedCells.length > 0 && !_.isNil(touched)) {
                 changedCells.forEach(c => c.setTarget(touched.updateTarget));
                 pushHistory($grid, changedCells, txId);
                 events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));

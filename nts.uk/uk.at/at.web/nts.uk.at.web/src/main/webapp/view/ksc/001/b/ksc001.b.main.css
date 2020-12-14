@@ -1,353 +1,333 @@
-
-#contents-area.fix-2180 {
-	/*height: 100vh !important;*/
-}
-
 .navigation-label {
-	margin-left: 20px;
-	vertical-align: 12px;
+  margin-left: 20px;
+  vertical-align: 12px;
 }
-contents-area
-.create-creation {
-	background-image: url(./IMG_KSC001_1.png);
-	background-size: 100%;
-	height: 109px;
-	width: 327px;
-	background-repeat: no-repeat;対象期間・実施内容を選ぶ
-        作成方法を選ぶ
-        対象期間
-        2020/08/04　～　2020/09/03
-        作成方法を選択してください。
-        作成方法
-        作成方法（参照先）
-        月間パターン
-        コピー開始年月日
-        2020/08/04
-        作成時の同時確定
-	margin-left: 20px;
+contents-area .create-creation {
+  background-image: url(./IMG_KSC001_1.png);
+  background-size: 100%;
+  height: 109px;
+  width: 327px;
+  background-repeat: no-repeat;
+  margin-left: 20px;
 }
 
 .history-reference {
-	background-image: url(./IMG_KSC001_2.png);
-	background-size: 100%;
-	height: 109px;
-	width: 327px;
-	background-repeat: no-repeat;
-	margin-left: 60px;
+  background-image: url(./IMG_KSC001_2.png);
+  background-size: 100%;
+  height: 109px;
+  width: 327px;
+  background-repeat: no-repeat;
+  margin-left: 60px;
+}
+
+.nts-wizard.ksc001 > .content > .body .panel-content {
+	min-height: 485px;
+	position: relative;
+}
+.nts-wizard.ksc001 > .content > .body .panel-content .buttonPrevNext {
+	position: absolute;
+	bottom: 7px;
+	right: 0;
 }
 
 .contentB {
-	margin-left: 50px;
-	margin-top: 20px;
+  margin-left: 50px;
+  margin-top: 10px;
 }
 
 .contentC {
 	margin-left: 50px;
 }
+.nts-wizard.ksc001 > .content > .body .contentC {
+	min-height: 495px;
+}
 
 .contentD {
-	margin-top: 10px;
-	margin-left: 90px;
+  margin-top: 10px;
+  margin-left: 90px;
+	max-width: 730px;
 }
 
 .contentE {
-	margin-top: 10px;
-	margin-left: 50px;
+  margin-top: 10px;
+  margin-left: 50px;
 }
 
 .periodCovered {
-	display: flex;
-	align-items: center;
-	border-bottom: solid 1px #B1B1B1;
-	padding-bottom: 5px;
-	margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: solid 1px #b1b1b1;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 }
 .periodCovered .info-period-date {
-	padding-left: 15px;
+  padding-left: 15px;
 }
 .selectionEmployee {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .buttonNext {
-	margin-top: 8px;
-	margin-left: 470px;
-}
-
-.selectionCase {
+  margin-top: 8px;
+  margin-left: 470px;
 }
 
 .periodChangeValue {
-	margin-left: 15px;
+  margin-left: 15px;
 }
 
 .labelSchedule {
-	margin-left: 30px;
-	margin-top: 10px;
+  margin-left: 30px;
+  margin-top: 10px;
 }
 
 .helpButton {
-	margin-left: 15px;
+  margin-left: 15px;
 }
 
 .selectImplementAtr {
-	margin-left: 15px;
-}
-
-.labelRangeDate {
-
+  margin-left: 15px;
 }
 
 button.nts-switch-button {
-	min-width: 80px;
+  min-width: 80px;
 }
 
 .radioboxCase,
 .radioboxCaseAll {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .lableCaseAll {
-	display: inline-flex;
-	width: 100%;
-	align-items: center;
-	margin: 5px 0;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  margin: 5px 0;
 }
 .lableCaseAll.label-list {
-	align-items: flex-start;
+  align-items: flex-start;
 }
 .contentELable {
-	margin-left: 20px;
+  margin-left: 20px;
 }
 
 .buttonCase {
-	margin-left: 20px;
+  margin-left: 20px;
 }
 
 .radioboxProcessExecutionAtr {
-	margin-top: 10px;
-	margin-left: 20px;
+  margin-top: 10px;
+  margin-left: 20px;
 }
 
 .radioboxRebuildAtr {
-	margin-top: 5px;
-	margin-left: 10px;
+  margin-top: 5px;
+  margin-left: 10px;
 }
 
 .checkboxSetting {
-	margin-top: 10px;
-	margin-left: 30px;
+  margin-top: 10px;
+  margin-left: 30px;
 }
-.checkboxSetting  .checkBoxGroup {
-	padding-left: 3px;
+.checkboxSetting .checkBoxGroup {
+  padding-left: 3px;
 }
 .checkboxSetting-1 {
-	margin-top: 10px;
-	margin-left: 40px;
+  margin-top: 10px;
+  margin-left: 40px;
 }
 
 .checkboxSettingEnd {
-	margin-top: 5px;
-	margin-left: 70px;
-	float: left;
+  margin-top: 5px;
+  margin-left: 70px;
+  float: left;
 }
 
 .checkboxOne {
-	width: 180px;
+  width: 180px;
 }
 
 .checkboxOne-1 {
-	width: 205px;
+  width: 205px;
 }
 
 .labelSettingEnd {
-	margin-left: 105px;
-	float: left;
+  margin-left: 105px;
+  float: left;
 }
 
-.nts-wizard{
-	overflow: auto;
+.nts-wizard {
+  overflow: auto;
 }
 
-.nts-wizard.vertical>.steps {
-	width: 300px;
+.nts-wizard.vertical > .steps {
+  width: 300px;
 }
 
-.nts-wizard.vertical>.content {
-	margin: 0 0 0 0;
-	background: none;
-	width: 100%;
-	max-width: 800px;
+.nts-wizard.vertical > .content {
+  margin: 0 0 0 0;
+  background: none;
+  width: 100%;
+  max-width: 800px;
 }
 
 .nts-wizard.ksc001 > .content > .body {
-	padding: 0;
-    min-height: 100vh;
+  padding: 0;
+  min-height: 100vh;
 }
 
 .buttonBeginNext {
-	margin-left: 20px;
-	/* float: left; */
-}
-
-.buttonBeginPrevious {
-	/*margin-top: 12px;
-	float: left; */
+  margin-left: 20px;
 }
 
 .labelSelection {
-	width: 100px;
+  width: 100px;
 }
 
 .labelContents {
-	background-color: #eaeaea;
-	width: 100%;
-	padding: 10px;
-	overflow-y: scroll;
-	position: relative;
+  background-color: #eaeaea;
+  width: 100%;
+  padding: 10px;
+  overflow-y: scroll;
+  position: relative;
 }
 .labelContents label {
-	margin: 0 0 5px;
-	display: block;
+  margin: 0 0 5px;
+  display: block;
 }
 
 .labelCenter {
-	margin-top: 8px;
-	white-space: pre;
+  margin-top: 8px;
+  white-space: pre;
 }
 
 .rangeLabel {
-	padding: 10px 5px 6px 5px;
+  padding: 10px 5px 6px 5px;
 }
 
 .rangeDatePicker {
-	padding-top: 4px;
+  padding-top: 4px;
 }
 
 .ccg_tab_content_1 {
-	height: 460px !important;
+  height: 460px !important;
 }
 
 .ccg_tab_content_2 {
-	height: 460px !important;
+  height: 460px !important;
 }
 
 #employeeSearch #nts-component-list {
-	padding: 10px 10px 10px 20px !important;
+  padding: 10px 10px 10px 20px !important;
 }
 #employeeSearch > div {
-	padding: 0px !important;
-	width: 100% !important;
-	max-width: 100% !important;
+  padding: 0px !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .contentE {
-	min-height: 405px;
+  min-height: 405px;
 }
 
-.contentE+div.btns {
-	width: 682px;
-	text-align: right;
+.contentE + div.btns {
+  width: 682px;
+  text-align: right;
 }
 
-.btns>.proceed {
-	margin-left: 15px;
+.btns > .proceed {
+  margin-left: 15px;
 }
 
-#wizard-p-3{
-	position: relative !important;
+#wizard-p-3 {
+  position: relative !important;
 }
 
 .buttonPrevNext {
-	text-align: right;
-	margin-top: 32px;
+  text-align: right;
+  margin-top: 10px;
 }
 
 .buttonPrevNext .buttonBeginNext,
 .buttonPrevNext .buttonBeginPrevious {
-	display: inline-block;
+  display: inline-block;
 }
 .selectionCase {
-	padding-left: 15px;
-	padding-top: 10px;
+  padding-left: 15px;
+  padding-top: 5px;
 }
 
 .radioButtonGroup {
-	padding-left: 30px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	overflow: hidden;
+  padding-left: 30px;
+  padding-top: 10px;
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
 .radioButtonGroup .b43RadioGroup label {
-	display: block;
-	margin-bottom: 15px;
+  display: block;
+  margin-bottom: 10px;
 }
 
 .radioButtonGroup .b43RadioGroup {
-	display: block;
+  display: block;
 }
 .checkboxSetting {
-	overflow: hidden;
+  overflow: hidden;
 }
 .checkboxSetting .chkListTitle {
-	border-bottom: solid 1px #B1B1B1;
-	width: 100%;
-	margin-bottom: 10px;
+  border-bottom: solid 1px #b1b1b1;
+  width: 100%;
+  margin-bottom: 10px;
 }
 .checkboxSetting .checkboxOne {
-	display: block;
-	margin-bottom: 5px;
-	width: auto;
-	cursor: pointer;
+  display: block;
+  margin-bottom: 0;
+  width: auto;
+  cursor: pointer;
 }
 .switchButtonGroup {
-	position: relative;
+  position: relative;
 }
 .switchButtonGroup .SwitchButton {
-	position: absolute;
-	top: -45px;
-	left: 100px;
+  position: absolute;
+  top: -40px;
+  left: 100px;
 }
 
 .comboBoxLists .comboBoxItem {
-	display: flex;
-	align-items: center;
-	margin: 5px 0;
-	padding-left: 28px;
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  padding-left: 28px;
 }
 .comboBoxLists .comboBoxItem .item {
-	width: 150px;
+  width: 150px;
 }
 
 .lableCaseAll .total-employee {
-    margin-top: 2px;
+  margin-top: 2px;
 }
 .radioButtonGroup.comboBoxLists .ntsCheckBox {
-    padding-left: 0;
+  padding-left: 0;
 }
-#contents-area.fix-2180 .nts-wizard {
-    overflow: hidden;
+#contents-area.fix-1360 .nts-wizard {
+  overflow: hidden;
 }
-#contents-area.fix-2180 .nts-wizard.vertical>.content {
-    overflow: hidden;
-    width: calc(100% - 300px);
-    max-width: 100%;
-    min-height: 0;
+#contents-area.fix-1360 .nts-wizard.vertical > .content {
+  overflow: hidden;
+  width: calc(100% - 300px);
+  max-width: 100%;
 }
-#contents-area.fix-2180 .nts-wizard.ksc001 > .content > .body {
-    width: 100%;
-    overflow-y: auto;
-    padding-bottom: 25px;
-    min-height: 0;
-}
-#contents-area.fix-2180 .nts-wizard.ksc001 > .content > #wizard-p-2 {
-    overflow: hidden;
-}
-#contents-area.fix-2180 .nts-wizard.vertical .panel-content {
-    max-width: 75%;
+#contents-area.fix-1360 .nts-wizard.ksc001 > .content > .body {
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 0;
 }
 
-#contents-area.fix-2180 .contentC .buttonPrevNext {
-    margin-top: 10px;
+#contents-area.fix-1360 .nts-wizard.vertical .panel-content {
+  max-width: 770px;
+}
+#contents-area.fix-1360 .nts-wizard.vertical .contentD {
+  max-width: 730px;
 }

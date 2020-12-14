@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = {width: 450, height: 320 };</script>
+			<com:stylefile path="./kmp001.i.css" />
+			<com:scriptfile path="./kmp001.i.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber
+			</com:ValidatorScript>
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" style="display: none; height: 0;"></div>
+			<div class="contents-area">
+				<div class="row">
+					<span class="label title" data-bind="i18n: 'KMP001_151'"></span>
+				</div>
+				<div class="row">
+					<span class="label" data-bind="i18n: 'KMP001_152'"></span>
+					<input tabindex="1" id="iCCard" data-bind="ntsTextEditor: { value: value, constraint: 'StampNumber' }"/>
+					<span class="label" data-bind="i18n: notify, style:{ color: color }"></span>
+					<com:ko-if bind="diplayBtnConnect">
+						<button tabindex="2" class="small" data-bind="click: connectICCard, i18n: 'KMP001_158'"></button>
+					</com:ko-if>
+				</div>
+				<div class="row inforAuthent">
+					<pre data-bind="i18n: inforAuthent"></pre>
+				</div>
+				<div class="divBtn">
+					<button tabindex="3" class="x-large" data-bind="click: closeDialog, i18n: 'KMP001_47'"></button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

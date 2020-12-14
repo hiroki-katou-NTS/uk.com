@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -65,18 +66,21 @@ public class ReflectApplicationWorkRecord {
 				ScheduleRecordClassifi.RECORD, createDailyDomain(require, domainDaily));
 
 		// 申請.打刻申請モードをチェック
+		ChangeDailyAttendance changeAtt;
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
+			changeAtt = new ChangeDailyAttendance(true, true, true, false, false);
 			/// 打刻申請（NRモード）を反映する -- itemId
-			TimeStampApplicationNRMode.process(require, dateTarget, (AppRecordImageShare) application, dailyRecordApp,
-					stamp);
+			TimeStampApplicationNRMode.process(require, dateTarget,
+					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
 		} else {
 			/// 申請の反映（勤務実績） in process
-			RCCreateDailyAfterApplicationeReflect.process(require, application, dailyRecordApp, dateTarget);
+			val affterReflect = RCCreateDailyAfterApplicationeReflect.process(require, application, dailyRecordApp, dateTarget);
+
+			changeAtt = createChangeDailyAtt(affterReflect.getLstItemId());
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
-		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, true, true, false);
 		IntegrationOfDaily domainCorrect = CorrectDailyAttendanceService.processAttendanceRule(require,
 				dailyRecordApp.getDomain(), changeAtt);
 
@@ -106,6 +110,18 @@ public class ReflectApplicationWorkRecord {
 		reflectStatus.setReflectStatus(ReflectedStateShare.REFLECTED);
 
 		return Pair.of(reflectStatus, Optional.of(task));
+	}
+	
+	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
+
+		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
+				.isPresent();
+		boolean scheduleWorkInfo = lstItemId.stream().filter(x -> x.intValue() == 1 || x.intValue() == 2).findFirst()
+				.isPresent();
+		boolean attendance = lstItemId.stream()
+				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo);
 	}
 
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {

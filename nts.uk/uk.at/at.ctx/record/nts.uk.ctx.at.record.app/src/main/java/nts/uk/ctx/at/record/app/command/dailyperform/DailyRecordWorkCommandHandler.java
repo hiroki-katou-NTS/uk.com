@@ -25,8 +25,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
@@ -55,6 +53,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommand
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.snapshot.SnapshotOfDailyPerformCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.snapshot.SnapshotOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceCommandAddHandler;
@@ -71,11 +71,11 @@ import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -94,7 +94,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class DailyRecordWorkCommandHandler extends RecordHandler {
-	
+
 	/** 勤務情報： 日別実績の勤務情報 */
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, jpPropertyName = DAILY_WORK_INFO_NAME, index = 1)
@@ -120,20 +120,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
-	// @Inject
-	// @AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	// private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
-	// @Inject
-	// @AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
-	// private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
-
-	/** エラー一覧： 社員の日別実績エラー一覧 */
 	@Inject
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private BusinessTypeOfDailyPerformCommandAddHandler businessTypeAddHandler;
+	@AttendanceItemLayout(layout = DAILY_SNAPSHOT_CODE, jpPropertyName = DAILY_SNAPSHOT_NAME, index = 4)
+	private SnapshotOfDailyPerformCommandAddHandler snapshotAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private BusinessTypeOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
+	@AttendanceItemLayout(layout = DAILY_SNAPSHOT_CODE, jpPropertyName = DAILY_SNAPSHOT_NAME, index = 4)
+	private SnapshotOfDailyPerformCommandUpdateHandler snapshotUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject
@@ -670,8 +662,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
 		case DAILY_AFFILIATION_INFO_NAME:
 			return isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
-		case DAILY_BUSINESS_TYPE_NAME:
-			return isUpdate ? this.businessTypeUpdateHandler : this.businessTypeAddHandler;
 		case DAILY_OUTING_TIME_NAME:
 			return isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
 		case DAILY_BREAK_TIME_NAME:

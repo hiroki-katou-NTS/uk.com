@@ -32,12 +32,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -68,13 +68,13 @@ public class TimeStampApplicationNRModeTest {
 		new Expectations() {
 			{
 				ReflectGoOutReturn.process(require, dailyRecordApp, (OutputTimeReflectForWorkinfo) any,
-						(AttendanceClock) any, (EngraveShareAtr) any, stamp);
+						(AttendanceClock) any, (EngraveShareAtr) any, stamp, (ChangeDailyAttendance) any);
 				result = new ReflectTimeStampResult(dailyRecordApp.getDomain(), true, new WorkNo(1));
 			}
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp);
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, false));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(91, 86));
 
@@ -102,13 +102,13 @@ public class TimeStampApplicationNRModeTest {
 		new Expectations() {
 			{
 				ReflectGoOutReturn.process(require, dailyRecordApp, (OutputTimeReflectForWorkinfo) any,
-						(AttendanceClock) any, (EngraveShareAtr) any, stamp);
+						(AttendanceClock) any, (EngraveShareAtr) any, stamp, (ChangeDailyAttendance) any);
 				result = new ReflectTimeStampResult(dailyRecordApp.getDomain(), false, new WorkNo(1));
 			}
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp);
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, false));
 
 		assertThat(actualResult).isEmpty();
 
@@ -147,7 +147,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp);
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, false));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(31));
 
@@ -186,7 +186,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp);
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, false));
 
 		assertThat(actualResult).isEmpty();
 

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.ws.monthly.agreement.monthlyresult.specialprovision
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision.*;
-import nts.uk.ctx.at.record.app.command.reservation.bento.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -23,19 +22,13 @@ public class AppSpecialProvisionMonthWebService extends WebService {
     @Inject
     private RegisterAppSpecialProvisionYearCommandHandler registerAppSpecialProvisionYearCommandHandler;
     @Inject
-    private ApplyAppSpecialProvisionMonthCommandHandler aplyAppSpecialProvisionMonthCommandHandler;
-    @Inject
-    private ApplyAppSpecialProvisionYearCommandHandler applyAppSpecialProvisionYearCommandHandler;
+    private ApplyAppSpecialProvisionCommandHandler aplyAppSpecialProvisionCommandHandler;
     @Inject
     private DeleteAppSpecialProvisionCommandHandler deleteAppSpecialProvisionCommandHandler;
     @Inject
-    private ApproveDenialAppSpecialProvisionApproverCommandHandler approveDenialAppSpecialProvisionApproverCommandHandler;
+    private ApproveDenialAppSpecialProvisionCommandHandler approveDenialAppSpecialProvisionCommandHandler;
     @Inject
-    private ApproveDenialAppSpecialProvisionConfirmerCommandHandler approveDenialAppSpecialProvisionConfirmerCommandHandler;
-    @Inject
-    private BulkApproveAppSpecialProvisionApproverCommandHandler bulkApproveAppSpecialProvisionApproverCommandHandler;
-    @Inject
-    private BulkApproveAppSpecialProvisionConfirmerCommandHandler bulkApproveAppSpecialProvisionConfirmerCommandHandler;
+    private BulkApproveAppSpecialProvisionCommandHandler bulkApproveAppSpecialProvisionCommandHandler;
 
     @Path("register-month")
     @POST
@@ -49,16 +42,10 @@ public class AppSpecialProvisionMonthWebService extends WebService {
         return this.registerAppSpecialProvisionYearCommandHandler.handle(commands);
     }
 
-    @Path("apply-month")
+    @Path("apply")
     @POST
-    public List<ErrorResultDto> applyMonth(List<ApplyAppSpecialProvisionMonthCommand> commands) {
-        return this.aplyAppSpecialProvisionMonthCommandHandler.handle(commands);
-    }
-
-    @Path("apply-year")
-    @POST
-    public List<ErrorResultDto> applyYear(List<ApplyAppSpecialProvisionYearCommand> commands) {
-        return this.applyAppSpecialProvisionYearCommandHandler.handle(commands);
+    public List<ErrorResultDto> applyMonth(List<ApplyAppSpecialProvisionCommand> commands) {
+        return this.aplyAppSpecialProvisionCommandHandler.handle(commands);
     }
 
     @Path("delete")
@@ -67,27 +54,15 @@ public class AppSpecialProvisionMonthWebService extends WebService {
         this.deleteAppSpecialProvisionCommandHandler.handle(commands);
     }
 
-    @Path("approve-denial-approver")
+    @Path("approve-denial")
     @POST
-    public void approveDenialApprover(List<ApproveDenialAppSpecialProvisionApproverCommand> commands) {
-        this.approveDenialAppSpecialProvisionApproverCommandHandler.handle(commands);
+    public void approveDenialApprover(ApproveDenialAppSpecialProvisionCommand command) {
+        this.approveDenialAppSpecialProvisionCommandHandler.handle(command);
     }
 
-    @Path("approve-denial-confirmer")
+    @Path("bulk-approve")
     @POST
-    public void approveDenialConfirmer(List<ApproveDenialAppSpecialProvisionConfirmerCommand> commands) {
-        this.approveDenialAppSpecialProvisionConfirmerCommandHandler.handle(commands);
-    }
-
-    @Path("bulk-approve-approver")
-    @POST
-    public void bulkApproveApprover(List<BulkApproveAppSpecialProvisionApproverCommand> commands) {
-        this.bulkApproveAppSpecialProvisionApproverCommandHandler.handle(commands);
-    }
-
-    @Path("bulk-approve-confirmer")
-    @POST
-    public void bulkApproveConfirmer(List<BulkApproveAppSpecialProvisionConfirmerCommand> commands) {
-        this.bulkApproveAppSpecialProvisionConfirmerCommandHandler.handle(commands);
+    public void bulkApproveApprover(BulkApproveAppSpecialProvisionCommand command) {
+        this.bulkApproveAppSpecialProvisionCommandHandler.handle(command);
     }
 }

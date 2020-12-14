@@ -24,14 +24,14 @@ public class EmpInfoTerminalPubImpl implements EmpInfoTerminalPub {
 	private EmpInfoTerminalRepository repo;
 
 	@Override
-	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode) {
+	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
 
 		return repo.getEmpInfoTerminal(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode))
 				.map(x -> convertTo(x));
 	}
 
 	private EmpInfoTerminalExport convertTo(EmpInfoTerminal setting) {
-		return new EmpInfoTerminalBuilder(setting.getIpAddress().map(x -> x.v()), setting.getMacAddress().v(),
+		return new EmpInfoTerminalBuilder(setting.getIpAddress().map(x -> x.getFullIpAddress()), setting.getMacAddress().v(),
 				setting.getEmpInfoTerCode().v(), setting.getTerSerialNo().map(x -> x.v()),
 				setting.getEmpInfoTerName().v(), setting.getContractCode().v())
 						.modelEmpInfoTer(setting.getModelEmpInfoTer().value).intervalTime(setting.getIntervalTime().v())

@@ -34,9 +34,6 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	// 勤務実績の勤務情報
 	private WorkInformation recordInfo;
 	@Setter
-	// 勤務予定の勤務情報
-	private WorkInformation scheduleInfo;
-	@Setter
 	// 計算状態
 	private CalculationState calculationState;
 	// 直行区分
@@ -45,7 +42,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private NotUseAttribute backStraightAtr;
 	// 曜日
 	private DayOfWeek dayOfWeek;
-	// 勤務予定時間帯
+	// 始業終業時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 	//振休振出として扱う日数
 	@Setter
@@ -55,12 +52,11 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	@Setter
 	@Getter
 	private long ver;
-	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
+	public WorkInfoOfDailyAttendance(WorkInformation recordInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
 		this.recordInfo = recordInfo;
-		this.scheduleInfo = scheduleInfo;
 		this.calculationState = calculationState;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
@@ -111,55 +107,43 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public Optional<WorkStyle> getWorkStyle(Require require){
 		return this.recordInfo.getWorkStyle(require);
 	}
-
-	/**
-	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
-	 * @param workNo
-	 * @param predetermineTimeSheetSetting
-	 * @return
-	 */
-	public boolean isMatchWorkInfomation() {			
-		if(getScheduleInfo().getWorkTypeCode() == getRecordInfo().getWorkTypeCode()&&
-				getScheduleInfo().getWorkTimeCode() == getRecordInfo().getWorkTimeCode()) {
-			return true;
-		}
-		return false;
-	}
 	
 	// 勤務情報と始業終業を変更する
-			public void changeWorkSchedule(Require require, WorkInfoDto workInfo, boolean changeWorkType, boolean changeWorkTime) {
-				// 勤務情報を変更する
-			Optional<WorkTypeCode> workTypeCode = Optional.ofNullable(this.recordInfo.getWorkTypeCode());
-			Optional<WorkTimeCode> workTimeCode = this.recordInfo.getWorkTimeCodeNotNull();
-			
-			if(changeWorkType) {
-				workTypeCode =  workInfo.getWorkTypeCode();
-			}
-			
-			if(changeWorkTime) {
-				workTimeCode = workInfo.getWorkTimeCode();
-			}
-			
-			this.recordInfo = new WorkInformation(workTypeCode.orElse(null),
-					workTimeCode.orElse(null));
+	public void changeWorkSchedule(Require require, WorkInformation workInfo, 
+			boolean changeWorkType, boolean changeWorkTime) {
+		
+		// 勤務情報を変更する
+		Optional<WorkTypeCode> workTypeCode = Optional.ofNullable(this.recordInfo.getWorkTypeCode());
+		Optional<WorkTimeCode> workTimeCode = this.recordInfo.getWorkTimeCodeNotNull();
+		
+		if(changeWorkType) {
+			workTypeCode =  Optional.of(workInfo.getWorkTypeCode());
+		}
+		
+		if(changeWorkTime) {
+			workTimeCode = workInfo.getWorkTimeCodeNotNull();
+		}
+		
+		this.recordInfo = new WorkInformation(workTypeCode.orElse(null),
+				workTimeCode.orElse(null));
 
-				// input.require.所定時間帯を取得する
-				PredetermineTimeSetForCalc determine = require.getPredeterminedTimezone(
-						workTypeCode.map(x -> x.v()).orElse(null),
-						workTimeCode.map(x -> x.v()).orElse(null), null);
+		// input.require.所定時間帯を取得する
+		PredetermineTimeSetForCalc determine = require.getPredeterminedTimezone(
+				workTypeCode.map(x -> x.v()).orElse(null),
+				workTimeCode.map(x -> x.v()).orElse(null), null);
 
-				// determine.getTimezones().st
-				// 始業終業に取得した所定時間帯をセットする
-				this.getScheduleTimeSheets().forEach(x -> {
-					TimezoneUse timeZone = determine.getTimezones().stream().filter(t -> {
-						return t.getWorkNo() == x.getWorkNo().v();
-					}).findFirst().orElse(null);
-					if (timeZone != null) {
-						x.setAttendance(timeZone.getStart());
-						x.setLeaveWork(timeZone.getEnd());
-					}
-				});
+		// determine.getTimezones().st
+		// 始業終業に取得した所定時間帯をセットする
+		this.getScheduleTimeSheets().forEach(x -> {
+			TimezoneUse timeZone = determine.getTimezones().stream().filter(t -> {
+				return t.getWorkNo() == x.getWorkNo().v();
+			}).findFirst().orElse(null);
+			if (timeZone != null) {
+				x.setAttendance(timeZone.getStart());
+				x.setLeaveWork(timeZone.getEnd());
 			}
+		});
+	}
 
 	public static interface Require extends WorkInformation.Require {
 		

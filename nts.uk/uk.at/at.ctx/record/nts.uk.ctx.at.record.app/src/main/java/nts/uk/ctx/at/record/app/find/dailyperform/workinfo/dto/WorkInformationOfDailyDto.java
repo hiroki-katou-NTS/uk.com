@@ -39,10 +39,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL)
 	private WorkInfoDto actualWorkInfo;
 
-	/** 勤務予定の勤務情報: 勤務情報 */
-	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = PLAN)
-	private WorkInfoDto planWorkInfo;
-
 	/** 勤務予定時間帯: 予定時間帯 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PLAN + TIME_ZONE, 
 			listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
@@ -74,7 +70,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setBackStraightAtr(workInfo.getWorkInformation().getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getWorkInformation().getCalculationState().value);
 			result.setGoStraightAtr(workInfo.getWorkInformation().getGoStraightAtr().value);
-			result.setPlanWorkInfo(createWorkInfo(workInfo.getWorkInformation().getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getWorkInformation().getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getWorkInformation().getDayOfWeek().value);
@@ -94,7 +89,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getCalculationState().value);
 			result.setGoStraightAtr(workInfo.getGoStraightAtr().value);
-			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
@@ -137,7 +131,8 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
+		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(
+				employeeId, getWorkInfo(actualWorkInfo),
 				calculationState == CalculationState.No_Calculated.value ? CalculationState.No_Calculated : CalculationState.Calculated, 
 				goStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use,
 				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
@@ -162,7 +157,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		result.setBackStraightAtr(backStraightAtr);
 		result.setCalculationState(calculationState);
 		result.setGoStraightAtr(goStraightAtr);
-		result.setPlanWorkInfo(planWorkInfo == null ? null : planWorkInfo.clone());
 		
 		result.setScheduleTimeZone(ConvertHelper.mapTo(scheduleTimeZone, c -> c.clone()));
 		result.setDayOfWeek(dayOfWeek);
@@ -178,8 +172,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		switch (path) {
 		case ACTUAL:
 			return Optional.ofNullable(this.actualWorkInfo);
-		case PLAN:
-			return Optional.ofNullable(this.planWorkInfo);
 		default:
 			return Optional.empty();
 		}
@@ -208,9 +200,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		case ACTUAL:
 			this.actualWorkInfo = (WorkInfoDto) value;
 			break;
-		case PLAN:
-			this.planWorkInfo = (WorkInfoDto) value;
-			break;
 		default:
 			break;
 		}
@@ -224,7 +213,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
 		case ACTUAL:
-		case PLAN:
 			return new WorkInfoDto();
 		case (PLAN + TIME_ZONE):
 			return new ScheduleTimeZoneDto();

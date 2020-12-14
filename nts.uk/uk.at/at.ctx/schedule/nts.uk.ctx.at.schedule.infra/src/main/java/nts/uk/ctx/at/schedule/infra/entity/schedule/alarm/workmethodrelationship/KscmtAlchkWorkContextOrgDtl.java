@@ -19,6 +19,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -49,7 +50,11 @@ public class KscmtAlchkWorkContextOrgDtl extends ContractUkJpaEntity{
 		}
 		
 		return KscmtAlchkWorkContextOrgDtlPk.fromDomain(domain)
-				.stream().map( pk -> new KscmtAlchkWorkContextOrgDtl(pk))
+				.stream().map( pk -> {
+					KscmtAlchkWorkContextOrgDtl item = new KscmtAlchkWorkContextOrgDtl(pk);
+					item.contractCd = AppContexts.user().contractCode();
+					return item;
+				})
 				.collect(Collectors.toList());
 		
 	}

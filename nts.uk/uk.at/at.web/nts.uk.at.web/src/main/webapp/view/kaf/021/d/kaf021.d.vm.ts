@@ -3,40 +3,40 @@
 module nts.uk.at.kaf021.d {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
+    import validation = nts.uk.ui.validation;
+    import disableCell = nts.uk.ui.mgrid.color.Disable;
 
     const API = {
-        INIT_DISPLAY: 'screen/at/kaf021/init-display',
-        SEARCH: 'screen/at/kaf021/search',
-        APPROVE_DENIAL_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-approver',
-        APPROVE_DENIAL_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-confirmer',
-        BULK_APPROVE_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-approver',
-        BULK_APPROVE_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-confirmer'
+        INIT_DISPLAY: 'screen/at/kaf021/init-display-approve',
+        SEARCH: 'screen/at/kaf021/search-approve',
+        APPROVE_DENIAL: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial',
+        BULK_APPROVE: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve'
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
-        mode: ScreenMode = ScreenMode.APPROVER;
-
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(true);
-        approveChecked: KnockoutObservable<boolean> = ko.observable(true);
-        denialChecked: KnockoutObservable<boolean> = ko.observable(true);
+        approveChecked: KnockoutObservable<boolean> = ko.observable(false);
+        denialChecked: KnockoutObservable<boolean> = ko.observable(false);
 
         unapproveCount: KnockoutObservable<number> = ko.observable(0);
         unapproveCountStr: KnockoutObservable<string> = ko.observable(null);
-        approveCount: KnockoutObservable<number> = ko.observable(1);
+        approveCount: KnockoutObservable<number> = ko.observable(0);
         approveCountStr: KnockoutObservable<string> = ko.observable(null);
-        denialCount: KnockoutObservable<number> = ko.observable(2);
+        denialCount: KnockoutObservable<number> = ko.observable(0);
         denialCountStr: KnockoutObservable<string> = ko.observable(null);
 
         datePeriod: KnockoutObservable<any> = ko.observable({});
 
         datas: Array<any> = [];
+
+        commentValidation = new validation.StringValidator(this.$i18n("KAF021_49"), "AgreementApprovalComments", { required: true });
         constructor() {
             super();
             const vm = this;
         }
 
-        created(params: any) {
+        created() {
             const vm = this;
 
             vm.loadMGrid();
@@ -54,7 +54,7 @@ module nts.uk.at.kaf021.d {
 
         }
 
-        setStatusCount() {
+        setStatus() {
             const vm = this;
 
             let unapproveCount = _.filter(vm.datas, (item: ApplicationListDto) => {
@@ -83,15 +83,21 @@ module nts.uk.at.kaf021.d {
                 status: []
             };
             param.status.push(common.ApprovalStatusEnum.UNAPPROVED);
-            param.status.push(common.ApprovalStatusEnum.APPROVED);
-            param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.INIT_DISPLAY, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
+                if (!data.setting.useSpecical) {
+                    vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
+                        vm.$jump('com', '/view/ccg/008/a/index.xhtml');
+                    });
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.datePeriod({
                     startDate: moment(data.startDate).format("YYYY/MM/DD"),
                     endDate: moment(data.endDate).format("YYYY/MM/DD")
                 });
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 dfd.resolve();
             }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
             return dfd.promise();
@@ -100,11 +106,14 @@ module nts.uk.at.kaf021.d {
         search(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
+            let start = moment(vm.datePeriod().startDate, "YYYY/MM/DD").toISOString();
+            let end = moment(vm.datePeriod().endDate, "YYYY/MM/DD").toISOString();
+            if (!start || !end) return;
             vm.$blockui("invisible");
             vm.datas = [];
             let param: any = {
-                startDate: moment(vm.datePeriod().startDate, "YYYY/MM/DD").toISOString(),
-                endDate: moment(vm.datePeriod().endDate, "YYYY/MM/DD").toISOString(),
+                startDate: start,
+                endDate: end,
                 status: []
             };
             if (vm.unapproveChecked()) param.status.push(common.ApprovalStatusEnum.UNAPPROVED);
@@ -112,7 +121,7 @@ module nts.uk.at.kaf021.d {
             if (vm.denialChecked()) param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.SEARCH, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 $("#grid").mGrid("destroy");
                 vm.loadMGrid();
                 dfd.resolve();
@@ -127,10 +136,20 @@ module nts.uk.at.kaf021.d {
                 let result: ApplicationListDto = item;
                 result.approvalChecked = false;
                 result.denialChecked = false;
-                result.employee = result.employeeCode + "　" + result.employeeName;
+                // result.employee = result.employeeCode + "　" + result.employeeName;
+                result.employee = result.employeeName;
                 if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
-                    result.appType = textFormat(vm.$i18n("KAF021_64"), result.applicationTime?.oneMonthTime?.yearMonth);
+                    let ym = result.applicationTime?.oneMonthTime?.yearMonth.toString();
+                    result.appType = textFormat(vm.$i18n("KAF021_64"), ym.substring(4));
                     result.month = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfMonth, true).format();
+                    if (result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth != null) {
+                        result.month += "<br>(" + parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth, true).format() + ")";
+                    }
+                    result.monthAverage2Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage2Str, true).format();
+                    result.monthAverage3Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage3Str, true).format();
+                    result.monthAverage4Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage4Str, true).format();
+                    result.monthAverage5Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage5Str, true).format();
+                    result.monthAverage6Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage6Str, true).format();
                     result.currentMax = parseTime(result.screenDisplayInfo?.upperContents?.oneMonthLimit.error, true).format();
                     result.newMax = parseTime(result.applicationTime?.oneMonthTime?.errorTime?.error, true).format();
                 } else if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {
@@ -141,12 +160,8 @@ module nts.uk.at.kaf021.d {
                 }
 
                 result.year = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfYear, true).format();
-                result.monthAverage2Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage2Str, true).format();
-                result.monthAverage3Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage3Str, true).format();
-                result.monthAverage4Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage4Str, true).format();
-                result.monthAverage5Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage5Str, true).format();
-                result.monthAverage6Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage6Str, true).format();
                 result.exceededNumber = result.screenDisplayInfo?.exceededMonth;
+                result.inputDateStr = moment(result.inputDate).format("YY/MM/DD(dd)");
                 switch (result.approvalStatus) {
                     case common.ApprovalStatusEnum.UNAPPROVED:
                         result.approverStatusStr = vm.$i18n("KAF021_68");
@@ -201,15 +216,22 @@ module nts.uk.at.kaf021.d {
                     {
                         name: 'ApprovalCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
-                            //vm.checkDelete(rowId, value);
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: ApplicationListDto) {
+                            // UI処理６
+                            if (value) {
+                                $("#grid").mGrid("updateCell", rowId, "denialChecked", false)
+                            }
+
                         }
                     },
                     {
                         name: 'DenialCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
-                            //vm.checkDelete(rowId, value);
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: ApplicationListDto) {
+                            // UI処理６
+                            if (value) {
+                                $("#grid").mGrid("updateCell", rowId, "approvalChecked", false)
+                            }
                         }
                     }
                 ],
@@ -242,6 +264,10 @@ module nts.uk.at.kaf021.d {
                         ]
                     },
                     {
+                        name: 'HeaderStyles',
+                        columns: vm.getHeaderStyles()
+                    },
+                    {
                         name: 'CellStyles',
                         states: vm.getCellStyles()
                     }
@@ -259,11 +285,11 @@ module nts.uk.at.kaf021.d {
             // D2_2
             columns.push({ headerText: vm.$i18n("KAF021_38"), key: 'denialChecked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "DenialCheckBox" });
             // D2_3
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_5
-            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '90px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // D2_6
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),
@@ -298,25 +324,25 @@ module nts.uk.at.kaf021.d {
             });
 
             // D2_18
-            columns.push({ headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '300px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px', ntsControl: "Label" });
             // D2_19
             columns.push({
-                headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '180px',
+                headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '360px',
                 constraint: {
                     primitiveValue: 'AgreementApprovalComments',
                     required: false
                 }
             });
             // D2_20
-            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_21
-            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDate', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDateStr', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_22
-            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_23
             columns.push({ headerText: vm.$i18n("KAF021_34"), key: 'approverStatusStr', dataType: 'string', width: '80px', ntsControl: "Label" });
             // D2_24
-            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'confirmer', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'confirmer', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_25
             columns.push({ headerText: vm.$i18n("KAF021_46"), key: 'confirmStatusStr', dataType: 'string', width: '80px', ntsControl: "Label" });
             return columns;
@@ -327,6 +353,20 @@ module nts.uk.at.kaf021.d {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
+                if (!vm.isEnableApproval(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
+                    cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
+                }
+
+                if (!vm.isEnableDeny(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
+                    cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
+                }
+
+                if (data.canApprove) {
+                    cellStates.push(new common.CellState(data.applicantId, 'comment', ["cell-edit"]));
+                } else {
+                    cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
+                }
+
                 cellStates.push(new common.CellState(data.applicantId, 'appType', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'month', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'year', ["center-align"]));
@@ -338,124 +378,221 @@ module nts.uk.at.kaf021.d {
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align"]));
-                cellStates.push(new common.CellState(data.applicantId, 'comment', ["cell-edit"]));
-                cellStates.push(new common.CellState(data.applicantId, 'inputDate', ["center-align"]));
+                cellStates.push(new common.CellState(data.applicantId, 'inputDateStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'confirmStatusStr', ["center-align"]));
             })
             return cellStates;
         }
 
+        getHeaderStyles(): Array<any> {
+            const vm = this;
+            return [
+                { key: "monthAverage2Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-12'] },
+                { key: "monthAverage4Str", colors: ['padding-12'] },
+                { key: "monthAverage5Str", colors: ['padding-12'] },
+                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: "currentMax", colors: ['#F8EFD4'] },
+                { key: "newMax", colors: ['#F8EFD4'] },
+                { key: "comment", colors: ['#F8EFD4'] },
+            ]
+        }
+
         approval() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+            let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.approvalChecked; });
+            if (_.isEmpty(appSelecteds)) {
+                vm.$dialog.error({ messageId: "Msg_1857" });
+                vm.$blockui("clear");
+                return;
+            }
+
+            if (!vm.isValid(appSelecteds)) {
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
-                    let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.approvalChecked; });
-                    if (_.isEmpty(appSelecteds)) {
-                        vm.$dialog.error({ messageId: "Msg_1857" });
-                        vm.$blockui("clear");
-                        return;
-                    }
+                    let approvalSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canApprove });
+                    let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
+                    });
 
-                    let api = API.APPROVE_DENIAL_APPROVER;
-                    let commands: Array<any> = [];
-                    if (vm.mode == ScreenMode.APPROVER) {
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
-                        });
-                    } else if (vm.mode == ScreenMode.CONFIRMER) {
-                        api = API.APPROVE_DENIAL_CONFIRMER;
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED);
-                        });
-                    }
+                    let confirmerSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canConfirm });
+                    let confirmerCommands = _.map(confirmerSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.CONFIRMED);
+                    });
 
-                    vm.$ajax(api, commands).done(() => {
+                    vm.$ajax(API.APPROVE_DENIAL, { approvers: approverCommands, confirmers: confirmerCommands }).done(() => {
                         vm.$dialog.info({ messageId: "Msg_220" }).then(function () {
                             vm.search();
                         });
                     }).fail((error: any) => {
                         vm.$errors(error);
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
 
         bulkApproval() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+
+            if (!vm.isValid(apps)) {
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1841' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+                    let approvalSelected = _.filter(apps, (app: ApplicationListDto) => { return app.canApprove });
+                    let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
+                        return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
+                    });
 
-                    let api = API.BULK_APPROVE_APPROVER;
-                    let commands: Array<any> = [];
-                    if (vm.mode == ScreenMode.APPROVER) {
-                        commands = _.map(apps, (app: ApplicationListDto) => {
-                            return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
-                        });
-                    } else if (vm.mode == ScreenMode.CONFIRMER) {
-                        api = API.BULK_APPROVE_CONFIRMER;
-                        commands = _.map(apps, (app: ApplicationListDto) => {
-                            return new BulkApproveAppSpecialProvisionConfirmerCommand(app.applicantId);
-                        });
-                    }
+                    let confirmerSelected = _.filter(apps, (app: ApplicationListDto) => { return app.canConfirm });
+                    let confirmerCommands = _.map(confirmerSelected, (app: ApplicationListDto) => {
+                        return new BulkApproveAppSpecialProvisionConfirmerCommand(app.applicantId);
+                    });
 
-                    vm.$ajax(api, commands).done(() => {
+
+                    vm.$ajax(API.BULK_APPROVE, { approvers: approverCommands, confirmers: confirmerCommands }).done(() => {
                         vm.$dialog.info({ messageId: "Msg_220" }).then(function () {
                             vm.search();
                         });
                     }).fail((error: any) => {
                         vm.$errors(error);
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
 
         denial() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+            let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.denialChecked; });
+            if (_.isEmpty(appSelecteds)) {
+                vm.$dialog.error({ messageId: "Msg_1857" });
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1842' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
-                    let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.denialChecked; });
-                    if (_.isEmpty(appSelecteds)) {
-                        vm.$dialog.error({ messageId: "Msg_1857" });
-                        vm.$blockui("clear");
-                        return;
-                    }
+                    let approvalSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canApprove });
+                    let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
+                    });
 
-                    let api = API.APPROVE_DENIAL_APPROVER;
-                    let commands: Array<any> = [];
-                    if (vm.mode == ScreenMode.APPROVER) {
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
-                        });
-                    } else if (vm.mode == ScreenMode.CONFIRMER) {
-                        api = API.APPROVE_DENIAL_CONFIRMER;
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ApprovalStatusEnum.DENY);
-                        });
-                    }
+                    let confirmerSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canConfirm });
+                    let confirmerCommands = _.map(confirmerSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.DENY);
+                    });
 
-                    vm.$ajax(api, commands).done(() => {
+                    vm.$ajax(API.APPROVE_DENIAL, { approvers: approverCommands, confirmers: confirmerCommands }).done(() => {
                         vm.$dialog.info({ messageId: "Msg_222" }).then(function () {
                             vm.search();
                         });
                     }).fail((error: any) => {
                         vm.$errors(error);
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
 
-    }
+        isValid(data: Array<ApplicationListDto>) {
+            const vm = this;
 
-    enum ScreenMode {
-        APPROVER = 1,
-        CONFIRMER = 2
+            let errorItems: Array<any> = [];
+            _.forEach(data, (item: ApplicationListDto) => {
+                if (!item.canApprove) return;
+                let checkReason: any = vm.commentValidation.validate(item.comment == null ? null : item.comment);
+                if (!checkReason.isValid) {
+                    errorItems.push({
+                        message: checkReason.errorMessage,
+                        messageId: checkReason.errorCode,
+                        supplements: {}
+                    })
+                }
+            })
+
+            if (!_.isEmpty(errorItems)) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+                return false;
+            }
+
+            return true;
+        }
+
+        // ※13
+        isEnableApproval(approvalStatus: common.ApprovalStatusEnum, confirmStatus: common.ConfirmationStatusEnum,
+            canApprove: boolean, canConfirm: boolean) {
+            if (canApprove && !canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            if (!canApprove && canConfirm) {
+                if (confirmStatus == common.ConfirmationStatusEnum.CONFIRMED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            if (canApprove && canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ※14
+        isEnableDeny(approvalStatus: common.ApprovalStatusEnum, confirmStatus: common.ConfirmationStatusEnum,
+            canApprove: boolean, canConfirm: boolean) {
+            if (canApprove && !canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.UNAPPROVED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (!canApprove && canConfirm) {
+                if (confirmStatus == common.ConfirmationStatusEnum.UNCONFIRMED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (canApprove && canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.UNAPPROVED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        }
     }
 
     interface ApplicationListDto extends common.IApplicationListDto {
@@ -473,8 +610,11 @@ module nts.uk.at.kaf021.d {
         exceededNumber: number;
         currentMax: any;
         newMax: any;
+        inputDateStr: string;
         approverStatusStr: any;
         confirmStatusStr: any;
+        canApprove: boolean;
+        canConfirm: boolean;
     }
 
     class ApproveDenialAppSpecialProvisionApproverCommand {

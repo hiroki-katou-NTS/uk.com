@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforO
 import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.snapshot.SnapshotDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
@@ -47,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -84,13 +86,12 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		this.withCalcAttr(domain.getCalAttr());
 		this.withAffiliationInfo(domain.getAffiliationInfor());
 //		this.withBusinessType(domain.getBusinessType().orElse(null));
-		if (domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
+		if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
 			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
 		this.withBreakTime(domain.getBreakTime());
 		this.withAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().orElse(null));
-//		this.withAttendanceTimeByWork(domain.getAttendancetimeByWork().orElse(null));
 		this.withTimeLeaving(domain.getAttendanceLeave().orElse(null));
 		this.withShortTime(domain.getShortTime().orElse(null));
 		this.withSpecificDateAttr(domain.getSpecDateAttr().orElse(null));
@@ -100,6 +101,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		this.withTemporaryTime(domain.getTempTime().orElse(null));
 		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
 		this.withRemarks(domain.getRemarks());
+		this.withSnapshot(domain.getSnapshot().orElse(null));
 		return this;
 	}
 
@@ -161,8 +163,6 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 
 		this.dtoSource.put(ItemConst.DAILY_BREAK_TIME_NAME, BreakTimeDailyDto.getDto(this.employeeId, this.ymd, domain));
 		this.itemValues.put(ItemConst.DAILY_BREAK_TIME_NAME, null);
-		return this;
-	}
 
 	public DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyAttendance domain) {
 
@@ -447,5 +447,17 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	@Override
 	protected boolean isMonthly() {
 		return false;
+	}
+	public DailyRecordToAttendanceItemConverter withSnapshot(String employeeId, GeneralDate ymd,
+			SnapShot domain) {
+
+		this.dailyRecord.withSnapshot(SnapshotDto.from(employeeId, ymd, domain));
+		return this;
+	}
+
+	@Override
+	public Optional<SnapShot> snapshot() {
+		
+		return this.dailyRecord.getSnapshot().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 }

@@ -49,6 +49,7 @@ module nts.uk.at.view.ksm005.a {
             reflectionSetting: ReflectionSetting;
             calendarOptions: KnockoutObservableArray<any>;
             cssRangerYM = ko.observable({});
+            reloadYM: boolean = true;
 
             workStyle: string;
 
@@ -83,7 +84,7 @@ module nts.uk.at.view.ksm005.a {
 
                     if (monthlyPatternCode) {
                         self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
-                        if (self.yearMonthPicked() == self.getMonth()){
+                        if (self.yearMonthPicked() == self.getMonth() || !self.reloadYM){
                             self.yearMonthPicked.valueHasMutated();
                         } else{
                             self.yearMonthPicked(self.getMonth());
@@ -103,9 +104,13 @@ module nts.uk.at.view.ksm005.a {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
+
                     if($('#yMPicker').ntsError('hasError')){
                         return; 
                     }
+                    // Reset value, always reload yearMonthPicker
+                    self.reloadYM = true;
+
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
                     }
@@ -139,7 +144,7 @@ module nts.uk.at.view.ksm005.a {
                 self.workplaceId = ko.observable("0");
                 self.workplaceName = ko.observable("");
                 self.eventDisplay = ko.observable(true);
-                self.eventUpdatable = ko.observable(true);
+                self.eventUpdatable = ko.observable(false);
                 self.holidayDisplay = ko.observable(true);
                 self.cellButtonDisplay = ko.observable(false);
 
@@ -234,6 +239,7 @@ module nts.uk.at.view.ksm005.a {
 			            self.enableDelete(false);
 			            self.resetData();
 		            }else {
+                        self.reloadYM = true;
 			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
                     dfd.resolve(self);
@@ -517,7 +523,8 @@ module nts.uk.at.view.ksm005.a {
                                                     self.modeMonthlyPattern()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
+                        // reload pa
+                        self.reloadYM = false;
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     });
                 }).fail(function(error) {
@@ -541,6 +548,7 @@ module nts.uk.at.view.ksm005.a {
                     service.deleteMonthlyPattern(self.monthlyPatternModel().code()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
                             // reload page
+                             self.reloadYM = true;
                             self.reloadPage(self.monthlyPatternModel().code(), true);
                             nts.uk.ui.errors.clearAll()
                         });

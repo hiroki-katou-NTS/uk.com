@@ -17,7 +17,7 @@ public class TopPageAlarmEmpInfoTerRQ extends TopPageAlarmRQ implements DomainAg
 	/**
 	 * 端末コード
 	 */
-	private final Integer empInfoTerCode;
+	private final String empInfoTerCode;
 
 	/**
 	 * 詳細
@@ -25,7 +25,7 @@ public class TopPageAlarmEmpInfoTerRQ extends TopPageAlarmRQ implements DomainAg
 	private final List<TopPageAlEmpInfoTerDetailRQ> lstEmpInfoTerDetail;
 
 	public TopPageAlarmEmpInfoTerRQ(String companyId, List<TopPageAlarmManagerTrRQ> lstManagerTr,
-			Integer empInfoTerCode, List<TopPageAlEmpInfoTerDetailRQ> lstEmpInfoTerDetail) {
+			String empInfoTerCode, List<TopPageAlEmpInfoTerDetailRQ> lstEmpInfoTerDetail) {
 		super(companyId, GeneralDateTime.now(), ExistenceErrorRQ.HAVE_ERROR, IsCancelledRQ.NOT_CANCELLED, lstManagerTr);
 		this.empInfoTerCode = empInfoTerCode;
 		this.lstEmpInfoTerDetail = lstEmpInfoTerDetail;

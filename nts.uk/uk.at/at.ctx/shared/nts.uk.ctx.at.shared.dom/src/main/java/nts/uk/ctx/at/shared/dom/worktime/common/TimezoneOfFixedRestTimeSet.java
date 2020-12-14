@@ -12,12 +12,15 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
+ * 固定休憩時間の時間帯設定
  * The Class TimezoneOfFixedRestTimeSet.
+ *
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.共通設定.休憩設定.固定休憩時間の時間帯設定
  */
-// 固定休憩時間の時間帯設定
 @Getter
 public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject implements Cloneable{
 
@@ -94,7 +97,7 @@ public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject implements 
 							 					.map(tc -> tc.timeSpan().lengthAsMinutes())
 							 					.collect(Collectors.summingInt(tc -> tc)));
 	}
-	
+
 	@Override
 	public TimezoneOfFixedRestTimeSet clone() {
 		TimezoneOfFixedRestTimeSet cloned = new TimezoneOfFixedRestTimeSet();
@@ -106,4 +109,15 @@ public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject implements 
 		}
 		return cloned;
 	}
+
+
+	/**
+	 * 休憩時間帯を取得
+	 * ※休憩時間帯を計算時間帯リストとして取得する
+	 * @return 休憩時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getRestTimezonesForCalc() {
+		return this.timezones.stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
+	}
+
 }
