@@ -501,7 +501,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
 		
 		
-		return this.queryProxy().query(SELECT_YEAR_EMP, KshmtLegalTimeMWkp.class)
+		return this.queryProxy().query(SELECT_YEAR_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
 				.setParameter("start", Integer.parseInt(start))
@@ -526,7 +526,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
 		
 		
-		return this.queryProxy().query(SELECT_YEAR_SYA, KshmtLegalTimeMWkp.class)
+		return this.queryProxy().query(SELECT_YEAR_SYA, KshmtLegalTimeMSya.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
 				.setParameter("start", Integer.parseInt(start))
