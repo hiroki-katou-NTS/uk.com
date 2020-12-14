@@ -51,7 +51,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "LEFT JOIN SptdtInfoMessageTgt n ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "LEFT JOIN SptdtInfoMessageRead s ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
 			, "AND s.pk.readSid = :sid"
-			, "WHERE m.startDate <= :endDate"
+			, "WHERE m.companyId = :cid AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
 			, "AND (m.destination = 0"
 			, "OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)"
@@ -64,7 +64,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_TGT N ON M.INPUT_DATE = N.INPUT_DATE AND M.SID = N.SID"
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_READ S ON M.INPUT_DATE = S.INPUT_DATE AND M.SID = S.SID"
 			, "AND S.READ_SID = '{:SID}'"
-			, "WHERE M.START_DATE <= GETDATE() AND M.END_DATE >= GETDATE()"
+			, "WHERE M.CID = '{:CID}' AND M.START_DATE <= GETDATE() AND M.END_DATE >= GETDATE()"
 			, "AND (M.DESTINATION_ATR = 0 or (M.DESTINATION_ATR = 1 and N.TGT_INFO_ID = '{:WKPID}')"
 			, "OR (M.DESTINATION_ATR = 2 AND N.TGT_INFO_ID = '{:SID}'))"
 			, ") A"
@@ -170,10 +170,11 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	}
 
 	@Override
-	public List<MessageNotice> getMsgRefByPeriod(DatePeriod period, Optional<String> wpId, String sid) {
+	public List<MessageNotice> getMsgRefByPeriod(String cid, DatePeriod period, Optional<String> wpId, String sid) {
 		List<SptdtInfoMessage> entities = new ArrayList<SptdtInfoMessage>();
 		if (wpId.isPresent()) {
 			entities = this.queryProxy().query(GET_MSG_REF_BY_PERIOD, SptdtInfoMessage.class)
+							.setParameter("cid", cid)
 							.setParameter("endDate", period.end())
 							.setParameter("startDate", period.start())
 							.setParameter("wpId", wpId.get())
@@ -182,6 +183,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		} else {
 			String queryString = GET_MSG_REF_BY_PERIOD.replace("", " OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)");
 			entities = this.queryProxy().query(queryString, SptdtInfoMessage.class)
+							.setParameter("cid", cid)
 							.setParameter("endDate", period.end())
 							.setParameter("startDate", period.start())
 							.setParameter("sid", sid)
@@ -192,9 +194,10 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	}
 
 	@Override
-	public List<MessageNotice> getNewMsgForDay(Optional<String> wpId) {
+	public List<MessageNotice> getNewMsgForDay(String cid, Optional<String> wpId) {
 		String sid = AppContexts.user().employeeId();
 		String query = NATIVE_GET_NEW_MSG_FOR_DAY
+				.replace("{:CID}", cid)
 				.replace("{:SID}", sid)
 				.replace("{:WKPID}", wpId.orElse(null));
 		

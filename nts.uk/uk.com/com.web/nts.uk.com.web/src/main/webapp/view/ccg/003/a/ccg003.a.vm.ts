@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg003.a {
       </div>
       <!-- A4 絞り込み -->
       <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
-        <div id="top-title" class="bg-schedule-focus bg-accordion-1 no-border-bottom">
+        <div id="top-title" class="bg-schedule-focus bg-accordion-1">
           <!-- ヘッダテキスト -->
           <h3 data-bind="text: $component.$i18n('CCG003_5')" class="inline"></h3>
         </div>
@@ -105,6 +105,9 @@ module nts.uk.com.view.ccg003.a {
   <style>
     #A0-CCG003 {
       min-height: 150px;
+      position: fixed;
+      right: 0px !important;
+      left: unset !important;
     }
     #A3-CCG003 {
       cursor: pointer;
@@ -114,6 +117,7 @@ module nts.uk.com.view.ccg003.a {
     }
     .ccg003-a2 {
       color: blue;
+      text-decoration: underline;
     }
     .datepicker-container {
       z-index: 10000000 !important;
@@ -219,9 +223,6 @@ module nts.uk.com.view.ccg003.a {
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .flex {
-      display: flex;
-    }
     .inline {
       display: inline;
     }
@@ -242,7 +243,7 @@ module nts.uk.com.view.ccg003.a {
     // Map<個人の記念日情報、新記念日Flag> (List)
     anniversaries: KnockoutObservableArray<AnniversaryNotices> = ko.observableArray([]);
     // ロール
-    roleFlag: KnockoutObservable<boolean> = ko.observable(true);
+    roleFlag: KnockoutObservable<boolean> = ko.observable(false);
     role: KnockoutObservable<Role> = ko.observable(new Role());
     isShow: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -255,8 +256,10 @@ module nts.uk.com.view.ccg003.a {
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
-            vm.role(response.role);
-            vm.roleFlag(response.role.employeeReferenceRange !== 3);
+            if (response.role) {
+              vm.role(response.role);
+              vm.roleFlag(response.role.employeeReferenceRange !== 3);
+            }
             vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dd)'));
           }
         })
@@ -288,6 +291,7 @@ module nts.uk.com.view.ccg003.a {
       });
       $('#top-title').dblclick(e => e.preventDefault());
       $('#top-title').click(() => {
+        $('#top-title').css('border-bottom', 'none');
         const maxHeight = $('.auto-overflow').css('max-height');
         if (maxHeight === '320px') {
           $('.auto-overflow').css('max-height', '385px');
