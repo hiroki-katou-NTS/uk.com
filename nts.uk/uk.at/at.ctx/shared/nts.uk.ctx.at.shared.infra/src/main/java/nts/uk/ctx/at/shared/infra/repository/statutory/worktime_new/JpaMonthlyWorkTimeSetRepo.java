@@ -270,7 +270,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 			+ "WHERE x.pk.cid = :cid  AND x.pk.type = :type AND x.pk.wkpId = :wkpId", KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
-				.setParameter("sid", wkpId)
+				.setParameter("wkpId", wkpId)
 				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 

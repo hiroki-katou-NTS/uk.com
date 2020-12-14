@@ -14,6 +14,8 @@ import nts.uk.screen.at.app.kmk004.c.BasicSettingsForWorkplace;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceList;
+import nts.uk.screen.at.app.query.kmk004.common.YearDto;
+import nts.uk.screen.at.app.query.kmk004.common.YearlyListByWorkplace;
 
 /**
  * 
@@ -30,6 +32,9 @@ public class Kmk004CWebSevice extends WebService{
 	@Inject
 	private BasicSettingsForWorkplace baseSetting;
 	
+	@Inject
+	private YearlyListByWorkplace getYears;
+	
 	
 	@POST
 	@Path("viewc/wpl/getWorkPlaceId")
@@ -39,9 +44,15 @@ public class Kmk004CWebSevice extends WebService{
 	
 	
 	@POST
-	@Path("viewc/wpl/getBaseSetting")
+	@Path("viewc/wpl/getBaseSetting/{wkpId}")
 	public DisplayBasicSettingsDto getBaseSetting(@PathParam("wkpId") String wkpId) {
 		return this.baseSetting.getSetting(wkpId);
+	}
+	
+	@POST
+	@Path("viewc/wpl/getYears/{wkpId}")
+	public List<YearDto> getYears(@PathParam("wkpId") String wkpId) {
+		return this.getYears.get(wkpId, LaborWorkTypeAttr.REGULAR_LABOR);
 	}
 	
 }
