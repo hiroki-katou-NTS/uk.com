@@ -126,7 +126,7 @@ module nts.uk.at.view.kbt002.b {
               vm.cloudCreationFlag(res.processExecution.cloudCreFlag);
               vm.updateList();
               vm.currentExecItem().workplaceList(res.workplaceInfos);
-              vm.buildWorkplaceStr(vm.currentExecItem().workplaceList()); // B4_6, 7, 9, 10
+              vm.buildWorkplaceStr(_.map(vm.currentExecItem().workplaceList(), 'workplaceId')); // B4_6, 7, 9, 10
               // vm.executionTaskWarning(vm.buildExecutionTaskWarningStr()); // B5_6
               if (vm.currentExecItem().perScheduleCls()) {
                 // vm.targetDateText('targetDateText');
@@ -383,7 +383,7 @@ module nts.uk.at.view.kbt002.b {
         vm.$blockui("clear")
         const data = nts.uk.ui.windows.getShared('outputCDL008');
         if (data) {
-          vm.currentExecItem().workplaceList(data);
+          vm.currentExecItem().workplaceList(_.filter(vm.workplaceList(), item => _.includes(data, item.workplaceId)));
           vm.buildWorkplaceStr(data);
         }
       });

@@ -289,7 +289,7 @@ module nts.uk.at.view.kbt002.f {
           return (nts.uk.request as any).asyncTask.getInfo(taskId)
             .done((res: any) => {
               //ExecuteProcessExecCommandHandler
-              const message101 = vm.getAsyncData(res.taskDatas, "message101").valueAsString;
+              const message101 = vm.getAsyncData(res.taskDatas, "message1101").valueAsString;
               if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
                 vm.isOnceMessage101(false);
                 vm.$dialog.alert({ messageId: message101 });

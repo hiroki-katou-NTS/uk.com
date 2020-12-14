@@ -84,11 +84,6 @@ public class ProcessExecutionSettingDto {
 	private IndexReconstructionDto indexReconstruction;
 
 	/**
-	 * 再実行条件
-	 */
-	private ReExecutionConditionDto reExecCondition;
-
-	/**
 	 * Create from domain.
 	 *
 	 * @param domain the domain
@@ -112,7 +107,6 @@ public class ProcessExecutionSettingDto {
 		dto.externalOutput = ExternalOutputDto.createFromDomain(domain.getExternalOutput());
 		dto.aggrAnyPeriod = AggregationAnyPeriodDto.createFromDomain(domain.getAggrAnyPeriod());
 		dto.indexReconstruction = IndexReconstructionDto.createFromDomain(domain.getIndexReconstruction());
-		dto.reExecCondition = ReExecutionConditionDto.createFromDomain(domain.getReExecCondition());
 		return dto;
 	}
 

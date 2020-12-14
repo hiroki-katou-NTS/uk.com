@@ -32,7 +32,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ExternalOutput;
 import nts.uk.ctx.at.function.dom.processexecution.IndexReconstruction;
 import nts.uk.ctx.at.function.dom.processexecution.MonthlyAggregate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
-import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
 import nts.uk.ctx.at.function.dom.processexecution.ReflectionApprovalResult;
 import nts.uk.ctx.at.function.dom.processexecution.SaveData;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
@@ -471,11 +470,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		entity.aggAnyPeriodCode = domain.getAggrAnyPeriod().getAggrFrameCode()
 														   .map(AggrFrameCode::v)
 														   .orElse(null);
-		if (domain.getReExecCondition() != null) {
-			entity.recreateChangeBus = domain.getReExecCondition().getRecreatePersonChangeWkt().value;
-			entity.recreateTransfer = domain.getReExecCondition().getRecreateTransfer().value;
-			entity.recreateLeaveSya = domain.getReExecCondition().getRecreateLeave().value;
-		}
 		entity.indexReorgArt = domain.getIndexReconstruction().getIndexReorgAttr().value;
 		entity.updStatisticsArt = domain.getIndexReconstruction().getUpdateStatistics().value;
 				
@@ -558,8 +552,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 				this.updStatisticsArt, 
 				this.indexReorgArt, 
 				this.indexCategoryList.stream().map(data -> data.pk.categoryNo).collect(Collectors.toList())));
-		// Sets re-execution condition
-		domain.setReExecCondition(new ReExecutionCondition(this.recreateChangeBus, this.recreateTransfer, this.recreateLeaveSya));
 		return domain;
 	}
 

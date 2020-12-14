@@ -970,7 +970,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 scheduleCommand.setCountDownLatch(countDownLatch);
 								scheduleCommand.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                 scheduleCommand.setRecreateTransfer(procExec
-                                        .getExecSetting()
                                         .getReExecCondition()
                                         .getRecreateTransfer()
                                         .equals(NotUseAtr.USE));
@@ -1046,7 +1045,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                         scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
 										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                         scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
-                                                .getExecSetting()
                                                 .getReExecCondition()
                                                 .getRecreateTransfer()
                                                 .equals(NotUseAtr.USE));
@@ -1089,7 +1087,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                             scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
 											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                             scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
-                                                    .getExecSetting()
                                                     .getReExecCondition()
                                                     .getRecreateTransfer()
                                                     .equals(NotUseAtr.USE));
@@ -1146,10 +1143,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
                                     .setPeriod(new DatePeriod(periodDate.start(), endDate));
 
-							boolean isTransfer = procExec.getExecSetting().getReExecCondition()
+							boolean isTransfer = procExec.getReExecCondition()
                                     .getRecreateTransfer()
                                     .equals(NotUseAtr.USE);
-							boolean isWorkType = procExec.getExecSetting().getReExecCondition()
+							boolean isWorkType = procExec.getReExecCondition()
                                     .getRecreatePersonChangeWkt()
                                     .equals(NotUseAtr.USE);
 
@@ -1874,8 +1871,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             List<DatePeriod> listDatePeriodWorktype = new ArrayList<>();
                             List<DatePeriod> listDatePeriodAll = new ArrayList<>();
                             //INPUT．「異動時に再作成」をチェックする
-                            if (procExec.getExecSetting()
-                            		.getReExecCondition()
+                            if (procExec.getReExecCondition()
                                     .getRecreateTransfer()
                                     .equals(NotUseAtr.USE)) {
                                 //社員ID（List）と期間から個人情報を取得する - RQ401
@@ -1897,7 +1893,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 check = true;
                             }
                             //INPUT．「勤務種別変更時に再作成」をチェックする
-                            if (procExec.getExecSetting().getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE) && !check) {
+                            if (procExec.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE) && !check) {
                                 //<<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
 								List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(Arrays.asList(empLeader), datePeriod);
                                 //勤務種別情報変更期間を求める

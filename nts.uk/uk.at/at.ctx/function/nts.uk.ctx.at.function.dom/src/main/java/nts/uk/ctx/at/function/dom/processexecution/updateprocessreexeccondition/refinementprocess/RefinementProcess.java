@@ -35,7 +35,7 @@ public class RefinementProcess {
 	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistAdapter;
 	
 	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, UpdateProcessAutoExecution procExec) {
-		if (procExec.getExecSetting().getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE)) {
+		if (procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE)) {
 			// 異動者の絞り込み todo request list 189
 			List<AffWorkplaceHistoryImport> list = workplaceWorkRecordAdapter.getWorkplaceBySidsAndBaseDate(empIds,
 					startDate);
@@ -48,7 +48,7 @@ public class RefinementProcess {
 				});
 			});
 		}
-		if (procExec.getExecSetting().getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE)) {
+		if (procExec.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE)) {
 			// 勤務種別の絞り込み
 			this.refineWorkType(companyId, empIds, startDate, newEmpIdList);
 		}

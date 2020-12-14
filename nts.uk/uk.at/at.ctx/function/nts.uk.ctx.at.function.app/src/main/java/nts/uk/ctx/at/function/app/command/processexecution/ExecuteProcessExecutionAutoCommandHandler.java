@@ -974,7 +974,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							scheduleCommand.setCountDownLatch(countDownLatch);
 							scheduleCommand
 									.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
-							scheduleCommand.setRecreateTransfer(procExec.getExecSetting().getReExecCondition()
+							scheduleCommand.setRecreateTransfer(procExec.getReExecCondition()
 									.getRecreateTransfer().equals(NotUseAtr.USE));
 							AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
 							dataToAsyn.setHandle(handle1);
@@ -1800,7 +1800,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							List<DatePeriod> listDatePeriodWorktype = new ArrayList<>();
 							List<DatePeriod> listDatePeriodAll = new ArrayList<>();
 							// INPUT．「異動時に再作成」をチェックする
-							if (procExec.getExecSetting().getReExecCondition().getRecreateTransfer()
+							if (procExec.getReExecCondition().getRecreateTransfer()
 									.equals(NotUseAtr.USE)) {
 								// 社員ID（List）と期間から個人情報を取得する - RQ401
 								EmployeeGeneralInfoImport employeeGeneralInfoImport = employeeGeneralInfoAdapter
@@ -1826,7 +1826,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								check = true;
 							}
 							// INPUT．「勤務種別変更時に再作成」をチェックする
-							if (procExec.getExecSetting().getReExecCondition().getRecreatePersonChangeWkt()
+							if (procExec.getReExecCondition().getRecreatePersonChangeWkt()
 									.equals(NotUseAtr.USE) && !check) {
 								// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
 								List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(Arrays.asList(empLeader), datePeriod);
