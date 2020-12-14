@@ -105,6 +105,9 @@ module nts.uk.com.view.ccg003.a {
   <style>
     #A0-CCG003 {
       min-height: 150px;
+      position: fixed;
+      right: 0px !important;
+      left: unset !important;
     }
     #A3-CCG003 {
       cursor: pointer;
@@ -219,9 +222,6 @@ module nts.uk.com.view.ccg003.a {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    .flex {
-      display: flex;
     }
     .inline {
       display: inline;
