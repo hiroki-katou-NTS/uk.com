@@ -92,6 +92,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("FROM KfnmtRptRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.displayCode  =:displayCode ");
+        builderString.append(" AND  a.settingType  =:settingType ");
         FIND_WORK_LEDGER_ITEM_BY_CODE = builderString.toString();
 
         builderString = new StringBuilder();
@@ -100,6 +101,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" AND  a.displayCode  =:displayCode ");
+        builderString.append(" AND  a.settingType  =:settingType ");
         FIND_WORK_LEDGER_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
     }
 
@@ -207,9 +209,11 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     @Override
     public boolean exist(OutputItemSettingCode code, String cid) {
         val displayCode = Integer.parseInt(code.v());
+        val settingType = SettingClassificationCommon.STANDARD_SELECTION;
         val rs = this.queryProxy().query(FIND_WORK_LEDGER_ITEM_BY_CODE, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("displayCode", displayCode)
+                .setParameter("settingType", settingType.value)
                 .getList(JpaWorkLedgerOutputItemRepo::toDomain);
         return rs != null && rs.size() != 0;
     }
@@ -217,10 +221,12 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     @Override
     public boolean exist(OutputItemSettingCode code, String cid, String employeeId) {
         val displayCode = Integer.parseInt(code.v());
+        val settingType = SettingClassificationCommon.FREE_SETTING;
         val rs = this.queryProxy().query(FIND_WORK_LEDGER_ITEM_BY_CODE_EMPLOYEE, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("displayCode", displayCode)
+                .setParameter("settingType", settingType.value)
                 .getList(JpaWorkLedgerOutputItemRepo::toDomain);
         return rs != null && rs.size() != 0;
     }
