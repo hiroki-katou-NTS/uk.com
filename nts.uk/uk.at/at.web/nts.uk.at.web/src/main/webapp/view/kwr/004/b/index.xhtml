@@ -121,7 +121,7 @@
                       value: attendanceCode, 
                       required: true,
                       constraint: 'OutputItemSettingCode',
-                      name: $i18n('KWR004_59'),
+                      name: '#[KWR004_59]',
                       enable: isEnableAttendanceCode
                     }"
                   />
@@ -133,7 +133,7 @@
                       value: attendanceName,
                       required: true,
                       constraint: 'OutputItemSettingName',
-                      name: $i18n('KWR004_60')
+                      name: '#[KWR004_60]'
                     }"
                   />
                 </div>
@@ -199,7 +199,7 @@
                                   ntsTextEditor: { 
                                     value: name,
                                     required: isChecked,
-                                    name: '#[KWR004_215]',
+                                    name: '#[KWR004_66]',
                                     constraint: $index() &gt; 1 ? 'FormOutputItemName' : 'OutputItemNameOfAnnualWorkLedger'
                                   }"
                           />
