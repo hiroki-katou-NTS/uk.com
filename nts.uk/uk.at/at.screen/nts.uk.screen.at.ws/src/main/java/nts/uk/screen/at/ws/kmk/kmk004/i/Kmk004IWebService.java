@@ -29,13 +29,13 @@ import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 public class Kmk004IWebService {
 
 	@Inject
-	private DisplayInitialFlexScreenByEmployment displayInitialFlexScreenByEmployment;
+	private DisplayInitialFlexScreenByEmployment initScreen;
 
 	@Inject
-	private SelectEmploymentFlex selectEmploymentFlex;
+	private SelectEmploymentFlex selectEmployment;
 
 	@Inject
-	private SelectFlexYearByEmployment selectFlexYearByEmployment;
+	private SelectFlexYearByEmployment selectFlexYear;
 
 	@Inject
 	private RegisterFlexMonthlyWorkTimeSetEmpCommandHandler registerHandler;
@@ -47,27 +47,27 @@ public class Kmk004IWebService {
 	private DeleteFlexMonthlyWorkTimeSetEmpCommandHandler deleteHandler;
 
 	@Inject
-	private AfterCopyFlexMonthlyWorkTimeSetEmp afterCopyFlexMonthlyWorkTimeSetEmp;
+	private AfterCopyFlexMonthlyWorkTimeSetEmp afterCopy;
 
 	@Inject
-	private AfterChangeFlexEmploymentSetting afterChangeFlexEmploymentSetting;
+	private AfterChangeFlexEmploymentSetting afterChangeSetting;
 
 	@POST
 	@Path("init-screen")
 	public DisplayInitialFlexScreenByEmploymentDto initScreen() {
-		return this.displayInitialFlexScreenByEmployment.displayInitialFlexScreenByEmployment();
+		return this.initScreen.displayInitialFlexScreenByEmployment();
 	}
 
 	@POST
 	@Path("change-year/{empCd}")
 	public List<YearDto> changeYear(@PathParam("empCd") String empCd) {
-		return this.selectFlexYearByEmployment.selectFlexYearByEmployment(empCd);
+		return this.selectFlexYear.selectFlexYearByEmployment(empCd);
 	}
 
 	@POST
 	@Path("change-empCd/{empCd}")
 	public SelectEmploymentFlexDto changeempCd(@PathParam("empCd") String empCd) {
-		return this.selectEmploymentFlex.selectEmploymentFlex(empCd);
+		return this.selectEmployment.selectEmploymentFlex(empCd);
 	}
 
 	@POST
@@ -91,13 +91,13 @@ public class Kmk004IWebService {
 	@POST
 	@Path("after-copy")
 	public List<EmploymentCodeDto> afterCopy() {
-		return this.afterCopyFlexMonthlyWorkTimeSetEmp.afterCopyFlexMonthlyWorkTimeSetEmp();
+		return this.afterCopy.afterCopyFlexMonthlyWorkTimeSetEmp();
 	}
 
 	@POST
 	@Path("change-setting/{empCd}")
 	public AfterChangeFlexEmploymentSettingDto changeSetting(@PathParam("empCd") String empCd) {
-		return this.afterChangeFlexEmploymentSetting.afterChangeFlexEmploymentSetting(empCd);
+		return this.afterChangeSetting.afterChangeFlexEmploymentSetting(empCd);
 	}
 
 }

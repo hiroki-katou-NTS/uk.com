@@ -81,9 +81,9 @@ public class Kmk004KWebService {
 	}
 
 	@POST
-	@Path("display-sha/{sID}")
-	public ShaFlexMonthActCalSetDto displayShaSetting(@PathParam("sID") String sID) {
-		return this.displaySha.displayInitialFlexBasicSettingByEmployee(sID);
+	@Path("display-sha/{sId}")
+	public ShaFlexMonthActCalSetDto displayShaSetting(@PathParam("sId") String sId) {
+		return this.displaySha.displayInitialFlexBasicSettingByEmployee(sId);
 	}
 
 	@POST
