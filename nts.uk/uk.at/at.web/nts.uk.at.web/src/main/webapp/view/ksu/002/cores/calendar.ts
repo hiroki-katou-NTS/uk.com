@@ -5,7 +5,13 @@ module nts.uk.ui.calendar {
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
 
-	const BD_SK = 'KSU_002.START_DATE';
+	const KSU_USER_DATA = 'KSU002.USER_DATA';
+
+	export interface StorageData {
+		fdate: number;
+		wtypec: string;
+		wtimec: string;
+	}
 
 	export interface DayData<T = DataInfo> {
 		date: Date;
@@ -680,13 +686,13 @@ module nts.uk.ui.calendar {
 				}));
 
 			vm.$window
-				.storage(BD_SK)
-				.then((v) => {
+				.storage(KSU_USER_DATA)
+				.then((v: StorageData) => {
 					options(listDates);
 
 					return v;
 				})
-				.then(v => vm.baseDate.start(v));
+				.then((v: StorageData) => vm.baseDate.start(v.fdate));
 
 			ko.computed({
 				read: () => {
@@ -702,8 +708,18 @@ module nts.uk.ui.calendar {
 			});
 
 			vm.baseDate.start
-				.subscribe(c => {
-					vm.$window.storage(BD_SK, c);
+				.subscribe(fdate => {
+					vm.$window
+						.storage(KSU_USER_DATA)
+						.then((store: undefined | StorageData) => {
+							if (store) {
+								const { wtypec, wtimec } = store;
+
+								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec, wtypec });
+							} else {
+								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec: null, wtypec: null });
+							}
+						});
 				});
 
 			vm.baseDate.model
