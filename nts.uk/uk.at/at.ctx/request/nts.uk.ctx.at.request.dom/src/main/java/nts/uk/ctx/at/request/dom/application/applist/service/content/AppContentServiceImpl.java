@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeName;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
@@ -356,6 +357,12 @@ public class AppContentServiceImpl implements AppContentService {
 				break;
 			case OPTIONAL_ITEM_APPLICATION:
 				// 任意申請データを作成(tạo data của任意申請 )
+				String contentOptionalItemApp = appContentDetailCMM045.createOptionalItemApp(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				listOfApp.setAppContent(contentOptionalItemApp);
 				break;
 			case STAMP_APPLICATION:
 				// 打刻申請データを作成(tạo data của打刻申請 )
@@ -577,6 +584,46 @@ public class AppContentServiceImpl implements AppContentService {
 				result = "CMMS45_10";
 			}
 			return result;
+		}
+		return result;
+	}
+
+	@Override
+	public String getOptionalItemAppContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			OptionalItemApplicationTypeName optionalItemApplicationTypeName, List<OptionalItemOutput> optionalItemOutputLst, 
+			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
+		String result = Strings.EMPTY;
+		String paramString = Strings.EMPTY;
+		// ScreenID
+		if(screenAtr != ScreenAtr.KAF018 && screenAtr != ScreenAtr.CMM045) {
+			// @＝改行
+			paramString = "\n";
+		} else {
+			// @＝”　”
+			paramString = "";
+		}
+		// 申請内容＝任意申請種類名
+		result = optionalItemApplicationTypeName.v();
+		for(OptionalItemOutput optionalItemOutput : optionalItemOutputLst) {
+			// 申請内容＋＝@＋”　”＋<List>任意項目名称＋”　”＋<List>値＋<List>単位
+			result += paramString + " " + optionalItemOutput.getOptionalItemName().v() + " ";
+			if(optionalItemOutput.getAnyItemValue().getTime().isPresent()) {
+				result += new TimeWithDayAttr(optionalItemOutput.getAnyItemValue().getTime().get().v()).getRawTimeWithFormat() + optionalItemOutput.getUnit().v();
+				continue;
+			}
+			if(optionalItemOutput.getAnyItemValue().getTimes().isPresent()) {
+				result += optionalItemOutput.getAnyItemValue().getTimes().get().v() + optionalItemOutput.getUnit().v();
+				continue;
+			}
+			if(optionalItemOutput.getAnyItemValue().getAmount().isPresent()) {
+				result += optionalItemOutput.getAnyItemValue().getAmount().get().v() + optionalItemOutput.getUnit().v();
+				continue;
+			}
+		}
+		// アルゴリズム「申請内容の申請理由」を実行する
+		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}

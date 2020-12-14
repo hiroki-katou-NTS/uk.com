@@ -1956,6 +1956,13 @@ public class ProgramsManager {
     public static final Program KMK013Q = new Program(WebAppId.AT, ProgramIdConsts.KMK013Q, "KMK013_421",
             "/view/kmk/013/q/index.xhtml");
 
+    /** KAF020 */
+    public static final Program KAF020A = new Program(WebAppId.AT, ProgramIdConsts.KAF020A, "KAF020_1",
+            "/view/kaf/020/a/index.xhtml");
+    public static final Program KAF020B = new Program(WebAppId.AT, ProgramIdConsts.KAF020B, "KAF020_2",
+            "/view/kaf/020/b/index.xhtml");
+
+    /** KAF021 */
     /**
      * KAF021
      */

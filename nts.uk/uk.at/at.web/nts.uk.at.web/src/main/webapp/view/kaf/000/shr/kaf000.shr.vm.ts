@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
         prePostAtr: KnockoutObservable<number>;
         employeeIDLst: KnockoutObservableArray<string>;
         appType: number;
+        inputDate: string;
         appDate: KnockoutObservable<string>;
         opAppReason: KnockoutObservable<string>;
         opAppStandardReasonCD: KnockoutObservable<number>;
@@ -115,6 +116,8 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opInforGoBackCommonDirectOutput: any;
 		
 		opBusinessTripInfoOutput: any;
+
+        opOptionalItemOutput: any;
 	}
 	
 	export interface AppInitParam {

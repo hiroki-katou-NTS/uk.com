@@ -30,13 +30,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ApplicationExportService extends ExportService<AppPrintQuery> {
-	
+
 	@Inject
 	private CommonAppPrint commonAppPrint;
 
 	@Inject
 	private ApplicationGenerator applicationGenerator;
-	
+
 	@Override
 	protected void handle(ExportServiceContext<AppPrintQuery> context) {
 		AppPrintQuery appPrintQuery = context.getQuery();
@@ -47,11 +47,11 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 		if(appPrintQuery.opPrintContentOfEachApp != null) {
 			opPrintContentOfEachApp = Optional.of(appPrintQuery.opPrintContentOfEachApp.toDomain());
 		}
-				
+
 		PrintContentOfApp printContentOfApp = commonAppPrint.print(
-				companyID, 
-				application.getAppID(), 
-				appDispInfoStartupOutput, 
+				companyID,
+				application.getAppID(),
+				appDispInfoStartupOutput,
 				opPrintContentOfEachApp);
 		// メニューの表示名を取得する
 		String applicationName = Strings.EMPTY;
@@ -61,7 +61,7 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 			List<ListOfAppTypesCmd> stampAppLst = appNameList.stream()
 					.filter(x -> x.getAppType()==ApplicationType.STAMP_APPLICATION.value).collect(Collectors.toList());
 			applicationName = stampAppLst.stream()
-				.filter(x -> { 
+				.filter(x -> {
 					boolean condition1 = x.getAppType()==ApplicationType.STAMP_APPLICATION.value;
 					ApplicationTypeDisplay applicationTypeDisplay = null;
 					if(application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
@@ -74,16 +74,15 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 				}).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		case OVER_TIME_APPLICATION:
-			
 			break;
 		default:
 			applicationName = appNameList.stream().filter(x -> x.getAppType()==application.getAppType().value).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		}
 		printContentOfApp.setApplicationName(applicationName);
-		
+
 		applicationGenerator.generate(
-				context.getGeneratorContext(), 
+				context.getGeneratorContext(),
 				printContentOfApp,
 				application.getAppType());
 	}

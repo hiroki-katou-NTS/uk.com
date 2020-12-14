@@ -38,7 +38,6 @@ module nts.uk.at.view.kdw002.a {
                 self.txtItemId = ko.observable(null);
                 self.txtItemName = ko.observable('');
                 self.attendanceItems = ko.observableArray([]);
-                self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
                 self.roundingUnitValue = ko.observable(null);

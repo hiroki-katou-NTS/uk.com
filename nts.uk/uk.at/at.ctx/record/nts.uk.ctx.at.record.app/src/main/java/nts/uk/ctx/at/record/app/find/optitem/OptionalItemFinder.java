@@ -4,10 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -107,6 +104,33 @@ public class OptionalItemFinder {
 		dto.setFormulas(this.getFormulas(optionalItem));
 
 		return dto;
+	}
+
+	/**
+	 * Find By List No.
+	 *
+	 * @param optionalItemNos the list optional item no
+	 * @return the list optional item dto
+	 */
+	public List<OptionalItemDto> findByListNo(List<Integer> optionalItemNos) {
+		List<OptionalItemDto> result = new ArrayList<>();
+		List<OptionalItem> optionalItems = this.repository.findByListNos(AppContexts.user().companyId(), optionalItemNos);
+		List<Formula> formulas = this.formulaRepo.find(AppContexts.user().companyId());
+		optionalItems.forEach(item -> {
+			OptionalItemDto dto = new OptionalItemDto();
+			item.saveToMemento(dto);
+			// Set list formula.
+			List<FormulaDto> formulaDtos = formulas.stream().filter(
+					formula -> formula.getOptionalItemNo().equals(item)
+			).map(formula -> {
+				FormulaDto formulaDto = new FormulaDto();
+				formula.saveToMemento(formulaDto);
+				return formulaDto;
+			}).collect(Collectors.toList());
+			dto.setFormulas(formulaDtos);
+			result.add(dto);
+		});
+		return result;
 	}
 
 	/**
