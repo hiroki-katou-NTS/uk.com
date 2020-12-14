@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg003.a {
       </div>
       <!-- A4 絞り込み -->
       <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
-        <div id="top-title" class="bg-schedule-focus bg-accordion-1 no-border-bottom">
+        <div id="top-title" class="bg-schedule-focus bg-accordion-1">
           <!-- ヘッダテキスト -->
           <h3 data-bind="text: $component.$i18n('CCG003_5')" class="inline"></h3>
         </div>
@@ -114,6 +114,7 @@ module nts.uk.com.view.ccg003.a {
     }
     .ccg003-a2 {
       color: blue;
+      text-decoration: underline;
     }
     .datepicker-container {
       z-index: 10000000 !important;
@@ -288,6 +289,7 @@ module nts.uk.com.view.ccg003.a {
       });
       $('#top-title').dblclick(e => e.preventDefault());
       $('#top-title').click(() => {
+        $('#top-title').css('border-bottom', 'none');
         const maxHeight = $('.auto-overflow').css('max-height');
         if (maxHeight === '320px') {
           $('.auto-overflow').css('max-height', '385px');

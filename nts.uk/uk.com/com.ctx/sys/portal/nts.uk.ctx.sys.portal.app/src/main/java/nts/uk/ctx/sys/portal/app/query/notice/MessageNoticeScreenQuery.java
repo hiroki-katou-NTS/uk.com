@@ -224,12 +224,14 @@ public class MessageNoticeScreenQuery {
 
 		@Override
 		public List<MessageNotice> getNewMsgForDay(Optional<String> wpId) {
-			return messageNoticeRepository.getNewMsgForDay(wpId);
+			String cid = AppContexts.user().companyId();
+			return messageNoticeRepository.getNewMsgForDay(cid, wpId);
 		}
 
 		@Override
 		public List<MessageNotice> getMsgRefByPeriod(DatePeriod period, Optional<String> wpId, String sid) {
-			return messageNoticeRepository.getMsgRefByPeriod(period, wpId, sid);
+			String cid = AppContexts.user().companyId();
+			return messageNoticeRepository.getMsgRefByPeriod(cid, period, wpId, sid);
 		}
 	}
 }

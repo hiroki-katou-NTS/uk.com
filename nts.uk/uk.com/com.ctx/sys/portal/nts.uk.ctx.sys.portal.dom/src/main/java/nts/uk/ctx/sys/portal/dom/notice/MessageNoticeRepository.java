@@ -63,14 +63,14 @@ public interface MessageNoticeRepository {
 	 * @param sid 社員ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
 	 */
-	List<MessageNotice> getMsgRefByPeriod(DatePeriod period, Optional<String> wpId, String sid);
+	List<MessageNotice> getMsgRefByPeriod(String cid, DatePeriod period, Optional<String> wpId, String sid);
 	
 	/**
 	 * [8]当日の新メッセージを取得する
 	 * @param wpId 職場ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
 	 */
-	List<MessageNotice> getNewMsgForDay(Optional<String> wpId);
+	List<MessageNotice> getNewMsgForDay(String cid, Optional<String> wpId);
 	
 	/**
 	 * [9]期間、社員IDで参照できるメッセージを取得する
