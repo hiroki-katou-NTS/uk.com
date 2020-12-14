@@ -15,6 +15,9 @@ module nts.uk.at.view.kdw002.a {
             timeInputCurrentCode: KnockoutObservable<any>;
             linebreak: KnockoutObservable<any>;
             timeInputEnable: KnockoutObservable<boolean>;
+            roundingUnitValue: KnockoutObservable<number>;
+            unit: KnockoutObservable<number>;
+            frameCategory: KnockoutObservable<number>;
             //
             isDaily: boolean;
             isSave: KnockoutObservable<boolean>;
@@ -38,12 +41,17 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
+                self.roundingUnitValue = ko.observable(null);
+                self.unit = ko.observable(null);
+                self.frameCategory = ko.observable(null);
                 self.aICurrentCode.subscribe(displayNumber => {
                     if (displayNumber) {
                         self.isSave(true);
                         let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
                         self.txtItemName(attendanceItem.attendanceItemName);
                         self.txtItemId(displayNumber);
+                        self.unit(attendanceItem.optionalItemAtr);
+                        self.frameCategory(attendanceItem.frameCategory);
                         // self.txtItemName(cAttendanceItem.attandanceItemName);
                         self.unitRoundings([
                             { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
@@ -51,13 +59,13 @@ module nts.uk.at.view.kdw002.a {
                             , { timeInputValue: 5, timeInputName: '60分' }]);
                         self.timeInputCurrentCode(0);
                         if (self.isDaily) {
-                            if (attendanceItem.dailyAttendanceAtr == 5) {
+                            if (self.frameCategory() === 8 || (self.frameCategory() !== 8 && attendanceItem.attendanceAtr == 5)) {
                                 self.timeInputEnable(true);
                             } else {
                                 self.timeInputEnable(false);
                             }
                         } else {
-                            if (attendanceItem.dailyAttendanceAtr == 1) {
+                            if (self.frameCategory() === 8 || (self.frameCategory() !== 8 && attendanceItem.attendanceAtr == 1)) {
                                 self.timeInputEnable(true);
                             } else {
                                 self.timeInputEnable(false);
@@ -68,23 +76,27 @@ module nts.uk.at.view.kdw002.a {
                         if (self.isDaily) {
                             service.getControlOfDailyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                    self.txtItemId(cAttendanceItem.itemDailyID);
+                                    // self.txtItemId(cAttendanceItem.itemDailyID);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                                    self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
+                                    self.roundingUnitValue(null);
                                 }
                             });
                         } else {
                             service.getControlOfMonthlyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                    self.txtItemId(cAttendanceItem.itemMonthlyId);
+                                    // self.txtItemId(cAttendanceItem.itemMonthlyId);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
                                     self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                                    self.roundingUnitValue(cAttendanceItem.inputUnitOfTimeItem);
                                 } else {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
+                                    self.roundingUnitValue(null);
                                 }
                             });
                         }
@@ -112,7 +124,7 @@ module nts.uk.at.view.kdw002.a {
                     { key: 'attendanceItemId', dataType: "number", hidden: true },
                     { headerText: 'コード', key: 'displayNumber', width: 50, dataType: "number" },
                     { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string", formatter: _.escape },
-                    { key: 'dailyAttendanceAtr', dataType: "number", hidden: true },
+                    { key: 'attendanceAtr', dataType: "number", hidden: true },
                     { key: 'nameLineFeedPosition', dataType: "number", hidden: true }
                 ]);
                 $(".clear-btn").hide();
@@ -123,9 +135,11 @@ module nts.uk.at.view.kdw002.a {
                             attendanceItems.push({
                                 attendanceItemId: item.attendanceItemId,
                                 attendanceItemName: item.attendanceItemName,
-                                dailyAttendanceAtr: item.typeOfAttendanceItem,
+                                attendanceAtr: item.typeOfAttendanceItem,
                                 nameLineFeedPosition: item.nameLineFeedPosition,
-                                displayNumber: item.attendanceItemDisplayNumber
+                                displayNumber: item.attendanceItemDisplayNumber,
+                                optionalItemAtr: item.optionalItemAtr,
+                                frameCategory: item.frameCategory
                             });
                         })
                         self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
@@ -138,9 +152,11 @@ module nts.uk.at.view.kdw002.a {
                             attendanceItems.push({
                                 attendanceItemId: item.attendanceItemId,
                                 attendanceItemName: item.attendanceItemName,
-                                dailyAttendanceAtr: item.typeOfAttendanceItem,
+                                attendanceAtr: item.typeOfAttendanceItem,
                                 nameLineFeedPosition: item.nameLineFeedPosition,
-                                displayNumber: item.attendanceItemDisplayNumber
+                                displayNumber: item.attendanceItemDisplayNumber,
+                                optionalItemAtr: item.optionalItemAtr,
+                                frameCategory: item.frameCategory
                             });
                         })
                         self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
@@ -167,7 +183,7 @@ module nts.uk.at.view.kdw002.a {
                                     attendanceItems.push({
                                         attendanceItemId: attendanceItem.attendanceItemId,
                                         attendanceItemName: attendanceItem.attendanceName,
-                                        dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr,
+                                        attendanceAtr: attendanceItem.attendanceAtr,
                                         nameLineFeedPosition: attendanceItem.nameLineFeedPosition,
                                         displayNumber: attendanceItem.displayNumber
                                     });
@@ -194,7 +210,7 @@ module nts.uk.at.view.kdw002.a {
                                 }
 
                                 atItems.forEach(attendanceItem => {
-                                    attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition, displayNumber: attendanceItem.attendanceItemDisplayNumber });
+                                    attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, attendanceAtr: attendanceItem.attendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition, displayNumber: attendanceItem.attendanceItemDisplayNumber });
                                 });
                                 self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
                                 self.aICurrentCode(self.attendanceItems()[0].displayNumber);
@@ -219,35 +235,60 @@ module nts.uk.at.view.kdw002.a {
 
             submitData(): void {
                 let self = this,
-                    AtItems = {
-                        companyID: ""
-                    };
+                AtItems = {
+                    companyID: ""
+                };
+                if ((self.roundingUnitValue() === null || self.roundingUnitValue() === "") && self.frameCategory() === 8) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1713" }).then(() => nts.uk.ui.block.clear());
+                    // nts.uk.ui.block.clear();
+                    return;
+                }
                 let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(self.aICurrentCode()) });
                 if (self.headerColorValue()) {
                     AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                 }
-                if (self.timeInputEnable()) {
-                    AtItems.inputUnitOfTimeItem = self.timeInputCurrentCode();
-                }
+                // if (self.timeInputEnable()) {
+                //     AtItems.inputUnitOfTimeItem = self.timeInputCurrentCode();
+                // }
 
                 if (self.isDaily) {
                     AtItems.itemDailyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                     }
+                    if (self.roundingUnitValue) {
+                        AtItems.inputUnitOfTimeItem = self.roundingUnitValue();
+                    }
+                    nts.uk.ui.block.invisible();
                     service.updateDaily(AtItems).done(x => {
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                         $("#colorID").focus();
+                    }).fail((fail) => {
+                        if (fail) {
+                          this.$dialog.error({ messageId: fail.messageId })  
+                        };
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 } else {
                     AtItems.itemMonthlyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfMonthlyPer = self.headerColorValue();
                     }
+                    if (self.roundingUnitValue) {
+                        AtItems.inputUnitOfTimeItem = self.roundingUnitValue();
+                    }
+                    nts.uk.ui.block.invisible();
                     service.updateMonthly(AtItems).done(x => {
 
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                         $("#colorID").focus();
+                    }).fail((fail) => {
+                        if (fail) {
+                          this.$dialog.error({ messageId: fail.messageId })  
+                        };
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 }
             }

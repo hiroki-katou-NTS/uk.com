@@ -8,6 +8,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.RoundingUnitPrimitive
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw002.a.main.css" />
 			<com:scriptfile path="kdw002.a.start.js" />
@@ -65,12 +68,23 @@
 				<div class="component-area">
 					<label>#{i18n.getText('KDW002_25')}</label>
 					<div id="colorID" tabindex="5" class="headerColor"
-						data-bind="ntsColorPicker: {value: headerColorValue, width: 50}" />
+						data-bind="ntsColorPicker: {value: headerColorValue, width: 50}" ></div>
 				</div>
 				<div class="component-area">
-					<label>#{i18n.getText('KDW002_27')}</label> <select tabindex="6"
+					<label>#{i18n.getText('KDW002_27')}</label> 
+					<!-- <select tabindex="6"
 						class="unitRounding"
-						data-bind="options: unitRoundings , optionsText: 'timeInputName', optionsValue: 'timeInputValue' , value: timeInputCurrentCode, enable: timeInputEnable"></select>
+						data-bind="options: unitRoundings , optionsText: 'timeInputName', optionsValue: 'timeInputValue' , value: timeInputCurrentCode, enable: timeInputEnable"></select> -->
+						<input style="width: 50px; margin-right: 10px;" class="unitRounding" data-bind="ntsNumberEditor: {
+							constraint: 'RoundingUnitPrimitive',
+							required: false,
+							name: '丸め単位',
+							value: roundingUnitValue,
+							enable: timeInputEnable
+						}" />
+						<span class="label" data-bind="visible: unit() === 0">#{i18n.getText('KDW002_45')}</span>
+						<span class="label" data-bind="visible: unit() === 1">#{i18n.getText('KDW002_46')}</span>
+						<span class="label" data-bind="visible: unit() === 2">#{i18n.getText('KDW002_47')}</span>
 				</div>
 
 			</div>

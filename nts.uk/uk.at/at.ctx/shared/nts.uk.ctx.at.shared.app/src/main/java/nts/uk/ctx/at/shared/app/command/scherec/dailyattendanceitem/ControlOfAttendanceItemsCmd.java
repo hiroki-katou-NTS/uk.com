@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-//import lombok.Value;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 
 @Getter
@@ -24,14 +23,14 @@ public class ControlOfAttendanceItemsCmd {
 	private String headerBgColorOfDailyPer;
 
 	/**時間項目の入力単位*/
-	private Integer inputUnitOfTimeItem;
+	private BigDecimal inputUnitOfTimeItem;
 	
 	public static ControlOfAttendanceItems fromDomain(ControlOfAttendanceItemsCmd command) {
 		return new ControlOfAttendanceItems(
 				command.getCompanyID(),
 				command.getItemDailyID(),
 				command.getHeaderBgColorOfDailyPer()==null?null: new HeaderBackgroundColor(command.getHeaderBgColorOfDailyPer()),
-				command.getInputUnitOfTimeItem()==null?null:EnumAdaptor.valueOf(command.getInputUnitOfTimeItem(), TimeInputUnit.class) 
+				command.getInputUnitOfTimeItem()==null? null : command.getInputUnitOfTimeItem() 
 				);
 	}
 }

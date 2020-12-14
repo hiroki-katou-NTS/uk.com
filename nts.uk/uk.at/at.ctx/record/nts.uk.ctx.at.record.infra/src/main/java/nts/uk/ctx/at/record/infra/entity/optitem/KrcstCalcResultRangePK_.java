@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstCalcResultRangePK_.
  */
-@StaticMetamodel(KrcstCalcResultRangePK.class)
+@StaticMetamodel(KrcmtCalcResultRangePK.class)
 public class KrcstCalcResultRangePK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KrcstCalcResultRangePK, String> cid;
+	public static volatile SingularAttribute<KrcmtCalcResultRangePK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstCalcResultRangePK, Integer> optionalItemNo;
+	public static volatile SingularAttribute<KrcmtCalcResultRangePK, Integer> optionalItemNo;
 
 }

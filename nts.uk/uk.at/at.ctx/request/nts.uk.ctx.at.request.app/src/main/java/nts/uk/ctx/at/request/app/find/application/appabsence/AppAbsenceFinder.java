@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationS
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
@@ -97,43 +98,34 @@ public class AppAbsenceFinder {
 	 * @param employeeIDs
 	 * @return
 	 */
-	public AppAbsenceStartInfoDto getAppForLeave(String appDate, String employeeID,List<String> employeeIDs) {
-		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
-		// error EA refactor 4
-		/*String companyID = AppContexts.user().companyId();
-		List<GeneralDate> dateLst = new ArrayList<>();
-		if(appDate != null) {
-			dateLst.add(GeneralDate.fromString(appDate, DATE_FORMAT));
-		}
-		// 申請共通の起動処理
-		// error EA refactor 4
-		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
-				companyID, 
-				ApplicationType_Old.ABSENCE_APPLICATION, 
-				employeeIDs, 
-				dateLst, 
-				true);
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto_Old.fromDomain(appDispInfoStartupOutput);
-		// 休暇申請設定を取得する
-		HolidayRequestSetOutput holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
-		result.hdAppSet = HdAppSetDto.convertToDto(holidayRequestSetOutput.getHdAppSet());
-		result.displayReasonLst = holidayRequestSetOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
-		// 休暇残数情報を取得する
-		RemainVacationInfo remainVacationInfo = absenseProcess.getRemainVacationInfo(
-				companyID, 
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getSid(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
-		result.remainVacationInfo = remainVacationInfo;
-		// 取得した情報もとに「休暇残数情報」にセットして返す
-		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
-		holidayAppTypes = this.getHolidayAppTypeName(
-				Optional.of(holidayRequestSetOutput.getHdAppSet()),
-				holidayAppTypes,
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
-		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
-		result.holidayAppTypeName = holidayAppTypes;*/
+	public AppAbsenceStartInfoDto getAppForLeave(AppDispInfoStartupDto appDispInfo) {
+		String companyID = AppContexts.user().companyId();
 		
-		return result;
+		// 1.休暇申請（新規）起動処理
+		AppAbsenceStartInfoDto appDispInfoStartup = AppAbsenceStartInfoDto.fromDomain(absenseProcess.getVacationActivation(companyID, appDispInfo.toDomain()));
+		
+		// 休暇申請設定を取得する
+//		AppAbsenceStartInfoDto holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
+//		result.hdAppSet = HdAppSetDto.convertToDto(holidayRequestSetOutput.getHdAppSet());
+//		result.displayReasonLst = holidayRequestSetOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
+//		// 休暇残数情報を取得する
+//		RemainVacationInfo remainVacationInfo = absenseProcess.getRemainVacationInfo(
+//				companyID, 
+//				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getSid(), 
+//				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+//		result.remainVacationInfo = remainVacationInfo;
+//		// 取得した情報もとに「休暇残数情報」にセットして返す
+//		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
+//		holidayAppTypes = this.getHolidayAppTypeName(
+//				Optional.of(holidayRequestSetOutput.getHdAppSet()),
+//				holidayAppTypes,
+//				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
+//		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
+//		result.holidayAppTypeName = holidayAppTypes;
+		
+		
+		
+		return appDispInfoStartup;
 	}
 
 	/**
@@ -205,7 +197,7 @@ public class AppAbsenceFinder {
 		String companyID = AppContexts.user().companyId();
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = absenseProcess.holidayTypeChangeProcess(
 				companyID, 
-				param.getAppAbsenceStartInfoDto().toDomain(), 
+				param.getAppAbsenceStartInfoDto().toDomain(companyID), 
 				param.isDisplayHalfDayValue(), 
 				param.getAlldayHalfDay(), 
 				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class));
@@ -296,7 +288,7 @@ public class AppAbsenceFinder {
 	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDay(AppAbsenceStartInfoDto appAbsenceStartInfoDto, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, Integer holidayType) {
 		String companyID = AppContexts.user().companyId();
-		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain(companyID);
 		// INPUT．「休暇種類」を確認する
 		if(holidayType!=null) {
 			// 休暇種類変更時処理
@@ -325,7 +317,7 @@ public class AppAbsenceFinder {
 	 */
 	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetAllAppAbsence param) {
 		String companyID = AppContexts.user().companyId();
-		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
 		appAbsenceStartInfoOutput = absenseProcess.allHalfDayChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 
@@ -348,7 +340,7 @@ public class AppAbsenceFinder {
 	public AppAbsenceStartInfoDto getChangeDisplayHalfDay(String startAppDate, boolean displayHalfDayValue, String employeeID,
 			String workTypeCode, Integer holidayType, int alldayHalfDay, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
 		String companyID = AppContexts.user().companyId();
-		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain(companyID);
 		appAbsenceStartInfoOutput = absenseProcess.allHalfDayChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 
@@ -370,7 +362,7 @@ public class AppAbsenceFinder {
 	 */
 	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
 		String companyID = AppContexts.user().companyId();
-		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
 		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 
@@ -405,7 +397,7 @@ public class AppAbsenceFinder {
 	 */
 	public List<TimeZoneUseDto> getWorkingHours(String workTimeCode, String workTypeCode, Integer holidayType, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
 		String companyID = AppContexts.user().companyId();
-		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain(companyID);
 		appAbsenceStartInfoOutput = absenseProcess.workTimesChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 

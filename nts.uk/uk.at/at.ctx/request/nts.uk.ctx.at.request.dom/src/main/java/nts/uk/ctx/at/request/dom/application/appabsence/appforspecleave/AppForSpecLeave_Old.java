@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppForSpecLeave {
+public class AppForSpecLeave_Old {
 	/**
 	 * 申請ID
 	 */
@@ -29,9 +29,9 @@ public class AppForSpecLeave {
 	 */
 	private RelationshipReasonPrimitive relationshipReason;
 	
-	public static AppForSpecLeave createFromJavaType(String appID, boolean mournerFlag, String relationshipCD,
+	public static AppForSpecLeave_Old createFromJavaType(String appID, boolean mournerFlag, String relationshipCD,
 				String relationshipReason){
-		return new AppForSpecLeave(appID,
+		return new AppForSpecLeave_Old(appID,
 				mournerFlag,
 				new RelationshipCDPrimitive(relationshipCD),
 				new RelationshipReasonPrimitive(relationshipReason));

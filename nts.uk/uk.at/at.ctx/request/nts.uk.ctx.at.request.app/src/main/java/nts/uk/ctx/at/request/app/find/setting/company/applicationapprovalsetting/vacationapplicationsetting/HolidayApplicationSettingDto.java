@@ -22,11 +22,11 @@ public class HolidayApplicationSettingDto {
                 domain.getHolidayApplicationTypeDisplayName().stream().map(d -> new HolidayAppTypeDispNameDto(d.getHolidayApplicationType().value, d.getDisplayName().v())).collect(Collectors.toList())
         );
     }
-
+    
     public HolidayApplicationSetting toDomain(String companyId) {
         return HolidayApplicationSetting.create(
-                companyId,
-                dispNames.stream().map(HolidayAppTypeDispNameDto::toDomain).collect(Collectors.toList()),
+                companyId, 
+                dispNames.stream().map(x -> HolidayApplicationTypeDisplayName.create(x.getHolidayAppType(), x.getDisplayName())).collect(Collectors.toList()), 
                 halfDayAnnualLeaveUsageLimitCheck);
     }
 }

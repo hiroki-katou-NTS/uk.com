@@ -11,6 +11,8 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -32,6 +34,11 @@ public class AppAbsenceStartInfoOutput {
 	private AppDispInfoStartupOutput appDispInfoStartupOutput;
 	
 	/**
+	 * 休暇申請の反映
+	 */
+	private VacationApplicationReflect vacationAppReflect;
+	
+	/**
 	 * 休暇申請設定
 	 */
 	private HolidayApplicationSetting hdAppSet;
@@ -39,7 +46,7 @@ public class AppAbsenceStartInfoOutput {
 	/**
 	 * 申請理由表示
 	 */
-	private List<DisplayReason> displayReasonLst;
+	private DisplayReason displayReason;
 	
 	/**
 	 * 休暇残数情報
@@ -80,5 +87,10 @@ public class AppAbsenceStartInfoOutput {
 	 * 選択中の就業時間帯
 	 */
 	private Optional<String> selectedWorkTimeCD = Optional.empty();
+	
+	/**
+	 * 必要休暇時間
+	 */
+	private Optional<AttendanceTime> requiredVacationTimeOptional = Optional.empty();
 	
 }

@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KrcstCalcResultRangePK implements Serializable {
+public class KrcmtCalcResultRangePK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class KrcstCalcResultRangePK implements Serializable {
 	/**
 	 * Instantiates a new krcst calc result range PK.
 	 */
-	public KrcstCalcResultRangePK() {
+	public KrcmtCalcResultRangePK() {
 		super();
 	}
 
@@ -44,7 +44,7 @@ public class KrcstCalcResultRangePK implements Serializable {
 	 * @param cid the cid
 	 * @param optionalItemNo the optional item no
 	 */
-	public KrcstCalcResultRangePK(String cid, Integer optionalItemNo) {
+	public KrcmtCalcResultRangePK(String cid, Integer optionalItemNo) {
 		this.cid = cid;
 		this.optionalItemNo = optionalItemNo;
 	}
@@ -72,7 +72,7 @@ public class KrcstCalcResultRangePK implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KrcstCalcResultRangePK other = (KrcstCalcResultRangePK) obj;
+		KrcmtCalcResultRangePK other = (KrcmtCalcResultRangePK) obj;
 		if (cid == null) {
 			if (other.cid != null)
 				return false;

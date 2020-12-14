@@ -17,7 +17,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeave;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeavePK;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppForSpecLeave;
@@ -108,8 +108,8 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 //		return Optional.of(appAbsence);
 		return Optional.empty();
 	}
-	private AppForSpecLeave toDomain(KrqdtAppForSpecLeave entity){
-		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
+	private AppForSpecLeave_Old toDomain(KrqdtAppForSpecLeave entity){
+		return AppForSpecLeave_Old.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
 				entity.isMournerFlg(),
 				entity.getRelationshipCD(),
 				entity.getRelationshipReason());

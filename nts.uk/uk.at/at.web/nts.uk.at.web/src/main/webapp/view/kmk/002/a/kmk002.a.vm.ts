@@ -18,6 +18,7 @@ module nts.uk.at.view.kmk002.a {
             optionalItemHeader: OptionalItemHeader;
             langId: KnockoutObservable<string> = ko.observable('ja');
             langJP: KnockoutObservable<boolean> = ko.observable(true); 
+
             constructor() {
                 let self = this;
                 self.optionalItemHeader = new OptionalItemHeader(self.langId());
@@ -115,7 +116,7 @@ module nts.uk.at.view.kmk002.a {
                     var cols = $("#tbl-master-list").igGrid("option", "columns");
                     if ($("#tbl-master-list").igGrid("option", "columns").length == 4) {
                         //add columns otherLanguageName   
-                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, formatter: _.escape };
+                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, hidden: true, formatter: _.escape };
                         cols.splice(2, 0, newColumn);
                         $("#tbl-master-list").igGrid("option", "columns", cols);
                         $("#tbl-master-list").igGrid("option", "dataSource", lstOptItem());
@@ -161,6 +162,13 @@ module nts.uk.at.view.kmk002.a {
             empConClsDatasource: KnockoutObservableArray<any>;
             perfClsDatasource: KnockoutObservableArray<any>;
             atrDataSource: EnumConstantDto[];
+            
+            calculationAtr: KnockoutObservableArray<any>;
+            selectedClac: KnockoutObservable<any> = ko.observable(0);
+            note: KnockoutObservable<string>;
+            description: KnockoutObservable<string>;
+            dailyUnit: KnockoutObservable<string>;
+            monthlyUnit: KnockoutObservable<string>;
 
             // function
             getExcludedOptItems: () => Array<number>;
@@ -193,6 +201,10 @@ module nts.uk.at.view.kmk002.a {
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
                 this.unit = ko.observable('');
+                this.note = ko.observable('');
+                this.description = ko.observable('');
+                this.dailyUnit = ko.observable('');
+                this.monthlyUnit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -211,6 +223,35 @@ module nts.uk.at.view.kmk002.a {
                 // init subscribe
                 this.initSubscribe();
 
+                // this.selectedClac.subscribe((vl) => {
+                //     if (vl) {
+                //         if($('#inp-upper-amount-day').is(':enabled')){
+                //             $('#inp-upper-amount-day').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-number-day').is(':enabled')){
+                //             $('#inp-upper-number-day').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-time-day').is(':enabled')){
+                //             $('#inp-upper-time-day').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-amount-month').is(':enabled')){
+                //             $('#inp-upper-amount-month').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-number-month').is(':enabled')){
+                //             $('#inp-upper-number-month').ntsEditor('validate');
+                //         }
+                //         if($('#inp-upper-time-month').is(':enabled')){
+                //             $('#inp-upper-time-month').ntsEditor('validate');
+                //         }
+                //     } else {
+                //         $('#inp-upper-amount-day').ntsError('clear');
+                //         $('#inp-upper-number-day').ntsError('clear');
+                //         $('#inp-upper-time-day').ntsError('clear');
+                //         $('#inp-upper-amount-month').ntsError('clear');
+                //         $('#inp-upper-number-month').ntsError('clear');
+                //         $('#inp-upper-time-month').ntsError('clear');
+                //     }
+                // })
             }
 
             /**
@@ -244,8 +285,8 @@ module nts.uk.at.view.kmk002.a {
             private initDatasource(): void {
                 let self = this;
                 self.usageClsDatasource = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText("KMK002_14") }, // used
-                    { code: 0, name: nts.uk.resource.getText("KMK002_15") } // not used
+                    { code: 1, name: nts.uk.resource.getText("KMK002_103") }, // used
+                    { code: 0, name: nts.uk.resource.getText("KMK002_104") } // not used
                 ]);
                 self.empConClsDatasource = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KMK002_17") }, // not apply
@@ -256,6 +297,10 @@ module nts.uk.at.view.kmk002.a {
                     { code: 0, name: nts.uk.resource.getText("KMK002_23") } // monthly
                 ]);
                 self.atrDataSource = [];
+                self.calculationAtr = ko.observableArray([
+                    { code: 1, name: nts.uk.resource.getText("KMK002_14")},
+                    { code: 0, name: nts.uk.resource.getText("KMK002_15")}
+                ]);
             }
 
             /**
@@ -321,6 +366,26 @@ module nts.uk.at.view.kmk002.a {
                     self.setApplyFormula();
                 });
 
+                // self.usageAtr.subscribe(vl => {
+                //     if (!vl && !self.hasChanged) {
+                //         if (self.calcFormulas().length > 0) {
+                //             nts.uk.ui.dialog.confirm({ messageId: 'Msg_1714' }).ifYes(() => {
+                //                 // remove all formulas
+                //             self.removeAllFormulas();
+
+                //             // reset calc result range.
+                //             self.calcResultRange.resetValue();
+
+                //             self.checkSelectedAtr();
+
+                //             }).ifNo(() => {
+                //                 // get old value from stash
+                //                 self.optionalItemAtr(self.optionalItemAtrStash);
+                //             })
+                //         }
+                //     }
+                // });
+
                 // Event on performanceAtr value changed
                 self.performanceAtr.subscribe(value => {
 
@@ -330,6 +395,13 @@ module nts.uk.at.view.kmk002.a {
                     if (self.hasChanged || value == self.performanceAtrStash) {
                         return;
                     }
+
+                    $('#inp-upper-amount-day').ntsError('clear');
+                    $('#inp-upper-number-day').ntsError('clear');
+                    $('#inp-upper-time-day').ntsError('clear');
+                    $('#inp-lower-amount-day').ntsError('clear');
+                    $('#inp-lower-number-day').ntsError('clear');
+                    $('#inp-lower-time-day').ntsError('clear');
 
                     // if has formulas
                     if (self.isFormulaSet()) {
@@ -368,6 +440,9 @@ module nts.uk.at.view.kmk002.a {
                     if (self.hasChanged || value == self.optionalItemAtrStash) {
                         return;
                     }
+
+                    self.dailyUnit('1');
+                    self.monthlyUnit('1');
 
                     // Check whether has formula or calculation result range is set.
                     if (self.isFormulaSet() || self.calcResultRange.isSet()) {
@@ -461,7 +536,7 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Remove all formula.
              */
-            private removeAllFormulas(): void {
+            public removeAllFormulas(): void {
                 let self = this;
 
                 // clear error
@@ -860,6 +935,9 @@ module nts.uk.at.view.kmk002.a {
                     dto.optionalItemName = self.optionalItemName();
                     dto.optionalItemAtr = self.optionalItemAtr();
                     dto.unit = self.unit();
+                    dto.calAtr = self.selectedClac();
+                    dto.note = self.note();
+                    dto.description = self.description();
 
                     // return dto
                     return dto;
@@ -875,6 +953,9 @@ module nts.uk.at.view.kmk002.a {
                 dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
                 dto.unit = self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
+                dto.calAtr = self.selectedClac();
+                dto.note = self.note();
+                dto.description = self.description();
 
                 return dto;
             }
@@ -897,6 +978,9 @@ module nts.uk.at.view.kmk002.a {
                 self.performanceAtr(dto.performanceAtr);
                 self.unit(dto.unit);
                 self.calcResultRange.fromDto(dto.calcResultRange);
+                self.selectedClac(dto.calAtr);
+                self.note(dto.note);
+                self.description(dto.description);
 
                 // reset apply formula
                 self.applyFormula('');
@@ -924,6 +1008,7 @@ module nts.uk.at.view.kmk002.a {
                 self.optionalItemName('');
                 self.optionalItemAtr(0);
                 self.usageAtr(0);
+                self.selectedClac(0);
                 self.empConditionAtr(0);
                 self.performanceAtr(0);
                 self.calcResultRange.resetValue();
@@ -1061,57 +1146,112 @@ module nts.uk.at.view.kmk002.a {
         class CalculationResultRange {
             upperCheck: KnockoutObservable<boolean>;
             lowerCheck: KnockoutObservable<boolean>;
-            numberUpper: KnockoutObservable<number>;
-            numberLower: KnockoutObservable<number>;
-            amountUpper: KnockoutObservable<number>;
-            amountLower: KnockoutObservable<number>;
-            timeUpper: KnockoutObservable<number>;
-            timeLower: KnockoutObservable<number>;
+
+            numberUpperDay: KnockoutObservable<number>;
+            numberLowerDay: KnockoutObservable<number>;
+            amountUpperDay: KnockoutObservable<number>;
+            amountLowerDay: KnockoutObservable<number>;
+            timeUpperDay: KnockoutObservable<number>;
+            timeLowerDay: KnockoutObservable<number>;
+
+            numberUpperMonth: KnockoutObservable<number>;
+            numberLowerMonth: KnockoutObservable<number>;
+            amountUpperMonth: KnockoutObservable<number>;
+            amountLowerMonth: KnockoutObservable<number>;
+            timeUpperMonth: KnockoutObservable<number>;
+            timeLowerMonth: KnockoutObservable<number>;
+
+            upperRequired: KnockoutObservable<boolean>;
+            lowerRequired: KnockoutObservable<boolean>;
 
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
-                this.numberUpper = ko.observable(null);
-                this.numberLower = ko.observable(null);
-                this.amountUpper = ko.observable(null);
-                this.amountLower = ko.observable(null);
-                this.timeUpper = ko.observable(null);
-                this.timeLower = ko.observable(null);
+
+                this.numberUpperDay = ko.observable(null);
+                this.numberLowerDay = ko.observable(null);
+                this.amountUpperDay = ko.observable(null);
+                this.amountLowerDay = ko.observable(null);
+                this.timeUpperDay = ko.observable(null);
+                this.timeLowerDay = ko.observable(null);
+
+                this.numberUpperMonth = ko.observable(null);
+                this.numberLowerMonth = ko.observable(null);
+                this.amountUpperMonth = ko.observable(null);
+                this.amountLowerMonth = ko.observable(null);
+                this.timeUpperMonth = ko.observable(null);
+                this.timeLowerMonth = ko.observable(null);
+
+                this.upperRequired = ko.observable(false);
+                this.lowerRequired = ko.observable(false);
                 
                 this.upperCheck.subscribe(vl => {
                     if (vl) {
-                        if($('#inp-upper-amount').is(':enabled')){
-                            $('#inp-upper-amount').ntsEditor('validate');
+                        if($('#inp-upper-amount-day').is(':enabled')){
+                            $('#inp-upper-amount-day').ntsEditor('validate');
                         }
-                        if($('#inp-upper-number').is(':enabled')){
-                            $('#inp-upper-number').ntsEditor('validate');
+                        if($('#inp-upper-number-day').is(':enabled')){
+                            $('#inp-upper-number-day').ntsEditor('validate');
                         }
-                        if($('#inp-upper-time').is(':enabled')){
-                            $('#inp-upper-time').ntsEditor('validate');
+                        if($('#inp-upper-time-day').is(':enabled')){
+                            $('#inp-upper-time-day').ntsEditor('validate');
                         }
+                        if($('#inp-upper-amount-month').is(':enabled')){
+                            $('#inp-upper-amount-month').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-number-month').is(':enabled')){
+                            $('#inp-upper-number-month').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-time-month').is(':enabled')){
+                            $('#inp-upper-time-month').ntsEditor('validate');
+                        }
+
+                        this.upperRequired(true);
                     } else {
-                        $('#inp-upper-amount').ntsError('clear');
-                        $('#inp-upper-number').ntsError('clear');
-                        $('#inp-upper-time').ntsError('clear');
+                        $('#inp-upper-amount-day').ntsError('clear');
+                        $('#inp-upper-number-day').ntsError('clear');
+                        $('#inp-upper-time-day').ntsError('clear');
+                        $('#inp-upper-amount-month').ntsError('clear');
+                        $('#inp-upper-number-month').ntsError('clear');
+                        $('#inp-upper-time-month').ntsError('clear');
+
+                        this.upperRequired(false);
                     }
                 });
                 this.lowerCheck.subscribe(vl => {
                     if (vl) {
-                        if($('#inp-upper-amount').is(':enabled')){
-                            $('#inp-lower-amount').ntsEditor('validate');
+                        if($('#inp-upper-amount-day').is(':enabled')){
+                            $('#inp-lower-amount-day').ntsEditor('validate');
                         }
-                        if($('#inp-lower-number').is(':enabled')){
-                            $('#inp-lower-number').ntsEditor('validate');
+                        if($('#inp-lower-number-day').is(':enabled')){
+                            $('#inp-lower-number-day').ntsEditor('validate');
                         }
-                        if($('#inp-lower-time').is(':enabled')){
-                            $('#inp-lower-time').ntsEditor('validate');
+                        if($('#inp-lower-time-day').is(':enabled')){
+                            $('#inp-lower-time-day').ntsEditor('validate');
                         }
+                        if($('#inp-upper-amount-month').is(':enabled')){
+                            $('#inp-lower-amount-month').ntsEditor('validate');
+                        }
+                        if($('#inp-lower-number-month').is(':enabled')){
+                            $('#inp-lower-number-month').ntsEditor('validate');
+                        }
+                        if($('#inp-lower-time-month').is(':enabled')){
+                            $('#inp-lower-time-month').ntsEditor('validate');
+                        }
+
+                        this.lowerRequired(true);
                     } else {
-                        $('#inp-lower-amount').ntsError('clear');
-                        $('#inp-lower-number').ntsError('clear');
-                        $('#inp-lower-time').ntsError('clear');
+                        $('#inp-lower-amount-day').ntsError('clear');
+                        $('#inp-lower-number-day').ntsError('clear');
+                        $('#inp-lower-time-day').ntsError('clear');
+                        $('#inp-lower-amount-month').ntsError('clear');
+                        $('#inp-lower-number-month').ntsError('clear');
+                        $('#inp-lower-time-month').ntsError('clear');
+
+                        this.lowerRequired(false);
                     }
                 });
+                
             }
 
             /**
@@ -1121,12 +1261,18 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.upperCheck()
                     || self.lowerCheck()
-                    || !!self.numberUpper()
-                    || !!self.numberLower()
-                    || !!self.amountUpper()
-                    || !!self.amountLower()
-                    || !!self.timeUpper()
-                    || !!self.timeLower();
+                    || !!self.numberUpperDay()
+                    || !!self.numberLowerDay()
+                    || !!self.amountUpperDay()
+                    || !!self.amountLowerDay()
+                    || !!self.timeUpperDay()
+                    || !!self.timeLowerDay()
+                    || !!self.numberUpperMonth()
+                    || !!self.numberLowerMonth()
+                    || !!self.amountUpperMonth()
+                    || !!self.amountLowerMonth()
+                    || !!self.timeUpperMonth()
+                    || !!self.timeLowerMonth();
             }
 
             /**
@@ -1135,14 +1281,20 @@ module nts.uk.at.view.kmk002.a {
             public validateInput(): void {
                 let self = this;
                 if (self.upperCheck()) {
-                    $('#inp-upper-amount').ntsEditor('validate');
-                    $('#inp-upper-number').ntsEditor('validate');
-                    $('#inp-upper-time').ntsEditor('validate');
+                    $('#inp-upper-amount-day').ntsEditor('validate');
+                    $('#inp-upper-number-day').ntsEditor('validate');
+                    $('#inp-upper-time-day').ntsEditor('validate');
+                    $('#inp-upper-amount-month').ntsEditor('validate');
+                    $('#inp-upper-number-month').ntsEditor('validate');
+                    $('#inp-upper-time-month').ntsEditor('validate');
                 }
                 if (self.lowerCheck()) {
-                    $('#inp-lower-amount').ntsEditor('validate');
-                    $('#inp-lower-number').ntsEditor('validate');
-                    $('#inp-lower-time').ntsEditor('validate');
+                    $('#inp-lower-amount-day').ntsEditor('validate');
+                    $('#inp-lower-number-day').ntsEditor('validate');
+                    $('#inp-lower-time-day').ntsEditor('validate');
+                    $('#inp-lower-amount-month').ntsEditor('validate');
+                    $('#inp-lower-number-month').ntsEditor('validate');
+                    $('#inp-lower-time-month').ntsEditor('validate');
                 }
             }
 
@@ -1153,12 +1305,20 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 self.upperCheck(false);
                 self.lowerCheck(false);
-                self.numberUpper(null);
-                self.numberLower(null);
-                self.amountUpper(null);
-                self.amountLower(null);
-                self.timeUpper(null);
-                self.timeLower(null);
+
+                self.numberUpperDay(null);
+                self.numberLowerDay(null);
+                self.amountUpperDay(null);
+                self.amountLowerDay(null);
+                self.timeUpperDay(null);
+                self.timeLowerDay(null);
+
+                self.numberUpperMonth(null);
+                self.numberLowerMonth(null);
+                self.amountUpperMonth(null);
+                self.amountLowerMonth(null);
+                self.timeUpperMonth(null);
+                self.timeLowerMonth(null);
 
                 // clear error
                 self.clearError();
@@ -1168,60 +1328,126 @@ module nts.uk.at.view.kmk002.a {
              * Clear input error
              */
             private clearError(): void {
-                $('#inp-upper-amount').ntsError('clear');
-                $('#inp-upper-number').ntsError('clear');
-                $('#inp-upper-time').ntsError('clear');
-                $('#inp-lower-amount').ntsError('clear');
-                $('#inp-lower-number').ntsError('clear');
-                $('#inp-lower-time').ntsError('clear');
+                $('#inp-upper-amount-day').ntsError('clear');
+                $('#inp-upper-number-day').ntsError('clear');
+                $('#inp-upper-time-day').ntsError('clear');
+                $('#inp-lower-amount-day').ntsError('clear');
+                $('#inp-lower-number-day').ntsError('clear');
+                $('#inp-lower-time-day').ntsError('clear');
+                $('#inp-upper-amount-month').ntsError('clear');
+                $('#inp-upper-number-month').ntsError('clear');
+                $('#inp-upper-time-month').ntsError('clear');
+                $('#inp-lower-amount-month').ntsError('clear');
+                $('#inp-lower-number-month').ntsError('clear');
+                $('#inp-lower-time-month').ntsError('clear');
             }
 
             /**
              * Convert dto to view model
              */
-            public fromDto(dto: CalcResultRangeDto): void {
+            public fromDto(dto: any): void {
                 let self = this;
                 self.upperCheck(dto.upperCheck);
                 self.lowerCheck(dto.lowerCheck);
-                self.numberUpper(dto.numberUpper);
-                self.numberLower(dto.numberLower);
-                self.timeUpper(dto.timeUpper);
-                self.timeLower(dto.timeLower);
-                self.amountUpper(dto.amountUpper);
-                self.amountLower(dto.amountLower);
+
+                self.numberUpperDay(dto.numberRange.dailyNumberRange.upperLimit);
+                self.numberLowerDay(dto.numberRange.dailyNumberRange.lowerLimit);
+                self.timeUpperDay(dto.timeRange.dailyTimeRange.upperLimit);
+                self.timeLowerDay(dto.timeRange.dailyTimeRange.lowerLimit);
+                self.amountUpperDay(dto.amountRange.dailyAmountRange.upperLimit);
+                self.amountLowerDay(dto.amountRange.dailyAmountRange.lowerLimit);
+
+                self.numberUpperMonth(dto.numberRange.monthlyNumberRange.upperLimit);
+                self.numberLowerMonth(dto.numberRange.monthlyNumberRange.lowerLimit);
+                self.timeUpperMonth(dto.timeRange.monthlyTimeRange.upperLimit);
+                self.timeLowerMonth(dto.timeRange.monthlyTimeRange.lowerLimit);
+                self.amountUpperMonth(dto.amountRange.monthlyAmountRange.upperLimit);
+                self.amountLowerMonth(dto.amountRange.monthlyAmountRange.lowerLimit);
             }
 
             /**
              * Convert view model to dto
              */
-            public toDto(calcResultRangeStash: CalcResultRangeDto): CalcResultRangeDto {
+            public toDto(calcResultRangeStash: CalcResultRangeDto) {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
                 dto.lowerCheck = self.lowerCheck();
 
                 if (self.upperCheck()) {
-                    dto.numberUpper = self.numberUpper();
-                    dto.amountUpper = self.amountUpper();
-                    dto.timeUpper = self.timeUpper();
+                    dto.numberUpperDay = self.numberUpperDay();
+                    dto.amountUpperDay = self.amountUpperDay();
+                    dto.timeUpperDay = self.timeUpperDay();
+
+                    dto.numberUpperMonth = self.numberUpperMonth();
+                    dto.amountUpperMonth = self.amountUpperMonth();
+                    dto.timeUpperMonth = self.timeUpperMonth();
                 } else {
                     // get stored data from stash
-                    dto.numberUpper = calcResultRangeStash.numberUpper;
-                    dto.amountUpper = calcResultRangeStash.amountUpper;
-                    dto.timeUpper = calcResultRangeStash.timeUpper;
+                    dto.numberUpperDay = calcResultRangeStash.numberUpperDay;
+                    dto.amountUpperDay = calcResultRangeStash.amountUpperDay;
+                    dto.timeUpperDay = calcResultRangeStash.timeUpperDay;
+
+                    dto.numberUpperMonth = calcResultRangeStash.numberUpperMonth;
+                    dto.amountUpperMonth = calcResultRangeStash.amountUpperMonth;
+                    dto.timeUpperMonth = calcResultRangeStash.timeUpperMonth;
                 }
 
                 if (self.lowerCheck()) {
-                    dto.numberLower = self.numberLower();
-                    dto.amountLower = self.amountLower();
-                    dto.timeLower = self.timeLower();
+                    dto.numberLowerDay = self.numberLowerDay();
+                    dto.amountLowerDay = self.amountLowerDay();
+                    dto.timeLowerDay = self.timeLowerDay();
+
+                    dto.numberLowerMonth = self.numberLowerMonth();
+                    dto.amountLowerMonth = self.amountLowerMonth();
+                    dto.timeLowerMonth = self.timeLowerMonth();
                 } else {
                     // get stored data from stash
-                    dto.numberLower = calcResultRangeStash.numberLower;
-                    dto.amountLower = calcResultRangeStash.amountLower;
-                    dto.timeLower = calcResultRangeStash.timeLower;
+                    dto.numberLowerDay = calcResultRangeStash.numberLowerDay;
+                    dto.amountLowerDay = calcResultRangeStash.amountLowerDay;
+                    dto.timeLowerDay = calcResultRangeStash.timeLowerDay;
+
+                    dto.numberLowerMonth = calcResultRangeStash.numberLowerMonth;
+                    dto.amountLowerMonth = calcResultRangeStash.amountLowerMonth;
+                    dto.timeLowerMonth = calcResultRangeStash.timeLowerMonth;
                 }
-                return dto;
+
+                let output = {
+                    upperCheck: dto.upperCheck,
+                    lowerCheck: dto.lowerCheck,
+                    numberRange: {
+                        dailyNumberRange: {
+                            upperLimit: dto.numberUpperDay,
+                            lowerLimit: dto.numberLowerDay
+                        },
+                        monthlyNumberRange: {
+                            upperLimit: dto.numberUpperMonth,
+                            lowerLimit: dto.numberLowerMonth
+                        }
+                    },
+                    timeRange: {
+                        dailyTimeRange: {
+                            upperLimit: dto.timeUpperDay,
+                            lowerLimit: dto.timeLowerDay
+                        },
+                        monthlyTimeRange: {
+                            upperLimit: dto.timeUpperMonth,
+                            lowerLimit: dto.timeLowerMonth
+                        }
+                    },
+                    amountRange: {
+                        dailyAmountRange: {
+                            upperLimit: dto.amountUpperDay,
+                            lowerLimit: dto.amountLowerDay
+                        },
+                        monthlyAmountRange: {
+                            upperLimit: dto.amountUpperMonth,
+                            lowerLimit: dto.amountLowerMonth
+                        }
+                    }
+                };
+                
+                return output;
             }
         }
 
@@ -1235,6 +1461,7 @@ module nts.uk.at.view.kmk002.a {
             optionalItem: OptionalItem;
             hasSelected: KnockoutObservable<boolean>;
             langId: any;
+            isInit: boolean = false;
 
             constructor(langId: any) {
                 let self = this;
@@ -1278,39 +1505,95 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // Select first item
-                let itemNo = self.optionalItemHeaders()[0].itemNo;
-                self.selectedCode(itemNo);
-
-                self.loadOptionalItemDetail(itemNo).done(() => {
-
-                    // init usageAtr subscribe.
-                    self.optionalItem.usageAtr.subscribe(vl => {
-                        if (vl === 1) {
-                            self.optionalItem.isUsed(true);
-                        } else {
-                            self.optionalItem.isUsed(false);
-                        }
+                // if (self.optionalItemHeaders().length > 0) {
+                    let itemNo = self.optionalItemHeaders()[0].itemNo;
+                    self.isInit = true;
+                    self.selectedCode(itemNo);
+    
+                    self.loadOptionalItemDetail(itemNo).done(() => {
+    
+                        // init usageAtr subscribe.
+                        self.optionalItem.usageAtr.subscribe(vl => {
+                            if (vl === 1) {
+                                self.optionalItem.isUsed(true);
+                            } else {
+                                self.optionalItem.isUsed(false);
+                                if ($("#description").ntsError("hasError")) {
+                                    $("#description").ntsError('clear');
+                                }  
+                            }
+                            if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
+                                if (self.optionalItem.calcFormulas().length > 0) {
+                                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_1714' }).ifYes(() => {
+                                        // remove all formulas
+                                    self.optionalItem.removeAllFormulas();
+        
+                                    // reset calc result range.
+                                    self.optionalItem.calcResultRange.resetValue();
+        
+                                    self.optionalItem.checkSelectedAtr();
+                                    
+                                    $('#inp-upper-amount-day').ntsError('clear');
+                                    $('#inp-upper-number-day').ntsError('clear');
+                                    $('#inp-upper-time-day').ntsError('clear');
+                                    $('#inp-upper-amount-month').ntsError('clear');
+                                    $('#inp-upper-number-month').ntsError('clear');
+                                    $('#inp-upper-time-month').ntsError('clear');
+                                    $('#inp-lower-amount-day').ntsError('clear');
+                                    $('#inp-lower-number-day').ntsError('clear');
+                                    $('#inp-lower-time-day').ntsError('clear');
+                                    $('#inp-lower-amount-month').ntsError('clear');
+                                    $('#inp-lower-number-month').ntsError('clear');
+                                    $('#inp-lower-time-month').ntsError('clear'); 
+        
+                                    }).ifNo(() => {
+                                        self.optionalItem.usageAtr(1)
+                                        // get old value from stash
+                                        self.optionalItem.optionalItemAtr(self.optionalItem.optionalItemAtrStash);
+                                    })
+                                }
+                            }
+                            if (!vl && !self.optionalItem.hasChanged) {
+                                $('#inp-upper-amount-day').ntsError('clear');
+                                    $('#inp-upper-number-day').ntsError('clear');
+                                    $('#inp-upper-time-day').ntsError('clear');
+                                    $('#inp-upper-amount-month').ntsError('clear');
+                                    $('#inp-upper-number-month').ntsError('clear');
+                                    $('#inp-upper-time-month').ntsError('clear');
+                                    $('#inp-lower-amount-day').ntsError('clear');
+                                    $('#inp-lower-number-day').ntsError('clear');
+                                    $('#inp-lower-time-day').ntsError('clear');
+                                    $('#inp-lower-amount-month').ntsError('clear');
+                                    $('#inp-lower-number-month').ntsError('clear');
+                                    $('#inp-lower-time-month').ntsError('clear'); 
+                            }
+                            self.isInit = false;
+                        });
+    
+                        // force to check enable/disable condition
+                        self.optionalItem.usageAtr.valueHasMutated();
+    
+                        // init selected code subscribe
+                        self.selectedCode.subscribe(itemNo => {
+                            if (itemNo && itemNo != 0) {
+                                self.hasSelected(true);
+                                self.optionalItem.dailyUnit();
+                                self.optionalItem.monthlyUnit();
+                                self.loadOptionalItemDetail(itemNo);
+                                // clear error.
+                                if ($('.nts-editor').ntsError("hasError")){
+                                    $('.nts-editor').ntsError('clear');
+                                }
+                            } else {
+                                self.optionalItem.clearAll();
+                                self.hasSelected(false);
+                            }
+                        });
+    
+                        dfd.resolve();
                     });
-
-                    // force to check enable/disable condition
-                    self.optionalItem.usageAtr.valueHasMutated();
-
-                    // init selected code subscribe
-                    self.selectedCode.subscribe(itemNo => {
-                        if (itemNo && itemNo != 0) {
-                            self.hasSelected(true);
-                            self.loadOptionalItemDetail(itemNo);
-                            // clear error.
-                            $('.nts-editor').ntsError('clear');
-                        } else {
-                            self.optionalItem.clearAll();
-                            self.hasSelected(false);
-                        }
-                    });
-
-                    // resolve
-                    dfd.resolve();
-                });
+                // }
+                // resolve
 
                 return dfd.promise();
             }
@@ -1358,6 +1641,11 @@ module nts.uk.at.view.kmk002.a {
              */
             private isValidData(): boolean {
                 let self = this;
+
+                if (self.optionalItem.usageAtr() === 1 && self.langId === "ja") {
+                    // validate input description
+                    $("#description").ntsError("check");
+                }
 
                 // validate input optional item name
                 $('#inpName').ntsEditor('validate');
@@ -1447,7 +1735,21 @@ module nts.uk.at.view.kmk002.a {
                         self.optionalItem.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                         // convert dto to view model.
-                        self.optionalItem.fromDto(res);
+                        self.optionalItem.fromDto(res.optionalItem);
+
+                        if (res.controlUnit) {
+                            if (res.optionalItem.performanceAtr === 0) {
+                                self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
+                            } else {
+                                self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
+                            }
+                        } else {
+                            if (res.optionalItem.performanceAtr === 0) {
+                                self.optionalItem.monthlyUnit(null);
+                            } else {
+                                self.optionalItem.dailyUnit(null);
+                            }
+                        }
 
                         // focus optional item name input
                         $('#inpName').focus();
@@ -2004,6 +2306,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.formulaAtr = self.formulaAtr();
                 dto.symbolValue = self.symbolValue;
                 dto.calcAtr = self.calcAtr();
+
                 // clone object
                 dto.formulaSetting = jQuery.extend(true, {}, self.formulaSetting);
                 dto.itemSelection = jQuery.extend(true, {}, self.itemSelection);
