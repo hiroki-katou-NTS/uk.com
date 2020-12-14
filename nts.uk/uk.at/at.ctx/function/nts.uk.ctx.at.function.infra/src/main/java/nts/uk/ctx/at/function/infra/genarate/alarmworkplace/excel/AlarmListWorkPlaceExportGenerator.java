@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
+import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListExtractResultWorkplaceData;
 import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListWorkPlaceGenerator;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -32,7 +33,7 @@ public class AlarmListWorkPlaceExportGenerator extends AsposeCellsReportGenerato
 	private AlarmPatternSettingRepository alarmPatternSettingRepo;
 
 	@Override
-	public void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceDto> dataSource,String alarmCode,String alarmName) {
+	public void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceData> dataSource, String alarmCode, String alarmName) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			setHeaderAndHeaderColumn(reportContext,alarmCode,alarmName);
 			// set data source named "item"
