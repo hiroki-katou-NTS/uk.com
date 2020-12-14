@@ -51,3 +51,7 @@
 .kaf018-f-stt-no-target {
 	background-color: #a9a9a9;
 }
+
+.nts-legendbutton-panel {
+	z-index: 10000;
+}

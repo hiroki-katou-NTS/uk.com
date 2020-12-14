@@ -40,12 +40,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			const vm = this;
 			vm.legendWithTemplateOptions = {
 				items: [
-	                { colorCode: '#ff0000', labelText: vm.$i18n("KAF018_403") },
-	                { colorCode: '#00AA00', labelText: vm.$i18n("KAF018_404") },
-	                { colorCode: '#0000FF', labelText: vm.$i18n("KAF018_405") },
-					{ colorCode: '#000000', labelText: vm.$i18n("KAF018_406") },
+	                { color: '', background: '#BFEA60', icon: vm.$i18n('KAF018_560'), text: vm.$i18n('KAF018_403') },
+	                { color: '#FF2D2D', background: '', icon: vm.$i18n('KAF018_561'), text: vm.$i18n('KAF018_404') },
+	                { color: '', background: '', icon: vm.$i18n('KAF018_562'), text: vm.$i18n('KAF018_405') },
+					{ color: '#a9a9a9', background: '#a9a9a9', icon: '未', text: vm.$i18n('KAF018_406') },
 	            ],
-	            template : '<div style="color: #{colorCode}; "> #{labelText} </div>'	
+	            template : `<div>
+								<div style="color: #{color}; background-color: #{background}; border: 1px solid #a9a9a9; display: inline-block;">#{icon}</div>
+								<div style="display: inline-block;">#{text}</div>
+							</div>`	
 			}
 			vm.$blockui('show');
 			vm.closureItem = params.closureItem;
@@ -209,24 +212,24 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			_.forEach(vm.dataSource, (item: EmpConfirmInfo) => {
 				for(let i=0; i<item.dateInfoLst.length; i++) {
 					let dateInfoItem = item.dateInfoLst[i];
+					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-confirmed');
+					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-boss-unconfirmed');
+					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-no-target');
 					switch(dateInfoItem.status) {
 						//実績確認済      
-				        case CONFIRMSTATUS.CONFIRMED: 
-							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove();
+				        case CONFIRMSTATUS.CONFIRMED:
+							
 							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.add('kaf018-f-stt-confirmed');
 							break;
 				        //実績上司未確認
-				        case CONFIRMSTATUS.BOSS_UNCONFIRMED: 
-							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove();
+				        case CONFIRMSTATUS.BOSS_UNCONFIRMED:
 							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.add('kaf018-f-stt-boss-unconfirmed');
 							break;
 				        //本人未確認
-				        case CONFIRMSTATUS.SELF_UNCONFIRMED: 
-							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove();
+				        case CONFIRMSTATUS.SELF_UNCONFIRMED:
 							break;
 				        //実績対象外
-				        case CONFIRMSTATUS.NO_TARGET: 
-							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove();
+				        case CONFIRMSTATUS.NO_TARGET:
 							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.add('kaf018-f-stt-no-target');
 							break;
 						default:
