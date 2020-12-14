@@ -127,10 +127,15 @@ module nts.uk.at.view.kwr004.b {
 
     mounted() {
       const vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
-        $("#multiGridList").ntsFixedTable({ height: 370 });
-      else
-        $("#multiGridList").ntsFixedTable({ height: 372 });
+      let _height: number = 372,
+        _dialogHeight = $(window).height();
+        
+        _height = ( _dialogHeight > 592 ) ? 448 : 372;
+
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {       
+        _height = _dialogHeight > 592 ? 446 : 370;
+      }
+      $("#multiGridList").ntsFixedTable({ height: _height });
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -139,7 +144,7 @@ module nts.uk.at.view.kwr004.b {
 
       row.isChecked.subscribe((value: boolean) => {
         nts.uk.ui.errors.clearAll();
-        //vm.settingListItemsDetails.valueHasMutated();
+        vm.settingListItemsDetails.valueHasMutated();
       });
 
       row.independentCalcClassic.subscribe((value) => {
@@ -149,11 +154,11 @@ module nts.uk.at.view.kwr004.b {
         row.dailyAttributes(value === 1 ? vm.dailyAloneAttributes() : vm.dailyCalcAttributes());
         //vm.settingListItemsDetails.valueHasMutated();
       });
-      
+
       row.itemAttribute.subscribe((value) => {
         row.selectedTimeList([]);
         row.selectionItem(null);
-        row.selectedTime = -1;        
+        row.selectedTime = -1;
         //vm.settingListItemsDetails.valueHasMutated();
       });
 
@@ -163,7 +168,7 @@ module nts.uk.at.view.kwr004.b {
     clearSetting() {
 
     }
-    
+
     addNewRow() {
       const vm = this;
       //vm.addRowItem();
@@ -426,7 +431,7 @@ module nts.uk.at.view.kwr004.b {
 
         //create label to display
         selectionItem = vm.getAttendanceAttributes(dailyOrMonthly, independentCalc, selectedListItems);
-        if( _.isEmpty(selectionItem)) selectedListItems = [];
+        if (_.isEmpty(selectionItem)) selectedListItems = [];
         //create new row
         let newItem = new SettingForPrint(
           index + step, //rank
@@ -606,10 +611,10 @@ module nts.uk.at.view.kwr004.b {
       vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category      
       vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
 
-      if (row.selectedTimeList().length > 0) {      
+      if (row.selectedTimeList().length > 0) {
         vm.shareParam.selectedTime = row.selectedTimeList()[0].attendanceItemId;
       }
-      
+
       vm.shareParam.attribute.attributeList = [
         new AttendanceType(1, vm.$i18n('KWR002_141')),
         new AttendanceType(2, vm.$i18n('KWR002_142')),
@@ -640,7 +645,7 @@ module nts.uk.at.view.kwr004.b {
           listItem.operator = '+'; //+
           listItem.indicatesNumber = 0;
           //vm.settingListItemsDetails()[index].required(true);   
-          vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);          
+          vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
           vm.settingListItemsDetails()[index].selectedTimeList([listItem]);
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
           vm.settingListItemsDetails()[index].selectionItem(findAttendanceName.attendanceItemName);
@@ -650,7 +655,7 @@ module nts.uk.at.view.kwr004.b {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
-          vm.settingListItemsDetails()[index].selectedTime = -1;          
+          vm.settingListItemsDetails()[index].selectedTime = -1;
           vm.settingListItemsDetails()[index].required(false);
         }
       });
@@ -687,12 +692,12 @@ module nts.uk.at.view.kwr004.b {
           //clear error on input
           if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
           let dataSelection: string = vm.createDataSelection(attendanceItem.selectedTimeList);
-          if (index > -1) {            
+          if (index > -1) {
             //vm.settingListItemsDetails()[index].required(true);
             vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute.selected);
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
             vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
-            vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);            
+            vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
             if (row.isChecked()) $('#textName' + row.id).focus();
           }
         } else {
@@ -700,7 +705,7 @@ module nts.uk.at.view.kwr004.b {
           vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
-          vm.settingListItemsDetails()[index].selectedTime = -1;          
+          vm.settingListItemsDetails()[index].selectedTime = -1;
           vm.settingListItemsDetails()[index].required(false);
         }
       });
@@ -762,7 +767,7 @@ module nts.uk.at.view.kwr004.b {
         { code: 1, name: vm.$i18n('KWR004_68') },
         { code: 2, name: vm.$i18n('KWR004_69') }
       ]);
-      
+
       //1, 2, 3
       vm.dailyAloneAttributes = ko.observableArray([]);
       vm.dailyAloneAttributes.push({ code: 1, name: vm.$i18n('KWR002_141') });
@@ -774,13 +779,13 @@ module nts.uk.at.view.kwr004.b {
       vm.dailyCalcAttributes.push({ code: 4, name: vm.$i18n('KWR002_180') });
       vm.dailyCalcAttributes.push({ code: 5, name: vm.$i18n('KWR002_181') });
       vm.dailyCalcAttributes.push({ code: 7, name: vm.$i18n('KWR002_183') });
-     
+
       //4, 5, 6, 7
       vm.monthlyAttributes = ko.observableArray();
       vm.monthlyAttributes.push({ code: 4, name: vm.$i18n('KWR002_180') });
       vm.monthlyAttributes.push({ code: 5, name: vm.$i18n('KWR002_181') });
       vm.monthlyAttributes.push({ code: 6, name: vm.$i18n('KWR002_182') });
-      vm.monthlyAttributes.push({ code: 7, name: vm.$i18n('KWR002_183') });      
+      vm.monthlyAttributes.push({ code: 7, name: vm.$i18n('KWR002_183') });
     }
     /**
      * Get attendance attributes
