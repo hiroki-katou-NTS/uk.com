@@ -130,7 +130,11 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		// 
 		krqdtAppOverTime.flexExcessTime = appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()).orElse(null);
 		krqdtAppOverTime.overTimeNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight() == null ? null : x.getOverTimeMidNight().v()).orElse(null);
-		krqdtAppOverTime.totalNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide() == null ? null : x.getMidNightOutSide().v()).orElse(null);
+		krqdtAppOverTime.totalNight = 0;
+		if (krqdtAppOverTime.overTimeNight != null) {
+			krqdtAppOverTime.totalNight += krqdtAppOverTime.overTimeNight;
+		}
+				// appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide() == null ? null : x.getMidNightOutSide().v()).orElse(null);
 		if (appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent()) {
 			if (!CollectionUtil.isEmpty(appOverTime.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes())) {
 				appOverTime.getApplicationTime()
@@ -140,14 +144,20 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 							.stream()
 							.forEach(i -> {
 								if (i.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+									krqdtAppOverTime.totalNight += i.getAttendanceTime().v();
 									krqdtAppOverTime.legalHdNight = i.getAttendanceTime().v();
 								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+									krqdtAppOverTime.totalNight += i.getAttendanceTime().v();
 									krqdtAppOverTime.nonLegalHdNight = i.getAttendanceTime().v();
 								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+									krqdtAppOverTime.totalNight += i.getAttendanceTime().v();
 									krqdtAppOverTime.nonLegalPublicHdNight = i.getAttendanceTime().v();
 								}
 							});
 			}
+		}
+		if (krqdtAppOverTime.totalNight == 0) {
+			krqdtAppOverTime.totalNight = null;
 		}
 		
 		
@@ -252,12 +262,25 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		
 		updateAppOverTime.get().flexExcessTime = krqdtAppOverTime.flexExcessTime;
 		updateAppOverTime.get().overTimeNight = krqdtAppOverTime.overTimeNight;
-		updateAppOverTime.get().totalNight = krqdtAppOverTime.totalNight;
 		
 		updateAppOverTime.get().legalHdNight = krqdtAppOverTime.legalHdNight;
 		updateAppOverTime.get().nonLegalHdNight = krqdtAppOverTime.nonLegalHdNight;
 		updateAppOverTime.get().nonLegalPublicHdNight = krqdtAppOverTime.nonLegalPublicHdNight;
 		
+		updateAppOverTime.get().totalNight = 0;
+		if (krqdtAppOverTime.legalHdNight != null) {
+			updateAppOverTime.get().totalNight += krqdtAppOverTime.legalHdNight;
+		}
+		if (krqdtAppOverTime.nonLegalHdNight != null) {
+			updateAppOverTime.get().totalNight += krqdtAppOverTime.nonLegalHdNight;
+		}
+		if (krqdtAppOverTime.nonLegalPublicHdNight != null) {
+			updateAppOverTime.get().totalNight += krqdtAppOverTime.nonLegalPublicHdNight;
+		}
+		
+		if (updateAppOverTime.get().totalNight == 0) {
+			updateAppOverTime.get().totalNight = null;
+		}
 		updateAppOverTime.get().divergenceNo1 = krqdtAppOverTime.divergenceNo1;
 		updateAppOverTime.get().divergenceCD1 = krqdtAppOverTime.divergenceCD1;
 		updateAppOverTime.get().divergenceReason1 = krqdtAppOverTime.divergenceReason1;
