@@ -114,19 +114,28 @@ export class KafS05Step1Component extends Vue {
             let breakTime = object.infoWithDateApplicationOp.breakTime;
             if (!_.isNil(breakTime)) {
                 let timeZone = breakTime.timeZones;
-                _.forEach(timeZone, (item: any, index: number) => {
-                    let resultBreakTime = _.find(self.breakTimes, (i: any) => i.frameNo == (index + 1)) as BreakTime;
-                    if (!_.isNil(resultBreakTime)) {
-                        resultBreakTime.valueHours = {} as ValueTime;
-                        resultBreakTime.valueHours.start = item.start;
-                        resultBreakTime.valueHours.end = item.end;
-                    } else {
-                        self.breakTimes[index].valueHours = null as ValueTime;
-                    }
-                });
+                if (!_.isEmpty(timeZone)) {
+                    _.forEach(timeZone, (item: any, index: number) => {
+                        let resultBreakTime = _.find(self.breakTimes, (i: any) => i.frameNo == (index + 1)) as BreakTime;
+                        if (!_.isNil(resultBreakTime)) {
+                            resultBreakTime.valueHours = {} as ValueTime;
+                            resultBreakTime.valueHours.start = item.start;
+                            resultBreakTime.valueHours.end = item.end;
+                        } else {
+                            self.breakTimes[index].valueHours = null as ValueTime;
+                        }
+                    });
+                    
+                    return;
+                }
+
 
             }
         }
+
+        _.forEach(self.breakTimes, (item: any) => {
+            item.valueHours = null as ValueTime;
+        });
     }
 
     public loadWorkHours(object?: DisplayInfoOverTime) {

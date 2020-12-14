@@ -96,7 +96,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     vm.model = {} as Model;
                     vm.model.displayInfoOverTime = result.data.displayInfoOverTime;
 
-                    let step1: any = vm.$refs.step1;
+                    let step1 = vm.$refs.step1 as KafS05Step1Component;
                     step1.loadData(vm.model.displayInfoOverTime);
                
                 } else {
@@ -115,14 +115,30 @@ export class KafS05Component extends KafS00ShrComponent {
     public kaf000BChangeDate(objectDate) {
         const vm = this;
         console.log('kaf000BChangeDate');
-        if (objectDate.startDate) {
-            if (vm.modeNew) {
-                vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
-                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
-                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
-                // console.log('changeDateCustom');
-            }
-        }
+        vm.changeDate(objectDate.startDate);
+    }
+
+    public changeDate(date: string) {
+        const self = this;
+        self.$mask('show');
+        let command = {
+            companyId: self.user.companyId,
+            date,
+            displayInfoOverTime: self.model.displayInfoOverTime
+        };
+        self.$http.post('at',
+            API.changeDate,
+            command
+            )
+            .then((res: any) => {
+                self.model.displayInfoOverTime = res.data;
+                let step1 = self.$refs.step1 as KafS05Step1Component;
+                step1.loadData(self.model.displayInfoOverTime);
+                self.$mask('hide');
+            })
+            .catch((res: any) => {
+                self.$mask('hide');
+            });
     }
     
     public kaf000BChangePrePost(prePostAtr) {
@@ -290,6 +306,8 @@ export class KafS05Component extends KafS00ShrComponent {
 }
 const API = {
     start: 'at/request/application/overtime/mobile/start',
+    changeDate: 'at/request/application/overtime/mobile/changeDate',
+
     checkBeforeRegisterSample: 'at/request/application/checkBeforeSample',
     registerSample: 'at/request/application/changeDataSample',
     sendMailAfterRegisterSample: ''
