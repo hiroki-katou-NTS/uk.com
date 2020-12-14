@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
@@ -78,7 +79,8 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 				endDateTime = GeneralDateTime.fromString(
 						endDate.getEndDate().get().toString("yyyy/MM/dd") 
 								+ " " 
-								+ endTime.getEndTime().get().hour() + ":" + endTime.getEndTime().get().minute() + ":00",
+								+ endTime.getEndTime().get().hour() + ":" + StringUtil.padLeft(
+										String.valueOf(endTime.getEndTime().get().minute()), 2, '0') + ":00",
 						"yyyy/MM/dd HH:mm:ss");
 			} else {
 				// →「実行タスク設定.終了日.終了日」＋0:00＝終了日時

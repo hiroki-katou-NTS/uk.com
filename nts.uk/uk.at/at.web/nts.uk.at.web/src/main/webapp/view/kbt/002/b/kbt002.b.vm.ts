@@ -264,12 +264,11 @@ module nts.uk.at.view.kbt002.b {
             vm.$dialog.info({ messageId: "Msg_15" })
               .then(() => {
                 // Get process execution list
-                vm.getProcExecList(response);
+                vm.getProcExecList(command.execItemCode);
                 vm.$nextTick(() => {
                   vm.focusInput();
                 });
               })
-              .then(() => vm.selectedExecCode(command.execItemCode));
           })
           .fail((error: any) => {
             vm.showMessageError(error);

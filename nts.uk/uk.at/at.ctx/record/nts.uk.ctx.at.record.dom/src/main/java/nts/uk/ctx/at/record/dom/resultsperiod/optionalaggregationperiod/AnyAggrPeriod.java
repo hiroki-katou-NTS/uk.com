@@ -64,7 +64,7 @@ public class AnyAggrPeriod extends AggregateRoot {
 		memento.setAggrFrameCode(this.aggrFrameCode.v());
 		memento.setOptionalAggrName(this.optionalAggrName.v());
 		memento.setStartDate(this.period.start());
-		memento.setEndDate(period.end());
+		memento.setEndDate(this.period.end());
 	}
 
 	/**
