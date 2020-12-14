@@ -244,7 +244,7 @@ public class HolidayServiceImpl implements HolidayService {
 		OverTimeContent overTimeContent = commonHolidayWorkAlgorithm.getOverTimeContent(Optional.of(workType), Optional.of(workTime), 
 				actualContentDisplayList);
 		WorkHours workHours = commonOverTimeAlgorithm.initAttendanceTime(companyId, Optional.ofNullable(date), overTimeContent, 
-				holidayWorkAppSet.getApplicationDetailSetting());
+				holidayWorkAppSet.getApplicationDetailSetting()).orElse(null);
 		hdSelectWorkDispInfoOutput.setWorkHours(workHours);
 		
 		//	休憩時間帯を取得する
@@ -428,10 +428,11 @@ public class HolidayServiceImpl implements HolidayService {
 			if(appHdWorkDispInfoOutput.getCalculationResult().isPresent()) {  
 				appHdWorkDispInfoOutput.getCalculationResult().get().setActualOvertimeStatus(overStateOutput);
 				appHdWorkDispInfoOutput.getCalculationResult().get().setCalculatedFlag(CalculatedFlag.CALCULATED);
-			} else {
-				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult(overStateOutput, null, CalculatedFlag.CALCULATED);
-				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
 			}
+//			else {
+//				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult(overStateOutput, null, CalculatedFlag.CALCULATED);
+//				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
+//			}
 		}
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		

@@ -266,14 +266,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.restTimeTableVisible2(false);
 			}
-
-			// ※20 // ※21 huytodo daikou
 		}
-		
-		register() {
-			const vm = this;
 
-			vm.$blockui("show");
+		toAppHolidayWork(){
+			let vm = this;
 			let appHolidayWork = {} as AppHolidayWorkCmd;
 			let listApplicationTime = [] as Array<OvertimeApplicationSetting>
 			let listMidNightHolidayTimes = [];
@@ -347,6 +343,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					appHolidayWork.breakTimeList.push(restTime);
 				}		
 			}
+			return appHolidayWork;
+		}
+		
+		register() {
+			const vm = this;
+
+			vm.$blockui("show");
+			let appHolidayWork = vm.toAppHolidayWork();
 			
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
@@ -618,7 +622,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 					}
 					// A6_29 A6_36 A6_41
-					let appRoot = opPreAppContentDisplayLst[0];
+					let appRoot = opPreAppContentDisplayLst[0].appHolidayWork.applicationTime;
 						if (!_.isNil(appRoot.overTimeShiftNight)) {
 							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
@@ -682,7 +686,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 
 			self.holidayTime(holidayTimeArray);
-			// self.setColorForHolidayTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 0, self.dataSource);
+			self.setColorForHolidayTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 0, self.dataSource);
 		}
 
 		setColorForHolidayTime(isCalculation: Boolean, dataSource: AppHdWorkDispInfo) {
@@ -879,7 +883,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					}
 					
 				}
-				item.backgroundColor(backgroundColor);
+				item.backgroundColor = ko.observable(backgroundColor);
 			});
 		}
 
@@ -952,9 +956,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				// A7_9
 				let opPreAppContentDisplayLst = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
 				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let appHolidayWork = opPreAppContentDisplayLst[0].appHolidayWork;
-					if (appHolidayWork) {
-						let applicationTime = appHolidayWork.applicationTime.applicationTime;
+					let apOptional = opPreAppContentDisplayLst[0].apOptional;
+					if (apOptional) {
+						let applicationTime = apOptional.applicationTime as ApplicationTime;
 						if (!_.isEmpty(applicationTime)) {
 							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
 								overTimeArray
@@ -998,7 +1002,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 
 			self.overTime(overTimeArray);
-			// self.setColorForOverTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 0, self.dataSource);
+			self.setColorForOverTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 0, self.dataSource);
 		}
 
 		setColorForOverTime(isCalculation: Boolean, dataSource: AppHdWorkDispInfo) {
@@ -1090,7 +1094,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 					}
 				}
-				item.backgroundColor(backgroundColor);
+				item.backgroundColor = ko.observable(backgroundColor);
 
 			});
 		}

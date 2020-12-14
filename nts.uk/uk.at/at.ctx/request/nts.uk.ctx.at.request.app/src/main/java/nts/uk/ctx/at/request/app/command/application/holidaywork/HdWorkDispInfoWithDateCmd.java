@@ -88,7 +88,7 @@ public class HdWorkDispInfoWithDateCmd {
 	public HdWorkDispInfoWithDateOutput toDomain() {
 		String companyId = AppContexts.user().companyId();
 		return new HdWorkDispInfoWithDateOutput(this.subHdManage, 
-				this.workHours.toDomain(), 
+				this.workHours != null ? this.workHours.toDomain() : null, 
 				Optional.ofNullable(this.breakTimeZoneSettingList != null ? this.breakTimeZoneSettingList.toDomain() : null), 
 				Optional.ofNullable(this.workTypeList != null ? 
 						this.workTypeList.stream().map(workTypeCmd -> workTypeCmd.toDomain(companyId)).collect(Collectors.toList()) : null), 
