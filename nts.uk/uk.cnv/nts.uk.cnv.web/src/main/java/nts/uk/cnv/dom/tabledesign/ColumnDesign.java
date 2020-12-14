@@ -32,4 +32,8 @@ public class ColumnDesign {
 			(this.nullable ? " NULL" : " NOT NULL") +
 			(this.defaultValue != null && !this.defaultValue.isEmpty() ? " DEFAULT " + this.defaultValue : "");
 	}
+	
+	public boolean isContractCd() {
+		return this.name.equals("CONTRACT_CD");
+	}
 }

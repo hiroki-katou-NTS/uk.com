@@ -68,7 +68,8 @@ public class TableDesign {
 		}
 
 		String rls = "";
-		if(withRLS) {
+		// カラムにCONTRACT_CDがない場合RLSに関する記述はスキップする
+		if(withRLS && containContractCd()) {
 			rls = define.rlsDdl(name);
 		}
 
@@ -103,4 +104,11 @@ public class TableDesign {
 							.collect(Collectors.toList())
 					);
 	}
+	
+	private boolean containContractCd() {
+		return this.columns.stream()
+				.map(col -> col.isContractCd())
+				.anyMatch(con -> con == true);
+	}
+	
 }
