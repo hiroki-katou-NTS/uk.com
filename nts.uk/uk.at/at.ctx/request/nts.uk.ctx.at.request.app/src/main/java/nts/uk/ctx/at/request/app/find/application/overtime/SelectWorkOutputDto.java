@@ -16,7 +16,7 @@ public class SelectWorkOutputDto {
 	
 	public static SelectWorkOutputDto fromDomain(SelectWorkOutput selectWorkOutput) {
 		return new SelectWorkOutputDto(
-				WorkHoursDto.fromDomain(selectWorkOutput.getWorkHours()),
+				selectWorkOutput.getWorkHours().map(x -> WorkHoursDto.fromDomain(x)).orElse(null),
 				BreakTimeZoneSettingDto.fromDomain(selectWorkOutput.getBreakTimeZoneSetting()),
 				ApplicationTimeDto.fromDomain(selectWorkOutput.getApplicationTime()));
 	}

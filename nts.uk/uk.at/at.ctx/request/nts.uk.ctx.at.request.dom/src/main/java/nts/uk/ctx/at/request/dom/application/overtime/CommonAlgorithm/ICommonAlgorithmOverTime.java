@@ -158,7 +158,7 @@ public interface ICommonAlgorithmOverTime {
 	 * @param overTimeContent
 	 * @return
 	 */
-	public WorkHours initAttendanceTime(
+	public Optional<WorkHours> initAttendanceTime(
 			String companyId,
 			Optional<GeneralDate> dateOp,
 			OverTimeContent overTimeContent,
@@ -170,7 +170,7 @@ public interface ICommonAlgorithmOverTime {
 	 * @param atworkTimeBeginDisp
 	 * @return
 	 */
-	public WorkHours getWorkHours(
+	public Optional<WorkHours> getWorkHours(
 			String companyId,
 			OverTimeContent overTimeContent,
 			AtWorkAtr atworkTimeBeginDisp,

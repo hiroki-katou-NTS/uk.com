@@ -565,7 +565,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		overTimeContent.setSPRTime(Optional.of(workHoursSPR));
 		overTimeContent.setActualTime(Optional.of(workHoursActual));
 		// 初期表示する出退勤時刻を取得する
-		WorkHours workHours = commonAlgorithmOverTime.initAttendanceTime(
+		Optional<WorkHours> workHoursOp = commonAlgorithmOverTime.initAttendanceTime(
 				companyId,
 				dateOp,
 				overTimeContent,
@@ -591,7 +591,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				Optional.empty(),
 				breakTimes.getTimeZones(),
 				actualContentDisplay);
-		output.setWorkHours(workHours);
+		output.setWorkHours(workHoursOp);
 		output.setBreakTimeZoneSetting(breakTimes);
 		output.setApplicationTime(applicationTime);
 		return output;
@@ -805,6 +805,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public DisplayInfoOverTime startA(
 			String companyId,
+			String employeeId,
 			Optional<GeneralDate> dateOp,
 			OvertimeAppAtr overtimeAppAtr,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
@@ -842,14 +843,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 			if (workHours.isPresent()) {
 				if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
 					TimeZone timeZone = new TimeZone(
-							workHours.get().getStartTimeOp1().get(),
-							workHours.get().getEndTimeOp1().get());
+							workHours.get().getStartTimeOp1().orElse(null),
+							workHours.get().getEndTimeOp1().orElse(null));
 					timeZones.add(timeZone);
 				}
 				if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
 					TimeZone timeZone = new TimeZone(
-							workHours.get().getStartTimeOp2().get(),
-							workHours.get().getEndTimeOp2().get());
+							workHours.get().getStartTimeOp2().orElse(null),
+							workHours.get().getEndTimeOp2().orElse(null));
 					timeZones.add(timeZone);
 				}
 			}
@@ -1022,7 +1023,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		workContent.setWorkTimeCode(workTimeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()));
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
 		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
-		Optional<WorkHours> workHours = Optional.ofNullable(selectWorkOutput.getWorkHours());
+		Optional<WorkHours> workHours = selectWorkOutput.getWorkHours();
 		if (workHours.isPresent()) {
 			if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
 				TimeZone timeZone = new TimeZone(

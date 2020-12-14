@@ -473,7 +473,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output.setWorkTypeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTypeCD()));
 		output.setWorkTimeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTimeCD()));
 		output.setBreakTime(Optional.ofNullable(selectWorkOutput.getBreakTimeZoneSetting()));
-		output.setWorkHours(Optional.ofNullable(selectWorkOutput.getWorkHours()));
+		output.setWorkHours(selectWorkOutput.getWorkHours());
 		output.setApplicationTime(Optional.ofNullable(selectWorkOutput.getApplicationTime()));
 		
 		
@@ -503,8 +503,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			// 休憩時間帯を取得する
 			List<DeductionTime> timeZones = commonOverTime.getBreakTimes(
 					companyId,
-					workTypeCode.v(),
-					workTimeCode.v(),
+					workTypeCode != null ? workTypeCode.v() : null,
+					workTimeCode != null ? workTimeCode.v() : null,
 					startTimeOp, 
 					endTimeOp);
 			output.setTimeZones(timeZones);
@@ -550,13 +550,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	}
 
 	@Override
-	public WorkHours initAttendanceTime(
+	public Optional<WorkHours> initAttendanceTime(
 			String companyId,
 			Optional<GeneralDate> dateOp,
 			OverTimeContent overTimeContent,
 			ApplicationDetailSetting applicationDetailSetting
 			) {
-		WorkHours output = new WorkHours();
+		Optional<WorkHours> output = Optional.empty();
 		// INPUT．「申請日」と「＠時間入力利用区分」をチェックする
 		if (!(dateOp.isPresent() && applicationDetailSetting.getTimeInputUse() == NotUseAtr.USE)) {
 			return output;
@@ -565,25 +565,43 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output = this.getWorkHours(companyId, overTimeContent, applicationDetailSetting.getAtworkTimeBeginDisp(), applicationDetailSetting);
 		
 		// INPUT．「申請内容．SPR連携時刻」を確認する
-		if (!overTimeContent.getSPRTime().isPresent()) return new WorkHours();
+		if (!overTimeContent.getSPRTime().isPresent()) {
+			
+			if (!overTimeContent.getSPRTime().get().getStartTimeOp1().isPresent()
+					&& !overTimeContent.getSPRTime().get().getEndTimeOp1().isPresent()) {
+				output = Optional.empty();
+				return output;				
+			} else {
+				if (overTimeContent.getSPRTime().get().getStartTimeOp1().isPresent()) {
+					if (!output.isPresent()) output = Optional.of(new WorkHours());
+					output.get().setStartTimeOp1(overTimeContent.getSPRTime().get().getStartTimeOp1());
+					
+				}
+				if (overTimeContent.getSPRTime().get().getEndTimeOp1().isPresent()) {
+					if (!output.isPresent()) output = Optional.of(new WorkHours());
+					output.get().setEndTimeOp1(overTimeContent.getSPRTime().get().getEndTimeOp1());
+				}
+			}
+				
+		}
 		// OUTPUT「勤務時間」を更新して返す
+		
 		
 		return output;
 	}
 	@Override
-	public WorkHours getWorkHours(
+	public Optional<WorkHours> getWorkHours(
 			String companyId,
 			OverTimeContent overTimeContent,
 			AtWorkAtr atworkTimeBeginDisp,
 			ApplicationDetailSetting applicationDetailSetting
 			) {
-		WorkHours workHours = new WorkHours();
+		Optional<WorkHours> workHoursOp = Optional.empty();
 		// 「出退勤時刻初期表示区分」をチェックする
 		if (atworkTimeBeginDisp == AtWorkAtr.NOTDISPLAY) { // 表示しない
 			// OUTPUT「勤務時間」を返す
-			return workHours;
-		}
-		if (atworkTimeBeginDisp == AtWorkAtr.AT_START_WORK_OFF_ENDWORK) { // 出勤は始業時刻、退勤は終業時刻を初期表示する
+			return workHoursOp;
+		} else if (atworkTimeBeginDisp == AtWorkAtr.AT_START_WORK_OFF_ENDWORK) { // 出勤は始業時刻、退勤は終業時刻を初期表示する
 			// 所定時間帯を取得する
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(
 					companyId,
@@ -598,15 +616,21 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					Optional<TimeWithDayAttr> startTime = Optional.of(item.getStart());
 					Optional<TimeWithDayAttr> endTime = Optional.of(item.getEnd());
 					if (item.getWorkNo() == TimezoneUse.SHIFT_ONE) {
-						workHours.setStartTimeOp1(startTime);
-						workHours.setEndTimeOp1(endTime);
+						if (!workHoursOp.isPresent()) {
+							workHoursOp = Optional.of(new WorkHours());
+						}
+						workHoursOp.get().setStartTimeOp1(startTime);
+						workHoursOp.get().setEndTimeOp1(endTime);
 					} else if (item.getWorkNo() == TimezoneUse.SHIFT_TWO) {
-						workHours.setStartTimeOp2(startTime);
-						workHours.setEndTimeOp2(endTime);
+						if (!workHoursOp.isPresent()) {
+							workHoursOp = Optional.of(new WorkHours());
+						}
+						workHoursOp.get().setStartTimeOp2(startTime);
+						workHoursOp.get().setEndTimeOp2(endTime);
 					}
 				}
 			}
-			return workHours;
+			return workHoursOp;
 		}
 		if (atworkTimeBeginDisp == AtWorkAtr.AT_START_WORK_OFF_PERFORMANCE) { // 出勤は始業時刻、退勤は実績の退勤を初期表示する
 			// 所定時間帯を取得する
@@ -622,14 +646,20 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					TimezoneUse item = predetermineTimeSetForCalc.getTimezones().get(i);
 					Optional<TimeWithDayAttr> startTime = Optional.of(item.getStart());
 					if (item.getWorkNo() == TimezoneUse.SHIFT_ONE) {
-						workHours.setStartTimeOp1(startTime);
+						if (!workHoursOp.isPresent()) {
+							workHoursOp = Optional.of(new WorkHours());
+						}
+						workHoursOp.get().setStartTimeOp1(startTime);
 						if (overTimeContent.getActualTime().isPresent()) {
-							workHours.setEndTimeOp1(overTimeContent.getActualTime().get().getEndTimeOp1());
+							workHoursOp.get().setEndTimeOp1(overTimeContent.getActualTime().get().getEndTimeOp1());
 						}
 					} else if (item.getWorkNo() == TimezoneUse.SHIFT_TWO) {
-						workHours.setStartTimeOp2(startTime);
+						if (!workHoursOp.isPresent()) {
+							workHoursOp = Optional.of(new WorkHours());
+						}
+						workHoursOp.get().setStartTimeOp2(startTime);
 						if (overTimeContent.getActualTime().isPresent()) {
-							workHours.setEndTimeOp2(overTimeContent.getActualTime().get().getEndTimeOp2());
+							workHoursOp.get().setEndTimeOp2(overTimeContent.getActualTime().get().getEndTimeOp2());
 						}
 					}
 				}
@@ -639,22 +669,22 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		if (atworkTimeBeginDisp == AtWorkAtr.DISPLAY) { // 実績から出退勤を初期表示する
 			// OUTPUT「勤務時間」をセットする
 			if (overTimeContent.getActualTime().isPresent()) {
-				workHours = overTimeContent.getActualTime().get();				
+				workHoursOp = Optional.of(overTimeContent.getActualTime().get());				
 			}
 		}
 		// 「退勤時刻がない時システム時刻を表示するか」をチェックする
 		if (!overTimeContent.getSPRTime().isPresent()) {
-			return workHours;
+			return workHoursOp;
 		}
 		// OUTPUT「勤務時間．終了時刻1」をチェックする
-		if (workHours.getEndTimeOp1().isPresent()) {
-			return workHours;
+		if (workHoursOp.get().getEndTimeOp1().isPresent()) {
+			return workHoursOp;
 		}
 		// NULLの場合
 		// システム時刻をOUTPUT「勤務時間」に更新する
-		workHours.setEndTimeOp1(Optional.of(new TimeWithDayAttr(ClockHourMinute.now().v())));
+		workHoursOp.get().setEndTimeOp1(Optional.of(new TimeWithDayAttr(ClockHourMinute.now().v())));
 		// OUTPUT「勤務時間」を返す
-		return workHours;
+		return workHoursOp;
 	}
 
 

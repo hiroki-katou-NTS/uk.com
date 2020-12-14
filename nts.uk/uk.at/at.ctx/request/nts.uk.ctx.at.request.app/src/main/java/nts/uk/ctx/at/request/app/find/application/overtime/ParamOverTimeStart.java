@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
@@ -42,5 +44,7 @@ public class ParamOverTimeStart {
 	public ApplicationTimeCommand achieveApplicationTime;
 	
 	public WorkContentCommand workContent;
+	
+	public List<String> sids;
 	
 }

@@ -40,6 +40,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// new 
 			const vm = this;
 			vm.urlParam = $(location).attr('search').split("=")[1];
+			let dataTransfer: DataTransfer;
+			if (_.isNil(params)) {
+				dataTransfer = __viewContext.transferred.value; // from spr		
+			}
+			__viewContext.transferred.value = undefined;
 			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
 			vm.setMode(params);
@@ -51,6 +56,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			vm.bindMessageInfo(null);
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
+			if (!_.isNil(dataTransfer)) {
+				dateLst.push(dataTransfer.appDate);
+			}	
 			if (!_.isEmpty(params)) {
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
@@ -67,6 +75,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 			}
 			vm.isSendMail = ko.observable(false);
+			if (!_.isNil(dataTransfer)) {
+				vm.application().appDate(dataTransfer.appDate);				
+			}
+			if (!_.isNil(params)) {
+				if (!_.isNil(params.baseDate)) {
+					vm.application().appDate(moment(params.baseDate).format('YYYY/MM/DD'));					
+				}
+			}
+			
 			vm.$blockui("show");
 			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType())
@@ -93,11 +110,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 						} as FirstParam;
 						param1.companyId = vm.$user.companyId;
-						// param1.dateOp = '2020/11/13';
+						param1.dateOp = vm.application().appDate();
 						param1.overtimeAppAtr = vm.getOverTimeAtrByUrl();
 						param1.appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput);
-						// param1.startTimeSPR = 100;
-						// param1.endTimeSPR = 200;
+						if (!_.isNil(dataTransfer)) {
+							param1.startTimeSPR = dataTransfer.startTime;
+							param1.endTimeSPR = dataTransfer.endTime;							
+						}
+						if (vm.isAgentMode()) {
+							param1.sids = vm.employeeIDLst;
+						} else {
+							param1.sids = [];
+							param1.sids.push(vm.$user.employeeId);
+						}
 						param1.isProxy = true;
 						let command = {
 							companyId: param1.companyId,
@@ -107,8 +132,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							startTimeSPR: param1.startTimeSPR,
 							endTimeSPR: param1.endTimeSPR,
 							isProxy: param1.isProxy,
+							sids: param1.sids
 						};
-						// load setting đơn xin
+						// load setting đơn xins
 						return vm.$ajax(API.start, command);
 					}
 				}).then((successData: any) => {
@@ -743,6 +769,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				} else {
 					workTime.name = self.$i18n('KAF_005_345');
 				}
+				
+				// not change in select work type 
+				if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
+					self.workInfo().workType(workType);				
+					self.workInfo().workTime(workTime);				
+				}
 				// set input time
 				let workHoursDto = infoWithDateApplication.workHours;
 				if (workHoursDto) {
@@ -755,11 +787,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 
 			}
-			// not change in select work type 
-			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
-				self.workInfo().workType(workType);				
-				self.workInfo().workTime(workTime);				
-			}
+			
 			self.workInfo().workHours1 = workHours1;
 			self.workInfo().workHours2 = workHours2;
 
@@ -2277,10 +2305,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			command.workTimeCode = self.workInfo().workTime().code;
 			command.startTime = self.workInfo().workHours1.start();
 			command.endTime = self.workInfo().workHours1.end();
-			command.actualContentDisplayDtos = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLstl;
+			command.actualContentDisplayDtos = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst;
 			self.$ajax(API.breakTimes, command)
 				.done((res: BreakTimeZoneSetting) => {
 					if (res) {
+						_.forEach(self.restTime(), (item: RestTime) => {
+								item.start(null);
+								item.end(null);
+							});
 						if (!_.isEmpty(res.timeZones)) {
 							_.forEach(self.restTime(), (item: RestTime) => {
 								let data = res.timeZones.shift();
@@ -2291,11 +2323,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 									item.start(null);
 									item.end(null);
 								}
-							});
-						} else {
-							_.forEach(self.restTime(), (item: RestTime) => {
-								item.start(null);
-								item.end(null);
 							});
 						}
 					}
@@ -2901,6 +2928,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		NORMAL,
 		SINGLE_AGENT,
 		MULTiPLE_AGENT
+	}
+	interface DataTransfer {
+		startTime: number;
+		endTime: number;
+		employeeID: string;
+		appDate: string;
+		applicationReason: string;
 	}
 
 

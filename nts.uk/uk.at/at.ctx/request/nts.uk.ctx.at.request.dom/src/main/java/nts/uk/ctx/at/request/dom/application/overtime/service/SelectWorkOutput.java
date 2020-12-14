@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,7 @@ import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork
 @Data
 public class SelectWorkOutput {
 	// 勤務時間
-	private WorkHours workHours;
+	private Optional<WorkHours> workHours;
 	// 休憩時間帯設定
 	private BreakTimeZoneSetting breakTimeZoneSetting;
 	// 申請時間
