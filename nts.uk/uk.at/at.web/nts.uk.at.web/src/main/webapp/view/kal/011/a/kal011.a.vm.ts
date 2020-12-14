@@ -204,7 +204,7 @@ module nts.uk.at.kal011.a {
         exportExcel() {
             const vm = this;
             vm.$blockui("grayout");
-            vm.$ajax(API.EXPORT_EXCEL, {
+            nts.uk.request.exportFile(API.EXPORT_EXCEL, {
                 alarmCode: "alarmCode1",
                 alarmName: "alarmName",
                 data: [
