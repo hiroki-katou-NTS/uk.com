@@ -22,8 +22,11 @@
           <div id="C1_1" data-bind="ntsFormLabel: { constraint: 'NotificationMessage', required: true }">
             #{i18n.getText('CCG003_20')}</div>
           <!-- C1_2	メッセージ -->
-          <textarea id="C1_2" tabindex="1"
-            data-bind="ntsTextEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage', required: true }" />
+          <textarea id="C1_2" tabindex="1" rows="10" data-bind="ntsTextEditor: {
+            name:'#[CCG003_20]',
+            value: messageText,
+            constraint: 'NotificationMessage',
+            required: true }" />
         </div>
         <div class="flex mt-10">
           <div class="left w-p-15">

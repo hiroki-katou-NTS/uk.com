@@ -24,7 +24,7 @@ module nts.uk.com.view.ccg003.c {
   @bean()
   export class ViewModel extends ko.ViewModel {
     messageText: KnockoutObservable<string> = ko.observable('');
-    destination: KnockoutObservable<number> = ko.observable(2);
+    destination: KnockoutObservable<number> = ko.observable(1);
     dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
       startDate: '',
       endDate: ''
@@ -38,7 +38,7 @@ module nts.uk.com.view.ccg003.c {
     isVisibleDestination: KnockoutComputed<boolean> = ko.computed(() =>
       this.isNewMode() || moment.utc(this.dateValue().startDate, 'YYYY/MM/DD').isBefore(moment.utc(new Date(), 'YYYY/MM/DD')));
     // ※C1
-    isVisibleAllEmployees: KnockoutComputed<boolean> = ko.computed(() => !this.isNewMode() && this.assignAtr() === 0);
+    isVisibleAllEmployees: KnockoutComputed<boolean> = ko.computed(() => this.assignAtr() === 0);
     // ※C2
     isActiveWorkplaceBtn: KnockoutComputed<boolean> = ko.computed(() => this.isVisibleDestination() && this.destination() === DestinationClassification.WORKPLACE);
     // ※C3
@@ -396,10 +396,11 @@ module nts.uk.com.view.ccg003.c {
   }
 
   enum SystemType {
-    COMMON = 0,
-    EMPLOYMENT = 1,
-    SALARY = 2,
-    HUMAN_RESOURCE = 3
+    PERSONAL_INFORMATION = 1,
+    EMPLOYMENT = 2,
+    SALARY = 3,
+    HUMAN_RESOURCES = 4,
+    ADMINISTRATOR = 5
   }
 
   enum EmployeeReferenceRange {

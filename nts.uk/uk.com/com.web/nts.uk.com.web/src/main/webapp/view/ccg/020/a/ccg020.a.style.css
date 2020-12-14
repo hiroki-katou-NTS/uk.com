@@ -143,3 +143,6 @@ div#operation-info {
   top: -8px;
   padding: 0;
 }
+#notice-msg {
+  cursor: pointer;
+}
