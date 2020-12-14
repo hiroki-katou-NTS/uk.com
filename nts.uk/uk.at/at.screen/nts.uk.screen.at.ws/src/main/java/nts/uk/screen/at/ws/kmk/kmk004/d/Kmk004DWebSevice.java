@@ -14,6 +14,8 @@ import nts.uk.screen.at.app.kmk004.d.BasicSettingsByEmployment;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
+import nts.uk.screen.at.app.query.kmk004.common.YearDto;
+import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
 
 /**
  * 
@@ -31,6 +33,9 @@ public class Kmk004DWebSevice extends WebService {
 	@Inject
 	private BasicSettingsByEmployment baseSetting;
 	
+	@Inject
+	private YearListByEmployment getYears;
+	
 	
 	@POST
 	@Path("viewd/emp/getEmploymentId")
@@ -42,5 +47,11 @@ public class Kmk004DWebSevice extends WebService {
 	@Path("viewd/emp/getBaseSetting/{employmentCode}")
 	public DisplayBasicSettingsDto getBaseSetting(@PathParam("employmentCode") String employmentCode) {
 		return this.baseSetting.getSetting(employmentCode);
+	}
+	
+	@POST
+	@Path("viewd/emp/years/{employmentCode}")
+	public List<YearDto> getYears(@PathParam("employmentCode") String employmentCode) {
+		return this.getYears.get(employmentCode, LaborWorkTypeAttr.DEFOR_LABOR);
 	}
 }
