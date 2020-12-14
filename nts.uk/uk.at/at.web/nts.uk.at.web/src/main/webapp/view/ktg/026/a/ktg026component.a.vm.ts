@@ -170,7 +170,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
   }
   /* 限度エラー時間超過 */
   .exceeding-limit-error {
-    background-color: #0c0606; /* 36協定エラー */
+    background-color: #FD4D4D; /* 36協定エラー */
     color: #ffffff; /* 36協定エラー文字 */
   }
   /* 限度アラーム時間超過（特例あり） */
@@ -188,7 +188,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
   }
   /* 特例限度エラー時間超過 */
   .special-exceeded-limit-error {
-    background-color: #0c0606; /* 36協定エラー */
+    background-color: #FD4D4D; /* 36協定エラー */
     color: #ffffff; /* 36協定エラー文字 */
   }
   
@@ -248,7 +248,7 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
           <!-- A3_1 js-yearMonth -->
           <td id="A3_1" class="border-bot data-text" data-bind="text: yearMonth"></td>
           <!-- A3_2 js-agreementTime -->
-          <td id="A3_2" class="border-bot text-right" data-bind="text: agreementTimeDisplay, class: cssClass"></td>
+          <td id="A3_2" class="border-bot text-right" data-bind="text: agreementTimeDisplay, css: cssClass"></td>
           <td class="pl-20 inline-flex">
             <span class="dashed45"></span>
             <span class="dashed80"></span>
@@ -294,12 +294,6 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
       vm.dataTable = ko.observableArray([]);
       let targetDate = null;
       const cache = windows.getShared('cache');
-      vm.$window.storage('KTG026_PARAM').then((data: any) => {
-        if (data) {
-          vm.employeeId = data.employeeId;
-          targetDate = data.targetDate;
-        }
-      });
 
       const currentOrNextMonth = !!cache ? cache.currentOrNextMonth : 1; // 1: 従業員参照モード 2: 上長参照モード
 
@@ -339,8 +333,9 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
           targetYear: Number(year),
           processingYm: processingYm
         });
-
-        vm.extractOvertime(requestBody);
+        if(!!vm.employeeId) {
+          vm.extractOvertime(requestBody);
+        }
       });
     }
 
