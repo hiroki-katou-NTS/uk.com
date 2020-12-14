@@ -517,7 +517,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 													  this.mailPrincipal,
 													  this.mailAdministrator,
 													  this.displayTpAdmin,
-													  this.displayTpAdmin));
+													  this.displayTpPrincipal));
 		// Sets personal schedule creation
 		PersonalScheduleCreationPeriod perSchedulePeriod = new PersonalScheduleCreationPeriod(this.creationPeriod,
 																							  this.targetDate,

@@ -11,7 +11,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public interface ServerExternalOutputAdapter {
 
-	ServerExternalOutputImport findExternalOutput(String cid, String conditionCd);
+	ServerExternalOutputImport findExternalOutput(String cid, String conditionCd) throws Exception;
 	
 	void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate,
 			Integer categoryId);
