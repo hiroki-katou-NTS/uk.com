@@ -253,7 +253,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
         List<LeaveComDayOffManaDto> result = new ArrayList<>();
         for (GeneralDate holiday : inputData.getSubstituteHolidayList()) {
             double requiredNumber = inputData.getDaysUnit();
-            while (requiredNumber > 0.0) {
+            while (requiredNumber > 0.0 && inputData.getHolidayWorkInfoList().stream().anyMatch(i -> i.getRemainingNumber() > 0)) {
                 // 同一日かチェックする
                 if (inputData.getHolidayWorkInfoList().stream()
                         .anyMatch(holidayWorkData -> holiday.compareTo(holidayWorkData.getHolidayWorkDate()) == 0)) {
@@ -291,7 +291,6 @@ public class HolidayWorkSubHolidayAssociationFinder {
                         break;
                     }
                 }
-                requiredNumber = 0;
             }
         }
         return result;
