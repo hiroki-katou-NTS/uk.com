@@ -60,7 +60,7 @@ public class Kmk004JWebService {
 
 	@POST
 	@Path("change-year/{sId}/{year}")
-	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("sId") String sId, @PathParam("sId") int year) {
+	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("sId") String sId, @PathParam("year") int year) {
 		return this.selectFlexYearByEmployee.selectFlexYearByEmployee(sId, year);
 	}
 
@@ -95,9 +95,9 @@ public class Kmk004JWebService {
 	}
 
 	@POST
-	@Path("change-setting")
-	public AfterChangeFlexEmployeeSettingDto changeSetting(String ShaCd) {
-		return this.afterChangeFlexEmployeeSetting.afterChangeFlexEmployeeSetting(ShaCd);
+	@Path("change-setting/{sId}")
+	public AfterChangeFlexEmployeeSettingDto changeSetting(@PathParam("sId") String sId) {
+		return this.afterChangeFlexEmployeeSetting.afterChangeFlexEmployeeSetting(sId);
 	}
 
 }

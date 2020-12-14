@@ -95,8 +95,8 @@ public class Kmk004IWebService {
 	}
 
 	@POST
-	@Path("change-setting")
-	public AfterChangeFlexEmploymentSettingDto changeSetting(String empCd) {
+	@Path("change-setting/{empCd}")
+	public AfterChangeFlexEmploymentSettingDto changeSetting(@PathParam("empCd") String empCd) {
 		return this.afterChangeFlexEmploymentSetting.afterChangeFlexEmploymentSetting(empCd);
 	}
 
