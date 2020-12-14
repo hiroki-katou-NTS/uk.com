@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM8;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AggregateAttendanceTimeValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
@@ -142,6 +143,8 @@ public class AggregateMonthlyRecordServiceProc {
 	private boolean isOverWriteRemain;
 	/** 並列処理用 */
 //	private ManagedExecutorService executerService;
+
+//	private MonthlyAggregationRemainingNumber monthlyAggregationRemaining;
 
 	public AggregateMonthlyRecordServiceProc() {
 	}
@@ -1110,9 +1113,6 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 	}
 
-	@Inject
-	MonthlyAggregationRemainingNumber monthlyAggregationRemaining;
-
 	/**
 	 * 残数処理
 	 *
@@ -1138,8 +1138,7 @@ public class AggregateMonthlyRecordServiceProc {
 		// 振休
 		// 代休
 		// 特別休暇
-		val output = monthlyAggregationRemaining.aggregation(
-				require, cacheCarrier, period, interimRemainMngMode, isCalcAttendanceRate);
+		val output = require.aggregation(cacheCarrier, period, interimRemainMngMode, isCalcAttendanceRate);
 
 //		ConcurrentStopwatches.start("12410:年休積休：");
 
@@ -1200,9 +1199,8 @@ public class AggregateMonthlyRecordServiceProc {
 //
 //		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
 
-		return monthlyAggregationRemaining.createDailyInterimRemainMngs(
-				require, cacheCarrier, this.companyId,this.employeeId,period,
-				this.companySets,this.monthlyCalculatingDailys);
+		return require.createDailyInterimRemainMngs(cacheCarrier, this.companyId,this.employeeId,period,
+													this.companySets,this.monthlyCalculatingDailys);
 
 	}
 
@@ -1702,6 +1700,14 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 
 	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3{
+
+//		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
+//
+//		List<Closure> closure(String companyId);
+
+		AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
+				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
+
 		/** 特別休暇基本情報 */
 		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
 
@@ -1713,6 +1719,13 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 
 	public static interface RequireM7 extends InterimRemainOffPeriodCreateData.RequireM4 {
+
+		Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
+				String companyId,
+				String employeeId,
+				DatePeriod period,
+				MonAggrCompanySettings comSetting,
+				MonthlyCalculatingDailys dailys);
 	}
 
 	public static interface RequireM6 extends GetDaysForCalcAttdRate.RequireM2

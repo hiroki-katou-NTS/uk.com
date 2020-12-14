@@ -18,15 +18,11 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class SpecialLeaveUseTimes extends DomainObject{
 
-//	/**
-//	 * 使用回数
-//	 */
-//	private UseNumber useNumber;
 	/**
 	 * 使用時間
 	 */
 	private SpecialLeavaRemainTime useTimes;
-	
+
 //	/**
 //	 * 使用時間付与前
 //	 */
@@ -35,21 +31,21 @@ public class SpecialLeaveUseTimes extends DomainObject{
 //	 * 使用時間付与後
 //	 */
 //	private Optional<SpecialLeavaRemainTime> afterUseGrantTimes;
-	
+
 	/**
 	 * 日数を使用日数に加算する
 	 */
 	public void addUseTimes(SpecialLeaveUseTimes useTimes){
 		this.useTimes.addMinutes(useTimes.getUseTimes().v());
 	}
-	
+
 	/**
 	 * 使用時間を加算する
 	 */
 	public void addUsedNumber(SpecialLeaveUseTimes useTimes){
-		this.useTimes.addMinutes(useTimes.getUseTimes().v());		
+		this.useTimes.addMinutes(useTimes.getUseTimes().v());
 	}
-	
+
 	@Override
 	public SpecialLeaveUseTimes clone() {
 		SpecialLeaveUseTimes cloned = new SpecialLeaveUseTimes();
@@ -61,5 +57,5 @@ public class SpecialLeaveUseTimes extends DomainObject{
 		}
 		return cloned;
 	}
-	
+
 }

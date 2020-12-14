@@ -47,7 +47,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+//import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataMngCheckRegister {
@@ -162,15 +162,15 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
 						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
 
-				List<SpecialLeaveError> specialErros =specialLeaveService.complileInPeriodOfSpecialLeave(
-						require, cacheCarrier, inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
-						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
-						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData);
-
-				if (!specialErros.isEmpty()) {
-					outputData.setChkSpecial(true);
-					break;
-				}
+//				List<SpecialLeaveError> specialErros =specialLeaveService.complileInPeriodOfSpecialLeave(
+//						require, cacheCarrier, inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
+//						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
+//						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData);
+//
+//				if (!specialErros.isEmpty()) {
+//					outputData.setChkSpecial(true);
+//					break;
+//				}
 			}
 		}
 		// 年休チェック区分をチェックする

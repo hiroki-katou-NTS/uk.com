@@ -62,7 +62,6 @@ public class AggregateMonthlyRecordService {
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
 			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
-
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork) {
 
@@ -132,6 +131,7 @@ public class AggregateMonthlyRecordService {
 	 */
 	public static Map<GeneralDate, DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require,
 			CacheCarrier cacheCarrier, String cid, String sid, DatePeriod datePeriod) {
+
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc();
 
 		MonAggrEmployeeSettings monAggreEmpSetting = MonAggrEmployeeSettings.loadSettings(require, cacheCarrier, cid, sid, datePeriod);

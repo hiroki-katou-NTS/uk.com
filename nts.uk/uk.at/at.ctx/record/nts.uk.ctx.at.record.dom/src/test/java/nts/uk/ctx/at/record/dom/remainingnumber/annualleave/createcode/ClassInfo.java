@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +23,7 @@ public class ClassInfo {
 	/**
 	 * パッケージ
 	 */
-	private String pakage;
+	private String pakage = "";
 
 	/**
 	 * importリスト
@@ -31,17 +33,150 @@ public class ClassInfo {
 	/**
 	 * クラスコメント
 	 */
-	private String classNameComment;
+	private String classNameComment = "";
 
 	/**
 	 * クラス名
 	 */
-	private String className;
+	private String className = "";
+
+	public boolean isEmpty() {
+		return className==null;
+	}
+
+	/**
+	 * 親クラス
+	 */
+	private String extendsName = "";
 
 	/**
 	 * メンバー変数リスト
 	 */
-	private ArrayList<MemberInfo> memberInfoList = new ArrayList<MemberInfo>();
+	private List<MemberInfo> memberInfoList = new ArrayList<MemberInfo>();
+
+	/** エラーエラーメッセージ */
+	private String errorMessage = "";
+
+	/**
+	 * プリミティブ型か?(Java、Nts)
+	 * @param classType
+	 * @return
+	 */
+	public boolean isPrimitiveType() {
+
+		boolean status = isJavaPrimitiveType(this.getClassName())
+				|| isNtsPrimitiveType(this.getExtendsName());
+
+		return status;
+	}
+
+	/**
+	 * プリミティブ型か?(Java)
+	 * @param classType
+	 * @return
+	 */
+	static public boolean isJavaPrimitiveType(String classType) {
+		if ( classType.equals("String")
+				|| classType.equals("boolean") || classType.equals("Boolean")
+				|| classType.equals("byte") || classType.equals("Byte")
+				|| classType.equals("char") || classType.equals("Character")
+				|| classType.equals("short") || classType.equals("Short")
+				|| classType.equals("int") || classType.equals("Integer")
+				|| classType.equals("float") || classType.equals("Float")
+				|| classType.equals("long") || classType.equals("Long")
+				|| classType.equals("double") || classType.equals("Double")
+				)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * プリミティブ型か?(Nts)
+	 * @param classType
+	 * @return
+	 */
+	static public boolean isNtsPrimitiveType(String classType) {
+		if ( classType == null || classType.length() == 0 ) {
+			return false;
+		}
+		if ( classType.equals("ComparablePrimitiveValue")
+				|| classType.equals("DecimalPrimitiveValue")
+				|| classType.equals("HalfIntegerPrimitiveValue")
+				|| classType.equals("IntegerPrimitiveValue")
+				|| classType.equals("KanaPrimitiveValue")
+				|| classType.equals("LongPrimitiveValue")
+				|| classType.equals("PrimitiveValue")
+				|| classType.equals("PrimitiveValueUtil")
+				|| classType.equals("StringPrimitiveValue")
+				|| classType.equals("TimeAsMinutesPrimitiveValue")
+				|| classType.equals("TimeAsSecondsPrimitiveValue")
+				|| classType.equals("TimeClockPrimitiveValue")
+				|| classType.equals("TimeDurationPrimitiveValue")
+				|| classType.equals("UpperCaseAlphaNumericPrimitiveValue")
+				)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * メンバ変数の型を指定して、パッケージ名を取得する
+	 * @param className
+	 * @return
+	 */
+	public String getPackageName(String className) {
+
+		// importのリストを順番に検索
+		String s = "." + className + ";";
+		for(String importString : importList) {
+			if (importString.contains(s)) {
+				return importString.replace(s, "");
+			}
+		}
+
+		// importのリストにないときには、クラスのパッケージを返す
+		return this.pakage;
+	}
+
+	/**
+	 * 全メンバ変数リストを取得（継承クラスのメンバを先頭に追加する）
+	 * @param classInfoManager
+	 * @return
+	 */
+	public List<MemberInfo> getAllMemberInfoList(
+			ClassInfoManager classInfoManager ){
+
+		List<MemberInfo> list = new ArrayList<MemberInfo>();
+		this.addAllMemberInfoList(classInfoManager, list);
+
+		return list;
+	}
+
+	private void addAllMemberInfoList(
+			ClassInfoManager classInfoManager,
+			List<MemberInfo> memberInfoList
+			){
+
+		// 継承先
+		if ( 0 < this.extendsName.length() ) {
+			String packageName = this.getPackageName(this.extendsName);
+			if ( 0 < packageName.length() ) {
+				Optional<ClassInfo> classInfoOpt = classInfoManager.getClassInfo(packageName, this.extendsName);
+				if ( classInfoOpt.isPresent() ) {
+					classInfoOpt.get().addAllMemberInfoList(classInfoManager, memberInfoList);
+				}
+			}
+		}
+
+		// クラスのメンバ変数を追加
+		memberInfoList.addAll(this.memberInfoList);
+	}
+
 
 	/**
 	 * デバッグ用
@@ -72,12 +207,18 @@ public class ClassInfo {
 		sb.append("'");
 		sb.append(System.lineSeparator());
 
+		sb.append("extendsName = '");
+		sb.append(extendsName);
+		sb.append("'");
+		sb.append(System.lineSeparator());
+
 		sb.append("member ---------------------------------------------------");
 		sb.append(System.lineSeparator());
 		for(MemberInfo memberInfo : memberInfoList) {
 			memberInfo.setDebugString(sb);
 			sb.append(System.lineSeparator());
 		}
+
 	}
 
 	public String getDebugString() {
@@ -86,9 +227,8 @@ public class ClassInfo {
 		return sb.toString();
 	}
 
-
 	/**
-	 *
+	 * クラスファイルを読み込んで、クラス情報を取得
 	 * @param filePath
 	 */
 	public void readFile(String filePath) {
@@ -128,6 +268,7 @@ public class ClassInfo {
 			  str = br.readLine();
 			  int beginIndex_import = -1;
 			  int beginIndex_class = -1;
+			  int beginIndex_extends = -1;
 			  ArrayList<String> importList = new ArrayList<String>();
 
 			  while(str != null){
@@ -187,13 +328,28 @@ public class ClassInfo {
 				  }
 
 				  beginIndex_class = str.indexOf("class ");
+				  beginIndex_extends = str.indexOf(" extends ");
+
 				  // class があるとき
 				  if (0 <= beginIndex_class) {
-					 String className = str.substring(beginIndex_class).replace("class ", "").replace("{", "").trim();
+					 String className = str.substring(beginIndex_class)
+							 .replace("class ", "").replace("{", "").replace(" extends ", "").trim();
 					 this.setClassName(className);
 
 					 comment = comment.replace("/*", "").replace("*", "").trim();
 					 this.setClassNameComment(comment);
+
+					// extends があるとき
+					if (0 <= beginIndex_extends) {
+						  className = str.substring(beginIndex_class, beginIndex_extends)
+								.replace("class ", "").replace("{", "").replace(" extends ", "").trim();
+						  this.setClassName(className);
+
+						  String extendsName = str.substring(beginIndex_extends)
+								.replace("class ", "").replace("{", "").replace(" extends ", "").trim();
+						  this.setExtendsName(extendsName);
+					 }
+
 					 comment = "";
 					 str = br.readLine();
 					 break;
@@ -245,6 +401,7 @@ public class ClassInfo {
 						  if ( !str.contains("{ ") && !str.contains("(") ) { // 関数は除く
 
 							  MemberInfo memberInfo = new MemberInfo();
+							  memberInfo.setClassInfoRef(this);
 
 							  String memberString = str;
 							  if ( str.contains("private ") ) {
@@ -274,20 +431,15 @@ public class ClassInfo {
 								  String memberType = memberString.substring(0, beginIndexSpace).trim();
 								  if ( memberType.contains("Optional<")) {
 									  memberInfo.setOptional(true);
-
-
-
-
-
-
-
-
+									  memberType = memberType.replace("Optional<", "").replace(">","");
+								  }
+								  if ( memberType.contains("List<")) {
+									  memberInfo.setList(true);
+									  memberType = memberType.replace("List<", "").replace(">","");
 								  }
 
-
-								  memberInfo.setMemberType(memberType);
+								  memberInfo.setClassType(memberType);
 								  memberString = memberString.substring(beginIndexSpace).trim();
-
 							  }
 
 							  // 名前
@@ -306,7 +458,9 @@ public class ClassInfo {
 							  memberInfo.setMemberNameComment(comment);
 							  comment = "";
 
-							  memberInfoList.add(memberInfo);
+							  if (!memberInfo.getMemberName().equals("serialVersionUID")) { // 一部のメンバ変数名を除く
+								  memberInfoList.add(memberInfo);
+							  }
 						  }
 					  }
 				  }

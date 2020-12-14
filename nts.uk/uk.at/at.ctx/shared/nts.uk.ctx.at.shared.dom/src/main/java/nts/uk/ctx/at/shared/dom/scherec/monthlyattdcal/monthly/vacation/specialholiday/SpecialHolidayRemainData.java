@@ -5,17 +5,14 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
 
 /**
  * 特別休暇月別残数データ
@@ -99,8 +96,8 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 //			InPeriodOfSpecialLeaveResultInfor inPeriod,
 			SpecialLeaveRemainNoMinus remainNoMinus){
 
-		// ooooo 要修正 jinno　一時的にコメントアウト
-//
+		// ooooo 要修正 jinno　一時的にコメントアウト　項目移送
+
 ////		【項目移送】
 //
 //		SpecialHolidayRemainData domain = new SpecialHolidayRemainData();
@@ -158,7 +155,6 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 //					new UsedTimes(0), // ooooo要修正！！
 //					specialLeaveUseNumberAfterOpt
 //					);
-//
 //
 ////		特別休暇．未消化数　←　特別休暇情報（期間終了日の翌日開始時点）．残数．未消化数
 //		// ooooo要修正！！

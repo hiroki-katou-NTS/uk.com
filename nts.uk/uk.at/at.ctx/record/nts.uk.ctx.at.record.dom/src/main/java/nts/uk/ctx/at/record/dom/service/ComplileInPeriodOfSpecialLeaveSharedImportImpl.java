@@ -12,24 +12,25 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ComplileInPeriodOfSpecialLeaveSharedImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RequireM5;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RequireM5;
 
 public class ComplileInPeriodOfSpecialLeaveSharedImportImpl implements ComplileInPeriodOfSpecialLeaveSharedImport{
 
-	@Override
-	public List<SpecialLeaveError> complileInPeriodOfSpecialLeave(RequireM5 require, CacheCarrier cacheCarrier,
-			String cid, String sid, DatePeriod complileDate, boolean mode, GeneralDate baseDate, int specialLeaveCode,
-			boolean mngAtr, boolean overwriteFlg, List<InterimRemain> remainData,
-			List<InterimSpecialHolidayMng> interimSpecialData) {
-
-		ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(
-				cid, sid, complileDate, mode,baseDate,specialLeaveCode, mngAtr, overwriteFlg, remainData,
-				interimSpecialData);
-
-		InPeriodOfSpecialLeaveResultInfor speOutCheck = SpecialLeaveManagementService
-				.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam).getAggSpecialLeaveResult();
-
-		return speOutCheck.getSpecialLeaveErrors();
-	}
+	// 要修正 jinno
+//	@Override
+//	public List<SpecialLeaveError> complileInPeriodOfSpecialLeave(RequireM5 require, CacheCarrier cacheCarrier,
+//			String cid, String sid, DatePeriod complileDate, boolean mode, GeneralDate baseDate, int specialLeaveCode,
+//			boolean mngAtr, boolean overwriteFlg, List<InterimRemain> remainData,
+//			List<InterimSpecialHolidayMng> interimSpecialData) {
+//
+//		ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(
+//				cid, sid, complileDate, mode,baseDate,specialLeaveCode, mngAtr, overwriteFlg, remainData,
+//				interimSpecialData);
+//
+//		InPeriodOfSpecialLeaveResultInfor speOutCheck = SpecialLeaveManagementService
+//				.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam).getAggSpecialLeaveResult();
+//
+//		return speOutCheck.getSpecialLeaveErrors();
+//	}
 
 }
