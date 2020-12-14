@@ -136,8 +136,8 @@ module nts.uk.at.view.kwr006.a {
                 ]);
                 // A12_1
                 self.dataDisplayClassification = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_88")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_89"))
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_88")),// 表示
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_89")) // 非表示
                 ]);
                 // A13_1
                 self.dataDisplaySwitching = ko.observableArray([
@@ -623,7 +623,7 @@ module nts.uk.at.view.kwr006.a {
                 self.totalOutputSetting = new WorkScheduleSettingTotalOutputModel();
                 self.totalOutputSetting.isIndividualTypeSelected = self.isIndividualTypeSelected;
                 self.itemSettingType = ko.observable(ItemSelectionEnum.STANDARD_SELECTION);
-                self.displayType = ko.observable(1);
+                self.displayType = ko.observable(0);
                 self.itemDisplaySwitch = ko.observable(0);
             }
             public updateData(data: MonthlyWorkScheduleConditionDto, authorityFreeSetting: boolean): void {
