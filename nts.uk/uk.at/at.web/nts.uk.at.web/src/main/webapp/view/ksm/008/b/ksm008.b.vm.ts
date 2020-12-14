@@ -392,10 +392,11 @@ module nts.uk.at.ksm008.b {
             const vm = this;
 
             vm.clearError();
-            let togetherEmployee = ko.toJS(vm.multiSelectedCode());
+            let togetherEmployee = _.map(vm.simultanceList(), i => i.id);
             let listAfterClick = ko.toJS(vm.simultanceList());
 
             const params = {
+                selectFirst: true,
                 isMultiple: true,
                 baseDate: moment(new Date()).toDate(),
                 target: TargetClassification.WORKPLACE,

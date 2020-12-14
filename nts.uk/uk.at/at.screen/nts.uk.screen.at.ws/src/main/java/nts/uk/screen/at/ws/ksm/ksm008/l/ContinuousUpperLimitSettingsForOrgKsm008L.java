@@ -7,6 +7,7 @@ import nts.uk.ctx.at.schedule.app.command.schedule.alarm.limitworktime.l.Ksm008L
 import nts.uk.ctx.at.schedule.app.command.schedule.alarm.limitworktime.l.Ksm008LDeleteWorkTimeOrgCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.alarm.limitworktime.l.Ksm008LUpdateWorkTimeOrgCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.alarm.limitworktime.l.Ksm008LUpdateWorkTimeOrgCommandHandler;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
 import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkDetaislRequestParam;
 import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkListRequestParam;
 import nts.uk.screen.at.app.ksm008.query.l.Ksm008LStartOrgInfoDto;
@@ -18,6 +19,7 @@ import nts.uk.screen.at.app.ksm008.query.l.MaxDaysOfWorkTimeListOrgDto;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
@@ -50,6 +52,12 @@ public class ContinuousUpperLimitSettingsForOrgKsm008L extends WebService {
     @Path("getStartupInfo")
     public Ksm008LStartOrgInfoDto getStartupInfo() {
         return ksm008LStartupOrgInfoScreenQuery.getOrgInfo();
+    }
+
+    @POST
+    @Path("getCheckCon/{code}")
+    public AlarmCheckConditionsQueryDto getAlarmCheckConSche(@PathParam("code") String code) {
+        return ksm008LStartupOrgInfoScreenQuery.getAlarmCheckConSche(code);
     }
 
     @POST

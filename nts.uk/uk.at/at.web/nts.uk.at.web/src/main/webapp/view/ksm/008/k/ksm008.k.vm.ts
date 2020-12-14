@@ -18,6 +18,7 @@ module nts.uk.at.ksm008.i {
         getStartupInfo: 'screen/at/ksm008/l/getStartupInfo',
         getWorkHoursList: 'screen/at/ksm008/l/getWorkHoursList',
         getWorkHoursDetails: 'screen/at/ksm008/l/getWorkTimeDetails',
+        getAlarmCheckConSche: 'screen/at/ksm008/l/getCheckCon'
     };
 
     @bean()
@@ -115,9 +116,27 @@ module nts.uk.at.ksm008.i {
             if (vm.$user.role.isInCharge.attendance) {
                 vm.onCompanySelect();
             } else {
-                vm.onOrganizationSelect();
+                vm.getAlarmCheckCon().then(() => {
+                    vm.onOrganizationSelect();
+                });
             }
         }
+
+        getAlarmCheckCon() {
+            const vm = this;
+            const screenCode = "07";
+
+            vm.$blockui("grayout");
+            return vm.$ajax(API_LSCREEN.getAlarmCheckConSche + "/" + screenCode).done((res: any) => {
+                let explanation = _.join(res.explanationList, "\n");
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(screenCode, res.conditionName, explanation.trim()));
+            }).fail((err: any) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui("clear"));
+        }
+
         /**
          * This function is responsible to open KDL001 modal for K screen
          *
@@ -211,6 +230,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isKScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isKScreenUpdateMode(true);
+                        vm.kScreenCurrentCode("");
                         vm.kScreenCurrentCode(data.workTimeList[0].code);
                     }
                     vm.isKScreenStart = false;
@@ -247,6 +267,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isLScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isLScreenUpdateMode(true);
+                        vm.lScreenCurrentCode("");
                         vm.lScreenCurrentCode(data.workTimeList[0].code);
                     }
                     vm.isLScreenStart = false;
@@ -558,7 +579,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             vm.isLScreenStart = true;
             vm.loadLScreenListData().done(()=>{
-                vm.$errors("clear", ".nts-editor", "button")
+                vm.$errors("clear", ".nts-editor", "button");
                 if (vm.isLScreenUpdateMode()){
                     $('#L3_3').focus();
                 }

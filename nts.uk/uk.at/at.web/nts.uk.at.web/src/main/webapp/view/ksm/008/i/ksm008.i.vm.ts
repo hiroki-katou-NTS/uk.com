@@ -260,6 +260,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isIScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isIScreenUpdateMode(true);
+                        vm.currentCode("");
                         vm.currentCode(data.workTimeList[0].code);
                         $("#I6_3").focus();
                     }
@@ -297,6 +298,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isJScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isJScreenUpdateMode(true);
+                        vm.jScreenCurrentCode("");
                         vm.jScreenCurrentCode(data.workTimeList[0].code);
                         $("J3_3").focus();
                     }
