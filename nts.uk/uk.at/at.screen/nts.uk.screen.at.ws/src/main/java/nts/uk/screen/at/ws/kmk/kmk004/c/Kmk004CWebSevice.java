@@ -12,6 +12,9 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.MonthlyWorkTimeSetWkpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.SaveMonthlyWorkTimeSetWkpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.SaveMonthlyWorkTimeSetWkpCommandHandler;
@@ -46,8 +49,10 @@ public class Kmk004CWebSevice extends WebService{
 	private MonthlyWorkingHoursByWorkplace getWorkTimes;
 	
 	@Inject
-	private SaveMonthlyWorkTimeSetWkpCommandHandler saveMonthlyWorkTimeSetWkpCommandHandler;
+	private SaveMonthlyWorkTimeSetWkpCommandHandler saveWorkTime;
 	
+	@Inject
+	private DeleteMonthlyWorkTimeSetWkpCommandHandler deleteWorkTime;
 	
 	@POST
 	@Path("viewc/wkp/getWorkPlaceId")
@@ -76,14 +81,23 @@ public class Kmk004CWebSevice extends WebService{
 	
 	@POST
 	@Path("viewc/wkp/monthlyWorkTime/add")
-	public void getWorkTimes(WorkTimeInputViewC input) {
+	public void addOrUpdateWorkTimes(WorkTimeInputViewC input) {
 		List<MonthlyWorkTimeSetWkpCommand> result = input.laborTime.stream().map(m -> {
 			return new MonthlyWorkTimeSetWkpCommand(input.workPlaceId, 0, input.year,
 					new MonthlyLaborTimeCommand(m, null, null));
 		}).collect(Collectors.toList());
 
 		SaveMonthlyWorkTimeSetWkpCommand command = new SaveMonthlyWorkTimeSetWkpCommand(result);
-		this.saveMonthlyWorkTimeSetWkpCommandHandler.handle(command);
+		this.saveWorkTime.handle(command);
 	}
 	
+	@POST
+	@Path("viewc/wkp/monthlyWorkTime/delete")
+	public void deleteWorkTimes(InputDeleteWorkTimeViewC input) {
+
+		DeleteMonthlyWorkTimeSetWkpCommand command = new DeleteMonthlyWorkTimeSetWkpCommand(input.workplaceId, 0,
+				new YearMonthPeriodCommand(input.startMonth, input.endMonth));
+		this.deleteWorkTime.handle(command);
+	}
+
 }
