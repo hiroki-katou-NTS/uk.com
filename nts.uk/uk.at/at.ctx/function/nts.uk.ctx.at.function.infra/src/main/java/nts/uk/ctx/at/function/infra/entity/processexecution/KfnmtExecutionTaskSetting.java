@@ -192,7 +192,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Column(name = "END_SCHEDULE_ID")
 	public String endScheduleId;
 	
-	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_REP_MONTH_DATE")
 	public List<KfnmtRepeatMonthDay> repeatMonthDateList;
 	

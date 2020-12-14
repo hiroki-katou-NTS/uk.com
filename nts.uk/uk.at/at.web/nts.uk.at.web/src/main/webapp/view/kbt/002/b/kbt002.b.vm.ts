@@ -533,14 +533,26 @@ module nts.uk.at.view.kbt002.b {
       }
       params[3] = data.oneDayRepClassification === 0 
                   ? ""
-                  : vm.$i18n("KBT002_307", [data.oneDayRepInterval]);
+                  : vm.$i18n("KBT002_307", [vm.getOneDayRepInterval(data.oneDayRepInterval)]);
       params[4] = data.endTimeCls === 0 
                   ? ""
-                  : vm.$i18n("KBT002_309", [`${Math.floor(data.endTime / 60)}:${data.endTime % 60}`]);
+                  : vm.$i18n("KBT002_309", [`${Math.floor(data.endTime / 60)}:${nts.uk.text.padLeft(String(data.endTime % 60), '0', 2)}`]);
       params[5] = data.endDateCls === 0 
                   ? ""
                   : vm.$i18n("KBT002_308", [data.endDate]);
       return vm.$i18n("KBT002_306", params);
+    }
+
+    private getOneDayRepInterval(value: number): string {
+      const vm = this;
+      switch (value) {
+        case 0: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_10");
+        case 1: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_15");
+        case 2: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_20");
+        case 3: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_30");
+        case 4: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_60");
+        default: return "";
+      }
     }
 
     private updateList() {

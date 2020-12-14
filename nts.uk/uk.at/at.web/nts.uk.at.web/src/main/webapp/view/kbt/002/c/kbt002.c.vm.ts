@@ -129,7 +129,7 @@ module nts.uk.at.view.kbt002.c {
       params.startTime = vm.curExecSetting().startTime();
 
       if (vm.selectExec() !== 0) {
-        (params as any).oneDayRepClassification = vm.selectTimeRepeat(); //1日の繰り返し
+        params.oneDayRepCls = vm.selectTimeRepeat(); //1日の繰り返し
         params.oneDayRepInterval = vm.curExecSetting().oneDayRepInterval(); //時刻指定
         params.endTimeCls = vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0; //終了時刻
         params.endDateCls = vm.selectEndDate(); //終了日
@@ -159,6 +159,7 @@ module nts.uk.at.view.kbt002.c {
           params.october = vm.curExecSetting().october();
           params.november = vm.curExecSetting().november();
           params.december = vm.curExecSetting().december();
+          params.repeatMonthDateList = vm.curExecSetting().repeatMonthDateList();
         }
       }
       vm.$ajax(API.saveExecSetting, params)

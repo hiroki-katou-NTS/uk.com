@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
@@ -107,12 +108,9 @@ public class RepeatWeekDaysSelect extends DomainObject {
 		if (values == null) {
 			values = generateValuesMap();
 		}
-		StringBuilder res = new StringBuilder();
+		StringJoiner res = new StringJoiner(", ");
 		for (int i = 0; i < values.size(); i++) {
-			res.append(KANJI_STRING[values.keySet().toArray(new Integer[0])[i] - 1]);
-			if (i != values.size() - 1) {
-				res.append(", ");
-			}
+			res.add(KANJI_STRING[values.keySet().toArray(new Integer[0])[i] - 1]);
 		}
 		return res.toString();
 	}

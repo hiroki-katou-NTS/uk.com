@@ -25,8 +25,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndDateClassification;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;

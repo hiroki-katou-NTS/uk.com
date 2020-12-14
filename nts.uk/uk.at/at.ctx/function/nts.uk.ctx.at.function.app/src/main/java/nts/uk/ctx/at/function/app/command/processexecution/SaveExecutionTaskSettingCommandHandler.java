@@ -280,7 +280,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				}
 				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 						.userData(scheduletimeData).startDate(startDate).endDate(endate)
-						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(0)).build();
+						.startClock(new StartTime(command.getStartTime())).build();
 
 				// loop minute
 //				if (command.getOneDayRepCls() == 1) {
