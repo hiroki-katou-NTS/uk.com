@@ -276,7 +276,7 @@ module nts.uk.ui.at.ksu002.a {
                     background-color: #ddddd2;                    
                 }
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
-                    background-color: #d9d9d9;
+                    background-color: #ddddd2;
                 }
                 .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .join,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .leave {
