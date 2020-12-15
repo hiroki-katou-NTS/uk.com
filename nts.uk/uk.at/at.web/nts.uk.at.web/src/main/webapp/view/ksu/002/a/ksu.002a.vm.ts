@@ -230,17 +230,15 @@ module nts.uk.ui.at.ksu002.a {
 
 											if (specificDay || !!optCompanyEventName || !!optWorkplaceEventName) {
 												const events: string[] = [];
-												events.push('<table><tbody>');
-												if (!!optCompanyEventName) {
-													events.push(`<tr class="cen"><td>${vm.$i18n('KSU001_4014')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(optCompanyEventName)}</td></tr>`);
-												}
+												events.push('<table><colgroup><col width="75"></col><col width="10"></col></colgroup><tbody>');
 
-												if (!!optWorkplaceEventName) {
-													events.push(`<tr class="wen"><td>${vm.$i18n('KSU001_4015')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(optWorkplaceEventName)}</td></tr>`);
-												}
+												events.push(`<tr class="cen"><td>${vm.$i18n('KSU001_4014')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!optCompanyEventName ? _.escape(optCompanyEventName) : vm.$i18n('KSU001_4019')}</td></tr>`);
+
+												events.push(`<tr class="wen"><td>${vm.$i18n('KSU001_4015')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!optWorkplaceEventName ? _.escape(optWorkplaceEventName) : vm.$i18n('KSU001_4019')}</td></tr>`);
+
+												events.push(`<tr class="sdc"><td rowspan="${listSpecDayNameCompany.length || 1}">${vm.$i18n('KSU001_4016')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!listSpecDayNameCompany.length ? _.escape(_.head(listSpecDayNameCompany) || '') : vm.$i18n('KSU001_4019')}</td></tr>`);
 
 												if (!!listSpecDayNameCompany.length) {
-													events.push(`<tr class="sdc"><td rowspan="${listSpecDayNameCompany.length || 1}">${vm.$i18n('KSU001_4016')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(_.head(listSpecDayNameCompany) || '')}</td></tr>`);
 													_.each(listSpecDayNameCompany, (v, i) => {
 														if (!!i) {
 															events.push(`<tr class="sdc"><td></td><td>${_.escape(v)}</td></tr>`)
@@ -248,8 +246,9 @@ module nts.uk.ui.at.ksu002.a {
 													});
 												}
 
+												events.push(`<tr class="swc"><td rowspan="${listSpecDayNameWorkplace.length || 1}">${vm.$i18n('KSU001_4017')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!listSpecDayNameWorkplace.length ? _.escape(_.head(listSpecDayNameWorkplace) || '') : vm.$i18n('KSU001_4019')}</td></tr>`);
+
 												if (!!listSpecDayNameWorkplace.length) {
-													events.push(`<tr class="swc"><td rowspan="${listSpecDayNameWorkplace.length || 1}">${vm.$i18n('KSU001_4017')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(_.head(listSpecDayNameWorkplace) || '')}</td></tr>`);
 													_.each(listSpecDayNameWorkplace, (v, i) => {
 														if (!!i) {
 															events.push(`<tr class="swc"><td></td><td>${_.escape(v)}</td></tr>`)
