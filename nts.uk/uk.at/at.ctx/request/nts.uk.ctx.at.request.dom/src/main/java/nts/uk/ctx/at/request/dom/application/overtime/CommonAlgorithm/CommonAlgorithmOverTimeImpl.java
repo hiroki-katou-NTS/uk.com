@@ -565,26 +565,20 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output = this.getWorkHours(companyId, overTimeContent, applicationDetailSetting.getAtworkTimeBeginDisp(), applicationDetailSetting);
 		
 		// INPUT．「申請内容．SPR連携時刻」を確認する
-		if (!overTimeContent.getSPRTime().isPresent()) {
-			
-			if (!overTimeContent.getSPRTime().get().getStartTimeOp1().isPresent()
-					&& !overTimeContent.getSPRTime().get().getEndTimeOp1().isPresent()) {
-				output = Optional.empty();
-				return output;				
-			} else {
-				if (overTimeContent.getSPRTime().get().getStartTimeOp1().isPresent()) {
-					if (!output.isPresent()) output = Optional.of(new WorkHours());
-					output.get().setStartTimeOp1(overTimeContent.getSPRTime().get().getStartTimeOp1());
-					
-				}
-				if (overTimeContent.getSPRTime().get().getEndTimeOp1().isPresent()) {
-					if (!output.isPresent()) output = Optional.of(new WorkHours());
-					output.get().setEndTimeOp1(overTimeContent.getSPRTime().get().getEndTimeOp1());
-				}
-			}
-				
+		if ( !overTimeContent.getSPRTime().flatMap(x -> x.getStartTimeOp1()).isPresent() 
+				&& !overTimeContent.getSPRTime().flatMap(x -> x.getEndTimeOp1()).isPresent()) {
+			return output;
 		}
+
+			
+				
+		
 		// OUTPUT「勤務時間」を更新して返す
+		if (output.isPresent()) {
+			output = Optional.of(new WorkHours());
+		}
+		output.get().setStartTimeOp1(overTimeContent.getSPRTime().flatMap(x -> x.getStartTimeOp1()));
+		output.get().setEndTimeOp1(overTimeContent.getSPRTime().flatMap(x -> x.getEndTimeOp1()));
 		
 		
 		return output;
