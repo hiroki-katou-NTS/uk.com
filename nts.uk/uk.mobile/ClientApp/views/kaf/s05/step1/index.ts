@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Watch } from '@app/core/component';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
@@ -36,6 +36,17 @@ export class KafS05Step1Component extends Vue {
     public breakTimes: Array<BreakTime> = [];
 
     public displayNumberBreakTime = 3;
+
+    @Watch('workHours1', {deep: true})
+    public changeWorkHours1(data: any) {
+        console.log(data);
+    }
+
+    @Watch('workHours2', {deep: true})
+    public changeWorkHours2(data: any) {
+        console.log(data);
+    }
+
 
     public kafS00P1Params1: any = {
         preAppDisp: false,
@@ -77,6 +88,27 @@ export class KafS05Step1Component extends Vue {
         const self = this;
         
         return self.workInfo.workTime.code;
+    }
+    public setWorkTime(
+        workTimeCD?: string,
+        workTimeName?: string,
+        workTimeHours?: string,
+    ) {
+
+        const self = this;
+        let workType = {} as Work;
+        workType.code = self.workInfo.workType.code;
+        workType.name = self.workInfo.workType.name;
+        let workTime = {} as Work;
+        workTime.code = workTimeCD;
+        workTime.name = workTimeName;
+        let workInfo = {} as WorkInfo;
+        workInfo.workType = workType;
+        workInfo.workTime = workTime;
+        self.workInfo = workInfo;
+        
+        return;
+
     }
 
     public setWorkCode(
@@ -148,32 +180,34 @@ export class KafS05Step1Component extends Vue {
                         if (_.isNil(self.workHours1)) {
                             self.workHours1 = {} as ValueTime;
                         }
-                        this.workHours1.start = workHours.startTimeOp1;
+                        self.workHours1.start = workHours.startTimeOp1;
                     }
 
                     if (!_.isNil(workHours.endTimeOp1)) {
                         if (_.isNil(self.workHours1)) {
                             self.workHours1 = {} as ValueTime;
                         }
-                        this.workHours1.end = workHours.endTimeOp1;
+                        self.workHours1.end = workHours.endTimeOp1;
                     }
 
                     if (!_.isNil(workHours.startTimeOp2)) {
                         if (_.isNil(self.workHours2)) {
                             self.workHours2 = {} as ValueTime;
                         }
-                        this.workHours2.start = workHours.startTimeOp2;
+                        self.workHours2.start = workHours.startTimeOp2;
                     }
 
                     if (!_.isNil(workHours.endTimeOp2)) {
                         if (_.isNil(self.workHours2)) {
                             self.workHours2 = {} as ValueTime;
                         }
-                        this.workHours2.end = workHours.endTimeOp2;
+                        self.workHours2.end = workHours.endTimeOp2;
                     }
                 }
             }
+
         }
+
     }
     public loadData(object?: DisplayInfoOverTime) {
         const self = this;

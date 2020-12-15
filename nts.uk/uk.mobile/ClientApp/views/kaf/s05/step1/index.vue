@@ -24,7 +24,7 @@
       />
     </div>
     <!-- Work type and work time -->
-    <div v-if="true" class="card card-label">
+    <div v-if="$appContext.c3" class="card card-label">
       <!-- A4 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_63" | i18n }}</span>
@@ -33,27 +33,34 @@
       <div class="card-body">
         <!-- A4_1 -->
         <span class="textSize uk-text-dark-gray">{{ "KAFS05_64" | i18n }}</span>
-        <button 
-        v-on:click="$appContext.openKDL002()"
-        type="button" 
-        class="btn btn-selection mt-2 mb-2">
+        <button
+          v-bind:disabled="false"
+          v-on:click="$appContext.openKDL002('worktype')"
+          type="button"
+          class="btn btn-selection mt-2 mb-2"
+        >
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary">{{workInfo.workType.code}}</span>
-          <span>{{workInfo.workType.name}}</span>
+          <span class="badge badge-secondary">{{
+            workInfo.workType.code
+          }}</span>
+          <span>{{ workInfo.workType.name }}</span>
         </button>
 
         <!-- A4_3 -->
         <span class="textSize uk-text-dark-gray">{{ "KAFS05_65" | i18n }}</span>
         <button
           type="button"
+          v-on:click="$appContext.openKDL002('worktime')"
           v-bind:enable="true"
           class="btn btn-selection mt-2 mb-2"
         >
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary">{{workInfo.workTime.code}}</span>
-          <span>{{workInfo.workTime.name}}</span>
+          <span class="badge badge-secondary">{{
+            workInfo.workTime.code
+          }}</span>
+          <span>{{ workInfo.workTime.name }}</span>
           <!-- A4_3_2 -->
-          <span class="d-block mt-1">{{workInfo.workTime.time}}</span>
+          <span class="d-block mt-1">{{ workInfo.workTime.time }}</span>
         </button>
       </div>
     </div>
@@ -66,42 +73,48 @@
       </div>
       <!-- A7_2 -->
       <div v-if="true" class="card-body">
-        <nts-time-range-input v-if="true" v-model="workHours1" />
-        <nts-time-range-input v-else disabled v-model="workHours1" />
+        <nts-time-range-input v-model="workHours1" />
       </div>
     </div>
 
     <div class="card card-label">
       <!-- A7_1 -->
-      <div v-if="true" class="card-header uk-bg-accordion">
+      <div v-if="$appContext.c3_2" class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_67" | i18n }}</span>
         <span class="badge badge-info">任意</span>
       </div>
       <!-- A7_2 -->
-      <div v-if="true" class="card-body">
-        <nts-time-range-input v-if="true" v-model="workHours2" />
-        <nts-time-range-input v-else disabled v-model="workHours2" />
+      <div v-if="$appContext.c3_2" class="card-body">
+        <nts-time-range-input v-model="workHours2" />
       </div>
     </div>
 
     <!-- Break -->
-    <div class="card card-label">
+    <div v-if="$appContext.c3_1" class="card card-label">
       <div class="card-header uk-bg-accordion mt-2 mb-n2">
         <span>{{ "KAFS05_68" | i18n }}</span>
         <span class="badge badge-info">任意</span>
       </div>
 
       <!-- Break Hour -->
-      <div v-for="(item, index) in breakTimes.slice(0, displayNumberBreakTime)" v-bind:key="index" :value="index" >
+      <div
+        v-for="(item, index) in breakTimes.slice(0, displayNumberBreakTime)"
+        v-bind:key="index"
+        :value="index"
+      >
         <div class="card-body">
           <div class="row mt-3">
-            <div class="col-6">{{"KAFS05_69" | i18n}}</div>
+            <div class="col-6">{{ "KAFS05_69" | i18n }}</div>
             <!-- <kafs00subp1 
                   v-bind:params="kafS00P1Params1"
                   /> -->
           </div>
           <div class="card-body">
-            <nts-time-range-input v-bind:disabled="true" class="mb-1" v-model="item.valueHours" />
+            <nts-time-range-input
+              v-bind:disabled="true"
+              class="mb-1"
+              v-model="item.valueHours"
+            />
           </div>
         </div>
       </div>
