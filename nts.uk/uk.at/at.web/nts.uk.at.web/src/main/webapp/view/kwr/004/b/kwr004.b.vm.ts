@@ -459,8 +459,7 @@ module nts.uk.at.view.kwr004.b {
             false, 0, [], dailyAttributes, i < maxDailyRows);
           vm.addRowItem(newItem);
         }
-      }
- 
+      } 
     }
 
     dailyOrMonthlyAttributes(type: number) {
