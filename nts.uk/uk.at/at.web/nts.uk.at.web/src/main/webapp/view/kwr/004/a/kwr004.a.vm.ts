@@ -33,7 +33,7 @@ module nts.uk.at.view.kwr004.a {
     settingId: KnockoutObservable<string> = ko.observable(null);
 
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
-    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(1);
+    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
     settingListItems1: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -453,11 +453,12 @@ module nts.uk.at.view.kwr004.a {
     getWorkScheduleOutputConditions() {
       const vm = this;
       const key = vm.storageKey();
+      
       vm.$window.storage(key).then((data: any) => {
         if (!_.isNil(data)) {
           let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
           let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);
-          vm.rdgSelectedId(data.itemSelection); //項目選択
+          vm.rdgSelectedId(!vm.allowFreeSetting() ? 0 : data.itemSelection); //項目選択
           vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード

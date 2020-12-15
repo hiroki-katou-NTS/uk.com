@@ -59,55 +59,55 @@ module nts.uk.at.view.kwr003.b {
       const vm = this;
 
       //get output info
-      vm.getWorkStatusTableOutput();
+      vm.getWorkStatusTableOutput().done(() => {
 
-      vm.getSettingList(params);
+        vm.getSettingList(params);
 
-      vm.currentCodeList.subscribe((newValue: any) => {
-        nts.uk.ui.errors.clearAll();
-        if (!newValue) return;
-        vm.getSettingListForPrint(newValue);
-        vm.getSettingListItemsDetails();
+        vm.currentCodeList.subscribe((newValue: any) => {
+          nts.uk.ui.errors.clearAll();
+          if (!newValue) return;
+          vm.getSettingListForPrint(newValue);
+          vm.getSettingListItemsDetails();
+        });
+
+        vm.settingRules = ko.observableArray([
+          { code: 1, name: vm.$i18n('KWR003_217') },
+          { code: 2, name: vm.$i18n('KWR003_218') }
+        ]);
+
+        vm.settingListItemsDetails.subscribe((newList) => {
+          if (!newList || newList.length <= 0) {
+            vm.isSelectAll(false);
+            return;
+          }
+          //Check if all the values in the settingListItemsDetails array are true:
+          let isSelectedAll: any = vm.settingListItemsDetails().every(item => item.isChecked() === true);
+          //there is least one item which is not checked
+          if (isSelectedAll === false) isSelectedAll = null;
+          vm.isSelectAll(isSelectedAll);
+        });
+
+        // subscribe isSelectAll
+        vm.isSelectAll.subscribe(newValue => {
+          vm.selectAllChange(newValue);
+        });
+
+        //KDL 047, 048      
+        vm.shareParam.titleLine.displayFlag = vm.isDisplayTitle();
+        vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
+        vm.shareParam.titleLine.layoutName = vm.attendanceName();
+
+        const positionText = vm.position() === 1 ? "上" : "下";
+        vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
+        vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
+        vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
+        vm.shareParam.itemNameLine.name = vm.attendanceItemName();
+        vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
+        vm.shareParam.attribute.selected = vm.comboSelected();
+        vm.shareParam.selectedTime = vm.tableSelected();
+        vm.shareParam.attendanceItems = vm.diligenceProjects();
+        vm.shareParam.diligenceProjectList = vm.diligenceProjects();
       });
-
-      vm.settingRules = ko.observableArray([
-        { code: 1, name: vm.$i18n('KWR003_217') },
-        { code: 2, name: vm.$i18n('KWR003_218') }
-      ]);
-
-      vm.settingListItemsDetails.subscribe((newList) => {
-        if (!newList || newList.length <= 0) {
-          vm.isSelectAll(false);
-          return;
-        }
-        //Check if all the values in the settingListItemsDetails array are true:
-        let isSelectedAll: any = vm.settingListItemsDetails().every(item => item.isChecked() === true);
-        //there is least one item which is not checked
-        if (isSelectedAll === false) isSelectedAll = null;
-        vm.isSelectAll(isSelectedAll);
-      });
-
-      // subscribe isSelectAll
-      vm.isSelectAll.subscribe(newValue => {
-        vm.selectAllChange(newValue);
-      });
-
-      //KDL 047, 048      
-      vm.shareParam.titleLine.displayFlag = vm.isDisplayTitle();
-      vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
-      vm.shareParam.titleLine.layoutName = vm.attendanceName();
-
-      const positionText = vm.position() === 1 ? "上" : "下";
-      vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
-      vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
-      vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
-      vm.shareParam.itemNameLine.name = vm.attendanceItemName();
-      vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
-      vm.shareParam.attribute.selected = vm.comboSelected();
-      vm.shareParam.selectedTime = vm.tableSelected();
-      vm.shareParam.attendanceItems = vm.diligenceProjects();
-      vm.shareParam.diligenceProjectList = vm.diligenceProjects();
-
     }
 
     created(params: any) {
@@ -196,9 +196,7 @@ module nts.uk.at.view.kwr003.b {
       if (nts.uk.ui.errors.hasError()) return;
 
       vm.saveOrUpdateSetting().done(() => {
-        let listItemsDetails: Array<any> = [];
-        listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
-        vm.createListItemAfterSorted(listItemsDetails);
+        vm.getSettingListItemsDetails();
       });
     }
 
@@ -213,14 +211,14 @@ module nts.uk.at.view.kwr003.b {
       vm.attendance(returnAttendance);
     }
 
-    saveOrUpdateSetting(): JQueryPromise<void> {
+    saveOrUpdateSetting(): JQueryPromise<any> {
       const vm = this;
-      let dfd = $.Deferred<void>();
+      let dfd = $.Deferred<any>();
 
       let params: DataOutputDto = new DataOutputDto(),
         outputItemList: Array<OutputItemList> = [];
 
-      _.forEach(vm.settingListItemsDetails(), (item) => {
+      _.forEach(vm.settingListItemsDetails(), (item, index) => {
         if (!_.isEmpty(item.name()) && item.selectedTimeList().length > 0) {
           let outputItem = new OutputItemList();
           outputItem.rank = item.id;
@@ -253,14 +251,15 @@ module nts.uk.at.view.kwr003.b {
 
       vm.$blockui('show');
       vm.$ajax(url, params).done(() => {
-        vm.loadSettingList(reloadParams);
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          if (vm.isNewMode()) vm.loadSettingList(reloadParams);
           vm.settingAttendance();
           vm.isNewMode(false);
           vm.$blockui('hide');
-          dfd.resolve();
+
           $('#KWR003_B43').focus();
         });
+        dfd.resolve();
       }).fail((error) => {
         switch (error.messageId) {
           case 'Msg_1903':
@@ -276,6 +275,7 @@ module nts.uk.at.view.kwr003.b {
             break;
         }
         vm.$blockui('hide');
+        dfd.reject();
       }).always(() => vm.$blockui('hide'));
 
       return dfd.promise();
@@ -519,7 +519,7 @@ module nts.uk.at.view.kwr003.b {
 
             listItemsDetails.push(newItem);
           });
-        
+
           //re-order the list
           listItemsDetails = vm.orderListItemsByField(listItemsDetails);
           vm.createListItemAfterSorted(listItemsDetails);
@@ -593,8 +593,9 @@ module nts.uk.at.view.kwr003.b {
       $('#KWR003_B43').focus();
     }
 
-    getWorkStatusTableOutput() {
+    getWorkStatusTableOutput(): JQueryPromise<any> {
       const vm = this;
+      let dfd = $.Deferred<any>();
 
       vm.$blockui('show');
 
@@ -612,7 +613,10 @@ module nts.uk.at.view.kwr003.b {
           });
         }
         vm.$blockui('hide');
+        dfd.resolve();
       }).always(() => vm.$blockui('hide'));
+
+      return dfd.promise();
     }
 
     getSettingList(params: any) {
@@ -676,7 +680,7 @@ module nts.uk.at.view.kwr003.b {
      */
     openDialogKDL047(row: any) {
       const vm = this;
-   
+
       vm.shareParam.itemNameLine.name = row.name();
       vm.shareParam.itemNameLine.displayFlag = true;
       vm.shareParam.attribute.selected = row.selected; //setting Category
@@ -718,7 +722,7 @@ module nts.uk.at.view.kwr003.b {
           listItem.itemId = parseInt(attendanceItem.attendanceId);
           listItem.name = findAttendanceName.attendanceItemName;
           listItem.operator = '+'; //+
-          vm.settingListItemsDetails()[index].selectedTimeList([listItem]);         
+          vm.settingListItemsDetails()[index].selectedTimeList([listItem]);
           vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
           vm.settingListItemsDetails()[index].selectedTime = attendanceItem.attendanceId;
 
