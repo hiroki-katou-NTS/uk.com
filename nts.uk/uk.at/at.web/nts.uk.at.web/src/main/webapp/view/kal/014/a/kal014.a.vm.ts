@@ -554,28 +554,28 @@ module nts.uk.at.kal014.a {
          * */
         clickDeleteButton() {
             const vm = this;
-            vm.$blockui("grayout");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    vm.$ajax(PATH_API.DELETE,{code: vm.currentCode()});
+                    vm.$blockui("grayout");
+                    vm.$ajax(PATH_API.DELETE,{code: vm.currentCode()}).done(() => {
+                        vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+                            // Find new selected item
+                            let index = _.findIndex(vm.gridItems(), item => item.code == vm.currentCode()),
+                                newCurrentCode: string = null;
+                            if ( vm.gridItems().length < 1){
+                                newCurrentCode = null;
+                            }else if (index == (vm.gridItems().length -1 )){
+                                newCurrentCode = vm.gridItems()[index -1 ].code;
+                            }  else {
+                                newCurrentCode = vm.gridItems()[index + 1].code;
+                            }
+                            vm.getAllSettingData(newCurrentCode);
+                        });
+                    }).fail((res: any) => {
+                        vm.$dialog.error(res);
+                    }).always(() => vm.$blockui("hide"));
                 }
-            }).done(() => {
-                vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-                    // Find new selected item
-                    let index = _.findIndex(vm.gridItems(), item => item.code == vm.currentCode()),
-                        newCurrentCode: string = null;
-                    if ( vm.gridItems().length < 1){
-                        newCurrentCode = null;
-                    }else if (index == (vm.gridItems().length -1 )){
-                        newCurrentCode = vm.gridItems()[index -1 ].code;
-                    }  else {
-                        newCurrentCode = vm.gridItems()[index + 1].code;
-                    }
-                    vm.getAllSettingData(newCurrentCode);
-                });
-            }).fail((res: any) => {
-                vm.$dialog.error(res);
-            }).always(() => vm.$blockui("hide"));
+            })
 
         }
 
