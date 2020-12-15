@@ -283,7 +283,7 @@ public interface ApprovalStatusService {
 	 * @param apprSttExecutionOutputLst
 	 */
 	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
-			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst, ClosureDate closureDate);
 	
 	/**
 	 * C:メール送信_対象再取得_申請
@@ -307,7 +307,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別本人.C:メール送信_対象再取得_月別本人
@@ -351,7 +351,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod);
+	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(Map<String, Pair<String, GeneralDate>> mapDayApproval);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_月別上長の情報を取得.C:メール送信_月別上長の情報を取得
@@ -359,7 +359,8 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(List<ApprSttExecutionOutput> apprSttExecutionOutputLst, DatePeriod paramPeriod);
+	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(Map<String, String> mapMonthApproval, DatePeriod paramPeriod,
+			Integer closureID, YearMonth yearMonth, ClosureDate closureDate);
 	
 	/**
 	 * C:メール送信_本人の情報を取得

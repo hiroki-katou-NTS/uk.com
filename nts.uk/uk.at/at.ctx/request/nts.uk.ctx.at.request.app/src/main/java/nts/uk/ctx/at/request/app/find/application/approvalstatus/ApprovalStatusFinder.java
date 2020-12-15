@@ -700,8 +700,9 @@ public class ApprovalStatusFinder {
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
 		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
 		List<String> employmentCDLst = param.getEmploymentCDLst();
+		ClosureDate closureDate = new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth());
 		return ApprSttSendMailInfoDto.fromDomain(
-				appSttService.getApprSttSendMailInfo(mailType, closureId, processingYm, period, displayWorkplaceLst, employmentCDLst), 
+				appSttService.getApprSttSendMailInfo(mailType, closureId, processingYm, period, displayWorkplaceLst, employmentCDLst, closureDate), 
 				param.getMailType());
 	}
 	

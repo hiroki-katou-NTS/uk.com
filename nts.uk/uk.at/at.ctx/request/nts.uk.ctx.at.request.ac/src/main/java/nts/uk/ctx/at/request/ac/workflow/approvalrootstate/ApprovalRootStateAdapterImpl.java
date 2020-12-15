@@ -16,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -29,7 +30,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApproveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverEmpImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
@@ -44,6 +47,7 @@ import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
 import nts.uk.ctx.sys.env.pub.maildestination.OutGoingMail;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
+import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
@@ -58,6 +62,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 /**
  * 
  * @author Doan Duy Hung
@@ -451,6 +456,33 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
 		ApprovalRootStateExport approvalRootStateExport = intermediateDataPub.getAppRootInstanceMonthByEmpPeriod(employeeID, period);
 		return new ApprovalRootStateImport_New(fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty()), approvalRootStateExport.getApprovalRecordDate()); 
+	}
+
+	@Override
+	public List<ApproverApproveImport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst,
+			Integer rootType) {
+		return intermediateDataPub.getApproverByDateLst(employeeIDLst, dateLst, rootType).stream()
+				.map(x -> new ApproverApproveImport(
+						x.getDate(), 
+						x.getEmployeeID(), 
+						x.getAuthorList().stream().map(y -> new ApproverEmpImport(
+								y.getEmployeeID(), 
+								y.getEmployeeCD(), 
+								y.getEmployeeName())).collect(Collectors.toList())))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth,
+			ClosureDate closureDate, GeneralDate date) {
+		ApproverApproveExport approverApproveExport = intermediateDataPub.getApproverByPeriodMonth(employeeID, closureID, yearMonth, closureDate, date);
+		return new ApproverApproveImport(
+				approverApproveExport.getDate(), 
+				approverApproveExport.getEmployeeID(), 
+				approverApproveExport.getAuthorList().stream().map(y -> new ApproverEmpImport(
+						y.getEmployeeID(), 
+						y.getEmployeeCD(), 
+						y.getEmployeeName())).collect(Collectors.toList()));
 	}
 
 }
