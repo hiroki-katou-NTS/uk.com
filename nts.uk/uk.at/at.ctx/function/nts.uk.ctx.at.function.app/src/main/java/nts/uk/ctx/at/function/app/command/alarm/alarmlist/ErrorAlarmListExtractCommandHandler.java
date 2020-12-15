@@ -146,9 +146,9 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 													c.getAlarmItem(), c.getAlarmValueMessage(), c.getComment(), c.getCheckedValue());
 			}).collect(Collectors.toList());
 			
-			extractResultRepo.insert(Arrays.asList(new AlarmListExtractResult(AppContexts.user().employeeId(), 
+			/*extractResultRepo.insert(Arrays.asList(new AlarmListExtractResult(AppContexts.user().employeeId(), 
 																		comId, ExtractExecuteType.MANUAL, command.getStatusProcessId(),
-																		empData, empEralData)));
+																		empData, empEralData)));*/
 			dataSetter.setData("nullData", false);
 			dataSetter.setData("eralRecord", empEralData.size());
 			/*for (int i = 0; i < empData.size(); i++) {

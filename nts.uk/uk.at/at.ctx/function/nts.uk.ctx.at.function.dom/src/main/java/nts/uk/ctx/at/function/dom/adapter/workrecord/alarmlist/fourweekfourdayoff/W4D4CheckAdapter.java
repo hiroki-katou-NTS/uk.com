@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleImport;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.workschedule.WorkScheduleBasicInforFunctionImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -15,6 +15,6 @@ public interface W4D4CheckAdapter {
 	
 	List<ValueExtractAlarm> checkHolidayWithSchedule(String workplaceID, String employeeID, DatePeriod period,
 			List<WorkType> legalHolidayWorkTypeCodes, List<WorkType> illegalHolidayWorkTypeCodes, 
-			List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID, List<BasicScheduleImport> basicSchedules);
+			List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID, List<WorkScheduleBasicInforFunctionImport> basicSchedules);
 
 }

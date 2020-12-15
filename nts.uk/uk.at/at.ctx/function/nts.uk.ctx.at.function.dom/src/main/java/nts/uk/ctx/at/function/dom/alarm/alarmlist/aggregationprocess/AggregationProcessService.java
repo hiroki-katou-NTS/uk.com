@@ -16,6 +16,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.experimental.var;
 import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -51,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmPatternExtractRe
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.CategoryCondValueDto;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
@@ -233,7 +235,7 @@ public class AggregationProcessService {
 		lstCondCate.stream().forEach(x ->{
 			List<AlarmListCheckInfor> mapCondCdCheckNoType = new ArrayList<>();
 			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory().value, x.getCode().v(), mapCondCdCheckNoType);
-			DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+			DatePeriod datePeriod = null;
 			//期間条件を絞り込む TODO can xem lai voi truong hop 36
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
 					.filter(y -> y.getCategory() == x.getCategory().value)
@@ -249,7 +251,7 @@ public class AggregationProcessService {
 					|| !extractTargetCondition.getLstEmploymentCode().isEmpty()
 					|| !extractTargetCondition.getLstJobTitleId().isEmpty()) {
 				lstSidTmp.clear();
-				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod.start()
+				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod == null ? GeneralDate.today() : datePeriod.start()
 						,lstSid
 						,x.getExtractTargetCondition());
 				
@@ -260,11 +262,14 @@ public class AggregationProcessService {
 			if(!lstSidTmp.isEmpty()) {
 				List<AlarmListCheckInfor> lstCheckType = new ArrayList<>();
 				List<ResultOfEachCondition> lstResultCondition = new ArrayList<>();
+				
 				//[RQ189] 社員ID（List）と指定期間から所属職場履歴を取得
-				List<WorkPlaceHistImport> getWplByListSidAndPeriod = wpAdapter.getWplByListSidAndPeriod(lstSidTmp, datePeriod);
+				List<WorkPlaceHistImport> getWplByListSidAndPeriod = wpAdapter.getWplByListSidAndPeriod(lstSidTmp,
+						datePeriod == null || datePeriod.start() == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today()) : datePeriod);
 				
 				//[RQ588]社員の指定期間中の所属期間を取得する
-				List<StatusOfEmployeeAdapter> lstStatusEmp = syCompAdapter.getAffCompanyHistByEmployee(lstSidTmp, datePeriod);
+				List<StatusOfEmployeeAdapter> lstStatusEmp = syCompAdapter.getAffCompanyHistByEmployee(lstSidTmp, 
+						datePeriod == null || datePeriod.start() == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today()) : datePeriod);
 				
 				//ループ中のカテゴリ別アラームチェック条件．カテゴリをチェック
 				switch (x.getCategory()) {
@@ -280,31 +285,34 @@ public class AggregationProcessService {
 					FourW4DCheckCond w4d4Cond = fourW4DCheckCond.getFourW4DCheckCond();
 					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid, lstSidTmp, datePeriod, w4d4Cond
 							, getWplByListSidAndPeriod, lstStatusEmp);
-					lstResultCondition.add(w4d4CondResult);
+					if(w4d4CondResult != null) {
+						lstResultCondition.add(w4d4CondResult);	
+					}
 					AlarmListCheckInfor w4d4CheckInfor = new AlarmListCheckInfor(String.valueOf(w4d4Cond.value), AlarmListCheckType.FixCheck);
 					valuesDto.getMapCondCdCheckNoType().add(w4d4CheckInfor);
+					break;
 				case SCHEDULE_MONTHLY:
-					
+					break;
 				case SCHEDULE_YEAR:
-					
+					break;
 				case DAILY:
-					
+					break;
 				case WEEKLY:
-					
+					break;
 				case MONTHLY:
-					
+					break;
 				case APPLICATION_APPROVAL:
-					
+					break;
 				case MULTIPLE_MONTH:
-					
+					break;
 				case ANY_PERIOD:
-					
+					break;
 				case ATTENDANCE_RATE_FOR_HOLIDAY:
-					
+					break;
 				case AGREEMENT:
-					
+					break;
 				case MAN_HOUR_CHECK:
-					
+					break;
 				case MASTER_CHECK:
 					MasterCheckAlarmCheckCondition masterCheck = (MasterCheckAlarmCheckCondition) x.getExtractionCondition();
 					extractAlarmService.extractMasterCheckResult(cid, lstSidTmp, 
@@ -314,8 +322,9 @@ public class AggregationProcessService {
 							lstStatusEmp, 
 							lstResultCondition,
 							lstCheckType);
-					default:
-						
+					break;	
+				default:
+					break;
 				
 				}
 				
@@ -336,8 +345,8 @@ public class AggregationProcessService {
 		AlarmPatternExtractResult alarmResult = new AlarmPatternExtractResult(cid, runCode, pattentCd, alarmPattern.getAlarmPatternName().v(), lstExtracResult);
 		result.setExtracting(true);
 		result.setLstAlarmResult(lstExtracResult);
-		//アラーム（トップページ）永続化の処理
-		this.createAlarmToppage(alarmResult, lstSid, lstValueDto, lstCategoryPeriod, alarmPattern.getAlarmPatternName().v());
+		//アラーム（トップページ）永続化の処理 TODO doi ung khi co yeu cau
+		//this.createAlarmToppage(alarmResult, lstSid, lstValueDto, lstCategoryPeriod, alarmPattern.getAlarmPatternName().v());
 		return result;
 			
 		
@@ -373,7 +382,11 @@ public class AggregationProcessService {
 			
 			//②今回のアラーム結果がないがデータベースに存在している場合データベースを削除
 			//③データベースに存在しているアラームが今回のアラーム結果がある場合データがそのまま存在
-			lstCheckType.stream().forEach(x -> {
+			if(lstCheckType.isEmpty()) {
+				return;
+			}
+			for (int i = 0; i < lstCheckType.size(); i++) {
+				CategoryCondValueDto x = lstCheckType.get(i);
 				//TODO can phai debug de xem lai dinh dang ngay thang
 				List<PeriodByAlarmCategory> period = lstCategoryPeriod.stream().filter(p -> p.getCategory() == p.getCategory())
 						.collect(Collectors.toList());
@@ -387,23 +400,30 @@ public class AggregationProcessService {
 				if(lstExtracResultDB.isEmpty()) {
 					lstExResultInsert.addAll(lstExtracResultNew);
 				} else {
-					x.getMapCondCdCheckNoType().stream().forEach(y ->{
+					if(x.getMapCondCdCheckNoType().isEmpty()) {
+						continue;
+					}
+					List<AlarmListCheckInfor> mapCondCdCheckNoType = x.getMapCondCdCheckNoType();
+					for (int j = 0; j < mapCondCdCheckNoType.size(); j++) {
+						AlarmListCheckInfor y = mapCondCdCheckNoType.get(j);
 						List<ResultOfEachCondition> lstCondResultDB = new ArrayList<>();
 						List<ResultOfEachCondition> lstCondResultNew = new ArrayList<>();
 						//チェック種類、アラームリストチェック条件のNo・コードを絞り込む
-						lstExtracResultDB.stream().forEach(ex ->{
+						for (int k = 0; k < lstExtracResultDB.size(); k++) {
+							AlarmExtracResult ex = lstExtracResultDB.get(k);														
 							List<ResultOfEachCondition> lstCondResultDBT = ex.getLstResult().stream()
-									.filter(co -> co.getCheckType() == y.getChekType() && co.getNo().equals(y.getNo()))
+									.filter(co -> co.getCheckType().value == y.getChekType().value && co.getNo().equals(y.getNo()))
 									.collect(Collectors.toList());							
-							lstCondResultDB.addAll(lstCondResultDBT);							
-						});	
-						
-						lstExtracResultNew.stream().forEach(ex -> {
+							lstCondResultDB.addAll(lstCondResultDBT);	
+						}
+						for (int k = 0; k < lstExtracResultNew.size(); k++) {
+							AlarmExtracResult ex = lstExtracResultNew.get(k);
 							List<ResultOfEachCondition> lstCondResultNewT = ex.getLstResult().stream()
-									.filter(co -> co.getCheckType() == y.getChekType() && co.getNo().equals(y.getNo()))
+									.filter(co -> co.getCheckType().equals(y.getChekType()) && co.getNo().equals(y.getNo()))
 									.collect(Collectors.toList());							
 							lstCondResultNew.addAll(lstCondResultNewT);	
-						});
+						}
+						
 						if(lstCondResultNew.isEmpty() && !lstCondResultDB.isEmpty()) {
 							AlarmExtracResult extracResultDelete = new AlarmExtracResult(x.getCondCode(), x.getCategory(), lstCondResultDB);
 							lstExResultDelete.add(extracResultDelete);
@@ -414,38 +434,43 @@ public class AggregationProcessService {
 							List<ExtractionResultDetail> lstResultDetailDB = new ArrayList<>();
 							List<ExtractionResultDetail> lstResultDetailNew = new ArrayList<>();
 							//社員ID、日付から絞り込む
-							lstCondResultDB.stream().forEach(de -> {
+							for (int k = 0; k < lstCondResultDB.size(); k++) {
+								ResultOfEachCondition de = lstCondResultDB.get(k);
 								List<ExtractionResultDetail> lstResultDetailDBT = de.getLstResultDetail().stream()
 										.filter(dt -> lstSid.contains(dt.getSID())
-												&& (!period.isEmpty() 
-														&& dt.getPeriodDate().getStartDate().afterOrEquals(period.get(0).getStartDate())
-														&& dt.getPeriodDate().getStartDate().beforeOrEquals(period.get(0).getEndDate())))
+												&& (!period.isEmpty() && period.get(0).getStartDate() != null && period.get(0).getEndDate() != null
+														&& dt.getPeriodDate().getStartDate().get().afterOrEquals(period.get(0).getStartDate())
+														&& dt.getPeriodDate().getStartDate().get().beforeOrEquals(period.get(0).getEndDate())))
 										.collect(Collectors.toList());
 								lstResultDetailDB.addAll(lstResultDetailDBT);
-							});
-							
-							lstCondResultNew.stream().forEach(de -> {
+							}
+							for (int k = 0; k < lstCondResultNew.size(); k++) {
+								ResultOfEachCondition de = lstCondResultNew.get(k);
 								List<ExtractionResultDetail> lstResultDetailNewT = de.getLstResultDetail().stream()
 										.filter(dt -> lstSid.contains(dt.getSID())
-												&& (!period.isEmpty() 														
-														&& dt.getPeriodDate().getStartDate().afterOrEquals(period.get(0).getStartDate())
-														&& dt.getPeriodDate().getStartDate().beforeOrEquals(period.get(0).getEndDate())))
+												&& (!period.isEmpty() && period.get(0).getStartDate() != null && period.get(0).getEndDate() != null													
+														&& dt.getPeriodDate().getStartDate().get().beforeOrEquals(period.get(0).getStartDate())
+														&& dt.getPeriodDate().getStartDate().get().after(period.get(0).getEndDate())))
 										.collect(Collectors.toList());
 								lstResultDetailNew.addAll(lstResultDetailNewT);
-							});
+							}
 							
+							
+							//追加
 							if(lstResultDetailDB.isEmpty() && !lstResultDetailNew.isEmpty()) {
 								ResultOfEachCondition eachCondNew = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstResultDetailNew);
 								AlarmExtracResult extracResultInsert = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondNew));
 								lstExResultInsert.add(extracResultInsert);								
-							} else if (!lstResultDetailDB.isEmpty() && lstResultDetailNew.isEmpty()){
+							} 
+							//削除　又は　追加
+							else if (!lstResultDetailDB.isEmpty() && lstResultDetailNew.isEmpty()){
 								ResultOfEachCondition eachCondDel = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstResultDetailDB);
 								AlarmExtracResult extracResultDel = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondDel));
 								lstExResultDelete.add(extracResultDel);
-							} else {
+							} else if (!lstResultDetailDB.isEmpty() && !lstResultDetailNew.isEmpty()){
 								List<ExtractionResultDetail> lstDetailIns = new ArrayList<>();
 								List<ExtractionResultDetail> lstDetailDel = new ArrayList<>();
-								
+								//データベースがあるが抽出した結果がない　-> 削除
 								lstResultDetailDB.stream().forEach(db -> {
 									List<ExtractionResultDetail> lstDel = lstResultDetailNew.stream()
 											.filter(news -> db.getSID().equals(news.getSID())
@@ -455,10 +480,13 @@ public class AggregationProcessService {
 										lstDetailDel.add(db);
 									}					
 								});
-								ResultOfEachCondition eachCondDel = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstDetailDel);
-								AlarmExtracResult extracResultDel = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondDel));
-								lstExResultDelete.add(extracResultDel);
+								if(!lstDetailDel.isEmpty()) {
+									ResultOfEachCondition eachCondDel = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstDetailDel);
+									AlarmExtracResult extracResultDel = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondDel));
+									lstExResultDelete.add(extracResultDel);	
+								}
 								
+								//データベースがないが抽出した結果がある ->　追加
 								lstResultDetailNew.stream().forEach(news -> {
 									List<ExtractionResultDetail> lstnew = lstResultDetailDB.stream()
 											.filter(db -> db.getSID().equals(db.getSID())
@@ -468,18 +496,17 @@ public class AggregationProcessService {
 										lstDetailIns.add(news);
 									}					
 								});
-								ResultOfEachCondition eachCondIns = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstDetailIns);
-								AlarmExtracResult extracResultIns = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondIns));
-								lstExResultInsert.add(extracResultIns);
+								if(!lstDetailIns.isEmpty()) {
+									ResultOfEachCondition eachCondIns = new ResultOfEachCondition(y.getChekType(), y.getNo(), lstDetailIns);
+									AlarmExtracResult extracResultIns = new AlarmExtracResult(x.getCondCode(), x.getCategory(), Arrays.asList(eachCondIns));
+									lstExResultInsert.add(extracResultIns);	
+								}								
 							}
 							
 						}
-						
-					});
-					
+					}					
 				}
-				
-			});
+			}
 			if(!lstExResultInsert.isEmpty()) {
 				AlarmPatternExtractResult alarmInsert = new AlarmPatternExtractResult(cid, runCode, pattentCd, patternName, lstExResultInsert);
 				alarmRepos.addAlarmExtractResult(alarmInsert);

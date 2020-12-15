@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.alarmList;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,13 +8,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
-
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
@@ -24,84 +23,104 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetai
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.infra.entity.alarmList.KfndtAlarmExtracResult;
 import nts.uk.ctx.at.shared.infra.entity.alarmList.KfndtAlarmExtracResultPK;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAlarmPatternExtractResultRepository  extends JpaRepository implements AlarmPatternExtractResultRepository{
 
 	@Override
 	@SneakyThrows
 	public Optional<AlarmPatternExtractResult> optAlarmExtractResult(String cid, String runCode, String patternCode) {
-		String sql = "SELECT * FROM KFNDT_ALARM_EXTRAC_RESULT"
-				+ " WHERE CID = @cid"
-				+ " AND AUTORUN_CODE = @runCode"
-				+ " AND PATTERN_CODE = @patternCode";
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KFNDT_ALARM_EXTRAC_RESULT"
+				+ " WHERE CID = ?"
+				+ " AND AUTORUN_CODE = ?"
+				+ " AND PATTERN_CODE = ?");
+		)
+		{
+			sql.setString(1, cid);
+			sql.setString(2, runCode);
+			sql.setString(3, patternCode);			
+			List<KfndtAlarmExtracResult> lstEntity = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toEntity(x));
+			Optional<AlarmPatternExtractResult> result = this.toObject(lstEntity);
+			return result;
+		}
 		
-		List<NtsResultRecord> mapLst = new NtsStatement(sql, this.jdbcProxy())
-				.paramString("cid", cid)
-				.paramString("runCode", runCode)
-				.paramString("patternCode", patternCode)
-				.getList(rec -> rec);
-		Optional<AlarmPatternExtractResult> result = toObject(mapLst);		
+	}
+	private KfndtAlarmExtracResult toEntity(NtsResultRecord rec){
+		KfndtAlarmExtracResultPK pk = new KfndtAlarmExtracResultPK(rec.getString("CID"),
+				rec.getString("AUTORUN_CODE"),
+				rec.getString("PATTERN_CODE"),
+				rec.getInt("CATEGORY"),
+				rec.getString("ALARM_CHECK_CODE"),
+				rec.getInt("CHECK_ATR"),
+				rec.getString("CONDITION_NO"),
+				rec.getString("SID"));
+		KfndtAlarmExtracResult result = new KfndtAlarmExtracResult(pk,
+				rec.getString("CONTRACT_CD"),
+				rec.getGeneralDate("START_DATE"),
+				rec.getGeneralDate("END_DATE"),
+				rec.getString("PATTERN_NAME"),
+				rec.getString("ALARM_ITEM_NAME"),
+				rec.getString("ALARM_CONTENT"),
+				rec.getGeneralDateTime("RUN_TIME"),
+				rec.getString("WORKPLACE_ID"),
+				rec.getString("COMMENT"), 
+				rec.getString("CHECK_VALUE"));
 		return result;
 	}
-
-	private Optional<AlarmPatternExtractResult> toObject(List<NtsResultRecord> lstRec) {
-		ResultOfEachCondition eachCond = new ResultOfEachCondition(AlarmListCheckType.Excess,"",new ArrayList<>());
-		AlarmExtracResult extracResult = new AlarmExtracResult("", 0, new ArrayList<>());
-		AlarmPatternExtractResult result = new AlarmPatternExtractResult("","","","",new ArrayList<>());
-		if(lstRec.isEmpty()) {
-			return Optional.empty();
+	private Optional<AlarmPatternExtractResult> toObject(List<KfndtAlarmExtracResult> lstEntity) {
+		if(lstEntity.isEmpty()) {
+			Optional.empty();
 		}
-		lstRec.stream().forEach(rec ->{
-			String cid = rec.getString("CID");
-			String runCode = rec.getString("AUTORUN_CODE");
-			String patternCode = rec.getString("PATTERN_CODE");
-			int category = rec.getInt("CATEGORY");
-			String condCode = rec.getString("ALARM_CHECK_CODE");
-			String condNo = rec.getString("CONDITION_NO");
-			AlarmListCheckType chekType = EnumAdaptor.valueOf(rec.getInt("CHECK_ATR"), AlarmListCheckType.class);
-			ExtractionAlarmPeriodDate periodDate = new ExtractionAlarmPeriodDate(rec.getGeneralDate("START_DATE"), 
-					Optional.ofNullable(rec.getGeneralDate("END_DATE")));
-			ExtractionResultDetail detail = new ExtractionResultDetail(rec.getString("SID")
+		
+		List<AlarmExtracResult> lstExtracResult = new ArrayList<>();
+		AlarmPatternExtractResult result = new AlarmPatternExtractResult("","","","", new ArrayList<>());
+		
+		lstEntity.stream().forEach(x -> {
+			ResultOfEachCondition eachCond = new ResultOfEachCondition(AlarmListCheckType.Excess,"",new ArrayList<>());
+			AlarmExtracResult extracResult = new AlarmExtracResult("", 0, new ArrayList<>());
+			ExtractionAlarmPeriodDate periodDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(x.getStartDate()), 
+					Optional.ofNullable(x.getEndDate()));
+			ExtractionResultDetail detail = new ExtractionResultDetail(x.getPk().getSid()
 					,periodDate
-					,rec.getString("ALARM_ITEM_NAME")
-					,rec.getString("ALARM_CONTENT")
-					,rec.getGeneralDateTime("RUN_TIME")
-					,Optional.ofNullable(rec.getString("WORKPLACE_ID"))
-					,Optional.ofNullable(rec.getString("COMMENT"))
-					,Optional.ofNullable(rec.getString("CHECK_VALUE")));
-			eachCond.setCheckType(chekType);
-			eachCond.setNo(condNo);
-			eachCond.getLstResultDetail().add(detail);
-			
-			extracResult.setCategory(category);
-			extracResult.setCoditionCode(condCode);
+					,x.getAlarmItemName()
+					,x.getAlarmContent()
+					,x.getRunTime()
+					,Optional.ofNullable(x.getWpId())
+					,Optional.ofNullable(x.getComment())
+					,Optional.ofNullable(x.getCheckValue()));
+			eachCond.setCheckType(EnumAdaptor.valueOf(x.getPk().getCheckAtr(), AlarmListCheckType.class));
+			eachCond.setNo(x.getPk().getConditionNo().replace(" ", ""));
+			eachCond.getLstResultDetail().add(detail);	
+			extracResult.setCategory(x.getPk().getCategory());
+			extracResult.setCoditionCode(x.getPk().getAlarmCheckCode());
 			extracResult.getLstResult().add(eachCond);
-			
-			if(result.getCID().isEmpty()) {				
-				result.setCID(cid);
-				result.setPatternCode(patternCode);
-				result.setPatternName("");
-				result.setRunCode(runCode);
-				result.setLstExtracResult(Arrays.asList(extracResult));
+			if(result.getLstExtracResult().isEmpty()) {
+				result.setCID(x.getPk().getCid());
+				result.setPatternCode(x.getPk().getPatternCode());
+				result.setPatternName(x.getPatternName());
+				result.setRunCode(x.getPk().getAutoRunCode());
+				result.getLstExtracResult().add(extracResult);
 			} else {
-				List<AlarmExtracResult> lstExtracResult = new ArrayList<>(result.getLstExtracResult());
-				lstExtracResult.stream().forEach(ex -> {
-					if(ex.getCategory() == category && ex.getCoditionCode().equals(condCode)) {
-						List<ResultOfEachCondition> lstResult = new ArrayList<>(ex.getLstResult());
-						lstResult.stream().forEach(re -> {
-							if(re.getNo().equals(condNo) && re.getCheckType() == chekType) {
+				
+				result.getLstExtracResult().stream().forEach(ex -> {
+					if(ex.getCategory() == x.getPk().getCategory() && ex.getCoditionCode().equals(x.getPk().getAlarmCheckCode())) {
+						List<ResultOfEachCondition> lstResult = new ArrayList<>();
+						ex.getLstResult().stream().forEach(re -> {
+							if(re.getNo().equals(x.getPk().getConditionNo()) && re.getCheckType().value == x.getPk().getCheckAtr()) {
 								re.getLstResultDetail().add(detail);
 							} else {
-								ex.getLstResult().add(eachCond);
+								lstResult.add(eachCond);
 							}
 						});
+						ex.getLstResult().addAll(lstResult);
 					} else {
-						result.getLstExtracResult().add(extracResult);
+						lstExtracResult.add(extracResult);
 					}
 				});
 			}
 		});
-		
+		result.getLstExtracResult().addAll(lstExtracResult);
 		return Optional.ofNullable(result);
 	}
 
@@ -111,7 +130,9 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 			return;
 		}
 		List<KfndtAlarmExtracResult> lstAlarm = this.toEntity(alarmPattern);
-		this.commandProxy().insert(lstAlarm);		
+		lstAlarm.stream().forEach(x -> {
+			this.commandProxy().insert(x);	
+		});
 	}
 	
 	private List<KfndtAlarmExtracResult> toEntity(AlarmPatternExtractResult alarmPattern) {
@@ -130,10 +151,11 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 							x.getCoditionCode(), 
 							y.getCheckType().value,
 							y.getNo(), 
-							z.getSID(),
-							z.getPeriodDate().getStartDate());
+							z.getSID());
 					
 					lstResult.add(new KfndtAlarmExtracResult(pk, 
+							AppContexts.user().contractCode(),
+							z.getPeriodDate().getStartDate().isPresent() ? z.getPeriodDate().getStartDate().get() : null,
 							z.getPeriodDate().getEndDate().isPresent() ? z.getPeriodDate().getEndDate().get() : null, 
 							patternName,
 							z.getAlarmName(),
@@ -168,8 +190,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 							x.getCoditionCode(), 
 							y.getCheckType().value,
 							y.getNo(),
-							z.getSID(),
-							z.getPeriodDate().getStartDate());
+							z.getSID());
 					lstpk.add(pk);
 				});
 			});

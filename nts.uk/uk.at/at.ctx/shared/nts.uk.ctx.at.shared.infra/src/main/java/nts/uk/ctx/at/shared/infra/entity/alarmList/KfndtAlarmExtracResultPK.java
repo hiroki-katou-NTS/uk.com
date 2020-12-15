@@ -45,8 +45,6 @@ public class KfndtAlarmExtracResultPK implements Serializable {
 	/**	社員ID */
 	@Column(name = "SID")
 	public String sid;
-	/**	アラーム値日付：開始日 */
-	@Column(name = "START_DATE")
-	public GeneralDate startDate;
+
 
 }

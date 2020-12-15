@@ -411,14 +411,18 @@ public class ExtractAlarmForEmployeeService {
 	
 	public ResultOfEachCondition lstRunW4d4CheckErAl(String cid, List<String> lstSid, DatePeriod dPeriod,
 			FourW4DCheckCond w4dCheckCond,List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp){
-		ResultOfEachCondition result = new ResultOfEachCondition();
+		
 		List<ExtractionResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid, lstSid, dPeriod, w4dCheckCond, getWplByListSidAndPeriod, lstStatusEmp);
-		if(!lstDetail.isEmpty()) {
-			result.setCheckType(AlarmListCheckType.FixCheck);
-			result.setNo(String.valueOf(w4dCheckCond.value));
-			result.setLstResultDetail(lstDetail);
+		if(lstDetail.isEmpty()) {
+			return null;
 		}
+		
+		ResultOfEachCondition result = new ResultOfEachCondition();
+		result.setCheckType(AlarmListCheckType.FixCheck);
+		result.setNo(String.valueOf(w4dCheckCond.value));
+		result.setLstResultDetail(lstDetail);
 		return result;
+		
 	}
 	
 	

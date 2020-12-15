@@ -36,7 +36,7 @@ public class AlarmExtraValueWkReDto {
 	private String alarmValueDate;
 
 	/**カテゴリ*/
-	private int category;
+	private Integer category;
 	
 	private String categoryName;
 	

@@ -172,7 +172,7 @@ public class ExtractAlarmListService {
 		if(!alarmResult.getLstAlarmResult().isEmpty()) {
 			for (int a = 0; a < alarmResult.getLstAlarmResult().size(); a++) {
 				AlarmExtracResult x = alarmResult.getLstAlarmResult().get(a);
-				if(!x.getLstResult().isEmpty()) {
+				if(x.getLstResult().isEmpty()) {
 					continue;
 				} 
 				for (int i = 0; i < x.getLstResult().size(); i++) {
@@ -195,7 +195,7 @@ public class ExtractAlarmListService {
 							}
 						}
 						alarmValue.setAlarmItem(z.getAlarmName());
-						alarmValue.setAlarmValueDate(z.getPeriodDate().getStartDate().toString());
+						alarmValue.setAlarmValueDate(z.getPeriodDate().getStartDate().isPresent() ? z.getPeriodDate().getStartDate().get().toString() : GeneralDate.today().toString());
 						alarmValue.setComment(z.getComment().isPresent() ? z.getComment().get() : "");
 						alarmValue.setAlarmValueMessage(z.getAlarmContent());
 						alarmValue.setCategory(x.getCategory());
@@ -209,10 +209,38 @@ public class ExtractAlarmListService {
 			}			
 		}
 		
-		lstExtractedAlarmData = lstExtractedAlarmData.stream().sorted((a,b) -> Integer.compare(a.getCategory(), b.getCategory()))
-				.collect(Collectors.toList());
+		lstExtractedAlarmData = this.sortExtractedResult(lstExtractedAlarmData);
+		result.setExtractedAlarmData(lstExtractedAlarmData);
 		return result;
 		
+	}
+	
+	private List<AlarmExtraValueWkReDto> sortExtractedResult(List<AlarmExtraValueWkReDto> lstAlarmResult){
+		return lstAlarmResult.stream().sorted((a, b) -> {			
+			Integer rs = a.getCategory().compareTo(b.getCategory());
+			if (rs == 0) {
+				Integer rs2 = a.getEmployeeCode().compareTo(b.getEmployeeCode());
+				if (rs2 == 0) {
+					if(a.getAlarmValueDate() != null) {
+						GeneralDate dateA = GeneralDate.fromString(a.getAlarmValueDate(), "yyyy/mm/dd");
+						GeneralDate dateB = GeneralDate.fromString(b.getAlarmValueDate(), "yyyy/mm/dd");
+						Integer rs3 = dateA.compareTo(dateB);
+	                    if(rs3 == 0){
+	                        return dateA.compareTo(dateB);
+	                    }else{
+	                        return rs3;
+	                    }
+					} else {
+						return 0;
+					}
+                    
+				} else {
+					return rs2;
+				}
+			} else {
+				return rs;
+			}
+		}).collect(Collectors.toList());
 	}
 
 }

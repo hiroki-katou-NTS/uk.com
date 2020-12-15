@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -22,11 +23,17 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
 @Table(name = "KFNDT_ALARM_EXTRAC_RESULT")
 public class KfndtAlarmExtracResult extends UkJpaEntity implements Serializable {
 	/**主キー	 */
 	@EmbeddedId
 	public KfndtAlarmExtracResultPK pk;
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
+	/**	アラーム値日付：開始日 */
+	@Column(name = "START_DATE")
+	public GeneralDate startDate;
 	/**アラーム値日付：終了日	 */
 	@Column (name = "END_DATE")
 	public GeneralDate endDate;

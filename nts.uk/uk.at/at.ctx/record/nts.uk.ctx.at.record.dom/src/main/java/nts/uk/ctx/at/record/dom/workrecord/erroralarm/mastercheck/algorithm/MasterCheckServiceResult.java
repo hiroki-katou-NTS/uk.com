@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
@@ -111,7 +112,7 @@ public class MasterCheckServiceResult {
 					this.lstWorkTime = workTimeRepos.findActiveItems(cid);
 				}
 				if(x == MasterCheckFixedCheckItem.WORKPLACE_CONFIRM) {
-					this.lstEmpAndWorkplace = affWorkPlaceAdapter.findBySIdAndBaseDate(lstSid, dPeriod.start());
+					this.lstEmpAndWorkplace = affWorkPlaceAdapter.findBySIdAndBaseDate(lstSid, dPeriod == null || dPeriod.start() == null ? GeneralDate.today() : dPeriod.start());
 					this.lstWorklocation = wLocationRepos.findAll(cid);
 				}
 				
@@ -119,8 +120,9 @@ public class MasterCheckServiceResult {
 						|| x == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM
 						|| x == MasterCheckFixedCheckItem.HOLIDAY_WORKTYPE_CONFIRM
 						|| x == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM
-						|| x == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM) && this.lstWorkingItem == null) {
-					this.lstWorkingItem = wConditionItemRepos.getBySidsAndDatePeriodNew(lstSid, dPeriod);
+						|| x == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM) && this.lstWorkingItem == null) {				
+					this.lstWorkingItem = wConditionItemRepos.getBySidsAndDatePeriodNew(lstSid, 
+							dPeriod == null || dPeriod.start() == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today()) : dPeriod);
 				}
 				
 			});		
@@ -152,7 +154,6 @@ public class MasterCheckServiceResult {
 						.collect(Collectors.toList());
 				List<MasterCheckFixedExtractItem> lstMasterCheckItem = masterCheckItemRepos.getFixedMasterCheckByNo(lstNo);
 		DataCheck dataCheck = new DataCheck(cid, lstSid, lstItemNo, dPeriod);
-		List<ResultOfEachCondition> lstResult = new ArrayList<>();
 		lstMasterCheck.stream().forEach(exCond -> {
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(exCond.getNo().value), AlarmListCheckType.FixCheck));
 			MasterCheckFixedExtractItem extractItem = lstMasterCheckItem.stream().filter(x -> x.getNo() == exCond.getNo())
@@ -267,12 +268,13 @@ public class MasterCheckServiceResult {
 					
 				}
 				if(!alarmValue.isEmpty()) {
-					ExtractionAlarmPeriodDate dPeriodR = new ExtractionAlarmPeriodDate(dPeriod.start(), Optional.ofNullable(dPeriod.end()));
+					ExtractionAlarmPeriodDate dPeriodR = new ExtractionAlarmPeriodDate(dPeriod == null ? Optional.empty() : Optional.ofNullable(dPeriod.start()),
+							dPeriod == null ? Optional.empty() : Optional.ofNullable(dPeriod.end()));
 					String condName = extractItem.getName().v();
 					List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList())
 							.get(0).getLstWkpIdAndPeriod().stream()
-								.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod.end()) 
-										&& x.getDatePeriod().end().afterOrEquals(dPeriod.start())).collect(Collectors.toList());
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod == null || dPeriod.end() == null ? GeneralDate.today() : dPeriod.end()) 
+										&& x.getDatePeriod().end().afterOrEquals(dPeriod == null || dPeriod.start() == null ? GeneralDate.today() : dPeriod.start())).collect(Collectors.toList());
 					String wpl = "";
 					if(!lstWpl.isEmpty()) {
 						wpl = lstWpl.get(0).getWorkplaceId();
@@ -286,22 +288,23 @@ public class MasterCheckServiceResult {
 							Optional.ofNullable(wpl),
 							exCond.getMessage().isPresent() ? Optional.ofNullable(exCond.getMessage().get().v()) : Optional.empty(),
 							Optional.ofNullable(targetValues));
-					List<ResultOfEachCondition> lstResultTmp = lstResult.stream()
+					List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
 							.filter(r -> r.getNo().equals(String.valueOf(exCond.getNo().value)) && r.getCheckType() == AlarmListCheckType.FixCheck).collect(Collectors.toList());
 					if(!lstResultTmp.isEmpty()) {
-						lstResult.get(0).getLstResultDetail().add(resultDetail);
+						ResultOfEachCondition resultTemp = lstResultTmp.get(0);
+						lstResultCondition.remove(resultTemp);
+						resultTemp.getLstResultDetail().add(resultDetail);
+						lstResultCondition.add(resultTemp);
 					} else {
 						ResultOfEachCondition cond = new ResultOfEachCondition(AlarmListCheckType.FixCheck, 
 								String.valueOf(exCond.getNo().value), 
-								Arrays.asList(resultDetail));
-						lstResult.add(cond);
+								new ArrayList<>());
+						cond.getLstResultDetail().add(resultDetail);
+						lstResultCondition.add(cond);
 					}
 					
 				}
 			});
 		});
-		if(!lstResult.isEmpty()) {
-			lstResultCondition.addAll(lstResult);
-		}
 	}
 }

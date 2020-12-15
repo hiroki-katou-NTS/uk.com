@@ -10,9 +10,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleImport;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workschedule.WorkScheduleBasicInforFunctionImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
@@ -54,16 +54,16 @@ public class W4D4CheckAcAdapter implements W4D4CheckAdapter {
 	public List<ValueExtractAlarm> checkHolidayWithSchedule(String workplaceID, String employeeID, DatePeriod period,
 			List<WorkType> legalHolidayWorkTypeCodes, List<WorkType> illegalHolidayWorkTypeCodes,
 			List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID,
-			List<BasicScheduleImport> basicSchedules) {
+			List<WorkScheduleBasicInforFunctionImport> basicSchedules) {
 
-		List<AlarmExtractionValue4W4DExport> alarmExports = w4D4CheckPub.checkHolidayWithSchedule(workplaceID, employeeID,
+		/*List<AlarmExtractionValue4W4DExport> alarmExports = w4D4CheckPub.checkHolidayWithSchedule(workplaceID, employeeID,
 				period, legalHolidayWorkTypeCodes, illegalHolidayWorkTypeCodes, 
 				listWorkInfoOfDailyPerByID.stream().map(c->convertToExport(c)).collect(Collectors.toList()),
-				basicSchedules.stream().map(c -> new InfoCheckNotRegisterPubExport(c.getEmployeeId(), 
-						c.getWorkTimeCode(), c.getWorkTypeCode(), c.getDate()))
-					.collect(Collectors.toList()));
+				basicSchedules.stream().map(c -> new InfoCheckNotRegisterPubExport(c.getEmployeeID(), 
+						c.getWorkTimeCd(), c.getWorkTypeCd(), c.getYmd()))
+					.collect(Collectors.toList()));*/
 		List<ValueExtractAlarm> alarms = new ArrayList<>();
-		if (!alarmExports.isEmpty()) {			
+		/*if (!alarmExports.isEmpty()) {			
 			alarmExports.stream().forEach(a -> {
 				ValueExtractAlarm alarmImport = new ValueExtractAlarm(workplaceID, employeeID, 
 						TextResource.localize("KAL010_908",period.start().toString(ErAlConstant.DATE_FORMAT),period.end().toString(ErAlConstant.DATE_FORMAT)),
@@ -71,7 +71,7 @@ public class W4D4CheckAcAdapter implements W4D4CheckAdapter {
 						a.getComment(), a.getCheckedValue());
 				alarms.add(alarmImport);
 			});
-		}
+		}*/
 		
 		return alarms;
 

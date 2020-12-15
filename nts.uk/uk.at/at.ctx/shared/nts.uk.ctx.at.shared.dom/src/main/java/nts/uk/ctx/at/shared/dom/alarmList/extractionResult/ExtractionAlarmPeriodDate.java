@@ -21,7 +21,7 @@ public class ExtractionAlarmPeriodDate {
 	/**
 	 * 開始日
 	 */
-	private GeneralDate startDate;
+	private Optional<GeneralDate> startDate;
 	/**
 	 * 終了日
 	 */
