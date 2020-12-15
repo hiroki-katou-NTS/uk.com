@@ -23,7 +23,7 @@ export const valueType = function (value: string | number | Date, type: 'Decimal
                 break;
             case 'HalfInt':
             case 'Integer':
-                if (!/^[-+]?[1-9]\d*$/.test($value)) {
+                if (!/^[-+]?[0-9]\d*$/.test($value)) {
                     if (rule.min >= 0) {
                         return ['MsgB_39', `${rule.max}`];
                     } else {

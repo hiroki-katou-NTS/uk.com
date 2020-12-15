@@ -701,7 +701,7 @@ module nts.uk.com.view.cmm024.a {
 			if (vm.isReloadScreen()) {
 				vm.$ajax('at', common.CMM024_API.getAgreementUnitSetting)
 					.done((data) => {
-						if (data && data.workPlaceUseAtr !== 1) {
+						if (data && data.useWorkplace !== 1) { //workPlaceUseAtr
 							$("#sidebar").ntsSideBar("hide", 1);
 							$('.sidebar-content .disappear').html('');
 							vm.isShowPanelB(false);

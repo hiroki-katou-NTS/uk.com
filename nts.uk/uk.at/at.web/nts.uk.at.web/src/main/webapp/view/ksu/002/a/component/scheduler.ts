@@ -82,7 +82,6 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     const COMPONENT_NAME = 'scheduler';
-    const CL_VALUE = Number(!!b.version.match(/IE/));
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -273,8 +272,9 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
                     background-color: #eccefb;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.diff-month .data-info,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info {
+                    background-color: #ddddd2;                    
+                }
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
                     background-color: #d9d9d9;
                 }
@@ -613,7 +613,7 @@ module nts.uk.ui.at.ksu002.a {
                         attr: {
                             tabindex: $tabindex
                         },
-                        ntsTimeEditor: {
+                        ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_28'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
@@ -621,7 +621,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.begin,
                             readonly: false,
                             enable: $component.enable,
-                            required: $component.model.required
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
@@ -638,7 +641,7 @@ module nts.uk.ui.at.ksu002.a {
                         attr: {
                             tabindex: $tabindex
                         },
-                        ntsTimeEditor: {
+                        ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_29'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
@@ -646,7 +649,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.finish,
                             readonly: false,
                             enable: $component.enable,
-                            required: $component.model.required
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
@@ -666,8 +672,8 @@ module nts.uk.ui.at.ksu002.a {
                 };
 
             click: WorkTimeRange<number> = {
-                begin: ko.observable(CL_VALUE),
-                finish: ko.observable(CL_VALUE)
+                begin: ko.observable(0),
+                finish: ko.observable(0)
             };
 
             text: {
@@ -794,7 +800,7 @@ module nts.uk.ui.at.ksu002.a {
                     const f = ko.unwrap(model.finish);
 
                     if (ko.unwrap(enable)) {
-                        if (_.isNumber(b) && _.isNumber(f) && b > f) {
+                        if (_.isNumber(b) && _.isNumber(f) && b >= f) {
                             if (!$begin.ntsError('hasError')) {
                                 $begin.ntsError('set', { messageId: MSG_1811 });
                             }
@@ -824,7 +830,7 @@ module nts.uk.ui.at.ksu002.a {
                             if (readonly) {
                                 $begin.attr(RO, RO);
                             } else {
-                                $begin.removeAttr(RO);
+                                $begin.removeAttr(RO).select();
                             }
                         }
                     },
@@ -840,7 +846,7 @@ module nts.uk.ui.at.ksu002.a {
                             if (readonly) {
                                 $finish.attr(RO, RO);
                             } else {
-                                $finish.removeAttr(RO);
+                                $finish.removeAttr(RO).select();
                             }
                         }
                     },
@@ -873,9 +879,9 @@ module nts.uk.ui.at.ksu002.a {
                 const vm = this;
 
                 if (input === 'begin') {
-                    vm.click.begin(CL_VALUE);
+                    vm.click.begin(0);
                 } else if (input === 'finish') {
-                    vm.click.finish(CL_VALUE);
+                    vm.click.finish(0);
                 }
             }
 

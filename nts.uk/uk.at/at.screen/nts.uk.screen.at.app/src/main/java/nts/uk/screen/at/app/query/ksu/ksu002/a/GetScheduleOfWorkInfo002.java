@@ -228,14 +228,15 @@ public class GetScheduleOfWorkInfo002 {
 					}
 				}
 
+				
 				Optional<EditStateOfDailyAttd> workTypeEditStatus = workSchedule.getLstEditState().stream()
-						.filter(i -> i.getAttendanceItemId() == 1).findFirst();
+						.filter(i -> i.getAttendanceItemId() == 28).findFirst();
 				Optional<EditStateOfDailyAttd> workTimeEditStatus = workSchedule.getLstEditState().stream()
-						.filter(i -> i.getAttendanceItemId() == 2).findFirst();
+						.filter(i -> i.getAttendanceItemId() == 29).findFirst();
 				Optional<EditStateOfDailyAttd> startTimeEditStatus = workSchedule.getLstEditState().stream()
-						.filter(i -> i.getAttendanceItemId() == 3).findFirst();
+						.filter(i -> i.getAttendanceItemId() == 31).findFirst();
 				Optional<EditStateOfDailyAttd> endTimeEditStatus = workSchedule.getLstEditState().stream()
-						.filter(i -> i.getAttendanceItemId() == 4).findFirst();
+						.filter(i -> i.getAttendanceItemId() == 32).findFirst();
 
 				// KSU002
 				List<String> sids = new ArrayList<>();
