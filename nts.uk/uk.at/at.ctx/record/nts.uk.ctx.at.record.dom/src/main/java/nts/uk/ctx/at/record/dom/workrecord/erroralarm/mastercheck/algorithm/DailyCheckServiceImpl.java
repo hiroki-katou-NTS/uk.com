@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private ErrorAlarmWorkRecordRepository errorAlarmRep;
 	
 	@Override
-	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, List<String> errorDailyCheckId, 
+	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorDailyCheckId, 
 			List<String> errorDailyCheckCd, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType) {
@@ -51,7 +52,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	}
 
 	private void prepareDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
-			List<String> errorDailyCheckId, List<String> errorDailyCheckCd) {
+			String errorDailyCheckId, List<String> errorDailyCheckCd) {
 		
 		//日次の勤怠項目を取得する
 		//画面で利用できる勤怠項目一覧を取得する
@@ -68,7 +69,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<IntegrationOfDaily> listIntegrationDai = dailyRecordShareFinder.findByListEmployeeId(lstSid, dPeriod);
 		
 		//ドメインモデル「勤務実績の抽出条件」を取得する
-		List<WorkRecordExtractingCondition> listWorkRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(errorDailyCheckId, true);
+		Optional<WorkRecordExtractingCondition> workRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(errorDailyCheckId, true);
 		
 		//ドメインモデル「日別実績のエラーアラーム」を取得する
 		List<ErrorAlarmWorkRecord> listError = errorAlarmRep.findByListErrorAlamByIdUse(errorDailyCheckCd, true);
