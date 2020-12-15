@@ -40,6 +40,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		restTimeTableVisible: KnockoutObservable<boolean> = ko.observable(false);
 		overTimeTableVisible: KnockoutObservable<boolean> = ko.observable(false);
 		restTimeTableVisible2: KnockoutObservable<boolean> = ko.observable(false);
+		overTimeWorkVisible: KnockoutObservable<boolean> = ko.observable(false);
 		isGoWorkAtr: KnockoutObservable<boolean> = ko.observable(false);
 		isBackHomeAtr: KnockoutObservable<boolean> = ko.observable(false);
 		selectedDivergenceReasonCode: KnockoutObservable<string> = ko.observable();
@@ -126,12 +127,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					if (successData) {
 						console.log(successData, 'res');
 						vm.dataSource = successData;
+						vm.itemControlHandler();
 						vm.bindOverTimeWorks(vm.dataSource);
 						vm.bindWorkInfo(vm.dataSource, true);
 						vm.bindRestTime(vm.dataSource);
 						vm.bindHolidayTime(vm.dataSource, 1);
 						vm.bindOverTime(vm.dataSource, 1);
-						vm.itemControlHandler();
 						vm.setComboDivergenceReason(vm.dataSource);
 
 						vm.workInfo().workHours1.start.subscribe((value) => {
@@ -265,6 +266,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				self.restTimeTableVisible2(true);
 			} else {
 				self.restTimeTableVisible2(false);
+			}
+			// ※6
+			if(self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr == 1){
+				self.overTimeWorkVisible(true);
+			} else {
+				self.overTimeWorkVisible(false);
 			}
 		}
 
@@ -430,6 +437,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		bindOverTimeWorks(res: AppHdWorkDispInfo) { // dummy data
 			const self = this;
+			if(!self.overTimeWorkVisible()){
+				return;
+			}
 			const { otWorkHoursForApplication } = res;
 			let overTimeWorks = [];
 			{

@@ -68,11 +68,6 @@ public class AppHdWorkDispInfoOutput {
 	private List<OvertimeWorkFrame> overtimeFrameList;
 	
 	/**
-	 * 申請用時間外労働時間
-	 */
-	private OverTimeWorkHoursOutput otWorkHoursForApplication;
-	
-	/**
 	 * 申請表示情報
 	 */
 	private AppDispInfoStartupOutput appDispInfoStartupOutput;
@@ -81,6 +76,11 @@ public class AppHdWorkDispInfoOutput {
 	 * 乖離理由の選択肢
 	 */
 	private Optional<DivergenceReasonSelect> comboDivergenceReason = Optional.empty();
+	
+	/**
+	 * 申請用時間外労働時間
+	 */
+	private Optional<OverTimeWorkHoursOutput> otWorkHoursForApplication;
 	
 	/**
 	 * 計算結果

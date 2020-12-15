@@ -41,7 +41,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 											params: {
 												overTimeWork: overTimeWork
 											}
-											}"></div>												
+											}, visible: overTimeWorkVisible"></div>												
 	<div data-bind="component: { name: 'kaf000-b-component2', 
 													params: {
 														appType: appType,
@@ -135,6 +135,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		restTimeTableVisible2: KnockoutObservable<boolean> = ko.observable(false);
 		isGoWorkAtr: KnockoutObservable<boolean> = ko.observable(false);
 		isBackHomeAtr: KnockoutObservable<boolean> = ko.observable(false);
+		overTimeWorkVisible: KnockoutObservable<boolean> = ko.observable(false);
 		selectedDivergenceReasonCode: KnockoutObservable<string> = ko.observable();
 
 		appHolidayWork: AppHolidayWorkCmd;
@@ -190,12 +191,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					vm.appHolidayWork = res.appHolidayWork;
 					vm.dataSource = res.appHdWorkDispInfoOutput;
 					// vm.visibleModel = vm.createVisibleModel(vm.dataSource);
+					vm.itemControlHandler();
 					vm.bindOverTimeWorks(vm.dataSource);
 					vm.bindWorkInfo(vm.dataSource, false);
 					vm.bindRestTime(vm.dataSource, 0);
 					vm.bindHolidayTime(vm.dataSource, 0);
 					vm.bindOverTime(vm.dataSource, 0);
-					vm.itemControlHandler();
 					vm.setComboDivergenceReason(vm.dataSource);
 					// vm.bindMessageInfo(vm.dataSource);
 					if (vm.isStart) {
@@ -492,6 +493,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.restTimeTableVisible2(false);
 			}
+			// ※6
+			if(self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr == 1){
+				self.overTimeWorkVisible(true);
+			} else {
+				self.overTimeWorkVisible(false);
+			}
 		}
 		
 		// register() {
@@ -650,6 +657,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		bindOverTimeWorks(res: AppHdWorkDispInfo) { // dummy data
 			const self = this;
+			if(!self.overTimeWorkVisible()){
+				return;
+			}
 			const { otWorkHoursForApplication } = res;
 			let overTimeWorks = [];
 			{

@@ -69,11 +69,6 @@ public class AppHdWorkDispInfoCmd {
 	private List<OvertimeWorkFrameCommand> overtimeFrameList;
 	
 	/**
-	 * 申請用時間外労働時間
-	 */
-	private OverTimeWorkHoursCommand otWorkHoursForApplication;
-	
-	/**
 	 * 申請表示情報
 	 */
 	private AppDispInfoStartupCmd appDispInfoStartupOutput;
@@ -82,6 +77,11 @@ public class AppHdWorkDispInfoCmd {
 	 * 乖離理由の選択肢
 	 */
 	private DivergenceReasonSelectCommand comboDivergenceReason;
+	
+	/**
+	 * 申請用時間外労働時間
+	 */
+	private OverTimeWorkHoursCommand otWorkHoursForApplication;
 	
 	/**
 	 * 計算結果
@@ -98,9 +98,9 @@ public class AppHdWorkDispInfoCmd {
 				this.hdWorkDispInfoWithDateOutput.toDomain(), 
 				this.hdWorkOvertimeReflect.toDomain(), 
 				this.overtimeFrameList.stream().map(overtimeFrame -> overtimeFrame.toDomain()).collect(Collectors.toList()), 
-				this.otWorkHoursForApplication.toDomain(), 
 				this.appDispInfoStartupOutput.toDomain(), 
 				Optional.ofNullable(this.comboDivergenceReason != null ? this.comboDivergenceReason.toDomain() : null), 
+				Optional.ofNullable(this.otWorkHoursForApplication != null ? this.otWorkHoursForApplication.toDomain() : null), 
 				Optional.ofNullable(this.calculationResult != null ? this.calculationResult.toDomain() : null));
 	}
 }
