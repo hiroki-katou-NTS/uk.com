@@ -32,6 +32,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
 
+	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
+			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode";
+
 	/**
 	 * Create Grant Date Domain From Entity
 	 * @param c
@@ -312,15 +315,15 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		return new ArrayList<GrantDateTbl>();
 	}
 
-//	@Override
-//	public void changeAllProvision(int specialHolidayCode) {
-//		String companyId = AppContexts.user().companyId();
-//
-//		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION)
-//					.setParameter("companyId", companyId)
-//					.setParameter("specialHolidayCode", specialHolidayCode)
-//					.executeUpdate();
-//	}
+	@Override
+	public void changeAllProvision(int specialHolidayCode) {
+		String companyId = AppContexts.user().companyId();
+
+		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION)
+					.setParameter("companyId", companyId)
+					.setParameter("specialHolidayCode", specialHolidayCode)
+					.executeUpdate();
+	}
 
 //	@Override
 //	public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode) {

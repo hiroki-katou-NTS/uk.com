@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 
 public interface ComplileInPeriodOfSpecialLeaveSharedImport {
 
-//	//要修正 jinno
 //	List<SpecialLeaveError> complileInPeriodOfSpecialLeave(
 //			RequireM5 require,
 //			CacheCarrier cacheCarrier,

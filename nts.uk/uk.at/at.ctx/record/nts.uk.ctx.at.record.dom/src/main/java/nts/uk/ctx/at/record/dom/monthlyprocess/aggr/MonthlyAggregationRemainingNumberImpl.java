@@ -487,7 +487,6 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		for (SpecialHoliday specialHoliday : specialHolidays){
 			Integer specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
 
-			// 要修正 jinno
 			// 前回集計結果を確認する
 			Optional<InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResult = Optional.empty();
 //			if (this.prevSpecialLeaveResultMap.containsKey(specialLeaveCode)) {
@@ -516,8 +515,12 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			SpecialLeaveInfo inPeriod = aggrResult.getAsOfPeriodEnd();
 
 			// 特別休暇月別残数データを更新
-			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(this.employeeId, this.yearMonth,
+//			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(this.employeeId, this.yearMonth,
+//					this.closureId, this.closureDate, period, specialLeaveCode, new SpecialLeaveRemainNoMinus());
+			SpecialHolidayRemainData speLeaRemNum = aggrResult.createSpecialHolidayRemainData(
+					this.employeeId, this.yearMonth,
 					this.closureId, this.closureDate, period, specialLeaveCode, new SpecialLeaveRemainNoMinus());
+
 			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
 
 			// 特別休暇エラーから月別残数エラー一覧を作成する

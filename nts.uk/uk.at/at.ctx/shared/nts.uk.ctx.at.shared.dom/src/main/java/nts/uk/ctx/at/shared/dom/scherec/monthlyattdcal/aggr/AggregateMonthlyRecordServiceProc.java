@@ -1274,8 +1274,7 @@ public class AggregateMonthlyRecordServiceProc {
 //			val asOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfPeriodEnd();
 //			val asOfStartNextDayOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfStartNextDayOfPeriodEnd();
 //			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
-//
-////			// ooooo要修正！！
+//！
 ////			// 年休月別残数データを更新
 ////			AnnLeaRemNumEachMonth annLeaRemNum = AnnLeaRemNumEachMonth.of(this.employeeId, this.yearMonth,
 ////					this.closureId, this.closureDate, period, ClosureStatus.UNTREATED,

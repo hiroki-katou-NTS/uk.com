@@ -29,7 +29,6 @@ public class CreateCodeTest {
 
 
 
-
 //		/** ルートクラスのパッケージ名 */
 //		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
 //		/** ルートクラスのクラス名 */
@@ -72,13 +71,40 @@ public class CreateCodeTest {
 //		/** ルートクラスのコメント */
 //		String classComment = "年休";
 
-		/** ルートクラスのパッケージ名 */
-		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave";
-		/** ルートクラスのクラス名 */
-		String className = "AnnLeaRemNumEachMonth";
-		/** ルートクラスのコメント */
-		String classComment = "年休月別残数データ";
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave";
+//		/** ルートクラスのクラス名 */
+//		String className = "AnnLeaRemNumEachMonth";
+//		/** ルートクラスのコメント */
+//		String classComment = "年休月別残数データ";
 
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
+//		/** ルートクラスのクラス名 */
+//		String className = "SpecialLeaveUseTimes";
+//		/** ルートクラスのコメント */
+//		String classComment = "特別休暇使用時間";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.specialholiday.grantinformation";
+//		/** ルートクラスのクラス名 */
+//		String className = "FixGrantDate";
+//		/** ルートクラスのコメント */
+//		String classComment = "指定日付与";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.specialholiday";
+//		/** ルートクラスのクラス名 */
+//		String className = "SpecialHoliday";
+//		/** ルートクラスのコメント */
+//		String classComment = "特別休暇";
+
+		/** ルートクラスのパッケージ名 */
+		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
+		/** ルートクラスのクラス名 */
+		String className = "SpecialLeave";
+		/** ルートクラスのコメント */
+		String classComment = "特別休暇";
 
 		// クラス情報管理
 		ClassInfoManager classInfoManager = new ClassInfoManager(srcRootPath, packageRootPathList);

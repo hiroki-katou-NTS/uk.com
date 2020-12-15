@@ -115,10 +115,10 @@ public class TestAnnualLeave {
 //					g_require.getOperationStartSetRepo(),
 //					g_require.getAnnualLeaveRemainHistRepo());
 
-				// テスト用会社ID ooooo 要修正
+				// テスト用会社ID
 				String companyId = "000000000000-0101";
 
-				// 社員 ooooo 要修正　CSVファイルで社員コードを取得して、DBより社員IDに変換する
+				// 社員　CSVファイルで社員コードを取得して、DBより社員IDに変換する
 				//String employeeId = annualleaveTestCase.getEmployee();
 				String employeeId = "ca294040-910f-4a42-8d90-2bd02772697c";
 

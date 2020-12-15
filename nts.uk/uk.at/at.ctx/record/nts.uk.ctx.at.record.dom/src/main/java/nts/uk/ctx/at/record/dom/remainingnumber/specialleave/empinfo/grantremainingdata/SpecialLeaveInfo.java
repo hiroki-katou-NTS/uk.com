@@ -438,15 +438,6 @@ public class SpecialLeaveInfo implements Cloneable {
 			}
 		}
 
-
-
-
-
-
-//		//
-//		// 「特休上限データ」を取得
-//		val annLeaMaxDataOpt = require.SpecialLeaveMaxData(employeeId);
-
 		// 特別休暇情報残数を更新
 		specialLeaveInfo.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
 
@@ -671,7 +662,6 @@ public class SpecialLeaveInfo implements Cloneable {
 
 			}
 		}
-
 
 		// 「特休の集計結果」を返す
 		return aggrResult;

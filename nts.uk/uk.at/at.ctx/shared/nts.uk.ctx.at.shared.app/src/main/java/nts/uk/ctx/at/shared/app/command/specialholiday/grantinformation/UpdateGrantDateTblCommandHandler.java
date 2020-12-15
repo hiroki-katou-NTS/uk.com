@@ -32,7 +32,7 @@ public class UpdateGrantDateTblCommandHandler extends CommandHandlerWithResult<G
 			// Add new data
 			if(domain.isSpecified()) {
 				// 要修正 jinno
-//				repo.changeAllProvision(domain.getSpecialHolidayCode().v());
+				repo.changeAllProvision(domain.getSpecialHolidayCode().v());
 			}
 
 			repo.update(domain);

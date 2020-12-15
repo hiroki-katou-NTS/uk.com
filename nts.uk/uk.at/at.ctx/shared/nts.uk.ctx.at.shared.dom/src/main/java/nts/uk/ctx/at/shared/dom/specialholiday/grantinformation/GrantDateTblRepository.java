@@ -80,12 +80,12 @@ public interface GrantDateTblRepository {
 //	List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, String grantDateCode);
 //
 //
-//
-//	/**
-//	 *
-//	 * @param specialHolidayCode
-//	 */
-//	void changeAllProvision(int specialHolidayCode);
+
+	/**
+	 *
+	 * @param specialHolidayCode
+	 */
+	void changeAllProvision(int specialHolidayCode);
 
 //	/**
 //	 * get 特別休暇付与テーブル with 規定のテーブルとする: True

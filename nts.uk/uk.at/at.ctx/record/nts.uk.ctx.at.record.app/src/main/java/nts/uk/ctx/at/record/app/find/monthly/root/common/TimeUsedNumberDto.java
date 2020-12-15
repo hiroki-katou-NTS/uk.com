@@ -28,17 +28,17 @@ public class TimeUsedNumberDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private int usedTimes;
-	
+
 	/** 使用時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private int usedTime;
-	
+
 	/** 使用時間付与前 */
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_C)
 	private int usedTimeBeforeGrant;
-	
+
 	/** 使用時間付与後 */
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_D)
@@ -46,7 +46,7 @@ public class TimeUsedNumberDto implements ItemConst {
 
 	public static TimeUsedNumberDto from(AnnualLeaveUsedTime domain) {
 		return domain == null ? null : new TimeUsedNumberDto(
-						0, 
+						0,
 						domain.getUsedTime().valueAsMinutes(),
 						0,
 						null);
@@ -55,7 +55,7 @@ public class TimeUsedNumberDto implements ItemConst {
 	public AnnualLeaveUsedTime toDomain() {
 		return AnnualLeaveUsedTime.of(new UsedMinutes(usedTime));
 	}
-	
+
 	public static TimeUsedNumberDto from(AnnualLeaveMaxRemainingTime domain) {
 		return domain == null ? null : new TimeUsedNumberDto(
 						0, domain.getTime().valueAsMinutes(),
@@ -69,23 +69,24 @@ public class TimeUsedNumberDto implements ItemConst {
 							new RemainingMinutes(usedTimeBeforeGrant),
 							Optional.ofNullable(usedTimeAfterGrant == null ? null : new RemainingMinutes(usedTimeAfterGrant)));
 	}
-	
+
 	public static TimeUsedNumberDto from(SpecialLeaveUseTimes domain) {
-		// ooooo要修正！！
-//		return domain == null ? null : new TimeUsedNumberDto(				
-//						domain.getUseNumber().v(), 
+		// 要修正　→　保留
+//		return domain == null ? null : new TimeUsedNumberDto(
+//						domain.getUseNumber().v(),
 //						domain.getUseTimes().valueAsMinutes(),
 //						domain.getBeforeUseGrantTimes().valueAsMinutes(),
 //						domain.getAfterUseGrantTimes().isPresent() ? domain.getAfterUseGrantTimes().get().valueAsMinutes() : null);
-		return null;
+//		return null;
+		return domain == null ? null : new TimeUsedNumberDto(
+				0,
+				domain.getUseTimes().valueAsMinutes(),
+				0,
+				null);
 	}
-	
+
 	public SpecialLeaveUseTimes toSpecial(){
-		// ooooo要修正！！
-//		return new SpecialLeaveUseTimes(new UseNumber(usedTimes), 
-//										new SpecialLeavaRemainTime(usedTime), 
-//										new SpecialLeavaRemainTime(usedTimeBeforeGrant), 
-//										Optional.ofNullable(usedTimeAfterGrant == null ? null : new SpecialLeavaRemainTime(usedTimeAfterGrant)));
-	return null;
+		return new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(usedTime));
+
 	}
 }

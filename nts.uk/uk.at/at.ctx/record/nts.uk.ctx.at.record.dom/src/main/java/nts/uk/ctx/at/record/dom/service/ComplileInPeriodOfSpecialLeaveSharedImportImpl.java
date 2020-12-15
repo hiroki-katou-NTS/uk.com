@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ComplileInPeriodOfS
 
 public class ComplileInPeriodOfSpecialLeaveSharedImportImpl implements ComplileInPeriodOfSpecialLeaveSharedImport{
 
-	// 要修正 jinno
 //	@Override
 //	public List<SpecialLeaveError> complileInPeriodOfSpecialLeave(RequireM5 require, CacheCarrier cacheCarrier,
 //			String cid, String sid, DatePeriod complileDate, boolean mode, GeneralDate baseDate, int specialLeaveCode,

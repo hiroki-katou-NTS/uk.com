@@ -3619,7 +3619,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		/** 年休月別残数データ.年休出勤率日数.控除日数 */
 		c.getAttendanceRateDays().getDeductedDays();
 		/** 年休月別残数データ.付与区分 */
-		c.getGrantAtr();
+		c.isGrantAtr();
 
 		/** 年休月別残数データ.未消化.未消化日数.未消化日数 */
 		c.getUndigestedNumber().getUndigestedDays().getUndigestedDays();

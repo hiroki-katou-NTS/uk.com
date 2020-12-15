@@ -22,26 +22,26 @@ public class ReserveLeave implements Cloneable {
 	private ReserveLeaveUsedNumber usedNumber;
 	/** 残数 */
 	private ReserveLeaveRemainingInfo remainingNumberInfo;
-	
+
 //	/** 残数付与前 */
 //	private ReserveLeaveRemainingNumber remainingNumberInfoBeforeGrant;
 //	/** 残数付与後 */
 //	private Optional<ReserveLeaveRemainingNumber> remainingNumberInfoAfterGrant;
 //	/** 未消化数 */
 //	private ReserveLeaveUndigestedNumber undigestedNumber;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public ReserveLeave(){
-		
+
 		this.usedNumber = new ReserveLeaveUsedNumber();
 		this.remainingNumberInfo = new ReserveLeaveRemainingInfo();
 //		this.remainingNumberInfoBeforeGrant = new ReserveLeaveRemainingNumber();
 //		this.remainingNumberInfoAfterGrant = Optional.empty();
 //		this.undigestedNumber = new ReserveLeaveUndigestedNumber();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param usedNumber 使用数
@@ -60,7 +60,7 @@ public class ReserveLeave implements Cloneable {
 //		domain.undigestedNumber = undigestedNumber;
 		return domain;
 	}
-	
+
 	@Override
 	public ReserveLeave clone() {
 		ReserveLeave cloned = new ReserveLeave();
@@ -78,101 +78,77 @@ public class ReserveLeave implements Cloneable {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 実積立年休から値をセット　（積立年休（マイナスなし）を積立年休（マイナスあり）で上書き　＆　積立年休からマイナスを削除）
 	 * @param realReserveLeave 実積立年休
 	 */
 	public void setValueFromRealReserveLeave(ReserveLeave realReserveLeave){
-		// ooooo要修正！！
-//		// 実年休から上書き
-//		this.usedNumber = realReserveLeave.getUsedNumber().clone();
-//		this.remainingNumberInfo = realReserveLeave.getRemainingNumberInfo().clone();
-////		this.remainingNumberInfoBeforeGrant = realReserveLeave.getRemainingNumberBeforeGrant().clone();
-////		this.remainingNumberInfoAfterGrant = Optional.empty();
-////		if (realReserveLeave.getRemainingNumberAfterGrant().isPresent()){
-////			this.remainingNumberInfoAfterGrant = Optional.of(
-////					realReserveLeave.getRemainingNumberAfterGrant().get().clone());
-////		}
-//		
-//		// 残数からマイナスを削除
-//		if (this.remainingNumberInfo.getTotalRemaining().getTotalRemainingDays().lessThan(0.0)){
-//			// 積立年休．使用数からマイナス分を引く
-//			double minusDays = this.remainingNumberInfo.getTotalRemaining().getTotalRemainingDays().v();
-//			double useDays = this.usedNumber.getUsedDays().v();
-//			useDays += minusDays;
-//			if (useDays < 0.0) useDays = 0.0;
-//			this.usedNumber.setUsedDays(new ReserveLeaveUsedDayNumber(useDays));
-//			// 残数．明細．日数　←　0
-//			this.remainingNumberInfo.getTotalRemaining().setDaysOfAllDetail(0.0);
-//			// 残数．合計残日数　←　0
-//			this.remainingNumberInfo.getTotalRemaining().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-//		}
-//
-//		// 残数付与前からマイナスを削除
-//		if (this.remainingNumberInfoBeforeGrant.getTotalRemainingDays().lessThan(0.0)){
-//			// 積立年休．使用数（付与前）からマイナス分を引く
-//			double minusDays = this.remainingNumberInfoBeforeGrant.getTotalRemainingDays().v();
-//			double useDays = this.usedNumber.getUsedDaysBeforeGrant().v();
-//			useDays += minusDays;
-//			if (useDays < 0.0) useDays = 0.0;
-//			this.usedNumber.setUsedDaysBeforeGrant(new ReserveLeaveUsedDayNumber(useDays));
-//			// 残数付与前．明細．日数　←　0
-//			this.remainingNumberInfoBeforeGrant.setDaysOfAllDetail(0.0);
-//			// 残数．合計残日数　←　0
-//			this.remainingNumberInfoBeforeGrant.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-//		}
-//		if (this.getRemainingNumberInfo().getBeforeGrant().getTotalRemainingDays().lessThan(0.0)){
-//			// 積立年休．使用数（付与前）からマイナス分を引く
-//			double minusDays = this.remainingNumberInfo.getBeforeGrant().getTotalRemainingDays().v();
-//			double useDays = this.usedNumber.getUsedDaysBeforeGrant().v();
-//			useDays += minusDays;
-//			if (useDays < 0.0) useDays = 0.0;
-//			this.usedNumber.setUsedDaysBeforeGrant(new ReserveLeaveUsedDayNumber(useDays));
-//			// 残数付与前．明細．日数　←　0
-//			this.remainingNumberInfo.getBeforeGrant().setDaysOfAllDetail(0.0);
-//			// 残数．合計残日数　←　0
-//			this.remainingNumberInfo.getBeforeGrant().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-//		}
-//		
-////		if (!this.remainingNumberInfoAfterGrant.isPresent()) return;
-////		if (!this.usedNumber.getUsedDaysAfterGrant().isPresent()) return;
-////		
-////		// 残数付与後からマイナスを削除
-////		val remainingNumberInfoAfterGrantValue = this.remainingNumberInfoAfterGrant.get();
-////		val usedDaysAfterGrant = this.usedNumber.getUsedDaysAfterGrant().get();
-////		if (remainingNumberInfoAfterGrantValue.getTotalRemainingDays().lessThan(0.0)){
-////			// 積立年休．使用数（付与後）からマイナス分を引く
-////			double minusDays = remainingNumberInfoAfterGrantValue.getTotalRemainingDays().v();
-////			double useDays = usedDaysAfterGrant.v();
-////			useDays += minusDays;
-////			if (useDays < 0.0) useDays = 0.0;
-////			this.usedNumber.setUsedDaysAfterGrant(Optional.of(new ReserveLeaveUsedDayNumber(useDays)));
-////			// 残数付与前．明細．日数　←　0
-////			remainingNumberInfoAfterGrantValue.setDaysOfAllDetail(0.0);
-////			// 残数．合計残日数　←　0
-////			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-////		}
-//		if (!this.getRemainingNumberInfo().getAfterGrant().isPresent()) return;
-//		if (!this.usedNumber.getUsedDaysAfterGrant().isPresent()) return;
-//		
-//		// 残数付与後からマイナスを削除
-//		val remainingNumberInfoAfterGrantValue = this.getRemainingNumberInfo().getAfterGrant().get();
-//		val usedDaysAfterGrant = this.usedNumber.getUsedDaysAfterGrant().get();
-//		if (remainingNumberInfoAfterGrantValue.getTotalRemainingDays().lessThan(0.0)){
-//			// 積立年休．使用数（付与後）からマイナス分を引く
-//			double minusDays = remainingNumberInfoAfterGrantValue.getTotalRemainingDays().v();
-//			double useDays = usedDaysAfterGrant.v();
-//			useDays += minusDays;
-//			if (useDays < 0.0) useDays = 0.0;
-//			this.usedNumber.setUsedDaysAfterGrant(Optional.of(new ReserveLeaveUsedDayNumber(useDays)));
-//			// 残数付与前．明細．日数　←　0
-//			remainingNumberInfoAfterGrantValue.setDaysOfAllDetail(0.0);
-//			// 残数．合計残日数　←　0
-//			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-//		}
+
+		// 実年休から上書き
+		this.usedNumber = realReserveLeave.getUsedNumber().clone();
+		this.remainingNumberInfo = realReserveLeave.getRemainingNumberInfo().clone();
+
+		// 残数からマイナスを削除
+		if (this.remainingNumberInfo.getRemainingNumber().getTotalRemainingDays().lessThan(0.0)){
+			// 積立年休．使用数からマイナス分を引く
+			double minusDays = this.remainingNumberInfo.getRemainingNumber().getTotalRemainingDays().v();
+			double useDays = this.usedNumber.getUsedDays().v();
+			useDays += minusDays;
+			if (useDays < 0.0) useDays = 0.0;
+			this.usedNumber.setUsedDays(new ReserveLeaveUsedDayNumber(useDays));
+			// 残数．明細．日数　←　0
+			this.remainingNumberInfo.getRemainingNumber().setDaysOfAllDetail(0.0);
+			// 残数．合計残日数　←　0
+			this.remainingNumberInfo.getRemainingNumber().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
+		}
+
+		// 残数付与前からマイナスを削除
+		if (this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().lessThan(0.0)){
+			// 積立年休．使用数（付与前）からマイナス分を引く
+			double minusDays = this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+			double useDays = this.usedNumber.getUsedDaysBeforeGrant().v();
+			useDays += minusDays;
+			if (useDays < 0.0) useDays = 0.0;
+			this.usedNumber.setUsedDaysBeforeGrant(new ReserveLeaveUsedDayNumber(useDays));
+			// 残数付与前．明細．日数　←　0
+			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setDaysOfAllDetail(0.0);
+			// 残数．合計残日数　←　0
+			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
+		}
+		if (this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().lessThan(0.0)){
+			// 積立年休．使用数（付与前）からマイナス分を引く
+			double minusDays = this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+			double useDays = this.usedNumber.getUsedDaysBeforeGrant().v();
+			useDays += minusDays;
+			if (useDays < 0.0) useDays = 0.0;
+			this.usedNumber.setUsedDaysBeforeGrant(new ReserveLeaveUsedDayNumber(useDays));
+			// 残数付与前．明細．日数　←　0
+			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setDaysOfAllDetail(0.0);
+			// 残数．合計残日数　←　0
+			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
+		}
+
+		if (!this.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()) return;
+		if (!this.usedNumber.getUsedDaysAfterGrant().isPresent()) return;
+
+		// 残数付与後からマイナスを削除
+		val remainingNumberInfoAfterGrantValue = this.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get();
+		val usedDaysAfterGrant = this.usedNumber.getUsedDaysAfterGrant().get();
+		if (remainingNumberInfoAfterGrantValue.getTotalRemainingDays().lessThan(0.0)){
+			// 積立年休．使用数（付与後）からマイナス分を引く
+			double minusDays = remainingNumberInfoAfterGrantValue.getTotalRemainingDays().v();
+			double useDays = usedDaysAfterGrant.v();
+			useDays += minusDays;
+			if (useDays < 0.0) useDays = 0.0;
+			this.usedNumber.setUsedDaysAfterGrant(Optional.of(new ReserveLeaveUsedDayNumber(useDays)));
+			// 残数付与前．明細．日数　←　0
+			remainingNumberInfoAfterGrantValue.setDaysOfAllDetail(0.0);
+			// 残数．合計残日数　←　0
+			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
+		}
 	}
-	
+
 	/**
 	 * 積立年休付与残数データから積立年休残数を作成
 	 * @param remainingDataList 積立年休付与残数データリスト
@@ -180,11 +156,11 @@ public class ReserveLeave implements Cloneable {
 	 */
 	public void createRemainingNumberFromGrantRemaining(
 			List<ReserveLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
-		
+
 		// 積立年休付与残数データから残数を作成
 //		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
 		this.remainingNumberInfo.getRemainingNumber().createRemainingNumberFromGrantRemaining(remainingDataList);
-		
+
 		// 「付与後フラグ」をチェック
 		if (afterGrantAtr){
 			// 残数付与後　←　残数
@@ -206,7 +182,7 @@ public class ReserveLeave implements Cloneable {
 		this.usedNumber.saveStateBeforeGrant();
 		this.remainingNumberInfo.saveStateBeforeGrant();
 	}
-	
+
 	/**
 	 * 付与後退避処理
 	 */
@@ -215,5 +191,5 @@ public class ReserveLeave implements Cloneable {
 		this.usedNumber.saveStateAfterGrant();
 		this.remainingNumberInfo.saveStateAfterGrant();
 	}
-	
+
 }
