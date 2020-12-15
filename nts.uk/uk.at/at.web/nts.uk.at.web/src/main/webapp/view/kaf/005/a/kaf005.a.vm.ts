@@ -76,7 +76,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			vm.isSendMail = ko.observable(false);
 			if (!_.isNil(dataTransfer)) {
-				vm.application().appDate(dataTransfer.appDate);				
+				vm.application().appDate(dataTransfer.appDate);
+				vm.application().opAppStartDate(dataTransfer.appDate);
+				vm.application().opAppEndDate(dataTransfer.appDate);
 			}
 			if (!_.isNil(params)) {
 				if (!_.isNil(params.baseDate)) {

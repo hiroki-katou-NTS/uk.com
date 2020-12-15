@@ -437,7 +437,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(
 				prePostInitAtr,
 				Optional.ofNullable(advanceApplicationTime),
-				applicationTimes.isEmpty() ? Optional.empty() : Optional.of(applicationTimes.get(0)),
+				CollectionUtil.isEmpty(applicationTimes) ? Optional.empty() : Optional.of(applicationTimes.get(0)),
 				Optional.ofNullable(achieveApplicationTime));
 		// 【チェック内容】
 		// 取得したList「申請時間．type」 = 休出時間　がある場合
