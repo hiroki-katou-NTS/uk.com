@@ -1835,7 +1835,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        Cell remarkCell = cells.get(currentRow, remarkColumn-REMARK_CELL_WIDTH);
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
 				        
-				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
+				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 15);
 						int curRowRemark = currentRow;
 						String remarkContentRow;
 						
@@ -1843,7 +1843,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						
 			        	for(int i = 0; i < maxPossibleRow; i++) {
 				            start = i * 10;
-				            length = Math.min(errorDetail.length() - start, 10);
+				            length = Math.min(errorDetail.length() - start, 15);
 				            
 				            remarkContentRow = errorDetail.substring(start, start + length);
 				            
@@ -2523,7 +2523,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			        Cell remarkCell = cells.get(currentRow, remarkColumn);
 			        String errorDetail = employee.getDetailedErrorData();
 			        
-			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
+			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 15);
 					int curRowRemark = currentRow;
 					String remarkContentRow;
 					
@@ -2531,7 +2531,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					
 		        	for(int i = 0; i < maxPossibleRow; i++) {
 			            start = i * 10;
-			            length = Math.min(errorDetail.length() - start, 10);
+			            length = Math.min(errorDetail.length() - start, 15);
 
 			            remarkContentRow = errorDetail.substring(start, start + length);
 			            
