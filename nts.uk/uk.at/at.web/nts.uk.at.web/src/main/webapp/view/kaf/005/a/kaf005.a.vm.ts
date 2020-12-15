@@ -713,13 +713,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		//  work-info 
 		bindWorkInfo(res: DisplayInfoOverTime, mode?: ACTION) {
 			const self = this;
+			console.log('bindWorkInfo');
 			if (!ko.toJS(self.workInfo)) {
 				let workInfo = {} as WorkInfo;
 				let workType = {} as Work;
 				let workTime = {} as Work;
 				let workHours1 = {} as WorkHours;
-				workHours1.start = ko.observable(null);
-				workHours1.end = ko.observable(null);
+				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});;
+				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});;
 				workHours1.start.subscribe((value) => {
 					if (_.isNumber(value)) {
 						self.getBreakTimes();

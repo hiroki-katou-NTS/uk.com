@@ -591,8 +591,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let workType = {} as Work;
 				let workTime = {} as Work;
 				let workHours1 = {} as WorkHours;
-				workHours1.start = ko.observable(null);
-				workHours1.end = ko.observable(null);
+				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});
+				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});
 				workHours1.start.subscribe((value) => {
 					if (_.isNumber(value)) {
 						// self.getBreakTimes();
@@ -643,7 +643,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					workTime.name = self.$i18n('KAF_005_345');
 				}
 			}
-			
+			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
+				self.workInfo().workType(workType);				
+				self.workInfo().workTime(workTime);				
+			}
 			if (!_.isEmpty(self.appOverTime.workHoursOp)) {
 				_.forEach(self.appOverTime.workHoursOp, (i: TimeZoneWithWorkNo) => {
 					if (i.workNo == 1) {
@@ -656,10 +659,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				});
 
 			}
-			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
-				self.workInfo().workType(workType);				
-				self.workInfo().workTime(workTime);				
-			}
+			
 			self.workInfo().workHours1 = workHours1;
 			if (self.visibleModel.c29()) {
 				self.workInfo().workHours2 = workHours2;				
