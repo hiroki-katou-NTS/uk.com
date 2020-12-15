@@ -875,9 +875,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									.map(holidayTime => holidayTime.preApp(item.applicationTime));
 							})
 						}
-					}
-					// B6_29, B6_36, B6_41
-					let appRoot = opPreAppContentDisplayLst[0].appHolidayWork.applicationTime;
+						// B6_29, B6_36, B6_41
+						let appRoot = appHolidayWork.applicationTime;
 						if (!_.isNil(appRoot.overTimeShiftNight)) {
 							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
@@ -899,6 +898,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 						}
 					}
+				}
+					
 				// B6_11
 				if (!_.isNil(res.hdWorkDispInfoWithDateOutput)) {
 					if (!_.isEmpty(res.hdWorkDispInfoWithDateOutput.actualApplicationTime)) {
@@ -988,9 +989,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									.map(holidayTime => holidayTime.preApp(item.applicationTime));
 							})
 						}
-					}
-					// A6_29 A6_36 A6_41
-					let appRoot = opPreAppContentDisplayLst[0].appHolidayWork.applicationTime;
+						// A6_29 A6_36 A6_41
+						let appRoot = appHolidayWork.applicationTime;
 						if (!_.isNil(appRoot.overTimeShiftNight)) {
 							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
@@ -1012,6 +1012,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 						}
 					}
+				}
 				// A6_11
 				if (!_.isNil(res.hdWorkDispInfoWithDateOutput)) {
 					if (!_.isEmpty(res.hdWorkDispInfoWithDateOutput.actualApplicationTime)) {
