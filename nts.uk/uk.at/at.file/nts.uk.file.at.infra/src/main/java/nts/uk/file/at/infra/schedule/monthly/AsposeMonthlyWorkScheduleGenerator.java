@@ -2103,14 +2103,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						int parentHigherEnabledLevel = findWorkplaceHigherEnabledLevel(parentWorkplace, totalHierarchyOption);
 						if (parentHigherEnabledLevel <= level) {
 							if (levelIterator != null && levelIterator.hasNext()) {
-								tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next();
+								tagStr = TextResource.localize(WorkScheOutputConstants.WORKPLACE_INFO, Integer.toString(levelIterator.next()));
 							}
 							else {
 								tagStr = null;
 							}
 						}
 						else if (totalHierarchyOption.checkLevelEnabled(level)) {
-							tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+							tagStr = TextResource.localize(WorkScheOutputConstants.WORKPLACE_INFO, Integer.toString(workplaceReportData.getLevel()));
 						}
 						else {
 							tagStr = null;
@@ -2687,7 +2687,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 				// B7_1 - B11_1
 				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
+				workplaceTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE_INFO, Integer.toString(level)));
 				
 				// B7_2 - B11_2
 				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, textSizeCommonEnum, condition.getDisplayType());

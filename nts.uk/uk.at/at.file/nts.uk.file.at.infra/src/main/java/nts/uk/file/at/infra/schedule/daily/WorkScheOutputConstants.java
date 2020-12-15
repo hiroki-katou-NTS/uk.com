@@ -53,6 +53,9 @@ public class WorkScheOutputConstants {
 	// Record part
 	public static final String WORKPLACE = "KWR006_68";
 	
+	/** The Constant WORKPLACE_INFO. */
+	public static final String WORKPLACE_INFO = "KWR006_74";
+	
 	/** The Constant EMPLOYEE. */
 	public static final String EMPLOYEE = "KWR006_69";
 	
