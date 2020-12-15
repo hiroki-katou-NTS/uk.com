@@ -5,7 +5,7 @@ module nts.uk.at.view.ksu003.a {
 		screenModel.startPage().done(function() {
 			__viewContext.bind(screenModel);
 			$("#prev-all").focus();
-			
+			$('#functon-area-row2-left').trigger('click');
 			$(window).resize(function() {
 				screenModel.setPositionButonDownAndHeightGrid();
 			});
