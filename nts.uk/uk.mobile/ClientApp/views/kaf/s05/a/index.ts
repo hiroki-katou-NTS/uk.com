@@ -1,4 +1,4 @@
-import {ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr} from '../a/define.interface';
+import {ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork} from '../a/define.interface';
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -37,7 +37,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public modeNew: boolean = true;
     public application: Application = null;
 
-    public model: Model;
+    public model: Model = {} as Model;
 
     @Prop() 
     public readonly params: InitParam;
@@ -81,6 +81,150 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return displayOverTime.infoBaseDateOutput.quotaOutput.flexTimeClf;
     }
+    // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND 乖離理由を選択肢から選ぶ = true
+    public get c13() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+        let c13_1 = !_.isNil(findResult);
+        let c13_2 = c13_1 ? findResult.divergenceReasonSelected : false;
+        
+        return c13_1 && c13_2;
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND　乖離理由を入力する = true
+    public get c14() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+        let c14_1 = !_.isNil(findResult);
+        let c14_2 = c14_1 ? findResult.divergenceReasonInputed : false;
+
+        return c14_1 && c14_2;
+    }
+    // （「事前事後区分」が表示する　AND　「事前事後区分」が「事後」を選択している）　OR
+    // （「事前事後区分」が表示しない　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
+    public get c15() {
+
+
+        return true;
+    }
+    // ※表16-1 = ○　OR　※表16-2 = ○　OR　※表16-3 = ○　OR　※表16-4 = ○
+    public get c16() {
+        
+        return true;
+    }
+    // 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
+    public get c16_1() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        if (!_.isNil(displayOverTime.calculationResultOp)) {
+            _.forEach(displayOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
+                _.forEach(i.applicationTime, (item: OvertimeApplicationSetting) => {
+                    if (item.attendanceType == AttendanceType.BREAKTIME) {
+
+                        return true;
+                    }
+                });
+            });
+        }
+
+        return false;
+    }
+    // ※表15 = ○　　AND　※表16-1 = ○　
+    public get c16_1_2() {
+
+        return true;
+    }
+
+    // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定内休出 があるの場合
+    public get c16_2() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+            if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+
+                return true && self.c5;
+            }
+        });
+
+        return false;
+    }
+    // ※表15 = ○　　AND　※表16-2 = ○　
+    public get c16_2_2() {
+        const self = this;
+
+        return self.c15 && self.c16_2;
+    }
+    // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定外休出 があるの場合
+    public get c16_3() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+            if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+
+                return true && self.c5;
+            }
+        });
+
+        return false;
+    }
+    // ※表15 = ○　　AND　※表16-3 = ○　
+    public get c16_3_2() {
+        const self = this;
+
+        return self.c15 && self.c16_3;
+    }
+
+    // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 祝日休出 があるの場合
+    public get c16_4() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+            if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+
+                return true && self.c5;
+            }
+        });
+
+        return false;
+    }
+    // ※表15 = ○　　AND　※表16-4 = ○　
+    public get c16_4_2() {
+        const self = this;
+
+        return self.c5 && self.c16_4;
+    }
+    // ※表20＝○ OR ※表21＝○
+    public get c19() {
+        const self = this;
+        
+        return self.c20 || self.c21;
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND 乖離理由を選択肢から選ぶ = true
+    public get c20() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+        let c20_1 = !_.isNil(findResult);
+        let c20_2 = c20_1 ? findResult.divergenceReasonSelected : false;
+        
+        return c20_1 && c20_2;
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND　乖離理由を入力する = true
+    public get c21() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+        let c21_1 = !_.isNil(findResult);
+        let c21_2 = c21_1 ? findResult.divergenceReasonInputed : false;
+
+        return c21_1 && c21_2;
+    }
+
+
 
 
     public created() {
