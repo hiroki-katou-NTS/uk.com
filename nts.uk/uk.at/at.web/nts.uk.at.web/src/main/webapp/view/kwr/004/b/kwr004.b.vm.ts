@@ -68,11 +68,15 @@ module nts.uk.at.view.kwr004.b {
       const vm = this;
 
       //KDL047, 048
-      vm.getSettingListKDL();
+      //vm.getSettingListKDL();
+
       //merge attributes, settings
       vm.switchAndDropBox();
+     
       //get the left with code, settingCategory from A
-      vm.getSettingList(params);
+      $.when(vm.getSettingListKDL()).then(() => {
+        vm.getSettingList(params);
+      });      
 
       vm.currentCodeList.subscribe((newCode: any) => {
         nts.uk.ui.errors.clearAll();
@@ -152,14 +156,14 @@ module nts.uk.at.view.kwr004.b {
         row.selectionItem(null);
         row.selectedTime = -1;
         row.dailyAttributes(value === 1 ? vm.dailyAloneAttributes() : vm.dailyCalcAttributes());
-        //vm.settingListItemsDetails.valueHasMutated();
+        vm.settingListItemsDetails.valueHasMutated();
       });
 
       row.itemAttribute.subscribe((value) => {
         row.selectedTimeList([]);
         row.selectionItem(null);
         row.selectedTime = -1;
-        //vm.settingListItemsDetails.valueHasMutated();
+        vm.settingListItemsDetails.valueHasMutated();
       });
 
       vm.settingListItemsDetails.push(row);
@@ -222,7 +226,7 @@ module nts.uk.at.view.kwr004.b {
         dailyOutputItems: vm.getDailyOutputItems(),
         monthlyOutputItems: vm.getMonthlyOutputItems()
       };
-
+   
       const path_url = (vm.isNewMode()) ? PATH.createSetting : PATH.updateSetting;
 
       vm.$blockui('show');
@@ -236,7 +240,7 @@ module nts.uk.at.view.kwr004.b {
         .fail((error) => {
           vm.showError(error.messageId);
           vm.$blockui('hide');
-        }).always(() => vm.$blockui('hide'));
+        }).always(() => vm.$blockui('hide')); 
     }
 
     showError(messageId: string) {
@@ -347,20 +351,20 @@ module nts.uk.at.view.kwr004.b {
 
     sortSettingListItemsDetails(settingList: Array<SettingForPrint>, max_row: number) {
       const vm = this,
-        tempSettings: Array<SettingForPrint> = [];
+        tempSettings: Array<SettingForPrint> = [],
+        tempSettings1: Array<SettingForPrint> = [];
 
       _.forEach(settingList, (item) => {
         if (!nts.uk.util.isNullOrEmpty(item.name())) {
           tempSettings.push(item);
+        } else {
+          tempSettings1.push(item);
         }
       });
 
-      let from = tempSettings.length;
-      for (let i = from; i < max_row; i++) {
-        let dailyAttributes = vm.dailyOrMonthlyAttributes(i < 2 ? 1 : 2);
-        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
-        tempSettings.push(newItem);
-      }
+      _.forEach(tempSettings1, (item) => {
+        tempSettings.push(item);
+      });
 
       return tempSettings;
     }
@@ -434,8 +438,9 @@ module nts.uk.at.view.kwr004.b {
         if (_.isEmpty(selectionItem)) selectedListItems = [];
         //create new row
         let selectedTime: number = selectedListItems.length > 0 ? selectedListItems[0].attendanceItemId : -1;
+  
         let newItem = new SettingForPrint(
-          index + step, //rank
+          x.rank, //rank
           x.name, //b4_3_2 見出し名称
           x.independentCalcClassic, //b4_5_1 or b4_5_2
           vm.createDataSelection(selectionItem), //b4_3_4 - display 選択項目
@@ -458,7 +463,7 @@ module nts.uk.at.view.kwr004.b {
             false, 0, [], dailyAttributes, i < maxDailyRows);
           vm.addRowItem(newItem);
         }
-      }
+      } 
     }
 
     dailyOrMonthlyAttributes(type: number) {
@@ -479,8 +484,7 @@ module nts.uk.at.view.kwr004.b {
           vm.$ajax(PATH.deleteSetting, params)
             .done(() => {
               vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-                vm.getPositionBeforeDelete();  //keep position before remove        
-                //vm.getSettingItemsLeft(null);
+                vm.getPositionBeforeDelete();  //keep position before remove     
                 vm.$blockui('hide');
               })
             })
@@ -593,6 +597,7 @@ module nts.uk.at.view.kwr004.b {
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
             vm.currentCodeList(currentCode);
+            //vm.currentCodeList.valueHasMutated();
           }
         }).fail(() => { });
     }
