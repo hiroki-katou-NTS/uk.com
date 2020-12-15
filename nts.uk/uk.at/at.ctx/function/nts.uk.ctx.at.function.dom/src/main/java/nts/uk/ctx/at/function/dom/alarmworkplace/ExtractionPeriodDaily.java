@@ -7,10 +7,10 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 @Getter
 public class ExtractionPeriodDaily implements RangeToExtract {
 
-    /**終了日*/
+    /**開始日*/
     private StartDate startDate;
 
-    /**開始日*/
+    /**終了日*/
     private EndDate endDate;
 
     public ExtractionPeriodDaily(StartDate startDate, EndDate endDate) {

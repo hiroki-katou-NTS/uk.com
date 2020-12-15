@@ -3,6 +3,10 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
 import nts.uk.ctx.at.function.dom.alarmworkplace.*;
@@ -107,34 +111,37 @@ public class ExtractAlarmListWorkPlaceFinder {
         List<CheckConditionDto> periods = new ArrayList<>();
         for (CheckCondition checkCond : checkConditions) {
             WorkplaceCategory category = checkCond.getWorkplaceCategory();
+            CheckConditionDto period = null;
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // 基本の期間を表示に取得する
-                    periods.add(getBasicPeriod(checkCond.getRangeToExtract(), processingYm));
+                    period = getBasicPeriod(checkCond.getRangeToExtract(), processingYm);
                     break;
                 case MASTER_CHECK_WORKPLACE:
                     // 職場の期間を表示に取得する
-                    periods.add(getWorkplacePeriod(checkCond.getRangeToExtract(), processingYm));
+                    period = getWorkplacePeriod(checkCond.getRangeToExtract(), processingYm);
                     break;
                 case MONTHLY:
                     // 期間を作成する。
                     SingleMonth singleMonth = (SingleMonth) checkCond.getRangeToExtract();
                     Integer ym = YearMonth.of(processingYm.year(), singleMonth.getMonthNo()).v();
-                    periods.add(new CheckConditionDto(category, ym));
+                    period = new CheckConditionDto(category, ym);
                     break;
                 case SCHEDULE_DAILY:
                     // スケジュール／日次の期間を取得する。
-                    periods.add(getScheduleDailyPeriod(category, checkCond.getRangeToExtract(), processingYm));
+                    period = getScheduleDailyPeriod(category, checkCond.getRangeToExtract(), processingYm);
                     break;
                 case MASTER_CHECK_DAILY:
                     // マスタチェック(日次)の期間を取得する。
-                    periods.add(getScheduleDailyPeriod(category, checkCond.getRangeToExtract(), processingYm));
+                    period = getScheduleDailyPeriod(category, checkCond.getRangeToExtract(), processingYm);
                     break;
                 case APPLICATION_APPROVAL:
-                    // 申請承認の期間を取得する。
-                    // TODO
-                    periods.add(new CheckConditionDto(category, GeneralDate.today(), GeneralDate.today()));
+                    // 申請承認の期間を取得する。//TODO Q&A 38144
+                    period = getScheduleDailyPeriod(category, checkCond.getRangeToExtract(), processingYm);
                     break;
+            }
+            if (period != null) {
+                periods.add(period);
             }
         }
 
@@ -180,7 +187,7 @@ public class ExtractAlarmListWorkPlaceFinder {
     }
 
     /**
-     * スケジュール／日次の期間を取得する。
+     * スケジュール／日次の期間を表示に取得する
      *
      * @param category       カテゴリ
      * @param rangeToExtract ドメイン「抽出期間(日単位)」
@@ -189,11 +196,52 @@ public class ExtractAlarmListWorkPlaceFinder {
     private CheckConditionDto getScheduleDailyPeriod(WorkplaceCategory category, RangeToExtract rangeToExtract,
                                                      YearMonth processingYm) {
         ExtractionPeriodDaily period = (ExtractionPeriodDaily) rangeToExtract;
-        // TODO
-        // 開始日の指定方法をチェックする。
+        GeneralDate systemDate = GeneralDate.today();
 
-        GeneralDate startdate = GeneralDate.today();
-        GeneralDate enddate = GeneralDate.today();
-        return new CheckConditionDto(category, startdate, enddate);
+        // TODO Q&A 38158
+        // 開始日の指定方法をチェックする。
+        if (StartSpecify.DAYS.equals(period.getStartDate().getStartSpecify())) {
+            // 開始日を作成する。
+            // ・開始日　＝　システム日付ー「Input．抽出期間(日単位)．開始日．日数指定．日」
+            Optional<Days> strDays = period.getStartDate().getStrDays();
+            GeneralDate startdate;
+            if (strDays.isPresent()) {
+                startdate = GeneralDate.ymd(systemDate.year(), systemDate.month(), strDays.get().getDay().v());
+            } else {
+                startdate = GeneralDate.ymd(systemDate.year(), systemDate.month(), 1); // TODO
+            }
+
+            // 終了日を作成する。
+            // ・終了日　＝　システム日付ー「Input．抽出期間(日単位)．終了日．日数指定．日」
+            Optional<Days> endDays = period.getEndDate().getEndDays();
+            GeneralDate enddate;
+            if (endDays.isPresent()) {
+                enddate = GeneralDate.ymd(systemDate.year(), systemDate.month(), endDays.get().getDay().v());
+            } else {
+                enddate = GeneralDate.ymd(systemDate.year(), systemDate.month(), 1).addMonths(1).addDays(-1); // TODO
+            }
+            return new CheckConditionDto(category, startdate, enddate);
+
+        } else if (StartSpecify.MONTH.equals(period.getStartDate().getStartSpecify())) {
+            // 開始日を作成する。
+            // ・開始日　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．開始日．締め日指定．月数」
+            Optional<Month> strMonth = period.getStartDate().getStrMonth();
+            int startYm = processingYm.month();
+            if (strMonth.isPresent()){
+                startYm = YearMonth.of(processingYm.year(), period.getStartDate().getStrMonth().get().getMonth()).v();
+            }
+
+            // 終了日を作成する。
+            // ・終了日　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」
+            Optional<Month> endMonth = period.getEndDate().getEndMonth();
+            int endYm = processingYm.month();
+            if (endMonth.isPresent()){
+                endYm = YearMonth.of(processingYm.year(), period.getEndDate().getEndMonth().get().getMonth()).v();
+            }
+
+            return new CheckConditionDto(category, startYm, endYm);
+        }
+
+        return null;
     }
 }

@@ -79,8 +79,8 @@ module nts.uk.at.kal011.a {
 
             vm.$ajax(API.INIT).done((res: IInitActiveAlarmList) => {
                 if (res) {
-                    if (!res.processingYm){
-                        dfd.reject({messageId: "Msg_1143"});
+                    if (!res.processingYm) {
+                        dfd.reject({ messageId: "Msg_1143" });
                         return;
                     }
                     vm.employmentCode = res.employmentCode;
@@ -160,17 +160,28 @@ module nts.uk.at.kal011.a {
                 }
 
                 let categoryPeriods = _.map(conditionSelecteds, (condition: CheckCondition) => {
-                    if (condition.category == common.WORKPLACE_CATAGORY.MONTHLY){
-                        return {
-                            category: condition.category,
-                            yearMonth: condition.dateRange().startDate
-                        }
-                    } else {
-                        return {
-                            category: condition.category,
-                            startDate: condition.dateRange().startDate.toISOString(),
-                            endDate: condition.dateRange().endDate.toISOString()
-                        }
+                    switch (condition.periodType) {
+                        case PeriodType.PERIOD_DATE:
+                            return {
+                                category: condition.category,
+                                startDate: condition.dateRange().startDate.toISOString(),
+                                endDate: condition.dateRange().endDate.toISOString()
+                            }
+                        case PeriodType.PERIOD_YM:
+                            let start = condition.dateRangeYm().startDate.toString();
+                            let startDate = new Date(Number(start.substr(0, 4)), Number(start.substr(4, 6)) - 1, 1);
+                            let end = condition.dateRangeYm().endDate.toString();
+                            let endDate = new Date(Number(end.substr(0, 4)), Number(end.substr(4, 6)), 0);
+                            return {
+                                category: condition.category,
+                                startDate: startDate.toISOString(),
+                                endDate: endDate.toISOString()
+                            }
+                        case PeriodType.SINGLE_MONTH:
+                            return {
+                                category: condition.category,
+                                yearMonth: condition.yearMonth()
+                            }
                     }
                 })
 
@@ -271,45 +282,58 @@ module nts.uk.at.kal011.a {
         category: number;
         categoryName: string;
         checkConditionLis: Array<string>;
+        periodType: PeriodType;
         startDate: any;
-        endDate: any
+        endDate: any;
+        startYm: any;
+        endYm: any
         yearMonth: number;
+    }
+
+    enum PeriodType {
+        PERIOD_DATE = 1,
+        PERIOD_YM = 2,
+        SINGLE_MONTH = 3
     }
 
     class CheckCondition {
         isChecked: KnockoutObservable<boolean>;
         category: common.WORKPLACE_CATAGORY;
         categoryName: any;
+        periodType: PeriodType;
         dateRange: KnockoutObservable<DateRangePickerModel>;
+        dateRangeYm: KnockoutObservable<DateRangePickerModel>;
         yearMonth: KnockoutObservable<number>;
-        type: KnockoutObservable<string>;
 
         constructor(data: ICheckCondition) {
             this.isChecked = ko.observable(false);
             this.category = data.category;
             this.categoryName = data.categoryName;
+            this.periodType = data.periodType;
             this.dateRange = ko.observable(new DateRangePickerModel(data.startDate, data.endDate));
+            this.dateRangeYm = ko.observable(new DateRangePickerModel(data.startYm, data.endYm));
             this.yearMonth = ko.observable(data.yearMonth);
-            this.type = ko.observable(this.getType());
-        }
-
-        getType(): string {
-            if (this.category == common.WORKPLACE_CATAGORY.MASTER_CHECK_BASIC 
-                || this.category == common.WORKPLACE_CATAGORY.MASTER_CHECK_WORKPLACE) {
-                return 'yearmonth';
-            }
-            return 'date';
         }
 
         isValid() {
-            if (!this.dateRange().startDate || !this.dateRange().endDate) {
-                return false;
+            switch (this.periodType) {
+                case PeriodType.PERIOD_DATE:
+                    if (!this.dateRange().startDate || !this.dateRange().endDate) {
+                        return false;
+                    }
+                    break;
+                case PeriodType.PERIOD_YM:
+                    if (!this.dateRangeYm().startDate || !this.dateRangeYm().endDate) {
+                        return false;
+                    }
+                    break;
+                case PeriodType.SINGLE_MONTH:
+                    if (!this.yearMonth()) {
+                        return false;
+                    }
+                    break;
             }
             return true;
-        }
-
-        isPeriodDate(){
-            return this.category != common.WORKPLACE_CATAGORY.MONTHLY;
         }
     }
 
