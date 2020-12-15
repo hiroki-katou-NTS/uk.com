@@ -152,14 +152,14 @@ module nts.uk.at.view.kwr004.b {
         row.selectionItem(null);
         row.selectedTime = -1;
         row.dailyAttributes(value === 1 ? vm.dailyAloneAttributes() : vm.dailyCalcAttributes());
-        //vm.settingListItemsDetails.valueHasMutated();
+        vm.settingListItemsDetails.valueHasMutated();
       });
 
       row.itemAttribute.subscribe((value) => {
         row.selectedTimeList([]);
         row.selectionItem(null);
         row.selectedTime = -1;
-        //vm.settingListItemsDetails.valueHasMutated();
+        vm.settingListItemsDetails.valueHasMutated();
       });
 
       vm.settingListItemsDetails.push(row);
@@ -222,7 +222,7 @@ module nts.uk.at.view.kwr004.b {
         dailyOutputItems: vm.getDailyOutputItems(),
         monthlyOutputItems: vm.getMonthlyOutputItems()
       };
-
+   
       const path_url = (vm.isNewMode()) ? PATH.createSetting : PATH.updateSetting;
 
       vm.$blockui('show');
@@ -236,7 +236,7 @@ module nts.uk.at.view.kwr004.b {
         .fail((error) => {
           vm.showError(error.messageId);
           vm.$blockui('hide');
-        }).always(() => vm.$blockui('hide'));
+        }).always(() => vm.$blockui('hide')); 
     }
 
     showError(messageId: string) {
@@ -347,20 +347,20 @@ module nts.uk.at.view.kwr004.b {
 
     sortSettingListItemsDetails(settingList: Array<SettingForPrint>, max_row: number) {
       const vm = this,
-        tempSettings: Array<SettingForPrint> = [];
+        tempSettings: Array<SettingForPrint> = [],
+        tempSettings1: Array<SettingForPrint> = [];
 
       _.forEach(settingList, (item) => {
         if (!nts.uk.util.isNullOrEmpty(item.name())) {
           tempSettings.push(item);
+        } else {
+          tempSettings1.push(item);
         }
       });
 
-      let from = tempSettings.length;
-      for (let i = from; i < max_row; i++) {
-        let dailyAttributes = vm.dailyOrMonthlyAttributes(i < 2 ? 1 : 2);
-        let newItem = new SettingForPrint(i + 1, null, i < 2 ? 1 : 2, null, false, 0, [], dailyAttributes, i < 2);
-        tempSettings.push(newItem);
-      }
+      _.forEach(tempSettings1, (item) => {
+        tempSettings.push(item);
+      });
 
       return tempSettings;
     }
@@ -480,8 +480,7 @@ module nts.uk.at.view.kwr004.b {
           vm.$ajax(PATH.deleteSetting, params)
             .done(() => {
               vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-                vm.getPositionBeforeDelete();  //keep position before remove        
-                //vm.getSettingItemsLeft(null);
+                vm.getPositionBeforeDelete();  //keep position before remove     
                 vm.$blockui('hide');
               })
             })
@@ -594,6 +593,7 @@ module nts.uk.at.view.kwr004.b {
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
             vm.currentCodeList(currentCode);
+            //vm.currentCodeList.valueHasMutated();
           }
         }).fail(() => { });
     }
