@@ -50,36 +50,67 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c1() {
         const self = this;
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let value = _.get(displayOverTime, 'infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr');
 
-        return displayOverTime.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr == NotUseAtr.USE;
+        return value == NotUseAtr.USE;
     }
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
     public get c3() {
         const self = this;
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let value = _.get(displayOverTime, 'infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
 
-        return displayOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE;
+        return value == NotUseAtr.USE;
     }
+    // ※表3 = ○　OR　※表3-1-1 = ○
+    public get c3_1() {
+        const self = this;
+
+        return self.c3_1_1 || self.c3;
+    }
+    // ※表15 = × AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」＝する
+    // ※表15 = ○ AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
+    public get c3_1_1() {
+        const self = this;
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let value1 = _.get(displayOverTime, 'infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak');
+        let value2 = _.get(displayOverTime, 'infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting');
+        
+        return (value1 == NotUseAtr.USE || value2 == NotUseAtr.USE);
+    }
+    //  c3 AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
+    public get c3_2() {
+        const self = this;
+        let value = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
+        
+        return value;
+    }
+
+
+
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
     public get c4() {
         const self = this;
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let value = _.get(displayOverTime, 'infoBaseDateOutput.quotaOutput.overTimeQuotaList');
 
-        return !_.isEmpty(displayOverTime.infoBaseDateOutput.quotaOutput.overTimeQuotaList);
+        return !_.isEmpty(value);
     }
     // 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
     public get c5() {
         const self = this;
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let value = _.get(displayOverTime, 'infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr');
 
-        return displayOverTime.infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr == NotUseAtr.USE; 
+        return value == NotUseAtr.USE; 
     }
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．フレックス時間表示区分」= true
     public get c6() {
         const self = this;
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let value = _.get(displayOverTime, 'infoBaseDateOutput.quotaOutput.flexTimeClf');
 
-        return displayOverTime.infoBaseDateOutput.quotaOutput.flexTimeClf;
+        return value;
     }
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND 乖離理由を選択肢から選ぶ = true
     public get c13() {
@@ -454,31 +485,68 @@ export class KafS05Component extends KafS00ShrComponent {
             });
         });
     }
+    public handleErrorMessage(res: any) {
+        const self = this;
+        self.$mask('hide');
+        if (res.messageId) {
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            
+            if (_.isArray(res.errors)) {
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+            } else {
+                return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
+    }
 
-    public openKDL002() {
+    public openKDL002(name: string) {
         const self = this;
         let step1 = self.$refs.step1 as KafS05Step1Component;
-        self.$modal('worktype', {
+        if (name == 'worktype') {
+            self.$modal('worktype', {
 
-            seledtedWkTypeCDs: _.map(_.uniqBy(self.model.displayInfoOverTime.infoBaseDateOutput.worktypes, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
-            selectedWorkTypeCD: step1.getWorkType(),
-            seledtedWkTimeCDs: _.map(self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
-            selectedWorkTimeCD: step1.getWorkTime(),
-            isSelectWorkTime: 1,
-        })
-        .then((f: any) => {
-            step1.setWorkCode(
-                f.selectedWorkType.workTypeCode,
-                f.selectedWorkType.name,
-                f.selectedWorkTime.code,
-                f.selectedWorkTime.name,
-                f.selectedWorkTime.workTime1,
-                self.model.displayInfoOverTime
-            );
-        })
-        .catch((err: any) => {
-            console.log(err);
-        });
+                seledtedWkTypeCDs: _.map(_.uniqBy(self.model.displayInfoOverTime.infoBaseDateOutput.worktypes, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
+                selectedWorkTypeCD: step1.getWorkType(),
+                seledtedWkTimeCDs: _.map(self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                selectedWorkTimeCD: step1.getWorkTime(),
+                isSelectWorkTime: 1,
+            })
+            .then((f: any) => {
+                step1.setWorkCode(
+                    f.selectedWorkType.workTypeCode,
+                    f.selectedWorkType.name,
+                    f.selectedWorkTime.code,
+                    f.selectedWorkTime.name,
+                    f.selectedWorkTime.workTime1,
+                    self.model.displayInfoOverTime
+                );
+            })
+            .catch((res: any) => {
+                self.handleErrorMessage(res);
+            });
+        } else {
+            self.$modal(
+                'worktime',
+                {
+                    isAddNone: 0,
+                    seledtedWkTimeCDs: _.map(self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                    selectedWorkTimeCD: step1.getWorkTime(),
+                    isSelectWorkTime: 1
+                }
+            ).then((f: any) => {
+                if (f) {
+                    step1.setWorkTime(
+                        f.selectedWorkTime.code,
+                        f.selectedWorkTime.name,
+                        f.selectedWorkTime.workTime1,
+                    );
+                }
+            }).catch((res: any) => {
+                self.handleErrorMessage(res);
+            });
+        }
+        
     }
 
 
