@@ -403,7 +403,7 @@ module nts.uk.at.kal014.a {
                     end = vm.$i18n('KAL014_44') + "当日 ";
                 } else {
                     end = vm.$i18n('KAL014_44')
-                        + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousMonth() == 0? "前" : "先");
+                        + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousDay() == 0? "前" : "先");
                 }
             }
 
