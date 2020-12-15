@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,6 +18,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
@@ -30,6 +32,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 		implements DivergenceReasonInputMethodRepository {
 	
 	private final static String FIND_DVGC_TIME;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT d FROM KrcstDvgcTime d ");
