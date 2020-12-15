@@ -56,7 +56,7 @@ public class JudgCurrentStatusEmpInfoTerminal {
 		return TerminalComStatus.createTerminalComStatus(listStateCount, listComstate, totalNumberOfTer);
 	}
 	
-	private static TerminalCurrentState judgmentComStatus(List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus, EmpInfoTerminalCode empInfoTerCode, MonitorIntervalTime intervalTime) {
+	public static TerminalCurrentState judgmentComStatus(List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus, EmpInfoTerminalCode empInfoTerCode, MonitorIntervalTime intervalTime) {
 		List<EmpInfoTerminalComStatusImport> filteredList = listEmpInfoTerminalComStatus.stream()
 																.filter(e -> e.getEmpInfoTerCode().equals(empInfoTerCode))
 																.collect(Collectors.toList());
