@@ -16,7 +16,5 @@ public class KrcmtWkpFxexConPk {
     @Column(name = "WP_ERROR_ALARM_CHKID")
     public String id;
 
-    @Column(name = "NO")
-    public Integer no;
 
 }

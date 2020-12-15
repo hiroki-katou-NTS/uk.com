@@ -24,6 +24,9 @@ public class KrcmtWkpBasicFxexCon extends ContractCompanyUkJpaEntity implements 
     @EmbeddedId
     public KrcmtWkpBasicFxexConPk pk;
 
+    @Column(name = "NO")
+    public Integer no;
+
     @Column(name = "MESSAGE_DISPLAY")
     public String message;
 
@@ -38,7 +41,7 @@ public class KrcmtWkpBasicFxexCon extends ContractCompanyUkJpaEntity implements 
     public BasicFixedExtractionCondition toDomain() {
         return new BasicFixedExtractionCondition(
                 this.pk.id,
-                this.pk.no,
+                this.no,
                 this.useAtr,
                 this.message
         );

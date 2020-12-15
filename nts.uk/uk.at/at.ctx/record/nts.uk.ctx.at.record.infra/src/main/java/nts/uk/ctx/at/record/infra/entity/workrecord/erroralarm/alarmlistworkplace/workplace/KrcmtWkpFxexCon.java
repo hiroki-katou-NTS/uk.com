@@ -24,6 +24,9 @@ public class KrcmtWkpFxexCon extends ContractCompanyUkJpaEntity implements Seria
     @EmbeddedId
     public KrcmtWkpFxexConPk pk;
 
+    @Column(name = "NO")
+    public Integer no;
+
     @Column(name = "MESSAGE_DISPLAY")
     public String message;
 
@@ -38,7 +41,7 @@ public class KrcmtWkpFxexCon extends ContractCompanyUkJpaEntity implements Seria
     public AlarmFixedExtractionCondition toDomain() {
         return new AlarmFixedExtractionCondition(
                 this.pk.id,
-                this.pk.no,
+                this.no,
                 this.useAtr,
                 this.message
         );
