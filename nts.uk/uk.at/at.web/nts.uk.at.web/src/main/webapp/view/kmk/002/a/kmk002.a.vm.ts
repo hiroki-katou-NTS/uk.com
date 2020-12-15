@@ -188,6 +188,11 @@ module nts.uk.at.view.kmk002.a {
             isUpperRequiredMonth: KnockoutComputed<boolean>;
             isLowerRequiredMonth: KnockoutComputed<boolean>;
 
+            enableUpperDay: KnockoutComputed<boolean>;
+            enableLowerDay: KnockoutComputed<boolean>;
+            enableUpperMonth: KnockoutComputed<boolean>;
+            enableLowerMonth: KnockoutComputed<boolean>;
+
             // stash
             optionalItemAtrStash: number;
             performanceAtrStash: number;
@@ -233,6 +238,19 @@ module nts.uk.at.view.kmk002.a {
                 });
                 this.isLowerRequiredMonth = ko.computed(() => {
                     return this.usageAtr() === 1 && this.calcResultRange.lowerCheck() && this.calcResultRange.lowerRequired();
+                });
+
+                this.enableUpperDay = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.upperCheck() && this.performanceAtr() === 1;
+                });
+                this.enableLowerDay = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.lowerCheck() && this.performanceAtr() === 1;
+                });
+                this.enableUpperMonth = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.upperCheck();
+                });
+                this.enableLowerMonth = ko.computed(() => {
+                    return this.usageAtr() === 1 && this.calcResultRange.lowerCheck();
                 });
 
                 // init datasource
@@ -964,6 +982,21 @@ module nts.uk.at.view.kmk002.a {
                 }
 
                 // get current value of view model
+                if (self.performanceAtr() === 0) {
+                    if (self.optionalItemAtr() === 0) {
+                        self.calcResultRange.timeLowerDay(null);
+                        self.calcResultRange.timeUpperDay(null);
+                    }
+                    if (self.optionalItemAtr() === 1) {
+                        self.calcResultRange.numberLowerDay(null);
+                        self.calcResultRange.numberUpperDay(null);
+                    }
+                    if (self.optionalItemAtr() === 2) {
+                        self.calcResultRange.amountUpperDay(null);
+                        self.calcResultRange.amountLowerDay(null);
+                    }
+                }
+
                 dto.optionalItemNo = self.optionalItemNo();
                 dto.optionalItemName = self.optionalItemName();
                 dto.optionalItemAtr = self.optionalItemAtr();
@@ -1600,6 +1633,7 @@ module nts.uk.at.view.kmk002.a {
                                 self.hasSelected(true);
                                 self.optionalItem.dailyUnit();
                                 self.optionalItem.monthlyUnit();
+                                self.optionalItem.calcResultRange.resetValue();
                                 self.loadOptionalItemDetail(itemNo);
                                 // clear error.
                                 if ($('.nts-editor').ntsError("hasError")){
