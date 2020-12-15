@@ -510,6 +510,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			output.setTimeZones(timeZones);
 		} else {
 			// 「休憩時間帯設定」<List>を作成する
+			List<DeductionTime> timeZones = breakTimes.stream()
+					  .map(x -> new DeductionTime(x.getOpStartTime().orElse(null), x.getOpEndTime().orElse(null)))
+					  .collect(Collectors.toList());
+			output.setTimeZones(timeZones);
+			// 勤務時間外の休憩時間を除く
 			output = this.createBreakTime(startTimeOp, endTimeOp, output);
 		}
 		
