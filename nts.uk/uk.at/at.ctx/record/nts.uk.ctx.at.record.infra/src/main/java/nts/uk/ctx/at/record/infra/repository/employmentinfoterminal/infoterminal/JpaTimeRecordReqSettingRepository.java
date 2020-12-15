@@ -188,7 +188,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	public List<EmployeeId> getEmployeeIdList(ContractCode contractCode, EmpInfoTerminalCode code) {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
 		if (!timeRecordReqSetting.isPresent()) {
-			Collections.emptyList();
+			return Collections.emptyList();
 		}
 		return timeRecordReqSetting.get().getEmployeeIds();
 	}
@@ -197,7 +197,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	public List<WorkTypeCode> getWorkTypeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
 		if (!timeRecordReqSetting.isPresent()) {
-			Collections.emptyList();
+			return Collections.emptyList();
 		}
 		return timeRecordReqSetting.get().getWorkTypeCodes();
 	}
@@ -206,7 +206,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	public List<WorkTimeCode> getWorkTimeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
 		if (!timeRecordReqSetting.isPresent()) {
-			Collections.emptyList();
+			return Collections.emptyList();
 		}
 		return timeRecordReqSetting.get().getWorkTimeCodes();
 	}
@@ -215,7 +215,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	public List<Integer> getbentoMenuFrameNumbers(ContractCode contractCode, EmpInfoTerminalCode code) {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
 		if (!timeRecordReqSetting.isPresent()) {
-			Collections.emptyList();
+			return Collections.emptyList();
 		}
 		return timeRecordReqSetting.get().getBentoMenuFrameNumbers();
 	}
