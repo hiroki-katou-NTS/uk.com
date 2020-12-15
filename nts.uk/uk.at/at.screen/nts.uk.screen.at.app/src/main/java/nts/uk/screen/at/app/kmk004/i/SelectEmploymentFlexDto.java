@@ -15,7 +15,7 @@ import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 @Data
 public class SelectEmploymentFlexDto {
 	// 雇用を選択する
-	EmpFlexMonthActCalSetDto empFlexMonthActCalSetDto;
+	EmpFlexMonthActCalSetDto flexMonthActCalSet;
 	// 職場別年度リストを表示する
 	List<YearDto> years;
 }

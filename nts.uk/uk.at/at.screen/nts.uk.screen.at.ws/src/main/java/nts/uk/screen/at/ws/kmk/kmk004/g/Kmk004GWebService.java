@@ -28,7 +28,7 @@ public class Kmk004GWebService {
 	private DisplayInitialFlexScreenByCompany displayInitialFlexScreenByCompany;
 
 	@Inject
-	private SelectFlexYearByCompany selectFlexYearByCompany;
+	private SelectFlexYearByCompany selectYear;
 
 	@Inject
 	private RegisterFlexMonthlyWorkTimeSetComCommandHandler registerHandler;
@@ -40,7 +40,7 @@ public class Kmk004GWebService {
 	private DeleteFlexMonthlyWorkingHoursByComCommandHandler deleteHandler;
 
 	@Inject
-	private AfterChangeFlexCompanySetting afterChangeFlexCompanySetting;
+	private AfterChangeFlexCompanySetting afterChangeSetting;
 
 	@POST
 	@Path("init-screen")
@@ -51,7 +51,7 @@ public class Kmk004GWebService {
 	@POST
 	@Path("change-year/{year}")
 	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("year") int year) {
-		return this.selectFlexYearByCompany.selectYearByCompany(year);
+		return this.selectYear.selectYearByCompany(year);
 	}
 
 	@POST
@@ -75,7 +75,7 @@ public class Kmk004GWebService {
 	@POST
 	@Path("change-setting")
 	public DisplayFlexBasicSettingByCompanyDto changeSetting() {
-		return this.afterChangeFlexCompanySetting.afterChangeFlexCompanySetting();
+		return this.afterChangeSetting.afterChangeFlexCompanySetting();
 	}
 
 }

@@ -34,15 +34,18 @@ public class DisplayInitialFlexScreenByWorkPlace {
 		// 1.ログイン会社ID
 
 		this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
-			result.setGetFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
+			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 		// 2.職場リストを表示する
 		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.FLEX));
 
 		if (!result.getWkpIds().isEmpty()) {
 			// 3.職場を選択する（フレックス勤務）
-			result.setSelectWorkPlaceFlex(
-					this.selectWorkPlaceFlex.selectWorkPlaceFlex(result.getWkpIds().get(0).WorkplaceId));
+			
+			SelectWorkPlaceFlexDto selectWorkPlaceFlexDto = this.selectWorkPlaceFlex.selectWorkPlaceFlex(result.getWkpIds().get(0).WorkplaceId);
+			result.setFlexBasicSetting(selectWorkPlaceFlexDto.getFlexBasicSetting());
+			result.setYearList(selectWorkPlaceFlexDto.getYearList());
+			
 		}
 
 		return result;

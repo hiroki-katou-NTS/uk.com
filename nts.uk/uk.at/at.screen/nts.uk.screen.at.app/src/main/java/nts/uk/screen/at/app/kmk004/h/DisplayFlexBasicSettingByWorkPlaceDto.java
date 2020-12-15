@@ -16,7 +16,7 @@ import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 @NoArgsConstructor
 public class DisplayFlexBasicSettingByWorkPlaceDto {
 	// 職場別フレックス勤務集計方法
-	WkpFlexMonthActCalSetDto wkpFlexMonthActCalSet;
+	WkpFlexMonthActCalSetDto flexMonthActCalSet;
 	// フレックス勤務所定労働時間取得
 	GetFlexPredWorkTimeDto getFlexPredWorkTime;
 	

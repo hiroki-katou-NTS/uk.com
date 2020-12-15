@@ -31,14 +31,14 @@ public class DisplayInitialFlexBasicSettingByCompany {
 		// フレックス勤務所定労働時間取得
 		this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
 
-			result.setGetFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
+			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 
 		});
 
 		// 会社別フレックス勤務集計方法
 		this.comFlexMonthActCalSetRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
 
-			result.setComFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
+			result.setFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
 
 		});
 
