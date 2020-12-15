@@ -12,7 +12,7 @@ module nts.uk.at.view.kcp015.test {
             checkedA3_4 : KnockoutObservable<boolean> = ko.observable(true);
             checkedA3_5 : KnockoutObservable<boolean> = ko.observable(true);
             checkedA3_6 : KnockoutObservable<boolean> = ko.observable(true);
-            enable      : KnockoutObservable<boolean> = ko.observable(false);
+            enable      : KnockoutObservable<boolean> = ko.observable(true);
             
             baseDate1: KnockoutObservable<string>   = ko.observable('');
             listEmp: KnockoutObservableArray<any> = ko.observableArray([]);

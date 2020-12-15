@@ -21,9 +21,9 @@
           <nts-label>{{ "KDLS35_3" | i18n }}</nts-label>
         </div>
         <!-- A2_2 -->
-        <div class="col-7 pt-2 " id="A2_2">
-          <label v-if="startDate === endDate" >{{startDate | i18n}}</label>
-          <label v-else >{{"KDLS35_14" | i18n([startDate, endDate])}}</label>
+        <div class="col-7 pt-2" id="A2_2">
+          <label v-if="startDate === endDate">{{ startDate | i18n }}</label>
+          <label v-else>{{ "KDLS35_14" | i18n([startDate, endDate]) }}</label>
         </div>
       </div>
       <!-- A3_1 -->
@@ -72,12 +72,31 @@
           <tr class="text-center">
             <td>
               <!-- A5_6 -->
-              <nts-checkbox v-bind:value="true" v-model="item.checked" v-bind:disabled="!item.enable" v-focus>
-              </nts-checkbox>
+              <nts-checkbox
+                v-if="item.enable && index == 0"
+                v-bind:value="true"
+                v-model="item.checked"
+                v-on:input="(val) => checkRequirementOfDay(item, val)"
+                v-focus
+              />
+              <nts-checkbox
+                v-else-if="item.enable"
+                v-bind:value="true"
+                v-model="item.checked"
+                v-on:input="(val) => checkRequirementOfDay(item, val)"
+              />
+              <nts-checkbox
+                v-else
+                class="cb-bg-color"
+                v-bind:value="true"
+                v-model="item.checked"
+                v-on:input="() => checkRequirementOfDay(item)"
+                v-bind:disabled="true"
+              />
             </td>
             <!-- A5_7 -->
-            <td v-on:click="() => (item.checked = !item.checked)">
-               <template v-if="item.icon">
+            <td v-on:click="() => checkRequirementOfDayWithCheck(item)">
+              <template v-if="item.icon">
                 <fa-font :icon="item.icon" />
               </template>
               <template v-else />
@@ -85,21 +104,21 @@
             <!-- A5_8 -->
             <td
               class="substituteWorkDate"
-              v-on:click="() => (item.checked = !item.checked)"
+              v-on:click="() => checkRequirementOfDayWithCheck(item)"
             >
               {{ item.substituteWorkDate | date("YY/MM/DD(ddd)") }}
             </td>
             <!-- A5_9 -->
             <td
               class="remainingNumber"
-              v-on:click="() => (item.checked = !item.checked)"
+              v-on:click="() => checkRequirementOfDayWithCheck(item)"
             >
               <span>{{ "KDLS35_5" | i18n(item.remainingNumber) }}</span>
             </td>
             <!-- A5_10 -->
             <td
               class="expirationDate"
-              v-on:click="() => (item.checked = !item.checked)"
+              v-on:click="() => checkRequirementOfDayWithCheck(item)"
             >
               <span>{{ item.expirationDate | date("YY/MM/DD(ddd)") }}</span>
             </td>

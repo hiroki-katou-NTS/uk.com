@@ -5,7 +5,8 @@ module nts.uk.at.view.kmf002 {
     export module viewmodel {
         
         var path: any = {
-                findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth"
+                findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth",
+                findHolidayConfig: "at/shared/holidaysetting/config/find"
             };
         
         export class CommonTableMonthDaySet { 
@@ -29,37 +30,43 @@ module nts.uk.at.view.kmf002 {
             infoSelect1: KnockoutObservable<string>;
             infoSelect2: KnockoutObservable<string>;
             infoSelect3: KnockoutObservable<string>;
+            isPeriod: KnockoutObservable<boolean>;
             
             constructor(){
-                let _self = this;
+                let self = this;
                 
-                _self.visibleInfoSelect = ko.observable(false);
-                _self.infoSelect1 = ko.observable("");
-                _self.infoSelect2 = ko.observable("");
-                _self.infoSelect3 = ko.observable("");
+                self.visibleInfoSelect = ko.observable(false);
+                self.infoSelect1 = ko.observable("");
+                self.infoSelect2 = ko.observable("");
+                self.infoSelect3 = ko.observable("");
                 
-                _self.fiscalYear = ko.observable(moment().format('YYYY'));
-                _self.arrMonth = ko.observableArray([]);
+                self.fiscalYear = ko.observable(moment().format('YYYY'));
+                self.arrMonth = ko.observableArray([]);
+
+                self.isPeriod = ko.observable(true);
                 
-                $.when(_self.findFirstMonth()).done(function(data: any) {
+                $.when(self.findFirstMonth(), self.getHolidayConfig()).done(function(data: any, data1: any) {
                     if (_.isNull(data.startMonth)) {
                             data.startMonth = 1;
                         }
                     for (let i=data.startMonth; i<=12; i++) {
-                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
+                        self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
                     }
                     
                     for (let i=1; i<data.startMonth; i++) {
-                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
-                    } 
+                        self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
+                    }
+                    if(!_.isUndefined(data1) && !_.isNull(data1) && !_.isEmpty(data1)){
+                        self.isPeriod(data1.publicHolidayPeriod === 1 ? true: false);
+                    }                    
                 });
                 
                 // Define styles
-               _self.cssRangerY = [];
-               _self.cssRangerYM = {};
-               _self.cssRangerYMD = {};
+               self.cssRangerY = [];
+               self.cssRangerYM = {};
+               self.cssRangerYMD = {};
                 
-                _.forEach(_self.arrMonth(), function(newValue: any) {
+                _.forEach(self.arrMonth(), function(newValue: any) {
                     newValue.day.subscribe(function(newValue) {
                     });
                 });   
@@ -68,6 +75,11 @@ module nts.uk.at.view.kmf002 {
             private findFirstMonth() :JQueryPromise<any> {
                 return nts.uk.request.ajax("at", path.findFirstMonth); 
             }
+
+            public getHolidayConfig() : JQueryPromise<any> {
+                return nts.uk.request.ajax("at", path.findHolidayConfig);
+            }
        }      
+
     }
 }

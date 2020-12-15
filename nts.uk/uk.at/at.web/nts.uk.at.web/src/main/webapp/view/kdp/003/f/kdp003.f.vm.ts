@@ -282,9 +282,13 @@ module nts.uk.at.kdp003.f {
 				});
 
 			$(vm.$el)
-				.on('keyup', '#password-input', evt => {
-					if (evt.keyCode === 13 && !!ko.unwrap(vm.model.password)) {
-						vm.submitLogin();
+				.on('keyup', '#password-input, #employee-code-inp-2', evt => {
+					if (evt.keyCode === 13) {
+						const { employeeCode, password } = vm.model;
+
+						if (!!ko.unwrap(employeeCode) && !!ko.unwrap(password)) {
+							vm.submitLogin();
+						}
 					}
 				});
 		}
