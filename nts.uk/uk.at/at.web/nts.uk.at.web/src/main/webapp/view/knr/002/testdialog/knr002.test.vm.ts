@@ -38,6 +38,7 @@ module knr002.test {
             empInfoTerName_G: KnockoutObservable<string>;
             modelEmpInfoTerName_G: KnockoutObservable<string>;
             workLocationName_G: KnockoutObservable<string>;
+            
 
 
             
@@ -78,7 +79,7 @@ module knr002.test {
 
 
                 // G_Dialog
-                self.empInfoTerCode_G = ko.observable("0002");
+                self.empInfoTerCode_G = ko.observable("1111");
                 self.empInfoTerName_G = ko.observable("Name 2G_Shared");
                 self.modelEmpInfoTerName_G = ko.observable("NRL-G");
                 self.workLocationName_G = ko.observable("Work Location 2G");

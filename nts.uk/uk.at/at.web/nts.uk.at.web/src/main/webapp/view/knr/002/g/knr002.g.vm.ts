@@ -26,9 +26,18 @@ module knr002.g {
             stampReceive: KnockoutObservable<boolean>;//全ての打刻データ
             applicationReceive: KnockoutObservable<boolean>;//全ての申請データ
             reservationReceive: KnockoutObservable<boolean>;//全ての予約データ
+            
+            //WorkType_ 
+            posibleWorkTypes: KnockoutObservableArray<string>;
+            workTypeCodes: KnockoutObservableArray<string>;
+            selectableWorkTypes: KnockoutObservableArray<string>;
+            isCloseWorkType: KnockoutObservable<boolean>;
 
-
-
+            //WorkTime_ 就業時間帯の設定
+            posibleWorkTimes: KnockoutObservableArray<string>;
+            workTimeCodes: KnockoutObservableArray<string>;
+            selectableWorkTimes: KnockoutObservableArray<string>;
+            isCloseWorkTime: KnockoutObservable<boolean>;
 
             constructor(){
                 var self = this;
@@ -48,6 +57,16 @@ module knr002.g {
                 self.stampReceive = ko.observable(false);
                 self.applicationReceive = ko.observable(false);
                 self.reservationReceive = ko.observable(false);
+                // Worktype
+                self.posibleWorkTypes = ko.observableArray([]);
+                self.workTypeCodes = ko.observableArray([]);
+                self.selectableWorkTypes = ko.observableArray([]);
+                self.isCloseWorkType = ko.observable(false); 
+                // Worktime
+                self.posibleWorkTimes = ko.observableArray([]);
+                self.workTimeCodes = ko.observableArray([]);
+                self.selectableWorkTimes = ko.observableArray([]);
+                self.isCloseWorkTime = ko.observable(false);               
             }
             /**
              * Start Page
@@ -91,6 +110,43 @@ module knr002.g {
                 blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
+            }
+            /**
+             * get worktype to be sent
+             * 
+             */
+            private call_KDL002(): void{
+                var self = this;
+                blockUI.invisible();
+                service.getWorkTypes(self.empInfoTerCode()).done((data)=>{	
+                console.log("code", self.empInfoTerCode());
+                    if(!data){	
+                        //do something
+                    }else{	
+                        self.posibleWorkTypes(data.posibleWorkTypes);
+                        self.workTypeCodes(self.isCloseWorkType()? self.workTypeCodes() : data.workTypeCodes);
+                        console.log("data", data);
+                        setShared('KDL002_Multiple', true);
+                        setShared('KDL002_AllItemObj', self.posibleWorkTypes());
+                        setShared('KDL002_SelectedItemId', self.workTypeCodes());
+                        nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(() => {
+                            var self = this;
+                            var selectable= nts.uk.ui.windows.getShared("KDL002_SelectedNewItem");
+                            self.selectableWorkTypes(selectable !== undefined? selectable : []);
+                            self.isCloseWorkType(true);
+                            console.log("selectable: ", self.selectableWorkTypes());
+                            blockUI.clear();
+                        });
+                    }	
+                });	 
+            }
+            /**
+             * get Worktime
+             * 
+             */
+            private call_KDL001(): void{
+                var self = this;
+                blockUI.invisible();
             }
             /**
              * get Model Name

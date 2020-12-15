@@ -7,8 +7,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.screen.at.app.query.knr.knr002.g.GetWorkTypeToBeSent;
-import nts.uk.screen.at.app.query.knr.knr002.g.GetWorkTypeToBeSentDto;
+import nts.uk.screen.at.app.query.knr.knr002.g.GetWorkType;
+import nts.uk.screen.at.app.query.knr.knr002.g.GetWorkTypeDto;
 
 /**
 *
@@ -19,12 +19,12 @@ import nts.uk.screen.at.app.query.knr.knr002.g.GetWorkTypeToBeSentDto;
 @Produces(MediaType.APPLICATION_JSON)
 public class GetWorkTypeScreenWS {
 	@Inject
-	private GetWorkTypeToBeSent getWorkTypeToBeSent;
+	private GetWorkType getWorkType;
 	
 	@POST
-	@Path("getworktypetobesent/{empInfoTerCode}")
-	public GetWorkTypeToBeSentDto getTimeRecordReqSetting(@PathParam("empInfoTerCode") String empInforTerCode) {
-		return this.getWorkTypeToBeSent.getWorkTypeToBeSent(empInforTerCode);
+	@Path("getworktypes/{empInfoTerCode}")
+	public GetWorkTypeDto getTimeRecordReqSetting(@PathParam("empInfoTerCode") String empInforTerCode) {
+		return this.getWorkType.getWorkTypes(empInforTerCode);
 	}
 
 }

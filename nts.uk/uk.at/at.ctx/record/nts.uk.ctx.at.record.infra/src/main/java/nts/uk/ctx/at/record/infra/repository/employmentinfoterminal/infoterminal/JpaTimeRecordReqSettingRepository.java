@@ -91,7 +91,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 					String.valueOf(rs.getString("COMPANY_CD")),
 					rs.getString("EMPLOYEE") == null ? Collections.emptyList()
 							: Arrays.asList(new EmployeeId(rs.getString("EMPLOYEE"))),
-					rs.getString("RESERVE_FRAME_NO") == null ? null
+					rs.getString("RESERVE_FRAME_NO") == null ? Collections.emptyList()
 							: Arrays.asList(Integer.parseInt(rs.getString("RESERVE_FRAME_NO"))),
 					rs.getString("WORKTYPE_CD") == null ? Collections.emptyList()
 							: Arrays.asList(new WorkTypeCode(rs.getString("WORKTYPE_CD"))))

@@ -15,8 +15,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class GetWorkTypeToBeSentDto {
-	//	勤務種類コード
-	private List<String> selectableWorks;
+public class GetWorkTypeDto {
+	//	選択可能な勤務種類コード<List>
+	private List<String> posibleWorkTypes;
+	//	選択中の勤務種類コード<List>
 	private List<String> workTypeCodes;
 }
