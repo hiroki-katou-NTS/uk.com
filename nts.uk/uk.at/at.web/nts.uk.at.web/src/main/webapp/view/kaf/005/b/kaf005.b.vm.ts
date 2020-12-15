@@ -999,6 +999,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
 						self.dataSource.workdayoffFrames = res.workdayoffFrames;
 						self.isCalculation = true;
+						self.createVisibleModel(self.dataSource);
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 					}
