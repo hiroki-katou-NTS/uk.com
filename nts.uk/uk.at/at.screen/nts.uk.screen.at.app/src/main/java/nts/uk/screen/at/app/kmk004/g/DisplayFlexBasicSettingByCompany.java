@@ -31,13 +31,13 @@ public class DisplayFlexBasicSettingByCompany {
 
 		// 1.get(ログイン会社ID)
 		this.getFlexRepo.find(comId).ifPresent(x -> {
-			result.setGetFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
+			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 
 		// 2.get(ログイン会社ID)
 
 		this.comFlexRepo.find(comId).ifPresent(x -> {
-			result.setComFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
+			result.setFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
 		});
 
 		return result;

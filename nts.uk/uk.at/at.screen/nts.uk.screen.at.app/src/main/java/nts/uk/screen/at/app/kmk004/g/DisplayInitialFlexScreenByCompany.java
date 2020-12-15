@@ -31,10 +31,10 @@ public class DisplayInitialFlexScreenByCompany {
 		// 1. 利用単位の設定を取得する
 		result.setUsageUnitSetting(this.getUsageUnit.get());
 		// 2. 会社別基本設定（フレックス勤務）を表示する
-		result.setDisplayFlexBasicSettingByCompanyDto(
+		result.setFlexBasicSetting(
 				this.displayFlexBasicSettingByCompany.displayFlexBasicSettingByCompany());
 		// 3. 会社別年度リストを表示する
-		result.setCompanies(this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX.value));
+		result.setYearList(this.displayYearListByCompany.get(LaborWorkTypeAttr.FLEX.value));
 
 		return result;
 	}

@@ -19,6 +19,8 @@ import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonth
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.query.kmk004.a.DisplayInitialScreenForRegistration;
+import nts.uk.screen.at.app.query.kmk004.a.DisplayInitialScreenForRegistrationDto;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettings;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
 import nts.uk.screen.at.app.query.kmk004.b.WorkTimeComDto;
@@ -78,7 +80,18 @@ public class Kmk004WebService extends WebService {
 
 	@Inject
 	private YearListByEmployment yearListByEmployment;
+	
+	@Inject
+	private DisplayInitialScreenForRegistration initScreenViewA;
 
+	
+	// View A
+	@POST
+	@Path("viewA/init")
+	public DisplayInitialScreenForRegistrationDto getInitViewA() {
+		return this.initScreenViewA.get();
+	}
+	
 	// View S
 	@POST
 	@Path("getUsageUnitSetting")

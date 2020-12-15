@@ -87,8 +87,8 @@ module nts.uk.at.kmk004.components.flex {
 			if (param) {
 				this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 				this.monthlyWorkTimeSetComs(_.map(param.monthlyWorkTimeSetComs, (item) => { return new MonthlyWorkTimeSetCom(item); }));
-				this.comFlexMonthActCalSet(param.comFlexMonthActCalSet);
-				this.getFlexPredWorkTime(param.getFlexPredWorkTime);
+				this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
+				this.getFlexPredWorkTime(param.flexBasicSetting.flexPredWorkTime);
 			} else {
 				let monthlyWorkTimeSetComs: Array<MonthlyWorkTimeSetCom> = [];
 				for (let i = 1; i <= 12; i++) {
@@ -134,8 +134,8 @@ module nts.uk.at.kmk004.components.flex {
 		updateData(param: IScreenData) {
 			this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 			this.monthlyWorkTimeSetComs(_.map(param.monthlyWorkTimeSetComs, (item) => { return new MonthlyWorkTimeSetCom(item); }));
-			this.comFlexMonthActCalSet(param.comFlexMonthActCalSet);
-			this.getFlexPredWorkTime(param.getFlexPredWorkTime);
+			this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
+			this.getFlexPredWorkTime(param.flexBasicSetting.flexPredWorkTime);
 		}
 	}
 
@@ -199,16 +199,22 @@ module nts.uk.at.kmk004.components.flex {
 
 
 	export interface IScreenData {
-		//会社別フレックス勤務集計方法
-		comFlexMonthActCalSet: IComFlexMonthActCalSet
-		//フレックス勤務所定労働時間取得
-		getFlexPredWorkTime: IGetFlexPredWorkTime;
+
+		//会社別基本設定（フレックス勤務）を表示する
+		flexBasicSetting: IDisplayFlexBasicSettingByCompanyDto
 
 		isShowCheckbox: boolean;
 		//年度リスト
 		yearList: Array<number>;
 		//会社別月単位労働時間
 		monthlyWorkTimeSetComs: Array<IMonthlyWorkTimeSetCom>;
+	}
+
+	export interface IDisplayFlexBasicSettingByCompanyDto {
+		//会社別フレックス勤務集計方法
+		flexMonthActCalSet: IComFlexMonthActCalSet
+		//フレックス勤務所定労働時間取得
+		flexPredWorkTime: IGetFlexPredWorkTime;
 	}
 	//会社別月単位労働時間 
 	export interface IMonthlyWorkTimeSetCom {

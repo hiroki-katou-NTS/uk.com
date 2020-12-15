@@ -28,7 +28,7 @@ public class DisplayFlexBasicSettingByWorkPlace {
 		DisplayFlexBasicSettingByWorkPlaceDto result = new DisplayFlexBasicSettingByWorkPlaceDto();
 		// 1. get(ログイン会社ID,職場ID)
 		this.wkpFlexMonthActCalSetRepo.find(AppContexts.user().companyId(), wkpId).ifPresent(x -> {
-			result.setWkpFlexMonthActCalSet(WkpFlexMonthActCalSetDto.fromDomain(x));
+			result.setFlexMonthActCalSet(WkpFlexMonthActCalSetDto.fromDomain(x));
 		});
 
 		// 2. get(ログイン会社ID,職場ID)

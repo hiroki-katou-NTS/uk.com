@@ -17,8 +17,8 @@ public class DisplayInitialFlexScreenByCompanyDto {
 	UsageUnitSettingDto usageUnitSetting;
 
 	// 会社別基本設定（フレックス勤務）を表示する
-	DisplayFlexBasicSettingByCompanyDto displayFlexBasicSettingByCompanyDto;
+	DisplayFlexBasicSettingByCompanyDto flexBasicSetting;
 
 	// 会社別年度リスト
-	List<YearDto> companies;
+	List<YearDto> yearList;
 }

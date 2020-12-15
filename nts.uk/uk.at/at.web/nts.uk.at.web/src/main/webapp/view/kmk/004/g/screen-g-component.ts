@@ -39,14 +39,15 @@ const template = `
 						</div>
 					</div>
 	`;
-const COMPONENT_NAME = 'screen-g-component';
 
-const API_URL = {
-	START_PAGE: 'screen/at/kmk004/h/start-page'
+const BASE_URL = 'screen/at/kmk004/g/';
+
+const API_G_URL = {
+	START_PAGE: BASE_URL + 'init-screen',
 };
 
 @component({
-	name: COMPONENT_NAME,
+	name: 'screen-g-component',
 	template
 })
 
@@ -60,12 +61,13 @@ class ScreenGComponent extends ko.ViewModel {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
-		/*	vm.$blockui('invisible')
-				.then(() => vm.$ajax(API_URL.START_PAGE))
-				.then((data: IScreenData) => {
-					vm.screenData(new FlexScreenData(data));
-				})
-				.then(() => vm.$blockui('clear'));*/
+		vm.$blockui('invisible')
+			.then(() => vm.$ajax(API_G_URL.START_PAGE))
+			.then((data) => {
+				console.log(data);
+				//vm.screenData(new FlexScreenData(data));
+			})
+			.then(() => vm.$blockui('clear'));
 
 	}
 

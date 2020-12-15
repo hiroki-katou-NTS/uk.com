@@ -24,7 +24,7 @@ public class SelectEmploymentFlex {
 	public SelectEmploymentFlexDto selectEmploymentFlex(String employmentCd) {
 		SelectEmploymentFlexDto result = new SelectEmploymentFlexDto();
 		// 1. 雇用別基本設定（フレックス勤務）を表示する
-		result.setEmpFlexMonthActCalSetDto(
+		result.setFlexMonthActCalSet(
 				this.displayFlexBasicSettingByEmployment.displayFlexBasicSettingByEmployment(employmentCd));
 		// 2. 雇用別年度リストを表示する
 		result.setYears(this.yearListByEmployment.get(employmentCd, LaborWorkTypeAttr.FLEX));
