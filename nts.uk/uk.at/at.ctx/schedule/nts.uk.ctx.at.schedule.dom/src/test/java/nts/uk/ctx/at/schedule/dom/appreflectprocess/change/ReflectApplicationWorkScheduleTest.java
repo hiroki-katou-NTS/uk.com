@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AddDataB
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.GetDomainReflectModelApp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 @RunWith(JMockit.class)
 public class ReflectApplicationWorkScheduleTest {
@@ -42,6 +43,7 @@ public class ReflectApplicationWorkScheduleTest {
 	public void testNotFoundSchedule() {
 
 		val actualResult = ReflectApplicationWorkSchedule.process(require, "1", // CID
+				ExecutionType.NORMAL_EXECUTION, 
 				SCReflectApplicationHelper.createApp(PrePostAtrShare.POSTERIOR), // 申請
 				GeneralDate.today(), // 処理対象日
 				SCReflectApplicationHelper.createReflectStatusResult(), 0);// 勤務予定の反映状態
@@ -84,6 +86,7 @@ public class ReflectApplicationWorkScheduleTest {
 		};
 
 		val actualResult = ReflectApplicationWorkSchedule.process(require, "1", // CID
+				ExecutionType.NORMAL_EXECUTION,
 				SCReflectApplicationHelper.createAppStamp(), // 申請
 				GeneralDate.today(), // 処理対象日
 				SCReflectApplicationHelper.createReflectStatusResult(), 0);// 勤務予定の反映状態

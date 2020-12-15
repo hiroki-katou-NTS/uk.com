@@ -194,32 +194,32 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	
 	@Override
 	public List<Application> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType) {
-		List<Integer> lstApptype = new ArrayList<>();
-		lstApptype.add(ApplicationType.ABSENCE_APPLICATION.value);
-		lstApptype.add(ApplicationType.OVER_TIME_APPLICATION.value);
-		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
-		lstApptype.add(ApplicationType.HOLIDAY_WORK_APPLICATION.value);
-		lstApptype.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-		lstApptype.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-		List<Integer> lstRecordStatus = new ArrayList<>();
-		List<Integer> lstScheStatus = new ArrayList<>();
-		List<Application> lstApp = new ArrayList<>();
-		// 実行種別を確認
-		if(exeType == ExecutionTypeExImport.NORMAL_EXECUTION) {
-			//反映待ちの申請を取得
-			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
-			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);			 
-		} else {
-			//反映済みも含めて申請を取得
-			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
-			lstRecordStatus.add(ReflectedState.REFLECTED.value);
-			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);
-			lstScheStatus.add(ReflectedState.REFLECTED.value);
-		}
-		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
-		//申請日でソートする		
-		return lstApp;
+//		List<Integer> lstApptype = new ArrayList<>();
+//		lstApptype.add(ApplicationType.ABSENCE_APPLICATION.value);
+//		lstApptype.add(ApplicationType.OVER_TIME_APPLICATION.value);
+//		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
+//		lstApptype.add(ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+//		lstApptype.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
+//		lstApptype.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+//		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+//		List<Integer> lstRecordStatus = new ArrayList<>();
+//		List<Integer> lstScheStatus = new ArrayList<>();
+//		List<Application> lstApp = new ArrayList<>();
+//		// 実行種別を確認
+//		if(exeType == ExecutionTypeExImport.NORMAL_EXECUTION) {
+//			//反映待ちの申請を取得
+//			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
+//			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);			 
+//		} else {
+//			//反映済みも含めて申請を取得
+//			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
+//			lstRecordStatus.add(ReflectedState.REFLECTED.value);
+//			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);
+//			lstScheStatus.add(ReflectedState.REFLECTED.value);
+//		}
+//		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
+//		//申請日でソートする		
+		return getAppsForReflect(sid, datePeriod, exeType);
 	}
 
 	//NEW
@@ -233,7 +233,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		lstApptype.add(ApplicationType.BUSINESS_TRIP_APPLICATION.value);
 		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
 		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
-		lstApptype.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		//lstApptype.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
 		lstApptype.add(ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		List<Integer> lstRecordStatus = new ArrayList<>();
 		List<Integer> lstScheStatus = new ArrayList<>();
@@ -260,7 +260,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			lstAppMuildayRela = this.getAppsWaitReflect(sid, period, exeType, lstApptype, lstScheStatus, lstRecordStatus);
 		}
 		lstApp.addAll(lstAppMuildayRela);
-		lstApp = lstApp.stream().distinct().collect(Collectors.toList());
+		lstApp = lstApp.stream().filter(distinctByKey(x -> x.getAppID())).collect(Collectors.toList());
 		//申請日でソートする（条件：入力日　ASC）
 		Collections.sort(lstApp, Comparator.comparing(Application::getInputDate));
 		//申請を取得 (lấy đơn)//HOATT
@@ -271,7 +271,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		});
 		
 		//申請(List)を返す
-		return lstApp;
+		return lstResult;
 	}
 	private GeneralDate finMaxDate(List<Application> lstApp) {
 		//SORT DESC
@@ -299,7 +299,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			//反映待ちの申請を取得
 			lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
 			//同日の反映済み申請を取得する
-			lstApp = this.getAppReflectSameDay(sid, lstApp);
+			lstApp.addAll(this.getAppReflectSameDay(sid, lstApp));
 		}
 		//申請(List)を返す
 		return lstApp;
