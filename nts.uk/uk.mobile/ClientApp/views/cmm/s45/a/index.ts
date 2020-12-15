@@ -122,6 +122,8 @@ export class CmmS45AComponent extends Vue {
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '10':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '15':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
 
             // case '0':
             //     return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
@@ -169,6 +171,7 @@ export class CmmS45AComponent extends Vue {
             self.convertAppInfo(self.data.appListInfoDto);
 
 
+
         } else if (getCache && storage.local.hasItem('CMMS45_DataStorage')) {
             // 申請を絞り込む
             // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
@@ -207,9 +210,17 @@ export class CmmS45AComponent extends Vue {
                     };
                     storage.local.setItem('CMMS45_DataStorage', dataStorage);
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
-
+                    let selectedTemp = self.selectedValue;
+                    self.selectedValue = '-1';
                     self.convertAppInfo(self.data.appListInfoDto);
                     self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    self.$nextTick(() => {
+                        if (_.find(self.lstAppType, (i: any) => i.code == selectedTemp)) {
+                            self.selectedValue = selectedTemp;
+                        } else {
+                            self.selectedValue = '-1';
+                        }
+                    });
                     self.$mask('hide');
 
                 }).catch(() => {

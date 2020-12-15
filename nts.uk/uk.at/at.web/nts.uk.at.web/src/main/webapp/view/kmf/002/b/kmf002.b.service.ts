@@ -8,7 +8,7 @@ module nts.uk.at.view.kmf002.b {
                 find: "at/shared/holidaysetting/workplace/findWorkplaceMonthDaySetting",
                 remove: "at/shared/holidaysetting/workplace/remove",
                 findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth",
-                findAll: "at/shared/holidaysetting/workplace/findWorkplaceMonthDaySetting"
+                findAll: "at/shared/holidaysetting/workplace/findWorkplaceMonthDaySetting"                
             };
         
          export function save(year: string, data: any, workplaceId: string): JQueryPromise<any> {
@@ -41,6 +41,10 @@ module nts.uk.at.view.kmf002.b {
          */    
         export function findAll(year: string): JQueryPromise<any> {
             return nts.uk.request.ajax("at", path.findAll + "/" + year );
+        }
+
+        export function findHolidayConfig(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.findHolidayConfig);
         }
         
         export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
