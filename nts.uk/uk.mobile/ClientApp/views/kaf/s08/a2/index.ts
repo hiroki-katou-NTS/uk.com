@@ -226,6 +226,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 endWorkTime: item.opAchievementDetail.opLeaveTime
             };
         });
+        let screenDetails: Array<any> = _.map(vm.businessTripActualContent, function (item: any) {
+            return {
+                date: item.date,
+                workTypeName: item.opAchievementDetail.opWorkTypeName,
+                workTimeName: item.opAchievementDetail.opWorkTimeName
+            };
+        });
         let paramsBusinessTrip = {
             departureTime: vm.derpartureTime,
             returnTime: vm.returnTime,
@@ -235,7 +242,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
         // check before registering application
         vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
-            businessTripDto: paramsBusinessTrip
+            businessTripDto: paramsBusinessTrip,
+            screenDetails
         }).then((res: any) => {
             vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         }).catch((err: any) => {
