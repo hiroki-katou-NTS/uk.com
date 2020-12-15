@@ -750,7 +750,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.setInfoBaseDateOutput(infoBaseDateOutput);
 		displayInfoOverTime.setInfoWithDateApplicationOp(infoOptional);
 		displayInfoOverTime.setOvertimeAppAtr(appOverTime.getOverTimeClf());
-		displayInfoOverTime.setWorkdayoffFrames(Collections.emptyList()); // not done
 		displayInfoOverTime.setIsProxy(false);
 		CalculationResult calculationResult = new CalculationResult();
 		calculationResult.setOverStateOutput(overStateOutput);
