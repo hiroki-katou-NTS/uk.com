@@ -119,6 +119,9 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	}
 
 	private Optional<TimeRecordReqSetting> getOneByList(List<TimeRecordReqSetting> listFullData) {
+		if(listFullData.isEmpty()) {
+			return Optional.empty();
+		}
 		List<WorkTimeCode> wTimeCode = listFullData.stream().flatMap(x -> x.getWorkTimeCodes().stream()).distinct()
 				.collect(Collectors.toList());
 		List<WorkTypeCode> wTypeCode = listFullData.stream().flatMap(x -> x.getWorkTypeCodes().stream()).distinct()
