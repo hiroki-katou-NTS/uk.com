@@ -34,12 +34,9 @@ import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResult;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResultRepo;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -71,8 +68,8 @@ public class CreateRequireReflectionProcess {
 	@Inject
 	private CreateEditStatusHistAppReasonAdapter createEditStatusHistAppReasonAdapter;
 
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
+//	@Inject
+//	private RequestSettingRepository requestSettingRepository;
 
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
@@ -87,7 +84,7 @@ public class CreateRequireReflectionProcess {
 		return new RequireImpl(AppContexts.user().companyId(), eflectApplicationWorkScheduleAdapter,
 				scBasicScheduleAdapter, identificationAdapter, determineActualResultLockAdapter, employeeRequestAdapter,
 				workFixedAdapter, reflectApplicationWorkRecordAdapter, createEditStatusHistAppReasonAdapter,
-				requestSettingRepository, closureEmploymentRepository, appReflectExeConditionRepository,
+				closureEmploymentRepository, appReflectExeConditionRepository,
 				reasonApplicationDailyResultRepo);
 	}
 
@@ -112,7 +109,7 @@ public class CreateRequireReflectionProcess {
 
 		private final CreateEditStatusHistAppReasonAdapter createEditStatusHistAppReasonAdapter;
 
-		private final RequestSettingRepository requestSettingRepository;
+		//private final RequestSettingRepository requestSettingRepository;
 
 		private final ClosureEmploymentRepository closureEmploymentRepository;
 
@@ -188,17 +185,17 @@ public class CreateRequireReflectionProcess {
 			return appReflectExeConditionRepository.findByCompanyId(companyId);
 		}
 
-		@Override
-		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType) {
-			// ????? apptype
-			return requestSettingRepository.getAppReflectionSetting(companyId);
-		}
+//		@Override
+//		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType) {
+//			// ????? apptype
+//			return requestSettingRepository.getAppReflectionSetting(companyId);
+//		}
 
-		@Override
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
-			// TODO ??? repo
-			return Optional.empty();
-		}
+//		@Override
+//		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
+//			// TODO ??? repo
+//			return Optional.empty();
+//		}
 
 		@Override
 		public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {

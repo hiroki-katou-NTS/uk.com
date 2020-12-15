@@ -8,7 +8,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
@@ -19,7 +18,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCh
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
-import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
@@ -91,12 +89,12 @@ public class ProcessReflectWorkSchedule {
 		 */
 		public Optional<AppReflectExecutionCondition> findAppReflectExecCond(String companyId);
 
-		/**
-		 * 
-		 * require{ 申請反映設定を取得する(会社ID、申請種類） }
-		 * RequestSettingRepository.getAppReflectionSetting
-		 */
-		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType);
+//		/**
+//		 * 
+//		 * require{ 申請反映設定を取得する(会社ID、申請種類） }
+//		 * RequestSettingRepository.getAppReflectionSetting
+//		 */
+//		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType);
 
 		// ReflectApplicationWorkScheduleAdapter
 		public Pair<Object, AtomTask> process(ExecutionType executionType, ApplicationShare application, GeneralDate date,

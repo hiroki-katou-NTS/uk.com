@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -72,12 +71,12 @@ public class ProcessReflectWorkRecord {
 		 */
 		public Optional<AppReflectExecutionCondition> findAppReflectExecCond(String companyId);
 
-		/**
-		 * 
-		 * require{ 社員の作業データ設定を取得する(社員ID） }
-		 * 
-		 */
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
+//		/**
+//		 * 
+//		 * require{ 社員の作業データ設定を取得する(社員ID） }
+//		 * 
+//		 */
+//		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 
 		// ReflectApplicationWorkRecordAdapter
 		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ExecutionType executionType, ApplicationShare application, GeneralDate date,
