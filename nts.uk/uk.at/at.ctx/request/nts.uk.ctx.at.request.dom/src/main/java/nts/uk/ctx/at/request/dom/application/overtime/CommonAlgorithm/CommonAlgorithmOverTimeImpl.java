@@ -673,7 +673,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			}
 		}
 		// 「退勤時刻がない時システム時刻を表示するか」をチェックする
-		if (!overTimeContent.getSPRTime().isPresent()) {
+		if (!applicationDetailSetting.isDispSystemTimeWhenNoWorkTime()) {
 			return workHoursOp;
 		}
 		// OUTPUT「勤務時間．終了時刻1」をチェックする
