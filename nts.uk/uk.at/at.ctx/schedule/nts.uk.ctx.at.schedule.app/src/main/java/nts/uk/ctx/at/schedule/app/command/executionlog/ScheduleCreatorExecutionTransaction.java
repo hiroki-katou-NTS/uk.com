@@ -1131,10 +1131,13 @@ public class ScheduleCreatorExecutionTransaction {
 
 				// 取得した勤務予定一覧をメモリにキャッシュする
 				workSchedules = carrier.get("勤務予定", () -> workScheduleRepo);
+				if(workSchedules.isEmpty()) {
+					workSchedules = workScheduleRepo;
+				}
 			}
 		}
 		// コピー元対象日を計算する
-		DatePeriod targetPeriodCopy = new DatePeriod(dateInPeriod, targetPeriod.start());
+		DatePeriod targetPeriodCopy = new DatePeriod(targetPeriod.start(), dateInPeriod);
 		GeneralDate dateTargetCopy = command.getContent().getSpecifyCreation().getCopyStartDate().get()
 				.addDays(targetPeriodCopy.datesBetween().size() - 1);
 		workSchedules = workSchedules.stream().filter(x -> x.getYmd().equals(dateTargetCopy))
