@@ -25,15 +25,20 @@
       />
     </div>
     <!-- A_A5_1 -->
-    <div v-for="dispInfoTimeLeaveRequest in DispInfoOfTimeLeaveRequestLst" v-bind:key="dispInfoTimeLeaveRequest.frame">
+    <div
+      v-for="dispInfoTimeLeaveRequest in DispInfoOfTimeLeaveRequestLst"
+      v-bind:key="dispInfoTimeLeaveRequest.frame"
+    >
       <div class="card card-label">
         <div class="card-header uk-bg-accordion">
-          <span>{{ dispInfoTimeLeaveRequest.header| i18n }}</span>
+          <span>{{ dispInfoTimeLeaveRequest.header | i18n }}</span>
           <span class="badge badge-info">任意</span>
         </div>
       </div>
       <!-- A_A5_2 -->
-      <span class="uk-text-dark-gray ml-1">{{ dispInfoTimeLeaveRequest.attendanceTimeLabel | i18n }}</span>
+      <span class="uk-text-dark-gray ml-1">{{
+        dispInfoTimeLeaveRequest.attendanceTimeLabel | i18n
+      }}</span>
       <!-- A_A5_3 -->
       <div class="position-relative">
         <nts-time-editor
@@ -43,9 +48,37 @@
           v-bind:show-title="true"
         />
         <div class="position-absolute">
-        <kafs00-p1 v-bind:params="dispInfoTimeLeaveRequest.kafS00P1Params" />
+          <kafs00-p1 v-bind:params="dispInfoTimeLeaveRequest.kafS00P1Params" />
+        </div>
       </div>
+    </div>
+    <!-- A_A9_1 -->
+    <div class="card card-label">
+      <div class="card-header uk-bg-accordion">
+        <span>{{ "KAFS12_13" | i18n }}</span>
+        <span class="badge badge-info">任意</span>
       </div>
+    </div>
+    <!-- A_A9_2 -->
+    <span class="uk-text-dark-gray ml-1">{{ "KAFS12_14" | i18n }}</span>
+    <!-- A_A9_3 -->
+    <div
+      v-for="goBackTimeItem in GoBackTimeLst"
+      v-bind:key="goBackTimeItem.frame"
+    >
+      <nts-time-range-input
+        v-model="goBackTimeItem.goBackTime"
+        v-bind:showTile="true"
+        v-bind:name="goBackTimeItem.name"
+      />
+      <nts-switchbox
+        v-for="option in dataSource"
+        v-bind:key="option.id"
+        v-model="goBackTimeItem.swtOutClassification"
+        v-bind:showTitle="false"
+        v-bind:value="option.id"
+        >{{ option.name }}
+      </nts-switchbox>
     </div>
   </div>
 </template>

@@ -2,8 +2,8 @@ import { component, Prop } from '@app/core/component';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00DComponent } from 'views/kaf/s00/d';
-import { DispInfoOfTimeLeaveRequest } from '../shr/';
-import { KafS00SubP1Component, KAFS00P1Params, ExcessTimeStatus } from 'views/kaf/s00/sub/p1/';
+import { DispInfoOfTimeLeaveRequest,GoBackTime } from '../shr/';
+import { KafS00SubP1Component, ExcessTimeStatus } from 'views/kaf/s00/sub/p1/';
 
 @component({
     name: 'kafs12a1',
@@ -26,29 +26,69 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public application: Application = null;
     public mode: boolean = true;
     public user: any = null;
-    
+
+
+    //Disp Infomation Time Leave Request Value
     public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_5', frame: 0, attendanceTimeLabel: 'KAFS12_6', attendanceTime: null,swtOutClassification: 0, titleOfAttendanceTime: 'KAFS12_5',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+        header: 'KAFS12_5', frame: 0, attendanceTimeLabel: 'KAFS12_6',
+        attendanceTime: null, titleOfAttendanceTime: 'KAFS12_5',
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
     });
     public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_7', frame: 1, attendanceTimeLabel: 'KAFS12_8', attendanceTime: null, swtOutClassification: 1, titleOfAttendanceTime: 'KAFS12_7',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+        header: 'KAFS12_7', frame: 1, attendanceTimeLabel: 'KAFS12_8',
+        attendanceTime: null, titleOfAttendanceTime: 'KAFS12_7',
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
     });
     public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_9', frame: 2, attendanceTimeLabel: 'KAFS12_10', attendanceTime: null, swtOutClassification: 0, titleOfAttendanceTime: 'KAFS12_9',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+        header: 'KAFS12_9', frame: 2, attendanceTimeLabel: 'KAFS12_10',
+        attendanceTime: null, titleOfAttendanceTime: 'KAFS12_9',
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
     });
     public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_11', frame: 3, attendanceTimeLabel: 'KAFS12_12', attendanceTime: null, swtOutClassification: 1, titleOfAttendanceTime: 'KAFS12_11',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null }
+        header: 'KAFS12_11', frame: 3, attendanceTimeLabel: 'KAFS12_12', attendanceTime: null, titleOfAttendanceTime: 'KAFS12_11',
+        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
     });
 
+    //Dis Information Leave Request List
     public DispInfoOfTimeLeaveRequestLst = [
-        this.DispInfoOfTimeLeaveRequest1, 
-        this.DispInfoOfTimeLeaveRequest2, 
-        this.DispInfoOfTimeLeaveRequest3, 
-        this.DispInfoOfTimeLeaveRequest4 
+        this.DispInfoOfTimeLeaveRequest1,
+        this.DispInfoOfTimeLeaveRequest2,
+        this.DispInfoOfTimeLeaveRequest3,
+        this.DispInfoOfTimeLeaveRequest4
+    ];
+
+    //Go Back Time Value
+    public iGoBackTime1 = new GoBackTime({
+        frame: 0,
+        startTime: null,
+        endTime: null,
+        name: 'KAFS12_18',
+        swtOutClassification: 0,
+    });
+    public iGoBackTime2 = new GoBackTime({
+        frame: 1,
+        startTime: null,
+        endTime: null,
+        name: 'KAFS12_18',
+        swtOutClassification: 0,
+    });
+    public iGoBackTime3 = new GoBackTime({
+        frame: 0,
+        startTime: null,
+        endTime: null,
+        name: 'KAFS12_18',
+        swtOutClassification: 0,
+    });
+    public dataSource = [
+        {id: 2, name: 'KAFS12_16'},
+        {id: 1, name: 'KAFS12_15'},
+    ];
+
+    //Go Back Time List
+    public GoBackTimeLst = [
+        this.iGoBackTime1,
+        this.iGoBackTime2,
+        this.iGoBackTime3,
     ];
 
     @Prop({ default: () => { } })
