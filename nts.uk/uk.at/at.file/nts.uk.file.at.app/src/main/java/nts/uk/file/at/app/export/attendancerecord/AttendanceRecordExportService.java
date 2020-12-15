@@ -444,10 +444,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 											, closureDate);
 					if (oAffiliationInfoOfMonthly.isPresent()) {
 
+						if (!oAffiliationInfoOfMonthly.get().getAttendanceTime().isPresent()
+						 && !oAffiliationInfoOfMonthly.get().getAffiliation().isPresent()) {
+							continue;
+						}
 						// Get start and end date of month
-						DatePeriod monthPeriod = oAffiliationInfoOfMonthly.get().getAttendanceTime().isPresent()
-											? oAffiliationInfoOfMonthly.get().getAttendanceTime().get().getDatePeriod()
-											: null;
+						DatePeriod monthPeriod = oAffiliationInfoOfMonthly.get().getAttendanceTime().get().getDatePeriod();
 
 						// 月別実績の月初と月末の雇用コードをチェックする
 						MonthlyResultCheck monthResultCheck = this.checkEmployeeCodeInMonth(
