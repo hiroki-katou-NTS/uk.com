@@ -54,6 +54,8 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
@@ -64,8 +66,6 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -168,7 +168,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	private SyCompanyPub symCompany;
 	
 	@Inject
-	private AffiliationInfoOfMonthlyRepository affiliationInfoOfMonthlyRepository;
+	private TimeOfMonthlyRepository timeOfMonthlyRepository;
 	
 	@Inject
 	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
@@ -412,9 +412,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(),
 						screenUseAtrList, 1));
 			}
-			
-			DatePeriod datePeriod = employeePeriod.get(employee.getEmployeeId());
-
 			if (!attItemValueResults.isEmpty()) {
 
 				// 取得した月別実績の着目社員分をループ
@@ -433,25 +430,30 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						endDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
 								yearMonth.lastDateInMonth());
 					} else {
-						startDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month() - 1,
-								monthlyValue.getClouseDate() + 1);
+						startDateByClosure = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
+								monthlyValue.getClouseDate()).addDays(1).addMonths(-1);
 						endDateByClosure = GeneralDate.ymd(yearMonth.year(),
 								yearMonth.month(), monthlyValue.getClouseDate());
 					}
 
-					// Get start and end date of month
-					DatePeriod monthPeriod = new DatePeriod(startDateByClosure, endDateByClosure);
-	
-					//	月別実績の月初と月末の雇用コードをチェックする
 					// #111678
-					Optional<AffiliationInfoOfMonthly> oAffiliationInfoOfMonthly = this.affiliationInfoOfMonthlyRepository
-							.find(employee.getEmployeeId(), yearMonth, ClosureId.valueOf(closureId), closureDate);
-					List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
+					Optional<TimeOfMonthly> oAffiliationInfoOfMonthly = this.timeOfMonthlyRepository.find(
+										 	employee.getEmployeeId()
+											, yearMonth
+											, ClosureId.valueOf(monthlyValue.getClosureId())
+											, closureDate);
 					if (oAffiliationInfoOfMonthly.isPresent()) {
+
+						// Get start and end date of month
+						DatePeriod monthPeriod = oAffiliationInfoOfMonthly.get().getAttendanceTime().isPresent()
+											? oAffiliationInfoOfMonthly.get().getAttendanceTime().get().getDatePeriod()
+											: null;
+
+						// 月別実績の月初と月末の雇用コードをチェックする
 						MonthlyResultCheck monthResultCheck = this.checkEmployeeCodeInMonth(
 								employee.getEmployeeId(), monthPeriod,
-								oAffiliationInfoOfMonthly.get().getFirstInfo().getEmploymentCd().v(),
-								oAffiliationInfoOfMonthly.get().getLastInfo().getEmploymentCd().v());
+								oAffiliationInfoOfMonthly.get().getAffiliation().get().getFirstInfo().getEmploymentCd().v(),
+								oAffiliationInfoOfMonthly.get().getAffiliation().get().getLastInfo().getEmploymentCd().v());
 						//	雇用取得結果：false
 						if (!monthResultCheck.isEmployeeResult()) {
 							// エラーリストに「社員コード」「社員名」を書き出す
@@ -459,580 +461,584 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									employee.getEmployeeCode(),
 									employee.getEmployeeName());
 						}
+
 						if (!monthResultCheck.isCheckResult()) {
 							// 雇用コードが一致しなかったのでこの月別実績は処理しない - This monthly performance will not be processed 
 							//											 as the employment code did not match
 							// →次の月別実績データの処理に移行(continue) - → Move to the next monthly performance data processing (continue)
 							continue;
 						}
+
+						// 月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
+						List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(Arrays.asList(employee.getEmployeeId()), monthPeriod);
+
 						//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
 						//	社員の指定期間中の所属期間を取得する RequestList 588
 						// (UK2)出勤簿を出力する
 						if (statusEmps.isEmpty()) {
 							continue;
 						}
-					}
 	
-					// amount day in month
-					int flag = 0;
-	
-					// List DailyData
-					List<AttendanceRecordReportDailyData> dailyDataList = new ArrayList<>();
-	
-					// Weekly Data
-					List<AttendanceRecordReportWeeklyData> weeklyDataList = new ArrayList<>();
-	
-					// Report by Month
-					//	重複期間．開始年月日～重複期間．終了年月日のループ
-					while (startDateByClosure.beforeOrEquals(endDateByClosure)) {
-						flag++;
-						List<AttendanceRecordResponse> upperDailyRespond = new ArrayList<>();
-						List<AttendanceRecordResponse> lowerDailyRespond = new ArrayList<>();
-						// return result upper-daily-singleItems
-						AttendanceItemValueService.AttendanceItemValueResult valueSingleUpper = null;
-						GeneralDate closureDateTemp = startDateByClosure;
-	
-						//	日別項目（単一項目・上段） - Daily items (single item, upper row)
-						//	勤怠項目の実績値を取得し編集する - Acquire and edit the actual value of attendance items
-						AttendanceItemValueResult itemValueResult = AttendanceItemValueResult.builder()
-								.employeeId(null).workingDate(null).attendanceItems(new ArrayList<ItemValue>())
-								.build();
-						// Get all daily result in Date
-						if (!singleIdUpper.isEmpty() || !singleIdLower.isEmpty()) {
-	                        if (dailyValuesAll.containsKey(employee.employeeId)
-	                        		&& closureDateTemp.afterOrEquals(datePeriod.start())
-	                        		&& closureDateTemp.beforeOrEquals(datePeriod.end())) {
-	                            List<AttendanceItemValueResult> dailyValuesByEmp = dailyValuesAll.get(employee.employeeId);
-	                            Optional<AttendanceItemValueResult> itemValueOtp = dailyValuesByEmp.stream().filter(x -> x.getWorkingDate().equals(closureDateTemp)).findFirst();
-	                            if (itemValueOtp.isPresent()) {
-	                                itemValueResult = itemValueOtp.get();
-	                            }
-	                        }
-						}
-	
-						// Fill in upper single item
-						if (!singleIdUpper.isEmpty()) {
-							valueSingleUpper = AttendanceItemValueResult.builder()
-									.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
-									.attendanceItems(new ArrayList<ItemValue>()).build();
-							for (Integer id : singleIdUpper) {
-								ItemValue value = new ItemValue();
-								for (ItemValue item : itemValueResult.getAttendanceItems()) {
-									if (item.getItemId() == id) {
-										if (item.getValue() != null && !ZERO.equals(item.getValue())
-												&& !item.getValue().isEmpty()) {
-											realData++;
+						// amount day in month
+						int flag = 0;
+		
+						// List DailyData
+						List<AttendanceRecordReportDailyData> dailyDataList = new ArrayList<>();
+		
+						// Weekly Data
+						List<AttendanceRecordReportWeeklyData> weeklyDataList = new ArrayList<>();
+		
+						// Report by Month
+						//	重複期間．開始年月日～重複期間．終了年月日のループ
+						while (startDateByClosure.beforeOrEquals(endDateByClosure)) {
+							flag++;
+							List<AttendanceRecordResponse> upperDailyRespond = new ArrayList<>();
+							List<AttendanceRecordResponse> lowerDailyRespond = new ArrayList<>();
+							// return result upper-daily-singleItems
+							AttendanceItemValueService.AttendanceItemValueResult valueSingleUpper = null;
+							GeneralDate closureDateTemp = startDateByClosure;
+		
+							//	日別項目（単一項目・上段） - Daily items (single item, upper row)
+							//	勤怠項目の実績値を取得し編集する - Acquire and edit the actual value of attendance items
+							AttendanceItemValueResult itemValueResult = AttendanceItemValueResult.builder()
+									.employeeId(null).workingDate(null).attendanceItems(new ArrayList<ItemValue>())
+									.build();
+							// Get all daily result in Date
+							if (!singleIdUpper.isEmpty() || !singleIdLower.isEmpty()) {
+		                        if (dailyValuesAll.containsKey(employee.employeeId)
+                        		 && this.checkEmployeePeriod(statusEmps, closureDateTemp, employee.employeeId)) {
+		                            List<AttendanceItemValueResult> dailyValuesByEmp = dailyValuesAll.get(employee.employeeId);
+		                            Optional<AttendanceItemValueResult> itemValueOtp = dailyValuesByEmp.stream().filter(x -> x.getWorkingDate().equals(closureDateTemp)).findFirst();
+		                            if (itemValueOtp.isPresent()) {
+		                                itemValueResult = itemValueOtp.get();
+		                            }
+		                        }
+							}
+		
+							// Fill in upper single item
+							if (!singleIdUpper.isEmpty()) {
+								valueSingleUpper = AttendanceItemValueResult.builder()
+										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								for (Integer id : singleIdUpper) {
+									ItemValue value = new ItemValue();
+									for (ItemValue item : itemValueResult.getAttendanceItems()) {
+										if (item.getItemId() == id) {
+											if (item.getValue() != null && !ZERO.equals(item.getValue())
+													&& !item.getValue().isEmpty()) {
+												realData++;
+											}
+											value = item;
+											break;
 										}
-										value = item;
-										break;
+		
 									}
-	
+									valueSingleUpper.getAttendanceItems().add(value);
 								}
-								valueSingleUpper.getAttendanceItems().add(value);
+		
+							} else {
+								valueSingleUpper = AttendanceItemValueResult.builder()
+										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								for (int i = 1; i <= 6; i++) {
+									valueSingleUpper.getAttendanceItems().add(new ItemValue());
+								}
 							}
-	
-						} else {
-							valueSingleUpper = AttendanceItemValueResult.builder()
-									.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
-									.attendanceItems(new ArrayList<ItemValue>()).build();
-							for (int i = 1; i <= 6; i++) {
-								valueSingleUpper.getAttendanceItems().add(new ItemValue());
+		
+							// convert data to show
+							if (valueSingleUpper != null) {
+		
+								valueSingleUpper.getAttendanceItems().forEach(item -> {
+									if (item != null)
+										upperDailyRespond.add(new AttendanceRecordResponse(
+												employee.getEmployeeId(),
+												employee.getEmployeeName(), closureDateTemp, "",
+												this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
+														optionalAttendanceRecExpSet.get().getNameUseAtr(), condition.getZeroDisplayType()),
+												this.setAttributeOutFrame(item)));
+		
+								});
 							}
-						}
-	
-						// convert data to show
-						if (valueSingleUpper != null) {
-	
-							valueSingleUpper.getAttendanceItems().forEach(item -> {
-								if (item != null)
-									upperDailyRespond.add(new AttendanceRecordResponse(
-											employee.getEmployeeId(),
-											employee.getEmployeeName(), closureDateTemp, "",
-											this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
-													optionalAttendanceRecExpSet.get().getNameUseAtr(), condition.getZeroDisplayType()),
-											this.setAttributeOutFrame(item)));
-	
-							});
-						}
-						
-						//	日別項目（算出項目・上段） - Daily items (calculation items, upper row)
-						//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
-						// return result upper-daily-calculateItems
-						for (CalculateAttendanceRecord item : calculateUpperDaily) {
-	
-							AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
+							
+							//	日別項目（算出項目・上段） - Daily items (calculation items, upper row)
+							//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
+							// return result upper-daily-calculateItems
+							for (CalculateAttendanceRecord item : calculateUpperDaily) {
+		
+								AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
+										.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								// Fill in upper calculate daily ADD item
+								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
+									for (Integer id : item.getAddedItem()) {
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
+													realData++;
+												}
+												addValueCalUpper.getAttendanceItems().add(e);
+												break;
+											}
+		
+										}
+		
+									}
+		
+								AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
+										.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								// Fill in upper calculate daily SUBTRACT item
+								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
+									for (Integer id : item.getSubtractedItem()) {
+		
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
+													realData++;
+												}
+												subValueCalUpper.getAttendanceItems().add(e);
+												break;
+											}
+		
+										}
+		
+									}
+		
+								// get result upper calculate
+								String result = "";
+								if (!addValueCalUpper.getAttendanceItems().isEmpty()
+										|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
+									result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
+											subValueCalUpper.getAttendanceItems(), zeroDisplayType);
+								}
+								upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+										employee.getEmployeeName(), closureDateTemp, "", result , ATTRIBUTE_OUTFRAME));
+		
+							}
+		
+							//	日別項目（単一項目・下段） - Daily items (single item / lower)
+							//	勤怠項目の実績値を取得し編集する - Acquire and edit the actual value of attendance items
+							// return result lower-daily-singleItems
+							AttendanceItemValueService.AttendanceItemValueResult valueSingleLower = AttendanceItemValueResult
 									.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
 									.attendanceItems(new ArrayList<ItemValue>()).build();
-							// Fill in upper calculate daily ADD item
-							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
-								for (Integer id : item.getAddedItem()) {
-									for (ItemValue e : itemValueResult.getAttendanceItems()) {
-										if (e.getItemId() == id) {
-											if (e.getValue() != null && !ZERO.equals(e.getValue())
-													&& !e.getValue().isEmpty()) {
+							// Fill in lower single item
+							if (!singleIdLower.isEmpty()) {
+		
+								valueSingleLower = AttendanceItemValueResult.builder()
+										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								for (Integer id : singleIdLower) {
+									ItemValue value = new ItemValue();
+									for (ItemValue item : itemValueResult.getAttendanceItems()) {
+										if (item.getItemId() == id) {
+											if (item.getValue() != null && !ZERO.equals(item.getValue())
+													&& !item.getValue().isEmpty()) {
 												realData++;
 											}
-											addValueCalUpper.getAttendanceItems().add(e);
+											value = item;
 											break;
 										}
-	
+		
 									}
-	
+									valueSingleLower.getAttendanceItems().add(value);
 								}
-	
-							AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
-									.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
-									.attendanceItems(new ArrayList<ItemValue>()).build();
-							// Fill in upper calculate daily SUBTRACT item
-							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
-								for (Integer id : item.getSubtractedItem()) {
-	
-									for (ItemValue e : itemValueResult.getAttendanceItems()) {
-										if (e.getItemId() == id) {
-											if (e.getValue() != null && !ZERO.equals(e.getValue())
-													&& !e.getValue().isEmpty()) {
-												realData++;
+		
+							} else {
+								valueSingleLower = AttendanceItemValueResult.builder()
+										.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
+										.attendanceItems(new ArrayList<ItemValue>()).build();
+								for (int i = 1; i <= 6; i++) {
+									valueSingleLower.getAttendanceItems().add(new ItemValue());
+		
+								}
+							}
+							// convert data to show
+							if (valueSingleLower != null)
+								valueSingleLower.getAttendanceItems().forEach(item -> {
+									if (item != null)
+										lowerDailyRespond.add(new AttendanceRecordResponse(
+												employee.getEmployeeId(),
+												employee.getEmployeeName(), closureDateTemp, "",
+												this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
+														optionalAttendanceRecExpSet.get().getNameUseAtr(), condition.getZeroDisplayType()),
+												this.setAttributeOutFrame(item)));
+		
+								});
+							//	日別項目（算出項目・下段） - Daily items (calculation items, lower row)
+							//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
+							for (CalculateAttendanceRecord item : calculateLowerDaily) {
+		
+								AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
+										.builder().attendanceItems(new ArrayList<>()).build();
+								// Fill in lower calculate daily ADD item
+								if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
+									for (Integer id : item.getAddedItem()) {
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
+													realData++;
+												}
+												addValueCalUpper.getAttendanceItems().add(e);
+												break;
 											}
-											subValueCalUpper.getAttendanceItems().add(e);
-											break;
+		
 										}
-	
 									}
-	
-								}
-	
-							// get result upper calculate
-							String result = "";
-							if (!addValueCalUpper.getAttendanceItems().isEmpty()
-									|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
-								result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
-										subValueCalUpper.getAttendanceItems(), zeroDisplayType);
-							}
-							upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-									employee.getEmployeeName(), closureDateTemp, "", result , ATTRIBUTE_OUTFRAME));
-	
-						}
-	
-						//	日別項目（単一項目・下段） - Daily items (single item / lower)
-						//	勤怠項目の実績値を取得し編集する - Acquire and edit the actual value of attendance items
-						// return result lower-daily-singleItems
-						AttendanceItemValueService.AttendanceItemValueResult valueSingleLower = AttendanceItemValueResult
-								.builder().employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
-								.attendanceItems(new ArrayList<ItemValue>()).build();
-						// Fill in lower single item
-						if (!singleIdLower.isEmpty()) {
-	
-							valueSingleLower = AttendanceItemValueResult.builder()
-									.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
-									.attendanceItems(new ArrayList<ItemValue>()).build();
-							for (Integer id : singleIdLower) {
-								ItemValue value = new ItemValue();
-								for (ItemValue item : itemValueResult.getAttendanceItems()) {
-									if (item.getItemId() == id) {
-										if (item.getValue() != null && !ZERO.equals(item.getValue())
-												&& !item.getValue().isEmpty()) {
-											realData++;
-										}
-										value = item;
-										break;
-									}
-	
-								}
-								valueSingleLower.getAttendanceItems().add(value);
-							}
-	
-						} else {
-							valueSingleLower = AttendanceItemValueResult.builder()
-									.employeeId(employee.getEmployeeId()).workingDate(startDateByClosure)
-									.attendanceItems(new ArrayList<ItemValue>()).build();
-							for (int i = 1; i <= 6; i++) {
-								valueSingleLower.getAttendanceItems().add(new ItemValue());
-	
-							}
-						}
-						// convert data to show
-						if (valueSingleLower != null)
-							valueSingleLower.getAttendanceItems().forEach(item -> {
-								if (item != null)
-									lowerDailyRespond.add(new AttendanceRecordResponse(
-											employee.getEmployeeId(),
-											employee.getEmployeeName(), closureDateTemp, "",
-											this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
-													optionalAttendanceRecExpSet.get().getNameUseAtr(), condition.getZeroDisplayType()),
-											this.setAttributeOutFrame(item)));
-	
-							});
-						//	日別項目（算出項目・下段） - Daily items (calculation items, lower row)
-						//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
-						for (CalculateAttendanceRecord item : calculateLowerDaily) {
-	
-							AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
-									.builder().attendanceItems(new ArrayList<>()).build();
-							// Fill in lower calculate daily ADD item
-							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
-								for (Integer id : item.getAddedItem()) {
-									for (ItemValue e : itemValueResult.getAttendanceItems()) {
-										if (e.getItemId() == id) {
-											if (e.getValue() != null && !ZERO.equals(e.getValue())
-													&& !e.getValue().isEmpty()) {
-												realData++;
+		
+								AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
+										.builder().attendanceItems(new ArrayList<>()).build();
+								// Fill in lower calculate daily SUBTRACT item
+								if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
+									for (Integer id : item.getSubtractedItem()) {
+										for (ItemValue e : itemValueResult.getAttendanceItems()) {
+											if (e.getItemId() == id) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
+													realData++;
+												}
+												subValueCalUpper.getAttendanceItems().add(e);
+												break;
 											}
-											addValueCalUpper.getAttendanceItems().add(e);
-											break;
+		
 										}
-	
+		
 									}
+		
+								// get result lower calculate daily
+								String result = "";
+								if (!addValueCalUpper.getAttendanceItems().isEmpty()
+										|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
+									result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
+											subValueCalUpper.getAttendanceItems(), zeroDisplayType);
 								}
-	
-							AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
-									.builder().attendanceItems(new ArrayList<>()).build();
-							// Fill in lower calculate daily SUBTRACT item
-							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
-								for (Integer id : item.getSubtractedItem()) {
-									for (ItemValue e : itemValueResult.getAttendanceItems()) {
-										if (e.getItemId() == id) {
-											if (e.getValue() != null && !ZERO.equals(e.getValue())
-													&& !e.getValue().isEmpty()) {
-												realData++;
-											}
-											subValueCalUpper.getAttendanceItems().add(e);
-											break;
-										}
-	
-									}
-	
+								lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+										employee.getEmployeeName(), closureDateTemp, "", result, ATTRIBUTE_OUTFRAME));
+							}
+		
+							AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
+							// Set data daily
+							dailyData.setDate(String.valueOf(startDateByClosure.day()));
+							dailyData.setDayOfWeek(DayOfWeekJP
+									.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
+							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnDailyData];
+							int index = 0;
+							for (AttendanceRecordResponse item : upperDailyRespond) {
+								columnDatasArray[index] = new AttendanceRecordReportColumnData("", false, "", false);
+								if (item.getValue() != null) {
+									columnDatasArray[index].setUper(item.getValue());
 								}
-	
-							// get result lower calculate daily
-							String result = "";
-							if (!addValueCalUpper.getAttendanceItems().isEmpty()
-									|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
-								result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
-										subValueCalUpper.getAttendanceItems(), zeroDisplayType);
+								if( item.getOutFrameAttribute() != ATTRIBUTE_OUTFRAME) {
+									columnDatasArray[index].setAlignUper(true);
+								}
+								index++;
 							}
-							lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-									employee.getEmployeeName(), closureDateTemp, "", result, ATTRIBUTE_OUTFRAME));
+							index = 0;
+							for (AttendanceRecordResponse item : lowerDailyRespond) {
+								if (item.getValue() != null) {
+									columnDatasArray[index].setLower(item.getValue());
+								}
+								if( item.getOutFrameAttribute() != ATTRIBUTE_OUTFRAME) {
+									columnDatasArray[index].setAlignLower(true);
+								}
+								index++;
+		
+							}
+							List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
+							for (int i = 0; i < columnDatasArray.length; i++) {
+								if (columnDatasArray[i] == null)
+									columnDatasArray[i] = new AttendanceRecordReportColumnData("", false, "", false);
+								columnDatas.add(columnDatasArray[i]);
+							}
+							//	日別項目（算出項目・上段下段） - Daily items (calculation items, upper and lower)
+							//	週単位の集計をする - Aggregate on a weekly basis
+		
+							dailyData.setColumnDatas(columnDatas);
+							dailyData.setSecondCol(flag <= 15 ? false : true);
+							dailyDataList.add(dailyData);
+							// Check end of week
+							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+								AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
+								// Set weekly data
+								weeklyData.setDailyDatas(dailyDataList);
+								// Set total result in week
+								AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
+								summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value, zeroDisplayType);
+		
+								weeklyData.setWeeklySumaryData(summaryWeeklyData);
+		
+								weeklyDataList.add(weeklyData);
+								// empty daily data list
+								dailyDataList = new ArrayList<>();
+		
+							}
+							// Next day
+							startDateByClosure = startDateByClosure.addDays(1);
+		
 						}
-	
-						AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
-						// Set data daily
-						dailyData.setDate(String.valueOf(startDateByClosure.day()));
-						dailyData.setDayOfWeek(DayOfWeekJP
-								.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
-						AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnDailyData];
-						int index = 0;
-						for (AttendanceRecordResponse item : upperDailyRespond) {
-							columnDatasArray[index] = new AttendanceRecordReportColumnData("", false, "", false);
-							if (item.getValue() != null) {
-								columnDatasArray[index].setUper(item.getValue());
-							}
-							if( item.getOutFrameAttribute() != ATTRIBUTE_OUTFRAME) {
-								columnDatasArray[index].setAlignUper(true);
-							}
-							index++;
-						}
-						index = 0;
-						for (AttendanceRecordResponse item : lowerDailyRespond) {
-							if (item.getValue() != null) {
-								columnDatasArray[index].setLower(item.getValue());
-							}
-							if( item.getOutFrameAttribute() != ATTRIBUTE_OUTFRAME) {
-								columnDatasArray[index].setAlignLower(true);
-							}
-							index++;
-	
-						}
-						List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
-						for (int i = 0; i < columnDatasArray.length; i++) {
-							if (columnDatasArray[i] == null)
-								columnDatasArray[i] = new AttendanceRecordReportColumnData("", false, "", false);
-							columnDatas.add(columnDatasArray[i]);
-						}
-						//	日別項目（算出項目・上段下段） - Daily items (calculation items, upper and lower)
-						//	週単位の集計をする - Aggregate on a weekly basis
-	
-						dailyData.setColumnDatas(columnDatas);
-						dailyData.setSecondCol(flag <= 15 ? false : true);
-						dailyDataList.add(dailyData);
-						// Check end of week
-						if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+						// 日別項目（算出項目・上段下段） -  Daily items (calculation items, upper and lower)
+						//	週単位集計値の編集をする - Edit weekly aggregated values 
+						// Day of the last week in month
+						if (dailyDataList.size() > 0) {
 							AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
-							// Set weekly data
 							weeklyData.setDailyDatas(dailyDataList);
-							// Set total result in week
 							AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
 							summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value, zeroDisplayType);
-	
+		
 							weeklyData.setWeeklySumaryData(summaryWeeklyData);
-	
+		
 							weeklyDataList.add(weeklyData);
 							// empty daily data list
 							dailyDataList = new ArrayList<>();
-	
 						}
-						// Next day
-						startDateByClosure = startDateByClosure.addDays(1);
-	
-					}
-					// 日別項目（算出項目・上段下段） -  Daily items (calculation items, upper and lower)
-					//	週単位集計値の編集をする - Edit weekly aggregated values 
-					// Day of the last week in month
-					if (dailyDataList.size() > 0) {
-						AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
-						weeklyData.setDailyDatas(dailyDataList);
-						AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
-						summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value, zeroDisplayType);
-	
-						weeklyData.setWeeklySumaryData(summaryWeeklyData);
-	
-						weeklyDataList.add(weeklyData);
-						// empty daily data list
-						dailyDataList = new ArrayList<>();
-					}
-	
-					//	月別項目（算出項目・上段） - Monthly items (calculation items, upper row)
-					//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
-					List<String> upperResult = new ArrayList<>();
-					List<String> lowerResult = new ArrayList<>();
-					AttendanceItemValueService.MonthlyAttendanceItemValueResult itemValueResult = MonthlyAttendanceItemValueResult
-							.builder().attendanceItems(new ArrayList<>()).build();
-	
-					if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
-	
-						// Get montnly result
-	                    if (monthlyValuesAll.containsKey(employee.getEmployeeId())) {
-	                        List<MonthlyAttendanceItemValueResult> monthlyValuesByEmp = monthlyValuesAll.get(employee.getEmployeeId());
-	                        for (MonthlyAttendanceItemValueResult item : monthlyValuesByEmp) {
-	                            if (item.getYearMonth()
-	                                    .equals(closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1))
-	                                    && item.getClouseDate() == closureDate.getClosureDay().v()) {
-	                                itemValueResult = item;
-	                                break;
-	                            }
-	                        }
-	                    }
-					}
-					
-					for (CalculateAttendanceRecord item : calculateUpperMonthly) {
-						AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperAddResult = MonthlyAttendanceItemValueResult
+		
+						//	月別項目（算出項目・上段） - Monthly items (calculation items, upper row)
+						//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
+						List<String> upperResult = new ArrayList<>();
+						List<String> lowerResult = new ArrayList<>();
+						AttendanceItemValueService.MonthlyAttendanceItemValueResult itemValueResult = MonthlyAttendanceItemValueResult
 								.builder().attendanceItems(new ArrayList<>()).build();
-						AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperSubResult = MonthlyAttendanceItemValueResult
-								.builder().attendanceItems(new ArrayList<>()).build();
-	
-						// Fill in upper calculate monthly ADD item
-						if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
-							for (Integer id : item.getAddedItem()) {
-								for (ItemValue e : itemValueResult.getAttendanceItems()) {
-									if (id == e.getItemId()) {
-										if (e.getValue() != null && !ZERO.equals(e.getValue())
-												&& !e.getValue().isEmpty()) {
-											realData++;
-										}
-										monthlyUpperAddResult.getAttendanceItems().add(e);
-										break;
-									}
-	
-								}
-	
-							}
+		
+						if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
+		
+							// Get montnly result
+		                    if (monthlyValuesAll.containsKey(employee.getEmployeeId())) {
+		                        List<MonthlyAttendanceItemValueResult> monthlyValuesByEmp = monthlyValuesAll.get(employee.getEmployeeId());
+		                        for (MonthlyAttendanceItemValueResult item : monthlyValuesByEmp) {
+		                            if (item.getYearMonth()
+		                                    .equals(closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1))
+		                                    && item.getClouseDate() == closureDate.getClosureDay().v()) {
+		                                itemValueResult = item;
+		                                break;
+		                            }
+		                        }
+		                    }
 						}
-	
-						// Fill in upper calculate monthly SUBTRACT item
-						if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
-							for (Integer id : item.getSubtractedItem()) {
-								for (ItemValue e : itemValueResult.getAttendanceItems()) {
-									if (id == e.getItemId()) {
-										if (e.getValue() != null && !ZERO.equals(e.getValue())
-												&& !e.getValue().isEmpty()) {
-											realData++;
-										}
-										monthlyUpperSubResult.getAttendanceItems().add(e);
-										break;
-									}
-	
-								}
-	
-							}
-						}
-	
-						// Get upper monthly result
-						String result = "";
-						if (!monthlyUpperAddResult.getAttendanceItems().isEmpty()
-								|| !monthlyUpperSubResult.getAttendanceItems().isEmpty()) {
-							result = this.getSumCalculateAttendanceItem(monthlyUpperAddResult.getAttendanceItems(),
-									monthlyUpperSubResult.getAttendanceItems(), zeroDisplayType);
-						}
-						upperResult.add(result);
-	
-					}
-					
-					//	月別項目（算出項目・下段） -  Monthly items (calculation items, lower row)
-					//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
-					for (CalculateAttendanceRecord item : calculateLowerMonthly) {
-						AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerAddResult = MonthlyAttendanceItemValueResult
-								.builder().attendanceItems(new ArrayList<>()).build();
-	
-						AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerSubResult = MonthlyAttendanceItemValueResult
-								.builder().attendanceItems(new ArrayList<>()).build();
-						// Fill in lower calculate monthly ADD item
-						if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
-							for (Integer id : item.getAddedItem()) {
-								for (ItemValue e : itemValueResult.getAttendanceItems()) {
-									if (id == e.getItemId()) {
-										if (e.getValue() != null && !ZERO.equals(e.getValue())
-												&& !e.getValue().isEmpty()) {
-											realData++;
-										}
-										monthlyLowerAddResult.getAttendanceItems().add(e);
-										break;
-									}
-	
-								}
-	
-							}
-						}
-	
-						// Fill in lower calculate monthly SUBTRACT item
-						if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
-							for (Integer id : item.getSubtractedItem()) {
-								for (ItemValue e : itemValueResult.getAttendanceItems()) {
-									if (id == e.getItemId()) {
-										if (e.getValue() != null && !ZERO.equals(e.getValue())
-												&& !e.getValue().isEmpty()) {
-											realData++;
-										}
-										monthlyLowerSubResult.getAttendanceItems().add(e);
-										break;
-									}
-	
-								}
-	
-							}
-						}
-	
-						// Get lower monthly result
-						String result = new String("");
-						if (!monthlyLowerAddResult.getAttendanceItems().isEmpty()
-								|| !monthlyLowerSubResult.getAttendanceItems().isEmpty()) {
-							result = this.getSumCalculateAttendanceItem(monthlyLowerAddResult.getAttendanceItems(),
-									monthlyLowerSubResult.getAttendanceItems(), zeroDisplayType);
-						}
-						lowerResult.add(result);
-	
-					}
-					// Convert to AttendanceRecordReportColumnData
-					List<AttendanceRecordReportColumnData> employeeMonthlyData = new ArrayList<>();
-	
-					AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[columnMonthlyData];
-					int index = 0;
-					for (String item : upperResult) {
-						columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", false, "", false);
-						if (item != null)
-							columnDataMonthlyArray[index].setUper(item);
-						index++;
-					}
-					index = 0;
-					for (String item : lowerResult) {
-						if (item != null) {
-							if (columnDataMonthlyArray[index] == null) {
-								columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", false, "", false);
-							}
-							columnDataMonthlyArray[index].setLower(item);
-						}
-						index++;
-	
-					}
-	
-					for (int i = 0; i < columnDataMonthlyArray.length; i++) {
-						if (columnDataMonthlyArray[i] == null)
-							columnDataMonthlyArray[i] = new AttendanceRecordReportColumnData("", false, "", false);
-						employeeMonthlyData.add(columnDataMonthlyArray[i]);
-					}
-	
-					if (realData > 0) {
-						// Get AttendanceRecordReportEmployeeData
-						AttendanceRecordReportEmployeeData attendanceRecRepEmpData = new AttendanceRecordReportEmployeeData();
-	
-						attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
-						attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
-						attendanceRecRepEmpData.setReportYearMonth(yearMonth.toString());
-	
-						/**
-						 * Need information
-						 * 
-						 * The invidual. The workplace. The employment The
-						 * title. The work type The year month
-						 **/
-						//	月次確認済表示区分をチェックする - Check the monthly confirmed display category
-						if (optionalAttendanceRecExpSet.get()
-								.getMonthlyConfirmedDisplay() == MonthlyConfirmedDisplay.DISPLAY) {
-							//	表示  - if display 
-							//	月の承認済状況を編集する - Edit the approved status of the month
-							listMonthlyApproval.forEach(i -> {
-									if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag() && i.getYm().equals(yearMonth)) {
-									attendanceRecRepEmpData.setApprovalStatus(true);
-								}
-							});
-						} else {
-							attendanceRecRepEmpData.setApprovalStatus(false); 
-						}
-	
-						// build param
-	
-						//	アルゴリズム「社員情報を返す」を実行する  - Execute the algorithm "Return employee information"
-						// Param  出力対象社員ID（List) - Output target employee ID (List),   基準日 - Reference date
-						// Get Employee information
-						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
-								.employeeIds(empIDs)
-								.referenceDate(endDateByClosure)
-								.toGetWorkplace(true)
-								.toGetDepartment(false)
-								.toGetPosition(true)
-								.toGetEmployment(true)
-								.toGetClassification(false)
-								.toGetEmploymentCls(true).build();
-						employeeInfoList = employeePub.find(param);
-						EmployeeInformationExport result = employeeInfoList.stream()
-																			.filter(e -> e.getEmployeeId().equals(employee.getEmployeeId()))
-																			.findFirst().get();
-	
-						attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + " "
-								+ result.getEmployment().getEmploymentName().toString());
-						attendanceRecRepEmpData
-								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
-						attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
-								: result.getPosition().getPositionCode() + " " + result.getPosition().getPositionName().toString());
-						attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
-								: result.getWorkplace().getWorkplaceCode().toString() + " "
-										+ result.getWorkplace().getWorkplaceName().toString());
-						attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
-								: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
-										WorkingSystem.class).nameId));
-						attendanceRecRepEmpData
-								.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
-						// ver8 file report . add deadline B8_17 B8_18
-						attendanceRecRepEmpData.setLastDayOfMonth(closureDate.getLastDayOfMonth());
-						attendanceRecRepEmpData.setClosureDay(closureDate.getClosureDay().v());
 						
-						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
-						realDataOfEmployee++;
-					}
-					
-					if (realDataOfEmployee == 0) {
-						nullDataEmployeeList.add(employee);
-					}
-					
-					List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
-					for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
-	
-						if (this.getCodeFromInvidual(item.getInvidual()).equals(employee.getEmployeeCode().trim())) {
-							attendanceRecRepEmpDataByMonthList.add(item);
+						for (CalculateAttendanceRecord item : calculateUpperMonthly) {
+							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperAddResult = MonthlyAttendanceItemValueResult
+									.builder().attendanceItems(new ArrayList<>()).build();
+							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperSubResult = MonthlyAttendanceItemValueResult
+									.builder().attendanceItems(new ArrayList<>()).build();
+		
+							// Fill in upper calculate monthly ADD item
+							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
+								for (Integer id : item.getAddedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
+											monthlyUpperAddResult.getAttendanceItems().add(e);
+											break;
+										}
+		
+									}
+		
+								}
+							}
+		
+							// Fill in upper calculate monthly SUBTRACT item
+							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
+								for (Integer id : item.getSubtractedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
+											monthlyUpperSubResult.getAttendanceItems().add(e);
+											break;
+										}
+		
+									}
+		
+								}
+							}
+		
+							// Get upper monthly result
+							String result = "";
+							if (!monthlyUpperAddResult.getAttendanceItems().isEmpty()
+									|| !monthlyUpperSubResult.getAttendanceItems().isEmpty()) {
+								result = this.getSumCalculateAttendanceItem(monthlyUpperAddResult.getAttendanceItems(),
+										monthlyUpperSubResult.getAttendanceItems(), zeroDisplayType);
+							}
+							upperResult.add(result);
+		
 						}
-	
+						
+						//	月別項目（算出項目・下段） -  Monthly items (calculation items, lower row)
+						//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
+						for (CalculateAttendanceRecord item : calculateLowerMonthly) {
+							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerAddResult = MonthlyAttendanceItemValueResult
+									.builder().attendanceItems(new ArrayList<>()).build();
+		
+							AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerSubResult = MonthlyAttendanceItemValueResult
+									.builder().attendanceItems(new ArrayList<>()).build();
+							// Fill in lower calculate monthly ADD item
+							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
+								for (Integer id : item.getAddedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
+											monthlyLowerAddResult.getAttendanceItems().add(e);
+											break;
+										}
+		
+									}
+		
+								}
+							}
+		
+							// Fill in lower calculate monthly SUBTRACT item
+							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
+								for (Integer id : item.getSubtractedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (id == e.getItemId()) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
+											monthlyLowerSubResult.getAttendanceItems().add(e);
+											break;
+										}
+		
+									}
+		
+								}
+							}
+		
+							// Get lower monthly result
+							String result = new String("");
+							if (!monthlyLowerAddResult.getAttendanceItems().isEmpty()
+									|| !monthlyLowerSubResult.getAttendanceItems().isEmpty()) {
+								result = this.getSumCalculateAttendanceItem(monthlyLowerAddResult.getAttendanceItems(),
+										monthlyLowerSubResult.getAttendanceItems(), zeroDisplayType);
+							}
+							lowerResult.add(result);
+		
+						}
+						// Convert to AttendanceRecordReportColumnData
+						List<AttendanceRecordReportColumnData> employeeMonthlyData = new ArrayList<>();
+		
+						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[columnMonthlyData];
+						int index = 0;
+						for (String item : upperResult) {
+							columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", false, "", false);
+							if (item != null)
+								columnDataMonthlyArray[index].setUper(item);
+							index++;
+						}
+						index = 0;
+						for (String item : lowerResult) {
+							if (item != null) {
+								if (columnDataMonthlyArray[index] == null) {
+									columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", false, "", false);
+								}
+								columnDataMonthlyArray[index].setLower(item);
+							}
+							index++;
+		
+						}
+		
+						for (int i = 0; i < columnDataMonthlyArray.length; i++) {
+							if (columnDataMonthlyArray[i] == null)
+								columnDataMonthlyArray[i] = new AttendanceRecordReportColumnData("", false, "", false);
+							employeeMonthlyData.add(columnDataMonthlyArray[i]);
+						}
+		
+						if (realData > 0) {
+							// Get AttendanceRecordReportEmployeeData
+							AttendanceRecordReportEmployeeData attendanceRecRepEmpData = new AttendanceRecordReportEmployeeData();
+		
+							attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
+							attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
+							attendanceRecRepEmpData.setReportYearMonth(yearMonth.toString());
+		
+							/**
+							 * Need information
+							 * 
+							 * The invidual. The workplace. The employment The
+							 * title. The work type The year month
+							 **/
+							//	月次確認済表示区分をチェックする - Check the monthly confirmed display category
+							if (optionalAttendanceRecExpSet.get()
+									.getMonthlyConfirmedDisplay() == MonthlyConfirmedDisplay.DISPLAY) {
+								//	表示  - if display 
+								//	月の承認済状況を編集する - Edit the approved status of the month
+								listMonthlyApproval.forEach(i -> {
+										if(i.getEmployeeId().equals(employee.getEmployeeId()) && i.isApprovedFlag() && i.getYm().equals(yearMonth)) {
+										attendanceRecRepEmpData.setApprovalStatus(true);
+									}
+								});
+							} else {
+								attendanceRecRepEmpData.setApprovalStatus(false); 
+							}
+		
+							// build param
+		
+							//	アルゴリズム「社員情報を返す」を実行する  - Execute the algorithm "Return employee information"
+							// Param  出力対象社員ID（List) - Output target employee ID (List),   基準日 - Reference date
+							// Get Employee information
+							EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
+									.employeeIds(empIDs)
+									.referenceDate(endDateByClosure)
+									.toGetWorkplace(true)
+									.toGetDepartment(false)
+									.toGetPosition(true)
+									.toGetEmployment(true)
+									.toGetClassification(false)
+									.toGetEmploymentCls(true).build();
+							employeeInfoList = employeePub.find(param);
+							EmployeeInformationExport result = employeeInfoList.stream()
+																				.filter(e -> e.getEmployeeId().equals(employee.getEmployeeId()))
+																				.findFirst().get();
+		
+							attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + " "
+									+ result.getEmployment().getEmploymentName().toString());
+							attendanceRecRepEmpData
+									.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
+							attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
+									: result.getPosition().getPositionCode() + " " + result.getPosition().getPositionName().toString());
+							attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
+									: result.getWorkplace().getWorkplaceCode().toString() + " "
+											+ result.getWorkplace().getWorkplaceName().toString());
+							attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
+									: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
+											WorkingSystem.class).nameId));
+							attendanceRecRepEmpData
+									.setYearMonth(yearMonth.year() + "/" + yearMonth.month());
+							// ver8 file report . add deadline B8_17 B8_18
+							attendanceRecRepEmpData.setLastDayOfMonth(closureDate.getLastDayOfMonth());
+							attendanceRecRepEmpData.setClosureDay(closureDate.getClosureDay().v());
+							
+							attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
+							realDataOfEmployee++;
+						}
 					}
-					// Fill in export Data of employee
-					reportData.put(employee.getEmployeeCode().trim(), attendanceRecRepEmpDataByMonthList);
 				}
+
+				if (realDataOfEmployee == 0) {
+					nullDataEmployeeList.add(employee);
+				}
+
+				List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
+				for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
+
+					if (this.getCodeFromInvidual(item.getInvidual()).equals(employee.getEmployeeCode().trim())) {
+						attendanceRecRepEmpDataByMonthList.add(item);
+					}
+
+				}
+				// Fill in export Data of employee
+				reportData.put(employee.getEmployeeCode().trim(), attendanceRecRepEmpDataByMonthList);
 			} else {
 				nullDataEmployeeList.add(employee);
 			}
@@ -1711,5 +1717,22 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 		}
 		return 0;
+	}
+	
+	private boolean checkEmployeePeriod(List<StatusOfEmployee> statusOfEmployees
+									  , GeneralDate currrentDate
+									  , String employeeId) {
+		Optional<StatusOfEmployee> employeeStatus = statusOfEmployees.stream()
+													.filter(t -> t.getEmployeeId().equals(employeeId))
+													.findFirst();
+		if (employeeStatus.isPresent() && !employeeStatus.get().getListPeriod().isEmpty()) {
+			for (DatePeriod datePeriod : employeeStatus.get().getListPeriod()) {
+				if (currrentDate.afterOrEquals(datePeriod.start())
+				 && currrentDate.beforeOrEquals(datePeriod.end())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
