@@ -17,6 +17,7 @@ public class CheckConditionDto {
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.startDate = startDate;
         this.endDate = endDate;
+        this.periodType = 1;
     }
 
     public CheckConditionDto(WorkplaceCategory workplaceCategory, Integer startYm,  Integer endYm) {
@@ -24,12 +25,14 @@ public class CheckConditionDto {
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.startYm = startYm;
         this.endYm = endYm;
+        this.periodType = 2;
     }
 
     public CheckConditionDto(WorkplaceCategory workplaceCategory, Integer yearMonth) {
         this.category = workplaceCategory.value;
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.yearMonth = yearMonth;
+        this.periodType = 3;
     }
 
     /**
@@ -46,6 +49,8 @@ public class CheckConditionDto {
      * チェック条件コード一覧
      */
     private List<String> checkConditionLis;
+
+    private int periodType;
 
     /**
      * 抽出期間: Start date

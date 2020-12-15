@@ -81,16 +81,15 @@
                                             <td><span data-bind="text: $data.categoryName"></span></td>
                                             <!-- A6_6 and A6_7-->
                                             <td class="periodTime">
-                                                <com:ko-if bind="!$data.isPeriodDate()">
-                                                    <!-- A6_7 -->
-                                                    <div data-bind="ntsDatePicker: {value: $data.yearMonth, dateType: 'yearmonth'}"></div>
+                                                <com:ko-if bind="$data.periodType == 1">
+                                                    <div tabindex="-1" id="daterangepicker" data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRange, type: 'date'}"/>
                                                 </com:ko-if>
-                                                <com:ko-if bind="$data.isPeriodDate()">
-                                                    <!-- A6_6 and A6_7-->
-                                                    <div tabindex="-1" id="daterangepicker"
-                                                    data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRange, type: $data.type}"/>
+                                                <com:ko-if bind="$data.periodType == 2">
+                                                    <div tabindex="-1" id="daterangepicker" data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRangeYm, type: 'yearmonth'}"/>
                                                 </com:ko-if>
-                                                
+                                                <com:ko-if bind="$data.periodType == 3">
+                                                    <div data-bind="ntsDatePicker: {value: $data.yearMonth, type: 'yearmonth'}"/>
+                                                </com:ko-if>                                                
                                             </td>
                                         </tr>
                                     </com:ko-foreach>

@@ -117,7 +117,8 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
 
     private List<PeriodByAlarmCategory> convertPeriods(List<CategoryPeriodCommand> categoryPeriods) {
         List<PeriodByAlarmCategory> periods = categoryPeriods.stream()
-                .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStartDate(), x.getEndDate(), new YearMonth(x.getYearMonth())))
+                .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStartDate(), x.getEndDate(),
+                        x.getYearMonth() == null ? null : new YearMonth(x.getYearMonth())))
                 .collect(Collectors.toList());
         return periods;
     }
