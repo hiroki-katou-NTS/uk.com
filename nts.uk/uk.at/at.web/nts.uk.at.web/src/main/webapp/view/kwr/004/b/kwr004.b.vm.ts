@@ -72,57 +72,57 @@ module nts.uk.at.view.kwr004.b {
 
       //merge attributes, settings
       vm.switchAndDropBox();
-     
+
       //get the left with code, settingCategory from A
-      $.when(vm.getSettingListKDL()).then(() => {
+      vm.getSettingListKDL().done(() => {
         vm.getSettingList(params);
-      });      
 
-      vm.currentCodeList.subscribe((newCode: any) => {
-        nts.uk.ui.errors.clearAll();
-        if (_.isNil(newCode)) return;
-        vm.getSettingListItemsDetails(newCode);
+        vm.currentCodeList.subscribe((newCode: any) => {
+          nts.uk.ui.errors.clearAll();
+          if (_.isNil(newCode)) return;
+          vm.getSettingListItemsDetails(newCode);
+        });
+
+        vm.settingListItemsDetails.subscribe((newList) => {
+          if (!newList || newList.length <= 0) {
+            vm.isSelectAll(false);
+            return;
+          }
+          //Check if all the values in the settingListItemsDetails array are true:
+          let isSelectedAll: any = vm.settingListItemsDetails().every(item => item.isChecked() === true);
+          //there is least one item which is not checked
+          if (isSelectedAll === false) isSelectedAll = null;
+          vm.isSelectAll(isSelectedAll);
+        });
+
+        // subscribe isSelectAll
+        vm.isSelectAll.subscribe(newValue => {
+          vm.selectAllChange(newValue);
+        });
+
+        //KDL 047, 048      
+        vm.shareParam.titleLine.displayFlag = vm.isDisplayTitle();
+        vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
+        vm.shareParam.titleLine.layoutName = vm.attendanceName();
+
+        const positionText = vm.position() === 1 ? "上" : "下";
+        vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
+        vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
+        vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
+        vm.shareParam.itemNameLine.name = vm.attendanceItemName();
+        vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
+        vm.shareParam.attribute.selected = vm.comboSelected();
+        vm.shareParam.selectedTime = vm.tableSelected();
+
+        vm.shareParam.attribute.attributeList = [
+          new AttendanceType(1, vm.$i18n('KWR002_141')),
+          new AttendanceType(2, vm.$i18n('KWR002_142')),
+          new AttendanceType(3, vm.$i18n('KWR002_143'))
+        ]
+
+        vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
+        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
       });
-
-      vm.settingListItemsDetails.subscribe((newList) => {
-        if (!newList || newList.length <= 0) {
-          vm.isSelectAll(false);
-          return;
-        }
-        //Check if all the values in the settingListItemsDetails array are true:
-        let isSelectedAll: any = vm.settingListItemsDetails().every(item => item.isChecked() === true);
-        //there is least one item which is not checked
-        if (isSelectedAll === false) isSelectedAll = null;
-        vm.isSelectAll(isSelectedAll);
-      });
-
-      // subscribe isSelectAll
-      vm.isSelectAll.subscribe(newValue => {
-        vm.selectAllChange(newValue);
-      });
-
-      //KDL 047, 048      
-      vm.shareParam.titleLine.displayFlag = vm.isDisplayTitle();
-      vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
-      vm.shareParam.titleLine.layoutName = vm.attendanceName();
-
-      const positionText = vm.position() === 1 ? "上" : "下";
-      vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
-      vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
-      vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
-      vm.shareParam.itemNameLine.name = vm.attendanceItemName();
-      vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
-      vm.shareParam.attribute.selected = vm.comboSelected();
-      vm.shareParam.selectedTime = vm.tableSelected();
-
-      vm.shareParam.attribute.attributeList = [
-        new AttendanceType(1, vm.$i18n('KWR002_141')),
-        new AttendanceType(2, vm.$i18n('KWR002_142')),
-        new AttendanceType(3, vm.$i18n('KWR002_143'))
-      ]
-
-      vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
-      vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
     }
 
     created(params: any) {
@@ -133,10 +133,10 @@ module nts.uk.at.view.kwr004.b {
       const vm = this;
       let _height: number = 372,
         _dialogHeight = $(window).height();
-        
-        _height = ( _dialogHeight > 592 ) ? 448 : 372;
 
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {       
+      _height = (_dialogHeight > 592) ? 448 : 372;
+
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {
         _height = _dialogHeight > 592 ? 446 : 370;
       }
       $("#multiGridList").ntsFixedTable({ height: _height });
@@ -226,7 +226,7 @@ module nts.uk.at.view.kwr004.b {
         dailyOutputItems: vm.getDailyOutputItems(),
         monthlyOutputItems: vm.getMonthlyOutputItems()
       };
-   
+
       const path_url = (vm.isNewMode()) ? PATH.createSetting : PATH.updateSetting;
 
       vm.$blockui('show');
@@ -240,7 +240,7 @@ module nts.uk.at.view.kwr004.b {
         .fail((error) => {
           vm.showError(error.messageId);
           vm.$blockui('hide');
-        }).always(() => vm.$blockui('hide')); 
+        }).always(() => vm.$blockui('hide'));
     }
 
     showError(messageId: string) {
@@ -438,7 +438,7 @@ module nts.uk.at.view.kwr004.b {
         if (_.isEmpty(selectionItem)) selectedListItems = [];
         //create new row
         let selectedTime: number = selectedListItems.length > 0 ? selectedListItems[0].attendanceItemId : -1;
-  
+
         let newItem = new SettingForPrint(
           x.rank, //rank
           x.name, //b4_3_2 見出し名称
@@ -463,7 +463,7 @@ module nts.uk.at.view.kwr004.b {
             false, 0, [], dailyAttributes, i < maxDailyRows);
           vm.addRowItem(newItem);
         }
-      } 
+      }
     }
 
     dailyOrMonthlyAttributes(type: number) {
@@ -650,7 +650,7 @@ module nts.uk.at.view.kwr004.b {
           listItem.itemId = parseInt(attendanceItem.attendanceId);
           listItem.name = findAttendanceName.attendanceItemName;
           listItem.operator = '+'; //+
-          listItem.indicatesNumber = findAttendanceName.findAttendanceName;
+          listItem.indicatesNumber = findAttendanceName.indicatesNumber;
           //vm.settingListItemsDetails()[index].required(true);   
           vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
           vm.settingListItemsDetails()[index].selectedTimeList([listItem]);
@@ -732,8 +732,9 @@ module nts.uk.at.view.kwr004.b {
       })
     }
 
-    getSettingListKDL() {
+    getSettingListKDL(): JQueryPromise<any> {
       const vm = this;
+      let dfd = $.Deferred<any>();
 
       vm.$blockui('grayout');
 
@@ -764,7 +765,10 @@ module nts.uk.at.view.kwr004.b {
         }
 
         vm.$blockui('hide');
+        dfd.resolve();
       }).always(() => vm.$blockui('hide'));
+
+      return dfd.promise();
     }
 
     switchAndDropBox() {
