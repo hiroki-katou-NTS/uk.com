@@ -65,13 +65,15 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void settingPage(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+        pageSetup.setFitToPagesTall(1);
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + dataSource.getOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        worksheet.getPageSetup().setHeader(2,
+        pageSetup.setFirstPageNumber(0);
+        pageSetup.setHeader(2,
                 "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
     }
