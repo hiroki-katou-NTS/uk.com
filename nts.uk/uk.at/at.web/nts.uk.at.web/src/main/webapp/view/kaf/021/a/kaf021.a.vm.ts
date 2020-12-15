@@ -220,14 +220,9 @@ module nts.uk.at.kaf021.a {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 339;
-            let width = $(window).width() + 20 - 1170;
-
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1170px",
-                height: "200px",
-                subWidth: width + "px",
-                subHeight: height + "px",
+                subWidth: "130px",
+                subHeight: "240px",
                 headerHeight: '60px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
@@ -237,7 +232,7 @@ module nts.uk.at.kaf021.a {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 hidePrimaryKey: true,
                 columns: vm.getColumns(),
                 ntsControls: [
