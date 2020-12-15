@@ -401,14 +401,16 @@ public class SpecialProvisionOfAgreementQuery {
             agreementTimeYearOpt.ifPresent(agreementTimeYear -> agreementTimeYearAll.put(employee.getEmployeeId(),
                     agreementTimeYear));
 
-            Map<YearMonth, AttendanceTimeMonth> times = timeAll.entrySet().stream()
-                    .filter(x -> x.getValue().getYm().greaterThanOrEqualTo(currentYm.addMonths(-5))
-                            && x.getValue().getYm().lessThanOrEqualTo(currentYm))
-                    .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().getAgreementTime().getAgreementTime()));
-            AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = AggregateAgreementTimeByYM.aggregate(require,
-                    employee.getEmployeeId(), baseDate, currentYm, times);
-            if (agreMaxAverageTimeMulti != null) {
-                agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti);
+            if (!isYearMode){
+                Map<YearMonth, AttendanceTimeMonth> times = timeAll.entrySet().stream()
+                        .filter(x -> x.getValue().getYm().greaterThanOrEqualTo(currentYm.addMonths(-5))
+                                && x.getValue().getYm().lessThanOrEqualTo(currentYm))
+                        .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().getAgreementTime().getAgreementTime()));
+                AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = AggregateAgreementTimeByYM.aggregate(require,
+                        employee.getEmployeeId(), baseDate, currentYm, times);
+                if (agreMaxAverageTimeMulti != null) {
+                    agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti);
+                }
             }
         });
 

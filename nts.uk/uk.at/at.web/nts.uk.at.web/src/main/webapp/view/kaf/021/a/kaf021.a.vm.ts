@@ -184,19 +184,19 @@ module nts.uk.at.kaf021.a {
             switch (vm.appTypeSelected()) {
                 case common.AppTypeEnum.CURRENT_MONTH:
                     vm.$ajax(API.CURRENT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = vm.convertData(data);
+                        vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_MONTH);
                         dfd.resolve();
                     }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 case common.AppTypeEnum.NEXT_MONTH:
                     vm.$ajax(API.NEXT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = vm.convertData(data);
+                        vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_MONTH);
                         dfd.resolve();
                     }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 case common.AppTypeEnum.YEARLY:
                     vm.$ajax(API.YEAR, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = vm.convertData(data);
+                        vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_YEAR);
                         dfd.resolve();
                     }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
@@ -207,11 +207,11 @@ module nts.uk.at.kaf021.a {
             return dfd.promise();
         }
 
-        convertData(data: Array<IEmployeeAgreementTime>): Array<EmployeeAgreementTime> {
+        convertData(data: Array<IEmployeeAgreementTime>, typeAgreement: common.TypeAgreementApplicationEnum): Array<EmployeeAgreementTime> {
             const vm = this;
             let results: Array<EmployeeAgreementTime> = [];
             _.each(data, (item: IEmployeeAgreementTime) => {
-                let result = new EmployeeAgreementTime(item)
+                let result = new EmployeeAgreementTime(item, typeAgreement)
                 result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : "";
                 results.push(result);
             })
@@ -702,7 +702,7 @@ module nts.uk.at.kaf021.a {
 
         exceededNumber: number;
 
-        constructor(data: IEmployeeAgreementTime) {
+        constructor(data: IEmployeeAgreementTime, typeAgreement: common.TypeAgreementApplicationEnum) {
             this.employeeId = data.employeeId;
             this.checked = false;
             this.status = data.status;
@@ -855,25 +855,27 @@ module nts.uk.at.kaf021.a {
             this.yearError = data.year?.time?.error;
             this.yearAlarm = data.year?.time?.alarm;
 
-            this.monthAverage2 = data.monthAverage2?.time;
-            this.monthAverage2Str = parseTime(this.monthAverage2, true).format();
-            this.monthAverage2Status = data.monthAverage2?.status;
+            if (typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
+                this.monthAverage2 = data.monthAverage2?.time;
+                this.monthAverage2Str = parseTime(this.monthAverage2, true).format();
+                this.monthAverage2Status = data.monthAverage2?.status;
 
-            this.monthAverage3 = data.monthAverage3?.time;
-            this.monthAverage3Str = parseTime(this.monthAverage3, true).format();
-            this.monthAverage3Status = data.monthAverage3?.status;
+                this.monthAverage3 = data.monthAverage3?.time;
+                this.monthAverage3Str = parseTime(this.monthAverage3, true).format();
+                this.monthAverage3Status = data.monthAverage3?.status;
 
-            this.monthAverage4 = data.monthAverage4?.time;
-            this.monthAverage4Str = parseTime(this.monthAverage4, true).format();
-            this.monthAverage4Status = data.monthAverage4?.status;
+                this.monthAverage4 = data.monthAverage4?.time;
+                this.monthAverage4Str = parseTime(this.monthAverage4, true).format();
+                this.monthAverage4Status = data.monthAverage4?.status;
 
-            this.monthAverage5 = data.monthAverage5?.time;
-            this.monthAverage5Str = parseTime(this.monthAverage5, true).format();
-            this.monthAverage5Status = data.monthAverage5?.status;
+                this.monthAverage5 = data.monthAverage5?.time;
+                this.monthAverage5Str = parseTime(this.monthAverage5, true).format();
+                this.monthAverage5Status = data.monthAverage5?.status;
 
-            this.monthAverage6 = data.monthAverage6?.time;
-            this.monthAverage6Str = parseTime(this.monthAverage6, true).format();
-            this.monthAverage6Status = data.monthAverage6?.status;
+                this.monthAverage6 = data.monthAverage6?.time;
+                this.monthAverage6Str = parseTime(this.monthAverage6, true).format();
+                this.monthAverage6Status = data.monthAverage6?.status;
+            }
 
             this.exceededNumber = data.exceededNumber;
         }
