@@ -67,11 +67,6 @@ public class AppHdWorkDispInfoDto {
 	private List<OvertimeWorkFrameDto> overtimeFrameList;
 	
 	/**
-	 * 申請用時間外労働時間
-	 */
-	private OverTimeWorkHoursDto otWorkHoursForApplication;
-	
-	/**
 	 * 申請表示情報
 	 */
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
@@ -80,6 +75,11 @@ public class AppHdWorkDispInfoDto {
 	 * 乖離理由の選択肢
 	 */
 	private DivergenceReasonSelectDto comboDivergenceReason;
+	
+	/**
+	 * 申請用時間外労働時間
+	 */
+	private OverTimeWorkHoursDto otWorkHoursForApplication;
 	
 	/**
 	 * 計算結果
@@ -101,9 +101,9 @@ public class AppHdWorkDispInfoDto {
 					.stream()
 					.map(overtimeFrame -> OvertimeWorkFrameDto.fromDomain(overtimeFrame))
 					.collect(Collectors.toList()), 
-				domain.getOtWorkHoursForApplication() != null ? OverTimeWorkHoursDto.fromDomain(domain.getOtWorkHoursForApplication()) : null, 
 				AppDispInfoStartupDto.fromDomain(domain.getAppDispInfoStartupOutput()), 
-				domain.getComboDivergenceReason().isPresent() ? DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().get()) : null, 
+				domain.getComboDivergenceReason().isPresent() ? DivergenceReasonSelectDto.fromDomain(domain.getComboDivergenceReason().get()) : null,
+				domain.getOtWorkHoursForApplication().isPresent() ? OverTimeWorkHoursDto.fromDomain(domain.getOtWorkHoursForApplication().get()) : null, 
 				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)));
 	}
 }
