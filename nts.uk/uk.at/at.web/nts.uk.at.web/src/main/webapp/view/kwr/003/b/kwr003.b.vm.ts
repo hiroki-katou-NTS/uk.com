@@ -196,9 +196,7 @@ module nts.uk.at.view.kwr003.b {
       if (nts.uk.ui.errors.hasError()) return;
 
       vm.saveOrUpdateSetting().done(() => {
-        let listItemsDetails: Array<any> = [];
-        listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
-        vm.createListItemAfterSorted(listItemsDetails);
+        vm.getSettingListItemsDetails();
       });
     }
 
@@ -220,7 +218,7 @@ module nts.uk.at.view.kwr003.b {
       let params: DataOutputDto = new DataOutputDto(),
         outputItemList: Array<OutputItemList> = [];
 
-      _.forEach(vm.settingListItemsDetails(), (item) => {
+      _.forEach(vm.settingListItemsDetails(), (item, index) => {
         if (!_.isEmpty(item.name()) && item.selectedTimeList().length > 0) {
           let outputItem = new OutputItemList();
           outputItem.rank = item.id;
@@ -252,15 +250,16 @@ module nts.uk.at.view.kwr003.b {
       let reloadParams = { standOrFree: vm.settingCategory(), code: vm.attendanceCode() };
 
       vm.$blockui('show');
-      vm.$ajax(url, params).done(() => {
-        vm.loadSettingList(reloadParams);
+      vm.$ajax(url, params).done(() => {        
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          if(vm.isNewMode()) vm.loadSettingList(reloadParams);
           vm.settingAttendance();
           vm.isNewMode(false);
           vm.$blockui('hide');
-          dfd.resolve();
+          
           $('#KWR003_B43').focus();
         });
+        dfd.resolve();
       }).fail((error) => {
         switch (error.messageId) {
           case 'Msg_1903':

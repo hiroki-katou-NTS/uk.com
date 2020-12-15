@@ -68,11 +68,15 @@ module nts.uk.at.view.kwr004.b {
       const vm = this;
 
       //KDL047, 048
-      vm.getSettingListKDL();
+      //vm.getSettingListKDL();
+
       //merge attributes, settings
       vm.switchAndDropBox();
+     
       //get the left with code, settingCategory from A
-      vm.getSettingList(params);
+      $.when(vm.getSettingListKDL()).then(() => {
+        vm.getSettingList(params);
+      });      
 
       vm.currentCodeList.subscribe((newCode: any) => {
         nts.uk.ui.errors.clearAll();
