@@ -259,6 +259,10 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         break;
                     }
                     default: {
+						if (err.messageId == 'Msg_277') {
+                        	vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst = [];
+							vm.appDispInfoStartupOutput.valueHasMutated();
+                        }
                         vm.$dialog.error(err).then(() => {
                             if (err.messageId == 'Msg_197') {
                                 location.reload();
