@@ -14,8 +14,8 @@
 			</script>
 
 			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+				nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode
+				nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -53,13 +53,13 @@
 								data-bind="ntsPanel:{width: '260px', height: '360px', direction: 'right', showIcon: true, visible: true}">
 								<!-- C2_2 -->
 								<div style="width: 250px"
-									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list',
 											items: outputItemList, selected: selectedCodeC2_3, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<!-- C2_3 -->
 								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
 										height: 300,
 										options: outputItemList,
-										optionsValue: 'code', 
+										optionsValue: 'code',
 										columns: columns,
 										multiple: false,
 										columnResize: true,
@@ -72,7 +72,7 @@
 							<div class="right">
 								<div class="row">
 									<!-- C3_1 -->
-									<div class="label-name" data-bind="ntsFormLabel: { constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], 
+									<div class="label-name" data-bind="ntsFormLabel: { constraint: ['MonthlyOutputItemSettingCode', 'MonthlyOutputItemSettingName'],
 																					   required: true,
 																					   name: '#[KWR006_42]'}">#{i18n.getText('KWR006_42')}</div>
 									<!-- C3_2 -->
@@ -80,14 +80,14 @@
 											name: '#[KWR006_43]',
 											required: true,
 											value: C3_2_value,
-											constraint: 'OutputItemSettingCode',
+											constraint: 'MonthlyOutputItemSettingCode',
 											enable: enableCodeC3_2}" />
 									<!-- C3_3 -->
 									<input id="C3_3" class="C3_3 save-error" tabindex="8" data-bind="ntsTextEditor:{
 											name: '#[KWR006_44]',
 											required: true,
 											value: C3_3_value,
-											constraint: 'OutputItemSettingName'}" />
+											constraint: 'MonthlyOutputItemSettingName'}" />
 								</div>
 								<div class="row">
 									<!-- C9_1 -->
