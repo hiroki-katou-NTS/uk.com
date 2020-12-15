@@ -972,13 +972,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             // set data cho combobox WorkType
             let listWorkType = [];
-            _.each(listWorkTypeInfo, (emp: IWorkTypeInfomation, i) => {
+            _.each(listWorkTypeInfo, (emp: any, i) => {
                 let workTypeDto: IWorkTypeDto = {
                     workTypeCode: emp.workTypeDto.workTypeCode, // 勤務種類コード - コード
                     name: emp.workTypeDto.name,         // 勤務種類名称  - 表示名
                     memo: emp.workTypeDto.memo,
                     workTimeSetting: emp.workTimeSetting, // 必須任意不要区分 :  必須である REQUIRED(0), 任意であるOPTIONAL(1), 不要であるNOT_REQUIRED(2)
                     workStyle: emp.workStyle,
+                    abbName: emp.workTypeDto.abbName,
                 }
                 listWorkType.push(workTypeDto);
             });
@@ -3608,7 +3609,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workTypeCode: string, // 勤務種類コード - コード
         name: string,         // 勤務種類名称  - 表示名
         memo: string,
-        workTimeSetting: number         // 必須任意不要区分 
+        workTimeSetting: number,         // 必須任意不要区分 
+        abbName: string
     }
 
     interface IEditStateOfDailyAttdDto {
