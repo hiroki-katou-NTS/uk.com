@@ -598,10 +598,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				.distinct()
 				.collect(Collectors.toList());
 			workTypeList = workTypeRepository.findWorkTypeByCodes(companyId, workTypeCodeList, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value);
-			workTypeList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
-		} else {
+			
+		} 
+		if(workTypeList.isEmpty()) {
 			workTypeList = workTypeRepository.findWorkOneDay(companyId, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value, WorkTypeClassification.HolidayWork.value);
 		}
+		workTypeList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
 		return workTypeList;
 	}
 	
@@ -666,10 +668,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				}
 			}
 			if(!initWorkTypeCd.isPresent()) {
-				initWorkTypeCd = Optional.of(workTypeList.get(0).getWorkTypeCode());
+				initWorkTypeCd = Optional.ofNullable(!workTypeList.isEmpty() ? workTypeList.get(0).getWorkTypeCode() : null);
 			}
 			if(!initWorkTimeCd.isPresent()) {
-				initWorkTimeCd = Optional.of(workTimeList.get(0).getWorktimeCode());
+				initWorkTimeCd = Optional.ofNullable(!workTypeList.isEmpty() ? workTimeList.get(0).getWorktimeCode() : null);
 			}
 		} else {
 			initWorkTypeCd = workingConditionItem.isPresent() ? 
