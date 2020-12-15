@@ -72,10 +72,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	@Override	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void reflectEmployeeOfApp(Application appInfor, InformationSettingOfEachApp reflectSetting,
+	public void reflectEmployeeOfApp(Application appInfor,
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord) {
 		try {
-			self.reflectEmployeeOfAppWithTransaction(appInfor, reflectSetting, execuTionType, excLogId);
+			self.reflectEmployeeOfAppWithTransaction(appInfor, execuTionType, excLogId);
 			
 		} catch(Exception ex) {
 			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
@@ -98,14 +98,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				throw ex;
 			}	
 			
-			self.reflectEmployeeOfApp(appInfor, reflectSetting, execuTionType, excLogId, newCountRerun);
+			self.reflectEmployeeOfApp(appInfor, execuTionType, excLogId, newCountRerun);
 		}
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Transactional
-	public void reflectEmployeeOfAppWithTransaction(Application appInfor,
-			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId) {
+	public void reflectEmployeeOfAppWithTransaction(Application appInfor, ExecutionTypeExImport execuTionType,
+			String excLogId) {
 		String companyID = AppContexts.user().companyId();
 		
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, appInfor.getEmployeeID(), GeneralDate.today());

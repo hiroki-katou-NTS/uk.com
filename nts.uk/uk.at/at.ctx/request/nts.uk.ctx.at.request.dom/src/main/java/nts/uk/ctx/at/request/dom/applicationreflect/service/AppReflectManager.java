@@ -15,9 +15,9 @@ public interface AppReflectManager {
 	 * @param excLogId 実行ID
 	 * @param currentRecord default = 0
 	 */
-	public void reflectEmployeeOfApp(Application appInfor, InformationSettingOfEachApp reflectSetting,
+	public void reflectEmployeeOfApp(Application appInfor,
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord);
 
-	void reflectEmployeeOfAppWithTransaction(Application appInfor,
-			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId);
+	void reflectEmployeeOfAppWithTransaction(Application appInfor, ExecutionTypeExImport execuTionType,
+			String excLogId);
 }

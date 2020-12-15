@@ -471,6 +471,7 @@ public class IntegrationOfDaily {
 		this.remarks = daily.getRemarks();
 		this.ouenTimeSheet = daily.getOuenTimeSheet();
 		this.ouenTime = daily.getOuenTime();
+		this.snapshot = daily.getSnapshot();
 	}
 	
 	public IntegrationOfDaily getDomain() {
@@ -500,5 +501,6 @@ public class IntegrationOfDaily {
 		this.editState = daily.getEditState();
 		this.tempTime = daily.getTempTime();
 		this.remarks = daily.getRemarks();
+		this.snapshot = daily.getSnapshot();
 	}
 }
