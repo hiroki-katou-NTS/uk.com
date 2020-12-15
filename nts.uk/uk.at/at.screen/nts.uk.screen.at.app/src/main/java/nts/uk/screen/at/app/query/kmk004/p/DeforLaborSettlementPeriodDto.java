@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforLaborSettlementPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
 
 /**
  * 
@@ -35,6 +36,15 @@ public class DeforLaborSettlementPeriodDto {
 				new Month(startMonth == null ? 1 : startMonth), 
 				new Month(period == null ? 1 : period), 
 				repeatAtr);
+	}
+	
+	public static DeforLaborSettlementPeriodDto from(DeforLaborSettlementPeriod domain){
+		
+		return DeforLaborSettlementPeriodDto.builder()
+				.startMonth(domain.getStartMonth().v())
+				.period(domain.getStartMonth().v())
+				.repeatAtr(domain.isRepeat())
+				.build();
 	}
 
 }

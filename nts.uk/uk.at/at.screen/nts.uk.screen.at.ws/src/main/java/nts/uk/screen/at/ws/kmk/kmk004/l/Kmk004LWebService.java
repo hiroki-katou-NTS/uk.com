@@ -14,6 +14,10 @@ import nts.uk.screen.at.app.command.kmk.kmk004.l.DeleteTransMonthlyWorkTimeSetCo
 import nts.uk.screen.at.app.command.kmk.kmk004.l.RegisterTransMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.l.UpdateTransMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommand;
+import nts.uk.screen.at.app.kmk004.l.DeforLaborMonthTimeComDto;
+import nts.uk.screen.at.app.kmk004.l.DisplayDeforBasicSettingByCompany;
+import nts.uk.screen.at.app.kmk004.l.DisplayInitialDeforScreenByCom;
+import nts.uk.screen.at.app.kmk004.l.DisplayInitialDeforScreenByCompanyDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayYearListByCompany;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
@@ -37,6 +41,12 @@ public class Kmk004LWebService {
 
 	@Inject
 	private DeleteTransMonthlyWorkTimeSetComCommandHandler deleteHandler;
+	
+	@Inject
+	private DisplayDeforBasicSettingByCompany dislaySetting;
+	
+	@Inject
+	private DisplayInitialDeforScreenByCom initScreen;
 
 	@POST
 	@Path("viewL/getListYear")
@@ -61,5 +71,17 @@ public class Kmk004LWebService {
 	public void deleteMonthlyWorkTimeSet(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetComCommand> command) {
 		deleteHandler.handle(command);
 	}
-
+	
+	@POST
+	@Path("viewL/getBasicSetting")
+	public DeforLaborMonthTimeComDto getBasicSetting() {
+		return dislaySetting.displayDeforBasicSettingByCompany();
+	}
+	
+	@POST
+	@Path("viewL/initScreen")
+	public DisplayInitialDeforScreenByCompanyDto initScreen() {
+		return initScreen.displayInitialDeforScreenByCom() ;
+	}
+	
 }

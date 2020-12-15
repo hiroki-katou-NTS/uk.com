@@ -15,6 +15,12 @@ import nts.uk.screen.at.app.command.kmk.kmk004.n.DeleteTransMonthlyWorkTimeSetEm
 import nts.uk.screen.at.app.command.kmk.kmk004.n.DeleteTransMonthlyWorkTimeSetEmpCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.n.RegisterTransMonthlyWorkTimeSetEmpCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.n.UpdateTransMonthlyWorkTimeSetEmpCommandHandler;
+import nts.uk.screen.at.app.kmk004.n.DeforLaborMonthTimeEmpDto;
+import nts.uk.screen.at.app.kmk004.n.DisplayDeforBasicSettingByEmployment;
+import nts.uk.screen.at.app.kmk004.n.DisplayInitialDeforScreenByEmployment;
+import nts.uk.screen.at.app.kmk004.n.DisplayInitialDeforScreenByEmploymentDto;
+import nts.uk.screen.at.app.kmk004.n.SelectEmploymentDefor;
+import nts.uk.screen.at.app.kmk004.n.SelectEmploymentDeforDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
 
@@ -39,6 +45,14 @@ public class Kmk004NWebService {
 	@Inject
 	private DeleteTransMonthlyWorkTimeSetEmpCommandHandler deleteHandler;
 
+	@Inject
+	private DisplayDeforBasicSettingByEmployment dislaySetting;
+	
+	@Inject
+	private DisplayInitialDeforScreenByEmployment initScreen;
+	
+	@Inject
+	private SelectEmploymentDefor select;
 	
 	@POST
 	@Path("viewN/getListYear/{empCode}")
@@ -47,20 +61,38 @@ public class Kmk004NWebService {
 	}
 	
 	@POST
-	@Path("viewM/monthlyWorkTimeSet/add")
+	@Path("viewN/monthlyWorkTimeSet/add")
 	public void registerMonthlyWorkTimeSet(CommandHandlerContext<SaveMonthlyWorkTimeSetEmpCommand> command) {
 		registerHandler.handle(command);
 	}
 	
 	@POST
-	@Path("viewM/monthlyWorkTimeSet/update")
+	@Path("viewN/monthlyWorkTimeSet/update")
 	public void updateMonthlyWorkTimeSet(CommandHandlerContext<SaveMonthlyWorkTimeSetEmpCommand> command) {
 		updateHandler.handle(command);
 	}
 	
 	@POST
-	@Path("viewM/monthlyWorkTimeSet/delete")
+	@Path("viewN/monthlyWorkTimeSet/delete")
 	public void deleteMonthlyWorkTimeSet(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetEmpCommand> command) {
 		deleteHandler.handle(command);
+	}
+	
+	@POST
+	@Path("viewN/getBasicSetting/{empCode}")
+	public DeforLaborMonthTimeEmpDto getBasicSetting(@PathParam("empCode") String empCode) {
+		return dislaySetting.displayDeforBasicSettingByEmployment(empCode);
+	}
+	
+	@POST
+	@Path("viewN/selectEmp/{empCode}")
+	public SelectEmploymentDeforDto selectWkp(@PathParam("empCode") String empCode) {
+		return select.selectEmploymentDefor(empCode);
+	}
+
+	@POST
+	@Path("viewN/initScreen")
+	public DisplayInitialDeforScreenByEmploymentDto initScreen() {
+		return initScreen.displayInitialDeforScreenByEmployment() ;
 	}
 }
