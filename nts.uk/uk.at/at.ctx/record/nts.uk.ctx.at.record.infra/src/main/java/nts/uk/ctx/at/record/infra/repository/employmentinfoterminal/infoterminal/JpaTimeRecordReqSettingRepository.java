@@ -169,12 +169,16 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		}
 	}
 
-	private TimeRecordReqSetting getByContractCodeAndCode(ContractCode contractCode, EmpInfoTerminalCode code) {
+	private Optional<TimeRecordReqSetting> getByContractCodeAndCode(ContractCode contractCode, EmpInfoTerminalCode code) {
 		try (PreparedStatement statement = this.connection().prepareStatement(GET_BY_KEY)) {
 			statement.setString(1, contractCode.v());
 			statement.setString(2, code.v());
 			List<TimeRecordReqSetting> listFullData = createTimeReqSetting(statement.executeQuery());
-			return getOneByList(listFullData).get();
+			Optional<TimeRecordReqSetting> timeRecordReqSetting = getOneByList(listFullData);
+			if (!timeRecordReqSetting.isPresent()) {
+				return Optional.empty();
+			}
+			return timeRecordReqSetting;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -182,26 +186,38 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	@Override
 	public List<EmployeeId> getEmployeeIdList(ContractCode contractCode, EmpInfoTerminalCode code) {
-		TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
-		return timeRecordReqSetting.getEmployeeIds();
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		if (!timeRecordReqSetting.isPresent()) {
+			Collections.emptyList();
+		}
+		return timeRecordReqSetting.get().getEmployeeIds();
 	}
 
 	@Override
 	public List<WorkTypeCode> getWorkTypeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
-		TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
-		return timeRecordReqSetting.getWorkTypeCodes();
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		if (!timeRecordReqSetting.isPresent()) {
+			Collections.emptyList();
+		}
+		return timeRecordReqSetting.get().getWorkTypeCodes();
 	}
 
 	@Override
 	public List<WorkTimeCode> getWorkTimeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
-		TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
-		return timeRecordReqSetting.getWorkTimeCodes();
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		if (!timeRecordReqSetting.isPresent()) {
+			Collections.emptyList();
+		}
+		return timeRecordReqSetting.get().getWorkTimeCodes();
 	}
 
 	@Override
 	public List<Integer> getbentoMenuFrameNumbers(ContractCode contractCode, EmpInfoTerminalCode code) {
-		TimeRecordReqSetting timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
-		return timeRecordReqSetting.getBentoMenuFrameNumbers();
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		if (!timeRecordReqSetting.isPresent()) {
+			Collections.emptyList();
+		}
+		return timeRecordReqSetting.get().getBentoMenuFrameNumbers();
 	}
 
 }
