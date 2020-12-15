@@ -44,7 +44,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             if (!dataSource.getLstAnnualWorkLedgerContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
                 printContents(worksheet, dataSource);
-                removeTemplate(worksheet);
+               // removeTemplate(worksheet);
             }
 
             worksheets.setActiveSheetIndex(0);
@@ -65,14 +65,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void settingPage(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-        pageSetup.setFitToPagesTall(1);
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + dataSource.getOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        pageSetup.setFirstPageNumber(0);
+
         pageSetup.setHeader(2,
                 "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
@@ -84,12 +83,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         List<AnnualWorkLedgerContent> lstAnnualWorkLedgerContent = dataSource.getLstAnnualWorkLedgerContent();
         for (int i = 0; i < lstAnnualWorkLedgerContent.size(); i++) {
             AnnualWorkLedgerContent empInfo = lstAnnualWorkLedgerContent.get(i);
-            int firstRow = (i + 1) * NUMBER_ROW_OF_PAGE;
+            int firstRow = (i ) * NUMBER_ROW_OF_PAGE;
+            int firstPage = (i + 1) * NUMBER_ROW_OF_PAGE;
             cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
-
+            cells.clearContents(firstRow,0,cells.getMaxRow(),cells.getMaxColumn());
             this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
             this.printData(worksheet, firstRow, dataSource, empInfo);
-            pageBreaks.add(firstRow);
+            pageBreaks.add(firstPage);
         }
     }
 
