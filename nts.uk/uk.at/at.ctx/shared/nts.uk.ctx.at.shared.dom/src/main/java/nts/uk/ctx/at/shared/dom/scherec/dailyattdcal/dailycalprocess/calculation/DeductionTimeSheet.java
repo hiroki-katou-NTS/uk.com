@@ -322,13 +322,22 @@ public class DeductionTimeSheet {
 		sheetList = sheetList.stream()
 				.sorted((first, second) -> first.getTimeSheet().getTimeSpan().getStart().compareTo(second.getTimeSheet().getTimeSpan().getStart()))
 				.collect(Collectors.toList());
+		
 		/* 計算範囲による絞り込み */
-		List<TimeSheetOfDeductionItem> reNewSheetList = refineCalcRange(
-				sheetList,
-				oneDayOfRange,
-				integrationOfWorkTime.getCommonRestSetting().getCalculateMethod(),
-				attendanceLeaveWork);
-		return reNewSheetList;
+		return refineCalcRangeForCorrect(sheetList, oneDayOfRange);
+	}
+	
+	private static List<TimeSheetOfDeductionItem> refineCalcRangeForCorrect(List<TimeSheetOfDeductionItem> dedTimeSheets,
+			TimeSpanForDailyCalc oneDayRange) {
+		
+		return dedTimeSheets.stream().map(dedTimeSheet -> {
+			return oneDayRange.getDuplicatedWith(dedTimeSheet.getTimeSheet()).map(timeSheet -> {
+				return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(timeSheet,
+						dedTimeSheet.getRounding(), dedTimeSheet.getRecordedTimeSheet(), dedTimeSheet.getDeductionTimeSheet(),
+						dedTimeSheet.getWorkingBreakAtr(), dedTimeSheet.getGoOutReason(), dedTimeSheet.getBreakAtr(), 
+						dedTimeSheet.getShortTimeSheetAtr(), dedTimeSheet.getDeductionAtr(), dedTimeSheet.getChildCareAtr());
+			}).orElse(null);
+		}).filter(c -> c != null).collect(Collectors.toList());
 	}
 
 	private static List<TimeSheetOfDeductionItem> getShortTimeDeductionTimeSheet(
