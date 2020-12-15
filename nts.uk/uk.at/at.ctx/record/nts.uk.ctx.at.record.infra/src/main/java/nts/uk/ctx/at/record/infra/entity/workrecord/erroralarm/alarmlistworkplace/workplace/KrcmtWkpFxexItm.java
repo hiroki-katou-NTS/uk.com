@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,10 +17,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Table(name = "KRCMT_WKP_FXEX_ITM")
-public class KrcmtWkpFxexItm extends UkJpaEntity implements Serializable {
-
-    @Column(name="CONTRACT_CD")
-    public String contractCd;
+public class KrcmtWkpFxexItm extends ContractCompanyUkJpaEntity implements Serializable {
 
     @Id
     @Column(name="NO")
