@@ -926,7 +926,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 		setColorForHolidayTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
 			const self = this;
-			if (!isCalculation || _.isNil(dataSource.calculationResultOp)) {
+			if (_.isNil(dataSource.calculationResultOp)) {
 				
 				return;
 			}
@@ -1144,7 +1144,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		setColorForOverTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
 			const self = this;
-			if (!isCalculation || _.isNil(dataSource.calculationResultOp)) {
+			if (_.isNil(dataSource.calculationResultOp)) {
 				
 				return;
 			}
