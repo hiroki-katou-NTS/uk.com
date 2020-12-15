@@ -1,6 +1,15 @@
 package nts.uk.screen.at.app.query.kmk004.a;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.at.shared.dom.workingform.SettingFlexWork;
+import nts.uk.ctx.at.shared.dom.workingform.SettingFlexWorkRepository;
+import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
+import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -12,9 +21,23 @@ import javax.ejb.Stateless;
 
 @Stateless
 public class DisplayInitialScreenForRegistration {
+	
+	@Inject
+	private SettingFlexWorkRepository flexWorkRepository;
+	
+	@Inject
+	private AggDeformedLaborSettingRepository aggDeformedLaborSettingRepository;
+	
 
-	public static DisplayInitialScreenForRegistrationDto get () {
+	public DisplayInitialScreenForRegistrationDto get () {
 		DisplayInitialScreenForRegistrationDto result = new DisplayInitialScreenForRegistrationDto();
+		String cid = AppContexts.user().companyId();
+		
+		Optional<AggDeformedLaborSetting> agg = this.aggDeformedLaborSettingRepository.findByCid(cid);
+		SettingFlexWork flex = this.flexWorkRepository.find(cid);
+		
+		result.setFlexWorkManaging(flex.isFlexWorkManaging());
+		result.setUseDeformedLabor(agg.map(m -> m.getUseDeformedLabor().isUse()).orElse(false));
 		
 		return result;
 	}
