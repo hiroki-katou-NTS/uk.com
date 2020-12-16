@@ -43,7 +43,6 @@ public class KscmtTallyByWkpEveryTimeZone extends ContractUkJpaEntity implements
 			return new WorkplaceCounterStartTime(x.pk.startClock);
 		}).collect(Collectors.toList());
 
-		//TODO fix duplicate sau khi query
-		return WorkplaceCounterTimeZonePeopleNumber.create(workplaceCounterStartTimes);
+		return new WorkplaceCounterTimeZonePeopleNumber(workplaceCounterStartTimes);
 	}
 }

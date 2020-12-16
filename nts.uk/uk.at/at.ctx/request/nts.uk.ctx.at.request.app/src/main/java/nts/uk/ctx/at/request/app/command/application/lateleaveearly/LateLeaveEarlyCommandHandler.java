@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.LateLeaveEarlyService;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author anhnm
@@ -39,9 +42,10 @@ public class LateLeaveEarlyCommandHandler extends CommandHandlerWithResult<LateL
 		applicationDto.setInputDate(GeneralDateTime.now().toString("yyyy/MM/dd HH:mm:ss"));
 		Application application = Application.createFromNew(
 				EnumAdaptor.valueOf(dto.getApplication().getPrePostAtr(), PrePostAtr.class),
-				dto.getApplication().getEmployeeID(), EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
+				Strings.isBlank(dto.getApplication().getEmployeeID()) ? AppContexts.user().employeeId() : dto.getApplication().getEmployeeID(), 
+				EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
 				new ApplicationDate(GeneralDate.fromString(dto.getApplication().getAppDate(), "yyyy/MM/dd")),
-				applicationDto.getEmployeeID(),
+				AppContexts.user().employeeId(),
 				dto.getApplication().getOpStampRequestMode() == null ? Optional.empty()
 						: Optional.of(EnumAdaptor.valueOf(dto.getApplication().getOpStampRequestMode(),
 								StampRequestMode.class)),

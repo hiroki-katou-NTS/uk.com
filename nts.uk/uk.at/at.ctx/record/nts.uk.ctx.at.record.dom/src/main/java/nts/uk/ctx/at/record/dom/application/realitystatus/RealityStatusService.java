@@ -53,6 +53,8 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.confirmemployment.RestrictConfirmEmployment;
+import nts.uk.ctx.at.record.dom.confirmemployment.RestrictConfirmEmploymentRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
@@ -102,6 +104,9 @@ public class RealityStatusService {
 	
 	@Inject
 	private WorkplaceConfigInfoAdapter configInfoAdapter;
+	
+	@Inject
+	private RestrictConfirmEmploymentRepository restrictConfirmEmploymentRepository;
 	
 	/**
 	 * 承認状況職場実績起動
@@ -227,14 +232,20 @@ public class RealityStatusService {
 		Optional<ApprovalProcessingUseSetting> approval = approvalProcessingUseSettingRepo.findByCompanyId(cid);
 		// 本人確認処理の利用設定
 		Optional<IdentityProcessUseSet> identity = identityProcessUseSetRepo.findByKey(cid);
-
+		// 就業確定の機能制限
+		Optional<RestrictConfirmEmployment> restrictConfirmEmployment = restrictConfirmEmploymentRepository.findByCompanyID(cid);
+		
+		// 月別本人確認を利用する ← 本人確認処理の利用設定.月の本人確認を利用する
+		boolean monthlyIdentityConfirm = identity.isPresent() ? identity.get().isUseIdentityOfMonth() : false;
 		// 月別確認を利用する ← 承認処理の利用設定.月の承認者確認を利用する
 		boolean monthlyConfirm = approval.isPresent() ? approval.get().getUseMonthApproverConfirm() : false;
 		// 上司確認を利用する ← 承認処理の利用設定.日の承認者確認を利用する
 		boolean useBossConfirm = approval.isPresent() ? approval.get().getUseDayApproverConfirm() : false;
 		// 本人確認を利用する ← 本人確認処理の利用設定.日の本人確認を利用する
 		boolean usePersonConfirm = identity.isPresent() ? identity.get().isUseConfirmByYourself() : false;
-		return new UseSetingOutput(monthlyConfirm, useBossConfirm, usePersonConfirm);
+		// 就業確定を利用する ← 就業確定の機能制限.就業確定を行う
+		boolean employmentConfirm = restrictConfirmEmployment.isPresent() ? restrictConfirmEmployment.get().isConfirmEmployment() : false;
+		return new UseSetingOutput(monthlyIdentityConfirm, monthlyConfirm, useBossConfirm, usePersonConfirm, employmentConfirm);
 	}
 
 	/**

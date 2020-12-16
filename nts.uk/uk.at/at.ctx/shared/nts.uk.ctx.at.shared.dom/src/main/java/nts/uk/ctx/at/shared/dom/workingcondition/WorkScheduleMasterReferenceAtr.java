@@ -10,7 +10,10 @@ public enum WorkScheduleMasterReferenceAtr {
 	WORK_PLACE(0, "Enum_WorkScheduleMasterReferenceAtr_Workplace"),
 
 	/** The classification. */
-	CLASSIFICATION(1, "Enum_WorkScheduleMasterReferenceAtr_Classification");
+	CLASSIFICATION(1, "Enum_WorkScheduleMasterReferenceAtr_Classification"),
+	
+	/** The company. */
+	COMPANY(2, "Enum_WorkScheduleMasterReferenceAtr_Company");
 
 	/** The value. */
 	public final int value;
