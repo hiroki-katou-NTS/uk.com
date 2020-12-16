@@ -9,10 +9,8 @@ const template = `
 		<button class="danger" data-bind="enable:screenData().yearList().length > 0,click: remove,i18n: 'KMK004_227'"></button>
 	`;
 
-const COMPONENT_NAME = 'sidebar-button';
-
 @component({
-	name: COMPONENT_NAME,
+	name: 'sidebar-button',
 	template
 })
 
@@ -27,7 +25,75 @@ class SidebarButton extends ko.ViewModel {
 	}
 
 	register() {
+		const vm = this;
+		if (vm.screenData().updateMode()) {
+			vm.updateData();
+		} else {
+			vm.registerData();
+		}
+	}
 
+	updateData() {
+		const vm = this;
+		let cmd, datas;
+
+		if (vm.screenMode == 'Com_Company') {
+
+			cmd = { workTimeSetComs: ko.mapping.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
+			vm.$blockui('invisible');
+			vm.$ajax(API_G_URL.UPDATE, cmd).done(() => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.screenData().saveToUnSaveList();
+					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+				});
+			}).fail((error) => {
+				vm.$dialog.error(error);
+			}).always(() => {
+				vm.$blockui("clear");
+			});
+		}
+
+
+		if (vm.screenMode == 'Com_Workplace') {
+			datas = $('#work-place-list').getDataList();
+		}
+		if (vm.screenMode == 'Com_Employment') {
+			datas = $('#empt-list-setting').getDataList();
+		}
+		if (vm.screenMode == 'Com_Person') {
+			datas = $('#employee-list').getDataList();
+		}
+	}
+
+	registerData() {
+		const vm = this;
+
+		let cmd, datas;
+
+		if (vm.screenMode == 'Com_Company') {
+			cmd = { workTimeSetComs: ko.mapping.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
+			vm.$blockui('invisible');
+			vm.$ajax(API_G_URL.REGISTER, cmd).done(() => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+				});
+			}).fail((error) => {
+				vm.$dialog.error(error);
+			}).always(() => {
+				vm.$blockui("clear");
+			});
+		}
+
+
+		if (vm.screenMode == 'Com_Workplace') {
+			datas = $('#work-place-list').getDataList();
+		}
+		if (vm.screenMode == 'Com_Employment') {
+			datas = $('#empt-list-setting').getDataList();
+		}
+		if (vm.screenMode == 'Com_Person') {
+			datas = $('#employee-list').getDataList();
+		}
 	}
 
 	openRDialog() {

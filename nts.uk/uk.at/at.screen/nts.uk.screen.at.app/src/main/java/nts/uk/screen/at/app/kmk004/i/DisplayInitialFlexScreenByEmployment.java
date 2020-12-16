@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.i;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -39,15 +41,15 @@ public class DisplayInitialFlexScreenByEmployment {
 
 		// 職場リストを表示する
 		// input： 勤務区分 ← 2：フレックス勤務
-		result.setEmploymentCds(this.employmentList.get(LaborWorkTypeAttr.FLEX));
-		if (!result.getEmploymentCds().isEmpty()) {
+		result.setAlreadySettings(this.employmentList.get(LaborWorkTypeAttr.FLEX).stream().map(x-> x.employmentCode).collect(Collectors.toList()));
+		if (!result.getAlreadySettings().isEmpty()) {
 
 			// 雇用を選択する（フレックス勤務）
 			// input：
 			// 雇用コード ← 雇用リストの先頭の雇用コード
 			// 勤務区分 ← 2：フレックス勤務
 			result.setSelectWorkPlaceFlex(this.selectEmploymentFlex
-					.selectEmploymentFlex(result.getEmploymentCds().get(0).employmentCode));
+					.selectEmploymentFlex(result.getAlreadySettings().get(0)));
 		}
 
 		return result;

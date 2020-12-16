@@ -40,10 +40,15 @@ const template = `
 					</div>
 	`;
 
-const BASE_URL = 'screen/at/kmk004/g/';
+const BASE_G_URL = 'screen/at/kmk004/g/';
 
 const API_G_URL = {
-	START_PAGE: BASE_URL + 'init-screen',
+	START_PAGE: BASE_G_URL + 'init-screen',
+	CHANGE_YEAR: BASE_G_URL + 'change-year/',
+	UPDATE: BASE_G_URL + 'update',
+	REGISTER: BASE_G_URL + 'register',
+	DELETE: BASE_G_URL + 'delete',
+	CHANGE_SETTING: BASE_G_URL + 'change-setting',
 };
 
 @component({
@@ -64,16 +69,43 @@ class ScreenGComponent extends ko.ViewModel {
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_G_URL.START_PAGE))
 			.then((data) => {
-				console.log(data);
-				//vm.screenData(new FlexScreenData(data));
+				vm.screenData().updateData(data);
 			})
 			.then(() => vm.$blockui('clear'));
 
+		vm.screenData().selectedYear.subscribe((yearInput) => {
+			
+			let year = Number(yearInput);
+			//check if data has in unsave list => bind data from that
+			let unsaveItem = _.find(vm.screenData().unSaveSetComs, ['year', year]);
+			
+			if (unsaveItem) {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if(isChanged){vm.screenData().setUpdateYear(vm.screenData().serverData.year);}
+				vm.screenData().serverData = unsaveItem;
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom) => { return new nts.uk.at.kmk004.components.flex.MonthlyWorkTimeSetCom(item); }));
+			} else {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if(isChanged){vm.screenData().setUpdateYear(vm.screenData().serverData.year);}
+				//else load data from sever
+				vm.$blockui('invisible');
+				vm.$ajax(API_G_URL.CHANGE_YEAR + year).done((timeSetComs: Array<nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom>) => {
+					vm.$blockui('clear');
+					vm.screenData().serverData = { year: year, data: timeSetComs };
+					vm.screenData().monthlyWorkTimeSetComs(_.map(timeSetComs, (item: nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom) => { return new nts.uk.at.kmk004.components.flex.MonthlyWorkTimeSetCom(item); }));
+				});
+
+			}
+		});
 	}
+
+	
 
 	mounted() {
 		$("#year-list").focus();
 	}
 
 }
+
+
 

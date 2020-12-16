@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.h;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -37,15 +39,18 @@ public class DisplayInitialFlexScreenByWorkPlace {
 			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 		// 2.職場リストを表示する
-		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.FLEX));
+		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.WorkplaceId)
+				.collect(Collectors.toList()));
 
-		if (!result.getWkpIds().isEmpty()) {
+		if (!result.getAlreadySettings().isEmpty()) {
 			// 3.職場を選択する（フレックス勤務）
-			
-			SelectWorkPlaceFlexDto selectWorkPlaceFlexDto = this.selectWorkPlaceFlex.selectWorkPlaceFlex(result.getWkpIds().get(0).WorkplaceId);
+
+			SelectWorkPlaceFlexDto selectWorkPlaceFlexDto = this.selectWorkPlaceFlex
+					.selectWorkPlaceFlex(result.getAlreadySettings().get(0));
 			result.setFlexBasicSetting(selectWorkPlaceFlexDto.getFlexBasicSetting());
-			result.setYearList(selectWorkPlaceFlexDto.getYearList());
-			
+			result.setYearList(
+					selectWorkPlaceFlexDto.getYearList().stream().map(x -> x.year).collect(Collectors.toList()));
+
 		}
 
 		return result;
