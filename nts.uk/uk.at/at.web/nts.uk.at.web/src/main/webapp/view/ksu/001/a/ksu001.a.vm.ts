@@ -847,7 +847,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").children().remove();
             $("#extable").removeData();
             let extable = $("#extable")[0];
-            extable.replaceWith(extable.cloneNode(true));
+            $("#extable").replaceWith(extable.cloneNode(true));
             let updateMode = self.mode() === 'edit' ? 'stick' : 'determine'
             self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
