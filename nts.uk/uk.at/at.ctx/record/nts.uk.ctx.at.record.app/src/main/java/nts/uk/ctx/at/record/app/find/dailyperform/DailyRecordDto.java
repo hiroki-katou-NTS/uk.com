@@ -133,6 +133,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
 	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
+	
 	/** PCログオン情報: 日別実績のPCログオン情報 */
 	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE, jpPropertyName = DAILY_PC_LOG_INFO_NAME, isOptional = true)
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
@@ -380,7 +381,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.remarks = remarks;
 		return this;
 	}
-
+	
 	public DailyRecordDto workingDate(GeneralDate workingDate) {
 		this.date = workingDate;
 		return this;
@@ -474,12 +475,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return Optional.ofNullable(this.calcAttr);
 		case DAILY_AFFILIATION_INFO_NAME:
 			return Optional.ofNullable(this.affiliationInfo);
-		case DAILY_BUSINESS_TYPE_NAME:
-			return Optional.ofNullable(this.businessType.orElse(null));
 		case DAILY_OUTING_TIME_NAME:
 			return Optional.ofNullable(this.outingTime.orElse(null));
 		case DAILY_BREAK_TIME_NAME:
-			return Optional.ofNullable(this.breakTime);
+			return Optional.ofNullable(this.breakTime.orElse(null));
 		case DAILY_ATTENDANCE_TIME_NAME:
 			return Optional.ofNullable(this.attendanceTime.orElse(null));
 		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
@@ -500,6 +499,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return Optional.ofNullable(this.pcLogInfo.orElse(null));
 		case DAILY_REMARKS_NAME:
 			return Optional.ofNullable(this.remarks);
+		case DAILY_SNAPSHOT_NAME:
+			return Optional.ofNullable(this.snapshot.orElse(null));
 		default:
 			return Optional.empty();
 		}
@@ -517,14 +518,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		case DAILY_AFFILIATION_INFO_NAME:
 			this.affiliationInfo = (AffiliationInforOfDailyPerforDto) value;
 			break;
-		case DAILY_BUSINESS_TYPE_NAME:
-			this.businessType = Optional.ofNullable((BusinessTypeOfDailyPerforDto) value);
-			break;
 		case DAILY_OUTING_TIME_NAME:
 			this.outingTime = Optional.ofNullable((OutingTimeOfDailyPerformanceDto) value);
 			break;
 		case DAILY_BREAK_TIME_NAME:
-			this.breakTime = (BreakTimeDailyDto) value;
+			this.breakTime = Optional.ofNullable((BreakTimeDailyDto) value);
 			break;
 		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:/** まだ対応しない */
 			this.attendanceTimeByWork = Optional.ofNullable((AttendanceTimeByWorkOfDailyDto) value);
@@ -556,6 +554,9 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		case DAILY_ATTENDANCE_TIME_NAME:
 			this.attendanceTime = Optional.ofNullable((AttendanceTimeDailyPerformDto) value);
 			break;
+		case DAILY_SNAPSHOT_NAME:
+			this.snapshot = Optional.ofNullable((SnapshotDto) value);
+			break;
 		default:
 			break;
 		}
@@ -570,8 +571,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return new CalcAttrOfDailyPerformanceDto();
 		case DAILY_AFFILIATION_INFO_NAME:
 			return new AffiliationInforOfDailyPerforDto();
-		case DAILY_BUSINESS_TYPE_NAME:
-			return new BusinessTypeOfDailyPerforDto();
 		case DAILY_OUTING_TIME_NAME:
 			return new OutingTimeOfDailyPerformanceDto();
 		case DAILY_BREAK_TIME_NAME:
@@ -596,6 +595,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return new PCLogOnInforOfDailyPerformDto();
 		case DAILY_REMARKS_NAME:
 			return new RemarksOfDailyDto();
+		case DAILY_SNAPSHOT_NAME:
+			return new SnapshotDto();
 		default:
 			return null;
 		}

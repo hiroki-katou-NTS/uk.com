@@ -53,7 +53,7 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 
 	DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyAttd> domain);
+	DailyRecordToAttendanceItemConverter withBreakTime(BreakTimeOfDailyAttd domain);
 
 	DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyAttendance domain);
 //	DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain);
@@ -78,7 +78,7 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 	
 	DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyAttd> domain);
 	
-	DailyRecordToAttendanceItemConverter withSnapshot(String employeeId, GeneralDate ymd, SnapShot domain);
+	DailyRecordToAttendanceItemConverter withSnapshot(SnapShot domain);
 
 	DailyRecordToAttendanceItemConverter employeeId(String employeeId);
 
@@ -96,7 +96,7 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 
 	Optional<OutingTimeOfDailyAttd> outingTime();
 
-	List<BreakTimeOfDailyAttd> breakTime();
+	Optional<BreakTimeOfDailyAttd> breakTime();
 
 	Optional<AttendanceTimeOfDailyAttendance> attendanceTime();
 

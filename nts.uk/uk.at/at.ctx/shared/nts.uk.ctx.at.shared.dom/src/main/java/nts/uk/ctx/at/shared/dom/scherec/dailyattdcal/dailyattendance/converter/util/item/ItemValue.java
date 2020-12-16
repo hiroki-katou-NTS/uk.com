@@ -42,11 +42,18 @@ public class ItemValue implements Cloneable {
 		this.pathLink = path;
 	}
 	
-	public ItemValue() {
-	}
-	
 	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId){
 		this(value, valueType, layoutCode, itemId, "", false);
+	}
+	
+	public ItemValue(ValueType valueType, String layoutCode, Integer itemId, Object value){
+		this.valueType = valueType;
+		this.layoutCode = layoutCode;
+		this.itemId = itemId;
+		value(value);
+	}
+	
+	public ItemValue() {
 	}
 	
 	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String path){

@@ -71,19 +71,17 @@ public class BreakTimeOfDailyService {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 
+		BreakTimeOfDailyAttd dailyAttd = working.getBreakTime().orElse(null);
+
 		BreakTimeOfDailyPerformance dailyPerformance = new BreakTimeOfDailyPerformance(working.getEmployeeId(), working.getYmd(), dailyAttd);
 		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(Optional.ofNullable(dailyPerformance),
 							() -> getBreakTimeDefault(wi.getEmployeeId(), wi.getYmd()));
 
-		List<BreakTimeOfDailyAttd> breakTimeAttd = new ArrayList<>();
-		if(Optional.ofNullable(breakTimeRecord.getTimeZone()).isPresent()) {
-			breakTimeAttd = Arrays.asList(breakTimeRecord.getTimeZone());
-		}
 		
 		DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 				.employeeId(wi.getEmployeeId())
 				.workingDate(wi.getYmd())
-				.withBreakTime(breakTimeAttd);
+				.withBreakTime(breakTimeRecord.getTimeZone());
 
 		List<ItemValue> beforeCorrectItemValues = converter.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -106,17 +104,12 @@ public class BreakTimeOfDailyService {
 			DailyRecordToAttendanceItemConverter converter, List<ItemValue> beforeCorrectItemValues,
 			BreakTimeOfDailyPerformance breakTime) {
 		/** 「日別実績の休憩時間帯」を更新する */
+		working.setBreakTime(Optional.of(breakTime.getTimeZone()));
 		
-		List<BreakTimeOfDailyAttd> breakTimeAttd = new ArrayList<>();
-		if(Optional.ofNullable(breakTime.getTimeZone()).isPresent()) {
-			breakTimeAttd = Arrays.asList(breakTime.getTimeZone());
-		}
-		
-		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(breakTimeAttd)
-															.convert(CorrectEventConts.BREAK_TIME_ITEMS);
+		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(breakTime.getTimeZone()).convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
 		afterCorrectItemValues.removeAll(beforeCorrectItemValues);
-		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.itemId()).collect(Collectors.toList());
+		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		
 		if (directToDB) {
@@ -183,11 +176,11 @@ public class BreakTimeOfDailyService {
 		if (!itemsToMerge.isEmpty()) {
 			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter()
 																	.employeeId(empId).workingDate(targetDate)
-																	.withBreakTime(Arrays.asList(breakTimeRecord.getTimeZone()));
+																	.withBreakTime(breakTime.getTimeZone());
 			
 			List<ItemValue> ipByHandValues = converter.convert(itemsToMerge);
 			
-			converter.withBreakTime(new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
+//			converter.withBreakTime(empId, targetDate, breakTime.getTimeZone());
 			
 //			List<ItemValue> recordVal = converter.convert(itemsToMerge);
 			
