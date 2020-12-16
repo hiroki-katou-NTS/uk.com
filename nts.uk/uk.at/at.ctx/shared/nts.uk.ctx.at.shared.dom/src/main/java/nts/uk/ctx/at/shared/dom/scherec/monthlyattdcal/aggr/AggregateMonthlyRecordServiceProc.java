@@ -610,10 +610,8 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 月別実績の勤怠時間を集計
 	 * 
-	 * @param datePeriod
-	 *            期間
-	 * @param workingConditionItem
-	 *            労働条件項目
+	 * @param datePeriod 期間
+	 * @param workingConditionItem 労働条件項目
 	 * @return 月別実績の勤怠時間
 	 */
 	private AggregateAttendanceTimeValue aggregateAttendanceTime(RequireM13 require, CacheCarrier cacheCarrier,
