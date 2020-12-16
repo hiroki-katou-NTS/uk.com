@@ -3,6 +3,8 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWor
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -20,9 +23,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.就業機能.アラーム_職場別.アルゴリズム.集計処理.集計処理
@@ -41,6 +46,8 @@ public class AggregateProcessService {
     private AggregateProcessAdapter aggregateProcessAdapter;
     @Inject
     private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
+    @Inject
+    private WorkplaceAdapter workplaceAdapter;
 
     /**
      * 集計処理
@@ -51,8 +58,14 @@ public class AggregateProcessService {
      * @param periods          List<カテゴリ別期間>
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<AlarmListExtractInfoWorkplace> process(String cid, String alarmPatternCode, List<String> workplaceIds, List<PeriodByAlarmCategory> periods,
+    public List<AlarmListExtractInfoWorkplace> process(String cid, String alarmPatternCode, List<String> workplaceIds,
+                                                       List<PeriodByAlarmCategory> periods, String processStatusId,
                                                        Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+        GeneralDate baseDate = GeneralDate.today();
+        // [No.560]職場IDから職場の情報をすべて取得する
+        Map<String, WorkPlaceInforExport> wpInfoMap = this.workplaceAdapter.getWorkplaceInforByWkpIds(cid, workplaceIds, baseDate)
+                .stream().collect(Collectors.toMap(WorkPlaceInforExport::getWorkplaceId, x -> x));
+
         // パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定(職場別)」を取得する
         Optional<AlarmPatternSettingWorkPlace> patternOpt = alarmPatternSettingWorkPlaceRepo.getBy(cid, new AlarmPatternCode(alarmPatternCode));
         if (!patternOpt.isPresent()) {
@@ -64,6 +77,8 @@ public class AggregateProcessService {
         // 取得した「アラームリストパターン設定(職場別)」．カテゴリ別チェック条件をループする
         List<CheckCondition> checkConList = patternOpt.get().getCheckConList();
         for (PeriodByAlarmCategory ctgPeriod : periods) {
+            List<AlarmListExtractInfoWorkplace> extractInfos = new ArrayList<>();
+
             // 抽出処理停止フラグが立っているかチェックする
             if (shouldStop.get()) {
                 break;
@@ -91,42 +106,55 @@ public class AggregateProcessService {
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckBasic(cid,
+                    extractInfos = aggregateProcessAdapter.processMasterCheckBasic(cid,
                             new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
-                            alarmCheckWkpId, workplaceIds));
+                            alarmCheckWkpId, workplaceIds);
                     break;
                 case MASTER_CHECK_DAILY:
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckDaily(cid,
+                    extractInfos = aggregateProcessAdapter.processMasterCheckDaily(cid,
                             new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
-                            alarmCheckWkpId, workplaceIds));
+                            alarmCheckWkpId, workplaceIds);
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMasterCheckWorkplace(cid,
+                    extractInfos = aggregateProcessAdapter.processMasterCheckWorkplace(cid,
                             new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
-                            alarmCheckWkpId, workplaceIds));
+                            alarmCheckWkpId, workplaceIds);
                     break;
                 case SCHEDULE_DAILY:
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processSchedule(cid,
+                    extractInfos = aggregateProcessAdapter.processSchedule(cid,
                             new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
-                            alarmCheckWkpId, optionalIds, workplaceIds));
+                            alarmCheckWkpId, optionalIds, workplaceIds);
                     break;
                 case MONTHLY:
                     // アルゴリズム「月次の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processMonthly(cid, ctgPeriod.getYearMonth(), alarmCheckWkpId, optionalIds, workplaceIds));
+                    extractInfos = aggregateProcessAdapter.processMonthly(cid, ctgPeriod.getYearMonth(), alarmCheckWkpId, optionalIds, workplaceIds);
                     break;
                 case APPLICATION_APPROVAL:
                     // アルゴリズム「申請承認の集計処理」を実行する
-                    alExtractInfos.addAll(aggregateProcessAdapter.processAppApproval(
+                    extractInfos = aggregateProcessAdapter.processAppApproval(
                             new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
-                            alarmCheckWkpId, workplaceIds));
+                            alarmCheckWkpId, workplaceIds);
                     break;
             }
 
             // List＜アラーム抽出結果（職場別）＞に返す値を追加
-            alarmListExtractInfoWorkplaceRepo.addAll(alExtractInfos);
+            extractInfos.forEach(x -> {
+                x.setProcessingId(processStatusId);
+                x.setCategoryName(TextResource.localize(x.getCategory().nameId));
+                x.getExtractResults().forEach(c -> {
+                    if (!c.getWorkplaceId().isPresent()) return;
+                    if (wpInfoMap.containsKey(c.getWorkplaceId().get())) {
+                        WorkPlaceInforExport wpInfo = wpInfoMap.get(c.getWorkplaceId().get());
+                        c.setWorkplaceInfo(wpInfo.getWorkplaceCode(), wpInfo.getWorkplaceName(), wpInfo.getHierarchyCode());
+                    }
+                });
+            });
+            alarmListExtractInfoWorkplaceRepo.addAll(extractInfos);
+            alExtractInfos.addAll(extractInfos); //TODO
+
             counter.accept(1);
         }
 

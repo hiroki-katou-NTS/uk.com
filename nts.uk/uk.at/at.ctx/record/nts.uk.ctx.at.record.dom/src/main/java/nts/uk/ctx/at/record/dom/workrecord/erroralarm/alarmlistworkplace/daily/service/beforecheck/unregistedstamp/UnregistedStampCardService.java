@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.affiliate.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.affiliate.SharedAffWorkplaceHistoryItemAdapter;
 
@@ -23,6 +24,8 @@ public class UnregistedStampCardService {
     @Inject
     private StampRepository stampRepository;
     @Inject
+    private StampCardRepository stampCardRepository;
+    @Inject
     private SharedAffWorkplaceHistoryItemAdapter sharedAffWorkplaceHistoryItemAdapter;
 
     /**
@@ -41,7 +44,7 @@ public class UnregistedStampCardService {
         // TODO Q&A 36536
 
         // ドメインモデル「打刻カード」を取得
-        // TODO Q&A 36537
+        stampCardRepository.getListStampCardByCardNumbers(new ArrayList<>());
 
         // 未登録打刻カードをチェック
 
