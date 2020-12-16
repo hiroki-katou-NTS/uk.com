@@ -234,8 +234,8 @@ public class WorkInformation {
 			return Optional.empty();
 		}
 
-		val workSetting = workTimeSetting.get().getWorkSetting(require);
-		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
+		val workSetting = this.getWorkSetting(require);
+		val predetermineTimeSetting = workSetting.get().getPredetermineTimeSetting(require);
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
 		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
 				.filter( e -> e.isUsed() )
