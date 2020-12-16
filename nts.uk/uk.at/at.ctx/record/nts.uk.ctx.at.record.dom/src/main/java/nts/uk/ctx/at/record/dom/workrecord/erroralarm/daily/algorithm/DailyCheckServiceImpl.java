@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -69,6 +71,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	@Inject
 	private AppRootStateConfirmAdapter approotAdap;
 	
+	@Inject
+	private WorkTimeSettingRepository workTimeRep;
+	
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId,
@@ -78,8 +83,17 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		
 	}
 
-	private void prepareDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
-			String errorDailyCheckId, List<Integer> fixedExtractConditionWorkRecord, List<String> errorDailyCheckCd) {
+	/**
+	 * ドメインモデル「勤務実績の固定抽出条件」を取得する
+	 * @param cid
+	 * @param lstSid
+	 * @param dPeriod
+	 * @param errorDailyCheckId
+	 * @param errorDailyCheckCd
+	 * @return
+	 */
+	private PrepareData prepareDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
+			String errorDailyCheckId, List<String> errorDailyCheckCd) {
 		
 		//日次の勤怠項目を取得する
 		//画面で利用できる勤怠項目一覧を取得する
@@ -103,6 +117,12 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		
 		//日次の固定抽出条件のデータを取得する
 		DataFixExtracCon dataforDailyFix = this.getDataForDailyFix(lstSid, dPeriod, errorDailyCheckId);
+		
+		// 会社で使用できる就業時間帯を全件を取得する
+		List<WorkTimeSetting> listWorktime = workTimeRep.findByCompanyId(cid);
+		
+		PrepareData prepareData = new PrepareData(mapNameId, listWorkType, listIntegrationDai, workRecordCond, listError, dataforDailyFix, listWorktime);
+		return prepareData;
 	}
 	
 	/**
