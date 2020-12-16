@@ -44,7 +44,8 @@ module nts.uk.at.view.kmk004.b {
 					name: 'time-work',
 					params:{
 						selectedYear: selectedYear,
-						years: years
+						years: years,
+						type: type
 					}
 				}"></div>
 			</div>
@@ -120,7 +121,6 @@ module nts.uk.at.view.kmk004.b {
 		openDialogS() {
 			const vm = this;
 			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
-			console.log(param);
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
