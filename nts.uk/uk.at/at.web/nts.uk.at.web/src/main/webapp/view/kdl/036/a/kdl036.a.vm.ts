@@ -77,9 +77,6 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 actualContentDisplayList: _.cloneDeep(self.actualContentDisplayList),
                 managementData: _.cloneDeep(self.managementData)
             };
-            initParams.actualContentDisplayList.forEach(c => {
-                c.date = new Date(c.date).toISOString();
-            });
             initParams.managementData.forEach(d => {
                 d.outbreakDay = new Date(d.outbreakDay).toISOString();
                 d.dateOfUse = new Date(d.dateOfUse).toISOString();
