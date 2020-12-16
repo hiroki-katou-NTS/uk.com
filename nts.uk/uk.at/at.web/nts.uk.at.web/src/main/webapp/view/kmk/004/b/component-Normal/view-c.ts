@@ -45,7 +45,7 @@ module nts.uk.at.view.kmk004.b {
 					<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 					<div class="content-data">
 						<div>
-							<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogS"></button>
+							<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
 						</div>
 						<div class="year">
 							<div class= "box-year" data-bind="component: {
@@ -143,7 +143,7 @@ module nts.uk.at.view.kmk004.b {
 			});
 		}
 
-		openDialogS() {
+		openDialogQ() {
 			const vm = this;
 			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {

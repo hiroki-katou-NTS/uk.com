@@ -109,7 +109,7 @@ module nts.uk.at.view.kmk004.b {
             vm.type = params.type;
             vm.selectId = params.selectId;
 
-            vm.initList(2020);
+            vm.initList(2020, false);
             vm.reloadData();
 
             vm.workTimes.subscribe((wts) => {
@@ -128,7 +128,6 @@ module nts.uk.at.view.kmk004.b {
             vm.selectedYear
                 .subscribe(() => {
                     vm.reloadData();
-
                 });
         }
 
@@ -225,16 +224,16 @@ module nts.uk.at.view.kmk004.b {
                     }
                 }
                 else {
-                    vm.initList(ko.unwrap(vm.selectedYear));
+                    vm.initList(ko.unwrap(vm.selectedYear), true);
                 }
             }else{
-                vm.initList(2020);
+                vm.initList(2020, false);
             }
         }
 
-        initList(year: number) {
+        initList(year: number, check: boolean) {
             const vm = this
-            var check: boolean = false;
+            var check: boolean = check;
 
             if (ko.unwrap(vm.checkEmployee)) {
                 check = false;

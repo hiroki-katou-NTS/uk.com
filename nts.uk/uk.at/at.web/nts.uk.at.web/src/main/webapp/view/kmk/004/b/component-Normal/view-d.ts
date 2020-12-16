@@ -45,7 +45,7 @@ module nts.uk.at.view.kmk004.b {
 				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
 					<div>
-						<button tabindex="6" data-bind="i18n: 'KMK004_233'"></button>
+						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
 					</div>
 					<div class="year">
 						<div class= "box-year" data-bind="component: {
@@ -129,6 +129,18 @@ module nts.uk.at.view.kmk004.b {
 		remote() {
 			$(document).ready(function () {
 				$('.listbox').focus();
+			});
+		}
+
+		openDialogQ() {
+			const vm = this;
+			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
+			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
+				if (result) {
+					vm.years.push(new IYear(parseInt(result.year), true));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+				}
 			});
 		}
 	}
