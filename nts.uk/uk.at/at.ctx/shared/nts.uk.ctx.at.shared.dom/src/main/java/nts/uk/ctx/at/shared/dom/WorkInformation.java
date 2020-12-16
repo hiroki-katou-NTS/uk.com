@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.Contains
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -232,10 +234,12 @@ public class WorkInformation {
 			return Optional.empty();
 		}
 
-		val workSetting = this.getWorkSetting(require);
-		val predetermineTimeSetting = workSetting.get().getPredetermineTimeSetting(require);
+		val workSetting = workTimeSetting.get().getWorkSetting(require);
+		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
 		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
+				.filter( e -> e.isUsed() )
+				.sorted(Comparator.comparing(TimezoneUse::getWorkNo))
 				.map( e -> (TimeZone) e).collect(Collectors.toList());
 		
 		return Optional.of( WorkInfoAndTimeZone.create( 
