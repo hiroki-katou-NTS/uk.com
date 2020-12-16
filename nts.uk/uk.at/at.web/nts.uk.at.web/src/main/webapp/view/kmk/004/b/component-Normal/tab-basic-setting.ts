@@ -4,6 +4,14 @@ module nts.uk.at.view.kmk004.b {
 
 	const API = {
 		DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
+		GET_SETTING_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getBaseSetting',
+		GET_SETTING_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getBaseSetting',
+		GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting'
+	}
+
+	interface Params {
+		type: SIDEBAR_TYPE
+		selectId?: KnockoutObservable<string>;
 	}
 
 	const template = `
@@ -102,18 +110,20 @@ module nts.uk.at.view.kmk004.b {
 	class Setting extends ko.ViewModel {
 		public model = new DataModel();
 		public tabSetting = new TabSetting();
-		public modeCheckChangeSetting: KnockoutObservable<string>;
+		public type: SIDEBAR_TYPE;
+		public selectId: KnockoutObservable<string> = ko.observable('');
 
-		created(params: any) {
+		created(params: Params) {
 			const vm = this;
+			vm.type = params.type;
+			vm.selectId = vm.selectId;
 
 			vm.reloadData();
 
-			vm.modeCheckChangeSetting = params.modeCheckChangeSetting;
-			vm.modeCheckChangeSetting
+			vm.selectId
 				.subscribe(() => {
 					vm.reloadData();
-				});
+				})
 		}
 
 		mounted() {
@@ -143,12 +153,40 @@ module nts.uk.at.view.kmk004.b {
 		reloadData() {
 			const vm = this;
 
-			vm.$blockui('invisible')
-				.then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
-				.then((data: ITabSetting) => {
-					vm.tabSetting.create(data)
-				})
-				.then(() => vm.$blockui('clear'));
+			switch (vm.type) {
+				case 'Com_Company':
+					vm.$blockui('invisible')
+						.then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
+						.then((data: ITabSetting) => {
+							vm.tabSetting.create(data)
+						})
+						.then(() => vm.$blockui('clear'));
+					break;
+				case 'Com_Workplace':
+					vm.$blockui('invisible')
+						.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
+						.then((data: ITabSetting) => {
+							vm.tabSetting.create(data)
+						})
+						.then(() => vm.$blockui('clear'));
+					break;
+				case 'Com_Employment':
+					vm.$blockui('invisible')
+						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
+						.then((data: ITabSetting) => {
+							vm.tabSetting.create(data)
+						})
+						.then(() => vm.$blockui('clear'));
+					break;
+				case 'Com_Person':
+					vm.$blockui('invisible')
+						.then(() => vm.$ajax(API.DISPLAY_BASICSETTING + "/" + ko.unwrap(vm.selectId)))
+						.then((data: ITabSetting) => {
+							vm.tabSetting.create(data)
+						})
+						.then(() => vm.$blockui('clear'));
+					break;
+			}
 		}
 	}
 

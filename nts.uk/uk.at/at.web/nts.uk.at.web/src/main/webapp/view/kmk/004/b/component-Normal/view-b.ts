@@ -20,7 +20,8 @@ module nts.uk.at.view.kmk004.b {
 				<div data-bind="component: {
 					name: 'basic-setting',
 					params:{
-						modeCheckChangeSetting: modeCheckChangeSetting
+						type: type,
+						selectId: ko.observable
 					}
 				}"></div>
 			</div>
@@ -44,7 +45,8 @@ module nts.uk.at.view.kmk004.b {
 					name: 'time-work',
 					params:{
 						selectedYear: selectedYear,
-						years: years
+						years: years,
+						type: type
 					}
 				}"></div>
 			</div>
@@ -68,7 +70,6 @@ module nts.uk.at.view.kmk004.b {
 
 	export class ViewBComponent extends ko.ViewModel {
 
-		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
@@ -96,7 +97,6 @@ module nts.uk.at.view.kmk004.b {
 
 		add() {
 			const vm = this;
-			vm.modeCheckChangeSetting.valueHasMutated();
 
 			$(document).ready(function () {
 				$('.listbox').focus();
@@ -120,7 +120,6 @@ module nts.uk.at.view.kmk004.b {
 		openDialogS() {
 			const vm = this;
 			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
-			console.log(param);
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));

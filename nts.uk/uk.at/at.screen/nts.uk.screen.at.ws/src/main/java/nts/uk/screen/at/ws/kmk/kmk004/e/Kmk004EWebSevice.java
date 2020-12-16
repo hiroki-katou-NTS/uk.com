@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.kmk.kmk004.e;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.SaveMonthly
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.SaveMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.kmk004.e.BasicSettingsForEmployee;
 import nts.uk.screen.at.app.query.kmk004.b.DisplayBasicSettingsDto;
+import nts.uk.screen.at.app.query.kmk004.b.WorkTimeComDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmployeeList;
@@ -77,8 +79,23 @@ public class Kmk004EWebSevice extends WebService {
 	
 	@POST
 	@Path("viewe/sha/getWorkTimes/{sid}/{year}")
-	public List<DisplayMonthlyWorkingDto> getYears(@PathParam("sid") String sid, @PathParam("year") int year) {
-		return this.workTime.get(sid, LaborWorkTypeAttr.REGULAR_LABOR, year);
+	public List<WorkTimeComDto> getYears(@PathParam("sid") String sid, @PathParam("year") int year) {
+		
+		List<WorkTimeComDto> result = new ArrayList<>();
+		List<DisplayMonthlyWorkingDto> list = this.workTime.get(sid, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		result = list.stream().map(m -> {
+			WorkTimeComDto w = new WorkTimeComDto();
+			
+			w.setYearMonth(m.getYearMonth());
+			if (m.getLaborTime().getLegalLaborTime() == null){
+				w.setLaborTime(0);
+			}else {
+				w.setLaborTime(m.getLaborTime().getLegalLaborTime());
+			}
+			
+			return w;
+		}).collect(Collectors.toList());
+		return result;
 	}
 	
 	@POST

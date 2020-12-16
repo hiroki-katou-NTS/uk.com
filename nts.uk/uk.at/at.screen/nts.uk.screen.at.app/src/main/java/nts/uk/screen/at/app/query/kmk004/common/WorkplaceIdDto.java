@@ -11,6 +11,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WorkplaceIdDto {
 
-	public String WorkplaceId;
+	public String workplaceId;
 	
 }

@@ -36,40 +36,30 @@ module nts.uk.at.view.kmk004.b {
             })
             
             vm.alreadySettings.subscribe(() => {
-                $('#empt-list-setting') 
-                .ntsListComponent({
-                    isShowAlreadySet: true,
-                    isMultiSelect: false,
-                    listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: vm.selectedCode,
-                    isDialog: false,
-                    isShowNoSelectRow: false,
-                    alreadySettingList: vm.alreadySettings,
-                    isDisplayClosureSelection: true,
-                    closureSelectionType: vm.closureSelectionType,
-                    maxRows: 12
-                }).done(()=>{
-                    console.log($('#tree-grid').getDataList());
-                });
+               vm.reload();
             });
+        }
+
+        reload(){
+            const vm = this;
 
             $('#empt-list-setting') 
-                .ntsListComponent({
-                    isShowAlreadySet: true,
-                    isMultiSelect: false,
-                    listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_FIRST_ITEM,
-                    selectedCode: vm.selectedCode,
-                    isDialog: false,
-                    isShowNoSelectRow: false,
-                    alreadySettingList: vm.alreadySettings,
-                    isDisplayClosureSelection: true,
-                    closureSelectionType: vm.closureSelectionType,
-                    maxRows: 12
-                }).done(()=>{
-                    vm.employmentList($('#empt-list-setting').getDataList());
-                });
+            .ntsListComponent({
+                isShowAlreadySet: true,
+                isMultiSelect: false,
+                listType: ListType.EMPLOYMENT,
+                selectType: SelectType.SELECT_FIRST_ITEM,
+                selectedCode: vm.selectedCode,
+                isDialog: false,
+                isShowNoSelectRow: false,
+                alreadySettingList: vm.alreadySettings,
+                isDisplayClosureSelection: true,
+                closureSelectionType: vm.closureSelectionType,
+                maxRows: 12
+            }).done(()=>{
+                vm.employmentList($('#empt-list-setting').getDataList());
+            });
+
         }
 
         mounted() {

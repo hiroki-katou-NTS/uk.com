@@ -37,7 +37,8 @@ module nts.uk.at.view.kmk004.b {
 					<div class ="setting" data-bind="component: {
 						name: 'basic-setting',
 						params:{
-							modeCheckChangeSetting: modeCheckChangeSetting
+							type: type,
+							selectId: selectedId
 						}
 					}"></div>
 				<!-- /ko -->
@@ -83,13 +84,13 @@ module nts.uk.at.view.kmk004.b {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
-		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public emloyment: Employment = new Employment();
 		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
+		public selectedId: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
