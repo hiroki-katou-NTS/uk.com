@@ -22,7 +22,9 @@ import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveHolder;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveService;
+import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
+import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -37,10 +39,16 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 	@Inject
 	private ManualSetOfDataSaveRepository manualSetOfDataSaveRepository;
+	
+	@Inject
+	private TargetCategoryRepository targetCategoryRepository;
+	
+	@Inject
+	private TargetEmployeesRepository targetEmployeesRepository;
 
 	@Inject
 	private ManualSetDeletionRepository manualSetDeletionRepository;
-
+	
 	@Inject
 	private EmployeesDeletionRepository employeesDeletionRepository;
 
@@ -58,6 +66,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 		ManualSetOfDataSave manualSet = this.autoStoragePreparationCommandHandler.handle(patternCode);
 		// ドメインモデル「データ保存の対象社員」に保存する
 		this.manualSetOfDataSaveRepository.addManualSetting(manualSet);
+		this.targetCategoryRepository.add(manualSet.getCategory());
 		return new AutoPrepareDataExport(manualSet.getStoreProcessingId(), manualSet.getDaySaveStartDate(),
 				manualSet.getDaySaveEndDate());
 	}
@@ -73,8 +82,10 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 		ManualSetOfDataSave manualSet = this.manualSetOfDataSaveRepository.getManualSetOfDataSaveById(storeProcessId)
 				.orElse(null);
+		manualSet.setCategory(this.targetCategoryRepository
+				.getTargetCategoryListById(manualSet.getStoreProcessingId()));
 		manualSet.setEmployees(targetEmployees);
-		this.manualSetOfDataSaveRepository.update(manualSet);
+		this.targetEmployeesRepository.addAll(targetEmployees);
 		// アルゴリズム「サーバー手動保存処理」を実行する
 		this.manualSetOfDataSaveService.start(new ManualSetOfDataSaveHolder(manualSet, patternCode));
 	}
@@ -85,7 +96,6 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 		// ドメインモデル「データ削除の手動設定」を追加する
 		this.manualSetDeletionRepository.addManualSetting(manualSet);
-
 		return new AutoPrepareDataExport(manualSet.getDelId(), manualSet.getStartDateOfDaily().orElse(null),
 				manualSet.getEndDateOfDaily().orElse(null));
 	}
@@ -101,9 +111,8 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 		// ドメインモデル「データ削除の対象社員」を更新する
 		employeesDeletionRepository.addAll(targetEmployees);
-
+		ManualSetDeletion manualSet = this.manualSetDeletionRepository.getManualSetDeletionById(delId).orElse(null);
 		// アルゴリズム「サーバ手動削除処理」を実行する
-		this.manualSetDeletionService
-				.start(this.manualSetDeletionRepository.getManualSetDeletionById(delId).orElse(null));
+		this.manualSetDeletionService.start(manualSet);
 	}
 }

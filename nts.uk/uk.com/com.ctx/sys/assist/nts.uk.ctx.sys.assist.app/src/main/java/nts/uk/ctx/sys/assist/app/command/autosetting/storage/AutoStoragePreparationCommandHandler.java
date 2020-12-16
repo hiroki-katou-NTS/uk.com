@@ -14,10 +14,13 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
+import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
+import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
 import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetMonth;
@@ -28,17 +31,24 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * UKDesign.UniversalK.共通.CMF_補助機能.CMF003_データ保存.サーバー処理.アルゴリズム.自動保存.自動保存準備.自動保存準備
  */
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AutoStoragePreparationCommandHandler extends CommandHandlerWithResult<String, ManualSetOfDataSave> {
 
 	@Inject
 	private DataStoragePatternSettingRepository dataStoragePatternSettingRepository;
+	
+	@Inject
+	private DataStorageMngRepository dataStorageMngRepository;
 
 	@Override
 	protected ManualSetOfDataSave handle(CommandHandlerContext<String> context) {
 		String patternCode = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		String dataStorageProcessingId = IdentifierUtil.randomUniqueId();
+		DataStorageMng dataStorageMng = new DataStorageMng(dataStorageProcessingId, NotUseAtr.NOT_USE, 0, 0, 0,
+				OperatingCondition.INPREPARATION);
+		dataStorageMngRepository.add(dataStorageMng);
 		// ドメインモデル「データ保存のパターン設定」を取得する
 		Optional<DataStoragePatternSetting> optPatternSetting = this.dataStoragePatternSettingRepository
 				.findByContractCdAndPatternCd(AppContexts.user().contractCode(), patternCode);
@@ -46,7 +56,6 @@ public class AutoStoragePreparationCommandHandler extends CommandHandlerWithResu
 			DataStoragePatternSetting patternSetting = optPatternSetting.get();
 			// ドメインモデル「データ保存の手動設定」を追加する
 			int saveType = StorageClassification.AUTO.value;
-			String dataStorageProcessingId = IdentifierUtil.randomUniqueId();
 			String saveName = patternSetting.getPatternName().v();
 			int passwordAvailability = patternSetting.getWithoutPassword().value;
 			String password = patternSetting.getPatternCompressionPwd().map(FileCompressionPassword::v).orElse(null);

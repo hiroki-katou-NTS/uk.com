@@ -113,9 +113,9 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 			}
 
 			//実行設定(B15_2,B15_3,B15_4)のチェックボックスのうち1つ以上TUREになっていなければならない。
-			if (execSetting.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.NOT_USE) && //B15_2
-					execSetting.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.NOT_USE) && //B15_3
-					execSetting.getReExecCondition().getRecreateLeave().equals(NotUseAtr.NOT_USE)) { //B15_4 
+			if (this.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.NOT_USE) && //B15_2
+					this.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.NOT_USE) && //B15_3
+					this.getReExecCondition().getRecreateLeave().equals(NotUseAtr.NOT_USE)) { //B15_4 
 				throw new BusinessException("Msg_1391");
 			}
 		}

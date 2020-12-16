@@ -73,7 +73,7 @@ public class ChangePersionListForSche {
 		DatePeriod newClosurePeriod = new DatePeriod(closurePeriod.start(), GeneralDate.ymd(9999, 12, 31));
 
 //			TargetSetting setting = procExec.getExecSetting().getPerScheduleCreation().getTarget().getTargetSetting();
-		ReExecutionCondition setting = procExec.getExecSetting().getReExecCondition();
+		ReExecutionCondition setting = procExec.getReExecCondition();
 		// 異動者を再作成するか判定
 		if (setting.getRecreateTransfer().equals(NotUseAtr.USE)) {
 			// Imported(勤務実績)「所属職場履歴」を取得する : 異動者の絞り込み

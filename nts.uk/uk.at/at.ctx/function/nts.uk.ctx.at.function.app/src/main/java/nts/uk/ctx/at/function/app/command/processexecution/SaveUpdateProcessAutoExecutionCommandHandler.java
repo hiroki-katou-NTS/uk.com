@@ -103,7 +103,6 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 			this.updateExecutionTaskSetting(cid, execItemCd, enabledSetting);
 			// ドメインモデル「更新処理自動実行」に更新登録する
 			this.processExecutionRepository.update(domain);
-
 		});
 	}
 

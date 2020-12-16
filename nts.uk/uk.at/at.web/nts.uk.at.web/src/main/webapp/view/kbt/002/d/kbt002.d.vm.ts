@@ -14,14 +14,11 @@ module nts.uk.at.view.kbt002.d {
 
     created(params: any) {
       const vm = this;
-      if (params) {
-        vm.selectedDaysList(params.repeatMonthDateList);
-      }
       vm.gridListColumns = ko.observableArray([
         { headerText: '', key: 'value', hidden: true },
         { headerText: vm.$i18n("KBT002_108"), key: 'localizedName', width: 210 }
       ]);
-      vm.getEnumDataList();
+      vm.getEnumDataList(params);
     }
 
     public select() {
@@ -34,11 +31,15 @@ module nts.uk.at.view.kbt002.d {
       }
     }
 
-    private getEnumDataList() {
+    private getEnumDataList(params: any) {
       const vm = this;
       vm.$blockui("grayout");
       vm.$ajax(API.getEnumDataList)
-        .then((setting: any) => vm.monthDaysList(setting.monthDayList))
+        .then((setting: any) => {
+          vm.monthDaysList(setting.monthDayList);
+          vm.selectedDaysList(params.repeatMonthDateList);
+          vm.selectedDaysList.valueHasMutated();
+        })
         .always(() => vm.$blockui("clear"));
     }
 

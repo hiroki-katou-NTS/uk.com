@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
@@ -128,7 +130,7 @@ public class ApplicationDto {
 				version,
 				appID, 
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-				employeeID, 
+				Strings.isBlank(employeeID) ? AppContexts.user().employeeId() : employeeID, 
 				EnumAdaptor.valueOf(appType, ApplicationType.class), 
 				new ApplicationDate(GeneralDate.fromString(appDate, "yyyy/MM/dd")), 
 				enteredPerson, 

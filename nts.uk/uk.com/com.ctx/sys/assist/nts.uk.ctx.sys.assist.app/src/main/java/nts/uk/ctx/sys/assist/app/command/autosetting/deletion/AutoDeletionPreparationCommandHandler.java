@@ -66,31 +66,32 @@ public class AutoDeletionPreparationCommandHandler extends CommandHandlerWithRes
 			Integer dailyReferMonth = this.getTargetMonth(patternSetting.getDailyReferMonth());
 			boolean disableDay = dailyReferYear == null || dailyReferMonth == null;
 			GeneralDate dayStartDate = disableDay ? null
-					: GeneralDate.ymd(
-							today.addYears(dailyReferYear).year(),				// （システム日付（今年）　ー　データ削除のパターン設定.日次参照年）　
-							today.addMonths(dailyReferMonth).month(),			// +（システム日付（今月）　ー　データ削除のパターン設定.日次参照月）　
-							today.day()).addDays(1);							// + (システム日付（今日）+ 1日)
+					: GeneralDate.ymd(today.addYears(dailyReferYear).year(), // （システム日付（今年） ー データ削除のパターン設定.日次参照年）
+							today.addMonths(dailyReferMonth).month(), // +（システム日付（今月） ー データ削除のパターン設定.日次参照月）
+							today.day()).addDays(1); // + (システム日付（今日）+ 1日)
 			// 日次保存終了年月
-			GeneralDate dayEndDate = disableDay ? null : GeneralDate.today(); 	// システム日付（年月日）
+			GeneralDate dayEndDate = disableDay ? null : GeneralDate.today(); // システム日付（年月日）
 			// 月次保存開始年月
 			Integer monthlyReferYear = this.getTargetYear(patternSetting.getMonthlyReferYear());
 			Integer monthlyReferMonth = this.getTargetMonth(patternSetting.getMonthlyReferMonth());
 			boolean disableMonth = monthlyReferYear == null || monthlyReferMonth == null;
 			String monthStartDate = disableMonth ? null
-					: String.format("%d%d",
-							today.addYears(monthlyReferYear).year(), 			// （システム日付（今年）　ー　データ削除のパターン設定.月次参照年）　
-							today.addMonths(monthlyReferYear).month());			// +（システム日付（今月）　ー　データ削除のパターン設定.月次参照月）
+					: String.format("%d%d", today.addYears(monthlyReferYear).year(), // （システム日付（今年） ー
+																						// データ削除のパターン設定.月次参照年）
+							today.addMonths(monthlyReferYear).month()); // +（システム日付（今月） ー データ削除のパターン設定.月次参照月）
 			// 月次保存終了年月
 			String monthEndDate = disableMonth ? null : String.format("%d%d", today.year(), today.month()); // システム日付（年月）
 			// 年次開始年
 			Integer annualReferYear = this.getTargetYear(patternSetting.getAnnualReferYear());
 			boolean disableYear = annualReferYear == null;
-			Integer startYear = disableYear ? null : today.addYears(annualReferYear).year();  // （システム日付（今年）　ー　データ削除のパターン設定.年次参照年）
+			Integer startYear = disableYear ? null : today.addYears(annualReferYear).year(); // （システム日付（今年） ー
+																								// データ削除のパターン設定.年次参照年）
 			Integer endYear = disableYear ? null : today.year(); // システム日付（年）
-			return ManualSetDeletion.createFromJavatype(delId, AppContexts.user().companyId(),
-					delName, saveBeforeDelete, passwordAvailability, password, presenceOfEmployee, practitioner,
+			return ManualSetDeletion.createFromJavatype(delId, AppContexts.user().companyId(), delName,
+					saveBeforeDelete, passwordAvailability, password, presenceOfEmployee, practitioner,
 					suppleExplanation, refDate, executionDateTime, dayStartDate, dayEndDate,
-					Integer.parseInt(monthStartDate), Integer.parseInt(monthEndDate), startYear, endYear, delType,
+					monthStartDate != null ? Integer.parseInt(monthStartDate) : null,
+					monthEndDate != null ? Integer.parseInt(monthEndDate) : null, startYear, endYear, delType,
 					patternCd, categories);
 		}
 		return null;

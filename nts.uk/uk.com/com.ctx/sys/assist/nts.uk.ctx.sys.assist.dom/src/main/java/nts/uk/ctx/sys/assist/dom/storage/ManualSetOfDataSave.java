@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -120,7 +121,9 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword != null 
+				? new FileCompressionPassword(compressedPassword)
+				: null;
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;
@@ -147,7 +150,9 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword != null 
+				? new FileCompressionPassword(compressedPassword)
+				: null;
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,15 +48,33 @@ import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAda
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.ExeStateOfCalAndSumImportFn;
+import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodAdapter;
+import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.createextractionprocess.CreateExtraProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.ExecAlarmListProcessingService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.OutputExecAlarmListPro;
+import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionAdapter;
+import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
+import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetAdapter;
+import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetImport;
+import nts.uk.ctx.at.function.dom.indexreconstruction.FragmentationRate;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexName;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
+import nts.uk.ctx.at.function.dom.indexreconstruction.TableName;
+import nts.uk.ctx.at.function.dom.indexreconstruction.repository.CaculateFragRate;
+import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgTableRepository;
+import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
+import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
+import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
@@ -85,6 +104,7 @@ import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.over
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ChangePersionList;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ListLeaderOrNotEmp;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
+import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodDomainAdapter;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
@@ -97,6 +117,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionT
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.PresenceOfError;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodtarget.State;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -117,6 +139,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethod;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
@@ -171,6 +194,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     private ClosureRepository closureRepo;
     @Inject
     private ClosureEmploymentRepository closureEmpRepo;
+    @Inject
+	private IndexReorgTableRepository indexReorgTableRepository;
+    @Inject
+	private ProcExecIndexRepository proExecIndexRepository;
 
 //	@Inject
 //	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
@@ -267,6 +294,24 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
     @Inject
     private RecordWorkInfoFunAdapter recordWorkInfoFunAdapter;
+    
+    @Inject
+	private AnyAggrPeriodAdapter anyAggrPeriodAdapter;
+    
+    @Inject
+	private AggrPeriodExcutionAdapter aggrPeriodExcutionAdapter;
+    
+    @Inject
+	private AggrPeriodTargetAdapter aggrPeriodTargetAdapter;
+    
+    @Inject
+	private ExecuteAggrPeriodDomainAdapter executeAggrPeriodDomainAdapter;
+    
+	@Inject
+	private ServerExternalOutputAdapter serverExternalOutputAdapter;
+
+	@Inject
+	private AutoExecutionPreparationAdapter autoExecutionPreparationAdapter;
 
     /**
      * 更新処理を開始する
@@ -315,8 +360,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		   * 取得したドメインモデル「更新処理自動実行管理」の現在の実行状態を確認する
 		(Checkstatus thực hiện domain 「更新処理自動実行管理」 )
          */
+        TaskDataSetter dataSetter = context.asAsync().getDataSetter();
         if (processExecutionLogManage.getCurrentStatus().isPresent()
         		&& !processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.WAITING)) {
+        	dataSetter.setData("message1101", "Msg_1101");
         	throw new BusinessException("Msg_1101");
         }
 
@@ -525,17 +572,17 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             }
 
             // ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
-//            List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
-//                    .map(item -> ProcessExecutionTaskLogCommand.builder()
-//                            .taskId(item.getProcExecTask().value)
-//                            .status(item.getStatus().map(e -> e.value).orElse(null))
-//                            .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-//                            .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-//                            .errorSystem(item.getErrorSystem().orElse(null))
-//                            .errorBusiness(item.getErrorBusiness().orElse(null))
-//                            .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
-//                            .build())
-//                    .collect(Collectors.toList());
+            List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
+                    .map(item -> ProcessExecutionTaskLogCommand.builder()
+                            .taskId(item.getProcExecTask().value)
+                            .status(item.getStatus().map(e -> e.value).orElse(null))
+                            .lastExecDateTime(item.getLastExecDateTime().orElse(null))
+                            .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
+                            .errorSystem(item.getErrorSystem().orElse(null))
+                            .errorBusiness(item.getErrorBusiness().orElse(null))
+                            .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
+                            .build())
+                    .collect(Collectors.toList());
             Optional<DatePeriod> scheduleCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getScheduleCreationPeriod).orElse(null);
             Optional<DatePeriod> dailyCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCreationPeriod).orElse(null);
             Optional<DatePeriod> dailyCalcPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCalcPeriod).orElse(null);
@@ -634,8 +681,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         }
         if (this.monthlyAggregation(execId, procExec, procExecLog, companyId, context)) {
             return true;
-
         }
+		// Step 任意期間の集計
+		if (this.aggregationOfArbitraryPeriod(execId, companyId, procExec, procExecLog, context)) {
+			return true;
+		}
+		// 外部出力
+		if (this.externalOutput(execId, companyId, procExec, procExecLog)) {
+			return true;
+		}
         if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
             return true;
         }
@@ -813,6 +867,19 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 //				}
 //			}
         }
+		// データの保存
+		if (this.dataStorage(execId, companyId, procExec, procExecLog)) {
+			return true;
+		}
+
+		// データの削除
+		if (this.dataDeletion(execId, companyId, procExec, procExecLog)) {
+			return true;
+		}
+
+		// インデックス再構成
+		this.indexReconstruction(execId, companyId, procExec, procExecLog);
+        
         return false;
     }
 
@@ -903,7 +970,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 scheduleCommand.setCountDownLatch(countDownLatch);
 								scheduleCommand.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                 scheduleCommand.setRecreateTransfer(procExec
-                                        .getExecSetting()
                                         .getReExecCondition()
                                         .getRecreateTransfer()
                                         .equals(NotUseAtr.USE));
@@ -979,7 +1045,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                         scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
 										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                         scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
-                                                .getExecSetting()
                                                 .getReExecCondition()
                                                 .getRecreateTransfer()
                                                 .equals(NotUseAtr.USE));
@@ -1022,7 +1087,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                             scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
 											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
                                             scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
-                                                    .getExecSetting()
                                                     .getReExecCondition()
                                                     .getRecreateTransfer()
                                                     .equals(NotUseAtr.USE));
@@ -1079,10 +1143,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
                                     .setPeriod(new DatePeriod(periodDate.start(), endDate));
 
-							boolean isTransfer = procExec.getExecSetting().getReExecCondition()
+							boolean isTransfer = procExec.getReExecCondition()
                                     .getRecreateTransfer()
                                     .equals(NotUseAtr.USE);
-							boolean isWorkType = procExec.getExecSetting().getReExecCondition()
+							boolean isWorkType = procExec.getReExecCondition()
                                     .getRecreatePersonChangeWkt()
                                     .equals(NotUseAtr.USE);
 
@@ -1807,8 +1871,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             List<DatePeriod> listDatePeriodWorktype = new ArrayList<>();
                             List<DatePeriod> listDatePeriodAll = new ArrayList<>();
                             //INPUT．「異動時に再作成」をチェックする
-                            if (procExec.getExecSetting()
-                            		.getReExecCondition()
+                            if (procExec.getReExecCondition()
                                     .getRecreateTransfer()
                                     .equals(NotUseAtr.USE)) {
                                 //社員ID（List）と期間から個人情報を取得する - RQ401
@@ -1830,7 +1893,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 check = true;
                             }
                             //INPUT．「勤務種別変更時に再作成」をチェックする
-                            if (procExec.getExecSetting().getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE) && !check) {
+                            if (procExec.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE) && !check) {
                                 //<<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
 								List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(Arrays.asList(empLeader), datePeriod);
                                 //勤務種別情報変更期間を求める
@@ -1982,15 +2045,23 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
     private void updateStatusAndStartDateNull(ProcessExecutionLog procExecLog, ProcessExecutionTask execTask,
                                               EndStatus status) {
-        procExecLog.getTaskLogList().forEach(task -> {
+    	boolean hasTask = false;
+        for (ExecutionTaskLog task: procExecLog.getTaskLogList()) {
             if (execTask.value == task.getProcExecTask().value) {
+            	hasTask = true;
                 task.setStatus(status);
                 task.setLastExecDateTime(null);
                 task.setErrorBusiness(null);
                 task.setErrorSystem(null);
                 task.setLastEndExecDateTime(null);
             }
-        });
+        }
+        if (!hasTask) {
+        	procExecLog.getTaskLogList().add(ExecutionTaskLog.builder()
+        			.procExecTask(execTask)
+        			.status(Optional.ofNullable(status))
+        			.build());
+        }
     }
 
     private void initAllTaskStatus(ProcessExecutionLog procExecLog, EndStatus status) {
@@ -2228,7 +2299,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         for (int i = 0; i < size; i++) {
             ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
             // 承認結果反映
-            if (executionTaskLog.getProcExecTask().value == 3) {
+            if (executionTaskLog.getProcExecTask().equals(ProcessExecutionTask.RFL_APR_RESULT)) {
                 executionTaskLog.setStatus(null);
                 executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
                 executionTaskLog.setErrorBusiness(null);
@@ -2254,7 +2325,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             for (int i = 0; i < size; i++) {
                 ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
                 // 承認結果反映
-                if (executionTaskLog.getProcExecTask().value == 3) {
+                if (executionTaskLog.getProcExecTask().equals(ProcessExecutionTask.RFL_APR_RESULT)) {
                     // 未実施
                     executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
                     executionTaskLog.setLastExecDateTime(null);
@@ -2537,7 +2608,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         for (int i = 0; i < size; i++) {
             ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
             // 月別集計
-            if (executionTaskLog.getProcExecTask().value == 4) {
+            if (executionTaskLog.getProcExecTask().equals(ProcessExecutionTask.MONTHLY_AGGR)) {
                 executionTaskLog.setStatus(null);
                 executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
                 existExecutionTaskLog = true;
@@ -2575,7 +2646,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             for (int i = 0; i < size; i++) {
                 ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
                 // 月別集計
-                if (executionTaskLog.getProcExecTask().value == 4) {
+                if (executionTaskLog.getProcExecTask().equals(ProcessExecutionTask.MONTHLY_AGGR)) {
                     // 未実施
                     executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
                     executionTaskLog.setLastExecDateTime(null);
@@ -3029,7 +3100,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
             // [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
             this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-
+			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD,
+					EndStatus.NOT_IMPLEMENT);
+			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE,
+					EndStatus.NOT_IMPLEMENT);
+			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT,
+					EndStatus.NOT_IMPLEMENT);
+			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION,
+					EndStatus.NOT_IMPLEMENT);
+			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
             procExecLog.setExecId(execId);
 
             this.procExecLogRepo.insert(procExecLog);
@@ -3051,48 +3131,49 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 processExecutionLogManage.setLastExecDateTimeEx(dateTime);
             }
             this.processExecLogManaRepo.update(processExecutionLogManage);
-            List<ExecutionTaskLog> taskLogList = new ArrayList<ExecutionTaskLog>();
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.SCH_CREATION.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CALCULATION.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.RFL_APR_RESULT.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.MONTHLY_AGGR.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.AL_EXTRACTION.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_DAI.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
-            taskLogList.add(ExecutionTaskLog.builder()
-                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_MON.value, ProcessExecutionTask.class))
-                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                    .build()
-            );
+//            List<ExecutionTaskLog> taskLogList = new ArrayList<ExecutionTaskLog>();
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.SCH_CREATION.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CALCULATION.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.RFL_APR_RESULT.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.MONTHLY_AGGR.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.AL_EXTRACTION.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_DAI.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+//            taskLogList.add(ExecutionTaskLog.builder()
+//                    .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_MON.value, ProcessExecutionTask.class))
+//                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+//                    .build()
+//            );
+            List<ExecutionTaskLog> taskLogList = ProcessExecutionLog.processInitTaskLog();
             procExecLog = new ProcessExecutionLog(new ExecutionCode(execItemCd), companyId, null, taskLogList, execId);
             this.procExecLogRepo.insert(procExecLog);
         }
@@ -3336,6 +3417,422 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         List<DatePeriod> lstDatePeriod = lstApprovalPeriod.stream().flatMap(x -> x.getListPeriod().stream()).collect(Collectors.toList());
         return new ApprovalPeriodByEmp(lstApprovalPeriod.get(0).getEmployeeID(), mergePeriod(lstDatePeriod));
     }
+
+	/**
+	 * Index reconstruction. インデックス再構成
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行.実行処理.各処理の分岐.インデックス再構成.インデックス再構成
+	 *
+	 * @param execId      the exec id
+	 * @param companyId   the company id
+	 * @param procExec    the proc exec 更新処理自動実行
+	 * @param procExecLog the proc exec log 更新処理自動実行ログ
+	 */
+	private void indexReconstruction(String execId, String companyId, UpdateProcessAutoExecution procExec,
+			ProcessExecutionLog procExecLog) {
+		String errorMessage = "";
+		boolean isHasException = false;
+		// Step 1: ドメインモデル「更新処理自動実行ログ」を更新する - Update the domain model 更新処理自動実行ログ
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		for (int i = 0; i < taskLogLists.size(); i++) {
+			// Check 各処理の終了状態.更新処理 ＝ インデックス再構成
+			if (taskLogLists.get(i).getProcExecTask() == ProcessExecutionTask.INDEX_RECUNSTRUCTION) {
+				// Set 各処理の終了状態 ＝ [インデックス再構成、NULL]
+				taskLogLists.get(i).setStatus(null);
+				// Set 開始日時 ＝ [インデックス再構成、システム日時]
+				taskLogLists.get(i).setLastExecDateTime(GeneralDateTime.now());
+			}
+		}
+		procExecLog.setTaskLogList(taskLogLists);
+		this.procExecLogRepo.update(procExecLog);
+		// Step 2: INPUT「更新処理自動実行．実行設定．インデックス再構成．使用区分」を判定する - INPUT "Automatic execution
+		// of update process. Execution setting. Index reconstruction. Usage
+		// classification" is judged.
+		if (procExec.getExecSetting().getIndexReconstruction().getIndexReorgAttr() == NotUseAtr.NOT_USE) {
+			// Step 3: if False: ドメインモデル「更新処理自動実行ログ」を更新する -> return
+			for (int i = 0; i < taskLogLists.size(); i++) {
+				ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
+				// Check 各処理の終了状態.更新処理 ＝ 任意期間の集計
+				if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.INDEX_RECUNSTRUCTION) {
+					// Set 各処理の終了状態 ＝ [任意期間の集計、未実施]
+					executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
+					// Set 開始日時 ＝ [任意期間の集計、NULL]
+					executionTaskLog.setLastExecDateTime(null);
+				}
+			}
+			procExecLog.setTaskLogList(taskLogLists);
+			this.procExecLogRepo.update(procExecLog);
+			return;
+		}
+		// カテゴリNO in INPUT「更新処理自動実行．実行設定．インデックス再作成．カテゴリリスト」
+		List<BigDecimal> categoryList = procExec.getExecSetting().getIndexReconstruction().getCategoryList().stream()
+				.map(i -> new BigDecimal(i.v())).collect(Collectors.toList());
+		try {
+			// Step 3: if True: ドメインモデル「インデックス再構成テーブル」を取得する - Get the domain model "index
+			// reconstruction table"
+			List<IndexReorgTable> listIndexReorgTable = this.indexReorgTableRepository
+					.findAllByCategoryIds(categoryList);
+			// Step 4: 「インデックス再構成結果履歴」を作成する
+			ProcExecIndex proExecIndex = new ProcExecIndex(new ExecutionCode(execId), Collections.emptyList());
+			// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction
+			// table"
+			if (!listIndexReorgTable.isEmpty()) {
+				// 取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
+				List<ProcExecIndexResult> indexReconstructionResult = new ArrayList<ProcExecIndexResult>();
+				listIndexReorgTable.forEach(indexReorgTable -> {
+					// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index
+					// reconstruction
+					// Step 6: 「インデックス再構成結果」を作成する
+					List<ProcExecIndexResult> resultCaculateFragRates = this.indexReorgTableRepository
+							.calculateFragRate(indexReorgTable.getTablePhysName().v()).stream()
+							.filter(item -> item.getIndexId() > 0) // Check condition 実行したSQLの結果の「index_id」> 0
+							.map(item -> ProcExecIndexResult.builder().indexName(new IndexName(item.getIndexName()))
+									.fragmentationRate(new FragmentationRate(item.getFragmentationRate()))
+									.tablePhysicalName(new TableName(item.getTablePhysicalName())).build())
+							.collect(Collectors.toList());
+					// Step 7 テーブルのインデックス再構成する
+					this.indexReorgTableRepository.reconfiguresIndex(indexReorgTable.getTablePhysName().v());
+					// INPUT「更新処理自動実行．実行設定．インデックス再構成．統計情報を更新する」を判定する
+					// if USE
+					if (procExec.getExecSetting().getIndexReconstruction().getUpdateStatistics() == NotUseAtr.USE) {
+						// Step 8 統計情報を更新する - Update stats
+						this.indexReorgTableRepository.updateStatis(indexReorgTable.getTablePhysName().v());
+					}
+					// Step 9 インデックス再構成後の断片化率を計算する
+					List<CaculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository
+							.calculateFragRate(indexReorgTable.getTablePhysName().v());
+					resultCaculateFragRatesAfter.removeIf(item -> item.getIndexId() > 0);
+					for (int j = 0; j < resultCaculateFragRatesAfter.size(); j++) {
+						resultCaculateFragRates.get(j).setFragmentationRateAfterProcessing(
+								new FragmentationRate(resultCaculateFragRatesAfter.get(j).getFragmentationRate()));
+					}
+					indexReconstructionResult.addAll(resultCaculateFragRates);
+				});
+				// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
+				proExecIndex.setIndexReconstructionResult(indexReconstructionResult);
+			}
+			// Step 11: 作成した「インデックス再構成結果履歴」を登録する
+			this.proExecIndexRepository.update(proExecIndex);
+		} catch (Exception e) {
+			isHasException = true;
+			errorMessage = "Msg_1339";
+		}
+		// Step 12: 各処理の後のログ更新処理
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.INDEX_RECUNSTRUCTION, companyId, execId,
+				procExec, procExecLog, isHasException, false, errorMessage);
+	}
+
+	/**
+	 * 任意期間の集計
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行.実行処理.各処理の分岐.任意期間の集計.任意期間の集計
+	 *
+	 * @param execId      実行ID
+	 * @param companyId   会社ID
+	 * @param procExec    更新処理自動実行
+	 * @param procExecLog 更新処理自動実行ログ
+	 * @param context
+	 * @return
+	 */
+	private boolean aggregationOfArbitraryPeriod(String execId, String companyId, UpdateProcessAutoExecution procExec,
+			ProcessExecutionLog procExecLog, CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
+		// Step ドメインモデル「更新処理自動実行ログ」を更新する
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		int size = taskLogLists.size();
+		boolean existExecutionTaskLog = false;
+		boolean checkStopExec = false;
+		String errorMessage = "";
+		for (int i = 0; i < size; i++) {
+			// Check 各処理の終了状態.更新処理 ＝ 任意期間の集計
+			if (taskLogLists.get(i).getProcExecTask() == ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD) {
+				// Set 各処理の終了状態 ＝ [任意期間の集計、NULL]
+				taskLogLists.get(i).setStatus(null);
+				// Set 開始日時 ＝ [任意期間の集計、システム日時]
+				taskLogLists.get(i).setLastExecDateTime(GeneralDateTime.now());
+				existExecutionTaskLog = true;
+				break;
+			}
+		}
+		if (!existExecutionTaskLog) {
+			ExecutionTaskLog execTaskLog = ExecutionTaskLog.builder().procExecTask(EnumAdaptor
+					.valueOf(ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD.value, ProcessExecutionTask.class))
+					.lastExecDateTime(Optional.of(GeneralDateTime.now())).build();
+			taskLogLists.add(execTaskLog);
+		}
+		String execItemCd = context.getCommand().getExecItemCd();
+		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
+				execId);
+		if (CollectionUtil.isEmpty(taskLogList)) {
+			this.execTaskLogRepo.insertAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+		} else {
+			this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+		}
+		this.procExecLogRepo.update(procExecLog);
+		// Step INPUT「更新処理自動実行．実行設定．任意期間の集計．使用区分」を判定する
+		// FALSE（しない）の場合
+		if (procExec.getExecSetting().getAggrAnyPeriod().getAggAnyPeriodAttr() == NotUseAtr.NOT_USE) {
+			// Step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
+			for (int i = 0; i < taskLogLists.size(); i++) {
+				ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
+				// Check 各処理の終了状態.更新処理 ＝ 任意期間の集計
+				if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD) {
+					// Set 各処理の終了状態 ＝ [任意期間の集計、未実施]
+					executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
+					// Set 開始日時 ＝ [任意期間の集計、NULL]
+					executionTaskLog.setLastExecDateTime(null);
+					existExecutionTaskLog = true;
+				}
+			}
+			procExecLog.setTaskLogList(taskLogLists);
+			this.procExecLogRepo.update(procExecLog);
+			return false;
+		}
+		// TRUE（する）の場合
+		boolean isHasException = false;
+		try {
+			String aggrFrameCode = procExec.getExecSetting().getAggrAnyPeriod().getAggrFrameCode().map(item -> item.v())
+					.orElse(null);
+			// Step ドメインモデル「任意集計期間」を取得する
+			Optional<AnyAggrPeriodImport> anyAggrPeriod = this.anyAggrPeriodAdapter.findOne(companyId, aggrFrameCode);
+			// 「任意集計期間」取得できたかチェック - check if could get AnyAggrPeriod
+			if (!anyAggrPeriod.isPresent()) {
+				// 取得できない - if can't get
+				for (int i = 0; i < taskLogLists.size(); i++) {
+					ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
+					// Check 各処理の終了状態.更新処理 ＝ 任意期間の集計
+					if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD) {
+						// Set 各処理の終了状態 ＝ [任意期間の集計、未実施]
+						executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
+						// Set 開始日時 ＝ [任意期間の集計、NULL]
+						executionTaskLog.setLastExecDateTime(null);
+					}
+				}
+				procExecLog.setTaskLogList(taskLogLists);
+				this.procExecLogRepo.update(procExecLog);
+				return false;
+			} else {
+				// Step 更新処理自動実行の実行対象社員リストを取得する - Get the list of employees to be automatically
+				// executed in the update process
+				// 職場ID＜List＞ = ドメインモデル「更新処理自動実行」．実行範囲．職場実行範囲
+//                List<String> workplaceIds = procExec.getExecScope()
+//                        .getWorkplaceIdList()
+//                        .stream()
+//                        .map(ProcessExecutionScopeItem::getWkpId)
+//                        .collect(Collectors.toList());
+				// 更新処理自動実行の実行対象社員リストを取得する
+				List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(companyId, anyAggrPeriod.get().getPeriod(),
+						procExec.getExecScope().getExecScopeCls(),
+						Optional.of(procExec.getExecScope().getWorkplaceIdList()), Optional.empty());
+				// Step ドメインモデル「任意期間集計実行ログ」を新規登録する - Registering a new domain model 任意期間集計実行ログ
+				// (AggrPeriodExcution)
+				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
+						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")
+						.startDateTime(GeneralDateTime.now()).executionAtr(ExecutionAtr.AUTOMATIC.value)
+						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
+						.endDateTime(GeneralDateTime.now()).build();
+				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
+
+				// Step ドメインモデル「L」を新規登録する - Registering a new domain model "any period Aggregate
+				// Target
+				// 取得した「社員ID＜List＞」の分だけ「任意期間集計対象者」を登録する
+				List<AggrPeriodTargetImport> targetLists = new ArrayList<>();
+				listEmp.forEach(empId -> {
+					targetLists.add(AggrPeriodTargetImport.builder().aggrId(execId).employeeId(empId)
+							.state(State.UNDONE.value).build());
+				});
+				if (targetLists.isEmpty()) {
+					isHasException = true;
+					errorMessage = "Msg_1339";
+					checkStopExec = true;
+				}
+				this.aggrPeriodTargetAdapter.addTarget(targetLists);
+				try {
+					// Step 任意期間集計Mgrクラス
+					this.executeAggrPeriodDomainAdapter.excuteOptionalPeriod(companyId, execId, context.asAsync());
+				} catch (Exception e) {
+					isHasException = true;
+					errorMessage = "Msg_1339";
+					checkStopExec = true;
+				}
+			}
+		} catch (Exception e) {
+			isHasException = true;
+			errorMessage = "Msg_1552";
+			checkStopExec = true;
+		}
+		// 各処理の後のログ更新処理
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD,
+				companyId, execId, procExec, procExecLog, isHasException, checkStopExec, errorMessage);
+		return false;
+	}
+
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.外部入出力.外部出力.アルゴリズム.サーバ外部出力自動実行.サーバ外部出力実行時引数処理.サーバ外部出力実行時引数処理
+	 * 
+	 * @param execId      実行ID
+	 * @param companyId   会社ID
+	 * @param procExec    更新処理自動実行
+	 * @param procExecLog 更新処理自動実行ログ
+	 * @return
+	 */
+	private boolean externalOutput(String execId, String companyId, UpdateProcessAutoExecution procExec,
+			ProcessExecutionLog procExecLog) {
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		boolean hasError = false;
+		boolean hasException = false;
+		boolean hasOutputError = false;
+		String errorMessage = "";
+		// Step ドメインモデル「更新処理自動実行ログ」を更新する
+		this.updateLog(execId, ProcessExecutionTask.EXTERNAL_OUTPUT, procExec, procExecLog);
+
+		// 外部出力区分の判定する
+		// しないの場合
+		if (procExec.getExecSetting().getExternalOutput().getExtOutputCls().equals(NotUseAtr.NOT_USE)) {
+			// ドメインモデル「更新処理自動実行ログ」を更新する
+			this.updateTaskLogs(taskLogLists, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT, null);
+			procExecLog.setTaskLogList(taskLogLists);
+			this.procExecLogRepo.update(procExecLog);
+			return true;
+		}
+		// するの場合
+		// 実行条件ごとにループする
+		try {
+			for (ExternalOutputConditionCode conditionCd : procExec.getExecSetting().getExternalOutput()
+					.getExtOutCondCodeList()) {
+				// サーバ外部出力実行時引数処理
+				ServerExternalOutputImport output = this.serverExternalOutputAdapter.findExternalOutput(companyId,
+						conditionCd.v());
+				// 実行結果を確認する
+				if (output != null && output.isExecutionResult()) {
+					// アルゴリズム「サーバ外部出力自動実行」を実行する
+					this.serverExternalOutputAdapter.processAutoExecution(conditionCd.v(), output.getPeriod(),
+							output.getBaseDate(), null);
+				} else {
+					hasError = true;
+					hasOutputError = true;
+					errorMessage = output != null ? output.getErrorMessage() : null;
+				}
+			}
+		} catch (Exception e) {
+			hasException = true;
+			hasError = true;
+		}
+		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする
+		Optional<ProcessExecutionLog> optProcLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
+				procExec.getExecItemCode().v(), execId);
+		if (optProcLog.isPresent()) {
+			for (ExecutionTaskLog task : optProcLog.get().getTaskLogList()) {
+				if (task.getStatus().isPresent() && task.getStatus().get().equals(EndStatus.FORCE_END)) {
+					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId,
+							execId, procExec, procExecLog, hasOutputError, hasError, errorMessage);
+				} else {
+					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId,
+							execId, procExec, procExecLog, hasException, hasError, errorMessage);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行.実行処理.各処理の分岐.データの保存.データの保存
+	 * 
+	 * @param execId      実行ID
+	 * @param companyId   会社ID
+	 * @param procExec    更新処理自動実行
+	 * @param procExecLog 更新処理自動実行ログ
+	 * @return
+	 */
+	private boolean dataStorage(String execId, String companyId, UpdateProcessAutoExecution procExec,
+			ProcessExecutionLog procExecLog) {
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		String errorMessage = "";
+		// Step ドメインモデル「更新処理自動実行ログ」を更新する
+		this.updateLog(execId, ProcessExecutionTask.SAVE_DATA, procExec, procExecLog);
+
+		// データの保存区分の判定する
+		// しないの場合
+		if (procExec.getExecSetting().getSaveData().getSaveDataCls().equals(NotUseAtr.NOT_USE)) {
+			this.updateTaskLogs(taskLogLists, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT, null);
+			procExecLog.setTaskLogList(taskLogLists);
+			this.procExecLogRepo.update(procExecLog);
+			return true;
+		}
+
+		// アルゴリズム「自動削除準備」を実行する
+		this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.SAVE_DATA, companyId,
+				execId, procExec, procExecLog, false, false, errorMessage);
+		return false;
+	}
+
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行.実行処理.各処理の分岐.データの削除.データの削除
+	 * 
+	 * @param execId      実行ID
+	 * @param companyId   会社ID
+	 * @param procExec    更新処理自動実行
+	 * @param procExecLog 更新処理自動実行ログ
+	 * @return
+	 */
+	private boolean dataDeletion(String execId, String companyId, UpdateProcessAutoExecution procExec,
+			ProcessExecutionLog procExecLog) {
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		String errorMessage = "";
+		// Step ドメインモデル「更新処理自動実行ログ」を更新する
+		this.updateLog(execId, ProcessExecutionTask.DELETE_DATA, procExec, procExecLog);
+
+		// データの削除区分の判定する
+		// しないの場合
+		if (procExec.getExecSetting().getSaveData().getSaveDataCls().equals(NotUseAtr.NOT_USE)) {
+			this.updateTaskLogs(taskLogLists, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT, null);
+			procExecLog.setTaskLogList(taskLogLists);
+			this.procExecLogRepo.update(procExecLog);
+			return true;
+		}
+
+		// アルゴリズム「自動削除準備」を実行する
+		this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.DELETE_DATA, companyId,
+				execId, procExec, procExecLog, false, false, errorMessage);
+		return false;
+	}
+
+	private boolean updateTaskLogs(List<ExecutionTaskLog> taskLogLists, ProcessExecutionTask procTask, EndStatus status,
+			GeneralDateTime execDateTime) {
+		boolean existExecutionTaskLog = false;
+		for (int i = 0; i < taskLogLists.size(); i++) {
+			if (taskLogLists.get(i).getProcExecTask() == procTask) {
+				taskLogLists.get(i).setStatus(status);
+				taskLogLists.get(i).setLastExecDateTime(execDateTime);
+				existExecutionTaskLog = true;
+				break;
+			}
+		}
+		return existExecutionTaskLog;
+	}
+
+	private void updateLog(String execId, ProcessExecutionTask procTask, UpdateProcessAutoExecution procExec,
+			ProcessExecutionLog procExecLog) {
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		boolean existExecutionTaskLog = this.updateTaskLogs(taskLogLists, procTask, null, GeneralDateTime.now());
+		String companyId = procExec.getCompanyId();
+		if (!existExecutionTaskLog) {
+			ExecutionTaskLog execTaskLog = ExecutionTaskLog.builder()
+					.procExecTask(EnumAdaptor.valueOf(procTask.value, ProcessExecutionTask.class))
+					.lastExecDateTime(Optional.of(GeneralDateTime.now())).build();
+			taskLogLists.add(execTaskLog);
+		}
+		String execItemCd = procExec.getExecItemCode().v();
+		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
+				execId);
+		if (CollectionUtil.isEmpty(taskLogList)) {
+			this.execTaskLogRepo.insertAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+		} else {
+			this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+		}
+		this.procExecLogRepo.update(procExecLog);
+	}
 
 }
 

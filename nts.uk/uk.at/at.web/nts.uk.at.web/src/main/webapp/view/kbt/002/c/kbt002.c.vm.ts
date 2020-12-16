@@ -83,16 +83,16 @@ module nts.uk.at.view.kbt002.c {
 
     getExecSetting() {
       const vm = this;
-      //FAKE-DATA
-      // vm.execItemCd('53');
-      // vm.execItemName('KBT002_C review');
-
       vm.$blockui('grayout')
         .then(() => vm.$ajax(`${API.getExecSetting}/${vm.execItemCd()}`))
         .then((item: ExecutionSettingDto) => {
           vm.$blockui('clear');
           if (item) {
             vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
+            vm.selectExec(item.repeatContent);
+            vm.selectTimeRepeat((item as any).oneDayRepClassification);
+            vm.selectEndDate(item.endDateCls);
+            vm.selectEndTime(item.endTimeCls);
             vm.monthDays(vm.buildMonthDaysStr());
             vm.isNewMode = false;
           } else {
@@ -159,6 +159,7 @@ module nts.uk.at.view.kbt002.c {
           params.october = vm.curExecSetting().october();
           params.november = vm.curExecSetting().november();
           params.december = vm.curExecSetting().december();
+          params.repeatMonthDateList = vm.curExecSetting().repeatMonthDateList();
         }
       }
       vm.$ajax(API.saveExecSetting, params)
@@ -166,9 +167,9 @@ module nts.uk.at.view.kbt002.c {
           if (res) {
             vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => {
-              params.startDate = moment.utc(params.startDate).format("YYYY/MM/DD");
-              params.endDate = moment.utc(params.endDate).format("YYYY/MM/DD");
-              vm.$window.close(params);
+              res.startDate = moment.utc(res.startDate).format("YYYY/MM/DD");
+              res.endDate = moment.utc(res.endDate).format("YYYY/MM/DD");
+              vm.$window.close(res);
             });
           }
         })

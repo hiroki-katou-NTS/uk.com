@@ -261,10 +261,10 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 	}
 
 	const API = {
-		getMailTemp: "at/request/application/approvalstatus/getMailTemp",
-		registerMail: "at/request/application/approvalstatus/registerMail",
-		confirmSenderMail: "at/request/application/approvalstatus/confirmSenderMail",
-		sendTestMail: "at/request/application/approvalstatus/sendTestMail/{0}",
+		getMailTemp: "at/screen/application/approvalstatus/getMailTemp",
+		registerMail: "at/screen/application/approvalstatus/registerMail",
+		confirmSenderMail: "at/screen/application/approvalstatus/confirmSenderMail",
+		sendTestMail: "at/screen/application/approvalstatus/sendTestMail/{0}",
 		getUseSetting: "at/record/application/realitystatus/getUseSetting"
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -131,13 +132,10 @@ public class ExecutionTaskSettingDto {
 		List<Integer> repeatMonthDateList = domain.getDetailSetting().getMonthly()
 				.map(data -> data.getDays().stream().map(x -> x.value).collect(Collectors.toList()))
 				.orElse(Collections.emptyList());
-		StringBuilder trueMonthlyDayString = new StringBuilder();
-		for (int i = 0; i < repeatMonthDateList.size(); i++) {
-			trueMonthlyDayString.append(repeatMonthDateList.get(i) + "日");
-			if (i == repeatMonthDateList.size() - 1) {
-				trueMonthlyDayString.append(", ");
-			}
-		}
+		StringJoiner trueMonthlyDayString = new StringJoiner(", ");
+		repeatMonthDateList.forEach(date -> {
+			trueMonthlyDayString.add(date + "日");
+		});
 		return new ExecutionTaskSettingDto(domain.getCompanyId(), domain.getExecItemCd().v(), domain.isEnabledSetting(),
 				domain.getOneDayRepInr().getDetail().map(o -> o.value).orElse(null),
 				domain.getOneDayRepInr().getOneDayRepCls().value, domain.getNextExecDateTime().orElse(null),

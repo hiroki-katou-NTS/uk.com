@@ -263,12 +263,12 @@ module nts.uk.at.view.kbt002.f {
     private executeUpdateProcess(execItemCd: string) {
       const vm = this;
       const selectedItem: any = _.find(vm.dataSource(), (item) => item.execItemCd === execItemCd);
-      if (selectedItem && selectedItem.updateProcessAutoExecLog) {
+      // if (selectedItem && selectedItem.updateProcessAutoExecLog) {
         vm.$blockui("grayout");
         const command: ExecuteProcessExecutionCommand = new ExecuteProcessExecutionCommand({
-          companyId: selectedItem.updateProcessAutoExecLog.companyId,
-          execItemCd: selectedItem.updateProcessAutoExecLog.execItemCd,
-          execId: selectedItem.updateProcessAutoExecLog.execId,
+          companyId: selectedItem.updateProcessAutoExec.companyId,
+          execItemCd: selectedItem.updateProcessAutoExec.execItemCode,
+          execId: selectedItem.updateProcessAutoExecLog ? selectedItem.updateProcessAutoExecLog.execId : null,
           execType: 1,
         });
         vm.$ajax(API.execute, command)
@@ -279,7 +279,7 @@ module nts.uk.at.view.kbt002.f {
             return vm.getExecItemInfoList();
           })
           .always(() => vm.$blockui("clear"));
-      }
+      // }
     }
 
     private repeatCheckAsyncResult(taskId: any, selectedItem: any) {
@@ -289,7 +289,7 @@ module nts.uk.at.view.kbt002.f {
           return (nts.uk.request as any).asyncTask.getInfo(taskId)
             .done((res: any) => {
               //ExecuteProcessExecCommandHandler
-              const message101 = vm.getAsyncData(res.taskDatas, "message101").valueAsString;
+              const message101 = vm.getAsyncData(res.taskDatas, "message1101").valueAsString;
               if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
                 vm.isOnceMessage101(false);
                 vm.$dialog.alert({ messageId: message101 });

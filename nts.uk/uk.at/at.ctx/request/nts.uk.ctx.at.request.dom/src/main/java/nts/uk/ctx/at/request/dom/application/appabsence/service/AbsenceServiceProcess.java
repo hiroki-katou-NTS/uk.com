@@ -12,9 +12,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenc
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 public interface AbsenceServiceProcess {
 	/**
@@ -87,7 +89,9 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
-			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage);
+            ManageDistinct annualLeaveManageDistinct, ManageDistinct accumulatedManage, ManageDistinct substituteLeaveManagement, 
+            ManageDistinct holidayManagement, ManageDistinct overrest60HManagement, ManageDistinct childNursingManagement, 
+            ManageDistinct longTermCareManagement);
 	
 	/**
 	 * 休暇申請設定を取得する
@@ -319,4 +323,12 @@ public interface AbsenceServiceProcess {
 	 */
 	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
 			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
+	
+	/**
+	 * 1.休暇申請（新規）起動処理
+	 * @param String companyID 会社ID
+	 * @param AppDispInfoStartupOutput appDispInfoStartupOutput 申請表示情報
+	 * @return AppAbsenceStartInfoOutput 休暇申請起動時の表示情報
+	 */
+	public AppAbsenceStartInfoOutput getVacationActivation(String companyID, AppDispInfoStartupOutput appDispInfoStartupOutput);
 }

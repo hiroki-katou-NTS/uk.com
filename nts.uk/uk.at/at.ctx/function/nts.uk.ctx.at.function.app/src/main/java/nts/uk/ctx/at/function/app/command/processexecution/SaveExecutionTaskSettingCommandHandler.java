@@ -28,6 +28,7 @@ import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.repository.RepeatMonthDayRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
@@ -45,7 +47,7 @@ import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
 @Stateless
 public class SaveExecutionTaskSettingCommandHandler
-		extends CommandHandlerWithResult<SaveExecutionTaskSettingCommand, String> {
+		extends CommandHandlerWithResult<SaveExecutionTaskSettingCommand, ExecutionTaskSettingDto> {
 
 	@Inject
 	private ExecutionTaskSettingRepository execTaskSettingRepo;
@@ -70,7 +72,7 @@ public class SaveExecutionTaskSettingCommandHandler
 	}
 
 	@Override
-	protected String handle(CommandHandlerContext<SaveExecutionTaskSettingCommand> context) {
+	protected ExecutionTaskSettingDto handle(CommandHandlerContext<SaveExecutionTaskSettingCommand> context) {
 		SaveExecutionTaskSettingCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
@@ -278,7 +280,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				}
 				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 						.userData(scheduletimeData).startDate(startDate).endDate(endate)
-						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(0)).build();
+						.startClock(new StartTime(command.getStartTime())).build();
 
 				// loop minute
 //				if (command.getOneDayRepCls() == 1) {
@@ -352,7 +354,7 @@ public class SaveExecutionTaskSettingCommandHandler
 			throw new BusinessException("Msg_1110");
 		}
 
-		return taskSetting.getExecItemCd().v();
+		return ExecutionTaskSettingDto.fromDomain(taskSetting);
 	}
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
@@ -445,7 +447,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		}
 		Integer startTimeRun = null;
 
-		if (command.getOneDayRepInterval() != null) {
+		if (command.getOneDayRepInterval() != null && command.getOneDayRepCls() == 1) {
 			repeatMinute = EnumAdaptor.valueOf(command.getOneDayRepInterval(), OneDayRepeatIntervalDetail.class).getMinuteValue();
 		}
 
@@ -460,11 +462,11 @@ public class SaveExecutionTaskSettingCommandHandler
 		StringBuilder cronExpress3 = null;
 		int repeatContent = command.getRepeatContent().intValue();
 		// fixbug when not repeat day week month
-		if (!command.isRepeatCls()) {
-			repeatContent = 0;
-		}
-		switch (repeatContent) {
-		case 0: // day
+//		if (!command.isRepeatCls()) {
+//			repeatContent = 0;
+//		}
+		switch (EnumAdaptor.valueOf(repeatContent, RepeatContentItem.class)) {
+		case WEEKLY_DAYS: // day
 			if (repeatMinute == null) {
 				cronExpress.append("0 " + startMinute + " " + startHours + " * * ? ");
 			} else {
@@ -507,7 +509,7 @@ public class SaveExecutionTaskSettingCommandHandler
 
 			}
 			break;
-		case 1: // week
+		case SPECIFIED_WEEK_DAYS: // week
 
 			if (!command.isSunday() && !command.isMonday() && !command.isTuesday() && !command.isWednesday()
 					&& !command.isThursday() && !command.isFriday() && !command.isSaturday()) {
@@ -623,7 +625,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				cronExpress.deleteCharAt(cronExpress.length() - 1);
 			}
 			break;
-		case 2: // month
+		case SPECIFIED_IN_MONTH: // month
 			List<Integer> repeatMonthDateList = command.getRepeatMonthDateList();
 			/*
 			 * if(command.getRepeatMonthDateList().isEmpty()){ if(repeatMinute==null){

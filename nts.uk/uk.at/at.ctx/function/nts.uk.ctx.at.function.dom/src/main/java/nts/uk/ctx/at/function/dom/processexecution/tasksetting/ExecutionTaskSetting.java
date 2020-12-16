@@ -277,7 +277,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 			tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, 1));
 			for (RepeatMonthDaysSelect day : pickedDates) {
 				try {
-					if (day.value == RepeatMonthDaysSelect.LAST_DAY.value) {
+					if (day.value == RepeatMonthDaysSelect.DAY_32.value) {
 						tempDateTime = this.buildGeneralDateTime(
 								GeneralDate.ymd(startDate.year(), month, tempDateTime.toLocalDate().lengthOfMonth()));
 					} else {

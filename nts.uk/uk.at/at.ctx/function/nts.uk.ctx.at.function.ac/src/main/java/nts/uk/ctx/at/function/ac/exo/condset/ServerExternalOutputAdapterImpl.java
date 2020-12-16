@@ -20,7 +20,7 @@ public class ServerExternalOutputAdapterImpl implements ServerExternalOutputAdap
 	private ServerExternalOutputPub pub;
 
 	@Override
-	public ServerExternalOutputImport findExternalOutput(String cid, String conditionCd) {
+	public ServerExternalOutputImport findExternalOutput(String cid, String conditionCd) throws Exception {
 		ServerExternalOutputExport export = pub.findExternalOutput(cid, conditionCd);
 		return new ServerExternalOutputImport(export.isExecutionResult(), export.getErrorMessage(), export.getPeriod(),
 				export.getBaseDate());

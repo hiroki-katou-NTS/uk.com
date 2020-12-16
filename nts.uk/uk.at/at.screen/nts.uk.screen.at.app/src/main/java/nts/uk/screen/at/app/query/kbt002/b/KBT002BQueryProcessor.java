@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.kbt002.b;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,31 +94,27 @@ public class KBT002BQueryProcessor {
 		List<StdOutputCondSetDto> stdOutputCondSetList = this.outputCondSetFinder.getStdOutputCondSetsByCompanyId();
 
 		// ドメインモデル「受入条件設定（定型）」を取得する
-		List<StdAcceptCondSetDto> stdAcceptCondSetList = this.acceptCondSetQueryFinder.getStdAcceptCondSetsByCompanyId();
+		List<StdAcceptCondSetDto> stdAcceptCondSetList = this.acceptCondSetQueryFinder
+				.getStdAcceptCondSetsByCompanyId();
 
 		// ドメインモデル「データ保存のパターン設定」を取得する
 		String contractCode = AppContexts.user().contractCode();
-		List<DataStoragePatternSettingDto> dataStoragePatternSetList = this.dataStoragePatternSetRepo.findByContractCd(contractCode)
-																									 .stream()
-																									 .map(DataStoragePatternSettingDto::createFromDomain)
-																									 .collect(Collectors.toList());
+		List<DataStoragePatternSettingDto> dataStoragePatternSetList = this.dataStoragePatternSetRepo
+				.findByContractCd(contractCode).stream().map(DataStoragePatternSettingDto::createFromDomain)
+				.sorted(Comparator.comparing(DataStoragePatternSettingDto::getPatternCode))
+				.collect(Collectors.toList());
 
 		// ドメインモデル「データ削除のパターン設定」を取得する
-		List<DataDeletionPatternSettingDto> dataDelPatternSetList = this.dataDelPatternSetRepo.findByContractCd(contractCode)
-																							  .stream()
-																							  .map(DataDeletionPatternSettingDto::createFromDomain)
-																							  .collect(Collectors.toList());
+		List<DataDeletionPatternSettingDto> dataDelPatternSetList = this.dataDelPatternSetRepo
+				.findByContractCd(contractCode).stream().map(DataDeletionPatternSettingDto::createFromDomain)
+				.sorted(Comparator.comparing(DataDeletionPatternSettingDto::getPatternCode))
+				.collect(Collectors.toList());
 
 		// ドメインモデル「インデックス再構成カテゴリ」を取得する
 		List<IndexReorgCateDto> indexReorgCateList = this.indexReorgCateFinder.getAllIndexReorgCates();
 
-		return new MasterInfoDto(aggrPeriodList,
-								 alarmPatternSettingList,
-								 stdOutputCondSetList,
-								 stdAcceptCondSetList,
-								 dataStoragePatternSetList,
-								 dataDelPatternSetList,
-								 indexReorgCateList);
+		return new MasterInfoDto(aggrPeriodList, alarmPatternSettingList, stdOutputCondSetList, stdAcceptCondSetList,
+				dataStoragePatternSetList, dataDelPatternSetList, indexReorgCateList);
 	}
 
 }

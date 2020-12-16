@@ -90,7 +90,6 @@ module nts.uk.at.view.kbt002.b {
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
-          console.log(response);
           vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
           vm.stdAcceptList(response.stdAcceptCondSetList);
           vm.stdOutputList(response.stdOutputCondSetList);
@@ -127,7 +126,7 @@ module nts.uk.at.view.kbt002.b {
               vm.cloudCreationFlag(res.processExecution.cloudCreFlag);
               vm.updateList();
               vm.currentExecItem().workplaceList(res.workplaceInfos);
-              vm.buildWorkplaceStr(vm.currentExecItem().workplaceList()); // B4_6, 7, 9, 10
+              vm.buildWorkplaceStr(_.map(vm.currentExecItem().workplaceList(), 'workplaceId')); // B4_6, 7, 9, 10
               // vm.executionTaskWarning(vm.buildExecutionTaskWarningStr()); // B5_6
               if (vm.currentExecItem().perScheduleCls()) {
                 // vm.targetDateText('targetDateText');
@@ -158,7 +157,6 @@ module nts.uk.at.view.kbt002.b {
       const vm = this;
       vm.$blockui('grayout')
       $.when(vm.getEnumDataList(), vm.getAlarmByUser())
-        .then((response) => console.log(vm.targetMonthList()))
         .always(() => vm.$blockui('clear'));
       vm.taskSetting.subscribe(data => {
         vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(data));
@@ -266,12 +264,11 @@ module nts.uk.at.view.kbt002.b {
             vm.$dialog.info({ messageId: "Msg_15" })
               .then(() => {
                 // Get process execution list
-                vm.getProcExecList(response);
+                vm.getProcExecList(command.execItemCode);
                 vm.$nextTick(() => {
                   vm.focusInput();
                 });
               })
-              .then(() => vm.selectedExecCode(command.execItemCode));
           })
           .fail((error: any) => {
             vm.showMessageError(error);
@@ -335,6 +332,7 @@ module nts.uk.at.view.kbt002.b {
       const data: any = {
         execItemCode: vm.currentExecItem().execItemCode(),
         execItemName: vm.currentExecItem().execItemName(),
+        repeatContent: vm.taskSetting() ? vm.taskSetting().repeatContent : 0,
         cloudCreationFlag: vm.cloudCreationFlag()
       };
       vm.$window.modal('/view/kbt/002/c/index.xhtml', data)
@@ -385,7 +383,7 @@ module nts.uk.at.view.kbt002.b {
         vm.$blockui("clear")
         const data = nts.uk.ui.windows.getShared('outputCDL008');
         if (data) {
-          vm.currentExecItem().workplaceList(data);
+          vm.currentExecItem().workplaceList(_.filter(vm.workplaceList(), item => _.includes(data, item.workplaceId)));
           vm.buildWorkplaceStr(data);
         }
       });
@@ -534,14 +532,26 @@ module nts.uk.at.view.kbt002.b {
       }
       params[3] = data.oneDayRepClassification === 0 
                   ? ""
-                  : vm.$i18n("KBT002_307", [data.oneDayRepInterval]);
+                  : vm.$i18n("KBT002_307", [vm.getOneDayRepInterval(data.oneDayRepInterval)]);
       params[4] = data.endTimeCls === 0 
                   ? ""
-                  : vm.$i18n("KBT002_309", [`${Math.floor(data.endTime / 60)}:${data.endTime % 60}`]);
+                  : vm.$i18n("KBT002_309", [`${Math.floor(data.endTime / 60)}:${nts.uk.text.padLeft(String(data.endTime % 60), '0', 2)}`]);
       params[5] = data.endDateCls === 0 
                   ? ""
                   : vm.$i18n("KBT002_308", [data.endDate]);
       return vm.$i18n("KBT002_306", params);
+    }
+
+    private getOneDayRepInterval(value: number): string {
+      const vm = this;
+      switch (value) {
+        case 0: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_10");
+        case 1: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_15");
+        case 2: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_20");
+        case 3: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_30");
+        case 4: return vm.$i18n("Enum_OneDayRepeatIntervalDetail_MIN_60");
+        default: return "";
+      }
     }
 
     private updateList() {
