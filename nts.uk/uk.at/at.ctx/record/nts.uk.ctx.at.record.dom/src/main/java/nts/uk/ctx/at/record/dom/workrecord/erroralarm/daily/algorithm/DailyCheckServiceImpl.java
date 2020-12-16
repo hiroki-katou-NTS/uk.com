@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
+import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateStatusSprImport;
+import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.Request113Import;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
@@ -18,6 +21,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
@@ -60,6 +66,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	@Inject
 	private IdentificationRepository indentifiRep;
 	
+	@Inject
+	private AppRootStateConfirmAdapter approotAdap;
+	
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId,
@@ -93,6 +102,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<ErrorAlarmWorkRecord> listError = errorAlarmRep.findByListErrorAlamByIdUse(errorDailyCheckCd, true);
 		
 		//日次の固定抽出条件のデータを取得する
+		DataFixExtracCon dataforDailyFix = this.getDataForDailyFix(lstSid, dPeriod, errorDailyCheckId);
 	}
 	
 	/**
@@ -101,9 +111,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	 * @param dPeriod
 	 * @param fixedExtractConditionWorkRecord
 	 */
-	private void getDataForDailyFix(List<String> lstSid, DatePeriod dPeriod,  String errorDailyCheckId) {
+	private DataFixExtracCon getDataForDailyFix(List<String> lstSid, DatePeriod dPeriod,  String errorDailyCheckId) {
 		
 		List<FixExtracItem> fixExtrac = new ArrayList<>();
+		List<IdentityVerifiForDay> listIdentity = new ArrayList<>();
+		List<IdentityVerifiForDay> listIdentityManage = new ArrayList<>();
 		
 		// ドメインモデル「勤務実績の固定抽出条件」を取得する
 		List<FixedConditionWorkRecord> workRecordExtract = fixCondReRep.getFixConWorkRecordByIdUse(errorDailyCheckId, true);
@@ -128,15 +140,19 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				switch (itemFix.getNo()) {
 					case 3: 
 						// 社員一覧本人が確認しているかチェック
-						List<IdentityVerifiForDay> listIdentity = this.getEmployeeListCheckIfPersonConfirm(lstSid, dPeriod);
+						listIdentity = this.getEmployeeListCheckIfPersonConfirm(lstSid, dPeriod);
 						
 					case 4:	
+						// 管理者未確認チェック
+						listIdentityManage = this.administratorUnconfirmedChk(lstSid, dPeriod);
 						
 					default:
 				}
 			}
 		}
 		
+		DataFixExtracCon dataFixExtracCon = new DataFixExtracCon(workRecordExtract, listIdentity, listIdentityManage);
+		return dataFixExtracCon;
 	}
 	
 	/**
@@ -182,7 +198,19 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	private List<IdentityVerifiForDay> administratorUnconfirmedChk(List<String> lstSid, DatePeriod dPeriod) {
 		List<IdentityVerifiForDay> listIdentity = new ArrayList<>();
 		
-		
+		// 上司が確認しているかチェックする
+		for(String item : lstSid) {
+			Request113Import request = approotAdap.getAppRootStatusByEmpPeriod(item, dPeriod, 1);
+			List<AppRootStateStatusSprImport> outputRequest = request.getAppRootStateStatusLst();
+			
+			if(!outputRequest.isEmpty()) {
+				// List＜社員ID、年月日、状況＞を作成して返す
+				for(AppRootStateStatusSprImport temp : outputRequest) {
+					IdentityVerifiForDay identityItem = new IdentityVerifiForDay(item, temp.getDate(), temp.getDailyConfirmAtr() == 2 ? "承認済み" : "未承認");
+					listIdentity.add(identityItem);
+				}
+			}
+		}
 		
 		return listIdentity;
 	}

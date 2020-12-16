@@ -1,8 +1,10 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily;
 
 import java.util.List;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 
