@@ -23,6 +23,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppFrameInsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppPhaseInsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootSttMonthImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFormImport;
@@ -106,6 +110,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		
 		return new ApprovalRootContentImport_New(
 					new ApprovalRootStateImport_New(
+							approvalRootContentExport.getApprovalRootState().getRootStateID(),
 							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.of(mailDestCache)),
 							approvalRootContentExport.getApprovalRootState().getApprovalRecordDate()),
 					EnumAdaptor.valueOf(approvalRootContentExport.getErrorFlag().value, ErrorFlagImport.class));
@@ -445,17 +450,23 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public List<ApprovalRootStateImport_New> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst,
+	public List<ApprovalRootStateImport_New> getAppRootInstanceDayByEmpPeriod(List<String> employeeIDLst,
 			DatePeriod period, Integer rootType) {
-		return intermediateDataPub.getAppRootInstanceByEmpPeriod(employeeIDLst, period, rootType).stream()
-			.map(x -> new ApprovalRootStateImport_New(fromExport(x.getListApprovalPhaseState(), Optional.empty()), x.getApprovalRecordDate()))
+		return intermediateDataPub.getAppRootInstanceDayByEmpPeriod(employeeIDLst, period, rootType).stream()
+			.map(x -> new ApprovalRootStateImport_New(
+					x.getRootStateID(),
+					fromExport(x.getListApprovalPhaseState(), Optional.empty()), 
+					x.getApprovalRecordDate()))
 			.collect(Collectors.toList());
 	}
 
 	@Override
 	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
 		ApprovalRootStateExport approvalRootStateExport = intermediateDataPub.getAppRootInstanceMonthByEmpPeriod(employeeID, period);
-		return new ApprovalRootStateImport_New(fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty()), approvalRootStateExport.getApprovalRecordDate()); 
+		return new ApprovalRootStateImport_New(
+				approvalRootStateExport.getRootStateID(),
+				fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty()), 
+				approvalRootStateExport.getApprovalRecordDate()); 
 	}
 
 	@Override
@@ -483,6 +494,31 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 						y.getEmployeeID(), 
 						y.getEmployeeCD(), 
 						y.getEmployeeName())).collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<AppRootInsPeriodImport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
+			Integer rootType) {
+		return intermediateDataPub.getAppRootInstanceByEmpPeriod(employeeIDLst, period, rootType)
+			.stream().map(x -> new AppRootInsPeriodImport(
+					x.getEmployeeID(), 
+					x.getAppRootInstanceLst().stream().map(y -> new AppRootInsImport(
+								y.getRootID(), 
+								y.getCompanyID(), 
+								y.getEmployeeID(), 
+								y.getDatePeriod(), 
+								y.getRootType(), 
+								y.getListAppPhase().stream().map(z -> new AppPhaseInsImport(
+											z.getPhaseOrder(), 
+											z.getApprovalForm(), 
+											z.getListAppFrame().stream().map(t -> new AppFrameInsImport(
+														t.getFrameOrder(), 
+														t.isConfirmAtr(), 
+														t.getListApprover())
+											).collect(Collectors.toList()))
+								).collect(Collectors.toList()))
+					).collect(Collectors.toList()))
+			).collect(Collectors.toList());
 	}
 
 }

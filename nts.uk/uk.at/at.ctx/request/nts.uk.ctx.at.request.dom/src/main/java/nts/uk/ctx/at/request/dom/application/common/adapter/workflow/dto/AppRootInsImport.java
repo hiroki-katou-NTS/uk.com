@@ -14,7 +14,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 @AllArgsConstructor
 @Getter
-public class AppRootInstanceImport {
+public class AppRootInsImport {
 	/**
 	 * 承認ルート中間データID
 	 */
@@ -44,5 +44,5 @@ public class AppRootInstanceImport {
 	/**
 	 * 承認フェーズ
 	 */
-	private List<AppPhaseInstanceImport> listAppPhase;
+	private List<AppPhaseInsImport> listAppPhase;
 }

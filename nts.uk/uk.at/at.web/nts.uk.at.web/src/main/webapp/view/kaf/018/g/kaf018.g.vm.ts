@@ -3,6 +3,7 @@
 module nts.uk.at.view.kaf018.g.viewmodel {
 	import EmpConfirmInfo = nts.uk.at.view.kaf018.f.viewmodel.EmpConfirmInfo;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
+	import ApprovalPhaseStateImport_New = nts.uk.at.view.kaf018.share.model.ApprovalPhaseStateImport_New;
 
     @bean()
     class Kaf018GViewModel extends ko.ViewModel {
@@ -35,11 +36,6 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 		created(params: KAF018GParam) {
 			const vm = this;
 			vm.params = params;
-			vm.dataSource1.push(new EmpDateConfirmContent("1"));
-			vm.dataSource1.push(new EmpDateConfirmContent("2"));
-			for(let i=1; i<=18; i++) {
-				vm.dataSource2.push(new EmpDateConfirmContent(i.toString()));	
-			}
 			vm.$blockui('show');
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
@@ -180,12 +176,104 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				lastDayOfMonth = vm.params.closureItem.lastDayOfMonth,
 				wsParam = { wkpID, startDate, endDate, empID, apprSttComfirmSet, yearMonth, closureId, closureDay, lastDayOfMonth };
 			vm.$blockui('show');
-			vm.createIggrid1();
-			vm.createIggrid2();
-			return vm.$ajax(API.getConfirmApprSttByEmpMonthDay, wsParam).done((data: Array<any>) => {
-//				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
-//				vm.createIggrid();
+			return vm.$ajax(API.getConfirmApprSttByEmpMonthDay, wsParam).done((data: ApprSttConfirmEmpMonthDay) => {
+				vm.createMonthDataSource(data);
+				vm.createDayDataSource(data);
 			});
+		}
+		
+		createMonthDataSource(apprSttConfirmEmpMonthDay: ApprSttConfirmEmpMonthDay) {
+			const vm = this;
+			let monthDataSource: Array<EmpDateConfirmContent> = [];
+			let empDateConfirmContent: EmpDateConfirmContent = new EmpDateConfirmContent('');
+			empDateConfirmContent.rootID = apprSttConfirmEmpMonthDay.approvalRootStateMonth.rootStateID;
+			empDateConfirmContent.dateStr = moment(apprSttConfirmEmpMonthDay.approvalRootStateMonth.date,'YYYY/MM/DD').format('M/D(ddd)');
+			empDateConfirmContent.confirmStt = apprSttConfirmEmpMonthDay.monthConfirm ? vm.$i18n('KAF018_533') : vm.$i18n('KAF018_534');
+			empDateConfirmContent.apprStt = apprSttConfirmEmpMonthDay.monthApproval == 0 ? vm.$i18n('KAF018_535') :
+				apprSttConfirmEmpMonthDay.monthApproval == 1 ? vm.$i18n('KAF018_536') :	vm.$i18n('KAF018_537');
+			let phase1 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==1);
+			let phase2 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==2);
+			let phase3 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==3);
+			let phase4 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==4);
+			let phase5 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==5);
+			empDateConfirmContent.approvalStatus = this.getPhaseStatusStr(phase1) + this.getPhaseStatusStr(phase2) + this.getPhaseStatusStr(phase3) +
+				this.getPhaseStatusStr(phase4) + this.getPhaseStatusStr(phase5);
+			empDateConfirmContent.phase1 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==1));
+			empDateConfirmContent.phase2 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==2));
+			empDateConfirmContent.phase3 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==3));
+			empDateConfirmContent.phase4 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==4));
+			empDateConfirmContent.phase5 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==5));
+			monthDataSource.push(empDateConfirmContent);
+			vm.dataSource1 = monthDataSource;
+			vm.createIggrid1();
+		}
+		
+		createDayDataSource(apprSttConfirmEmpMonthDay: ApprSttConfirmEmpMonthDay) {
+			const vm = this;
+			let dayDataSource: Array<EmpDateConfirmContent> = [];
+			_.forEach(apprSttConfirmEmpMonthDay.approvalRootStateDayLst, item => {
+				let empDateConfirmContent: EmpDateConfirmContent = new EmpDateConfirmContent('');
+				empDateConfirmContent.rootID = item.rootStateID;
+				empDateConfirmContent.dateStr = moment(item.date,'YYYY/MM/DD').format('M/D(ddd)');
+				let dailyConfirmItem = _.find(apprSttConfirmEmpMonthDay.listDailyConfirm, o => o.targetDate==item.date);
+				if(dailyConfirmItem) {
+					empDateConfirmContent.confirmStt = item.personConfirm ? vm.$i18n('KAF018_533') : vm.$i18n('KAF018_534');
+					empDateConfirmContent.apprStt = item.bossConfirm ? vm.$i18n('KAF018_535') : vm.$i18n('KAF018_537');
+				}
+				let phase1 = _.find(item.listApprovalPhaseState, (phase: any) => phase.phaseOrder==1);
+				let phase2 = _.find(item.listApprovalPhaseState, (phase: any) => phase.phaseOrder==2);
+				let phase3 = _.find(item.listApprovalPhaseState, (phase: any) => phase.phaseOrder==3);
+				let phase4 = _.find(item.listApprovalPhaseState, (phase: any) => phase.phaseOrder==4);
+				let phase5 = _.find(item.listApprovalPhaseState, (phase: any) => phase.phaseOrder==5);
+				empDateConfirmContent.approvalStatus = this.getPhaseStatusStr(phase1) + this.getPhaseStatusStr(phase2) + this.getPhaseStatusStr(phase3) +
+					this.getPhaseStatusStr(phase4) + this.getPhaseStatusStr(phase5);
+				let dayApproval = apprSttConfirmEmpMonthDay.dayApprovalMap[item.date];
+				if(dayApproval) {
+					empDateConfirmContent.phase1 = this.getPhaseApprover(_.find(dayApproval, o => o.phaseOrder==1));
+					empDateConfirmContent.phase2 = this.getPhaseApprover(_.find(dayApproval, o => o.phaseOrder==2));
+					empDateConfirmContent.phase3 = this.getPhaseApprover(_.find(dayApproval, o => o.phaseOrder==3));
+					empDateConfirmContent.phase4 = this.getPhaseApprover(_.find(dayApproval, o => o.phaseOrder==4));
+					empDateConfirmContent.phase5 = this.getPhaseApprover(_.find(dayApproval, o => o.phaseOrder==5));	
+				}
+				dayDataSource.push(empDateConfirmContent);
+			});
+			vm.dataSource2 = dayDataSource;
+			vm.createIggrid2();
+		}
+		
+		getPhaseStatusStr(phase: any) {
+			if(phase) {
+				switch(phase.approvalAtrValue) {
+					case ApprovalPhaseStateImport_New.UNAPPROVED:
+						return "－";
+					case ApprovalPhaseStateImport_New.APPROVED:
+						return "〇";
+					case ApprovalPhaseStateImport_New.DENIAL:
+						return "×";
+					case ApprovalPhaseStateImport_New.REMAND:
+						return "－";
+					case ApprovalPhaseStateImport_New.ORIGINAL_REMAND:
+						return "－";
+					default: 
+						return " ";
+				}
+			} else {
+				return " ";
+			}	
+		}
+		
+		getPhaseApprover(phase: any) {
+			const vm = this;
+			if(phase) {
+				let str = '';
+				str = phase.empName;
+				if(phase.countRemainApprover) {
+					str += vm.$i18n('KAF018_531', [phase.countRemainApprover]);
+				}
+				return str;	
+			} else {
+				return "";
+			}
 		}
     }
 
@@ -199,11 +287,21 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 		currentEmpID: string;
 	}
 	
+	interface ApprSttConfirmEmpMonthDay {
+		monthConfirm: boolean;
+		monthApproval: number;
+		approvalRootStateMonth: any;
+		monthApprovalLst: Array<any>;
+		listDailyConfirm: Array<any>;
+		approvalRootStateDayLst: Array<any>;
+		dayApprovalMap: any
+	}
+	
 	class EmpDateConfirmContent {
 		rootID: string;
 		dateStr: string;
-		confirmStt: number;
-		apprStt: number;
+		confirmStt: string;
+		apprStt: string;
 		approvalStatus: string;
 		phase1: string;
 		phase2: string;

@@ -101,6 +101,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalSta
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppFrameInsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppPhaseInsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFormImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -2284,19 +2288,26 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// アルゴリズム「月別本人確認を取得する」を実行する
 		boolean monthConfirm = this.getMonthConfirm(companyID, employeeID, apprSttComfirmSet, yearMonth, closureId);
 		// アルゴリズム「月別上長承認進捗状況を取得する」を実行する
-		boolean monthApproval = this.getMonthApprovalTopStatus(employeeID, period, apprSttComfirmSet, yearMonth, closureId, closureDate);
+		Integer monthApproval = this.getMonthApprovalTopStatus(employeeID, period, apprSttComfirmSet, yearMonth, closureId, closureDate);
 		// アルゴリズム「月別承認の進捗過程を取得する」を実行する
 		ApprovalRootStateImport_New approvalRootStateMonth = this.getMonthApprovalStatus(employeeID, period, apprSttComfirmSet).orElse(null);
 		// アルゴリズム「月別の承認者を取得する」を実行する
-		List<PhaseApproverStt> monthApprovalLst = this.getMonthApproval(apprSttComfirmSet, employeeID, period.end(), approvalRootStateMonth);
+		List<PhaseApproverStt> monthApprovalLst = this.getMonthApproval(apprSttComfirmSet, employeeID, period);
 		// アルゴリズム「日別本人確認と上長承認を取得する」を実行する
 		List<DailyConfirmOutput> listDailyConfirm = this.createConfirmApprSttByDate(wkpID, employeeID, period, apprSttComfirmSet);
 		// アルゴリズム「日別承認の進捗過程を取得する」を実行する
 		List<ApprovalRootStateImport_New> approvalRootStateDayLst = this.getDayApprovalStatus(closureId, employeeID, period, apprSttComfirmSet);
 		// アルゴリズム「日別の承認者を取得する」を実行する
-		Map<GeneralDate, List<PhaseApproverStt>> monthApprovalMap = this.getDayApproval(apprSttComfirmSet, employeeID, wkpID, period, approvalRootStateDayLst);
+		Map<GeneralDate, List<PhaseApproverStt>> dayApprovalMap = this.getDayApproval(apprSttComfirmSet, employeeID, period);
 		// 画面表示する
-		return new ApprSttConfirmEmpMonthDay(monthConfirm, monthApproval, monthApprovalLst, listDailyConfirm, approvalRootStateDayLst, monthApprovalMap);
+		return new ApprSttConfirmEmpMonthDay(
+				monthConfirm, 
+				monthApproval, 
+				approvalRootStateMonth,
+				monthApprovalLst, 
+				listDailyConfirm, 
+				approvalRootStateDayLst, 
+				dayApprovalMap);
 	}
 
 	@Override
@@ -2315,7 +2326,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public boolean getMonthApprovalTopStatus(String employeeID, DatePeriod paramPeriod, ApprSttComfirmSet apprSttComfirmSet,
+	public Integer getMonthApprovalTopStatus(String employeeID, DatePeriod paramPeriod, ApprSttComfirmSet apprSttComfirmSet,
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		// 月別確認を利用する
 		if(apprSttComfirmSet.isMonthlyConfirm()) {
@@ -2328,12 +2339,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 							paramPeriod.end(), 
 							employeeID)));
 			if(!CollectionUtil.isEmpty(request533Import.getAppRootSttMonthImportLst())) {
-				if(request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr()==2) {
-					return true;
-				}
+				return request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr();
 			}
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -2347,39 +2356,49 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<PhaseApproverStt> getMonthApproval(ApprSttComfirmSet apprSttComfirmSet, String employeeID, GeneralDate date, ApprovalRootStateImport_New approvalRootState) {
+	public List<PhaseApproverStt> getMonthApproval(ApprSttComfirmSet apprSttComfirmSet, String employeeID, DatePeriod period) {
 		// 「月別実績の上長承認の状況を表示する」を判別する
 		if(apprSttComfirmSet.isMonthlyConfirm()) {
 			// アルゴリズム「社員の月別実績の進捗状況を得る」を実行する
-			return this.getMonthAchievementApprover(employeeID, date, approvalRootState);
+			return this.getMonthAchievementApprover(employeeID, period);
 		}
 		return Collections.emptyList();
 	}
 
 	@Override
-	public List<PhaseApproverStt> getMonthAchievementApprover(String employeeID, GeneralDate date, ApprovalRootStateImport_New approvalRootState) {
-		if(approvalRootState==null) {
+	public List<PhaseApproverStt> getMonthAchievementApprover(String employeeID, DatePeriod period) {
+		List<AppRootInsPeriodImport> appRootInsPeriodImportLst = approvalStateAdapter.getAppRootInstanceByEmpPeriod(Arrays.asList(employeeID), period, 2);
+		if(CollectionUtil.isEmpty(appRootInsPeriodImportLst)) {
 			return Collections.emptyList();
 		}
+		Optional<AppRootInsImport> opAppRootInsImport = appRootInsPeriodImportLst.get(0).getAppRootInstanceLst()
+				.stream().filter(x -> x.getDatePeriod().contains(period.end())).findAny();
+		if(!opAppRootInsImport.isPresent()) {
+			return Collections.emptyList();
+		}
+		
 		// アルゴリズム「実績承認者取得」を実行する
-		return this.getAchievementApprover(approvalRootState, date);
+		return this.getAchievementApprover(opAppRootInsImport.get(), period.end());
 	}
 
 	@Override
-	public List<PhaseApproverStt> getAchievementApprover(ApprovalRootStateImport_New approvalRootState, GeneralDate date) {
+	public List<PhaseApproverStt> getAchievementApprover(AppRootInsImport appRootInsImport, GeneralDate date) {
 		List<PhaseApproverStt> result = new ArrayList<>();
 		// クラス：承認フェーズ中間データ
-		for(ApprovalPhaseStateImport_New phase : approvalRootState.getListApprovalPhaseState()) {
+		for(AppPhaseInsImport phase : appRootInsImport.getListAppPhase()) {
 			List<ApproverSpecial> approverSpecialLst = new ArrayList<>();
 			// クラス：承認枠中間データ
-			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+			for(AppFrameInsImport frame : phase.getListAppFrame()) {
 				// アルゴリズム「承認状況未承認者取得代行優先」を実行する
-				approverSpecialLst.addAll(this.getUnAppSubstitutePriority(frame.getListApprover(), date, frame.getConfirmAtr()));
+				approverSpecialLst.addAll(this.getUnAppSubstitutePriority(
+						frame.getListApprover().stream().map(x -> ApproverStateImport_New.createSimpleFromInstance(x)).collect(Collectors.toList()), 
+						date, 
+						frame.isConfirmAtr() ? 1 : 0));
 			}
 			// 承認者（リスト）
 			if(CollectionUtil.isEmpty(approverSpecialLst)) {
 				// 承認者リストをセットする
-				result.add(new PhaseApproverStt(phase.getPhaseOrder(), "", null, phase.getApprovalAtr().value));
+				result.add(new PhaseApproverStt(phase.getPhaseOrder(), "", null, null));
 				continue;
 			}
 			// 承認者（リスト）
@@ -2406,7 +2425,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				count+=1;
 			}
 			// 承認者リストをセットする
-			result.add(new PhaseApproverStt(phase.getPhaseOrder(), approverName, count, phase.getApprovalAtr().value));
+			result.add(new PhaseApproverStt(phase.getPhaseOrder(), approverName, count, null));
 		}
 		return result;
 	}
@@ -2417,34 +2436,35 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 「日別実績の上長承認の状況を表示する」を判別する
 		if(apprSttComfirmSet.isUseBossConfirm()) {
 			// 社員の日別実績の進捗状況を得る。　　　　　　リクエストリストNo.672
-			result = approvalStateAdapter.getAppRootInstanceByEmpPeriod(Arrays.asList(employeeID), period, 1);
+			result = approvalStateAdapter.getAppRootInstanceDayByEmpPeriod(Arrays.asList(employeeID), period, 1);
 		}
 		return result;
 	}
 
 	@Override
-	public Map<GeneralDate, List<PhaseApproverStt>> getDayApproval(ApprSttComfirmSet apprSttComfirmSet, String employeeID, String wkpID, 
-			DatePeriod period, List<ApprovalRootStateImport_New> approvalRootStateLst) {
+	public Map<GeneralDate, List<PhaseApproverStt>> getDayApproval(ApprSttComfirmSet apprSttComfirmSet, String employeeID, DatePeriod period) {
 		// 「日別実績の上長承認の状況を表示する」を判別する
 		if(apprSttComfirmSet.isUseBossConfirm()) {
 			// アルゴリズム「社員の日別実績の進捗状況を得る」を実行する
-			return this.getDayAchievementApprover(period, approvalRootStateLst);
+			return this.getDayAchievementApprover(employeeID, period);
 		}
 		return Collections.emptyMap();
 	}
 
 	@Override
-	public Map<GeneralDate, List<PhaseApproverStt>> getDayAchievementApprover(DatePeriod period, List<ApprovalRootStateImport_New> approvalRootStateLst) {
-		if(CollectionUtil.isEmpty(approvalRootStateLst)) {
+	public Map<GeneralDate, List<PhaseApproverStt>> getDayAchievementApprover(String employeeID, DatePeriod period) {
+		List<AppRootInsPeriodImport> appRootInsPeriodImportLst = approvalStateAdapter.getAppRootInstanceByEmpPeriod(Arrays.asList(employeeID), period, 1);
+		if(CollectionUtil.isEmpty(appRootInsPeriodImportLst)) {
 			return Collections.emptyMap();
 		}
 		Map<GeneralDate, List<PhaseApproverStt>> result = new HashMap<>();
 		for(GeneralDate loopDate : period.datesBetween()) {
-			Optional<ApprovalRootStateImport_New> op = approvalRootStateLst.stream().filter(x -> x.getDate().equals(loopDate)).findAny();
-			if(!op.isPresent()) {
+			Optional<AppRootInsImport> opAppRootInsImport = appRootInsPeriodImportLst.get(0).getAppRootInstanceLst()
+					.stream().filter(x -> x.getDatePeriod().contains(loopDate)).findAny();
+			if(!opAppRootInsImport.isPresent()) {
 				continue;
 			}
-			List<PhaseApproverStt> phaseApproverSttLst = this.getAchievementApprover(op.get(), loopDate);
+			List<PhaseApproverStt> phaseApproverSttLst = this.getAchievementApprover(opAppRootInsImport.get(), loopDate);
 			result.put(loopDate, phaseApproverSttLst);
 		}
 		return result;

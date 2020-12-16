@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class AppFrameInstanceImport {
+public class AppFrameInsImport {
 	/**
 	 * 順序
 	 */

@@ -401,12 +401,16 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			}
 			
 			if(ui.colKey=="countUnConfirmDay" || ui.colKey=="countUnApprDay" || ui.colKey=="countUnConfirmMonth" || ui.colKey=="countUnApprMonth") {
+				let currentWkp = _.find(vm.dataSource, o => o.wkpID == ui.rowKey);
+				if(!(currentWkp.countUnConfirmDay || currentWkp.countUnApprDay || currentWkp.countUnConfirmMonth || currentWkp.countUnApprMonth)) {
+					return;	
+				}
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					apprSttExeDtoLst = _.filter(vm.dataSource, o => {
-						let countUnApprApp = o.countUnApprApp ? true : false;
-						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+						let count = (o.countUnConfirmDay || o.countUnApprDay || o.countUnConfirmMonth || o.countUnApprMonth) ? true : false;
+						return count && _.includes(vm.pageData, o.wkpID);
 					}),
 					currentWkpID = ui.rowKey,
 					apprSttComfirmSet = vm.params.useSet,

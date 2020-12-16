@@ -12,19 +12,14 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class AppPhaseInstanceImport {
+public class AppRootInsPeriodImport {
 	/**
-	 * 順序
+	 * 社員ID
 	 */
-	private Integer phaseOrder;
+	private String employeeID;
 	
 	/**
-	 * 承認形態
+	 * 承認ルート一覧
 	 */
-	private Integer approvalForm;
-	
-	/**
-	 * 承認枠
-	 */
-	private List<AppFrameInstanceImport> listAppFrame;
+	private List<AppRootInsImport> appRootInstanceLst;
 }

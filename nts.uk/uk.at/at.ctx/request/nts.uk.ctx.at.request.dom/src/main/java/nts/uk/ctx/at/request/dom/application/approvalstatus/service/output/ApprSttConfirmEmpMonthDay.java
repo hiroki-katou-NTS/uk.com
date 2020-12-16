@@ -17,9 +17,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 @Getter
 public class ApprSttConfirmEmpMonthDay {
 	private boolean monthConfirm;
-	private boolean monthApproval;
+	private Integer monthApproval;
+	private ApprovalRootStateImport_New approvalRootStateMonth;
 	private List<PhaseApproverStt> monthApprovalLst;
 	private List<DailyConfirmOutput> listDailyConfirm;
 	private List<ApprovalRootStateImport_New> approvalRootStateDayLst;
-	private Map<GeneralDate, List<PhaseApproverStt>> monthApprovalMap;
+	private Map<GeneralDate, List<PhaseApproverStt>> dayApprovalMap;
 }

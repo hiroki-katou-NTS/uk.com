@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
@@ -188,7 +189,7 @@ public interface ApprovalRootStateAdapter {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApprovalRootStateImport_New> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
+	public List<ApprovalRootStateImport_New> getAppRootInstanceDayByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
 	
 	/**
 	 * RequestList 673
@@ -217,5 +218,14 @@ public interface ApprovalRootStateAdapter {
 	 * @return
 	 */
 	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date); 
+	
+	/**
+	 * RequestList 709
+	 * @param employeeIDLst
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<AppRootInsPeriodImport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
     
 }

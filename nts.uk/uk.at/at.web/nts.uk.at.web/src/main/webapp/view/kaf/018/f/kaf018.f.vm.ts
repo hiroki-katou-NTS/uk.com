@@ -350,7 +350,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					let apprSttConfirmEmp = _.find(data, o => o.listDailyConfirm[0].empID==item.empID);
 					a.push(new EmpConfirmInfo(apprSttConfirmEmp, vm));	
 				});
-				vm.dataSource = a;
+				vm.dataSource = _.sortBy(a, 'empCD');
 				$("#fGrid").igGrid("option", "dataSource", vm.dataSource);
 				$("#fGrid").css('visibility','visible');
 				$('#kaf018-f-dynamic-header').css('visibility','visible');

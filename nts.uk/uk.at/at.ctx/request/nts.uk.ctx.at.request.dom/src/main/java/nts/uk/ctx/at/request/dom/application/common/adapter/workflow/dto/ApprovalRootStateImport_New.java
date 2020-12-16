@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 @Value
 public class ApprovalRootStateImport_New {
 	
+	private String rootStateID;
+	
 	private List<ApprovalPhaseStateImport_New> listApprovalPhaseState;
 	
 	private GeneralDate date;

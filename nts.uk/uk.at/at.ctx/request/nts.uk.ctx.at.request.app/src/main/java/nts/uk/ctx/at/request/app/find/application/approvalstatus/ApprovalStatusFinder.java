@@ -731,8 +731,8 @@ public class ApprovalStatusFinder {
 				new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth()));
 	}
 	
-	public ApprSttConfirmEmpMonthDay getConfirmApprSttByEmpMonthDay(ConfirmSttEmpMonthDayParam param) {
-		return appSttService.getConfirmApprSttContent(
+	public ApprSttConfirmEmpMonthDayDto getConfirmApprSttByEmpMonthDay(ConfirmSttEmpMonthDayParam param) {
+		ApprSttConfirmEmpMonthDay apprSttConfirmEmpMonthDay = appSttService.getConfirmApprSttContent(
 				param.getWkpID(), 
 				param.getEmpID(), 
 				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")), 
@@ -740,5 +740,6 @@ public class ApprovalStatusFinder {
 				new YearMonth(param.getYearMonth()), 
 				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 
 				new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth()));
+		return ApprSttConfirmEmpMonthDayDto.fromDomain(apprSttConfirmEmpMonthDay);
 	}
 }
