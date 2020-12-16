@@ -188,23 +188,22 @@ public class CreateWorkScheduleTest {
 	}
 	
 	@Test
-	public <T> void testCreate_Exception_430(@Injectable WorkInformation workInformation) {
+	public <T> void testCreate_Exception_430(
+			@Injectable WorkInformation workInformation,
+			@Mocked BusinessException businessException,
+			@Mocked Builder builder) {
 		
 		new Expectations() {{
 			require.getWorkSchedule(anyString, (GeneralDate) any);
 			//result = empty
+			
+			businessException.getMessageId();
+			result = "Msg_430";
+			
+			builder.build().buildMessage();
+			result = "msg";
 		}};
-		
-		new MockUp<WorkSchedule>() {
-			@Mock
-			public WorkSchedule createByHandCorrectionWithWorkInformation(Require require,
-					String employeeId,
-					GeneralDate date,
-					WorkInformation workInformation) {
-				throw new BusinessException("Msg_430");
-			}
-		};
-		
+
 		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
 				require, 
 				"empId", 
@@ -225,7 +224,7 @@ public class CreateWorkScheduleTest {
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					Optional.empty(), 
-					"Msg_430"));
+					"msg"));
 		
 	}
 	
