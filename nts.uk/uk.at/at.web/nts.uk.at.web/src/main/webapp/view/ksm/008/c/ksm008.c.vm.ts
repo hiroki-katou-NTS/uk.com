@@ -174,6 +174,7 @@ module nts.uk.at.ksm008.c {
                             workplaceName: ''
                         };
                     });
+                    listEmployee = _.orderBy(listEmployee, ['code'],['asc']);
                     vm.selectableEmployeeList(listEmployee);
                     vm.lstEmployeeSelectableBegin(listEmployee);
                 } else {
@@ -276,14 +277,12 @@ module nts.uk.at.ksm008.c {
             _.each(selectedableCode, function (item: any) {
 
                 let selectedItem = _.filter(currentSelectableList, (i: any) => i.code == item);
-
                 _.remove(currentSelectableList, (i: any) => i.code == item);
-
                 currentTagretList.push(selectedItem[0]);
 
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList);
             });
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'],['asc']));
+            vm.targetEmployeeList(currentTagretList);
 
         }
 
@@ -301,14 +300,12 @@ module nts.uk.at.ksm008.c {
             _.each(selectedTargetList, function (item: any) {
 
                 let selectedItem = _.filter(currentTagretList, (i: any) => i.code == item);
-
                 _.remove(currentTagretList, (i: any) => i.code == item);
-
                 currentSelectableList.push(selectedItem[0]);
 
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList)
             });
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'],['asc']));
+            vm.targetEmployeeList(currentTagretList);
         }
 
         swithchNewMode() {
@@ -355,8 +352,8 @@ module nts.uk.at.ksm008.c {
                         listTarget.push(currentEmployee[0]);
                     }
                 });
-                vm.selectableEmployeeList(listSelectable);
-                vm.targetEmployeeList(listTarget);
+                vm.selectableEmployeeList(_.orderBy(listSelectable, ['code'],['asc']));
+                vm.targetEmployeeList(_.orderBy(listTarget, ['code'],['asc']));
             }
 
             vm.targetSelectedCodes([]);
