@@ -26,7 +26,7 @@ public class DisplayInitialDeforScreenByWorkplace {
 		DisplayInitialDeforScreenByWorkPlaceDto result = new DisplayInitialDeforScreenByWorkPlaceDto();
 
 		// 1. 職場リストを表示する
-		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.DEFOR_LABOR));
+		result.setWkpIds(workplaceList.get(LaborWorkTypeAttr.DEFOR_LABOR));
 
 		// 2. 職場を選択する（変形労働）
 		if (!result.getWkpIds().isEmpty()) {

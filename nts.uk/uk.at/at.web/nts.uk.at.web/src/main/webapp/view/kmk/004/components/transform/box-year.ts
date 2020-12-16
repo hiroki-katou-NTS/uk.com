@@ -91,7 +91,8 @@ module nts.uk.at.view.kmk004.components.transform {
                                 vm.selectedYear(null);
                             }
                         });
-                    break
+                    break;
+
                 case 'Com_Workplace':
                     if (ko.unwrap(vm.param) != '') {
                         vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.toJS(vm.param()))
@@ -110,7 +111,8 @@ module nts.uk.at.view.kmk004.components.transform {
                                 }
                             });
                     }
-                    break
+                    break;
+
                 case 'Com_Employment':
                     if (ko.unwrap(vm.param) != '') {
                         vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.toJS(vm.param()))
@@ -129,7 +131,8 @@ module nts.uk.at.view.kmk004.components.transform {
                                 }
                             });
                     }
-                    break
+                    break;
+
                 case 'Com_Person':
                     if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
                         vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' + ko.toJS(vm.param()))
@@ -149,7 +152,7 @@ module nts.uk.at.view.kmk004.components.transform {
                                 }
                             });
                     }
-                    break
+                    break;
             }
         
 		}

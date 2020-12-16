@@ -27,7 +27,7 @@ public class SelectEmploymentDefor {
 
 		// 1. 雇用別基本設定（変形労働）を表示する
 		// 雇用コード = 選択中の雇用コード
-		result.setDeforLaborMonthTimeWkpDto(
+		result.setDeforLaborMonthTimeEmpDto(
 				displayDeforBasicSettingByEmployment.displayDeforBasicSettingByEmployment(empCd));
 
 		//2. 雇用別年度リストを表示する

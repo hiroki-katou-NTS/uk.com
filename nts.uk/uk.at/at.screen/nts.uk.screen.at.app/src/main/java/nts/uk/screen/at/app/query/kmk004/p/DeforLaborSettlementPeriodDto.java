@@ -42,7 +42,7 @@ public class DeforLaborSettlementPeriodDto {
 		
 		return DeforLaborSettlementPeriodDto.builder()
 				.startMonth(domain.getStartMonth().v())
-				.period(domain.getStartMonth().v())
+				.period(domain.getPeriod().v())
 				.repeatAtr(domain.isRepeat())
 				.build();
 	}

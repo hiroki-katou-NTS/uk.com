@@ -33,10 +33,10 @@ public class DisplayDeforBasicSettingByEmployment {
 		DeforLaborMonthTimeEmpDto deforLaborMonthTimeEmpDto = new DeforLaborMonthTimeEmpDto();
 
 		// 1. 雇用別変形労働法定労働時間
-		Optional<DeforLaborTimeEmp> optShaDefor = timeEmpRepo.find(AppContexts.user().companyId(), empCd);
+		Optional<DeforLaborTimeEmp> optEmpDefor = timeEmpRepo.find(AppContexts.user().companyId(), empCd);
 
-		if (optShaDefor.isPresent()) {
-			deforLaborMonthTimeEmpDto.setDeforLaborTimeEmpDto(DeforLaborTimeEmpDto.fromDomain(optShaDefor.get()));
+		if (optEmpDefor.isPresent()) {
+			deforLaborMonthTimeEmpDto.setDeforLaborTimeEmpDto(DeforLaborTimeEmpDto.fromDomain(optEmpDefor.get()));
 		}
 
 		// 2. 雇用別変形労働集計設定

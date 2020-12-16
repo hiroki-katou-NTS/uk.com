@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk004.p {
 		titleName: string;
 		isLoadData: KnockoutObservable<boolean>;
 	}
-	
+
 	export interface IParamL {
 		sidebarType: SIDEBAR_TYPE;
 		wkpId: string;
@@ -70,14 +70,14 @@ module nts.uk.at.view.kmk004.p {
 
 		constructor(private params: IParamL) {
 			super();
-			if(params){			
+			if (params) {
 				var vm = this;
-	
+
 				vm.itemListP3_3 = ko.observableArray<ItemModel>([
 					new ItemModel('0', vm.$i18n("KMK004_313")), //単月
 					new ItemModel('1', vm.$i18n("KMK004_314")) //複数月
 				]);
-	
+
 				let tg = [], tg1 = [];
 				for (let i = 1; i <= 12; i++) {
 					tg.push(new ItemModel(i.toString(), i.toString() + '月'));
@@ -91,8 +91,8 @@ module nts.uk.at.view.kmk004.p {
 
 		mounted() {
 			const vm = this;
-			if(vm.params)
-			vm.loadData();
+			if (vm.params)
+				vm.loadData();
 		}
 
 		loadData() {
@@ -140,7 +140,7 @@ module nts.uk.at.view.kmk004.p {
 						vm.selectedP3_3(1);
 					}
 				}).always(() => vm.$blockui("clear"));
-			
+
 			}
 
 			//社員
@@ -195,7 +195,7 @@ module nts.uk.at.view.kmk004.p {
 			const vm = this;
 			if (data.deforLaborTimeComDto != null && data.settingDto != null) {
 				vm.mode(SCREEN_MODE.UPDATE);
-				vm.screenData.update(data);
+				vm.screenData.updateP(data);
 
 			} else {
 				vm.mode(SCREEN_MODE.ADD);
@@ -456,24 +456,67 @@ module nts.uk.at.view.kmk004.p {
 		empId: string;
 		titleName: string;
 		constructor() { }
-		update(param: IResponse) {
+		updateP(param: any) {
 			this.deforLaborTimeComDto.update(param.deforLaborTimeComDto);
 			this.settingDto.update(param.settingDto);
+		}
+
+		updateBasicSetting(param: any, sidebarType: String) {
+			switch (sidebarType) {
+				case 'Com_Company':
+					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeComDto.deforLaborTimeComDto);
+					this.settingDto.update(param.deforLaborMonthTimeComDto.comDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Workplace':
+
+					break;
+
+				case 'Com_Employment':
+					this.deforLaborTimeComDto.update(param.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto);
+					this.settingDto.update(param.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Person':
+
+					break;
+
+			}
+		}
+
+		updateReloadBasicSetting(param: any, sidebarType: String) {
+			switch (sidebarType) {
+				case 'Com_Company':
+					this.deforLaborTimeComDto.update(param.deforLaborTimeComDto);
+					this.settingDto.update(param.comDeforLaborMonthActCalSetDto);
+					break;
+					
+				case 'Com_Workplace':
+					break;
+
+				case 'Com_Company':
+					this.deforLaborTimeComDto.update(param.deforLaborTimeEmpDto);
+					this.settingDto.update(param.empDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Person':
+					break;
+			}
 		}
 
 		add(param: IParamL) {
 			this.sidebarType = param.sidebarType;
 			this.titleName = param.titleName;
-			
-			if(param.sidebarType == 'Com_Workplace') {
+
+			if (param.sidebarType == 'Com_Workplace') {
 				this.wkpId = param.wkpId;
 			}
-			
-			if(param.sidebarType == 'Com_Employment') {
+
+			if (param.sidebarType == 'Com_Employment') {
 				this.empCode = param.empCode;
 			}
-			
-			if(param.sidebarType == 'Com_Person') {
+
+			if (param.sidebarType == 'Com_Person') {
 				this.empId = param.empId;
 			}
 		}
@@ -485,9 +528,10 @@ module nts.uk.at.view.kmk004.p {
 		weeklyTime = new Weekly();
 		dailyTime = new Daily();
 		constructor() { }
-		update(param: DeforLaborTimeComDto) {
+		update(param: any) {
 			this.weeklyTime.update(param.weeklyTime);
 			this.dailyTime.update(param.dailyTime);
+
 		}
 	}
 

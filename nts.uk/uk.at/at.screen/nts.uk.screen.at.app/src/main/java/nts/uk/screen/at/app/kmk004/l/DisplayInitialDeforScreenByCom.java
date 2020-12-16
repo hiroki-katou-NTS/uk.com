@@ -36,7 +36,7 @@ public class DisplayInitialDeforScreenByCom {
 		result.setDeforLaborMonthTimeComDto(displayFlexBasicSettingByCompany.displayDeforBasicSettingByCompany());
 
 		// 3. 会社別年度リストを表示する
-		result.setYears(displayYearListByCompany.get(LaborWorkTypeAttr.FLEX.value));
+		result.setYears(displayYearListByCompany.get(LaborWorkTypeAttr.DEFOR_LABOR.value));
 
 		return result;
 	}
