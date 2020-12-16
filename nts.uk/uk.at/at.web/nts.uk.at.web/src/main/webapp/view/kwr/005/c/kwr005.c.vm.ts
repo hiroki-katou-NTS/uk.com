@@ -82,16 +82,9 @@ module nts.uk.at.view.kwr005.c {
           vm.$window.close({ code: vm.newCode(), name: vm.newName() });
         })
         .fail((error) => {
-          //データが先に削除された - 1903    
-          //コードの重複 - Msg_1753
-          vm.$dialog.error({ messageId: error.messageId }).then(() => {
-            if (error.messageId == 1928)
-              $('#closeDialog').focus();
-            else
-              $('#KWR005_C23').focus();
-
-            vm.$blockui('hide');
-          });
+          let ctrlId = (error.messageId === 'Msg_1927') ? '#KWR005_C23' : '#closeDialog';
+          $(ctrlId).ntsError('set', { messageId: error.messageId });
+          vm.$blockui('hide');
         })
         .always(() => vm.$blockui('hide'));
     }
