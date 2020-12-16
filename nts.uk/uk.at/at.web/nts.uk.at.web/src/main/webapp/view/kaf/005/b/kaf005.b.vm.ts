@@ -1611,7 +1611,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							{
 								let itemFind = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(itemFind)) {
-									if (!_.isNil(applicationTime.overTimeShiftNight)) {									
+									if (!_.isNil(applicationTime.flexOverTime)) {									
 										itemFind.preTime(applicationTime.flexOverTime);
 									}
 								}
@@ -1751,7 +1751,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							{
 								let itemFind = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(itemFind)) {
-									if (!_.isNil(applicationTime.overTimeShiftNight)) {									
+									if (!_.isNil(applicationTime.flexOverTime)) {									
 										itemFind.preTime(applicationTime.flexOverTime);
 									}
 								}
