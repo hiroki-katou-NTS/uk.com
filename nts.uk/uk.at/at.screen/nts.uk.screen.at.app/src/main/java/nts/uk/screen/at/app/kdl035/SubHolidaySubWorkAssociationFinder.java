@@ -67,7 +67,7 @@ public class SubHolidaySubWorkAssociationFinder {
 
         DatePeriod period = inputData.getEndDate() != null ? new DatePeriod(inputData.getStartDate(), inputData.getEndDate()) : DatePeriod.oneDay(inputData.getStartDate());
         List<GeneralDate> dates = new ArrayList<>();
-        if (period.start().compareTo(period.end()) == 0) {
+        if (period.start().compareTo(period.end()) != 0) {
             // 申請期間から休日の申請日を取得する
             dates.addAll(otherCommonAlgorithm.lstDateIsHoliday(
                     inputData.getEmployeeId(),
@@ -188,9 +188,10 @@ public class SubHolidaySubWorkAssociationFinder {
                 remainData.stream().filter(d -> d.getRemainManaID().equals(recMng.getRecruitmentMngId())).findFirst().ifPresent((InterimRemain remainMng) -> {
                     SubstituteWorkData data = new SubstituteWorkData();
                     data.setSubstituteWorkDate(remainMng.getYmd());
-                    managementData.stream().filter(i -> i.getAssocialInfo().getOutbreakDay().compareTo(remainMng.getYmd()) == 0).findFirst().ifPresent(i -> {
-                        data.setRemainingNumber(i.getAssocialInfo().getDayNumberUsed().v());
-                    });
+//                    managementData.stream().filter(i -> i.getAssocialInfo().getOutbreakDay().compareTo(remainMng.getYmd()) == 0).findFirst().ifPresent(i -> {
+//                        data.setRemainingNumber(i.getAssocialInfo().getDayNumberUsed().v());
+//                    });
+                    data.setRemainingNumber(recMng.getUnUsedDays().v());
                     data.setExpirationDate(recMng.getExpirationDate());
                     data.setDataType(remainMng.getCreatorAtr() == CreateAtr.RECORD || remainMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value);
                     data.setExpiringThisMonth(recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()));
@@ -208,9 +209,10 @@ public class SubHolidaySubWorkAssociationFinder {
             for (PayoutManagementData payout : payoutData) {
                 SubstituteWorkData data = new SubstituteWorkData();
                 data.setSubstituteWorkDate(payout.getPayoutDate().getDayoffDate().orElse(null));
-                managementData.stream().filter(i -> payout.getPayoutDate().getDayoffDate().isPresent() && i.getAssocialInfo().getOutbreakDay().compareTo(payout.getPayoutDate().getDayoffDate().get()) == 0).findFirst().ifPresent(i -> {
-                    data.setRemainingNumber(i.getAssocialInfo().getDayNumberUsed().v());
-                });
+//                managementData.stream().filter(i -> payout.getPayoutDate().getDayoffDate().isPresent() && i.getAssocialInfo().getOutbreakDay().compareTo(payout.getPayoutDate().getDayoffDate().get()) == 0).findFirst().ifPresent(i -> {
+//                    data.setRemainingNumber(i.getAssocialInfo().getDayNumberUsed().v());
+//                });
+                data.setRemainingNumber(payout.getUnUsedDays().v());
                 data.setExpirationDate(payout.getExpiredDate());
                 data.setDataType(DataType.ACTUAL.value);
                 data.setExpiringThisMonth(payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()));
@@ -231,7 +233,7 @@ public class SubHolidaySubWorkAssociationFinder {
         inputData.getSubstituteWorkInfoList().sort(Comparator.comparingDouble(SubstituteWorkData::getRemainingNumber).reversed());
         double total = 0;
         for (int i = 0; i < inputData.getSubstituteWorkInfoList().size(); i++) {
-            if (total >= required) throw new BusinessException("Msg_1761");
+            if (total - required > 0.5) throw new BusinessException("Msg_1761");
             total += inputData.getSubstituteWorkInfoList().get(i).getRemainingNumber();
         }
 
@@ -249,7 +251,7 @@ public class SubHolidaySubWorkAssociationFinder {
         List<PayoutSubofHDManagementDto> result = new ArrayList<>();
         for (GeneralDate holiday : inputData.getSubstituteHolidayList()) {
             double requiredNumber = inputData.getDaysUnit();
-            while (requiredNumber > 0.0) {
+            while (requiredNumber > 0.0 && inputData.getSubstituteWorkInfoList().stream().anyMatch(i -> i.getRemainingNumber() > 0)) {
                 // 同一日かチェックする
                 if (inputData.getSubstituteWorkInfoList().stream()
                         .anyMatch(subWorkData -> holiday.compareTo(subWorkData.getSubstituteWorkDate()) == 0)) {

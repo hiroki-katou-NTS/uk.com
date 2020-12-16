@@ -14,7 +14,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface CheckResultMonthlyAdapter {
 	
-	boolean checkPublicHoliday(String companyId, String employeeCd , String employeeId,String workplaceId ,boolean isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckConFunImport specHolidayCheckCon );
+	boolean checkPublicHoliday(String companyId, String employeeCd , String employeeId,String workplaceId ,int isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckConFunImport specHolidayCheckCon );
 	
 	Check36AgreementValueImport check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate,AgreementCheckCon36FunImport agreementCheckCon36);
 	
