@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.experimental.var;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -30,7 +31,6 @@ import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
@@ -44,6 +44,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
@@ -234,7 +235,7 @@ public class AggregationProcessService {
 		List<CategoryCondValueDto> lstValueDto = new ArrayList<>();
 		lstCondCate.stream().forEach(x ->{
 			List<AlarmListCheckInfor> mapCondCdCheckNoType = new ArrayList<>();
-			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory().value, x.getCode().v(), mapCondCdCheckNoType);
+			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory(), x.getCode().v(), mapCondCdCheckNoType);
 			DatePeriod datePeriod = null;
 			//期間条件を絞り込む TODO can xem lai voi truong hop 36
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
@@ -329,11 +330,11 @@ public class AggregationProcessService {
 				}
 				
 				//List＜チェック種類、コード＞に追加
-				CategoryCondValueDto valueDto = new CategoryCondValueDto(x.getCategory().value, x.getCode().v(), lstCheckType);
+				CategoryCondValueDto valueDto = new CategoryCondValueDto(x.getCategory(), x.getCode().v(), lstCheckType);
 				lstValueDto.add(valueDto);
 				//「アラーム抽出結果」を作成してList<アラーム抽出結果＞に追加
 				if(!lstResultCondition.isEmpty()) {
-					AlarmExtracResult extracResult = new AlarmExtracResult(x.getCode().v(), x.getCategory().value, lstResultCondition);
+					AlarmExtracResult extracResult = new AlarmExtracResult(x.getCode().v(), x.getCategory(), lstResultCondition);
 					lstExtracResult.add(extracResult);	
 				}
 				

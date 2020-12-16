@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryCondValueDto {
 	/**カテゴリ	 */
-	private int category;
+	private AlarmCategory category;
 	/**アラームチェック条件コード	 */
 	private String condCode;
 	/**	、アラームチェック条件のチェックNO、アラームチェック条件のチェック種類 */

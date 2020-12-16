@@ -4,13 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * insert/update AgreeConditionError Command

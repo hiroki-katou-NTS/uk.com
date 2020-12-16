@@ -14,7 +14,6 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionB
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
@@ -24,6 +23,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

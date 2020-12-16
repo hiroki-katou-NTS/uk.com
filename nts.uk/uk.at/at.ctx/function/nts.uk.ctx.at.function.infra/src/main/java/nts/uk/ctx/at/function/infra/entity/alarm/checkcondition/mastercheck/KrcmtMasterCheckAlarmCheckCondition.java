@@ -11,10 +11,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * マスタチェックのアラームチェック条件

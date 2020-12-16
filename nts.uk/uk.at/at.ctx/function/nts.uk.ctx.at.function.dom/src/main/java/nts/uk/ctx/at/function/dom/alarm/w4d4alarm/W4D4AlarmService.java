@@ -38,7 +38,6 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAl
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.adapter.workschedule.WorkScheduleBasicInforFunctionImport;
 import nts.uk.ctx.at.function.dom.adapter.workschedule.WorkScheduleFunctionAdapter;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -46,6 +45,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;

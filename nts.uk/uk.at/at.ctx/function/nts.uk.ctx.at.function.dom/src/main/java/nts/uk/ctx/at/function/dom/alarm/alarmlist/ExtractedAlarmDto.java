@@ -11,6 +11,12 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 @NoArgsConstructor
 public class ExtractedAlarmDto {
 	private List<AlarmExtraValueWkReDto> extractedAlarmData;
+	/**
+	 * 処理中
+	 */
 	private boolean extracting;
+	/**
+	 * True: データなし
+	 */
 	private boolean nullData;	
 }

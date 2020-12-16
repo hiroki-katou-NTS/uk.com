@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMon
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCodePK;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCode;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCodePK;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 
 /**
  * 

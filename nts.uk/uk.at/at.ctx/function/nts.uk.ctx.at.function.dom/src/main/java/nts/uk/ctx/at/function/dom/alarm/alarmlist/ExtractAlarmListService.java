@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeBasicInfoFnImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
@@ -198,12 +199,14 @@ public class ExtractAlarmListService {
 						alarmValue.setAlarmValueDate(z.getPeriodDate().getStartDate().isPresent() ? z.getPeriodDate().getStartDate().get().toString() : GeneralDate.today().toString());
 						alarmValue.setComment(z.getComment().isPresent() ? z.getComment().get() : "");
 						alarmValue.setAlarmValueMessage(z.getAlarmContent());
-						alarmValue.setCategory(x.getCategory());
+						alarmValue.setCategory(x.getCategory().value);
+						alarmValue.setCategoryName(x.getCategory().name());
 						alarmValue.setCheckedValue(z.getCheckValue().isPresent() ? z.getCheckValue().get() : "");
 						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());
 						alarmValue.setEmployeeID(empInfo.getEmployeeId());
 						alarmValue.setEmployeeName(empInfo.getPName());
 						lstExtractedAlarmData.add(alarmValue);
+						alarmValue.setGuid(IdentifierUtil.randomUniqueId());
 					}
 				}
 			}			
@@ -216,30 +219,36 @@ public class ExtractAlarmListService {
 	}
 	
 	private List<AlarmExtraValueWkReDto> sortExtractedResult(List<AlarmExtraValueWkReDto> lstAlarmResult){
-		return lstAlarmResult.stream().sorted((a, b) -> {			
-			Integer rs = a.getCategory().compareTo(b.getCategory());
-			if (rs == 0) {
-				Integer rs2 = a.getEmployeeCode().compareTo(b.getEmployeeCode());
-				if (rs2 == 0) {
-					if(a.getAlarmValueDate() != null) {
-						GeneralDate dateA = GeneralDate.fromString(a.getAlarmValueDate(), "yyyy/mm/dd");
-						GeneralDate dateB = GeneralDate.fromString(b.getAlarmValueDate(), "yyyy/mm/dd");
-						Integer rs3 = dateA.compareTo(dateB);
-	                    if(rs3 == 0){
-	                        return dateA.compareTo(dateB);
-	                    }else{
-	                        return rs3;
-	                    }
+		return lstAlarmResult.stream().sorted((a, b) -> {
+			Integer wpl = a.getHierarchyCd().compareTo(b.getHierarchyCd());
+			if(wpl == 0) {
+				Integer rs = a.getCategory().compareTo(b.getCategory());
+				if (rs == 0) {
+					Integer rs2 = a.getEmployeeCode().compareTo(b.getEmployeeCode());
+					if (rs2 == 0) {
+						if(a.getAlarmValueDate() != null) {
+							GeneralDate dateA = GeneralDate.fromString(a.getAlarmValueDate(), "yyyy/mm/dd");
+							GeneralDate dateB = GeneralDate.fromString(b.getAlarmValueDate(), "yyyy/mm/dd");
+							Integer rs3 = dateA.compareTo(dateB);
+		                    if(rs3 == 0){
+		                        return dateA.compareTo(dateB);
+		                    }else{
+		                        return rs3;
+		                    }
+						} else {
+							return 0;
+						}
+	                    
 					} else {
-						return 0;
+						return rs2;
 					}
-                    
 				} else {
-					return rs2;
+					return rs;
 				}
 			} else {
-				return rs;
+				return wpl;
 			}
+			
 		}).collect(Collectors.toList());
 	}
 

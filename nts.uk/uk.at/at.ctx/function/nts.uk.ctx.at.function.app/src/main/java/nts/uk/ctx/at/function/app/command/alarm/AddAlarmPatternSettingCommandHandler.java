@@ -11,7 +11,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingService;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

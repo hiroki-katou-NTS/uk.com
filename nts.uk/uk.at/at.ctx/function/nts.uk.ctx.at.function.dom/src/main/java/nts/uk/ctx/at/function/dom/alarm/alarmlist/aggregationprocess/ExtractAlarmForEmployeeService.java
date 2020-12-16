@@ -22,7 +22,6 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.Approval
 import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.ApprovalProcessImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
@@ -38,6 +37,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;

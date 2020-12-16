@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 
 /**
  * アラーム抽出結果
@@ -21,7 +22,7 @@ public class AlarmExtracResult extends DomainObject {
 	/**アラームチェック条件コード	 */
 	private String coditionCode;
 	/**カテゴリ	 */
-	private int category; //AlarmCategory
+	private AlarmCategory category; //AlarmCategory
 	/**チェック条件結果	 */
 	private List<ResultOfEachCondition> lstResult;
 }

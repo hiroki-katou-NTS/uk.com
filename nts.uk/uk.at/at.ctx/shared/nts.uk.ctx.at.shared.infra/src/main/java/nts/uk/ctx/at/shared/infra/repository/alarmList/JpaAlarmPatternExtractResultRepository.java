@@ -14,6 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmPatternExtractResult;
@@ -78,7 +79,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 		
 		lstEntity.stream().forEach(x -> {
 			ResultOfEachCondition eachCond = new ResultOfEachCondition(AlarmListCheckType.Excess,"",new ArrayList<>());
-			AlarmExtracResult extracResult = new AlarmExtracResult("", 0, new ArrayList<>());
+			AlarmExtracResult extracResult = new AlarmExtracResult("", AlarmCategory.DAILY, new ArrayList<>());
 			ExtractionAlarmPeriodDate periodDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(x.getStartDate()), 
 					Optional.ofNullable(x.getEndDate()));
 			ExtractionResultDetail detail = new ExtractionResultDetail(x.getPk().getSid()
@@ -92,7 +93,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 			eachCond.setCheckType(EnumAdaptor.valueOf(x.getPk().getCheckAtr(), AlarmListCheckType.class));
 			eachCond.setNo(x.getPk().getConditionNo().replace(" ", ""));
 			eachCond.getLstResultDetail().add(detail);	
-			extracResult.setCategory(x.getPk().getCategory());
+			extracResult.setCategory(EnumAdaptor.valueOf(x.getPk().getCategory(), AlarmCategory.class));
 			extracResult.setCoditionCode(x.getPk().getAlarmCheckCode());
 			extracResult.getLstResult().add(eachCond);
 			if(result.getLstExtracResult().isEmpty()) {
@@ -104,7 +105,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 			} else {
 				
 				result.getLstExtracResult().stream().forEach(ex -> {
-					if(ex.getCategory() == x.getPk().getCategory() && ex.getCoditionCode().equals(x.getPk().getAlarmCheckCode())) {
+					if(ex.getCategory().value == x.getPk().getCategory() && ex.getCoditionCode().equals(x.getPk().getAlarmCheckCode())) {
 						List<ResultOfEachCondition> lstResult = new ArrayList<>();
 						ex.getLstResult().stream().forEach(re -> {
 							if(re.getNo().equals(x.getPk().getConditionNo()) && re.getCheckType().value == x.getPk().getCheckAtr()) {
@@ -147,7 +148,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 					KfndtAlarmExtracResultPK pk = new KfndtAlarmExtracResultPK(cid, 
 							runCode, 
 							patternCd, 
-							x.getCategory(), 
+							x.getCategory().value, 
 							x.getCoditionCode(), 
 							y.getCheckType().value,
 							y.getNo(), 
@@ -186,7 +187,7 @@ public class JpaAlarmPatternExtractResultRepository  extends JpaRepository imple
 					KfndtAlarmExtracResultPK pk = new KfndtAlarmExtracResultPK(cid, 
 							runCode, 
 							patternCd, 
-							x.getCategory(), 
+							x.getCategory().value, 
 							x.getCoditionCode(), 
 							y.getCheckType().value,
 							y.getNo(),

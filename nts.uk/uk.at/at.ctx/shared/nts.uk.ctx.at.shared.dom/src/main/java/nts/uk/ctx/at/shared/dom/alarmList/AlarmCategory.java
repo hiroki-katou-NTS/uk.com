@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm;
+package nts.uk.ctx.at.shared.dom.alarmList;
 
 /**
  * @author dxthuong
