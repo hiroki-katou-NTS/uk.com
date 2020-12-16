@@ -21,7 +21,7 @@ module nts.uk.at.view.kmk004.b {
 					name: 'basic-setting',
 					params:{
 						type: type,
-						selectId: ko.observable
+						selectId: ko.observable('')
 					}
 				}"></div>
 			</div>

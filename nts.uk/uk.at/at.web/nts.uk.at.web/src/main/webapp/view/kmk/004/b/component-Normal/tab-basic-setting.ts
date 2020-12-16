@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk004.b {
 		created(params: Params) {
 			const vm = this;
 			vm.type = params.type;
-			vm.selectId = vm.selectId;
+			vm.selectId = params.selectId;
 
 			vm.reloadData();
 
@@ -152,7 +152,6 @@ module nts.uk.at.view.kmk004.b {
 
 		reloadData() {
 			const vm = this;
-			console.log(ko.unwrap(vm.selectId));
 			
 			switch (vm.type) {
 				case 'Com_Company':
@@ -175,11 +174,9 @@ module nts.uk.at.view.kmk004.b {
 					break;
 				case 'Com_Employment':
 					if (ko.unwrap(vm.selectId) !== '') {
-						console.log(ko.unwrap(vm.selectId));
 						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
-							console.log(data);
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
@@ -250,8 +247,8 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	class TabSetting {
-		daily: KnockoutObservable<string> = ko.observable('');
-		weekly: KnockoutObservable<string> = ko.observable('');
+		daily: KnockoutObservable<string> = ko.observable('0');
+		weekly: KnockoutObservable<string> = ko.observable('0');
 		deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
 		deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
 		deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
@@ -283,6 +280,15 @@ module nts.uk.at.view.kmk004.b {
 				if (lastWeekly.length < 2) {
 					lastWeekly = '0' + lastWeekly;
 				}
+
+				if (firstDaily === ''){
+					firstDaily = '0';
+				}
+
+				if (firstWeekly === ''){
+					firstWeekly = '0';
+				}
+
 				self.daily(firstDaily + ':' + lastDaily);
 				self.weekly(firstWeekly + ':' + lastWeekly);
 				self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
