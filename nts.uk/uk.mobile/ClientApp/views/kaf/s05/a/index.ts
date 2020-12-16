@@ -1,4 +1,4 @@
-import {ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime} from '../a/define.interface';
+import { ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime} from '../a/define.interface';
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -326,12 +326,7 @@ export class KafS05Component extends KafS00ShrComponent {
         }).then(() => vm.$mask('hide'));
     }
 
-    public kaf000BChangeDate(objectDate) {
-        const vm = this;
-        console.log('kaf000BChangeDate');
-        vm.date = objectDate.startDate;
-        vm.changeDate(objectDate.startDate);
-    }
+   
 
     public changeDate(date: string) {
         const self = this;
@@ -356,34 +351,77 @@ export class KafS05Component extends KafS00ShrComponent {
             });
     }
     
+    public kaf000BChangeDate(objectDate) {
+        const self = this;
+        console.log('emit' + objectDate);
+        if (objectDate.startDate) {
+            if (self.modeNew) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                
+            }
+            self.changeDate(objectDate.startDate);
+        }
+    }
+    
     public kaf000BChangePrePost(prePostAtr) {
-        const vm = this;
-        console.log('kaf000BChangePrePost');
-        vm.application.prePostAtr = prePostAtr;
+        const self = this;
+        console.log('emit' + prePostAtr);
+        self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
-        const vm = this;
-        console.log('kaf000CChangeReasonCD');
-        vm.application.opAppStandardReasonCD = opAppStandardReasonCD;
+        const self = this;
+        console.log('emit' + opAppStandardReasonCD);
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+        
     }
 
     public kaf000CChangeAppReason(opAppReason) {
-        const vm = this;
-        console.log('kaf000CChangeAppReason');
-        vm.application.opAppReason = opAppReason;
+        const self = this;
+        console.log('emit' + opAppReason);
+        self.application.opAppReason = opAppReason;
     }
 
     public toStep(value: number) {
         const vm = this;
+        vm.$mask('show');
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
             window.scrollTo(500, 0);
+            vm.$nextTick(() => {
+                vm.$mask('hide');
+            });
 
             return;
         }
-        vm.numb = value;
+        let command = {
+
+        } as ParamCalculateMobile;
+        command.companyId = vm.user.companyId;
+        command.employeeId = vm.user.employeeId;
+        command.dateOp = vm.date;
+        command.mode = vm.modeNew;
+        vm.$http.post(
+            'at', 
+            API.calculate,
+            command
+            )
+                .then((res: any) => {
+                    vm.numb = value;
+
+                    vm.$nextTick(() => {
+                        vm.$mask('hide');
+                    });
+                })
+                .catch((res: any) => {
+                    vm.$nextTick(() => {
+                        vm.$mask('hide');
+                    });
+                });
+
     }
 
     public customValidate(viewModel: any) {
@@ -684,6 +722,7 @@ const API = {
     changeDate: 'at/request/application/overtime/mobile/changeDate',
     getBreakTime: 'at/request/application/overtime/mobile/breakTimes',
     selectWorkInfo: 'at/request/application/overtime/mobile/selectWorkInfo',
+    calculate: 'at/request/application/overtime/mobile/calculate',
 
     checkBeforeRegisterSample: 'at/request/application/checkBeforeSample',
     registerSample: 'at/request/application/changeDataSample',

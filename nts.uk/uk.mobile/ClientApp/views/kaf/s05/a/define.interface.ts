@@ -444,3 +444,12 @@ export interface ParamSelectWorkMobile {
     actualContentDisplay: any;
     overtimeAppSet: any;
 }
+export interface ParamCalculateMobile {
+    companyId: string;
+    displayInfoOverTime: DisplayInfoOverTime;
+    appOverTimeInsert: AppOverTime;
+    appOverTimeUpdate: AppOverTime;
+    mode: Boolean;
+    employeeId: string;
+    dateOp: string;
+}
