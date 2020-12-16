@@ -78,7 +78,7 @@ public class WorkScheOutputConstants {
 	public static final String PERSONAL_TOTAL = "KWR006_72";
 	
 	/** The Constant WORKPLACE_TOTAL. */
-	public static final String WORKPLACE_TOTAL = "職場計";
+	public static final String WORKPLACE_TOTAL = "KWR006_73";
 	
 	/** The Constant GROSS_TOTAL. */
 	public static final String GROSS_TOTAL = "総合計";

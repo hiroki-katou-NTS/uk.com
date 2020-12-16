@@ -1979,7 +1979,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// A8_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(TextResource.localize("KWR006_73"));
+			workplaceTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE_TOTAL));
 			
 			// A8_2
 			WorkplaceTotal workplaceTotal = workplaceReportData.getWorkplaceTotal();
@@ -2598,7 +2598,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// B6_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_TOTAL);
+			workplaceTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE_TOTAL));
 			
 			// B6_2
 			if (rootWorkplace.hasData)
