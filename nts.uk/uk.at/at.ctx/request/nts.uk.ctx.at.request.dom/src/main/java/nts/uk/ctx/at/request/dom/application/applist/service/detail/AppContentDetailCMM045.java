@@ -174,4 +174,15 @@ public interface AppContentDetailCMM045 {
 	 * @return
 	 */
 	public String createBusinessTripData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.任意申請データを作成.任意申請データを作成
+	 * @param application 申請
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @param companyID 会社ID
+	 * @return
+	 */
+	public String createOptionalItemApp(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
 }

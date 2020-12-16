@@ -7,7 +7,7 @@
 
     <body>
 		
-        <ui:composition template="../../../../master/base.xhtml">
+        <ui:composition template="../../../../master/masterpage.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script> 
             	<style>
@@ -15,6 +15,7 @@
             			border: 1px solid #000;
             		}
             	</style>          	
+            	<com:scriptfile set="IGNITE" />
 				<com:stylefile path="../../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../../catalog/catalog.js" />
@@ -27,6 +28,22 @@
 					<div id="content" class="cf">
 						<h1>Gantt Chart</h1>
 						<!-- <div id="gc" style="position: absolute; border: 1px solid #000; width: 1000px; height: 400px; overflow: scroll;"></div> -->
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
+												name: '',
+												options: itemList,
+												optionsValue: 'code',
+												optionsText: 'name',
+												visibleItemsCount: 4,
+												value: selectedCode,
+												editable: false,
+												enable: true,
+												required: false,
+												selectFirstIfNull: true,
+												columns: [
+														{ prop: 'name', length: 10 },
+													]}"></div>
+						<button data-bind="click: replace">Replace</button>
 						<div id="extable" style="height: 400px;"></div>
 						<article class="cf" style="margin-top: 400px;">
 							<div class="tabs">

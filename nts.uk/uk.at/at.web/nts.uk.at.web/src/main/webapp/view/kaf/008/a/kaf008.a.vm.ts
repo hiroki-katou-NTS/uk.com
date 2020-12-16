@@ -53,6 +53,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
+						vm.application().employeeIDLst(empLst);
                         const applicantList = empLst;
                         const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
                         const command = {applicantList, dateLst, appDispInfoStartupOutput};
@@ -169,6 +170,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             };
 
             let applicationDto = ko.toJS(vm.application);
+			applicationDto.employeeID = vm.application().employeeIDLst()[0];
             let command = {
                 businessTrip: businessTripDto,
                 businessTripInfoOutput: tripOutput,
@@ -188,14 +190,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                             vm.handleConfirmMessage(res, command);
                         }
                     }).fail(err => {
-                        let param;
-                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
-                            err.message = err.parameterIds[0] + err.message;
-                            param = err;
-                            vm.$dialog.error(param);
-                        } else {
-                            vm.handleError(err);
-                        }
+                        vm.handleError(err);
                     });
                 }
             }).always(() => vm.$blockui("hide"));
@@ -203,7 +198,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         registerData(command: any) {
             const vm = this;
-            vm.$blockui("show").then(() => vm.$ajax(API.register, command).done( data => {
+            vm.$blockui("show");
+            return vm.$ajax(API.register, command).done( data => {
                 if (data) {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
@@ -212,7 +208,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).fail(res => {
                 vm.handleError(res);
-            })).always(() => vm.$blockui("hide"));;
+            }).always(() => vm.$blockui("hide"));
         }
 
         focusDate() {
@@ -244,22 +240,38 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         handleError(err: any) {
             const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
 
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+            if (err && err.messageId) {
+
+                if ( _.includes(["Msg_23","Msg_24","Msg_1912","Msg_1913"], err.messageId)) {
+                    err.message = err.parameterIds[0] + err.message;
                 }
+
+                switch (err.messageId) {
+                    case "Msg_23":
+                    case "Msg_24":
+                    case "Msg_1715":
+                    case "Msg_702": {
+                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    default: {
+						if (err.messageId == 'Msg_277') {
+                        	vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst = [];
+							vm.appDispInfoStartupOutput.valueHasMutated();
+                        }
+                        vm.$dialog.error(err).then(() => {
+                            if (err.messageId == 'Msg_197') {
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+
             }
-            vm.$dialog.error(param).then(() => {
-                if (err.messageId == 'Msg_197') {
-                    location.reload();
-                }
-            });
         }
     }
 
@@ -300,6 +312,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
         changeAppDate: "at/request/application/businesstrip/changeAppDate"
-    }
+    };
 
 }
