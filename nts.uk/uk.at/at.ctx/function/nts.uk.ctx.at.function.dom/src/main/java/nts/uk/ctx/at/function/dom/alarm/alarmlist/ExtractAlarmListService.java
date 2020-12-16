@@ -200,7 +200,7 @@ public class ExtractAlarmListService {
 						alarmValue.setComment(z.getComment().isPresent() ? z.getComment().get() : "");
 						alarmValue.setAlarmValueMessage(z.getAlarmContent());
 						alarmValue.setCategory(x.getCategory().value);
-						alarmValue.setCategoryName(x.getCategory().name());
+						alarmValue.setCategoryName(x.getCategory().nameId);
 						alarmValue.setCheckedValue(z.getCheckValue().isPresent() ? z.getCheckValue().get() : "");
 						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());
 						alarmValue.setEmployeeID(empInfo.getEmployeeId());
