@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 
@@ -21,7 +21,7 @@ public class DisplayInfoOverTimeCommand {
 	// 残業申請区分
 	public Integer overtimeAppAtr;
 	// 申請表示情報
-	public AppDispInfoStartupDto appDispInfoStartup;
+	public AppDispInfoStartupCmd appDispInfoStartup;
 	// 代行申請か
 	public Boolean isProxy;
 	// 計算結果
