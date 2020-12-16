@@ -79,8 +79,10 @@ module nts.uk.com.view.ccg020.a {
       });
       
       $('#radio-search-category').on('click', () => {
-        vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
         $("#popup-search-category").ntsPopup("hide");
+      });
+      vm.searchCategory.subscribe((value) => {
+        vm.searchPlaceholder(value === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
       });
       $("#search-icon").on('click', () => {
         $("#popup-search-category").ntsPopup("toggle");
