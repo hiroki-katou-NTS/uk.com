@@ -10,9 +10,6 @@ module nts.uk.com.view.ccg015.f {
     paramIframe1: KnockoutObservable<DisplayInTopPageDto> = ko.observable();
     layoutDisplayType: KnockoutObservable<number> = ko.observable(null);
     visible: KnockoutObservable<boolean> = ko.observable(false);
-    visibleLayout2: KnockoutObservable<boolean> = ko.observable(false);
-    visibleLayout3: KnockoutObservable<boolean> = ko.observable(false);
-
 
     created(params: any) {
       const vm = this;
@@ -35,6 +32,7 @@ module nts.uk.com.view.ccg015.f {
       if (data.layout1) {
         vm.getLayout1(data);
       }
+      vm.visible(true)
       if (data.layout2) {
         vm.getLayout2(data);
       }
@@ -52,13 +50,11 @@ module nts.uk.com.view.ccg015.f {
     private getLayout2(data: DisplayInTopPageDto) {
       const vm = this;
       vm.paramWidgetLayout2(data.layout2);
-      vm.visibleLayout2(true);
     }
 
     private getLayout3(data: DisplayInTopPageDto) {
       const vm = this;
       vm.paramWidgetLayout3(data.layout3);
-      vm.visibleLayout3(true);
     }
 
     close() {

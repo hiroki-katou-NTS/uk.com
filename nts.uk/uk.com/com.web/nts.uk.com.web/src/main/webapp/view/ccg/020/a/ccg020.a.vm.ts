@@ -79,7 +79,7 @@ module nts.uk.com.view.ccg020.a {
       });
       
       $('#radio-search-category').on('click', () => {
-        vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
+        vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
       });
     }
 
