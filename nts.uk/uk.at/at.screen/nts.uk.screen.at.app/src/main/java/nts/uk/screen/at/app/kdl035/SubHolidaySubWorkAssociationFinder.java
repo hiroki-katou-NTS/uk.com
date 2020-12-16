@@ -67,7 +67,7 @@ public class SubHolidaySubWorkAssociationFinder {
 
         DatePeriod period = inputData.getEndDate() != null ? new DatePeriod(inputData.getStartDate(), inputData.getEndDate()) : DatePeriod.oneDay(inputData.getStartDate());
         List<GeneralDate> dates = new ArrayList<>();
-        if (period.start().compareTo(period.end()) == 0) {
+        if (period.start().compareTo(period.end()) != 0) {
             // 申請期間から休日の申請日を取得する
             dates.addAll(otherCommonAlgorithm.lstDateIsHoliday(
                     inputData.getEmployeeId(),

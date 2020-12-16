@@ -30,4 +30,6 @@ public class AttendanceRecordResponse {
 	/** The value. */
 	String value;
 
+	/** The out frame attribute */
+	int outFrameAttribute;
 }
