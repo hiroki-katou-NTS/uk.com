@@ -432,12 +432,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		else
 			headerData.companyName = "";
 		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
-			headerData.fixedHeaderData.add(TextResource.localize(WorkScheOutputConstants.YEARMONTH));
+			headerData.fixedHeaderData.add(TextResource.localize("KWR006_65"));
 		} else {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
 		}
-		headerData.fixedHeaderData.add(TextResource.localize(WorkScheOutputConstants.CLOSURE_DATE));
-		headerData.fixedHeaderData.add(TextResource.localize(WorkScheOutputConstants.REMARK));
+		headerData.fixedHeaderData.add(TextResource.localize("KWR006_84"));
+		headerData.fixedHeaderData.add(TextResource.localize("KWR006_67"));
 	}
 	
 	/**
@@ -1891,7 +1891,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					
 					// A6_1
 					Cell personalTotalCellTag = cells.get(currentRow, 0);
-					personalTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.PERSONAL_TOTAL));
+					personalTotalCellTag.setValue(TextResource.localize("KWR006_72"));
 					
 					// A6_2
 					Map<Integer, TotalValue> mapPersonalTotal = employeeReportData.getMapPersonalTotal();
@@ -1979,7 +1979,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// A8_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE_TOTAL));
+			workplaceTotalCellTag.setValue(TextResource.localize("KWR006_73"));
 			
 			// A8_2
 			WorkplaceTotal workplaceTotal = workplaceReportData.getWorkplaceTotal();
@@ -2361,7 +2361,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Cells cells = sheetInfo.getSheet().getCells();
 		if (!findDetailedData(rootWorkplace))
 			return currentRow;
-		String workplaceTitle = TextResource.localize(WorkScheOutputConstants.WORKPLACE) + "　" + rootWorkplace.getWorkplaceCode()
+		String workplaceTitle = TextResource.localize("KWR006_68") + "　" + rootWorkplace.getWorkplaceCode()
 				+ "　" + rootWorkplace.getWorkplaceName();
 		/*Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range workplaceRange = cells.createRange(currentRow, 0, 1, remarkColumn);
@@ -2598,7 +2598,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// B6_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE_TOTAL));
+			workplaceTotalCellTag.setValue(TextResource.localize("KWR006_73"));
 			
 			// B6_2
 			if (rootWorkplace.hasData)
@@ -3126,13 +3126,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
             // A4_1
             Cell employeeTagCell = cells.get(currentRow, 0);
-            employeeTagCell.setValue(TextResource.localize(WorkScheOutputConstants.EMPLOYEE)
+            employeeTagCell.setValue(TextResource.localize("KWR006_69")
             		+ "　" + employeeReportData.employeeCode																 // A4_2
                     + "　" + employeeReportData.employeeName																 // A4_3
-                    + "　" + TextResource.localize(WorkScheOutputConstants.EMPLOYMENT)									 // A4_4
+                    + "　" + TextResource.localize("KWR006_70")									 						 // A4_4
                     + "　" + (employeeReportData.employmentCode == null ? "" : (employeeReportData.employmentCode + "　")) // A4_5_1
                     + "　" + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) // A4_5_2
-                    + TextResource.localize(WorkScheOutputConstants.POSITION)											 // A4_6	
+                    + TextResource.localize("KWR006_71")											 					 // A4_6	
                     + "　" + employeeReportData.jobTitleCode																 // A4_7_1
                     + "　" + employeeReportData.position);																 // A4_7_2
             currentRow++;
