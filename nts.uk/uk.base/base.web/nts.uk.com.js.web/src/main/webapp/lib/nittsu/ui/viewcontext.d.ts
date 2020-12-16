@@ -65,7 +65,7 @@ declare module nts.uk.ui.vm {
 
 		readonly bind: {
 			(viewModel: any): void;
-			(viewModel: any, dialogOptions: DialogOption): void;
+			(viewModel: any, dialogOptions: JQueryUI.DialogOptions): void;
 		};
 
 		readonly ready: (callback: () => void) => void;

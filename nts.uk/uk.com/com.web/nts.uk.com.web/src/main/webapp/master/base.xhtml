@@ -19,10 +19,9 @@
 	<div id="master-wrapper" data-bind="with: content">
 		<com:ko tag="let" bind="{ $vm: $data }">
 			<ui:insert name="base-content">
-				<ui:insert name="header-content">
-					<div id="header"></div>
-				</ui:insert>
-				<div id="master-content">
+				<div data-bind="ui-master-notification"></div>
+				<div data-bind="ui-master-header"></div>
+				<div data-bind="ui-master-content">
 					<ui:insert name="content" />
 				</div>
 			</ui:insert>

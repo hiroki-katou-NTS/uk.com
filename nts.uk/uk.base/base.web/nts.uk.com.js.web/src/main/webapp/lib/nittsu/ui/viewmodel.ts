@@ -7,7 +7,7 @@ type KibanViewModel = {
 };
 
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption?: DialogOption): any {
+function bean(dialogOption?: JQueryUI.DialogOptions): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
