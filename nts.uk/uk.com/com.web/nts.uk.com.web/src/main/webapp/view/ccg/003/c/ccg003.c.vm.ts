@@ -148,7 +148,7 @@ module nts.uk.com.view.ccg003.c {
       vm.notificationCreated(data);
       if (this.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
         // ※新規モード又は更新モード(宛先区分≠職場選択)
-        if (_.isNull(data.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
+        if (!_.isNull(data.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
           vm.workPlaceIdList([data.workplaceInfo.workplaceId]);
           vm.workPlaceName([data.workplaceInfo.workplaceName]);
         }
@@ -157,9 +157,11 @@ module nts.uk.com.view.ccg003.c {
         vm.isStartUpdateMode = false;
         const wkpList = vm.notificationCreated().targetWkps;
         vm.workPlaceTxtRefer(_.map(wkpList, wkp => wkp.workplaceName).join(COMMA));
+        vm.workPlaceIdList(_.map(wkpList, wkp => wkp.workplaceId));
       }
       if (_.isEmpty(vm.workPlaceTxtRefer()) && !_.isNil(this.notificationCreated().workplaceInfo)) {
         const workplaceInfo = this.notificationCreated().workplaceInfo;
+        vm.workPlaceIdList([workplaceInfo.workplaceId]);
         vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
       }
       // ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合

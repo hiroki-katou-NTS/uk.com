@@ -107,7 +107,7 @@ module nts.uk.com.view.ccg003.a {
       min-height: 150px;
       position: fixed;
       right: 0px !important;
-      left: unset !important;
+      left: inherit !important;
     }
     #A3-CCG003 {
       cursor: pointer;
@@ -116,7 +116,7 @@ module nts.uk.com.view.ccg003.a {
       border-bottom: 0;
     }
     .ccg003-a2 {
-      color: blue;
+      color: blue !important;
       text-decoration: underline;
     }
     .datepicker-container {
