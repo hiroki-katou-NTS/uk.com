@@ -1,4 +1,4 @@
-import {ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork} from '../a/define.interface';
+import {ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime} from '../a/define.interface';
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -38,6 +38,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public application: Application = null;
 
     public model: Model = {} as Model;
+
+    public date: string;
 
     @Prop() 
     public readonly params: InitParam;
@@ -327,6 +329,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public kaf000BChangeDate(objectDate) {
         const vm = this;
         console.log('kaf000BChangeDate');
+        vm.date = objectDate.startDate;
         vm.changeDate(objectDate.startDate);
     }
 
@@ -513,14 +516,62 @@ export class KafS05Component extends KafS00ShrComponent {
                 isSelectWorkTime: 1,
             })
             .then((f: any) => {
+                let workTypeCode;
+                let workTimeCode;
+                workTypeCode = f.selectedWorkType.workTypeCode;
+                workTimeCode = f.selectedWorkTime.code;
                 step1.setWorkCode(
-                    f.selectedWorkType.workTypeCode,
+                    workTypeCode,
                     f.selectedWorkType.name,
-                    f.selectedWorkTime.code,
+                    workTimeCode,
                     f.selectedWorkTime.name,
                     f.selectedWorkTime.workTime1,
                     self.model.displayInfoOverTime
                 );
+                let command = {
+
+                } as ParamSelectWorkMobile;
+                command.companyId = self.user.companyId;
+                command.employeeId = self.user.employeeId;
+                command.dateOp = self.date;
+                command.workTypeCode = step1.workInfo.workType.code;
+                command.workTimeCode = step1.workInfo.workTime.code;
+                if (!_.isNil(step1.workHours1)) {
+                    command.startTimeSPR = step1.workHours1.start;
+                    command.endTimeSPR = step1.workHours1.end;
+                }
+                command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail');
+                command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
+                self.$mask('show');
+
+                return self.$http.post(
+                    'at',
+                    API.selectWorkInfo,
+                    command
+                         );
+
+            })
+            .then((res: any) => {
+                let step1 = self.$refs.step1 as KafS05Step1Component;
+                // call API select work info
+                let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
+                if (!_.isNil(infoWithDateApplicationOp)) {
+                    infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                    infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                    infoWithDateApplicationOp.workHours = res.data.workHours;
+                    infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                    infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                } else {
+                    infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                    infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                    infoWithDateApplicationOp.workHours = res.data.workHours;
+                    infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                    infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                    infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                }
+                step1.loadData(self.model.displayInfoOverTime);
+                self.$mask('hide');
+
             })
             .catch((res: any) => {
                 self.handleErrorMessage(res);
@@ -541,12 +592,87 @@ export class KafS05Component extends KafS00ShrComponent {
                         f.selectedWorkTime.name,
                         f.selectedWorkTime.workTime1,
                     );
+
+                    let command = {
+
+                    } as ParamSelectWorkMobile;
+                    command.companyId = self.user.companyId;
+                    command.employeeId = self.user.employeeId;
+                    command.dateOp = self.date;
+                    command.workTypeCode = step1.workInfo.workType.code;
+                    command.workTimeCode = step1.workInfo.workTime.code;
+                    if (!_.isNil(step1.workHours1)) {
+                        command.startTimeSPR = step1.workHours1.start;
+                        command.endTimeSPR = step1.workHours1.end;
+                    }
+                    command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail');
+                    command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
+                    self.$mask('show');
+    
+                    return self.$http.post(
+                        'at',
+                        API.selectWorkInfo,
+                        command
+                             );
                 }
-            }).catch((res: any) => {
+            })
+            .then((res: any) => {
+                // call API select work info
+                let step1 = self.$refs.step1 as KafS05Step1Component;
+                let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
+                if (!_.isNil(infoWithDateApplicationOp)) {
+                    infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                    infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                    infoWithDateApplicationOp.workHours = res.data.workHours;
+                    infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                    infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                } else {
+                    infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                    infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                    infoWithDateApplicationOp.workHours = res.data.workHours;
+                    infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                    infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                    infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                }
+                step1.loadData(self.model.displayInfoOverTime);
+                self.$mask('hide');
+
+            })
+            .catch((res: any) => {
                 self.handleErrorMessage(res);
             });
         }
         
+    }
+
+    public getBreakTime(command: ParamBreakTime) {
+        const self = this;
+        console.log('getBreakTime');
+        self.$mask('show');
+        self.$http.post(
+            'at',
+            API.getBreakTime,
+            command
+            )
+            .then((res: any) => {
+                let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
+                if (!_.isNil(infoWithDateApplicationOp)) {
+                    infoWithDateApplicationOp.breakTime.timeZones = res.data.timeZones;
+                } else {
+                    infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                    infoWithDateApplicationOp.breakTime = {} as any;
+                    infoWithDateApplicationOp.breakTime.timeZones = res.data.timeZones;
+                }
+                let step1 = self.$refs.step1 as KafS05Step1Component;
+                if (!_.isNil(step1)) {
+                    step1.loadBreakTime(res.data.timeZones);
+                }   
+
+                self.$mask('hide');
+            })
+            .catch((res: any) => {
+                self.handleErrorMessage(res);
+            });
     }
 
 
@@ -556,6 +682,8 @@ export class KafS05Component extends KafS00ShrComponent {
 const API = {
     start: 'at/request/application/overtime/mobile/start',
     changeDate: 'at/request/application/overtime/mobile/changeDate',
+    getBreakTime: 'at/request/application/overtime/mobile/breakTimes',
+    selectWorkInfo: 'at/request/application/overtime/mobile/selectWorkInfo',
 
     checkBeforeRegisterSample: 'at/request/application/checkBeforeSample',
     registerSample: 'at/request/application/changeDataSample',

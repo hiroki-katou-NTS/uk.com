@@ -104,7 +104,7 @@
       >
         <div class="card-body">
           <div class="row mt-3">
-            <div class="col-6">{{ "KAFS05_69" | i18n }}</div>
+            <div class="col-6">{{item.title}}</div>
             <!-- <kafs00subp1 
                   v-bind:params="kafS00P1Params1"
                   /> -->

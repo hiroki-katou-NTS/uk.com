@@ -3,7 +3,8 @@ import { component, Watch } from '@app/core/component';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { InfoWithDateApplication , DisplayInfoOverTime, TimeZone} from '../a/define.interface';
+import { InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime} from '../a/define.interface';
+import { KafS05Component} from '../a/index';
 @component({
     name: 'kafs05step1',
     route: '/kaf/s05/step1',
@@ -38,8 +39,24 @@ export class KafS05Step1Component extends Vue {
     public displayNumberBreakTime = 3;
 
     @Watch('workHours1', {deep: true})
-    public changeWorkHours1(data: any) {
-        console.log(data);
+    public changeWorkHours1(data: ValueTime) {
+        const self = this;
+        if (_.isNil(data.start) || _.isNil(data.end)) {
+
+            return;
+        }
+        let parent = self.$parent as KafS05Component;
+        let command = {
+
+        } as ParamBreakTime;
+        command.workTypeCode = self.workInfo.workType.code;
+        command.workTimeCode = self.workInfo.workTime.code;
+        command.startTime = self.workHours1.start;
+        command.endTime = self.workHours1.end;
+        command.companyId = parent.user.companyId;
+        command.actualContentDisplayDto = _.get(parent.model.displayInfoOverTime,'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst');
+        parent.getBreakTime(command);
+        
     }
 
     @Watch('workHours2', {deep: true})
@@ -75,6 +92,7 @@ export class KafS05Step1Component extends Vue {
             let item = {} as BreakTime;
             item.valueHours = null as ValueTime;
             item.frameNo = i + 1;
+            item.title = self.$i18n('KAFS05_69', String(item.frameNo));
             self.breakTimes.push(item);
         }
     }
@@ -140,33 +158,21 @@ export class KafS05Step1Component extends Vue {
         return self.$parent;
     }
 
-    public loadBreakTime(object?: DisplayInfoOverTime) {
+    public loadBreakTime(timeZone?: any) {
         const self = this;
-        if (!_.isNil(object.infoWithDateApplicationOp)) {
-            let breakTime = object.infoWithDateApplicationOp.breakTime;
-            if (!_.isNil(breakTime)) {
-                let timeZone = breakTime.timeZones;
-                if (!_.isEmpty(timeZone)) {
-                    _.forEach(timeZone, (item: any, index: number) => {
-                        let resultBreakTime = _.find(self.breakTimes, (i: any) => i.frameNo == (index + 1)) as BreakTime;
-                        if (!_.isNil(resultBreakTime)) {
-                            resultBreakTime.valueHours = {} as ValueTime;
-                            resultBreakTime.valueHours.start = item.start;
-                            resultBreakTime.valueHours.end = item.end;
-                        } else {
-                            self.breakTimes[index].valueHours = null as ValueTime;
-                        }
-                    });
-                    
-                    return;
-                }
-
-
-            }
-        }
-
+       
         _.forEach(self.breakTimes, (item: any) => {
             item.valueHours = null as ValueTime;
+        });
+        _.forEach(timeZone, (item: any, index: number) => {
+            let resultBreakTime = _.find(self.breakTimes, (i: any) => i.frameNo == (index + 1)) as BreakTime;
+            if (!_.isNil(resultBreakTime)) {
+                resultBreakTime.valueHours = {} as ValueTime;
+                resultBreakTime.valueHours.start = item.start;
+                resultBreakTime.valueHours.end = item.end;
+            } else {
+                self.breakTimes[index].valueHours = null as ValueTime;
+            }
         });
     }
 
@@ -254,7 +260,8 @@ export class KafS05Step1Component extends Vue {
 
 
             // load break time
-            self.loadBreakTime(object);
+
+            self.loadBreakTime(_.get(object, 'infoWithDateApplicationOp.breakTime.timeZones'));
             // load work hours
             self.loadWorkHours(object);
 

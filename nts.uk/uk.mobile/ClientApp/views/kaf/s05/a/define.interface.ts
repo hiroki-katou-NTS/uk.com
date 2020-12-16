@@ -425,3 +425,22 @@ export interface Model {
     appOverTime: AppOverTime;
     displayInfoOverTime: DisplayInfoOverTime;
 }
+export interface ParamBreakTime {	
+    workTypeCode: string;
+    workTimeCode: string;
+    startTime: number;
+    endTime: number;
+    actualContentDisplayDto: Array<any>;
+}
+
+export interface ParamSelectWorkMobile {
+    companyId: string;
+    employeeId: string;
+    dateOp: string;
+    workTypeCode: string;
+    workTimeCode: string;
+    startTimeSPR: number;
+    endTimeSPR: number;
+    actualContentDisplay: any;
+    overtimeAppSet: any;
+}
