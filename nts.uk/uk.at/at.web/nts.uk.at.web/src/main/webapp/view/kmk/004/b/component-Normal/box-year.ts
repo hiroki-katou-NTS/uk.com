@@ -41,7 +41,7 @@ module nts.uk.at.view.kmk004.b {
 
     class BoxYear extends ko.ViewModel {
 
-        public itemList: KnockoutObservableArray<IYear>;
+        public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public type: SIDEBAR_TYPE;
         public selectId: KnockoutObservable<string> = ko.observable('');
@@ -63,6 +63,7 @@ module nts.uk.at.view.kmk004.b {
             vm.selectId
                 .subscribe(() => {
                     vm.reloadData(0);
+                    
                 });
 
             vm.selectId.valueHasMutated();

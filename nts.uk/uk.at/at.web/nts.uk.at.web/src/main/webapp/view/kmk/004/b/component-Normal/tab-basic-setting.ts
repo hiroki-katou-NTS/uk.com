@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk004.b {
 
 	interface Params {
 		type: SIDEBAR_TYPE
-		selectId?: KnockoutObservable<string>;
+		selectId: KnockoutObservable<string>;
 	}
 
 	const template = `
@@ -152,7 +152,8 @@ module nts.uk.at.view.kmk004.b {
 
 		reloadData() {
 			const vm = this;
-
+			console.log(ko.unwrap(vm.selectId));
+			
 			switch (vm.type) {
 				case 'Com_Company':
 					vm.$blockui('invisible')
@@ -163,28 +164,36 @@ module nts.uk.at.view.kmk004.b {
 						.then(() => vm.$blockui('clear'));
 					break;
 				case 'Com_Workplace':
-					vm.$blockui('invisible')
+					if (ko.unwrap(vm.selectId) !== '') {
+						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
+					}
 					break;
 				case 'Com_Employment':
-					vm.$blockui('invisible')
+					if (ko.unwrap(vm.selectId) !== '') {
+						console.log(ko.unwrap(vm.selectId));
+						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
+							console.log(data);
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
+					}
 					break;
 				case 'Com_Person':
-					vm.$blockui('invisible')
+					if (ko.unwrap(vm.selectId) !== ''){
+						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.DISPLAY_BASICSETTING + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
+					}
 					break;
 			}
 		}

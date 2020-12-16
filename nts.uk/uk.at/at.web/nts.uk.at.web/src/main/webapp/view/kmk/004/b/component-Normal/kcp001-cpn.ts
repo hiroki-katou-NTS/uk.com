@@ -10,6 +10,10 @@ module nts.uk.at.view.kmk004.b {
         alreadySettings: KnockoutObservableArray<AlreadySettingEmployment>;
     }
 
+    const API = {
+        GET_LIST_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getEmploymentId'
+    }
+
     @component({
         name: 'kcp001',
         template
@@ -18,7 +22,7 @@ module nts.uk.at.view.kmk004.b {
     export class KCP001VM extends ko.ViewModel {
 
         public selectedCode: KnockoutObservable<string> = ko.observable('');
-        public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment>;
+        public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
         public closureSelectionType: KnockoutObservable<number> = ko.observable(1);
         public employmentList: KnockoutObservableArray<IEmployment> = ko.observableArray([]);
         public employment: Employment;
@@ -26,40 +30,49 @@ module nts.uk.at.view.kmk004.b {
         created(params: Params) {
             const vm = this;
             vm.employment = params.emloyment;
-            vm.alreadySettings = params.alreadySettings;
+
+            vm.$ajax(API.GET_LIST_EMPLOYMENT)
+                .then((data: any) => {
+                    if (data) {
+                        let list: AlreadySettingEmployment[] = [];
+                        _.forEach(data, ((value) => {
+                            let object = {code: value.employmentCode, isAlreadySetting: true} as AlreadySettingEmployment;
+                            list.push(object);
+                        }));
+                        vm.alreadySettings(list);
+                    }
+                })
+                .then(() => {
+                    vm.reload();
+                });
 
             vm.selectedCode.subscribe(() => {
                 const exist = _.find(ko.unwrap(vm.employmentList), (emp: IEmployment) => emp.code === ko.unwrap(vm.selectedCode));
                 if (exist) {
                     vm.employment.update(exist);
                 }
-            })
-            
-            vm.alreadySettings.subscribe(() => {
-               vm.reload();
             });
         }
 
-        reload(){
+        reload() {
             const vm = this;
 
-            $('#empt-list-setting') 
-            .ntsListComponent({
-                isShowAlreadySet: true,
-                isMultiSelect: false,
-                listType: ListType.EMPLOYMENT,
-                selectType: SelectType.SELECT_FIRST_ITEM,
-                selectedCode: vm.selectedCode,
-                isDialog: false,
-                isShowNoSelectRow: false,
-                alreadySettingList: vm.alreadySettings,
-                isDisplayClosureSelection: true,
-                closureSelectionType: vm.closureSelectionType,
-                maxRows: 12
-            }).done(()=>{
-                vm.employmentList($('#empt-list-setting').getDataList());
-            });
-
+            $('#empt-list-setting')
+                .ntsListComponent({
+                    isShowAlreadySet: true,
+                    isMultiSelect: false,
+                    listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
+                    selectedCode: vm.selectedCode,
+                    isDialog: false,
+                    isShowNoSelectRow: false,
+                    alreadySettingList: vm.alreadySettings,
+                    isDisplayClosureSelection: true,
+                    closureSelectionType: vm.closureSelectionType,
+                    maxRows: 12
+                }).done(() => {
+                    vm.employmentList($('#empt-list-setting').getDataList());
+                });
         }
 
         mounted() {
@@ -85,7 +98,7 @@ module nts.uk.at.view.kmk004.b {
         name: KnockoutObservable<String> = ko.observable('');
         isAlreadySetting: KnockoutObservable<boolean> = ko.observable(false);
 
-        constructor(param? : IEmployment) {
+        constructor(param?: IEmployment) {
             const md = this;
 
             if (param) {
@@ -93,21 +106,21 @@ module nts.uk.at.view.kmk004.b {
             }
         }
 
-        update(param: IEmployment){
+        update(param: IEmployment) {
             const md = this;
             md.code(param.code);
             md.name(param.name);
             md.isAlreadySetting(param.isAlreadySetting);
         }
     }
-    
+
     export class SelectType {
         static SELECT_BY_SELECTED_CODE = 1;
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
     }
-    
+
     export interface AlreadySettingEmployment {
         code: string;
         isAlreadySetting: boolean;

@@ -26,19 +26,19 @@ module nts.uk.at.view.kmk004.b {
 				<div class="name" data-bind="i18n: emloyment.name"></div>
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-					<!-- ko if: modeCheckSetting -->
+					<!-- ko if: emloyment.isAlreadySetting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_241'"></button>
 					<!-- /ko -->
-					<!-- ko if: !modeCheckSetting -->
+					<!-- ko ifnot: emloyment.isAlreadySetting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_240'"></button>
 					<!-- /ko -->
 				</div>
-				<!-- ko if: modeCheckSetting -->
+				<!-- ko if: emloyment.isAlreadySetting -->
 					<div class ="setting" data-bind="component: {
 						name: 'basic-setting',
 						params:{
 							type: type,
-							selectId: selectedId
+							selectId: emloyment.code
 						}
 					}"></div>
 				<!-- /ko -->
@@ -52,17 +52,19 @@ module nts.uk.at.view.kmk004.b {
 							name: 'box-year',
 							params:{
 								selectedYear: selectedYear,
-								param: ko.observable(''),
 								type: type,
-								years: years
+								years: years,
+								selectId: emloyment.code
 							}
 						}"></div>
 					</div>
 					<div tabindex="7" class= "time-work" data-bind="component: {
 						name: 'time-work',
 						params:{
+							type: type,
 							selectedYear: selectedYear,
-							checkEmployee: checkEmployee
+							years: years,
+							selectId: emloyment.code
 						}
 					}"></div>
 				</div>
@@ -90,16 +92,20 @@ module nts.uk.at.view.kmk004.b {
 		public emloyment: Employment = new Employment();
 		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
-		public selectedId: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
-			vm.selectedYear
+
+			vm.years
 				.subscribe(() => {
-					if (vm.selectedYear != null) {
+					if (ko.unwrap(vm.years).length > 0) {
 						vm.existYear(true);
+					} else {
+						vm.existYear(false);
+						vm.selectedYear(null);
 					}
-				});
+				})
+
 		}
 
 		mounted() {
