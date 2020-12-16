@@ -9,9 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
@@ -62,22 +60,30 @@ public class ListOfPeriodsClose {
 	
 	public SystemDateDto get(ListOfPeriodsCloseInput input) {
 		
-		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
+		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo,
+				shareEmploymentAdapter,
+				closureEmploymentRepo);
 		CacheCarrier cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 		
 		SystemDateDto dto = new SystemDateDto();
 		
-		if (input.getYearMonth() <= 0) {
+		if (input.getYearMonth().lessThanOrEqualTo(0)) {
 			dto.setYearMonth(this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
 		} else {
-			dto.setYearMonth(input.getYearMonth());
+			dto.setYearMonth(input.getYearMonth().v());
 		}
 		
 		List<PeriodsClose> closes = new ArrayList<>();
 		
-		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, sid, GeneralDate.today(), YearMonth.of(dto.getYearMonth()));
+		/// YearMonth criteriaDate = YearMonth.of(input.getYearMonth());
+		
+		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require,
+				cacheCarrier,
+				sid,
+				input.getYearMonth().lastGeneralDate(),
+				YearMonth.of(dto.getYearMonth()));
 		
 		List<Closure> closures = this.closureRepository.findByListId(companyId,
 				periods.stream().map(m -> m.getClosureId().value).collect(Collectors.toList()));
@@ -101,7 +107,10 @@ public class ListOfPeriodsClose {
 				periodsClose.setWorkplaceId(affWorkplaceHistoryItem.get(0).getWorkplaceId());
 			}
 			
-			Optional<Closure> closure = closures.stream().filter(f -> f.getClosureId().value ==  closurePeriod.getClosureId().value).findFirst();
+			Optional<Closure> closure = closures
+					.stream()
+					.filter(f -> f.getClosureId().value ==  closurePeriod.getClosureId().value)
+					.findFirst();
 			
 			periodsClose.setClosureName(closure.map(m -> m.getClosureHistories().get(0).getClosureName().v()).orElse(""));
 			

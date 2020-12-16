@@ -181,7 +181,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 							a.getChildCareAttr().value,
 							a.getStartTime().v(),
 							a.getEndTime().v(),
-							a.getDeductionTime().v(),
+							a.getDeductionTime() == null ? 0 : a.getDeductionTime().v(),
 							a.getShortTime().v());
 				}).collect(Collectors.toList());
 				record.setListShortWorkingTimeSheetExport(listExport);							

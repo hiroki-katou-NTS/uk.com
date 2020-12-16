@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
  */
 public class DeleteEmpInfoTerminalService {
 	
-	public static ResultOfDeletion create(Require require, String contractCode, int empInfoTerCode) {
+	public static ResultOfDeletion create(Require require, String contractCode, String empInfoTerCode) {
 	
 		// 1: get(契約コード、就業情報端末コード): Optional<就業情報端末>
 		Optional<EmpInfoTerminal> empInfoTerminal = require.getEmpInfoTerminal(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode));

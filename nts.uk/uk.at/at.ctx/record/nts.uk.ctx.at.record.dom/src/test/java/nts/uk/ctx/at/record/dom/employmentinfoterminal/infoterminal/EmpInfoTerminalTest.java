@@ -57,7 +57,7 @@ public class EmpInfoTerminalTest {
 	public void setUp() throws Exception {
 		empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
 				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
@@ -69,7 +69,7 @@ public class EmpInfoTerminalTest {
 
 		StampRecord recordExpect = new StampRecord(new ContractCode(""), new StampNumber("1"),
 				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""),
-				Optional.of(new EmpInfoTerminalCode(1)));
+				Optional.of(new EmpInfoTerminalCode("1")));
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
@@ -204,7 +204,7 @@ public class EmpInfoTerminalTest {
 
 		EmpInfoTerminal target = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
 				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(null).modelEmpInfoTer(ModelEmpInfoTer.NRL_1)
 						.intervalTime((new MonitorIntervalTime(1))).build();
 		NtsAssert.invokeGetters(target);

@@ -26,11 +26,7 @@ public enum FormCanUsedForTime {
 	// 勤務台帳
 	WORKBOOK(8);
 
-	public final Integer value;
-	
-	private FormCanUsedForTime(int value) {
-		this.value = value;
-	}
+	public final int value;
 
 	public static FormCanUsedForTime valueOf(Integer value) {
 		// Invalid object.

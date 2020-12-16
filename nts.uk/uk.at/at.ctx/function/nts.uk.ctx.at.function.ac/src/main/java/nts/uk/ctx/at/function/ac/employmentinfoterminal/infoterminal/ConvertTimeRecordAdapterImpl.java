@@ -27,7 +27,7 @@ public class ConvertTimeRecordAdapterImpl implements ConvertTimeRecordStampAdapt
 	private ConvertTimeRecordStampPub timeRecordStampPub;
 
 	@Override
-	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> convertData(Integer empInfoTerCode,
+	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataImport stampReceptData) {
 
 		Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData = timeRecordStampPub

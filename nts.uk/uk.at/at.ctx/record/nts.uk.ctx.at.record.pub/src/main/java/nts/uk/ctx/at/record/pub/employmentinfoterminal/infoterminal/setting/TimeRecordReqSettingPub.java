@@ -17,7 +17,7 @@ public interface TimeRecordReqSettingPub {
 	 * @param empInfoTerCode
 	 * @return
 	 */
-	public Optional<TimeRecordReqSettingExport> getTimeRecordReqSetting(Integer empInfoTerCode,
+	public Optional<TimeRecordReqSettingExport> getTimeRecordReqSetting(String empInfoTerCode,
 			String contractCode);
 
 }

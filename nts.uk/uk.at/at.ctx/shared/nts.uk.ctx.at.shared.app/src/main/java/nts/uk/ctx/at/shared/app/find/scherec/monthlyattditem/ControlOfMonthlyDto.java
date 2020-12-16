@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItems;
 
@@ -15,9 +17,9 @@ public class ControlOfMonthlyDto {
 	private String headerBgColorOfMonthlyPer;
 
 	/**時間項目の入力単位*/
-	private Integer inputUnitOfTimeItem;
+	private BigDecimal inputUnitOfTimeItem;
 	
-	public ControlOfMonthlyDto(String companyId, int itemMonthlyId, String headerBgColorOfMonthlyPer, Integer inputUnitOfTimeItem) {
+	public ControlOfMonthlyDto(String companyId, int itemMonthlyId, String headerBgColorOfMonthlyPer, BigDecimal inputUnitOfTimeItem) {
 		super();
 		this.companyId = companyId;
 		this.itemMonthlyId = itemMonthlyId;
@@ -30,7 +32,7 @@ public class ControlOfMonthlyDto {
 				domain.getCompanyId(),
 				domain.getItemMonthlyId(),
 				!domain.getHeaderBgColorOfMonthlyPer().isPresent() ?null:domain.getHeaderBgColorOfMonthlyPer().get().v(),
-				!domain.getInputUnitOfTimeItem().isPresent()?null: domain.getInputUnitOfTimeItem().get().value
+				!domain.getInputUnitOfTimeItem().isPresent() ? null: domain.getInputUnitOfTimeItem().get()
 				);
 	}
 }

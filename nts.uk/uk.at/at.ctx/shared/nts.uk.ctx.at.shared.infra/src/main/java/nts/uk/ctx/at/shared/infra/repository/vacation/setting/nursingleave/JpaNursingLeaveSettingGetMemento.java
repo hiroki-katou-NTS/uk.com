@@ -13,15 +13,16 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
  */
 public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetMemento {
-    
+
     /** The entity nursing. */
     private KnlmtNursingLeaveSet entityNursing;
-    
+
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
      *
@@ -31,10 +32,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
     public JpaNursingLeaveSettingGetMemento(KnlmtNursingLeaveSet entityNursing) {
         this.entityNursing = entityNursing;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getCompanyId()
      */
@@ -45,7 +46,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getManageType()
      */
@@ -56,7 +57,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getNursingCategory()
      */
@@ -67,18 +68,22 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getStartMonthDay()
      */
     @Override
-    public Integer getStartMonthDay() {
-        return this.entityNursing.getStartMonthDay();
+    public MonthDay getStartMonthDay() {
+       //return this.entityNursing.getStartMonthDay();
+
+    	int month = this.entityNursing.getStartMonthDay() / 100;
+    	int day = this.entityNursing.getStartMonthDay() % 100;
+    	return new MonthDay(month, day);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getMaxPersonSetting()
      */
@@ -88,18 +93,18 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
     }
 
 	@Override
-	public Optional<Integer> getSpecialHolidayFrame() {
-		return Optional.of(this.entityNursing.getSpecialHolidayFrame());
+	public Optional<Integer> getHdspFrameNo() {
+		return Optional.ofNullable(this.entityNursing.getHdspFrameNo());
 	}
 
 	@Override
-	public Optional<Integer> getWorkAbsence() {
-		return Optional.of(this.entityNursing.getWorkAbsence());
+	public Optional<Integer> getAbsenceFrameNo() {
+		return Optional.ofNullable(this.entityNursing.getAbsenceFrameNo());
 	}
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getWorkTypeCodes()
      */

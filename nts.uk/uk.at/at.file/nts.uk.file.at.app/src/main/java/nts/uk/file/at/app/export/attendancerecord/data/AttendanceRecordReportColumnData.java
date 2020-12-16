@@ -16,6 +16,12 @@ public class AttendanceRecordReportColumnData {
 	/** The uper. */
 	private String uper;
 	
+	/** The align uper. */
+	private boolean alignUper = false;
+	
 	/** The lower. */
 	private String lower;
+	
+	/** The align lower. */
+	private boolean alignLower = false;
 }

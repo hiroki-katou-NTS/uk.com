@@ -24,4 +24,6 @@ public class LogDataParamsExport {
 	private List<String> lstHeaderDto;
 	
 	private List<String> lstSubHeaderDto;
+	
+	private List<String> lstSelectedItemHeader;
 }

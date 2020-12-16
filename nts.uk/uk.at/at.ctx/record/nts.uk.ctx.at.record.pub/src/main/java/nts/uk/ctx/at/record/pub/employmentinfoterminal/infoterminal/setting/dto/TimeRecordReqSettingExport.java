@@ -20,7 +20,7 @@ public class TimeRecordReqSettingExport implements DomainAggregate {
 	 * コード
 	 */
 	@Getter
-	private final Integer terminalCode;
+	private final String terminalCode;
 
 	/**
 	 * 契約コード
@@ -164,7 +164,7 @@ public class TimeRecordReqSettingExport implements DomainAggregate {
 		/**
 		 * コード
 		 */
-		private Integer terminalCode;
+		private String terminalCode;
 
 		/**
 		 * 契約コード
@@ -269,7 +269,7 @@ public class TimeRecordReqSettingExport implements DomainAggregate {
 		@Getter
 		private  boolean reboot;
 
-		public ReqSettingBuilder(Integer terminalCode, String contractCode, CompanyId companyId, String companyCode,
+		public ReqSettingBuilder(String terminalCode, String contractCode, CompanyId companyId, String companyCode,
 				List<EmployeeId> employeeIds, List<Integer> bentoMenuFrameNumbers, List<WorkTypeCode> workTypeCodes) {
 			this.terminalCode = terminalCode;
 			this.contractCode = contractCode;

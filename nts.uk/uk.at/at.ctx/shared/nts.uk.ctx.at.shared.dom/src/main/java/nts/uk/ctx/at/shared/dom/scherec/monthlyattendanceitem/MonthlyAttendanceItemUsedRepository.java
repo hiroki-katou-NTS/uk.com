@@ -5,6 +5,7 @@ import java.util.List;
 public interface MonthlyAttendanceItemUsedRepository {
 	
 	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.勤怠項目が利用できる帳票.Repository.帳票用の月次勤怠項目の取得Repository
 	 * 	月次の勤怠項目が利用できる帳票
 	 *
 	 * @param companyId 会社ID
