@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -617,9 +618,9 @@ public class WorkInformationTest {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>( Arrays.asList(
-				new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 2),
-				new TimezoneUse(new TimeWithDayAttr(2), new TimeWithDayAttr(3), UseSetting.USE, 1),
-				new TimezoneUse(new TimeWithDayAttr(4), new TimeWithDayAttr(5), UseSetting.NOT_USE, 3)
+				new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 1),
+				new TimezoneUse(new TimeWithDayAttr(3), new TimeWithDayAttr(4), UseSetting.USE, 2),
+				new TimezoneUse(new TimeWithDayAttr(5), new TimeWithDayAttr(6), UseSetting.USE, 3)
 				));
 		
 		new Expectations() {
@@ -643,15 +644,19 @@ public class WorkInformationTest {
 				result = listTimezoneUse;
 			}
 		};
-		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
-		assertThat(result.isPresent()).isTrue();
-		assertThat(result.get().getTimeZones().size()).isEqualTo(listTimezoneUse.size()-1);
-		//workNo 1
-		assertThat(result.get().getTimeZones().get(0).getStart()).isEqualTo(listTimezoneUse.get(1).getStart());
-		assertThat(result.get().getTimeZones().get(0).getEnd()).isEqualTo(listTimezoneUse.get(1).getEnd());
-		//workNo 2
-		assertThat(result.get().getTimeZones().get(1).getStart()).isEqualTo(listTimezoneUse.get(0).getStart());
-		assertThat(result.get().getTimeZones().get(1).getEnd()).isEqualTo(listTimezoneUse.get(0).getEnd());
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		
+		assertThat( result.get().getWorkType() ).isEqualTo(workType );
+		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
+		assertThat( result.get().getTimeZones() )
+			.extracting( 
+					d -> d.getStart().v(),
+					d -> d.getEnd().v() )
+			.containsExactly(
+					tuple( 1, 2),
+					tuple( 3, 4),
+					tuple( 5, 6));
+		
 	}
 
 
