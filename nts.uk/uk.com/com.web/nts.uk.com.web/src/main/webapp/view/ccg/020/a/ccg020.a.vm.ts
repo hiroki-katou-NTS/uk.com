@@ -183,6 +183,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       vm.get10LastResults();
       $('#popup-search').ntsPopup('show');
+      $("#popup-search-category").ntsPopup("hide");
     }
 
     submit() {
