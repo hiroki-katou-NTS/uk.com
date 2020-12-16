@@ -241,16 +241,16 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	
+
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSet;
-	
+
 	@Inject
 	private FlowWorkSettingRepository flowWorkSet;
-	
+
 	@Inject
-	private FlexWorkSettingRepository flexWorkSet ;
-	
+	private FlexWorkSettingRepository flexWorkSet;
+
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
@@ -317,7 +317,7 @@ public class ScheduleCreatorExecutionTransaction {
 					CompletionStatus.INTERRUPTION);
 
 			asyncTask.finishedAsCancelled();
-			
+
 			return;
 		} else {
 			// else 中断じゃない
@@ -665,7 +665,8 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務情報が正常な状態かをチェックする
 
 				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
+						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
+						predetemineTimeSet);
 				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 				// 正常の場合
@@ -1476,13 +1477,7 @@ public class ScheduleCreatorExecutionTransaction {
 			WorkScheduleMasterReferenceAtr referenceBasicWork, GeneralDate dateInPeriod,
 			List<ExClassificationHistoryImported> mapClassificationHist,
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
-		
-//		WorkScheduleMasterReferenceAtr workplaceHistItem = itemDto.get().getScheduleMethod().get()
-//				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
-//
-//		WorkScheduleMasterReferenceAtr referenceBasicWork = itemDto.get().getScheduleMethod().get()
-//				.getWorkScheduleBusCal().get().getReferenceBasicWork();
-//		
+
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
 		// điều kiện 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
@@ -1692,16 +1687,16 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Inject
 		private BasicScheduleService basicScheduleService;
-		
+
 		@Inject
 		private FixedWorkSettingRepository fixedWorkSet;
-		
+
 		@Inject
 		private FlowWorkSettingRepository flowWorkSet;
-		
+
 		@Inject
-		private FlexWorkSettingRepository flexWorkSet ;
-		
+		private FlexWorkSettingRepository flexWorkSet;
+
 		@Inject
 		private PredetemineTimeSettingRepository predetemineTimeSet;
 
@@ -1724,7 +1719,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting =  flowWorkSet.find(companyId, code.v());
+			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
 			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 

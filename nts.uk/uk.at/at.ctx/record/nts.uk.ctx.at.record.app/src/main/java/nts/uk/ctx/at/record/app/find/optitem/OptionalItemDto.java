@@ -5,14 +5,17 @@
 package nts.uk.ctx.at.record.app.find.optitem;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -40,9 +43,6 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	/** The usage classification. */
 	private int usageAtr;
 
-	/** The calculation atr. */
-	private int calcAtr;
-
 	/** The emp condition classification. */
 	private int empConditionAtr;
 
@@ -57,6 +57,15 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/** The unit. */
 	private String unit;
+	
+	/** The calAtr */
+	private int calAtr;
+	
+	/** The note */
+	private String note;
+	
+	/** The description */
+	private String description;
 
 	/*
 	 * (non-Javadoc)
@@ -119,16 +128,6 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemSetMemento#
-	 * setCalcAtr(nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr)
-	 */
-	@Override
-	public void setCalcAtr(CalcUsageAtr calcAtr) {
-		this.calcAtr = calcAtr.value;
-	}
-	
-	/*
-	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.timeitemmanagement.OptionalItemSetMemento#
 	 * setEmpConditionClassification(nts.uk.ctx.at.shared.dom.timeitemmanagement
@@ -172,7 +171,22 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 * ctx.at.record.dom.optitem.UnitOfOptionalItem)
 	 */
 	@Override
-	public void setUnit(UnitOfOptionalItem unit) {
-		this.unit = unit.v();
+	public void setUnit(Optional<UnitOfOptionalItem> unit) {
+		this.unit = unit.isPresent() ? unit.get().v() : null;
 	}
+
+    @Override
+    public void setCalAtr(CalculationClassification calAtr) {
+        this.calAtr = calAtr.value;
+    }
+
+    @Override
+    public void setNote(Optional<NoteOptionalItem> note) {
+        this.note = note.isPresent() ? note.get().v() : null;
+    }
+
+    @Override
+    public void setDescription(Optional<DescritionOptionalItem> description) {
+        this.description = description.isPresent() ? description.get().v() : null;
+    }
 }

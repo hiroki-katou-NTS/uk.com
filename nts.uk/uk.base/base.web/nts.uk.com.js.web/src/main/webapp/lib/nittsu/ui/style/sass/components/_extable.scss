@@ -10,7 +10,7 @@
 	font-weight: bold;
 }
 .extable td.edit-cell {
-	padding: 0px;
+	padding: 0px !important;
 }
 .extable div.edited, .extable td.edited {
 	background-color: #FAD7A0;
@@ -185,6 +185,10 @@ div .ex-area-line.x-stay {
     cursor: pointer;
 }
 
+.x-button {
+	height: 24px;
+}
+
 .x-cell-overflow {
   position: absolute;
   display: inline-block;
@@ -211,4 +215,14 @@ div .ex-area-line.x-stay {
 
 .red-corner-mark {
 	background-image: linear-gradient(135deg, red, red 5px, transparent 5px, transparent);
+}
+
+.chart-name {
+	font-size: 0.8rem;
+	max-width: 50px;
+	vertical-align: top;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+	margin-left: 5px;
 }
