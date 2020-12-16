@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class AttendanceRecordAddCommand {
+	String layoutId;
 	List<SingleAttendanceRecordAddCommand> singleList;
 	List<CalculateAttendanceRecordAddCommand> calculateList;
 }

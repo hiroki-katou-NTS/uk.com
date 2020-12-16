@@ -15,4 +15,8 @@ public class DisplayWorkplace {
 	private String code;
 	
 	private String id;
+	
+	private String name;
+	
+	private String hierarchyCode;
 }

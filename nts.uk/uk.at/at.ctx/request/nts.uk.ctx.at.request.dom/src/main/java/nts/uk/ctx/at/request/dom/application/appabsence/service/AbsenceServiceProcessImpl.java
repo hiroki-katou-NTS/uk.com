@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +14,11 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.*;
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.val;
+import lombok.experimental.var;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -25,6 +30,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCh
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaGrantRemainingImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -32,13 +42,25 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
@@ -47,10 +69,28 @@ import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.Check
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.DateSpecHdRelationOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.SpecialHolidayEventAlgorithm;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess.RequireM4;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SixtyHourSettingOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -75,14 +115,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private AcquisitionRuleRepository repoAcquisitionRule;
 //	@Inject
 //	private GetClosureStartForEmployee getClosureStartForEmp;
-//	@Inject
-//	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-//	@Inject
-//	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
-//	@Inject
-//	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
-//	@Inject
-//	private ReserveLeaveManagerApdater rsvLeaMngApdater;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
+	@Inject
+	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
+	@Inject
+	private ReserveLeaveManagerApdater rsvLeaMngApdater;
 	
 	@Inject
 	private HolidayApplicationSettingRepository hdAppSetRepository;
@@ -125,6 +165,24 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject 
 	private WorkTimeSettingService weorkTimeSettingService;
+	
+	@Inject
+	private VacationApplicationReflectRepository vacationAppReflectRepository;
+	
+	@Inject
+	private HolidayApplicationSettingRepository hdSetRepo;
+	
+	@Inject
+	private AbsenceTenProcessCommon absenceCommon;
+	
+	@Inject
+	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+	
+	@Inject
+	private ComSubstVacationRepository comSubstVacationRepository;
+	
+	@Inject
+	private RemainNumberTempRequireService requireService;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -184,30 +242,102 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate) {
-//		//A4_3 - 年休設定
-//		boolean isYearManage = false;
-//		//A4_4 - 代休管理設定
-//		boolean isSubHdManage = false;
-//		//A4_5 - 振休管理設定
-//		boolean isSubVacaManage = false;
-//		//A4_8 - 積立年休設定
-//		boolean isRetentionManage = false;
-//		//10-1.年休の設定を取得する
-//		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
-//		isYearManage = annualHd.isYearHolidayManagerFlg();
-//		//10-4.積立年休の設定を取得する
-//		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
-//		//10-2.代休の設定を取得する
-//		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
-//		isSubHdManage = subHd.isSubstitutionFlg();
-//		//10-3.振休の設定を取得する
-//		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
-//		isSubVacaManage = leaveSet.isSubManageFlag();
-//		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
-		return null;
+	    val require = requireService.createRequire();
+	    val cache = new CacheCarrier();
+	    
+	    // 10-1.年休の設定を取得する
+	    AnnualHolidaySetOutput annualHolidaySetOutput = AbsenceTenProcess.getSettingForAnnualHoliday(require, companyID);
+	    
+	    // 10-4.積立年休の設定を取得する
+	    boolean isYearlyReserve = AbsenceTenProcess.getSetForYearlyReserved(require, cache, companyID, sID, baseDate);
+	    
+	    // 10-2.代休の設定を取得する
+	    SubstitutionHolidayOutput substituationHoliday =  AbsenceTenProcess.getSettingForSubstituteHoliday(require, cache, companyID, sID, baseDate);
+	    
+	    // 10-3.振休の設定を取得する
+	    LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cache, companyID, sID, baseDate);
+//	    LeaveSetOutput leaveSet = null;
+	    
+	    // 10-5.60H超休の設定を取得する
+	    SixtyHourSettingOutput setting60H = absenceCommon.getSixtyHourSetting(companyID, sID, baseDate);
+	    
+	    // 子看護介護の設定の取得
+	    NursingLeaveSetting childNursingLeaveSetting = this.getNursingLeaveSetting(companyID, NursingCategory.ChildNursing);
+	    
+	    // 子看護介護の設定の取得
+	    NursingLeaveSetting nursingLeaveSetting = this.getNursingLeaveSetting(companyID, NursingCategory.Nursing);
+	    
+	    // 代休の紐付け管理区分を取得する
+	    CompensatoryLeaveComSetting compensatoryLeaveComSetting = this.getCompLeaveComSetting(companyID);
+	    
+	    // 振休の紐付け管理区分を取得する
+	    ComSubstVacation comSubstVacation = this.getComSubstVacation(companyID);
+	    
+	    // OUTPUTを作成して返す
+	    AnualLeaveManagement annualLeaveManagement = new AnualLeaveManagement(
+	            EnumAdaptor.valueOf(annualHolidaySetOutput.getTimeYearRest(), TimeDigestiveUnit.class), 
+	            EnumAdaptor.valueOf(annualHolidaySetOutput.isSuspensionTimeYearFlg() ? 1 : 0, ManageDistinct.class),
+	            EnumAdaptor.valueOf(annualHolidaySetOutput.isYearHolidayManagerFlg() ? 1 : 0, ManageDistinct.class));
+	    
+	    AccumulatedRestManagement accumulatedRestManagement = new AccumulatedRestManagement(
+	            EnumAdaptor.valueOf(isYearlyReserve ? 1 : 0, ManageDistinct.class));
+	    
+	    SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(
+	            EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class), 
+	            EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class), 
+	            compensatoryLeaveComSetting.getIsManaged(), 
+	            EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
+	    
+	    HolidayManagement holidayManagement = new HolidayManagement(
+	            comSubstVacation.getSetting().getIsManage(), 
+	            EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
+	    
+	    Overtime60HManagement overtime60hManagement = new Overtime60HManagement(
+	            EnumAdaptor.valueOf(setting60H.isSixtyHourOvertimeMngDistinction() ? 1 : 0, ManageDistinct.class), 
+	            EnumAdaptor.valueOf(setting60H.getSixtyHourOverDigestion(), TimeDigestiveUnit.class));
+	    
+	    NursingCareLeaveManagement nursingCareLeaveManagement = new NursingCareLeaveManagement(
+	            childNursingLeaveSetting.getManageType(), 
+	            // Mock data START
+	            TimeDigestiveUnit.OneHour, 
+	            ManageDistinct.YES, 
+	            TimeDigestiveUnit.OneHour, 
+	            ManageDistinct.YES, 
+	            // Mock data END
+	            nursingLeaveSetting.getManageType());
+	    
+		return new CheckDispHolidayType(
+		        annualLeaveManagement, 
+		        accumulatedRestManagement, 
+		        substituteLeaveManagement, 
+		        holidayManagement, 
+		        overtime60hManagement, 
+		        nursingCareLeaveManagement);
 	}
 	
-	@Override
+	private ComSubstVacation getComSubstVacation(String companyID) {
+	    Optional<ComSubstVacation> comSubstVacationOpt = comSubstVacationRepository.findById(companyID);
+        return comSubstVacationOpt.orElse(null);
+    }
+
+    private CompensatoryLeaveComSetting getCompLeaveComSetting(String companyID) {
+        val require = requireService.createRequire();
+	    CompensatoryLeaveComSetting setting = require.compensatoryLeaveComSetting(companyID);
+	    
+        return setting;
+    }
+
+    private NursingLeaveSetting getNursingLeaveSetting(String companyID, NursingCategory nursingType) {
+	    // ドメインモデル「介護看護休暇設定」を取得する (Lấy domain NursingLeaveSetting)
+	    List<NursingLeaveSetting> nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyId(companyID)
+	            .stream().filter(setting -> setting.getNursingCategory().equals(nursingType))
+	            .collect(Collectors.toList());
+	    
+	    
+        return nursingLeaveSettings.size() > 0 ? nursingLeaveSettings.get(0) : null;
+    }
+
+    @Override
 	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
 			boolean subHdManage, Double subVacaRemain, Double subHdRemain) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
@@ -314,92 +444,113 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
-			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage) {
-//		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-//		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
-//		if(!closure.isPresent()){
-//			return new NumberOfRemainOutput(null, null, null, null);
-//		}
-//		//年休残数
-//		Double yearRemain = null;
-//		//代休残数
-//		Double subHdRemain = null;
-//		//振休残数
-//		Double subVacaRemain = null;
-//		//ストック休暇残数
-//		Double stockRemain = null;
-//		GeneralDate closureDate = closure.get();
-//		
-//		//1
-//		if(subVacaManage){//output．振休管理区分が管理する
-//			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
-//			//・会社ID＝ログイン会社ID
-////			・社員ID＝申請者社員ID
-////			・集計開始日＝締め開始日
-////			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
-////			・モード＝その他モード
-////			・基準日＝申請開始日
-////			・上書きフラグ＝false
-//			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-//					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-//			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
-//			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
-//			subVacaRemain = subVaca.getRemainDays();//残日数
-//		}
-//		
-//		//2
-//		if(subHdManage){//output．代休管理区分が管理する
-//			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
-//			//・会社ID＝ログイン会社ID
-////			・社員ID＝申請者社員ID
-////			・集計開始日＝締め開始日
-////			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
-////			・モード＝その他モード
-////			・基準日＝申請開始日
-////			・上書きフラグ＝false
-//			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-//					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-//			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
-//			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
-//			subHdRemain = subHd.getRemainDays();
-//		}
-//		
-//		//3
-//		if(retentionManage){//output．積休管理区分が管理する
-//			//基準日時点の積立年休残数を取得する - RQ201
-//			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
-//			if(stock.isPresent()){
-//				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
-//				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
-//				if(stock.get().getGrantRemainingList().size() > 0){
-//					stockRemain = new Double(0L);
-//					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
-//						stockRemain = stockRemain + rsv.getRemainingNumber();
-//					}
-//				}
-//			}
-//		}
-//		
-//		//4
-//		if(yearManage){//output．年休管理区分が管理する
-//			//基準日時点の年休残数を取得する - RQ198
-//			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
-//			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
-//			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
-//				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
-//		}
+	        ManageDistinct annualLeaveManageDistinct, ManageDistinct accumulatedManage, ManageDistinct substituteLeaveManagement, 
+	        ManageDistinct holidayManagement, ManageDistinct overrest60HManagement, ManageDistinct childNursingManagement, 
+	        ManageDistinct longTermCareManagement) {
+	    val require = requireService.createRequire();
+	    val cache = new CacheCarrier();
+	    
+		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
+		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cache, employeeID);
+		if(!closure.isPresent()){
+			return new NumberOfRemainOutput(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		}
+		//年休残数
+		Double yearRemain = null;
+		//代休残数
+		Double subHdRemain = null;
+		//振休残数
+		Double subVacaRemain = null;
+		//ストック休暇残数
+		Double stockRemain = null;
+		GeneralDate closureDate = closure.get();
+		
+		//1
+		if(holidayManagement.equals(ManageDistinct.YES)){//output．振休管理区分が管理する
+			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
+			//・会社ID＝ログイン会社ID
+//			・社員ID＝申請者社員ID
+//			・集計開始日＝締め開始日
+//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
+//			・モード＝その他モード
+//			・基準日＝申請開始日
+//			・上書きフラグ＝false
+			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(require, cache, paramInput);
+			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
+			subVacaRemain = subVaca.getRemainDays();//残日数
+		}
+		
+		//2
+		if(substituteLeaveManagement.equals(ManageDistinct.YES)){//output．代休管理区分が管理する
+			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
+			//・会社ID＝ログイン会社ID
+//			・社員ID＝申請者社員ID
+//			・集計開始日＝締め開始日
+//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
+//			・モード＝その他モード
+//			・基準日＝申請開始日
+//			・上書きフラグ＝false
+			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(require, cache, inputParam);
+			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
+			subHdRemain = subHd.getRemainDays();
+		}
+		
+		//3
+		if(accumulatedManage.equals(ManageDistinct.YES)){//output．積休管理区分が管理する
+			//基準日時点の積立年休残数を取得する - RQ201
+			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
+			if(stock.isPresent()){
+				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
+				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
+				if(stock.get().getGrantRemainingList().size() > 0){
+					stockRemain = new Double(0L);
+					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
+						stockRemain = stockRemain + rsv.getRemainingNumber();
+					}
+				}
+			}
+		}
+		
+		//4
+		if(annualLeaveManageDistinct.equals(ManageDistinct.YES)){//output．年休管理区分が管理する
+			//基準日時点の年休残数を取得する - RQ198
+			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
+			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
+			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
+				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
+		}
+		
+		if (overrest60HManagement.equals(ManageDistinct.YES)) {
+		    
+		}
+		
+		if (childNursingManagement.equals(ManageDistinct.YES)) {
+		    
+		}
+		
+		if (longTermCareManagement.equals(ManageDistinct.YES)) {
+		    
+		}
 //        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
-		return null;
+		return new NumberOfRemainOutput(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 	}
 
 	@Override
 	public HolidayRequestSetOutput getHolidayRequestSet(String companyID) {
 		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
-		HolidayApplicationSetting hdAppSet = hdAppSetRepository.findSettingByCompanyId(companyID).get();
-		// ドメインモデル「申請理由表示」を取得する(lấy dữ liệu domain 「申請理由表示」)
-		List<DisplayReason> displayReasonLst = displayRep.findByCompanyId(companyID);
+//		HdAppSet hdAppSet = hdAppSetRepository.getAll().get();
+	    HolidayApplicationSetting hdAppSet = hdSetRepo.findSettingByCompanyId(companyID).orElseGet(null);
+//		// ドメインモデル「申請理由表示」を取得する(lấy dữ liệu domain 「申請理由表示」)
+//		List<DisplayReason> displayReasonLst = displayRep.findDisplayReason(companyID);
+		
+		// ドメインモデル「休暇申請の反映」を取得する
+		VacationApplicationReflect vacationApplicationReflect = vacationAppReflectRepository.findReflectByCompanyId(companyID).orElse(null);
 		// 取得した情報を返す
-		return new HolidayRequestSetOutput(hdAppSet, displayReasonLst);
+		return new HolidayRequestSetOutput(hdAppSet, vacationApplicationReflect);
 	}
 
 	@Override
@@ -411,20 +562,32 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				companyID, 
 				employeeID, 
 				date, 
-				checkDispHolidayType.isYearManage(), 
-				checkDispHolidayType.isSubHdManage(), 
-				checkDispHolidayType.isSubVacaManage(), 
-				checkDispHolidayType.isRetentionManage());
+				checkDispHolidayType.getAnnAnualLeaveManagement().getAnnualLeaveManageDistinct(), 
+				checkDispHolidayType.getAccumulatedRestManagement().getAccumulatedManage(), 
+				checkDispHolidayType.getSubstituteLeaveManagement().getSubstituteLeaveManagement(), 
+				checkDispHolidayType.getHolidayManagement().getHolidayManagement(), 
+				checkDispHolidayType.getOvertime60hManagement().getOverrest60HManagement(), 
+				checkDispHolidayType.getNursingCareLeaveManagement().getChildNursingManagement(), 
+				checkDispHolidayType.getNursingCareLeaveManagement().getLongTermCareManagement());
 		// 取得した情報もとに「休暇残数情報」にセットして返す
 		return new RemainVacationInfo(
-				checkDispHolidayType.isYearManage(), 
-				checkDispHolidayType.isSubHdManage(), 
-				checkDispHolidayType.isSubVacaManage(), 
-				checkDispHolidayType.isRetentionManage(), 
-				numberOfRemainOutput.getYearRemain() == null ? new Double(0) : numberOfRemainOutput.getYearRemain(), 
-				numberOfRemainOutput.getSubHdRemain() == null ? new Double(0) : numberOfRemainOutput.getSubHdRemain(), 
-				numberOfRemainOutput.getSubVacaRemain() == null ? new Double(0) : numberOfRemainOutput.getSubVacaRemain(), 
-				numberOfRemainOutput.getStockRemain() == null ? new Double(0) : numberOfRemainOutput.getStockRemain());
+		        checkDispHolidayType.getAnnAnualLeaveManagement(), 
+                checkDispHolidayType.getAccumulatedRestManagement(), 
+                checkDispHolidayType.getSubstituteLeaveManagement(), 
+                checkDispHolidayType.getHolidayManagement(), 
+                checkDispHolidayType.getOvertime60hManagement(), 
+                checkDispHolidayType.getNursingCareLeaveManagement(), 
+                Optional.ofNullable(numberOfRemainOutput.getYearRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getYearHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getSubHdRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getSubVacaRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getSubVacaHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getSubHdHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getOver60HHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getChildNursingRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getChildNursingHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getNursingRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getNursingHourRemain()));
 	}
 
 	@Override
@@ -539,32 +702,34 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, Optional<String> workTypeCD) {
-		// INPUT．「休暇申請起動時の表示情報．選択中の勤務種類」にセットする
-		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypeCD);
-		// 就業時間帯の表示制御フラグを確認する
-		boolean controlDispWorkingHours = appAbsenceFourProcess.getDisplayControlWorkingHours(
-				workTypeCD.orElse(null), 
-				Optional.of(appAbsenceStartInfoOutput.getHdAppSet()), 
-				companyID);
-		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
-		appAbsenceStartInfoOutput.setWorkHoursDisp(controlDispWorkingHours);
-		// INPUT．「休暇種類」をチェックする
-		if(holidayType == HolidayAppType.SPECIAL_HOLIDAY) {
-			// 特別休暇の上限情報取得する
-			appAbsenceStartInfoOutput = this.getSpecAbsenceUpperLimit(companyID, appAbsenceStartInfoOutput, workTypeCD);
-		}
-		// 取得した「就業時間帯表示フラグ」を確認する
-		if(controlDispWorkingHours) {
-			// 就業時間帯変更時処理
-			appAbsenceStartInfoOutput = this.workTimesChangeProcess(
-					companyID, 
-					appAbsenceStartInfoOutput, 
-					workTypeCD.get(), 
-					appAbsenceStartInfoOutput.getSelectedWorkTimeCD(), 
-					holidayType);
-		}
-		// 返ってきた「休暇申請起動時の表示情報」を返す
-		return appAbsenceStartInfoOutput;
+//		// INPUT．「休暇申請起動時の表示情報．選択中の勤務種類」にセットする
+//		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypeCD);
+//		// 就業時間帯の表示制御フラグを確認する
+//		boolean controlDispWorkingHours = appAbsenceFourProcess.getDisplayControlWorkingHours(
+//				workTypeCD.orElse(null), 
+//				Optional.of(appAbsenceStartInfoOutput.getHdAppSet()), 
+//				companyID);
+//		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
+//		appAbsenceStartInfoOutput.setWorkHoursDisp(controlDispWorkingHours);
+//		// INPUT．「休暇種類」をチェックする
+//		if(holidayType == HolidayAppType.SPECIAL_HOLIDAY) {
+//			// 特別休暇の上限情報取得する
+//			appAbsenceStartInfoOutput = this.getSpecAbsenceUpperLimit(companyID, appAbsenceStartInfoOutput, workTypeCD);
+//		}
+//		// 取得した「就業時間帯表示フラグ」を確認する
+//		if(controlDispWorkingHours) {
+//			// 就業時間帯変更時処理
+//			appAbsenceStartInfoOutput = this.workTimesChangeProcess(
+//					companyID, 
+//					appAbsenceStartInfoOutput, 
+//					workTypeCD.get(), 
+//					appAbsenceStartInfoOutput.getSelectedWorkTimeCD(), 
+//					holidayType);
+//		}
+//		// 返ってきた「休暇申請起動時の表示情報」を返す
+//		return appAbsenceStartInfoOutput;
+	    
+	    return null;
 	}
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
@@ -1133,4 +1298,26 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		absenceCheckRegisterOutput.setHolidayDateLst(holidayDateLst);
 		return absenceCheckRegisterOutput;
 	}
+
+    @Override
+    public AppAbsenceStartInfoOutput getVacationActivation(String companyID,
+            AppDispInfoStartupOutput appDispInfoStartupOutput) {
+        
+        // 休暇申請設定を取得する
+        HolidayRequestSetOutput holidayRequestSetOutput = this.getHolidayRequestSet(companyID);
+        
+        // 休暇残数情報を取得する
+        RemainVacationInfo remainInfo = this.getRemainVacationInfo(companyID, 
+                appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+                appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+        
+        // 取得した情報もとに「休暇残数情報」にセットして返す
+        AppAbsenceStartInfoOutput output = new AppAbsenceStartInfoOutput();
+        output.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+        output.setHdAppSet(holidayRequestSetOutput.getHdAppSet());
+        output.setVacationAppReflect(holidayRequestSetOutput.getVacationAppReflect());
+        output.setRemainVacationInfo(remainInfo);
+        
+        return output;
+    }
 }
