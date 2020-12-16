@@ -251,17 +251,17 @@ module nts.uk.at.view.kdm001.i.viewmodel {
          * closeDialog
          */
         public submitData() {
-            let self = this;
+            const vm = this;
             errors.clearAll();
-            if (self.checkedHoliday()) {
+            if (vm.checkedHoliday()) {
                 $("#I6_1").trigger("validate");
                 $("#I6_3").trigger("validate");
                 $("#I8_1").trigger("validate");
             }
-            if (self.checkedSubHoliday()) {
+            if (vm.checkedSubHoliday()) {
                 $("#I11_1").trigger("validate");
                 $("#I11_3").trigger("validate");
-                if (self.checkedSplit()) {
+                if (vm.checkedSplit()) {
                     $("#I12_2").trigger("validate");
                     $("#I12_4").trigger("validate");
                 }
@@ -269,27 +269,31 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             if (!errors.hasError()) {
                 block.invisible();
 
-                const linkingDates = _.map(self.displayLinkingDate(), item => moment.utc(item.outbreakDay).format('YYYY-MM-DD'));
-
+                const linkingDates = _.map(vm.displayLinkingDate(), item => moment.utc(item.outbreakDay).format('YYYY-MM-DD'));
+                const selectedCodeHoliday: number = vm.checkedHoliday() ? vm.selectedCodeHoliday() : 0;0;
+                const selectedCodeSubHoliday: number = vm.checkedSubHoliday() ? vm.selectedCodeSubHoliday() : 0.0;
+                const selectedCodeOptionSubHoliday: number = vm.checkedSplit() ? parseFloat(vm.selectedCodeOptionSubHoliday()) : 0.0;
+                const linkingDate: number = _.reduce(vm.displayLinkingDate(), (sum, item) => sum + item.dateOfUse, 0);
+                const dayRemaining = linkingDate + selectedCodeHoliday - selectedCodeSubHoliday - selectedCodeOptionSubHoliday;
                 let data = {
-                    employeeId: self.employeeId(),
-                    checkedHoliday: self.checkedHoliday(),
-                    dateHoliday: moment.utc(self.dateHoliday(), 'YYYY/MM/DD').toISOString(),
-                    selectedCodeHoliday: self.selectedCodeHoliday(),
-                    duedateHoliday: moment.utc(self.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
-                    checkedSubHoliday: self.checkedSubHoliday(),
-                    dateSubHoliday: moment.utc(self.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
-                    selectedCodeSubHoliday: self.selectedCodeSubHoliday(),
-                    checkedSplit: self.checkedSplit(),
-                    dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
-                    selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
-                    dayRemaining: parseFloat(self.dayRemaining()),
-                    closureId: self.closureId(),
+                    employeeId: vm.employeeId(),
+                    checkedHoliday: vm.checkedHoliday(),
+                    dateHoliday: moment.utc(vm.dateHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeHoliday: vm.selectedCodeHoliday(),
+                    duedateHoliday: moment.utc(vm.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
+                    checkedSubHoliday: vm.checkedSubHoliday(),
+                    dateSubHoliday: moment.utc(vm.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeSubHoliday: vm.selectedCodeSubHoliday(),
+                    checkedSplit: vm.checkedSplit(),
+                    dateOptionSubHoliday: moment.utc(vm.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeOptionSubHoliday: vm.selectedCodeOptionSubHoliday(),
+                    dayRemaining: dayRemaining,
+                    closureId: vm.closureId(),
                     lstLinkingDate: linkingDates,
-                    linkingDate: self.linkingDate(),
-                    displayRemainDays: self.displayRemainDays()
+                    linkingDate: vm.linkingDate(),
+                    displayRemainDays: vm.displayRemainDays()
                 };
-                if (!self.checkedSubHoliday()) {
+                if (!vm.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
                 }
                 service.add(data).done(result => {

@@ -42,8 +42,8 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	
 	private static final String DELETE_BY_SID = "DELETE FROM KrcmtLeaveDayOffMana a"
 			+ " WHERE (a.krcmtLeaveDayOffManaPK.sid = :sid1 OR a.krcmtLeaveDayOffManaPK.sid = :sid2)"
-			+ " AND a.krcmtLeaveDayOffManaPK.occDate IN :occDates"
-			+ " AND a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates";
+			+ " AND (a.krcmtLeaveDayOffManaPK.occDate IN :occDates"
+			+ " OR a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates)";
 	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
@@ -211,8 +211,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 					.setParameter("sid", sid)
 					.setParameter("lstDigestDate", lstDigestDate)
 					.getList();
-		}
-		else if (!lstOccDate.isEmpty() && lstDigestDate.isEmpty()) {
+		} else if (!lstOccDate.isEmpty() && lstDigestDate.isEmpty()) {
 			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate");
 			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)

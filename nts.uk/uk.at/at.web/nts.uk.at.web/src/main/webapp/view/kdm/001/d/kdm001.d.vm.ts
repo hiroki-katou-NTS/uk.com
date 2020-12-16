@@ -208,26 +208,32 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         }
         
         public submitForm() {
-            let self = this;
-            const linkingDates = _.map(self.displayLinkingDate(), item => moment.utc(item.outbreakDay).format('YYYY-MM-DD'));
+            let vm = this;
+            block.invisible();
+            const linkingDates = _.map(vm.displayLinkingDate(), item => moment.utc(item.outbreakDay).format('YYYY-MM-DD'));
+            const occurredDays: number = vm.pickUp() ? vm.occurredDays() : 0;
+            const subDays: number = vm.pause() ? vm.subDays() : 0.0;
+            const requiredDays: number = vm.checkedSplit() ? vm.requiredDays() : 0;
+            const linkingDate: number = _.reduce(vm.displayLinkingDate(), (sum, item) => sum + item.dateOfUse, 0);
+            const dayRemaining = linkingDate + occurredDays - subDays - requiredDays;
             let data = {
-                employeeId: self.employeeId(),
-                pickUp: self.pickUp(),
-                dayOff: moment.utc(self.dayOff(), 'YYYY/MM/DD').toISOString(),
-                occurredDays: self.occurredDays(),
-                expiredDate: moment.utc(self.expiredDate(), 'YYYY/MM/DD').toISOString(),
-                pause: self.pause(),
-                subDayoffDate: moment.utc(self.subDayoffDate(), 'YYYY/MM/DD').toISOString(),
-                lawAtr: self.lawAtr(),
-                requiredDays: self.requiredDays(),
-                remainDays: self.remainDays(),
-                checkedSplit: self.checkedSplit(),
-                closureId: self.closureId(),
-                holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
-                subDays: self.subDays(),
+                employeeId: vm.employeeId(),
+                pickUp: vm.pickUp(),
+                dayOff: moment.utc(vm.dayOff(), 'YYYY/MM/DD').toISOString(),
+                occurredDays: vm.occurredDays(),
+                expiredDate: moment.utc(vm.expiredDate(), 'YYYY/MM/DD').toISOString(),
+                pause: vm.pause(),
+                subDayoffDate: moment.utc(vm.subDayoffDate(), 'YYYY/MM/DD').toISOString(),
+                lawAtr: vm.lawAtr(),
+                requiredDays: vm.requiredDays(),
+                remainDays: dayRemaining,
+                checkedSplit: vm.checkedSplit(),
+                closureId: vm.closureId(),
+                holidayDate: moment.utc(vm.holidayDate(), 'YYYY/MM/DD').toISOString(),
+                subDays: vm.subDays(),
                 linkingDates: linkingDates,
-                linkingDate: self.linkingDate(),
-                displayRemainDays: self.displayRemainDays()
+                linkingDate: vm.linkingDate(),
+                displayRemainDays: vm.displayRemainDays()
             };
             
             service.save(data).done(result => {
@@ -286,7 +292,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             })
             .fail((res: any) => {
                 dialog.info(res).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
-            });
+            })
+            .always(() => block.clear());
         }
         
         public checked() {

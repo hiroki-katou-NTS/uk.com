@@ -426,7 +426,7 @@ public class ExtraHolidayManagementService {
 			// List＜休出代休紐付け管理＞を絞り込みする  Filter List＜代休管理データ＞
 			List<LeaveComDayOffManagement> lcdomList = listLeaveComDayOffManagement.stream()
 					.filter(item -> cdomdData.getDayOffDate().getDayoffDate().isPresent()
-								? item.getAssocialInfo().getDateOfUse().compareTo(cdomdData.getDayOffDate().getDayoffDate().get()) == 0
+								? cdomdData.getDayOffDate().getDayoffDate().get().equals(item.getAssocialInfo().getDateOfUse())
 								: false)
 					.collect(Collectors.toList());
 			
@@ -455,7 +455,7 @@ public class ExtraHolidayManagementService {
 				continue;
 			}
 			List<GeneralDate> dayOffs = lcdomList.stream()
-					.map(x -> x.getAssocialInfo().getDateOfUse())
+					.map(x -> x.getAssocialInfo().getOutbreakDay())
 					.collect(Collectors.toList());
 			// ドメインモデル「休出管理データ」を取得する Get domain model 「休出管理データ」
 			List<LeaveManagementData> manaDataList = leaveManaDataRepository.getBySidAndDatOff(sid, dayOffs);

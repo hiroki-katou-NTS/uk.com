@@ -420,17 +420,15 @@ public class PayoutManagementDataService {
 		for (SubstitutionOfHDManagementData substitutionOfHDManagementData : substitutionOfHDManagementDatas) {
 			// 取得したList＜振出管理データ＞をループする
 			for (PayoutManagementData x : lstRecconfirm) {
+				Double oldUnUseDay = x.getUnUsedDays().v();
+				Double requiredDay = substitutionOfHDManagementData.getRequiredDays().v();
 				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
-				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) > 0) {
-					unUseDay = x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v();
-				} else if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) <= 0 || unUseDay > 0) {
-					unUseDay = 0;
-				}
+				unUseDay = oldUnUseDay - requiredDay >= 0 ? oldUnUseDay - requiredDay : 0d;
 
-				// ・未使用日数　＝　計算した振休管理データ
-				x.setRemainNumber(unUseDay);
 				// ・振休消化区分　＝　消化済み
 				x.setStateAtr(DigestionAtr.USED.value);
+				// ・未使用日数　＝　計算した振休管理データ
+				x.setRemainNumber(unUseDay);
 
 				// ループ中ドメインモデル「振出管理データ」を更新する Update domain model 「振出管理データ」 trong vòng lặp
 				this.confirmRecMngRepo.update(x);
@@ -439,9 +437,11 @@ public class PayoutManagementDataService {
 				PayoutSubofHDManagement payoutSubofHDManagement = new PayoutSubofHDManagement(employeeId //	社員ID　＝　Input．社員ID
 						, x.getPayoutDate().getDayoffDate().orElse(null)								 //	 紐付け情報．発生日　＝　ループ中の振出管理データ．振出日
 						, substitutionOfHDManagementData.getHolidayDate().getDayoffDate().orElse(null)	 //	紐付け情報．使用日　＝　ループ中の振休管理データ．振休日
-						, substitutionOfHDManagementData.getRequiredDays().v()							 //	紐付け情報．使用日数　＝　ループ中の振休管理データ．必要日数
+						, oldUnUseDay >= requiredDay													 // 紐付け情報．使用日数　＝　
+							? substitutionOfHDManagementData.getRequiredDays().v() 						 // ループ中の振出管理データ．未使用日数　＞＝　ループ中の振休管理データ．必要日数　－＞　ループ中の振休管理データ．必要日数
+							: oldUnUseDay														 		 //	Else　－＞　ループ中の振出管理データ．未使用日数
 						, TargetSelectionAtr.MANUAL.value);												 //	紐付け情報．対象選択区分　＝　手動
-				
+
 				// 	ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
 				boolean insertState = this.addPayoutSub(payoutSubofHDManagement);
 				if (insertState) {

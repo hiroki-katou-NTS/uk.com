@@ -71,7 +71,7 @@ public class AddSubHdManagementService {
 				LeaveManagementData domainLeaveManagementData = new LeaveManagementData(leaveId,
 						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
 						subHdManagementData.getDateHoliday(), subHdManagementData.getDuedateHoliday(),
-						subHdManagementData.getSelectedCodeHoliday(), 0, subHdManagementData.getDayRemaining(), 0,
+						subHdManagementData.getSelectedCodeHoliday(), 0, subHdManagementData.getSelectedCodeHoliday(), 0,
 						subHDAtr, equivalentADay, equivalentHalfDay);
 				repoLeaveManaData.create(domainLeaveManagementData);
 				if (subHdManagementData.getCheckedSubHoliday()) {
@@ -94,14 +94,14 @@ public class AddSubHdManagementService {
 					CompensatoryDayOffManaData domainCompensatoryDayOffManaData = new CompensatoryDayOffManaData(
 							comDayOffID, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
 							subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
-							subHdManagementData.getSelectedCodeSubHoliday(), 0);
+							subHdManagementData.getDayRemaining(), 0);
 					repoComDayOffManaData.create(domainCompensatoryDayOffManaData);
 					if (subHdManagementData.getCheckedSplit()) {
 						CompensatoryDayOffManaData domainCompensatoryDayOffManaDataSub = new CompensatoryDayOffManaData(
 								comDayOffIDSub, AppContexts.user().companyId(), subHdManagementData.getEmployeeId(),
 								false, subHdManagementData.getDateOptionSubHoliday(),
 								subHdManagementData.getSelectedCodeOptionSubHoliday(), 0,
-								subHdManagementData.getSelectedCodeOptionSubHoliday(), 0);
+								subHdManagementData.getDayRemaining(), 0);
 						repoComDayOffManaData.create(domainCompensatoryDayOffManaDataSub);
 					}
 				}
@@ -140,16 +140,20 @@ public class AddSubHdManagementService {
 			for (CompensatoryDayOffManaData compensatoryDayOffManaData : lstSubstituteLeaveManagement) {
 				//	取得したList＜休出管理データ＞をループする Loop list ＜休出管理データ＞ đã nhận
 				for (LeaveManagementData leaveManagementData : lstLeaveManagement) {
+					Double oldUnUseDay = leaveManagementData.getUnUsedDays().v();
+					Double requireDays = compensatoryDayOffManaData.getRequireDays().v();
+					Integer oldUnUseTimes = leaveManagementData.getUnUsedTimes().v();
+					Integer requiredTimes = compensatoryDayOffManaData.getRequiredTimes().v();
 					//	未使用日数、未使用時間数を計算 Tính toán số ngày/ số giờ chưa sử dụng
-					if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() > 0) {
-						unUsedDay = leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v();
-					} else if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() <= 0.0 || unUsedDay > 0) {
-						unUsedDay = 0.0;
+					if (oldUnUseDay - requireDays > 0) {
+						unUsedDay = oldUnUseDay - requireDays;
+					} else {
+						unUsedDay = 0d;
 					}
 
-					if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() > 0) {
-						unUsedHour = leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v();
-					} else if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() < 0 || unUsedHour > 0) {
+					if (oldUnUseTimes - requiredTimes > 0) {
+						unUsedHour = oldUnUseTimes - requiredTimes;
+					} else {
 						unUsedHour = 0;
 					}
 					//	ループ中の「休出管理データ」を更新する Update "Data quản lý đi làm ngày nghỉ" trong vòng lặp
@@ -160,11 +164,15 @@ public class AddSubHdManagementService {
 							unUsedHour, 1, leaveManagementData.getFullDayTime(), leaveManagementData.getHalfDayTime(),
 							leaveManagementData.getDisapearDate());
 					repoLeaveManaData.update(updateData);
-					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(subHdManagementData.getEmployeeId(),
-							leaveManagementData.getComDayOffDate().getDayoffDate().get(), 
-							compensatoryDayOffManaData.getDayOffDate().getDayoffDate().get(),
-							compensatoryDayOffManaData.getRequireDays().v(), 
-							TargetSelectionAtr.MANUAL.value);
+					// ドメインモデル「休出代休紐付け管理」を追加 Bổ sung domain model "Quản lý liên kết đi làm ngày nghỉ/ nghĩ bù)
+					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(
+							subHdManagementData.getEmployeeId(), 								// ・社員ID　＝　Input．社員ID
+							leaveManagementData.getComDayOffDate().getDayoffDate().get(),	 	// ・紐付け．発生日　＝　ループ中の休出管理データ．休出日
+							compensatoryDayOffManaData.getDayOffDate().getDayoffDate().get(), 	// ・紐付け．使用日　＝　ループ中の代休管理データ．代休日
+							oldUnUseDay >= requireDays 											// ・紐付け．使用日数　＝
+								? requireDays									 				// 計算した「未使用日数」　＞＝０　－＞　ループ中の代休管理データ．必要日数
+								: oldUnUseDay, 													// Else　－＞　ループ中の休出管理データ．未使用日数
+							TargetSelectionAtr.MANUAL.value);									// ・紐付け．対象選択区分　＝　手動
 					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
 					//	計算した未使用日数　＝　0 AND　計算した未使用時間数　＝　0
 					if(!(unUsedDay == 0.0 && unUsedHour == 0)) {

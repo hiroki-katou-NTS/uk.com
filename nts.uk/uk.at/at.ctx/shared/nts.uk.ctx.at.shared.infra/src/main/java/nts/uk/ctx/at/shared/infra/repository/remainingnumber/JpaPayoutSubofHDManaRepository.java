@@ -42,7 +42,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 
 	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps"
 			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR ps.krcmtPayoutSubOfHDManaPK.sid = :sid2)"
-			+ " (AND ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
+			+ " AND (ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
 			+ " OR ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates)";
 
 	@Override
@@ -148,9 +148,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			result = this.queryProxy().query(GET_BY_LISTDATE, KrcmtPayoutSubOfHDMana.class)
 						.setParameter("sid", sid)
 						.setParameter("lstDate", lstDate)
-						.getList()
-						.stream()
-						.map(item -> toDomain(item)).collect(Collectors.toList());
+						.getList(item -> toDomain(item));
 		}
 		return result;
 	}
@@ -162,9 +160,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			result = this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
 						.setParameter("sid", sid)
 						.setParameter("lstDate", lstDate)
-						.getList()
-						.stream()
-						.map(item -> toDomain(item)).collect(Collectors.toList());
+						.getList(item -> toDomain(item));
 		}
 		return result;
 	}
