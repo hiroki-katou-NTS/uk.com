@@ -1,10 +1,15 @@
 #master-wrapper {
 	height: 100vh;
-    div#contents-area {
-		position: relative;
-		padding: 10px;
-		overflow-y: auto;
-    }
+	
+	div#master-content {
+		overflow: hidden;
+
+		div#contents-area {
+			position: relative;
+			padding: 10px;
+			overflow-y: auto;
+		}
+	}
 }
 	
 .fixed-flex-layout {
