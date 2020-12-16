@@ -73,7 +73,6 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 			UID uid = new UID();
 			KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
 			item.setRecordItemId(uid.toString());
-			item.setExclusVer(1);
 			item.setContractCd(AppContexts.user().contractCode());
 			item.setCid(this.kfnmtRptWkAtdOutframe.getCid());
 			item.setLayoutId(this.kfnmtRptWkAtdOutframe.getId().getLayoutId());
@@ -104,7 +103,6 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 			UID uid = new UID();
 			KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
 			item.setRecordItemId(uid.toString());
-			item.setExclusVer(1);
 			item.setContractCd(AppContexts.user().contractCode());
 			item.setCid(this.kfnmtRptWkAtdOutframe.getCid());
 			item.setLayoutId(this.kfnmtRptWkAtdOutframe.getId().getLayoutId());
