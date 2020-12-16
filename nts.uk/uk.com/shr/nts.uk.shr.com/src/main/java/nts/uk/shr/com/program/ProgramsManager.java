@@ -2219,6 +2219,19 @@ public class ProgramsManager {
             "/view/kal/004/f/index.xhtml");
     public static final Program KAL004G = new Program(WebAppId.AT, ProgramIdConsts.KAL004G, "KAL004_2",
             "/view/kal/004/g/index.xhtml");
+
+    /**
+     * KAL011
+     */
+    public static final Program KAL011A = new Program(WebAppId.AT, ProgramIdConsts.KAL011A, "KAL011_1",
+            "/view/kal/011/a/index.xhtml");
+    public static final Program KAL011B = new Program(WebAppId.AT, ProgramIdConsts.KAL011B, "KAL011_2",
+            "/view/kal/011/b/index.xhtml");
+    public static final Program KAL011C = new Program(WebAppId.AT, ProgramIdConsts.KAL011C, "KAL011_3",
+            "/view/kal/011/c/index.xhtml");
+    public static final Program KAL011D = new Program(WebAppId.AT, ProgramIdConsts.KAL011D, "KAL011_4",
+            "/view/kal/011/d/index.xhtml");
+
     /**
      * KAL014A
      */
