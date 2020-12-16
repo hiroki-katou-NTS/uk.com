@@ -80,7 +80,7 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	const API = {
-		
+
 	};
 
 	@component({
@@ -113,6 +113,16 @@ module nts.uk.at.view.kmk004.b {
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
+
+			vm.years
+				.subscribe(() => {
+					vm.$errors('clear');
+					if (ko.unwrap(vm.years).length > 0) {
+						vm.existYear(true);
+					}else{
+						vm.existYear(false);
+					}
+				});
 		}
 
 		add() {
@@ -135,7 +145,7 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogS() {
 			const vm = this;
-			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
+			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
