@@ -22,13 +22,11 @@ import org.eclipse.persistence.exceptions.OptimisticLockException;
 
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.manager.algorithm.employee.CreateRequireReflectionProcess;
 import nts.uk.ctx.at.request.dom.applicationreflect.manager.algorithm.employee.ReflectionProcess;
@@ -38,8 +36,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -54,16 +50,12 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Resource
 	private SessionContext scContext;
 	private AppReflectManager self;
-	@Inject
-	private RemainNumberTempRequireService requireSerive;
+
 	@Inject
     private ExecutionLogRequestImport executionLogRequestImport;	
 	
 	@Inject
 	private CreateRequireReflectionProcess createRequireReflectionProcess;
-	
-	@Inject
-	private EmployeeRequestAdapter employeeAdapter;
 	
 	@PostConstruct
 	public void postContruct() {
@@ -72,10 +64,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	@Override	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void reflectEmployeeOfApp(Application appInfor,
+	public void reflectEmployeeOfApp(Application appInfor, SEmpHistImport sEmpHistImport, 
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord) {
 		try {
-			self.reflectEmployeeOfAppWithTransaction(appInfor, execuTionType, excLogId);
+			self.reflectEmployeeOfAppWithTransaction(appInfor, sEmpHistImport, execuTionType, excLogId);
 			
 		} catch(Exception ex) {
 			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
@@ -98,32 +90,20 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				throw ex;
 			}	
 			
-			self.reflectEmployeeOfApp(appInfor, execuTionType, excLogId, newCountRerun);
+			self.reflectEmployeeOfApp(appInfor, sEmpHistImport, execuTionType, excLogId, newCountRerun);
 		}
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Transactional
-	public void reflectEmployeeOfAppWithTransaction(Application appInfor, ExecutionTypeExImport execuTionType,
+	public void reflectEmployeeOfAppWithTransaction(Application appInfor, SEmpHistImport sEmpHistImport, ExecutionTypeExImport execuTionType,
 			String excLogId) {
 		String companyID = AppContexts.user().companyId();
 		
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, appInfor.getEmployeeID(), GeneralDate.today());
-		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
-
+		// 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		List<GeneralDate> lstDate = new ArrayList<>();
-		//社員に対応する締め開始日を取得する
-		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(requireSerive.createRequire(), 
-				new CacheCarrier(), appInfor.getEmployeeID());
-		if(!closure.isPresent()) {
-			return;
-		}
-		GeneralDate closureStartDate = closure.get();
 		for(int i = 0; appInfor.getOpAppStartDate().get().getApplicationDate().daysTo(appInfor.getOpAppEndDate().get().getApplicationDate()) - i >= 0; i++){
 			GeneralDate loopDate = appInfor.getOpAppStartDate().get().getApplicationDate().addDays(i);
-			if(loopDate.before(closureStartDate)) {
-				continue;
-			}
 
             Boolean isCalWhenLock = this.executionLogRequestImport.isCalWhenLock(excLogId, 2);
           //TODO: new Process
