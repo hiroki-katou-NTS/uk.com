@@ -29,6 +29,9 @@ public class FixedExtractionDayCon extends AggregateRoot {
      */
     private DisplayMessage messageDisp;
 
+    /**使用区分*/
+    private boolean useAtr;
+
     /**
      * 作成する
      *
@@ -38,10 +41,10 @@ public class FixedExtractionDayCon extends AggregateRoot {
      */
     public static FixedExtractionDayCon create(String errorAlarmWorkplaceId,
                                                int fixedCheckDayItems,
-                                               String messageDisp) {
+                                               String messageDisp,Boolean useAtr) {
 
         return new FixedExtractionDayCon(errorAlarmWorkplaceId,
                 EnumAdaptor.valueOf(fixedCheckDayItems, FixedCheckDayItems.class),
-                new DisplayMessage(messageDisp));
+                new DisplayMessage(messageDisp),useAtr);
     }
 }

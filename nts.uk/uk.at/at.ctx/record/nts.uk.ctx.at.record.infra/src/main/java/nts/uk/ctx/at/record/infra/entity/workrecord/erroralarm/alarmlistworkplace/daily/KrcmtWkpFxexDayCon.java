@@ -21,7 +21,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_FXEX_DAY_CON")
-public class KrcmtWkpFxexDayCon extends ContractUkJpaEntity  implements Serializable {
+public class KrcmtWkpFxexDayCon extends ContractUkJpaEntity implements Serializable {
+
+    /* 会社ID */
+    @Column(name = "CID")
+    public String cid;
 
     /* 職場のエラーアラームチェックID */
     @Id
@@ -36,9 +40,9 @@ public class KrcmtWkpFxexDayCon extends ContractUkJpaEntity  implements Serializ
     @Column(name = "MESSAGE_DISPLAY")
     public String messageDisp;
 
-    /* 会社ID */
-    @Column(name = "CID")
-    public String cid;
+    /* 使用区分 */
+    @Column(name = "USE_ATR")
+    private boolean useAtr;
 
     @Override
     protected Object getKey() {
@@ -58,9 +62,10 @@ public class KrcmtWkpFxexDayCon extends ContractUkJpaEntity  implements Serializ
 
     public FixedExtractionDayCon toDomain() {
         return FixedExtractionDayCon.create(
-                this.errorAlarmWorkplaceId,
-                this.fixedCheckDayItems,
-                this.messageDisp
+            this.errorAlarmWorkplaceId,
+            this.fixedCheckDayItems,
+            this.messageDisp,
+            this.useAtr
         );
     }
 }
