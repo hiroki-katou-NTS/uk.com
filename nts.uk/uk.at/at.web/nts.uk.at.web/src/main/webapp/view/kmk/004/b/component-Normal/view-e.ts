@@ -45,7 +45,8 @@ module nts.uk.at.view.kmk004.b {
 					<div class ="setting" data-bind="component: {
 						name: 'basic-setting',
 						params:{
-							modeCheckChangeSetting: modeCheckChangeSetting
+							type: type,
+							selectId: selectedCode
 						}
 					}"></div>
 				<!-- /ko -->
@@ -91,7 +92,6 @@ module nts.uk.at.view.kmk004.b {
 
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
-		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
 		public selectedCode: KnockoutObservable<string> = ko.observable('');
 		public selectedEmployeeID: KnockoutObservable<string> = ko.observable('');

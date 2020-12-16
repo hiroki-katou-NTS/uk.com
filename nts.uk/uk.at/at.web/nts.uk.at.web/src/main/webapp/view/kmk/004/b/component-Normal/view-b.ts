@@ -20,7 +20,8 @@ module nts.uk.at.view.kmk004.b {
 				<div data-bind="component: {
 					name: 'basic-setting',
 					params:{
-						modeCheckChangeSetting: modeCheckChangeSetting
+						type: type,
+						selectId: ko.observable
 					}
 				}"></div>
 			</div>
@@ -69,7 +70,6 @@ module nts.uk.at.view.kmk004.b {
 
 	export class ViewBComponent extends ko.ViewModel {
 
-		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
@@ -97,7 +97,6 @@ module nts.uk.at.view.kmk004.b {
 
 		add() {
 			const vm = this;
-			vm.modeCheckChangeSetting.valueHasMutated();
 
 			$(document).ready(function () {
 				$('.listbox').focus();

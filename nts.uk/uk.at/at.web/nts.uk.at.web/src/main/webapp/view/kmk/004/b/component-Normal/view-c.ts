@@ -37,7 +37,8 @@ module nts.uk.at.view.kmk004.b {
 						<div class ="setting" data-bind="component: {
 							name: 'basic-setting',
 							params:{
-								modeCheckChangeSetting: modeCheckChangeSetting
+								type: type,
+								selectId: selectedId
 							}
 						}"></div>
 					<!-- /ko -->
@@ -90,7 +91,6 @@ module nts.uk.at.view.kmk004.b {
 	export class ViewCComponent extends ko.ViewModel {
 
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
-		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public type: SIDEBAR_TYPE = 'Com_Workplace';

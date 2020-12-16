@@ -4,7 +4,15 @@ module nts.uk.at.view.kmk004.b {
 
 	const API = {
 		DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
+		GET_SETTING_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getBaseSetting',
+        GET_SETTING_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getBaseSetting',
+        GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting'
 	}
+
+	interface Params {
+        type: SIDEBAR_TYPE
+        selectId?: KnockoutObservable<string>;
+    }
 
 	const template = `
         <div class="table-view">
@@ -102,18 +110,24 @@ module nts.uk.at.view.kmk004.b {
 	class Setting extends ko.ViewModel {
 		public model = new DataModel();
 		public tabSetting = new TabSetting();
-		public modeCheckChangeSetting: KnockoutObservable<string>;
+		public type: SIDEBAR_TYPE;
+        public selectId: KnockoutObservable<string> = ko.observable('');
 
-		created(params: any) {
+		created(params: Params) {
 			const vm = this;
+			vm.type = params.type;
+			vm.selectId = vm.selectId;
 
+			console.log(vm.type);
+			console.log(ko.unwrap(vm.selectId));
+			
 			vm.reloadData();
 
-			vm.modeCheckChangeSetting = params.modeCheckChangeSetting;
-			vm.modeCheckChangeSetting
-				.subscribe(() => {
-					vm.reloadData();
-				});
+			// vm.modeCheckChangeSetting = params.modeCheckChangeSetting;
+			// vm.modeCheckChangeSetting
+			// 	.subscribe(() => {
+			// 		vm.reloadData();
+			// 	});
 		}
 
 		mounted() {
