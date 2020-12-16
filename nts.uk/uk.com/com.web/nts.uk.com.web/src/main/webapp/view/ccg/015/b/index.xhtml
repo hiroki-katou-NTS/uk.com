@@ -21,7 +21,7 @@
           <!-- B1_1 -->
           <a class="goback" id="B1_1" data-bind="ntsLinkButton: { jump: '/view/ccg/015/a/index.xhtml' }">#{i18n.getText('CCG015_56')}</a>
           <!-- B1_2 -->
-          <button tabindex="5" data-bind="click: newTopPage" id="btn_new" class="btnStyle">#{i18n.getText('CCG015_4')}</button>
+          <button tabindex="5" data-bind="click: newTopPage, enable: !isDisableNewBtn()" id="btn_new" class="btnStyle">#{i18n.getText('CCG015_4')}</button>
           <!-- B1_3 -->
           <button tabindex="6" data-bind="click: saveTopPage ,enable: $root.errors.isEmpty" class="proceed btnStyle"
             id="btn_save">#{i18n.getText('CCG015_5')}</button>
