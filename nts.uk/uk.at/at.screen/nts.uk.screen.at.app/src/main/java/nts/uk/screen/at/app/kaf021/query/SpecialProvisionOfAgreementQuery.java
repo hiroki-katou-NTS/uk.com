@@ -2,8 +2,6 @@ package nts.uk.screen.at.app.kaf021.query;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -22,8 +20,6 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettin
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.query.model.employee.EmployeeInformation;
@@ -334,25 +330,14 @@ public class SpecialProvisionOfAgreementQuery {
     private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd, boolean isYearMode, YearMonth currentYm) {
         if (CollectionUtil.isEmpty(employees)) return new ArrayList<>();
         String cid = AppContexts.user().companyId();
-        // String sid = employees.get(0).getEmployeeId();
         GeneralDate baseDate = GeneralDate.today();
         val require = requireService.createRequire();
-        //val cacheCarrier = new CacheCarrier();
         List<String> employeeIds = employees.stream().map(EmployeeBasicInfoDto::getEmployeeId).distinct()
                 .collect(Collectors.toList());
 
         // get(会社ID):36協定運用設定
         AgreementOperationSetting setting = getSetting(cid);
 
-        /*
-        // 社員に対応する処理締めを取得する
-        Closure closureInfo = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, baseDate);
-
-        // 年月を指定して、36協定期間の年月を取得する
-        if (closureInfo == null) {
-            throw new RuntimeException("Closure is null!");
-        }
-        YearMonth currentYm = closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd);*/ // TODO Q&A 37715
         YearMonth ym = currentYm.addMonths(monthAdd);
         YearMonth startY = setting.getYearMonthOfAgreementPeriod(ym);
         YearMonth startYm = YearMonth.of(startY.year(), setting.getStartingMonth().getMonth());

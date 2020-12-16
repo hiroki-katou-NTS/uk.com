@@ -89,32 +89,43 @@ module nts.uk.at.kaf021.a {
 
         created() {
             const vm = this;
-            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
-
-            if (vm.isReload != null) {
-                let cacheJson: string = localStorage.getItem(vm.getCacheKey());
-                let cache: CacheData = JSON.parse(cacheJson);
-                if (cache) {
-                    vm.datas = cache.datas;
-                    vm.empItems = cache.empItems;
-                    vm.empSearchItems = cache.empSearchItems;
-                    vm.canNextScreen(vm.empItems.length > 0);
-                    vm.appTypeSelected(cache.appType);
+            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
+                vm.$blockui("invisible");
+                if (vm.isReload != null) {
+                    let cacheJson: string = localStorage.getItem(vm.getCacheKey());
+                    let cache: CacheData = JSON.parse(cacheJson);
+                    if (cache) {
+                        vm.datas = cache.datas;
+                        vm.empItems = cache.empItems;
+                        vm.empSearchItems = cache.empSearchItems;
+                        vm.canNextScreen(vm.empItems.length > 0);
+                        vm.appTypeSelected(cache.appType);
+                        vm.processingMonth = cache.processingMonth;
+                    } else {
+                        vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
+                    }
                 } else {
                     vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
                 }
-            } else {
-                vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
-            }
 
-            vm.initData().done(() => {
-                vm.loadMGrid();
-                $('#A1_5').focus();
-
-                // Reload when back from screen B (Register success)
-                if (vm.isReload) {
-                    vm.appTypeSelected.valueHasMutated();
-                }
+                vm.initData().done(() => {
+                    vm.loadMGrid();
+                    $('#A1_5').focus();
+                    vm.$blockui("clear");
+                    if (vm.isReload == null) {
+                        // Fisrt load
+                        vm.getprocessingMonth(null);
+                    }
+                    vm.reloadAppTypes();
+                    // Reload when back from screen B (Register success)
+                    if (vm.isReload) {
+                        vm.$nextTick(() => {
+                            vm.appTypeSelected.valueHasMutated();
+                        })
+                    }
+                }).fail(() => {
+                    vm.$blockui("clear");
+                });
             });
 
             _.extend(window, { vm });
@@ -129,24 +140,17 @@ module nts.uk.at.kaf021.a {
         initData(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
-            vm.$blockui("invisible");
             vm.$ajax(API.INIT).done((data: StartupInfo) => {
                 vm.setting = data.setting;
                 vm.closurePeriods = data.closurePeriods;
-                vm.getprocessingMonth(null);
-                vm.reloadAppTypes();
                 if (!vm.setting.useSpecical) {
                     vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
                         vm.$jump('com', '/view/ccg/008/a/index.xhtml');
                     });
-                    vm.$blockui("clear");
-                    return;
                 }
-
-                vm.$blockui("clear");
                 dfd.resolve();
             }).fail((error: any) => {
-                vm.$blockui("clear");
+                dfd.reject();
                 vm.$dialog.error(error);
             });
 
@@ -172,9 +176,12 @@ module nts.uk.at.kaf021.a {
                 vm.appTypeSubscription.dispose();
             }
             vm.appTypeSubscription = vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
+                vm.$blockui("invisible");
                 vm.fetchData().done(() => {
                     $("#grid").mGrid("destroy");
                     vm.loadMGrid();
+                }).always(() => {
+                    vm.$blockui("clear");
                 });
             })
         }
@@ -199,7 +206,6 @@ module nts.uk.at.kaf021.a {
                 dfd.resolve();
                 return dfd.promise();
             }
-            vm.$blockui("invisible");
             vm.datas = [];
             let param = {
                 employees: vm.empSearchItems,
@@ -209,24 +215,20 @@ module nts.uk.at.kaf021.a {
                 case common.AppTypeEnum.CURRENT_MONTH:
                     vm.$ajax(API.CURRENT_MONTH, param).done((data: any) => {
                         vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_MONTH);
-                        dfd.resolve();
-                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => dfd.resolve());
                     break;
                 case common.AppTypeEnum.NEXT_MONTH:
                     vm.$ajax(API.NEXT_MONTH, param).done((data: any) => {
                         vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_MONTH);
-                        dfd.resolve();
-                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => dfd.resolve());
                     break;
                 case common.AppTypeEnum.YEARLY:
                     vm.$ajax(API.YEAR, param).done((data: any) => {
                         vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_YEAR);
-                        dfd.resolve();
-                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => dfd.resolve());
                     break;
                 default:
                     dfd.resolve();
-                    vm.$blockui("clear");
             }
             return dfd.promise();
         }
@@ -443,7 +445,7 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             let dataAll: Array<EmployeeAgreementTime> = $("#grid").mGrid("dataSource", true);
             let dataSelected = _.filter(dataAll, (item: EmployeeAgreementTime) => { return item.checked });
-            let cache = new CacheData(vm.appTypeSelected(), dataAll, vm.empItems, vm.empSearchItems);
+            let cache = new CacheData(vm.appTypeSelected(), vm.processingMonth, dataAll, vm.empItems, vm.empSearchItems);
             localStorage.setItem(vm.getCacheKey(), JSON.stringify(cache));
             vm.$jump('at', '/view/kaf/021/b/index.xhtml', {
                 datas: dataSelected,
@@ -519,12 +521,14 @@ module nts.uk.at.kaf021.a {
 
     class CacheData {
         appType: common.AppTypeEnum;
+        processingMonth: number;
         datas: Array<EmployeeAgreementTime>;
         empItems: Array<string> = [];
         empSearchItems: Array<EmployeeSearchDto> = [];
 
-        constructor(appType: common.AppTypeEnum, datas: Array<EmployeeAgreementTime>, empItems: Array<string> = [], empSearchItems: Array<EmployeeSearchDto>) {
+        constructor(appType: common.AppTypeEnum, processingMonth: number, datas: Array<EmployeeAgreementTime>, empItems: Array<string> = [], empSearchItems: Array<EmployeeSearchDto>) {
             this.appType = appType;
+            this.processingMonth = processingMonth;
             this.datas = datas;
             this.empItems = empItems;
             this.empSearchItems = empSearchItems;
