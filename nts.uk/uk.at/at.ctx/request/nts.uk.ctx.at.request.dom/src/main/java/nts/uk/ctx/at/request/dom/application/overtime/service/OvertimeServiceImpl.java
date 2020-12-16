@@ -1241,8 +1241,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public DisplayInfoOverTime calculateMobile(String companyId, DisplayInfoOverTime displayInfoOverTime,
-			AppOverTime appOverTime, Boolean mode, String employeeId, Optional<GeneralDate> dateOp) {
+	public DisplayInfoOverTime calculateMobile(
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
+			Boolean mode,
+			String employeeId,
+			Optional<GeneralDate> dateOp) {
 		
 		// 勤務情報の申請内容をチェックする
 		this.checkContentApp(
