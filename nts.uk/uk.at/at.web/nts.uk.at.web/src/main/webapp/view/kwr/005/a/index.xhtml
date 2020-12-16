@@ -84,7 +84,7 @@
                         optionsText: 'name',
                         value: rdgSelectedId,
                         enable: true,
-                        name: $i18n('KWR005_104')
+                        name: '#[KWR005_104]'
                       }"
                     ></div>
                   </div>
@@ -95,8 +95,8 @@
                         tabindex="6"
                         id="KWR005_105"
                         data-bind="ntsComboBox: {
-                          name: $i18n('KWR005_105'),
-                          options:  settingListItems1,
+                          name: '#[KWR005_105]',
+                          options: settingListItems1,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
                           value: standardSelectedCode,
@@ -117,20 +117,20 @@
                                   click: showDialogScreenB, text: $i18n('KWR005_8')"
                       />
                     </div>
-                    <div class="item item-2" data-bind="if: isPermission51">
+                    <div class="item item-2">
                       <!-- A5_4_2 - KWR005_106-->
                       <div
                         tabindex="8"
                         id="KWR005_106"
                         data-bind="ntsComboBox: {
-                          name: $i18n('KWR005_106'),
+                          name: '#[KWR005_106]',
                           options:  settingListItems2,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
                           value: freeSelectedCode,
                           optionsText: 'name',
                           editable: false,
-                          enable: !isEnableSelectedCode(),
+                          enable: !isEnableSelectedCode() &amp;&amp; isPermission51,
                           required: true,
                           selectFirstIfNull: true,
                             columns: [
@@ -141,7 +141,8 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="9"
-                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB, text: $i18n('KWR005_8')"
+                        data-bind="enable: !isEnableSelectedCode() &amp;&amp; isPermission51, 
+                        click: showDialogScreenB, text: $i18n('KWR005_8')"
                       />
                     </div>
                   </div>
@@ -161,10 +162,10 @@
                     tabindex="10"
                     class="cf"
                     data-bind="ntsSwitchButton: {
-                    name: $i18n('KWR005_107'),
+                    name: '#[KWR005_107]',
                     options: [
-                      { code: 0, name: $i18n('KWR005_10')},
-                      { code: 1, name: $i18n('KWR005_11')}
+                      { code: 1, name: $i18n('KWR005_10')},
+                      { code: 0, name: $i18n('KWR005_11')}
                     ],
                     optionsValue: 'code',
                     optionsText: 'name',
@@ -187,7 +188,7 @@
                     tabindex="11"
                     class="cf"
                     data-bind="ntsSwitchButton: {
-                    name: $i18n('KWR005_110'),
+                    name: '#[KWR005_110]',
                     options: [
                       { code: 0, name: $i18n('KWR005_13')},
                       { code: 1, name: $i18n('KWR005_14')}

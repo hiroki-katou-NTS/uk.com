@@ -24,9 +24,9 @@ module nts.uk.at.view.kwr005.c {
 
     constructor(params: any) {
       super();
-      const vm = this;     
-     
-      vm.params({     
+      const vm = this;
+
+      vm.params({
         settingCategory: 0, //設定区分
         dupSrcId: null, //複製元の設定ID
         dupCode: null,//複製先_コード
@@ -35,7 +35,7 @@ module nts.uk.at.view.kwr005.c {
 
       if (!_.isNil(params)) {
         vm.oldCode(params.code);
-        vm.oldName(params.name);          
+        vm.oldName(params.name);
         vm.params().dupSrcId = params.settingId;
         vm.params().dupCode = params.code;
         vm.params().dupName = params.name;
@@ -54,13 +54,12 @@ module nts.uk.at.view.kwr005.c {
     }
 
     proceed() {
-      const vm = this;      
+      const vm = this;
       vm.cloneSettingClassification();
     }
 
     cancel() {
-      const vm = this;
-      //vm.$window.storage(KWR005_C_OUTPUT, null);
+      const vm = this;   
       vm.$window.close(null);
     }
 
@@ -70,26 +69,26 @@ module nts.uk.at.view.kwr005.c {
     cloneSettingClassification() {
       const vm = this;
 
+      $('.clone-item').trigger('validate');
+      if (nts.uk.ui.errors.hasError()) return;
+
       vm.$blockui('show');
       vm.params().dupCode = vm.newCode();
       vm.params().dupName = vm.newName();
 
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
-        .done((response) => {   
+        .done((response) => {
           vm.$blockui('hide');
-          vm.$window.close({ code: vm.newCode(), name: vm.newName() });       
-         /*  vm.$window.storage(KWR005_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });          
-          vm.$blockui('hide');
-          vm.$window.close(); */
+          vm.$window.close({ code: vm.newCode(), name: vm.newName() });
         })
-        .fail((error) => {      
+        .fail((error) => {
           //データが先に削除された - 1903    
           //コードの重複 - Msg_1753
           vm.$dialog.error({ messageId: error.messageId }).then(() => {
-            if( error.messageId == 1928)
-            $('#closeDialog').focus();
+            if (error.messageId == 1928)
+              $('#closeDialog').focus();
             else
-            $('#KWR005_C23').focus();
+              $('#KWR005_C23').focus();
 
             vm.$blockui('hide');
           });

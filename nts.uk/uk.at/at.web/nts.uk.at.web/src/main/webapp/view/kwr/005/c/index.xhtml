@@ -45,23 +45,23 @@
             <div class="textEditor">
               <input
                 id="KWR005_C23"
-                class="code"
+                class="code clone-item"
                 tabindex="1"
                 data-bind="ntsTextEditor: {
                       value: newCode, 
                       required: true,
                       constraint: 'OutputItemSettingCode',
-                      name: $i18n('KWR005_203')
+                      name: '#[KWR005_203]'
                     }"
               />
               <input
-                class="name"
+                class="name clone-item"
                 tabindex="2"
                 data-bind="ntsTextEditor: {
                       value: newName,
                       required: true,
                       constraint: 'OutputItemSettingName',
-                      name: $i18n('KWR005_203')
+                      name: '#[KWR005_203]'
                     }"
               />
             </div>
@@ -72,9 +72,9 @@
             id="proceedDialog" 
             tabindex="3"
             data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR005_205')"
-            class="proceed large"
+            class="proceed x-large"
           />
-          <button id="closeDialog" tabindex="4" data-bind="click: cancel, text: $i18n('KWR005_206')" />
+          <button id="closeDialog" class="large" tabindex="4" data-bind="click: cancel, text: $i18n('KWR005_206')" />
         </div>
       </ui:define>
     </ui:composition>

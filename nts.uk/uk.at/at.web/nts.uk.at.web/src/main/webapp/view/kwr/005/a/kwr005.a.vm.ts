@@ -12,7 +12,8 @@ module nts.uk.at.view.kwr005.a {
     exportExcelPDF: 'at/function/kwr/005/report/export',
     getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
-    getStartFromMonthly: 'at/function/kwr/005/a/beginningmonth'
+    getStartFromMonthly: 'at/function/kwr/005/a/beginningmonth',
+    //getInit: 'at/screen/kwr/005/b/getinfor',    
   };
 
   @bean()
@@ -35,7 +36,7 @@ module nts.uk.at.view.kwr005.a {
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
     isEnableFreeBtn: KnockoutObservable<boolean> = ko.observable(true);
 
-    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(1);
+    zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
     settingListItems1: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
@@ -117,7 +118,7 @@ module nts.uk.at.view.kwr005.a {
         showAdvancedSearchTab: true,
         showBaseDate: true,
         showClosure: true,
-        showAllClosure: true,
+        showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
         showPeriod: true,
         periodFormatYM: false,
 
@@ -251,7 +252,7 @@ module nts.uk.at.view.kwr005.a {
         params.settingId = attendance.id;
         params.standOrFree = vm.rdgSelectedId();
       }
-      console.log();
+ 
       vm.$window.modal('/view/kwr/005/b/index.xhtml', ko.toJS(params)).then((data: any) => { 
         if (data) {
           nts.uk.ui.errors.clearAll();
@@ -260,18 +261,6 @@ module nts.uk.at.view.kwr005.a {
         $('#btnExportExcel').focus();
       });
       
-      /* vm.$window.storage(KWR005_B_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/005/b/index.xhtml').then(() => {
-          vm.$window.storage(KWR005_B_OUTPUT).then((data: any) => {
-            if (data) {
-              nts.uk.ui.errors.clearAll();
-              vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
-            }
-            //settingListItems
-          });
-          $('#btnExportExcel').focus();
-        });
-      }); */
     }
 
     /**
@@ -283,6 +272,7 @@ module nts.uk.at.view.kwr005.a {
     getSettingListWorkStatus(type: number, dataFromB?: any) {
       const vm = this;
       let listWorkStatus: Array<ItemModel> = [];
+      console.log(dataFromB);
       //定型選択		
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: type }).done((data) => {
         if (!_.isNil(data)) {
@@ -303,16 +293,15 @@ module nts.uk.at.view.kwr005.a {
             vm.freeSelectedCode(selectedCode);
           }
 
+          $('#btnExportExcel').focus();
         }
       });
     }
 
     getSettingListItems() {
       const vm = this;
-
       vm.getSettingListWorkStatus(0);
       vm.getSettingListWorkStatus(1);
-
     }
 
     checkErrorConditions() {
@@ -393,7 +382,7 @@ module nts.uk.at.view.kwr005.a {
       });
 
       vm.saveWorkScheduleOutputConditions().done(() => {
-        //vm.$blockui('grayout');
+        vm.$blockui('grayout');
 
         let findObj = null;
 
@@ -404,8 +393,8 @@ module nts.uk.at.view.kwr005.a {
         }
         
         let baseDate = moment(vm.dpkYearMonth(), 'YYYY/MM').format('YYYY/MM');
-        let endOfMonth = moment().endOf('month').format('DD');
-        let currentDate = moment().format('DD');
+        //let endOfMonth = moment().endOf('month').format('DD');
+        //let currentDate = moment().format('DD');
 
         let params = {
           mode: mode, //ExcelPdf区分
@@ -418,8 +407,8 @@ module nts.uk.at.view.kwr005.a {
           closureId: vm.closureId() //締め日
         }
 
-        console.log(params);
-        //vm.$blockui('hide');
+        vm.$blockui('hide');
+
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
         }).fail().always(() => vm.$blockui('hide'));
       });
@@ -450,38 +439,35 @@ module nts.uk.at.view.kwr005.a {
 
     getWorkScheduleOutputConditions() {
       const vm = this,
-        dfd = $.Deferred<void>(),
+        //dfd = $.Deferred<void>(),
         companyId: string = vm.$user.companyId,
         employeeId: string = vm.$user.employeeId;
 
       let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
 
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
+
         if (!_.isNil(data)) {
           let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
-          let freeCode = _.find(vm.settingListItems1(), ['code', data.freeSelectedCode]);
-          vm.rdgSelectedId(data.itemSelection); //項目選択
+          let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);
+          let zeroDisplay = _.isEmpty(data.zeroDisplayClassification) ? 0 : data.zeroDisplayClassification;
+          let pageBreak = _.isEmpty(data.pageBreakSpecification) ? 0 : data.pageBreakSpecification;
+          vm.rdgSelectedId( !vm.isPermission51() ? 0 : data.itemSelection); //項目選択
           vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
         }
-        dfd.resolve();
-      }).always(() => {
-        dfd.resolve();
-      });
-
-      return dfd.promise();
+      }).always(() => {});
     }
 
     getItemSelection() {
       const vm = this;
 
       vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR005_6') });
-
       vm.$ajax(PATH.checkDailyAuthor, { roleId: vm.$user.role.attendance }).done((permission) => {
         vm.isPermission51(permission);
-        if (vm.isPermission51()) vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR005_7') });
+        vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR005_7'), enable: permission });
       });
     }
 
@@ -500,9 +486,9 @@ module nts.uk.at.view.kwr005.a {
 
       vm.$ajax(PATH.getStartFromMonthly)
         .done((result) => {
-          if (result) {         
+          if (result && _.isNumber(result.startMonth)) {         
             //システム日付の月　＜　期首月　
-            const startMonth = _.toInteger(result);
+            const startMonth = _.toInteger(result.startMonth);
             if (startMonth > _.toInteger(moment().format('MM'))) {
               endDate = moment(currentYear + '/' + startMonth + '/01').toDate();
               startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
@@ -517,7 +503,7 @@ module nts.uk.at.view.kwr005.a {
             });
           }
         })
-        .fail();
+        .fail(() => {});
     }
   }
 
