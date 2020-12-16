@@ -96,7 +96,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this;
 			// get data from sc A
 			self.dataFromA = ko.observable(getShared('dataFromA'));
-			if(self.dataFromA().daySelect < self.dataFromA().dayEdit){
+			if(self.dataFromA().daySelect <= self.dataFromA().dayEdit){
 				self.checkDisByDate = false;
 			}
 			self.lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [{ empId: c.id, name: c.name, code: c.code }]);
@@ -770,7 +770,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				if (schedule.workScheduleDto != null && schedule.fixedWorkInforDto != null) {
 					// Bind *worktypecode - *worktimecode
-					if (schedule.workScheduleDto.workTimeCode == null || schedule.workScheduleDto.workTimeCode == "") {
+					if (schedule.workScheduleDto.workTypeCode == null || schedule.workScheduleDto.workTypeCode == "") {
 						workTypeName = getText('KSU003_55');
 					} else if (schedule.workScheduleDto.workTypeCode != null && schedule.workScheduleDto.workTypeCode != "" && schedule.fixedWorkInforDto != null
 						&& (schedule.fixedWorkInforDto.workTypeName == null || schedule.fixedWorkInforDto.workTypeName == "")) {
@@ -1115,7 +1115,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (disableDSFilter.length > 0) {
 					leftContentDeco.push(new CellColor("empName", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color)); // set màu cho emp name khi bị dis
 					leftContentDeco.push(new CellColor("cert", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color));
-					let index = _.findIndex(self.lstEmpId, (x: any) => { return x.empId == disableDSFilter[0].empId });
 					middleContentDeco.push(new CellColor("worktypeCode", disableDSFilter[0].empId, "xseal"));
 					middleContentDeco.push(new CellColor("worktypeName", disableDSFilter[0].empId, "xseal"));
 					middleContentDeco.push(new CellColor("worktimeCode", disableDSFilter[0].empId, "xseal"));
@@ -1132,8 +1131,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						detailContentDeco.push(new CellColor(z.toString(), disableDSFilter[0].empId, disableDSFilter[0].color));
 					}
 				} else {
+					let isNeedWorkSchedule = self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule,
+					canModified = self.dataScreen003A().canModified, // 修正可能
+					isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed; // 確定済みか
 					// set ẩn hiện A6, A7, A8
-					if (self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule != 1) { // ※2 & ※3
+					
+					if (isNeedWorkSchedule != 1) { // ※2 & ※3
 						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0)); // 4 
 						middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0)); // 4
 						middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0)); // 4
@@ -1151,45 +1154,46 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FIXED) { // 10
 
 						}
-						if (self.dataScreen003A().canModified == 1 || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1) { // [※3]=〇 ※4 x x
+						if (canModified == 0 || isConfirmed == 1) { // [※3]=〇 ※4 x x 確定済みか
 							middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0));
 							middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0));
 							checkColor.worktypeCode = 0;
 							checkColor.worktypeName = 0;
 							checkColor.worktimeName = 0;
+							checkColor.worktimeCode = 0;
 							self.lstDis.push({
 								empId: self.lstEmpId[i].empId
 							})
 						}
 
-						if (self.dataScreen003A().canModified == 1) { // [※4]=〇
-							if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto! = null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null) {
-								if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 0 || // [※5]=〇
-									self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 1 ||
-									self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 2) {
-									if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null &&
-										self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FLEX) { // ※7 x
-										middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
-										middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
-										checkColor.startTime2 = 0;
-										checkColor.endTime2 = 0;
-									}
-								} else {
-									middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
-									middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
-									checkColor.startTime2 = 0;
-									checkColor.endTime2 = 0;
-								}
-
-								if (_.isNil(dataMid.worktimeCode) || dataMid.worktimeCode == "") {
+						if (canModified == 1) { // [※4]=〇 // 修正可能
+						if (_.isNil(dataMid.worktimeCode) || dataMid.worktimeCode == "") {
 									middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0)); // ※9 x
 									checkColor.worktimeCode = 0;
 									self.lstDis.push({
 										empId: self.lstEmpId[i].empId
 									})
+						}
+						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto! = null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null) {
+							if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 0 || // [※5]=〇
+								self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 1 ||
+								self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 2) {
+								if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null &&
+									self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FLEX) { // ※7 x
+									middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+									middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+									checkColor.startTime2 = 0;
+									checkColor.endTime2 = 0;
 								}
+							} else {
+								middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+								middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+								checkColor.startTime2 = 0;
+								checkColor.endTime2 = 0;
 							}
+						}
 						} else {
 
 							middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
@@ -2759,6 +2763,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					let errorsInfo  = _.uniqBy(errors, x =>{return x.message});
 					bundledErrors({ errors: errorsInfo });
+					return;
 				}
 					
 			}).fail(function(res: any) {
@@ -2859,7 +2864,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dataShare: any = {
 				employeeInfo: data[0],
 				targetInfor: self.dataScreen003A().targetInfor,
-				canModified: 1, //self.dataScreen003A().canModified, // comment tạm để test
+				canModified: self.dataScreen003A().canModified, // comment tạm để test
 				scheCorrection: self.dataScreen003A().scheCorrection,
 				unit: self.dataFromA().unit,
 				targetId: self.dataFromA().unit === 0 ? self.dataFromA().workplaceId : self.dataFromA().workplaceGroupId,
