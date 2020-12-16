@@ -100,10 +100,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A6_7 残業時間名称-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
-						<td data-bind="style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''}"><input
+						<td data-bind="style: {'background-color': backgroundColor()}"><input
 							tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
-								style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''},
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
 									value: applicationTime,
 									option: {width: '85px', timeWithDay: true},
@@ -144,10 +144,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A6_7 残業時間名称-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
-						<td data-bind="style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''}"><input
+						<td data-bind="style: {'background-color': backgroundColor()}"><input
 							tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
-								style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''},
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
 									value: applicationTime,
 									option: {width: '85px', timeWithDay: true},
@@ -203,10 +203,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A5_5 休憩時間順序-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
-						<td data-bind="style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''}">
+						<td data-bind="style: {'background-color': backgroundColor()}">
 						<input tabindex="12" class="right-content"
 							data-bind="
-								style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''},
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
 									name: '#[KAF005_337]', 
 									value: start, 
@@ -244,10 +244,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A5_5 休憩時間順序-->
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
-						<td data-bind="style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''}">
+						<td data-bind="style: {'background-color': backgroundColor()}">
 						<input tabindex="12" class="right-content"
 							data-bind="
-								style: {'background-color': $parent.visibleModel.c15_3() ? backgroundColor() : ''},
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
 									name: '#[KAF005_337]', 
 									value: start, 
@@ -272,6 +272,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
+
+
+
+
 
 
 	`
