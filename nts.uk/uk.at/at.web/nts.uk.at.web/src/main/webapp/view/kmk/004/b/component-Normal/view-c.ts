@@ -14,6 +14,8 @@ module nts.uk.at.view.kmk004.b {
 				<div data-bind="component: {
 					name: 'kcp004',
 					params:{
+						selectedId: selectedId,
+						model: model
 					}
 				}"></div>
 			</div>
@@ -21,17 +23,17 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 					<hr></hr>
-					<div class="name" data-bind="i18n: 'Chung dep trai'"></div>
+					<div class="name" data-bind="i18n: model.name"></div>
 					<div>
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-						<!-- ko if: modeCheckSetting -->
+						<!-- ko if: model.isAlreadySetting -->
 							<button tabindex="5" data-bind="i18n: 'KMK004_239'"></button>
 						<!-- /ko -->
-						<!-- ko if: !modeCheckSetting -->
+						<!-- ko ifnot: model.isAlreadySetting -->
 							<button tabindex="5" data-bind="i18n: 'KMK004_238'"></button>
 						<!-- /ko -->
 					</div>
-					<!-- ko if: modeCheckSetting -->
+					<!-- ko if: model.isAlreadySetting -->
 						<div class ="setting" data-bind="component: {
 							name: 'basic-setting',
 							params:{
@@ -42,16 +44,16 @@ module nts.uk.at.view.kmk004.b {
 					<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 					<div class="content-data">
 						<div>
-							<button tabindex="6" data-bind="i18n: 'KMK004_233'"></button>
+							<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogS"></button>
 						</div>
 						<div class="year">
 							<div class= "box-year" data-bind="component: {
 								name: 'box-year',
 								params:{
 									selectedYear: selectedYear,
-									param: ko.observable(''),
 									type: type,
-									years: years
+									years: years,
+									selectId: selectedId
 								}
 							}"></div>
 						</div>
@@ -59,7 +61,10 @@ module nts.uk.at.view.kmk004.b {
 							name: 'time-work',
 							params:{
 								selectedYear: selectedYear,
-								checkEmployee: checkEmployee
+								checkEmployee: ko.observable(false),
+								type: type,
+								years: years,
+								selectId: selectedId
 							}
 						}"></div>
 					</div>
@@ -73,6 +78,10 @@ module nts.uk.at.view.kmk004.b {
 
 	}
 
+	const API = {
+		
+	};
+
 	@component({
 		name: 'view-c',
 		template
@@ -80,13 +89,13 @@ module nts.uk.at.view.kmk004.b {
 
 	export class ViewCComponent extends ko.ViewModel {
 
-		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
-		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
-		public selectedYear: KnockoutObservable<number| null> = ko.observable(null);
+		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public type: SIDEBAR_TYPE = 'Com_Workplace';
+		public selectedId: KnockoutObservable<string> = ko.observable('');
+		public model: Model = new Model();
 
 		created(params: Params) {
 			const vm = this;
@@ -94,6 +103,13 @@ module nts.uk.at.view.kmk004.b {
 		}
 
 		mounted() {
+			const vm = this;
+
+			vm.selectedId
+				.subscribe(() => {
+					vm.selectedYear.valueHasMutated();
+				})
+
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
@@ -114,6 +130,18 @@ module nts.uk.at.view.kmk004.b {
 		remote() {
 			$(document).ready(function () {
 				$('.listbox').focus();
+			});
+		}
+
+		openDialogS() {
+			const vm = this;
+			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
+			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
+				if (result) {
+					vm.years.push(new IYear(parseInt(result.year), true));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+				}
 			});
 		}
 	}

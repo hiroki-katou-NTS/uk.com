@@ -6,10 +6,15 @@ module nts.uk.at.view.kmk004.b {
         selectedYear: KnockoutObservable<number | null>;
         checkEmployee?: KnockoutObservable<boolean>
         years: KnockoutObservableArray<IYear>;
+        type: SIDEBAR_TYPE;
+        selectId?: KnockoutObservable<string>;
     }
 
     const API = {
-        GET_WORK_TIME: 'screen/at/kmk004/getWorkingHoursByCompany'
+        GET_WORK_TIME: 'screen/at/kmk004/getWorkingHoursByCompany',
+        GET_WORKTIME_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getWorkTimes',
+        GET_WORKTIME_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getWorkTimes',
+        GET_WORKTIME_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getWorkTimes'
     };
 
     const TYPE = 0;
@@ -93,12 +98,16 @@ module nts.uk.at.view.kmk004.b {
         public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
         public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
         public years: KnockoutObservableArray<IYear>;
+        public type: SIDEBAR_TYPE;
+        public selectId: KnockoutObservable<string>;
 
         created(params: Params) {
             const vm = this;
             vm.selectedYear = params.selectedYear;
             vm.checkEmployee = params.checkEmployee;
             vm.years = params.years;
+            vm.type = params.type;
+            vm.selectId = params.selectId;
 
             vm.initList(2020);
             vm.reloadData();
@@ -120,6 +129,7 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.reloadData();
                 });
+                
         }
 
         reloadData() {
@@ -134,27 +144,59 @@ module nts.uk.at.view.kmk004.b {
 
             if (exist) {
                 if (!exist.isNew) {
-                    vm.$ajax(API.GET_WORK_TIME, input)
-                        .then((data: IWorkTime[]) => {
-                            if (data.length > 0) {
-                                console.log(data);
-                                const data1: IWorkTime[] = [];
-                                var check: boolean = true;
+                    switch (vm.type) {
+                        case 'Com_Company':
+                            vm.$ajax(API.GET_WORK_TIME, input)
+                                .then((data: IWorkTime[]) => {
+                                    if (data.length > 0) {
+                                        const data1: IWorkTime[] = [];
+                                        var check: boolean = true;
 
-                                if (ko.unwrap(vm.checkEmployee)) {
-                                    check = false;
-                                }
-                                data.map(m => {
-                                    const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
-                                    data1.push(s);
+                                        if (ko.unwrap(vm.checkEmployee)) {
+                                            check = false;
+                                        }
+                                        data.map(m => {
+                                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                            data1.push(s);
+                                        });
+
+                                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                    }
                                 });
+                            ;
+                            break;
+                        case 'Com_Workplace':
+                            console.log(ko.unwrap(vm.selectId));
+                            console.log(ko.unwrap(vm.selectedYear));
+                            
+                            
+                            vm.$ajax(API.GET_WORKTIME_WORKPLACE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                .then((data: IWorkTime[]) => {
+                                    console.log(data);
+                                    if (data.length > 0) {
+                                        const data1: IWorkTime[] = [];
+                                        var check: boolean = true;
 
-                                vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-                            }
-                        });
-                    ;
+                                        if (ko.unwrap(vm.checkEmployee)) {
+                                            check = false;
+                                        }
+                                        data.map(m => {
+                                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                            data1.push(s);
+                                        });
+
+                                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                    }
+                                });
+                            break;
+                        case 'Com_Employment':
+                            break;
+                        case 'Com_Person':
+
+                            break
+                    }
                 }
-                else{
+                else {
                     vm.initList(ko.unwrap(vm.selectedYear));
                 }
             }
@@ -168,18 +210,18 @@ module nts.uk.at.view.kmk004.b {
                 check = false;
             }
 
-            const IWorkTime1: IWorkTime[] = [{ check: check, yearMonth: year*100 +1, laborTime: 0 },
-            { check: check, yearMonth: year*100 +2, laborTime: 0 },
-            { check: check, yearMonth: year*100 +3, laborTime: 0 },
-            { check: check, yearMonth: year*100 +4, laborTime: 0 },
-            { check: check, yearMonth: year*100 +5, laborTime: 0 },
-            { check: check, yearMonth: year*100 +6, laborTime: 0 },
-            { check: check, yearMonth: year*100 +7, laborTime: 0 },
-            { check: check, yearMonth: year*100 +8, laborTime: 0 },
-            { check: check, yearMonth: year*100 +9, laborTime: 0 },
-            { check: check, yearMonth: year*100 +10, laborTime: 0 },
-            { check: check, yearMonth: year*100 +11, laborTime: 0 },
-            { check: check, yearMonth: year*100 +12, laborTime: 0 }];
+            const IWorkTime1: IWorkTime[] = [{ check: check, yearMonth: year * 100 + 1, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 2, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 3, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 4, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 5, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 6, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 7, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 8, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 9, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 10, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 11, laborTime: 0 },
+            { check: check, yearMonth: year * 100 + 12, laborTime: 0 }];
             vm.workTimes(IWorkTime1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
         }
     }

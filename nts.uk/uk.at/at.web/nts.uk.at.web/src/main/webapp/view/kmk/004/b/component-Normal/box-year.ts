@@ -4,9 +4,9 @@ module nts.uk.at.view.kmk004.b {
 
     interface Params {
         selectedYear: KnockoutObservable<number | null>;
-        param: KnockoutObservable<string>;
         type: SIDEBAR_TYPE
-        years:  KnockoutObservableArray<IYear>;
+        years: KnockoutObservableArray<IYear>;
+        selectId?: KnockoutObservable<string>;
     }
 
     const API = {
@@ -43,14 +43,13 @@ module nts.uk.at.view.kmk004.b {
 
         public itemList: KnockoutObservableArray<IYear>;
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-        public param: KnockoutObservable<string> = ko.observable('');
         public type: SIDEBAR_TYPE;
+        public selectId: KnockoutObservable<string> = ko.observable('');
 
         created(params: Params) {
             const vm = this;
-
             vm.selectedYear = params.selectedYear;
-            vm.param = params.param;
+            vm.selectId = params.selectId;
             vm.type = params.type;
             vm.itemList = params.years;
 
@@ -59,12 +58,14 @@ module nts.uk.at.view.kmk004.b {
         mounted() {
             const vm = this;
 
-            vm.param
+            vm.reloadData(0);
+
+            vm.selectId
                 .subscribe(() => {
                     vm.reloadData(0);
                 });
 
-            vm.param.valueHasMutated();
+            vm.selectId.valueHasMutated();
         }
 
         reloadData(selectedIndex: number = 0) {
@@ -82,16 +83,16 @@ module nts.uk.at.view.kmk004.b {
                             }));
                         })
                         .then(() => {
-                            if(ko.unwrap(vm.itemList) != []){
+                            if (ko.unwrap(vm.itemList) != []) {
                                 vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                            }else {
+                            } else {
                                 vm.selectedYear(null);
                             }
                         });
                     break
                 case 'Com_Workplace':
-                    if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.unwrap(vm.param))
+                    if (ko.unwrap(vm.selectId) != '') {
+                        vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.unwrap(vm.selectId))
                             .then((data: any) => {
                                 data = _.orderBy(data, ['year'], ['desc']);
                                 _.forEach(data, ((value: any) => {
@@ -100,17 +101,17 @@ module nts.uk.at.view.kmk004.b {
                                 }));
                             })
                             .then(() => {
-                                if(ko.unwrap(vm.itemList) != []){
+                                if (ko.unwrap(vm.itemList) != []) {
                                     vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                                }else {
+                                } else {
                                     vm.selectedYear(null);
                                 }
                             });
                     }
                     break
                 case 'Com_Employment':
-                    if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.unwrap(vm.param))
+                    if (ko.unwrap(vm.selectId) != '') {
+                        vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.unwrap(vm.selectId))
                             .then((data: any) => {
                                 data = _.orderBy(data, ['year'], ['desc']);
                                 _.forEach(data, ((value: any) => {
@@ -119,17 +120,17 @@ module nts.uk.at.view.kmk004.b {
                                 }));
                             })
                             .then(() => {
-                                if(ko.unwrap(vm.itemList) != []){
+                                if (ko.unwrap(vm.itemList) != []) {
                                     vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                                }else {
+                                } else {
                                     vm.selectedYear(null);
                                 }
                             });
                     }
                     break
                 case 'Com_Person':
-                    if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
-                        vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' +  ko.unwrap(vm.param))
+                    if (ko.unwrap(vm.selectId) != null && ko.unwrap(vm.selectId) != '') {
+                        vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' + ko.unwrap(vm.selectId))
                             .then((data: any) => {
                                 data = _.orderBy(data, ['year'], ['desc']);
                                 _.forEach(data, ((value: any) => {
@@ -138,10 +139,10 @@ module nts.uk.at.view.kmk004.b {
                                 }));
                             })
                             .then(() => {
-                                
-                                if(ko.unwrap(vm.itemList) != []){
+
+                                if (ko.unwrap(vm.itemList) != []) {
                                     vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                                }else {
+                                } else {
                                     vm.selectedYear(null);
                                 }
                             });
@@ -158,12 +159,12 @@ module nts.uk.at.view.kmk004.b {
         nameYear: string;
 
         constructor(year: number, isNew?: boolean) {
-			this.year = year;
+            this.year = year;
             this.nameYear = year.toString() + '年度';
-			if(isNew){
+            if (isNew) {
                 this.isNew = isNew;
                 this.isChange = '＊';
             }
-		}
+        }
     }
 }
