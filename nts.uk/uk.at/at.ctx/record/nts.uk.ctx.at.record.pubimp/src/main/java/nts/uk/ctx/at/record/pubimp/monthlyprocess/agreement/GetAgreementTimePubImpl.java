@@ -14,12 +14,12 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetYearAndMultiMonthAgreementTime;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeYearExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 
 /**
@@ -34,28 +34,30 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 	
 	/** 36協定時間の取得 */
 	@Override
-	public AgreementTimeOfManagePeriod calcAgreementTime(String sid, YearMonth ym,
+	public AgreementTimeOfManagePeriodExport calcAgreementTime(String sid, YearMonth ym,
 			List<IntegrationOfDaily> dailyRecord, GeneralDate baseDate, ScheRecAtr scheRecAtr) {
 		val require = requireService.createRequire();
 		
-		return GetAgreementTime.get(require, sid, ym, dailyRecord, baseDate, scheRecAtr);
+		return AgreementTimeOfManagePeriodExport.copy(GetAgreementTime.get(require, sid, ym, dailyRecord, baseDate, scheRecAtr));
 	}
 	
 	/** 36協定年間時間の取得 */
 	@Override
-	public Optional<AgreementTimeYear> getYear(String employeeId, YearMonthPeriod period, GeneralDate criteria, ScheRecAtr scheRecAtr) {
+	public Optional<AgreementTimeYearExport> getYear(String employeeId, YearMonthPeriod period, GeneralDate criteria, ScheRecAtr scheRecAtr) {
 		val require = requireService.createRequire();
 		
-		return GetAgreementTime.getYear(require, employeeId, period, criteria, scheRecAtr);
+		return GetAgreementTime.getYear(require, employeeId, period, criteria, scheRecAtr)
+				.map(c -> AgreementTimeYearExport.copy(c));
 	}
 	
 	/** 36協定上限複数月平均時間の取得 */
 	@Override
-	public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(List<IntegrationOfDaily> dailyRecord, 
+	public Optional<AgreMaxAverageTimeMultiExport> getMaxAverageMulti(List<IntegrationOfDaily> dailyRecord, 
 			String employeeId, YearMonth yearMonth, GeneralDate criteria, ScheRecAtr scheRecAtr) {
 		val require = requireService.createRequire();
 		
-		return GetAgreementTime.getMaxAverageMulti(require, dailyRecord, employeeId, yearMonth, criteria, scheRecAtr);
+		return GetAgreementTime.getMaxAverageMulti(require, dailyRecord, employeeId, yearMonth, criteria, scheRecAtr)
+					.map(c -> AgreMaxAverageTimeMultiExport.copy(c));
 	}
 	
 	/** 36協定上限複数月平均時間と年間時間の取得（日指定） */
@@ -66,8 +68,8 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 		
 		val result = GetYearAndMultiMonthAgreementTime.getByYmAndDate(require, employeeId, criteria, averageMonth, scheRecAtr);
 		
-		return new AgreementTimeExport(result.getAgreementTimeYear().orElse(null), 
-										result.getAgreMaxAverageTimeMulti().orElse(null));
+		return new AgreementTimeExport(result.getAgreementTimeYear().map(c -> AgreementTimeYearExport.copy(c)).orElse(null), 
+										result.getAgreMaxAverageTimeMulti().map(c -> AgreMaxAverageTimeMultiExport.copy(c)).orElse(null));
 	}
 	
 	/** 36協定上限複数月平均時間と年間時間の取得（年度指定） */
@@ -78,7 +80,7 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 		
 		val result = GetYearAndMultiMonthAgreementTime.getByYmAndYear(require, employeeId, criteria, averageMonth, year, scheRecAtr);
 		
-		return new AgreementTimeExport(result.getAgreementTimeYear().orElse(null), 
-				result.getAgreMaxAverageTimeMulti().orElse(null));
+		return new AgreementTimeExport(result.getAgreementTimeYear().map(c -> AgreementTimeYearExport.copy(c)).orElse(null), 
+										result.getAgreMaxAverageTimeMulti().map(c -> AgreMaxAverageTimeMultiExport.copy(c)).orElse(null));
 	}
 }

@@ -37,7 +37,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 		// Get work time info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		// TODO: default ContractCode "000000000000"
-		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(Integer.parseInt(nrlNo.trim()),
+		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(nrlNo.trim(),
 				"000000000000");
 		String payload = toStringObject(lstInfo);
 		byte[] payloadBytes = Codryptofy.decode(payload);

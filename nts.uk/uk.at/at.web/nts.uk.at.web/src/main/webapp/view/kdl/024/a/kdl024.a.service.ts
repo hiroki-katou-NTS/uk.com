@@ -21,7 +21,7 @@ module kdl024.a.service {
         command.externalBudgetCode = updateBudgetCmd.externalBudgetCode();
         command.externalBudgetName = updateBudgetCmd.externalBudgetName();
         command.budgetAtr = Number(updateBudgetCmd.budgetAtr());
-        command.unitAtr = updateBudgetCmd.unitAtr();
+        //command.unitAtr = updateBudgetCmd.unitAtr();
         return nts.uk.request.ajax(paths.updateExternalBudget, command);
     }
 
@@ -31,7 +31,7 @@ module kdl024.a.service {
         command.externalBudgetCode = insertBudgetCmd.externalBudgetCode();
         command.externalBudgetName = insertBudgetCmd.externalBudgetName();
         command.budgetAtr = Number(insertBudgetCmd.budgetAtr());
-        command.unitAtr = insertBudgetCmd.unitAtr();
+        //command.unitAtr = insertBudgetCmd.unitAtr();
         return nts.uk.request.ajax(paths.insertExternalBudget, command);
     }
     
@@ -41,7 +41,7 @@ module kdl024.a.service {
         command.externalBudgetCode = deleteBudgetCmd.externalBudgetCode();
         command.externalBudgetName = deleteBudgetCmd.externalBudgetName();
         command.budgetAtr = Number(deleteBudgetCmd.budgetAtr());
-        command.unitAtr = deleteBudgetCmd.unitAtr();
+        //command.unitAtr = deleteBudgetCmd.unitAtr();
         return nts.uk.request.ajax(paths.deleteExternalBudget, command);
     }
 
@@ -50,7 +50,7 @@ module kdl024.a.service {
             externalBudgetCode: string;
             externalBudgetName: string;
             budgetAtr: number;
-            unitAtr: number;
+           //unitAtr: number;
         }
     }
     //ExportExcel

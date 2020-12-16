@@ -1531,7 +1531,17 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		pcLogon(domain.getWorkClock());
 	}
 	
-	
+	public void reset() {
+
+		/** 勤務日数 */
+		workDays(new WorkDaysOfMonthly());
+		
+		/** 勤務時間 */
+		workTime(new WorkTimeOfMonthlyVT());
+		
+		/** 勤務時刻 */
+		pcLogon(new WorkClockOfMonthly());
+	}
 	
 	private void workTime(WorkTimeOfMonthlyVT workTime) {
 		/** 遅刻早退 */

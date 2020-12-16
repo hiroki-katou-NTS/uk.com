@@ -158,7 +158,7 @@ declare module "vue/types/vue" {
             readonly fromUTCString: {
                 (value: string, format: string): Date;
             };
-            readonly timewd:{
+            readonly timewd: {
                 (value: number): string;
             };
             readonly timedr: {
@@ -251,6 +251,7 @@ declare module "vue/types/vue" {
             (name: string): boolean;
         };
         $updateValidator: {
+            (): void;
             (rule: IRule): void;
             (name: string, rule: IRule): void;
         };

@@ -16,7 +16,7 @@ public class WorkChangeDetailDto {
 	/**
 	* 勤務変更申請
 	*/
-	AppWorkChangeDto_Old workChangeDto;
+	AppWorkChangeDto workChangeDto;
 	/**
 	 * 申請
 	 */

@@ -17,6 +17,6 @@ public interface EmpInfoTerminalPub {
 	 * @param contractCode
 	 * @return
 	 */
-	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode);
+	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(String empInfoTerCode, String contractCode);
 	
 }

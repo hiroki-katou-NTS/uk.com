@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
@@ -22,7 +23,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     public Integer nursingCategory;
 
     /** The start month day. */
-    public Integer startMonthDay;
+    public MonthDay startMonthDay;
 
     /** The nursing number leave day. */
     public Integer nursingNumberLeaveDay;
@@ -31,12 +32,12 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     public Integer nursingNumberPerson;
 
     public Integer specialHolidayFrame;
-    
+
     public Integer absenceWorkDay;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setCompanyId(java.lang.String)
      */
@@ -46,7 +47,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setManageType(nts.uk.ctx.at.shared.dom.
      * vacation.setting.ManageDistinct)
@@ -58,7 +59,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setNursingCategory(nts.uk.ctx.at.shared.
      * dom.vacation.setting.nursingleave.NursingCategory)
@@ -70,18 +71,18 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setStartMonthDay(java.lang.Integer)
      */
     @Override
-    public void setStartMonthDay(Integer startMonthDay) {
+    public void setStartMonthDay(MonthDay startMonthDay) {
         this.startMonthDay = startMonthDay;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setMaxPersonSetting(nts.uk.ctx.at.shared
      * .dom.vacation.setting.nursingleave.MaxPersonSetting)
@@ -97,7 +98,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     }
 
 	@Override
-	public void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame) {
+	public void setHdspFrameNo(Optional<Integer> specialHolidayFrame) {
 		if (specialHolidayFrame.isPresent())
 			this.specialHolidayFrame = specialHolidayFrame.get();
 		else
@@ -105,7 +106,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	}
 
 	@Override
-	public void setWorkAbsence(Optional<Integer> workAbsence) {
+	public void setAbsenceFrameNo(Optional<Integer> workAbsence) {
 		if (workAbsence.isPresent())
 			this.absenceWorkDay = workAbsence.get();
 		else

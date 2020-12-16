@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.YearMonth;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
@@ -43,7 +44,8 @@ public class Ksu002AWebService extends WebService {
 	@Path("getListOfPeriodsClose")
 	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
 		if (param == null) {
-			param = new ListOfPeriodsCloseInput(theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
+			int ym = theInitialDisplayDate.getInitialDisplayDate().getYearMonth();
+			param = new ListOfPeriodsCloseInput(YearMonth.of(ym));
 		}
 		
 		return this.listOfPeriodsClose.get(param);
