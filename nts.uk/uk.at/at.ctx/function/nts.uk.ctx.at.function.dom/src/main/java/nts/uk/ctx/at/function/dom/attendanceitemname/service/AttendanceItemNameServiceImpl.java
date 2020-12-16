@@ -270,6 +270,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			FrameCategory frCtg = EnumAdaptor.valueOf(item.getFrameCategory(), FrameCategory.class);
 			AttendanceItemLinking itemLink = mapItemLinking.get(item.getAttendanceItemId());
 			Integer frameNo = itemLink.getFrameNo().v();
+            item.setFrameNo(frameNo);
 			
 			switch (frCtg) {
 			case OverTime:

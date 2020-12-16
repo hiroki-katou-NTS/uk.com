@@ -30,14 +30,12 @@ public class ApprovalProcessingUseSettingFinder {
 			return ApprovalProcessingUseSettingDto.builder().build();
 		}
 
-		ApprovalProcessingUseSettingDto result = ApprovalProcessingUseSettingDto.builder()
-			.companyId(aPUS.get().getCompanyId())
-			.useDayApproverConfirm(aPUS.get().getUseDayApproverConfirm())
-			.useMonthApproverConfirm(aPUS.get().getUseMonthApproverConfirm())
-			.lstJobTitleNotUse(aPUS.get().getLstJobTitleNotUse())
-			.supervisorConfirmErrorAtr(aPUS.get().getSupervisorConfirmErrorAtr().value)
-			.build();
-		
-		return result;
+		return ApprovalProcessingUseSettingDto.builder()
+				.companyId(aPUS.get().getCompanyId())
+				.useDayApproverConfirm(aPUS.get().getUseDayApproverConfirm())
+				.useMonthApproverConfirm(aPUS.get().getUseMonthApproverConfirm())
+				.lstJobTitleNotUse(aPUS.get().getLstJobTitleNotUse())
+				.supervisorConfirmErrorAtr(aPUS.get().getSupervisorConfirmErrorAtr().value)
+				.build();
 	}
 }

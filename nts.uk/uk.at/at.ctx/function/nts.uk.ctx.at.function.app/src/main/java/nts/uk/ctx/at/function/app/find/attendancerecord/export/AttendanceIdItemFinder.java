@@ -210,9 +210,7 @@ public class AttendanceIdItemFinder {
 		List<Integer> attendanceIdList = this.getDailyAttendanceItemsAvaiable(companyId, FormCanUsedForTime.ATTENDANCE_BOOK, TypeOfItem.Daily);
 		
 		// 日次勤怠項目に対応する名称、属性を取得する 
-		List<AttributeOfAttendanceItemDto> result = this.getDailyAttendanceItemNameAndAttr(companyId, attendanceIdList);
-
-		return result;
+		return this.getDailyAttendanceItemNameAndAttr(companyId, attendanceIdList);
 	}
 	
 	/**
@@ -230,9 +228,7 @@ public class AttendanceIdItemFinder {
 				BigDecimal.valueOf(formId.value));
 		
 		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」
-		List<Integer> avaiableItem = this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, dailyItemUsed);
-
-		return avaiableItem;
+		return this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, dailyItemUsed);
 		
 	}
 	
@@ -292,9 +288,7 @@ public class AttendanceIdItemFinder {
 		List<Integer> attendanceIdList = this.getMonthlyAttendanceItemsAvaiable(companyId, FormCanUsedForTime.ATTENDANCE_BOOK, TypeOfItem.Monthly);
 		
 		// 日次勤怠項目に対応する名称、属性を取得する 
-		List<AttributeOfAttendanceItemDto> result = this.getMonthlyAttendanceItemNameAndAttr(companyId, attendanceIdList);
-		
-		return result;
+		return this.getMonthlyAttendanceItemNameAndAttr(companyId, attendanceIdList);
 		
 	}
 	
@@ -309,10 +303,8 @@ public class AttendanceIdItemFinder {
 		// アルゴリズム「帳票で利用できる月次の勤怠項目を取得する」を実行する Thực hiện thuật toán 「帳票で利用できる月次の勤怠項目を取得する」
 		List<Integer> monthlyItemUsed = this.monthlyAttendanceItemUsedRepository.getAllMonthlyItemId(companyId, formId.value);
 
-		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」
-		List<Integer> avaiableItem = this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, monthlyItemUsed);
-		
-		return avaiableItem;
+		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」	
+		return this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, monthlyItemUsed);
 	}
 	
 	/**

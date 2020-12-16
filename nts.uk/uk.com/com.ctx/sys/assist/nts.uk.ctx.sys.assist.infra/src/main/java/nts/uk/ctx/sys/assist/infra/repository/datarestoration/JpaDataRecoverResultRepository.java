@@ -45,10 +45,9 @@ public class JpaDataRecoverResultRepository extends JpaRepository implements Dat
 
 	@Override
 	public List<DataRecoveryResult> getDataRecoveryResultByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
-		List<DataRecoveryResult> list = this.queryProxy()
+		return this.queryProxy()
 				.query(FIND_RESULTS_BY_STARTDATETIME, SspmtDataRecoverResult.class).setParameter("start", from)
 				.setParameter("end", to).getList(SspmtDataRecoverResult::toDomain);
-		return list;
 	}
 
 	@Override

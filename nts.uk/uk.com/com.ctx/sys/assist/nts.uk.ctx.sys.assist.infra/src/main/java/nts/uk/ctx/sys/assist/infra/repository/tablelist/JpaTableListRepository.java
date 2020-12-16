@@ -42,7 +42,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			+ "	AND t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId	";
 	private static final String SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID = "SELECT t FROM SspmtTableList t "
 			+ "	WHERE t.tableListPk.systemType =:systemType "
-			+ "	AND t.dataRecoveryProcessId =:dataRecoveryProcessId	";
+			+ "	AND t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId	";
 	private static final String COMPANY_CD = "0";
 	private static final String EMPLOYEE_CD = "5";
 	private static final String YEAR = "6";
@@ -678,9 +678,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 
 	@Override
-	public List<TableList> getBySystemTypeAndRecoverId(int systemType, String recoverId) {
+	public List<TableList> getBySystemTypeAndRecoverId(int systemType, String id) {
 		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID, SspmtTableList.class)
-				.setParameter("systemType", systemType).setParameter("dataRecoveryProcessId", recoverId)
+				.setParameter("systemType", systemType).setParameter("dataStorageProcessingId", id)
 				.getList(c -> c.toDomain());
 	}
 

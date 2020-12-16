@@ -271,7 +271,7 @@ module nts.uk.at.ksm008.f {
             })
         }
 
-        moveItemToRight() {
+        moveItemToRight(isButtonClick = true) {
             const vm = this;
             if (_.isEmpty(vm.selectedableCodes())) {
                 return;
@@ -295,6 +295,9 @@ module nts.uk.at.ksm008.f {
                 currentTagretList.push(selectedItem[0]);
             });
             vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
+            if (!isButtonClick) {
+                    currentTagretList = _.orderBy(currentTagretList, ['code'], ['asc']);
+            }
             vm.targetEmployeeList(currentTagretList);
 
             vm.$blockui("clear");
@@ -318,7 +321,7 @@ module nts.uk.at.ksm008.f {
             $("#kcp005-component-right").ntsError("clear");
         }
 
-        moveItemToLeft() {
+        moveItemToLeft(isButtonClick = true) {
             const vm = this;
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
@@ -364,13 +367,16 @@ module nts.uk.at.ksm008.f {
                         if (!_.isEmpty(data.empsCanNotSameHolidays)) {
                             let empsCanNotSameHolidays = new Array<string>();
                             _.each(data.empsCanNotSameHolidays, (dataId: string) => {
-                                empsCanNotSameHolidays.push(_.find(vm.selectableEmployeeList(), i => {
+                                let personInfo = _.find(vm.selectableEmployeeList(), i => {
                                     return i.id == dataId
-                                }).code)
+                                });
+                                if (!_.isEmpty(personInfo)) {
+                                    empsCanNotSameHolidays.push(personInfo.code)
+                                }
                             });
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
-                            vm.moveItemToRight();
+                            vm.moveItemToRight(false);
                             vm.selectedTargetCode([]);
                         }
 
@@ -470,6 +476,7 @@ module nts.uk.at.ksm008.f {
 
         setNewMode() {
             const vm = this;
+            vm.selectedTargetCode([]);
 
             //clear data
             vm.selectedCode('');
@@ -643,15 +650,13 @@ module nts.uk.at.ksm008.f {
                     workplaceGroupId: vm.workplaceGroupId
                 })
                 .done(data => {
-                    if (!_.isEmpty(data)) {
-                        data = _.orderBy(data, ['employeeCode'], ['asc']);
+                    data = _.orderBy(data, ['employeeCode'], ['asc']);
 
-                        vm.selectableEmployeeList(data.map((item: any) => {
-                            return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
-                        }));
+                    vm.selectableEmployeeList(data.map((item: any) => {
+                        return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
+                    }));
 
-                        vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
-                    }
+                    vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
 
                     dfd.resolve();
                 })
