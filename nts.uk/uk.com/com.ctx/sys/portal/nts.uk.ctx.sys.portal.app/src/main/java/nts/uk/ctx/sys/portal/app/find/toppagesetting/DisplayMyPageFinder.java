@@ -151,7 +151,7 @@ public class DisplayMyPageFinder {
 					result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
 				}
 				//	トップページの場合
-			} else if (param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+			} else if (param.getTopPageSetting().get().getLoginMenuCode().isEmpty() || param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
 				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
 				result.setDisplayTopPage(dataDisplay);
 			}

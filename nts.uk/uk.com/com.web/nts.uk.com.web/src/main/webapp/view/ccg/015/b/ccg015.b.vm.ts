@@ -28,6 +28,7 @@ module nts.uk.com.view.ccg015.b {
     text3: KnockoutObservable<String> = ko.observable('');
     button1Text: KnockoutObservable<string> = ko.observable('');
     button2Text: KnockoutObservable<string> = ko.observable('');
+    isDisableNewBtn: KnockoutObservable<boolean> = ko.observable(false);
 
     breakNewMode = false;
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -119,6 +120,7 @@ module nts.uk.com.view.ccg015.b {
         }
       });
      
+
     }
 
     private loadTopPageList(selectedCode?: string): JQueryPromise<void> {
@@ -132,10 +134,12 @@ module nts.uk.com.view.ccg015.b {
             const listTopPage: Node[] = _.map(data, (item) => new Node(item.topPageCode, item.topPageName, null));
             const lstSort =  _.orderBy(listTopPage, ["code"], ["asc"])
             vm.listTopPage(lstSort);
+            vm.isDisableNewBtn(false);
             vm.toppageSelectedCode(selectedCode || data[0].topPageCode);
           } else {
             vm.listTopPage([]);
             vm.topPageModel(new TopPageViewModel());
+            vm.isDisableNewBtn(true);
             vm.isNewMode(true);
             $("#inp_code").focus();
           }
