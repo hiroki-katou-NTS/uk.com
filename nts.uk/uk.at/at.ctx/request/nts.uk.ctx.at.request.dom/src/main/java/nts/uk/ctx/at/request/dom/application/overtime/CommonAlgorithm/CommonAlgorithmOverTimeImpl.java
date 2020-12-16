@@ -749,7 +749,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		if (overStateOutput != null) {
 			if (overStateOutput.getIsExistApp()) {
 				// メッセージ（Msg_1508）をOUTPUT「確認メッセージリスト」に追加する
-				output.add(new ConfirmMsgOutput("Msg_1580", Collections.emptyList()));
+				output.add(new ConfirmMsgOutput("Msg_1508", Collections.emptyList()));
 			} else { // false
 				// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 				if (overStateOutput.getAdvanceExcess().isAdvanceExcess()) {
