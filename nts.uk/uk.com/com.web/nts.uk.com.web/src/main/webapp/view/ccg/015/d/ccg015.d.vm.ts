@@ -70,6 +70,7 @@ module nts.uk.com.view.ccg015.d {
     mounted() {
       const vm = this;
       vm.checkDataLayout(vm.params);
+      $('#D2_2').focus();
     }
 
     private changeLayout(layoutType: number): JQueryPromise<any> {
@@ -191,7 +192,7 @@ module nts.uk.com.view.ccg015.d {
         .then(() => {
           vm.isNewMode(false);
           vm.$blockui('clear');
-          vm.$dialog.info({ messageId: "Msg_15" });
+          vm.$dialog.info({ messageId: "Msg_15" }).then(() => $('#D2_2').focus());
         })
         .always(() => vm.$blockui('clear'));
     }

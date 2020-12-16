@@ -23,6 +23,7 @@
 
 .contents_1 {
   padding: 5px 5px 5px 5px;
+  overflow: auto;
   width: 100%;
   height: 92%;
 }

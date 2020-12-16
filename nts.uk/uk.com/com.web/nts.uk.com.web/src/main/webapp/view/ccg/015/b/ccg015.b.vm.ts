@@ -18,6 +18,7 @@ module nts.uk.com.view.ccg015.b {
     topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
     columns: KnockoutObservable<any> = ko.observableArray([]);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    isDisableButton: KnockoutObservable<boolean> = ko.observable(true);
     selectedId: KnockoutObservable<number> = ko.observable(null);
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
@@ -84,7 +85,7 @@ module nts.uk.com.view.ccg015.b {
 
     mounted() {
       const vm = this;
-      vm.selectedId(1);
+      vm.selectedId(0);
       vm.toppageSelectedCode.subscribe((selectedTopPageCode: string) => {
         if (selectedTopPageCode) {
           vm.isNewMode(false);
@@ -96,7 +97,9 @@ module nts.uk.com.view.ccg015.b {
               $('.save-error').ntsError('clear');
             })
             .always(() => vm.$blockui("clear"));
-          $("#inp_name").focus();
+          if (selectedTopPageCode !== "") {
+            $("#inp_name").focus();
+          }
         } else {
           // 新規のトップページを作成する
           vm.isNewMode(true);
@@ -107,6 +110,15 @@ module nts.uk.com.view.ccg015.b {
           }
         }
       });
+      
+      vm.isNewMode.subscribe((x:any) => {
+        if(x) {
+          vm.isDisableButton(true);
+        } else {
+          vm.isDisableButton(false);
+        }
+      });
+     
     }
 
     private loadTopPageList(selectedCode?: string): JQueryPromise<void> {
@@ -118,7 +130,8 @@ module nts.uk.com.view.ccg015.b {
           // if data # empty
           if (data.length > 0) {
             const listTopPage: Node[] = _.map(data, (item) => new Node(item.topPageCode, item.topPageName, null));
-            vm.listTopPage(listTopPage);
+            const lstSort =  _.orderBy(listTopPage, ["code"], ["asc"])
+            vm.listTopPage(lstSort);
             vm.toppageSelectedCode(selectedCode || data[0].topPageCode);
           } else {
             vm.listTopPage([]);
@@ -155,6 +168,8 @@ module nts.uk.com.view.ccg015.b {
       const vm = this;
       vm.topPageModel(new TopPageViewModel());
       vm.isNewMode(true);
+      vm.selectedId(0);
+      this.$nextTick(()=>  $("#inp_code").focus());
       vm.breakNewMode = true;
       vm.toppageSelectedCode("");
       if (nts.uk.ui.errors.hasError()) {
@@ -178,6 +193,7 @@ module nts.uk.com.view.ccg015.b {
                 .then(() => {
                   vm.$blockui("clear");
                   vm.$dialog.info({ messageId: "Msg_15" });
+                  $("#inp_name").focus();
                   vm.loadTopPageList(param.topPageCode);
                 })
                 .fail((err) => {
@@ -191,6 +207,7 @@ module nts.uk.com.view.ccg015.b {
                   vm.$blockui("clear");
                   vm.$dialog.info({ messageId: "Msg_15" });
                   vm.loadTopPageList(param.topPageCode);
+                  $("#inp_name").focus();
                 })
                 .fail((err) => {
                   vm.$blockui("clear");
@@ -316,7 +333,7 @@ module nts.uk.com.view.ccg015.b {
     openDialogCCG015F() {
       const vm = this;
       const topPageModel: TopPageModelParams = vm.topPageModelParam();
-      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageCode = vm.toppageSelectedCode();
       topPageModel.topPageName = vm.topPageModel().topPageName();
       vm.topPageModelParam(topPageModel);
       const data = {
