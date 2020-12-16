@@ -846,12 +846,12 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 							 }										 
 						 }
 					 });
-		if (outDateApplication.getFlex() == type) {
-			contentMsgs.add(I18NText.getText("KAF005_65"));
-		}
 		
 		if (outDateApplication.getOverTimeLate() == type) {
 			contentMsgs.add(I18NText.getText("KAF005_63"));
+		}
+		if (outDateApplication.getFlex() == type) {
+			contentMsgs.add(I18NText.getText("KAF005_65"));
 		}
 		
 		// {1}：追加方法を下に参照　※複数枠が超過したら”、”を追加してください（nếu nhiều frame cung lỗi thi cach nhau bằng dấu "、"）
