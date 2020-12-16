@@ -379,13 +379,8 @@ module nts.uk.at.kal014.a {
                         + (data.strPreviousMonth() == 0? "前" : "先") + "の"+ vm.$i18n('KAL014_48');
                 }
             } else{
-                if(data.strMakeToDay()){
-                    // 当日から当日
-                    start = vm.$i18n('KAL014_44')+"当日 ";
-                } else {
-                    start = vm.$i18n('KAL014_44')
-                        + data.strDay()+  vm.$i18n('KAL014_46') + (data.strPreviousDay() == 0? "前" : "先");
-                }
+                start = vm.$i18n('KAL014_44')
+                    + data.strDay()+  vm.$i18n('KAL014_46') + (data.strPreviousDay() == 0? "前" : "先");
             }
 
             let end = "";
@@ -398,13 +393,8 @@ module nts.uk.at.kal014.a {
                         + (data.endPreviousMonth() == 0? "前" : "先") + "の" +vm.$i18n('KAL014_53');
                 }
             } else{
-                if(data.endMakeToDay()){
-                    // 当日から当日
-                    end = vm.$i18n('KAL014_44') + "当日 ";
-                } else {
-                    end = vm.$i18n('KAL014_44')
-                        + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousDay() == 0? "前" : "先");
-                }
+                end = vm.$i18n('KAL014_44')
+                    + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousDay() == 0? "前" : "先");
             }
 
             return start + vm.$i18n('KAL014_42') + end;
