@@ -119,19 +119,17 @@ module knr002.g {
                 var self = this;
                 blockUI.invisible();
                 service.getWorkTypes(self.empInfoTerCode()).done((data)=>{	
-                console.log("code", self.empInfoTerCode());
                     if(!data){	
                         //do something
                     }else{	
                         self.posibleWorkTypes(data.posibleWorkTypes);
                         self.workTypeCodes(self.isCloseWorkType()? self.workTypeCodes() : data.workTypeCodes);
-                        console.log("data", data);
+                        console.log('isClose: ', self.isCloseWorkType());
                         setShared('KDL002_Multiple', true);
                         setShared('KDL002_AllItemObj', self.posibleWorkTypes());
                         setShared('KDL002_SelectedItemId', self.workTypeCodes());
                         nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(() => {
-                            var self = this;
-                            var selectable= nts.uk.ui.windows.getShared("KDL002_SelectedNewItem");
+                            var selectable = nts.uk.ui.windows.getShared("KDL002_SelectedNewItem");
                             self.selectableWorkTypes(selectable !== undefined? selectable : []);
                             self.isCloseWorkType(true);
                             console.log("selectable: ", self.selectableWorkTypes());
@@ -141,12 +139,31 @@ module knr002.g {
                 });	 
             }
             /**
-             * get Worktime
+             * get Worktime to be sent
              * 
              */
             private call_KDL001(): void{
                 var self = this;
                 blockUI.invisible();
+                service.getWorkTimes(self.empInfoTerCode()).done((data)=>{	
+                    if(!data){	
+                        //do something
+                    }else{	
+                        self.posibleWorkTimes(data.posibleWorkTimes);
+                        self.workTimeCodes(self.isCloseWorkTime()? self.workTimeCodes() : data.workTimeCodes);
+                        console.log("data", data);
+                        setShared('kml001multiSelectMode', true);
+                        setShared('kml001selectAbleCodeList', self.posibleWorkTimes());
+                        setShared('kml001selectedCodeList', self.workTimeCodes());
+                        nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                            var selectable = getShared("kml001selectedCodeList");
+                            self.isCloseWorkTime(true);
+                            self.selectableWorkTimes(selectable !== undefined? selectable : []);
+                            console.log("selectableWorkTimes: ", self.selectableWorkTimes());
+                            blockUI.clear();
+                        });       
+                    }	
+                });	 
             }
             /**
              * get Model Name

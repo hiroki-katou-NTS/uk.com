@@ -111,10 +111,9 @@ module knr002.h {
                     // Load employee list component
                 });
 
-                service.getAllAttendanceRecExpSet().done(function(listAttendance) {
+                service.getAllAttendanceRecExpSet().done( listAttendance => {
                     if (listAttendance === undefined || listAttendance.length == 0) {
-                        self.attendanceRecordList();
-                      
+                        self.attendanceRecordList();                      
                     } else {
                      
                         var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);

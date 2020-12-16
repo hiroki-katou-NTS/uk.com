@@ -22,12 +22,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetWorkTime {
-	//	
+	//	WorkTimeSettingRepository.findByCompanyId(companyId)
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	//	就業情報端末のリクエスト一覧Repository.[6]就業時間帯コードListを取得する
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
+	
 	public GetWorkTimeDto getWorkTimes(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyId = AppContexts.user().companyId();

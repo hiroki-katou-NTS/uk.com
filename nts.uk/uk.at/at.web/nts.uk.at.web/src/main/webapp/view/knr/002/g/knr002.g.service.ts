@@ -4,6 +4,7 @@ module knr002.g.service {
     let paths: any = {
         getTimeRecordReqSettings: "screen/at/tranfercontentsettings/gettimerecordreqsettings",
         getWorkTypes: "screen/at/worktypetransfer/getworktypes",
+        getWorkTimes: "screen/at/worktimetransfer/getworktimes",
     };
 
     /**
@@ -17,5 +18,11 @@ module knr002.g.service {
      */
     export function getWorkTypes(empInfoTerCode: any): JQueryPromise<any> {
         return ajax(paths.getWorkTypes+ "/" + empInfoTerCode);
+    }
+    /**
+     * Get Worktime tobe sent
+     */
+    export function getWorkTimes(empInfoTerCode: any): JQueryPromise<any> {
+        return ajax(paths.getWorkTimes+ "/" + empInfoTerCode);
     }
 }
