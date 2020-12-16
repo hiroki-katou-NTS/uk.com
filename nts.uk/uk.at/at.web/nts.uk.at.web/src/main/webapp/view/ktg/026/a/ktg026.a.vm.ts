@@ -35,7 +35,7 @@ module nts.uk.at.view.ktg026.a.viewmodel {
       const cache = windows.getShared('cache');
       vm.employeeId = param.employeeId;
       targetDate = param.targetDate;
-      const currentOrNextMonth = !!cache ? cache.currentOrNextMonth : 1; // 1: 従業員参照モード 2: 上長参照モード
+      const currentOrNextMonth = !!cache && cache.currentOrNextMonth ? cache.currentOrNextMonth : 1; // 1: 従業員参照モード 2: 上長参照モード
 
       const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
         employeeId: vm.employeeId,
