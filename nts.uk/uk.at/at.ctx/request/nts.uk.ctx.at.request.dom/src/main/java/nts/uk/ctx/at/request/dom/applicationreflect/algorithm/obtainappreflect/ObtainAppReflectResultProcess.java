@@ -44,7 +44,7 @@ public class ObtainAppReflectResultProcess {
 		for (Application app : lstApp) {
 			/// 申請反映結果を取得
 			Optional<IntegrationOfDaily> dailyResult = require
-					.getAppReflectResult(ConvertApplicationToShare.toAppliction(app), baseDate, optDaily);
+					.getAppReflectResult(cid, ConvertApplicationToShare.toAppliction(app), baseDate, optDaily);
 			if (dailyResult.isPresent()) {
 				optDaily = dailyResult;
 			}
@@ -98,7 +98,7 @@ public class ObtainAppReflectResultProcess {
 				List<Integer> scheStatus, List<Integer> appType);
 
 		// GetApplicationReflectionResultAdapter.getApp
-		public Optional<IntegrationOfDaily> getAppReflectResult(ApplicationShare application, GeneralDate baseDate,
+		public Optional<IntegrationOfDaily> getAppReflectResult(String cid, ApplicationShare application, GeneralDate baseDate,
 				Optional<IntegrationOfDaily> dailyData);
 
 	}
