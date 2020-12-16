@@ -38,9 +38,6 @@ public class AgentWebService extends WebService {
 	private EmployeeAdapter employeeAdapter;
 
 	@Inject
-	private SendMailToApproverCommandHandler sendMailToApproverCommandHandler;
-
-	@Inject
 	private AgentReportExportService exportService;
 
 	@Path("find/{employeeId}")
@@ -94,12 +91,6 @@ public class AgentWebService extends WebService {
 	public EmpInfoImport findEmpName(String sId) {
 		List<EmpInfoImport> result = employeeAdapter.getEmpInfo(Collections.singletonList(sId));
 		return CollectionUtil.isEmpty(result) ? null : result.get(0);
-	}
-
-	@Path("sendMail")
-	@POST
-	public void sendEmail(SendEmailCommand command) {
-		this.sendMailToApproverCommandHandler.handle(command);
 	}
 
 	@POST

@@ -473,6 +473,7 @@ module nts.uk.at.ksm008.f {
 
         setNewMode() {
             const vm = this;
+            vm.selectedTargetCode([]);
 
             //clear data
             vm.selectedCode('');
