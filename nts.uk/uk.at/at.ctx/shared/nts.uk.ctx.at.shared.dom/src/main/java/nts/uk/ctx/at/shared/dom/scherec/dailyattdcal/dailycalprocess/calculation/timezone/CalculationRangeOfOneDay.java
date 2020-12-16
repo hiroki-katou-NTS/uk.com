@@ -993,8 +993,13 @@ public class CalculationRangeOfOneDay {
 		Optional<ScheduleTimeSheet> scheduleTimeSheet = this.workInformationOfDaily.getScheduleTimeSheet(workNo);
 		
 		if(scheduleTimeSheet.isPresent()) {
-			copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateStartTime(scheduleTimeSheet.get().getAttendance());
-			copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateEndTime(scheduleTimeSheet.get().getLeaveWork());
+			copiedPredetermineTimeSetForCalc.getTimeSheets().stream().filter(c -> c.getWorkNo() == workNo.v())
+				.findFirst().ifPresent(c -> {
+					c.updateStartTime(scheduleTimeSheet.get().getAttendance());
+					c.updateEndTime(scheduleTimeSheet.get().getLeaveWork());
+				});
+//			copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateStartTime(scheduleTimeSheet.get().getAttendance());
+//			copiedPredetermineTimeSetForCalc.getTimeSheets().get(workNo.v()).updateEndTime(scheduleTimeSheet.get().getLeaveWork());
 		}
 		
 		//午前勤務、午後勤務の場合に時間帯を補正する
