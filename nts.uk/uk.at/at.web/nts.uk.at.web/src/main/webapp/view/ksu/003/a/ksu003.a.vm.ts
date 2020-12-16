@@ -314,7 +314,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 							}
 						})
-						if(timeConvert.start == "" || timeConvert.start2 == "" || timeConvert.end == "" || timeConvert.end2 == "") return;
+						if((timeConvert.start == "" && timeConvert.end != "") || (timeConvert.start != "" && timeConvert.end == "") 
+						|| (timeConvert.start2 == "" && timeConvert.end2 != "") || (timeConvert.start2 != "" && timeConvert.end2 == "")) 
+						return;
 						// tính lại tổng time
 						let lstTime : any = [],timeRangeLimit = ((self.timeRange * 60) / 5),totalBrkTime : any = null;
 						self.lstBreakSum = [];

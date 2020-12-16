@@ -1835,7 +1835,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
                         startDate: self.dateTimePrev(),
                         endDate: self.dateTimeAfter(),
-                        dayEdit: moment(dayEdit).add(3, 'd').format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
+                        dayEdit: moment(dayEdit).subtract(3, 'd').format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
                     }
                     setShared("dataFromA", param);
                     setShared("dataTooltip", self.tooltipShare);
