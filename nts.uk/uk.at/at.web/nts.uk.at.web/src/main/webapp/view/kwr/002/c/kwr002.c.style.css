@@ -63,16 +63,15 @@
 }
 
 #tab-panel {
-	width: 735px;
 	height: auto;
 }
 
-.tab-content1 {
-	width: 95%;
+.tab-content-1 {
+	width: 810px;
 }
 
-.tab-content1 {
-	width: 95%;
+.tab-content-2 {
+	width: 690px;
 }
 
 .search {
@@ -121,4 +120,7 @@
 .layout-info {
 	margin-left: 110px;
 	margin-right: 5px;
+}
+.row-inline{
+	display: inline-block;
 }
