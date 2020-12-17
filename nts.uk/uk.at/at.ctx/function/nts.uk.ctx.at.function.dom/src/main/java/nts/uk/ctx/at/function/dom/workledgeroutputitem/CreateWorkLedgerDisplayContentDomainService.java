@@ -70,7 +70,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
         val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
         // ④ Call 会社の月次項目を取得する
-        val attName = require.getMonthlyItems(cid, null, listAttIds, null).stream()
+        val attName = require.getMonthlyItems(cid, Optional.empty(), listAttIds, null).stream()
                 .collect(Collectors.toMap(AttItemName::getAttendanceItemId, q -> q));
         List<WorkLedgerDisplayContent> rs = new ArrayList<>();
         if (attName.isEmpty()) {
@@ -95,8 +95,10 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 //5    ⑤ Cal 月別実績取得の為に年月日から適切な年月に変換する
                 val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
                 //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
-                listAttendances.addAll(require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
-                        yearMonthPeriod, listAttIds).get(e.getEmployeeId()));
+                val actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
+                        yearMonthPeriod, listAttIds);
+                if(actualMultipleMonths == null||actualMultipleMonths.get(e.getEmployeeId()) == null) continue;
+                listAttendances.addAll(actualMultipleMonths.get(e.getEmployeeId()));
             }
             Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendances.stream()
                     .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
