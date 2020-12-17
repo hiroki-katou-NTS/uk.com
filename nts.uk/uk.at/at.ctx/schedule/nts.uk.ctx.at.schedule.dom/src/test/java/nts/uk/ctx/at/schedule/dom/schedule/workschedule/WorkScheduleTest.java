@@ -100,7 +100,7 @@ public class WorkScheduleTest {
 			
 		}};
 		
-		NtsAssert.businessException("xxx", 
+		NtsAssert.businessException("Msg_430", 
 				() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
 		
 	}
@@ -131,6 +131,49 @@ public class WorkScheduleTest {
 		assertThat ( result.getOptSortTimeWork() ).isEmpty();
 		
 		// TODO affInfo, workInfo, timeLeavingをどうやってテストすればいいなのまだ微妙
+		assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
+		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
+		assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
+		
+	}
+	
+	@Test
+	public void testCreateByHandCorrectionWithWorkInformation(
+			@Injectable WorkInformation workInformation,
+			@Mocked AffiliationInforOfDailyAttd affInfo,
+			@Mocked WorkInfoOfDailyAttendance workInfo,
+			@Mocked TimeLeavingOfDailyAttd timeLeaving) {
+		
+		new Expectations() {{
+			
+			workInformation.checkNormalCondition(require);
+			result = true;
+			
+			require.getLoginEmployeeId();
+			result = "empId";
+		}};
+		
+		WorkSchedule result = WorkSchedule.createByHandCorrectionWithWorkInformation(
+				require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+		
+		assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
+		assertThat( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
+		assertThat( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
+		assertThat( result.getLstBreakTime() ).isEmpty();
+		assertThat( result.getLstEditState() )
+			.extracting( 
+					d -> d.getAttendanceItemId(),
+					d -> d.getEditStateSetting() )
+			.containsExactly(
+				tuple( WS_AttendanceItem.WorkType.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+				tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+				tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+				tuple( WS_AttendanceItem.EndTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+				tuple( WS_AttendanceItem.StartTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+				tuple( WS_AttendanceItem.EndTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+				);
+		assertThat( result.getOptAttendanceTime() ).isEmpty();
+		assertThat( result.getOptSortTimeWork() ).isEmpty();
 		assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
 		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
 		assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
