@@ -24,7 +24,7 @@
             <div class="table tbl-wrap">
                 <div class="cell valign-top">
                      <!-- A3_1 -->
-                    <div tabindex="3" id="tree-grid"></div>
+                    <div id="tree-grid"></div>
                 </div>
                 <div class="cell valign-top">
                     <div class="table tbl-control">
@@ -54,7 +54,7 @@
                         </div>
                         <div class="cell valign-top">
                             <!-- A6 -->
-                            <table id="fixed-table">
+                            <table id="fixed-table" tabindex="5">
                                 <colgroup>
                                     <col width="35px"/>
                                     <col width="150px"/>
@@ -80,13 +80,13 @@
                                             <!-- A6_6 and A6_7-->
                                             <td class="periodTime">
                                                 <com:ko-if bind="$data.periodType == 1">
-                                                    <div tabindex="-1" id="daterangepicker" data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRange, type: 'date'}"/>
+                                                    <div tabindex="-1" data-bind="attr:{id: $data.index}, ntsDateRangePicker: {name: $vm.$i18n('KAL011_9'), enable: true, value: $data.dateRange, type: 'date', maxRange: 'oneYear', required: isChecked}"/>
                                                 </com:ko-if>
                                                 <com:ko-if bind="$data.periodType == 2">
-                                                    <div tabindex="-1" id="daterangepicker" data-bind="ntsDateRangePicker: {enable: true, value: $data.dateRangeYm, type: 'yearmonth'}"/>
+                                                    <div tabindex="-1" data-bind="attr:{id: $data.index}, ntsDateRangePicker: {name: $vm.$i18n('KAL011_9'), enable: true, value: $data.dateRangeYm, type: 'yearmonth', maxRange: 'oneYear', required: isChecked}"/>
                                                 </com:ko-if>
                                                 <com:ko-if bind="$data.periodType == 3">
-                                                    <div data-bind="ntsDatePicker: {value: $data.yearMonth, type: 'yearmonth'}"/>
+                                                    <div tabindex="-1" data-bind="attr:{id: $data.index}, ntsDatePicker: {name: $vm.$i18n('KAL011_9'), value: $data.yearMonth, type: 'yearmonth', required: isChecked}"/>
                                                 </com:ko-if>                                                
                                             </td>
                                         </tr>

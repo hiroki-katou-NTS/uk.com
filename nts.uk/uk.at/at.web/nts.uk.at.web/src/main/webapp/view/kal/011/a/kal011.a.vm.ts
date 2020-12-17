@@ -39,7 +39,7 @@ module nts.uk.at.kal011.a {
                 isDialog: false,
                 alreadySettingList: vm.alreadySettingList,
                 maxRows: 12,
-                tabindex: -1,
+                tabindex: 3,
                 systemType: 2 // EMPLOYMENT
             };
         }
@@ -54,18 +54,24 @@ module nts.uk.at.kal011.a {
                 vm.alarmPatternCode.subscribe((code) => {
                     if (!code) return;
                     vm.$blockui("invisible");
-                    vm.getCheckCondition()
-                        .fail((err: any) => {
-                            vm.$dialog.error(err);
-                        }).always(() => {
-                            vm.$blockui("clear");
-                        });
+                    vm.getCheckCondition().done(() => {
+                        // reset check all
+                        vm.isCheckAll_Temp = false;
+                        vm.isCheckAll(vm.isCheckAll_Temp);
+
+                        vm.$errors("clear");
+                    }).fail((err: any) => {
+                        vm.$dialog.error(err);
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
                 });
                 vm.alarmPatternCode.valueHasMutated();
             }).fail((err: any) => {
                 vm.$dialog.error(err);
             }).always(() => {
                 vm.$blockui("clear");
+                $("#tree-grid .ntsDatepicker").focus();
             });
 
             _.extend(window, { vm });
@@ -106,8 +112,13 @@ module nts.uk.at.kal011.a {
                 console.log(conditions)
                 let conds: Array<CheckCondition> = [];
                 if (conditions) {
+                    let index = 1;
                     _.each(conditions, (condition: ICheckCondition) => {
-                        conds.push(new CheckCondition(condition));
+                        let checkCond = new CheckCondition(condition);
+                        checkCond.index = "period-ctg-" + index.toString();
+                        vm.triggerError(checkCond);
+                        conds.push(checkCond);
+                        index++;
                     })
                 }
                 vm.conditions(conds);
@@ -117,6 +128,21 @@ module nts.uk.at.kal011.a {
             })
 
             return dfd.promise();
+        }
+
+        triggerError(checkCond: CheckCondition) {
+            const vm = this;
+            checkCond.isChecked.subscribe((value: boolean) => {
+                if (value){
+                    vm.$validate("#" + checkCond.index);
+                    vm.$validate("#" + checkCond.index + " .ntsStartDatePicker");
+                    vm.$validate("#" + checkCond.index + " .ntsEndDatePicker");
+                } else {
+                    vm.$errors("clear", "#" + checkCond.index);
+                    vm.$errors("clear", "#" + checkCond.index + " .ntsStartDatePicker");
+                    vm.$errors("clear", "#" + checkCond.index + " .ntsEndDatePicker");
+                }
+            })
         }
 
         checkBoxAllOrNot(condition: CheckCondition) {
@@ -143,7 +169,7 @@ module nts.uk.at.kal011.a {
             vm.$validate("#B3_2").then((valid: boolean) => {
                 if (!valid) return;
                 if (_.isEmpty(vm.workplaceIds())) {
-                    vm.$dialog.error({ messageId: "Msg_834" }); //TODO Q&A 37827
+                    vm.$dialog.error({ messageId: "Msg_719" }); //TODO Q&A 37827
                     return
                 }
                 let conditionSelecteds = _.filter(vm.conditions(), (condition: CheckCondition) => condition.isChecked());
@@ -258,6 +284,7 @@ module nts.uk.at.kal011.a {
     }
 
     class CheckCondition {
+        index: string;
         isChecked: KnockoutObservable<boolean>;
         category: common.WORKPLACE_CATAGORY;
         categoryName: any;
