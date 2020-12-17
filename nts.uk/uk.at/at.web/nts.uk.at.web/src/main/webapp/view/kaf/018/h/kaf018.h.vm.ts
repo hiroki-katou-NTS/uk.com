@@ -18,11 +18,21 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.wkpInfo = params.wkpInfo;
+			vm.confirmMode(params.displayConfirm);
         }
 
 		activeConfirm() {
 			const vm = this;
-			vm.confirmMode(!vm.confirmMode());
+			let	wsParam = 
+			{
+				workPlaceId: vm.wkpInfo.wkpID,
+				closureId: vm.closureItem.closureId,
+				currentMonth: vm.closureItem.processingYm,
+				confirmEmployment: vm.confirmMode()
+			};
+			return vm.$ajax(API.activeConfirm, [wsParam]).done((data: any) => {
+				vm.$window.close({});
+			});
 		}
 
 		close() {
@@ -36,6 +46,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 		startDate: string;
 		endDate: string;
 		wkpInfo: ApprSttExecutionDto;
+		displayConfirm: boolean;
 	}
 
     const API = {

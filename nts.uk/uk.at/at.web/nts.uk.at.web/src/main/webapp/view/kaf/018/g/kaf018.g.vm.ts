@@ -168,7 +168,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 			let wkpID = vm.params.currentWkpID,
 				startDate = vm.startDate,
 				endDate = vm.endDate,
-				empID = vm.params.currentEmpID,
+				empID = vm.currentEmpInfo().empID,
 				apprSttComfirmSet = vm.params.apprSttComfirmSet,
 				yearMonth = vm.params.closureItem.processingYm,
 				closureId = vm.params.closureItem.closureId,

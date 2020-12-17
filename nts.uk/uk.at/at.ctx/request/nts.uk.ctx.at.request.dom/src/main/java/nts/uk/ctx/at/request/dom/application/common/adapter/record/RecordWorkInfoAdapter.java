@@ -27,7 +27,8 @@ public interface RecordWorkInfoAdapter {
 	 * @param clearState
 	 * @return
 	 */
-	public Optional<StatusConfirmMonthImport> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId, boolean clearState);
+	public Optional<StatusConfirmMonthImport> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
+			YearMonth yearmonthInput, Integer clsId);
 	
 	/**
 	 * request list 165

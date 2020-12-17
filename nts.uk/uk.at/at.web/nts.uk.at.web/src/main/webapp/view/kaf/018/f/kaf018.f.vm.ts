@@ -424,24 +424,38 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 						item = _.find(apprSttConfirmEmp.listDailyConfirm, o => moment(o.targetDate,'YYYY/MM/DD').isSame(loopDate));	
 					if(item) {
 						if(apprSttComfirmSet.usePersonConfirm && apprSttComfirmSet.useBossConfirm) {
-							if(item.bossConfirm) {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
-							} else if(item.personConfirm) {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
+							if(_.isNull(item.bossConfirm) && _.isNull(item.personConfirm)) {
+								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.SELF_UNCONFIRMED));	
+								if(item.bossConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
+								} else if(item.personConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
+								} else {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.SELF_UNCONFIRMED));	
+								}		
 							}
+							
+							
 						} else if(apprSttComfirmSet.usePersonConfirm && !apprSttComfirmSet.useBossConfirm) {
-							if(item.personConfirm) {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));		
+							if(_.isNull(item.personConfirm)) {
+								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.SELF_UNCONFIRMED));		
-							}	
+								if(item.personConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));		
+								} else {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.SELF_UNCONFIRMED));		
+								}		
+							}
 						} else if(!apprSttComfirmSet.usePersonConfirm && apprSttComfirmSet.useBossConfirm) {
-							if(item.bossConfirm) {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
+							if(_.isNull(item.bossConfirm)) {
+								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
+								if(item.bossConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
+								} else {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
+								}	
 							}
 						} else {
 							a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	

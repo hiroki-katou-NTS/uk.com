@@ -422,7 +422,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					wkpInfo = _.find(vm.dataSource, o => o.wkpID==ui.rowKey),
-					hParam: KAF018HParam = { closureItem, startDate, endDate, wkpInfo };
+					displayConfirm = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).displayConfirm,
+					hParam: KAF018HParam = { closureItem, startDate, endDate, wkpInfo, displayConfirm };
 				vm.$window.modal('/view/kaf/018/h/index.xhtml', hParam);
 			}
 		}

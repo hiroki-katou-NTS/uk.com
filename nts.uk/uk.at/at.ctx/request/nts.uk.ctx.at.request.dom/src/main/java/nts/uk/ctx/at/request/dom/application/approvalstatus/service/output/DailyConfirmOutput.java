@@ -30,9 +30,9 @@ public class DailyConfirmOutput {
 	/**
 	 * 本人確認
 	 */
-	private boolean personConfirm;
+	private Boolean personConfirm;
 	/**
 	 * 上司確認
 	 */
-	private boolean bossConfirm;
+	private Boolean bossConfirm;
 }

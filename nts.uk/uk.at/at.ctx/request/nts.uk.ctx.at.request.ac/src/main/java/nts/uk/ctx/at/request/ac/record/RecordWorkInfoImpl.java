@@ -106,8 +106,8 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 
 	@Override
 	public Optional<StatusConfirmMonthImport> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
-			YearMonth yearmonthInput, Integer clsId, boolean clearState) {
-		return confirmStatusMonthlyPub.getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, clearState)
+			YearMonth yearmonthInput, Integer clsId) {
+		return confirmStatusMonthlyPub.getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, Optional.empty())
 				.map(x -> new StatusConfirmMonthImport(x.getListConfirmStatus().stream()
 						.map(y -> new ConfirmStatusResultImport(
 								y.getEmployeeId(), 
