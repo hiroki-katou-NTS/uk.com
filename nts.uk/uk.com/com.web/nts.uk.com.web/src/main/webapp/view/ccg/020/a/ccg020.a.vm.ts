@@ -15,10 +15,10 @@ module nts.uk.com.view.ccg020.a {
 
   @component({
     name: 'ccg020-component',
-    template: `<div id="search-bar" class="cf">
+    template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
-    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }, click: openPopupSearchCategory" class="img-icon"></i>
-    <input id="search" autocomplete="off" data-bind="ntsTextEditor: {
+    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }" class="img-icon"></i>
+    <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
       enterkey: submit,
       constraint: 'SearchContent',
@@ -43,10 +43,10 @@ module nts.uk.com.view.ccg020.a {
     <div id="popup-search"></div>
   </div>
   <div id="message" class="cf">
-    <i class="img" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
-    <i class="img" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
-  </div>`
+    <i class="img-ccg020" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
+    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
+    <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
+  </div></div>`
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -79,7 +79,13 @@ module nts.uk.com.view.ccg020.a {
       });
       
       $('#radio-search-category').on('click', () => {
-        vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
+        $("#popup-search-category").ntsPopup("hide");
+      });
+      vm.searchCategory.subscribe((value) => {
+        vm.searchPlaceholder(value === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
+      });
+      $("#search-icon").on('click', () => {
+        $("#popup-search-category").ntsPopup("toggle");
       });
     }
 
@@ -105,7 +111,7 @@ module nts.uk.com.view.ccg020.a {
               $('<div/>')
                 .attr('id', 'avatar_id_ccg020')
                 .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
-                .appendTo($userImage);
+                .appendTo($('#user-image'));
             });
           }
         })
@@ -124,7 +130,7 @@ module nts.uk.com.view.ccg020.a {
         position: {
           my: 'left top',
           at: 'left bottom',
-          of: '#search'
+          of: '#search-input'
         }
       });
       $('#popup-search').ntsPopup({
@@ -133,12 +139,12 @@ module nts.uk.com.view.ccg020.a {
         position: {
           my: 'left top',
           at: 'left bottom',
-          of: '#search'
+          of: '#search-input'
         }
       });
       $('#popup-search-category').ntsPopup({
         showOnStart: false,
-        dismissible: true,
+        dismissible: false,
         position: {
           my: 'right top',
           at: 'right bottom',
@@ -149,10 +155,6 @@ module nts.uk.com.view.ccg020.a {
       $('#list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
       });
-    }
-
-    private openPopupSearchCategory() {
-      $('#popup-search-category').ntsPopup('show');
     }
 
     private getListMenu() {
@@ -181,6 +183,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       vm.get10LastResults();
       $('#popup-search').ntsPopup('show');
+      $("#popup-search-category").ntsPopup("hide");
     }
 
     submit() {
