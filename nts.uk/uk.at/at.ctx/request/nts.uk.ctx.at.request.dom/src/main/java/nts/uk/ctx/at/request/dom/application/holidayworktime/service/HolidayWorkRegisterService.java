@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 import java.util.List;
 import java.util.Map;
 
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -56,4 +55,16 @@ public interface HolidayWorkRegisterService {
 	 * @return
 	 */
 	public ProcessResult update(String companyId, AppHolidayWork appHolidayWork);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.休日出勤申請の登録処理.休日出勤申請の登録処理
+	 * @param mode
+	 * @param companyId
+	 * @param appHdWorkDispInfo
+	 * @param appHolidayWork
+	 * @param appTypeSetting
+	 * @return
+	 */
+	public ProcessResult registerMobile(Boolean mode, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork, AppTypeSetting appTypeSetting);
 }

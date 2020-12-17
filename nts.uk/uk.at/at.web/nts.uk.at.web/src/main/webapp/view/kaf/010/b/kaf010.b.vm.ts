@@ -265,8 +265,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						require: true,
 						companyId: vm.$user.companyId,
 						appHdWorkDispInfo: vm.dataSource, 
-						appHolidayWork: appHolidayWork,
-						isProxy: false
+						appHolidayWork: appHolidayWork
 					}
 					if(result) {
 						return vm.$ajax(API.checkBeforeUpdate, commandCheck); // chua xong
@@ -480,9 +479,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 			// ※15
 			if (!_.isNil(self.dataSource.calculationResult)) {
-				if (!_.isEmpty(self.dataSource.calculationResult.applicationTime) 
-						&& !_.isEmpty(self.dataSource.calculationResult.applicationTime.applicationTime)) {
-					self.overTimeTableVisible(true);
+				if (!_.isNil(self.dataSource.calculationResult.applicationTime)){
+					let applicationTimes = self.dataSource.calculationResult.applicationTime.applicationTime;
+					if (!_.isEmpty(applicationTimes) && applicationTimes.filter(applicationTime => applicationTime.attendanceType==AttendanceType.NORMALOVERTIME).length > 0) {
+						self.overTimeTableVisible(true);
+					}
 				}
 			} else {
 				self.overTimeTableVisible(false);

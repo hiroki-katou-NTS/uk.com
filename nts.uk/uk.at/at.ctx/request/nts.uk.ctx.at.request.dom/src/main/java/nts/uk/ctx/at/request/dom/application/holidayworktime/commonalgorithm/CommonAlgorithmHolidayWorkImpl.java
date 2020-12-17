@@ -20,12 +20,15 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.employee.EmploymentAdapterRQ;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -150,6 +153,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	
 	@Inject
 	private EmploymentAdapterRQ employmentAdapter;
+	
+	@Inject
+	private NewBeforeRegister processBeforeRegister;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 
 	@Override
 	public HolidayWorkAppSet getHolidayWorkSetting(String companyId) {
@@ -755,5 +764,60 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		overTimeContent.setSPRTime(Optional.of(workHoursSPR));
 		overTimeContent.setActualTime(Optional.of(workHoursActual));
 		return overTimeContent;
+	}
+
+	@Override
+	public void checkContentApp(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork, Boolean mode) {
+		if (mode) { // 新規モード　の場合
+			//2-1.新規画面登録前の処理
+			processBeforeRegister.processBeforeRegister_New(
+					companyId,
+					EmploymentRootAtr.APPLICATION,
+					false,
+					appHolidayWork.getApplication(),
+					null,
+					appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+					Collections.emptyList(), 
+					appHdWorkDispInfo.getAppDispInfoStartupOutput());
+			
+		} else { // 詳細・照会モード　の場合
+			//4-1.詳細画面登録前の処理
+			detailBeforeUpdate.processBeforeDetailScreenRegistration(
+					companyId,
+					appHolidayWork.getEmployeeID(),
+					appHolidayWork.getAppDate().getApplicationDate(),
+					EmploymentRootAtr.APPLICATION.value,
+					appHolidayWork.getAppID(),
+					appHolidayWork.getPrePostAtr(),
+					appHolidayWork.getVersion(),
+					appHolidayWork.getWorkInformation().getWorkTypeCode().v(),
+					appHolidayWork.getWorkInformation().getWorkTimeCode().v(),
+					appHdWorkDispInfo.getAppDispInfoStartupOutput());
+		}
+		//	遷移する前のエラーチェック
+		this.checkBeforeMoveToAppTime(companyId, appHdWorkDispInfo, appHolidayWork);
+	}
+
+	@Override
+	public void checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork) {
+		//	勤務種類、就業時間帯チェックのメッセージを表示
+		this.checkWorkMessageDisp(appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
+				appHolidayWork.getWorkInformation().getWorkTimeCode().v());
+		
+		//	事前申請が必須か確認する
+		List<PreAppContentDisplay> preAppContentDisplayList = appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+				.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
+		appHdWorkDispInfo.getHolidayWorkAppSet().getApplicationDetailSetting().checkAdvanceApp(ApplicationType.HOLIDAY_WORK_APPLICATION, 
+				appHolidayWork.getApplication().getPrePostAtr(), Optional.empty(), 
+				!preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty());
+		
+		//	申請の矛盾チェック
+		List<EmployeeInfoImport> empList = appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst();
+    	commonAlgorithm.appConflictCheck(companyId, !empList.isEmpty() ? empList.get(0) : null, 
+    			Arrays.asList(appHolidayWork.getApplication().getAppDate().getApplicationDate()), 
+    			Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
+    			appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
 	}
 }

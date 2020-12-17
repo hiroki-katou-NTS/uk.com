@@ -125,4 +125,14 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 				application.getAppID(),
 				null);
 	}
+
+	@Override
+	public ProcessResult registerMobile(Boolean mode, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork, AppTypeSetting appTypeSetting) {
+		if(mode) {
+			return this.register(companyId, appHolidayWork, appTypeSetting, appHdWorkDispInfo);
+		} else {
+			return this.update(companyId, appHolidayWork);
+		}
+	}
 }

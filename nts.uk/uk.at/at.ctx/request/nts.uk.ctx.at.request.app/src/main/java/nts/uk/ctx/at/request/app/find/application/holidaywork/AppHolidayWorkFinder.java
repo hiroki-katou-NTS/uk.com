@@ -14,19 +14,25 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDtoMobile;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamMobile;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputMultiDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWorkMobile;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegisterMobile;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegisterMulti;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeUpdate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdChange;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDateMobile;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWorkMobile;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
@@ -35,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm.ICommonAlgorithmHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.AppHdWorkDispInfoOutputMobile;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
@@ -270,11 +277,127 @@ public class AppHolidayWorkFinder {
 		appHolidayWork.setApplication(application);
 		
 		CheckBeforeOutput checkBeforeOutput = 
-				holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), appHdWorkDispInfoOutput, appHolidayWork, param.isProxy());
+				holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), appHdWorkDispInfoOutput, appHolidayWork);
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
 	}
 
 	public void deleteHdChange(ParamDeleteHdChange param) {
 		holidayWorkService.deleteHdChange(param.getApplicationId());
+	}
+	
+	public AppHdWorkDispInfoDtoMobile getStartMobile(AppHolidayWorkParamMobile param) {
+		Optional<GeneralDate> appDate = Optional.empty();
+		if (StringUtils.isNotBlank(param.getAppDate())) {
+			appDate = Optional.of(GeneralDate.fromString(param.getAppDate(), PATTERN_DATE));	
+		}
+		AppHdWorkDispInfoOutputMobile appHdWorkDispInfoOutputMobile = holidayWorkService.getStartMobile(
+				param.getMode(),
+				param.getCompanyId(),
+				!StringUtils.isBlank(param.getEmployeeId()) ? Optional.of(param.getEmployeeId()) : Optional.empty(),
+				appDate,
+				param.getAppHdWorkDispInfo() != null ? Optional.of(param.getAppHdWorkDispInfo().toDomain()) : Optional.empty(),
+				param.getAppHolidayWork() != null ? Optional.of(param.getAppHolidayWork().toDomain()) : Optional.empty(),
+				param.getAppDispInfoStartupOutput().toDomain());
+		
+		return AppHdWorkDispInfoDtoMobile.fromDomain(appHdWorkDispInfoOutputMobile);
+	}
+
+	public AppHdWorkDispInfoDto changeDateMobile(ParamHolidayWorkChangeDateMobile param) {
+		GeneralDate appDate = null;
+		if (StringUtils.isNotBlank(param.getAppDate())) {
+			appDate = GeneralDate.fromString(param.getAppDate(), PATTERN_DATE);
+		}
+		AppHdWorkDispInfoOutput appHdWorkDispInfo = holidayWorkService.changeDateMobile(
+				param.getCompanyId(),
+				appDate,
+				param.getAppHdWorkDispInfo().toDomain());
+		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfo);
+	}
+
+	public AppHdWorkDispInfoDto selectWorkMobile(ParamHolidayWorkChangeWorkMobile param) {
+		GeneralDate appDate = null;
+		if (StringUtils.isNotBlank(param.getAppDate())) {
+			appDate = GeneralDate.fromString(param.getAppDate(), PATTERN_DATE);
+		}
+		AppHdWorkDispInfoOutput appHdWorkDispInfo = param.getAppHdWorkDispInfo().toDomain();
+		//	勤務種類・就業時間帯選択時に表示するデータを取得する
+		HdSelectWorkDispInfoOutput hdSelectWorkDispInfoOutput = holidayWorkService.selectWork(param.getCompanyId(), appDate, 
+				new WorkTypeCode(param.getWorkTypeCode()), new WorkTimeCode(param.getWorkTimeCode()), 
+				appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()), 
+				appHdWorkDispInfo.getAppDispInfoStartupOutput(), appHdWorkDispInfo.getHolidayWorkAppSet());
+		//	取得した「勤務種類・就業時間帯選択時の表示情報」を「休日出勤申請起動時の表示情報」にセット
+		appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setWorkHours(hdSelectWorkDispInfoOutput.getWorkHours());
+		appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setActualApplicationTime(Optional.ofNullable(hdSelectWorkDispInfoOutput.getActualApplicationTime()));
+		appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setBreakTimeZoneSettingList(hdSelectWorkDispInfoOutput.getBreakTimeZoneSettingList());
+		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfo);
+	}
+
+	public AppHdWorkDispInfoDto changeWorkHoursMobile(ParamHolidayWorkChangeWorkMobile param) {
+		AppHdWorkDispInfoOutput appHdWorkDispInfo = param.getAppHdWorkDispInfo().toDomain();
+		
+		//	休憩時間帯を取得する
+		List<ActualContentDisplay> opActualContentDisplayLst = appHdWorkDispInfo.getAppDispInfoStartupOutput()
+				.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList());
+		Optional<AchievementDetail> achievementDetail = !opActualContentDisplayLst.isEmpty() ? 
+				opActualContentDisplayLst.get(0).getOpAchievementDetail() : Optional.empty();
+
+		BreakTimeZoneSetting breakTimeZoneSettingList = commonOverTimeAlgorithm.selectWorkTypeAndTime(param.getCompanyId(), 
+				new WorkTypeCode(param.getWorkTimeCode()), 
+				new WorkTimeCode(param.getWorkTimeCode()),
+				Optional.of(new TimeWithDayAttr(param.getStartTime())), 
+				Optional.of(new TimeWithDayAttr(param.getEndTime())), 
+				achievementDetail);
+		//	休日出勤申請起動時の表示情報．休日出勤申請起動時の表示情報(申請対象日関係あり)．休憩時間帯設定リスト＝取得した「勤務種類・就業時間帯選択時の表示情報」．休憩時間帯設定リスト
+		appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));
+		
+//		if(appHdWorkDispInfo.getCalculationResult().isPresent()) {
+//			appHdWorkDispInfo.getCalculationResult().get().setCalculatedFlag(CalculatedFlag.UNCALCULATED);
+//		}
+		
+		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfo);
+	}
+
+	public AppHdWorkDispInfoDto calculateMobile(ParamCalculationHolidayWorkMobile param) {
+		String companyId = param.getCompanyId();
+		Optional<GeneralDate> appDate = Optional.empty();
+		if (StringUtils.isNotBlank(param.getAppDate())) {
+			appDate = Optional.of(GeneralDate.fromString(param.getAppDate(), PATTERN_DATE));	
+		}
+		Application application;
+		AppHolidayWork appHolidayWork;
+		if (param.getMode()) {
+			application = param.getAppHolidayWorkInsert().getApplication().toDomain();
+			appHolidayWork = param.getAppHolidayWorkInsert().toDomain();
+		} else {
+			application = param.getAppHolidayWorkUpdate().getApplication().toDomain(param.getAppHdWorkDispInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
+			appHolidayWork = param.getAppHolidayWorkUpdate().toDomain();
+		}
+		
+		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+		}
+		appHolidayWork.setApplication(application);
+		
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = holidayWorkService.calculateMobile(
+				companyId,
+				param.getAppHdWorkDispInfo().toDomain(),
+				appHolidayWork,
+				param.getMode(),
+				param.getEmployeeId(),
+				appDate);
+		
+		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
+	}
+
+	public CheckBeforeOutputDto checkBeforeRegisterMobile(ParamCheckBeforeRegisterMobile param) {
+		CheckBeforeOutput checkBeforeOutput;
+		if(param.getMode()) {
+			checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), 
+					param.getAppHdWorkDispInfo().toDomain(), param.getAppHolidayWork().toDomain(), false);
+		} else {
+			checkBeforeOutput = holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), 
+					param.getAppHdWorkDispInfo().toDomain(), param.getAppHolidayWork().toDomain());
+		}
+		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
 	}
 }
