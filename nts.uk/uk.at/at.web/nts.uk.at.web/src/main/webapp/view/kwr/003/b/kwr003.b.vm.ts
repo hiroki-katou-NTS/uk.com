@@ -459,7 +459,7 @@ module nts.uk.at.view.kwr003.b {
 
         vm.settingListItemsDetails([]);
         if (!_.isNil(data) && !data.settingId) {
-          vm.$dialog.info({ messageId: 'Msg_1903' }).then(() => {
+          vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => {
             vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
           });
           return;

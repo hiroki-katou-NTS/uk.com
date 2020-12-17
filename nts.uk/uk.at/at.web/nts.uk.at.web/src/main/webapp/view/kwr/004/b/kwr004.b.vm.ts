@@ -394,16 +394,23 @@ module nts.uk.at.view.kwr004.b {
       vm.$blockui('show');
       vm.settingListItemsDetails([]);
       vm.$ajax(PATH.getSettingDetail, { settingId: settingId })
-        .done((result) => {
-          //daily
-          if (!_.isNil(result.dailyOutputItems)) {
-            vm.makeSettingDetailsFromData(result.dailyOutputItems, 2);
-          }
+        .done((result) => {     
+          if (_.isNil(result)) {
+            vm.$dialog.error({ messageId: 'Msg_1898' }).then(() => {
+              vm.getSettingItemsLeft(null); //left list    
+              vm.$blockui('hide');
+            });
+          } else {
+            //daily
+            if (!_.isNil(result.dailyOutputItems)) {
+              vm.makeSettingDetailsFromData(result.dailyOutputItems, 2);
+            }
 
-          if (!_.isNil(result.monthlyOutputItems)) {
-            vm.makeSettingDetailsFromData(result.monthlyOutputItems, 10);
+            if (!_.isNil(result.monthlyOutputItems)) {
+              vm.makeSettingDetailsFromData(result.monthlyOutputItems, 10);
+            }
+            vm.$blockui('hide');
           }
-
         })
         .fail()
         .always(() => vm.$blockui('hide'))
@@ -576,7 +583,8 @@ module nts.uk.at.view.kwr004.b {
       const vm = this;
 
       let lisItems: Array<any> = [];
-
+      
+      vm.settingListItems.removeAll();      
       vm.$ajax(PATH.getSetting, { settingClassification: vm.itemSelection() })
         .done((result) => {
 
@@ -590,8 +598,7 @@ module nts.uk.at.view.kwr004.b {
             });
 
             //sort by code with asc
-            lisItems = _.orderBy(lisItems, 'code', 'asc');
-            vm.settingListItems([]);
+            lisItems = _.orderBy(lisItems, 'code', 'asc');            
             vm.settingListItems(lisItems);
 
             let firstItem: any = _.head(vm.settingListItems());
