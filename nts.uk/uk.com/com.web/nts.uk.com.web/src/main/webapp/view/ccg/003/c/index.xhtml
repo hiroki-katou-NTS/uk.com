@@ -110,11 +110,11 @@
 
       <div id="functions-area-bottom">
         <!-- C20_1 登録 -->
-        <button id="C20_1" class="proceed pl-15 pr-15 left ml-60" data-bind="enable: $root.errors.isEmpty, click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
+        <button id="C20_1" class="proceed left ml-60" data-bind="enable: $root.errors.isEmpty, click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
         <!-- C20_2 削除 -->
-        <button id="C20_2" data-bind="enable: isActiveDelete, click: onClickDelete" class="danger pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_29')}</button>
+        <button id="C20_2" data-bind="enable: isActiveDelete, click: onClickDelete" class="danger left ml-60">#{i18n.getText('CCG003_29')}</button>
         <!-- C20_3 戻る -->
-        <button id="C20_3" data-bind="click: closeWindow" class="pl-15 pr-15 right mr-60">#{i18n.getText('CCG003_30')}</button>
+        <button id="C20_3" data-bind="click: closeWindow" class="right mr-60">#{i18n.getText('CCG003_30')}</button>
       </div>
     </ui:define>
   </ui:composition>
