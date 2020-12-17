@@ -232,6 +232,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+								let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+								$(cssTotalTime).css("background-color", "#ffffff");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 
 								if (data.holiday == false) {
@@ -267,6 +269,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+								let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+								$(cssTotalTime).css("background-color", "#ffffff");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
@@ -337,6 +341,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 						if (!self.checkClearTime == false) {
+							let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+							$(cssTotalTime).css("background-color", "#ffffff");
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
 						}
 					}
@@ -406,6 +412,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						else
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime);
+						let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+						$(cssTotalTime).css("background-color", "#ffffff");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 
 						self.dataScreen003A().employeeInfo[index].workScheduleDto.workTypeCode = schedule.workTypeCode;
@@ -447,7 +455,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				})
 		}
 
-		setDataToMidExtable(empId: string, schedule: model.EmployeeWorkScheduleDto, fixed: model.FixedWorkInforDto, totalTime: any, totalBrkTime: any) {
+		setDataToMidExtable(index : number, empId: string, schedule: model.EmployeeWorkScheduleDto, fixed: model.FixedWorkInforDto, totalTime: any, totalBrkTime: any) {
 			let workTypeName = "", workTimeName = "";
 			if (schedule == null) {
 				workTimeName = getText('KSU003_55');
@@ -487,6 +495,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (schedule.endTime2)));
 
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime);
+			let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+			$(cssTotalTime).css("background-color", "#ffffff");
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 		}
 
@@ -661,6 +671,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+					$(cssTotalTime).css("background-color", "#ffffff");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
@@ -2857,7 +2869,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						schedule = self.dataScreen045A().workScheduleDto,
 						fixed = self.dataScreen045A().fixedWorkInforDto,
 						info = self.dataScreen045A().workInfoDto;
-					self.setDataToMidExtable(empId, schedule, fixed, totalTime, totalBrkTime);
+					self.setDataToMidExtable(lineNo, empId, schedule, fixed, totalTime, totalBrkTime);
 					if(_.isNull(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto)){
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = {
 						startTime1: schedule.startTime1,
@@ -2917,6 +2929,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+								let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
+								$(cssTotalTime).css("background-color", "#ffffff");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 								return;
@@ -2977,9 +2991,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}]
 						// 社員勤務予定と勤務固定情報を取得する
 						service.getEmpWorkFixedWorkInfo(param).done((data: model.DataFrom045) => {
-							
 							if (!_.isNil(data)) {
-								
+								let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; });
 								if(data.fixedWorkInforDto.workType == null){
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", data.workScheduleDto.workTypeCode);
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
@@ -2988,6 +3001,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", " ");
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+									let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
+									$(cssTotalTime).css("background-color", "#ffffff");
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", data.fixedWorkInforDto.workTypeName);
@@ -2998,7 +3013,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.checkClearTime = false;
 									self.checkUpdateMidChart = false;
 								}
-								let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; });
+								
 								self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = data.fixedWorkInforDto;
 								self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = data.workScheduleDto;
 
@@ -3012,7 +3027,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 								let totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : "";
 
-								self.setDataToMidExtable(empId, data.workScheduleDto, data.fixedWorkInforDto, totalTime, totalBrkTime);
+								self.setDataToMidExtable(lineNo, empId, data.workScheduleDto, data.fixedWorkInforDto, totalTime, totalBrkTime);
 								self.convertDataIntoExtable(lineNo);
 
 								let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
