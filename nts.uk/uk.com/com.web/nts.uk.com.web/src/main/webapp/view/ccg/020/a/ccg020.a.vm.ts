@@ -170,13 +170,15 @@ module nts.uk.com.view.ccg020.a {
           )
         )
       );
-      treeMenu = _.uniqBy(treeMenu, 'code');
+      treeMenu = _.uniqBy(treeMenu, 'url');
       _.forEach(treeMenu, (item: TreeMenu) => {
         item.name = item.displayName === item.defaultName
           ? item.displayName
           : `${item.displayName} (${item.defaultName})`;
       });
       vm.treeMenu(treeMenu);
+      console.log(vm.treeMenu());
+      
     }
 
     private eventClickSearch() {
