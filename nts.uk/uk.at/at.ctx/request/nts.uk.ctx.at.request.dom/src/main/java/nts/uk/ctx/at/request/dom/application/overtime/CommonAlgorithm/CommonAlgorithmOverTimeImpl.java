@@ -363,7 +363,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				}
 			}
 			// [RQ694]乖離時間Listを取得する
-			List<DivergenceTimeRoot> divergenceTimeRootList = divergenceTimeRoots.getList(frames);
+			List<DivergenceTimeRoot> divergenceTimeRootList = divergenceTimeRoots.getList(companyId, frames);
 			if (CollectionUtil.isEmpty(divergenceTimeRootList)) {
 				return output;
 			}
@@ -375,7 +375,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 														   .collect(Collectors.toList());
 			List<DivergenceReasonInputMethod> divergenceReasonInputMethodListFilter = divergenceReasonInputMethod.getData(companyId, lstNo);
 			
-			if (divergenceReasonInputMethodListFilter.isEmpty()) {
+			if (CollectionUtil.isEmpty(divergenceReasonInputMethodListFilter)) {
 				return output; // emptyを返す
 			}
 			output.setDivergenceReasonInputMethod(divergenceReasonInputMethodListFilter);
@@ -510,6 +510,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			output.setTimeZones(timeZones);
 		} else {
 			// 「休憩時間帯設定」<List>を作成する
+			List<DeductionTime> timeZones = breakTimes.stream()
+					  .map(x -> new DeductionTime(x.getOpStartTime().orElse(null), x.getOpEndTime().orElse(null)))
+					  .collect(Collectors.toList());
+			output.setTimeZones(timeZones);
+			// 勤務時間外の休憩時間を除く
 			output = this.createBreakTime(startTimeOp, endTimeOp, output);
 		}
 		
@@ -565,26 +570,20 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output = this.getWorkHours(companyId, overTimeContent, applicationDetailSetting.getAtworkTimeBeginDisp(), applicationDetailSetting);
 		
 		// INPUT．「申請内容．SPR連携時刻」を確認する
-		if (!overTimeContent.getSPRTime().isPresent()) {
-			
-			if (!overTimeContent.getSPRTime().get().getStartTimeOp1().isPresent()
-					&& !overTimeContent.getSPRTime().get().getEndTimeOp1().isPresent()) {
-				output = Optional.empty();
-				return output;				
-			} else {
-				if (overTimeContent.getSPRTime().get().getStartTimeOp1().isPresent()) {
-					if (!output.isPresent()) output = Optional.of(new WorkHours());
-					output.get().setStartTimeOp1(overTimeContent.getSPRTime().get().getStartTimeOp1());
-					
-				}
-				if (overTimeContent.getSPRTime().get().getEndTimeOp1().isPresent()) {
-					if (!output.isPresent()) output = Optional.of(new WorkHours());
-					output.get().setEndTimeOp1(overTimeContent.getSPRTime().get().getEndTimeOp1());
-				}
-			}
-				
+		if ( !overTimeContent.getSPRTime().flatMap(x -> x.getStartTimeOp1()).isPresent() 
+				&& !overTimeContent.getSPRTime().flatMap(x -> x.getEndTimeOp1()).isPresent()) {
+			return output;
 		}
+
+			
+				
+		
 		// OUTPUT「勤務時間」を更新して返す
+		if (output.isPresent()) {
+			output = Optional.of(new WorkHours());
+		}
+		output.get().setStartTimeOp1(overTimeContent.getSPRTime().flatMap(x -> x.getStartTimeOp1()));
+		output.get().setEndTimeOp1(overTimeContent.getSPRTime().flatMap(x -> x.getEndTimeOp1()));
 		
 		
 		return output;
@@ -673,7 +672,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			}
 		}
 		// 「退勤時刻がない時システム時刻を表示するか」をチェックする
-		if (!overTimeContent.getSPRTime().isPresent()) {
+		if (!applicationDetailSetting.isDispSystemTimeWhenNoWorkTime()) {
 			return workHoursOp;
 		}
 		// OUTPUT「勤務時間．終了時刻1」をチェックする
@@ -750,12 +749,12 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		if (overStateOutput != null) {
 			if (overStateOutput.getIsExistApp()) {
 				// メッセージ（Msg_1508）をOUTPUT「確認メッセージリスト」に追加する
-				output.add(new ConfirmMsgOutput("Msg_1580", Collections.emptyList()));
+				output.add(new ConfirmMsgOutput("Msg_1508", Collections.emptyList()));
 			} else { // false
 				// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 				if (overStateOutput.getAdvanceExcess().isAdvanceExcess()) {
 					// handle msg
-					output.add(new ConfirmMsgOutput("Msg_424", getContentMsg(displayInfoOverTime, overStateOutput.getAdvanceExcess())));
+					output.add(new ConfirmMsgOutput("Msg_424", getContentMsg(displayInfoOverTime, overStateOutput.getAdvanceExcess(), ExcessState.EXCESS_ALARM)));
 				}
 				
 				
@@ -776,14 +775,14 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			} else {
 				// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 				if (overStateOutput.getAchivementExcess().isAdvanceExcessError()) {
-					List<String> contens1748 = getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess());			
+					List<String> contens1748 = getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess(), ExcessState.EXCESS_ERROR);			
 					// エラーメッセージ（Msg_1748）を表示する
 					throw new BusinessException("Msg_1748", contens1748.toArray(new String[contentMsgs.size()])); // note handle content's message late
 				} else {
 					// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 					if (overStateOutput.getAchivementExcess().isAdvanceExcess()) {
 						// メッセージ（Msg_1747）をOUTPUT「確認メッセージリスト」に追加する
-						output.add(new ConfirmMsgOutput("Msg_1747", getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess())));
+						output.add(new ConfirmMsgOutput("Msg_1747", getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess(), ExcessState.EXCESS_ALARM)));
 						
 					}
 					// OUTPUT「確認メッセージリスト」を返す
@@ -795,13 +794,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		return output;
 	}
 
-	public List<String> getContentMsg(DisplayInfoOverTime displayInfoOverTime, OutDateApplication outDateApplication) {
+	public List<String> getContentMsg(DisplayInfoOverTime displayInfoOverTime, OutDateApplication outDateApplication, ExcessState type) {
 		List<String> contentMsgs = new ArrayList<String>();
 		// ・申請時間の超過状態．申請時間．type = 残業時間　に超過アラームがある
 		List<Integer> lstFrameOverTime = outDateApplication.getExcessStateDetail()
 					 .stream()
 					 .filter(x -> x.getType() == AttendanceType_Update.NORMALOVERTIME
-							 && x.getExcessState() == ExcessState.EXCESS_ALARM)
+							 && x.getExcessState() == type)
 					 .map(y -> y.getFrame().v())
 					 .collect(Collectors.toList());
 		
@@ -819,7 +818,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		List<Integer> lstFrameHoliday = outDateApplication.getExcessStateDetail()
 				 .stream()
 				 .filter(x -> x.getType() == AttendanceType_Update.BREAKTIME
-						 && x.getExcessState() == ExcessState.EXCESS_ALARM)
+						 && x.getExcessState() == type)
 				 .map(y -> y.getFrame().v())
 				 .collect(Collectors.toList());
 		
@@ -837,23 +836,30 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		outDateApplication.getExcessStateMidnight()
 					 .stream()
 					 .forEach(x -> {
-						 if (x.getExcessState() == ExcessState.EXCESS_ALARM) {
+						 if (x.getExcessState() == type) {
 							 if (x.getLegalCfl() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-								 contentMsgs.add(I18NText.getText("#KAF005_341"));
+								 contentMsgs.add(I18NText.getText("KAF005_341"));
 							 } else if (x.getLegalCfl() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
-								 contentMsgs.add(I18NText.getText("#KAF005_342"));
+								 contentMsgs.add(I18NText.getText("KAF005_342"));
 							 } else if (x.getLegalCfl() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
-								 contentMsgs.add(I18NText.getText("#KAF005_343"));
+								 contentMsgs.add(I18NText.getText("KAF005_343"));
 							 }										 
 						 }
 					 });
-		if (outDateApplication.getFlex() == ExcessState.EXCESS_ALARM) {
-			contentMsgs.add(I18NText.getText("#KAF005_63"));
+		
+		if (outDateApplication.getOverTimeLate() == type) {
+			contentMsgs.add(I18NText.getText("KAF005_63"));
+		}
+		if (outDateApplication.getFlex() == type) {
+			contentMsgs.add(I18NText.getText("KAF005_65"));
 		}
 		
-		if (outDateApplication.getOverTimeLate() == ExcessState.EXCESS_ALARM) {
-			contentMsgs.add(I18NText.getText("#KAF005_65"));
-		}
+		// {1}：追加方法を下に参照　※複数枠が超過したら”、”を追加してください（nếu nhiều frame cung lỗi thi cach nhau bằng dấu "、"）
+		String msgContent = contentMsgs.stream()
+									   .collect(Collectors.joining("、"));
+		contentMsgs.clear();
+		contentMsgs.add(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName());
+		contentMsgs.add(msgContent);
 		return contentMsgs;
 	}
 	@Override
@@ -955,7 +961,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			Integer mode) {
 		if (appOverTime == null) return;
 		// 画面のモードをチェックする
-		if (mode == 0) { // 新規モードの場合
+		if (mode == 1) { // 新規モードの場合
 			List<GeneralDate> dates = new ArrayList<GeneralDate>();
 			dates.add(appOverTime.getAppDate().getApplicationDate());
 			List<String> workTypeLst = new ArrayList<String>();

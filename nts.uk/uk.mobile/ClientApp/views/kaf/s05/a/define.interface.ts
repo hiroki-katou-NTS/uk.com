@@ -1,4 +1,4 @@
-enum NotUseAtr {
+export enum NotUseAtr {
     Not_USE,
     USE
 }
@@ -424,4 +424,37 @@ export interface ParamStartMobile {
 export interface Model {
     appOverTime: AppOverTime;
     displayInfoOverTime: DisplayInfoOverTime;
+}
+export interface ParamBreakTime {	
+    workTypeCode: string;
+    workTimeCode: string;
+    startTime: number;
+    endTime: number;
+    actualContentDisplayDto: Array<any>;
+}
+
+export interface ParamSelectWorkMobile {
+    companyId: string;
+    employeeId: string;
+    dateOp: string;
+    workTypeCode: string;
+    workTimeCode: string;
+    startTimeSPR: number;
+    endTimeSPR: number;
+    actualContentDisplay: any;
+    overtimeAppSet: any;
+}
+export interface ParamCalculateMobile {
+    companyId: string;
+    displayInfoOverTime: DisplayInfoOverTime;
+    appOverTimeInsert: AppOverTime;
+    appOverTimeUpdate: AppOverTime;
+    mode: Boolean;
+    employeeId: string;
+    dateOp: string;
+}
+export interface BreakTime {
+    valueHours: any;
+    title: string;
+    frameNo: number;
 }

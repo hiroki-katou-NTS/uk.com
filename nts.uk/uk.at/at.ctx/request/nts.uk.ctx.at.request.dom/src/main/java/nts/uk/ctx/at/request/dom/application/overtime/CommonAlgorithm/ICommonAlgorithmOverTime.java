@@ -92,7 +92,6 @@ public interface ICommonAlgorithmOverTime {
 			OvertimeAppSet overtimeAppSet
 			);
 	/**
-	 * pending to create RQ693
 	 * Refactor5 利用する乖離理由を取得する
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.利用する乖離理由のを取得する
 	 * @param companyId 会社ID

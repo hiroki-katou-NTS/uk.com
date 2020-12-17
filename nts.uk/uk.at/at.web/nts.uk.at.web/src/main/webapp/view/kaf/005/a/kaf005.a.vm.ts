@@ -76,7 +76,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			vm.isSendMail = ko.observable(false);
 			if (!_.isNil(dataTransfer)) {
-				vm.application().appDate(dataTransfer.appDate);				
+				vm.application().appDate(dataTransfer.appDate);
+				vm.application().opAppStartDate(dataTransfer.appDate);
+				vm.application().opAppEndDate(dataTransfer.appDate);
 			}
 			if (!_.isNil(params)) {
 				if (!_.isNil(params.baseDate)) {
@@ -713,20 +715,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		//  work-info 
 		bindWorkInfo(res: DisplayInfoOverTime, mode?: ACTION) {
 			const self = this;
+			console.log('bindWorkInfo');
 			if (!ko.toJS(self.workInfo)) {
 				let workInfo = {} as WorkInfo;
 				let workType = {} as Work;
 				let workTime = {} as Work;
 				let workHours1 = {} as WorkHours;
-				workHours1.start = ko.observable(null);
-				workHours1.end = ko.observable(null);
+				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});;
+				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});;
 				workHours1.start.subscribe((value) => {
-					if (_.isNumber(value)) {
+					if (_.isNumber(value) && !_.isNil(workHours1.end())) {
 						self.getBreakTimes();
 					}
 				})
 				workHours1.end.subscribe((value) => {
-					if (_.isNumber(value)) {
+					if (_.isNumber(value) && !_.isNil(workHours1.start())) {
 						self.getBreakTimes();
 					}
 				})
@@ -925,7 +928,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 		setColorForHolidayTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
 			const self = this;
-			if (!isCalculation || _.isNil(dataSource.calculationResultOp)) {
+			if (_.isNil(dataSource.calculationResultOp)) {
 				
 				return;
 			}
@@ -1143,7 +1146,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		setColorForOverTime(isCalculation: Boolean, dataSource: DisplayInfoOverTime) {
 			const self = this;
-			if (!isCalculation || _.isNil(dataSource.calculationResultOp)) {
+			if (_.isNil(dataSource.calculationResultOp)) {
 				
 				return;
 			}
@@ -1446,7 +1449,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							{
 								let itemFind = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(itemFind)) {
-									if (!_.isNil(applicationTime.overTimeShiftNight)) {									
+									if (!_.isNil(applicationTime.flexOverTime)) {									
 										itemFind.preTime(applicationTime.flexOverTime);
 									}
 								}
@@ -1586,7 +1589,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							{
 								let itemFind = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(itemFind)) {
-									if (!_.isNil(applicationTime.overTimeShiftNight)) {									
+									if (!_.isNil(applicationTime.flexOverTime)) {									
 										itemFind.preTime(applicationTime.flexOverTime);
 									}
 								}
@@ -2214,7 +2217,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
-			let c18 = true;
+			let c18 = c7 || c18_1;
 			visibleModel.c18(c18);
 
 
@@ -2419,6 +2422,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
 						self.dataSource.workdayoffFrames = res.workdayoffFrames;
 						self.isCalculation = true;
+						self.createVisibleModel(self.dataSource);
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 					}

@@ -9,5 +9,5 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtime
  * hoangnd
  */
 public interface DivergenceTimeRepositoryPub {
-	List<DivergenceTimeRoot> getAllDivTime(String companyId);
+	List<DivergenceTimeRoot> getAllDivTime(String companyId, List<Integer> divNo);
 }

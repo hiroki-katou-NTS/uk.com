@@ -591,16 +591,16 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let workType = {} as Work;
 				let workTime = {} as Work;
 				let workHours1 = {} as WorkHours;
-				workHours1.start = ko.observable(null);
-				workHours1.end = ko.observable(null);
+				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});
+				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});
 				workHours1.start.subscribe((value) => {
-					if (_.isNumber(value)) {
-						// self.getBreakTimes();
+					if (_.isNumber(value) && !_.isNil(workHours1.end())) {
+						self.getBreakTimes();
 					}
 				})
 				workHours1.end.subscribe((value) => {
-					if (_.isNumber(value)) {
-						// self.getBreakTimes();
+					if (_.isNumber(value) && !_.isNil(workHours1.start())) {
+						self.getBreakTimes();
 					}
 				})
 				let workHours2 = {} as WorkHours;
@@ -643,7 +643,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					workTime.name = self.$i18n('KAF_005_345');
 				}
 			}
-			
+			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
+				self.workInfo().workType(workType);				
+				self.workInfo().workTime(workTime);				
+			}
 			if (!_.isEmpty(self.appOverTime.workHoursOp)) {
 				_.forEach(self.appOverTime.workHoursOp, (i: TimeZoneWithWorkNo) => {
 					if (i.workNo == 1) {
@@ -656,10 +659,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				});
 
 			}
-			if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
-				self.workInfo().workType(workType);				
-				self.workInfo().workTime(workTime);				
-			}
+			
 			self.workInfo().workHours1 = workHours1;
 			if (self.visibleModel.c29()) {
 				self.workInfo().workHours2 = workHours2;				
@@ -999,6 +999,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
 						self.dataSource.workdayoffFrames = res.workdayoffFrames;
 						self.isCalculation = true;
+						self.createVisibleModel(self.dataSource);
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 					}
@@ -1610,7 +1611,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							{
 								let itemFind = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(itemFind)) {
-									if (!_.isNil(applicationTime.overTimeShiftNight)) {									
+									if (!_.isNil(applicationTime.flexOverTime)) {									
 										itemFind.preTime(applicationTime.flexOverTime);
 									}
 								}
@@ -1750,7 +1751,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							{
 								let itemFind = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(itemFind)) {
-									if (!_.isNil(applicationTime.overTimeShiftNight)) {									
+									if (!_.isNil(applicationTime.flexOverTime)) {									
 										itemFind.preTime(applicationTime.flexOverTime);
 									}
 								}
@@ -2393,7 +2394,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
-			let c18 = true;
+			let c18 = c7 || c18_1;
 			visibleModel.c18(c18);
 
 
@@ -2409,7 +2410,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 
 			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-			let c29 = c7 && true;
+			let c29 = c7 && res.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 			visibleModel.c29(c29);
 
 			// 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合

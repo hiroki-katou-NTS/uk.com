@@ -29,9 +29,9 @@ public class OutDateApplication {
 	// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 	public Boolean isAdvanceExcess() {
 		if (flex == ExcessState.EXCESS_ALARM
-			&& excessStateMidnight.stream().allMatch(x -> x.getExcessState() == ExcessState.EXCESS_ALARM)
-			&& overTimeLate == ExcessState.EXCESS_ALARM
-			&& excessStateDetail.stream().allMatch(x -> x.getExcessState() == ExcessState.EXCESS_ALARM)
+			|| excessStateMidnight.stream().anyMatch(x -> x.getExcessState() == ExcessState.EXCESS_ALARM)
+			|| overTimeLate == ExcessState.EXCESS_ALARM
+			|| excessStateDetail.stream().anyMatch(x -> x.getExcessState() == ExcessState.EXCESS_ALARM)
 				) {
 			return true;
 		}
@@ -40,9 +40,9 @@ public class OutDateApplication {
 	// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 	public Boolean isAdvanceExcessError() {
 		if (flex == ExcessState.EXCESS_ERROR
-			&& excessStateMidnight.stream().allMatch(x -> x.getExcessState() == ExcessState.EXCESS_ERROR)
-			&& overTimeLate == ExcessState.EXCESS_ERROR
-			&& excessStateDetail.stream().allMatch(x -> x.getExcessState() == ExcessState.EXCESS_ERROR)
+			|| excessStateMidnight.stream().anyMatch(x -> x.getExcessState() == ExcessState.EXCESS_ERROR)
+			|| overTimeLate == ExcessState.EXCESS_ERROR
+			|| excessStateDetail.stream().anyMatch(x -> x.getExcessState() == ExcessState.EXCESS_ERROR)
 				) {
 			return true;
 		}

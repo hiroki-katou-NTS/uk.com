@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.pub.application.divergence.DivergenceReasonInputMethodExport;
@@ -20,12 +21,8 @@ public class DivergenceReasonInputMethodPubImpl implements DivergenceReasonInput
 	
 	@Override
 	public List<DivergenceReasonInputMethodExport> getData(String companyId, List<Integer> lstNo) {
-		List<DivergenceReasonInputMethod> divergenceReasonInputMethods = divergenceReasonInputMethodExport.getAllDivTime(companyId);
-		if (divergenceReasonInputMethods.isEmpty() || lstNo.isEmpty()) return Collections.emptyList();
-		divergenceReasonInputMethods = divergenceReasonInputMethods
-															.stream()
-															.filter(x -> lstNo.contains(x.getDivergenceTimeNo()))
-															.collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(lstNo)) return Collections.emptyList();
+		List<DivergenceReasonInputMethod> divergenceReasonInputMethods = divergenceReasonInputMethodExport.getByCidAndLstTimeInfo(companyId, lstNo);
 		
 		// parse export 
 		return divergenceReasonInputMethods.stream()
