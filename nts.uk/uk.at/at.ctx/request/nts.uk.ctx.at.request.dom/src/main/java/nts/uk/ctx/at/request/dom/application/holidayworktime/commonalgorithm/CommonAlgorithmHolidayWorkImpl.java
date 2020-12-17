@@ -713,8 +713,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
 		}
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
-		timeZones.add(timeZoneNo1);
-		timeZones.add(timeZoneNo2);
+		if(timeZoneNo1.getStart() != null && timeZoneNo1.getEnd() != null) {
+			timeZones.add(timeZoneNo1);
+		}
+		if(timeZoneNo2.getStart() != null && timeZoneNo2.getEnd() != null) {
+			timeZones.add(timeZoneNo2);
+		}
 		workContent.setTimeZones(timeZones);
 
 		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
