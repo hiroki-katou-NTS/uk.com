@@ -413,7 +413,9 @@ module nts.uk.at.view.kwr006.a {
                     startYearMonth: startYM,
                     endYearMonth: endYM,
                     workplaceIds: [],
-                    code: self.monthlyWorkScheduleConditionModel.selectedCode(),
+                    code: self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION
+                            ? self.monthlyWorkScheduleConditionModel.selectedCode()
+                            : self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(),
                     employeeId: self.getListSelectedEmployee(),
                     condition: self.monthlyWorkScheduleConditionModel.toDto(),
                     fileType: null,
