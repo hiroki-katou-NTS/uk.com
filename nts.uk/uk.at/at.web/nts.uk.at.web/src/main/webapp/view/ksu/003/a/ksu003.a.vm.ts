@@ -1031,7 +1031,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public initExtableData() {
 			let self = this;
 			setTimeout(() => {
+				
+				if(!_.isEmpty(self.leftDs))
 				self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs);
+				
 				self.showHide();
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 12) });
 			}, 200)
@@ -1098,7 +1101,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				disableDSFilter = _.filter(disableDs, (x: any) => { return x.empId === self.lstEmpId[i].empId }); // list không dùng schedule
 
 				leftmostDs.push({ empId: self.lstEmpId[i].empId, empName: eName, cert: getText('KSU003_22') });
-				if(_.isEmpty(leftDSFilter)){
+				if(!_.isEmpty(leftDSFilter)){
 					leftContentDeco.push(new CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
 					leftContentDeco.push(new CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
 				}
