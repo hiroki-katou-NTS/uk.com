@@ -594,13 +594,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});
 				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});
 				workHours1.start.subscribe((value) => {
-					if (_.isNumber(value)) {
-						// self.getBreakTimes();
+					if (_.isNumber(value) && !_.isNil(workHours1.end())) {
+						self.getBreakTimes();
 					}
 				})
 				workHours1.end.subscribe((value) => {
-					if (_.isNumber(value)) {
-						// self.getBreakTimes();
+					if (_.isNumber(value) && !_.isNil(workHours1.start())) {
+						self.getBreakTimes();
 					}
 				})
 				let workHours2 = {} as WorkHours;
