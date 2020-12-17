@@ -7,6 +7,7 @@ import lombok.Getter;
 
 /**
  * 外部連携情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).作業管理.作業マスタ.外部連携情報
  * @author lan_lt
  *
  */

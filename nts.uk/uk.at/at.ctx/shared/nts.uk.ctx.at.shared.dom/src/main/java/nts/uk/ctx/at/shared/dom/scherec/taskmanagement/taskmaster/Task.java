@@ -9,32 +9,28 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 /**
  * 作業
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).作業管理.作業マスタ.作業
  * @author lan_lt
  *
  */
+@Getter
 @AllArgsConstructor
 public class Task  implements DomainAggregate{
 	/*** 作業枠NO */
-	@Getter
 	private final TaskFrameNo taskFrameNo;
 	
 	/*** コード  */
-	@Getter
 	private final TaskCode code;
 	
 	/*** 有効期限 */
-	@Getter
 	private DatePeriod expriationDate;
 	
 	/*** 表示情報 */
-	@Getter
 	private TaskDisplayInfo displayInfo;
 	
 	/*** 外部連携情報 */
-	@Getter
 	private ExternalCooperationInfo extCoopInfo;
 	
 	/*** 子作業一覧 */
-	@Getter
 	private List<TaskCode> taskSubs;
 }

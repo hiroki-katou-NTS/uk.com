@@ -8,6 +8,7 @@ import nts.uk.shr.com.color.ColorCode;
 
 /**
  * 作業表示情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).作業管理.作業マスタ.作業表示情報
  * @author lan_lt
  *
  */
@@ -18,7 +19,7 @@ public class TaskDisplayInfo {
 	/** 名称　 */
 	private TaskName taskName;
 	
-	/** 各名　*/
+	/** 略名　*/
 	private TaskAbName taskAbName;
 	
 	/** 作業色　*/
