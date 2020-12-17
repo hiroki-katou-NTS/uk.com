@@ -154,6 +154,11 @@ module nts.uk.at.view.kmk004 {
 					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto);
 					this.settingDto.update(param.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto);
 					break;
+					
+				case 'Com_Person':
+					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeShaDto.deforLaborTimeShaDto);
+					this.settingDto.update(param.deforLaborMonthTimeShaDto.shaDeforLaborMonthActCalSetDto);
+					break;
 			}
 
 		}
@@ -309,7 +314,7 @@ module nts.uk.at.view.kmk004 {
 			const vm = this;
 
 			vm.initData();
-			vm.isLoadData = vm.params.isLoadData;
+			vm.isLoadData = vm.params.isLoadData; 
 			vm.isLoadData.subscribe((value: boolean) => {
 				if (value) {
 					vm.reloadData();
@@ -535,6 +540,14 @@ module nts.uk.at.view.kmk004 {
 
 				//社員
 				case 'Com_Person':
+					if (data.deforLaborMonthTimeShaDto.deforLaborTimeShaDto != null && data.deforLaborMonthTimeShaDto.shaDeforLaborMonthActCalSetDto != null) {
+						vm.visibleL4(true);
+						vm.mode(SCREEN_MODE.UPDATE);
+						vm.screenData.updateSelectBasicSetting(data, 'Com_Person');
+					} else {
+						vm.visibleL4(false);
+					}
+				
 					break;
 
 			}

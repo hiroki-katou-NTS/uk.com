@@ -120,7 +120,6 @@ module nts.uk.at.view.kmk004.l {
 						settings.push(s);
 					}));
 					vm.alreadySettingList(settings);
-					console.log(ko.unwrap(vm.alreadySettingList), 'alreadySettingList');
 				})
 
 			vm.baseDate = ko.observable(new Date());

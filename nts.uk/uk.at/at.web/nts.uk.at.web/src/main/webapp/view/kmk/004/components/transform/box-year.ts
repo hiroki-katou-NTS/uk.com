@@ -12,13 +12,6 @@ module nts.uk.at.view.kmk004.components.transform {
 		years: KnockoutObservableArray<IYear>;
 	}
 
-	const API = {
-		GET_YEARS_COM: 'screen/at/kmk004/viewL/getListYear',
-		GET_YEARS_WORKPLACE: 'screen/at/kmk004/viewM/getListYear',
-		GET_YEARS_EMPLOYMENT: 'screen/at/kmk004/viewN/getListYear',
-		GET_YEARS_EMPLOYEE: 'screen/at/kmk004/viewO/getListYear'
-	};
-
 	const template = `
 		<button id = "btn_year" data-bind="click: openQDialog, i18n: 'KMK004_233'"></button>
         <div tabindex="6" class="listbox">
@@ -207,7 +200,7 @@ module nts.uk.at.view.kmk004.components.transform {
                     break;
 
                 case 'Com_Person':
-                    if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
+                    /*if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
                         vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.toJS(vm.param()))
                             .then((data: any) => {
                                 var years = _.orderBy(data.years, ['year'], ['desc']);
@@ -224,7 +217,7 @@ module nts.uk.at.view.kmk004.components.transform {
                                     vm.selectedYear(null);
                                 }
                             });
-                    }
+                    }*/
                     break;
             }
         

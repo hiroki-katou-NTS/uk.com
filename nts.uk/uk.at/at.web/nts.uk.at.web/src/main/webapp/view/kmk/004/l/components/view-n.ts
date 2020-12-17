@@ -2,7 +2,6 @@
 
 module nts.uk.at.view.kmk004.l {
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
-	import tree = kcp.share.tree;
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 
@@ -76,6 +75,13 @@ module nts.uk.at.view.kmk004.l {
 		static JOB_TITLE = 3;
 		static EMPLOYEE = 4;
 	}
+	
+	export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
 
 	interface UnitModel {
 		code: string;
@@ -145,7 +151,7 @@ module nts.uk.at.view.kmk004.l {
 				isShowAlreadySet: vm.isShowAlreadySet(),
 				isMultiSelect: vm.isMultiSelect(),
 				listType: ListType.EMPLOYMENT,
-				selectType: tree.SelectionType.SELECT_BY_SELECTED_CODE,
+				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: vm.selectedCode,
 				isDialog: vm.isDialog(),
 				isShowNoSelectRow: vm.isShowNoSelectRow(),
@@ -162,7 +168,6 @@ module nts.uk.at.view.kmk004.l {
 						settings.push(s);
 					}));
 					vm.alreadySettingList(settings);
-					console.log(ko.unwrap(vm.alreadySettingList), 'alreadySettingList');
 				})
 
 			vm.employeeList = ko.observableArray<UnitModel>([]);
