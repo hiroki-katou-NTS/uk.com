@@ -32,7 +32,7 @@ public class DisplayInitialDeforScreenByWorkplace {
 		if (!result.getWkpIds().isEmpty()) {
 
 			result.setSelectWorkplaceDeforDto(
-					selectWorkplaceDefor.selectWorkplaceDefor(result.getWkpIds().get(0).WorkplaceId));
+					selectWorkplaceDefor.selectWorkplaceDefor(result.getWkpIds().get(0).workplaceId));
 		}
 
 		return result;

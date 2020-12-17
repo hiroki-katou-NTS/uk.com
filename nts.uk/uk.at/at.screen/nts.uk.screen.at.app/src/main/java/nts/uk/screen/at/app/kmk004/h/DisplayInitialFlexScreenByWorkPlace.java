@@ -39,7 +39,7 @@ public class DisplayInitialFlexScreenByWorkPlace {
 			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 		// 2.職場リストを表示する
-		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.WorkplaceId)
+		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
 				.collect(Collectors.toList()));
 
 		if (!result.getAlreadySettings().isEmpty()) {
