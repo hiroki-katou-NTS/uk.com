@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.file.at.infra.schedule.monthly;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
@@ -1818,7 +1820,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
 				            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
-				            		cell.putValue(value, true);
+									if (!StringUtil.isNullOrEmpty(value, false)
+											&& (valueTypeEnum.equals(ValueType.AMOUNT_NUM)
+													|| valueTypeEnum.equals(ValueType.AMOUNT))) {
+				            			DecimalFormat format = new DecimalFormat("###,###,###");
+				            			cell.putValue(format.format(valueTypeEnum.isInteger() ? Integer.parseInt(value) :  Double.parseDouble(value)), false);
+				            		} else {
+					            		cell.putValue(value, true);
+				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
 				            	else {
@@ -2506,7 +2515,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
-			            		cell.putValue(value, true);	
+			            		if (!StringUtil.isNullOrEmpty(value, false)
+										&& (valueTypeEnum.equals(ValueType.AMOUNT_NUM)
+												|| valueTypeEnum.equals(ValueType.AMOUNT))) {
+			            			DecimalFormat format = new DecimalFormat("###,###,###");
+			            			cell.putValue(format.format(valueTypeEnum.isInteger() ? Integer.parseInt(value) :  Double.parseDouble(value)), false);
+			            		} else {
+			            			cell.putValue(value, true);	
+			            		}
 			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else {
@@ -2890,7 +2906,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
 		} else {
-			return (displayType == DisplayTypeEnum.DISPLAY.value && timeFormat.isZero()) ? timeFormat.getTimeText() : "";
+			return displayType == DisplayTypeEnum.DISPLAY.value && timeFormat.isZero() ? "" : timeFormat.getTimeText();
 		}
 	}
 
