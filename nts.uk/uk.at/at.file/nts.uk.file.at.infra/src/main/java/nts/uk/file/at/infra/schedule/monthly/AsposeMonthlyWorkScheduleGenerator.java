@@ -3019,7 +3019,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemName() + outputItem.getItemCode().toString());
+            	cell.setValue(outputItem.getItemName());
 
             }
         }
