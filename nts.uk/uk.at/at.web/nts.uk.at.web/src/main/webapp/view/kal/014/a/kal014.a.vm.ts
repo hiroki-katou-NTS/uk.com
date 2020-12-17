@@ -185,7 +185,7 @@ module nts.uk.at.kal014.a {
                         // In case of init screen select on first item
                         vm.currentCode(vm.gridItems()[0].code);
                     }
-
+                    vm.currentCode.valueHasMutated();
                     // Set all value of category
                     let allCtgCd = _.map(ctg, i=> new AlarmCheckCategoryList(i) );
                     vm.listAllCtgCode = allCtgCd;
