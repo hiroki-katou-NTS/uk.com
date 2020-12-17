@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk004.b {
                     if (data) {
                         let list: AlreadySettingEmployment[] = [];
                         _.forEach(data, ((value) => {
-                            let object = {code: value.employmentCode, isAlreadySetting: true} as AlreadySettingEmployment;
+                            let object = { code: value.employmentCode, isAlreadySetting: true } as AlreadySettingEmployment;
                             list.push(object);
                         }));
                         vm.alreadySettings(list);
