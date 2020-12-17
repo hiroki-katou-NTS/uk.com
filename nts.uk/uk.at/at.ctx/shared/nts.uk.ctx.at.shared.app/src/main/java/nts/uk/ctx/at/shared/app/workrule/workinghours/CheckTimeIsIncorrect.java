@@ -75,34 +75,40 @@ public class CheckTimeIsIncorrect {
 	 * @param workTime1 , 勤務時間帯1: 時間帯(実装コードなし/使用不可)
 	 * @param workTime2 勤務時間帯2: 時間帯(実装コードなし/使用不可)
 	 */
-	public List<ContainsResultDto> check(String workType,String workTime,TimeZoneDto workTime1,TimeZoneDto workTime2) {
-		//1:Create()
+	public List<ContainsResultDto> check(String workType, String workTime, TimeZoneDto workTime1,
+			TimeZoneDto workTime2) {
+		// 1:Create()
 		WorkInformation wi = new WorkInformation(workType, workTime);
 		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-				workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
-		
+				workTimeSettingService, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository,
+				flexWorkSettingRepository, predetemineTimeSettingRepository);
+
 		List<ContainsResultDto> listContainsResult = new ArrayList<>();
-		try {
-			//2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-			ContainsResult containsResult1 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1), new TimeWithDayAttr(workTime1.getStartTime().getTime()));	
-			listContainsResult.add(convertToContainsResult(containsResult1,TextResource.localize("KSU001_54"),convertToTime(workTime1.getStartTime().getTime()),true));
-			
-			//3:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
-			ContainsResult containsResult2 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1), new TimeWithDayAttr(workTime1.getEndTime().getTime()));
-			listContainsResult.add(convertToContainsResult(containsResult2,TextResource.localize("KSU001_55"),convertToTime(workTime1.getEndTime().getTime()),true));
-			
-			//4:
-			if(workTime2 != null) {
-				//4.1
-				ContainsResult containsResult3 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
-				listContainsResult.add(convertToContainsResult(containsResult3,TextResource.localize("KSU001_56"),convertToTime(workTime2.getStartTime().getTime()),false));
-				
-				//4.2
-				ContainsResult containsResult4 =  wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
-				listContainsResult.add(convertToContainsResult(containsResult4,TextResource.localize("KSU001_57"),convertToTime(workTime2.getEndTime().getTime()),false));
-			}
-		} catch (Exception e) {
-			//throw new RuntimeException("Error 時刻が不正かチェックする");
+		// 2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
+		ContainsResult containsResult1 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START, new WorkNo(1),
+				new TimeWithDayAttr(workTime1.getStartTime().getTime()));
+		listContainsResult.add(convertToContainsResult(containsResult1, TextResource.localize("KSU001_54"),
+				convertToTime(workTime1.getStartTime().getTime()), true));
+
+		// 3:変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
+		ContainsResult containsResult2 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END, new WorkNo(1),
+				new TimeWithDayAttr(workTime1.getEndTime().getTime()));
+		listContainsResult.add(convertToContainsResult(containsResult2, TextResource.localize("KSU001_55"),
+				convertToTime(workTime1.getEndTime().getTime()), true));
+
+		// 4:
+		if (workTime2 != null) {
+			// 4.1
+			ContainsResult containsResult3 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.START,
+					new WorkNo(2), new TimeWithDayAttr(workTime2.getStartTime().getTime()));
+			listContainsResult.add(convertToContainsResult(containsResult3, TextResource.localize("KSU001_56"),
+					convertToTime(workTime2.getStartTime().getTime()), false));
+
+			// 4.2
+			ContainsResult containsResult4 = wi.containsOnChangeableWorkingTime(require, ClockAreaAtr.END,
+					new WorkNo(2), new TimeWithDayAttr(workTime2.getEndTime().getTime()));
+			listContainsResult.add(convertToContainsResult(containsResult4, TextResource.localize("KSU001_57"),
+					convertToTime(workTime2.getEndTime().getTime()), false));
 		}
 		return listContainsResult;
 	}
