@@ -66,8 +66,8 @@ module nts.uk.at.view.kmk004.l {
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public existYear: KnockoutObservable<boolean> = ko.observable(true);
 		public type: SIDEBAR_TYPE = 'Com_Company';
-		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		enable: KnockoutObservable<boolean> = ko.observable(false);
+		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(private params: IParam){
 			super();

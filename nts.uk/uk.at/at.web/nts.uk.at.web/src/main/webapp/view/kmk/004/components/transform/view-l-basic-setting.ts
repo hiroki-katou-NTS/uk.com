@@ -1,11 +1,14 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004 {
-	import TransformScreenData = nts.uk.at.view.kmk004.p.TransformScreenData;
+	import Setting = nts.uk.at.view.kmk004.p.Setting;
 	import SCREEN_MODE = nts.uk.at.view.kmk004.p.SCREEN_MODE;
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
 	import DeforLaborTimeComDto = nts.uk.at.view.kmk004.p.DeforLaborTimeComDto;
+	import SettlementPeriod = nts.uk.at.view.kmk004.p.SettlementPeriod;
 	import SettingDto = nts.uk.at.view.kmk004.p.SettingDto;
+	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
+	import DeforLaborTimeCom = nts.uk.at.view.kmk004.p.DeforLaborTimeCom;
 
 	export const KMK004_API = {
 		COM_INIT_SCREEN: 'screen/at/kmk004/viewL/initScreen',
@@ -14,34 +17,171 @@ module nts.uk.at.view.kmk004 {
 		COM_GET_BASIC_SETTING: 'screen/at/kmk004/viewL/getBasicSetting',
 		WKP_GET_BASIC_SETTING: 'screen/at/kmk004/viewM/getBasicSetting',
 		EMP_GET_BASIC_SETTING: 'screen/at/kmk004/viewN/getBasicSetting',
-		SHA_GET_BASIC_SETTING: 'screen/at/kmk004/viewO/getBasicSetting'
+		SHA_GET_BASIC_SETTING: 'screen/at/kmk004/viewO/getBasicSetting',
+		WKP_SELECT: 'screen/at/kmk004/viewM/selectWkp',
+		EMP_SELECT: 'screen/at/kmk004/viewN/selectEmp',
+		SHA_SELECT: 'screen/at/kmk004/viewO/selectSha',
 	}
 
-	export interface SettingResponse {
+	//Init Screen L Response
+	export interface InitScreenLResponse {
+		usageUnitSetting: UsageUnitSetting;
 		deforLaborMonthTimeComDto: DeforLaborMonthTimeComDto;
+	}
+
+	export interface UsageUnitSetting {
+		workPlace: boolean;
+		employment: boolean;
+		employee: boolean;
 	}
 
 	export interface DeforLaborMonthTimeComDto {
 		deforLaborTimeComDto: DeforLaborTimeComDto; //会社別変形労働法定労働時間
-		comDeforLaborMonthActCalSetDto: SettingDto; //会社別変形労働集計設定
+		comDeforLaborMonthActCalSetDto: ComDeforLaborMonthActCalSetDto; //会社別変形労働集計設定
+		yearDto: YearDto;
 	}
 
-	export interface EmpSettingResponse {
-		employmentCds: EmploymentCds;
+	export interface ComDeforLaborMonthActCalSetDto {
+		comId: String;
+		aggregateTimeSet: ExcessOutsideTimeSetReg; //集計時間設定
+		excessOutsideTimeSet: ExcessOutsideTimeSetReg; //時間外超過設定
+		settlementPeriod: SettlementPeriod; //清算期間
+	}
+
+	export interface YearDto {
+		year: number;
+	}
+
+	//Init Screen M Response
+	export interface InitScreenMResponse {
+		wkpId: WorkplaceIdDto;
+		selectWorkplaceDeforDto: SelectWorkplaceDeforDto;
+	}
+
+	export interface WorkplaceIdDto {
+		workplaceId: String;
+	}
+
+	export interface SelectWorkplaceDeforDto {
+		deforLaborMonthTimeWkpDto: DeforLaborMonthTimeWkpDto;
+		yearDto: YearDto;
+	}
+
+	export interface DeforLaborMonthTimeWkpDto {
+		deforLaborTimeWkpDto: DeforLaborTimeWkpDto;
+		wkpDeforLaborMonthActCalSetDto: WkpDeforLaborMonthActCalSetDto;
+	}
+
+	export interface DeforLaborTimeWkpDto extends DeforLaborTimeComDto {
+		wkpId: String;
+	}
+
+	export interface WkpDeforLaborMonthActCalSetDto extends SettingDto {
+		wkpId: String;
+	}
+
+
+	//Init Screen N Response
+	export interface InitScreenNResponse {
+		employmentCodeDto: EmploymentCodeDto;
 		selectEmploymentDeforDto: SelectEmploymentDeforDto;
 	}
 
-	export interface EmploymentCds {
+	export interface EmploymentCodeDto {
 		employmentCode: String;
 	}
 
 	export interface SelectEmploymentDeforDto {
-		deforLaborMonthTimeWkpDto: DeforLaborMonthTimeComDto;
-		years: Years;
+		deforLaborMonthTimeEmpDto: DeforLaborMonthTimeEmpDto;
+		yearDto: YearDto;
 	}
 
-	export interface Years {
-		years: number;
+	export interface DeforLaborMonthTimeEmpDto {
+		deforLaborTimeEmpDto: DeforLaborTimeEmpDto;
+		empDeforLaborMonthActCalSetDto: EmpDeforLaborMonthActCalSetDto;
+	}
+
+	export interface DeforLaborTimeEmpDto extends DeforLaborTimeComDto {
+		empCd: String;
+	}
+
+	export interface EmpDeforLaborMonthActCalSetDto extends SettingDto {
+		empCd: String;
+	}
+
+	export class TransformScreenData {
+		deforLaborTimeComDto = new DeforLaborTimeCom();
+		settingDto = new Setting();
+		sidebarType: SIDEBAR_TYPE;
+		wkpId: string;
+		empCode: string;
+		empId: string;
+		titleName: string;
+
+		constructor() { }
+
+		updateInitBasicSetting(param: any, sidebarType: String) {
+			switch (sidebarType) {
+				case 'Com_Company':
+					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeComDto.deforLaborTimeComDto);
+					this.settingDto.update(param.deforLaborMonthTimeComDto.comDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Workplace':
+					this.deforLaborTimeComDto.update(param.selectWorkplaceDeforDto.deforLaborMonthTimeWkpDto.deforLaborTimeWkpDto);
+					this.settingDto.update(param.selectWorkplaceDeforDto.deforLaborMonthTimeWkpDto.wkpDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Employment':
+					this.deforLaborTimeComDto.update(param.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto);
+					this.settingDto.update(param.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto);
+					break;
+			}
+
+		}
+
+		updateSelectBasicSetting(param: any, sidebarType: String) {
+			switch (sidebarType) {
+				case 'Com_Company':
+					break;
+
+				case 'Com_Workplace':
+					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeWkpDto.deforLaborTimeWkpDto);
+					this.settingDto.update(param.deforLaborMonthTimeWkpDto.wkpDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Employment':
+					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto);
+					this.settingDto.update(param.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto);
+					break;
+			}
+
+		}
+
+		updateReloadBasicSetting(param: any, sidebarType: String) {
+			switch (sidebarType) {
+				case 'Com_Company':
+					this.deforLaborTimeComDto.update(param.deforLaborTimeComDto);
+					this.settingDto.update(param.comDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Workplace':
+					this.deforLaborTimeComDto.update(param.deforLaborTimeWkpDto);
+					this.settingDto.update(param.wkpDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Employment':
+					this.deforLaborTimeComDto.update(param.deforLaborTimeEmpDto);
+					this.settingDto.update(param.empDeforLaborMonthActCalSetDto);
+					break;
+
+				case 'Com_Person':
+					this.deforLaborTimeComDto.update(param.deforLaborTimeShaDto);
+					this.settingDto.update(param.shaDeforLaborMonthActCalSetDto);
+					break;
+			}
+		}
+
 	}
 
 	const template = `
@@ -161,19 +301,28 @@ module nts.uk.at.view.kmk004 {
 	class BasicSetting extends ko.ViewModel {
 		mode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.ADD);
 		visibleL4: KnockoutObservable<boolean> = ko.observable(false);
-
-		screenData = new TransformScreenData();
-
 		isLoadData: KnockoutObservable<boolean>;
+		screenData = new TransformScreenData();
 
 		constructor(private params: IParam) {
 			super();
 			const vm = this;
 
+			vm.initData();
+			vm.isLoadData = vm.params.isLoadData;
+			vm.isLoadData.subscribe((value: boolean) => {
+				if (value) {
+					vm.reloadData();
+					vm.isLoadData(false);
+				}
+			});
+		}
+
+		mounted() {
+			const vm = this;
 			switch (vm.params.sidebarType) {
 				//会社
 				case 'Com_Company':
-					vm.loadData();
 					break;
 
 				//職場
@@ -203,18 +352,41 @@ module nts.uk.at.view.kmk004 {
 					});
 					break;
 			}
-
-			vm.isLoadData = vm.params.isLoadData;
-			vm.isLoadData.subscribe((value: boolean) => {
-				if (value) {
-					vm.reloadData();
-					vm.isLoadData(false);
-				}
-			});
-
 		}
 
-		mounted() {
+
+		initData() {
+			const vm = this;
+			vm.$blockui("grayout");
+
+			switch (vm.params.sidebarType) {
+
+				//会社
+				case 'Com_Company':
+					vm.$ajax(KMK004_API.COM_INIT_SCREEN).done((data: InitScreenLResponse) => {
+						vm.bindingInitData(data);
+					}).always(() => vm.$blockui("clear"));
+					break;
+
+				//職場	
+				case 'Com_Workplace':
+					vm.$ajax(KMK004_API.WKP_INIT_SCREEN).done((data: InitScreenMResponse) => {
+						vm.bindingInitData(data);
+					}).always(() => vm.$blockui("clear"));
+					break;
+
+				//雇用
+				case 'Com_Employment':
+					vm.$ajax(KMK004_API.EMP_INIT_SCREEN).done((data: InitScreenNResponse) => {
+						vm.bindingInitData(data);
+					}).always(() => vm.$blockui("clear"));
+					break;
+
+				//社員
+				case 'Com_Person':
+					break;
+			}
+
 		}
 
 		loadData() {
@@ -225,27 +397,27 @@ module nts.uk.at.view.kmk004 {
 
 				//会社
 				case 'Com_Company':
-					vm.$ajax(KMK004_API.COM_INIT_SCREEN).done((data: SettingResponse) => {
-						vm.bindingData(data);
-					}).always(() => vm.$blockui("clear"));
 					break;
 
 				//職場	
 				case 'Com_Workplace':
-					vm.$ajax(KMK004_API.WKP_INIT_SCREEN).done((data: SettingResponse) => {
-						vm.bindingData(data);
+					vm.$ajax(KMK004_API.WKP_SELECT + "/" + vm.params.wkpId()).done((data: any) => {
+						vm.bindingSelectData(data);
 					}).always(() => vm.$blockui("clear"));
 					break;
 
 				//雇用
 				case 'Com_Employment':
-					vm.$ajax(KMK004_API.EMP_INIT_SCREEN).done((data: SettingResponse) => {
-						vm.bindingData(data);
+					vm.$ajax(KMK004_API.EMP_SELECT + "/" + vm.params.empCode()).done((data: any) => {
+						vm.bindingSelectData(data);
 					}).always(() => vm.$blockui("clear"));
 					break;
 
 				//社員
 				case 'Com_Person':
+					vm.$ajax(KMK004_API.SHA_SELECT + "/" + vm.params.empId()).done((data: any) => {
+						vm.bindingSelectData(data);
+					}).always(() => vm.$blockui("clear"));
 					break;
 			}
 
@@ -288,7 +460,7 @@ module nts.uk.at.view.kmk004 {
 
 		}
 
-		bindingData(data: any) {
+		bindingInitData(data: any) {
 			const vm = this;
 			switch (vm.params.sidebarType) {
 				//会社
@@ -296,7 +468,7 @@ module nts.uk.at.view.kmk004 {
 					if (data.deforLaborMonthTimeComDto.deforLaborTimeComDto != null && data.deforLaborMonthTimeComDto.comDeforLaborMonthActCalSetDto != null) {
 						vm.visibleL4(true);
 						vm.mode(SCREEN_MODE.UPDATE);
-						vm.screenData.updateBasicSetting(data, 'Com_Company');
+						vm.screenData.updateInitBasicSetting(data, 'Com_Company');
 					} else {
 						vm.visibleL4(false);
 					}
@@ -304,6 +476,13 @@ module nts.uk.at.view.kmk004 {
 
 				//職場
 				case 'Com_Workplace':
+					if (data.selectWorkplaceDeforDto.deforLaborMonthTimeWkpDto.deforLaborTimeWkpDto != null && data.selectWorkplaceDeforDto.deforLaborMonthTimeWkpDto.wkpDeforLaborMonthActCalSetDto != null) {
+						vm.visibleL4(true);
+						vm.mode(SCREEN_MODE.UPDATE);
+						vm.screenData.updateInitBasicSetting(data, 'Com_Workplace');
+					} else {
+						vm.visibleL4(false);
+					}
 					break;
 
 				//雇用
@@ -311,7 +490,44 @@ module nts.uk.at.view.kmk004 {
 					if (data.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto != null && data.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto != null) {
 						vm.visibleL4(true);
 						vm.mode(SCREEN_MODE.UPDATE);
-						vm.screenData.updateBasicSetting(data, 'Com_Employment');
+						vm.screenData.updateInitBasicSetting(data, 'Com_Employment');
+					} else {
+						vm.visibleL4(false);
+					}
+					break;
+
+				//社員
+				case 'Com_Person':
+					break;
+
+			}
+
+		}
+
+		bindingSelectData(data: any) {
+			const vm = this;
+			switch (vm.params.sidebarType) {
+				//会社
+				case 'Com_Company':
+					break;
+
+				//職場
+				case 'Com_Workplace':
+					if (data.deforLaborMonthTimeWkpDto.deforLaborTimeWkpDto != null && data.deforLaborMonthTimeWkpDto.wkpDeforLaborMonthActCalSetDto != null) {
+						vm.visibleL4(true);
+						vm.mode(SCREEN_MODE.UPDATE);
+						vm.screenData.updateSelectBasicSetting(data, 'Com_Workplace');
+					} else {
+						vm.visibleL4(false);
+					}
+					break;
+
+				//雇用
+				case 'Com_Employment':
+					if (data.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto != null && data.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto != null) {
+						vm.visibleL4(true);
+						vm.mode(SCREEN_MODE.UPDATE);
+						vm.screenData.updateSelectBasicSetting(data, 'Com_Employment');
 					} else {
 						vm.visibleL4(false);
 					}
@@ -338,10 +554,16 @@ module nts.uk.at.view.kmk004 {
 						vm.visibleL4(false);
 					}
 					break;
-					
+
 				case 'Com_Workplace':
+					if (data.deforLaborTimeWkpDto != null && data.wkpDeforLaborMonthActCalSetDto != null) {
+						vm.visibleL4(true);
+						vm.mode(SCREEN_MODE.UPDATE);
+						vm.screenData.updateReloadBasicSetting(data, 'Com_Workplace');
+					} else {
+						vm.visibleL4(false);
+					}
 					break;
-					
 				case 'Com_Employment':
 					if (data.deforLaborTimeEmpDto != null && data.empDeforLaborMonthActCalSetDto != null) {
 						vm.visibleL4(true);
@@ -353,6 +575,13 @@ module nts.uk.at.view.kmk004 {
 					break;
 
 				case 'Com_Person':
+					if (data.deforLaborTimeShaDto != null && data.shaDeforLaborMonthActCalSetDto != null) {
+						vm.visibleL4(true);
+						vm.mode(SCREEN_MODE.UPDATE);
+						vm.screenData.updateReloadBasicSetting(data, 'Com_Person');
+					} else {
+						vm.visibleL4(false);
+					}
 					break;
 			}
 		}

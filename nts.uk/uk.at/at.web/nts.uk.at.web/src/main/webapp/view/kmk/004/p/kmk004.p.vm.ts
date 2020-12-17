@@ -66,7 +66,7 @@ module nts.uk.at.view.kmk004.p {
 		visibleP6_3: KnockoutObservable<boolean> = ko.observable(false);
 		requiredP3: KnockoutObservable<boolean> = ko.observable(false);
 
-		screenData = new TransformScreenData();
+		screenPData = new TransformScreenPData();
 
 		constructor(private params: IParamL) {
 			super();
@@ -106,7 +106,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
+					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -120,7 +120,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
+					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -134,7 +134,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
+					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -149,7 +149,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenData.settingDto.settlementPeriod.period() === 1) {
+					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(0);
 					} else {
 						vm.selectedP3_3(1);
@@ -195,7 +195,7 @@ module nts.uk.at.view.kmk004.p {
 			const vm = this;
 			if (data.deforLaborTimeComDto != null && data.settingDto != null) {
 				vm.mode(SCREEN_MODE.UPDATE);
-				vm.screenData.updateP(data);
+				vm.screenPData.updateP(data);
 
 			} else {
 				vm.mode(SCREEN_MODE.ADD);
@@ -215,7 +215,7 @@ module nts.uk.at.view.kmk004.p {
 
 		create() {
 			const vm = this;
-			vm.screenData.add(vm.params);
+			vm.screenPData.add(vm.params);
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
@@ -225,7 +225,7 @@ module nts.uk.at.view.kmk004.p {
 						return;
 					}
 
-					vm.$ajax(KMK004_P_API.WKP_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.WKP_CREATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -246,7 +246,7 @@ module nts.uk.at.view.kmk004.p {
 					if (!valid) {
 						return;
 					}
-					vm.$ajax(KMK004_P_API.EMP_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.EMP_CREATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -266,7 +266,7 @@ module nts.uk.at.view.kmk004.p {
 					if (!valid) {
 						return;
 					}
-					vm.$ajax(KMK004_P_API.SHA_CREATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.SHA_CREATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -282,7 +282,7 @@ module nts.uk.at.view.kmk004.p {
 
 		update() {
 			const vm = this;
-			vm.screenData.add(vm.params);
+			vm.screenPData.add(vm.params);
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Company') {
@@ -290,7 +290,7 @@ module nts.uk.at.view.kmk004.p {
 					if (!valid) {
 						return;
 					}
-					vm.$ajax(KMK004_P_API.COM_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.COM_UPDATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -310,7 +310,7 @@ module nts.uk.at.view.kmk004.p {
 					if (!valid) {
 						return;
 					}
-					vm.$ajax(KMK004_P_API.WKP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.WKP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -331,7 +331,7 @@ module nts.uk.at.view.kmk004.p {
 					if (!valid) {
 						return;
 					}
-					vm.$ajax(KMK004_P_API.EMP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.EMP_UPDATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -351,7 +351,7 @@ module nts.uk.at.view.kmk004.p {
 						return;
 					}
 
-					vm.$ajax(KMK004_P_API.SHA_UPDATE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+					vm.$ajax(KMK004_P_API.SHA_UPDATE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 						vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							vm.close();
 						})
@@ -371,14 +371,14 @@ module nts.uk.at.view.kmk004.p {
 
 		removeData() {
 			const vm = this;
-			vm.screenData.add(vm.params);
+			vm.screenPData.add(vm.params);
 
 			//職場
 			if (vm.params.sidebarType == 'Com_Workplace') {
 				vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 					if (result === 'yes') {
 						vm.$blockui("invisible");
-						vm.$ajax(KMK004_P_API.WKP_DELETE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$ajax(KMK004_P_API.WKP_DELETE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 							vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 								vm.close();
 							})
@@ -401,7 +401,7 @@ module nts.uk.at.view.kmk004.p {
 				vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 					if (result === 'yes') {
 						vm.$blockui("invisible");
-						vm.$ajax(KMK004_P_API.EMP_DELETE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$ajax(KMK004_P_API.EMP_DELETE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 							vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 								vm.close();
 							})
@@ -425,7 +425,7 @@ module nts.uk.at.view.kmk004.p {
 				vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 					if (result === 'yes') {
 						vm.$blockui("invisible");
-						vm.$ajax(KMK004_P_API.SHA_DELETE_BASIC_SETTING, ko.toJS(vm.screenData)).done(() => {
+						vm.$ajax(KMK004_P_API.SHA_DELETE_BASIC_SETTING, ko.toJS(vm.screenPData)).done(() => {
 							vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 								vm.close();
 							})
@@ -447,7 +447,7 @@ module nts.uk.at.view.kmk004.p {
 		}
 	}
 
-	export class TransformScreenData {
+	export class TransformScreenPData {
 		deforLaborTimeComDto = new DeforLaborTimeCom();
 		settingDto = new Setting();
 		sidebarType: SIDEBAR_TYPE;
@@ -459,49 +459,6 @@ module nts.uk.at.view.kmk004.p {
 		updateP(param: any) {
 			this.deforLaborTimeComDto.update(param.deforLaborTimeComDto);
 			this.settingDto.update(param.settingDto);
-		}
-
-		updateBasicSetting(param: any, sidebarType: String) {
-			switch (sidebarType) {
-				case 'Com_Company':
-					this.deforLaborTimeComDto.update(param.deforLaborMonthTimeComDto.deforLaborTimeComDto);
-					this.settingDto.update(param.deforLaborMonthTimeComDto.comDeforLaborMonthActCalSetDto);
-					break;
-
-				case 'Com_Workplace':
-
-					break;
-
-				case 'Com_Employment':
-					this.deforLaborTimeComDto.update(param.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.deforLaborTimeEmpDto);
-					this.settingDto.update(param.selectEmploymentDeforDto.deforLaborMonthTimeEmpDto.empDeforLaborMonthActCalSetDto);
-					break;
-
-				case 'Com_Person':
-
-					break;
-
-			}
-		}
-
-		updateReloadBasicSetting(param: any, sidebarType: String) {
-			switch (sidebarType) {
-				case 'Com_Company':
-					this.deforLaborTimeComDto.update(param.deforLaborTimeComDto);
-					this.settingDto.update(param.comDeforLaborMonthActCalSetDto);
-					break;
-					
-				case 'Com_Workplace':
-					break;
-
-				case 'Com_Company':
-					this.deforLaborTimeComDto.update(param.deforLaborTimeEmpDto);
-					this.settingDto.update(param.empDeforLaborMonthActCalSetDto);
-					break;
-
-				case 'Com_Person':
-					break;
-			}
 		}
 
 		add(param: IParamL) {
@@ -555,11 +512,13 @@ module nts.uk.at.view.kmk004.p {
 
 	//会社別変形労働集計設定
 	export class Setting {
+		comId = '';
 		aggregateTimeSet = new TimeSet(); //集計時間設定
 		excessOutsideTimeSet = new TimeSet(); //時間外超過設定
 		settlementPeriod = new Settlement(); //清算期間
 		constructor() { }
-		update(param: SettingDto) {
+		update(param: any) {
+			this.comId = param.comId;
 			this.aggregateTimeSet.update(param.aggregateTimeSet);
 			this.excessOutsideTimeSet.update(param.excessOutsideTimeSet);
 			this.settlementPeriod.update(param.settlementPeriod);
@@ -592,6 +551,7 @@ module nts.uk.at.view.kmk004.p {
 
 	//会社別変形労働法定労働時間
 	export interface DeforLaborTimeComDto {
+		comId: String;
 		weeklyTime: WeeklyTime; //週単位
 		dailyTime: DailyTime; //日単位
 	}
@@ -608,6 +568,7 @@ module nts.uk.at.view.kmk004.p {
 
 	//会社別変形労働集計設定
 	export interface SettingDto {
+		comId: string;
 		aggregateTimeSet: ExcessOutsideTimeSetReg; //集計時間設定
 		excessOutsideTimeSet: ExcessOutsideTimeSetReg; //時間外超過設定
 		settlementPeriod: SettlementPeriod; //清算期間

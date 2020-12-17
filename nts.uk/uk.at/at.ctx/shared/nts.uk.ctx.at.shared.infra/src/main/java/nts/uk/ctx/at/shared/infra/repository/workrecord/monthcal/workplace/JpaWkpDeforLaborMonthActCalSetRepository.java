@@ -24,7 +24,7 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements WkpDeforLaborMonthActCalSetRepo {
 
 	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpDeforMCalSet c"
-			+ " WHERE c.kshstWkpTransLabTimePK.cid = :cid";
+			+ " WHERE c.krcstWkpDeforMCalSetPK.cid = :cid";
 	
 	/*
 	 * (non-Javadoc)

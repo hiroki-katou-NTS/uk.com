@@ -3,6 +3,7 @@
 module nts.uk.at.view.kmk004.components.transform {
 
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
+	import KMK004_API = nts.uk.at.view.kmk004.KMK004_API;
 
 	interface Params {
 		selectedYear: KnockoutObservable<number | null>;
@@ -60,26 +61,26 @@ module nts.uk.at.view.kmk004.components.transform {
 
 		mounted() {
 			const vm = this;
-
+			vm.initData(0);
 			vm.param
 				.subscribe(() => {
-					vm.reloadData(0);
+					vm.loadData(0);
 				});
 
 			vm.param.valueHasMutated();
 		}
 
-		reloadData(selectedIndex: number = 0) {
+		initData(selectedIndex: number = 0) {
 			
             const vm = this;
             vm.itemList([]);
             switch (vm.type) {
                 case 'Com_Company':
-                    vm.$ajax(API.GET_YEARS_COM)
+                    vm.$ajax(KMK004_API.COM_INIT_SCREEN)
                         .then((data: any) => {
-                            data = _.orderBy(data, ['year'], ['desc']);
+                            var years = _.orderBy(data.years, ['year'], ['desc']);
 
-                            _.forEach(data, ((value: any) => {
+                            _.forEach(years, ((value: any) => {
                                 const y: IYear = new IYear(value.year);
                                 vm.itemList.push(y);
                             }));
@@ -95,10 +96,10 @@ module nts.uk.at.view.kmk004.components.transform {
 
                 case 'Com_Workplace':
                     if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.toJS(vm.param()))
+                        vm.$ajax(KMK004_API.WKP_INIT_SCREEN + '/' + ko.toJS(vm.param()))
                             .then((data: any) => {
-                                data = _.orderBy(data, ['year'], ['desc']);
-                                _.forEach(data, ((value: any) => {
+                                var years = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(years, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
                                     vm.itemList.push(y);
                                 }));
@@ -115,10 +116,10 @@ module nts.uk.at.view.kmk004.components.transform {
 
                 case 'Com_Employment':
                     if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.toJS(vm.param()))
+                        vm.$ajax(KMK004_API.EMP_INIT_SCREEN  + '/' + ko.toJS(vm.param()))
                             .then((data: any) => {
-                                data = _.orderBy(data, ['year'], ['desc']);
-                                _.forEach(data, ((value: any) => {
+                                  var years = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(years, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
                                     vm.itemList.push(y);
                                 }));
@@ -135,10 +136,82 @@ module nts.uk.at.view.kmk004.components.transform {
 
                 case 'Com_Person':
                     if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
-                        vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' + ko.toJS(vm.param()))
+                        vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.toJS(vm.param()))
                             .then((data: any) => {
-                                data = _.orderBy(data, ['year'], ['desc']);
-                                _.forEach(data, ((value: any) => {
+                                var years = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(years, ((value: any) => {
+                                    const y: IYear = new IYear(value.year);
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
+                    break;
+            }
+        
+		}
+		
+		loadData(selectedIndex: number = 0) {
+			
+            const vm = this;
+            vm.itemList([]);
+            switch (vm.type) {
+                case 'Com_Company':
+                    break;
+
+                case 'Com_Workplace':
+                    if (ko.unwrap(vm.param) != '') {
+                        vm.$ajax(KMK004_API.WKP_SELECT + '/' + ko.toJS(vm.param()))
+                            .then((data: any) => {
+                                var years = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(years, ((value: any) => {
+                                    const y: IYear = new IYear(value.year);
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
+                    break;
+
+                case 'Com_Employment':
+                    if (ko.unwrap(vm.param) != '') {
+                        vm.$ajax(KMK004_API.EMP_SELECT  + '/' + ko.toJS(vm.param()))
+                            .then((data: any) => {
+                                  var years = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(years, ((value: any) => {
+                                    const y: IYear = new IYear(value.year);
+                                    vm.itemList.push(y);
+                                }));
+                            })
+                            .then(() => {
+                                if(ko.unwrap(vm.itemList) != []){
+                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                }else {
+                                    vm.selectedYear(null);
+                                }
+                            });
+                    }
+                    break;
+
+                case 'Com_Person':
+                    if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
+                        vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.toJS(vm.param()))
+                            .then((data: any) => {
+                                var years = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(years, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
                                     vm.itemList.push(y);
                                 }));

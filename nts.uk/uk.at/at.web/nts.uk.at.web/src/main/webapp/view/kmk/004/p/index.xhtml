@@ -33,14 +33,14 @@
 
 				<!-- P2_3 -->
 				<input tabindex="1" id="inputP2_3" class="input_time"
-					data-bind="ntsTimeEditor: { value: screenData.deforLaborTimeComDto.dailyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_309]' }" />
+					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.dailyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_309]' }" />
 
 				<!-- P2_4 -->
 				<label data-bind="text: $i18n('KMK004_310')"></label>
 
 				<!-- P2_5 -->
 				<input tabindex="2" class="input_time"
-					data-bind="ntsTimeEditor: { value: screenData.deforLaborTimeComDto.weeklyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_310]' }" />
+					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.weeklyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_310]' }" />
 				<br></br>
 				<!-- P3_1 -->
 				<div
@@ -77,7 +77,7 @@
 									options: itemListP3_5,
 									optionsValue: 'code',
 									visibleItemsCount: 12,
-									value: screenData.settingDto.settlementPeriod.startMonth,
+									value: screenPData.settingDto.settlementPeriod.startMonth,
 									optionsText: 'name',
 									editable:  false,
 									enable: selectedP3_3() == 1,
@@ -98,7 +98,7 @@
 									options: itemListP3_7,
 									optionsValue: 'code',
 									visibleItemsCount: 12,
-									value: screenData.settingDto.settlementPeriod.period,
+									value: screenPData.settingDto.settlementPeriod.period,
 									optionsText: 'name',
 									editable:  false,
 									enable: selectedP3_3() == 1,
@@ -108,7 +108,7 @@
 						</td>
 						<td>
 							<!-- P3_8 -->
-							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenData.settingDto.settlementPeriod.repeatAtr, enable: selectedP3_3() == 1 } ">
+							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenPData.settingDto.settlementPeriod.repeatAtr, enable: selectedP3_3() == 1 } ">
 							#{i18n.getText('KMK004_317')}
 							</div>
 						</td>
@@ -122,14 +122,14 @@
 				<!-- P4_2 -->
 				<div class="child-row"> 
 					<div tabindex="7" class ="checkbox"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalOverTimeWork } ">
+					data-bind="ntsCheckBox: { checked: screenPData.settingDto.aggregateTimeSet.legalOverTimeWork } ">
 					#{i18n.getText('KMK004_319')}</div>
 				</div>
 				
 				<!-- P4_3 -->
 				<div class="child-row"> 
 					<div tabindex="8" class ="checkbox"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.aggregateTimeSet.legalHoliday } ">
+					data-bind="ntsCheckBox: { checked: screenPData.settingDto.aggregateTimeSet.legalHoliday } ">
 					#{i18n.getText('KMK004_320')}</div>
 				</div>
 				
@@ -141,14 +141,14 @@
 				<!-- P5_2 -->
 				<div class="child-row"> 
 					<div tabindex="9" class ="checkbox"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalOverTimeWork } ">
+					data-bind="ntsCheckBox: { checked: screenPData.settingDto.excessOutsideTimeSet.legalOverTimeWork } ">
 					#{i18n.getText('KMK004_322')}</div>
 				</div>
 
 				<!-- P5_3 -->
 				<div class="child-row">
 					<div tabindex="10" class ="checkbox"
-					data-bind="ntsCheckBox: { checked: screenData.settingDto.excessOutsideTimeSet.legalHoliday } ">
+					data-bind="ntsCheckBox: { checked: screenPData.settingDto.excessOutsideTimeSet.legalHoliday } ">
 					#{i18n.getText('KMK004_323')}</div>
 				</div> 
 			</div>

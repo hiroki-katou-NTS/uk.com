@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpF
 public class JpaWkpFlexMonthActCalSetRepository extends JpaRepository implements WkpFlexMonthActCalSetRepo {
 
 	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpFlexMCalSet c"
-			+ " WHERE c.krcstWkpFlexMCalSetPK.cid = :cid";
+			+ " WHERE c.krcstWkpDeforMCalSetPK.cid = :cid";
 	
 	/*
 	 * (non-Javadoc)
