@@ -22,19 +22,19 @@
 
 		<ui:define name="content">
 			<!-- Remote Settings copy dialog -->
-			<div class="fixed-flex-layout" id="contents-area">
+			<div class="fixed-flex-layout" id="contents-area" style="margin-top: 50px;">
 				<div id="K1_1" style="margin-left: 15px;"
 					data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KNR002_190')}</div>
 				<div>
 					<table id="multi-list"
 						data-bind="ntsGridList: {				
 									height: 384,		
-									options: destinationCopyList,	
-									optionsValue: 'code',	
+									options: bentoMenu,	
+									optionsValue: 'frameNumber',	
 									value: selectedList,	
 									columns: [
-										{ headerText: '#{i18n.getText('KNR002_191')}', key: 'code', width: 60, formatter: _.escape },
-										{ headerText: '#{i18n.getText('KNR002_192')}', key: 'name', width: 150, formatter: _.escape },
+										{ headerText: '#{i18n.getText('KNR002_191')}', key: 'frameNumber', width: 60, formatter: _.escape },
+										{ headerText: '#{i18n.getText('KNR002_192')}', key: 'bentoName', width: 150, formatter: _.escape },
 					            	],				
 									multiple: true }">
 

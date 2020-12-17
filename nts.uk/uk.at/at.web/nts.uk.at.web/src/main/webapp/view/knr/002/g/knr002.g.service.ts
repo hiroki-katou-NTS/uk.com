@@ -2,9 +2,9 @@ module knr002.g.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getTimeRecordReqSettings: "screen/at/tranfercontentsettings/gettimerecordreqsettings",
-        getWorkTypes: "screen/at/worktypetransfer/getworktypes",
-        getWorkTimes: "screen/at/worktimetransfer/getworktimes",
+        getTimeRecordReqSettings: "screen/at/tranfercontentsettings/getTimeRecordReqSettings",
+        getWorkTypes: "screen/at/worktypetransfer/getWorkTypes",
+        getWorkTimes: "screen/at/worktimetransfer/getWorkTimes",
     };
 
     /**

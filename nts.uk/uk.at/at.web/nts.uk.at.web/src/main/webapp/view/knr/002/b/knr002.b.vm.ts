@@ -103,10 +103,10 @@ module knr002.b {
                 if(self.hasError()){
                     return;
                 }
-                //process
+                // process
                 let sDateTime = self.toDate(new Date(self.sTime()));
                 let eDateTime = self.toDate(new Date(self.eTime()));
-               
+                // load List Log in the Period
                 self.loadLogInPeriod(self.empInfoTerCode(), sDateTime, eDateTime); 
             } 
 
@@ -115,7 +115,6 @@ module knr002.b {
              * 閉じるボタン
              */
             private cancel_Dialog(): any {
-                //let self = this;
                 nts.uk.ui.windows.close();
             }
             /**
@@ -123,35 +122,38 @@ module knr002.b {
              */
             private loadLogInPeriod(empInfoTerCode: string, sTime: string, eTime: string): void{
                 var self = this;
-                
-                service.getInPeriod(empInfoTerCode, sTime, eTime).done((data) => {
-                    if(!data){
-                        //do something                 
-                        self.displayLogList([]);
-                    } else {
-                        let displayLogListTemp = [];
-                        for (let i = 0; i < data.length; i++) { 
-                            try {
-                                var sDay = new Date(data[i].preTimeSuccDate).getDay();
-                                var eDay = new Date(data[i].lastestTimeSuccDate).getDay();
-                                let displayLog = new DisplayLog(`${self.getDate(data[i].preTimeSuccDate)}${self.getDayOfWeek(sDay)}`,
-                                                                 self.getTime(data[i].preTimeSuccDate),
-                                                                `${self.getDate(data[i].lastestTimeSuccDate)}${self.getDayOfWeek(eDay)}`,
-                                                                 self.getTime(data[i].lastestTimeSuccDate));
-                                switch(sDay){
-                                    case 6: displayLog.id = `${i}_sta`; break;
-                                    case 0: displayLog.id = `${i}_sun`; break;
-                                    default: displayLog.id = `${i}`;
-                                }
-                                displayLogListTemp.push(displayLog);
-                            } catch (error) {
-                                console.log("Can't convert string to date");
-                            }                              
-                        }
+                if(empInfoTerCode === undefined || empInfoTerCode === '' || empInfoTerCode.length <= 0){
+                    self.displayLogList([]);
+                }else{
+                    service.getInPeriod(empInfoTerCode, sTime, eTime).done((data) => {
+                        if(!data){
+                            //do something                 
+                            self.displayLogList([]);
+                        } else {
+                            let displayLogListTemp = [];
+                            for (let i = 0; i < data.length; i++) { 
+                                try {
+                                    var sDay = new Date(data[i].preTimeSuccDate).getDay();
+                                    var eDay = new Date(data[i].lastestTimeSuccDate).getDay();
+                                    let displayLog = new DisplayLog(`${self.getDate(data[i].preTimeSuccDate)}${self.getDayOfWeek(sDay)}`,
+                                                                    self.getTime(data[i].preTimeSuccDate),
+                                                                    `${self.getDate(data[i].lastestTimeSuccDate)}${self.getDayOfWeek(eDay)}`,
+                                                                    self.getTime(data[i].lastestTimeSuccDate));
+                                    switch(sDay){
+                                        case 6: displayLog.id = `${i}_sta`; break;
+                                        case 0: displayLog.id = `${i}_sun`; break;
+                                        default: displayLog.id = `${i}`;
+                                    }
+                                    displayLogListTemp.push(displayLog);
+                                } catch (error) {
+                                    console.log("Can't convert string to date");
+                                }                              
+                            }
 
-                        self.displayLogList(displayLogListTemp);
-                    }    
-                });
+                            self.displayLogList(displayLogListTemp);
+                        }    
+                    });
+                }
                 $('#B6_1').focus();
                 blockUI.clear();  
             }

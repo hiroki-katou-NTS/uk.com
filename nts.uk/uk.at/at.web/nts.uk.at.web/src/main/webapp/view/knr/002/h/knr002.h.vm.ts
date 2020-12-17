@@ -11,11 +11,12 @@ module knr002.h {
 
     export module viewmodel {
         export class ScreenModel {
+            empInfoTerCode: string;
             ccgcomponent: GroupOption;       
             baseDate: KnockoutObservable<Date>;
             listEmployee: KnockoutObservableArray<ExportEmployeeSearchDto >;
             currentCodeList: KnockoutObservableArray<string>;
-            attendanceRecordList: KnockoutObservableArray<AttendanceRecordExportSettingDto>;
+            employeesList: KnockoutObservableArray<EmployeesDto>;
             selectedCode: KnockoutObservable<string>;
             selectedEmployee: KnockoutObservableArray<any>;
             lstPersonComponentOption: any;
@@ -23,13 +24,15 @@ module knr002.h {
             alreadySettingPersonal: KnockoutObservableArray<any>;
             employeeSearchedList: KnockoutObservableArray<ExportEmployeeSearchDto >;
             columns: KnockoutObservableArray<any>;
+            
 
             constructor() {
                 let self = this;
+                self.empInfoTerCode = '';
                 self.listEmployee = ko.observableArray<ExportEmployeeSearchDto >([]);
 
 
-                self.attendanceRecordList = ko.observableArray([]);
+                self.employeesList = ko.observableArray([]);
 
                 self.selectedCode = ko.observable(null);
                 self.currentCodeList = ko.observableArray([]);
@@ -92,8 +95,6 @@ module knr002.h {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.searchByEmploymentType(data.listEmployee);
                         self.listEmployee(data.listEmployee);
-                        console.log(data);
-                        console.log(self.searchByEmploymentType(data.listEmployee));
                     }
                 }
             }
@@ -103,7 +104,7 @@ module knr002.h {
                 blockUI.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-                
+                self.empInfoTerCode = getShared('KNR002H_empInfoTerCode');
                 // Start component
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                     self.employeeSearchedList = ko.observableArray<ExportEmployeeSearchDto >([]);
@@ -111,21 +112,17 @@ module knr002.h {
                     // Load employee list component
                 });
 
-                service.getAllAttendanceRecExpSet().done( listAttendance => {
-                    if (listAttendance === undefined || listAttendance.length == 0) {
-                        self.attendanceRecordList();                      
-                    } else {
-                     
-                        var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
-                        _.map(sortArray, (item) => {
-                            item.code = _.padStart(item.code, 2, '0');
-                        });
-                        self.attendanceRecordList(sortArray);
+                service.getEmployees(self.empInfoTerCode).done(data => {
+                    if (data === undefined || data.length == 0) {
+                        self.employeesList();
+                    } else {                  
+                       // var sortArray = _.orderBy(data, [e.employeeCode], ['asc']);
+                        self.employeesList(data);
                     }
-
+                    console.log("data from server: ", data);
                     dfd.resolve();
                 });
-                $('#ccgcomponent').focus();
+
                 blockUI.clear();
                 return dfd.promise();
             }
@@ -133,7 +130,7 @@ module knr002.h {
 
 
             /**
-             * apply ccg001
+             * apply ccg001 search data to load
              */
             private searchByEmploymentType(dataList: ExportEmployeeSearchDto []): void {
                 let self = this;
@@ -159,13 +156,33 @@ module knr002.h {
             }
         }
 
-        export class AttendanceRecordExportSettingDto {
-            code: string;
-            name: string;
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
 
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+
+        export class EmployeesDto {
+            employeeId: string;
+            employeeCode: string;
+            businessName: string;
+            businessNameKana: string;
+            workplaceName: string;
+
+            constructor(employeeId: string, employeeCode: string, businessName: string, businessNameKana: string, workplaceName: string) {
+                this.employeeId = employeeId;
+                this.employeeCode = employeeCode;
+                this.businessName = businessName;
+                this.businessNameKana = businessNameKana;
+                this.workplaceName = workplaceName;
             }
         }
 

@@ -15,32 +15,31 @@ module knr002.test {
             isMulti: boolean;
             sharedContent: KnockoutObservable<string>;
 
-            //B_Dialog
+            //  B_Dialog
             empInfoTerCode_B: KnockoutObservable<string>;
             empInfoTerName_B: KnockoutObservable<string>;
             modelEmpInfoTerName_B: KnockoutObservable<string>;
             workLocationName_B: KnockoutObservable<string>;
             lastSuccessDate_B: KnockoutObservable<string>;
             status: KnockoutObservable<string>;
-            //D_Dialog
+            //  D_Dialog
             empInfoTerCode_D: KnockoutObservable<string>;
             empInfoTerName_D: KnockoutObservable<string>;
             empInfoTerList_D: KnockoutObservableArray<any>;
             //currentCodeList_D: KnockoutObservableArray<any>;
-            //F_Dialog
+            //  F_Dialog
             empInfoTerCode_F: KnockoutObservable<string>;
             empInfoTerName_F: KnockoutObservable<string>;
             modelEmpInfoTer_F: KnockoutObservable<number>;
             lastSuccessDate_F: KnockoutObservable<string>;
             empInfoTerList_F: KnockoutObservableArray<any>;
-            //G_Dialog
+            //  G_Dialog
             empInfoTerCode_G: KnockoutObservable<string>;
             empInfoTerName_G: KnockoutObservable<string>;
             modelEmpInfoTerName_G: KnockoutObservable<string>;
             workLocationName_G: KnockoutObservable<string>;
-            
-
-
+            //  K_Dialog
+            empInfoTerCode_K: KnockoutObservable<string>;
             
             constructor(){
                 var self = this;
@@ -83,6 +82,8 @@ module knr002.test {
                 self.empInfoTerName_G = ko.observable("Name 2G_Shared");
                 self.modelEmpInfoTerName_G = ko.observable("NRL-G");
                 self.workLocationName_G = ko.observable("Work Location 2G");
+                //  K_Dialog
+                self.empInfoTerCode_K = ko.observable("1111");
             }
 
             public startPage(): JQueryPromise<void>{
@@ -179,6 +180,10 @@ module knr002.test {
              * 
              */
             private test_K_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                 //setShared from G
+                setShared('KNR002K_empInfoTerCode', self.empInfoTerCode_K());
                 modal('/view/knr/002/k/index.xhtml', { title: 'K_Screen', }).onClosed(() => {
                     blockUI.clear();
                 });

@@ -41,10 +41,10 @@ module knr002.g {
 
             constructor(){
                 var self = this;
-                self.empInfoTerCode = ko.observable("");
-                self.empInfoTerName = ko.observable("");
-                self.modelEmpInfoTerName = ko.observable("");
-                self.workLocationName = ko.observable("");
+                self.empInfoTerCode = ko.observable('');
+                self.empInfoTerName = ko.observable('');
+                self.modelEmpInfoTerName = ko.observable('');
+                self.workLocationName = ko.observable('');
                 //checkbox
                 self.sendEmployeeId = ko.observable(false);
                 self.sendWorkType = ko.observable(false);
@@ -81,31 +81,32 @@ module knr002.g {
                 self.empInfoTerName(getShared('KNR002G_empInfoTerName'));
                 self.modelEmpInfoTerName(getShared('KNR002G_modelEmpInfoTer'));
                 self.workLocationName(getShared('KNR002G_workLocationName'));
-                if(!self.empInfoTerCode()){
-                    self.empInfoTerCode("0001");
-                    self.empInfoTerName("isn't the shared");
-                }
+                if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
+                    self.empInfoTerCode('');
+                    self.empInfoTerName('');
+                }else{
 
-                //load process
-                service.getTimeRecordReqSettings(self.empInfoTerCode()).done((data)=>{
-                    if(!data){
-                        //do something
-                        console.log("can't get data from server");
-                    }else{
-                        console.log("show data from server");
-                        self.sendEmployeeId(data.sendEmployeeId);
-                        self.sendWorkType(data.sendWorkType);
-                        self.sendWorkTime(data.sendWorkTime);
-                        self.overTimeHoliday(data.overTimeHoliday);
-                        self.applicationReason(data.applicationReason);
-                        self.sendBentoMenu(data.sendBentoMenu);
-                        self.timeSetting(data.timeSetting);
-                        self.reboot(data.reboot);
-                        self.stampReceive(data.stampReceive);
-                        self.applicationReceive(data.applicationReceive);
-                        self.reservationReceive(data.reservationReceive);                       
-                    }
-                });
+                    //load process
+                    service.getTimeRecordReqSettings(self.empInfoTerCode()).done((data)=>{
+                        if(!data){
+                            //do something
+                            self.empInfoTerCode('');
+                            self.empInfoTerName('');
+                        }else{
+                            self.sendEmployeeId(data.sendEmployeeId);
+                            self.sendWorkType(data.sendWorkType);
+                            self.sendWorkTime(data.sendWorkTime);
+                            self.overTimeHoliday(data.overTimeHoliday);
+                            self.applicationReason(data.applicationReason);
+                            self.sendBentoMenu(data.sendBentoMenu);
+                            self.timeSetting(data.timeSetting);
+                            self.reboot(data.reboot);
+                            self.stampReceive(data.stampReceive);
+                            self.applicationReceive(data.applicationReceive);
+                            self.reservationReceive(data.reservationReceive);                       
+                        }
+                    });
+                }
                 $('#G11_1').focus();
                 blockUI.clear();   																			
                 dfd.resolve();											
@@ -124,7 +125,6 @@ module knr002.g {
                     }else{	
                         self.posibleWorkTypes(data.posibleWorkTypes);
                         self.workTypeCodes(self.isCloseWorkType()? self.workTypeCodes() : data.workTypeCodes);
-                        console.log('isClose: ', self.isCloseWorkType());
                         setShared('KDL002_Multiple', true);
                         setShared('KDL002_AllItemObj', self.posibleWorkTypes());
                         setShared('KDL002_SelectedItemId', self.workTypeCodes());
@@ -132,7 +132,6 @@ module knr002.g {
                             var selectable = nts.uk.ui.windows.getShared("KDL002_SelectedNewItem");
                             self.selectableWorkTypes(selectable !== undefined? selectable : []);
                             self.isCloseWorkType(true);
-                            console.log("selectable: ", self.selectableWorkTypes());
                             blockUI.clear();
                         });
                     }	
@@ -151,7 +150,6 @@ module knr002.g {
                     }else{	
                         self.posibleWorkTimes(data.posibleWorkTimes);
                         self.workTimeCodes(self.isCloseWorkTime()? self.workTimeCodes() : data.workTimeCodes);
-                        console.log("data", data);
                         setShared('kml001multiSelectMode', true);
                         setShared('kml001selectAbleCodeList', self.posibleWorkTimes());
                         setShared('kml001selectedCodeList', self.workTimeCodes());
@@ -159,11 +157,34 @@ module knr002.g {
                             var selectable = getShared("kml001selectedCodeList");
                             self.isCloseWorkTime(true);
                             self.selectableWorkTimes(selectable !== undefined? selectable : []);
-                            console.log("selectableWorkTimes: ", self.selectableWorkTimes());
                             blockUI.clear();
                         });       
                     }	
                 });	 
+            }
+            /**
+             * get employees
+             * 
+             */
+            private call_H_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                setShared('KNR002H_empInfoTerCode', self.empInfoTerCode());
+                modal('/view/knr/002/h/index.xhtml', { title: 'H_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
+            /**
+             * get bento
+             * 
+             */
+            private call_K_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                setShared('KNR002K_empInfoTerCode', self.empInfoTerCode());
+                modal('/view/knr/002/k/index.xhtml', { title: 'k_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
             }
             /**
              * get Model Name
