@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAt
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
@@ -72,7 +73,7 @@ public class DeductionTotalTimeForFluidCalc {
 	/**
 	 * 流動休憩時間帯の作成
 	 */
-	public TimeSheetOfDeductionItem createDeductionFluidRestTime(
+	public List<TimeSheetOfDeductionItem> createDeductionFluidRestTime(DeductionAtr deductionAtr,
 			TimeLeavingOfDailyAttd timeLeave, TimeWithDayAttr goOutGetStartTime, FlowRestSetting flowBreakSet, 
 			DeductionTotalTimeLocal deductionTotal, List<TimeSheetOfDeductionItem> deductTimeSheet,
 			IntegrationOfWorkTime workTime, WorkType workType, TimeWithDayAttr dayStart, boolean correctWithEndTime) {
@@ -102,29 +103,30 @@ public class DeductionTotalTimeForFluidCalc {
 												workTime.getFlowWorkRestSettingDetail().get().getFlowRestSetting().getUseStampCalcMethod(),
 												goOutGetStartTime, deductTimeSheet);
 		}
-		Optional<TimeSpanForDailyCalc> newTimeSpan;
+		List<TimeSheetOfDeductionItem> newTimeSpan = new ArrayList<>();
 		if (correctWithEndTime) {
 			/** ○退勤が含まれている場合の補正 */
-			newTimeSpan = getLastLeave(timeLeave)
-					.flatMap(tl -> breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
+			newTimeSpan.addAll(getLastLeave(timeLeave)
+					.map(tl -> breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
 																				tl, workTime.getCommonRestSetting().getCalculateMethod(),
-																				breakTimeSheet.getTimeSheet()));	
+																				deductionAtr, breakTimeSheet.getTimeSheet()))
+					.get());	
 		} else {
-			newTimeSpan = Optional.empty();
+			newTimeSpan.add(breakTimeSheet);
 		}
 		
-		/** ○休憩時間帯を返す */
-		val corrected =	newTimeSpan.map(c -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(c, rounding, 
-												breakTimeSheet.getRecordedTimeSheet(), breakTimeSheet.getDeductionTimeSheet(),
-												breakTimeSheet.getWorkingBreakAtr(), breakTimeSheet.getGoOutReason(), breakTimeSheet.getBreakAtr(), 
-												breakTimeSheet.getShortTimeSheetAtr(), breakTimeSheet.getDeductionAtr(), breakTimeSheet.getChildCareAtr()))
-									.orElse(breakTimeSheet);
+//		/** ○休憩時間帯を返す */
+//		val corrected =	newTimeSpan.map(c -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(c, rounding, 
+//												breakTimeSheet.getRecordedTimeSheet(), breakTimeSheet.getDeductionTimeSheet(),
+//												breakTimeSheet.getWorkingBreakAtr(), breakTimeSheet.getGoOutReason(), breakTimeSheet.getBreakAtr(), 
+//												breakTimeSheet.getShortTimeSheetAtr(), breakTimeSheet.getDeductionAtr(), breakTimeSheet.getChildCareAtr()))
+//									.orElse(breakTimeSheet);
 
 		/** ○休憩時間帯クラスの開始時刻を退避 */
-		this.breakStartTime = corrected.getTimeSheet().getStart();
+		this.breakStartTime = newTimeSpan.get(0).getTimeSheet().getStart();
 		this.deductionTotal = breakTime.deductionTotal;
 				
-		return corrected;
+		return newTimeSpan;
 	}
 	
 	private Optional<TimeLeavingWork> getLastLeave(TimeLeavingOfDailyAttd timeLeave) {
