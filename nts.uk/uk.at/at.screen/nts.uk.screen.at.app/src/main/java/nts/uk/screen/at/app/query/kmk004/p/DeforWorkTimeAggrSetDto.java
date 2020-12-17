@@ -44,7 +44,7 @@ public class DeforWorkTimeAggrSetDto {
 		
 		ExcessOutsideTimeSetRegDto excessOutsideTimeSetDto = 
 				new ExcessOutsideTimeSetRegDto(domain.getExcessOutsideTimeSet().isLegalOverTimeWork(),
-						domain.getAggregateTimeSet().isLegalHoliday());
+						domain.getExcessOutsideTimeSet().isLegalHoliday());
 						
 		DeforLaborSettlementPeriodDto settlementPeriodDto =
 				new DeforLaborSettlementPeriodDto(domain.getSettlementPeriod().getStartMonth().v(),
