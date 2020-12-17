@@ -28,7 +28,7 @@ public class KfndtAlarmExtractWpl extends ContractUkJpaEntity implements Seriali
 
     private static final long serialVersionUID = 1L;
 
-    @EmbeddedId
+    @Id
     @Column(name = "GUI_ID")
     public String id;
     
