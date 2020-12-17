@@ -6,6 +6,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractI
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.extractresult.KfndtAlarmExtractWpl;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,26 +25,24 @@ public class JpaAlarmListExtractInfoWorkplaceRepository extends JpaRepository im
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE a.checkConditionId = :checkConditionId ");
+        builderString.append(" WHERE a.processingId = :processingId ");
         FIND_BY_ID = builderString.toString();
     }
 
     @Override
     public void addAll(List<AlarmListExtractInfoWorkplace> domains) {
+        List<KfndtAlarmExtractWpl> lstEntity = new ArrayList<>();
         domains.forEach(x ->
-            commandProxy().insertAll(KfndtAlarmExtractWpl.toEntity(x))
+            lstEntity.addAll(KfndtAlarmExtractWpl.toEntity(x))
         );
+
+        commandProxy().insertAll(lstEntity);
     }
 
     @Override
-    public void Insert(AlarmListExtractInfoWorkplace domain) {
-        commandProxy().insertAll(KfndtAlarmExtractWpl.toEntity(domain));
-    }
-
-    @Override
-    public Optional<AlarmListExtractInfoWorkplace> getById(String checkConditionId) {
+    public Optional<AlarmListExtractInfoWorkplace> getById(String processingId) {
         List<KfndtAlarmExtractWpl> result = this.queryProxy().query(FIND_BY_ID, KfndtAlarmExtractWpl.class)
-            .setParameter("checkConditionId", checkConditionId)
+            .setParameter("processingId", processingId)
             .getList();
         return result.size() > 0 ? Optional.of(KfndtAlarmExtractWpl.toDomain(result)) : Optional.empty();
     }
