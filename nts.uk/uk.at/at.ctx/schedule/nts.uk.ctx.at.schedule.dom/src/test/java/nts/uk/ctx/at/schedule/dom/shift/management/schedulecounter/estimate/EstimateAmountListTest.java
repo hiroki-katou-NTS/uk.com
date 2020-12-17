@@ -100,9 +100,8 @@ public class EstimateAmountListTest {
 	public void create_equal_amount_Msg_147() {
 		NtsAssert.businessException("Msg_147", () -> {
 			EstimateAmountList.create(Arrays.asList(
-					  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(600))
-				    , new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(600))
-				    , new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(900))
+					  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
+				    , new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(500))
 					));
 		});
 	}
@@ -117,8 +116,7 @@ public class EstimateAmountListTest {
 		NtsAssert.businessException("Msg_147", () -> {
 			EstimateAmountList.create(Arrays.asList(
 					  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-				    , new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(700))
-				    , new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(600))
+				    , new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(499))
 					));
 		});
 	}
@@ -131,15 +129,13 @@ public class EstimateAmountListTest {
 	public void create_estimateAmounts_success() {
 		val estimatePrise = EstimateAmountList.create(Arrays.asList(
 				  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-				, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(600))
-				, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(700))
+				, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(501))
 				));
 		
 		assertThat(estimatePrise.getEstimatePrices())
 						.extracting(d->d.getEstimateAmountNo().v(), d->d.getEstimateAmount().v())
 						.containsExactly( tuple(1, 500)
-										, tuple(2, 600)
-										, tuple(3, 700));
+										, tuple(2, 501));
 	}
 	
 	public static class Helper{

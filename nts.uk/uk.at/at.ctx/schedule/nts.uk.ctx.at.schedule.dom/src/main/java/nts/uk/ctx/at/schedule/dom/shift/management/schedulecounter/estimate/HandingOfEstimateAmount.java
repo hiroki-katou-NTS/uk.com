@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 /**
  * 目安金額の扱い			
@@ -12,7 +11,6 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class HandingOfEstimateAmount implements DomainAggregate{
 	/** 枠別の扱いリスト */

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.estimate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 /**
  *　会社の目安金額	 
@@ -11,7 +10,6 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class EstimateAmountForCompany implements DomainAggregate{	
 	/**　目安金額詳細　*/
 	private EstimateAmountDetail detail;

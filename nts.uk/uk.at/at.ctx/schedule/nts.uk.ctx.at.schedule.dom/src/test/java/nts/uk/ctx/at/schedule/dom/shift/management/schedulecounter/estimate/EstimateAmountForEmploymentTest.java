@@ -10,13 +10,15 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+
 @RunWith(JMockit.class)
-public class EstimateAmountForCompanyTest {
-	
+public class EstimateAmountForEmploymentTest {
 	@Test
 	public void getters() {
-		val ceAmount = new EstimateAmountForCompany(Helper.createEstDetailPrice());
-		NtsAssert.invokeGetters(ceAmount);
+		val detail = Helper.createEstDetailPrice();
+		val eeAmount = new EstimateAmountForEmployment(new EmploymentCode("01"), detail);
+		NtsAssert.invokeGetters(eeAmount);
 	}
 	
 	@Test
@@ -26,13 +28,13 @@ public class EstimateAmountForCompanyTest {
 				EstimateAmountList.create(Arrays.asList(new EstimateAmountByCondition(new EstimateAmountNo(1),  new EstimateAmount(90000)))),
 				EstimateAmountList.create(Arrays.asList(new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(1000))))
 				);
-        val ceAmount = new EstimateAmountForCompany(detail);
+        val eeAmount = new EstimateAmountForEmployment(new EmploymentCode("01"), detail);
         
         val newDetail = Helper.createEstDetailPrice();
         
-        ceAmount.update(newDetail);
+        eeAmount.update(newDetail);
         
-		assertThat(ceAmount.getDetail()).isEqualTo(newDetail);
+		assertThat(eeAmount.getDetail()).isEqualTo(newDetail);
 	}
 	
 	public static class Helper {
@@ -58,5 +60,4 @@ public class EstimateAmountForCompanyTest {
 		}
 
 	}
-
 }
