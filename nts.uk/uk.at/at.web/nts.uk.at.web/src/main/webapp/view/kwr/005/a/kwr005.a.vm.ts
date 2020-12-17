@@ -393,7 +393,7 @@ module nts.uk.at.view.kwr005.a {
         }
 
         let params = {
-          mode: mode, //ExcelPdf区分
+          //mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
           startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,        
           endMonth: _.toInteger(vm.periodDate().endDate),
