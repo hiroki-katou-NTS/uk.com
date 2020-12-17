@@ -40,8 +40,8 @@ module nts.uk.at.view.kmk004.b {
 
 					/** Required parameter */
 					baseDate: ko.observable(moment().format(DATE_FORMAT)),
-					periodStartDate: ko.observable(moment.utc('1900/01/01', DATE_FORMAT).format(DATE_FORMAT)),
-					periodEndDate: ko.observable(moment.utc('9999/12/31', DATE_FORMAT).format(DATE_FORMAT)),
+					periodStartDate: ko.observable(new Date()),
+					periodEndDate: ko.observable(new Date()),
 					inService: true,
 					leaveOfAbsence: true,
 					closed: true,
@@ -77,7 +77,8 @@ module nts.uk.at.view.kmk004.b {
 								workplaceName: m.affiliationName,
 								code: m.employeeCode,
 								name: m.employeeName,
-								id: m.employeeId
+								id: m.employeeId,
+								isAlreadySetting: m.isAlreadySetting
 							}));
 
 						vm.params.employees(employees);
@@ -87,9 +88,33 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	export interface IEmployee {
-		workplaceName: String;
-		code: String;
-		id: String;
-		name: String;
+		workplaceName: string;
+		code: string;
+		id: string;
+		name: string;
+		isAlreadySetting: boolean;
+	}
+
+	export class Employee {
+		id: KnockoutObservable<string> = ko.observable('');
+		code: KnockoutObservable<string> = ko.observable('');
+		name: KnockoutObservable<string> = ko.observable('');
+		workplaceName: KnockoutObservable<string> = ko.observable('');
+		isAlreadySetting: KnockoutObservable<boolean> = ko.observable(false);
+
+		constructor(params?: IEmployee) {
+			this.update(params);
+		}
+
+		public update(params?: IEmployee) {
+			if (params) {
+				this.id(params.id);
+				this.code(params.code);
+				this.name(params.name);
+				this.workplaceName(params.workplaceName);
+				this.isAlreadySetting(params.isAlreadySetting);
+			}
+		}
+
 	}
 }

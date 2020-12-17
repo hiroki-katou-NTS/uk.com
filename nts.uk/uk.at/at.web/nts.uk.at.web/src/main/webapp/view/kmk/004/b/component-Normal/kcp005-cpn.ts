@@ -11,6 +11,11 @@ module nts.uk.at.view.kmk004.b {
         employees: KnockoutObservableArray<IEmployee>;
     }
 
+    const API = {
+        GET_EMPLOYEEIDS: 'screen/at/kmk004/viewe/sha/getEmployeeId'
+    }
+
+
     @component({
         name: 'kcp005',
         template
@@ -20,14 +25,43 @@ module nts.uk.at.view.kmk004.b {
 
         public selectedCode: KnockoutObservable<string> = ko.observable('');
         public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
-        public employeeList: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-        public workPlaces: KnockoutObservableArray<IWorkTime> = ko.observableArray([]);
 
         created(params: ParamsKcp005) {
             const vm = this;
             vm.selectedCode = params.selectedCode;
             vm.employees = params.employees;
+
+            vm.reload();
+
+            vm.employees
+                .subscribe(() => {
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$ajax(API.GET_EMPLOYEEIDS)
+                                .then((data: any) => {
+                                    let list: UnitAlreadySettingModel[] = [];
+                                    _.forEach(data, ((value) => {
+                                        const setting: IEmployee = _.find(ko.unwrap(vm.employees), e => e.id === value.employeeId);
+
+                                        if (setting) {
+                                            let object = { code: setting.code, isAlreadySetting: true } as UnitAlreadySettingModel;
+                                            list.push(object);
+                                        }
+                                    }));
+                                    vm.alreadySettingList(list);
+                                });
+                        })
+                        .then(() => {
+                            vm.$blockui('clear');
+                        });
+                })
+
+        }
+
+        reload() {
+
+            const vm = this;
 
             $('#employee-list')
                 .ntsListComponent({
@@ -44,7 +78,6 @@ module nts.uk.at.view.kmk004.b {
                     isShowSelectAllButton: false,
                     disableSelection: false
                 });
-
         }
     }
 
@@ -65,16 +98,5 @@ module nts.uk.at.view.kmk004.b {
     interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
-    }
-
-    interface IworkPlace {
-        id: string;
-        code: string;
-        name: string;
-        nodeText?: string;
-        level: number;
-        heirarchyCode: string;
-        isAlreadySetting?: boolean;
-        children: Array<IworkPlace>;
     }
 }
