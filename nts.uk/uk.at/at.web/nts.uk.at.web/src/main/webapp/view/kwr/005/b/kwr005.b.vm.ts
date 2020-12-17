@@ -26,14 +26,8 @@ module nts.uk.at.view.kwr005.b {
     //属性
     printProperties: KnockoutObservableArray<any> = ko.observableArray(null);
     printPropertyCode: KnockoutObservable<any> = ko.observable(-1);
-    //current setting
-    /* attendance: KnockoutObservable<any> = ko.observable(null);
-    attendanceCode: KnockoutObservable<string> = ko.observable(null);
-    attendanceName: KnockoutObservable<string> = ko.observable(null); */
+    //current setting   
     settingCategory: KnockoutObservable<number> = ko.observable(0);
-    //settingId: KnockoutObservable<string> = ko.observable(null);
-
-    //----------------------
     isSelectAll: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAddButton: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAttendanceCode: KnockoutObservable<boolean> = ko.observable(false);
@@ -75,18 +69,18 @@ module nts.uk.at.view.kwr005.b {
         { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape },
       ]);
 
+      
     }
 
     created(params: any) {
       const vm = this;
-
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if (!_.isNil(msie) && msie.index > -1) vm.gridHeight(337);
     }
 
     mounted() {
-      const vm = this;
-      const userAgent = window.navigator.userAgent;
-      let msie = userAgent.match(/Trident.*rv\:11\./);
-      if (!_.isNil(msie) && msie.index > -1) vm.gridHeight(335);
+      const vm = this;     
       //$("#swapList-grid1").igGrid("container").focus();
     }
 
@@ -216,14 +210,12 @@ module nts.uk.at.view.kwr005.b {
           return;
         }
 
-        /* let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
-        if (!_.isNil(duplicateItem)) {
-          vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
-          return;
-        } */
+        let params = {
+          standOrFree: vm.settingCategory(),
+          code: data.code
+        };
+        vm.loadSettingList(params);
 
-        vm.settingListItems.push(data);
-        vm.currentCodeList(data.code);
       });
 
       $('#KWR005_B53').focus();
@@ -360,7 +352,7 @@ module nts.uk.at.view.kwr005.b {
 
       vm.$blockui('grayout');
 
-      vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).then((data) => {
+      vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).done((data) => {
         if (!_.isNil(data) && data.length > 0) {
           _.forEach(data, (item) => {
             let code = _.padStart(item.settingDisplayCode, 2, '0');
