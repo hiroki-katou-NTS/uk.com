@@ -1,16 +1,16 @@
-package nts.uk.ctx.health.dom.federate;
+package nts.uk.ctx.health.dom.linkage;
 
 import java.net.URI;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  * ヘルスライフAPI連携
  */
-@RequiredArgsConstructor
-public class HealthLifeApiFederation implements DomainAggregate {
+@AllArgsConstructor
+public class HealthLifeApiLinkage implements DomainAggregate {
 
 	@Getter
 	private final String tenantCode;

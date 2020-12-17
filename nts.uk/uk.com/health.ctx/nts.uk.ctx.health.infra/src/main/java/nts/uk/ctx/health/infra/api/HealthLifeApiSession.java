@@ -1,7 +1,5 @@
 package nts.uk.ctx.health.infra.api;
 
-import java.util.function.Function;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -19,18 +17,24 @@ import nts.gul.web.communicate.NtsHttpClient;
 import nts.gul.web.communicate.typedapi.RequestDefine;
 import nts.gul.web.communicate.typedapi.ResponseDefine;
 import nts.gul.web.communicate.typedapi.TypedWebAPI;
-import nts.uk.ctx.health.dom.federate.HealthLifeApiFederation;
-import nts.uk.ctx.health.dom.federate.HealthLifeApiFederationRepository;
+import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkage;
+import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * ヘルスライフのWebAPIを呼び出すためのセッションを確立する
+ * HLのWebAPIは、事前に認証・ログインのAPIを呼んだ上で、セッションCookieやCSRFトークンを取得し、
+ * それをリクエストの都度送らなければならないという仕様。
+ * このクラスはそれらの事前準備を隠蔽するためのもの。
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class HealthLifeApiSession {
 
 	@Inject
-	private HealthLifeApiFederationRepository federationRepo;
+	private HealthLifeApiLinkageRepository linkageRepo;
 	
-	public SessionContext begin(String companyId) {
+	public Context begin(String companyId) {
 		
 		val user = AppContexts.user();
 		if (!user.companyId().equals(companyId)) {
@@ -39,77 +43,33 @@ public class HealthLifeApiSession {
 			throw new RuntimeException("ログイン中の会社以外を指定できません。指定：" + companyId + ", ログイン：" + user.companyId());
 		}
 		
-		val fed = federationRepo.find(user.contractCode()).get();
+		val linkage = linkageRepo.find(user.contractCode()).get();
+		
+		return beginSession(linkage, user.companyCode());
+	}
+
+	private static Context beginSession(HealthLifeApiLinkage linkage, String companyCode) {
 		
 		val httpClient = DefaultNtsHttpClient.createDefault();
 		
-		val authen = httpClient.fetch(Authenticate.api(fed), Authenticate.Request.of(fed));
-		val login = httpClient.fetch(Login.api(fed), Login.Request.of(authen));
+		val authen = httpClient.fetch(Authenticate.api(linkage), Authenticate.Request.of(linkage));
+		val login = httpClient.fetch(Login.api(linkage), Login.Request.of(authen));
 		
-		int healthLifeCompanyCode = Integer.parseInt(user.companyCode());
+		int healthLifeCompanyCode = Integer.parseInt(companyCode);
 		
-		return new SessionContext(fed, httpClient, login.getCsrfToken(), healthLifeCompanyCode);
-	}
-	
-	private static class Authenticate {
-		
-		private static TypedWebAPI<Request, Response> api(HealthLifeApiFederation fed) {
-			return new TypedWebAPI<>(
-					fed.getUriOf("webapi/op/domain/gateway/externallinkage/uklinkage/authenticate"),
-					RequestDefine.json(Request.class, HttpMethod.POST),
-					ResponseDefine.json(Response.class));
-		}
-		
-		@Value
-		private static class Request {
-			private String contractCode;
-			private String linkageId;
-			private String linkagePassword;
-			
-			public static Request of(HealthLifeApiFederation fed) {
-				// 契約コードと連携IDは同一値となった
-				return new Request(fed.getTargetContractCode(), fed.getTargetContractCode(), fed.getPassword());
-			}
-		}
-		
-		@Data
-		private static class Response {
-			private String ticket;
-		}
-	}
-	
-	private static class Login {
-
-		private static TypedWebAPI<Request, Response> api(HealthLifeApiFederation fed) {
-			return new TypedWebAPI<>(
-					fed.getUriOf("webapi/op/domain/gateway/externallinkage/login"),
-					RequestDefine.json(Request.class, HttpMethod.POST),
-					ResponseDefine.json(Response.class));
-		}
-		@Value
-		private static class Request {
-			private String ticket;
-			
-			public static Request of(Authenticate.Response auth) {
-				return new Request(auth.getTicket());
-			}
-		}
-		
-		@Data
-		private static class Response {
-			private String csrfToken;
-		}
+		return new Context(linkage, httpClient, login.getCsrfToken(), healthLifeCompanyCode);
 	}
 	
 	@RequiredArgsConstructor
-	public static class SessionContext {
+	public static class Context {
 		
-		private final HealthLifeApiFederation fed;
+		private final HealthLifeApiLinkage linkage;
 		
 		private final NtsHttpClient httpClient;
 		
 		private final String csrfToken;
 		
+		/** HL側の会社コードは整数値 */
 		@Getter
 		private final int healthLifeCompanyCode;
 		
@@ -117,7 +77,7 @@ public class HealthLifeApiSession {
 			
 			@SuppressWarnings("unchecked")
 			val api = new TypedWebAPI<Q, S>(
-					fed.getUriOf("webapi/op/domain/gateway/externallinkage/uklinkage/authenticate"),
+					linkage.getUriOf("webapi/op/domain/gateway/externallinkage/uklinkage/authenticate"),
 					(RequestDefine<Q>) RequestDefine.json(requestEntity.getClass(), HttpMethod.POST),
 					ResponseDefine.json(responseClass));
 			
@@ -136,5 +96,59 @@ public class HealthLifeApiSession {
 			return response.get();
 		}
 		
+	}
+	
+	private static class Authenticate {
+		
+		private static TypedWebAPI<Request, Response> api(HealthLifeApiLinkage linkage) {
+			return new TypedWebAPI<>(
+					linkage.getUriOf("webapi/op/domain/gateway/externallinkage/uklinkage/authenticate"),
+					RequestDefine.json(Request.class, HttpMethod.POST),
+					ResponseDefine.json(Response.class));
+		}
+		
+		@Value
+		private static class Request {
+			private String contractCode;
+			private String linkageId;
+			private String linkagePassword;
+			
+			public static Request of(HealthLifeApiLinkage linkage) {
+				// 契約コードと連携IDは同一値
+				return new Request(
+						linkage.getTargetContractCode(),
+						linkage.getTargetContractCode(),
+						linkage.getPassword());
+			}
+		}
+		
+		@Data
+		private static class Response {
+			private String ticket;
+			private String loginWebService;
+		}
+	}
+	
+	private static class Login {
+
+		private static TypedWebAPI<Request, Response> api(HealthLifeApiLinkage linkage) {
+			return new TypedWebAPI<>(
+					linkage.getUriOf("webapi/op/domain/gateway/externallinkage/login"),
+					RequestDefine.json(Request.class, HttpMethod.POST),
+					ResponseDefine.json(Response.class));
+		}
+		@Value
+		private static class Request {
+			private String ticket;
+			
+			public static Request of(Authenticate.Response auth) {
+				return new Request(auth.getTicket());
+			}
+		}
+		
+		@Data
+		private static class Response {
+			private String csrfToken;
+		}
 	}
 }

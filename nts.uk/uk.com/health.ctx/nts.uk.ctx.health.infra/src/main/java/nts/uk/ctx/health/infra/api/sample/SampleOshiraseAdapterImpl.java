@@ -46,14 +46,14 @@ public class SampleOshiraseAdapterImpl implements SampleOshiraseAdapter {
 	}
 
 	@Value
-	private static class Request {
-		Date startDate;
-		Date endDate;
-		int companyCode;
+	public static class Request {
+		private final Date startDate;
+		private final Date endDate;
+		private final int companyCode;
 	}
 	
 	@Data
-	private static class Response {
+	public static class Response {
 		private List<SampleOshiraseDto> list;
 	}
 }
