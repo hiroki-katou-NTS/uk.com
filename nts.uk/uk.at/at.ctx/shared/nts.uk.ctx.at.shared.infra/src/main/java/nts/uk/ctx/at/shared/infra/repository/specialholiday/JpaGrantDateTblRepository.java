@@ -32,6 +32,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
 
+	private final static String SELECT_GD_BY_SPHDCD_QUERY
+		= "SELECT e.pk.companyId , SELECT e.pk.specialHolidayCode, SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.maxDay "
+			+ "FROM KshstGrantDateTbl e "
+			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
+			+ "ORDER BY e.pk.grantDateCd ASC";
+
 	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode";
 
@@ -228,7 +234,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * 取得
 	 * @param companyId 会社ID
 	 * @param specialHolidayCode　特別休暇コード
-	 * @param grantDateCode　特別休暇コード
+	 * @param grantDateCode　付与テーブルコード
 	 * @return List<GrantDateTbl>
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -303,16 +309,43 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	/**
+	 * Create Grant Date Domain From Entity
+	 * @param c
+	 * @return
+	 */
+	private GrantDateTbl createGdDomainFromEntity(Object[] c) {
+		String companyId = String.valueOf(c[0]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
+		String grantDateCd = String.valueOf(c[2]);
+		String grantName = String.valueOf(c[3]);
+		boolean isSpecified = Integer.parseInt(String.valueOf(c[4])) == 1 ? true : false;
+		boolean fixedAssign = Integer.parseInt(String.valueOf(c[5])) == 1 ? true : false;
+		int numberOfDays = c[6] != null ? Integer.parseInt(String.valueOf(c[6])) : 0;
+
+		return GrantDateTbl.createFromJavaType(
+				companyId, specialHolidayCode, grantDateCd, grantName, isSpecified, numberOfDays);
+	}
+
+	/**
 	 * Find all Grant Date Table data by Special Holiday Code
 	 * @param companyId
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	@Override
-	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode){
+//	@Override
+//	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode){
+//
+//		return new ArrayList<GrantDateTbl>();
+//	}
 
-		// 要修正 jinno
-		return new ArrayList<GrantDateTbl>();
+	@Override
+	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode) {
+		return this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
+				.getList(c -> {
+					return createGdDomainFromEntity(c);
+				});
 	}
 
 	@Override
@@ -324,6 +357,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 					.setParameter("specialHolidayCode", specialHolidayCode)
 					.executeUpdate();
 	}
+
 
 //	@Override
 //	public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode) {

@@ -19,22 +19,22 @@ import nts.gul.serialize.binary.SerializableWithOptional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, SerializableWithOptional {
-	
+
 	/**
 	 * Serializable
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 使用日数
 	 */
 	private SpecialLeaveUseDays useDays;
-	
+
 	/**
 	 * 使用時間
 	 */
 	private Optional<SpecialLeaveUseTimes> useTimes;
-	
+
 	/**
 	 * コンストラクタ
 	 * @param useDays
@@ -44,7 +44,30 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 			SpecialLeaveUseDays useDays, SpecialLeaveUseTimes useTimes) {
 		this(useDays, Optional.ofNullable(useTimes));
 	}
-	
+
+	/**
+	 * @param useDays
+	 * @param useTimes
+	 */
+	static public SpecialLeaveUseNumber of(
+			double useDays, Integer useTimes) {
+
+		SpecialLeaveUseTimes specialLeaveUseTimes = null;
+
+		if ( useTimes != null ) {
+			specialLeaveUseTimes
+				= new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(useTimes));
+		}
+
+		SpecialLeaveUseNumber specialLeaveUseNumber
+			= new SpecialLeaveUseNumber(
+					SpecialLeaveUseDays.of(new SpecialLeaveRemainDay(useDays)),
+					specialLeaveUseTimes);
+
+		return specialLeaveUseNumber;
+
+	}
+
 //	/**
 //	 * 使用日数、使用時間をクリア
 //	 */
@@ -52,7 +75,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 //		useDays.clear();
 //		useTimes = Optional.empty();
 //	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param usedDays 使用日数
@@ -62,13 +85,13 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	public static SpecialLeaveUseNumber of(
 			SpecialLeaveUseDays usedDays,
 			Optional<SpecialLeaveUseTimes> usedTime){
-		
+
 		SpecialLeaveUseNumber domain = new SpecialLeaveUseNumber();
 		domain.useDays = usedDays;
 		domain.useTimes = usedTime;
 		return domain;
 	}
-	
+
 	@Override
 	public SpecialLeaveUseNumber clone() {
 		SpecialLeaveUseNumber cloned = new SpecialLeaveUseNumber();
@@ -83,14 +106,14 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 使用数を加算する
 	 */
 	public void addUsedNumber(SpecialLeaveUseNumber usedNumber){
-		
+
 		this.useDays.addUseDays(usedNumber.getUseDays());
-		
+
 		if ( usedNumber.getUseTimes().isPresent()){
 			if (this.useTimes.isPresent()){
 				this.useTimes.get().addUseTimes(usedNumber.getUseTimes().get());

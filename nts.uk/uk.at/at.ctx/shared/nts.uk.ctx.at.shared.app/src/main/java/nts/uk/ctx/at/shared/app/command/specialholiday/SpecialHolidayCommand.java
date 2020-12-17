@@ -154,10 +154,11 @@ public class SpecialHolidayCommand {
 			return null;
 		}
 
-		// ooooo 要修正 jinno
-		return new FixGrantDate();
+		//KMF004A 特別休暇情報の登録　実装時にこの処理を実装すること
+//		return new FixGrantDate();
 //		return FixGrantDate.createFromJavaType(
 //				this.regularCommand.getGrantTime().getFixGrantDate().getInterval(),
 //				this.regularCommand.getGrantTime().getFixGrantDate().getGrantDays());
+		return null;
 	}
 }

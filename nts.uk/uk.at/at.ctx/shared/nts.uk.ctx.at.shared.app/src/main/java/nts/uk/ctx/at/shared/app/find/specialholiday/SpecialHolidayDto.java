@@ -44,7 +44,6 @@ public class SpecialHolidayDto {
 
 		GrantRegularDto grantRegular = GrantRegularDto.fromDomain(specialHoliday.getGrantRegular() != null ? specialHoliday.getGrantRegular() : null);
 
-		// 要修正 jinno
 		//GrantPeriodicDto grantPeriodic = GrantPeriodicDto.fromDomain(specialHoliday.getGrantPeriodic() != null ? specialHoliday.getGrantPeriodic() : null);
 		GrantPeriodicDto grantPeriodic = new GrantPeriodicDto();
 

@@ -71,7 +71,7 @@ public class TimeUsedNumberDto implements ItemConst {
 	}
 
 	public static TimeUsedNumberDto from(SpecialLeaveUseTimes domain) {
-		// 要修正　→　保留
+
 //		return domain == null ? null : new TimeUsedNumberDto(
 //						domain.getUseNumber().v(),
 //						domain.getUseTimes().valueAsMinutes(),

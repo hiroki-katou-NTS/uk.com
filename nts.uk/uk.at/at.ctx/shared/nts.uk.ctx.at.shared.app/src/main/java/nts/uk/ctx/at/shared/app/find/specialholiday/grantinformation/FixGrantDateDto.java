@@ -22,8 +22,8 @@ public class FixGrantDateDto {
 		if(fixGrantDate == null) {
 			return null;
 		}
-		// 要修正 jinno
-		// return new FixGrantDateDto(fixGrantDate.getInterval().v(), fixGrantDate.getGrantDays().v());
+
+//		 return new FixGrantDateDto(fixGrantDate.getInterval().v(), fixGrantDate.getGrantDays().v());
 		return new FixGrantDateDto(0, 0);
 
 	}

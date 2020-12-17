@@ -38,19 +38,6 @@ public class GrantRegular extends DomainObject {
 	/** 期間付与 */
 	private Optional<PeriodGrantDate> periodGrantDate;
 
-//
-//	/** 会社ID */
-//	private String companyId;
-//
-//	/** 特別休暇コード */
-//	private SpecialHolidayCode specialHolidayCode;
-//
-//	/** 取得できなかった端数は消滅する */
-//	private boolean allowDisappear;
-//
-//	/** 取得できなかった端数は消滅する */
-//	private GrantTime grantTime;
-
 	@Override
 	public void validate() {
 		super.validate();
@@ -61,16 +48,16 @@ public class GrantRegular extends DomainObject {
 		if(this.typeTime==TypeTime.REFER_GRANT_DATE_TBL) {
 			if(!this.getGrantPeriodic().isPresent())return Optional.empty();
 			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().isPresent())return Optional.empty();
-			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitAccumulationDays().isPresent())return Optional.empty();
+			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent())return Optional.empty();
 
-			return Optional.of(this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v());
+			return Optional.of(this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v());
 		}
 		if(this.typeTime==TypeTime.GRANT_SPECIFY_DATE) {
 			if(!this.getFixGrantDate().isPresent())return Optional.empty();
 			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().isPresent())return Optional.empty();
-			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitAccumulationDays().isPresent())return Optional.empty();
+			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent())return Optional.empty();
 
-			return Optional.of(this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v());
+			return Optional.of(this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v());
 		}
 		return Optional.empty();
 	}

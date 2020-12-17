@@ -61,7 +61,7 @@ public class KshmtHdspGrantDeadline extends UkJpaEntity implements Serializable 
 				domain.getExpirationDate().isPresent() ? domain.getExpirationDate().get().getYears().v() : null,
 				domain.getExpirationDate().isPresent() ? domain.getExpirationDate().get().getMonths().v() : null,
 				domain.getLimitAccumulationDays().isPresent() ?
-						domain.getLimitAccumulationDays().get().getLimitAccumulationDays().get().v() : null);
+						domain.getLimitAccumulationDays().get().getLimitCarryoverDays().get().v() : null);
 	}
 
 	public KshmtHdspGrantDeadline(

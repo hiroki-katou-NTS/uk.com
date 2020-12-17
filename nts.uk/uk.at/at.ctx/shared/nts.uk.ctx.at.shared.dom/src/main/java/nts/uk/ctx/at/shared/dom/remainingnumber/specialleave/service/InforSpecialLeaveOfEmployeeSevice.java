@@ -138,7 +138,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			//固定の付与日一覧を求める
 			return askGrantDays(require, cacheCarrier, cid, employeeId, period, grantDate, speHoliday, leaveBasicInfo);
 		} else {
-			// 要修正 jinno
+			// 要修正 jinno　前川さんに確認
 //			//テーブルに基づいた付与日数一覧を求める
 //			return askGrantdaysFromtable(require, cacheCarrier,cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
 			return new GrantDaysInforByDates();

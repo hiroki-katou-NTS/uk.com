@@ -37,7 +37,6 @@ public class GrantDateTblCommand {
 	public GrantDateTbl toDomain() {
 		String companyId = AppContexts.user().companyId();
 
-		// 要修正 jinno
 //		List<ElapseYear> elapseYear = this.elapseYear.stream().map(x-> {
 //			return new ElapseYear(companyId, specialHolidayCode, grantDateCode, x.getElapseNo(),
 //					new GrantedDays(x.getGrantedDays()),

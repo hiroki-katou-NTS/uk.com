@@ -28,7 +28,6 @@ public class GrantPeriodicDto {
 			return null;
 		}
 
-		// 要修正 jinno
 //		AvailabilityPeriodDto availabilityPeriodDto = new AvailabilityPeriodDto(grantPeriodic.getAvailabilityPeriod().getStartDateValue(), grantPeriodic.getAvailabilityPeriod().getEndDateValue());
 //
 //		SpecialVacationDeadlineDto expirationDate = SpecialVacationDeadlineDto.fromDomain(grantPeriodic.getExpirationDate() != null ? grantPeriodic.getExpirationDate() : null);

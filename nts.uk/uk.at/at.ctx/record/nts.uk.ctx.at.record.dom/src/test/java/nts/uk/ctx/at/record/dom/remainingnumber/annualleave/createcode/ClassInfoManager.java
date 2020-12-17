@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import lombok.Getter;
+
 /**
  * クラス情報管理
  * @author masaaki_jinno
  */
+@Getter
 public class ClassInfoManager {
 
 	public ClassInfoManager(
@@ -32,6 +35,7 @@ public class ClassInfoManager {
 	 * パッケージ名＋クラス名で、クラス情報を管理
 	 */
 	private HashMap<String, ClassInfo> classInfoMap = new HashMap<String, ClassInfo>();
+
 
 	/**
 	 * クラス情報を取得

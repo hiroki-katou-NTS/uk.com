@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumberInfo;
 
 @Data
@@ -35,7 +36,17 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst {
 				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().orElse(null)));
 	}
 
-	// 要修正　ReserveLeaveRemainingNumberInfo　エラー不明
+//	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingNumber domain) {
+//
+//		return domain == null ? null : new RsvLeaveRemainingNumberInfoDto(
+//				RsvLeaveRemainingNumberDto.from(domain.getTotalRemainingDays().v()),
+//				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberBeforeGrant()),
+//				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().orElse(null)));
+//
+//
+//
+//	}
+
 //	public ReserveLeaveRemainingNumberInfo toReserveDomain() {
 //
 //		return ReserveLeaveRemainingNumberInfo.of(

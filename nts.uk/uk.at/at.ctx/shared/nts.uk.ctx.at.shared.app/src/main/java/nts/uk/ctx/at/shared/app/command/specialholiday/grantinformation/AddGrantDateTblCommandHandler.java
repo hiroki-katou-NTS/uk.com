@@ -41,8 +41,7 @@ public class AddGrantDateTblCommandHandler extends CommandHandlerWithResult<Gran
 
 		if (errList.isEmpty()) {
 			if(domain.isSpecified()) {
-				// 要修正 jinno
-				//repo.changeAllProvision(command.getSpecialHolidayCode());
+				repo.changeAllProvision(command.getSpecialHolidayCode());
 			}
 
 			// add to db

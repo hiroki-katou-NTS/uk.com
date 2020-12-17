@@ -24,6 +24,6 @@ public class LimitAccumulationDays {
 	private boolean limit = true;
 
 	/** 繰越上限日数 */
-	private Optional<LimitCarryoverDays> limitAccumulationDays;
+	private Optional<LimitCarryoverDays> limitCarryoverDays;
 
 }

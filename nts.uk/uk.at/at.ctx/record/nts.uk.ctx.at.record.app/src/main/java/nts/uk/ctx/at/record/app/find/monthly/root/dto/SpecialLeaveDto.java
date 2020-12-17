@@ -44,12 +44,13 @@ public class SpecialLeaveDto implements ItemConst {
 
 	public static SpecialLeaveDto from(SpecialLeave domain){
 
-		return domain == null ? null : new SpecialLeaveDto(
-				DayAndTimeDto.from(domain.getRemain()),
-				DayAndTimeDto.from(domain.getBeforeRemainGrant()),
-				SpecialLeaveUseNumberDto.from(domain.getUseNumber()),
-				DayAndTimeDto.from(domain.getUnDegestionNumber()),
-				DayAndTimeDto.from(domain.getAfterRemainGrant().orElse(null)));
+//		return domain == null ? null : new SpecialLeaveDto(
+//				DayAndTimeDto.from(domain.getRemain()),
+//				DayAndTimeDto.from(domain.getBeforeRemainGrant()),
+//				SpecialLeaveUseNumberDto.from(domain.getUseNumber()),
+//				DayAndTimeDto.from(domain.getUnDegestionNumber()),
+//				DayAndTimeDto.from(domain.getAfterRemainGrant().orElse(null)));
+		return null;
 	}
 
 //	public ActualSpecialLeave toActualDomain(){
@@ -60,7 +61,7 @@ public class SpecialLeaveDto implements ItemConst {
 //	}
 
 	public SpecialLeave toDomain(){
-		// ooooo要修正！！
+		// ooooo要修正！！Converter
 //		return new SpecialLeave(remain == null ? null : remain.toSpecial(),
 //				beforeRemainGrant == null ? null : beforeRemainGrant.toSpecial(),
 //				useNumber == null ? null : useNumber.toDomain(),

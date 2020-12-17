@@ -18,6 +18,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -171,9 +172,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	/**
 	 * For delete releated domain of KDR001 (team G)
 	 */
-//	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
-//			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
-//			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD";
+	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
+			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
+			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD";
 
 	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
 			+ " WHERE c.pk.companyId = :companyId"
@@ -219,50 +220,64 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		int ageHigherLimit = c.getInt("AGE_HIGHER_LIMIT") != null ? c.getInt("AGE_HIGHER_LIMIT") : 0;
 		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
 
-		// 要修正 jinno 修正量多い
-		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
+//		// 要修正 jinno 修正量多い
+		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(
+				companyId,
+				specialHolidayCode,
+				grantedDays,
+				timeMethod,
+				limitCarryoverDays,
+				GeneralDate.max(), // 要修正　expirationDate
+				1, // 要修正　grantMonth
+				1); // 要修正　grantDay
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
-//		String companyId,
-//		int specialHolidayCode,
-//		int grantDays,
-//		int timeSpecifyMethod,
-//		int limitCarryoverDays,
-//		GeneralDate expirationDate,
-//		int grantMonth,
-//		int grantDay) {
+		
+		DatePeriod period = new DatePeriod(
+				GeneralDate.ymd(9999, (int)(Math.floor(startDate / 100)), (int)(Math.floor(startDate % 100))),
+				GeneralDate.ymd(9999, (int)(Math.floor(endDate / 100)), (int)(Math.floor(endDate % 100))));
+		
 
-
-
-
-
-
-
-
-
-
-		GrantRegular grantRegular = GrantRegular.createFromJavaType(
-				companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
-
-
-
-
-
-		AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
-		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
-		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
-				companyId, specialHolidayCode, timeMethod, limitCarryoverDays,
-				expirationDate.getMonths().v(), expirationDate.getYears().v());
-
-		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
-		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
-		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls,
-				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
-
-		return SpecialHoliday.of(
-				companyId, specialHolidayCode, specialHolidayName, grantRegular,
-				specialLeaveRestriction, null, autoGrant, memo);
-
+//		GrantRegular grantRegular = GrantRegular.createFromJavaType(
+//				companyId,
+//				specialHolidayCode,
+//				typeTime, grantDate, allowDisappear, grantTime);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//		AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
+//		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
+//		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
+//				companyId, specialHolidayCode, timeMethod, limitCarryoverDays,
+//				expirationDate.getMonths().v(), expirationDate.getYears().v());
+//
+//		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
+//		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
+//		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls,
+//				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
+//
+//		return SpecialHoliday.of(
+//				companyId, specialHolidayCode, specialHolidayName, grantRegular,
+//				specialLeaveRestriction, null, autoGrant, memo);
+		return null;
 	}
 
 	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
@@ -276,11 +291,20 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	}
 
 	private KshstSpecialHoliday createSpecialHolidayFromDomain(SpecialHoliday domain) {
-		// ooooo 要修正 jinno
-//		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
-//		return new KshstSpecialHoliday(pk, domain.getSpecialHolidayName().v(), domain.getAutoGrant().value,
-//				domain.getMemo().v());
-		return null;
+
+		int grantDate = 0;
+		if (domain.getGrantRegular().getGrantDate().isPresent()){
+			/** 特別休暇.付与・期限情報.付与基準日 */
+			grantDate = domain.getGrantRegular().getGrantDate().get().value;
+		}
+
+		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+		return new KshstSpecialHoliday(
+				pk, domain.getSpecialHolidayName().v(),
+				domain.getAutoGrant().value, /*自動付与区分*/
+				0, /* 連続で取得する */
+				grantDate, /* 付与基準日 */
+				domain.getMemo().v());
 	}
 
 	private List<KshstSphdAbsence> createKshstSphdAbsenceLst(SpecialHoliday domain){
@@ -303,55 +327,78 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 	private KshstGrantRegular createKshstGrantRegular(SpecialHoliday domain) {
 
-		// ooooo 要修正 jinno
-//		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
-//		int typeTime = TypeTime.GRANT_START_DATE_SPECIFY.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
-//				interval = 0, grantedDays = 0;
+		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
+		int typeTime = TypeTime.REFER_GRANT_DATE_TBL.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
+				interval = 0, grantedDays = 0;
 		KshstGrantRegular entity = new KshstGrantRegular();
-//		entity.pk = new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
-//		// update document ver 32
-//		if (isAutoGrant) {
-//			typeTime = domain.getGrantRegular().getTypeTime().value;
-//			grantDate = domain.getGrantRegular().getGrantDate().value;
+		entity.pk = new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+		// update document ver 32
+		if (isAutoGrant) {
+			typeTime = domain.getGrantRegular().getTypeTime().value;
+			grantDate = domain.getGrantRegular().getGrantDate().get().value;
 //			interval = domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
-//			grantedDays = domain.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
-//		}
-//		entity.typeTime = typeTime;
-//		entity.grantDate = grantDate;
-//		entity.allowDisappear = domain.getGrantRegular().isAllowDisappear() ? 1 : 0;
-//		entity.interval = interval;
-//		entity.grantedDays = grantedDays;
+			if ( domain.getGrantRegular().getFixGrantDate().isPresent() ) {
+				grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+			}
+		}
+		entity.typeTime = typeTime;
+		entity.grantDate = grantDate;
+		entity.interval = interval;
+		entity.grantedDays = grantedDays;
 
 		return entity;
 	}
 
 	private KshstGrantPeriodic createKshstGrantPeriodic(SpecialHoliday domain){
 
-		// ooooo 要修正 jinno
-//		KshstGrantPeriodic entity = new KshstGrantPeriodic();
-//		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
-//		int timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value, limitCarryoverDays = 999;
-//		entity.pk = new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
-//		if (isAutoGrant) {
-//			timeSpecifyMethod = domain.getGrantPeriodic().getTimeSpecifyMethod().value;
-//			limitCarryoverDays = 0;
-//			if ( domain.getGrantPeriodic().getLimitAccumulationDays().isPresent() ) {
-//				if ( domain.getGrantPeriodic().getLimitAccumulationDays().get().getLimitAccumulationDays().isPresent() ) {
-//					limitCarryoverDays = domain.getGrantPeriodic().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v();
-//				}
-//			}
-//		}
-//
-//		entity.timeMethod = timeSpecifyMethod;
+		KshstGrantPeriodic entity = new KshstGrantPeriodic();
+		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
+		int timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value, limitCarryoverDays = 999;
+		entity.pk = new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+
+		if (isAutoGrant) {
+			if ( domain.getGrantRegular().getGrantPeriodic().isPresent() ) {
+				timeSpecifyMethod = domain.getGrantRegular().getGrantPeriodic().get().getTimeSpecifyMethod().value;
+			}
+			limitCarryoverDays = 0;
+
+			if (domain.getGrantRegular().getFixGrantDate().isPresent()){
+				if (domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().isPresent()){
+					if (domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent()){
+						/** 特別休暇.付与・期限情報.指定日付与.期限.蓄積上限.繰越上限日数 */
+						limitCarryoverDays = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v();
+					}
+				}
+			}
+		}
+
+		entity.timeMethod = timeSpecifyMethod;
 //		entity.startDate = domain.getGrantPeriodic().getAvailabilityPeriod().getStartDateValue();
 //		entity.endDate = domain.getGrantPeriodic().getAvailabilityPeriod().getEndDateValue();
-//		entity.deadlineMonths = domain.getGrantPeriodic().getExpirationDate().getMonths().v();
-//		entity.deadlineYears = domain.getGrantPeriodic().getExpirationDate().getYears().v();
-//		entity.limitCarryoverDays = limitCarryoverDays;
-//
-//		return entity;
+		if (domain.getGrantRegular().getPeriodGrantDate().isPresent()){
+			/** 特別休暇.付与・期限情報.期間付与.期間 */
+			entity.startDate = domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().month() * 100
+					+ domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().day();
+			entity.endDate = domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().month() * 100
+					+ domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().day();
 
-		return null;
+		}
+
+		entity.startDate = domain.get
+
+		if (domain.getGrantRegular().getFixGrantDate().isPresent()){
+			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
+			domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
+			if (domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
+				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
+				entity.deadlineMonths = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();
+				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.年数 */
+				entity.deadlineYears = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getYears().v();
+			}
+		}
+		entity.limitCarryoverDays = limitCarryoverDays;
+
+		return entity;
 	}
 
 	private KshstSpecialLeaveRestriction createKshstSpecialLeaveRestriction(SpecialHoliday domain){
@@ -433,104 +480,123 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	public void update(SpecialHoliday specialHoliday) {
 
 		// ooooo 要修正 jinno
-//		boolean isAutoGrant = specialHoliday.getAutoGrant().value == 0 ? false : true;
-//		int typeTime = TypeTime.GRANT_START_DATE_SPECIFY.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
-//				interval = 0, grantedDays = 0, timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value,
-//				limitCarryoverDays = 999;
-//		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
-//		KshstSpecialHoliday old = this.queryProxy().find(pk, KshstSpecialHoliday.class).orElse(null);
-//		old.autoGrant = specialHoliday.getAutoGrant().value;
-//		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
-//		old.memo = specialHoliday.getMemo().v();
-//		this.commandProxy().update(old);
-//
-//		KshstGrantPeriodicPK grantPeriodicPK = new KshstGrantPeriodicPK(
-//				specialHoliday.getCompanyId(),
-//				specialHoliday.getSpecialHolidayCode().v());
-//		KshstGrantPeriodic oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshstGrantPeriodic.class).orElse(null);
-//		GrantPeriodic grantPeriodic = specialHoliday.getGrantPeriodic();
-//		if (isAutoGrant) {
-//			timeSpecifyMethod = grantPeriodic.getTimeSpecifyMethod().value;
-//			limitCarryoverDays = grantPeriodic.getLimitCarryoverDays().v();
-//		}
-//		oldGrantPeriodic.timeMethod =timeSpecifyMethod;
-//		oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().getStartDateValue();
-//		oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().getEndDateValue();
-//		oldGrantPeriodic.deadlineMonths = grantPeriodic.getExpirationDate().getMonths().v();
-//		oldGrantPeriodic.deadlineYears = grantPeriodic.getExpirationDate().getYears().v();
-//		oldGrantPeriodic.limitCarryoverDays = limitCarryoverDays;
-//		this.commandProxy().update(oldGrantPeriodic);
-//
-//		KshstGrantRegularPK grantRegularPK = new KshstGrantRegularPK(
-//				specialHoliday.getCompanyId(),
-//				specialHoliday.getSpecialHolidayCode().v());
-//		KshstGrantRegular oldGrantRegular = this.queryProxy().find(grantRegularPK, KshstGrantRegular.class).orElse(null);
-//		GrantRegular grantRegular = specialHoliday.getGrantRegular();
-//
-//		if (isAutoGrant) {
-//			typeTime = grantRegular.getTypeTime().value;
-//			grantDate = grantRegular.getGrantDate().value;
+		boolean isAutoGrant = specialHoliday.getAutoGrant().value == 0 ? false : true;
+		int typeTime = TypeTime.REFER_GRANT_DATE_TBL.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
+				interval = 0, grantedDays = 0, timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value,
+				limitCarryoverDays = 999;
+		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
+		KshstSpecialHoliday old = this.queryProxy().find(pk, KshstSpecialHoliday.class).orElse(null);
+		old.autoGrant = specialHoliday.getAutoGrant().value;
+		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
+		old.memo = specialHoliday.getMemo().v();
+		this.commandProxy().update(old);
+
+		KshstGrantPeriodicPK grantPeriodicPK = new KshstGrantPeriodicPK(
+				specialHoliday.getCompanyId(),
+				specialHoliday.getSpecialHolidayCode().v());
+		KshstGrantPeriodic oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshstGrantPeriodic.class).orElse(null);
+
+		GrantDeadline grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
+		if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
+			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
+			specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
+			if (specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
+				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
+				oldGrantPeriodic.deadlineMonths = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();
+				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.年数 */
+				oldGrantPeriodic.deadlineYears = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getYears().v();
+			}
+		}
+
+		// 要修正　date →　int ?
+		if (specialHoliday.getGrantRegular().getPeriodGrantDate().isPresent()){
+			/** 特別休暇.付与・期限情報.期間付与.期間 */
+////			oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().getStartDateValue();
+////			oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().getEndDateValue();
+//			oldGrantPeriodic.startDate = specialHoliday.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().toString("MMdd");
+//			oldGrantPeriodic.endDate = specialHoliday.getGrantRegular().getPeriodGrantDate().get().getPeriod().end();
+		}
+
+		oldGrantPeriodic.timeMethod = timeSpecifyMethod;
+
+		oldGrantPeriodic.limitCarryoverDays = limitCarryoverDays;
+		this.commandProxy().update(oldGrantPeriodic);
+
+		KshstGrantRegularPK grantRegularPK = new KshstGrantRegularPK(
+				specialHoliday.getCompanyId(),
+				specialHoliday.getSpecialHolidayCode().v());
+		KshstGrantRegular oldGrantRegular = this.queryProxy().find(grantRegularPK, KshstGrantRegular.class).orElse(null);
+		GrantRegular grantRegular = specialHoliday.getGrantRegular();
+
+		if (isAutoGrant) {
+			typeTime = grantRegular.getTypeTime().value;
+			if ( grantRegular.getGrantDate().isPresent() ) {
+				grantDate = grantRegular.getGrantDate().get().value;
+			}
 //			interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
-//			grantedDays = grantRegular.getGrantTime().getFixGrantDate().getGrantDays().v();
-//		}
-//
-//		oldGrantRegular.typeTime = typeTime;
-//		oldGrantRegular.grantDate = grantDate;
+			if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
+				/** 特別休暇.付与・期限情報.指定日付与.付与日数.付与日数 */
+				grantedDays = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+			}
+		}
+
+		oldGrantRegular.typeTime = typeTime;
+		oldGrantRegular.grantDate = grantDate;
 //		oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
-//		oldGrantRegular.interval = interval;
-//		oldGrantRegular.grantedDays = grantedDays;
-//		this.commandProxy().update(oldGrantRegular);
-//
-//		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
-//				specialHoliday.getCompanyId(),
-//				specialHoliday.getSpecialHolidayCode().v());
-//		KshstSpecialLeaveRestriction oldSpecialLeaveRestriction = this.queryProxy()
-//				.find(specialLeaveRestrictionPK, KshstSpecialLeaveRestriction.class).orElse(null);
-//		oldSpecialLeaveRestriction.restrictionCls = specialHoliday.getSpecialLeaveRestriction().getRestrictionCls().value;
-//		oldSpecialLeaveRestriction.ageLimit = specialHoliday.getSpecialLeaveRestriction().getAgeLimit().value;
-//		oldSpecialLeaveRestriction.genderRest = specialHoliday.getSpecialLeaveRestriction().getGenderRest().value;
-//		oldSpecialLeaveRestriction.restEmp = specialHoliday.getSpecialLeaveRestriction().getRestEmp().value;
-//		oldSpecialLeaveRestriction.ageCriteriaCls = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value;
-//		MonthDay ageBaseDate = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeBaseDate();
-//		oldSpecialLeaveRestriction.ageBaseDate = ageBaseDate.getMonth()*100+ageBaseDate.getDay();
-//		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null
-//				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null
-//				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0)
-//			: null;
-//		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null
-//				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null
-//				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0)
-//			: null;
-//		oldSpecialLeaveRestriction.gender = specialHoliday.getSpecialLeaveRestriction().getGender().value;
-//		this.commandProxy().update(oldSpecialLeaveRestriction);
-//
-//		this.getEntityManager().createQuery(DELETE_SPHD_ABSENCE)
-//			.setParameter("companyID", specialHoliday.getCompanyId())
-//			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
-//			.executeUpdate();
-//		this.getEntityManager().flush();
-//		this.commandProxy().insertAll(createKshstSphdAbsenceLst(specialHoliday));
-//
-//		this.getEntityManager().createQuery(DELETE_SPHD_SPEC_LEAVE)
-//			.setParameter("companyID", specialHoliday.getCompanyId())
-//			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
-//			.executeUpdate();
-//		this.getEntityManager().flush();
-//		this.commandProxy().insertAll(createKshstSphdSpecLeaveLst(specialHoliday));
-//
-//		this.getEntityManager().createQuery(DELETE_SPEC_CLS)
-//			.setParameter("companyID", specialHoliday.getCompanyId())
-//			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
-//			.executeUpdate();
-//		this.getEntityManager().flush();
-//		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
-//
-//		this.getEntityManager().createQuery(DELETE_SPEC_EMP)
-//			.setParameter("companyID", specialHoliday.getCompanyId())
-//			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
-//			.executeUpdate();
-//		this.getEntityManager().flush();
-//		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
+		oldGrantRegular.interval = interval;
+		oldGrantRegular.grantedDays = grantedDays;
+		this.commandProxy().update(oldGrantRegular);
+
+		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
+				specialHoliday.getCompanyId(),
+				specialHoliday.getSpecialHolidayCode().v());
+		KshstSpecialLeaveRestriction oldSpecialLeaveRestriction = this.queryProxy()
+				.find(specialLeaveRestrictionPK, KshstSpecialLeaveRestriction.class).orElse(null);
+		oldSpecialLeaveRestriction.restrictionCls = specialHoliday.getSpecialLeaveRestriction().getRestrictionCls().value;
+		oldSpecialLeaveRestriction.ageLimit = specialHoliday.getSpecialLeaveRestriction().getAgeLimit().value;
+		oldSpecialLeaveRestriction.genderRest = specialHoliday.getSpecialLeaveRestriction().getGenderRest().value;
+		oldSpecialLeaveRestriction.restEmp = specialHoliday.getSpecialLeaveRestriction().getRestEmp().value;
+		oldSpecialLeaveRestriction.ageCriteriaCls = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value;
+		MonthDay ageBaseDate = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeBaseDate();
+		oldSpecialLeaveRestriction.ageBaseDate = ageBaseDate.getMonth()*100+ageBaseDate.getDay();
+		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0)
+			: null;
+		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0)
+			: null;
+		oldSpecialLeaveRestriction.gender = specialHoliday.getSpecialLeaveRestriction().getGender().value;
+		this.commandProxy().update(oldSpecialLeaveRestriction);
+
+		this.getEntityManager().createQuery(DELETE_SPHD_ABSENCE)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSphdAbsenceLst(specialHoliday));
+
+		this.getEntityManager().createQuery(DELETE_SPHD_SPEC_LEAVE)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSphdSpecLeaveLst(specialHoliday));
+
+		this.getEntityManager().createQuery(DELETE_SPEC_CLS)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
+
+		this.getEntityManager().createQuery(DELETE_SPEC_EMP)
+			.setParameter("companyID", specialHoliday.getCompanyId())
+			.setParameter("specialHolidayCD", specialHoliday.getSpecialHolidayCode().v())
+			.executeUpdate();
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
 
 	}
 

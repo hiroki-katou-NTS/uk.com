@@ -17,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GrantDateTblFinder {
+
 	@Inject
 	private GrantDateTblRepository repo;
 
@@ -28,10 +29,8 @@ public class GrantDateTblFinder {
 	public List<GrantDateTblDto> findBySphdCd(int specialHolidayCode) {
 		String companyId = AppContexts.user().companyId();
 
-		// 要修正 jinno
-//		return this.repo.findByCode(companyId, specialHolidayCode).stream().map(c -> GrantDateTblDto.fromDomain(c))
-//				.collect(Collectors.toList());
-		return new ArrayList<GrantDateTblDto>();
+		return this.repo.findBySphdCd(companyId, specialHolidayCode).stream().map(c -> GrantDateTblDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -43,7 +42,8 @@ public class GrantDateTblFinder {
 	public List<ElapseYearDto> findByGrantDateCd(int specialHolidayCode, String grantDateCode) {
 		String companyId = AppContexts.user().companyId();
 
-		// 要修正 jinno
+//		ElapseYearDto.fromDomain(elapseYear)
+
 //		return this.repo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode).stream().map(c -> ElapseYearDto.fromDomain(c))
 //				.collect(Collectors.toList());
 		return new ArrayList<ElapseYearDto>();

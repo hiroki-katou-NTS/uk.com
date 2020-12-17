@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 public interface ComplileInPeriodOfSpecialLeaveSharedImport {
 
 //	List<SpecialLeaveError> complileInPeriodOfSpecialLeave(
-//			RequireM5 require,
+//			RecordDomRequireService require,
 //			CacheCarrier cacheCarrier,
 //			String cid,String sid,DatePeriod complileDate,boolean mode,GeneralDate baseDate,
 //			int specialLeaveCode,boolean mngAtr,boolean overwriteFlg,List<InterimRemain> remainData,

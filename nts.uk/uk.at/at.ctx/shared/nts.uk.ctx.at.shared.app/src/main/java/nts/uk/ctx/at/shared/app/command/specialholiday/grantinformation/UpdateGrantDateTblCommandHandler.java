@@ -31,7 +31,6 @@ public class UpdateGrantDateTblCommandHandler extends CommandHandlerWithResult<G
 		if (errList.isEmpty()) {
 			// Add new data
 			if(domain.isSpecified()) {
-				// 要修正 jinno
 				repo.changeAllProvision(domain.getSpecialHolidayCode().v());
 			}
 

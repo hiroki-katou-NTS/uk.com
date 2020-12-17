@@ -23,7 +23,7 @@ public class ClassInfo {
 	/**
 	 * パッケージ
 	 */
-	private String pakage = "";
+	private String package_ = "";
 
 	/**
 	 * importリスト
@@ -140,7 +140,7 @@ public class ClassInfo {
 		}
 
 		// importのリストにないときには、クラスのパッケージを返す
-		return this.pakage;
+		return this.package_;
 	}
 
 	/**
@@ -177,6 +177,101 @@ public class ClassInfo {
 		memberInfoList.addAll(this.memberInfoList);
 	}
 
+	/**
+	 * コード生成（of）
+	 * @param classInfoManager クラス情報管理
+	 * @param all_code ルートクラスから生成したコード全て
+	 * @param tab タブインデント
+	 * @param pre_comment このメンバ変数が定義されているクラスまでのコメント
+	 * @param pre_code　このメンバ変数が定義されているクラスまでのコード
+	 */
+	public void setCode_of(
+			StringBuilder all_code,
+			String tab
+			) {
+
+		// 内側インデントタブ
+		String tabInside = tab + "	";
+
+		all_code.append(tab);
+		all_code.append("static public ");
+		all_code.append(this.getClassName());
+		all_code.append(" of(");
+		all_code.append(System.lineSeparator());
+
+
+		// 引数
+		boolean isFirst = true;
+		for(MemberInfo memberInfo : memberInfoList) {
+			all_code.append(tabInside);
+			all_code.append("/** ");
+			all_code.append(memberInfo.getMemberNameComment());
+			all_code.append(" */");
+			all_code.append(System.lineSeparator());
+
+			all_code.append(tabInside);
+			if ( isFirst ) {
+				isFirst = false;
+			} else {
+				all_code.append(", ");
+			}
+
+			if (memberInfo.isOptional()) {
+				all_code.append("Optional<");
+			}
+			if (memberInfo.isList()) {
+				all_code.append("List<");
+			}
+			all_code.append(memberInfo.getClassType());
+			if (memberInfo.isList()) {
+				all_code.append(">");
+			}
+			if (memberInfo.isOptional()) {
+				all_code.append(">");
+			}
+			all_code.append(" ");
+
+			all_code.append(memberInfo.getMemberName());
+			all_code.append(System.lineSeparator());
+		}
+
+		all_code.append(tab);
+		all_code.append("){");
+		all_code.append(System.lineSeparator());
+
+		all_code.append(tabInside);
+		all_code.append(this.getClassName());
+		all_code.append(" c = new ");
+		all_code.append(this.getClassName());
+		all_code.append("();");
+		all_code.append(System.lineSeparator());
+
+		// セット
+		for(MemberInfo memberInfo : memberInfoList) {
+			all_code.append(tabInside);
+			all_code.append("/** ");
+			all_code.append(memberInfo.getMemberNameComment());
+			all_code.append(" */");
+			all_code.append(System.lineSeparator());
+
+			all_code.append(tabInside);
+			all_code.append("c.");
+			all_code.append(memberInfo.getMemberName());
+			all_code.append("=");
+			all_code.append(memberInfo.getMemberName());
+			all_code.append(";");
+			all_code.append(System.lineSeparator());
+		}
+
+		all_code.append(System.lineSeparator());
+		all_code.append(tabInside);
+		all_code.append("return c; ");
+		all_code.append(System.lineSeparator());
+
+		all_code.append(tab);
+		all_code.append("}");
+
+	}
 
 	/**
 	 * デバッグ用
@@ -185,7 +280,7 @@ public class ClassInfo {
 	protected void setDebugString(StringBuilder sb) {
 
 		sb.append("pakage = '");
-		sb.append(pakage);
+		sb.append(package_);
 		sb.append(System.lineSeparator());
 
 		sb.append("import ---------------------------------------------------");
@@ -255,7 +350,7 @@ public class ClassInfo {
 
 				  int endIndex_package = str.indexOf(";");
 				  String result = str.substring(beginIndex_package + 8, endIndex_package).trim();
-				  this.setPakage(result);
+				  this.setPackage_(result);
 				  break;
 
 			  }

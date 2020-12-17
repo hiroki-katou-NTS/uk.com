@@ -157,12 +157,11 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		// 特休チェック区分をチェックする
 		if (inputParam.isChkSpecial() && !specialHolidayData.isEmpty()) {
 			// 暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
-			// 要修正 jinno
 			for (InterimSpecialHolidayMng a : specialHolidayData) {
 				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
 						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
 
-//				List<SpecialLeaveError> specialErros =specialLeaveService.complileInPeriodOfSpecialLeave(
+//				List<SpecialLeaveError> specialErros = specialLeaveService.complileInPeriodOfSpecialLeave(
 //						require, cacheCarrier, inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
 //						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
 //						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData);

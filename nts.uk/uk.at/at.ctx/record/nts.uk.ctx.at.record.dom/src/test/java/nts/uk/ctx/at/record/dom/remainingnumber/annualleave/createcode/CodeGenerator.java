@@ -30,7 +30,7 @@ public class CodeGenerator {
 	 * @param rootClassComment ルートクラスコメント
 	 * @return
 	 */
-	public String createCode(
+	public String createCode_repository(
 			String packageName,
 			String rootClassName,
 			String rootClassComment)
@@ -48,8 +48,50 @@ public class CodeGenerator {
 
 		// メンバ変数を順番に処理
 		for( MemberInfo memberInfo : rootClassInfo.getAllMemberInfoList(classInfoManager)) {
-			memberInfo.setCode(classInfoManager, all_code, "	", rootClassComment, "c");
+			memberInfo.setCode_repostory(classInfoManager, all_code, "	", rootClassComment, "c");
 		}
+
+		return all_code.toString();
+	}
+
+	/**
+	 * コード生成
+	 * @param packageName パッケージ名
+	 * @param rootClassName ルートクラス名
+	 * @param rootClassComment ルートクラスコメント
+	 * @return
+	 */
+	public String createCode_of(
+			String packageName,
+			String rootClassName,
+			String rootClassComment)
+	{
+		// ルートクラス情報を取得
+		Optional<ClassInfo> rootClassInfoOpt = classInfoManager.getClassInfo(packageName, rootClassName);
+		if (!rootClassInfoOpt.isPresent()) {
+			// クラス情報が取得できないときは終了
+			return "";
+		}
+		ClassInfo rootClassInfo = rootClassInfoOpt.get();
+
+		// 生成したコード全て
+		StringBuilder all_code = new StringBuilder();
+
+		String tab = "	";
+
+		all_code.append(tab);
+		all_code.append(rootClassName);
+		all_code.append(".of(");
+		all_code.append(System.lineSeparator());
+
+		// メンバ変数を順番に処理
+		for( MemberInfo memberInfo : rootClassInfo.getAllMemberInfoList(classInfoManager)) {
+			memberInfo.setCode_of(classInfoManager, all_code, tab, rootClassComment, "c");
+		}
+
+		all_code.append(System.lineSeparator());
+		all_code.append(");");
+		all_code.append(System.lineSeparator());
 
 		return all_code.toString();
 	}

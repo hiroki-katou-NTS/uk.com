@@ -32,6 +32,8 @@ public class FixGrantDate {
 	/** 付与月日 */
 	private Optional<MonthDay> grantMonthDay;
 
+
+
 	/**
 	 * Create from Java Type
 	 * @return

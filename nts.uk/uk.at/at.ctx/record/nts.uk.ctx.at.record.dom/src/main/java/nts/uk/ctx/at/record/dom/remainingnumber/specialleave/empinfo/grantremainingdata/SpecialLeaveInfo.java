@@ -166,17 +166,18 @@ public class SpecialLeaveInfo implements Cloneable {
 				specialLeaveAggregatePeriodWork, specialHolidayInterimMngData, aggrResult);
 
 		// 残数不足エラーをチェックする -----------------------------
+		List<SpecialLeaveError> errors = new ArrayList<>();
 		{
 			// 特休残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
 			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
 				if (specialLeaveAggregatePeriodWork.isAfterGrant()){
 					// 「日単位特休不足エラー（付与後）」を追加
-					aggrResult.addError(SpecialLeaveError.AFTERGRANT);
+					errors.add(SpecialLeaveError.AFTERGRANT);
 				}
 				else {
 					// 「日単位特休不足エラー（付与前）」を追加
-					aggrResult.addError(SpecialLeaveError.BEFOREGRANT);
+					errors.add(SpecialLeaveError.BEFOREGRANT);
 				}
 			}
 		}
@@ -207,7 +208,8 @@ public class SpecialLeaveInfo implements Cloneable {
 		} else {
 			// 「特別休暇の集計結果．特別休暇エラー情報」に受け取った特別休暇エラーを全て追加
 			// ※既に「特別休暇エラー情報」に存在する特別休暇エラーは追加不要。
-			// ooooo要修正！！
+			for(SpecialLeaveError e : errors)
+				aggrResult.addError(e);
 
 			// 年月日を更新　←　終了日
 			this.ymd = specialLeaveAggregatePeriodWork.getPeriod().end();
@@ -388,7 +390,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			Optional<GrantDeadline> grantPeriodic = specialHolidayOpt.get().getGrantRegular().getGrantPeriodic();
 			if ( grantPeriodic.isPresent() ) {
 				if ( grantPeriodic.get().getLimitAccumulationDays().isPresent()) {
-					limitCarryoverDays = grantPeriodic.get().getLimitAccumulationDays().get().getLimitAccumulationDays().get().v();
+					limitCarryoverDays = grantPeriodic.get().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v();
 				}
 			}
 

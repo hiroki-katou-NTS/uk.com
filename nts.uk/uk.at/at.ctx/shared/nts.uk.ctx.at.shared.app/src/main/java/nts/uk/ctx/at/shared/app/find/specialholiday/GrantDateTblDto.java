@@ -20,14 +20,13 @@ public class GrantDateTblDto {
 	/** テーブル以降の固定付与をおこなう */
 	private Integer numberOfDays;
 
-	//　要修正 jinno
-		public static GrantDateTblDto fromDomain(GrantDateTbl grantDateTbl) {
-			return new GrantDateTblDto(
-					grantDateTbl.getGrantDateCode().v(),
-					grantDateTbl.getGrantDateName().v(),
-					grantDateTbl.isSpecified(),
-					false, // ←？
-					0 //  ←？
-			);
-		}
+	public static GrantDateTblDto fromDomain(GrantDateTbl grantDateTbl) {
+		return new GrantDateTblDto(
+				grantDateTbl.getGrantDateCode().v(),
+				grantDateTbl.getGrantDateName().v(),
+				grantDateTbl.isSpecified(),
+				false, // ←？
+				0 //  ←？
+		);
+	}
 }

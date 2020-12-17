@@ -16,9 +16,12 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacation
 @Getter
 @Setter
 public class ElapseYearMonth {
+
+	/** 年 */
 	private int year;
+	/** 月 */
 	private int month;
-	
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ElapseYearMonth))
@@ -27,7 +30,7 @@ public class ElapseYearMonth {
         ElapseYearMonth mdc = (ElapseYearMonth) obj;
         return mdc.year == this.year && mdc.month == this.month;
     }
-    
+
     public static ElapseYearMonth createFromJavaType(
 			int year, int month) {
 		return new ElapseYearMonth(year, month);
