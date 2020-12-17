@@ -4,8 +4,6 @@ module nts.uk.at.view.kwr005.a {
   import common = nts.uk.at.view.kwr005.common;
   import ComponentOption = kcp.share.list.ComponentOption;
 
-  const KWR005_B_INPUT = 'KWR005_WORK_STATUS_DATA';
-  const KWR005_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
   const KWR005_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
 
   const PATH = {
@@ -367,7 +365,6 @@ module nts.uk.at.view.kwr005.a {
         if (!_.isNull(validateError.focusId)) {
           $('#' + validateError.focusId).focus();
         }
-
         return;
       }
 
@@ -402,12 +399,16 @@ module nts.uk.at.view.kwr005.a {
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
           settingId: findObj.id, //ゼロ表示区分,
           closureId: vm.closureId() //締め日
-        }
-
-        vm.$blockui('hide');
+        }       
 
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
-        }).fail().always(() => vm.$blockui('hide'));
+          vm.$blockui('hide');
+        }).fail((error) => {
+          vm.$dialog.error({ messageId: error.messageId }).then(() => { 
+            $('#kcp005').focus();
+            vm.$blockui('hide'); 
+          });          
+        }).always(() => vm.$blockui('hide'));
       });
       //create an excel file and redirect to download
     }

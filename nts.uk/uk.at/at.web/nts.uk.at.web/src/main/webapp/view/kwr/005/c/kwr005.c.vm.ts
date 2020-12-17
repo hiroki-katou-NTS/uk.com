@@ -1,11 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kwr005.c {
-  //import common = nts.uk.at.view.kwr003.common; 
-  const KWR005_OUTPUT = 'KWR005_OUTPUT';
-  const KWR005_B13 = 'KWR005_B_DATA';
-  const KWR005_C_INPUT = 'KWR005_C_DATA';
-  const KWR005_C_OUTPUT = 'KWR005_C_RETURN';
 
   const PATHS = {
     cloneSettingClassification: 'at/function/kwr/005/c/duplicate'
