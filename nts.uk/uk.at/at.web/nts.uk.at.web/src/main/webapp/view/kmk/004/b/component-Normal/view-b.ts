@@ -46,7 +46,8 @@ module nts.uk.at.view.kmk004.b {
 					params:{
 						selectedYear: selectedYear,
 						years: years,
-						type: type
+						type: type,
+						selectId: ko.observable('')
 					}
 				}"></div>
 			</div>

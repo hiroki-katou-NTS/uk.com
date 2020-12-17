@@ -185,7 +185,7 @@ module nts.uk.at.view.kmk004.b {
 				case 'Com_Person':
 					if (ko.unwrap(vm.selectId) !== ''){
 						vm.$blockui('invisible')
-						.then(() => vm.$ajax(API.DISPLAY_BASICSETTING + "/" + ko.unwrap(vm.selectId)))
+						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
 							vm.tabSetting.create(data)
 						})
@@ -247,8 +247,8 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	class TabSetting {
-		daily: KnockoutObservable<string> = ko.observable('0');
-		weekly: KnockoutObservable<string> = ko.observable('0');
+		daily: KnockoutObservable<string> = ko.observable('0:00');
+		weekly: KnockoutObservable<string> = ko.observable('0:00');
 		deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
 		deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
 		deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;

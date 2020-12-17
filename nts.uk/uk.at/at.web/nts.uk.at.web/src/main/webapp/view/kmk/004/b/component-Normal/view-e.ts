@@ -31,22 +31,22 @@ module nts.uk.at.view.kmk004.b {
 			<div>
 				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
-				<div class="name" data-bind="i18n: 'Chung dep trai'"></div>
+				<div class="name" data-bind="i18n: model.name"></div>
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-					<!-- ko if: modeCheckSetting -->
+					<!-- ko if: model.isAlreadySetting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_241'"></button>
 					<!-- /ko -->
-					<!-- ko if: !modeCheckSetting -->
+					<!-- ko ifnot: model.isAlreadySetting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_240'"></button>
 					<!-- /ko -->
 				</div>
-				<!-- ko if: modeCheckSetting -->
+				<!-- ko if: model.isAlreadySetting -->
 					<div class ="setting" data-bind="component: {
 						name: 'basic-setting',
 						params:{
 							type: type,
-							selectId: selectedCode
+							selectId: model.id
 						}
 					}"></div>
 				<!-- /ko -->
@@ -60,9 +60,9 @@ module nts.uk.at.view.kmk004.b {
 							name: 'box-year',
 							params:{
 								selectedYear: selectedYear,
-								param: selectedEmployeeID,
 								type: type,
-								years: years
+								years: years,
+								selectId: model.id
 							}
 						}"></div>
 					</div>
@@ -70,7 +70,10 @@ module nts.uk.at.view.kmk004.b {
 						name: 'time-work',
 						params:{
 							selectedYear: selectedYear,
-							checkEmployee: checkEmployee
+							checkEmployee: checkEmployee,
+							type: type,
+							years: years,
+							selectId: model.id
 						}
 					}"></div>
 				</div>
@@ -94,18 +97,17 @@ module nts.uk.at.view.kmk004.b {
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
 		public selectedCode: KnockoutObservable<string> = ko.observable('');
-		public selectedEmployeeID: KnockoutObservable<string> = ko.observable('');
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Person';
+		public model: Employee = new Employee();
 
 
 		created(params: Params) {
 			const vm = this;
 			vm.years
 				.subscribe(() => {
-					console.log(ko.unwrap(vm.years).length);
 					if (ko.unwrap(vm.years).length == 0) {
 						vm.existYear(false);
 					} else {
@@ -115,11 +117,11 @@ module nts.uk.at.view.kmk004.b {
 
 			vm.selectedCode
 				.subscribe(() => {
-					_.forEach(ko.unwrap(vm.employees), ((value: IEmployee) => {
-						if (ko.unwrap(vm.selectedCode) == value.code) {
-							vm.selectedEmployeeID(value.id as string);
-						}
-					}))
+					const employee: IEmployee = _.find(ko.unwrap(vm.employees), e => e.code === ko.unwrap(vm.selectedCode));
+					if (employee) {
+						vm.model.update(employee);
+						vm.selectedYear.valueHasMutated();
+					}
 				})
 		}
 
