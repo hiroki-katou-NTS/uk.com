@@ -2015,9 +2015,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
-//	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-//	            		cell.putValue(value, false);
-//	            	}
+	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+	            		cell.putValue(value, false);
+	            	}
 	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2180,9 +2180,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
-//				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-//				            		cell.putValue(value, false);
-//				            	}
+				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+				            		cell.putValue(value, false);
+				            	}
 				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
@@ -2889,7 +2889,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
 		} else {
-			return (displayType == DisplayTypeEnum.DISPLAY.value && timeFormat.isZero()) ? timeFormat.getTimeText() : "";
+			return displayType == DisplayTypeEnum.DISPLAY.value && timeFormat.isZero() ? "" : timeFormat.getTimeText();
 		}
 	}
 
@@ -3018,7 +3018,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemName());
+            	cell.setValue(outputItem.getItemName() + outputItem.getItemCode().toString());
 
             }
         }
