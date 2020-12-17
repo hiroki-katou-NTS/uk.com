@@ -2289,6 +2289,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
 					$(".toLeft").css("margin-left", 193 + 'px');
+					if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 188 + 'px');
+					}
 				if (window.innerHeight < 700) {
 					$(".ex-header-detail").css({ "width": 966 + 'px' });
 					$(".ex-body-detail").css({ "width": 983 + 'px' });
@@ -2300,6 +2303,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
 				$(".toLeft").css("margin-left", 585 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 580 + 'px');
+					}
 				if (window.innerHeight < 700) {
 					$(".ex-header-detail").css({ "width": 588 + 'px' });
 					$(".ex-body-detail").css({ "width": 604 + 'px' });
@@ -2355,11 +2361,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
 				$(".toLeft").css("margin-left", 585 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 580 + 'px');
+				}
 			} else {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", 193 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 188 + 'px');
+				}
 			}
 
 			if (window.innerHeight < 700) {
