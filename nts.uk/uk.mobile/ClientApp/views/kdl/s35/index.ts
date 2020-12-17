@@ -58,21 +58,67 @@ export class KdlS35Component extends Vue {
     get requiredNumberOfDays() {
         const vm = this;
 
-        const { substituteWorkInfoList } = vm;
-        const required = vm.substituteHolidayList.length * vm.daysUnit;
-        let selected = 0;
+        const { substituteWorkInfoList, substituteHolidayList, daysUnit } = vm;
 
-        substituteWorkInfoList.forEach((m) => {
-            if (m.checked) {
-                selected += m.remainingNumber;
-            }
-        });
+        const counted = substituteWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, substituteHolidayList.length * daysUnit);
 
-        return required - selected < 0 ? 0 : required - selected;
+        return Math.max(counted, 0);
+    }
 
-        // return substituteWorkInfoList
-        //     .map((m) => m.checked ? m.remainingNumber : 0)
-        //     .reduce((p, c) => p + c, required);
+    get itemDecided() {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, substituteWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        // tinh lai counted
+        const counted = substituteWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+        const lastIndex = substituteWorkInfoList.filter((f) => f.checked).length;
+
+        return substituteWorkInfoList
+            .map((m) => ({
+                ...m,
+                // tinh toan lai gia tri remain cua thang cuoi cung duoc check
+                remainingNumber: counted < 0 && lastIndex === m.index ? m.remainingNumber + counted :  m.remainingNumber
+            }));
+    }
+
+    public checkRequirementOfDayWithCheck(item: ISubstituteWorkInfo) {
+        const vm = this;
+
+        if (item.enable) {
+            item.checked = !item.checked;
+
+            vm.checkRequirementOfDay(item);
+        }
+    }
+
+    public checkRequirementOfDay(item: ISubstituteWorkInfo) {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, substituteWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        const counted = substituteWorkInfoList
+            .filter((c) => !_.isEqual(c, item))
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+
+        if (Math.max(counted, 0) === 0 && item.checked) {
+            vm.$modal
+                .warn({ messageId: 'Msg_1761' })
+                .then(() => {
+                    item.checked = false;
+                    item.index = -1;
+                    // gan index checked = -1
+                });
+        } else if (item.checked) {
+            item.index = _.filter(substituteWorkInfoList, (item) => item.checked === true).length;
+            // gan index checked cho item
+        } else {
+            // gan index checked = -1
+            item.index = -1;
+        }
     }
 
     public back() {
@@ -104,41 +150,42 @@ export class KdlS35Component extends Vue {
         });
 
         vm.$http
-        .post('at', servicesPath.init,initParams)
-        .then((result: { data: ParamsData }) => {
-            vm.$mask('hide');
+            .post('at', servicesPath.init, initParams)
+            .then((result: { data: ParamsData }) => {
+                vm.$mask('hide');
 
-            vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
-            vm.endDate = vm.$dt(new Date(vm.endDate), 'YYYY/MM/DD');
-            const { data } = result;
-            const { daysUnit, targetSelectionAtr, substituteHolidayList, substituteWorkInfoList } = data;
+                vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
+                vm.endDate = vm.$dt(new Date(vm.endDate), 'YYYY/MM/DD');
+                const { data } = result;
+                const { daysUnit, targetSelectionAtr, substituteHolidayList, substituteWorkInfoList } = data;
 
-            vm.daysUnit = daysUnit;
-            vm.targetSelectionAtr = targetSelectionAtr;
-            vm.substituteHolidayList = substituteHolidayList;
-            vm.substituteWorkInfoList = substituteWorkInfoList
-                .map((m, index) => ({
-                    ...m, 
-                    checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.substituteWorkDate),
-                    enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
-                    get icon() {
-                        const { dataType, expiringThisMonth } = m;
+                vm.daysUnit = daysUnit;
+                vm.targetSelectionAtr = targetSelectionAtr;
+                vm.substituteHolidayList = substituteHolidayList;
+                vm.substituteWorkInfoList = substituteWorkInfoList
+                    .map((m, index) => ({
+                        ...m,
+                        index: -1,
+                        checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.substituteWorkDate),
+                        enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
+                        get icon() {
+                            const { dataType, expiringThisMonth } = m;
 
-                        if (expiringThisMonth === true) {
-                            return 'fas fa-exclamation-triangle';
-                        }
+                            if (expiringThisMonth === true) {
+                                return 'fas fa-exclamation-triangle';
+                            }
 
-                        if (dataType === 1) {
-                            return 'fas fa-calendar-check';
-                        }
+                            if (dataType === 1) {
+                                return 'fas fa-calendar-check';
+                            }
 
-                        return '';
-                    },
-                    
-                }));
-        }).catch((error: any) => {
-            vm.showError(error);
-        });
+                            return '';
+                        },
+
+                    }));
+            }).catch((error: any) => {
+                vm.showError(error);
+            });
     }
 
 
@@ -155,8 +202,7 @@ export class KdlS35Component extends Vue {
     }
 
     public mounted() {
-        const self = this;
-
+        const vm = this;
 
     }
 
@@ -169,19 +215,13 @@ export class KdlS35Component extends Vue {
             return;
         }
 
-        if (!vm.checkNumberOfDays()) {
-            vm.$modal.warn({ messageId: 'Msg_1761' });
-
-            return;
-        }
-
         const data: ParamsData = {
             daysUnit: vm.daysUnit,
             employeeId: vm.employeeId,
             substituteHolidayList: vm.substituteHolidayList
                 .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
-            substituteWorkInfoList: vm.substituteWorkInfoList
+            substituteWorkInfoList: vm.itemDecided
                 .filter((item) => item.checked)
                 .map((m) => ({ ...m }))
         };
@@ -193,42 +233,16 @@ export class KdlS35Component extends Vue {
         vm.$mask('show');
         vm.$http
             .post('at', servicesPath.associate, data)
-            .then((result: {data: SubWorkSubHolidayLinkingMng[]}) => {
+            .then((result: { data: SubWorkSubHolidayLinkingMng[] }) => {
                 vm.$mask('hide');
-                vm.setData(result.data);
-                vm.$close({mngDisp: vm.managementData});
+                vm.$close({ mngDisp: result.data });
             })
             .catch((error: any) => {
                 vm.showError(error);
             });
     }
-
-    private setData(data: SubWorkSubHolidayLinkingMng[]) {
-        const vm = this;
-
-        vm.managementData.push(...data);
-    }
-
-    private checkNumberOfDays(): boolean {
-        const vm = this;
-
-        const required = vm.substituteHolidayList.length * vm.daysUnit;
-        let total = 0;
-        const selected: ISubstituteWorkInfo[] =
-            _.orderBy(vm.substituteWorkInfoList
-                .filter((f) => f.checked), ['remainingNumber'], ['desc']);
-
-        for (let i = 0; i < selected.length; i++) {
-            if (total >= required) {
-
-                return false;
-            }
-            total += selected[i].remainingNumber;
-        }
-
-        return true;
-    }
 }
+
 
 interface IParam {
     //社員ID								
@@ -306,6 +320,8 @@ interface ISubstituteWorkInfo {
     remainingNumber: number;
     substituteWorkDate: string;
     checked: boolean;
+    enable: boolean;
+    index: number;
 }
 
 enum DataType {

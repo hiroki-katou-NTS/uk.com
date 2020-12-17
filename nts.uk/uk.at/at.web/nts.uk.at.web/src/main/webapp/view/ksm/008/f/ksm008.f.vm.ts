@@ -271,7 +271,7 @@ module nts.uk.at.ksm008.f {
             })
         }
 
-        moveItemToRight() {
+        moveItemToRight(isButtonClick = true) {
             const vm = this;
             if (_.isEmpty(vm.selectedableCodes())) {
                 return;
@@ -295,6 +295,9 @@ module nts.uk.at.ksm008.f {
                 currentTagretList.push(selectedItem[0]);
             });
             vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
+            if (!isButtonClick) {
+                    currentTagretList = _.orderBy(currentTagretList, ['code'], ['asc']);
+            }
             vm.targetEmployeeList(currentTagretList);
 
             vm.$blockui("clear");
@@ -318,7 +321,7 @@ module nts.uk.at.ksm008.f {
             $("#kcp005-component-right").ntsError("clear");
         }
 
-        moveItemToLeft() {
+        moveItemToLeft(isButtonClick = true) {
             const vm = this;
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
@@ -373,7 +376,7 @@ module nts.uk.at.ksm008.f {
                             });
                             vm.selectedableCodes(empsCanNotSameHolidays);
 
-                            vm.moveItemToRight();
+                            vm.moveItemToRight(false);
                             vm.selectedTargetCode([]);
                         }
 
