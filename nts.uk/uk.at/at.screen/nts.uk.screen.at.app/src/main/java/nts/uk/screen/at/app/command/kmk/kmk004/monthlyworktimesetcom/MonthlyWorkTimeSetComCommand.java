@@ -18,7 +18,7 @@ public class MonthlyWorkTimeSetComCommand extends MonthlyWorkTimeSetCommand {
 	public MonthlyWorkTimeSetCom toDomain() {
 		
 		return MonthlyWorkTimeSetCom.of(AppContexts.user().companyId(),
-				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYm()),
+				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYearMonth()),
 				this.getLaborTime().toDomain());
 	}
 

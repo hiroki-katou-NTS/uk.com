@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk004.b {
 
 	interface Params {
 		type: SIDEBAR_TYPE
-		selectId?: KnockoutObservable<string>;
+		selectId: KnockoutObservable<string>;
 	}
 
 	const template = `
@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk004.b {
 		created(params: Params) {
 			const vm = this;
 			vm.type = params.type;
-			vm.selectId = vm.selectId;
+			vm.selectId = params.selectId;
 
 			vm.reloadData();
 
@@ -152,7 +152,7 @@ module nts.uk.at.view.kmk004.b {
 
 		reloadData() {
 			const vm = this;
-
+			
 			switch (vm.type) {
 				case 'Com_Company':
 					vm.$blockui('invisible')
@@ -163,28 +163,34 @@ module nts.uk.at.view.kmk004.b {
 						.then(() => vm.$blockui('clear'));
 					break;
 				case 'Com_Workplace':
-					vm.$blockui('invisible')
+					if (ko.unwrap(vm.selectId) !== '') {
+						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
+					}
 					break;
 				case 'Com_Employment':
-					vm.$blockui('invisible')
+					if (ko.unwrap(vm.selectId) !== '') {
+						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
+					}
 					break;
 				case 'Com_Person':
-					vm.$blockui('invisible')
+					if (ko.unwrap(vm.selectId) !== ''){
+						vm.$blockui('invisible')
 						.then(() => vm.$ajax(API.DISPLAY_BASICSETTING + "/" + ko.unwrap(vm.selectId)))
 						.then((data: ITabSetting) => {
 							vm.tabSetting.create(data)
 						})
 						.then(() => vm.$blockui('clear'));
+					}
 					break;
 			}
 		}
@@ -241,8 +247,8 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	class TabSetting {
-		daily: KnockoutObservable<string> = ko.observable('');
-		weekly: KnockoutObservable<string> = ko.observable('');
+		daily: KnockoutObservable<string> = ko.observable('0');
+		weekly: KnockoutObservable<string> = ko.observable('0');
 		deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
 		deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
 		deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
@@ -274,6 +280,15 @@ module nts.uk.at.view.kmk004.b {
 				if (lastWeekly.length < 2) {
 					lastWeekly = '0' + lastWeekly;
 				}
+
+				if (firstDaily === ''){
+					firstDaily = '0';
+				}
+
+				if (firstWeekly === ''){
+					firstWeekly = '0';
+				}
+
 				self.daily(firstDaily + ':' + lastDaily);
 				self.weekly(firstWeekly + ':' + lastWeekly);
 				self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);

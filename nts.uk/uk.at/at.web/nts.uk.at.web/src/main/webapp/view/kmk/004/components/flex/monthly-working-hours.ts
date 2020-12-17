@@ -46,7 +46,7 @@ const template = `
 								<tbody data-bind="foreach:screenData().monthlyWorkTimeSetComs">
 											<tr>
 												<td  data-bind="visible: $parent.screenMode == 'Com_Person' "><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
-												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.month + '月度'"></span></td>
+												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.yearMonthText + '月度'"></span></td>
 												<td data-bind="visible: $parent.screenData().setting().useRegularWorkingHours() == 1"><input  data-bind="
 												ntsTimeEditor: {
 														name:'#[KMK004_264]',
@@ -141,12 +141,13 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				let yearList = vm.screenData().yearList();
 				yearList.push(new YearItem(Number(result.year), true));
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
-				vm.screenData().updateMode(false);
+				vm.screenData().setNewYear(vm.screenData().yearList()[0].year);
 				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
-
 			}
 		});
 	}
+	
+	
 
 	calTotalTime(attributeName: string) {
 		let vm = this,

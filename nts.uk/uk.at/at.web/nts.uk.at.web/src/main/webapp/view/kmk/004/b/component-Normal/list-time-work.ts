@@ -59,7 +59,7 @@ module nts.uk.at.view.kmk004.b {
                                 <input class="lable-input" 
                                     data-bind="ntsTimeEditor: {
                                         value: $data.laborTime,
-                                        enable: $parent.ckeckNullYear, 
+                                        enable: $data.check, 
                                         inputFormat: 'time',
                                         constraint: 'TimeDay',
                                         option: {
@@ -97,7 +97,7 @@ module nts.uk.at.view.kmk004.b {
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
         public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
         public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
-        public years: KnockoutObservableArray<IYear>;
+        public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
         public type: SIDEBAR_TYPE;
         public selectId: KnockoutObservable<string>;
 
@@ -109,7 +109,7 @@ module nts.uk.at.view.kmk004.b {
             vm.type = params.type;
             vm.selectId = params.selectId;
 
-            vm.initList(2020);
+            vm.initList(2020, false);
             vm.reloadData();
 
             vm.workTimes.subscribe((wts) => {
@@ -129,7 +129,6 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.reloadData();
                 });
-                
         }
 
         reloadData() {
@@ -166,13 +165,8 @@ module nts.uk.at.view.kmk004.b {
                             ;
                             break;
                         case 'Com_Workplace':
-                            console.log(ko.unwrap(vm.selectId));
-                            console.log(ko.unwrap(vm.selectedYear));
-                            
-                            
                             vm.$ajax(API.GET_WORKTIME_WORKPLACE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
                                 .then((data: IWorkTime[]) => {
-                                    console.log(data);
                                     if (data.length > 0) {
                                         const data1: IWorkTime[] = [];
                                         var check: boolean = true;
@@ -190,21 +184,56 @@ module nts.uk.at.view.kmk004.b {
                                 });
                             break;
                         case 'Com_Employment':
+                            vm.$ajax(API.GET_WORKTIME_EMPLOYMENT + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                .then((data: IWorkTime[]) => {
+                                    if (data.length > 0) {
+                                        const data1: IWorkTime[] = [];
+                                        var check: boolean = true;
+
+                                        if (ko.unwrap(vm.checkEmployee)) {
+                                            check = false;
+                                        }
+                                        data.map(m => {
+                                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                            data1.push(s);
+                                        });
+
+                                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                    }
+                                });
                             break;
                         case 'Com_Person':
+                            vm.$ajax(API.GET_WORKTIME_EMPLOYEE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                .then((data: IWorkTime[]) => {
+                                    if (data.length > 0) {
+                                        const data1: IWorkTime[] = [];
+                                        var check: boolean = true;
 
+                                        if (ko.unwrap(vm.checkEmployee)) {
+                                            check = false;
+                                        }
+                                        data.map(m => {
+                                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                            data1.push(s);
+                                        });
+
+                                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                    }
+                                });
                             break
                     }
                 }
                 else {
-                    vm.initList(ko.unwrap(vm.selectedYear));
+                    vm.initList(ko.unwrap(vm.selectedYear), true);
                 }
+            }else{
+                vm.initList(2020, false);
             }
         }
 
-        initList(year: number) {
+        initList(year: number, check: boolean) {
             const vm = this
-            var check: boolean = true;
+            var check: boolean = check;
 
             if (ko.unwrap(vm.checkEmployee)) {
                 check = false;

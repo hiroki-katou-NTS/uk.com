@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.query.kmk004.common.UsageUnitSettingDto;
-import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +19,5 @@ public class DisplayInitialFlexScreenByCompanyDto {
 	DisplayFlexBasicSettingByCompanyDto flexBasicSetting;
 
 	// 会社別年度リスト
-	List<YearDto> yearList;
+	List<Integer> yearList;
 }

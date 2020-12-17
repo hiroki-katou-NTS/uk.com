@@ -24,7 +24,7 @@ public class MonthlyWorkTimeSetShaCommand extends MonthlyWorkTimeSetCommand {
 	public MonthlyWorkTimeSetSha toDomain() {
 
 		return MonthlyWorkTimeSetSha.of(AppContexts.user().companyId(), this.empId,
-				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYm()),
+				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYearMonth()),
 				this.getLaborTime().toDomain());
 	}
 

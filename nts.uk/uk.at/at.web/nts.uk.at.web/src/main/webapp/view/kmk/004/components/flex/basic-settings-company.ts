@@ -22,8 +22,8 @@ const template = `
 			</tr>
 			<tr>
 				<td data-bind="text:getSettlePeriodText()"></td>
-				<td data-bind="text:screenData().comFlexMonthActCalSet().insufficSet.startMonth + '月'"></td>
-				<td data-bind="text:screenData().comFlexMonthActCalSet().insufficSet.period + 'ヵ月'"></td>
+				<td data-bind="text:getStartMonth()"></td>
+				<td data-bind="text:getStartPeriod()"></td>
 				<td data-bind="text:getCarryforwardSetText()"></td>
 			</tr>
 		</table >
@@ -80,39 +80,75 @@ class BasicSettingsCompany extends ko.ViewModel {
 
 		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName() });
 	}
+	getStartMonth(){
+		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
+		return vm.screenData().comFlexMonthActCalSet().insufficSet.startMonth + '月';
+	}
+	
+	getStartPeriod(){
+		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
+		return vm.screenData().comFlexMonthActCalSet().insufficSet.period + 'ヵ月'
+	}
 
 	getSettlePeriodText() {
 		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
 		return vm.$i18n.text(_.find(__viewContext.enums.SettlePeriod, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.settlePeriod]).name);
 	}
 
 	getCarryforwardSetText() {
 		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
 		return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.carryforwardSet]).name);
 	}
 
 	getAggrMethodText() {
 		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
 		return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().comFlexMonthActCalSet().aggrMethod]).name);
 	}
 
 	getReferenceText() {
 		let vm = this;
+		if(!vm.screenData().getFlexPredWorkTime()){
+			return '';
+		}
 		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
 	}
 
 	getIncludeOverTimeText() {
 		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
 		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
 	}
 
 	getIncludeIllegalHdwk() {
 		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
 		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
 	}
 
 	getAggregateSetText() {
 		let vm = this;
+		if(!vm.screenData().comFlexMonthActCalSet()){
+			return '';
+		}
 		return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().comFlexMonthActCalSet().legalAggrSet.aggregateSet]).name);
 	}
 

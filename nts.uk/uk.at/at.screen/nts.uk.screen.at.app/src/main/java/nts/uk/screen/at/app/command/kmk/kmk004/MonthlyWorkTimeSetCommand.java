@@ -18,7 +18,7 @@ public class MonthlyWorkTimeSetCommand {
 	private int laborAttr;
 
 	/** 年月 */
-	private int ym;
+	private int yearMonth;
 
 	/** 月労働時間 */
 	private MonthlyLaborTimeCommand laborTime;
