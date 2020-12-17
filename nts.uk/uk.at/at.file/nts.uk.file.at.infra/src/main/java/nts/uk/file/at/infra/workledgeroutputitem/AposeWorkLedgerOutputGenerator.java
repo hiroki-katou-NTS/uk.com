@@ -63,7 +63,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
-                "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setZoom(100);
     }
@@ -86,7 +86,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.clearContents(count,0,cells.getMaxRow(),15);
             }
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-            cells.get(count, 6).setValue(TextResource.localize("KWR005_303") +
+            cells.get(count, 7).setValue(TextResource.localize("KWR005_303") +
                     TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
@@ -113,7 +113,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
 
                 }
                 if (j % 2 == 0) {
-                    cells.copyRow(cells, 3, count);
+                    cells.copyRow(cells, 5, count);
                 } else {
                     cells.copyRow(cells, 4, count);
                 }
