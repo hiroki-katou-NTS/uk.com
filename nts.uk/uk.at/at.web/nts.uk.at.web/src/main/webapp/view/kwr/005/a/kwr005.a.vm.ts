@@ -97,7 +97,7 @@ module nts.uk.at.view.kwr005.a {
     created(params: any) {
       const vm = this;
 
-      vm.periodDate({startDate: '2017/02/02', endDate: '2017/02/02'});
+      vm.periodDate({ startDate: '2017/02/02', endDate: '2017/02/02' });
     }
 
     mounted() {
@@ -112,14 +112,14 @@ module nts.uk.at.view.kwr005.a {
       // Set component option
       vm.ccg001ComponentOption = {
         /** Common properties */
-        systemType: 2,
+        systemType: 2, //システム区分 - 2: 就業
         showEmployeeSelection: true,
-        showQuickSearchTab: true,
-        showAdvancedSearchTab: true,
-        showBaseDate: true,
+        showQuickSearchTab: true, //クイック検索
+        showAdvancedSearchTab: true, //詳細検索
+        showBaseDate: true, //基準日利用
         showClosure: true,
         showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
-        showPeriod: true,
+        showPeriod: false, //対象期間利用
         periodFormatYM: false,
 
         /** Required parameter */
@@ -133,21 +133,21 @@ module nts.uk.at.view.kwr005.a {
         retirement: false, // 退職区分 = 対象外
 
         /** Quick search tab options */
-        showAllReferableEmployee: true,
-        showOnlyMe: false,
-        showSameDepartment: false,
-        showSameDepartmentAndChild: false,
-        showSameWorkplace: true,
-        showSameWorkplaceAndChild: true,
+        showAllReferableEmployee: true,// 参照可能な社員すべて
+        showOnlyMe: true,// 自分だけ
+        showSameDepartment: false,//同じ部門の社員
+        showSameDepartmentAndChild: false,// 同じ部門とその配下の社員
+        showSameWorkplace: true, // 同じ職場の社員
+        showSameWorkplaceAndChild: true,// 同じ職場とその配下の社員
 
         /** Advanced search properties */
-        showEmployment: true,
-        showDepartment: false,
-        showWorkplace: false,
-        showClassification: true,
-        showJobTitle: true,
-        showWorktype: true,
-        isMutipleCheck: true,
+        showEmployment: true,// 雇用条件
+        showDepartment: false, // 部門条件
+        showWorkplace: true,// 職場条件
+        showClassification: true,// 分類条件
+        showJobTitle: true,// 職位条件
+        showWorktype: true,// 勤種条件
+        isMutipleCheck: true,// 選択モード
 
         tabindex: - 1,
         /**
@@ -246,21 +246,21 @@ module nts.uk.at.view.kwr005.a {
         standOrFree: vm.rdgSelectedId() //設定区分								
       }
 
-      if (!_.isNil(attendance) && !_.isNil(attendance.code)) {       
+      if (!_.isNil(attendance) && !_.isNil(attendance.code)) {
         params.code = attendance.code;
         params.name = attendance.name;
         params.settingId = attendance.id;
         params.standOrFree = vm.rdgSelectedId();
       }
- 
-      vm.$window.modal('/view/kwr/005/b/index.xhtml', ko.toJS(params)).then((data: any) => { 
+
+      vm.$window.modal('/view/kwr/005/b/index.xhtml', ko.toJS(params)).then((data: any) => {
         if (data) {
           nts.uk.ui.errors.clearAll();
           vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
         }
         $('#btnExportExcel').focus();
       });
-      
+
     }
 
     /**
@@ -357,7 +357,7 @@ module nts.uk.at.view.kwr005.a {
       return newListItems;
     }
 
-    exportExcelPDF( mode: number = 1) {
+    exportExcelPDF(mode: number = 1) {
       let vm = this,
         validateError: any = {}; //not error
 
@@ -386,22 +386,19 @@ module nts.uk.at.view.kwr005.a {
 
         let findObj = null;
 
-        if( vm.rdgSelectedId() === 0 ) {
+        if (vm.rdgSelectedId() === 0) {
           findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
-        } else  {
+        } else {
           findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
         }
-        
-        let baseDate = moment(vm.dpkYearMonth(), 'YYYY/MM').format('YYYY/MM');
-        //let endOfMonth = moment().endOf('month').format('DD');
-        //let currentDate = moment().format('DD');
 
         let params = {
           mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
-          targetDate: baseDate, //対象年月,          
-          isZeroDisplay: vm.zeroDisplayClassification(),//ゼロ表示区分選択肢
-          pageBreak: vm.pageBreakSpecification(), //改ページ指定選択肢,
+          startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,        
+          endMonth: _.toInteger(vm.periodDate().endDate),
+          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
+          pageBreak: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
           settingId: findObj.id, //ゼロ表示区分,
           closureId: vm.closureId() //締め日
@@ -452,13 +449,13 @@ module nts.uk.at.view.kwr005.a {
           let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);
           let zeroDisplay = _.isEmpty(data.zeroDisplayClassification) ? 0 : data.zeroDisplayClassification;
           let pageBreak = _.isEmpty(data.pageBreakSpecification) ? 0 : data.pageBreakSpecification;
-          vm.rdgSelectedId( !vm.isPermission51() ? 0 : data.itemSelection); //項目選択
+          vm.rdgSelectedId(!vm.isPermission51() ? 0 : data.itemSelection); //項目選択
           vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
         }
-      }).always(() => {});
+      }).always(() => { });
     }
 
     getItemSelection() {
@@ -472,7 +469,7 @@ module nts.uk.at.view.kwr005.a {
     }
 
     getStartFromMonthly() {
-      const vm  = this;
+      const vm = this;
 
       let startDate = moment().toDate(),
         endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
@@ -486,7 +483,7 @@ module nts.uk.at.view.kwr005.a {
 
       vm.$ajax(PATH.getStartFromMonthly)
         .done((result) => {
-          if (result && _.isNumber(result.startMonth)) {         
+          if (result && _.isNumber(result.startMonth)) {
             //システム日付の月　＜　期首月　
             const startMonth = _.toInteger(result.startMonth);
             if (startMonth > _.toInteger(moment().format('MM'))) {
@@ -503,7 +500,7 @@ module nts.uk.at.view.kwr005.a {
             });
           }
         })
-        .fail(() => {});
+        .fail(() => { });
     }
   }
 
