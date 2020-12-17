@@ -2,11 +2,10 @@ package nts.uk.ctx.at.schedule.app.find.budget.premium;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
-import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
-import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumSetDto;
-import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.ShortAttendanceItemDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguageRepository;
@@ -20,6 +19,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -160,16 +160,11 @@ public class PersonCostCalculationFinder {
 
     public HistPersonCostCalculation getHistPersonCostCalculations() {
         val cid = AppContexts.user().companyId();
-        val listItem = this.personCostCalculationRepository.findByCompanyID(cid);
-        if (listItem.isEmpty()) {
+        val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
+        if (!listItem.isPresent()) {
             throw new BusinessException("Msg_2027");
         }
-        return new HistPersonCostCalculation(
-                cid,
-                listItem.stream().map(e ->
-                        new DateHistoryItem(e.getHistoryID(), new DatePeriod(e.getStartDate(), e.getEndDate())
-                        )).collect(Collectors.toList())
-        );
+        return listItem.get();
+    }
 
     }
-}

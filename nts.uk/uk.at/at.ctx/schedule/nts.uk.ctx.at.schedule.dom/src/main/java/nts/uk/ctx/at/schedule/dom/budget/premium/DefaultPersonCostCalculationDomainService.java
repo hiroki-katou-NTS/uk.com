@@ -26,7 +26,8 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	public PersonCostCalculation createPersonCostCalculationFromJavaType(String companyID, GeneralDate startDate, 
 			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings) {
 		String historyID = UUID.randomUUID().toString();
-		return new PersonCostCalculation(companyID, historyID, startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), unitPrice, memo,
+		return new PersonCostCalculation(companyID, historyID, startDate,
+				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), unitPrice, memo,
 				premiumSettings.stream()
 				.map(x -> new PremiumSetting(
 						companyID, 

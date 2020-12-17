@@ -21,13 +21,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
-import nts.uk.ctx.at.schedule.dom.budget.premium.UnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
+import nts.uk.ctx.at.schedule.dom.budget.premium.*;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmldpPremiumAttendancePK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmldtPremiumAttendance;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmpPersonCostCalculationPK;
@@ -218,7 +212,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				), 
 				personCostCalculation.getStartDate(), 
 				personCostCalculation.getEndDate(),
-				personCostCalculation.getUnitPrice().value, 
+				personCostCalculation.getUnitPrice().value,
 				personCostCalculation.getMemo().v(), 
 				personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetEntity(x)).collect(Collectors.toList()));
 	}
@@ -398,6 +392,21 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			return null;
 		}
 		return premiumSettings;
+	}
+
+	@Override
+	public Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid) {
+		return Optional.of(new HistPersonCostCalculation()) ;
+	}
+
+	@Override
+	public void createHistPersonCl(HistPersonCostCalculation domain) {
+
+	}
+
+	@Override
+	public void updateHistPersonCl(HistPersonCostCalculation domain) {
+
 	}
 
 	private List<KmnmtPremiumItem> getPremiumItems(String comId) {
