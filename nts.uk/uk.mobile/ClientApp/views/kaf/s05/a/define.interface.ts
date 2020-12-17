@@ -453,3 +453,8 @@ export interface ParamCalculateMobile {
     employeeId: string;
     dateOp: string;
 }
+export interface BreakTime {
+    valueHours: any;
+    title: string;
+    frameNo: number;
+}

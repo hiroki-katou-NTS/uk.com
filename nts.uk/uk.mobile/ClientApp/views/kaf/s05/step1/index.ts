@@ -3,7 +3,7 @@ import { component, Watch } from '@app/core/component';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime} from '../a/define.interface';
+import { BreakTime, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime} from '../a/define.interface';
 import { KafS05Component} from '../a/index';
 @component({
     name: 'kafs05step1',
@@ -37,6 +37,12 @@ export class KafS05Step1Component extends Vue {
     public breakTimes: Array<BreakTime> = [];
 
     public displayNumberBreakTime = 3;
+
+    public get isAddFrameBreakTime() {
+        const self = this;
+
+        return self.displayNumberBreakTime != 10; 
+    }
 
     @Watch('workHours1', {deep: true})
     public changeWorkHours1(data: ValueTime) {
@@ -96,6 +102,18 @@ export class KafS05Step1Component extends Vue {
             self.breakTimes.push(item);
         }
     }
+    public getWorkHours1() {
+        const self = this;
+
+        return self.workHours1;
+    }
+
+    public getWorkHours2() {
+        const self = this;
+
+        return self.workHours2;
+    }
+
     public getWorkType() {
         const self = this;
 
@@ -106,6 +124,12 @@ export class KafS05Step1Component extends Vue {
         const self = this;
         
         return self.workInfo.workTime.code;
+    }
+
+    public getBreakTimes(): Array<BreakTime> {
+        const self = this;
+
+        return self.breakTimes;
     }
     public setWorkTime(
         workTimeCD?: string,
@@ -152,10 +176,10 @@ export class KafS05Step1Component extends Vue {
         return;
     }
 
-    get $appContext(): any {
+    get $appContext(): KafS05Component {
         const self = this;
 
-        return self.$parent;
+        return self.$parent as KafS05Component;
     }
 
     public loadBreakTime(timeZone?: any) {
@@ -283,6 +307,63 @@ export class KafS05Step1Component extends Vue {
         self.createBreakTime();
     }
 
+    public loadDataFromStep2() {
+        const self = this;
+        let appOverTime = self.$appContext.model.appOverTime as AppOverTime;
+        let displayOverTime = self.$appContext.model.displayInfoOverTime as DisplayInfoOverTime;
+        // loading first time
+        self.workInfo.workType = {
+            code: '',
+            name: ''
+        } as Work;
+        self.workInfo.workTime = {
+            code: '',
+            name: '',
+            time: ''
+        } as Work;
+        self.createBreakTime();
+
+        let workType = {} as Work;
+        if (!_.isNil(appOverTime.workInfoOp)) {
+            workType.code = appOverTime.workInfoOp.workType;
+        }
+        if (!_.isNil(workType.code)) {
+            let workTypes = displayOverTime.infoBaseDateOutput.worktypes;
+            let resultWorkType = 
+                    _.find(
+                            workTypes,
+                            (i: any) => i.workTypeCode == workType.code);
+            if (!_.isNil(resultWorkType)) {
+                workType.name = resultWorkType.name;
+            }                
+            
+        }
+
+        let workTime = {} as Work;
+        if (!_.isNil(appOverTime.workInfoOp)) {
+            workTime.code = appOverTime.workInfoOp.workTime;
+        }
+        if (!_.isNil(workTime.code)) {
+            let workTimes = displayOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+            let resultWorkTime = 
+                    _.find(
+                            workTimes,
+                            (i: any) => i.worktimeCode == workTime.code);
+            if (!_.isNil(resultWorkTime)) {
+                workTime.name = resultWorkTime.workTimeDisplayName.workTimeName;
+            }                
+            
+        }
+        self.workInfo.workType = workType;
+        self.workInfo.workTime = workTime;
+
+        let workInfo = {} as WorkInfo;
+        workInfo.workType = workType;
+        workInfo.workTime = workTime;
+        self.workInfo = workInfo;     
+
+    }
+
     public addBreakHour() {
         const self= this;
         if (self.displayNumberBreakTime < 10) {
@@ -300,12 +381,6 @@ interface Work {
     code: string;
     name: string;
     time?: string;
-}
-
-interface BreakTime {
-    valueHours: any;
-    title: string;
-    frameNo: number;
 }
 
 interface ValueTime {

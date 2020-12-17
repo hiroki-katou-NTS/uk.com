@@ -119,7 +119,7 @@
         </div>
       </div>
       <!-- Add more frame zone -->
-      <div v-if="true">
+      <div v-if="isAddFrameBreakTime">
         <div class="text-center position-relative" style="height: 35px">
           <!-- A5_7 -->
           <div class="position-absolute w-100">
@@ -137,15 +137,19 @@
         <div class="text-center">{{ "KAFS05_84" | i18n }}</div>
       </div>
     </div>
+    <div class="card card-label">
+      <div class="card-body">
+        <!-- A1_C1_1 -->
+        <button
+          type="button"
+          class="btn btn-block btn-success btn-lg text-center"
+          v-if="true"
+          v-on:click="$appContext.toStep(2)"
+        >
+          {{ "KAFS02_17" | i18n }}
+        </button>
+      </div> 
 
-    <!-- A1_C1_1 -->
-    <button
-      type="button"
-      class="btn btn-block btn-success btn-lg text-center"
-      v-if="true"
-      v-on:click="$appContext.toStep(2)"
-    >
-      {{ "KAFS02_17" | i18n }}
-    </button>
+    </div>
   </div>
 </template>

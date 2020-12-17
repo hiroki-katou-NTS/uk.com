@@ -1,4 +1,4 @@
-import { ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime} from '../a/define.interface';
+import { BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto} from '../a/define.interface';
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -40,6 +40,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public model: Model = {} as Model;
 
     public date: string;
+
+    public overTimeClf: number;
 
     @Prop() 
     public readonly params: InitParam;
@@ -262,6 +264,14 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
+        
+        if (vm.$route.query.a == '0') {
+            vm.overTimeClf = 0;
+        } else if (vm.$route.query.a == '1') {
+            vm.overTimeClf = 1;
+        } else {
+            vm.overTimeClf = 2;
+        }
         if (vm.params) {
             vm.modeNew = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
@@ -359,7 +369,7 @@ export class KafS05Component extends KafS00ShrComponent {
                 self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
                 self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
                 self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
-                
+                self.date = objectDate.startDate;
             }
             self.changeDate(objectDate.startDate);
         }
@@ -383,44 +393,112 @@ export class KafS05Component extends KafS00ShrComponent {
         console.log('emit' + opAppReason);
         self.application.opAppReason = opAppReason;
     }
+    public toAppOverTime() {
+        const self = this;
+        let step1 = self.$refs.step1 as KafS05Step1Component;
+        let appOverTimeInsert = {} as AppOverTime;
+        if (step1) {
+            if (self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
+                self.application.prePostAtr = self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
+            }
+            appOverTimeInsert.application = self.application as any;
+            appOverTimeInsert.overTimeClf = self.overTimeClf;
+            if (step1.getWorkType()) {
+                appOverTimeInsert.workInfoOp = {} as WorkInformation;
+                appOverTimeInsert.workInfoOp.workType = step1.getWorkType();
+                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
+            }
+            appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
+            {
+                let timeZone = {} as TimeZoneWithWorkNo;
+                timeZone.workNo = 1;
+                timeZone.timeZone = {} as TimeZoneNew;
+                timeZone.timeZone.startTime = step1.getWorkHours1().start;
+                timeZone.timeZone.endTime = step1.getWorkHours1().end;
+                appOverTimeInsert.workHoursOp.push(timeZone);
+            }
+            appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
+            let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
+            _.forEach(breakTimes, (item: BreakTime, index: number) => {
+                let start = _.get(item,'valueHours.start');
+                let end = _.get(item,'valueHours.end');
+                if (!_.isNil(start) && !_.isNil(end)) {
+                    let timeZone = {} as TimeZoneWithWorkNo;
+                    timeZone.workNo = index + 1;
+                    timeZone.timeZone = {} as TimeZoneNew;
+                    timeZone.timeZone.startTime = 
+                    timeZone.timeZone.endTime = step1.getWorkHours1().end;
+                    appOverTimeInsert.breakTimeOp.push(timeZone);
+                }
+            });
+
+        }
+
+
+        return appOverTimeInsert;
+    }
 
     public toStep(value: number) {
         const vm = this;
-        vm.$mask('show');
-        vm.isValidateAll = vm.customValidate(vm);
-        vm.$validate();
-        if (!vm.$valid || !vm.isValidateAll) {
-            window.scrollTo(500, 0);
-            vm.$nextTick(() => {
-                vm.$mask('hide');
-            });
-
-            return;
-        }
-        let command = {
-
-        } as ParamCalculateMobile;
-        command.companyId = vm.user.companyId;
-        command.employeeId = vm.user.employeeId;
-        command.dateOp = vm.date;
-        command.mode = vm.modeNew;
-        vm.$http.post(
-            'at', 
-            API.calculate,
-            command
-            )
-                .then((res: any) => {
-                    vm.numb = value;
-
-                    vm.$nextTick(() => {
-                        vm.$mask('hide');
-                    });
-                })
-                .catch((res: any) => {
-                    vm.$nextTick(() => {
-                        vm.$mask('hide');
-                    });
+        // step 1 -> step 2
+        if (vm.numb == 1 && value == 2) {
+            vm.$mask('show');
+            vm.isValidateAll = vm.customValidate(vm);
+            vm.$validate();
+            if (!vm.$valid || !vm.isValidateAll) {
+                window.scrollTo(500, 0);
+                vm.$nextTick(() => {
+                    vm.$mask('hide');
                 });
+
+                return;
+            }
+            let command = {
+    
+            } as ParamCalculateMobile;
+            vm.model.appOverTime = vm.toAppOverTime();
+            command.companyId = vm.user.companyId;
+            command.employeeId = vm.user.employeeId;
+            command.mode = vm.modeNew;
+            command.displayInfoOverTime = vm.model.displayInfoOverTime;
+            command.appOverTimeInsert = vm.model.appOverTime;
+            command.dateOp = command.appOverTimeInsert.application.appDate;
+            vm.$http.post(
+                'at', 
+                API.calculate,
+                command
+                )
+                    .then((res: any) => {
+                        vm.numb = value;
+    
+                        vm.$nextTick(() => {
+                            vm.$mask('hide');
+                        });
+                    })
+                    .catch((res: any) => {
+                        vm.$nextTick(() => {
+                            vm.$mask('hide');
+                        });
+                        // xử lý lỗi nghiệp vụ riêng
+                        vm.handleErrorCustom(res).then((result: any) => {
+                            if (result) {
+                                // xử lý lỗi nghiệp vụ chung
+                                vm.handleErrorCommon(res);
+                            }
+                        });
+                    });
+        } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            vm.numb  = value;
+            // vm.$mask('show');
+            // vm.$nextTick(() => {
+            //     let step1 = vm.$refs.step1 as KafS05Step1Component;
+            //     step1.loadDataFromStep2();
+            //     vm.$mask('hide');
+            // });
+
+        } else {
+            vm.numb  = value;
+        }
 
     }
 
@@ -578,7 +656,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     command.startTimeSPR = step1.workHours1.start;
                     command.endTimeSPR = step1.workHours1.end;
                 }
-                command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail');
+                command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                 command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                 self.$mask('show');
 
@@ -643,7 +721,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         command.startTimeSPR = step1.workHours1.start;
                         command.endTimeSPR = step1.workHours1.end;
                     }
-                    command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail');
+                    command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                     self.$mask('show');
     

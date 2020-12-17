@@ -1,8 +1,23 @@
 <template>
 <div class="kafs05step2">
-    <h3>Hello {{title | i18n}} component!</h3>
-    <nts-text-editor
-        name='title'
-        v-model='title' />
+    <div class="card card-label">
+        <!-- A2_C1_1 -->
+        <button
+      type="button"
+      class="btn btn-block btn-primary btn-lg"
+      v-if="true"
+    >
+      {{nameInsert}}
+    </button>
+    <!-- A2_C1_2 -->
+    <button
+      type="button"
+      class="btn btn-block btn-secondary"
+      v-if="true"
+      v-on:click="backStep1"
+    >
+      {{ "KAFS05_12" | i18n }}
+    </button>
+    </div>
 </div>
 </template>
