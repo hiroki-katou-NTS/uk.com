@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.app.export.alarmworkplace.alarmlist.AlarmWorkPlace
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.CheckConditionDto;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceFinder;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.InitActiveAlarmListDto;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -73,6 +74,12 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     @Path("extract/update-status")
     public void extractUpdateStatus(UpdateAlarmListExtractProcessStatusWorkplaceCommand command) {
         updateAlarmListExtractProcessStatusWorkplaceCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("extract/get-result/{processId}")
+    public List<AlarmListExtractResultWorkplaceDto> extractGetResult(String processId) {
+        return extractAlarmListWorkPlaceFinder.getExtractResult(processId);
     }
 
     @POST

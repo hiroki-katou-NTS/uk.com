@@ -33,17 +33,17 @@ public class JpaAlarmListExtractInfoWorkplaceRepository extends JpaRepository im
     public void addAll(List<AlarmListExtractInfoWorkplace> domains) {
         List<KfndtAlarmExtractWpl> lstEntity = new ArrayList<>();
         domains.forEach(x ->
-            lstEntity.addAll(KfndtAlarmExtractWpl.toEntity(x))
+                lstEntity.addAll(KfndtAlarmExtractWpl.toEntity(x))
         );
 
         commandProxy().insertAll(lstEntity);
     }
 
     @Override
-    public Optional<AlarmListExtractInfoWorkplace> getById(String processingId) {
+    public List<AlarmListExtractInfoWorkplace> getById(String processingId) {
         List<KfndtAlarmExtractWpl> result = this.queryProxy().query(FIND_BY_ID, KfndtAlarmExtractWpl.class)
-            .setParameter("processingId", processingId)
-            .getList();
-        return result.size() > 0 ? Optional.of(KfndtAlarmExtractWpl.toDomain(result)) : Optional.empty();
+                .setParameter("processingId", processingId)
+                .getList();
+        return KfndtAlarmExtractWpl.toDomain(result);
     }
 }

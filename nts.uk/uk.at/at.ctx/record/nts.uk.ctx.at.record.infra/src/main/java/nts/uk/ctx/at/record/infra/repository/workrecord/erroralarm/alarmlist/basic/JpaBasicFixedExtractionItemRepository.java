@@ -40,7 +40,7 @@ public class JpaBasicFixedExtractionItemRepository extends JpaRepository impleme
     @Override
     public Optional<BasicFixedExtractionItem> getBy(BasicFixedCheckItem no) {
         return this.queryProxy().query(FIND_BY_NO, KrcmtWkpBasicFxexItm.class)
-            .setParameter("no", no)
+            .setParameter("no", no.value)
             .getSingle(KrcmtWkpBasicFxexItm::toDomain);
     }
 

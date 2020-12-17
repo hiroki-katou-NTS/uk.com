@@ -78,7 +78,7 @@ public class AlarmListExtractResultWorkplaceDto {
     /**
      * 取得した職場情報一覧から「アラーム抽出結果（職場別）」にデータをマッピングする
      */
-    public static List<AlarmListExtractResultWorkplaceDto> FromDomains(List<AlarmListExtractInfoWorkplace> alExtractInfos){
+    public static List<AlarmListExtractResultWorkplaceDto> fromDomains(List<AlarmListExtractInfoWorkplace> alExtractInfos){
         List<AlarmListExtractResultWorkplaceDto> extractResultDtos = new ArrayList<>();
         for (AlarmListExtractInfoWorkplace alExtractInfo : alExtractInfos) {
 

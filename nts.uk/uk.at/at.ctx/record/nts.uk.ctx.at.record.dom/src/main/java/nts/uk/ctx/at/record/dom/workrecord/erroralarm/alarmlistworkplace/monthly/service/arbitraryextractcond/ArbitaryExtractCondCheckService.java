@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extract
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagenumday.AverageNumDayCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagenumtime.AverageNumTimeCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averageratio.AverageRatioCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagetime.AverageTimeCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided.MonthlyUndecidedCheckService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -32,6 +33,8 @@ public class ArbitaryExtractCondCheckService {
     private AverageNumDayCheckService averageNumDayCheckService;
     @Inject
     private AverageNumTimeCheckService averageNumTimeCheckService;
+    @Inject
+    private AverageRatioCheckService averageRatioCheckService;
 
     /**
      * 任意抽出条件をチェック
@@ -67,6 +70,7 @@ public class ArbitaryExtractCondCheckService {
                         result = averageNumTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     case AVERAGE_RATIO:
+                        result = averageRatioCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     default:
                         break;

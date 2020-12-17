@@ -59,14 +59,13 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
 
         dataSetter.setData("ctgCount", counter.get());
         // 集計処理
-        List<AlarmListExtractInfoWorkplace> results = aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds(),
+        aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds(),
                 convertPeriods(command.getCategoryPeriods()), command.getProcessStatusId(),
                 finished -> {
                     counter.set(counter.get() + finished);
                     dataSetter.updateData("ctgCount", counter.get());
                 },
                 () -> shouldStop(cid, context, asyncContext));
-        dataSetter.setData("extractResults", results);
     }
 
     /**

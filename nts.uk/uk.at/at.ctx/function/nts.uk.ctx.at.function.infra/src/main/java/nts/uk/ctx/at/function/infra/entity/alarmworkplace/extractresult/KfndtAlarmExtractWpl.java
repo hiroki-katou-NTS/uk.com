@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.extractresult;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.ExtractResult;
@@ -14,7 +15,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +32,9 @@ public class KfndtAlarmExtractWpl extends ContractUkJpaEntity implements Seriali
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
+    @Column(name = "GUI_ID")
+    public String id;
+
     @Column(name = "ALARM_CHK_ID")
     public String checkConditionId;
 
@@ -76,51 +82,60 @@ public class KfndtAlarmExtractWpl extends ContractUkJpaEntity implements Seriali
 
     @Override
     protected Object getKey() {
-        return this.checkConditionId;
+        return this.id;
     }
 
     public static List<KfndtAlarmExtractWpl> toEntity(AlarmListExtractInfoWorkplace domain) {
 
         return domain.getExtractResults().stream().map(x -> {
             KfndtAlarmExtractWpl entity = new KfndtAlarmExtractWpl(
-                domain.getCheckConditionId(),
-                AppContexts.user().companyId(),
-                domain.getProcessingId(),
-                x.getWorkplaceId().orElse(null),
-                x.getWorkplaceCode().orElse(null),
-                x.getWorkplaceName().orElse(null),
-                x.getHierarchyCode().orElse(null),
-                x.getAlarmValueDate().getStartDate(),
-                x.getAlarmValueDate().getEndDate().orElse(null),
-                domain.getCategory().value,
-                domain.getCategoryName(),
-                x.getAlarmItemName().v(),
-                x.getAlarmValueMessage().v(),
-                x.getComment().isPresent() ? x.getComment().get().v() : null,
-                x.getCheckTargetValue()
+                    IdentifierUtil.randomUniqueId(),
+                    domain.getCheckConditionId(),
+                    AppContexts.user().companyId(),
+                    domain.getProcessingId(),
+                    x.getWorkplaceId().orElse(null),
+                    x.getWorkplaceCode().orElse(null),
+                    x.getWorkplaceName().orElse(null),
+                    x.getHierarchyCode().orElse(null),
+                    x.getAlarmValueDate().getStartDate(),
+                    x.getAlarmValueDate().getEndDate().orElse(null),
+                    domain.getCategory().value,
+                    domain.getCategoryName(),
+                    x.getAlarmItemName().v(),
+                    x.getAlarmValueMessage().v(),
+                    x.getComment().isPresent() ? x.getComment().get().v() : null,
+                    x.getCheckTargetValue()
             );
             entity.contractCd = AppContexts.user().contractCode();
             return entity;
         }).collect(Collectors.toList());
     }
 
-    public static AlarmListExtractInfoWorkplace toDomain(List<KfndtAlarmExtractWpl> lstEntity) {
-        return new AlarmListExtractInfoWorkplace(
-            lstEntity.get(0).checkConditionId,
-            EnumAdaptor.valueOf(lstEntity.get(0).category, WorkplaceCategory.class),
-            lstEntity.stream().map(x -> new ExtractResult(
-                x.alarmValueMessage,
-                x.startDate,
-                x.endDate,
-                x.alarmItemName,
-                x.checkTargetValue,
-                x.comment,
-                x.workplaceId,
-                x.workplaceCode,
-                x.workplaceName,
-                x.hierarchyCode
-            )).collect(Collectors.toList())
-        );
+    public static List<AlarmListExtractInfoWorkplace> toDomain(List<KfndtAlarmExtractWpl> lstEntity) {
+        Map<Integer, Map<String, List<KfndtAlarmExtractWpl>>> mapData = lstEntity.stream()
+                .collect(Collectors.groupingBy(x -> x.category, Collectors.groupingBy(x -> x.checkConditionId, Collectors.toList())));
+        List<AlarmListExtractInfoWorkplace> domains = new ArrayList<>();
+        for (Map.Entry<Integer, Map<String, List<KfndtAlarmExtractWpl>>> dataByCtg : mapData.entrySet()) {
+            for (Map.Entry<String, List<KfndtAlarmExtractWpl>> dataByCond : dataByCtg.getValue().entrySet()) {
+                AlarmListExtractInfoWorkplace domain = new AlarmListExtractInfoWorkplace(
+                        dataByCond.getKey(),
+                        EnumAdaptor.valueOf(dataByCtg.getKey(), WorkplaceCategory.class),
+                        dataByCond.getValue().stream().map(x -> new ExtractResult(
+                                x.alarmValueMessage,
+                                x.startDate,
+                                x.endDate,
+                                x.alarmItemName,
+                                x.checkTargetValue,
+                                x.comment,
+                                x.workplaceId,
+                                x.workplaceCode,
+                                x.workplaceName,
+                                x.hierarchyCode
+                        )).collect(Collectors.toList()));
+                domains.add(domain);
+            }
+        }
+        return domains;
     }
 
 }

@@ -58,9 +58,9 @@ public class AggregateProcessService {
      * @param periods          List<カテゴリ別期間>
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<AlarmListExtractInfoWorkplace> process(String cid, String alarmPatternCode, List<String> workplaceIds,
-                                                       List<PeriodByAlarmCategory> periods, String processStatusId,
-                                                       Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+    public void process(String cid, String alarmPatternCode, List<String> workplaceIds,
+                        List<PeriodByAlarmCategory> periods, String processStatusId,
+                        Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
         GeneralDate baseDate = GeneralDate.today();
         // [No.560]職場IDから職場の情報をすべて取得する
         Map<String, WorkPlaceInforExport> wpInfoMap = this.workplaceAdapter.getWorkplaceInforByWkpIds(cid, workplaceIds, baseDate)
@@ -71,8 +71,6 @@ public class AggregateProcessService {
         if (!patternOpt.isPresent()) {
             throw new RuntimeException("「アラームリストパターン設定(職場別) 」が見つかりません！");
         }
-
-        List<AlarmListExtractInfoWorkplace> alExtractInfos = new ArrayList<>();
 
         // 取得した「アラームリストパターン設定(職場別)」．カテゴリ別チェック条件をループする
         List<CheckCondition> checkConList = patternOpt.get().getCheckConList();
@@ -153,12 +151,8 @@ public class AggregateProcessService {
                 });
             });
             alarmListExtractInfoWorkplaceRepo.addAll(extractInfos);
-            alExtractInfos.addAll(extractInfos); //TODO
-
             counter.accept(1);
         }
-
-        return alExtractInfos;
     }
 
     private YearMonth getYm(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {

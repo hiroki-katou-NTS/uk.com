@@ -12,6 +12,8 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.Single
 import nts.uk.ctx.at.function.dom.alarmworkplace.*;
 import nts.uk.ctx.at.function.dom.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
@@ -46,6 +48,8 @@ public class ExtractAlarmListWorkPlaceFinder {
     private WorkClosureQueryProcessor workClosureQueryProcessor;
     @Inject
     private ClosureRepository closureRepo;
+    @Inject
+    private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
 
     /**
      * アラームリストの初期起動
@@ -243,5 +247,10 @@ public class ExtractAlarmListWorkPlaceFinder {
         }
 
         return null;
+    }
+
+    public List<AlarmListExtractResultWorkplaceDto> getExtractResult(String processId) {
+        // 取得した職場情報一覧から「アラーム抽出結果（職場別）」にデータをマッピングする
+        return AlarmListExtractResultWorkplaceDto.fromDomains(alarmListExtractInfoWorkplaceRepo.getById(processId));
     }
 }
