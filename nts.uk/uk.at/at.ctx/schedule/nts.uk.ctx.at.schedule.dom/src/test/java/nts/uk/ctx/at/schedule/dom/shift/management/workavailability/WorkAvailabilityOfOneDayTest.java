@@ -17,6 +17,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -31,7 +32,7 @@ public class WorkAvailabilityOfOneDayTest {
 	@Test
 	public void getters() {
 		
-		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay();
+		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay(require);
 		NtsAssert.invokeGetters(workAvailability);  
 	}
 	
@@ -46,7 +47,7 @@ public class WorkAvailabilityOfOneDayTest {
 		
 		// Run
 		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDay
-				.create(employeeId, availabilityDate, memo, assignmentMethod, Collections.emptyList(), Collections.emptyList());
+				.create(require, employeeId, availabilityDate, memo, assignmentMethod, Collections.emptyList(), Collections.emptyList());
 		
 		// assert
 		assertThat(workAvailability.getEmployeeId()).isEqualTo("001");
@@ -68,8 +69,21 @@ public class WorkAvailabilityOfOneDayTest {
 				new ShiftMasterCode("S01"),
 				new ShiftMasterCode("S02"));
 		
+		List<ShiftMaster> shiftMasters = Arrays.asList(
+				new ShiftMaster("companyId",new ShiftMasterCode("01"), null, "workTypeCode", "workTimeCode"),
+				new ShiftMaster("companyId",new ShiftMasterCode("01"), null, "workTypeCode", "workTimeCode")
+				);
+		
+		new Expectations() {
+            {
+            	require.getShiftMaster(shiftCodeList);
+            	result = shiftMasters;
+            }
+        };
+        
+		
 		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDay
-				.create(employeeId, availabilityDate, memo, assignmentMethod, shiftCodeList, Collections.emptyList());
+				.create(require, employeeId, availabilityDate, memo, assignmentMethod, shiftCodeList, Collections.emptyList());
 		
 		assertThat(workAvailability.getWorkAvailability().getAssignmentMethod()).isEqualTo(AssignmentMethod.SHIFT);
 		assertThat(workAvailability.getWorkAvailability()).isInstanceOf(WorkAvailabilityByShiftMaster.class);
@@ -87,7 +101,7 @@ public class WorkAvailabilityOfOneDayTest {
 				new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(400)));
 		
 		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDay
-				.create(employeeId, availabilityDate, memo, assignmentMethod, Collections.emptyList(), timeZoneList);
+				.create(require, employeeId, availabilityDate, memo, assignmentMethod, Collections.emptyList(), timeZoneList);
 		
 		assertThat(workAvailability.getWorkAvailability().getAssignmentMethod()).isEqualTo(AssignmentMethod.TIME_ZONE);
 		assertThat(workAvailability.getWorkAvailability()).isInstanceOf(WorkAvailabilityByTimeZone.class);
@@ -96,7 +110,7 @@ public class WorkAvailabilityOfOneDayTest {
 	@Test
 	public void testIsHolidayAvailability_true() {
 		
-		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay();
+		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay(require);
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
@@ -113,7 +127,7 @@ public class WorkAvailabilityOfOneDayTest {
 	@Test
 	public void testIsHolidayAvailability_false() {
 		
-		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay();
+		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay(require);
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
@@ -130,7 +144,7 @@ public class WorkAvailabilityOfOneDayTest {
 	@Test
 	public void testIsMatchingAvailability_true() {
 		
-		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay();
+		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay(require);
 		
 		WorkInformation workInformation = new WorkInformation( 
 				
@@ -152,7 +166,7 @@ public class WorkAvailabilityOfOneDayTest {
 	@Test
 	public void testIsMatchingAvailability_false() {
 		
-		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay();
+		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDayTestHelper.createWorkAvailabilityOfOneDay(require);
 		
 		WorkInformation workInformation = new WorkInformation( 
 				new WorkTypeCode("001"),
@@ -175,12 +189,25 @@ public class WorkAvailabilityOfOneDayTest {
 	@Test
 	public void testGetDisplayInformation() {
 		
+		List<ShiftMasterCode> shiftCodes = Arrays.asList(new ShiftMasterCode("S01"));
+		List<ShiftMaster> shiftMasters = Arrays.asList(
+				new ShiftMaster("companyId",new ShiftMasterCode("01"), null, "workTypeCode", "workTimeCode")
+				);
+		
+		new Expectations() {
+            {
+            	require.getShiftMaster(shiftCodes);
+            	result = shiftMasters;
+            }
+        };
+		
 		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDay
-				.create("001", 
+				.create(require,
+						"001", 
 						GeneralDate.ymd(2020, 9, 18), 
 						new WorkAvailabilityMemo("memo"), 
 						AssignmentMethod.SHIFT, 
-						Arrays.asList(new ShiftMasterCode("S01")), 
+						shiftCodes, 
 						Collections.emptyList());
 		
 		WorkAvailabilityDisplayInfo displayInfo = new WorkAvailabilityDisplayInfo(

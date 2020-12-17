@@ -31,6 +31,7 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 
 	/**
 	 * 作る
+	 * @param require
 	 * @param workableShiftCodeList 社員の勤務希望シフトリスト
 	 * @return
 	 */

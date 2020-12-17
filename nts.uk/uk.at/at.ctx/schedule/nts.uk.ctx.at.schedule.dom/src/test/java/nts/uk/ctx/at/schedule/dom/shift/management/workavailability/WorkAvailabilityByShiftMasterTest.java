@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,6 +158,15 @@ public class WorkAvailabilityByShiftMasterTest {
 	}
 	
 	@Test
+	public void create_throw_empty() {
+		
+		NtsAssert.systemError(() -> {
+			WorkAvailabilityByShiftMaster.create(require, Collections.emptyList());
+		});
+		
+	}
+	
+	@Test
 	public void create_success() {
 		 List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
 			
@@ -171,9 +181,6 @@ public class WorkAvailabilityByShiftMasterTest {
 		};
 		
 		val result = WorkAvailabilityByShiftMaster.create(require, shiftMasterCodes);
-		
-		assertThat(result.getAssignmentMethod()).isEqualTo(AssignmentMethod.SHIFT);
-		assertThat(result.getWorkableShiftCodeList()).isEqualTo(shiftMasterCodes);
 		assertThat(result.getWorkableShiftCodeList()).extracting(d -> d.v()).containsExactly("S01","S02");
 		
 	}

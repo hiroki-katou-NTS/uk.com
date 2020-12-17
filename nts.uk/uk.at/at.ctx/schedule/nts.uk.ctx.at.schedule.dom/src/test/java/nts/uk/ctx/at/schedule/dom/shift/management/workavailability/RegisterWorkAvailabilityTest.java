@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +21,21 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetUsingShiftTableRuleOfEmployeeService;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRule;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 @SuppressWarnings("static-access")
 @RunWith(JMockit.class)
 public class RegisterWorkAvailabilityTest {
 	@Injectable
 	RegisterWorkAvailability.Require require;
+	
+	@Injectable
+	WorkAvailability.Require workRequire;
 	
 	@Mocked 
 	private ShiftTableRule shiftRule;
@@ -50,8 +59,18 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2049() {
+		
+		val shiftMasterCodes = Arrays.asList(new ShiftMasterCode("001"));
+		
+		new Expectations() {
+			{
+				workRequire.getShiftMaster(shiftMasterCodes);
+				result = Helper.createShiftMasterList(shiftMasterCodes);
+				
+			}
+		};
 
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
+		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire);
 		
 		new Expectations() {
 			{
@@ -70,7 +89,17 @@ public class RegisterWorkAvailabilityTest {
 	@Test
 	public void testCheckError_throw_Msg_2052() {
 		
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
+		val shiftMasterCodes = Arrays.asList(new ShiftMasterCode("001"));
+		
+		new Expectations() {
+			{
+				workRequire.getShiftMaster(shiftMasterCodes);
+				result = Helper.createShiftMasterList(shiftMasterCodes);
+				
+			}
+		};
+		
+		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire);
 		
 		new Expectations() {{
 			service.get(require, (String) any, (GeneralDate) any);
@@ -91,7 +120,17 @@ public class RegisterWorkAvailabilityTest {
 	@Test
 	public void testCheckError_throw_Msg_2050() {
 		
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays();
+		val shiftMasterCodes = Arrays.asList(new ShiftMasterCode("001"));
+		
+		new Expectations() {
+			{
+				workRequire.getShiftMaster(shiftMasterCodes);
+				result = Helper.createShiftMasterList(shiftMasterCodes);
+				
+			}
+		};
+
+		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire);
 		
 		new Expectations() {
 			{			
@@ -116,7 +155,7 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2051() {
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiHolidays();
+		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiHolidays(workRequire);
 		
 		new Expectations() {{
 			service.get(require, (String) any, (GeneralDate) any);
@@ -138,7 +177,17 @@ public class RegisterWorkAvailabilityTest {
 	@Test
 	public void testRegister_success_1() {
 		
-		val workOneDays = Helper.createWorkAvaiOfOneDays();
+		val shiftMasterCodes = Arrays.asList(new ShiftMasterCode("001"));
+		
+		new Expectations() {
+			{
+				workRequire.getShiftMaster(shiftMasterCodes);
+				result = Helper.createShiftMasterList(shiftMasterCodes);
+				
+			}
+		};
+
+		val workOneDays = Helper.createWorkAvaiOfOneDays(workRequire);
 		
 		new Expectations() {
 			{				
@@ -169,9 +218,9 @@ public class RegisterWorkAvailabilityTest {
 		 * 希望＝シフト
 		 * @return
 		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiOfOneDays() {
+		public static List<WorkAvailabilityOfOneDay> createWorkAvaiOfOneDays(@Injectable WorkAvailability.Require require) {
 			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create("sid", GeneralDate.today(), new WorkAvailabilityMemo("memo"),
+					WorkAvailabilityOfOneDay.create(require, "sid", GeneralDate.today(), new WorkAvailabilityMemo("memo"),
 							AssignmentMethod.SHIFT, Arrays.asList((new ShiftMasterCode("001"))), Collections.emptyList()));
 		}
 		
@@ -179,10 +228,26 @@ public class RegisterWorkAvailabilityTest {
 		 *  希望＝休日
 		 * @return
 		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiHolidays() {
+		public static List<WorkAvailabilityOfOneDay> createWorkAvaiHolidays(@Injectable WorkAvailability.Require require) {
 			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create("sid", GeneralDate.today(), new WorkAvailabilityMemo("memo"),
+					WorkAvailabilityOfOneDay.create(require, "sid", GeneralDate.today(), new WorkAvailabilityMemo("memo"),
 							AssignmentMethod.HOLIDAY, Collections.emptyList(), Collections.emptyList()));
+		}
+		
+		/**
+		 * シフトマスタを作る
+		 * @param shiftMasterCodes
+		 * @return
+		 */
+		public static List<ShiftMaster> createShiftMasterList(List<ShiftMasterCode> shiftMasterCodes) {
+
+			val shiftMasterDisInfo = new ShiftMasterDisInfor(new ShiftMasterName("shiftName"), new ColorCodeChar6("FFF"),
+					new Remarks("mark"));
+
+			return shiftMasterCodes.stream()
+					.map(c -> new ShiftMaster("cid", c, shiftMasterDisInfo, "workTypeCode", "workTimeCode"))
+					.collect(Collectors.toList());
+
 		}
 
 	}
