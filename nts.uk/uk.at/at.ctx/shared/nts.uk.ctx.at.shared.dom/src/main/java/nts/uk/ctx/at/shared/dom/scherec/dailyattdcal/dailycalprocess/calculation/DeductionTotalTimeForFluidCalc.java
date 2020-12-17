@@ -123,7 +123,7 @@ public class DeductionTotalTimeForFluidCalc {
 //									.orElse(breakTimeSheet);
 
 		/** ○休憩時間帯クラスの開始時刻を退避 */
-		this.breakStartTime = newTimeSpan.get(0).getTimeSheet().getStart();
+		this.breakStartTime = breakTimeSheet.getTimeSheet().getStart();
 		this.deductionTotal = breakTime.deductionTotal;
 				
 		return newTimeSpan;
