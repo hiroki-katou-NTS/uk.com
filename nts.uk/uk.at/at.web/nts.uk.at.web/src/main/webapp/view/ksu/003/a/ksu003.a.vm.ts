@@ -1208,7 +1208,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										empId: self.lstEmpId[i].empId
 									})
 						}
-						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto! = null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null) {
+						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null) {
 							if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 0 || // [※5]=〇
 								self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 1 ||
 								self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 2) {
@@ -1246,7 +1246,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null &&
 							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime === 0) { // ※8
-							middleContentDeco.push(new CellColor("breaktime", disableDSFilter[0].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal", 0));
 							checkColor.breaktime = 0;
 						}
 					}
