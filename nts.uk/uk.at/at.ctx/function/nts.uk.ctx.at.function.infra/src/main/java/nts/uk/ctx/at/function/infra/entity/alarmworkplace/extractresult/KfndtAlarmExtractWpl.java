@@ -10,10 +10,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.ExtractResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,7 @@ public class KfndtAlarmExtractWpl extends ContractUkJpaEntity implements Seriali
     @EmbeddedId
     @Column(name = "GUI_ID")
     public String id;
-
+    
     @Column(name = "ALARM_CHK_ID")
     public String checkConditionId;
 
