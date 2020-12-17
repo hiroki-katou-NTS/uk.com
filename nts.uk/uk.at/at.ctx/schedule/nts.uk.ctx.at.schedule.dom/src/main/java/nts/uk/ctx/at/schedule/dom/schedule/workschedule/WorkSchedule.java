@@ -125,7 +125,6 @@ public class WorkSchedule implements DomainAggregate {
 			){
 		
 		if (! workInformation.checkNormalCondition(require) ) {
-			// TODO msgId
 			throw new BusinessException("Msg_430");
 		}
 			
