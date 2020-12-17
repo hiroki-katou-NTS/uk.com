@@ -68,7 +68,6 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("FROM KfnmtRptRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.iD  =:settingId ");
-        builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_LEDGER_SETTING_FOR_DUP = builderString.toString();
 
@@ -176,8 +175,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     public void duplicateConfigDetails(String cid, String employeeId, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
         val optEntitySetting = this.queryProxy().query(FIND_WORK_LEDGER_SETTING_FOR_DUP, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", replicationSourceSettingId)
-                .setParameter("employeeId", employeeId).getSingle();
+                .setParameter("settingId", replicationSourceSettingId).getSingle();
         if (optEntitySetting.isPresent()) {
             KfnmtRptRecSetting entitySetting = optEntitySetting.get();
             val entity = new KfnmtRptRecSetting(
