@@ -19,7 +19,7 @@ public class WorkTimeInputViewE {
 
 	public String sid;
 
-	public int year;
+	public List<Integer> yearMonth;
 
 	public List<Integer> laborTime;
 
