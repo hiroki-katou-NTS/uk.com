@@ -40,6 +40,7 @@ module nts.uk.pr.view.kmf001.c {
             enableTimeMaxNumberCompany: KnockoutObservable<boolean>;            
             selectedroundProcessClassific: KnockoutObservable<number>;
             roundProcessClassificList: KnockoutObservableArray<EnumertionModel>;
+            enableC222: KnockoutObservable<boolean>; 
             
             // Data backup
             dataBackup: KnockoutObservable<any>;
@@ -106,7 +107,9 @@ module nts.uk.pr.view.kmf001.c {
                 self.enableTimeMaxNumberCompany = ko.computed(function() {
                     return self.enableTimeSetting() && self.selectedMaxDayVacation() == 0;
                 });
-                
+                self.enableC222 = ko.computed(function() {
+                    return self.selectedMaxNumberSemiVacation() == 0;
+                });
                 
                 // subscribe
                 self.selectedMaxManageSemiVacation.subscribe(function(value) {
