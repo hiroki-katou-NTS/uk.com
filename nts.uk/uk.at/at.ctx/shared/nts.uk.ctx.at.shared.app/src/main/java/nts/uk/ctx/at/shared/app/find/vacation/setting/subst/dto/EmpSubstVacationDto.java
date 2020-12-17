@@ -21,10 +21,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 @NoArgsConstructor
 public class EmpSubstVacationDto
 		implements EmpSubstVacationSetMemento {
-
+	// 雇用区分コード
 	/** The contract type code. */
 	private String contractTypeCode;
-	
+	//管理区分
 	private Integer manageDistinct;
 
 

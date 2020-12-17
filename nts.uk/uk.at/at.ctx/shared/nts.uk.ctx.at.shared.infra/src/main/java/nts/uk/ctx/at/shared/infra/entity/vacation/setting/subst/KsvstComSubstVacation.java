@@ -27,24 +27,24 @@ public class KsvstComSubstVacation extends ContractUkJpaEntity implements Serial
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The cid. */
+	/** 会社ID */
 	@Id
 	@Column(name = "CID")
 	private String cid;
     
-	
+	/** 管理区分 **/ 
 	@Column(name = "MANAGE_ATR")
 	private Integer manageAtr;
-	
+	/** 紐付け管理区分 **/
 	@Column(name = "LINK_MNG_ATR")
 	private Integer linkMngAtr;
-	
+	/** 休暇使用期限**/
 	@Column(name = "EXPIRATION_DATE_SET")
 	private Integer expitationDateSet;
-	
+	/** 先取り許可**/
 	@Column(name = "ALLOW_PREPAID_LEAVE")
 	private Integer allowPrepaidLeave;
-	
+	/** 期限日の管理方法**/
 	@Column(name = "EXP_DATE_MNG_METHOD")
 	private Integer expDateMngMethod;
 	/**

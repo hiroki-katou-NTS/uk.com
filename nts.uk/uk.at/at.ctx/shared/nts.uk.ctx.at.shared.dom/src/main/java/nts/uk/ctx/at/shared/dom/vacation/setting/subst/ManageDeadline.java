@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
-
+/**
+ * 期限日の管理方法
+ * @author Hieult
+ *
+ */
 public enum ManageDeadline {
-
+	//締めで管理する
 	MANAGE_BY_TIGHTENING( 0 , "締めで管理する", "締めで管理する"),
-	
+	//発生日を基準にして管理する
 	MANAGE_BY_BASE_DATE(1, "発生日を基準にして管理する" ,"発生日を基準にして管理する") ;
 	
 	/** The value. */

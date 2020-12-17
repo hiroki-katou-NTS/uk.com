@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+// 雇用の代休管理設定 Dto
 public class CompensatoryLeaveEmSettingDto {
 
 	// 会社ID
@@ -23,7 +24,7 @@ public class CompensatoryLeaveEmSettingDto {
 	// 雇用区分コード
 	/** The employment code. */
 	public String employmentCode;
-
+    //管理区分
 	/** The is managed. */
 	public int isManaged;
 
@@ -34,3 +35,4 @@ public class CompensatoryLeaveEmSettingDto {
 				domain.getIsManaged().value);
 	}
 }
+

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 /**
  * The Class CompensatoryLeaveEmSetting.
  */
+//雇用の代休管理設定
 @Getter
 public class CompensatoryLeaveEmSetting extends AggregateRoot {
 

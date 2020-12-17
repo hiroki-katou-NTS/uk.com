@@ -12,11 +12,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class SubstVacationSetting.
+ * 振休取得・使用方法
  */
 @Getter
 public class SubstVacationSetting extends DomainObject {
 
-	
+	//期限日の管理方法	
 	private ManageDeadline manageDeadline;
 
 	/** The expiration date. */
