@@ -976,6 +976,7 @@ module nts.uk.at.view.kmk002.a {
                     dto.calAtr = self.selectedClac();
                     dto.note = self.note();
                     dto.description = self.description();
+                    dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                     // return dto
                     return dto;
@@ -1261,12 +1262,24 @@ module nts.uk.at.view.kmk002.a {
 
                         this.upperRequired(true);
                     } else {
-                        $('#inp-upper-amount-day').ntsError('clear');
-                        $('#inp-upper-number-day').ntsError('clear');
-                        $('#inp-upper-time-day').ntsError('clear');
-                        $('#inp-upper-amount-month').ntsError('clear');
-                        $('#inp-upper-number-month').ntsError('clear');
-                        $('#inp-upper-time-month').ntsError('clear');
+                        if ($('#inp-upper-amount-day').ntsError("hasError")) {
+                            $('#inp-upper-amount-day').ntsError('clear');
+                        }
+                        if ($('#inp-upper-number-day').ntsError("hasError")) {
+                            $('#inp-upper-number-day').ntsError('clear');
+                        }
+                        if ($('#inp-upper-time-day').ntsError("hasError")) {
+                            $('#inp-upper-time-day').ntsError('clear');
+                        }
+                        if ($('#inp-upper-amount-month').ntsError("hasError")) {
+                            $('#inp-upper-amount-month').ntsError('clear');
+                        }
+                        if ($('#inp-upper-number-month').ntsError("hasError")) {
+                            $('#inp-upper-number-month').ntsError('clear');
+                        }
+                        if ($('#inp-upper-time-month').ntsError("hasError")) {
+                            $('#inp-upper-time-month').ntsError('clear');
+                        }
 
                         this.upperRequired(false);
                     }
@@ -1294,12 +1307,24 @@ module nts.uk.at.view.kmk002.a {
 
                         this.lowerRequired(true);
                     } else {
-                        $('#inp-lower-amount-day').ntsError('clear');
-                        $('#inp-lower-number-day').ntsError('clear');
-                        $('#inp-lower-time-day').ntsError('clear');
-                        $('#inp-lower-amount-month').ntsError('clear');
-                        $('#inp-lower-number-month').ntsError('clear');
-                        $('#inp-lower-time-month').ntsError('clear');
+                        if ($('#inp-lower-amount-day').ntsError("hasError")) {
+                            $('#inp-lower-amount-day').ntsError('clear');
+                        }
+                        if ($('#inp-lower-number-day').ntsError("hasError")) {
+                            $('#inp-lower-number-day').ntsError('clear');
+                        }
+                        if ($('#inp-lower-time-day').ntsError("hasError")) {
+                            $('#inp-lower-time-day').ntsError('clear');
+                        }
+                        if ($('#inp-lower-amount-month').ntsError("hasError")) {
+                            $('#inp-lower-amount-month').ntsError('clear');
+                        }
+                        if ($('#inp-lower-number-month').ntsError("hasError")) {
+                            $('#inp-lower-number-month').ntsError('clear');
+                        }
+                        if ($('#inp-lower-time-month').ntsError("hasError")) {
+                            $('#inp-lower-time-month').ntsError('clear');
+                        }
 
                         this.lowerRequired(false);
                     }
@@ -1334,20 +1359,44 @@ module nts.uk.at.view.kmk002.a {
             public validateInput(): void {
                 let self = this;
                 if (self.upperCheck()) {
-                    $('#inp-upper-amount-day').ntsEditor('validate');
-                    $('#inp-upper-number-day').ntsEditor('validate');
-                    $('#inp-upper-time-day').ntsEditor('validate');
-                    $('#inp-upper-amount-month').ntsEditor('validate');
-                    $('#inp-upper-number-month').ntsEditor('validate');
-                    $('#inp-upper-time-month').ntsEditor('validate');
+                    if($('#inp-upper-amount-day').is(':enabled')){
+                        $('#inp-upper-amount-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-number-day').is(':enabled')){
+                        $('#inp-upper-number-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-time-day').is(':enabled')){
+                        $('#inp-upper-time-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-amount-month').is(':enabled')){
+                        $('#inp-upper-amount-month').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-number-month').is(':enabled')){
+                        $('#inp-upper-number-month').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-time-month').is(':enabled')){
+                        $('#inp-upper-time-month').ntsEditor('validate');
+                    }
                 }
                 if (self.lowerCheck()) {
-                    $('#inp-lower-amount-day').ntsEditor('validate');
-                    $('#inp-lower-number-day').ntsEditor('validate');
-                    $('#inp-lower-time-day').ntsEditor('validate');
-                    $('#inp-lower-amount-month').ntsEditor('validate');
-                    $('#inp-lower-number-month').ntsEditor('validate');
-                    $('#inp-lower-time-month').ntsEditor('validate');
+                    if($('#inp-upper-amount-day').is(':enabled')){
+                        $('#inp-lower-amount-day').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-number-day').is(':enabled')){
+                        $('#inp-lower-number-day').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-time-day').is(':enabled')){
+                        $('#inp-lower-time-day').ntsEditor('validate');
+                    }
+                    if($('#inp-upper-amount-month').is(':enabled')){
+                        $('#inp-lower-amount-month').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-number-month').is(':enabled')){
+                        $('#inp-lower-number-month').ntsEditor('validate');
+                    }
+                    if($('#inp-lower-time-month').is(':enabled')){
+                        $('#inp-lower-time-month').ntsEditor('validate');
+                    }
                 }
             }
 
@@ -1572,9 +1621,6 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.isUsed(true);
                             } else {
                                 self.optionalItem.isUsed(false);
-                                if ($("#description").ntsError("hasError")) {
-                                    $("#description").ntsError('clear');
-                                }  
                             }
                             if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
                                 if (self.optionalItem.calcFormulas().length > 0) {
@@ -1587,40 +1633,40 @@ module nts.uk.at.view.kmk002.a {
         
                                     self.optionalItem.checkSelectedAtr();
                                     
-									if ($('#inp-upper-amount-day').is(':enabled') && $('#inp-upper-amount-day').ntsError('hasError')) {
+									if ($('#inp-upper-amount-day').ntsError('hasError')) {
 	                                    $('#inp-upper-amount-day').ntsError('clear');
 									}
-									if ($('#inp-upper-number-day').is(':enabled') && $('#inp-upper-number-day').ntsError('hasError')) {
+									if ($('#inp-upper-number-day').ntsError('hasError')) {
 	                                    $('#inp-upper-number-day').ntsError('clear');
 									}
-									if ($('#inp-upper-time-day').is(':enabled') && $('#inp-upper-time-day').ntsError('hasError')) {
+									if ($('#inp-upper-time-day').ntsError('hasError')) {
 	                                    $('#inp-upper-time-day').ntsError('clear');
 									}
-									if ($('#inp-upper-amount-month').is(':enabled') && $('#inp-upper-amount-month').ntsError('hasError')) {
+									if ($('#inp-upper-amount-month').ntsError('hasError')) {
 	                                    $('#inp-upper-amount-month').ntsError('clear');
 									}
-									if ($('#inp-upper-number-month').is(':enabled') && $('#inp-upper-number-month').ntsError('hasError')) {
+									if ($('#inp-upper-number-month').ntsError('hasError')) {
 	                                    $('#inp-upper-number-month').ntsError('clear');
 									}
-									if ($('#inp-upper-time-month').is(':enabled') && $('#inp-upper-time-month').ntsError('hasError')) {
+									if ($('#inp-upper-time-month').ntsError('hasError')) {
 	                                    $('#inp-upper-time-month').ntsError('clear');
 									}
-									if ($('#inp-lower-amount-day').is(':enabled') && $('#inp-lower-amount-day').ntsError('hasError')) {
+									if ($('#inp-lower-amount-day').ntsError('hasError')) {
 	                                    $('#inp-lower-amount-day').ntsError('clear');
 									}
-									if ($('#inp-lower-number-day').is(':enabled') && $('#inp-lower-number-day').ntsError('hasError')) {
+									if ($('#inp-lower-number-day').ntsError('hasError')) {
 	                                    $('#inp-lower-number-day').ntsError('clear');
 									}
-									if ($('#inp-lower-time-day').is(':enabled') && $('#inp-lower-time-day').ntsError('hasError')) {
+									if ($('#inp-lower-time-day').ntsError('hasError')) {
 	                                    $('#inp-lower-time-day').ntsError('clear');
 									}
-									if ($('#inp-lower-amount-month').is(':enabled') && $('#inp-lower-amount-month').ntsError('hasError')) {
+									if ($('#inp-lower-amount-month').ntsError('hasError')) {
 	                                    $('#inp-lower-amount-month').ntsError('clear');
 									}
-									if ($('#inp-lower-number-month').is(':enabled') && $('#inp-lower-number-month').ntsError('hasError')) {
+									if ($('#inp-lower-number-month').ntsError('hasError')) {
 	                                    $('#inp-lower-number-month').ntsError('clear');
 									}
-									if ($('#inp-lower-time-month').is(':enabled') && $('#inp-lower-time-month').ntsError('hasError')) {
+									if ($('#inp-lower-time-month').ntsError('hasError')) {
 	                                    $('#inp-lower-time-month').ntsError('clear'); 
 									}
         
@@ -1644,40 +1690,40 @@ module nts.uk.at.view.kmk002.a {
                                     $('#inp-lower-amount-month').ntsError('clear');
                                     $('#inp-lower-number-month').ntsError('clear');
                                     $('#inp-lower-time-month').ntsError('clear'); */
-								if ($('#inp-upper-amount-day').is(':enabled') && $('#inp-upper-amount-day').ntsError('hasError')) {
+								if ($('#inp-upper-amount-day').ntsError('hasError')) {
 	                                    $('#inp-upper-amount-day').ntsError('clear');
 									}
-									if ($('#inp-upper-number-day').is(':enabled') && $('#inp-upper-number-day').ntsError('hasError')) {
+									if ($('#inp-upper-number-day').ntsError('hasError')) {
 	                                    $('#inp-upper-number-day').ntsError('clear');
 									}
-									if ($('#inp-upper-time-day').is(':enabled') && $('#inp-upper-time-day').ntsError('hasError')) {
+									if ($('#inp-upper-time-day').ntsError('hasError')) {
 	                                    $('#inp-upper-time-day').ntsError('clear');
 									}
-									if ($('#inp-upper-amount-month').is(':enabled') && $('#inp-upper-amount-month').ntsError('hasError')) {
+									if ($('#inp-upper-amount-month').ntsError('hasError')) {
 	                                    $('#inp-upper-amount-month').ntsError('clear');
 									}
-									if ($('#inp-upper-number-month').is(':enabled') && $('#inp-upper-number-month').ntsError('hasError')) {
+									if ($('#inp-upper-number-month').ntsError('hasError')) {
 	                                    $('#inp-upper-number-month').ntsError('clear');
 									}
-									if ($('#inp-upper-time-month').is(':enabled') && $('#inp-upper-time-month').ntsError('hasError')) {
+									if ($('#inp-upper-time-month').ntsError('hasError')) {
 	                                    $('#inp-upper-time-month').ntsError('clear');
 									}
-									if ($('#inp-lower-amount-day').is(':enabled') && $('#inp-lower-amount-day').ntsError('hasError')) {
+									if ($('#inp-lower-amount-day').ntsError('hasError')) {
 	                                    $('#inp-lower-amount-day').ntsError('clear');
 									}
-									if ($('#inp-lower-number-day').is(':enabled') && $('#inp-lower-number-day').ntsError('hasError')) {
+									if ($('#inp-lower-number-day').ntsError('hasError')) {
 	                                    $('#inp-lower-number-day').ntsError('clear');
 									}
-									if ($('#inp-lower-time-day').is(':enabled') && $('#inp-lower-time-day').ntsError('hasError')) {
+									if ($('#inp-lower-time-day').ntsError('hasError')) {
 	                                    $('#inp-lower-time-day').ntsError('clear');
 									}
-									if ($('#inp-lower-amount-month').is(':enabled') && $('#inp-lower-amount-month').ntsError('hasError')) {
+									if ($('#inp-lower-amount-month').ntsError('hasError')) {
 	                                    $('#inp-lower-amount-month').ntsError('clear');
 									}
-									if ($('#inp-lower-number-month').is(':enabled') && $('#inp-lower-number-month').ntsError('hasError')) {
+									if ($('#inp-lower-number-month').ntsError('hasError')) {
 	                                    $('#inp-lower-number-month').ntsError('clear');
 									}
-									if ($('#inp-lower-time-month').is(':enabled') && $('#inp-lower-time-month').ntsError('hasError')) {
+									if ($('#inp-lower-time-month').ntsError('hasError')) {
 	                                    $('#inp-lower-time-month').ntsError('clear'); 
 									}
                             }
@@ -1759,7 +1805,7 @@ module nts.uk.at.view.kmk002.a {
 
                 if (self.optionalItem.usageAtr() === 1 && self.langId === "ja") {
                     // validate input description
-                    $("#description").ntsError("check");
+                    // $("#description").ntsError("check");
 
                     // Upper
                     if($('#inp-upper-amount-day').is(':enabled')){
