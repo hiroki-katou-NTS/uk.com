@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -47,6 +48,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class WorkSchedule implements DomainAggregate {
 
@@ -124,7 +126,7 @@ public class WorkSchedule implements DomainAggregate {
 		
 		if (! workInformation.checkNormalCondition(require) ) {
 			// TODO msgId
-			throw new BusinessException("xxx");
+			throw new BusinessException("Msg_430");
 		}
 			
 		return new WorkSchedule(
@@ -165,26 +167,21 @@ public class WorkSchedule implements DomainAggregate {
 			) {
 		WorkSchedule workSchedule = WorkSchedule.create(require, employeeId, date, workInformation);
 		
-		EditStateOfDailyAttd editStateOfDailyAttd = EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.WorkType.ID, employeeId);
+		List<EditStateOfDailyAttd> editStateOfDailyAttdList = 
+				Arrays.asList(
+					WS_AttendanceItem.WorkType,
+					WS_AttendanceItem.WorkTime,
+					WS_AttendanceItem.StartTime1,
+					WS_AttendanceItem.EndTime1,
+					WS_AttendanceItem.StartTime2,
+					WS_AttendanceItem.EndTime2)
+				.stream()
+				.map( item -> EditStateOfDailyAttd.createByHandCorrection(require, item.ID, employeeId))
+				.collect(Collectors.toList());
 		
-		List<EditStateOfDailyAttd> editStateOfDailyAttdList = new ArrayList<>( Arrays.asList(editStateOfDailyAttd) );
+		workSchedule.setLstEditState(editStateOfDailyAttdList);
 		
-		if ( workInformation.getWorkTimeCodeNotNull().isPresent() ) {
-			editStateOfDailyAttdList.add( EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.WorkTime.ID, employeeId) );
-		}
-		
-		return new WorkSchedule(
-				employeeId, 
-				date, 
-				workSchedule.getConfirmedATR(), 
-				workSchedule.getWorkInfo(), 
-				workSchedule.getAffInfo(), 
-				workSchedule.getLstBreakTime(), 
-				editStateOfDailyAttdList, 
-				workSchedule.getOptTimeLeaving(), 
-				workSchedule.getOptAttendanceTime(), 
-				workSchedule.getOptSortTimeWork(), 
-				workSchedule.getOutingTime());
+		return workSchedule;
 	}
 	
 	/**
