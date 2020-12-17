@@ -212,7 +212,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						self.inputWorkInfo(index, dataCell, dataFixed, empId);
 					}
 
-					// 勤務種類を変更する (nhập thủ công worktype code , worktime code )
+					// 勤務種類を変更する (nhập thủ công worktype code)
 					if ((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode != "")) {
 						self.checkUpdateTime.name = "worktypeCode";
 						self.checkUpdateTime.id = 2;
@@ -1153,6 +1153,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					canModified = self.dataScreen003A().canModified, // 修正可能
 					isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed; // 確定済みか
 					// set ẩn hiện A6, A7, A8
+					
+					if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto == null || (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && 
+					self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == null)) {
+						middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+						middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+						checkColor.startTime2 = 0;
+						checkColor.endTime2 = 0;
+
+						middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i].empId, "xseal", 0));
+						middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i].empId, "xseal", 0));
+						checkColor.startTime1 = 0;
+						checkColor.endTime1 = 0;
+					}
+					
 					
 					if (isNeedWorkSchedule != 1) { // ※2 & ※3
 						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0)); // 4 
@@ -2706,8 +2720,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public checkTimeInfo(worktypeCode: any, worktimeCode: any, startTime1: any, startTime2: any, endTime1: any, endTime2: any) {
 			let command: any = {
-				workType: worktypeCode,
-				workTime: worktimeCode,
+				workType: worktypeCode.trim(),
+				workTime: worktimeCode.trim(),
 				workTime1: startTime1 != "" && startTime1 != null ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
 					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)) : null,
 				workTime2: startTime2 != "" && startTime2 != null ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
