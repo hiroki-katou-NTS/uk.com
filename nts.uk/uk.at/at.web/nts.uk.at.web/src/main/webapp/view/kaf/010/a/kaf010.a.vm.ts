@@ -1285,6 +1285,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			command.actualApplicationTime = self.dataSource.hdWorkDispInfoWithDateOutput.actualApplicationTime;
 
 			for (let i = 1; i <= 2; i++) {
+				if(i == 2 && !self.managementMultipleWorkCyclescheck()){
+					break;
+				}
 				let timeZone = {} as TimeZone;
 				if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
 					timeZone.frameNo = i;
@@ -1311,6 +1314,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				.done((res: HolidayWorkCalculationResult) => {
 					if (res) {
 						self.dataSource.calculationResult = res;
+						self.itemControlHandler();
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 						// let appTimeList = res.applicationTime.applicationTime;
