@@ -33,7 +33,7 @@ module nts.uk.at.view.kdp.share {
 		virtual: false
 	})
 	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
 			const name = COMPONENT_NAME;
 			const params = valueAccessor();
 

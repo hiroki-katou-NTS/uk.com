@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -47,13 +49,6 @@ public interface OptionalItemSetMemento {
 	void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageAtr);
 
 	/**
-	 * Sets the calculation atr.
-	 *
-	 * @param calcAtr the new calculation atr
-	 */
-	void setCalcAtr(CalcUsageAtr calcAtr);
-
-	/**
 	 * Sets the emp condition atr.
 	 *
 	 * @param empConditionAtr the new emp condition atr
@@ -79,5 +74,26 @@ public interface OptionalItemSetMemento {
 	 *
 	 * @param unit the new unit
 	 */
-	void setUnit(UnitOfOptionalItem unit);
+	void setUnit(Optional<UnitOfOptionalItem> unit);
+	
+	/**
+	 * Set the calAtr
+	 * 
+	 * @param calcResultRange
+	 */
+	void setCalAtr(CalculationClassification calcResultRange);
+	
+	/**
+	 * Set the note
+	 * 
+	 * @param note
+	 */
+	void setNote(Optional<NoteOptionalItem> note);
+	
+	/**
+	 * Set the description
+	 * 
+	 * @param description
+	 */
+	void setDescription(Optional<DescritionOptionalItem> description);
 }

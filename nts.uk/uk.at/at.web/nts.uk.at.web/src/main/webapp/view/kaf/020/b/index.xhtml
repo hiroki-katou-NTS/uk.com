@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.request.dom.application.AppReason
+            nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+            nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+            nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/kaf/000/a/component1/kaf000.a.component1.css"/>
+        <com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css"/>
+        <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css"/>
+        <com:stylefile path="/view/kaf/000/a/component2/kaf000.a.component2.css"/>
+        <com:stylefile path="/view/kaf/000/a/component3/kaf000.a.component3.css"/>
+        <com:stylefile path="/view/kaf/000/a/component4/kaf000.a.component4.css"/>
+        <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js"/>
+        <com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component5/kaf000.a.component5.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component2/kaf000.a.component2.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component3/kaf000.a.component3.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component4/kaf000.a.component4.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js"/>
+        <com:scriptfile path="/view/kaf/020/b/kaf020.b.vm.js"/>
+        <com:scriptfile path="/view/kaf/020/shr/kaf020.shr.vm.js"/>
+        <com:stylefile path="/view/kaf/020/shr/kaf020.shr.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <div class="ntsControl">
+                <a class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"></a>
+            </div>
+            <button class="proceed"
+                    data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF020_16')"></button>
+            <div  data-bind="component: { name: 'kaf000-a-component7',
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block; margin-left: 10px"></div>
+        </div>
+        <div id="contents-area">
+            <div data-bind="component: { name: 'kaf000-a-component1',
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block;"></div>
+            <div class="table">
+                <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput,
+									isAgentMode: isAgentMode
+                                         } }"></div>
+                <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+            </div>
+            <div data-bind="component: { name: 'kaf000-a-component3',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+            <div data-bind="component: { name: 'kaf000-a-component4',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+            <div class="cell" data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
+            <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component5',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+            <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component6',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

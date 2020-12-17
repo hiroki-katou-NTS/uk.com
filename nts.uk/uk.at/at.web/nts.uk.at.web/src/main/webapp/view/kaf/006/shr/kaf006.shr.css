@@ -1,0 +1,35 @@
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.table-border {
+    border: 1px solid #999999;
+}
+
+button.nts-switch-button {
+	width: 92px;
+}
+
+#kaf006component2 .col-1 {
+    width: 125px;
+}
+
+#kaf006tab1 .col-1, #kaf006tab2 .col-1, #kaf006tab3 .col-1, #kaf006tab4 .col-1 {
+    width: 125px;
+}
+
+#kaf006tab1, #kaf006tab2, #kaf006tab3, #kaf006tab4 {
+    margin-top: 5px;
+}
+
+.py-10 {
+    padding: 10px;
+}
+
+.py-5 {
+    padding: 5px;
+}

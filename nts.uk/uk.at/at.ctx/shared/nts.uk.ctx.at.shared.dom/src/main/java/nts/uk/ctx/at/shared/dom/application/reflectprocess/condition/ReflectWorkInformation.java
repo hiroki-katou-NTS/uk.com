@@ -25,16 +25,17 @@ public class ReflectWorkInformation {
 			// [input. 勤務種類を反映する]をチェック
 			if (changeWorkType.orElse(false)) {
 
-				// 勤怠項目ID一覧 = [勤務種類コード]、[振休振出として扱う区分]、[振休振出として扱う日数]に該当する勤怠項目ID
-				lstItemId.addAll(Arrays.asList(1, 1292, 1293));
+			// 勤怠項目ID一覧 = [勤務種類コード]、[振休振出として扱う区分]、[振休振出として扱う日数]に該当する勤怠項目ID
+			lstItemId.addAll(Arrays.asList(28, 1292, 1293));
+			// 申請反映状態にする
+			UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
 
 			}
 
 			// [input. 就業時間帯を反映する]をチェック
 			if (changeWorkTime.orElse(false)) {
-
 				// 勤怠項目ID一覧 = [就業時間帯コード]に該当する勤怠項目ID
-				lstItemId.addAll(Arrays.asList(2));
+				lstItemId.addAll(Arrays.asList(29));
 			}
 			
 			// 勤務情報と始業終業を変更する

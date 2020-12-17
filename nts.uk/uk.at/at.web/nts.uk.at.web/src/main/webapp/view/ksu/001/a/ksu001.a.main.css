@@ -105,11 +105,6 @@
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
-	width: 110px;
-	margin-bottom: 10px;
-}
-
-#person-setting button{
 	width: auto;
 	margin-bottom: 10px;
 }
@@ -175,8 +170,7 @@
 }
 
 #A1_7_1 {
-	width: 390px !important;
-	height: 100px;
+	width: fit-content;
 }
 
 #A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
@@ -330,6 +324,7 @@ button[disabled] {
 	padding-bottom: 2px;
 	border-bottom: 1px solid #B1B1B1;
 	white-space: nowrap;
+	width: fit-content;
 }
 
 #functon-area-row2-left {
@@ -462,8 +457,7 @@ tbody a.x-link:hover {
 
 .right-content {
 	height: calc(100% - 80px);
-	width: calc(100% - 1px);
-   
+	width: fit-content;
 }
 
 html {

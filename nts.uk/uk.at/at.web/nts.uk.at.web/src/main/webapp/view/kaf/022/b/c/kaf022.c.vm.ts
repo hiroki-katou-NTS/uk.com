@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf022.c.viewmodel {
             self.substituteLeaveTime = ko.observable(1);
             self.nursing = ko.observable(1);
             self.childNursing = ko.observable(1);
-            self.specialVacationTime = ko.observable(1);
+            self.specialVacationTime = ko.observable(0);
 
             self.halfDayAnnualLeaveUsageLimitCheck = ko.observable(0);
 

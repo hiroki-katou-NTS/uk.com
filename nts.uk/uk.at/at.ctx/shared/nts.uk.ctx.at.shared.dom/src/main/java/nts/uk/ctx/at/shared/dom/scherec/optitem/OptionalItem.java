@@ -48,10 +48,6 @@ public class OptionalItem extends AggregateRoot {
 	/** The usage atr. */
 	// 任意項目利用区分
 	private OptionalItemUsageAtr usageAtr;
-
-	/** The calculation atr. */
-	// 計算区分
-	private CalcUsageAtr calcAtr;
 	
 	/** The emp condition atr. */
 	// 雇用条件区分
@@ -71,7 +67,19 @@ public class OptionalItem extends AggregateRoot {
 
 	/** The unit. */
 	// 単位
-	private UnitOfOptionalItem unit;
+	private Optional<UnitOfOptionalItem> unit;
+	
+	/** The Calculation Classification */
+	// 計算区分
+	private CalculationClassification calcAtr;
+	
+	/** The note */
+	// 任意項目のメモ
+	private Optional<NoteOptionalItem> note;
+	
+	/** The Description */
+	// 説明文
+	private Optional<DescritionOptionalItem> description;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
@@ -82,24 +90,46 @@ public class OptionalItem extends AggregateRoot {
 		if (this.calcResultRange.hasBothLimit()) {
 			BundledBusinessException be = BundledBusinessException.newInstance();
 			be.addMessage("Msg_574");
-			switch (this.optionalItemAtr) {
-			case NUMBER:
-				if (this.calcResultRange.getNumberRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case AMOUNT:
-				if (this.calcResultRange.getAmountRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case TIME:
-				if (this.calcResultRange.getTimeRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			default:
-				throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
+			    switch (this.optionalItemAtr) {
+			    case NUMBER:
+			        if (this.calcResultRange.getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case AMOUNT:
+			        if (this.calcResultRange.getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case TIME:
+			        if (this.calcResultRange.getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    default:
+			        throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			    }
+			} else {
+			    switch (this.optionalItemAtr) {
+                case NUMBER:
+                    if (this.calcResultRange.getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case AMOUNT:
+                    if (this.calcResultRange.getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case TIME:
+                    if (this.calcResultRange.getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("unknown value of enum OptionalItemAtr");
+                }
 			}
 		}
 	}
@@ -124,11 +154,13 @@ public class OptionalItem extends AggregateRoot {
 		this.optionalItemName = memento.getOptionalItemName();
 		this.optionalItemAtr = memento.getOptionalItemAtr();
 		this.usageAtr = memento.getOptionalItemUsageAtr();
-		this.calcAtr = memento.getCalcAtr();
 		this.empConditionAtr = memento.getEmpConditionAtr();
 		this.performanceAtr = memento.getPerformanceAtr();
 		this.calcResultRange = memento.getCalculationResultRange();
 		this.unit = memento.getUnit();
+		this.calcAtr = memento.getCalcAtr();
+		this.note = memento.getNote();
+		this.description = memento.getDescription();
 	}
 
 	/**
@@ -142,11 +174,13 @@ public class OptionalItem extends AggregateRoot {
 		memento.setOptionalItemAtr(this.optionalItemAtr);
 		memento.setOptionalItemName(this.optionalItemName);
 		memento.setOptionalItemUsageAtr(this.usageAtr);
-		memento.setCalcAtr(this.calcAtr);
 		memento.setEmpConditionAtr(this.empConditionAtr);
 		memento.setPerformanceAtr(this.performanceAtr);
 		memento.setCalculationResultRange(this.calcResultRange);
 		memento.setUnit(this.unit);
+		memento.setCalAtr(this.calcAtr);
+		memento.setNote(this.note);
+		memento.setDescription(this.description);
 	}
 
 	/* (non-Javadoc)
@@ -236,7 +270,7 @@ public class OptionalItem extends AggregateRoot {
 	 */
 	public boolean checkTermsOfCalc(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
 		// 計算区分を確認
-		if(this.calcAtr.isNotCalc()) {
+		if(this.calcAtr == CalculationClassification.NOT_CALC) {
 			return false;
 		}
 		// 雇用条件区分を確認
