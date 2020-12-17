@@ -22,13 +22,13 @@ public class EstimateAmountForCompanyTest {
 	@Test
 	public void testUpdate() {
 		
-		val detail = new EstimateAmountDetail(
+		val detail = Helper.createEstDetailPrice();
+        val ceAmount = new EstimateAmountForCompany(detail);
+        
+        val newDetail = new EstimateAmountDetail(
 				EstimateAmountList.create(Arrays.asList(new EstimateAmountByCondition(new EstimateAmountNo(1),  new EstimateAmount(90000)))),
 				EstimateAmountList.create(Arrays.asList(new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(1000))))
 				);
-        val ceAmount = new EstimateAmountForCompany(detail);
-        
-        val newDetail = Helper.createEstDetailPrice();
         
         ceAmount.update(newDetail);
         
