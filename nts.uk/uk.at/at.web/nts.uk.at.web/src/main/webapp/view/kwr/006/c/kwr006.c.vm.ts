@@ -46,6 +46,9 @@ module nts.uk.at.view.kwr006.c {
             loadSwapLst: KnockoutObservable<boolean> = ko.observable(true);
             sizeClassificationLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KWR006_53"));
 
+            // mode copy : add font sĩze
+            dataCoppy: KnockoutObservable<any>;
+
             constructor() {
                 var self = this;
                 self.C3_2_value = ko.observable("");
@@ -206,9 +209,10 @@ module nts.uk.at.view.kwr006.c {
 
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR006_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR006_D').nameCopy);
+                        self.dataCoppy = ko.observable(nts.uk.ui.windows.getShared('KWR006_D'));
                         if (_.size(KWR006DOutput.lstAtdChoose.errorList)) {
                             nts.uk.ui.dialog.alertError({ messageId: KWR006DOutput.lstAtdChoose.errorList }).then(() => {
-                                self.saveData();
+                                self.saveData().always(() => self.dataCoppy(null));
                             });
                         }
                         else {
@@ -256,12 +260,13 @@ module nts.uk.at.view.kwr006.c {
                 let dfd = $.Deferred();
                 let command: any = {};
                 let itemType: number = nts.uk.ui.windows.getShared('itemSelection');
+                let fontSizeCopy: any = _.isNil(self.dataCoppy) ? null : self.dataCoppy();
                 command.itemCode = self.C3_2_value();
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 // command.printSettingRemarksColumn = self.C5_4_value();
                 command.itemType = itemType;
-                command.textSize = self.C9_2_value();
+                command.textSize = _.isNil(fontSizeCopy) ? self.C9_2_value() : fontSizeCopy.fontSize ;
                 command.layoutID = self.layoutId();
                 command.isRemarkPrinted = self.isEnableRemarkInputContents();
                 _.map(self.currentCodeListSwap(), function (value, index) {
