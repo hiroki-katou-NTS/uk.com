@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkInsertCmd;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkUpdateCmd;
 
 /**
@@ -11,16 +12,22 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkU
  * @author huylq
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class ParamCheckBeforeUpdate {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ParamCalculationHolidayWorkMobile {
 
-	private boolean require;
-	
 	private String companyId;
+	
+	private String employeeId;
+	
+	private String appDate;
+	
+	private Boolean mode;
 	
 	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
 	
-	private AppHolidayWorkUpdateCmd appHolidayWork;
+	private AppHolidayWorkInsertCmd appHolidayWorkInsert;
+	
+	private AppHolidayWorkUpdateCmd appHolidayWorkUpdate;
 }

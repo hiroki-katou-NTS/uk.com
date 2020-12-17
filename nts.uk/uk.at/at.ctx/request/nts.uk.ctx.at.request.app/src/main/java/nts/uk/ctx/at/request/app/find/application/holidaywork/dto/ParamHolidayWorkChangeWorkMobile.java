@@ -4,23 +4,28 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkUpdateCmd;
 
 /**
  * Refactor5
  * @author huylq
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class ParamCheckBeforeUpdate {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ParamHolidayWorkChangeWorkMobile {
 
-	private boolean require;
-	
 	private String companyId;
 	
-	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
+	private String appDate;
 	
-	private AppHolidayWorkUpdateCmd appHolidayWork;
+	private String workTypeCode;
+	
+	private String workTimeCode;
+	
+	private int startTime;
+	
+	private int endTime;
+	
+	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
 }

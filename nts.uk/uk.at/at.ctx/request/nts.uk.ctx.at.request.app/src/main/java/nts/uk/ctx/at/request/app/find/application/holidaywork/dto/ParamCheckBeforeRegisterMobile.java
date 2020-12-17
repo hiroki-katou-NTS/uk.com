@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkUpdateCmd;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkInsertCmd;
 
 /**
  * Refactor5
@@ -14,13 +14,30 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkU
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ParamCheckBeforeUpdate {
-
+public class ParamCheckBeforeRegisterMobile {
+	
+	/**
+	 * require
+	 */
 	private boolean require;
 	
+	/**
+	 * 画面モード
+	 */
+	private Boolean mode;
+	
+	/**
+	 * 会社ID
+	 */
 	private String companyId;
 	
+	/**
+	 * 休日出勤申請起動時の表示情報
+	 */
 	private AppHdWorkDispInfoCmd appHdWorkDispInfo;
 	
-	private AppHolidayWorkUpdateCmd appHolidayWork;
+	/**
+	 * 休日出勤申請
+	 */
+	private AppHolidayWorkInsertCmd appHolidayWork;
 }

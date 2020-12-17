@@ -40,7 +40,7 @@ public interface HolidayService {
 			Optional<List<GeneralDate>> dateList, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
-	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.A：休日出勤時間申請（新規）.ユースケース.計算する(従業員).計算（従業員）
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.6.計算する(従業員).6.計算する(従業員)
 	 * @param companyId
 	 * @param employeeId
 	 * @param date
@@ -107,11 +107,10 @@ public interface HolidayService {
 	 * @param companyId
 	 * @param appHdWorkDispInfoOutput
 	 * @param appHolidayWork
-	 * @param proxy
 	 * @return
 	 */
 	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
-			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork, boolean isProxy);
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork);
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.11.休出申請（振休変更）削除.11.休出申請（振休変更）削除
@@ -130,4 +129,47 @@ public interface HolidayService {
 	 */
 	public CheckBeforeOutputMulti checkBeforeRegisterMulti(boolean require, String companyId, List<String> empList,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.休日出勤申請の起動（新規・編集）.休日出勤申請の起動（新規・編集）
+	 * @param mode
+	 * @param companyId
+	 * @param employeeId
+	 * @param appDate
+	 * @param appHdWorkDispInfo
+	 * @param appHolidayWork
+	 * @param appDispInfoStartupOutput
+	 * @return
+	 */
+	public AppHdWorkDispInfoOutputMobile getStartMobile(Boolean mode,
+			String companyId,
+			Optional<String> employeeId,
+			Optional<GeneralDate> appDate,
+			Optional<AppHdWorkDispInfoOutput> appHdWorkDispInfo,
+			Optional<AppHolidayWork> appHolidayWork,
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.申請日を変更する.申請日を変更する
+	 * @param companyId
+	 * @param appDate
+	 * @param appHdWorkDispInfo
+	 * @return
+	 */
+	public AppHdWorkDispInfoOutput changeDateMobile(String companyId, GeneralDate appDate,
+			AppHdWorkDispInfoOutput appHdWorkDispInfo);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.ユースケース
+	 * 				.計算して申請時間入力へ遷移する(Tính toán rồi di chuyển đến ''申請時間入力'').計算して申請時間入力へ遷移する
+	 * @param companyId
+	 * @param appHdWorkDispInfoOutput
+	 * @param appHolidayWork
+	 * @param mode
+	 * @param employeeId
+	 * @param appDate
+	 * @return
+	 */
+	public AppHdWorkDispInfoOutput calculateMobile(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork, Boolean mode, String employeeId, Optional<GeneralDate> appDate);
 }

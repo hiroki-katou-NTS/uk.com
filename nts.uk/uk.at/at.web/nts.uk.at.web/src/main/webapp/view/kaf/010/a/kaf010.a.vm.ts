@@ -255,8 +255,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 			// ※15
 			if (!_.isNil(self.dataSource.calculationResult)) {
-				if (!_.isEmpty(self.dataSource.calculationResult.applicationTime.applicationTime)) {
-					self.overTimeTableVisible(true);
+				if (!_.isNil(self.dataSource.calculationResult.applicationTime)){
+					let applicationTimes = self.dataSource.calculationResult.applicationTime.applicationTime;
+					if (!_.isEmpty(applicationTimes) && applicationTimes.filter(applicationTime => applicationTime.attendanceType==AttendanceType.NORMALOVERTIME).length > 0) {
+						self.overTimeTableVisible(true);
+					}
 				}
 			} else {
 				self.overTimeTableVisible(false);

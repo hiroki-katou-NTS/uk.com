@@ -153,4 +153,23 @@ public interface ICommonAlgorithmHolidayWork {
 	
 	public OverTimeContent getOverTimeContent(Optional<WorkTypeCode> workTypeCode, Optional<WorkTimeCode> workTimeCode, 
 			List<ActualContentDisplay> actualContentDisplayList);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.勤務情報の申請内容をチェックする.勤務情報の申請内容をチェックする
+	 * @param companyId
+	 * @param appHdWorkDispInfo
+	 * @param appHolidayWork
+	 * @param mode
+	 */
+	public void checkContentApp(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork, Boolean mode);
+
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.遷移する前のエラーチェック.遷移する前のエラーチェック
+	 * @param companyId
+	 * @param appHdWorkDispInfo
+	 * @param appHolidayWork
+	 */
+	public void checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork);
 }
