@@ -341,7 +341,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 			// Get index of temp sheet
 			int indexTempSheet = sheet.getIndex();
-			WorkSheetInfo sheetInfo = new WorkSheetInfo(sheet, currentRow, indexTempSheet);
+			String itemNameSelected = outputItemMonthlyWork.getItemName().v();
+			WorkSheetInfo sheetInfo = new WorkSheetInfo(sheet, currentRow, indexTempSheet, itemNameSelected);
 
 			// Copy sheet
 			sheet = this.copySheet(sheetCollection, sheetInfo);
@@ -3081,7 +3082,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Worksheet ws = wsc.get(wsc.getCount() - 1);
 		// sheet name
 		sheetInfo.plusNewSheetIndex();
-		String sheetName = WorkScheOutputConstants.SHEET_NAME + sheetInfo.getNewSheetIndex();
+		
+		String sheetName = StringUtils.isEmpty(sheetInfo.getSheetName())
+				? WorkScheOutputConstants.SHEET_NAME + sheetInfo.getNewSheetIndex()
+				: sheetInfo.getSheetName();
 		ws.setName(sheetName);
 		return ws;
 	}
