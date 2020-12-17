@@ -88,7 +88,7 @@ public class ApplicationDetailSetting {
 			// INPUT．「残業申請」を確認する
 			if (!overTime.isPresent()) {
 				// エラーメッセージ（Msg_1656）を表示する
-				throw new BusinessException("MSg_1656");
+				throw new BusinessException("Msg_1656");
 				
 			}
 			
@@ -96,7 +96,7 @@ public class ApplicationDetailSetting {
 		if (appType == ApplicationType.HOLIDAY_WORK_APPLICATION) { // 申請種類 = 休出時間申請
 			if (!holiday.isPresent()) {
 				// エラーメッセージ（Msg_1656）を表示する
-				throw new BusinessException("MSg_1656");
+				throw new BusinessException("Msg_1656");
 			}
 		}
 		

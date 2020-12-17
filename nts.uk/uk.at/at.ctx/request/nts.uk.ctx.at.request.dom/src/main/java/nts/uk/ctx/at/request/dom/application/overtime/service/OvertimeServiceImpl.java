@@ -1256,9 +1256,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appOverTime,
 				mode);
 		if (displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == nts.uk.shr.com.enumcommon.NotUseAtr.USE) {
-			Integer prePost = displayInfoOverTime.getAppDispInfoStartup()
-					.getAppDispInfoWithDateOutput()
-					.getPrePostAtr().value;
+			Integer prePost = appOverTime.getApplication().getPrePostAtr().value;
 				WorkContent workContent = new WorkContent();
 				if (appOverTime.getWorkInfoOp().isPresent()) {
 					workContent.setWorkTypeCode(appOverTime.getWorkInfoOp().get().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTypeCode().v()));
@@ -1293,7 +1291,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workContent.setBreakTimes(breakTimes);
 			
 			// 計算処理を実行する
-			this.calculate(
+			DisplayInfoOverTime temp = this.calculate(
 					companyId,
 					employeeId,
 					dateOp,
@@ -1310,6 +1308,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 						.map(x -> x.getApplicationTime().orElse(null))
 						.orElse(null),
 					workContent);
+			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
+			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 		}
 		
 		return displayInfoOverTime;

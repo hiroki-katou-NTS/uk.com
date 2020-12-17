@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
@@ -62,7 +61,7 @@ public class AppOverTimeInsertCommand {
 		
 		return new AppOverTime(
 				EnumAdaptor.valueOf(overTimeClf, OvertimeAppAtr.class),
-				applicationTime.toDomain(),
+				applicationTime == null ? null : applicationTime.toDomain(),
 				CollectionUtil.isEmpty(breakTimeOp) ?
 						Optional.empty() : 
 						Optional.of(breakTimeOp.stream()
