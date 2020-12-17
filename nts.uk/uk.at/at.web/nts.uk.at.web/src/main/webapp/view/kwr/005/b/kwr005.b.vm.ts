@@ -1,10 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kwr005.b {
-  const NUM_ROWS = 10;
-  const KWR005_B_INPUT = 'KWR005_WORK_STATUS_DATA';
-  const KWR005_B_OUTPUT = 'KWR005_WORK_STATUS_RETURN';
-  const KWR005_C_INPUT = 'KWR005_C_DATA';
-  const KWR005_C_OUTPUT = 'KWR005_C_RETURN';
 
   const PATH = {
     getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
@@ -251,10 +246,14 @@ module nts.uk.at.view.kwr005.b {
                 ));
               }
             });
+          } else {
+            vm.$dialog.error({ messageId: 'Msg_1928'}).then(() => {
+              vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null});              
+            });
           }
           vm.$blockui('hide');
         })
-        .fail()
+        .fail((error) => {})
         .always(() => vm.$blockui('hide'));
 
       return vm.currentCodeListSwap();
@@ -351,16 +350,16 @@ module nts.uk.at.view.kwr005.b {
       let listWorkStatus: Array<any> = [];
 
       vm.$blockui('grayout');
-
+      //sort by code with asc
+      vm.settingListItems.removeAll();
+      
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).done((data) => {
         if (!_.isNil(data) && data.length > 0) {
           _.forEach(data, (item) => {
             let code = _.padStart(item.settingDisplayCode, 2, '0');
             listWorkStatus.push(new ItemModel(code, _.trim(item.settingName), item.settingId));
           });
-
-          //sort by code with asc
-          vm.settingListItems([]);
+          
           listWorkStatus = _.orderBy(listWorkStatus, ['code', 'asc']);
           vm.settingListItems(listWorkStatus);
 
