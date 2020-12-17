@@ -2025,9 +2025,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
-	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-	            		cell.putValue(value, false);
-	            	}
+//	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+//	            		cell.putValue(value, false);
+//	            	}
 	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2190,9 +2190,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
-				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-				            		cell.putValue(value, false);
-				            	}
+//				            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
+//				            		cell.putValue(value, false);
+//				            	}
 				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
