@@ -515,6 +515,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public getData() {
 			let self = this;
 			let canModified = 0;
+			block.grayout();
 			if (self.dataFromA().dayEdit < self.targetDate()) {
 				canModified = 1;
 			}
@@ -549,6 +550,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.convertDataIntoExtable();
 				self.initExtableData();
 			});
+			block.clear();
 		}
 		
 		// ①<<ScreenQuery>> 初期起動の情報取得
@@ -581,7 +583,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public getWorkingByDate(targetDate: any, check?: number): JQueryPromise<any> {
 			let self = this;
 			let dfd = $.Deferred<any>();
-			block.grayout();
 			let targetOrg = {
 				unit: self.dataFromA().unit,
 				workplaceId: self.dataFromA().workplaceId != null ? self.dataFromA().workplaceId : null,
@@ -632,7 +633,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					errorDialog({ messageId: error.messageId });
 					dfd.reject();
 				}).always(function() {
-					block.clear();
 				});
 			return dfd.promise();
 		}
@@ -2596,6 +2596,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public nextDay() {
 			let self = this;
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
+			block.grayout();
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.nextDayImpl();
@@ -2603,6 +2604,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				self.nextDayImpl();
 			}
+			block.clear();
 		}
 
 		public nextDayImpl() {
@@ -2777,7 +2779,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}).fail(function(res: any) {
 				errorDialog({ messageId: res.messageId, messageParams: res.parameterIds });
 			}).always(function() {
-				block.clear();
 			});
 		}
 

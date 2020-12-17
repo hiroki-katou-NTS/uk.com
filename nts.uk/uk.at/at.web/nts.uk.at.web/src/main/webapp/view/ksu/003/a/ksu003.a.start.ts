@@ -4,15 +4,16 @@ module nts.uk.at.view.ksu003.a {
 		let screenModel = new viewmodel.ScreenModel();
 		screenModel.startPage().done(function() {
 			__viewContext.bind(screenModel);
-			$("#prev-all").focus();
-			$('#functon-area-row2-left').trigger('click');
 			$(window).resize(function() {
 				screenModel.setPositionButonDownAndHeightGrid();
 			});
-			nts.uk.ui.block.clear();
+			setTimeout(() => {
+				$('#period-setting').focus();
+			}, 0.5);
 		});
 		initEvent();
 		initEvent2();
+		nts.uk.ui.block.clear();
 	});
 	function initEvent(): void {
 		//click btnA5
