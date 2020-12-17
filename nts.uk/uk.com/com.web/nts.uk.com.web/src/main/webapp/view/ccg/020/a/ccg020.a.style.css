@@ -30,7 +30,7 @@
   cursor: pointer;
 }
 .result-search {
-  display: block;
+  display: block !important;
   line-height: 2;
   padding-left: 10px;
   padding-right: 10px;

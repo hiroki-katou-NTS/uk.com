@@ -202,6 +202,13 @@ module nts.uk.com.view.ccg020.a {
             const $tableResult = $('<div/>').attr('id', 'list-box');
             const list = vm.treeMenuResult();
             if (list.length > 0) {
+              $tableResult.append(
+                $('<p/>')
+                  .addClass('result-search')
+                  .text(nts.uk.text.format(nts.uk.resource.getText('CCG002_8'), vm.valueSearch())
+                )
+              );
+
               _.forEach(list, (item) => {
                 const $ul = $('<a/>')
                   .addClass('result-search custom-limited-label')
