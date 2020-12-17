@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
+    import Kaf006AViewModel =  nts.uk.at.view.kaf006_ref.a.viewmodel.Kaf006AViewModel;
 
     @component({
         name: 'kaf006-shr-tab4',
@@ -11,10 +12,10 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell">
                     <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
                         name: $i18n('KAF006_16'),
-                        options: workTypeLst,
+                        options: $parent.workTypeLst,
                         optionsValue: 'workTypeCode',
                         optionsText: 'name',
-                        value: selectedWorkTypeCD,
+                        value: $parent.selectedWorkTypeCD,
                         required: true
                     }"></div>
                 </div>
@@ -94,7 +95,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: $parent.openKDL036"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: openKDL036"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
             </div>
             <div class="table" style="margin: 10px 0;">
@@ -123,7 +124,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: $parent.openKDL035"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: openKDL035"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
             </div>
             <div class="table" style="margin: 10px 0;">
@@ -152,8 +153,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
     })
 
     class Kaf006Tab4ViewModel extends ko.ViewModel {
-        workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedWorkTypeCD: KnockoutObservable<any> = ko.observable();
+        // workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        // selectedWorkTypeCD: KnockoutObservable<any>;
         isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
         startTime1: KnockoutObservable<number> = ko.observable();
         endTime1: KnockoutObservable<number> = ko.observable();
@@ -164,13 +165,21 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             const vm = this;
 
             if (params) {
-                vm.workTypeLst = params.workTypeLst;
-                vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                // vm.workTypeLst = params.workTypeLst;
+                // vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
             }
         }
 
         mounted() {
 
+        }
+
+        public openKDL036() {
+            Kaf006AViewModel.openKDL036();
+        }
+
+        public openKDL035() {
+            ko.contextFor(this.$el).$parent.content.openKDL035();
         }
     }
 }

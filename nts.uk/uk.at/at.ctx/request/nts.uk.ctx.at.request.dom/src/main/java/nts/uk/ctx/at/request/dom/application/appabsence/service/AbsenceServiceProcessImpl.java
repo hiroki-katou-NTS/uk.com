@@ -850,7 +850,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    }
 	    
 	    // 就業時間帯を判断する
-	    Optional<String> workTimeCD = this.determineWorkingHour(employeeInfo.get().getSid(), GeneralDate.fromString(date.get(), "yyyy/MM/dd"), selectedWorkTimeCD, workInfoDaily, schedule, workingCondition);
+	    Optional<String> workTimeCD = this.determineWorkingHour(employeeInfo.get().getSid(), date.isPresent() ? GeneralDate.fromString(date.get(), "yyyy/MM/dd") : null, selectedWorkTimeCD, workInfoDaily, schedule, workingCondition);
 	    
 	    // 取得した「就業時間帯コード」をチェックする
 	    if (!workTimeCD.isPresent()) {
@@ -1631,32 +1631,36 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     }
 
     private boolean checkWorkTypeChangeSubHd(WorkType wtBefore, WorkType wtAfter) {
-        if (wtAfter.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-            if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
-                    && wtBefore.getDailyWork().getOneDay().equals(wtAfter.getDailyWork().getOneDay())) {
-                return true;
-            }
-        } else {
-            if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
-                    && (wtAfter.getDailyWork().getMorning().equals(WorkTypeClassification.SubstituteHoliday) 
-                            || wtAfter.getDailyWork().getAfternoon().equals(WorkTypeClassification.SubstituteHoliday))) {
-                return true;
+        if (wtBefore != null) {
+            if (wtAfter.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+                if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
+                        && wtBefore.getDailyWork().getOneDay().equals(wtAfter.getDailyWork().getOneDay())) {
+                    return true;
+                }
+            } else {
+                if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
+                        && (wtAfter.getDailyWork().getMorning().equals(WorkTypeClassification.SubstituteHoliday) 
+                                || wtAfter.getDailyWork().getAfternoon().equals(WorkTypeClassification.SubstituteHoliday))) {
+                    return true;
+                }
             }
         }
         return false;
     }
     
     private boolean checkWorkTypeChangeHdString(WorkType wtBefore, WorkType wtAfter) {
-        if (wtAfter.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-            if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
-                    && wtBefore.getDailyWork().getOneDay().equals(wtAfter.getDailyWork().getOneDay())) {
-                return true;
-            }
-        } else {
-            if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
-                    && (wtAfter.getDailyWork().getMorning().equals(WorkTypeClassification.Pause) 
-                            || wtAfter.getDailyWork().getAfternoon().equals(WorkTypeClassification.Pause))) {
-                return true;
+        if (wtBefore != null) {
+            if (wtAfter.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+                if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
+                        && wtBefore.getDailyWork().getOneDay().equals(wtAfter.getDailyWork().getOneDay())) {
+                    return true;
+                }
+            } else {
+                if (wtBefore.getDailyWork().getWorkTypeUnit().equals(wtAfter.getDailyWork().getWorkTypeUnit()) 
+                        && (wtAfter.getDailyWork().getMorning().equals(WorkTypeClassification.Pause) 
+                                || wtAfter.getDailyWork().getAfternoon().equals(WorkTypeClassification.Pause))) {
+                    return true;
+                }
             }
         }
         return false;

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetai
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeWorkTypeParam;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckTyingManagementParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
@@ -138,9 +139,8 @@ public class AppForLeaveWebService extends WebService{
 	
 	@POST
 	@Path("checkVacationTyingManage")
-	public VacationCheckOutput checkVacationTyingManage(WorkTypeDto wtBefore, WorkTypeDto wtAfter,
-            List<LeaveComDayOffManaDto> leaveComDayOffMana, List<PayoutSubofHDManagementDto> payoutSubofHDManagements) {
-	    return appForLeaveFinder.checkVacationTyingManage(wtBefore, wtAfter, leaveComDayOffMana, payoutSubofHDManagements);
+	public VacationCheckOutput checkVacationTyingManage(CheckTyingManagementParam checkTyingManageparam) {
+	    return appForLeaveFinder.checkVacationTyingManage(checkTyingManageparam.getWtBefore(), checkTyingManageparam.getWtAfter(), checkTyingManageparam.getLeaveComDayOffMana(), checkTyingManageparam.getPayoutSubofHDManagements());
 	}
 }
 

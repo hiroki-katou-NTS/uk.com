@@ -11,10 +11,10 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                 <div class="cell">
                     <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
                         name: $i18n('KAF006_16'),
-                        options: workTypeLst,
+                        options: $parent.workTypeLst,
                         optionsValue: 'workTypeCode',
                         optionsText: 'name',
-                        value: selectedWorkTypeCD,
+                        value: $parent.selectedWorkTypeCD,
                         required: true
                     }"></div>
                 </div>
@@ -154,8 +154,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
     })
 
     class Kaf006Tab2ViewModel extends ko.ViewModel {
-        workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedWorkTypeCD: KnockoutObservable<any> = ko.observable();
+        // workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        // selectedWorkTypeCD: KnockoutObservable<any>;
         isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
 
         // 60H超休
@@ -180,8 +180,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
             const vm = this;
 
             if (params) {
-                vm.workTypeLst = params.workTypeLst;
-                vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                // vm.workTypeLst = params.workTypeLst;
+                // vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
             }
 
             // vm.total = ko.observable(nts.uk.time.format.byId("Time_Short_HM", (vm.over60H() ? vm.over60H() : 0) + (vm.timeOff() ? vm.timeOff() : 0) 

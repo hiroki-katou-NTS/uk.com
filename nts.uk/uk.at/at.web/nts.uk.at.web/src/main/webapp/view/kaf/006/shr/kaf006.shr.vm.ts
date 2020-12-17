@@ -1,5 +1,7 @@
 module nts.uk.at.view.kaf006.shr.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class Kaf006ShrViewModel extends ko.ViewModel {
         create() {
@@ -13,6 +15,7 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
         public static openDialogKDL035(params: any) {
             console.log("Open KDL035");
 
+            setShared("KDL035_PARAMS", params);
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
                 const linkingDates: Array<any> = getShared('linkingDates');

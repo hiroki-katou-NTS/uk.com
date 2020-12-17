@@ -614,8 +614,8 @@ public class AppAbsenceFinder {
 	public VacationCheckOutput checkVacationTyingManage(WorkTypeDto wtBefore, WorkTypeDto wtAfter,
             List<LeaveComDayOffManaDto> leaveComDayOffMana, List<PayoutSubofHDManagementDto> payoutSubofHDManagements) {
 	    return this.absenseProcess.checkVacationTyingManage(
-	            wtBefore.toDomain(), 
-	            wtAfter.toDomain(), 
+	            wtBefore != null ? wtBefore.toDomain() : null, 
+	            wtAfter != null ? wtAfter.toDomain() : null, 
 	            leaveComDayOffMana.stream().map(item -> item.toDomain()).collect(Collectors.toList()), 
 	            payoutSubofHDManagements.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
 	}

@@ -29,6 +29,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		isCheckMourn: any = ko.observable(true);
 		requiredVacationTime: KnockoutObservable<number> = ko.observable(1200);
 		timeRequired: KnockoutObservable<string> = ko.observable();
+		leaveComDayOffManas: KnockoutObservableArray<any> = ko.observableArray([]);
+		workTypeBefore: KnockoutObservable<any> = ko.observable();
+		workTypeAfter: KnockoutObservable<any> = ko.observable();
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -40,13 +43,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		timeYearLeave: KnockoutObservable<string> = ko.observable();
 		childNursingRemain: KnockoutObservable<string> = ko.observable();
 		nursingRemain: KnockoutObservable<string> = ko.observable();
-		// yearRemain
-		// yearHourRemain
-		// childNursingRemain
-		// childNursingHourRemain
-		// nursingRemain
-		// nirsingHourRemain
-
 
         created(params: AppInitParam) {
             const vm = this;
@@ -68,7 +64,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					vm.isAgentMode(params.isAgentMode);
 				}
             }
-            
+			
+			// Load data common
             vm.$blockui("show");
 			vm.loadData(empLst, dateLst, vm.appType())
 				.then((loadDataFlag: any) => {
@@ -95,20 +92,80 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         mounted() {
 			const vm = this;
+
+			// Subscribe workType value before change
+			// vm.selectedWorkTypeCD.subscribe((oldValue) => {
+			// 	if (oldValue) {
+			// 		console.log(oldValue);
+			// 	}
+			// }, null, "beforeChange");
 			
-			vm.selectedWorkTypeCD.subscribe(() => {
+			// Subscribe workType value after change
+			vm.selectedWorkTypeCD.subscribe((workType) => {
 				if (_.isNil(vm.selectedWorkTypeCD()) || _.isEmpty(vm.workTypeLst())) {
 					return;
 				}
 
+				// return;
+				let commandCheckTyingManage = {
+					wtBefore: vm.workTypeBefore(),
+					wtAfter: vm.workTypeAfter(),
+					leaveComDayOffMana: [],
+					payoutSubofHDManagements: []
+				};
 
+				// Check vacation tying manage
+				// 休暇紐付管理をチェックする
+				vm.$blockui("show");
+				vm.$ajax(API.checkVacationTyingManage, commandCheckTyingManage)
+					.done((success) => {
+						if (success) {
+
+						}
+					}).fail((error) => {
+						if (error) {
+
+						}
+					}).always(() => {
+						vm.$blockui("hide");
+					});
+
+				let dates = [];
+				if (vm.application().opAppStartDate()) {
+					dates.push(vm.application().opAppStartDate());
+				}
+				if (vm.application().opAppEndDate() && (vm.application().opAppEndDate() !== vm.application().opAppStartDate())) {
+					dates.push(vm.application().opAppEndDate());
+				}
+
+				let commandChangeWorkType = {
+					appDates: dates,
+					startInfo: vm.data,
+					holidayAppType: vm.selectedType(),
+					workTypeCd: vm.selectedWorkTypeCD()
+				};
+				// Process change workType
+				// 勤務種類変更時処理
+				vm.$blockui("show");
+				vm.$ajax(API.changeWorkType, commandChangeWorkType)
+					.done((success) => {
+						if (success) {
+
+						}
+					}).fail((error) => {
+						if (error) {
+
+						}
+					}).always(() => {
+						vm.$blockui("hide");
+					});
 			});
 
 			vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
 			
 			// check selected item
             vm.selectedType.subscribe(() => {
-				console.log(this.selectedType())
+				console.log(this.selectedType());
 				let appDates = [];
 				if (_.isNil(vm.application().opAppStartDate())) {
 					appDates.push(vm.application().opAppStartDate());
@@ -161,8 +218,15 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		
 		fetchData(data: any) {
 			const vm = this;
+			
+			// Get value workType before change workType List
+			let workTypesBefore = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+			vm.workTypeBefore(workTypesBefore.length > 0 ? workTypesBefore[0] : null);
 
 			vm.data = data;
+			let workTypesAfter = _.filter(vm.data.workTypeLst, {'workTypeCode': data.selectedWorkTypeCD});
+			vm.workTypeAfter(workTypesAfter.length > 0 ? workTypesAfter[0] : null);
+
 			vm.selectedWorkTypeCD(data.selectedWorkTypeCD);
 
 			let workTypeLstOutput = data.workTypeLst;
@@ -383,11 +447,33 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		}
 		
 		public openKDL035() {
-			let params = {};
+			const vm = this;
+
+			let workType = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+
+			let params: any = {
+				// 社員ID
+				employeeId: __viewContext.user.employeeId,
+
+				// 申請期間
+				period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
+
+				// 日数単位（1.0 / 0.5）
+				daysUnit: workType[0].workAtr === 0 ? 1.0 : 0.5,
+
+				// 対象選択区分（自動 / 申請 / 手動
+				targetSelectionAtr: 1,
+
+				// List<表示する実績内容>
+				actualContentDisplayList: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
+
+				// List<振出振休紐付け管理>
+				managementData: ko.toJS(vm.leaveComDayOffManas)
+			};
 			Kaf006ShrViewModel.openDialogKDL035(params);
 		}
 
-		public openKDL036() {
+		public static openKDL036() {
 			let params = {};
 			Kaf006ShrViewModel.openDialogKDL036(params);
 		}
