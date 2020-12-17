@@ -244,10 +244,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.approve, command)
-            .done((successData: any) => {	
+            .done((successData: any) => {
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
-                	let param = [successData.reflectAppId];
-                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
                     vm.loadData();
                 });
             }).fail((res: any) => {
@@ -497,7 +495,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         cancel: "at/request/application/cancelapp",
         print: "at/request/application/print",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
-		sendMailAfterUpdate: "",
-		reflectAppSingle: "at/request/application/reflect-app"
+		sendMailAfterUpdate: ""
     }
 }
