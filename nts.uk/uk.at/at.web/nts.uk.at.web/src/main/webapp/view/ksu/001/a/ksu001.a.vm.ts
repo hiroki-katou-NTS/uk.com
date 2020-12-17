@@ -144,6 +144,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         // share tooltip to ksu003 
         tooltipShare: Array<any> = [];
+        scheduleModifyStartDate = null;
 
         constructor() {
             let self = this;
@@ -441,7 +442,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
                 console.log(data.dataBasicDto);
-
+                self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
                 self.saveDataGrid(data);
 
                 // khởi tạo data localStorage khi khởi động lần đầu.
@@ -1002,7 +1003,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let listCellNotEditBg = [];
             let listCellNotEditColor = [];
             let arrListCellLock = [];
-            
+            let scheduleModifyStartDate = self.scheduleModifyStartDate;
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             self.listEmpData = [];
@@ -1053,6 +1054,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let time = new Time(new Date(cell.date));
+                        let date = moment(cell.date, 'YYYY/MM/DD');
+                        if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
+                            cell.isEdit = false;
+                        }
+                        
                         let ymd = time.yearMonthDay;
                         let shiftName = '';
                         shiftName = (cell.haveData == true && (cell.shiftName == null || cell.shiftName == '')) ? getText("KSU001_94") : cell.shiftName;
@@ -1156,7 +1162,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {}
                         
-                        if (cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         } else if (cell.confirmed == true) {
@@ -1172,6 +1178,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
+                        if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
+                            cell.isEdit = false;
+                        }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
                         let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
@@ -1259,7 +1268,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Abc2
                         if (cell.isActive == false) {}
                         
-                        if (cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
@@ -1277,6 +1286,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         // set dataSource
+                        if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
+                            cell.isEdit = false;
+                        }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
                         let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
@@ -1407,7 +1419,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Abc2
                         if (cell.isActive == false) {}
                         
-                        if (cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 2));
@@ -1840,7 +1852,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
                         startDate: self.dateTimePrev(),
                         endDate: self.dateTimeAfter(),
-                        dayEdit: moment(dayEdit).add(3, 'd').format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
+                        dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
                     }
                     setShared("dataFromA", param);
                     setShared("dataTooltip", self.tooltipShare);
@@ -2642,9 +2654,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
 
-            $('div.ex-body-leftmost a').css("pointer-events", "");
-            $('div.ex-header-detail.xheader a').css("pointer-events", "");
-
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
@@ -2656,6 +2665,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableHelpBtn(true);
             self.updateExTableWhenChangeModeBg(self.detailContentDeco);
             self.setIconEventHeader();
+            $('div.ex-body-leftmost a').css("pointer-events", "");
+            $('div.ex-header-detail.xheader a').css("pointer-events", "");
+            
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
                 __viewContext.viewModel.viewAB.enableListWorkType(true);
@@ -2708,9 +2720,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
-            $('div.ex-body-leftmost a').css("pointer-events", "none");
-            $('div.ex-header-detail.xheader a').css("pointer-events", "none");
-
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
@@ -2738,6 +2747,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.shiftPalletControlDisable();
             }
             self.updateExTableWhenChangeModeBg(self.detailContentDecoModeConfirm);
+            $('div.ex-body-leftmost a').css("pointer-events", "none");
+            $('div.ex-header-detail.xheader a').css("pointer-events", "none");
             self.setIconEventHeader();
             nts.uk.ui.block.clear();
         }
@@ -3549,7 +3560,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         unit: number,
         workplaceId: string,
         workplaceGroupId: string,
-        code: string
+        code: string,
+        scheduleModifyStartDate: string
     }
 
     interface IDisplayControlPersonalCond {
