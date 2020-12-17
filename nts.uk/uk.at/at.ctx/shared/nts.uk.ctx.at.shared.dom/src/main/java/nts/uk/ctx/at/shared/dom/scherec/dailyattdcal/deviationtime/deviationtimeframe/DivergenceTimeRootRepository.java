@@ -10,8 +10,6 @@ public interface DivergenceTimeRootRepository {
 	 * @param frames  List<乖離時間NO>
 	 * @return 乖離時間
 	 */
-	public List<DivergenceTimeRoot> getList(List<Integer> frames);
+	public List<DivergenceTimeRoot> getList(String companyId, List<Integer> frames);
 	
-	
-	public List<DivergenceTimeRoot> getAllDivTime(String companyId);
 }

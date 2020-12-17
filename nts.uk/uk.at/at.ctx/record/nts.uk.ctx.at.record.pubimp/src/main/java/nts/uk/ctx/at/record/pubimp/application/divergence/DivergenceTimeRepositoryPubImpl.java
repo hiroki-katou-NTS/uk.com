@@ -20,9 +20,9 @@ public class DivergenceTimeRepositoryPubImpl implements DivergenceTimeRepository
 	private DivergenceTimeRepository repo;
 	
 	@Override
-	public List<DivergenceTimeRoot> getAllDivTime(String companyId) {
+	public List<DivergenceTimeRoot> getAllDivTime(String companyId, List<Integer> divNo) {
 		
-		return repo.getAllDivTime(companyId);
+		return repo.getUsedDivTimeListByNoV2(companyId, divNo);
 	}
 
 }

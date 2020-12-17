@@ -363,7 +363,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				}
 			}
 			// [RQ694]乖離時間Listを取得する
-			List<DivergenceTimeRoot> divergenceTimeRootList = divergenceTimeRoots.getList(frames);
+			List<DivergenceTimeRoot> divergenceTimeRootList = divergenceTimeRoots.getList(companyId, frames);
 			if (CollectionUtil.isEmpty(divergenceTimeRootList)) {
 				return output;
 			}
@@ -375,7 +375,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 														   .collect(Collectors.toList());
 			List<DivergenceReasonInputMethod> divergenceReasonInputMethodListFilter = divergenceReasonInputMethod.getData(companyId, lstNo);
 			
-			if (divergenceReasonInputMethodListFilter.isEmpty()) {
+			if (CollectionUtil.isEmpty(divergenceReasonInputMethodListFilter)) {
 				return output; // emptyを返す
 			}
 			output.setDivergenceReasonInputMethod(divergenceReasonInputMethodListFilter);
