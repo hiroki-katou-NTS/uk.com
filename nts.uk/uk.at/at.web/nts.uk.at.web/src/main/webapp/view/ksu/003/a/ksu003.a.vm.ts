@@ -1098,8 +1098,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				disableDSFilter = _.filter(disableDs, (x: any) => { return x.empId === self.lstEmpId[i].empId }); // list không dùng schedule
 
 				leftmostDs.push({ empId: self.lstEmpId[i].empId, empName: eName, cert: getText('KSU003_22') });
-				leftContentDeco.push(new CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
-				leftContentDeco.push(new CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
+				if(_.isEmpty(leftDSFilter)){
+					leftContentDeco.push(new CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
+					leftContentDeco.push(new CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
+				}
+				
 				let checkColor = ({
 					worktypeCode: 1,
 					worktypeName: 1,
@@ -2256,18 +2259,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
-				$(".toLeft").css("margin-left", "188px");
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$(".toLeft").css("margin-left", 193 + 'px');
-				}
 				if (window.innerHeight < 700) {
 					$(".ex-header-detail").css({ "width": 966 + 'px' });
 					$(".ex-body-detail").css({ "width": 983 + 'px' });
-				}
-				if (window.innerWidth < 1320) {
-					if (navigator.userAgent.indexOf("Chrome") != -1) {
-					$(".toLeft").css("margin-left", "204px");
-					}
 				}
 				
 			} else {
@@ -2275,23 +2270,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-				$(".toLeft").css("margin-left", 580 + 'px');
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 585 + 'px');
-				}
+				$(".toLeft").css("margin-left", 585 + 'px');
 				if (window.innerHeight < 700) {
 					$(".ex-header-detail").css({ "width": 588 + 'px' });
 					$(".ex-body-detail").css({ "width": 604 + 'px' });
 				}
-				
-				if (window.innerWidth < 1320) {
-					if (navigator.userAgent.indexOf("Chrome") != -1) {
-					$(".toLeft").css("margin-left", 595 + 'px');
-					}
-				}
-				/*$(".ex-body-detail").css({ 'overflow-x': 'scroll hidden' + '!important' });
-				$(".ex-body-detail").css({ 'overflow': 'none' + '!important' });
-				$(".ex-body-detail").css({ 'overflow-y': 'auto' + '!important' });*/
 			}
 
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
@@ -2342,28 +2325,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (!self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
-				$(".toLeft").css("margin-left", 580 + 'px');
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 585 + 'px');
-				}
-				if (window.innerWidth < 1320) {
-					if (navigator.userAgent.indexOf("Chrome") != -1) {
-					$(".toLeft").css("margin-left", 595 + 'px');
-					}
-				}
+				$(".toLeft").css("margin-left", 585 + 'px');
 			} else {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
-				$(".toLeft").css("margin-left", "188px");
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 193 + 'px');
-				}
-				if (window.innerWidth < 1320) {
-					if (navigator.userAgent.indexOf("Chrome") != -1) {
-					$(".toLeft").css("margin-left", "204px");
-					}
-				}
+				$(".toLeft").css("margin-left", 193 + 'px');
 			}
 
 			if (window.innerHeight < 700) {
