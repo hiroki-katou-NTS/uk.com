@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.extractresult;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
