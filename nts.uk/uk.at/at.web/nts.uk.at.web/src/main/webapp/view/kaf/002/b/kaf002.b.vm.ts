@@ -77,6 +77,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                         }
                     });
                     if(loadDataFlag) {
+						self.application().employeeIDLst(empLst);
                         let command = self.createCommandStart();
                         
                         self.$blockui( "show" );
@@ -204,7 +205,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             let agentAtr = false;
             let applicationCmd = ko.toJS(self.application);
             applicationCmd.enteredPerson = self.$user.employeeId;
-            applicationCmd.employeeID = self.$user.employeeId;
+            applicationCmd.employeeID = self.application().employeeIDLst()[0];
             let command = {
                     appStampOutputDto: data,
                     applicationDto: applicationCmd,

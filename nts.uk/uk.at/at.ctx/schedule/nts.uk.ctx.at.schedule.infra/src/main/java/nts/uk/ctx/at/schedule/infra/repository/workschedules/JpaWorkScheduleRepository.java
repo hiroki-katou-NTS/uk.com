@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -220,6 +221,15 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 			// List<KscdtSchAtdLvwTime> atdLvwTimes;
 			if (!oldData.get().atdLvwTimes.isEmpty()) {
+				String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+				if(newData.atdLvwTimes.isEmpty() || newData.wktmCd == null) {
+					oldData.get().atdLvwTimes.forEach(x -> {
+						this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
+						.setParameter("ymd", x.pk.ymd)
+						.setParameter("workNo", x.pk.workNo).executeUpdate();
+					});
+				}
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 					oldData.get().atdLvwTimes.forEach(x -> {
 						// Update data
@@ -237,15 +247,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						}
 						// Delete work no 2 when new data just have work no 1
 						if(workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() < 2 && x.pk.workNo == 2) {
-							String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
-									+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+							
 							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 									.setParameter("ymd", x.pk.ymd)
 									.setParameter("workNo", x.pk.workNo).executeUpdate();
 						}
 					});
 				}
-			} else {
+			} else if(!newData.atdLvwTimes.isEmpty() || newData.wktmCd != null){
 				// If old data is empty
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 							TimeLeavingWork leavingWork = workSchedule.getOptTimeLeaving().get()
@@ -302,17 +311,35 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				}
 			}
 		}
-			// List<KscdtSchBreakTs> breakTs;
 			if (!oldData.get().breakTs.isEmpty()) {
-				for (KscdtSchBreakTs y : newData.breakTs) {
-					oldData.get().breakTs.stream().forEach(x -> {
-						if (y.pk.frameNo == x.pk.frameNo) {
-							x.cid = y.cid;
-							x.breakTsStart = y.breakTsStart;
-							x.breakTsEnd = y.breakTsEnd;
-						}
-					});
+				oldData.get().breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
+				newData.breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
+				int sizeOld = oldData.get().breakTs.size();
+				int sizeNew = newData.breakTs.size();
+
+				if (sizeOld > sizeNew) {
+					// remove
+					for (int i = 0; i < sizeNew; i++) {
+						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
+						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
+						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
+					}
+					for (int i = sizeOld - 1; i >= sizeNew; i--) {
+						oldData.get().breakTs.remove(i);
+					}
+
+				} else {
+					for (int i = 0; i < sizeOld; i++) {
+						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
+						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
+						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
+					}
+					for (int i = sizeOld; i < sizeNew; i++) {
+						oldData.get().breakTs.add(newData.breakTs.get(i));
+					}
 				}
+			} else {
+				oldData.get().breakTs = newData.breakTs;
 			}
 			this.commandProxy().update(oldData.get());
 

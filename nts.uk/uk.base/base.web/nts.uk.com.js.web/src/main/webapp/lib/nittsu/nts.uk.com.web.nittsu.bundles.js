@@ -1346,7 +1346,7 @@ var nts;
              */
             function countHalf(text) {
                 var count = 0;
-                for (var i = 0; i < text.length; i++) {
+                for (var i = 0; i < (text || "").length; i++) {
                     var c = text.charCodeAt(i);
                     // 0x20 ～ 0x80: 半角記号と半角英数字
                     // 0xff61 ～ 0xff9f: 半角カタカナ
@@ -1361,7 +1361,7 @@ var nts;
             }
             text_3.countHalf = countHalf;
             function limitText(str, maxlength, index) {
-                var idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+                var idx = _.isNil(index) ? 0 : index;
                 return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
             }
             text_3.limitText = limitText;
@@ -1671,7 +1671,7 @@ var nts;
             * @param length 文字数
             */
             function padLeft(text, paddingChar, length) {
-                return charPadding(text, paddingChar, true, length);
+                return _.padStart(text, length, paddingChar);
             }
             text_3.padLeft = padLeft;
             /**
@@ -1681,7 +1681,7 @@ var nts;
             * @param length 文字数
             */
             function padRight(text, paddingChar, length) {
-                return charPadding(text, paddingChar, false, length);
+                return _.padEnd(text, length, paddingChar);
             }
             text_3.padRight = padRight;
             /**
@@ -1692,22 +1692,7 @@ var nts;
             * @param length 文字数
             */
             function charPadding(text, paddingChar, isPadLeft, length) {
-                var result;
-                if (countHalf(paddingChar) !== 1) {
-                    throw new Error('paddingChar "' + paddingChar + '" is not single character');
-                }
-                var lengthOfSource = countHalf(text);
-                var shortage = length - lengthOfSource;
-                if (shortage <= 0) {
-                    return text;
-                }
-                var pad = new Array(shortage + 1).join(paddingChar);
-                if (isPadLeft) {
-                    return pad + text;
-                }
-                else {
-                    return text + pad;
-                }
+                return isPadLeft ? _.padStart(text, length, paddingChar) : _.padEnd(text, length, paddingChar);
             }
             text_3.charPadding = charPadding;
             function replaceAll(originalString, find, replace) {
@@ -3202,8 +3187,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        return (duration.isNegative ? "-" : "")
-                            + duration.asHoursInt + ":" + duration.minutePartText;
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePart = duration.minutePart;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + minutePart, 2, '0')).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3639,8 +3624,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        return (duration.isNegative ? "-" : "")
-                            + duration.asHoursInt + ":" + duration.minutePartText + ":" + duration.secondPartText;
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, asMinutes = duration.asMinutes, asSeconds = duration.asSeconds;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + asMinutes, 2, '0') + ":" + _.padStart("" + asSeconds, 2, '0')).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -6561,13 +6546,16 @@ var nts;
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
-                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
+                                            var fable = $dialogContentDoc.find(":tabbable").toArray();
+                                            var focusableElements = _.sortBy(fable, function (o) { return parseInt(o.getAttribute("tabindex")); });
+                                            var first = _.first(focusableElements);
+                                            var last = _.last(focusableElements);
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
+                                                first.focus();
                                                 evt.preventDefault();
                                             }
                                             else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
+                                                last.focus();
                                                 evt.preventDefault();
                                             }
                                         }
@@ -6576,13 +6564,16 @@ var nts;
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
-                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
-                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
+                                            var fable = $dialogContentDoc.find(":tabbable").toArray();
+                                            var focusableElements = _.sortBy(fable, function (o) { return parseInt(o.getAttribute("tabindex")); });
+                                            var first = _.first(focusableElements);
+                                            var last = _.last(focusableElements);
+                                            if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                                first.focus();
                                                 evt.preventDefault();
                                             }
-                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
+                                            else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                                last.focus();
                                                 evt.preventDefault();
                                             }
                                         }
@@ -9318,13 +9309,7 @@ var nts;
                                 $cell.innerHTML = "";
                             }
                             else {
-                                var $controlIn = void 0;
-                                if (($controlIn = $cell.querySelector("a")) || ($controlIn = $cell.querySelector("button"))) {
-                                    $controlIn.innerText = value;
-                                }
-                                else {
-                                    $cell.textContent = value;
-                                }
+                                $cell.textContent = value;
                             }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
@@ -11948,7 +11933,7 @@ var nts;
                             var isValid = void 0, message = void 0;
                             if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
                                 isValid = false;
-                                message = uk.resource.getMessage('MsgB_1', [vtor.columnText || "時間"]);
+                                message = uk.resource.getMessage('MsgB_1', ["時間"]);
                             }
                             else if (!_.isUndefined(value) && !_.isEmpty(value)) {
                                 if (vtor.actValid === internal.TIME) {
@@ -11971,13 +11956,6 @@ var nts;
                                     isValid = isNumber(value, vtor.max, vtor.min);
                                     message = "MESSAGE_DEFINE_NEED";
                                     formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
-                                }
-                                else if (vtor.actValid === internal.TEXT) {
-                                    var stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
-                                    var res = stringValidator.validate(value);
-                                    isValid = res.isValid;
-                                    formatValue = res.parsedValue;
-                                    message = res.errorMessage;
                                 }
                                 else {
                                     isValid = true;
@@ -12039,7 +12017,7 @@ var nts;
                      */
                     function mandate($grid, columnKey, innerIdx) {
                         var visibleColumns = helper.getVisibleColumnsOn($grid);
-                        var actValid, dataType, max, min, required, columnText, primitiveValue;
+                        var actValid, dataType, max, min, required;
                         _.forEach(visibleColumns, function (col) {
                             if (col.key === columnKey) {
                                 if (!col.dataType)
@@ -12059,8 +12037,6 @@ var nts;
                                 max = col.max;
                                 min = col.min;
                                 required = col.required;
-                                columnText = col.headerText;
-                                primitiveValue = col.primitiveValue;
                                 return false;
                             }
                         });
@@ -12069,9 +12045,7 @@ var nts;
                                 actValid: actValid,
                                 max: max,
                                 min: min,
-                                required: required,
-                                columnText: columnText,
-                                primitiveValue: primitiveValue
+                                required: required
                             };
                     }
                     validation.mandate = mandate;
@@ -13799,7 +13773,7 @@ var nts;
                                     if (i === index || !$depend)
                                         return;
                                     var mainSyncing = $.data($main, scroll.SCROLL_SYNCING);
-                                    if (!mainSyncing && $depend.scrollLeft !== $main.scrollLeft) {
+                                    if (!mainSyncing) {
                                         $.data($depend, scroll.SCROLL_SYNCING, true);
                                         $depend.scrollLeft = $main.scrollLeft;
                                     }
@@ -13819,7 +13793,7 @@ var nts;
                                     if (i === index)
                                         return;
                                     var mainSyncing = $.data($main, scroll.VERT_SCROLL_SYNCING);
-                                    if (!mainSyncing && $depend.scrollTop !== $main.scrollTop) {
+                                    if (!mainSyncing) {
                                         $.data($depend, scroll.VERT_SCROLL_SYNCING, true);
                                         $depend.scrollTop = $main.scrollTop;
                                     }

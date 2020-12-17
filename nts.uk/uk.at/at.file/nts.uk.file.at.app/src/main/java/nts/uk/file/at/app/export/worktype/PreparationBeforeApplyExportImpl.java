@@ -7,8 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -86,10 +84,11 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.OtHdWorkAppSettingRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
@@ -211,7 +210,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     private SubstituteHdWorkAppSetRepository substituteHdWorkAppSetRepo;
 
     @Inject
-    private AppReflectOtHdWorkRepository otHdWorkAppReflectRepo;
+    private OtHdWorkAppSettingRepository appSetRepo;
+
+    @Inject
+    private OtWorkAppReflectRepository otWorkReflectRepo;
+
+    @Inject
+    private HdWorkAppReflectRepository hdWorkReflectRepo;
 
     @Inject
     private SubLeaveAppReflectRepository substituteLeaveAppReflectRepo;
@@ -733,11 +738,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
         ApprovalSettingDto approvalSetting = approvalSettingFinder.findApproSet();
         JobAssignSettingDto jobAssignSetting = jobFinder.findApp();
-        Optional<AppReflectOtHdWork> appReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
         List<DisplayReason> displayReasons = displayReasonRepo.findByCompanyId(companyId);
         Optional<AppReflectExecutionCondition> appReflectExecutionCondition = appReflectConditionRepo.findByCompanyId(companyId);
         if (!applicationSetting.isPresent()
-                || !appReflectOtHdWork.isPresent()
                 || !appReflectExecutionCondition.isPresent())
             return data;
 
@@ -745,7 +748,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         data.addAll(getDataA7(applicationSetting.get().getReceptionRestrictionSettings()));
         data.addAll(getDataA11(applicationSetting.get().getAppLimitSetting()));
         data.addAll(getDataA17(applicationSetting.get().getRecordDate(), approvalSetting.getPrinFlg(), jobAssignSetting.getIsConcurrently()));
-        data.addAll(getDataA19(appReflectOtHdWork.get().getNightOvertimeReflectAtr()));
+
+        Integer nightOTReflectAtr = appSetRepo.getNightOvertimeReflectAtr(companyId);
+        if (nightOTReflectAtr != null) {
+            data.addAll(getDataA19(EnumAdaptor.valueOf(nightOTReflectAtr, NotUseAtr.class)));
+        }
+
         data.addAll(getDataA12(applicationSetting.get().getAppDisplaySetting().getPrePostDisplayAtr()));
         data.addAll(getDataA22(applicationSetting.get().getAppTypeSettings()));
         data.addAll(getDataA20(applicationSetting.get().getAppLimitSetting()));
@@ -1076,11 +1084,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         String companyId = AppContexts.user().companyId();
         List<MasterData> data = new ArrayList<>();
         Optional<OvertimeAppSet> applySetting = overtimeAppSetRepo.findSettingByCompanyId(companyId);
-        Optional<AppReflectOtHdWork> reflectSetting = otHdWorkAppReflectRepo.findByCompanyId(companyId);
+        Optional<OtWorkAppReflect> reflectSetting = otWorkReflectRepo.findReflectByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
             return data;
 
-        OtWorkAppReflect overtimeWorkAppReflect = reflectSetting.get().getOvertimeWorkAppReflect();
+        OtWorkAppReflect overtimeWorkAppReflect = reflectSetting.get();
         for (int row = 0; row < 21; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < OVERTIME_COL_SIZE; col++) {
@@ -1236,7 +1244,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         for (int col = 0; col < 3; col++) {
                             String value;
                             if (col == 0 && row == 0 && count == 1) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
-                            else if (col == 1 && row == 0) value = ot.name;
+                            else if (col == 1 && row == 0) value = TextResource.localize(ot.name);
                             else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
                             else value = "";
                             rowData.put(
@@ -1250,23 +1258,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         data.add(MasterData.builder().rowData(rowData).build());
                     }
                 }
-//                else {
-//                    Map<String, MasterCellData> rowData = new HashMap<>();
-//                    for (int col = 0; col < 3; col++) {
-//                        String value;
-//                        if (col == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
-//                        else if (col == 1) value = ot.name;
-//                        else value = "";
-//                        rowData.put(
-//                                COLUMN_NO_HEADER + col,
-//                                MasterCellData.builder()
-//                                        .columnId(COLUMN_NO_HEADER + col)
-//                                        .value(value)
-//                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-//                                        .build());
-//                    }
-//                    data.add(MasterData.builder().rowData(rowData).build());
-//                }
             }
         });
         return data;
@@ -1474,10 +1465,10 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<HolidayWorkAppSet> applySetting = holidayWorkAppSetRepo.findSettingByCompany(companyId);
-        Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
-        if (!applySetting.isPresent() || !optionalAppReflectOtHdWork.isPresent())
+        Optional<HdWorkAppReflect> optionalReflectSetting = hdWorkReflectRepo.findReflectByCompany(companyId);
+        if (!applySetting.isPresent() || !optionalReflectSetting.isPresent())
             return data;
-        HdWorkAppReflect reflectSetting = optionalAppReflectOtHdWork.get().getHolidayWorkAppReflect();
+        HdWorkAppReflect reflectSetting = optionalReflectSetting.get();
 
         for (int row = 0; row < 20; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();

@@ -53,6 +53,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
+						vm.application().employeeIDLst(empLst);
                         const applicantList = empLst;
                         const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
                         const command = {applicantList, dateLst, appDispInfoStartupOutput};
@@ -169,6 +170,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             };
 
             let applicationDto = ko.toJS(vm.application);
+			applicationDto.employeeID = vm.application().employeeIDLst()[0];
             let command = {
                 businessTrip: businessTripDto,
                 businessTripInfoOutput: tripOutput,
@@ -257,6 +259,10 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         break;
                     }
                     default: {
+						if (err.messageId == 'Msg_277') {
+                        	vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst = [];
+							vm.appDispInfoStartupOutput.valueHasMutated();
+                        }
                         vm.$dialog.error(err).then(() => {
                             if (err.messageId == 'Msg_197') {
                                 location.reload();
