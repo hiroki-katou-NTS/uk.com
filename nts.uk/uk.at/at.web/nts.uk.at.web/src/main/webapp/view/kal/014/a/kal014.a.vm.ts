@@ -90,7 +90,9 @@ module nts.uk.at.kal014.a {
 
             vm.getAllSettingData(null).done(()=>{
                 vm.itemsSwap( _.cloneDeep(vm.listAllCtgCode));
-            })
+            }).fail( (err: any) =>{
+                vm.$dialog.error(err);
+            });
         }
 
         created() {
@@ -107,6 +109,8 @@ module nts.uk.at.kal014.a {
                     vm.itemsSwap(_.cloneDeep(vm.listAllCtgCode));
 
                     $("#A3_3").focus();
+                }).fail( (err: any) =>{
+                    vm.$dialog.error(err);
                 });
             });
 
@@ -212,9 +216,10 @@ module nts.uk.at.kal014.a {
             vm.$ajax(PATH_API.GET_SETTING_BYCODE,{patternCode: alarmCd})
                 .done((data: IAlarmPatternObject)=>{
                     if (!data){
-                        vm.clickNewButton();
-                        dfd.resolve();
-                        return;
+                        vm.getAllSettingData().done(()=>{
+                            dfd.resolve();
+                            return;
+                        });
                     }
                     vm.isNewMode(false);
 
