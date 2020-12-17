@@ -870,12 +870,12 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		if(!CollectionUtil.isEmpty(appTypeLst)) {
 			whereCondition += "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
-					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " +
+					"and APP_START_DATE <= @endDate and APP_END_DATE >= @startDate " +
 					"and APP_TYPE in @appTypeLst and PRE_POST_ATR in @prePostAtrLst";
 		}
 		if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
 			whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
-					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " +
+					"and APP_START_DATE <= @endDate and APP_END_DATE >= @startDate " +
 					"and STAMP_OPTION_ATR in @stampRequestModeLst and PRE_POST_ATR in @prePostAtrLst";
 		}
 
