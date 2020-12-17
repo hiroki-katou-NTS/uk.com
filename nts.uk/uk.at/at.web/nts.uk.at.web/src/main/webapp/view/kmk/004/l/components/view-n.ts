@@ -33,7 +33,7 @@ module nts.uk.at.view.kmk004.l {
 						
 						<div class="header_title">
 							<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
+							<button data-bind="i18n: btn_text, click: openViewP"></button>
 						</div>
 						<div class="header_content">
 							<div data-bind="component: {
@@ -85,7 +85,7 @@ module nts.uk.at.view.kmk004.l {
 	}
 
 	interface UnitAlreadySettingModel {
-		code: string;
+		id: string;
 		isAlreadySetting: boolean;
 	}
 
@@ -99,7 +99,7 @@ module nts.uk.at.view.kmk004.l {
 		selectedCode: KnockoutObservable<string>;
 		multiSelectedCode: KnockoutObservableArray<string>;
 		isShowAlreadySet: KnockoutObservable<boolean>;
-		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 		isDialog: KnockoutObservable<boolean>;
 		isShowNoSelectRow: KnockoutObservable<boolean>;
 		isMultiSelect: KnockoutObservable<boolean>;
@@ -109,7 +109,7 @@ module nts.uk.at.view.kmk004.l {
 		closureSelectionType: KnockoutObservable<number>;
 		selectClosureTypeList: KnockoutObservableArray<any>;
 		currentItemName: KnockoutObservable<string>;
-		
+
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
@@ -118,20 +118,17 @@ module nts.uk.at.view.kmk004.l {
 		public param: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
-		
-		constructor(private params: IParam){
+		btn_text: KnockoutObservable<string> = ko.observable('');
+
+		constructor(private params: IParam) {
 			super();
 		}
-		
+
 		created() {
 			let vm = this;
 			vm.selectedCode = ko.observable('1');
 			vm.multiSelectedCode = ko.observableArray(['0', '1', '4']);
 			vm.isShowAlreadySet = ko.observable(true);
-			vm.alreadySettingList = ko.observableArray([
-				{ code: '1', isAlreadySetting: true },
-				{ code: '2', isAlreadySetting: true }
-			]);
 			vm.isDialog = ko.observable(false);
 			vm.isShowNoSelectRow = ko.observable(false);
 			vm.isMultiSelect = ko.observable(false);
@@ -157,26 +154,39 @@ module nts.uk.at.view.kmk004.l {
 				isDisplayClosureSelection: vm.isDisplayClosureSelection(),
 			};
 
+			vm.$ajax(KMK004_API.EMP_INIT_SCREEN)
+				.done((data: any) => {
+					let settings: UnitAlreadySettingModel[] = [];
+					_.forEach(data.employmentCds, ((value) => {
+						let s: UnitAlreadySettingModel = { id: value.employmentCode, isAlreadySetting: true };
+						settings.push(s);
+					}));
+					vm.alreadySettingList(settings);
+					console.log(ko.unwrap(vm.alreadySettingList), 'alreadySettingList');
+				})
+
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
-			vm.paramL = {isLoadData: vm.isLoadData, sidebarType : "Com_Employment", wkpId: ko.observable(''), empCode :ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null}
+			vm.paramL = { isLoadData: vm.isLoadData, sidebarType: "Com_Employment", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
 			vm.selectedYear
-			.subscribe(() => {
-				if(vm.selectedYear != null) {
-					vm.existYear(true);
-				}
-			});
-			
+				.subscribe(() => {
+					if (vm.selectedYear != null) {
+						vm.existYear(true);
+					}
+				});
+
 			vm.selectedCode.subscribe((newValue) => {
-					let selectedItem = _.find(vm.employeeList(), emp => {
-						return emp.code == newValue;
-					});
+				let selectedItem = _.find(vm.employeeList(), emp => {
+					return emp.code == newValue;
+				});
 				vm.currentItemName(selectedItem ? selectedItem.name : '');
 				vm.paramL.empCode(newValue);
 				vm.paramL.titleName = vm.currentItemName();
 				vm.param(newValue);
+				vm.btn_text(
+					vm.alreadySettingList().filter(i => newValue == i.id).length == 0 ? 'KMK004_340' : 'KMK004_341');
 			});
-			
+
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
 				vm.employeeList($('#empt-list-setting').getDataList());
 				vm.selectedCode(vm.employeeList()[0].code);
@@ -185,7 +195,7 @@ module nts.uk.at.view.kmk004.l {
 
 		mounted() {
 		}
-		
+
 		openViewP() {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {

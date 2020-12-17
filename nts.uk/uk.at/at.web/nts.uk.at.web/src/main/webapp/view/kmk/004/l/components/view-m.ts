@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk004.l {
 							
 							<div class="header_title">
 								<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-								<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
+								<button data-bind="i18n: btn_text, click: openViewP"></button>
 							</div>
 							<div class="header_content">
 								<div data-bind="component: {
@@ -103,6 +103,7 @@ module nts.uk.at.view.kmk004.l {
 		public param: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		btn_text: KnockoutObservable<string> = ko.observable('');
 
 		constructor(public params: IParam) {
 			super();
@@ -119,7 +120,7 @@ module nts.uk.at.view.kmk004.l {
 						settings.push(s);
 					}));
 					vm.alreadySettingList(settings);
-					console.log(ko.unwrap(vm.alreadySettingList));
+					console.log(ko.unwrap(vm.alreadySettingList), 'alreadySettingList');
 				})
 
 			vm.baseDate = ko.observable(new Date());
@@ -153,6 +154,8 @@ module nts.uk.at.view.kmk004.l {
 				vm.paramL.wkpId(data);
 				vm.paramL.titleName = vm.selectedItemText();
 				vm.param(data);
+				vm.btn_text(
+					vm.alreadySettingList().filter(i => data == i.id).length == 0 ? 'KMK004_338' : 'KMK004_339');
 			});
 
 			$('#workplace-list').ntsTreeComponent(vm.treeGrid).done(() => {
