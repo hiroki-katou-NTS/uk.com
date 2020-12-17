@@ -112,7 +112,8 @@ ul#list-box-search {
 }
 #img-avatar {
   width: 28px;
-  top: 5px;
+  /* top: 5px; */
+  top: -3px;
   position: relative;
   border-radius: 50%;
   display: inline;
@@ -135,9 +136,16 @@ div#user-image {
   padding: 2px;
   position: relative;
   bottom: 3px;
+  /* position: relative;
+  bottom: 2px; */
 }
 #header #menu-header #logo-area > #user-info {
   display: flex;
+}
+#header #menu-header #logo-area > #user-info > #user {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 #header #menu-header #logo-area > #user-info > #company {
   margin-bottom: 6px;

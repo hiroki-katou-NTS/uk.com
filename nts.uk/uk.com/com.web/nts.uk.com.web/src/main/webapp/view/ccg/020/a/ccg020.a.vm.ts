@@ -104,7 +104,6 @@ module nts.uk.com.view.ccg020.a {
             const $icon = $('#user')
               .find('.user-settings')
               .find('.ui-icon-caret-1-s');
-            $icon.attr('style', 'top: 7px;');
             $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
           } else {
             $userImage.ready(() => {
