@@ -955,6 +955,7 @@ module nts.uk.at.view.kwr003.b {
     attendanceItemName: any;
     attributes: any;
     displayNumbers: any;
+    attendanceAtr: any;
     //48
     // ID
     id: any;
@@ -972,8 +973,8 @@ module nts.uk.at.view.kwr003.b {
       //48
       this.id = id;
       this.name = name;
-      //this.attributes = attributes;
       this.indicatesNumber = indicatesNumber;
+      this.attendanceAtr = attributes;
     }
   }
 

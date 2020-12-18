@@ -61,7 +61,8 @@ module nts.uk.at.view.kwr004.b {
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     diligenceProjectsMonthly: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
-    attributeList: KnockoutObservableArray<> = ko.observableArray([]);
+    attributeList: KnockoutObservableArray<any> = ko.observableArray([]);
+    
     constructor(params: any) {
       super();
 
@@ -120,8 +121,8 @@ module nts.uk.at.view.kwr004.b {
           new AttendanceType(3, vm.$i18n('KWR002_143'))
         ]
 
-        vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
-        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
+        vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047 - Daily
+        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048 - Daily
       });
     }
 
@@ -1000,6 +1001,7 @@ module nts.uk.at.view.kwr004.b {
     attendanceItemName: any;
     attributes: any;
     displayNumbers: any;
+    attendanceAtr: any;
     //48
     // ID
     id: any;
@@ -1017,8 +1019,8 @@ module nts.uk.at.view.kwr004.b {
       //48
       this.id = id;
       this.name = name;
-      //this.attributes = attributes;
       this.indicatesNumber = indicatesNumber;
+      this.attendanceAtr = attributes;
     }
   }
 }
