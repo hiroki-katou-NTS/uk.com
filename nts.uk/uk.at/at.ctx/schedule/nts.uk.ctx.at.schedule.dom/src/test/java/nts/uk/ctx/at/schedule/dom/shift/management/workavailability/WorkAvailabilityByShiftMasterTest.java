@@ -141,15 +141,16 @@ public class WorkAvailabilityByShiftMasterTest {
 	
 	@Test
 	public void create_throw_Msg_1705() {
-		 List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"), new ShiftMasterCode("S03"));
-			
-		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
-		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
 		
+		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
+
 		new Expectations() {
 			{
-				require.getShiftMaster(shiftMasterCodes);
-				result = Arrays.asList(shiftMaster1, shiftMaster2);
+				require.shiftMasterIsExist(shiftMasterCodes.get(0));
+				result = true;
+				
+				require.shiftMasterIsExist(shiftMasterCodes.get(1));
+				result = false;
 			}
 		};
 
@@ -168,15 +169,16 @@ public class WorkAvailabilityByShiftMasterTest {
 	
 	@Test
 	public void create_success() {
-		 List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
-			
-		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
-		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		
+		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
 		
 		new Expectations() {
 			{
-				require.getShiftMaster(shiftMasterCodes);
-				result = Arrays.asList(shiftMaster1, shiftMaster2);
+				require.shiftMasterIsExist(shiftMasterCodes.get(0));
+				result = true;
+				
+				require.shiftMasterIsExist(shiftMasterCodes.get(1));
+				result = true;
 			}
 		};
 		

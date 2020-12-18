@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +42,9 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 			throw new RuntimeException("workable shift code list is empty!");
 		}
 		
-		List<ShiftMaster> shiftMasters = require.getShiftMaster(workableShiftCodeList);
-		
-		if(shiftMasters.size() != workableShiftCodeList.size()) {
-			
+		if(!workableShiftCodeList.stream().allMatch(s -> require.shiftMasterIsExist(s))) {
 			throw new BusinessException("Msg_1705");
 		}
-		
 
 		return new WorkAvailabilityByShiftMaster(workableShiftCodeList);
 	}
@@ -90,6 +87,9 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 
 		// シフトマスタを取得する
 		List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList);
+		
+		//シフトマスタが存在するか
+		boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode);
 		
 	}
 	
