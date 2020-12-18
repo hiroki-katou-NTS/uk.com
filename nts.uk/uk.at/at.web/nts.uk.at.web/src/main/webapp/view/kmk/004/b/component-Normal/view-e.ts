@@ -35,10 +35,10 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: model.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_241'"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_241', click: openDialogF"></button>
 					<!-- /ko -->
 					<!-- ko ifnot: model.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_240'"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_240', click: openDialogF"></button>
 					<!-- /ko -->
 				</div>
 				<!-- ko if: model.isAlreadySetting -->
@@ -142,6 +142,14 @@ module nts.uk.at.view.kmk004.b {
 		copy() {
 			$(document).ready(function () {
 				$('.listbox').focus();
+			});
+		}
+
+		openDialogF() {
+			const vm = this;
+			const params = { type: vm.type, selectId: ko.unwrap(vm.model.id) };
+			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
+				
 			});
 		}
 
