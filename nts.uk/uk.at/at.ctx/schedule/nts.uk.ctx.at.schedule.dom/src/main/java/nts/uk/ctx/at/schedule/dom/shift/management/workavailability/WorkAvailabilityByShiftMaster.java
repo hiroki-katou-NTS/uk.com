@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
