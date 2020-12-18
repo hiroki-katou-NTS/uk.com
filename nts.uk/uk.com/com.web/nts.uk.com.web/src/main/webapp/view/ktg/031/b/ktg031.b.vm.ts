@@ -26,6 +26,10 @@ module nts.uk.com.view.ktg031.b {
       vm.getProcessExecution();
     }
 
+    mounted() {
+      $('#closebtn').focus();
+    }
+
     private getProcessExecution() {
       const vm = this;
       vm.$blockui('grayout');
