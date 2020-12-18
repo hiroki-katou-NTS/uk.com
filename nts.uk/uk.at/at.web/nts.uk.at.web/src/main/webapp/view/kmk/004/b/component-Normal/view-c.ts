@@ -65,7 +65,8 @@ module nts.uk.at.view.kmk004.b {
 								checkEmployee: ko.observable(false),
 								type: type,
 								years: years,
-								selectId: selectedId
+								selectId: selectedId,
+								workTimes: workTimes
 							}
 						}"></div>
 					</div>
@@ -96,10 +97,10 @@ module nts.uk.at.view.kmk004.b {
 		public type: SIDEBAR_TYPE = 'Com_Workplace';
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		public model: Model = new Model();
+		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 
 		created(params: Params) {
 			const vm = this;
-
 		}
 
 		mounted() {
