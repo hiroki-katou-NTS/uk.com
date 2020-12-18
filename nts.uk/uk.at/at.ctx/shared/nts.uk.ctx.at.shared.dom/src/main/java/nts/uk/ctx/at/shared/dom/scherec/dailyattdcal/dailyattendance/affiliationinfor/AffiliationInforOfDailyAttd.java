@@ -12,10 +12,11 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * 日別勤怠の所属情報
@@ -148,8 +149,12 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	 * @return
 	 */
 	private static Optional<BusinessTypeCode> getBusinessTypeCode(Require require, String employeeId, GeneralDate standardDate) {
-		// TODO edit with R-5
-		return Optional.empty();
+		Optional<BusinessTypeOfEmployee> businessTypeOfEmployee =  require.getBusinessType(employeeId, standardDate);
+		if ( businessTypeOfEmployee.isPresent() ) {
+			return Optional.of( businessTypeOfEmployee.get().getBusinessTypeCode() );
+		}
+		
+		return Optional.empty();	
 	}
 	
 	/**
@@ -202,15 +207,13 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		 */
 		SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate);
 		
-
 		/**
 		 * [R-5] 勤務種別履歴を取得する
 		 * @param employeeId 社員ID
 		 * @param standardDate 基準日
 		 * @return
 		 */
-		// TODO
-		
+		Optional<BusinessTypeOfEmployee> getBusinessType(String employeeId, GeneralDate standardDate);
 		
 		/**
 		 * [R-6] 労働条件履歴を取得する
