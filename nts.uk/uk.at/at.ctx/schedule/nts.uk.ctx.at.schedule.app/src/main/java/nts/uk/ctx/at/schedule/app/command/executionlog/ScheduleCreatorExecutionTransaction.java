@@ -330,17 +330,13 @@ public class ScheduleCreatorExecutionTransaction {
 					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
 
+			// 勤務予定を登録する
+			this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
+			
 			// Outputの勤務種類一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListWorkSchedule(), ws -> {
-						// 勤務予定を登録する
-						boolean checkUpdate = this.workScheduleRepository.checkExits(ws.getEmployeeID(), ws.getYmd());
-						if (checkUpdate) {
-							this.workScheduleRepository.update(ws);
-						} else {
-							this.workScheduleRepository.insert(ws);
-						}
-						;
 						// 暫定データの登録
 						this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
 								Arrays.asList(ws.getYmd()));
