@@ -11,4 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegisterLaborCalculationSettingCommand {
+    private String historyId;
+
 }
