@@ -28,6 +28,28 @@ export class KafS05Step2Component extends Vue {
     public overTimes: Array<OverTime> = [];
     public holidayTimes: Array<HolidayTime> = [];
 
+    public reason1: null;
+    // nts-dropdownにバインドされる値
+    public selectedValue: string = '3';
+    
+    // 各オプションにバインドされるデータソース
+    public dropdownList: Array<Object> = [{
+        code: '1',
+        text: 'The First'
+    }, {
+        code: '2',
+        text: 'The First'
+    }, {
+        code: '3',
+        text: 'The First'
+    }, {
+        code: '4',
+        text: 'The First'
+    },{
+        code: '5',
+        text: 'The First'
+    }];
+
     public created() {
         const self = this;
         self.bindOverTime();

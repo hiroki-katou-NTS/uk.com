@@ -443,7 +443,8 @@ export class KafS05Component extends KafS00ShrComponent {
         // step 1 -> step 2
         if (vm.numb == 1 && value == 2) {
             vm.$mask('show');
-            vm.isValidateAll = vm.customValidate(vm);
+            let step1 = vm.$refs.step1 as KafS05Step1Component;
+            vm.isValidateAll = vm.customValidate(step1);
             vm.$validate();
             if (!vm.$valid || !vm.isValidateAll) {
                 window.scrollTo(500, 0);
@@ -521,13 +522,16 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public register() {
         const vm = this;
-        vm.isValidateAll = vm.customValidate(vm);
+        vm.$mask('show');
+        let step2 = vm.$refs.step2 as KafS05Step2Component;
+        vm.isValidateAll = vm.customValidate(step2);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
+            window.scrollTo(500, 0);
+            vm.$nextTick(() => vm.$mask('hide'));
 
             return;
         }
-        vm.$mask('show');
         vm.$http.post('at', API.checkBeforeRegisterSample, ['Msg_260', 'Msg_261'])
         .then((result: any) => {
             if (result) {
@@ -558,7 +562,7 @@ export class KafS05Component extends KafS00ShrComponent {
                 }
             });
         }).then(() => {
-            vm.$mask('hide');    	
+            vm.$nextTick(() => vm.$mask('hide'));  	
         });
     }
     
