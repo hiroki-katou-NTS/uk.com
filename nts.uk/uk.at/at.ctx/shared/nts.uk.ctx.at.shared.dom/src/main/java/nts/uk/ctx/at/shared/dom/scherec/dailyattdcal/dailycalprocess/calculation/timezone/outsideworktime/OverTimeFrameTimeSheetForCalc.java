@@ -358,9 +358,11 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			/*振替処理   法定内基準時間を計算する*/
 			AttendanceTime workTime = new AttendanceTime(0);
 			if(createdWithinWorkTimeSheet != null){
-				boolean isOOtsukaMode = true;
-				//大塚納品ではこちらを通るようにする(実働と法定労働から振り替えられる時間を算出)
-				if(isOOtsukaMode) {
+				//大塚モードの確認
+				//製品版でも常に実働から求める方針に変更されたため、判定および就業からの算出を削除(2020/11/9 shuichi_ishida)
+//				boolean isOOtsukaMode = true;
+//				//大塚納品ではこちらを通るようにする(実働と法定労働から振り替えられる時間を算出)
+//				if(isOOtsukaMode) {
 					workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(
 							createdWithinWorkTimeSheet,
 							VacationClass.createAllZero(),
@@ -385,33 +387,33 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
 							Optional.of(new DeductLeaveEarly(0, 1)),
 							NotUseAtr.NOT_USE);
-				}
-				//製品版では就業時間を求めて使うようにする
-				else {
-					//時間帯の計算で既に遅刻早退が控除された状態となっている為、常に控除しないで渡す。
-					Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = integrationOfWorkTime.getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime()
-							?Optional.of(integrationOfWorkTime.getCommonSetting().reverceTimeZoneLateEarlySet())
-							:Optional.of(integrationOfWorkTime.getCommonSetting());
-					workTime = createdWithinWorkTimeSheet.calcWorkTime(
-							PremiumAtr.RegularWork,
-							VacationClass.createAllZero(),
-							AttendanceTime.ZERO,
-							todayWorkType,
-							predetermineTimeSetForCalc,
-							Optional.of(integrationOfWorkTime.getCode()),
-							integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
-							personDailySetting.getAddSetting(),
-							companyCommonSetting.getHolidayAdditionPerCompany().get(),
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-							personDailySetting.getDailyUnit(),
-							leaveLatesetForWorkTime,
-							personDailySetting.getPersonInfo(),
-							Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
-							integrationOfWorkTime.getCoreTimeSetting(),
-							HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
-							NotUseAtr.NOT_USE
-							).getWorkTime();
-				}
+//				}
+//				//製品版では就業時間を求めて使うようにする
+//				else {
+//					//時間帯の計算で既に遅刻早退が控除された状態となっている為、常に控除しないで渡す。
+//					Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = integrationOfWorkTime.getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime()
+//							?Optional.of(integrationOfWorkTime.getCommonSetting().reverceTimeZoneLateEarlySet())
+//							:Optional.of(integrationOfWorkTime.getCommonSetting());
+//					workTime = createdWithinWorkTimeSheet.calcWorkTime(
+//							PremiumAtr.RegularWork,
+//							VacationClass.createAllZero(),
+//							AttendanceTime.ZERO,
+//							todayWorkType,
+//							predetermineTimeSetForCalc,
+//							Optional.of(integrationOfWorkTime.getCode()),
+//							integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
+//							personDailySetting.getAddSetting(),
+//							companyCommonSetting.getHolidayAdditionPerCompany().get(),
+//							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+//							personDailySetting.getDailyUnit(),
+//							leaveLatesetForWorkTime,
+//							personDailySetting.getPersonInfo(),
+//							Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
+//							integrationOfWorkTime.getCoreTimeSetting(),
+//							HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
+//							NotUseAtr.NOT_USE
+//							).getWorkTime();
+//				}
 			}
 		
 			AttendanceTime ableRangeTime = new AttendanceTime(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
@@ -419,7 +421,27 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			HolidayCalculation holidayCalculation = integrationOfWorkTime.getCommonSetting().getHolidayCalculation();
 			if(ableRangeTime.greaterThan(0) && integrationOfDaily.getCalAttr().getOvertimeSetting().getLegalOtTime().getCalAtr().isCalculateEmbossing())
 			{
-				if(!todayWorkType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime() || holidayCalculation.getIsCalculate().isNotUse()) {
+				//大塚モードの確認タイミングが設計通りでなかったため、設計に沿う流れに変更(2020/11/9 shuichi_ishida)
+				//↓【参考】変更前の判定
+				//if(!todayWorkType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime() || holidayCalculation.getIsCalculate().isNotUse()) {
+				boolean isReclass = false;		//法定内分割するかどうか
+				//休暇時の計算設定を確認
+				if (holidayCalculation.getIsCalculate().isNotUse()){
+					isReclass = true;
+				}
+				else{
+					//大塚モードの確認
+					boolean isOOtsukaMode = true;
+					//勤務種類が1日特休かどうかを確認する
+					if (isOOtsukaMode && todayWorkType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()){
+						isReclass = false;		//大塚モード　かつ　1日特休　の時は、分割しない
+					}
+					else{
+						isReclass = true;
+					}
+				}
+				if (isReclass){
+					//残業枠の時間帯から法定内分を分割する
 					List<OverTimeFrameTimeSheetForCalc> result = reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
 							.filter(tc -> tc.getPayOrder().isPresent())
 							.sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()

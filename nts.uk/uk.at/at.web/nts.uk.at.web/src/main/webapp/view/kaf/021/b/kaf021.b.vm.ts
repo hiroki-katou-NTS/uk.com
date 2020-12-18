@@ -420,7 +420,7 @@ module nts.uk.at.kaf021.b {
 
         getDate() {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
+            let date = common.getProcessingDate(vm.processingMonth);
             let month = date.getMonth();
             if (vm.appType == common.AppTypeEnum.NEXT_MONTH) {
                 month = date.getMonth() + 1;

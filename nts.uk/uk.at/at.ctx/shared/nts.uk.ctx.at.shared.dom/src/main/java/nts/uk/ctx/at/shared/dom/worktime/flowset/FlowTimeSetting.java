@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 //流動時間設定
 @Getter
+@Setter
 @NoArgsConstructor
 public class FlowTimeSetting extends WorkTimeDomainObject implements Cloneable{
 

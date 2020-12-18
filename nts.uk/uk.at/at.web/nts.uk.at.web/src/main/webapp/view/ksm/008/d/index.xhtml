@@ -27,6 +27,7 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel" data-bind="visible: $vm.isAttendance()">
+            <com:ko tag="if" bind="$vm.isAttendance()">
             <div class="sidebar-content-header">
                 <span class="title" data-bind="text: $i18n('Com_Company')"/>
                 <!-- D2_1 -->
@@ -43,14 +44,16 @@
                 <div class="padding-15">
                     <div>
                         <!-- D3_1 -->
-                        <span class="label" style="margin-top: 7px;" data-bind="text: conditionCodeAndName"/>
+                        <span class="label" style="margin-top: 7px; margin-bottom: 7px;" data-bind="text: conditionCodeAndName"/>
                         <!-- D3_2 -->
                         <button tabindex="6" data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
                     </div>
-                    <!-- D5_1 -->
-                    <div class="label-warning" style="padding: 10px 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
-                    <!-- D5_2 -->
-                    <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
+                    <div class="label-warning">
+                        <!-- D5_1 -->
+                        <div data-bind="text: $i18n('KSM008_56')" />
+                        <!-- D5_2 -->
+                        <div style="white-space: pre-wrap;" data-bind="text: conditionDescription"/>
+                    </div>
                 </div>
 
                 <div class="table margin-15">
@@ -149,6 +152,7 @@
                     </div>
                 </div>
             </div>
+            </com:ko>
         </div>
         <div id="tabpanel-2" role="tabpanel">
             <ui:include src="../e/index.xhtml"/>

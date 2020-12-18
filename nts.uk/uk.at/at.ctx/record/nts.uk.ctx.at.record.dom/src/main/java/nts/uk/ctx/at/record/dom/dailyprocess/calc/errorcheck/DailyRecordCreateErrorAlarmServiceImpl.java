@@ -245,9 +245,9 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	public List<EmployeeDailyPerError> doubleStampAlgorithm(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
 		// 出勤系二重打刻をチェックする
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =integrationOfDaily.getAttendanceLeave() == null || !integrationOfDaily.getAttendanceLeave().isPresent() ?null : new TimeLeavingOfDailyPerformance(
 				integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
-				integrationOfDaily.getAttendanceLeave().orElse(null));
+				integrationOfDaily.getAttendanceLeave().get());
 		returnList.add(this.doubleStampAlgorithm.doubleStamp(
 				AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), timeLeavingOfDailyPerformance));
 		//ここに外出系、休憩系の二重打刻チェックが入る

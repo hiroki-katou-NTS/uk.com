@@ -12,7 +12,7 @@ public class EmpInfoTerminalComStatusExport {
 
 	private String contractCode;
 	
-	private int empInfoTerCode;
+	private String empInfoTerCode;
 	
 	private GeneralDateTime signalLastTime;
 }

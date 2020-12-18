@@ -17,7 +17,7 @@ public class TopPageAlarmEmpInfoTerPub extends TopPageAlarmPub implements Domain
 	/**
 	 * 端末コード
 	 */
-	private final Integer empInfoTerCode;
+	private final String empInfoTerCode;
 
 	/**
 	 * 詳細
@@ -25,7 +25,7 @@ public class TopPageAlarmEmpInfoTerPub extends TopPageAlarmPub implements Domain
 	private final List<TopPageAlEmpInfoTerDetailPub> lstEmpInfoTerDetail;
 
 	public TopPageAlarmEmpInfoTerPub(String companyId, List<TopPageAlarmManagerTrPub> lstManagerTr,
-			Integer empInfoTerCode, List<TopPageAlEmpInfoTerDetailPub> lstEmpInfoTerDetail) {
+			String empInfoTerCode, List<TopPageAlEmpInfoTerDetailPub> lstEmpInfoTerDetail) {
 		super(companyId, GeneralDateTime.now(), ExistenceErrorPub.HAVE_ERROR, IsCancelledPub.NOT_CANCELLED, lstManagerTr);
 		this.empInfoTerCode = empInfoTerCode;
 		this.lstEmpInfoTerDetail = lstEmpInfoTerDetail;

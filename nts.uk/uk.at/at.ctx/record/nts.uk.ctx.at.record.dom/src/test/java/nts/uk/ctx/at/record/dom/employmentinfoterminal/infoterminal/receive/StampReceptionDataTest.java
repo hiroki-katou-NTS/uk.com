@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
@@ -229,7 +228,7 @@ public class StampReceptionDataTest {
 				.overTimeHours("1101").midnightTime(" ").build();
 		EmpInfoTerminal ter = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
 				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
 				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE),
@@ -243,7 +242,7 @@ public class StampReceptionDataTest {
 				.midnightTime(" ").build();
 		ter = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
 				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
@@ -257,7 +256,7 @@ public class StampReceptionDataTest {
 	private EmpInfoTerminal createEmpInfoTer(NotUseAtr entranceExitOrGout) {
 		return new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
 				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
 								new ConvertEmbossCategory(entranceExitOrGout, entranceExitOrGout), Optional.empty()))

@@ -12,7 +12,12 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
@@ -47,12 +52,14 @@ public class ReflectWorkInformationTest {
 
 		new Expectations() {
 			{
-
-				// 所定時間帯を取得する
-				require.getPredeterminedTimezone(anyString, anyString, anyInt);
-				result = ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
-						1080, // 所定時間設定.時間帯. 終了
-						1);// 所定時間設定.時間帯.勤務NO
+				new MockUp<WorkInformation>() {
+					@Mock
+					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
+						return Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
+								1080, // 所定時間設定.時間帯. 終了
+								1));// 所定時間設定.時間帯.勤務NO
+					}
+				};
 
 			}
 
@@ -101,12 +108,14 @@ public class ReflectWorkInformationTest {
 		new Expectations() {
 			{
 
-				// 所定時間帯を取得する
-				require.getPredeterminedTimezone(anyString, anyString, anyInt);
-				result = ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
-						1080, // 所定時間設定.時間帯. 終了
-						1);// 所定時間設定.時間帯.勤務NO
-
+				new MockUp<WorkInformation>() {
+					@Mock
+					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
+						return Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
+								1080, // 所定時間設定.時間帯. 終了
+								1));// 所定時間設定.時間帯.勤務NO
+					}
+				};
 			}
 
 		};
@@ -152,12 +161,14 @@ public class ReflectWorkInformationTest {
 
 		new Expectations() {
 			{
-
-				// 所定時間帯を取得する
-				require.getPredeterminedTimezone("002", "002", anyInt);
-				result = ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
-						1080, // 所定時間設定.時間帯. 終了
-						1);// 所定時間設定.時間帯.勤務NO
+				new MockUp<WorkInformation>() {
+					@Mock
+					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
+						return Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
+								1080, // 所定時間設定.時間帯. 終了
+								1));// 所定時間設定.時間帯.勤務NO
+					}
+				};
 			}
 
 		};

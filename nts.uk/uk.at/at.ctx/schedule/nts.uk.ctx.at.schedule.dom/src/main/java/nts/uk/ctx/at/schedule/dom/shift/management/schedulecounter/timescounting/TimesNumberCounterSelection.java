@@ -8,7 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
- * 回数集計選択
+ * AggregateRoot: 回数集計選択
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.回数集計.回数集計選択
  * @author dan_pv
  *

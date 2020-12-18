@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class PublicHolidayManagementUsageUnit.
@@ -10,7 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 // 利用単位の設定
 @Getter
 @Setter
-public class PublicHolidayManagementUsageUnit extends DomainObject{
+public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 	
 	/** The is manage employee public hd. */
 	// 社員の公休管理をする

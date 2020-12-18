@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.Contains
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -234,16 +232,16 @@ public class WorkInformation {
 			return Optional.empty();
 		}
 
-		// 補正済み所定時間帯を取得する
-		val correctedTimezones = require.getPredeterminedTimezone( this.workTypeCode.v(), this.workTimeCode.get().v(), null )
-									.getTimezones().stream()
-									.filter( e -> e.isUsed() )
-									.sorted(Comparator.comparing(TimezoneUse::getWorkNo))
-									.map( e -> (TimeZone)e )
-									.collect(Collectors.toList());
-
-		return Optional.of( WorkInfoAndTimeZone.create( workType.get(), workTimeSetting.get(), correctedTimezones ));
-
+		val workSetting = workTimeSetting.get().getWorkSetting(require);
+		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
+		val attendanceDayAttr = workType.get().chechAttendanceDay();
+		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
+				.map( e -> (TimeZone) e).collect(Collectors.toList());
+		
+		return Optional.of( WorkInfoAndTimeZone.create( 
+				workType.get(), 
+				workTimeSetting.get(), 
+				correctedTimezones));
 	}
 
 
@@ -289,10 +287,13 @@ public class WorkInformation {
 		// 勤務NOに対応する変更可能な時間帯を取得する
 		val timezone = this.getChangeableWorkingTimezones(require).stream()
 							.filter( e -> e.getWorkNo().v() == workNo.toAttendance().v() )
-							.findFirst().get();
+							.findFirst();
+		if ( !timezone.isPresent() ) {
+			return ContainsResult.notContains();
+		}
 
 		// 時間帯に含まれているか
-		return timezone.contains(time, checkTarget);
+		return timezone.get().contains(time, checkTarget);
 
 	}
 
@@ -387,6 +388,12 @@ public class WorkInformation {
 		 * @param workTimeCd 就業時間帯コード
 		 * @param workNo 勤務NO
 		 * @return 計算用所定時間設定
+		 *
+		 * WORNING!!
+		 * WorkTimeSettingService．getPredeterminedTimezoneメソッドは、引数に誤りがあり、
+		 * String workTimeCd(就業時間帯コード), String workTypeCd(勤務種類コード)
+		 * になっています。
+		 * このメソッドとは引数の順番が違うため、implementsして実装する際には十分気をつけてください。
 		 */
 		PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
 

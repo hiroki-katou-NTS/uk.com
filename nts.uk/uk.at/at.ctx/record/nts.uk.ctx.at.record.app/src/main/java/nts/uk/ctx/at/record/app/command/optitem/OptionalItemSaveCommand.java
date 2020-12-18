@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.app.command.optitem;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
@@ -57,6 +61,12 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	private String unit;
 	
 	private String langId;
+	
+	private int calAtr;
+	
+	private String note;
+	
+	private String description;
 
 	/*
 	 * (non-Javadoc)
@@ -150,7 +160,22 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemGetMemento#getUnit()
 	 */
 	@Override
-	public UnitOfOptionalItem getUnit() {
-		return new UnitOfOptionalItem(this.unit);
+	public Optional<UnitOfOptionalItem> getUnit() {
+		return Optional.ofNullable(new UnitOfOptionalItem(this.unit));
 	}
+
+    @Override
+    public CalculationClassification getCalcAtr() {
+        return EnumAdaptor.valueOf(this.calAtr, CalculationClassification.class);
+    }
+
+    @Override
+    public Optional<NoteOptionalItem> getNote() {
+        return this.note == null ? Optional.empty() : Optional.ofNullable(new NoteOptionalItem(this.note));
+    }
+
+    @Override
+    public Optional<DescritionOptionalItem> getDescription() {
+        return this.description == null ? Optional.empty() : Optional.ofNullable(new DescritionOptionalItem(this.description));
+    }
 }

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleItemAttributes;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 
 /**
  * @author tuannt-nws
@@ -13,26 +13,25 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecIt
 public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceRecordGetMemento {
 
 	/** The kfnst attnd rec. */
-	private KfnstAttndRec kfnstAttndRec;
+	private KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe;
 
 	/** The kfnst attnd rec item. */
-	private KfnstAttndRecItem kfnstAttndRecItem;
+	private KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd;
 
+	
 	/**
 	 * Instantiates a new jpa single attendance record get memento.
 	 *
-	 * @param kfnstAttndRec
-	 *            the kfnst attnd rec
-	 * @param kfnstAttndRecItem
-	 *            the kfnst attnd rec item
+	 * @param kfnmtRptWkAtdOutframe the kfnmt rpt wk atd outframe
+	 * @param kfnstAttndRecItem the kfnst attnd rec item
 	 */
-	public JpaSingleAttendanceRecordGetMemento(KfnstAttndRec kfnstAttndRec, KfnstAttndRecItem kfnstAttndRecItem) {
+	public JpaSingleAttendanceRecordGetMemento(KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe, KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd) {
 		super();
-		this.kfnstAttndRec = kfnstAttndRec;
-		if (kfnstAttndRecItem != null) {
-			this.kfnstAttndRecItem = kfnstAttndRecItem;
+		this.kfnmtRptWkAtdOutframe = kfnmtRptWkAtdOutframe;
+		if (kfnmtRptWkAtdOutatd != null) {
+			this.kfnmtRptWkAtdOutatd = kfnmtRptWkAtdOutatd;
 		}else {
-			this.kfnstAttndRecItem = new KfnstAttndRecItem();
+			this.kfnmtRptWkAtdOutatd = new KfnmtRptWkAtdOutatd();
 		}
 	}
 
@@ -44,7 +43,7 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public SingleItemAttributes getAttribute() {
-		return SingleItemAttributes.valueOf(kfnstAttndRec.getAttribute().intValue());
+		return SingleItemAttributes.valueOf(kfnmtRptWkAtdOutframe.getAttribute().intValue());
 	}
 
 	/*
@@ -55,7 +54,7 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public ItemName getName() {
-		return new ItemName(kfnstAttndRec.getItemName().toString());
+		return new ItemName(kfnmtRptWkAtdOutframe.getItemName().toString());
 	}
 
 	/* (non-Javadoc)
@@ -63,7 +62,7 @@ public class JpaSingleAttendanceRecordGetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public Integer getTimeItemId() {
-		return (int)kfnstAttndRecItem.getTimeItemId();
+		return (int)kfnmtRptWkAtdOutatd.getTimeItemId();
 	}
 
 }

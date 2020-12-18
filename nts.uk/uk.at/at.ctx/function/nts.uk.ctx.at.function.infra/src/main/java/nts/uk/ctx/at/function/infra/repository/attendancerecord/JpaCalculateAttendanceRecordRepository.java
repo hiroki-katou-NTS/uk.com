@@ -8,21 +8,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -39,6 +32,18 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	/** The subtract formula type. */
 	private static final int SUBTRACT_FORMULA_TYPE = 2;
 
+	private static final String SELECT_ATD_BY_OUT_FRAME_DAI = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ "	WHERE frame.id.layoutId = :layoutId"
+			+ "		AND frame.id.columnIndex >= :columnIndexMin"
+			+ "		AND frame.id.columnIndex <= :columnIndexMax"
+			+ "		AND frame.id.position = :position "
+			+ "		AND frame.id.outputAtr = :outputAtr";
+			
+	
+	private static final String SELECT_ATD_BY_OUT_FRAME_MON = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ "	WHERE frame.id.layoutId = :layoutId"
+			+ "		AND frame.id.outputAtr = :outputAtr"
+			+ "		AND frame.id.position = :position ";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -48,49 +53,49 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * ExportSettingCode, long, long, long)
 	 */
 	@Override
-	public Optional<CalculateAttendanceRecord> getCalculateAttendanceRecord(String companyId,
-			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+	public Optional<CalculateAttendanceRecord> getCalculateAttendanceRecord(String layoutId, long columnIndex,
+			long exportArt, long position) {
+		KfnmtRptWkAtdOutframePK kfnmtRptWkAtdOutframePK = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
 				position);
-		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(kfnmtRptWkAtdOutframePK, KfnmtRptWkAtdOutframe.class).map(e -> this.toDomain(e));
 	}
 
 	@Override
-	public void addCalculateAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position,
+	public void addCalculateAttendanceRecord(String layoutId, int columnIndex, int position,
 			long exportArt, CalculateAttendanceRecord calculateAttendanceRecord) {
 	}
 
 	@Override
-	public void updateCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
+	public void updateCalculateAttendanceRecord(String layoutId, int columnIndex,
 			int position, long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 
 		// check and update AttendanceRecord
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnmtRptWkAtdOutframePK KfnmtRptWkAtdOutframePK = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
 				position);
-		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
+		Optional<KfnmtRptWkAtdOutframe> kfnstAttndRec = this.queryProxy().find(KfnmtRptWkAtdOutframePK, KfnmtRptWkAtdOutframe.class);
 		if (kfnstAttndRec.isPresent()) {
-			this.commandProxy().update(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
+			this.commandProxy().update(this.toEntityAtdOutFrame(layoutId, columnIndex, position, exportArt,
 					useAtr, calculateAttendanceRecord));
 		} else {
-			this.commandProxy().insert(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
+			this.commandProxy().insert(this.toEntityAtdOutFrame(layoutId, columnIndex, position, exportArt,
 					useAtr, calculateAttendanceRecord));
 		}
 
 		// get listItemAdded, listItemSubtracted
-		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
-				.map(e -> toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e))
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
+				.map(e -> toEntityAttndRecItemAdded(layoutId, columnIndex, position, exportArt, e))
 				.collect(Collectors.toList());
 
-		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream()
-				.map(e -> toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e))
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream()
+				.map(e -> toEntityAttndRecItemSubtracted(layoutId, columnIndex, position, exportArt, e))
 				.collect(Collectors.toList());
 
-		List<KfnstAttndRecItem> kfnstAttndRecItems = new ArrayList<KfnstAttndRecItem>();
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = new ArrayList<KfnmtRptWkAtdOutatd>();
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemAdded);
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemSubtracted);
 
 		// check and update attendanceRecordItems
-		List<KfnstAttndRecItem> kfnstAttndRecItemsOld = this.findAttendanceRecordItems(kfnstAttndRecPK);
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItemsOld = this.findAttendanceRecordItems(KfnmtRptWkAtdOutframePK);
 		if (kfnstAttndRecItemsOld != null) {
 			this.removeAllAttndRecItem(kfnstAttndRecItemsOld);
 		}
@@ -101,16 +106,16 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	}
 
 	@Override
-	public void deleteCalculateAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex,
+	public void deleteCalculateAttendanceRecord(String layoutId, int columnIndex,
 			int position, long exportArt, CalculateAttendanceRecord calculateAttendanceRecord) {
-		// find and delete KfnstAttndRec, KfnstAttndRecItem
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()),
+		// find and delete KfnmtRptWkAtdOutframe, KfnmtRptWkAtdOutatd
+		KfnmtRptWkAtdOutframePK KfnmtRptWkAtdOutframePK = new KfnmtRptWkAtdOutframePK(layoutId,
 				columnIndex, exportArt, position);
-		Optional<KfnstAttndRec> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
+		Optional<KfnmtRptWkAtdOutframe> optionalKfnstAttndRec = this.queryProxy().find(KfnmtRptWkAtdOutframePK, KfnmtRptWkAtdOutframe.class);
 		optionalKfnstAttndRec.ifPresent(kfnstAttndRec -> this.commandProxy().remove(kfnstAttndRec));
 
-		// find and delete KfnstAttndRecItem
-		List<KfnstAttndRecItem> kfnstAttndRecItems = this.findAttendanceRecordItems(kfnstAttndRecPK);
+		// find and delete KfnmtRptWkAtdOutatd
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = this.findAttendanceRecordItems(KfnmtRptWkAtdOutframePK);
 		if (kfnstAttndRecItems != null && !kfnstAttndRecItems.isEmpty()) {
 			this.commandProxy().removeAll(kfnstAttndRecItems);
 		}
@@ -124,12 +129,12 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 *            the kfnst attnd rec
 	 * @return the calculate attendance record
 	 */
-	private CalculateAttendanceRecord toDomain(KfnstAttndRec kfnstAttndRec) {
-		if(kfnstAttndRec.getId().getCid()==null)
+	private CalculateAttendanceRecord toDomain(KfnmtRptWkAtdOutframe kfnstAttndRec) {
+		if(kfnstAttndRec.getId().getLayoutId()==null)
 			return new CalculateAttendanceRecord();
-		// get KfnstAttndRecItem by KfnstAttndRecPK
-		KfnstAttndRecPK kfnstAttndRecPK = kfnstAttndRec.getId();
-		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
+		// get KfnmtRptWkAtdOutatd by KfnmtRptWkAtdOutframePK
+		KfnmtRptWkAtdOutframePK kfnmtRptWkAtdOutframePK = kfnstAttndRec.getId();
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnmtRptWkAtdOutframePK);
 
 		// create getMemento
 		CalculateAttendanceRecordGetMemento getMemento = new JpaCalculateAttendanceRecordGetMemento(kfnstAttndRec,
@@ -156,26 +161,33 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 *            the calculate attendance record
 	 * @return the kfnst attnd rec
 	 */
-	private KfnstAttndRec toEntityAttndRec(ExportSettingCode exportSettingCode, long columnIndex, long position,
+	private KfnmtRptWkAtdOutframe toEntityAtdOutFrame(String layoutId, long columnIndex, long position,
 			long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
-		// find entity KfnstAttndRec by pk
-		String companyId = AppContexts.user().companyId();
-		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, Long.valueOf(exportSettingCode.v()),
-				columnIndex, exportArt, position);
-		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
-				.orElse(new KfnstAttndRec());
+		// find entity KfnmtRptWkAtdOutframe by pk
+		KfnmtRptWkAtdOutframePK kfnmtRptWkAtdOutframePK = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
+				position);
+		KfnmtRptWkAtdOutframe kfnstAttndRec = this.queryProxy().find(kfnmtRptWkAtdOutframePK, KfnmtRptWkAtdOutframe.class)
+				.orElse(new KfnmtRptWkAtdOutframe());
 		if (kfnstAttndRec.getId() == null) {
-			kfnstAttndRec.setId(kfnstAttndRecPk);
+			kfnstAttndRec.setId(kfnmtRptWkAtdOutframePK);
+		}
+		
+		if (kfnstAttndRec.getCid() == null) {
+			kfnstAttndRec.setCid(AppContexts.user().companyId());
+		}
+		
+		if (kfnstAttndRec.getContractCd() == null) {
+			kfnstAttndRec.setContractCd(AppContexts.user().contractCode());
 		}
 
 		// get listItemAdded, listItemSubtracted
-		List<KfnstAttndRecItem> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
-				.map(e -> toEntityAttndRecItemAdded(exportSettingCode, columnIndex, position, exportArt, e))
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()
+				.map(e -> toEntityAttndRecItemAdded(layoutId, columnIndex, position, exportArt, e))
 				.collect(Collectors.toList());
-		List<KfnstAttndRecItem> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream()
-				.map(e -> toEntityAttndRecItemSubtracted(exportSettingCode, columnIndex, position, exportArt, e))
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItemSubtracted = calculateAttendanceRecord.getSubtractedItem().stream()
+				.map(e -> toEntityAttndRecItemSubtracted(layoutId, columnIndex, position, exportArt, e))
 				.collect(Collectors.toList());
-		List<KfnstAttndRecItem> kfnstAttndRecItems = new ArrayList<KfnstAttndRecItem>();
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = new ArrayList<KfnmtRptWkAtdOutatd>();
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemAdded);
 		kfnstAttndRecItems.addAll(listKfnstAttndRecItemSubtracted);
 
@@ -203,24 +215,42 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 *            the time item id
 	 * @return the kfnst attnd rec item
 	 */
-	private KfnstAttndRecItem toEntityAttndRecItemSubtracted(ExportSettingCode exportSettingCode, long columnIndex,
+	private KfnmtRptWkAtdOutatd toEntityAttndRecItemSubtracted(String layoutId, long columnIndex,
 			long position, long exportArt, int timeItemId) {
 		UID uid = new UID();
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(), AppContexts.user().companyId(),
-				columnIndex, exportSettingCode.v(), new BigDecimal(SUBTRACT_FORMULA_TYPE), exportArt, position,
-				timeItemId);
-		return kfnstAttendRecItem;
+		
+		KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
+		item.setRecordItemId(uid.toString());
+		item.setExclusVer(1);
+		item.setContractCd(AppContexts.user().contractCode());
+		item.setCid(AppContexts.user().companyId());
+		item.setLayoutId(layoutId);
+		item.setColumnIndex(columnIndex);
+		item.setPosition(position);
+		item.setOutputAtr(exportArt);
+		item.setTimeItemId(timeItemId);
+		item.setFormulaType(new BigDecimal(SUBTRACT_FORMULA_TYPE));
+		
+
+		return item;
 	}
 
-	private KfnstAttndRecItem toEntityAttndRecItemAdded(ExportSettingCode exportSettingCode, long columnIndex,
+	private KfnmtRptWkAtdOutatd toEntityAttndRecItemAdded(String layoutId, long columnIndex,
 			long position, long exportArt, int timeItemId) {
-		// KfnstAttndRecItemPK kfnstAttendRecItemPK = new
-		// KfnstAttndRecItemPK(AppContexts.user().companyId(),
-		// exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
 		UID uid = new UID();
-		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(), AppContexts.user().companyId(),
-				columnIndex, exportSettingCode.v(), new BigDecimal(ADD_FORMULA_TYPE), exportArt, position, timeItemId);
-		return kfnstAttendRecItem;
+		
+		KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
+		item.setRecordItemId(uid.toString());
+		item.setExclusVer(1);
+		item.setContractCd(AppContexts.user().contractCode());
+		item.setCid(AppContexts.user().companyId());
+		item.setLayoutId(layoutId);
+		item.setColumnIndex(columnIndex);
+		item.setPosition(position);
+		item.setOutputAtr(exportArt);
+		item.setTimeItemId(timeItemId);
+		item.setFormulaType(new BigDecimal(ADD_FORMULA_TYPE));
+		return item;
 	}
 
 	/**
@@ -229,7 +259,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * @param listKfnstAttndRecItem
 	 *            the list kfnst attnd rec item
 	 */
-	public void removeAllAttndRecItem(List<KfnstAttndRecItem> listKfnstAttndRecItem) {
+	public void removeAllAttndRecItem(List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem) {
 		if (!listKfnstAttndRecItem.isEmpty()) {
 			this.commandProxy().removeAll(listKfnstAttndRecItem);
 			this.getEntityManager().flush();
@@ -245,37 +275,31 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * long)
 	 */
 	@Override
-	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String companyId,
-			long exportCode, long position) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportCode));
-		predicates.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.columnIndex), (long) 7));
-		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.columnIndex),
-				(long) 9));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.position), position));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 1));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
+	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String layoutId, long position, int fontSize) {
+		int range = 0;
+		if(fontSize == ExportFontSize.CHAR_SIZE_LARGE.value ) {
+			range = 9;
+		}else if(fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			range = 11;
+		}else {
+			range = 13;
+		}
 
 		// query data
-		List<KfnstAttndRec> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-		List<KfnstAttndRec> kfnstAttndRecItemsTotal = new ArrayList<>();
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = this.queryProxy()
+				.query(SELECT_ATD_BY_OUT_FRAME_DAI, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("columnIndexMin", 7)
+				.setParameter("columnIndexMax", range)
+				.setParameter("position", position)
+				.setParameter("outputAtr", 1)
+				.getList();
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
 
-		for (int i = 7; i <= 9; i++) {
+		for (int i = 7; i <= range; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
-				KfnstAttndRec item = new KfnstAttndRec();
-				item.setId(new KfnstAttndRecPK());
+				KfnmtRptWkAtdOutframe item = new KfnmtRptWkAtdOutframe();
+				item.setId(new KfnmtRptWkAtdOutframePK());
 				kfnstAttndRecItemsTotal.add(item);
 			} else {
 				kfnstAttndRecItemsTotal.add(this.findIndexInList(i, kfnstAttndRecItems));
@@ -285,8 +309,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 				: kfnstAttndRecItemsTotal.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
-	private KfnstAttndRec findIndexInList(int i, List<KfnstAttndRec> list) {
-		for (KfnstAttndRec item : list) {
+	private KfnmtRptWkAtdOutframe findIndexInList(int i, List<KfnmtRptWkAtdOutframe> list) {
+		for (KfnmtRptWkAtdOutframe item : list) {
 			if (item.getId().getColumnIndex() == i)
 				return item;
 		}
@@ -303,32 +327,29 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * long)
 	 */
 	@Override
-	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String companyId,
-			long exportCode, long position) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportCode));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.position), position));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 2));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-
+	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String layoutId, long position , int fontSize) {
+		int range = 0;
+		if(fontSize == ExportFontSize.CHAR_SIZE_LARGE.value ) {
+			range = 12;
+		}else if(fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			range = 14;
+		}else {
+			range = 16;
+		}
+		
 		// query data
-		List<KfnstAttndRec> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
-		List<KfnstAttndRec> kfnstAttndRecItemsTotal = new ArrayList<>();
-		for (int i = 1; i <= 12; i++) {
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = this.queryProxy()
+				.query(SELECT_ATD_BY_OUT_FRAME_MON, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("outputAtr", 2)
+				.setParameter("position", position)
+				.getList();
+
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
+		for (int i = 1; i <= range; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
-				KfnstAttndRec item = new KfnstAttndRec();
-				item.setId(new KfnstAttndRecPK());
+				KfnmtRptWkAtdOutframe item = new KfnmtRptWkAtdOutframe();
+				item.setId(new KfnmtRptWkAtdOutframePK());
 				kfnstAttndRecItemsTotal.add(item);
 			} else {
 				kfnstAttndRecItemsTotal.add(this.findIndexInList(i, kfnstAttndRecItems));
@@ -337,4 +358,5 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		return kfnstAttndRecItems.isEmpty() ? new ArrayList<CalculateAttendanceRecord>()
 				: kfnstAttndRecItemsTotal.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
+
 }
