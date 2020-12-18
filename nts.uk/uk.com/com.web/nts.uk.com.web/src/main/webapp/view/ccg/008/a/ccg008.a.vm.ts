@@ -150,22 +150,57 @@ module nts.uk.com.view.ccg008.a.screenModel {
       if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
         vm.isShowButtonRefresh(true);
       }
-      if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
-        if (data.standardMenu.url) {
-          if (!!data.standardMenu.url.split("web/")[1]) {
-             // show standardmenu
-            const res = "/" + data.standardMenu.url.split("web/")[1];
-            const topPageUrl = "/view/ccg/008/a/index.xhtml";
-            if (res && topPageUrl !== res.trim()) {
-              if (_.includes(data.standardMenu.url, ".at.")) {
-                nts.uk.request.jump("at", res);
-              } else {
-                nts.uk.request.jump(res);
+      const transferData = __viewContext.transferred.value;
+      const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+      if(fromScreen === 'login'){
+        if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
+          if (data.standardMenu.url) {
+            if (!!data.standardMenu.url.split("web/")[1]) {
+               // show standardmenu
+              const res = "/" + data.standardMenu.url.split("web/")[1];
+              const topPageUrl = "/view/ccg/008/a/index.xhtml";
+              if (res && topPageUrl !== res.trim()) {
+                if (_.includes(data.standardMenu.url, ".at.")) {
+                  nts.uk.request.jump("at", res);
+                } else {
+                  nts.uk.request.jump(res);
+                }
               }
             }
           }
+          // show toppage
+        } else {
+          const layout1 = data.displayTopPage.layout1;
+          const layout2 = data.displayTopPage.layout2;
+          const layout3 = data.displayTopPage.layout3;
+          vm.visible(true)
+          if (layout1) {
+            vm.paramIframe1(data.displayTopPage);
+          }
+          if (layout2) {
+            _.each(layout2, (item: WidgetSettingDto) => {
+              if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
+                vm.isShowSwitch(true);
+              }
+              if (item.widgetType === 1) {
+                vm.isShowClosure(true);
+              }
+            });
+            vm.paramWidgetLayout2(layout2);
+          }
+          if (layout3) {
+            _.each(layout3, (item: WidgetSettingDto) => {
+              if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
+                vm.isShowSwitch(true);
+              }
+            
+              if (item.widgetType === 1) {
+                vm.isShowClosure(true);
+              }
+            });
+            vm.paramWidgetLayout3(layout3);
+          }
         }
-        // show toppage
       } else {
         const layout1 = data.displayTopPage.layout1;
         const layout2 = data.displayTopPage.layout2;
