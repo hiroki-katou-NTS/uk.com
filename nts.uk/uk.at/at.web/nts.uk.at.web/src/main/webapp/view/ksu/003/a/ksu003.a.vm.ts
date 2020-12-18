@@ -1132,7 +1132,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					breaktime: 1
 				})
 				
-				if (dataMid.color != "" && dataMid.color !== null && self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule == 1) {
+				if (dataMid.color != "" && dataMid.color !== null && self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule == 1 && self.checkDisByDate != false) {
 						if (checkColor.worktypeCode != 0)
 							middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId,
 								dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTypeColor));
@@ -1189,9 +1189,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					middleContentDeco.push(new CellColor("breaktime", disableDSFilter[0].empId, "xseal"));
 					$("#extable-ksu003").exTable("cellValue", "middle", disableDSFilter[0].empId, "worktimeName", getText('KSU003_55'));
 					// set dis for detail DS
-					for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
+					/*for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
 						detailContentDeco.push(new CellColor(z.toString(), disableDSFilter[0].empId, disableDSFilter[0].color));
-					}
+					}*/
 				} else {
 					let isNeedWorkSchedule = self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule,
 					canModified = self.dataScreen003A().canModified, // 修正可能
@@ -1308,11 +1308,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 				
-				if(self.checkDisByDate == false) {
+				/*if(self.checkDisByDate == false) {
 						for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
 						detailContentDeco.push(new CellColor(z.toString(), self.lstEmpId[i].empId, "#ddddd2"));
 						}
-				}
+				}*/
 
 				middleDs.push({
 					empId: dataMid.empId, worktypeCode: dataMid.worktypeCode + " ",
