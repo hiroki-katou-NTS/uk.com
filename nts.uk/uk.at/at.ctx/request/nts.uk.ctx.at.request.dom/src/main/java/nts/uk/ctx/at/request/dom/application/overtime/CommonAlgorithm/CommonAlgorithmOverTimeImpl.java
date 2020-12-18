@@ -402,7 +402,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// 乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = this.getInfoNoBaseDate(companyId, ApplicationType.OVER_TIME_APPLICATION, Optional.ofNullable(overtimeAppAtr), overtimeLeaveAppCommonSet);
 		// 01-02_時間外労働を取得
-		Optional<OverTimeWorkHoursOutput> agreeOverTimeOutputOp = commonOvertimeholiday.getAgreementTime(companyId, employeeId, ApplicationType.OVER_TIME_APPLICATION);
+		Optional<OverTimeWorkHoursOutput> agreeOverTimeOutputOp = commonOvertimeholiday.getAgreementTime(companyId, employeeId, overtimeLeaveAppCommonSet.getExtratimeExcessAtr(), overtimeLeaveAppCommonSet.getExtratimeDisplayAtr());
 		
 		// ドメインモデル「残業休日出勤申請の反映」を取得する
 		Optional<AppReflectOtHdWork> overTimeReflectOp = appReflectOtHdWorkRepository.findByCompanyId(companyId);

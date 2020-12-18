@@ -25,12 +25,14 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
@@ -55,7 +57,11 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 時間外表示区分
 	 * @return
 	 */
-	public Optional<OverTimeWorkHoursOutput> getAgreementTime(String companyID, String employeeID, ApplicationType appType);
+	public Optional<OverTimeWorkHoursOutput> getAgreementTime(
+			String companyID,
+			String employeeID,
+			Time36AgreeCheckRegister extratimeExcessAtr,
+			NotUseAtr extratimeDisplayAtr);
 
 	/**
 	 * 01-04_加給時間を取得

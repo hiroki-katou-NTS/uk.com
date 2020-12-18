@@ -32,6 +32,7 @@ public class OverTimeWorkHoursDto {
 	public String nextMonth;
 	
 	public static OverTimeWorkHoursDto fromDomain(OverTimeWorkHoursOutput param) {
+		if (param == null) return null;
 		int currentYear = param.getCurrentMonth().year();
 		int currentMonth = param.getCurrentMonth().month();
 		
