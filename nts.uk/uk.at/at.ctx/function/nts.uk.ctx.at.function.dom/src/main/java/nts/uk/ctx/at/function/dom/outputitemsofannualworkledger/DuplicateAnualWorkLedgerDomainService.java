@@ -41,7 +41,7 @@ public class DuplicateAnualWorkLedgerDomainService {
         }
         // 4. [1] true
         if (isCheck) {
-            throw new BusinessException("Msg_1753");
+            throw new BusinessException("Msg_1859");
         }
 
         // 5.設定IDを生成する
