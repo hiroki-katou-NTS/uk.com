@@ -92,6 +92,18 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		mounted(){}
 		
 		register() {
+			$('.nts-input').trigger("validate");
+			$('input').trigger("validate");
+			if(!nts.uk.ui.errors.hasError()){
+				let self = this;
+				let data = {
+					recruitmentApp : ko.toJS(self.recruitmentApp),
+					absenceLeaveApp : ko.toJS(self.recruitmentApp),
+					displayInforWhenStarting: self.displayInforWhenStarting()
+				}
+				console.log(data);	
+			}
+			
 			
 		}
 		

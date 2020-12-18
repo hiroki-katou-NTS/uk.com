@@ -71,7 +71,8 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("start")
 	public HolidayShipmentDto startPage(StartScreenAParam param) {
-		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
+//		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
+		return null;
 	}
 	
 	@POST
@@ -88,7 +89,8 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_work_type")
 	public WorkTimeInfoDto changeWorkType(ChangeWorkTypeParam param) {
-		return this.screenAFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
+//		return this.screenAFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
+		return null;
 	}
 
 	@POST
@@ -100,32 +102,36 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_day")
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
-		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
-				param.getUiType());
+//		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
+//				param.getUiType());
+		return null;
 	}
 	
 	@POST
 	@Path("changeWorkingDateRefactor")
 	public DisplayInforWhenStarting changeWorkingDateRefactor(ChangeWorkingDateParam param) {
-		return this.screenAFinder.changeWorkingDateRefactor(
-				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
-				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
-				param.displayInforWhenStarting);
+//		return this.screenAFinder.changeWorkingDateRefactor(
+//				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+//				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+//				param.displayInforWhenStarting);
+		return null;
 	}
 	
 	@POST
 	@Path("changeHolidayDateRefactor")
 	public DisplayInforWhenStarting changeHolidayDateRefactor(ChangeWorkingDateParam param) {
-		return this.screenAFinder.changeHolidayDateRefactor(
-				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
-				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
-				param.displayInforWhenStarting);
+//		return this.screenAFinder.changeHolidayDateRefactor(
+//				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+//				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+//				param.displayInforWhenStarting);
+		return null;
 	}
 
 	@POST
 	@Path("get_selected_working_hours")
 	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWorkTypeParam param) {
-		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
+//		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
+		return null;
 	}
 
 	@POST

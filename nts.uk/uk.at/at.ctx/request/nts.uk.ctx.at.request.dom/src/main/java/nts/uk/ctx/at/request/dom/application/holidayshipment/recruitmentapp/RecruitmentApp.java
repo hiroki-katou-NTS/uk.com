@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
@@ -32,6 +33,18 @@ public class RecruitmentApp extends ApplicationForHolidays {
 	
 	public Optional<TimeZoneWithWorkNo> getWorkTime(WorkNo workNo) {
 		return this.workingHours.stream().filter(c->c.getWorkNo().v() == workNo.v()).findFirst();
+	}
+	
+	/** ドメインモデル「振出申請」の事前条件をチェックする */
+	public void validateApp(boolean requiredReasons) {
+		for (TimeZoneWithWorkNo timeZoneWithWorkNo : this.workingHours) {
+			timeZoneWithWorkNo.validate();
+		}
+
+		if(requiredReasons && (!this.getOpAppStandardReasonCD().isPresent()) || !this.getOpAppReason().isPresent()) {
+			throw new BusinessException("Msg_115");
+		}
+		
 	}
 	
 }

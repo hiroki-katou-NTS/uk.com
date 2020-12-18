@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
@@ -43,4 +45,22 @@ public class AbsenceLeaveApp extends ApplicationForHolidays {
 	public Optional<TimeZoneWithWorkNo> getWorkTime(WorkNo workNo) {
 		return this.workingHours.stream().filter(c->c.getWorkNo().v() == workNo.v()).findFirst();
 	}
+	
+	/** ドメインモデル「振休申請」の事前条件をチェックする */ 
+	public void validateApp(boolean requiredReasons) {
+		if(this.workChangeUse == NotUseAtr.NOT_USE) {
+			this.workingHours = new ArrayList<>();
+		}else if(this.workChangeUse == NotUseAtr.USE && this.workingHours.isEmpty()){
+			//http://192.168.50.4:3000/issues/113303
+		}
+		for (TimeZoneWithWorkNo timeZoneWithWorkNo : this.workingHours) {
+			timeZoneWithWorkNo.validate();
+		}
+
+		if(requiredReasons && (!this.getOpAppStandardReasonCD().isPresent()) || !this.getOpAppReason().isPresent()) {
+			throw new BusinessException("Msg_115");
+		}
+		
+	}
+	
 }
