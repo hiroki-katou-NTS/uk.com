@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import mockit.Expectations;
+import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -14,9 +16,14 @@ import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 public class WorkAvailabilityRuleDateSettingTest {
+	@Injectable
+	WorkAvailability.Require require;
 	
 	@Test
 	public void getters() {
@@ -76,36 +83,56 @@ public class WorkAvailabilityRuleDateSettingTest {
 		assertThat(isOverDeadline).isTrue();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIsOverHolidayMaxdays_false() {
 		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
-				);
+		List<ShiftMaster> shiftMasters = WorkAvailabilityRuleDateSettingHelper.createShiftMasterList(Arrays.asList(new ShiftMasterCode("S01")));
 		
+		new Expectations() {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result = shiftMasters;
+			}
+		};
+		
+		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
+				);
+
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
 		
 		assertThat(isOverHolidayMaxDays).isFalse();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIsOverHolidayMaxdays_true() {
 		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
+		List<ShiftMaster> shiftMasters = WorkAvailabilityRuleDateSettingHelper.createShiftMasterList(Arrays.asList(new ShiftMasterCode("S01")));
+		
+		new Expectations() {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result = shiftMasters;
+			}
+		};
+		
 		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 6), AssignmentMethod.HOLIDAY)
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 6), AssignmentMethod.HOLIDAY)
 				);
 		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
