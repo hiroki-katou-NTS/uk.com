@@ -10,6 +10,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.ActualContentDisplayDto;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -34,6 +35,9 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	@Inject
 	private InterimRemainDataMngCheckRegister interimRemainDataMngCheckRegister;
 	
+	@Inject
+	private NewBeforeRegister newBeforeRegister;
+	
 	/**
 	 * 登録前のエラーチェック処理(Xử lý error check trước khi đăng ký)
 	 * @param companyId 会社ID
@@ -50,6 +54,13 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 		this.checkForInsufficientNumberOfHolidays(companyId, employeeId, abs, rec);
 		
+		if(rec.isPresent()) {
+			this.newBeforeRegister.processBeforeRegister_New(companyId, employmentRootAtr, agentAtr, application, overtimeAppAtr, errorFlg, lstDateHd, appDispInfoStartupOutput)
+		}
+		
+		if(abs.isPresent()) {
+			this.newBeforeRegister.processBeforeRegister_New(companyId, employmentRootAtr, agentAtr, application, overtimeAppAtr, errorFlg, lstDateHd, appDispInfoStartupOutput)
+		}
 		//TODO
 	}
 	
