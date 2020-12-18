@@ -100,10 +100,7 @@ module nts.uk.com.view.ccg020.a {
             $('<img/>')
               .attr('id', 'img-avatar')
               .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
-              .appendTo($userImage);
-            const $icon = $('#user')
-              .find('.user-settings')
-              .find('.ui-icon-caret-1-s');
+              .appendTo($('#user-image'));
             $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
           } else {
             $userImage.ready(() => {
@@ -176,8 +173,6 @@ module nts.uk.com.view.ccg020.a {
           : `${item.displayName} (${item.defaultName})`;
       });
       vm.treeMenu(treeMenu);
-      console.log(vm.treeMenu());
-      
     }
 
     private eventClickSearch() {
