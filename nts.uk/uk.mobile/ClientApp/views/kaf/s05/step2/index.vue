@@ -26,20 +26,27 @@
       <div v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
         <div class="card-body">
           <div class="row mt-3">
-            <div class="col-3">{{ item.title }}</div>
-            <div class="col-5">
-              <kafs00subp1 v-bind:params="item.preApp" />
+            <div class="col-4">{{ item.title }}</div>
+            <div class="col-8.5">
+              <div class="row mt-0">
+                  <div v-show="$appContext.c4_1" class="col-6">
+                      <kafs00subp1 v-bind:params="item.preApp" />
+                  </div>
+                  <div v-show="$appContext.c4_1" class="col-6">
+                      <kafs00subp1 v-bind:params="item.actualApp" />
+                  </div>
+              </div>
+              
             </div>
-            <div class="col-3.5">
-              <kafs00subp1 v-bind:params="item.actualApp" />
-            </div>
+            
           </div>
-          <div class="card-body">
+          <div v-show="item.visible" class="card-body">
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              require="true"
-              showTitle="true"
+              v-bind:require="false"
+              v-bind:showTitle="true"
+              v-bind:disabled="false"
               time-input-type="time-duration"
             />
           </div>
@@ -61,20 +68,27 @@
       >
         <div class="card-body">
           <div class="row mt-3">
-            <div class="col-3">{{ item.title }}</div>
-            <div class="col-5">
-              <kafs00subp1 v-bind:params="item.preApp" />
+            <div class="col-4">{{ item.title }}</div>
+            <div class="col-8.5">
+              <div class="row mt-0">
+                  <div v-show="$appContext.c4_1" class="col-6">
+                      <kafs00subp1 v-bind:params="item.preApp" />
+                  </div>
+                  <div v-show="$appContext.c4_1" class="col-6">
+                      <kafs00subp1 v-bind:params="item.actualApp" />
+                  </div>
+              </div>
+              
             </div>
-            <div class="col-3.5">
-              <kafs00subp1 v-bind:params="item.actualApp" />
-            </div>
+            
           </div>
           <div class="card-body">
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              require="true"
-              showTitle="true"
+              v-bind:require="false"
+              v-bind:showTitle="true"
+              v-bind:disabled="false"
               time-input-type="time-duration"
             />
           </div>

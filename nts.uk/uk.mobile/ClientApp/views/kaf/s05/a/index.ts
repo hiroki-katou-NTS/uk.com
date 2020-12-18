@@ -100,6 +100,12 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return !_.isEmpty(value);
     }
+
+    public get c4_1() {
+        const self = this;
+        
+        return self.application.prePostAtr == 1;
+    }
     // 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
     public get c5() {
         const self = this;

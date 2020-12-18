@@ -53,29 +53,36 @@ export class KafS05Step2Component extends Vue {
     public created() {
         const self = this;
         self.createOverTime();
-        self.bindHolidayTime();
+        self.createHolidayTime();
     }
     public mounted() {
-        
+
+    }
+    public bindOverTime() {
+        const self = this;
+
+        let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
+
+        return null;
     }
     public createOverTime() {
         const self = this;
         {
             let overTime = {} as OverTime;
             overTime.frameNo = '1';
-            overTime.title = self.$i18n('KAFS05_70');
+            overTime.title = self.$i18n('KAFS05_70') + overTime.frameNo;
             overTime.visible = true;
             overTime.applicationTime = 0;
             overTime.preApp = {
                 preAppDisp: true,
-                preAppTime: null,
-                preAppExcess: ExcessTimeStatus,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE,
 
             };
             overTime.actualApp = {
                 actualDisp: true,
-                actualTime: null,
-                actualExcess: ExcessTimeStatus
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
             };
             self.overTimes.push(overTime);
         }
@@ -83,7 +90,7 @@ export class KafS05Step2Component extends Vue {
     }
 
 
-    public bindHolidayTime() {
+    public createHolidayTime() {
         const self = this;
         {
             let holidaytime = {} as HolidayTime;
@@ -94,13 +101,13 @@ export class KafS05Step2Component extends Vue {
             holidaytime.preApp = {
                 preAppDisp: true,
                 preAppTime: null,
-                preAppExcess: ExcessTimeStatus,
+                preAppExcess: ExcessTimeStatus.NONE,
 
             };
             holidaytime.actualApp = {
                 actualDisp: true,
                 actualTime: null,
-                actualExcess: ExcessTimeStatus
+                actualExcess: ExcessTimeStatus.NONE
             };
             self.holidayTimes.push(holidaytime);
         }
@@ -132,13 +139,6 @@ export class KafS05Step2Component extends Vue {
         self.$appContext.toStep(1);
     }
 
-    public bindOverTime() {
-        const self = this;
-
-        let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
-
-        return null;
-    }
 
     public bindAllReason() {
         const self = this;
