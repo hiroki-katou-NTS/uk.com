@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
@@ -73,9 +74,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -241,12 +239,12 @@ public class ReflectApplicationHelper {
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}
 
-	public static PredetermineTimeSetForCalc createPredeteTimeSet(int start, int end, int no) {
-		List<TimezoneUse> timeZones = Arrays
-				.asList(new TimezoneUse(new TimeWithDayAttr(start), new TimeWithDayAttr(end), UseSetting.USE, no));
-		PredetermineTimeSetForCalc result = new PredetermineTimeSetForCalc();
-		result.setTimezones(timeZones);
-		return result;
+	public static WorkInfoAndTimeZone createPredeteTimeSet(int start, int end, int no) {
+		List<nts.uk.ctx.at.shared.dom.worktime.common.TimeZone> timeZones = Arrays
+				.asList(new nts.uk.ctx.at.shared.dom.worktime.common.TimeZone(new TimeWithDayAttr(start),
+						new TimeWithDayAttr(end)));
+
+		return new WorkInfoAndTimeZone(null, Optional.empty(), timeZones);
 	}
 
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre) {
