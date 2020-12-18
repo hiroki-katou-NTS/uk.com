@@ -7,8 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumberInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingInfo;
 
 @Data
 /** 積立年休残情報 */
@@ -28,12 +27,12 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = AFTER, layout = LAYOUT_C)
 	private RsvLeaveRemainingNumberDto after;
 
-	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingNumberInfo domain) {
+	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingInfo domain) {
 
 		return domain == null ? null : new RsvLeaveRemainingNumberInfoDto(
-				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber()),
-				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberBeforeGrant()),
-				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().orElse(null)));
+				RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
+				RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+				domain.getRemainingNumberAfterGrantOpt().map(c -> RsvLeaveRemainingNumberDto.from(c)).orElse(null));
 	}
 
 //	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingNumber domain) {
@@ -47,12 +46,11 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst {
 //
 //	}
 
-//	public ReserveLeaveRemainingNumberInfo toReserveDomain() {
-//
-//		return ReserveLeaveRemainingNumberInfo.of(
-//				totalRemainingDays.toReserveDomain(),
-//				before.toReserveDomain(),
-//				after.toReserveDomain());
-//	}
+	public ReserveLeaveRemainingInfo toReserveDomain() {
 
+		return ReserveLeaveRemainingInfo.of(
+					totalRemainingDays.toReserveDomain(),
+					before.toReserveDomain(),
+					Optional.ofNullable(after == null ? null : after.toReserveDomain()));
+	}
 }

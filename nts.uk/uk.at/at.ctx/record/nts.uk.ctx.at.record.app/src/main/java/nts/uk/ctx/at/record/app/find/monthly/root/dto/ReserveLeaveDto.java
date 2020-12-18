@@ -1,19 +1,15 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DayUsedNumberDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.RsvLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.RsvLeaveRemainingNumberInfoDto;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 
 @Data
 /** 積立年休 */
@@ -31,19 +27,16 @@ public class ReserveLeaveDto implements ItemConst {
 
 	public static ReserveLeaveDto from(ReserveLeave domain) {
 
-		// ooooo要修正！！converter
 		return domain == null ? null : new ReserveLeaveDto(
 						DayUsedNumberDto.from(domain.getUsedNumber()),
 						RsvLeaveRemainingNumberInfoDto.from(domain.getRemainingNumberInfo()));
-//		return null;
 
 	}
 
 	public ReserveLeave toDomain() {
-		// ooooo要修正！！converter
-//		return ReserveLeave.of(usedNumber == null ? new ReserveLeaveUsedNumber() : usedNumber.toDomain(),
-//				remainingNumber == null ? new ReserveLeaveRemainingNumberInfo() : remainingNumber.toReserveDomain());
-		return null;
+		
+		return ReserveLeave.of(usedNumber == null ? new ReserveLeaveUsedNumber() : usedNumber.toDomain(),
+							remainingNumber == null ? new ReserveLeaveRemainingInfo() : remainingNumber.toReserveDomain());
 	}
 
 //	public static ReserveLeaveDto from(ReserveLeave domain) {

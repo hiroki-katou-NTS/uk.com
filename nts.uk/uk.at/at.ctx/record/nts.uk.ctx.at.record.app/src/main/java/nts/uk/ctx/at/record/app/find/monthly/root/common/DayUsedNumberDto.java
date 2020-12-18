@@ -36,12 +36,16 @@ public class DayUsedNumberDto implements ItemConst {
 	private Double usedDaysAfterGrant;
 
 	public static DayUsedNumberDto from(ReserveLeaveUsedNumber domain){
-		return domain == null ? null : new DayUsedNumberDto(domain.getUsedDays().v(), domain.getUsedDaysBeforeGrant().v(),
-				domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
+		return domain == null ? null : new DayUsedNumberDto(
+				domain.getUsedDays().v(), 
+				domain.getUsedDaysBeforeGrant().v(),
+				domain.getUsedDaysAfterGrant().map(c -> c.v()).orElse(null));
 	}
 
 	public ReserveLeaveUsedNumber toDomain(){
-		return ReserveLeaveUsedNumber.of(new ReserveLeaveUsedDayNumber(usedDays), new ReserveLeaveUsedDayNumber(usedDaysBeforeGrant),
+		return ReserveLeaveUsedNumber.of(
+				new ReserveLeaveUsedDayNumber(usedDays), 
+				new ReserveLeaveUsedDayNumber(usedDaysBeforeGrant),
 				Optional.ofNullable(usedDaysAfterGrant == null ? null : new ReserveLeaveUsedDayNumber(usedDaysAfterGrant)));
 	}
 
