@@ -173,6 +173,14 @@ module nts.uk.at.kal014.a {
             let dfd = $.Deferred();
             $.when(vm.$ajax(PATH_API.GET_ALL_SETTING),vm.$ajax(PATH_API.GET_ALL_CTG))
                 .done((data: Array<IAlarmPatternSet>, ctg: Array<IAlarmCheckCategoryList>) =>{
+                    // Set all value of category
+                    if (!_.isEmpty(ctg)) {
+                        let allCtgCd = _.map(ctg, i => new AlarmCheckCategoryList(i));
+                        vm.listAllCtgCode = allCtgCd;
+                    } else{
+                        vm.listAllCtgCode = [];
+                    }
+
                     if (!data || data.length <= 0){
                         // Set to New Mode
                         vm.clickNewButton();
@@ -190,9 +198,6 @@ module nts.uk.at.kal014.a {
                         vm.currentCode(vm.gridItems()[0].code);
                     }
                     vm.currentCode.valueHasMutated();
-                    // Set all value of category
-                    let allCtgCd = _.map(ctg, i=> new AlarmCheckCategoryList(i) );
-                    vm.listAllCtgCode = allCtgCd;
                     dfd.resolve();
             }).fail( (err: any) =>{
                 vm.$dialog.error(err);
