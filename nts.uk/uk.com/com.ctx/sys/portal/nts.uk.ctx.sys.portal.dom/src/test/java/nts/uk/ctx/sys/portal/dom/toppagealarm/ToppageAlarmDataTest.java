@@ -60,12 +60,19 @@ public class ToppageAlarmDataTest {
 		assertThat(domain.getAlarmClassification()).isNull();
 		assertThat(domain.getCid()).isNull();
 		assertThat(domain.getIdentificationKey()).isNull();
-		assertThat(domain.getDisplaySId()).isNull();
-		assertThat(domain.getDisplayAtr()).isNull();
+		assertThat(domain.getDisplaySId()).isNotNull();
+		assertThat(domain.getDisplayAtr()).isNotNull();
 		assertThat(domain.getIsResolved()).isNull();
 		assertThat(domain.getOccurrenceDateTime()).isNull();
 		assertThat(domain.getDisplayMessage()).isNull();
 		assertThat(domain.getLinkUrl()).isNull();
+	}
+	
+	@Test
+	public void testNullValueWithDisplaySidAndAtr() {
+		ToppageAlarmData domain = ToppageAlarmData.builder().build();
+		assertThat(domain.getDisplaySId()).isNotNull();
+		assertThat(domain.getDisplayAtr()).isNotNull();
 	}
 	
 	@Test
