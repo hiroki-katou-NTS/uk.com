@@ -23,4 +23,8 @@ public class TimeLeaveApplication extends Application {
 		this.leaveApplicationDetails = leaveApplicationDetails;
 	}
 
+	public TimeLeaveApplication(Application application) {
+		super(application);
+	}
+
 }

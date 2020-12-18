@@ -8,14 +8,19 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHd;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 
 import javax.ejb.Stateless;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +45,6 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         GET_BY_KEYS = builderString.toString();
 
     }
-
 
     @Override
     public Optional<TimeLeaveApplication> findByKeys(String companyId, String appId, int appTimeType, int frameNo) {
@@ -83,25 +87,25 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         application.setEnteredPersonID(res.getString("ENTERED_PERSON_SID"));
         if (res.getString("REASON_REVERSION") == null) {
             application.setOpReversionReason(Optional.empty());
-        }else {
+        } else {
             application.setOpReversionReason(Optional.of(new ReasonForReversion(res.getString("REASON_REVERSION"))));
         }
         application.setAppDate(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2)));
         if (res.getInt("FIXED_REASON") == null) {
             application.setOpAppStandardReasonCD(Optional.empty());
-        }else {
+        } else {
             application.setOpAppStandardReasonCD(Optional.of(new AppStandardReasonCode(res.getInt("FIXED_REASON"))));
         }
         if (res.getString("APP_REASON") == null) {
             application.setOpAppReason(Optional.empty());
-        }else {
+        } else {
             application.setOpAppReason(Optional.of(new AppReason(res.getString("APP_REASON"))));
         }
         application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
         application.setEmployeeID(res.getString("APPLICANTS_SID"));
         if (res.getDate("APP_START_DATE") == null) {
             application.setOpAppStartDate(Optional.empty());
-        }else {
+        } else {
             application.setOpAppStartDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_START_DATE")), pattern2))));
         }
         if (res.getDate("APP_END_DATE") == null) {
@@ -112,17 +116,25 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
 
         if (res.getInt("STAMP_OPTION_ATR") == null) {
             application.setOpStampRequestMode(Optional.empty());
-        }else {
+        } else {
             application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(res.getInt("STAMP_OPTION_ATR"), StampRequestMode.class)));
         }
 
-        //TODO QA 38361
-        String wkTypeCd = res.getString("TIME_HD_TYPE");
-        String wkTimeCd = res.getString("FRAME_NO");
-        Integer wkTimeEnd = res.getInt("WORK_TIME_END");
-        Integer wkTimeStart = res.getInt("WORK_TIME_START");
+        Integer frameNo = res.getInt("FRAME_NO");
+        if (frameNo == null) return null;
 
-        return new TimeLeaveApplication();
+        TimeLeaveApplicationDetail detail = new TimeLeaveApplicationDetail(
+            EnumAdaptor.valueOf(res.getInt("TIME_HD_TYPE"), AppTimeType.class),
+            Arrays.asList(new TimeZoneWithWorkNo(
+                (int)res.getInt("FRAME_NO"),
+                res.getInt("WORK_TIME_START"),
+                res.getInt("WORK_TIME_END")
+            )),
+            //TODO
+            new TimeDigestApplication()
+        );
+
+        return new TimeLeaveApplication(application,Arrays.asList(detail));
     }
 
 }
