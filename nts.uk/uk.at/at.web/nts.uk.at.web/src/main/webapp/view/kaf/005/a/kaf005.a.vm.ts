@@ -2140,7 +2140,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			visibleModel.c2(c2);
 			// 
 			let c6 = self.mode() != MODE.MULTiPLE_AGENT;
-			visibleModel.c6(c6);
+			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
+				self.visibleModel.c6(false);
+			} else {
+				visibleModel.c6(c6);				
+			}
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
 			let c7 = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
