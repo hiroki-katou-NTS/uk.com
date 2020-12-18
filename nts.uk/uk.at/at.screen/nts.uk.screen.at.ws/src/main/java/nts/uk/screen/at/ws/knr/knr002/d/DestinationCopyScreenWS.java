@@ -31,7 +31,7 @@ public class DestinationCopyScreenWS {
 //	}
 
 	@POST
-	@Path("getdestinationcopylist/{empInfoTerCode}")
+	@Path("getDestinationCopyList/{empInfoTerCode}")
 	public List<GetDestinationCopyDto> getDestinationCopyList(@PathParam("empInfoTerCode") String empInforTerCode) {
 		List<GetDestinationCopyDto> result = this.getDestinationCopy.getEmpInfoTerDestinalList(empInforTerCode);
 		return result;

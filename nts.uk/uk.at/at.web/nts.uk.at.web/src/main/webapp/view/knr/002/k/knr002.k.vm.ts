@@ -3,16 +3,20 @@ module knr002.k {
     import dialog = nts.uk.ui.dialog;
     import alertError = nts.uk.ui.alertError;
     import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export module viewmodel{
         export class ScreenModel{
-            destinationCopyList: KnockoutObservableArray<ReservationItem>;
-            selectedList: KnockoutObservableArray<string>;
+            bentoMenu: KnockoutObservableArray<BentoMenuItem>;
+            selectedList: KnockoutObservableArray<number>;
+            empInfoTerCode: string;
             
             constructor(){
                 var self = this;  
-                self.destinationCopyList = ko.observableArray<ReservationItem>([]);
-                self.selectedList = ko.observableArray<string>([]);
+                self.bentoMenu = ko.observableArray<BentoMenuItem>([]);
+                self.selectedList = ko.observableArray<number>([]);
+                self.empInfoTerCode = '';
             }
             /**
              * Start Page
@@ -22,18 +26,36 @@ module knr002.k {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
-                service.getDestinationCopyList('1').done((data)=>{
-                    if(data.length < 0){
-                        //do something
-                    }else{
-                        let desCopyTempList = [];
-                        for(let item of data){
-                            let desCopyTemp = new ReservationItem(item.empInfoTerCode, item.empInfoTerName);
-                            desCopyTempList.push(desCopyTemp);
+                self.empInfoTerCode = getShared('KNR002K_empInfoTerCode');
+
+                if(self.empInfoTerCode == ''){
+                    self.bentoMenu([]);
+                    self.selectedList([]);
+                }else{
+                    console.log("empInfoTerCode: ", self.empInfoTerCode);
+                    service.getBentoMenu(self.empInfoTerCode).done((data)=>{
+                        console.log("data: ", data);
+                        if(!data){
+                            //do something
+                        }else{
+                            //  self.bentoMenu(data.bentoMenuList);
+                            //  self.selectedList(data.bentoMenu);
+                            let bentoMenuTemp = [];
+                            for(let item of data.bentoMenuList){
+                                let bentoTemp = new BentoMenuItem(item.bentoMenuFrameNumber, item.bentoMenuName);
+                                bentoMenuTemp.push(bentoTemp);
+                            } 
+                            self.bentoMenu(bentoMenuTemp);
+                            let selectedListTemp = [];
+                            for(let item of data.bentoMenu){
+                                selectedListTemp.push(item);
+                            }
+                            self.selectedList(selectedListTemp);
                         }
-                        self.destinationCopyList(desCopyTempList);
-                    }
-                });
+                    });
+                    console.log("bentoMenu", self.bentoMenu());
+                    console.log("selectedList: ", self.selectedList());
+                }
                 blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
@@ -47,12 +69,12 @@ module knr002.k {
             }
    
         }
-        class ReservationItem{
-            code: string;
-            name: string;
-            constructor(code: string, name: string){
-                this.code = code;
-                this.name = name;
+        class BentoMenuItem{
+            frameNumber: number;
+            bentoName: string;
+            constructor(frameNumber: number, bentoName: string){
+                this.frameNumber = frameNumber;
+                this.bentoName = bentoName;
             }
         }
     }

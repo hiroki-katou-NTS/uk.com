@@ -46,50 +46,55 @@ module knr002.f {
                 //get Share from A
                 let empInfoTerList = getShared('KNR002F_empInfoTerList');
                 
-                if(!self.modelEmpInfoTer()){
-                    self.modelEmpInfoTer(7);
-                    self.empInfoTerCode("0001");
-                    self.empInfoTerName("isn't the shared name");
-                    self.modelEmpInfoTerName("wrong");
-                    self.lastSuccessDate("9999/99/99 99:99:99");
-                }
-                         
-                service.getRecoveryTargeTertList(self.modelEmpInfoTer()).done((data)=>{
-                    if(!data || data.leng <= 0 ){
-                        self.recoveryTargetList([]);
-                        self.bindDestinationCopyList();
-                    }else{
-                        let recoveryTargetTempList = [];                                         
-                        if(empInfoTerList){
-                            let keyMap: any = {};
-                            _.forEach(empInfoTerList, e => {
-                                keyMap[e.empInfoTerCode] = e;
-                            }); 
-                            for(let item of data){
-                                let recoveryTargetTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()));                         
-                                let currentItem = keyMap[item.empInfoTerCode];                           
-                                if (currentItem) {
-                                    recoveryTargetTemp.workLocationName = currentItem.workLocationName;
-                                }                               
-                                recoveryTargetTempList.push(recoveryTargetTemp);
-                            }
+                if(self.modelEmpInfoTer() === undefined || self.modelEmpInfoTer() === 0){
+                    self.empInfoTerCode('');
+                    self.empInfoTerName('');
+                    self.modelEmpInfoTer(0);
+                    self.modelEmpInfoTerName('');
+                    self.lastSuccessDate('');
+                    self.workLocationName('');
+                    self.recoveryTargetList([]);
+                    self.selectedList([]);
+                    self.bindDestinationCopyList(); 
+                } else {             
+                    service.getRecoveryTargeTertList(self.modelEmpInfoTer()).done((data)=>{
+                        if(!data || data.leng <= 0 ){
+                            self.recoveryTargetList([]); 
                         }else{
-                            for(let item of data){
-                                let recoveryTargetTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()));                         
-                                recoveryTargetTempList.push(recoveryTargetTemp);
+                            let recoveryTargetTempList = [];                                         
+                            if(empInfoTerList){
+                                let keyMap: any = {};
+                                _.forEach(empInfoTerList, e => {
+                                    keyMap[e.empInfoTerCode] = e;
+                                }); 
+                                for(let item of data){
+                                    let recoveryTargetTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()));                         
+                                    let currentItem = keyMap[item.empInfoTerCode];                           
+                                    if (currentItem) {
+                                        recoveryTargetTemp.workLocationName = currentItem.workLocationName;
+                                    }                               
+                                    recoveryTargetTempList.push(recoveryTargetTemp);
+                                }
+                            }else{
+                                for(let item of data){
+                                    let recoveryTargetTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(self.modelEmpInfoTer()));                         
+                                    recoveryTargetTempList.push(recoveryTargetTemp);
+                                }
                             }
+                            self.recoveryTargetList(recoveryTargetTempList);
+                            console.log("data1: ", self.recoveryTargetList());   
                         }
-                        self.recoveryTargetList(recoveryTargetTempList);
-                        self.bindDestinationCopyList();
+                        self.bindDestinationCopyList(); 
+                    });											
                 }
-            });
-                blockUI.clear();   																			
+                $('#F6_1').focus();
+                blockUI.clear(); 																			
                 dfd.resolve();											
-                return dfd.promise();											
+                return dfd.promise();
             }
             
             /**
-             * bind table D3_2
+             * bind table F4
              */
             private bindDestinationCopyList(): void{
                 let self = this;

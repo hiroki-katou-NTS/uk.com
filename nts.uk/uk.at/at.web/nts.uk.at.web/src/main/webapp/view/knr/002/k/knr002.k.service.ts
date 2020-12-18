@@ -2,7 +2,7 @@ module knr002.k.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getDestinationCopyList: "screen/at/destinationcopy/getdestinationcopylist",
+        getBentoMenu: "screen/at/bentomenutransfer/getBentoMenu",
     };
 
     /**
@@ -10,7 +10,7 @@ module knr002.k.service {
     * 
     * 
     */
-   export function getDestinationCopyList(empInfoTerCode: any): JQueryPromise<any> {
-    return ajax(paths.getDestinationCopyList+ "/" + empInfoTerCode);
+   export function getBentoMenu(empInfoTerCode: any): JQueryPromise<any> {
+    return ajax(paths.getBentoMenu+ "/" + empInfoTerCode);
 }
 }

@@ -22,7 +22,7 @@ public class DisplayTranferContentSettingsScreenWS {
 	private DisplayTranferContentSettings displayTranferContentSettings;
 	
 	@POST
-	@Path("gettimerecordreqsettings/{empInfoTerCode}")
+	@Path("getTimeRecordReqSettings/{empInfoTerCode}")
 	public DisplayTranferContentSettingsDto getTimeRecordReqSetting(@PathParam("empInfoTerCode") String empInforTerCode) {
 		return this.displayTranferContentSettings.getTimeRecordReqSetting(empInforTerCode);
 	}

@@ -22,7 +22,7 @@ public class GetWorkTimeScreenWS {
 	private GetWorkTime getWorkTime;
 
 	@POST
-	@Path("getworktimes/{empInfoTerCode}")
+	@Path("getWorkTimes/{empInfoTerCode}")
 	public GetWorkTimeDto getTimeRecordReqSetting(@PathParam("empInfoTerCode") String empInforTerCode) {
 		return this.getWorkTime.getWorkTimes(empInforTerCode);
 	}

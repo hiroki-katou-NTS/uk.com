@@ -11,18 +11,14 @@ module knr002.d {
 			empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
             destinationCopyList: KnockoutObservableArray<EmpInfoTerminal>;
-            //currentCodeList: Array<ItemModel>;
             selectableCodeList: Array<ItemModel>;
-            //isCancel: boolean;
             
             constructor(){
                 var self = this;
                 self.empInfoTerCode = ko.observable('');
                 self.empInfoTerName = ko.observable('');
                 self.destinationCopyList = ko.observableArray<EmpInfoTerminal>([]);
-                //self.currentCodeList = [];
                 self.selectableCodeList = [];
-                //self.isCancel = false;
             }
             /**
              * Start Page
@@ -33,62 +29,39 @@ module knr002.d {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 // get Shared from C
-                let empInfoTerCodeShr = getShared('KNR002D_empInfoTerCode');
-                let empInfoTerNameShr = getShared('KNR002D_empInfoTerName');
-                self.empInfoTerCode(empInfoTerCodeShr? empInfoTerCodeShr : '');
-                self.empInfoTerName(empInfoTerNameShr? empInfoTerNameShr : '');
-                // get Shared from A
-                let empInfoTerList = getShared('KNR002D_empInfoTerList');
-               
-                if(empInfoTerList){                   
-                   let desCopyTempList = [];
-                    for(let e of empInfoTerList){
-                        if(e.empInfoTerCode != self.empInfoTerCode())
-                            desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
-                    };
-                    //desCopyTempList = self.fillBlankRecord(desCopyTempList, 5);
-                    self.destinationCopyList(desCopyTempList);
-                    self.bindDestinationCopyList();   
-                }else{
-                    //self.currentCodeList = self.isCancel ? self.selectableCodeList : getShared('KNR002D_currentCodeList');
-                    if(self.empInfoTerCode() == ''){
-                        self.empInfoTerCode('0001');
-                        self.empInfoTerName("isn't the shared");
+                self.empInfoTerCode(getShared('KNR002D_empInfoTerCode'));
+                self.empInfoTerName(getShared('KNR002D_empInfoTerName'));
+                if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
+                    self.destinationCopyList([]);
+                    self.selectableCodeList = [];
+                } else {
+                    // get Shared from A
+                    let empInfoTerList = getShared('KNR002D_empInfoTerList');
+                    if(empInfoTerList){                   
+                        let desCopyTempList = [];
+                        for(let e of empInfoTerList){
+                            if(e.empInfoTerCode != self.empInfoTerCode())
+                                desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
+                        };
+                        self.destinationCopyList(desCopyTempList); 
+                    } else {
+                        service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
+                            if(!data || data.length <= 0){
+                                //do something
+                                self.destinationCopyList([]);
+                                self.selectableCodeList = [];
+                            } else {
+                                let desCopyTempList = [];
+                                for(let item of data){
+                                    let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
+                                    desCopyTempList.push(desCopyTemp);
+                                }   
+                                self.destinationCopyList(desCopyTempList);
+                            }                       
+                        });
                     }
-                    service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                        if(!data || data.length <= 0){
-                            //do something
-                        } else {
-                            let desCopyTempList = [];
-                            // if(!self.currentCodeList){
-                            //     for(let item of data){
-                            //         let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
-                            //         desCopyTempList.push(desCopyTemp);
-                            //     } 
-                            // } else {
-                            //     for(let item of data){                             
-                            //         let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
-                            //         desCopyTemp.availability = false; 
-                            //         _.forEach(self.currentCodeList, e => {
-                            //             if(desCopyTemp.empInfoTerCode == e.code){
-                            //                 desCopyTemp.availability = true; 
-                            //                 return;
-                            //             }
-                            //         });
-                            //         desCopyTempList.push(desCopyTemp);
-                            //     }  
-                            // }       
-                            for(let item of data){
-                                let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, self.getModelName(item.modelEmpInfoTer), item.workLocationName);
-                                desCopyTempList.push(desCopyTemp);
-                            }   
-                           // desCopyTempList = self.fillBlankRecord(desCopyTempList, 5);
-                            self.destinationCopyList(desCopyTempList);
-                            self.bindDestinationCopyList();
-                        }                       
-                    });
                 }
-
+                self.bindDestinationCopyList();
                 $('#D5_1').focus();
                 blockUI.clear();   																			
                 dfd.resolve();											
@@ -127,17 +100,7 @@ module knr002.d {
              */
             private copy(): any {
                 let self = this;
-                //self.isCancel = false;
                 // Process
-                nts.uk.ui.windows.close();
-            }
-            /**
-             * D5_2
-             * キャンセルボタン
-             */
-            private cancel_Dialog(): any {
-                let self = this;
-                //self.isCancel = true;
                 self.selectableCodeList = [];
                 _.forEach(self.destinationCopyList(), e => {
                     if(e.availability)
@@ -147,15 +110,11 @@ module knr002.d {
                 nts.uk.ui.windows.close();
             }
             /**
-             * get Model Name
+             * D5_2
+             * キャンセルボタン
              */
-            private getModelName(modelEmpInfoTer: Number): string{
-                switch(modelEmpInfoTer){
-                    case 7: return 'NRL_1';
-                    case 8: return 'NRL_2';
-                    case 9: return 'NRL_M';
-                    default : return '';
-                }	
+            private cancel_Dialog(): any {
+                nts.uk.ui.windows.close();
             }
             /**
              * fill blank record to Grid

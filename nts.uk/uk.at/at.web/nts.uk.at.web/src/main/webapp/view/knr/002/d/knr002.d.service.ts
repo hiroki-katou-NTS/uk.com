@@ -2,7 +2,7 @@ module knr002.d.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getDestinationCopyList: "screen/at/destinationcopy/getdestinationcopylist",
+        getDestinationCopyList: "screen/at/destinationcopy/getDestinationCopyList",
     };
 
     /**

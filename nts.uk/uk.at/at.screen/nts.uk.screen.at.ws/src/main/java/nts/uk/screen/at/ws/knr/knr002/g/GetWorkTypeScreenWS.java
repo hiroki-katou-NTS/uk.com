@@ -22,7 +22,7 @@ public class GetWorkTypeScreenWS {
 	private GetWorkType getWorkType;
 	
 	@POST
-	@Path("getworktypes/{empInfoTerCode}")
+	@Path("getWorkTypes/{empInfoTerCode}")
 	public GetWorkTypeDto getTimeRecordReqSetting(@PathParam("empInfoTerCode") String empInforTerCode) {
 		return this.getWorkType.getWorkTypes(empInforTerCode);
 	}
