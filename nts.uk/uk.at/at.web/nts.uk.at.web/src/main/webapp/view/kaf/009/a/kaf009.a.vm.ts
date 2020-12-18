@@ -79,6 +79,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     }
                 });
                 if(loadDataFlag) {
+					vm.application().employeeIDLst(empLst);
                     let ApplicantEmployeeID: null,
                         ApplicantList: null,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),

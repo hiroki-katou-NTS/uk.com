@@ -68,7 +68,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
 
         DatePeriod period = inputData.getEndDate() != null ? new DatePeriod(inputData.getStartDate(), inputData.getEndDate()) : DatePeriod.oneDay(inputData.getStartDate());
         List<GeneralDate> dates = new ArrayList<>();
-        if (period.start().compareTo(period.end()) == 0) {
+        if (period.start().compareTo(period.end()) != 0) {
             // 申請期間から休日の申請日を取得する
             dates.addAll(otherCommonAlgorithm.lstDateIsHoliday(
                     inputData.getEmployeeId(),
@@ -253,7 +253,7 @@ public class HolidayWorkSubHolidayAssociationFinder {
         List<LeaveComDayOffManaDto> result = new ArrayList<>();
         for (GeneralDate holiday : inputData.getSubstituteHolidayList()) {
             double requiredNumber = inputData.getDaysUnit();
-            while (requiredNumber > 0.0) {
+            while (requiredNumber > 0.0 && inputData.getHolidayWorkInfoList().stream().anyMatch(i -> i.getRemainingNumber() > 0)) {
                 // 同一日かチェックする
                 if (inputData.getHolidayWorkInfoList().stream()
                         .anyMatch(holidayWorkData -> holiday.compareTo(holidayWorkData.getHolidayWorkDate()) == 0)) {

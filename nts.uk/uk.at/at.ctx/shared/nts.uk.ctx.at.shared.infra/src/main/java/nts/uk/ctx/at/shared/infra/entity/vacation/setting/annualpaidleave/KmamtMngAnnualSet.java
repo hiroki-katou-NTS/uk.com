@@ -34,10 +34,6 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     @Column(name = "CID")
     private String cid;
     
-    /** The half max grant day. */
-    @Column(name = "HALF_MAX_GRANT_DAY")
-    private Double halfMaxGrantDay;
-    
     /** The half max day year. */
     @Basic(optional = false)
     @Column(name = "HALF_MAX_DAY_YEAR")
@@ -66,14 +62,6 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     /** The remaining max day. */
     @Column(name = "REMAINING_MAX_DAY")
     private Double remainingMaxDay;
-    
-    /** The next grant day disp atr. */
-    @Column(name = "NEXT_GRANT_DAY_DISP_ATR")
-    private Integer nextGrantDayDispAtr;
-    
-    /** The remaining num disp atr. */
-    @Column(name = "REMAINING_NUM_DISP_ATR")
-    private Integer remainingNumDispAtr;
     
     /** The yearly of day. */
     @Column(name = "YEARLY_OF_DAYS")

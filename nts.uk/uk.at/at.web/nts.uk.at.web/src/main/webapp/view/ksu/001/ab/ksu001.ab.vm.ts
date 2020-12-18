@@ -138,7 +138,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
@@ -152,7 +152,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
@@ -166,7 +166,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     // 貼り付けのパターン3
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
@@ -183,7 +183,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
                         workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
                         startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
@@ -200,7 +200,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName"]);
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
@@ -214,7 +214,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName"]);
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
@@ -228,7 +228,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     // 貼り付けのパターン3
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: null,
                         workTimeName: null,
                         startTime   : '',
@@ -241,7 +241,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].name,
+                        workTypeName: objWorkType[0].abbName,
                         workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
                         workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
                         achievements: false,

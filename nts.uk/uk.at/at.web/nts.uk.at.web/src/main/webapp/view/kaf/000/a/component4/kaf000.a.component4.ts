@@ -151,6 +151,15 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     endDate = moment(value.endDate).format('YYYY/MM/DD');
 	       		vm.$validate(element).then((valid: boolean) => {
                     if(valid) {
+						if(vm.appType==AppType.BUSINESS_TRIP_APPLICATION) {
+							if(moment(endDate).diff(startDate, 'days') > 30) {
+								vm.application().appDate(startDate);
+		                        vm.application().opAppStartDate(startDate);
+		                        vm.application().opAppEndDate(endDate);
+		                        vm.application.valueHasMutated();
+								return false;
+							}
+						}
                     	return vm.$validate('#kaf000-a-component4-rangeDate');
                     }
                 }).then((valid: any) => {

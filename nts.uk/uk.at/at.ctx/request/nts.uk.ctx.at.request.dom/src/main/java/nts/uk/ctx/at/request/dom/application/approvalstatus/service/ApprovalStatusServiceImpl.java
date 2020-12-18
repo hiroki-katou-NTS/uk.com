@@ -1220,6 +1220,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	private String getApprovalSttDetailVacation(Application_New app) {
 		String relaName = "";
+
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
 		if (!absence.isPresent())
 			return "";
@@ -1934,6 +1935,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					empIDLst.stream().map(x -> new ApprSttEmpMailOutput(x, "", "")).collect(Collectors.toList())));
 		}
 		return result;
+
 	}
 	
 	@Override

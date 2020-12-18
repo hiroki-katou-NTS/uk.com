@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto;
 
-//import java.util.List;
+import java.util.List;
 import java.util.Optional;
 
-//import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -16,23 +16,31 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 
 public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
-    /** The manage type. */
+    /** The manage type. 管理区分 */
     public Integer manageType;
 
-    /** The nursing category. */
+    /** The nursing category. 介護看護区分*/
     public Integer nursingCategory;
 
-    /** The start month day. */
-    public MonthDay startMonthDay;
+    /** The start month day. 起算日 */
+    public Integer startMonthDay;
 
-    /** The nursing number leave day. */
+    /** The nursing number leave day. 看護休暇日数*/
     public Integer nursingNumberLeaveDay;
 
-    /** The nursing number person. */
+    /** The nursing number person. 看護休暇人数*/
     public Integer nursingNumberPerson;
 
+    /** The nursing number leave day. 看護休暇日数2*/
+    public Integer nursingNumberLeaveDay2;
+
+    /** The nursing number person. 看護休暇人数2*/
+    public Integer nursingNumberPerson2;
+
+    /** 特別休暇枠NO */
     public Integer specialHolidayFrame;
 
+    /** 欠勤枠NO */
     public Integer absenceWorkDay;
 
     /*
@@ -77,7 +85,8 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setStartMonthDay(MonthDay startMonthDay) {
-        this.startMonthDay = startMonthDay;
+    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
+    	this.startMonthDay = monthday;
     }
 
     /*
@@ -88,13 +97,18 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      * .dom.vacation.setting.nursingleave.MaxPersonSetting)
      */
     @Override
-    public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-        if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
-            this.nursingNumberLeaveDay = maxPersonSetting.getNursingNumberLeaveDay().v();
-        }
-        if (maxPersonSetting.getNursingNumberPerson() != null) {
-            this.nursingNumberPerson = maxPersonSetting.getNursingNumberPerson().v();
-        }
+    public void setMaxPersonSetting(List<MaxPersonSetting> maxPersonSetting) {
+//        if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
+//            this.nursingNumberLeaveDay = maxPersonSetting.getNursingNumberLeaveDay().v();
+//        }
+//        if (maxPersonSetting.getNursingNumberPerson() != null) {
+//            this.nursingNumberPerson = maxPersonSetting.getNursingNumberPerson().v();
+//        }
+
+    	val maxPerson1 = maxPersonSetting.stream().filter(c -> c.getNursingNumberPerson().v() == 1).findFirst().get();
+    	val maxPerson2 = maxPersonSetting.stream().filter(c -> c.getNursingNumberPerson().v() >= 2).findFirst().get();
+    	this.nursingNumberLeaveDay = maxPerson1.getNursingNumberLeaveDay().v();
+    	this.nursingNumberLeaveDay2 = maxPerson2.getNursingNumberLeaveDay().v();
     }
 
 	@Override

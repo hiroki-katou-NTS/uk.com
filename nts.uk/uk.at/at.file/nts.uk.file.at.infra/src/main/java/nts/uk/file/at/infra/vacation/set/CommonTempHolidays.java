@@ -148,6 +148,20 @@ public class CommonTempHolidays {
         }
         return "";
     }
+    
+    public static String getTextEnumTermManagement(int value){
+        switch (value) {
+            case 0: {
+                return I18NText.getText("Enum_TermManagement_MANAGE_BY_TIGHTENING");
+            }
+            case 1: {
+                return I18NText.getText("Enum_TermManagement_MANAGE_BASED_ON_THE_DATE");
+            }
+
+        }
+        return "";
+    }
+    
     public static String getTextEnumSixtyHourExtra(int value){
         switch (value) {
             case 0: {

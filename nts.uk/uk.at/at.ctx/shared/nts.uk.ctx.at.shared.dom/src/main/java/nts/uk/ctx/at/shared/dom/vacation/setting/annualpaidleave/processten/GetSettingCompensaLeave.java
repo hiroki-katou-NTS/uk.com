@@ -32,25 +32,25 @@ public class GetSettingCompensaLeave {
 			if (optEmpSubData.isPresent()) {// １件以上取得できた(1data trở lên)
 				// ドメインモデル「雇用振休管理設定」．管理区分をチェックする(kiểm tra domain 「雇用振休管理設定」．管理区分)
 				EmpSubstVacation empSubData = optEmpSubData.get();
-				if (empSubData.getSetting().getIsManage().equals(ManageDistinct.YES)) {
+			/*	if (empSubData.getSetting().getIsManage().equals(ManageDistinct.YES)) {
 					subManageFlag = true;
 					// 振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
 					expirationOfLeave = empSubData.getSetting().getExpirationDate().value;
 					// refactor RQ204
 					applyPermission = empSubData.getSetting().getAllowPrepaidLeave();
-				}
+				}*/
 			} else {// ０件(0 data)
 					// ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
 				Optional<ComSubstVacation> comSub = require.findComById(companyID);
 				if (comSub.isPresent()) {
 					ComSubstVacation comSubSet = comSub.get();
-					if (comSubSet.isManaged()) {
+					/*if (comSubSet.isManaged()) {
 						subManageFlag = true;
 						// 振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
 						expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
 						// refactor RQ204
 						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
-					}
+					}*/
 				}
 			}
 		}
