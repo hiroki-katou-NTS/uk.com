@@ -15,10 +15,10 @@ module nts.uk.com.view.ccg020.a {
 
   @component({
     name: 'ccg020-component',
-    template: `<div id="search-bar" class="cf">
+    template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
-    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }, click: openPopupSearchCategory" class="img-icon"></i>
-    <input id="search" autocomplete="off" data-bind="ntsTextEditor: {
+    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }" class="img-icon"></i>
+    <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
       enterkey: submit,
       constraint: 'SearchContent',
@@ -43,10 +43,10 @@ module nts.uk.com.view.ccg020.a {
     <div id="popup-search"></div>
   </div>
   <div id="message" class="cf">
-    <i class="img" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
-    <i class="img" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
-  </div>`
+    <i class="img-ccg020" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
+    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
+    <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
+  </div></div>`
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -73,9 +73,19 @@ module nts.uk.com.view.ccg020.a {
       vm.getListMenu();
       vm.isDisplayWarning();
       vm.isDisplayNewNoticeFunc();
-      vm.$nextTick(() => vm.getAvatar());
+      $('#user-image').ready(() => {
+        $('#user-image').removeClass('ui-icon ui-icon-person');
+        vm.$nextTick(() => vm.getAvatar());
+      });
+      
       $('#radio-search-category').on('click', () => {
-        vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
+        $("#popup-search-category").ntsPopup("hide");
+      });
+      vm.searchCategory.subscribe((value) => {
+        vm.searchPlaceholder(value === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
+      });
+      $("#search-icon").on('click', () => {
+        $("#popup-search-category").ntsPopup("toggle");
       });
     }
 
@@ -83,27 +93,24 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       const $userImage = $('#user-image');
       vm.$blockui('grayout');
-      vm.$ajax(API.getAvatar)
+      vm.$ajax('com', API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
-          if (vm.avatarInfo().fileId) {
+          if (vm.avatarInfo().fileId && vm.avatarInfo().fileId !== null) {
             $('<img/>')
               .attr('id', 'img-avatar')
               .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
               .appendTo($userImage);
-            $userImage.removeClass('ui-icon ui-icon-person');
             const $icon = $('#user')
               .find('.user-settings')
               .find('.ui-icon-caret-1-s');
-            $icon.attr('style', 'top: 7px;');
             $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
           } else {
             $userImage.ready(() => {
               $('<div/>')
-                .addClass('avatar')
-                .attr('id', 'avatar_id')
-                .text($('#user-name').text().substring(0, 2))
-                .appendTo($userImage);
+                .attr('id', 'avatar_id_ccg020')
+                .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
+                .appendTo($('#user-image'));
             });
           }
         })
@@ -122,7 +129,7 @@ module nts.uk.com.view.ccg020.a {
         position: {
           my: 'left top',
           at: 'left bottom',
-          of: '#search'
+          of: '#search-input'
         }
       });
       $('#popup-search').ntsPopup({
@@ -131,12 +138,12 @@ module nts.uk.com.view.ccg020.a {
         position: {
           my: 'left top',
           at: 'left bottom',
-          of: '#search'
+          of: '#search-input'
         }
       });
       $('#popup-search-category').ntsPopup({
         showOnStart: false,
-        dismissible: true,
+        dismissible: false,
         position: {
           my: 'right top',
           at: 'right bottom',
@@ -147,10 +154,6 @@ module nts.uk.com.view.ccg020.a {
       $('#list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
       });
-    }
-
-    private openPopupSearchCategory() {
-      $('#popup-search-category').ntsPopup('show');
     }
 
     private getListMenu() {
@@ -166,19 +169,22 @@ module nts.uk.com.view.ccg020.a {
           )
         )
       );
-      treeMenu = _.uniqBy(treeMenu, 'code');
+      treeMenu = _.uniqBy(treeMenu, 'url');
       _.forEach(treeMenu, (item: TreeMenu) => {
         item.name = item.displayName === item.defaultName
           ? item.displayName
           : `${item.displayName} (${item.defaultName})`;
       });
       vm.treeMenu(treeMenu);
+      console.log(vm.treeMenu());
+      
     }
 
     private eventClickSearch() {
       const vm = this;
       vm.get10LastResults();
       $('#popup-search').ntsPopup('show');
+      $("#popup-search-category").ntsPopup("hide");
     }
 
     submit() {
@@ -197,6 +203,13 @@ module nts.uk.com.view.ccg020.a {
             const $tableResult = $('<div/>').attr('id', 'list-box');
             const list = vm.treeMenuResult();
             if (list.length > 0) {
+              $tableResult.append(
+                $('<p/>')
+                  .addClass('result-search')
+                  .text(nts.uk.text.format(nts.uk.resource.getText('CCG002_8'), vm.valueSearch())
+                )
+              );
+
               _.forEach(list, (item) => {
                 const $ul = $('<a/>')
                   .addClass('result-search custom-limited-label')
@@ -221,7 +234,7 @@ module nts.uk.com.view.ccg020.a {
         searchCategory: vm.searchCategory(),
         contents: vm.valueSearch()
       });
-      vm.$ajax(API.saveHistorySearch, command)
+      vm.$ajax('com', API.saveHistorySearch, command)
         .then(() => vm.get10LastResults())
         .always(() => vm.$blockui('clear'));
     }
@@ -229,7 +242,7 @@ module nts.uk.com.view.ccg020.a {
     private removeHistoryResult(command: GeneralSearchHistoryCommand) {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.removeHistorySearch, command)
+      vm.$ajax('com', API.removeHistorySearch, command)
         .then(() => vm.get10LastResults())
         .always(() => vm.$blockui('clear'));
     }
@@ -238,7 +251,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       $('#list-box-search').remove();
       vm.$blockui('grayout');
-      vm.$ajax(`${API.get10LastResults}/${vm.searchCategory()}`)
+      vm.$ajax('com', `${API.get10LastResults}/${vm.searchCategory()}`)
         .then((response) => {
           vm.dataDisplay(response);
           vm.displayResultSearchHistory();
@@ -299,7 +312,7 @@ module nts.uk.com.view.ccg020.a {
     private isDisplayWarning() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.isDisplayWarning)
+      vm.$ajax('com', API.isDisplayWarning)
         .then((response) => {
           vm.$blockui('clear');
           vm.isDisplayWarningMsg(response);
@@ -310,7 +323,7 @@ module nts.uk.com.view.ccg020.a {
     private isDisplayNewNoticeFunc() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.isDisplayNewNotice)
+      vm.$ajax('com', API.isDisplayNewNotice)
         .then((response) => {
           vm.$blockui('clear');
           vm.isDisplayNewNotice(response);
@@ -321,7 +334,7 @@ module nts.uk.com.view.ccg020.a {
     private checkCanSearchManual() {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.checkSearchManual)
+      vm.$ajax('com', API.checkSearchManual)
         .then((response) => {
           vm.$blockui('clear');
           if (response) {

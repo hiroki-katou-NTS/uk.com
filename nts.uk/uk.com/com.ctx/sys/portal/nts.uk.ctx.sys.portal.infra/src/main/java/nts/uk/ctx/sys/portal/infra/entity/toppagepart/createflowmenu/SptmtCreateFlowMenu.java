@@ -43,6 +43,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.URL;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.VerticalPosition;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * フローメニュー作成
@@ -51,7 +52,8 @@ import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
 @Data
 @Entity
 @Table(name = "SPTMT_FLOWMENU_CREATE")
-public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.MementoGetter, CreateFlowMenu.MementoSetter {
+public class SptmtCreateFlowMenu extends UkJpaEntity
+		implements Serializable, CreateFlowMenu.MementoGetter, CreateFlowMenu.MementoSetter {
 
 	private static final long serialVersionUID = 1L;
 
@@ -144,18 +146,14 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 	public void setMenuSettings(List<MenuSetting> menuSettings, String contractCode) {
 		this.menuSettings = menuSettings.stream()
 				.map(domain -> SptmtFlowLayoutMenu.builder()
-						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
-						.contractCode(contractCode)
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0).contractCode(contractCode)
 						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
 						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
 						.menuClassification(domain.getMenuClassification().value).menuCode(domain.getMenuCode().v())
 						.menuName(domain.getMenuName().v())
-						.pk(new SptmtFlowLayoutMenuPk(
-								this.getCid(), 
-								this.getFlowMenuCode(),
-								domain.getSizeAndPosition().getColumn().v(),
-								domain.getSizeAndPosition().getRow().v()))
+						.pk(new SptmtFlowLayoutMenuPk(this.getCid(), this.getFlowMenuCode(),
+								domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
 						.systemType(domain.getSystemType().value)
 						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
 						.width(domain.getSizeAndPosition().getWidth().v()).build())
@@ -165,101 +163,72 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 	@Override
 	public void setArrowSettings(List<ArrowSetting> arrowSettings, String contractCode) {
 		this.arrowSettings = arrowSettings.stream()
-				.map(domain -> SptmtFlowLayoutArrow.builder()
-						.contractCode(contractCode)
-						.fileName(domain.getFileName().v())
-						.height(domain.getSizeAndPosition().getHeight().v())
-						.pk(new SptmtFlowLayoutArrowPk(
-								this.getCid(), 
-								this.getFlowMenuCode(),
-								domain.getSizeAndPosition().getColumn().v(), 
-								domain.getSizeAndPosition().getRow().v()))
+				.map(domain -> SptmtFlowLayoutArrow.builder().contractCode(contractCode)
+						.fileName(domain.getFileName().v()).height(domain.getSizeAndPosition().getHeight().v())
+						.pk(new SptmtFlowLayoutArrowPk(this.getCid(), this.getFlowMenuCode(),
+								domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
 						.width(domain.getSizeAndPosition().getWidth().v()).build())
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings, String contractCode) {
-		this.fileAttachmentSettings = fileAttachmentSettings.stream()
-				.map(domain -> SptmtFlowLayoutFileAttachment.builder()
-						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
-						.contractCode(contractCode)
-						.fileId(domain.getFileId())
-						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
-						.height(domain.getSizeAndPosition().getHeight().v())
-						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-						.linkContent(domain.getLinkContent().orElse(null))
-						.pk(new SptmtFlowLayoutFileAttachmentPk(
-								this.getCid(), 
-								this.getFlowMenuCode(),
-								domain.getSizeAndPosition().getColumn().v(), 
-								domain.getSizeAndPosition().getRow().v()))
-						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
-						.width(domain.getSizeAndPosition().getWidth().v()).build())
-				.collect(Collectors.toList());
+		this.fileAttachmentSettings = fileAttachmentSettings.stream().map(domain -> SptmtFlowLayoutFileAttachment
+				.builder().bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0).contractCode(contractCode)
+				.fileId(domain.getFileId()).fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
+				.height(domain.getSizeAndPosition().getHeight().v())
+				.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
+				.linkContent(domain.getLinkContent().orElse(null))
+				.pk(new SptmtFlowLayoutFileAttachmentPk(this.getCid(), this.getFlowMenuCode(),
+						domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
+				.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
+				.width(domain.getSizeAndPosition().getWidth().v()).build()).collect(Collectors.toList());
 	}
 
 	@Override
 	public void setImageSettings(List<ImageSetting> imageSettings, String contractCode) {
 		this.imageSettings = imageSettings.stream()
-				.map(domain -> SptmtFlowLayoutImage.builder()
-						.contractCode(contractCode)
+				.map(domain -> SptmtFlowLayoutImage.builder().contractCode(contractCode)
 						.fileId(domain.getFileId().orElse(null))
 						.fileName(domain.getFileName().map(FileName::v).orElse(null))
-						.height(domain.getSizeAndPosition().getHeight().v())
-						.isFixed(domain.getIsFixed().value)
-						.pk(new SptmtFlowLayoutImagePk(
-								this.getCid(), 
-								this.getFlowMenuCode(),
-								domain.getSizeAndPosition().getColumn().v(), 
-								domain.getSizeAndPosition().getRow().v()))
-						.ratio(domain.getRatio())
-						.width(domain.getSizeAndPosition().getWidth().v()).build())
+						.height(domain.getSizeAndPosition().getHeight().v()).isFixed(domain.getIsFixed().value)
+						.pk(new SptmtFlowLayoutImagePk(this.getCid(), this.getFlowMenuCode(),
+								domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
+						.ratio(domain.getRatio()).width(domain.getSizeAndPosition().getWidth().v()).build())
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public void setLabelSettings(List<LabelSetting> labelSettings, String contractCode) {
-		this.labelSettings = labelSettings.stream()
-				.map(domain -> SptmtFlowLayoutLabel.builder()
-						.backgroundColor(
-								domain.getFontSetting().getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null))
-						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
-						.contractCode(contractCode)
-						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
-						.height(domain.getSizeAndPosition().getHeight().v())
-						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-						.labelContent(domain.getLabelContent().map(LabelContent::v).orElse(null))
-						.pk(new SptmtFlowLayoutLabelPk(
-								this.getCid(), 
-								this.getFlowMenuCode(),
-								domain.getSizeAndPosition().getColumn().v(), 
-								domain.getSizeAndPosition().getRow().v()))
-						.textColor(domain.getFontSetting().getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null))
-						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
-						.width(domain.getSizeAndPosition().getWidth().v())
-						.build())
-				.collect(Collectors.toList());
+		this.labelSettings = labelSettings.stream().map(domain -> SptmtFlowLayoutLabel.builder()
+				.backgroundColor(
+						domain.getFontSetting().getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null))
+				.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0).contractCode(contractCode)
+				.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
+				.height(domain.getSizeAndPosition().getHeight().v())
+				.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
+				.labelContent(domain.getLabelContent().map(LabelContent::v).orElse(null))
+				.pk(new SptmtFlowLayoutLabelPk(this.getCid(), this.getFlowMenuCode(),
+						domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
+				.textColor(domain.getFontSetting().getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null))
+				.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
+				.width(domain.getSizeAndPosition().getWidth().v()).build()).collect(Collectors.toList());
 	}
 
 	@Override
 	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
-		this.linkSettings = linkSettings.stream().map(domain -> SptmtFlowLayoutLink.builder()
-						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
-						.contractCode(contractCode)
+		this.linkSettings = linkSettings.stream()
+				.map(domain -> SptmtFlowLayoutLink.builder()
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0).contractCode(contractCode)
 						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
 						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
 						.linkContent(domain.getLinkContent().orElse(null))
-						.pk(new SptmtFlowLayoutLinkPk(
-								this.getCid(), 
-								this.getFlowMenuCode(),
-								domain.getSizeAndPosition().getColumn().v(),
-								domain.getSizeAndPosition().getRow().v()))
+						.pk(new SptmtFlowLayoutLinkPk(this.getCid(), this.getFlowMenuCode(),
+								domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
 						.url(domain.getUrl().v())
 						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
-						.width(domain.getSizeAndPosition().getWidth().v())
-						.build())
+						.width(domain.getSizeAndPosition().getWidth().v()).build())
 				.collect(Collectors.toList());
 	}
 
@@ -382,5 +351,10 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 	@Override
 	public String getCid() {
 		return this.pk.cid;
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.pk;
 	}
 }

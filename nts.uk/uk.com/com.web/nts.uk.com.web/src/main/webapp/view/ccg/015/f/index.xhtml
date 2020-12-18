@@ -17,13 +17,12 @@
       <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
       <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js"  of="nts.uk.at.web"/>
       <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" />
-      <script>var dialogSize = { width: 1500, height: 700 };</script>
     </ui:define>
-    <ui:define name="content">
+    <ui:define name="content" style="padding: 7px;">
       <div class="contents_layout" id="resizable">
           <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
             <div class="contents_2" id="F2">
-              <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
+              <layout2-component params= "{item:paramWidgetLayout2(), isLayout: 2}"></layout2-component>
             </div>
           </com:ko-if>
           <com:ko-if bind="visible()">
@@ -33,12 +32,12 @@
           </com:ko-if>
           <com:ko-if bind="layoutDisplayType() === 1">
             <div class="contents_2" id="F4">
-              <layout2-component params= "item:paramWidgetLayout2()"></layout2-component>
+              <layout2-component params= "{item:paramWidgetLayout2(), isLayout: 2}"></layout2-component>
             </div>
           </com:ko-if>
           <com:ko-if bind="layoutDisplayType() === 3">
             <div class="contents_3" id="F3">
-              <layout2-component params= "item:paramWidgetLayout3()"></layout2-component>
+              <layout2-component params= "{item:paramWidgetLayout3(), isLayout: 3}"></layout2-component>
             </div>
           </com:ko-if>
       </div>

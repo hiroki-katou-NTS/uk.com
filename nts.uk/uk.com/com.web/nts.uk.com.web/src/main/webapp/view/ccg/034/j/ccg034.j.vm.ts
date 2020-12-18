@@ -22,7 +22,7 @@ module nts.uk.com.view.ccg034.j {
       // Init popup J
       // Generate image list
       for (let firstLoopIndex = 0; firstLoopIndex < 40; firstLoopIndex++) {
-        vm.arrowImageList.push({ code: firstLoopIndex, name: `../resources/j/CCG034J_${nts.uk.text.padLeft(String(firstLoopIndex + 1), '0', 3)}.png` });
+        vm.arrowImageList.push({ code: firstLoopIndex, name: `../../share/resources/ccg034/j/CCG034J_${nts.uk.text.padLeft(String(firstLoopIndex + 1), '0', 3)}.png` });
       }
       // Adding images inside popup
       for (let i = 0; i < 40; i += MAXIMUM_IMAGE_COUNT) {

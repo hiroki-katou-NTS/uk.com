@@ -125,7 +125,7 @@ height: 550px;
 }
 
 .contentsRL {
-width: 200px;
+width: 245px;
 }
 
 .contentsRR {
@@ -137,7 +137,7 @@ width: 327px;
 }
 
 .pad-left-20 {
-padding-left: 20px;
+padding-left: 10px;
 }
 
 .drop_links {
@@ -203,4 +203,11 @@ margin-top: 20px;
 .fix-span-62 {
   width: 200px;
   text-align: right;
+}
+
+.size08 {
+  font-size: 0.85rem;
+}
+.size100 {
+  width: 100px;
 }

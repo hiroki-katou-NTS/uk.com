@@ -10,7 +10,6 @@ module nts.uk.com.view.ccg015.b {
     updateTopPage: "/toppage/update",
     removeTopPage: "/toppage/remove"
   };
-
   @bean()
   export class ScreenModel extends ko.ViewModel {
     listTopPage: KnockoutObservableArray<Node> = ko.observableArray<Node>([]);
@@ -19,12 +18,17 @@ module nts.uk.com.view.ccg015.b {
     topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
     columns: KnockoutObservable<any> = ko.observableArray([]);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    isDisableButton: KnockoutObservable<boolean> = ko.observable(true);
     selectedId: KnockoutObservable<number> = ko.observable(null);
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
     isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
+    text1: KnockoutObservable<String> = ko.observable('');
+    text2: KnockoutObservable<String> = ko.observable('');
+    text3: KnockoutObservable<String> = ko.observable('');
     button1Text: KnockoutObservable<string> = ko.observable('');
     button2Text: KnockoutObservable<string> = ko.observable('');
+    isDisableNewBtn: KnockoutObservable<boolean> = ko.observable(false);
 
     breakNewMode = false;
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -41,6 +45,7 @@ module nts.uk.com.view.ccg015.b {
         { headerText: vm.$i18n("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
         { headerText: vm.$i18n("CCG015_12"), width: "260px", key: 'nodeText', dataType: "string", formatter: _.escape }
       ]);
+      const text470px = vm.$i18n("CCG015_62").toString();
       vm.selectedId.subscribe((value: number) => {
         const isLayout2or3: boolean = (value === LayoutType.LAYOUT_TYPE_2 || value === LayoutType.LAYOUT_TYPE_3);
         vm.button1Text(isLayout2or3 ? vm.$i18n("CCG015_60") : vm.$i18n("CCG015_59"));
@@ -50,6 +55,9 @@ module nts.uk.com.view.ccg015.b {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(false);
           vm.isVisiableButton3(false);
+          vm.text1('');
+          vm.text2('');
+          vm.text3('');
         } else if (value === LayoutType.LAYOUT_TYPE_1 || value === LayoutType.LAYOUT_TYPE_2) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
@@ -58,6 +66,19 @@ module nts.uk.com.view.ccg015.b {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(true);
+          vm.text1(text470px);
+          vm.text2('');
+          vm.text3(text470px);
+        }
+        if(value === LayoutType.LAYOUT_TYPE_1){
+          vm.text1('');
+          vm.text2(text470px);
+          vm.text3('');
+        }
+        if(value === LayoutType.LAYOUT_TYPE_2) {
+          vm.text1(text470px);
+          vm.text2('');
+          vm.text3('');
         }
       });
       vm.loadTopPageList();
@@ -65,7 +86,7 @@ module nts.uk.com.view.ccg015.b {
 
     mounted() {
       const vm = this;
-      vm.selectedId(1);
+      vm.selectedId(0);
       vm.toppageSelectedCode.subscribe((selectedTopPageCode: string) => {
         if (selectedTopPageCode) {
           vm.isNewMode(false);
@@ -77,7 +98,9 @@ module nts.uk.com.view.ccg015.b {
               $('.save-error').ntsError('clear');
             })
             .always(() => vm.$blockui("clear"));
-          $("#inp_name").focus();
+          if (selectedTopPageCode !== "") {
+            $("#inp_name").focus();
+          }
         } else {
           // 新規のトップページを作成する
           vm.isNewMode(true);
@@ -88,6 +111,16 @@ module nts.uk.com.view.ccg015.b {
           }
         }
       });
+      
+      vm.isNewMode.subscribe((x:any) => {
+        if(x) {
+          vm.isDisableButton(true);
+        } else {
+          vm.isDisableButton(false);
+        }
+      });
+     
+
     }
 
     private loadTopPageList(selectedCode?: string): JQueryPromise<void> {
@@ -99,11 +132,14 @@ module nts.uk.com.view.ccg015.b {
           // if data # empty
           if (data.length > 0) {
             const listTopPage: Node[] = _.map(data, (item) => new Node(item.topPageCode, item.topPageName, null));
-            vm.listTopPage(listTopPage);
+            const lstSort =  _.orderBy(listTopPage, ["code"], ["asc"])
+            vm.listTopPage(lstSort);
+            vm.isDisableNewBtn(false);
             vm.toppageSelectedCode(selectedCode || data[0].topPageCode);
           } else {
             vm.listTopPage([]);
             vm.topPageModel(new TopPageViewModel());
+            vm.isDisableNewBtn(true);
             vm.isNewMode(true);
             $("#inp_code").focus();
           }
@@ -136,6 +172,8 @@ module nts.uk.com.view.ccg015.b {
       const vm = this;
       vm.topPageModel(new TopPageViewModel());
       vm.isNewMode(true);
+      vm.selectedId(0);
+      this.$nextTick(()=>  $("#inp_code").focus());
       vm.breakNewMode = true;
       vm.toppageSelectedCode("");
       if (nts.uk.ui.errors.hasError()) {
@@ -159,6 +197,7 @@ module nts.uk.com.view.ccg015.b {
                 .then(() => {
                   vm.$blockui("clear");
                   vm.$dialog.info({ messageId: "Msg_15" });
+                  $("#inp_name").focus();
                   vm.loadTopPageList(param.topPageCode);
                 })
                 .fail((err) => {
@@ -172,6 +211,7 @@ module nts.uk.com.view.ccg015.b {
                   vm.$blockui("clear");
                   vm.$dialog.info({ messageId: "Msg_15" });
                   vm.loadTopPageList(param.topPageCode);
+                  $("#inp_name").focus();
                 })
                 .fail((err) => {
                   vm.$blockui("clear");
@@ -297,14 +337,19 @@ module nts.uk.com.view.ccg015.b {
     openDialogCCG015F() {
       const vm = this;
       const topPageModel: TopPageModelParams = vm.topPageModelParam();
-      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageCode = vm.toppageSelectedCode();
       topPageModel.topPageName = vm.topPageModel().topPageName();
       vm.topPageModelParam(topPageModel);
       const data = {
         topPageModel: vm.topPageModelParam(),
         selectedId: vm.selectedId(),
       };
-      vm.$window.modal('/view/ccg/015/f/index.xhtml', data);
+      const size = {
+        width: Math.round(Number(window.innerWidth) * 80 / 100),
+        height: Math.round(Number(window.innerHeight) * 80 / 100),
+        resizable: true,
+      }
+      vm.$window.modal('/view/ccg/015/f/index.xhtml', data, size);
     }
   }
 

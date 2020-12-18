@@ -58,8 +58,7 @@
         <div class="div-line flex valign-center preview-line">
           <!-- I2_2_1 画像のアップロード -->
           <div id="I2_2_1" class="choose-button" data-bind="ntsFileUpload: {
-            name: '#[CCG034_124]',
-            required: true,
+            name: '#{i18n.getText('CCG034_124')}',
             filename: uploadedFileName,
             accept: ['.png','.gif', '.jpeg', '.jpg', '.tiff', '.bmp'],
             text: '#{i18n.getText('CCG034_124')}',
@@ -67,14 +66,15 @@
             asLink: true,
             immediateUpload: true,
             uploadFinished: uploadFinished,
-            stereoType: 'avatarfile'
+            stereoType: 'avatarfile',
+            maxSize: 1
           }" tabindex="2"></div>
           <!-- I2_2_2 アップロード画像 -->
           <div id="I2_2_2" data-bind="visible: imageType() === 1"></div>
         </div>
         <div class="div-line flex valign-center size-zone">
           <!-- I2_3 最大ファイルサイズ -->
-          <label id="I2_3">${i18n.getText('CCG034_106')}</label>
+          <label id="I2_3">${i18n.getText('CCG034_126')}</label>
           <!-- I2_2_3 ファイルサイズ -->
           <label id="I2_2_3" data-bind="text: displayFileSize, visible: imageType() === 1"></label>
         </div>
@@ -83,10 +83,10 @@
       </div>
       <div id="functions-area-bottom">
         <!-- I20_1 決定 -->
-        <button class="large proceed" tabindex="6"
+        <button id="I20_1" class="large proceed" tabindex="6"
           data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_127')}</button>
         <!-- I20_2 閉じる -->
-        <button class="large" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_128')}</button>
+        <button id="I20_2" class="large" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_128')}</button>
       </div>
     </ui:define>
   </ui:composition>

@@ -174,12 +174,8 @@
 /* password-policy end*/
 
 /* tab1 start*/
-.cb {
+.no-cb, .cb {
   padding-left: 30px;
-}
-
-.no-cb {
-  padding-left: 20px;
 }
 /* tab1 end */
 

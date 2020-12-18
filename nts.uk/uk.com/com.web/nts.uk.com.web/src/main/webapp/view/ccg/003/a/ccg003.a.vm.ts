@@ -16,7 +16,217 @@ module nts.uk.com.view.ccg003.a {
 
   @component({
     name: 'ccg003-component',
-    template: '/nts.uk.com.web/view/ccg/003/a/index.html'
+    template: `<div class="contents">
+    <!-- A0 お知らせ表示 -->
+    <div id="A0-CCG003" class="panel panel-frame panel-ccg003">
+      <div class="top-content">
+        <!-- A1 対象日 -->
+        <div id="A1"><span data-bind="text: systemDate"></span>
+        </div>
+        <div class="fw-right">
+          <div data-bind="if: roleFlag">
+            <!-- A2 メッセージ入力 -->
+            <a id="A2" class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
+          </div>
+          <div>
+            <!-- A3 ☓アイコン -->
+            <i id="A3-CCG003" data-bind="ntsIcon: { no: 174, width: 25, height: 15 }, click: closeWindow"></i>
+          </div>
+        </div>
+      </div>
+      <!-- A4 絞り込み -->
+      <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
+        <div id="top-title" class="bg-schedule-focus bg-accordion-1">
+          <!-- ヘッダテキスト -->
+          <h3 data-bind="text: $component.$i18n('CCG003_5')" class="inline"></h3>
+        </div>
+        <div id="body-title" class="bg-accordion-1 no-border-radius pl-10">
+          <div class="row-inline">
+            <!-- A4_1 表示期間(ラベル) -->
+            <span id="A4_1" class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
+            <!-- A4_2 表示期間 -->
+            <div id="daterangepicker" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+              required: false,
+              enable: true,
+              showNextPrevious: false,
+              value: dateValue,
+              maxRange: 'oneMonth'}"
+            />
+            <!-- A4_3 絞込 -->
+            <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
+          </div>
+        </div>
+      </div>
+      <div class="auto-overflow">
+        <div data-bind="foreach: anniversaries">
+          <!-- A5 記念日 -->
+          <div class="w-490" data-bind="ntsAccordion: {}, click: $component.onClickAnniversary.bind($component, $index)">
+            <div class="bg-schedule-focus">
+              <!-- ヘッダテキスト -->
+              <span class="limited-label-custom  mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
+              <!-- A5_1 NEWアイコン -->
+              <span data-bind="if: $component.anniversaries()[$index()].flag">
+                <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
+              </span>
+            </div>
+            <div class="mr-data no-border-radius">
+              <!-- A5_2 記念日内容 -->
+              <div>
+                <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
+                <span class="block-5" data-bind="text: $component.$i18n('CCG003_16', [anniversaryNotice.displayDate])"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-bind="foreach: msgNotices">
+          <!-- A6 メッセージ -->
+          <div class="w-490" data-bind="ntsAccordion: {activate: $component.onClickMessageNotice.bind($component, message.creatorID, message.inputDate, $index)}">
+            <h3 class="bg-schedule-focus">
+              <!-- ヘッダテキスト -->
+              <span class="limited-label-custom  mw-400" data-bind="text: message.notificationMessage"></span>
+              <!-- A6_1 NEWアイコン -->
+              <span data-bind="if: $component.msgNotices()[$index()].flag">
+                <i data-bind="ntsIcon: { no: 175, width: 25, height: 15 }"></i>
+              </span>
+            </h3>
+            <!-- A6_2 メッセージ内容 -->
+            <div class="mr-data no-border-radius">
+              <div>
+                <span class="break-space" data-bind="html: messageDisplay"></span>
+                <span class="block-5" data-bind="text: $component.$i18n('CCG003_8', [creator])"></span>
+                <span class="block-5" data-bind="text: $component.$i18n('CCG003_9', [dateDisplay])"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    #A0-CCG003 {
+      min-height: 150px;
+      position: fixed;
+      right: 0px !important;
+      left: inherit !important;
+    }
+    #A3-CCG003 {
+      cursor: pointer;
+    }
+    #body-title {
+      border-bottom: 0;
+    }
+    .ccg003-a2 {
+      color: blue !important;
+      text-decoration: underline;
+    }
+    .datepicker-container {
+      z-index: 10000000 !important;
+    }
+    .mt-5 {
+      margin-top: 5px;
+    }
+    .w-490 {
+      width: 490px;
+    }
+    .img-close {
+      cursor: pointer;
+      width: 15px;
+      height: 15px;
+    }
+    .top-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .fw-right {
+      display: flex;
+      float: right;
+      justify-content: end;
+    }
+    .panel-ccg003 {
+      position: absolute;
+      max-height: 460px;
+      background-color: #f2f8ee !important;
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      width: 510px;
+      border-radius: 0px !important;
+    }
+    .row-inline {
+      display: inline-flex;
+    }
+    .ml-20 {
+      margin-left: 20px;
+    }
+    .bg-accordion-1 {
+      background-color: #e1eed7 !important;
+    }
+    .ui-accordion > .ui-accordion-header {
+      margin: 0 0 0 0 !important;
+      border-radius: 0px !important;
+    }
+    .bg-accordion-data {
+      background-color:#ffffcc !important;
+    }
+    .no-border-radius {
+      border-radius: 0px !important;
+    }
+    .pl-10 {
+      padding-left: 10px !important;
+    }
+    .pr-10 {
+      padding-right: 10px !important;
+    }
+    .auto-margin {
+      margin: auto;
+    }
+    .ml-10 {
+      margin-left: 10px;
+    }
+    .ml-90 {
+      margin-left: 90px;
+    }
+    .no-border-bottom {
+      border-bottom: none;
+    }
+    .new-img {
+      width: 20px;
+      height: 10px;
+      float: right;
+    }
+    .mw-400 {
+      max-width: 400px;
+    }
+    .mr-5 {
+      margin-right: 5px;
+    }
+    .auto-overflow {
+      overflow-y: auto;
+      max-height: 385px;
+      -moz-transition: 0.5s;
+      -ms-transition: 0.5s;
+      -o-transition: 0.5s;
+      -webkit-transition: 0.5s;
+      transition: 0.5s;
+    }
+    .block-5 {
+      display: block;
+      margin-top: 5px;
+    }
+    .break-space {
+      white-space: pre-wrap;
+    }
+    .limited-label-custom {
+      width: 99%;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .inline {
+      display: inline;
+    }
+  </style>`
   })
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -33,8 +243,9 @@ module nts.uk.com.view.ccg003.a {
     // Map<個人の記念日情報、新記念日Flag> (List)
     anniversaries: KnockoutObservableArray<AnniversaryNotices> = ko.observableArray([]);
     // ロール
-    roleFlag: KnockoutObservable<boolean> = ko.observable(true);
+    roleFlag: KnockoutObservable<boolean> = ko.observable(false);
     role: KnockoutObservable<Role> = ko.observable(new Role());
+    isShow: KnockoutObservable<boolean> = ko.observable(true);
 
     created() {
       const vm = this;
@@ -45,9 +256,11 @@ module nts.uk.com.view.ccg003.a {
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
-            vm.role(response.role);
-            vm.roleFlag(response.role.employeeReferenceRange !== 3);
-            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'));
+            if (response.role) {
+              vm.role(response.role);
+              vm.roleFlag(response.role.employeeReferenceRange !== 3);
+            }
+            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dd)'));
           }
         })
         .fail(error => vm.$dialog.error(error))
@@ -55,23 +268,42 @@ module nts.uk.com.view.ccg003.a {
     }
 
     mounted() {
+      const vm = this;
       const elementId ='#notice-msg';
-      const elementPosition = $(elementId).position();
-      const elementWidth = $(elementId).outerWidth();
-      const marginRight = elementPosition.left + elementWidth;
-      $('#A0').ntsPopup({
+      $('#A0-CCG003').ntsPopup({
         trigger: elementId,
         position: {
-          my: `right top`,
+          my: 'right top',
           at: 'right bottom',
           of: $('#user')
         },
         showOnStart: false,
-        dismissible: true
+        dismissible: false
       });
 
       $(elementId).click(() => {
-        $('#A0').ntsPopup('show');
+        if (vm.isShow()) {
+          $('#A0-CCG003').ntsPopup('show');
+        } else {
+          $('#A0-CCG003').ntsPopup('hide');
+        }
+        vm.isShow(!vm.isShow());
+      });
+      $('#top-title').dblclick(e => e.preventDefault());
+      $('#top-title').click(() => {
+        $('#top-title').css('border-bottom', 'none');
+        const maxHeight = $('.auto-overflow').css('max-height');
+        if (maxHeight === '320px') {
+          $('.auto-overflow').css('max-height', '385px');
+        } else {
+          $('.auto-overflow').css('max-height', '320px');
+        }
+
+        if (!_.isEmpty(vm.anniversaries()) || !_.isEmpty(vm.msgNotices())) {
+          $('#A4').css('border-bottom', 'unset');
+        } else {
+          $('#A4').css('border-bottom', '1px groove');
+        }
       });
     }
 
@@ -102,6 +334,10 @@ module nts.uk.com.view.ccg003.a {
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
+
+            if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
+              $('#A4').css('border-bottom', 'unset');
+            }
           }
         })
         .fail(error => vm.$dialog.error(error))
@@ -127,7 +363,7 @@ module nts.uk.com.view.ccg003.a {
     replaceUrl(text: string): string {
       return text.replace(urlRegex, (url, b, c) => {
         const url2 = (c == 'www.') ? 'http://' + url : url;
-        return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
+        return '<a style="color: blue !important;" href="' + url2 + '" target="_blank">' + url + '</a>';
       });
     }
 
@@ -142,9 +378,10 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.anniversaries()[index()].flag) {
         return;
       }
+      const anniversary = vm.anniversaries()[index()].anniversaryNotice.displayDate;
       const command = {
         personalId: vm.anniversaries()[index()].anniversaryNotice.personalId,
-        anniversary: vm.anniversaries()[index()].anniversaryNotice.anniversary,
+        anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
         referDate: moment.utc(vm.dateValue().endDate).toISOString(),
       }
       vm.$blockui('show');
@@ -189,12 +426,14 @@ module nts.uk.com.view.ccg003.a {
      */
     openScreenB(): void {
       const vm = this;
-      vm.$window.modal('/view/ccg/003/b/index.xhtml', vm.role().employeeReferenceRange)
+      vm.$window.modal('com', '/view/ccg/003/b/index.xhtml', vm.role())
         .then(() => vm.onClickFilter());
     }
 
     closeWindow(): void {
-      $('#A0').ntsPopup('hide');
+      const vm = this;
+      vm.isShow(!vm.isShow());
+      $('#A0-CCG003').ntsPopup('hide');
     }
   }
 

@@ -121,8 +121,17 @@ export class NavMenuBar extends Vue {
         const vm = this;
         dom.registerEventHandler(window, 'resize', resize);
         vm.$mask('show', { message: true });
-        vm.$http.post('com', servicePath.isNewNotice).then((res: boolean) => {
-            vm.isNewNotice = res;
+    }
+
+    public mounted() {
+        const vm = this;
+        vm.checkIsNewMsg();
+    }
+
+    private checkIsNewMsg() {
+        const vm = this;
+        vm.$http.post('com', servicePath.isNewNotice).then((res: any) => {
+            vm.isNewNotice = res.data;
             vm.$mask('hide');
         }).catch(() => {
             vm.$mask('hide');
@@ -146,7 +155,13 @@ export class NavMenuBar extends Vue {
     }
 
     public showCcg003() {
-        this.$modal(Ccgs03AComponent);
+        const vm = this;
+        this.$modal(Ccgs03AComponent)
+            .then((result: any) => {
+                if (result === 'back') {
+                    vm.checkIsNewMsg();
+                }
+            });
     }
 }
 

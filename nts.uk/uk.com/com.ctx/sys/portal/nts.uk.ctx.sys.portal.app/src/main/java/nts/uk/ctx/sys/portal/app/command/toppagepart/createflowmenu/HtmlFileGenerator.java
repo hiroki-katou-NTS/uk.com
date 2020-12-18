@@ -16,7 +16,7 @@ public class HtmlFileGenerator extends FileGenerator {
 	@SneakyThrows
 	public void generate(FileGeneratorContext context, String content, String fileName) {
 		try (OutputStream os = createNewFile(context, fileName);
-			 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os))) {
+			 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
 			writer.write(content);
 		}
 	}

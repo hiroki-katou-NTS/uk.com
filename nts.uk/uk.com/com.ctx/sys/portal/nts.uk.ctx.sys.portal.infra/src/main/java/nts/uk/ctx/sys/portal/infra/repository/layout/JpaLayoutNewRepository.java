@@ -100,7 +100,7 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	@Override
 	public void delete(String companyId, String topPageCode, List<BigDecimal> lstLayoutNo) {
 		List<SptmtLayoutPk> lstSptmtLayoutPk =  lstLayoutNo.stream().map(x -> new SptmtLayoutPk(companyId, topPageCode, x)).collect(Collectors.toList());
-		this.commandProxy().removeAll(SptmtLayoutPk.class, lstSptmtLayoutPk);
+		this.commandProxy().removeAll(SptmtLayout.class, lstSptmtLayoutPk);
 		this.getEntityManager().flush();
 	}
 

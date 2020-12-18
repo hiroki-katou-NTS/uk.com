@@ -15,11 +15,11 @@ module nts.uk.com.view.ccg003.b {
 
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     msgNotice: MessageNotice[] = [];
-    employeeReferenceRange: KnockoutObservable<number> = ko.observable(0);
+    role: Role = new Role();
 
-    created(employeeReferenceRange: number) {
+    created(role: Role) {
       const vm = this;
-      vm.employeeReferenceRange(employeeReferenceRange);
+      vm.role = role;
       vm.searchMessage(null);
     }
 
@@ -72,7 +72,7 @@ module nts.uk.com.view.ccg003.b {
       const vm = this;
       vm.$window.modal('/view/ccg/003/c/index.xhtml', {
         isNewMode: true,
-        employeeReferenceRange: vm.employeeReferenceRange(),
+        role: vm.role,
         messageNotice: null
       })
         .then(result => {
@@ -89,7 +89,7 @@ module nts.uk.com.view.ccg003.b {
       const vm = this;
       vm.$window.modal('/view/ccg/003/c/index.xhtml', {
         isNewMode: false,
-        employeeReferenceRange: vm.employeeReferenceRange(),
+        role: vm.role,
         messageNotice: vm.findMessage(data)
       })
         .then(() => {
@@ -105,6 +105,15 @@ module nts.uk.com.view.ccg003.b {
       this.$window.close();
     }
 
+  }
+
+  class Role {
+    companyId: string;
+    roleId: string;
+    roleCode: string;
+    roleName: string;
+    assignAtr: number;
+    employeeReferenceRange: number;
   }
 
   class DatePeriod {

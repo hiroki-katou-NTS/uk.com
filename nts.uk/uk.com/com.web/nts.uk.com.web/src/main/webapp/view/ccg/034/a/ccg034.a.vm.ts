@@ -122,6 +122,7 @@ module nts.uk.com.view.ccg034.a {
           if (res) {
             vm.getFlowMenuList().then(() => {
               vm.selectedFlowMenuId(res.flowMenuCode);
+              vm.selectedFlowMenuId.valueHasMutated();
             });
           } else {
             vm.isNewMode.valueHasMutated();
@@ -187,6 +188,7 @@ module nts.uk.com.view.ccg034.a {
       if (!vm.selectedFlowMenuId()) {
         return;
       }
+      const oldIndex = _.findIndex(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() });
       vm.$dialog.confirm({ messageId: "Msg_18" })
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'yes') {
@@ -201,7 +203,7 @@ module nts.uk.com.view.ccg034.a {
               .then(() => vm.getFlowMenuList())
               .then(() => {
                 if (vm.flowMenuList().length > 0) {
-                  vm.selectedFlowMenuId(vm.flowMenuList()[0].flowMenuCode);
+                  vm.selectAfterDelete(oldIndex);
                 } else {
                   vm.changeToNewMode();
                 }
@@ -214,6 +216,13 @@ module nts.uk.com.view.ccg034.a {
         });
     }
 
+    private selectAfterDelete(deletedIndex: number) {
+      const vm = this;
+      if (deletedIndex === vm.flowMenuList().length) {
+        deletedIndex--;
+      }
+      vm.selectedFlowMenuId(vm.flowMenuList()[deletedIndex].flowMenuCode);
+    }
   }
 
   export class FlowMenuModel {
