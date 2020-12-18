@@ -36,15 +36,10 @@ public class RecruitmentApp extends ApplicationForHolidays {
 	}
 	
 	/** ドメインモデル「振出申請」の事前条件をチェックする */
-	public void validateApp(boolean requiredReasons) {
+	public void validateApp() {
 		for (TimeZoneWithWorkNo timeZoneWithWorkNo : this.workingHours) {
 			timeZoneWithWorkNo.validate();
 		}
-
-		if(requiredReasons && (!this.getOpAppStandardReasonCD().isPresent()) || !this.getOpAppReason().isPresent()) {
-			throw new BusinessException("Msg_115");
-		}
-		
 	}
 	
 }

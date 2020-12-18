@@ -912,7 +912,7 @@ public class HolidayShipmentScreenAFinder {
 		//振休の紐付け管理区分を取得する get phân loại quản lý liên kết của nghỉ bù
 		Optional<ComSubstVacation> comSubstVacation = comSubrepo.findById(companyId);
 		if(comSubstVacation.isPresent()) {
-			result.setHolidayManage(comSubstVacation.get().getSetting().getIsManage().value);
+			result.setHolidayManage(comSubstVacation.get().getLinkingManagementATR().value);
 		}else {
 			result.setHolidayManage(ManageDistinct.NO.value);
 		}

@@ -47,20 +47,13 @@ public class AbsenceLeaveApp extends ApplicationForHolidays {
 	}
 	
 	/** ドメインモデル「振休申請」の事前条件をチェックする */ 
-	public void validateApp(boolean requiredReasons) {
+	public void validateApp() {
 		if(this.workChangeUse == NotUseAtr.NOT_USE) {
 			this.workingHours = new ArrayList<>();
-		}else if(this.workChangeUse == NotUseAtr.USE && this.workingHours.isEmpty()){
-			//http://192.168.50.4:3000/issues/113303
 		}
 		for (TimeZoneWithWorkNo timeZoneWithWorkNo : this.workingHours) {
 			timeZoneWithWorkNo.validate();
 		}
-
-		if(requiredReasons && (!this.getOpAppStandardReasonCD().isPresent()) || !this.getOpAppReason().isPresent()) {
-			throw new BusinessException("Msg_115");
-		}
-		
 	}
 	
 }
