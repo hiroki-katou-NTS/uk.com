@@ -6,12 +6,10 @@ package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 
 /**
@@ -84,14 +82,14 @@ public class CalcResultRange extends DomainObject {
 	 * 上限下限チェック
 	 * @return
 	 */
-	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
+	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
 		if(this.upperLimit.isSET()) {
-			BigDecimal upperValue = getUpperLimitValue(calcResultOfAnyItem,optionalItemAtr);
-			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(upperValue, optionalItemAtr);
+			BigDecimal upperValue = getUpperLimitValue(calcResultOfAnyItem, optionalItem);
+			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(upperValue, optionalItem.getOptionalItemAtr());
 		}
 		if(this.lowerLimit.isSET()) {
-			BigDecimal lowerValue = getLowerLimitValue(calcResultOfAnyItem,optionalItemAtr);
-			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(lowerValue, optionalItemAtr);
+			BigDecimal lowerValue = getLowerLimitValue(calcResultOfAnyItem, optionalItem);
+			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(lowerValue, optionalItem.getOptionalItemAtr());
 		}
 		return calcResultOfAnyItem;
 	}
@@ -102,50 +100,44 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItemAtr
 	 * @return
 	 */
-	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
-		switch(optionalItemAtr) {
+	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+		switch(optionalItem.getOptionalItemAtr()) {
 		case TIME:
-			if(this.timeRange.isPresent()&&calcResultOfAnyItem.getTime().isPresent()) {
-				Optional<AnyItemTime> timeUpperLimit = this.timeRange.get().getDailyTimeRange().get().getUpperLimit();
-				if(timeUpperLimit.isPresent()) {
-					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getTime().get().compareTo(BigDecimal.valueOf(timeUpperLimit.get().v())) > 0) {
-						return BigDecimal.valueOf(timeUpperLimit.get().v());							
-					}else {
-						return calcResultOfAnyItem.getTime().get();
-					}	
-				}
-			}
-		return BigDecimal.ZERO;
+			return this.timeRange.map(range -> {
+				
+				return getValueOrLimit(() -> calcResultOfAnyItem.getTime(), 
+										() -> range.getUpper(optionalItem.getPerformanceAtr()));
+			}).orElse(BigDecimal.ZERO);
+			
 		case NUMBER:
-			if(this.numberRange.isPresent()&&calcResultOfAnyItem.getCount().isPresent()) {
-				Optional<AnyItemTimes> numberUpperLimit = this.numberRange.get().getDailyTimesRange().get().getUpperLimit();
-				if(numberUpperLimit.isPresent()) {
-					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getCount().get().compareTo(BigDecimal.valueOf(numberUpperLimit.get().v().intValue())) > 0) {
-						return numberUpperLimit.get().v();						
-					}else {
-						return calcResultOfAnyItem.getCount().get();
-					}	
-				}
-			}
-			return BigDecimal.ZERO;
+			return this.numberRange.map(range -> {
+				
+				return getValueOrLimit(() -> calcResultOfAnyItem.getCount(), 
+						() -> range.getUpper(optionalItem.getPerformanceAtr()));
+			}).orElse(BigDecimal.ZERO);
+			
 		case AMOUNT:
-			if(this.amountRange.isPresent()&&calcResultOfAnyItem.getMoney().isPresent()) {
-				Optional<AnyItemAmount> amountUpperLimit = this.amountRange.get().getDailyAmountRange().get().getUpperLimit();
-				if(amountUpperLimit.isPresent()) {
-					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getMoney().get().compareTo(BigDecimal.valueOf(amountUpperLimit.get().v()))> 0 ) {
-						return BigDecimal.valueOf(amountUpperLimit.get().v());					
-					}else {
-						return calcResultOfAnyItem.getMoney().get();
-					}	
-				}
-			}
-			return BigDecimal.ZERO;
+			return this.amountRange.map(range -> {
+				
+				return getValueOrLimit(() -> calcResultOfAnyItem.getMoney(), 
+						() -> range.getUpper(optionalItem.getPerformanceAtr()));
+			}).orElse(BigDecimal.ZERO);
+			
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}
+	}
+	
+	private BigDecimal getValueOrLimit(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
+		BigDecimal timeUpperLimit = limit.get().orElse(BigDecimal.ZERO);
+			
+		return target.get().map(c -> {
+			//値 > 上限値　の場合　値←上限値とする。
+			if (c.compareTo(timeUpperLimit) > 0) {
+				return timeUpperLimit;
+			}
+			return c;
+		}).orElse(BigDecimal.ZERO);
 	}
 	
 	
@@ -154,47 +146,29 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItemAtr
 	 * @return
 	 */
-	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
-		switch(optionalItemAtr) {
+	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+		switch(optionalItem.getOptionalItemAtr()) {
 		case TIME:
-			if(this.timeRange.isPresent()&&calcResultOfAnyItem.getTime().isPresent()) {
-				Optional<AnyItemTime> timeLowerLimit = this.timeRange.get().getDailyTimeRange().get().getLowerLimit();
-				if(timeLowerLimit.isPresent()) {
-					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getTime().get().compareTo(BigDecimal.valueOf(timeLowerLimit.get().v()))<0) {
-						return BigDecimal.valueOf(timeLowerLimit.get().v());							
-					}else {
-						return calcResultOfAnyItem.getTime().get();
-					}	
-				}
-			}
-		return BigDecimal.ZERO;
+			return this.timeRange.map(range -> {
+				
+				return getValueOrLimit(() -> range.getLower(optionalItem.getPerformanceAtr()), 
+											() -> calcResultOfAnyItem.getTime());
+			}).orElse(BigDecimal.ZERO);
+			
 		case NUMBER:
-			if(this.numberRange.isPresent()&&calcResultOfAnyItem.getCount().isPresent()) {
-				Optional<AnyItemTimes> numberLowerLimit = this.numberRange.get().getDailyTimesRange().get().getLowerLimit();
-				if(numberLowerLimit.isPresent()) {
-					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getCount().get().compareTo(BigDecimal.valueOf(numberLowerLimit.get().v().intValue()))<0) {
-						return BigDecimal.valueOf(numberLowerLimit.get().v().intValue());						
-					}else {
-						return calcResultOfAnyItem.getCount().get();
-					}	
-				}
-			}
-			return BigDecimal.ZERO;
+			return this.numberRange.map(range -> {
+				
+				return getValueOrLimit(() -> range.getLower(optionalItem.getPerformanceAtr()), 
+											() -> calcResultOfAnyItem.getCount());
+			}).orElse(BigDecimal.ZERO);
+			
 		case AMOUNT:
-			if(this.amountRange.isPresent()&&calcResultOfAnyItem.getMoney().isPresent()) {
-				Optional<AnyItemAmount> amountLowerLimit = this.amountRange.get().getDailyAmountRange().get().getLowerLimit();
-				if(amountLowerLimit.isPresent()) {
-					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getMoney().get().compareTo(BigDecimal.valueOf(amountLowerLimit.get().v()))<0) {
-						return BigDecimal.valueOf(amountLowerLimit.get().v());					
-					}else {
-						return calcResultOfAnyItem.getMoney().get();
-					}	
-				}
-			}
-			return BigDecimal.ZERO;
+			return this.amountRange.map(range -> {
+				
+				return getValueOrLimit(() -> range.getLower(optionalItem.getPerformanceAtr()), 
+											() -> calcResultOfAnyItem.getMoney());
+			}).orElse(BigDecimal.ZERO);
+			
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}
