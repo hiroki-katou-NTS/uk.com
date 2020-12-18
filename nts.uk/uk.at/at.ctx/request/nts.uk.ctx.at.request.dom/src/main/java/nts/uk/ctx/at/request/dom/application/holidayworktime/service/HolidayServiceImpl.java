@@ -62,6 +62,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
@@ -132,9 +133,11 @@ public class HolidayServiceImpl implements HolidayService {
 		appHdWorkDispInfoOutput.setHolidayWorkAppSet(holidayWorkSetting);
 		appHdWorkDispInfoOutput.setHdWorkOvertimeReflect(hdWorkOvertimeReflect);
 		
-		//01-02_時間外労働を取得	huytodo common change param?
+		//01-02_時間外労働を取得
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
+		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId,
+				holidayWorkSetting.getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(),
+				holidayWorkSetting.getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
 		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
 		
 		//1-1.休日出勤申請（新規）起動時初期データを取得する
@@ -394,9 +397,11 @@ public class HolidayServiceImpl implements HolidayService {
 //		AgreementTimeStatusOfMonthly agreementTimeStatusOfMonthly = overtimeService.getTime36Detail(appHolidayWork.getAppOvertimeDetail().orElse(null));
 //		hdWorkDispInfoWithDateOutput.setActualMonthlyAgreeTimeStatus(Optional.ofNullable(agreementTimeStatusOfMonthly));
 		
-		//01-02_時間外労働を取得	huytodo common change param?
+		//01-02_時間外労働を取得
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
+		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId,
+				holidayWorkAppSet.isPresent() ? holidayWorkAppSet.get().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr() : Time36AgreeCheckRegister.NOT_CHECK,
+				holidayWorkAppSet.isPresent() ? holidayWorkAppSet.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() : nts.uk.shr.com.enumcommon.NotUseAtr.NOT_USE);
 		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
 		
 		//	取得した「休日出勤申請」．「申請」．事前事後区分をチェックする
