@@ -64,6 +64,23 @@ public class CalAttrOfDailyAttd implements DomainObject {
 		);
 		}
 	
+	// Đang để tạm lấy giá trị default để khỏi oẳng xử lý của Thanh dz
+	public static CalAttrOfDailyAttd defaultData() {
+		AutoCalFlexOvertimeSetting flexExcessTime = new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+		AutoCalRaisingSalarySetting rasingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+		AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+		AutoCalcOfLeaveEarlySetting leaveEarlySetting = new AutoCalcOfLeaveEarlySetting(false, false);
+		AutoCalcSetOfDivergenceTime divergenceTime = new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.valueOf(0));
+		
+		return new CalAttrOfDailyAttd(flexExcessTime, rasingSalarySetting, holidayTimeSetting, overtimeSetting, leaveEarlySetting, divergenceTime);
+	}
+	
 	/**
 	 * 全て「打刻から計算する」で作成する
 	 * @return 日別勤怠の計算区分
@@ -83,5 +100,4 @@ public class CalAttrOfDailyAttd implements DomainObject {
 		
 		return new CalAttrOfDailyAttd(flexExcessTime, rasingSalarySetting, holidayTimeSetting, overtimeSetting, leaveEarlySetting, divergenceTime);
 	}
-		
 }
