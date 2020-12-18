@@ -48,9 +48,8 @@ module nts.uk.at.view.kmk004.l {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
-										param: param,
 										type: type,
-										years: years
+										selectedId: selectedId
 									}
 								}"></div>
 								
@@ -103,6 +102,7 @@ module nts.uk.at.view.kmk004.l {
 	export class ViewNComponent extends ko.ViewModel {
 		listComponentOption: any;
 		selectedCode: KnockoutObservable<string>;
+		selectedId: KnockoutObservable<string> = ko.observable(''); ;
 		multiSelectedCode: KnockoutObservableArray<string>;
 		isShowAlreadySet: KnockoutObservable<boolean>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
@@ -121,13 +121,22 @@ module nts.uk.at.view.kmk004.l {
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
-		public param: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('');
 
 		constructor(private params: IParam) {
 			super();
+			const vm = this;
+			
+		/*	vm.isLoadInitData = vm.params.isLoadInitData; 
+			vm.isLoadInitData.subscribe((value: boolean) => {
+				if (value) {
+					vm.reloadInitData();
+					vm.isLoadInitData(false);
+				}
+			});*/
 		}
 
 		created() {
@@ -160,19 +169,11 @@ module nts.uk.at.view.kmk004.l {
 				isDisplayClosureSelection: vm.isDisplayClosureSelection(),
 			};
 
-			vm.$ajax(KMK004_API.EMP_INIT_SCREEN)
-				.done((data: any) => {
-					let settings: UnitAlreadySettingModel[] = [];
-					_.forEach(data.employmentCds, ((value) => {
-						let s: UnitAlreadySettingModel = { id: value.employmentCode, isAlreadySetting: true };
-						settings.push(s);
-					}));
-					vm.alreadySettingList(settings);
-				})
+			vm.reloadInitData();
 
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
-			vm.paramL = { isLoadData: vm.isLoadData, sidebarType: "Com_Employment", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
+			vm.paramL = {isLoadData: vm.isLoadData, sidebarType: "Com_Employment", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
 			vm.selectedYear
 				.subscribe(() => {
 					if (vm.selectedYear != null) {
@@ -187,7 +188,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.currentItemName(selectedItem ? selectedItem.name : '');
 				vm.paramL.empCode(newValue);
 				vm.paramL.titleName = vm.currentItemName();
-				vm.param(newValue);
+				vm.selectedId(newValue);
 				vm.btn_text(
 					vm.alreadySettingList().filter(i => newValue == i.id).length == 0 ? 'KMK004_340' : 'KMK004_341');
 			});
@@ -205,7 +206,22 @@ module nts.uk.at.view.kmk004.l {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {
 				vm.isLoadData(true);
+				//vm.isLoadInitData(true);
+				
 			});
+		}
+		
+		reloadInitData() {
+			let vm = this;
+			vm.$ajax(KMK004_API.EMP_INIT_SCREEN)
+				.done((data: any) => {
+					let settings: UnitAlreadySettingModel[] = [];
+					_.forEach(data.employmentCds, ((value) => {
+						let s: UnitAlreadySettingModel = { id: value.employmentCode, isAlreadySetting: true };
+						settings.push(s);
+					}));
+					vm.alreadySettingList(settings);
+				})
 		}
 	}
 }
