@@ -9,16 +9,54 @@
 		<ui:define name="htmlHead">
 
             <com:scriptfile set="IGNITE" />
-            <com:scriptfile path="knr002.a.vm.js" />
+            <com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="knr002.a.service.js" />
+			<com:scriptfile path="knr002.a.vm.js" />
+			<com:stylefile path="knr002.a.style.css" />
+			<com:scriptfile path="knr002.a.start.js" />
 
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
-				
-			</div>
 			<div id="contents-area">
-				<button class="proceed">Click</button>
-				<p data-bind="text: displaytext"></p>
+				<div class="top-container">
+					<div class="first">
+						<p class="testc">#{i18n.getText('KNR002_20')}</p>
+						<div class="cf" data-bind="ntsSwitchButton: {
+							name: 'Something',
+							options: filterButton,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedFilter,
+							required: false,
+							enable: true }"></div>
+					</div>
+					<div class="second">
+						<div>
+							<span>#{i18n.getText('KNR002_25')}</span>
+							<span data-bind="text: numOfRegTerminals"></span>
+							<span>#{i18n.getText('KNR002_26')}</span>
+						</div>
+						<div>
+							<span>#{i18n.getText('KNR002_27')}</span>
+							<span data-bind="text: numNormalState"></span>
+							<span>#{i18n.getText('KNR002_28')}</span>
+							<span>#{i18n.getText('KNR002_29')}</span>
+							<span data-bind="text: numAbnormalState"></span>
+							<span>#{i18n.getText('KNR002_30')}</span>
+						</div>
+						<div>
+							<span>#{i18n.getText('KNR002_31')}</span>
+							<span data-bind="text: numUntransmitted"></span>
+							<span>#{i18n.getText('KNR002_32')}</span>
+						</div>
+					</div>
+					<div class="third">
+						<button class="x-large">#{i18n.getText('KNR002_33')}</button>
+						<button class="x-large refresh">#{i18n.getText('KNR002_34')}</button>
+					</div>
+				</div>
+				<table id="grid"></table>
 			</div>
 		</ui:define>
 	</ui:composition>

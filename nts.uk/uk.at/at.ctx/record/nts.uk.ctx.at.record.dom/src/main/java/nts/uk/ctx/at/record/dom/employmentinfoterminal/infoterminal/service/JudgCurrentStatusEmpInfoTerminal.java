@@ -37,7 +37,8 @@ public class JudgCurrentStatusEmpInfoTerminal {
 		int totalNumberOfTer = empInfoTerCodeList.size();
 		
 		List<ComState> listComstate = empInfoTerList.stream()
-										.map(e -> ComState.createComState(e.getEmpInfoTerCode(), judgmentComStatus(listEmpInfoTerminalComStatus, e.getEmpInfoTerCode(), e.getIntervalTime()), mapSignalLastTime.get(e.getEmpInfoTerCode())))
+										.map(e -> ComState.createComState(e.getEmpInfoTerCode(), judgmentComStatus(listEmpInfoTerminalComStatus, e.getEmpInfoTerCode(), e.getIntervalTime()),
+												mapSignalLastTime.get(e.getEmpInfoTerCode()) == null ? Optional.empty() : mapSignalLastTime.get(e.getEmpInfoTerCode())))
 										.collect(Collectors.toList());
 		List<StateCount> listStateCount = new ArrayList<StateCount>();
 		

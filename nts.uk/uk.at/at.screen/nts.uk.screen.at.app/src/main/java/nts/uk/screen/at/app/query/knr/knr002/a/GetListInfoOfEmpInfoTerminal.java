@@ -3,19 +3,24 @@ package nts.uk.screen.at.app.query.knr.knr002.a;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ComState;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.StateCount;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalComStatus;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalCurrentState;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalComStatus.ComStateobject;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.DeterminingReqStatusTerminal;
@@ -46,14 +51,26 @@ public class GetListInfoOfEmpInfoTerminal {
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 	
 	public InfoOfEmpInfoTerminalDto getInfoOfEmpInfoTerminal() {
+		
 		String companyId = AppContexts.user().companyId();
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		
 		RequireJudImpl requireJudImpl = new RequireJudImpl(empInfoTerminalComStatusAdapter);
 		RequireDeterminingImpl requireDeterminingImpl = new RequireDeterminingImpl(timeRecordReqSettingRepository);
+		
+		// 1: get*(契約コード)：　就業情報端末<List>
 		List<EmpInfoTerminal> listEmpInfo = empInfoTerminalRepository.get(contractCode);
+		
 		List<String> listEmpInfoCode = listEmpInfo.stream().map(e -> e.getEmpInfoTerCode().v()).collect(Collectors.toList());
+		
+		// 2: get*([ログイン変数の契約コード、端末情報.打刻情報の作成.勤務場所コード]<List>): 勤務場所名称
 		Map<String, String> mapWorkLocationCodeAndName = workLocationRepository.getNameByCode(companyId, listEmpInfoCode);
+		
+		// 3: 端末の現在状態の判断(require, 契約コード, 就業情報端末List): 端末の通信状態
 		TerminalComStatus terminalComStatus = JudgCurrentStatusEmpInfoTerminal.judgingTerminalCurrentState(requireJudImpl, contractCode, listEmpInfo);
+		Map<EmpInfoTerminalCode, ComStateobject> mapByCode = terminalComStatus.getMapByCode(terminalComStatus.getListComstate());
+		
+		// 4: 端末のリクエスト状態の判断(require, 契約コード, 就業情報端末コードList): Map<端末コード、リクエストFlag>
 		Map<EmpInfoTerminalCode, Boolean> mapResults = DeterminingReqStatusTerminal.determiningReqStatusTerminal(requireDeterminingImpl, contractCode, listEmpInfo);
 		List<EmpInfoTerminalDto> listEmpInfoTerminalDto = new ArrayList<EmpInfoTerminalDto>();
 				
@@ -64,17 +81,40 @@ public class GetListInfoOfEmpInfoTerminal {
 					e.getModelEmpInfoTer().value,
 					e.getCreateStampInfo().getWorkLocationCd().get().v(),
 					mapWorkLocationCodeAndName.get(e.getEmpInfoTerCode().v()),
-					terminalComStatus.getMapByCode(terminalComStatus.getListComstate()).get(e.getEmpInfoTerCode()).getSignalLastTime(),
+					mapByCode.get(e.getEmpInfoTerCode())
+											.getSignalLastTime()
+											.isPresent() 
+											? terminalComStatus.getMapByCode(terminalComStatus.getListComstate()).get(e.getEmpInfoTerCode()).getSignalLastTime().get().toString()
+											: "",
 					terminalComStatus.getMapByCode(terminalComStatus.getListComstate()).get(e.getEmpInfoTerCode()).getTerminalCurrentState().value,
 					mapResults.get(e.getEmpInfoTerCode()));
 			listEmpInfoTerminalDto.add(empDto);
 		});
 		
+		int numNormalState = 0;
+		
+		int numAbnormalState = 0;
+		
+		int numUntransmitted = 0;
+		
+		for (StateCount state : terminalComStatus.getListStateCount()) {
+			
+			if (state.getTerminalCurrentState().equals(TerminalCurrentState.NORMAL)) {
+				numNormalState = state.getNumberOfTerminal();
+			}
+			if (state.getTerminalCurrentState().equals(TerminalCurrentState.ABNORMAL)) {
+				numAbnormalState = state.getNumberOfTerminal();
+			}
+			if (state.getTerminalCurrentState().equals(TerminalCurrentState.NOT_COMMUNICATED)) {
+				numUntransmitted = state.getNumberOfTerminal();
+			}
+		}
+		
 		InfoOfEmpInfoTerminalDto dto = new InfoOfEmpInfoTerminalDto(
 				terminalComStatus.getTotalNumberOfTer(),
-				(int) terminalComStatus.getListStateCount().stream().filter(e -> e.getTerminalCurrentState().equals(TerminalCurrentState.NORMAL)).count(),
-				(int) terminalComStatus.getListStateCount().stream().filter(e -> e.getTerminalCurrentState().equals(TerminalCurrentState.ABNORMAL)).count(),
-				(int) terminalComStatus.getListStateCount().stream().filter(e -> e.getTerminalCurrentState().equals(TerminalCurrentState.NOT_COMMUNICATED)).count(),
+				numNormalState,
+				numAbnormalState,
+				numUntransmitted,
 				listEmpInfoTerminalDto);
 		return dto;
 	}

@@ -22,10 +22,9 @@ public class EmpInfoTerminalDto {
 	
 	private String workLocationName;
 	
-	private Optional<GeneralDateTime> signalLastTime;
+	private String signalLastTime;
 	
 	private int terminalCurrentState;
 	
-	private boolean requestFlag;
-	
+	private Boolean requestFlag;
 }

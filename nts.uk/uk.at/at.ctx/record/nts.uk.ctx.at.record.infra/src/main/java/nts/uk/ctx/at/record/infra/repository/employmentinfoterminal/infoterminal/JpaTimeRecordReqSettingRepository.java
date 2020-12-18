@@ -16,7 +16,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
@@ -34,7 +36,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	private static final String GET_BY_KEY;
 
-	private static final String GET_CONTRACTCD_LISTCODE;
+	private static String GET_CONTRACTCD_LISTCODE;
 
 	static {
 
@@ -58,7 +60,8 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		builderString.append(
 				" LEFT JOIN KRCMT_TR_SEND_EMPLOYEE e ON a.CONTRACT_CD = e.CONTRACT_CD AND a.TIMERECORDER_CD = e.TIMERECORDER_CD ");
 		
-		GET_CONTRACTCD_LISTCODE =  builderString.toString() + " WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD IN ?";
+		GET_CONTRACTCD_LISTCODE =  builderString.toString();
+		//  + " WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD IN ("
 
 		builderString.append(" WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD = ?");
 		GET_BY_KEY = builderString.toString();
@@ -160,9 +163,25 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	@Override
 	public List<TimeRecordReqSetting> get(ContractCode contractCode, List<EmpInfoTerminalCode> listCode) {
-		try (PreparedStatement statement = this.connection().prepareStatement(GET_CONTRACTCD_LISTCODE)) {
+		List<TimeRecordReqSetting> results = new ArrayList<>();
+		CollectionUtil.split(listCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(getSubList(contractCode, subList));
+		});
+		
+		return results;
+	}
+	
+	private List<TimeRecordReqSetting> getSubList(ContractCode contractCode, List<EmpInfoTerminalCode> codes) {
+		System.out.println("----- " + JpaTimeRecordReqSettingRepository.GET_CONTRACTCD_LISTCODE);
+		String GET_CONTRACTCD_LISTCODE = JpaTimeRecordReqSettingRepository.GET_CONTRACTCD_LISTCODE + " WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD IN (";
+		String listCodes = codes.stream().map(e -> "?").collect(Collectors.joining(","));
+		GET_CONTRACTCD_LISTCODE += listCodes + ")" ;
+		
+		try (PreparedStatement statement = this.connection().prepareStatement(GET_CONTRACTCD_LISTCODE.toString())) {
 			statement.setString(1, contractCode.v());
-			statement.setArray(2, (Array) listCode);
+			for (int i = 0; i < codes.size(); i++) {
+				statement.setString(i + 2, codes.get(i).v());
+			}
 			return createTimeReqSetting(statement.executeQuery());
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
