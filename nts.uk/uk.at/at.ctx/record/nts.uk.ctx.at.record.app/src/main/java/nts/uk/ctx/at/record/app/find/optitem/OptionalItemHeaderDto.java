@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcUsageAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
@@ -40,6 +41,9 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	private int usageAtr;
+
+	/** The calculation atr. */
+	private int calcAtr;
 	
 	private String nameNotJP;
 

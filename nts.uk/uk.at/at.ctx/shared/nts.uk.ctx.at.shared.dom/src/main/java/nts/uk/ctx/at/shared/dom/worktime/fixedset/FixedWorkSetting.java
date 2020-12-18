@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -71,6 +72,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/** The common setting. */
 	// 共通設定
+	@Setter
 	private WorkTimezoneCommonSet commonSetting;
 
 	/** The use half day shift. */
@@ -321,7 +323,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @param attendanceHolidayAttr 出勤休日区分
 	 * @return 固定勤務の平日出勤用勤務時間帯(List)
 	 */
-	private Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
+	public Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
 		switch(attendanceHolidayAttr) {
 			case FULL_TIME:	return this.getFixHalfDayWorkTimezone(AmPmAtr.ONE_DAY);
 			case MORNING:	return this.getFixHalfDayWorkTimezone(AmPmAtr.AM);

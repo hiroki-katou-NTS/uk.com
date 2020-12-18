@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
@@ -70,6 +71,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/** The common setting. */
 	// 共通設定
+	@Setter
 	private WorkTimezoneCommonSet commonSetting;
 
 	/** The flow setting. */
