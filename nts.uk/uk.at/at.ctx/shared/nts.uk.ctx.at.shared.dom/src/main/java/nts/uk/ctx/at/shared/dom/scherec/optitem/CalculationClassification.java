@@ -22,4 +22,20 @@ public enum CalculationClassification {
     public final int value;
     
     public final String name;
+    
+    /**
+	 * 計算するか判定する
+	 * @return するならtrue
+	 */
+	public boolean isCalc() {
+		return CALC.equals(this);
+	}
+	
+	/**
+	 * 計算しないか判定する
+	 * @return しないならtrue
+	 */
+	public boolean isNotCalc() {
+		return NOT_CALC.equals(this);
+	}
 }
