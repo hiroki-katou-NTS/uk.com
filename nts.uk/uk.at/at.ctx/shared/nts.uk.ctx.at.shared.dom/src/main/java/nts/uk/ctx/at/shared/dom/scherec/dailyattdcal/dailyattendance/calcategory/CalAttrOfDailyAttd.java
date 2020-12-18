@@ -64,19 +64,22 @@ public class CalAttrOfDailyAttd implements DomainObject {
 		);
 		}
 	
-	// Đang để tạm lấy giá trị default để khỏi oẳng xử lý của Thanh dz
-	public static CalAttrOfDailyAttd defaultData() {
-		AutoCalFlexOvertimeSetting flexExcessTime = new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+	/**
+	 * 全て「打刻から計算する」で作成する
+	 * @return 日別勤怠の計算区分
+	 */
+	public static CalAttrOfDailyAttd createAllCalculate() {
+		AutoCalFlexOvertimeSetting flexExcessTime = new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS));
 		AutoCalRaisingSalarySetting rasingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
-		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
-		AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
-				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
-				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
-				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
-				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
-				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
-		AutoCalcOfLeaveEarlySetting leaveEarlySetting = new AutoCalcOfLeaveEarlySetting(false, false);
-		AutoCalcSetOfDivergenceTime divergenceTime = new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.valueOf(0));
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS));
+		AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS));
+		AutoCalcOfLeaveEarlySetting leaveEarlySetting = new AutoCalcOfLeaveEarlySetting(true, true);
+		AutoCalcSetOfDivergenceTime divergenceTime = new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.NOT_USE);
 		
 		return new CalAttrOfDailyAttd(flexExcessTime, rasingSalarySetting, holidayTimeSetting, overtimeSetting, leaveEarlySetting, divergenceTime);
 	}
