@@ -222,7 +222,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		@Override
 		public void insertSchedule(WorkSchedule workSchedule) {
-			workScheduleRepository.update(workSchedule);
+			workScheduleRepository.delete(workSchedule.getEmployeeID(), workSchedule.getYmd());
+			workScheduleRepository.insert(workSchedule);
 		}
 
 		@Override
