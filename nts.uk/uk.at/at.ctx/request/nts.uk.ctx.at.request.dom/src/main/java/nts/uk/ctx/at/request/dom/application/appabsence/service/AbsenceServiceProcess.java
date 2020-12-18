@@ -13,8 +13,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCh
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
@@ -347,4 +349,15 @@ public interface AbsenceServiceProcess {
 	 *         振休紐付管理をクリアする(boolean)
 	 */
 	public VacationCheckOutput checkVacationTyingManage(WorkType wtBefore, WorkType wtAfter, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements);
+	
+	/**
+	 *     休暇申請（新規）登録処理
+	 * @param applyForLeave
+	 * @param appDates
+	 * @param leaveComDayOffMana
+	 * @param payoutSubofHDManagements
+	 * @param mailServerSet
+	 * @param approvalRoot
+	 */
+	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot);
 }

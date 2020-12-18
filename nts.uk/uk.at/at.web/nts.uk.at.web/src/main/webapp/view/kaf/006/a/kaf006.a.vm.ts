@@ -92,6 +92,34 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         mounted() {
 			const vm = this;
+			
+			// check selected item
+            vm.selectedType.subscribe(() => {
+				console.log(this.selectedType());
+				let appDates = [];
+				if (_.isNil(vm.application().opAppStartDate())) {
+					appDates.push(vm.application().opAppStartDate());
+				}
+				if (_.isNil(vm.application().opAppEndDate()) && vm.application().opAppStartDate() !== vm.application().opAppEndDate()) {
+					appDates.push(vm.application().opAppEndDate());
+				}
+
+                let command = {
+					companyID: __viewContext.user.companyId,
+					appDates: appDates,
+					startInfo: vm.data,
+					holidayAppType: vm.selectedType()
+				};
+
+                vm.$blockui("show");
+                vm.$ajax(API.getAllAppForLeave, command).done((result) => {
+					vm.fetchData(result);
+                }).fail((fail) => {
+
+                }).always(() => {
+                    vm.$blockui("hide");
+                })
+			});
 
 			// Subscribe workType value before change
 			// vm.selectedWorkTypeCD.subscribe((oldValue) => {
@@ -101,7 +129,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			// }, null, "beforeChange");
 			
 			// Subscribe workType value after change
-			vm.selectedWorkTypeCD.subscribe((workType) => {
+			vm.selectedWorkTypeCD.subscribe(() => {
+				console.log(vm.selectedWorkTypeCD());
 				if (_.isNil(vm.selectedWorkTypeCD()) || _.isEmpty(vm.workTypeLst())) {
 					return;
 				}
@@ -163,33 +192,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 			vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
 			
-			// check selected item
-            vm.selectedType.subscribe(() => {
-				console.log(this.selectedType());
-				let appDates = [];
-				if (_.isNil(vm.application().opAppStartDate())) {
-					appDates.push(vm.application().opAppStartDate());
-				}
-				if (_.isNil(vm.application().opAppEndDate()) && vm.application().opAppStartDate() !== vm.application().opAppEndDate()) {
-					appDates.push(vm.application().opAppEndDate());
-				}
-
-                let command = {
-					companyID: __viewContext.user.companyId,
-					appDates: appDates,
-					startInfo: vm.data,
-					holidayAppType: vm.selectedType()
-				};
-
-                vm.$blockui("show");
-                vm.$ajax(API.getAllAppForLeave, command).done((result) => {
-					vm.fetchData(result);
-                }).fail((fail) => {
-
-                }).always(() => {
-                    vm.$blockui("hide");
-                })
-			});
 			
 			// disply condtion for item A10_3
 			vm.isDispMourn = ko.computed(() => {
@@ -214,6 +216,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					}
 				}
 			});
+		}
+
+		public workTypeChangeProcess() {
+			
 		}
 		
 		fetchData(data: any) {
@@ -269,15 +275,28 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 		}
 
+		// Register data
         register() {
 			const vm = this;
+
+			// Update appAbsenceStartInfo
+			vm.updateAppAbsenceStartInfo();
+
+			// Create data Vacation Request/ 休暇申請
+			vm.createDataVacationApp();
+
+			let command = {
+				appAbsenceStartInfoDto: vm.data,
+				applyForLeave: ''
+			};
+
 			vm.$blockui("show");
 			// validate chung KAF000
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 			.then((isValid) => {
 				if (isValid) {
 					// validate riêng cho màn hình
-					return vm.$validate('.inputTime');
+					return true;
 				}
 			}).then((result) => {
 				// check trước khi đăng kí
@@ -315,6 +334,21 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).always(() => {
 				vm.$blockui("hide");	
 			});
+		}
+
+		/**
+		 * Create Data for for Vacation Application
+		 */
+		createDataVacationApp() {
+			throw new Error("Method not implemented.");
+		}
+
+
+		/**
+		 * Update data for AppAbsenceStartInfo
+		 */
+		updateAppAbsenceStartInfo() {
+			throw new Error("Method not implemented.");
 		}
 		
 		handleErrorCustom(failData: any): any {

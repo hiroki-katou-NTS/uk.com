@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 @Stateless
-public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, ProcessResult>{
+public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<RegisterAppAbsenceCommand, ProcessResult>{
 	
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
@@ -37,7 +37,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	 * 休暇申請（新規）登録処理
 	 */
 	@Override
-	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<RegisterAppAbsenceCommand> context) {
 //		CreatAppAbsenceCommand command = context.getCommand();
 //		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = command.getAppAbsenceStartInfoDto().toDomain();
 //		// 会社ID
