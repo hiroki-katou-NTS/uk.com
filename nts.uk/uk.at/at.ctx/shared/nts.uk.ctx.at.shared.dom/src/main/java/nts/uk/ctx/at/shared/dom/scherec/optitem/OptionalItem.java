@@ -48,13 +48,11 @@ public class OptionalItem extends AggregateRoot {
 	/** The usage atr. */
 	// 任意項目利用区分
 	private OptionalItemUsageAtr usageAtr;
-<<<<<<< HEAD
-=======
 
 	/** The calculation atr. */
 	// 計算区分
 	private CalcUsageAtr calcAtr;
->>>>>>> 18d819614aa... Merge branch 'pj/at/jp_dev/nabe_team/develop' into pj/at/release_ver4
+
 	
 	/** The emp condition atr. */
 	// 雇用条件区分
