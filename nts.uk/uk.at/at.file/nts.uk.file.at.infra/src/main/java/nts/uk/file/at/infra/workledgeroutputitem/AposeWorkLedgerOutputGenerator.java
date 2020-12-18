@@ -125,6 +125,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.get(count, 14).getStyle()
                         .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
+                cells.get(count, 14).setValue(formatValue(oneLine.getTotal(),null,
+                        oneLine.getAttribute(), dataSource.isZeroDisplay()));
                 cells.setColumnWidth(0, 5);
                 cells.setColumnWidth(1, 5);
                 for (int k = 0; k < oneLine.getValueList().size(); k++) {
