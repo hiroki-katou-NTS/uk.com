@@ -13,12 +13,14 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateStatusSprImport;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.Request113Import;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionDataRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -74,13 +77,36 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	@Inject
 	private WorkTimeSettingRepository workTimeRep;
 	
+	@Inject
+	private ErrorAlarmConditionRepository errorConRep;
+	
+	
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
-			String errorDailyCheckId,
+			String errorDailyCheckId, List<String> extractConditionWorkRecord,
 			List<String> errorDailyCheckCd, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType) {
 		
+		// チェックする前にデータを準備
+		PrepareData prepareData = this.prepareDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId,
+																	extractConditionWorkRecord, errorDailyCheckCd);
+		
+		for(String item : lstSid) {
+			for(GeneralDate i = dPeriod.start(); i.equals(dPeriod.end().addDays(1)); i.addDays(1)) {
+				for(StatusOfEmployeeAdapterAl status : lstStatusEmp) {
+					
+					// 社員の会社所属状況をチェック
+					if(status.getEmployeeId() == item && status.getListPeriod().contains(i)) {
+						
+						// 日別実績を絞り込む
+						IntegrationOfDaily integrationDaily = dailyRecordShareFinder.find(item, i);
+					}else {
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -93,7 +119,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	 * @return
 	 */
 	private PrepareData prepareDataBeforeChecking(String cid, List<String> lstSid, DatePeriod dPeriod, 
-			String errorDailyCheckId, List<String> errorDailyCheckCd) {
+			String errorDailyCheckId, List<String> extractConditionWorkRecord, List<String> errorDailyCheckCd) {
 		
 		//日次の勤怠項目を取得する
 		//画面で利用できる勤怠項目一覧を取得する
@@ -109,8 +135,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		//社員と期間を条件に日別実績を取得する
 		List<IntegrationOfDaily> listIntegrationDai = dailyRecordShareFinder.findByListEmployeeId(lstSid, dPeriod);
 		
+		// ドメインモデル「勤務実績のエラーアラームチェック」を取得する。
+		List<ErrorAlarmCondition> listErrorAlarmCon = errorConRep.findMessageConByListErAlCheckId(extractConditionWorkRecord);
+		
 		//ドメインモデル「勤務実績の抽出条件」を取得する
-		Optional<WorkRecordExtractingCondition> workRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(errorDailyCheckId, true);
+		List<WorkRecordExtractingCondition> workRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(extractConditionWorkRecord, true);
 		
 		//ドメインモデル「日別実績のエラーアラーム」を取得する
 		List<ErrorAlarmWorkRecord> listError = errorAlarmRep.findByListErrorAlamByIdUse(errorDailyCheckCd, true);
@@ -121,7 +150,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		// 会社で使用できる就業時間帯を全件を取得する
 		List<WorkTimeSetting> listWorktime = workTimeRep.findByCompanyId(cid);
 		
-		PrepareData prepareData = new PrepareData(mapNameId, listWorkType, listIntegrationDai, workRecordCond, listError, dataforDailyFix, listWorktime);
+		PrepareData prepareData = new PrepareData(mapNameId, listWorkType, listIntegrationDai, listErrorAlarmCon, 
+													workRecordCond, listError, dataforDailyFix, listWorktime);
 		return prepareData;
 	}
 	
@@ -191,7 +221,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			
 			// 取得した「日の本人確認」をもとにList＜社員ID、年月日、本人状態＞を作成する
 			if (!identifiList.isEmpty()) {
-				for(GeneralDate i = dPeriod.start(); i.equals(dPeriod.end()); i.addDays(1)) {
+				for(GeneralDate i = dPeriod.start(); i.equals(dPeriod.end().addDays(1)); i.addDays(1)) {
 					
 					Optional<GeneralDate> temp = listDay.stream().filter(x -> x.equals(i)).findFirst();
 					
@@ -233,5 +263,26 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		}
 		
 		return listIdentity;
+	}
+	
+	
+	private void GenerateAlarmValueForDailyChkCondition(List<WorkRecordExtractingCondition> workRecordCond, 
+														IntegrationOfDaily integra, String sid, GeneralDate day, 
+														String wplId, Map<Integer, String> work, String errorDailyCheckId) {
+		if(integra.getWorkInformation() != null) {
+			
+			Optional<ErrorAlarmCondition> errorAlarm = errorConRep.findConditionByErrorAlamCheckId(errorDailyCheckId);
+			if(errorAlarm.isPresent()) {
+				int filterCompare = errorAlarm.get().getWorkTypeCondition().getComparePlanAndActual().value;
+			}
+					
+			
+			WorkInfoOfDailyAttendance workInfo = integra.getWorkInformation();
+		}
+	}
+	
+	
+	private void FilterWorkType(int filterByCompare, List<ErrorAlarmCondition> listErrorAlarmCon) {
+		
 	}
 }

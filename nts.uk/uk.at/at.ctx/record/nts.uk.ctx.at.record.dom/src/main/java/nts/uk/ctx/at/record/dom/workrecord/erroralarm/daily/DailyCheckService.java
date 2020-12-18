@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition
 
 public interface DailyCheckService {
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod,	
-			String errorDailyCheckId,
+			String errorDailyCheckId, List<String> extractConditionWorkRecord,
 			List<String> errorDailyCheckCd, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType);

@@ -2,11 +2,11 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -25,8 +25,11 @@ public class PrepareData {
 	// List＜日別実績＞
 	private List<IntegrationOfDaily> listIntegrationDai;
 	
+	// List＜勤務実績のエラーアラームチェック＞
+	private List<ErrorAlarmCondition> listErrorAlarmCon;
+	
 	// List<勤務実績の抽出条件＞
-	private Optional<WorkRecordExtractingCondition> workRecordCond;
+	private List<WorkRecordExtractingCondition> workRecordCond;
 	
 	// List＜日別実績のエラーアラーム＞
 	private List<ErrorAlarmWorkRecord> listError;
