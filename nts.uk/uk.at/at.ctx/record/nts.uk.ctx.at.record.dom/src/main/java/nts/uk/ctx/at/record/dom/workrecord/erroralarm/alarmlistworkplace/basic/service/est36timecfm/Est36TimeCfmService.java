@@ -50,7 +50,7 @@ public class Est36TimeCfmService {
                 LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
 
         // 取得したデータをチェック
-        if (generalSettingOpt.isPresent()) {
+        if (!generalSettingOpt.isPresent()) {
             // 「アラーム値メッセージ」を作成
             String message = TextResource.localize("KAL020_16");
 
@@ -65,7 +65,7 @@ public class Est36TimeCfmService {
             results.add(result);
         }
 
-        if (systemSettingOpt.isPresent()) {
+        if (!systemSettingOpt.isPresent()) {
             // 「アラーム値メッセージ」を作成
             String message = TextResource.localize("KAL020_18");
 

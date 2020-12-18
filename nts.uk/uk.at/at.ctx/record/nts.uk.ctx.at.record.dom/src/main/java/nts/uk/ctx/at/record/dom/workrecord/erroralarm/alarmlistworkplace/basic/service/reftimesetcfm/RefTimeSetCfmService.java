@@ -51,22 +51,22 @@ public class RefTimeSetCfmService {
             monthlySets.addAll(mnthlyWorkTimeSetRepo.findCompany(cid, MonthlyWorkTimeSet.LaborWorkTypeAttr.DEFOR_LABOR, startYear));
             monthlySets.addAll(mnthlyWorkTimeSetRepo.findCompany(cid, MonthlyWorkTimeSet.LaborWorkTypeAttr.FLEX, startYear));
 
-            if (!CollectionUtil.isEmpty(monthlySets)) continue;
+            if (CollectionUtil.isEmpty(monthlySets)) {
+                // 「アラーム値メッセージ」を作成します。
+                String message = TextResource.localize("KAL020_6", String.valueOf(startYear),
+                        AppContexts.user().companyCode());
+                // ドメインオブジェクト「抽出結果」を作成します。
+                ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
+                        new AlarmValueDate(startYear, Optional.empty()),
+                        name.v(),
+                        Optional.ofNullable(TextResource.localize("KAL020_15")),
+                        Optional.of(new MessageDisplay(displayMessage.v())),
+                        null
+                );
 
-            // 「アラーム値メッセージ」を作成します。
-            String message = TextResource.localize("KAL020_6", String.valueOf(startYear),
-                    AppContexts.user().companyCode());
-            // ドメインオブジェクト「抽出結果」を作成します。
-            ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(startYear, Optional.empty()),
-                    name.v(),
-                    Optional.ofNullable(TextResource.localize("KAL020_15")),
-                    Optional.of(new MessageDisplay(displayMessage.v())),
-                    null
-            );
-
-            // リスト「抽出結果」に作成した抽出結果を追加する。
-            results.add(result);
+                // リスト「抽出結果」に作成した抽出結果を追加する。
+                results.add(result);
+            }
 
             startYear++;
         }

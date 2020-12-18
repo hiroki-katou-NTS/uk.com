@@ -62,20 +62,20 @@ public class PublicHdCfmService {
         while (startYear <= endYear) {
             // ドメインモデル「会社月間日数設定」を取得する。
             Optional<CompanyMonthDaySetting> comMonDaySetOpt = comMonthDaySettingRepo.findByYear(new CompanyId(cid), new Year(startYear));
-            if (comMonDaySetOpt.isPresent()) continue;
+            if (!comMonDaySetOpt.isPresent()) {
+                // 「アラーム値メッセージ」を作成します。
+                String message = TextResource.localize("KAL020_10", AppContexts.user().companyCode());
 
-            // 「アラーム値メッセージ」を作成します。
-            String message = TextResource.localize("KAL020_10", AppContexts.user().companyCode());
-
-            // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
-            ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(startYear, Optional.empty()),
-                    name.v(),
-                    Optional.ofNullable(TextResource.localize("KAL020_15")),
-                    Optional.of(new MessageDisplay(displayMessage.v())),
-                    null
-            );
-            results.add(result);
+                // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
+                ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
+                        new AlarmValueDate(startYear, Optional.empty()),
+                        name.v(),
+                        Optional.ofNullable(TextResource.localize("KAL020_15")),
+                        Optional.of(new MessageDisplay(displayMessage.v())),
+                        null
+                );
+                results.add(result);
+            }
 
             startYear++;
         }

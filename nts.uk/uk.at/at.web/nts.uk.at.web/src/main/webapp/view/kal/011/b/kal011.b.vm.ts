@@ -34,11 +34,11 @@ module nts.uk.at.kal011.B {
                 /**B3_6**/
                 { headerText: vm.$i18n('KAL011_17'), key: 'alarmValueMessage', width: 200 },
                 /**B3_7**/
-                { headerText: vm.$i18n('KAL011_18'), key: 'alarmItemName', width: 100 },
+                { headerText: vm.$i18n('KAL011_18'), key: 'alarmItemName', width: 140 },
                 /**B3_8**/
-                { headerText: vm.$i18n('KAL011_19'), key: 'checkTargetValue', width: 100 },
+                { headerText: vm.$i18n('KAL011_19'), key: 'checkTargetValue', width: 200 },
                 /**B3_9**/
-                { headerText: vm.$i18n('KAL011_20'), key: 'comment', width: 250 }
+                { headerText: vm.$i18n('KAL011_20'), key: 'comment', width: 200 }
             ];
         }
 

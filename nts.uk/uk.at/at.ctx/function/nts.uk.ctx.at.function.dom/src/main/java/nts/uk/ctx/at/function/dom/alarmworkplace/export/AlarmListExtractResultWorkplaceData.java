@@ -99,11 +99,11 @@ public class AlarmListExtractResultWorkplaceData {
                     extractResult.getCheckTargetValue(),
                     alExtractInfo.getCategory().value,
                     GeneralDate.today(), //TODO Q&A 37860
-                    extractResult.getComment().isPresent() ? null : extractResult.getComment().get().v(),
-                    extractResult.getWorkplaceId().orElse(null),
-                    extractResult.getWorkplaceCode().orElse(null),
-                    extractResult.getWorkplaceName().orElse(null),
-                    extractResult.getHierarchyCode().orElse(null));
+                    extractResult.getComment().isPresent() ? extractResult.getComment().get().v() : "",
+                    extractResult.getWorkplaceId().orElse(""),
+                    extractResult.getWorkplaceCode().orElse(""),
+                    extractResult.getWorkplaceName().orElse(""),
+                    extractResult.getHierarchyCode().orElse(""));
             extractResultDtos.add(result);
         }
 
@@ -118,10 +118,12 @@ public class AlarmListExtractResultWorkplaceData {
     private static String convertAlarmValueDate(int date) {
         String dateStr = String.valueOf(date);
         switch (dateStr.length()) {
+            case 4:
+                return dateStr;
             case 6:
-                return dateStr.substring(0, 3) + "/" + dateStr.substring(4, 5);
+                return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
             case 8:
-                return dateStr.substring(0, 3) + "/" + dateStr.substring(4, 5) + "/" + dateStr.substring(6, 7);
+                return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
         }
         return null;
     }

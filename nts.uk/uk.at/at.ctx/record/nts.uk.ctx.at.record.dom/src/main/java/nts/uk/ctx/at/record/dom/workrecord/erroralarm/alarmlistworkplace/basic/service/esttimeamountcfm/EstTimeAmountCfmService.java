@@ -51,20 +51,20 @@ public class EstTimeAmountCfmService {
         while (startYear <= endYear) {
             // ドメインモデル「全社目安設定」を取得する。
             Optional<CompanyEstablishmentImport> comEstOpt = companyEstablishmentAdaptor.findById(cid, startYear);
-            if (comEstOpt.isPresent()) continue;
+            if (!comEstOpt.isPresent()) {
+                // 「アラーム値メッセージ」を作成します。
+                String message = TextResource.localize("KAL020_8", String.valueOf(startYear), AppContexts.user().companyCode());
 
-            // 「アラーム値メッセージ」を作成します。
-            String message = TextResource.localize("KAL020_8", String.valueOf(startYear), AppContexts.user().companyCode());
-
-            // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
-            ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(startYear, Optional.empty()),
-                    name.v(),
-                    Optional.ofNullable(TextResource.localize("KAL020_20")),
-                    Optional.of(new MessageDisplay(displayMessage.v())),
-                    null
-            );
-            results.add(result);
+                // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
+                ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
+                        new AlarmValueDate(startYear, Optional.empty()),
+                        name.v(),
+                        Optional.ofNullable(TextResource.localize("KAL020_20")),
+                        Optional.of(new MessageDisplay(displayMessage.v())),
+                        null
+                );
+                results.add(result);
+            }
 
             startYear++;
         }
