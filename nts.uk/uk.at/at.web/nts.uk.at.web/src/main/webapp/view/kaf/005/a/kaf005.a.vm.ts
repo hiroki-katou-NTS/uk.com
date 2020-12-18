@@ -2268,21 +2268,27 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							{	
 								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
 								if (!_.isNil(result)) {
-									c30_2 = true;
+									if (result.attendanceTime > 0) {
+										c30_2 = true;										
+									}
 								}
 							}
 							
 							{	
 								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
 								if (!_.isNil(result)) {
-									c30_3 = true;
+									if (result.attendanceTime > 0) {
+										c30_3 = true;										
+									}
 								}
 							}
 							
 							{	
 								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
 								if (!_.isNil(result)) {
-									c30_4 = true;
+									if (result.attendanceTime > 0) {
+										c30_4 = true;										
+									}
 								}
 							}
 						}
