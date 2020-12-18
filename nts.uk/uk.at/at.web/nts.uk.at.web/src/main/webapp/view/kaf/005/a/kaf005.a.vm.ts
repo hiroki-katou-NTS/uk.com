@@ -668,6 +668,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		// header
 		bindOverTimeWorks(res: DisplayInfoOverTime) {
 			const self = this;
+			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
+				self.visibleModel.c6(false);
+				return;	
+			}
 			let overTimeWorks = [];
 			{
 				let item = new OvertimeWork();

@@ -69,6 +69,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClas
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -98,6 +99,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
@@ -243,13 +245,14 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public Optional<OverTimeWorkHoursOutput> getAgreementTime(String companyID, String employeeID,
-			ApplicationType appType) {
+	public Optional<OverTimeWorkHoursOutput> getAgreementTime(
+			String companyID,
+			String employeeID,
+			Time36AgreeCheckRegister extratimeExcessAtr,
+			NotUseAtr extratimeDisplayAtr) {
 		Optional<OverTimeWorkHoursOutput> opAgreeOverTimeOutput = Optional.empty();
-		// 時間外表示区分チェック(check 時間外表示区分)
-		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, appType.value);
-		if (otRestAppCommonSet.isPresent() && (otRestAppCommonSet.get().getExtratimeDisplayAtr() == UseAtr.USE)) {
+		// ノートのif文を
+		if (!(extratimeExcessAtr == Time36AgreeCheckRegister.NOT_CHECK && extratimeDisplayAtr == NotUseAtr.NOT_USE)) {
 			// ３６時間の表示
 			opAgreeOverTimeOutput = Optional.of(agreementTimeService.getOverTimeWorkHoursOutput(companyID, employeeID));
 		}
