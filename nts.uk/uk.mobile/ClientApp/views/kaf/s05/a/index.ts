@@ -471,7 +471,8 @@ export class KafS05Component extends KafS00ShrComponent {
                 )
                     .then((res: any) => {
                         vm.numb = value;
-    
+                        let step2 = vm.$refs.step2 as KafS05Step2Component;
+                        step2.loadAllData();
                         vm.$nextTick(() => {
                             vm.$mask('hide');
                         });

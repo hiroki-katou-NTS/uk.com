@@ -1,10 +1,11 @@
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component } from '@app/core/component';
 import { KafS05Component} from '../a/index';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
+import { DivergenceReasonSelect, DisplayInfoOverTime, DivergenceReasonInputMethod, DivergenceTimeRoot } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -28,27 +29,26 @@ export class KafS05Step2Component extends Vue {
     public overTimes: Array<OverTime> = [];
     public holidayTimes: Array<HolidayTime> = [];
 
-    public reason1: null;
-    // nts-dropdownにバインドされる値
-    public selectedValue: string = '3';
+    public reason1: Reason = {
+        title: '',
+        reason: null,
+        selectedValue: null,
+        dropdownList: [{
+            code: null,
+            text: this.$i18n('KAFS05_54')
+        }]
+    } as Reason;
+
+    public reason2: Reason = {
+        title: '',
+        reason: null,
+        selectedValue: null,
+        dropdownList: [{
+            code: null,
+            text: this.$i18n('KAFS05_54')
+        }]
+    } as Reason;
     
-    // 各オプションにバインドされるデータソース
-    public dropdownList: Array<Object> = [{
-        code: '1',
-        text: 'The First'
-    }, {
-        code: '2',
-        text: 'The First'
-    }, {
-        code: '3',
-        text: 'The First'
-    }, {
-        code: '4',
-        text: 'The First'
-    },{
-        code: '5',
-        text: 'The First'
-    }];
 
     public created() {
         const self = this;
@@ -193,6 +193,55 @@ export class KafS05Step2Component extends Vue {
         const self = this;
         self.$appContext.toStep(1);
     }
+
+    public bindAllReason() {
+        const self = this;
+        let divergenceTimeRoot1 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceTimeRoot, (item: DivergenceTimeRoot) => item.divergenceTimeNo == 1);
+        let divergenceTimeRoot2 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceTimeRoot, (item: DivergenceTimeRoot) => item.divergenceTimeNo == 2);
+        let divergenceReasonInputMethod1 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod, (item: DivergenceReasonInputMethod) => item.divergenceTimeNo == 1);
+        let divergenceReasonInputMethod2 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod, (item: DivergenceReasonInputMethod) => item.divergenceTimeNo == 2);
+        
+        let reason1 = self.bindReason(divergenceTimeRoot1, divergenceReasonInputMethod1);
+        let reason2 = self.bindReason(divergenceTimeRoot2, divergenceReasonInputMethod2);
+
+        self.reason1 = reason1;
+        self.reason2 = reason2;
+
+    }
+
+    public bindReason(divergenceTimeRoot: DivergenceTimeRoot, divergenceReasonInputMethod: DivergenceReasonInputMethod) {
+        const self = this;
+        let reason = {} as Reason;
+        reason.title = '';
+        reason.reason = null;
+        reason.selectedValue = null;
+        if (!_.isNil(divergenceTimeRoot)) {
+            reason.title = divergenceTimeRoot.divTimeName;
+        }
+        reason.dropdownList = [] as Array<Object>;
+        reason.dropdownList.push({
+            code: null,
+            text: self.$i18n('KAFS05_54')
+        });
+        _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
+            let code = item.divergenceReasonCode;
+            let text = item.divergenceReasonCode + ' ' + item.reason;
+            reason.dropdownList.push({
+                code,
+                text
+            });
+            
+        });
+
+        return reason;
+
+    }
+
+    public loadAllData() {
+        const self = this;
+        self.bindAllReason();
+    }
+
 }
 export interface OverTime {
     frameNo: string;
@@ -213,4 +262,11 @@ export interface HolidayTime {
     actualTime: number;
     preApp: any;
     actualApp: any;
+}
+export interface Reason {
+    title?: string;
+    reason: string;
+    selectedValue: string;
+    titleDrop?: string;
+    dropdownList: Array<Object>;
 }
