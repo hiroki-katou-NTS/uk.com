@@ -105,41 +105,28 @@ public class CalcResultRange extends DomainObject {
 		case TIME:
 			return this.timeRange.map(range -> {
 				
-				return getValueOrLimit(() -> calcResultOfAnyItem.getTime(), 
+				return getValueOrUpper(() -> calcResultOfAnyItem.getTime(), 
 										() -> range.getUpper(optionalItem.getPerformanceAtr()));
 			}).orElse(BigDecimal.ZERO);
 			
 		case NUMBER:
 			return this.numberRange.map(range -> {
 				
-				return getValueOrLimit(() -> calcResultOfAnyItem.getCount(), 
-						() -> range.getUpper(optionalItem.getPerformanceAtr()));
+				return getValueOrUpper(() -> calcResultOfAnyItem.getCount(), 
+										() -> range.getUpper(optionalItem.getPerformanceAtr()));
 			}).orElse(BigDecimal.ZERO);
 			
 		case AMOUNT:
 			return this.amountRange.map(range -> {
 				
-				return getValueOrLimit(() -> calcResultOfAnyItem.getMoney(), 
-						() -> range.getUpper(optionalItem.getPerformanceAtr()));
+				return getValueOrUpper(() -> calcResultOfAnyItem.getMoney(), 
+										() -> range.getUpper(optionalItem.getPerformanceAtr()));
 			}).orElse(BigDecimal.ZERO);
 			
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}
 	}
-	
-	private BigDecimal getValueOrLimit(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
-		BigDecimal timeUpperLimit = limit.get().orElse(BigDecimal.ZERO);
-			
-		return target.get().map(c -> {
-			//値 > 上限値　の場合　値←上限値とする。
-			if (c.compareTo(timeUpperLimit) > 0) {
-				return timeUpperLimit;
-			}
-			return c;
-		}).orElse(BigDecimal.ZERO);
-	}
-	
 	
 	/**
 	 * 下限値の制御
@@ -151,22 +138,22 @@ public class CalcResultRange extends DomainObject {
 		case TIME:
 			return this.timeRange.map(range -> {
 				
-				return getValueOrLimit(() -> range.getLower(optionalItem.getPerformanceAtr()), 
-											() -> calcResultOfAnyItem.getTime());
+				return getValueOrLower(() -> calcResultOfAnyItem.getTime(),
+										() -> range.getLower(optionalItem.getPerformanceAtr()));
 			}).orElse(BigDecimal.ZERO);
 			
 		case NUMBER:
 			return this.numberRange.map(range -> {
 				
-				return getValueOrLimit(() -> range.getLower(optionalItem.getPerformanceAtr()), 
-											() -> calcResultOfAnyItem.getCount());
+				return getValueOrLower(() -> calcResultOfAnyItem.getCount(),
+										() -> range.getLower(optionalItem.getPerformanceAtr()));
 			}).orElse(BigDecimal.ZERO);
 			
 		case AMOUNT:
 			return this.amountRange.map(range -> {
 				
-				return getValueOrLimit(() -> range.getLower(optionalItem.getPerformanceAtr()), 
-											() -> calcResultOfAnyItem.getMoney());
+				return getValueOrLower(() -> calcResultOfAnyItem.getMoney(),
+										() -> range.getLower(optionalItem.getPerformanceAtr()));
 			}).orElse(BigDecimal.ZERO);
 			
 		default:
@@ -174,6 +161,27 @@ public class CalcResultRange extends DomainObject {
 		}
 	}
 	
+	private BigDecimal getValueOrUpper(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
+		BigDecimal upperLimit = limit.get().orElse(BigDecimal.ZERO);
+			
+		return target.get().map(c -> {
+			/** 値 > 上限値　の場合　値←上限値とする。 */
+			if (c.compareTo(upperLimit) > 0) {
+				return upperLimit;
+			}
+			return c;
+		}).orElse(BigDecimal.ZERO);
+	}
 	
-	
+	private BigDecimal getValueOrLower(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
+		BigDecimal lowerLimit = limit.get().orElse(BigDecimal.ZERO);
+			
+		return target.get().map(c -> {
+			/** 値 < 下限値　の場合　値←下限値とする。 */
+			if (c.compareTo(lowerLimit) < 0) {
+				return lowerLimit;
+			}
+			return c;
+		}).orElse(BigDecimal.ZERO);
+	}
 }

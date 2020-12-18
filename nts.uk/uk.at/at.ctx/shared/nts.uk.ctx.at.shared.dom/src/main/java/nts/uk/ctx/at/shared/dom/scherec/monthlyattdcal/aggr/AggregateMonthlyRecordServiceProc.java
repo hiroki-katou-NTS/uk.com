@@ -923,8 +923,8 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		return AnyItemAggrResult.of(optionalItemNo, 
 										checkedResult.getTime().map(c -> new AnyTimeMonth(c.intValue())),
-										checkedResult.getTime().map(c -> new AnyTimesMonth(c.doubleValue())), 
-										checkedResult.getTime().map(c -> new AnyAmountMonth(c.intValue())));
+										checkedResult.getCount().map(c -> new AnyTimesMonth(c.doubleValue())), 
+										checkedResult.getMoney().map(c -> new AnyAmountMonth(c.intValue())));
 	}
 
 	/**
