@@ -10,10 +10,12 @@ import nts.uk.screen.at.app.command.kmk.kmk004.f.DeleteByIdHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.DeleteSettingsForCompany;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.DeleteSettingsForEmp;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.DeleteSettingsForSha;
+import nts.uk.screen.at.app.command.kmk.kmk004.f.DeleteSettingsForWkp;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.UpdateSettingsByIdHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.UpdateSettingsForCompany;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.UpdateSettingsForEmp;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.UpdateSettingsForSha;
+import nts.uk.screen.at.app.command.kmk.kmk004.f.UpdateSettingsForWkp;
 import nts.uk.screen.at.app.command.kmk.kmk004.f.UpdateSettingsHandler;
 
 /**
@@ -31,6 +33,12 @@ public class Kmk004FWebSevice extends WebService{
 	
 	@Inject
 	private DeleteSettingsForCompany deleteByCom;
+	
+	@Inject
+	private UpdateSettingsForWkp updateByWkp;
+	
+	@Inject
+	private DeleteSettingsForWkp deleteByWkp;
 	
 	@Inject
 	private UpdateSettingsForEmp updateByEmp;
@@ -54,6 +62,18 @@ public class Kmk004FWebSevice extends WebService{
 	@Path("viewf/com/setting/delete")
 	public void deleteCom() {
 		this.deleteByCom.delete();;
+	}
+	
+	@POST
+	@Path("viewf/wkp/setting/update")
+	public void addOrUpdateWkp(UpdateSettingsByIdHandler command) {
+		this.updateByWkp.handle(command);;
+	}
+	
+	@POST
+	@Path("viewf/wkp/setting/delete")
+	public void deleteWkp(DeleteByIdHandler command) {
+		this.deleteByWkp.handle(command);
 	}
 	
 	@POST
