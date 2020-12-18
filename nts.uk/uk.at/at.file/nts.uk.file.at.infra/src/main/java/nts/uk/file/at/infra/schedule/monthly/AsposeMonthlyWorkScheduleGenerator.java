@@ -488,7 +488,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 */
 	public Map<String, WorkplaceInfo> collectWorkplaceHierarchy(String workplaceId, GeneralDate baseDate, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>();
-		Optional<WorkplaceConfigInfo> optHierachyInfo = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceId)).findFirst();
+		Optional<WorkplaceConfigInfo> optHierachyInfo = lstWorkplaceConfigInfo.stream().filter(x -> {
+			List<String> workplaceIds = new ArrayList<>();
+			if (!x.getLstWkpHierarchy().isEmpty()) {
+				workplaceIds.addAll(x.getLstWkpHierarchy().stream().map(t -> t.getWorkplaceId()).collect(Collectors.toList()));
+			}
+			return workplaceIds.contains(workplaceId);
+		}).findFirst();
+
 		optHierachyInfo.ifPresent(info -> {
 			List<WorkplaceHierarchy> lstHierarchy = info.getLstWkpHierarchy();
 			for (WorkplaceHierarchy hierarchy: lstHierarchy) {
@@ -829,9 +836,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			String employeeId = attendanceData.getEmployeeId();
 			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
 			Optional<WorkplaceHierarchy> code = lstWorkplaceConfigInfo.stream().filter(x -> {
-				return !x.getLstWkpHierarchy().isEmpty()
-					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
-					 : false;
+				List<String> workplaceIds = new ArrayList<>();
+				if (!x.getLstWkpHierarchy().isEmpty()) {
+					workplaceIds.addAll(x.getLstWkpHierarchy().stream().map(t -> t.getWorkplaceId()).collect(Collectors.toList()));
+				}
+				return workplaceIds.contains(workplaceImport.getWorkplaceId());
 			}).findFirst().map(t -> Optional.of(t.getLstWkpHierarchy().get(0))).orElse(Optional.empty());
 			return code.map(t -> t.getHierarchyCode().v()).orElse("");
 		}).collect(Collectors.toSet());
