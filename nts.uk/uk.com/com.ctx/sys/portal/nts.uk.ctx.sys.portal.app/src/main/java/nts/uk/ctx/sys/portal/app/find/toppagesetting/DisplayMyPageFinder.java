@@ -142,19 +142,25 @@ public class DisplayMyPageFinder {
 			if(!displayCode.isPresent()) {
 				return null;
 			}
-			//	標準メニューの場合
-			if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
-				result.setMenuClassification(MenuClassification.Standard.value);
-				Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, displayCode.get(),
-						param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
-				if(standardMenu.isPresent()) {
-					result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+			if(param.getFromScreen().equals(IS_LOGIN)) {
+				//	標準メニューの場合
+				if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
+					result.setMenuClassification(MenuClassification.Standard.value);
+					Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, displayCode.get(),
+							param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
+					if(standardMenu.isPresent()) {
+						result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+					}
+					//	トップページの場合
+				} else if (param.getTopPageSetting().get().getLoginMenuCode().isEmpty() || param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+					DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
+					result.setDisplayTopPage(dataDisplay);
 				}
-				//	トップページの場合
-			} else if (param.getTopPageSetting().get().getLoginMenuCode().isEmpty() || param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+			} else {
 				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
 				result.setDisplayTopPage(dataDisplay);
 			}
+			
 		}
 
 		return result;
