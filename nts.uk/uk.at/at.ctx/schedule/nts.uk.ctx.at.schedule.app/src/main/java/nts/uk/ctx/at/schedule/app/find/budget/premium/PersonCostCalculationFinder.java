@@ -113,8 +113,7 @@ public class PersonCostCalculationFinder {
         return new PersonCostCalculationSettingDto(
                 personCostCalculation.getCompanyID(),
                 personCostCalculation.getHistoryID(),
-                personCostCalculation.getStartDate(),
-                personCostCalculation.getEndDate(),
+
                 personCostCalculation.getUnitPrice().value,
                 personCostCalculation.getMemo().v(),
                 personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
@@ -158,13 +157,17 @@ public class PersonCostCalculationFinder {
      * Get 人件費計算設定の履歴
      */
 
-    public HistPersonCostCalculation getHistPersonCostCalculations() {
+    public List<HistPersonCostCalculationDto> getHistPersonCostCalculations() {
         val cid = AppContexts.user().companyId();
         val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
         if (!listItem.isPresent()) {
             throw new BusinessException("Msg_2027");
         }
-        return listItem.get();
+        return listItem.get().items().stream().map(e -> new HistPersonCostCalculationDto(
+                e.start(),
+                e.end(),
+                cid,
+                e.identifier()
+        )).collect(Collectors.toList());
     }
-
-    }
+}

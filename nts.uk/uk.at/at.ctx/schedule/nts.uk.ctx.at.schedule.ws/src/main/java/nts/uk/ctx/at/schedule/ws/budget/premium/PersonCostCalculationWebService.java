@@ -1,16 +1,12 @@
 package nts.uk.ctx.at.schedule.ws.budget.premium;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.DeletePersonCostCalculationCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.InsertPersonCostCalculationCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePersonCostCalculationCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePremiumItemCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdatePremiumItemCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.*;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.command.*;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.HistPersonCostCalculationDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
-import nts.uk.ctx.at.schedule.dom.budget.premium.HistPersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 
@@ -43,6 +39,15 @@ public class PersonCostCalculationWebService extends WebService {
 
     @Inject
     private UpdatePremiumItemCommandHandler updatePremiumItemCommandHandler;
+
+    @Inject
+    private InsertHistPersonCostCalculationCommandHandler insertHistCommandHandler;
+
+    @Inject
+    private UpdateHistPersonCostCalculationCommandHandler updateHistCommandHandler;
+
+    @Inject
+    private RegisterLaborCalculationSettingCommandHandler registerLaborCalSettingCommandHandler;
 
     @POST
     @Path("insertPersonCostCalculation")
@@ -104,15 +109,30 @@ public class PersonCostCalculationWebService extends WebService {
     public List<PremiumItemDto> findWorkTypeLanguage(@PathParam("langId") String langId) {
         return this.personCostCalculationSettingFinder.findWorkTypeLanguage(langId);
     }
+
     //===================================Update KML 001==================
+
     @POST
-    @Path("findHistPersonCostCalculationsByCompanyID")
-    public HistPersonCostCalculation getHistPersonCostCalculations() {
+    @Path("findHistByCompanyID")
+    public List<HistPersonCostCalculationDto> getHistPersonCostCalculations() {
         return this.personCostCalculationSettingFinder.getHistPersonCostCalculations();
     }
+
     @POST
-    @Path("create")
-    public void createHistPersonCostCalculation() {
-         this.personCostCalculationSettingFinder.createHistPersonCostCalculation();
+    @Path("create/hist")
+    public void createHistPersonCostCalculation(InsertHistPersonCostCalculationCommand command) {
+        this.insertHistCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("update/hist")
+    public void updateHistPersonCalculation(UpdateHistPersonCostCalculationCommand command) {
+        this.updateHistCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("registerLaborCalculationSetting")
+    public void registerLaborCalculationSetting(RegisterLaborCalculationSettingCommand command) {
+        this.registerLaborCalSettingCommandHandler.handle(command);
     }
 }

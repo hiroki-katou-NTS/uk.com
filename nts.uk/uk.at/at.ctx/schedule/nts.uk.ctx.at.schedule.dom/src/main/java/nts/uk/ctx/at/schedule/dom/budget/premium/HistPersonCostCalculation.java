@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class HistPersonCostCalculation extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 
     // 会社ID
