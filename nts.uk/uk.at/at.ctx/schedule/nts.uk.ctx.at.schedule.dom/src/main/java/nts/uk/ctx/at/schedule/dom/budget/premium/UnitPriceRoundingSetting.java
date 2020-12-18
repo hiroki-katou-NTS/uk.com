@@ -9,6 +9,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 public class UnitPriceRoundingSetting extends ValueObject{
     //1 : 端数処理 :人件費単価端数処理
 
-    private  UnitPriceRounding rounding;
+    private  UnitPriceRounding priceRounding;
 
 }

@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostRoundingSetting;
-
-import javax.inject.Inject;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +21,7 @@ public class RegisterLaborCalculationSettingCommand {
 
     private  String remarks;
 
-    private PersonCostRoundingSetting personCostRoundingSetting;
+    private PerCostRoundSettingDto personCostRoundingSetting;
 
 
 }
