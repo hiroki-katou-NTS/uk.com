@@ -215,6 +215,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setEmployeeID(appRootInstance.getEmployeeID());
 		approvalRootState.setApprovalRecordDate(appRootConfirm.getRecordDate());
 		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
+		approvalRootState.setRootStateID(appRootConfirm.getRootID());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();

@@ -137,7 +137,12 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}).then((data: any) => {
 				return $.Deferred((dfd) => {
 					vm.closureLst(_.map(data.closureList, (o: any) => {
-						return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
+						return new ClosureItem(
+							o.closureHistories[0].closureId, 
+							o.closureHistories[0].closeName, 
+							o.closureMonth,
+							o.closureHistories[0].closureDate.closureDay,
+							o.closureHistories[0].closureDate.lastDayOfMonth);
 					}));
 					vm.employmentCDLst = data.listEmploymentCD;
 					if(params) {
@@ -279,11 +284,15 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		closureId: number; 
 		closureName: string;
 		processingYm: number;
+		closureDay: number;
+		lastDayOfMonth: boolean;
 		
-		constructor(closureId: number, closureName: string, processingYm: number) {
+		constructor(closureId: number, closureName: string, processingYm: number, closureDay: number, lastDayOfMonth: boolean) {
 			this.closureId = closureId;
 			this.closureName = closureName;
 			this.processingYm = processingYm;
+			this.closureDay = closureDay;
+			this.lastDayOfMonth = lastDayOfMonth;
 		}
 	}
 	

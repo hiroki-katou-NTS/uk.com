@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.monthlyperformance.correction.param;
+package nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -87,5 +87,14 @@ public class MonthlyPerformaceLockStatus {
 			resultStatus = sb.toString().substring(0, sb.length() - 1);
 		}
 		return resultStatus;
+	}
+	
+	public boolean disableState(String sid) {
+		// 「過去実績のロック」「月別実績のロック」「職場の就業確定」のいずれかがロックされている場合
+		if (sid.equals(employeeId)) {
+			return pastPerformaceLock == LockStatus.LOCK || monthlyResultLock == LockStatus.LOCK
+					|| employmentConfirmWorkplace == LockStatus.LOCK;
+		}
+		return false;
 	}
 }
