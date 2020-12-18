@@ -89,6 +89,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		lstDis: any = [];
 		lstBreakSum: any = []; // list break time xuất hiện trên màn hình
+		lstHolidayShort : any = [];
 		
 		totalTimeWork: any = 0;
 		checkDisByDate : boolean = true;
@@ -329,13 +330,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						timeRangeLimit, lstTime, 1);
 						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
 						let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
-						lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime);
+						lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 2);
 						}
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime, 
-						timeRangeLimit, lstTime);
+						timeRangeLimit, lstTime, 2);
 						
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime);
-
 						let totalTime = self.calcAllTime(dataFixed[0], lstTime,timeRangeLimit);
 							
 						totalBrkTime = self.calcAllBrk(lstTime);	
@@ -381,13 +381,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						timeRangeLimit, lstTime, 1);
 						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
 						let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
-						lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime);
+						lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 2);
 						}
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime, 
-						timeRangeLimit, lstTime);
+						timeRangeLimit, lstTime, 2);
 						let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === empId });
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime);
-
 						let totalTime = self.calcAllTime(dataFixed[0], lstTime,timeRangeLimit);
 							
 						totalBrkTime = self.calcAllBrk(lstTime);	
@@ -972,7 +971,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// Tính tổng thời gian holiday time
 					for (let e = 0; e < schedule.workInfoDto.listTimeVacationAndType.length; e++) {
 						let y = schedule.workInfoDto.listTimeVacationAndType[e];
-						lstTime = self.calcChartTypeTime(schedule, y.timeVacation.timeZone, timeRangeLimit, lstTime);
+						lstTime = self.calcChartTypeTime(schedule, y.timeVacation.timeZone, timeRangeLimit, lstTime, 2);
 					}
 
 					// Thời gian chăm sóc / giữ trẻ (short time)
@@ -986,7 +985,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						})
 					}
 					// Tính tổng thời gian short time
-					lstTime = self.calcChartTypeTime(schedule, schedule.workInfoDto.shortTime, timeRangeLimit, lstTime);
+					lstTime = self.calcChartTypeTime(schedule, schedule.workInfoDto.shortTime, timeRangeLimit, lstTime, 2);
 				}
 				
 				// Tổng thời gian break time
@@ -1290,6 +1289,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null &&
 							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime === 0) { // ※8
 							middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal", 0));
+							$("#extable-ksu003").exTable("cellValue", "middle", self.lstEmpId[i].empId, "breakTime", " ");
 							checkColor.breaktime = 0;
 						}
 					}
@@ -1842,17 +1842,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							(timeChart.startTime < Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
 							(_.inRange(timeChartBrk.startTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 								_.inRange(timeChartBrk.endTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
-
+							let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, {start : startTime1,end : endTime1});
 							ruler.addChartWithType("BreakTime", {
 								id: id,
 								parent: parent,
 								lineNo: i,
 								start: startTime1,
 								end: endTime1,
-								limitStartMin: 0,
-								limitStartMax: 9999,
-								limitEndMin: 0,
-								limitEndMax: 9999,
+								limitStartMin: timeRange.start,
+								limitStartMax: timeRange.end,
+								limitEndMin: timeRange.start,
+								limitEndMax: timeRange.end,
 								zindex: 1001,
 								resizeFinished: (b: any, e: any, p: any) => {
 								},
@@ -1873,7 +1873,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime + " ");
 								}
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, 0, 9999, 0, 9999, 1001));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 							indexLeft = ++indexLeft;
 						}
 
@@ -2097,6 +2097,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 
 			return time;
+		}
+		
+		checkRangeBreakTime(lstHoliday : any[], breakTime : any){
+			let rangeBreak : any = {start : 0, end : 9999};
+				for (let i = 0; i < lstHoliday.length; i++){
+				if(lstHoliday[i].start > breakTime.end){
+					rangeBreak.end = lstHoliday[i].start;
+				}
+				if(lstHoliday[i].end < breakTime.start){
+					rangeBreak.start = lstHoliday[i].end;
+				} 
+				}
+			return rangeBreak;
 		}
 
 		addChartWithType045(empId: string, type: any, id: any, timeChart: any, lineNo: any, parent?: any,
@@ -2670,6 +2683,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								end : endCalc
 							})
 							}
+							
+							if(!_.isNil(lstBreak) && lstBreak == 2 &&  (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))){
+								self.lstHolidayShort.push({
+								start : startCalc,
+								end : endCalc
+							})
+							}
 
 					lstTimeFilter = _.filter(lstTime, (x: any) => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
 					if ((_.isEmpty(lstTimeFilter) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))))  {
@@ -2693,8 +2713,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						(_.inRange(timeChartBrk.startTime, 0, (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 							_.inRange(timeChartBrk.endTime, 0, (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 								
-								if(!_.isNil(lstBreak) && lstBreak == 1 &&  (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))){
+							if(!_.isNil(lstBreak) && lstBreak == 1 &&  (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))){
 								self.lstBreakSum.push({
+								start : startCalc,
+								end : endCalc
+							})
+							}
+							
+							if(!_.isNil(lstBreak) && lstBreak == 2 &&  (_.inRange(startCalc, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))){
+								self.lstHolidayShort.push({
 								start : startCalc,
 								end : endCalc
 							})
