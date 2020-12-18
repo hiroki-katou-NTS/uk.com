@@ -101,11 +101,13 @@ public class Kmk004EWebSevice extends WebService {
 	@POST
 	@Path("viewd/sha/monthlyWorkTime/add")
 	public void addWorkTimes(WorkTimeInputViewE input) {
-		List<MonthlyWorkTimeSetShaCommand> result = input.laborTime.stream().map(m -> {
-			return new MonthlyWorkTimeSetShaCommand(input.sid, 0, input.year,
-					new MonthlyLaborTimeCommand(m, null, null));
-		}).collect(Collectors.toList());
-
+		List<MonthlyWorkTimeSetShaCommand> result = new ArrayList<>();
+		
+		for (int i = 0; i < input.getLaborTime().size(); i++) {
+			MonthlyWorkTimeSetShaCommand s = new MonthlyWorkTimeSetShaCommand(input.sid, 0,
+					input.getYearMonth().get(i), new MonthlyLaborTimeCommand(input.getLaborTime().get(i), null, null));
+			result.add(s);
+		}
 		SaveMonthlyWorkTimeSetShaCommand command = new SaveMonthlyWorkTimeSetShaCommand(result);
 		this.saveWorkTime.handle(command);;
 	}

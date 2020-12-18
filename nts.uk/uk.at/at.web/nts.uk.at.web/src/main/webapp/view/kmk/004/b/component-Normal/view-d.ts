@@ -64,7 +64,8 @@ module nts.uk.at.view.kmk004.b {
 							type: type,
 							selectedYear: selectedYear,
 							years: years,
-							selectId: emloyment.code
+							selectId: emloyment.code,
+							workTimes: workTimes
 						}
 					}"></div>
 				</div>
@@ -76,6 +77,11 @@ module nts.uk.at.view.kmk004.b {
 	interface Params {
 
 	}
+
+	const API = {
+		ADD_WORK_TIME: 'screen/at/kmk004/viewd/emp/monthlyWorkTime/add',
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewd/emp/monthlyWorkTime/delete'
+    };
 
 	@component({
 		name: 'view-d',
@@ -92,6 +98,7 @@ module nts.uk.at.view.kmk004.b {
 		public emloyment: Employment = new Employment();
 		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
+		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 
 		created(params: Params) {
 			const vm = this;
@@ -115,6 +122,27 @@ module nts.uk.at.view.kmk004.b {
 		}
 
 		add() {
+			const vm = this;
+			const times = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				return ko.unwrap(value.laborTime);
+			}));
+
+			const yearMonth = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				return ko.unwrap(value.yearMonth);
+			}));
+			const input = {employmentCode: ko.unwrap(vm.emloyment.code), yearMonth: yearMonth, laborTime: times};
+
+			vm.$ajax(API.ADD_WORK_TIME, input)
+				.done(() => {
+					_.remove(ko.unwrap(vm.years), ((value) => {
+						return value.year == ko.unwrap(vm.selectedYear);
+					}));
+					vm.years.push(new IYear(ko.unwrap(vm.selectedYear), false));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.selectedYear.valueHasMutated();
+					vm.$dialog.info({ messageId: 'Msg_15' });
+				});
+
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});

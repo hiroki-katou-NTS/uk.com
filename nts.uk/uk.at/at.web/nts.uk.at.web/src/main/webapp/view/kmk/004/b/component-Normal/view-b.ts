@@ -47,7 +47,8 @@ module nts.uk.at.view.kmk004.b {
 						selectedYear: selectedYear,
 						years: years,
 						type: type,
-						selectId: ko.observable('')
+						selectId: ko.observable(''),
+						workTimes: workTimes
 					}
 				}"></div>
 			</div>
@@ -75,6 +76,7 @@ module nts.uk.at.view.kmk004.b {
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Company';
+		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 
 
 		created() {

@@ -6,6 +6,13 @@ module nts.uk.at.view.kmk004.f {
         type: string;
     }
 
+    const API = {
+		DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
+		GET_SETTING_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getBaseSetting',
+		GET_SETTING_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getBaseSetting',
+		GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting'
+	}
+
     @bean()
     export class ViewModel extends ko.ViewModel {
 

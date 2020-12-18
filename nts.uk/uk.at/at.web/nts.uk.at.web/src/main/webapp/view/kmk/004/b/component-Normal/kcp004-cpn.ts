@@ -35,9 +35,12 @@ module nts.uk.at.view.kmk004.b {
 
             vm.$ajax(API.GET_WORKPLACE_ID)
 				.then((data: any) => {
+                    let settings: UnitAlreadySettingModel[] = [];
 					_.forEach(data, ((value) =>{
-						vm.alreadySettingList.push(new UnitAlreadySettingModel(value.workplaceId));
-					}))
+                        let s: UnitAlreadySettingModel = {id: value.workplaceId ,isAlreadySetting: true};
+                        settings.push(s);
+                    }));
+                    vm.alreadySettingList(settings);
                 })
                 .then(() => {
                     vm.reloadData();
@@ -125,14 +128,9 @@ module nts.uk.at.view.kmk004.b {
         isAlreadySetting: boolean;
     }
 
-    export class UnitAlreadySettingModel  {
+    interface UnitAlreadySettingModel {
         id: string;
         isAlreadySetting: boolean;
-
-        constructor(id: string){
-            this.id = id;
-            this.isAlreadySetting = true;
-        }
     }
 
     export class Model {

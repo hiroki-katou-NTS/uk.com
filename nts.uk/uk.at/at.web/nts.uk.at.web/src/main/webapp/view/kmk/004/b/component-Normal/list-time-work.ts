@@ -8,6 +8,7 @@ module nts.uk.at.view.kmk004.b {
         years: KnockoutObservableArray<IYear>;
         type: SIDEBAR_TYPE;
         selectId: KnockoutObservable<string>;
+        workTimes: KnockoutObservableArray<WorkTime>;
     }
 
     const API = {
@@ -108,6 +109,7 @@ module nts.uk.at.view.kmk004.b {
             vm.years = params.years;
             vm.type = params.type;
             vm.selectId = params.selectId;
+            vm.workTimes = params.workTimes;
 
             vm.initList(9999, false);
             vm.reloadData();
