@@ -21,7 +21,8 @@ module nts.uk.at.view.kmk004.b {
 					name: 'basic-setting',
 					params:{
 						type: type,
-						selectId: ko.observable('')
+						selectId: ko.observable(''),
+						change: change
 					}
 				}"></div>
 			</div>
@@ -77,14 +78,13 @@ module nts.uk.at.view.kmk004.b {
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Company';
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
-
+		public change: KnockoutObservable<string> = ko.observable('');
 
 		created() {
 			const vm = this;
 
 			vm.selectedYear
 				.subscribe(() => {
-					vm.$errors('clear');
 					if (vm.selectedYear != null) {
 						vm.existYear(true);
 					}
@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk004.b {
 			const vm = this;
 			const params = { type: 'Com_Company', selectId: 'Chung dep trai' };
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
-				
+				vm.change.valueHasMutated();
 			});
 		}
 

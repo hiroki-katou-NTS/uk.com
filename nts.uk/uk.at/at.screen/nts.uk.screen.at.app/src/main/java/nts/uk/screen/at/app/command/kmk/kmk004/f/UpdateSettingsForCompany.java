@@ -43,8 +43,8 @@ public class UpdateSettingsForCompany extends CommandHandler<UpdateSettingsHandl
 		Optional<ComRegulaMonthActCalSet> comRegulaMonthActCalSet = actCalSetRepo.find(AppContexts.user().companyId());
 
 		RegularLaborTimeCom com = RegularLaborTimeCom.of(AppContexts.user().companyId(),
-				new WeeklyUnit(new WeeklyTime(context.getCommand().getDaily())),
-				new DailyUnit(new TimeOfDay(context.getCommand().getWeekly())));
+				new WeeklyUnit(new WeeklyTime(context.getCommand().weekly)),
+				new DailyUnit(new TimeOfDay(context.getCommand().daily)));
 		
 		ComRegulaMonthActCalSet actCalSet = ComRegulaMonthActCalSet.of(AppContexts.user().companyId(),
 				new ExcessOutsideTimeSetReg(context.getCommand().deforWorkLegalOverTimeWork,

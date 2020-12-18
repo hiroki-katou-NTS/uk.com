@@ -38,7 +38,8 @@ module nts.uk.at.view.kmk004.b {
 						name: 'basic-setting',
 						params:{
 							type: type,
-							selectId: emloyment.code
+							selectId: emloyment.code,
+							change: change
 						}
 					}"></div>
 				<!-- /ko -->
@@ -99,6 +100,7 @@ module nts.uk.at.view.kmk004.b {
 		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
+		public change: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
@@ -164,7 +166,7 @@ module nts.uk.at.view.kmk004.b {
 			const vm = this;
 			const params = { type: vm.type, selectId: ko.unwrap(vm.emloyment.code) };
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
-				
+				vm.change.valueHasMutated();
 			});
 		}
 

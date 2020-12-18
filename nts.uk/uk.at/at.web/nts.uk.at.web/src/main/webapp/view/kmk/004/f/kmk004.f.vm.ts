@@ -11,7 +11,19 @@ module nts.uk.at.view.kmk004.f {
         DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
         GET_SETTING_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getBaseSetting',
         GET_SETTING_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getBaseSetting',
-        GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting'
+        GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting',
+
+        ADD_OR_UPDATE_COM: 'screen/at/kmk004/viewf/com/setting/update',
+        DELETE_COM: 'screen/at/kmk004/viewf/com/setting/delete',
+
+        ADD_OR_UPDATE_WORKPLACE: 'screen/at/kmk004/viewf/wkp/setting/update',
+        DELETE_WORKPLACE: 'screen/at/kmk004/viewf/wkp/setting/delete',
+
+        ADD_OR_UPDATE_EMPLOYMENT: 'screen/at/kmk004/viewf/emp/setting/update',
+        DELETE_EMPLOYMENT: 'screen/at/kmk004/viewf/emp/setting/delete',
+
+        ADD_OR_UPDATE_EMPLOYEE: 'screen/at/kmk004/viewf/sha/setting/update',
+        DELETE_EMPLOYEE: 'screen/at/kmk004/viewf/sha/setting/delete',
     }
 
     @bean()
@@ -59,23 +71,91 @@ module nts.uk.at.view.kmk004.f {
             vm.$window.close();
         }
 
+        add() {
+            const vm = this;
+            switch (ko.unwrap(vm.valueInsurrance)) {
+                case '1':
+                    vm.model.deforWorkLegalOverTimeWork(false);
+                    break;
+                case '0':
+                    vm.model.deforWorkLegalOverTimeWork(true);
+                    break
+            }
+            switch (ko.unwrap(vm.valueSurcharges)) {
+                case '1':
+                    vm.model.outsidedeforWorkLegalOverTimeWork(false);
+                    break;
+                case '0':
+                    vm.model.outsidedeforWorkLegalOverTimeWork(true);
+                    break
+            }
+
+            const input = {
+                daily: ko.unwrap(vm.model.daily),
+                weekly: ko.unwrap(vm.model.weekly),
+                deforWorkSurchargeWeekMonth: ko.unwrap(vm.model.deforWorkSurchargeWeekMonth),
+                deforWorkLegalOverTimeWork: ko.unwrap(vm.model.deforWorkLegalOverTimeWork),
+                deforWorkLegalHoliday: ko.unwrap(vm.model.deforWorkLegalHoliday),
+                outsideSurchargeWeekMonth: ko.unwrap(vm.model.outsideSurchargeWeekMonth),
+                outsidedeforWorkLegalOverTimeWork: ko.unwrap(vm.model.outsidedeforWorkLegalOverTimeWork),
+                outsidedeforWorkLegalHoliday: ko.unwrap(vm.model.outsidedeforWorkLegalHoliday),
+            }
+
+            const inputById = {
+                id: ko.unwrap(vm.selectId),
+                handlerCommon: input
+            }
+
+            switch (vm.type) {
+                case 'Com_Company':
+                    vm.$ajax(API.ADD_OR_UPDATE_COM, input)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Workplace':
+                    vm.$ajax(API.ADD_OR_UPDATE_WORKPLACE, inputById)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Employment':
+                    vm.$ajax(API.ADD_OR_UPDATE_EMPLOYMENT, inputById)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Person':
+                    vm.$ajax(API.ADD_OR_UPDATE_EMPLOYEE, inputById)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+            }
+
+        }
+
+        delete() {
+
+        }
+
         init() {
             const vm = this;
-            vm.model.deforWorkSurchargeWeekMonth.subscribe(() => {
-                if (ko.unwrap(vm.model.deforWorkSurchargeWeekMonth)) {
+            vm.model.deforWorkLegalOverTimeWork.subscribe(() => {
+                if (ko.unwrap(vm.model.deforWorkLegalOverTimeWork)) {
                     vm.valueInsurrance('1');
                 } else {
                     vm.valueInsurrance('0');
                 }
-            })
+            });
 
-            vm.model.outsideSurchargeWeekMonth.subscribe(() => {
-                if (ko.unwrap(vm.model.outsideSurchargeWeekMonth)) {
+            vm.model.outsidedeforWorkLegalOverTimeWork.subscribe(() => {
+                if (ko.unwrap(vm.model.outsidedeforWorkLegalOverTimeWork)) {
                     vm.valueSurcharges('1');
                 } else {
                     vm.valueSurcharges('0');
                 }
-            })
+            });
         }
 
         reloadData() {
@@ -144,10 +224,10 @@ interface IModel {
 class Model {
     daily: KnockoutObservable<number> = ko.observable(0);
     weekly: KnockoutObservable<number> = ko.observable(0);
-    deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
+    deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
     deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
     deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
-    outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
+    outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
     outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
     outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
 
