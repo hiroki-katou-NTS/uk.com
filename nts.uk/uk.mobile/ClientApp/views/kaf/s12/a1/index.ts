@@ -2,7 +2,7 @@ import { component, Prop } from '@app/core/component';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00DComponent } from 'views/kaf/s00/d';
-import { DispInfoOfTimeLeaveRequest,GoBackTime } from '../shr/';
+import { DispInfoOfTimeLeaveRequest, GoBackTime } from '../shr/';
 import { KafS00SubP1Component, ExcessTimeStatus } from 'views/kaf/s00/sub/p1/';
 
 @component({
@@ -26,7 +26,6 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public application: Application = null;
     public mode: boolean = true;
     public user: any = null;
-
 
     //Disp Infomation Time Leave Request Value
     public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
@@ -73,15 +72,16 @@ export class KafS12A1Component extends KafS00ShrComponent {
         swtOutClassification: 0,
     });
     public iGoBackTime3 = new GoBackTime({
-        frame: 0,
+        frame: 2,
         startTime: null,
         endTime: null,
         name: 'KAFS12_18',
         swtOutClassification: 0,
     });
+
     public dataSource = [
-        {id: 2, name: 'KAFS12_16'},
-        {id: 1, name: 'KAFS12_15'},
+        { id: 0, name: 'KAFS12_15' },
+        { id: 1, name: 'KAFS12_16' },
     ];
 
     //Go Back Time List
@@ -200,7 +200,25 @@ export class KafS12A1Component extends KafS00ShrComponent {
             return resolve(true);
         });
     }
+
+    public addNewGoBackTime() {
+        const vm = this;
+
+        let currentFrame = vm.GoBackTimeLst.length;
+
+        if (currentFrame < 10) {
+            let iGoBackTime = new GoBackTime({
+                startTime: null,
+                endTime: null,
+                frame: currentFrame,
+                name: 'KAFS12_18',
+                swtOutClassification: 0
+            });
+            vm.GoBackTimeLst.push(iGoBackTime);
+        }
+    }
 }
+
 
 const API = {
     initAppNew: 'at/request/application/initApp',

@@ -1,5 +1,4 @@
 import {Vue,_} from '@app/provider';
-import { StringNullableChain } from 'lodash';
 import {KAFS00P1Params} from 'views/kaf/s00/sub/p1';
 
 export class DispInfoOfTimeLeaveRequest {
@@ -40,10 +39,7 @@ export class GoBackTime {
     public frame: number;
     public name: string;
     public swtOutClassification: number;
-    public goBackTime = {
-        start: null,
-        end: null
-    };
+    public goBackTime = {start: null,end: null};
 
     constructor (iGoBackTime: IGoBackTime) {
         this.frame = iGoBackTime.frame;
@@ -63,7 +59,7 @@ export interface  IDispInfoOfTimeLeaveRequest {
 }
 
 export interface IGoBackTime {
-    frame: number | null;
+    frame: number;
     name: string;
     swtOutClassification: number;
     startTime: number;

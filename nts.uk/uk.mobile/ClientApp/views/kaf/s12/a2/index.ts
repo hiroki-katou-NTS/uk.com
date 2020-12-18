@@ -11,5 +11,9 @@ import { component } from '@app/core/component';
     constraints: []
 })
 export class KafS12A2Component extends Vue {
-    public title: string = 'KafS12A2';
+
+    public create() {
+        const vm = this;
+
+    }
 }
