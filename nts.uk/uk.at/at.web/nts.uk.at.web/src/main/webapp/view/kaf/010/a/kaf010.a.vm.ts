@@ -44,6 +44,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		isGoWorkAtr: KnockoutObservable<boolean> = ko.observable(false);
 		isBackHomeAtr: KnockoutObservable<boolean> = ko.observable(false);
 		selectedDivergenceReasonCode: KnockoutObservable<string> = ko.observable();
+		divergenceReasonText: KnockoutObservable<string> = ko.observable();
 		mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
 		employeeIdLst: Array<string>;
 
@@ -308,12 +309,21 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					overTimeMidNight = vm.overTime()[i].applicationTime();
 				}
 			}
+			let reasonDissociation = {} as ReasonDivergence;
+			if(vm.selectedDivergenceReasonCode()){
+				reasonDissociation.reasonCode = vm.selectedDivergenceReasonCode();
+			}
+			if(vm.divergenceReasonText()){
+				reasonDissociation.reason = vm.divergenceReasonText();
+			}
+
 			appHolidayWork.workInformation = {} as WorkInformationCommand;
 			appHolidayWork.workInformation.workType = vm.workInfo().workType().code;
 			appHolidayWork.workInformation.workTime = vm.workInfo().workTime().code;
 
 			appHolidayWork.applicationTime = {} as ApplicationTime;
 			appHolidayWork.applicationTime.applicationTime = listApplicationTime;
+			appHolidayWork.applicationTime.reasonDissociation = [reasonDissociation];
 			appHolidayWork.applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
 			appHolidayWork.applicationTime.overTimeShiftNight.midNightHolidayTimes = listMidNightHolidayTimes;
 			appHolidayWork.applicationTime.overTimeShiftNight.overTimeMidNight = overTimeMidNight;
@@ -1429,7 +1439,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		flexOverTime: number; // フレックス超過時間
 		overTimeShiftNight: OverTimeShiftNight; // 就業時間外深夜時間
 		anyItem: Array<AnyItemValue>; // 任意項目
-		reasonDissociation: Array<any>; // 乖離理由
+		reasonDissociation: Array<ReasonDivergence>; // 乖離理由
+	}
+	interface ReasonDivergence{
+		reason: string;
+		reasonCode: string;
+		diviationTime: number;
 	}
 	interface AnyItemValue {
 		itemNo: number;

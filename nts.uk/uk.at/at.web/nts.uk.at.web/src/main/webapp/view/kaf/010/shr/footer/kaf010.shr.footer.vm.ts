@@ -30,6 +30,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 			<textarea style="height: 80px;" id="kaf000-a-component5-textReason"
 				data-bind="ntsMultilineEditor: {
 							name: $i18n('KAF010_93'),
+							value: $parent.divergenceReasonText,
 							constraint: 'DivergenceReasonContent',
 							option: {
 								resizeable: false,
