@@ -133,7 +133,7 @@ module nts.uk.at.kal011.a {
         triggerError(checkCond: CheckCondition) {
             const vm = this;
             checkCond.isChecked.subscribe((value: boolean) => {
-                if (value){
+                if (value) {
                     vm.$validate("#" + checkCond.index);
                     vm.$validate("#" + checkCond.index + " .ntsStartDatePicker");
                     vm.$validate("#" + checkCond.index + " .ntsEndDatePicker");
@@ -232,11 +232,11 @@ module nts.uk.at.kal011.a {
             const vm = this;
             vm.$window.storage('KAL011DModalData').done((data) => {
                 if (!data.isClose) {
-                    vm.$window.storage('KAL011BModalData', data).done(() => {
+                    let dataStored = { 
+                        processId: data.processId 
+                    }
+                    vm.$window.storage('KAL011BModalData', dataStored).done(() => {
                         vm.$window.modal('/view/kal/011/b/index.xhtml')
-                            .then((result: any) => {
-                                $('#grid > *').attr("tabindex", "-1");
-                            })
                     });
                 }
             });

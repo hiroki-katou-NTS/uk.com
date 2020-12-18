@@ -71,16 +71,14 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
                 new AlarmListExtractInfoWorkplace(
                         x.getCheckConditionId(),
                         EnumAdaptor.valueOf(x.getWorkplaceCategory(), WorkplaceCategory.class),
-                        x.getExtractResults().stream().map(y ->
-                                new ExtractResult(
-                                        y.getAlarmValueMessage(),
-                                        y.getStartDate(),
-                                        y.getEndDate(),
-                                        y.getAlarmItemName(),
-                                        y.getCheckTargetValue(),
-                                        y.getComment(),
-                                        y.getWorkplaceId()))
-                                .collect(Collectors.toList())
-                )).collect(Collectors.toList());
+                        new ExtractResult(
+                                x.getExtractResult().getAlarmValueMessage(),
+                                x.getExtractResult().getStartDate(),
+                                x.getExtractResult().getEndDate(),
+                                x.getExtractResult().getAlarmItemName(),
+                                x.getExtractResult().getCheckTargetValue(),
+                                x.getExtractResult().getComment(),
+                                x.getExtractResult().getWorkplaceId())))
+                .collect(Collectors.toList());
     }
 }

@@ -115,9 +115,10 @@ public class FixedExtractionCondCheckService {
             }
 
             // アラームリスト抽出情報（職場）を作成
-            AlarmListExtractionInfoWorkplaceDto alarmListResult = new AlarmListExtractionInfoWorkplaceDto(condition.getErrorAlarmWorkplaceId(),
-                    5, extractResults);
-            alarmListResults.add(alarmListResult);
+            List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->
+                    new AlarmListExtractionInfoWorkplaceDto(condition.getErrorAlarmWorkplaceId(), 5, x))
+                    .collect(Collectors.toList());
+            alarmListResults.addAll(results);
         }
 
         return alarmListResults;

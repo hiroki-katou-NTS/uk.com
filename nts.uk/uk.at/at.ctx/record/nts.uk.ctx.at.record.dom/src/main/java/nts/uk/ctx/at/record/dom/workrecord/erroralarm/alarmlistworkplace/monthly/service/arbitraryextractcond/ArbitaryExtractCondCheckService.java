@@ -80,7 +80,10 @@ public class ArbitaryExtractCondCheckService {
             }
 
             // アラームリスト抽出情報（職場）を作成
-            alarmListResults.add(new AlarmListExtractionInfoWorkplaceDto(cond.getErrorAlarmWorkplaceId(), 4, extractResults));
+            List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->
+                    new AlarmListExtractionInfoWorkplaceDto(cond.getErrorAlarmWorkplaceId(), 4, x))
+                    .collect(Collectors.toList());
+            alarmListResults.addAll(results);
         }
 
         // List＜アラームリスト抽出情報（職場）＞を返す

@@ -59,7 +59,7 @@ public class AggregateProcessService {
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public void process(String cid, String alarmPatternCode, List<String> workplaceIds,
-                        List<PeriodByAlarmCategory> periods, String processStatusId,
+                        List<PeriodByAlarmCategory> periods, String processId,
                         Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
         GeneralDate baseDate = GeneralDate.today();
         // [No.560]職場IDから職場の情報をすべて取得する
@@ -140,28 +140,18 @@ public class AggregateProcessService {
 
             // List＜アラーム抽出結果（職場別）＞に返す値を追加
             extractInfos.forEach(x -> {
-                x.setProcessingId(processStatusId);
+                x.setProcessId(processId);
                 x.setCategoryName(TextResource.localize(x.getCategory().nameId));
-                x.getExtractResults().forEach(c -> {
-                    if (!c.getWorkplaceId().isPresent()) return;
-                    if (wpInfoMap.containsKey(c.getWorkplaceId().get())) {
-                        WorkPlaceInforExport wpInfo = wpInfoMap.get(c.getWorkplaceId().get());
-                        c.setWorkplaceInfo(wpInfo.getWorkplaceCode(), wpInfo.getWorkplaceName(), wpInfo.getHierarchyCode());
-                    }
-                });
+
+                if (!x.getExtractResult().getWorkplaceId().isPresent()) return;
+                if (wpInfoMap.containsKey(x.getExtractResult().getWorkplaceId().get())) {
+                    WorkPlaceInforExport wpInfo = wpInfoMap.get(x.getExtractResult().getWorkplaceId().get());
+                    x.getExtractResult().setWorkplaceInfo(wpInfo.getWorkplaceCode(), wpInfo.getWorkplaceName(), wpInfo.getHierarchyCode());
+                }
+
             });
             alarmListExtractInfoWorkplaceRepo.addAll(extractInfos);
             counter.accept(1);
         }
-    }
-
-    private YearMonth getYm(WorkplaceCategory category, List<PeriodByAlarmCategory> periods) {
-        Optional<PeriodByAlarmCategory> period = periods.stream()
-                .filter(x -> x.getCategory() == category.value).findFirst();
-
-        if (!period.isPresent()) return null;
-
-        GeneralDate start = period.get().startDate;
-        return YearMonth.of(start.year(), start.month());
     }
 }

@@ -11,11 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AlarmWorkPlaceExportData {
-	
-	/** Data export */
-	private List<AlarmListExtractResultWorkplaceData> data;
 
-	private String alarmCode;
+	private String processId;
 
-	private String alarmName;
+	private String alarmPatternCode;
+
+	private String alarmPatternName;
 }

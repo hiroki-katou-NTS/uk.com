@@ -5,8 +5,6 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 
-import java.util.List;
-
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.就業機能.アラーム_職場別.抽出結果
  * アラームリスト抽出情報（職場）
@@ -15,6 +13,13 @@ import java.util.List;
  */
 @Getter
 public class AlarmListExtractInfoWorkplace extends AggregateRoot {
+
+    /**
+     * Id
+     */
+    @Setter
+    private String recordId;
+
     /**
      * チェック条件ID
      */
@@ -24,7 +29,7 @@ public class AlarmListExtractInfoWorkplace extends AggregateRoot {
      * 処理ID
      */
     @Setter
-    private String processingId;
+    private String processId;
 
     /**
      * 区分
@@ -40,13 +45,11 @@ public class AlarmListExtractInfoWorkplace extends AggregateRoot {
     /**
      * 抽出結果
      */
-    private List<ExtractResult> extractResults;
+    private ExtractResult extractResult;
 
-    public AlarmListExtractInfoWorkplace(String checkConditionId, WorkplaceCategory category, List<ExtractResult> extractResults) {
+    public AlarmListExtractInfoWorkplace(String checkConditionId, WorkplaceCategory category, ExtractResult extractResult) {
         this.checkConditionId = checkConditionId;
         this.category = category;
-        this.extractResults = extractResults;
+        this.extractResult = extractResult;
     }
-
-
 }

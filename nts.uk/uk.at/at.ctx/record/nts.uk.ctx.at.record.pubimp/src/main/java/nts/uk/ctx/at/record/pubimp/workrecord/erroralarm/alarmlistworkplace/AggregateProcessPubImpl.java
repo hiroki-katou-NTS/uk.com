@@ -74,8 +74,8 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
 
     @Override
     public List<AlarmListExtractionInfoWorkplaceExport> processAppApproval(DatePeriod period,
-                                                                List<String> fixedExtractCondIds,
-                                                                List<String> workplaceIds) {
+                                                                           List<String> fixedExtractCondIds,
+                                                                           List<String> workplaceIds) {
         return convert(aggregateProcessAppApprovalService.process(period, fixedExtractCondIds, workplaceIds));
     }
 
@@ -83,16 +83,15 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
         return data.stream().map(x ->
                 new AlarmListExtractionInfoWorkplaceExport(
                         x.getCheckConditionId(), x.getWorkplaceCategory(),
-                        x.getExtractResults().stream().map(y ->
-                                new ExtractResultExport(
-                                        y.getAlarmValueMessage().v(),
-                                        y.getAlarmValueDate().getStartDate(),
-                                        y.getAlarmValueDate().getEndDate().isPresent() ? y.getAlarmValueDate().getEndDate().get() : null,
-                                        y.getAlarmItemName(),
-                                        y.getCheckTargetValue().orElse(null),
-                                        y.getComment().isPresent() ? y.getComment().get().v() : null,
-                                        y.getWorkplaceId()
-                                )).collect(Collectors.toList())))
+                        new ExtractResultExport(
+                                x.getExtractResult().getAlarmValueMessage().v(),
+                                x.getExtractResult().getAlarmValueDate().getStartDate(),
+                                x.getExtractResult().getAlarmValueDate().getEndDate().isPresent() ? x.getExtractResult().getAlarmValueDate().getEndDate().get() : null,
+                                x.getExtractResult().getAlarmItemName(),
+                                x.getExtractResult().getCheckTargetValue().orElse(null),
+                                x.getExtractResult().getComment().isPresent() ? x.getExtractResult().getComment().get().v() : null,
+                                x.getExtractResult().getWorkplaceId()
+                        )))
                 .collect(Collectors.toList());
     }
 }

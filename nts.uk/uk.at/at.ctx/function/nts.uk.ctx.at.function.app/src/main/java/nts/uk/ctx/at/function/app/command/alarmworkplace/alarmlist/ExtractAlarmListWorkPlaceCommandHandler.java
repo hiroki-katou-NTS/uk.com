@@ -60,7 +60,7 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
         dataSetter.setData("ctgCount", counter.get());
         // 集計処理
         aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds(),
-                convertPeriods(command.getCategoryPeriods()), command.getProcessStatusId(),
+                convertPeriods(command.getCategoryPeriods()), command.getProcessId(),
                 finished -> {
                     counter.set(counter.get() + finished);
                     dataSetter.updateData("ctgCount", counter.get());
@@ -111,7 +111,7 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
     private Boolean shouldStop(String cid, CommandHandlerContext<ExtractAlarmListWorkPlaceCommand> context,
                                AsyncCommandHandlerContext<ExtractAlarmListWorkPlaceCommand> asyncContext) {
         Optional<AlarmListExtractProcessStatusWorkplace> processStatus = this.alarmListExtractProcessStatusWorkplaceRepo
-                .getBy(cid, context.getCommand().getProcessStatusId());
+                .getBy(cid, context.getCommand().getProcessId());
         if (processStatus.isPresent()
                 && processStatus.get().getStatus() == ExtractState.INTERRUPTION) {
             asyncContext.finishedAsCancelled();

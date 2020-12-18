@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.スケジュール／日次.アルゴリズム.固定抽出条件のアラーム値を作成する
@@ -82,7 +83,10 @@ public class FixedExtractCondAlarmValueService {
             }
 
             // アラームリスト抽出情報（職場）を作成
-            alarmListResults.add(new AlarmListExtractionInfoWorkplaceDto(fixedCond.getErrorAlarmWorkplaceId(), 3, extractResults));
+            List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->
+                    new AlarmListExtractionInfoWorkplaceDto(fixedCond.getErrorAlarmWorkplaceId(), 3, x))
+                    .collect(Collectors.toList());
+            alarmListResults.addAll(results);
         }
         return alarmListResults;
     }

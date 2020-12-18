@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック(基本).アルゴリズム.マスタチェック(基本)の集計処理
@@ -123,9 +124,10 @@ public class AggregateProcessMasterCheckBasicService {
             }
 
             // アラームリスト抽出情報（職場）を作成してList＜アラームリスト抽出情報（職場）＞を追加
-            AlarmListExtractionInfoWorkplaceDto alarmListResult = new AlarmListExtractionInfoWorkplaceDto(basic.getId(),
-                    0, extractResults);
-            alarmListResults.add(alarmListResult);
+            List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->
+                    new AlarmListExtractionInfoWorkplaceDto(basic.getId(), 0, x))
+                    .collect(Collectors.toList());
+            alarmListResults.addAll(results);
         }
 
         // List＜アラームリスト抽出情報（職場）＞を返す。

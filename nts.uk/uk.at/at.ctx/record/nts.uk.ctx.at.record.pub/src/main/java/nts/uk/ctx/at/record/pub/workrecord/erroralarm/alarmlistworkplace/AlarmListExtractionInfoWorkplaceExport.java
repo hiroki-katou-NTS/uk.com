@@ -25,6 +25,6 @@ public class AlarmListExtractionInfoWorkplaceExport {
     /**
      * 抽出結果
      */
-    private List<ExtractResultExport> extractResults;
+    private ExtractResultExport extractResult;
 
 }

@@ -15,18 +15,15 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--B1_1-->
-            <button tabindex="1" data-bind="click: exportExcel,enable :flgActive ">#{i18n.getText('KAL011_10')}</button>
+            <button tabindex="1" data-bind="click: exportExcel, enable:flgActive, text: $vm.$i18n('KAL011_10') "/>
             <!--B1_2-->
-            <button tabindex="2" data-bind="click: sendEmail, enable :flgActive">#{i18n.getText('KAL011_11')}</button>
+            <button tabindex="2" data-bind="click: sendEmail, enable:flgActive, text: $vm.$i18n('KAL011_11') "/>
             <!--B1_3-->
-            <button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAL011_12')}</button>
+            <button tabindex="3" data-bind="click: closeDialog, text: $vm.$i18n('KAL011_12')"/>
         </div>
         <div id="contents-area">
-            <div data-bind="if: eralRecord() > 1000">
-                <H3 data-bind="text: eralRecordText"></H3>
-            </div>
             <!--B3_1-->
-            <table tabindex="4" id="grid"></table>
+            <table id="grid"></table>
         </div>
     </ui:define>
 </ui:composition>

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
@@ -12,8 +11,8 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.Single
 import nts.uk.ctx.at.function.dom.alarmworkplace.*;
 import nts.uk.ctx.at.function.dom.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
+import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListExtractResultWorkplaceData;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
-import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
@@ -249,8 +248,8 @@ public class ExtractAlarmListWorkPlaceFinder {
         return null;
     }
 
-    public List<AlarmListExtractResultWorkplaceDto> getExtractResult(String processId) {
+    public List<AlarmListExtractResultWorkplaceData> getExtractResult(String processId) {
         // 取得した職場情報一覧から「アラーム抽出結果（職場別）」にデータをマッピングする
-        return AlarmListExtractResultWorkplaceDto.fromDomains(alarmListExtractInfoWorkplaceRepo.getById(processId));
+        return AlarmListExtractResultWorkplaceData.fromDomains(alarmListExtractInfoWorkplaceRepo.getById(processId));
     }
 }

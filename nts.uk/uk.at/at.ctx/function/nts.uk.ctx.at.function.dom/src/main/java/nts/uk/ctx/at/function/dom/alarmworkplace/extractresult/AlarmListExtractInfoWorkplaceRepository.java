@@ -6,5 +6,5 @@ import java.util.Optional;
 public interface AlarmListExtractInfoWorkplaceRepository {
 
     void addAll(List<AlarmListExtractInfoWorkplace> domains);
-    List<AlarmListExtractInfoWorkplace> getById(String processingId);
+    List<AlarmListExtractInfoWorkplace> getById(String processId);
 }

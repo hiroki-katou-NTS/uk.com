@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.app.export.alarmworkplace.alarmlist.AlarmWorkPlace
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.CheckConditionDto;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceFinder;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist.InitActiveAlarmListDto;
-import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.dto.AlarmListExtractResultWorkplaceDto;
+import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListExtractResultWorkplaceData;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -42,7 +42,6 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     private SendEmailAlarmListWorkPlaceCommandHandler sendEmailCommandHandler;
     @Inject
     private UpdateAlarmListExtractProcessStatusWorkplaceCommandHandler updateAlarmListExtractProcessStatusWorkplaceCommandHandler;
-
     @Inject
     private AlarmWorkPlaceExportService alarmWorkPlaceExportService;
 
@@ -77,20 +76,21 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     }
 
     @POST
-    @Path("extract/get-result/{processId}")
-    public List<AlarmListExtractResultWorkplaceDto> extractGetResult(String processId) {
+    @Path("get-alarm-list/{processId}")
+    public List<AlarmListExtractResultWorkplaceData> extractGetResult(@PathParam("processId") String processId) {
         return extractAlarmListWorkPlaceFinder.getExtractResult(processId);
+    }
+
+    @POST
+    @Path("export-alarm-list")
+    public ExportServiceResult generate(AlarmWorkPlaceExportData data) {
+        return this.alarmWorkPlaceExportService.start(data);
     }
 
     @POST
     @Path("send-email")
     public JavaTypeResult<String> sendEmailStarting(SendEmailAlarmListWorkPlaceCommand command) {
-        return new JavaTypeResult<String>(sendEmailCommandHandler.handle(command));
+        return new JavaTypeResult<>(sendEmailCommandHandler.handle(command));
     }
 
-    @POST
-    @Path("export-alarm-data")
-    public ExportServiceResult generate(AlarmWorkPlaceExportData data) {
-        return this.alarmWorkPlaceExportService.start(data);
-    }
 }

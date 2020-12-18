@@ -67,7 +67,10 @@ public class FixedExtractCondCheckService {
             if (CollectionUtil.isEmpty(extractResults)) continue;
 
             // 「アラームリスト抽出情報（職場）」の値をセット
-            alarmListResults.add(new AlarmListExtractionInfoWorkplaceDto(fixCond.getErrorAlarmWorkplaceId(), 4, extractResults));
+            List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->
+                    new AlarmListExtractionInfoWorkplaceDto(fixCond.getErrorAlarmWorkplaceId(), 4, x))
+                    .collect(Collectors.toList());
+            alarmListResults.addAll(results);
         }
 
         // List＜アラームリスト抽出情報（職場）＞を返す

@@ -25,24 +25,19 @@ public class JpaAlarmListExtractInfoWorkplaceRepository extends JpaRepository im
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE a.processingId = :processingId ");
+        builderString.append(" WHERE a.processId = :processId ");
         FIND_BY_ID = builderString.toString();
     }
 
     @Override
     public void addAll(List<AlarmListExtractInfoWorkplace> domains) {
-        List<KfndtAlarmExtractWpl> lstEntity = new ArrayList<>();
-        domains.forEach(x ->
-                lstEntity.addAll(KfndtAlarmExtractWpl.toEntity(x))
-        );
-
-        commandProxy().insertAll(lstEntity);
+        commandProxy().insertAll(KfndtAlarmExtractWpl.toEntity(domains));
     }
 
     @Override
-    public List<AlarmListExtractInfoWorkplace> getById(String processingId) {
+    public List<AlarmListExtractInfoWorkplace> getById(String processId) {
         List<KfndtAlarmExtractWpl> result = this.queryProxy().query(FIND_BY_ID, KfndtAlarmExtractWpl.class)
-                .setParameter("processingId", processingId)
+                .setParameter("processId", processId)
                 .getList();
         return KfndtAlarmExtractWpl.toDomain(result);
     }

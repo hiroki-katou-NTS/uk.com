@@ -22,55 +22,57 @@ import java.util.Locale;
 @Stateless
 public class AlarmListWorkPlaceExportGenerator extends AsposeCellsReportGenerator implements AlarmListWorkPlaceGenerator {
 
-	private static final String TEMPLATE_FILE = "report/KAL011-アラームリスト(職場別).xlsx";
-	private static final String COMPANY_ERROR = "Company is not found!!!!";
-	
-	@Inject
-	private CompanyAdapter company;
-	
-	@Inject
-	private AlarmPatternSettingRepository alarmPatternSettingRepo;
+    private static final String TEMPLATE_FILE = "report/KAL011-アラームリスト(職場別).xlsx";
+    private static final String COMPANY_ERROR = "Company is not found!!!!";
 
-	@Override
-	public void generateExcelScreen(FileGeneratorContext generatorContext, List<AlarmListExtractResultWorkplaceData> dataSource, String alarmCode, String alarmName) {
-		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
-			setHeaderAndHeaderColumn(reportContext,alarmCode,alarmName);
-			// set data source named "item"
-			reportContext.setDataSource("item", dataSource);
-			// process data binginds in template
-			reportContext.processDesigner();
-			// save as Excel file
-			GeneralDateTime dateNow = GeneralDateTime.now();
-			String dateTime = dateNow.toString("yyyyMMddHHmmss");
-			String fileName = "AlarmList_" + dateTime + ".xlsx";
-			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
-			reportContext.saveAsExcel(outputStream);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Inject
+    private CompanyAdapter company;
 
-	private void setHeaderAndHeaderColumn(AsposeCellsReportContext reportContext,String alarmCode,String alarmName) {
+    @Inject
+    private AlarmPatternSettingRepository alarmPatternSettingRepo;
 
-		String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
-			.getCompanyName();
+    @Override
+    public void generateExcelScreen(FileGeneratorContext generatorContext,
+                                    List<AlarmListExtractResultWorkplaceData> dataSource,
+                                    String alarmPatternCode, String alarmPatternName) {
+        try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
+            setHeaderAndHeaderColumn(reportContext, alarmPatternCode, alarmPatternName);
+            // set data source named "item"
+            reportContext.setDataSource("item", dataSource);
+            // process data binginds in template
+            reportContext.processDesigner();
+            // save as Excel file
+            GeneralDateTime dateNow = GeneralDateTime.now();
+            String dateTime = dateNow.toString("yyyyMMddHHmmss");
+            String fileName = "AlarmList_" + dateTime + ".xlsx";
+            OutputStream outputStream = this.createNewFile(generatorContext, fileName);
+            reportContext.saveAsExcel(outputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0, "&9&\"MS ゴシック\"" + companyName);
-		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KAL011_35"));
-		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(2,
-			"&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n"+TextResource.localize("KAL011_36")+" &P");
-		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
-		cell.get(0, 0).setValue(TextResource.localize("KAL011_45",alarmCode,alarmName));
-		cell.get(1, 0).setValue(TextResource.localize("KAL011_37"));
-		cell.get(1, 1).setValue(TextResource.localize("KAL011_38"));
-		cell.get(1, 2).setValue(TextResource.localize("KAL011_39"));
-		cell.get(1, 3).setValue(TextResource.localize("KAL011_40"));
-		cell.get(1, 4).setValue(TextResource.localize("KAL011_41"));
-		cell.get(1, 5).setValue(TextResource.localize("KAL011_42"));
-		cell.get(1, 6).setValue(TextResource.localize("KAL011_43"));
-		cell.get(1, 7).setValue(TextResource.localize("KAL011_44"));
+    private void setHeaderAndHeaderColumn(AsposeCellsReportContext reportContext, String alarmPatternCode, String alarmPatternName) {
 
-	}
+        String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
+                .getCompanyName();
+
+        reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0, "&9&\"MS ゴシック\"" + companyName);
+        reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KAL011_35"));
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
+        reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(2,
+                "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" + TextResource.localize("KAL011_36") + " &P");
+        val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
+        cell.get(0, 0).setValue(TextResource.localize("KAL011_45", alarmPatternCode, alarmPatternName));
+        cell.get(1, 0).setValue(TextResource.localize("KAL011_37"));
+        cell.get(1, 1).setValue(TextResource.localize("KAL011_38"));
+        cell.get(1, 2).setValue(TextResource.localize("KAL011_39"));
+        cell.get(1, 3).setValue(TextResource.localize("KAL011_40"));
+        cell.get(1, 4).setValue(TextResource.localize("KAL011_41"));
+        cell.get(1, 5).setValue(TextResource.localize("KAL011_42"));
+        cell.get(1, 6).setValue(TextResource.localize("KAL011_43"));
+        cell.get(1, 7).setValue(TextResource.localize("KAL011_44"));
+
+    }
 
 }

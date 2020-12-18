@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック（日別）.アルゴリズム.マスタチェック(日別)の集計処理.チェック処理
@@ -140,9 +141,10 @@ public class DailyCheckService {
             }
 
             // 「アラームリスト抽出情報（職場）」を作成してList＜アラームリスト抽出情報（職場）＞に追加
-            AlarmListExtractionInfoWorkplaceDto alarmListResult = new AlarmListExtractionInfoWorkplaceDto(
-                    fixedExtractDayCon.getErrorAlarmWorkplaceId(), 2, extractResults);
-            alarmListResults.add(alarmListResult);
+            List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->
+                    new AlarmListExtractionInfoWorkplaceDto(fixedExtractDayCon.getErrorAlarmWorkplaceId(), 2, x))
+                    .collect(Collectors.toList());
+            alarmListResults.addAll(results);
         }
 
         // List＜アラーム抽出結果（職場別）＞を返す

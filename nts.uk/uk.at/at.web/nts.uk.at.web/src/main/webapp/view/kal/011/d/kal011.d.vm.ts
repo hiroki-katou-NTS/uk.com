@@ -22,8 +22,6 @@ module nts.uk.at.kal011.d {
         alarmPatternCode: string;
         workplaceIds: Array<string>;
         categoryPeriods: Array<any>;
-        processStatusId: string;
-
         processId: string;
         dialogMode: KnockoutObservable<number> = ko.observable(ExtractState.PROCESSING);
         // interval 1000ms request to server
@@ -65,13 +63,13 @@ module nts.uk.at.kal011.d {
             const vm = this;
             let dfd = $.Deferred();
 
-            vm.$ajax(API.extractStart).done((processStatusId: string) => {
-                vm.processStatusId = processStatusId;
+            vm.$ajax(API.extractStart).done((processId: string) => {
+                vm.processId = processId;
                 let param: any = {
                     workplaceIds: vm.workplaceIds,
                     alarmPatternCode: vm.alarmPatternCode,
                     categoryPeriods: vm.categoryPeriods,
-                    processStatusId: vm.processStatusId
+                    processId: vm.processId
                 }
                 // 抽出処理が実行中である場合
                 vm.setControlStatus(ScreenMode.IN_PROGRESS);
@@ -146,7 +144,6 @@ module nts.uk.at.kal011.d {
         checkResult() {
             const vm = this;
             let modalData = {
-                selectedCode: vm.alarmPatternCode,
                 processId: vm.processId,
                 isClose: false
             }
