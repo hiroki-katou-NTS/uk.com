@@ -52,7 +52,6 @@ public class OptionalItem extends AggregateRoot {
 	/** The calculation atr. */
 	// 計算区分
 	private CalcUsageAtr calcAtr;
-
 	
 	/** The emp condition atr. */
 	// 雇用条件区分
