@@ -1744,13 +1744,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							self.addChildChartWithTypes(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, null, 1000)
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, 1000));
 							indexLeft = ++indexLeft;
-							/*lstTime = _.filter(lstTime, x => { return (x.start == timeChartOver.startTime && x.end < timeChartOver.endTime) || (x.start < timeChartOver.startTime && x.end == timeChartOver.endTime) })
-							if (_.isEmpty(lstTime)) {
-								lstTime.push({
-									start: timeChartOver.startTime,
-									end: timeChartOver.endTime
-								})
-							}*/
 						}
 
 						if ((timeMinus2.length > 0 && timeMinus2[0].startTime != null && timeMinus2[0].endTime != null) &&
@@ -1761,13 +1754,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							self.addChildChartWithTypes(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, null, 1000)
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, 1000));
 							indexRight = ++indexRight;
-							/*lstTimeFilter = _.filter(lstTime, x => { return (x.start == timeChartOver.startTime && x.end < timeChartOver.endTime) || (x.start < timeChartOver.startTime && x.end == timeChartOver.endTime) })
-							if (_.isEmpty(lstTimeFilter)) {
-								lstTime.push({
-									start: timeChartOver.startTime,
-									end: timeChartOver.endTime
-								})
-							}*/
 						}
 					}
 				};
@@ -1781,6 +1767,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 
+				// Add BREAK-TIME
 				if (breakTime.length > 0) {
 					for (let o = 0; o < breakTime.length; o++) {
 						let y = breakTime[o];
@@ -1810,8 +1797,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								dropFinished: (b: any, e: any) => {
 									let datafilterBrk = _.filter(midData, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
 										dataMidBrk = datafilterBrk[0], timeChartBrk2 : any = null, checkChange = 0;
-									breakTime = dataMidBrk.breaktime;
-									for (let l = 0; l < breakTime.length; l++) {
+								/*	for (let l = 0; l < breakTime.length; l++) {
 										timeChartBrk2 = self.convertTimeToChart(_.isNil(y.startTime) ? y.start : y.startTime, _.isNil(y.endTime) ? y.end : y.endTime);
 										if (b === timeChartBrk2.startTime && e === timeChartBrk2.endTime) {
 											checkChange = 1;
@@ -1821,7 +1807,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", breakTime == null ? "0:00" : breakTime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
 									} else {
 										$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", breakTime == null ? "0:00" : breakTime);
-									}
+									}*/
+									$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime + " ");
 								}
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, 0, 9999, 0, 9999, 1001));
@@ -2111,39 +2098,88 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			
 			ruler.addType({
-				name: "Fixed", color: "#ccccff", lineWidth: 30, canSlide: false, unitToPx: self.operationUnit(), fixed: fixed
+				name: "Fixed", 
+				color: "#ccccff", 
+				lineWidth: 30, 
+				canSlide: false, 
+				unitToPx: self.operationUnit(), 
+				fixed: fixed
 			});
 
 			ruler.addType({
-				name: "Changeable", color: "#ffc000", lineWidth: 30, canSlide: true, unitToPx: self.operationUnit(), fixed: fixed
+				name: "Changeable", 
+				color: "#ffc000", 
+				lineWidth: 30, 
+				canSlide: true, 
+				unitToPx: self.operationUnit(), 
+				fixed: fixed
 			});
 
 			ruler.addType({
-				name: "Flex", color: "#ccccff", lineWidth: 30, canSlide: true, unitToPx: self.operationUnit(), fixed: fixed
+				name: "Flex", 
+				color: "#ccccff", 
+				lineWidth: 30, 
+				canSlide: true, 
+				unitToPx: self.operationUnit(), 
+				fixed: fixed
 			});
 
 			ruler.addType({
-				name: "BreakTime", followParent: true, color: "#ff9999", lineWidth: 30, canSlide: self.checkDisByDate == false ? false : true,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, roundEdge: true, fixed: "Both"
+				name: "BreakTime", 
+				followParent: true, 
+				color: "#ff9999", 
+				lineWidth: 30, 
+				canSlide: self.checkDisByDate == false ? false : true,
+				unitToPx: self.operationUnit(), 
+				pin: true, 
+				rollup: true, 
+				roundEdge: true, 
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "OT", followParent: true, color: "#ffff00", lineWidth: 30, canSlide: false,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, fixed: "Both"
+				name: "OT", 
+				followParent: true, 
+				color: "#ffff00", 
+				lineWidth: 30, 
+				canSlide: false,
+				unitToPx: self.operationUnit(), 
+				pin: true, 
+				rollup: true, 
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "HolidayTime", followParent: true, color: "#c4bd97", lineWidth: 30, canSlide: false,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, roundEdge: false, fixed: "Both"
+				name: "HolidayTime", 
+				followParent: true, color: "#c4bd97", 
+				lineWidth: 30, 
+				canSlide: false,
+				unitToPx: self.operationUnit(), 
+				pin: true, 
+				rollup: true, 
+				roundEdge: false, 
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "ShortTime", followParent: true, color: "#6fa527", lineWidth: 30, canSlide: false,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, roundEdge: false, fixed: "Both"
+				name: "ShortTime", 
+				followParent: true, 
+				color: "#6fa527", 
+				lineWidth: 30, 
+				canSlide: false,
+				unitToPx: self.operationUnit(), 
+				pin: true, 
+				rollup: true, 
+				roundEdge: false, 
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "CoreTime", color: "#00ffcc", lineWidth: 30, unitToPx: self.operationUnit(), fixed: "Both"
+				name: "CoreTime", 
+				color: "#00ffcc", 
+				lineWidth: 30, 
+				unitToPx: self.operationUnit(), 
+				fixed: "Both"
 			});
 		}
 
