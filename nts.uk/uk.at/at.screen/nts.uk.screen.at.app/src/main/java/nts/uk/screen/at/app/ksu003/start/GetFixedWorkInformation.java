@@ -266,11 +266,12 @@ public class GetFixedWorkInformation {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
-				Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTypeCd, workTimeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
+//				Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTypeCd, workTimeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

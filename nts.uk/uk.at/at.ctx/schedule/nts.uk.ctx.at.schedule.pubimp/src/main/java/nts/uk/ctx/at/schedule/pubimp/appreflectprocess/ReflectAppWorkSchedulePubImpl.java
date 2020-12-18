@@ -132,10 +132,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
