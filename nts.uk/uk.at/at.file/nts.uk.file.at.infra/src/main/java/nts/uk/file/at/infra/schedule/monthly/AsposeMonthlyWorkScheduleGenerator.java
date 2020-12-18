@@ -614,10 +614,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Map<String, WorkplaceReportData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceReportData();
 		WkpHistImport workplaceImport = lstWorkplaceHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
 		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
-			return !x.getLstWkpHierarchy().isEmpty()
-					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
-					 : false;
-			}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+			List<String> workplaceIds = new ArrayList<>();
+			if (!x.getLstWkpHierarchy().isEmpty()) {
+				workplaceIds.addAll(x.getLstWkpHierarchy().stream().map(t -> t.getWorkplaceId()).collect(Collectors.toList()));
+			}
+			return workplaceIds.contains(workplaceImport.getWorkplaceId());
+		}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
 		HierarchyCode hierarchyCode = code != null ? code.getHierarchyCode() : new HierarchyCode("");
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			return mapWorkplaceInfo.get(hierarchyCode.v());
@@ -648,10 +650,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Map<String, MonthlyWorkplaceData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceData();
 		WkpHistImport workplaceImport = lstWkpHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
 		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
-			return !x.getLstWkpHierarchy().isEmpty()
-					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
-					 : false;
-			}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+			List<String> workplaceIds = new ArrayList<>();
+			if (!x.getLstWkpHierarchy().isEmpty()) {
+				workplaceIds.addAll(x.getLstWkpHierarchy().stream().map(t -> t.getWorkplaceId()).collect(Collectors.toList()));
+			}
+			return workplaceIds.contains(workplaceImport.getWorkplaceId());
+		}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
 		HierarchyCode hierarchyCode = code != null ? code.getHierarchyCode() : new HierarchyCode("");
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			return mapWorkplaceInfo.get(hierarchyCode.v());
