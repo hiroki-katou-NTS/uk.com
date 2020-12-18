@@ -134,8 +134,9 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		//01-02_時間外労働を取得	huytodo common change param?
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
-		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
+		//huytodo slow response rqlist
+//		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
+//		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
 		
 		//1-1.休日出勤申請（新規）起動時初期データを取得する
 		String applicantEmployeeId = empList.isPresent() ? empList.get().get(0) : "";
@@ -395,9 +396,10 @@ public class HolidayServiceImpl implements HolidayService {
 //		hdWorkDispInfoWithDateOutput.setActualMonthlyAgreeTimeStatus(Optional.ofNullable(agreementTimeStatusOfMonthly));
 		
 		//01-02_時間外労働を取得	huytodo common change param?
-		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
-		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
+		////huytodo slow response rqlist
+//		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
+//		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId, ApplicationType.HOLIDAY_WORK_APPLICATION);
+//		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
 		
 		//	取得した「休日出勤申請」．「申請」．事前事後区分をチェックする
 		if(application.getPrePostAtr().value == PrePostInitAtr.POSTERIOR.value) {
