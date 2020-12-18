@@ -107,7 +107,7 @@ public class AllPetitionsRequest extends NRLRequest<Frame> {
 		for (int i = 0; i < q; i++) {
 			Record record = exchange.getRecord(i);
 
-			Optional<AtomTask> result = adapter.converData(Integer.parseInt(nrlNo.trim()), "000000000000",
+			Optional<AtomTask> result = adapter.converData(nrlNo.trim(), "000000000000",
 					createAppReception(record, type));
 			if (result.isPresent())
 				result.get().run();

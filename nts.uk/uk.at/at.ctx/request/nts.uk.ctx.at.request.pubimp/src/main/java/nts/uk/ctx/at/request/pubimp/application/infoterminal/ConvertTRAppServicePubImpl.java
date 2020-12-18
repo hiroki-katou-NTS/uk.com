@@ -97,7 +97,7 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 	private EmployeeManageRQAdapter employeeManageRQAdapter;
 
 	@Override
-	public <T extends ApplicationReceptionDataExport> Optional<AtomTask> converData(Integer empInfoTerCode,
+	public <T extends ApplicationReceptionDataExport> Optional<AtomTask> converData(String empInfoTerCode,
 			String contractCode, T recept) {
 		RequireImpl impl = new RequireImpl(workTypeRepository, workingConditionItemRepository, applicationRepository,
 				appRecordImageRepository, appWorkChangeRepository, arrivedLateLeaveEarlyRepository, commonAlgorithm,
@@ -188,7 +188,7 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		private final EmployeeManageRQAdapter employeeManageRQAdapter;
 
 		@Override
-		public Optional<EmpInfoTerminal> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode) {
+		public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
 			return empInfoTerminalAdapter.getEmpInfoTerminal(empInfoTerCode, contractCode);
 		}
 
@@ -214,7 +214,7 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(Integer empInfoTerCode, String contractCode) {
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(String empInfoTerCode, String contractCode) {
 			return timeRecordReqSettingAdapter.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 

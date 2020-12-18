@@ -220,6 +220,15 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 			// List<KscdtSchAtdLvwTime> atdLvwTimes;
 			if (!oldData.get().atdLvwTimes.isEmpty()) {
+				String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+				if(newData.atdLvwTimes.isEmpty() || newData.wktmCd == null) {
+					oldData.get().atdLvwTimes.forEach(x -> {
+						this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
+						.setParameter("ymd", x.pk.ymd)
+						.setParameter("workNo", x.pk.workNo).executeUpdate();
+					});
+				}
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 					oldData.get().atdLvwTimes.forEach(x -> {
 						// Update data
@@ -237,15 +246,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						}
 						// Delete work no 2 when new data just have work no 1
 						if(workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() < 2 && x.pk.workNo == 2) {
-							String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
-									+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+							
 							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 									.setParameter("ymd", x.pk.ymd)
 									.setParameter("workNo", x.pk.workNo).executeUpdate();
 						}
 					});
 				}
-			} else {
+			} else if(!newData.atdLvwTimes.isEmpty() || newData.wktmCd != null){
 				// If old data is empty
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 							TimeLeavingWork leavingWork = workSchedule.getOptTimeLeaving().get()

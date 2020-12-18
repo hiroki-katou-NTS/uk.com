@@ -13,6 +13,7 @@ module nts.uk.at.view.kafsample.a.viewmodel {
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		isSendMail: KnockoutObservable<Boolean>;
+		time: KnockoutObservable<number> = ko.observable(1);
 
 		created(params: AppInitParam) {
 			const vm = this;
@@ -34,113 +35,119 @@ module nts.uk.at.view.kafsample.a.viewmodel {
 				}
 			}
 			vm.isSendMail = ko.observable(false);
-
 			vm.$blockui("show");
+			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType())
-				.then((loadDataFlag: any) => {
-					if (loadDataFlag) {
-						let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-							command = { empLst, dateLst, appDispInfoStartupOutput };
-						return vm.$ajax(API.startNew, command);
+			.then((loadDataFlag: any) => {
+				if (loadDataFlag) {
+					let command = {};
+					// load setting đơn xin
+					return vm.$ajax(API.initAppNew, command);
+				}
+			}).then((successData: any) => {
+				if (successData) {
+					
+				}
+			}).fail((failData: any) => {
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(failData).then((result: any) => {
+					if(result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(failData);
 					}
-				}).then((successData: any) => {
-					if (successData) {
-						if (!_.isEmpty(params)) {
-							if (!_.isEmpty(params.baseDate)) {
-								
-							}
-						}
-					}
-				}).fail((failData: any) => {
-					console.log(failData);
-					if (failData.messageId === "Msg_43") {
-						vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-
-					} else {
-						vm.$dialog.error(failData);
-					}
-				}).always(() => {vm.$blockui("hide"); $('#kaf000-a-component4-singleDate').focus();});
-		}
-
-		mounted() {
-			const vm = this;
+				});
+			}).always(() => {
+				vm.$blockui("hide"); 
+				$('#kaf000-a-component4-singleDate').focus();
+			});
+			
+			vm.application.subscribe(app => {
+				// console.log('changeDateCustom');
+			});
 		}
 		
 		register() {
 			const vm = this;
-
 			vm.$blockui("show");
-			
+			// validate chung KAF000
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
-				.then(isValid => {
-					if (isValid) {
-						return true;
-					}
-				})
-				.then(result => {
-					if(result) {
-						return vm.$ajax(API.checkBeforeRegisterSample, ["Msg_234"]);
-					}
-				}).then(res => {
-//					if (res) {
-//						if (!_.isEmpty(res.holidayDateLst)) {
-//							holidayDateLst = res.holidayDateLst;
-//						}
-//
-//						return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), command);
-//					};
-				}).then((result) => {
-//					if(result) {
-//						return vm.registerData(command);
-//					};
-				})
-				.done(result => {
-					
-				})
-				.fail(err => {
-					let messageId, messageParams;
-					if(err.errors) {
-						let errors = err.errors;
-						messageId = errors[0].messageId;
-					} else {
-						messageId = err.messageId;
-						messageParams = [err.parameterIds.join('、')];
-					}
-					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
-				})
-				.always(() => vm.$blockui("hide"));
-		}
-
-		handleConfirmMessage(listMes: any, vmParam: any): any {
-			const vm = this;
-
-			return new Promise((resolve: any) => {
-				if(_.isEmpty(listMes)) {
-					resolve(true);
+			.then((isValid) => {
+				if (isValid) {
+					// validate riêng cho màn hình
+					return vm.$validate('.inputTime');
 				}
-				let msg = listMes[0].value;
-
-				return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-					.then((value) => {
-						if (value === 'yes') {
-							return vm.handleConfirmMessage(listMes, vmParam);
-						} else {
-							resolve(false);
-						}
-					})
-	        });
+			}).then((result) => {
+				// check trước khi đăng kí
+				if(result) {
+					return vm.$ajax('at', API.checkBeforeRegisterSample, ["Msg_26"]);
+				}
+			}).then((result) => {
+				if (result) {
+					// xử lý confirmMsg
+					return vm.handleConfirmMessage(result);
+				}
+			}).then((result) => {
+				if(result) {
+					// đăng kí 
+					return vm.$ajax('at', API.registerSample, ["Msg_15"]).then(() => {
+						return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+							return true;
+						});	
+					});
+				}
+			}).then((result) => {
+				if(result) {
+					// gửi mail sau khi đăng kí
+					// return vm.$ajax('at', API.sendMailAfterRegisterSample);
+					return true;
+				}	
+			}).fail((failData) => {
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(failData).then((result: any) => {
+					if(result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(failData);
+					}
+				});
+			}).always(() => {
+				vm.$blockui("hide");	
+			});
+		}
+		
+		handleErrorCustom(failData: any): any {
+			const vm = this;
+			if(failData.messageId == "Msg_26") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+				.then(() => {
+					vm.$jump("com", "/view/ccg/008/a/index.xhtml");	
+				});
+				return $.Deferred().resolve(false);		
+			}
+			return $.Deferred().resolve(true);
 		}
 
-		registerData(params: any): any {
-			let vm = this;
+		handleConfirmMessage(listMes: any): any {
+			const vm = this;
+			if(_.isEmpty(listMes)) {
+				return $.Deferred().resolve(true);
+			}
+			let msg = listMes[0];
 
-			return vm.$ajax(API.register, params);
+			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+			.then((value) => {
+				if (value === 'yes') {
+					return vm.handleConfirmMessage(_.drop(listMes));
+				} else {
+					return $.Deferred().resolve(false);
+				}
+			});
 		}
 	}
 
 	const API = {
-		startNew: "at/request/application/workchange/startNew",
-		registerSample: "at/request/application/registerSample",
-		checkBeforeRegisterSample: "at/request/application/checkBeforeRegisterSample"
+		initAppNew: "at/request/application/initApp",
+		checkBeforeRegisterSample: "at/request/application/checkBeforeSample",
+		registerSample: "at/request/application/changeDataSample",
+		sendMailAfterRegisterSample: ""
 	}
 }

@@ -78,6 +78,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             }
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: any) => {
+					vm.application().employeeIDLst(empLst);
                     let appType = vm.appType,
                         appDates = dates,
                         appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
@@ -639,7 +640,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                     vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly = arrivedLateLeaveEarly;
 
-                    let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
+                    let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.application().employeeIDLst()[0],
                         ko.toJS(vm.application().appType), ko.toJS(vm.application().appDate), null, null, null, null, ko.toJS(vm.application().opReversionReason), ko.toJS(vm.application().appDate), ko.toJS(vm.application().appDate), ko.toJS(vm.application().opAppReason), ko.toJS(vm.application().opAppStandardReasonCD));
                     let command = {
                         agentAtr: true,

@@ -19,6 +19,6 @@ public class ExternalBudgetDto {
 
 	public static ExternalBudgetDto fromDomain(ExternalBudget domain) {
 		return new ExternalBudgetDto(domain.getExternalBudgetCd().v(), domain.getExternalBudgetName().v(),
-				domain.getBudgetAtr().value, domain.getUnitAtr().value);
+			domain.getBudgetAtr().value, domain.getUnitAtr().value);
 	}
 }

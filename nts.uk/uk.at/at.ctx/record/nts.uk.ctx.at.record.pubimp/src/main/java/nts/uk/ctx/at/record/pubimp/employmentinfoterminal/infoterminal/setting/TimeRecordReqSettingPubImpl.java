@@ -25,7 +25,7 @@ public class TimeRecordReqSettingPubImpl implements TimeRecordReqSettingPub {
 	private TimeRecordReqSettingRepository repository;
 
 	@Override
-	public Optional<TimeRecordReqSettingExport> getTimeRecordReqSetting(Integer empInfoTerCode, String contractCode) {
+	public Optional<TimeRecordReqSettingExport> getTimeRecordReqSetting(String empInfoTerCode, String contractCode) {
 		return repository
 				.getTimeRecordReqSetting(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode))
 				.map(x -> convertTo(x));

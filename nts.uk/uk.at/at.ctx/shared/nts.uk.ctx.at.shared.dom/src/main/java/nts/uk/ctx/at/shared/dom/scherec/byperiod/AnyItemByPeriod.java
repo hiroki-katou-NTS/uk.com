@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanyS
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.TermsOfUseForOptItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 
 /**
@@ -105,7 +106,7 @@ public class AnyItemByPeriod implements Cloneable {
 				empCondition = Optional.of(companySets.getEmpConditionMap().get(optionalItemNo));
 			}
 			val bsEmploymentHistOpt = employeeSets.getEmployment(period.end());
-			if (optionalItem.checkTermsOfUse(empCondition, bsEmploymentHistOpt))
+			if (optionalItem.checkTermsOfUseMonth(empCondition, bsEmploymentHistOpt) == TermsOfUseForOptItem.DAILY_VTOTAL)
 			{
 				// 属性に応じて初期化
 				AnyTimeMonth anyTime = null;

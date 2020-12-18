@@ -27,48 +27,81 @@ module nts.uk.at.view.kaf022.v.viewmodel {
 
         initData(allData: any): void {
             const self = this;
-            const menus: Array<StandardMenuNameExport> = allData.menus;
-            if (menus) {
-                const appSetForProxyApp: Array<any> = allData.applicationSetting ? allData.applicationSetting.appSetForProxyApp : [];
-                const data = menus.map(m => {
-                    return new MenuModel(
-                        m.programId + m.screenId + (m.queryString ? m.queryString.substr(m.queryString.length - 1) : ""),
-                        !!_.find(appSetForProxyApp, o => {
-                            switch (m.programId) {
-                                case "KAF005":
-                                    return o.appType == 0
-                                        && ((m.queryString == "overworkatr=0" && o.overtimeAppAtr == 0)
-                                            || (m.queryString == "overworkatr=1" && o.overtimeAppAtr == 1)
-                                            || (m.queryString == "overworkatr=2" && o.overtimeAppAtr == 2));
-                                case "KAF006":
-                                    return o.appType == 1;
-                                case "KAF007":
-                                    return o.appType == 2;
-                                case "KAF008":
-                                    return o.appType == 3;
-                                case "KAF009":
-                                    return o.appType == 4;
-                                case "KAF010":
-                                    return o.appType == 6;
-                                case "KAF012":
-                                    return o.appType == 8;
-                                case "KAF004":
-                                    return o.appType == 9;
-                                case "KAF002":
-                                    return o.appType == 7 && ((o.stampRequestMode == 0 && m.screenId == "A") || (o.stampRequestMode == 1 && m.screenId == "B"));
-                                case "KAF011":
-                                    return o.appType == 10;
-                                case "KAF020":
-                                    return o.appType == 15;
-                                default:
-                                    return false;
-                            }
-                        }),
-                        m.displayName
-                    );
-                });
-                self.menuList(data);
-            }
+            const menus: Array<StandardMenuNameExport> = allData.menus || [];
+            const appSetForProxyApp: Array<any> = allData.applicationSetting ? allData.applicationSetting.appSetForProxyApp : [];
+            const displayList: Array<MenuModel> = [
+                new MenuModel(
+                    "KAF005A0",
+                    !!_.find(appSetForProxyApp, o => o.appType == 0 && o.overtimeAppAtr == 0),
+                    (_.find(menus, m => m.programId == "KAF005" && m.queryString == "overworkatr=0") || {displayName: null}).displayName || getText("KAF022_775")
+                ),
+                new MenuModel(
+                    "KAF005A1",
+                    !!_.find(appSetForProxyApp, o => o.appType == 0 && o.overtimeAppAtr == 1),
+                    (_.find(menus, m => m.programId == "KAF005" && m.queryString == "overworkatr=1") || {displayName: null}).displayName || getText("KAF022_776")
+                ),
+                new MenuModel(
+                    "KAF005A2",
+                    !!_.find(appSetForProxyApp, o => o.appType == 0 && o.overtimeAppAtr == 2),
+                    (_.find(menus, m => m.programId == "KAF005" && m.queryString == "overworkatr=2") || {displayName: null}).displayName || getText("KAF022_777")
+                ),
+                new MenuModel(
+                    "KAF006A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 1),
+                    (_.find(menus, m => m.programId == "KAF006") || {displayName: null}).displayName || getText("KAF022_4")
+                ),
+                new MenuModel(
+                    "KAF007A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 2),
+                    (_.find(menus, m => m.programId == "KAF007") || {displayName: null}).displayName || getText("KAF022_5")
+                ),
+                new MenuModel(
+                    "KAF008A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 3),
+                    (_.find(menus, m => m.programId == "KAF008") || {displayName: null}).displayName || getText("KAF022_6")
+                ),
+                new MenuModel(
+                    "KAF009A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 4),
+                    (_.find(menus, m => m.programId == "KAF009") || {displayName: null}).displayName || getText("KAF022_7")
+                ),
+                new MenuModel(
+                    "KAF010A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 6),
+                    (_.find(menus, m => m.programId == "KAF010") || {displayName: null}).displayName || getText("KAF022_8")
+                ),
+                new MenuModel(
+                    "KAF012A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 8),
+                    (_.find(menus, m => m.programId == "KAF012") || {displayName: null}).displayName || getText("KAF022_9")
+                ),
+                new MenuModel(
+                    "KAF004A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 9),
+                    (_.find(menus, m => m.programId == "KAF004") || {displayName: null}).displayName || getText("KAF022_10")
+                ),
+                new MenuModel(
+                    "KAF002A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 7 && o.stampRequestMode == 0),
+                    (_.find(menus, m => m.programId == "KAF002" && m.screenId == "A") || {displayName: null}).displayName || getText("KAF022_11")
+                ),
+                new MenuModel(
+                    "KAF002A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 7),
+                    (_.find(menus, m => m.programId == "KAF002" && m.screenId == "B") || {displayName: null}).displayName || getText("KAF022_778")
+                ),
+                new MenuModel(
+                    "KAF011A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 10),
+                    (_.find(menus, m => m.programId == "KAF011") || {displayName: null}).displayName || getText("KAF022_12")
+                ),
+                new MenuModel(
+                    "KAF020A",
+                    !!_.find(appSetForProxyApp, o => o.appType == 15),
+                    (_.find(menus, m => m.programId == "KAF020") || {displayName: null}).displayName || getText("KAF022_705")
+                ),
+            ];
+            self.menuList(displayList);
         }
 
         collectData(): Array<any> {

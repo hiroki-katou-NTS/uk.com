@@ -2,6 +2,8 @@ package nts.uk.screen.at.app.ksu001.getinfoofInitstartup;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+
 
 @Value
 public class TargetOrgIdenInforDto   {
@@ -34,4 +36,12 @@ public class TargetOrgIdenInforDto   {
 		this.workplaceId = workplaceId;
 		this.workplaceGroupId = workplaceGroupId;
 	}
+	
+	public TargetOrgIdenInfor convertFromDomain() {
+		if(this.unit == TargetOrganizationUnit.WORKPLACE.value) {
+			return TargetOrgIdenInfor.creatIdentifiWorkplace(this.workplaceId);
+		}
+		return TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(this.workplaceGroupId);
+	}
+
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
  */
 public interface EmpInfoTerminalComStatusPub {
 
-	Optional<EmpInfoTerminalComStatusExport> get(String contractCode, int empInfoTerCodeList); 
+	Optional<EmpInfoTerminalComStatusExport> get(String contractCode, String empInfoTerCodeList); 
 	
 	// [1] 削除する
 	void delete(EmpInfoTerminalComStatusExport empInfoTerminalComStatusExport);

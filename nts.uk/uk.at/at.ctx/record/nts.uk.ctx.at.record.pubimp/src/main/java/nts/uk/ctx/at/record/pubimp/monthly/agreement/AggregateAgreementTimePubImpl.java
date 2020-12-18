@@ -15,11 +15,11 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AggregateAgreementTimePub;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeYearExport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
@@ -36,17 +36,17 @@ public class AggregateAgreementTimePubImpl implements AggregateAgreementTimePub 
 	private AgreementOperationSettingRepository agreementOperationSettingRepo;
 	
 	@Override
-	public AgreementTimeYear aggregate(String sid, GeneralDate baseDate, Year year,
+	public AgreementTimeYearExport aggregate(String sid, GeneralDate baseDate, Year year,
 			Map<YearMonth, AttendanceTimeMonth> agreementTimes) {
 		
-		return AggregateAgreementTimeByYear.aggregate(createRequireY(), sid, baseDate, year, agreementTimes);
+		return AgreementTimeYearExport.copy(AggregateAgreementTimeByYear.aggregate(createRequireY(), sid, baseDate, year, agreementTimes));
 	}
 
 	@Override
-	public AgreMaxAverageTimeMulti aggregate(String sid, GeneralDate baseDate, YearMonth ym,
+	public AgreMaxAverageTimeMultiExport aggregate(String sid, GeneralDate baseDate, YearMonth ym,
 			Map<YearMonth, AttendanceTimeMonth> agreementTimes) {
 		
-		return AggregateAgreementTimeByYM.aggregate(createRequireYM(), sid, baseDate, ym, agreementTimes);
+		return AgreMaxAverageTimeMultiExport.copy(AggregateAgreementTimeByYM.aggregate(createRequireYM(), sid, baseDate, ym, agreementTimes));
 	}
 	
 	private AggregateAgreementTimeByYear.RequireM1 createRequireY() {
