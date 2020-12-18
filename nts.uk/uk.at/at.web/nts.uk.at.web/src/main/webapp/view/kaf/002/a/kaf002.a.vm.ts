@@ -125,6 +125,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 }
             });
             if(loadDataFlag) {
+				self.application().employeeIDLst(empLst);
                 let companyId = self.$user.companyId;
                 let command = { 
                         appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
@@ -248,7 +249,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let companyId = self.$user.companyId;
         let agentAtr = false;
         self.application().enteredPerson = self.$user.employeeId;
-        self.application().employeeID = self.$user.employeeId;
+        self.application().employeeID = self.application().employeeIDLst()[0];
 //        self.application().prePostAtr(0);
         let command = {
                 companyId,

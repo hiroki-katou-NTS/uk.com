@@ -31,7 +31,7 @@ public class KsvstEmpSubstVacation extends ContractUkJpaEntity  implements Seria
 	/** The kclst emp compens leave PK. */
 	@EmbeddedId
 	protected KsvstEmpSubstVacationPK kclstEmpSubstVacationPK;
-	
+	//管理区分
 	@Column(name = "MANAGE_ATR")
 	private Integer manageAtr;
 

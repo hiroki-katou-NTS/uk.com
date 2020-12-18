@@ -498,14 +498,16 @@ module nts.uk.pr.view.kmf001.f {
                 self.compenTimeManage(data.compensatoryDigestiveTimeUnit.isManageByTime);
                 self.timeUnitCode(data.compensatoryDigestiveTimeUnit.digestiveUnit);
 
-//                if (data.compensatoryOccurrenceSetting[1].occurrenceType == OccurrenceDivision.OverTime) {
-//                    self.loadOverTime(data.compensatoryOccurrenceSetting[1].transferSetting);
-//                    self.loadWorkTime(data.compensatoryOccurrenceSetting[0].transferSetting);
-//                }
-//                else {
-//                    self.loadOverTime(data.compensatoryOccurrenceSetting[0].transferSetting);
-//                    self.loadWorkTime(data.compensatoryOccurrenceSetting[1].transferSetting);
-//                }
+             //   if (data.compensatoryOccurrenceSetting[1].occurrenceType == OccurrenceDivision.OverTime) {
+             //       self.loadOverTime(data.compensatoryOccurrenceSetting[1].transferSetting);
+            //       self.loadWorkTime(data.compensatoryOccurrenceSetting[0].transferSetting);
+           //     }
+            //    else {
+          //         self.loadOverTime(data.compensatoryOccurrenceSetting[0].transferSetting);
+            //        self.loadWorkTime(data.compensatoryOccurrenceSetting[1].transferSetting);
+             //  }
+                
+                
                 self.loadOverTime(data.substituteHolidaySetting.overtimeHourRequired)
                 self.loadWorkTime(data.substituteHolidaySetting.holidayWorkHourRequired);
             }
@@ -667,8 +669,12 @@ module nts.uk.pr.view.kmf001.f {
             private collectData() {
                 var self = this;
                 var data = self.backUpData();
-                var overTime = self.backUpData().compensatoryOccurrenceSetting[0].transferSetting;
-                var workTime = self.backUpData().compensatoryOccurrenceSetting[1].transferSetting;
+               // var overTime = self.backUpData().compensatoryOccurrenceSetting[0].transferSetting; 
+               // var workTime = self.backUpData().compensatoryOccurrenceSetting[1].transferSetting;
+                var overTime = self.backUpData().substituteHolidaySetting.overtimeHourRequired;
+                 var workTime = self.backUpData().substituteHolidaySetting.holidayWorkHourRequired;
+                
+                
                 return {
                     companyId: "",
                     isManaged: self.compenManage(),

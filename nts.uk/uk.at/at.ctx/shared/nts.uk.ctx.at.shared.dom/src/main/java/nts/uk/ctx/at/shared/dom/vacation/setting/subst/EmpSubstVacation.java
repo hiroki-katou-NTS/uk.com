@@ -18,11 +18,11 @@ public class EmpSubstVacation extends DomainObject {
 	/** The company id. */
 	// 会社ID
 	private String companyId;
-
+	
 	/** The emp contract type code. */
 	// 雇用区分コード
 	private String empContractTypeCode;
-	
+	//管理区分
 	private ManageDistinct manageDistinct;
 	/**
 	 * Instantiates a new emp subst vacation.

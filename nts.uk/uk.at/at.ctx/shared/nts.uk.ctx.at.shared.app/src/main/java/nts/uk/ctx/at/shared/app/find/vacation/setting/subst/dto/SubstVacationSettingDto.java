@@ -23,17 +23,17 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingSetMe
 @NoArgsConstructor
 public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
 
-	/** The is manage. */
+	/** 期限日の管理方法**/
 	private Integer manageDeadline;
 
-	/** The expiration date. */
+	/** The expiration date.  休暇使用期限 */
 	private Integer expirationDate;
 
-	/** The allow prepaid leave. */
+	/** The allow prepaid leave. 先取り許可 */
 	private Integer allowPrepaidLeave;
-	
+	/** The is manage. 管理区分   */
 	private Integer manageDistinct;
-		
+	/** 紐付け管理区分 **/
 	private Integer  linkingManagementATR;
 	
 

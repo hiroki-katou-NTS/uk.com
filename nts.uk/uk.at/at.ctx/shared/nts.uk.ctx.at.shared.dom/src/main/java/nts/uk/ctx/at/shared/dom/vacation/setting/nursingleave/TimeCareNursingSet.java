@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-
+/** 時間介護看護設定 */
 @Getter
 public class TimeCareNursingSet {
 	

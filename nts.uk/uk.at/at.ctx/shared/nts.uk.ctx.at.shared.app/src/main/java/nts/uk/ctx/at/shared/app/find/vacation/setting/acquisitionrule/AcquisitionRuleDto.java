@@ -22,10 +22,10 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	/** The category. */
 	public int category;
 	
-	/** */
+	/** The AnnualHolidayItemDto ---年休より優先する休暇 */
 	public AnnualHolidayItemDto annualHolidayShow;
 	
-	/** */
+	/** The HoursHolidayShow*/
 	public HoursHolidayItemDto hoursHolidayShow;
 
 	/*

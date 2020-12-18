@@ -82,11 +82,11 @@ public class ComSubstVacationSaveCommandHandler
 		
 		//get isManageByTime from DB
 		//int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getSetting().getIsManage().value : -1;
-		int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getSetting().getManageDeadline().value: -1;
+		int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getManageDistinct().value : -1;
 		//check managementCategory change
 		boolean isManage = command.getManageDeadline()!= isManageDB;
 		if (isManage) {
-			boolean manage = command.getManageDeadline() == ManageDistinct.YES.value;
+			boolean manage = command.getManageDistinct() == ManageDistinct.YES.value;
 			val substVacationSettingEvent = new SubstVacationSettingDomainEvent(manage);
 			substVacationSettingEvent.toBePublished();
 		}
