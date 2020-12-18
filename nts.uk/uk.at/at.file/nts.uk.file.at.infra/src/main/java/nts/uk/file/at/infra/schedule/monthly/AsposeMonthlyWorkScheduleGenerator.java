@@ -2906,7 +2906,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
 		} else {
-			return displayType == DisplayTypeEnum.DISPLAY.value && timeFormat.isZero() ? "" : timeFormat.getTimeText();
+			return displayType == DisplayTypeEnum.HIDE.value && timeFormat.isZero() ? "" : timeFormat.getTimeText();
 		}
 	}
 
