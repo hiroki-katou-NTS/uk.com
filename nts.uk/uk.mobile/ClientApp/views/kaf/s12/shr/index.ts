@@ -8,6 +8,7 @@ export class DispInfoOfTimeLeaveRequest {
     public attendanceTime: number | null = null;
     public titleOfAttendanceTime: string;
     public kafS00P1Params: KAFS00P1Params;
+    public numberOfHoursLeft: number | null;
     
     constructor(iDispInfoOfTimeLeaveRequest: IDispInfoOfTimeLeaveRequest) {
         this.frame = iDispInfoOfTimeLeaveRequest.frame;
@@ -16,6 +17,7 @@ export class DispInfoOfTimeLeaveRequest {
         this.attendanceTime = iDispInfoOfTimeLeaveRequest.attendanceTime;
         this.titleOfAttendanceTime = iDispInfoOfTimeLeaveRequest.titleOfAttendanceTime;
         this.kafS00P1Params = iDispInfoOfTimeLeaveRequest.kafS00P1Params;
+        this.numberOfHoursLeft = iDispInfoOfTimeLeaveRequest.numberOfHoursLeft;
     }
 }
 
@@ -23,15 +25,15 @@ export class CalculationResult {
     public workHeader: string;
     public requiredTime: number;
     public applicationTime: number;
-    public title: string;
     public frame: number;
+    public appliesTime: IAppliesTime[];
 
     constructor (iCalculationResult: ICalculationResult) {
         this.workHeader = iCalculationResult.workHeader;
         this.requiredTime = iCalculationResult.requiredTime;
         this.applicationTime = iCalculationResult.applicationTime;
-        this.title = iCalculationResult.title;
         this.frame = iCalculationResult.frame;
+        this.appliesTime = iCalculationResult.appliesTime;
     }
 }
 
@@ -56,6 +58,7 @@ export interface  IDispInfoOfTimeLeaveRequest {
     attendanceTime: number | null;
     titleOfAttendanceTime: string;
     kafS00P1Params: KAFS00P1Params;
+    numberOfHoursLeft: number | null;
 }
 
 export interface IGoBackTime {
@@ -70,7 +73,13 @@ export interface ICalculationResult {
     workHeader: string;
     requiredTime: number;
     applicationTime: number;
+    appliesTime: IAppliesTime[];
+}
+
+export interface IAppliesTime {
     title: string;
+    hoursOfWorkType: number | string | null;
+    frame: number;
 }
 
 

@@ -32,20 +32,24 @@ export class KafS12A1Component extends KafS00ShrComponent {
         header: 'KAFS12_5', frame: 0, attendanceTimeLabel: 'KAFS12_6',
         attendanceTime: null, titleOfAttendanceTime: 'KAFS12_5',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
+        numberOfHoursLeft: null
     });
     public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_7', frame: 1, attendanceTimeLabel: 'KAFS12_8',
         attendanceTime: null, titleOfAttendanceTime: 'KAFS12_7',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
+        numberOfHoursLeft: null
     });
     public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_9', frame: 2, attendanceTimeLabel: 'KAFS12_10',
         attendanceTime: null, titleOfAttendanceTime: 'KAFS12_9',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
+        numberOfHoursLeft: null
     });
     public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_11', frame: 3, attendanceTimeLabel: 'KAFS12_12', attendanceTime: null, titleOfAttendanceTime: 'KAFS12_11',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
+        numberOfHoursLeft: null
     });
 
     //Dis Information Leave Request List
