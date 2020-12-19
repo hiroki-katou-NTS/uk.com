@@ -251,6 +251,11 @@ public class MemberInfo {
 		}
 		sb.append(" ");
 		sb.append(createMemberValueName(member_number));
+		if ( isOptional() ) {
+			sb.append("Optional.empty()");
+		} else {
+			sb.append(" = null");
+		}
 		return sb.toString();
 	}
 

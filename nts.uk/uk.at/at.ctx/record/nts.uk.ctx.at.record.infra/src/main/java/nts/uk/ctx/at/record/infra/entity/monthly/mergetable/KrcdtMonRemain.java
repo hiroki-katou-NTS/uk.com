@@ -3125,76 +3125,6 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	 */
 	public AnnLeaRemNumEachMonth toDomainAnnLeaRemNumEachMonth(){
 
-		// 年休：使用時間
-//		UsedMinutes valUsedMinutesAfter = null;
-//		if (this.annleaUsedMinutesAfter != null){
-//			valUsedMinutesAfter = new UsedMinutes(this.annleaUsedMinutesAfter);
-//		}
-//		AnnualLeaveUsedTime valUsedTime = null;
-//		if (this.annleaUsedTimes != null &&
-//			this.annleaUsedMinutes != null &&
-//			this.annleaUsedMinutesBefore != null){
-//			valUsedTime = AnnualLeaveUsedTime.of(
-//					new UsedTimes(this.annleaUsedTimes),
-//					new UsedMinutes(this.annleaUsedMinutes),
-//					new UsedMinutes(this.annleaUsedMinutesBefore),
-//					Optional.ofNullable(valUsedMinutesAfter));
-//		}
-//
-//		// 年休：残数付与後
-//		AnnualLeaveRemainingNumber valRemainAfter = null;
-//		if (this.annleaRemainingDaysAfter != null){
-////			RemainingMinutes valRemainMinutesAfter = null;
-////			if (this.annleaRemainingMinutesAfter != null){
-////				valRemainMinutesAfter = new RemainingMinutes(this.annleaRemainingMinutesAfter);
-////			}
-//			valRemainAfter = AnnualLeaveRemainingNumber.of(
-//					new AnnualLeaveRemainingDayNumber(this.annleaRemainingDaysAfter),
-//					Optional.ofNullable(valRemainMinutesAfter),
-//					new ArrayList<>());
-//		}
-//
-//		// 年休
-//		AnnualLeaveUsedDayNumber valUsedDaysAfter = null;
-//		if (this.annleaUsedDaysAfter != null){
-//			valUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.annleaUsedDaysAfter);
-//		}
-//		RemainingMinutes valRemainMinutes = null;
-//		if (this.annleaRemainingMinutes != null){
-//			valRemainMinutes = new RemainingMinutes(this.annleaRemainingMinutes);
-//		}
-//		RemainingMinutes valRemainMinutesBefore = null;
-//		if (this.annleaRemainingMinutesBefore != null){
-//			valRemainMinutesBefore = new RemainingMinutes(this.annleaRemainingMinutesBefore);
-//		}
-		UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
-		if (this.annleaUnusedMinutes != null){
-			valUnusedMinutes = UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(this.annleaUnusedMinutes));
-		}
-
-//		/** 年休 */
-//		AnnualLeave annualLeave = AnnualLeave.of(
-//				/** 年休.使用情報 */
-//				AnnualLeaveUsedNumber.of(
-//						/** 年休.使用情報.合計 */
-//						AnnualLeaveUsedDays.of(
-//								new AnnualLeaveUsedDayNumber(this.annleaUsedDays),
-//								new AnnualLeaveUsedDayNumber(this.annleaUsedDaysBefore),
-//								Optional.ofNullable(valUsedDaysAfter)),
-//						Optional.ofNullable(valUsedTime)),
-//				AnnualLeaveRemainingNumber.of(
-//						new AnnualLeaveRemainingDayNumber(this.annleaRemainingDays),
-//						Optional.ofNullable(valRemainMinutes),
-//						new ArrayList<>()),
-//				AnnualLeaveRemainingNumber.of(
-//						new AnnualLeaveRemainingDayNumber(this.annleaRemainingDaysBefore),
-//						Optional.ofNullable(valRemainMinutesBefore),
-//						new ArrayList<>()),
-				Optional.ofNullable(valRemainAfter),
-				AnnualLeaveUndigestedNumber.of(
-						UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(this.annleaUnusedDays)),
-						Optional.ofNullable(valUnusedMinutes)));
-
 		/** 年休 */
 
 		/** 年休.使用情報.合計.使用日数.使用日数 */
@@ -3224,7 +3154,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		}
 
 		/** 年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
-		UsedTimes  val_annualLeaveUsedDayTimes12;
+		UsedTimes val_annualLeaveUsedDayTimes12 = new UsedTimes(0);
 
 		/** 年休.使用情報.付与後.使用日数.使用日数 */
 		AnnualLeaveUsedDayNumber val_annleaUsedDaysAfter = null;
@@ -3281,7 +3211,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		/** 年休.残数情報.付与後.明細 */
 		List<AnnualLeaveRemainingDetail>  val_details23 = new ArrayList<>();
 
-		AnnualLeave annualLeave1 = AnnualLeave.of(
+		AnnualLeave annualLeave = AnnualLeave.of(
 			/** 年休.使用情報 */
 			AnnualLeaveUsedInfo.of(
 				/** 年休.使用情報.合計 */
@@ -3295,7 +3225,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					,Optional.ofNullable(AnnualLeaveUsedTime.of(
 						/** 年休.使用情報.合計.使用時間.使用時間 */
 						 val_annleaUsedMinutes
-						 )
+						)
 					)
 				)
 				/** 年休.使用情報.付与前 */
@@ -3330,9 +3260,8 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 									/** 年休.使用情報.付与後.使用時間.使用時間 */
 									val_annleaUsedMinutesAfter
 							)
-						)
 					)
-				)
+				))
 			)
 			/** 年休.残数情報 */
 			,AnnualLeaveRemainingNumberInfo.of(
@@ -3362,167 +3291,99 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					, val_annleaRemainingMinutesAfter
 					/** 年休.残数情報.付与後.明細 */
 					, val_details23
-				)
+				))
 			)
-		)
-	);
+		);
 
+		/** 実年休.使用情報.合計.使用日数.使用日数 */
+		AnnualLeaveUsedDayNumber val_annleaFactUsedDays = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDays);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		// 実年休：使用時間
-		UsedMinutes valFactUsedMinutesAfter = null;
-		if (this.annleaFactUsedMinutesAfter != null){
-			valFactUsedMinutesAfter = new UsedMinutes(this.annleaFactUsedMinutesAfter);
-		}
-		TimeAnnualLeaveUsedTime valFactUsedTime = null;
-		if (this.annleaFactUsedTimes != null &&
-			this.annleaFactUsedMinutes != null &&
-			this.annleaFactUsedMinutesBefore != null){
-			valFactUsedTime = TimeAnnualLeaveUsedTime.of(
-					new UsedTimes(this.annleaFactUsedTimes),
-					new UsedMinutes(this.annleaFactUsedMinutes),
-					new UsedMinutes(this.annleaFactUsedMinutesBefore),
-					Optional.ofNullable(valFactUsedMinutesAfter));
+		/** 実年休.使用情報.合計.使用時間.使用時間 */
+		UsedMinutes val_annleaFactUsedMinutes = null;
+		if ( this.annleaFactUsedMinutes != null ) {
+			val_annleaFactUsedMinutes = new UsedMinutes(this.annleaFactUsedMinutes);
 		}
 
-		// 実年休：残数付与後
-		AnnualLeaveRemainingNumber valFactRemainAfter = null;
-		if (this.annleaFactRemainingDaysAfter != null){
-			RemainingMinutes valFactRemainMinutesAfter = null;
-			if (this.annleaFactRemainingMinutesAfter != null){
-				valFactRemainMinutesAfter = new RemainingMinutes(this.annleaFactRemainingMinutesAfter);
-			}
-			valFactRemainAfter = AnnualLeaveRemainingNumber.of(
-					new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysAfter),
-					Optional.ofNullable(valFactRemainMinutesAfter),
-					new ArrayList<>());
+		/** 実年休.使用情報.付与前.使用日数.使用日数 */
+		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysBefore = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysBefore);
+
+		/** 実年休.使用情報.付与前.使用時間.使用時間 */
+		UsedMinutes val_annleaFactUsedMinutesBefore = null;
+		if ( this.annleaFactUsedMinutesBefore != null ) {
+			val_annleaFactUsedMinutesBefore = new UsedMinutes(this.annleaFactUsedMinutesBefore);
 		}
 
-		// 実年休
-		AnnualLeaveUsedDayNumber valFactUsedDaysAfter = null;
-		if (this.annleaFactUsedDaysAfter != null){
-			valFactUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysAfter);
+		/** 実年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
+		UsedTimes val_annleaFactUsedTimes = null;
+		if ( this.annleaFactUsedTimes != null ) {
+			val_annleaFactUsedTimes = new UsedTimes(this.annleaFactUsedTimes);
 		}
-		RemainingMinutes valFactRemainMinutes = null;
-		if (this.annleaFactRemainingMinutes != null){
-			valFactRemainMinutes = new RemainingMinutes(this.annleaFactRemainingMinutes);
-		}
-		RemainingMinutes valFactRemainMinutesBefore = null;
-		if (this.annleaFactRemainingMinutesBefore != null){
-			valFactRemainMinutesBefore = new RemainingMinutes(this.annleaFactRemainingMinutesBefore);
-		}
-		RealAnnualLeave realAnnualLeave = RealAnnualLeave.of(
-				AnnualLeaveUsedNumber.of(
-						AnnualLeaveUsedDays.of(
-								new AnnualLeaveUsedDayNumber(this.annleaFactUsedDays),
-								new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysBefore),
-								Optional.ofNullable(valFactUsedDaysAfter)),
-						Optional.ofNullable(valFactUsedTime)),
-				AnnualLeaveRemainingNumber.of(
-						new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDays),
-						Optional.ofNullable(valFactRemainMinutes),
-						new ArrayList<>()),
-				AnnualLeaveRemainingNumber.of(
-						new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysBefore),
-						Optional.ofNullable(valFactRemainMinutesBefore),
-						new ArrayList<>()),
-				Optional.ofNullable(valFactRemainAfter));
 
+		/** 実年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
+		UsedTimes val_annualLeaveUsedDayTimes29 = new UsedTimes(0);
 
-//		/** 年休 */
-//		AnnualLeave.of(
-//			/** 年休.使用情報 */
-//			AnnualLeaveUsedInfo.of(
-//				/** 年休.使用情報.合計 */
-//				AnnualLeaveUsedNumber.of(
-//					/** 年休.使用情報.合計.使用日数 */
-//					AnnualLeaveUsedDays.of(
-//						/** 年休.使用情報.合計.使用日数.使用日数 */
-//						 val_usedDayNumber7
-//					)
-//					/** 年休.使用情報.合計.使用時間 */
-//					,Optional.of(AnnualLeaveUsedTime.of(
-//						/** 年休.使用情報.合計.使用時間.使用時間 */
-//						 val_usedTime8
-//					)
-//				)
-//				/** 年休.使用情報.付与前 */
-//				,AnnualLeaveUsedNumber.of(
-//					/** 年休.使用情報.付与前.使用日数 */
-//					AnnualLeaveUsedDays.of(
-//						/** 年休.使用情報.付与前.使用日数.使用日数 */
-//						 val_usedDayNumber9
-//					)
-//					/** 年休.使用情報.付与前.使用時間 */
-//					,Optional.of(AnnualLeaveUsedTime.of(
-//						/** 年休.使用情報.付与前.使用時間.使用時間 */
-//						 val_usedTime10
-//					)
-//				)
-//				/** 年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-//				, val_annualLeaveUsedTimes11
-//				/** 年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
-//				, val_annualLeaveUsedDayTimes12
-//				/** 年休.使用情報.付与後 */
-//				,Optional.of(AnnualLeaveUsedNumber.of(
-//					/** 年休.使用情報.付与後.使用日数 */
-//					AnnualLeaveUsedDays.of(
-//						/** 年休.使用情報.付与後.使用日数.使用日数 */
-//						 val_usedDayNumber13
-//					)
-//					/** 年休.使用情報.付与後.使用時間 */
-//					,Optional.of(AnnualLeaveUsedTime.of(
-//						/** 年休.使用情報.付与後.使用時間.使用時間 */
-//						 val_usedTime14
-//					)
-//				)
-//			)
-//			/** 年休.残数情報 */
-//			,AnnualLeaveRemainingNumberInfo.of(
-//				/** 年休.残数情報.合計 */
-//				AnnualLeaveRemainingNumber.of(
-//					/** 年休.残数情報.合計.合計残日数 */
-//					 val_totalRemainingDays15
-//					/** 年休.残数情報.合計.合計残時間 */
-//					, val_totalRemainingTime16
-//)					/** 年休.残数情報.合計.明細 */
-//					, val_details17
-//				)
-//				/** 年休.残数情報.付与前 */
-//				,AnnualLeaveRemainingNumber.of(
-//					/** 年休.残数情報.付与前.合計残日数 */
-//					 val_totalRemainingDays18
-//					/** 年休.残数情報.付与前.合計残時間 */
-//					, val_totalRemainingTime19
-//)					/** 年休.残数情報.付与前.明細 */
-//					, val_details20
-//				)
-//				/** 年休.残数情報.付与後 */
-//				,Optional.of(AnnualLeaveRemainingNumber.of(
-//					/** 年休.残数情報.付与後.合計残日数 */
-//					 val_totalRemainingDays21
-//					/** 年休.残数情報.付与後.合計残時間 */
-//					, val_totalRemainingTime22
-//)					/** 年休.残数情報.付与後.明細 */
-//					, val_details23
-//				)
-//			)
-//		)
+		/** 実年休.使用情報.付与後.使用日数.使用日数 */
+		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysAfter = new AnnualLeaveUsedDayNumber(annleaFactUsedDaysAfter);
+
+		/** 実年休.使用情報.付与後.使用時間.使用時間 */
+		UsedMinutes val_annleaFactUsedMinutesAfter = null;
+		if ( this.annleaFactUsedMinutesAfter != null ) {
+			val_annleaFactUsedMinutesAfter = new UsedMinutes(this.annleaFactUsedMinutesAfter);
+		}
+
+		/** 実年休.残数情報.合計.合計残日数 */
+		AnnualLeaveRemainingDayNumber val_annleaFactRemainingDays = new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDays);
+
+		/** 実年休.残数情報.合計.合計残時間 */
+		Optional<AnnualLeaveRemainingTime> val_annleaFactRemainingMinutes = Optional.empty();
+		if ( this.annleaFactRemainingMinutes != null ) {
+			val_annleaFactRemainingMinutes = Optional.of(new AnnualLeaveRemainingTime(this.annleaFactRemainingMinutes));
+		}
+
+		/** 実年休.残数情報.合計.明細 */
+		List<AnnualLeaveRemainingDetail> val_details34 = new ArrayList<AnnualLeaveRemainingDetail>();
+
+		/** 実年休.残数情報.付与前.合計残日数 */
+		AnnualLeaveRemainingDayNumber val_annleaFactRemainingDaysBefore = new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysBefore);
+
+		/** 実年休.残数情報.付与前.合計残時間 */
+		Optional<AnnualLeaveRemainingTime> val_annleaFactRemainingMinutesBefore = null;
+		if ( this.annleaFactRemainingMinutesBefore != null ) {
+			val_annleaFactRemainingMinutesBefore = Optional.of(new AnnualLeaveRemainingTime(this.annleaFactRemainingMinutesBefore));
+		}
+
+		/** 実年休.残数情報.付与前.明細 */
+		List<AnnualLeaveRemainingDetail> val_details37 = new ArrayList<AnnualLeaveRemainingDetail>();
+
+		/** 実年休.残数情報.付与後.合計残日数 */
+		AnnualLeaveRemainingDayNumber val_annleaFactRemainingDaysAfter = null;
+		if (this.annleaFactRemainingDaysAfter != null) {
+			val_annleaFactRemainingDaysAfter = new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysAfter);
+		}
+
+		/** 実年休.残数情報.付与後.合計残時間 */
+		Optional<AnnualLeaveRemainingTime> val_annleaFactRemainingMinutesAfter = Optional.empty();
+		if ( this.annleaFactRemainingMinutesAfter != null ) {
+			val_annleaFactRemainingMinutesAfter = Optional.of(new AnnualLeaveRemainingTime(this.annleaFactRemainingMinutesAfter));
+		}
+
+		/** 実年休.残数情報.付与後.明細 */
+		List<AnnualLeaveRemainingDetail> val_details40 = new ArrayList<AnnualLeaveRemainingDetail>();
+
+//		/** 付与区分 */
+//		boolean val_grantAtr69;
+//
+//		/** 未消化.未消化日数.未消化日数 */
+//		AnnualLeaveUsedDayNumber val_undigestedDays70;
+//
+//		/** 未消化.未消化時間.未消化時間 */
+//		UsedMinutes val_annleaUnusedMinutes;
+//		if ( this.annleaUnusedMinutes != null ) {
+//			val_annleaUnusedMinutes = new UsedMinutes(this.annleaUnusedMinutes);
+//		}
+
 		/** 実年休 */
-		,AnnualLeave.of(
+		AnnualLeave realAnnualLeave = AnnualLeave.of(
 			/** 実年休.使用情報 */
 			AnnualLeaveUsedInfo.of(
 				/** 実年休.使用情報.合計 */
@@ -3530,96 +3391,76 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					/** 実年休.使用情報.合計.使用日数 */
 					AnnualLeaveUsedDays.of(
 						/** 実年休.使用情報.合計.使用日数.使用日数 */
-						 val_usedDayNumber24
+						val_annleaFactUsedDays
 					)
 					/** 実年休.使用情報.合計.使用時間 */
-					,Optional.of(AnnualLeaveUsedTime.of(
+					, Optional.ofNullable(AnnualLeaveUsedTime.of(
 						/** 実年休.使用情報.合計.使用時間.使用時間 */
-						 val_usedTime25
-					)
+						val_annleaFactUsedMinutes
+					))
 				)
 				/** 実年休.使用情報.付与前 */
-				,AnnualLeaveUsedNumber.of(
+				, AnnualLeaveUsedNumber.of(
 					/** 実年休.使用情報.付与前.使用日数 */
 					AnnualLeaveUsedDays.of(
 						/** 実年休.使用情報.付与前.使用日数.使用日数 */
-						 val_usedDayNumber26
+						val_annleaFactUsedDaysBefore
 					)
 					/** 実年休.使用情報.付与前.使用時間 */
-					,Optional.of(AnnualLeaveUsedTime.of(
+					, Optional.ofNullable(AnnualLeaveUsedTime.of(
 						/** 実年休.使用情報.付与前.使用時間.使用時間 */
-						 val_usedTime27
-					)
+						val_annleaFactUsedMinutesBefore
+					))
 				)
 				/** 実年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-				, val_annualLeaveUsedTimes28
+				, val_annleaFactUsedTimes
 				/** 実年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
 				, val_annualLeaveUsedDayTimes29
 				/** 実年休.使用情報.付与後 */
-				,Optional.of(AnnualLeaveUsedNumber.of(
+				, Optional.ofNullable(AnnualLeaveUsedNumber.of(
 					/** 実年休.使用情報.付与後.使用日数 */
 					AnnualLeaveUsedDays.of(
 						/** 実年休.使用情報.付与後.使用日数.使用日数 */
-						 val_usedDayNumber30
+						val_annleaFactUsedDaysAfter
 					)
 					/** 実年休.使用情報.付与後.使用時間 */
-					,Optional.of(AnnualLeaveUsedTime.of(
+					, Optional.ofNullable(AnnualLeaveUsedTime.of(
 						/** 実年休.使用情報.付与後.使用時間.使用時間 */
-						 val_usedTime31
-					)
-				)
+						val_annleaFactUsedMinutesAfter
+					))
+				))
 			)
 			/** 実年休.残数情報 */
-			,AnnualLeaveRemainingNumberInfo.of(
+			, AnnualLeaveRemainingNumberInfo.of(
 				/** 実年休.残数情報.合計 */
 				AnnualLeaveRemainingNumber.of(
 					/** 実年休.残数情報.合計.合計残日数 */
-					 val_totalRemainingDays32
+					val_annleaFactRemainingDays
 					/** 実年休.残数情報.合計.合計残時間 */
-					, val_totalRemainingTime33
-)					/** 実年休.残数情報.合計.明細 */
+					, val_annleaFactRemainingMinutes
+					/** 実年休.残数情報.合計.明細 */
 					, val_details34
 				)
 				/** 実年休.残数情報.付与前 */
-				,AnnualLeaveRemainingNumber.of(
+				, AnnualLeaveRemainingNumber.of(
 					/** 実年休.残数情報.付与前.合計残日数 */
-					 val_totalRemainingDays35
+					val_annleaFactRemainingDaysBefore
 					/** 実年休.残数情報.付与前.合計残時間 */
-					, val_totalRemainingTime36
-)					/** 実年休.残数情報.付与前.明細 */
+					, val_annleaFactRemainingMinutesBefore
+					/** 実年休.残数情報.付与前.明細 */
 					, val_details37
 				)
 				/** 実年休.残数情報.付与後 */
-				,Optional.of(AnnualLeaveRemainingNumber.of(
+				, Optional.ofNullable(AnnualLeaveRemainingNumber.of(
 					/** 実年休.残数情報.付与後.合計残日数 */
-					 val_totalRemainingDays38
+					val_annleaFactRemainingDaysAfter
 					/** 実年休.残数情報.付与後.合計残時間 */
-					, val_totalRemainingTime39
-)					/** 実年休.残数情報.付与後.明細 */
+					, val_annleaFactRemainingMinutesAfter
+					/** 実年休.残数情報.付与後.明細 */
 					, val_details40
-				)
+				))
 			)
-		)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		);
 
 		// 半日年休
 		HalfDayAnnualLeave halfDayAnnualLeave = null;
@@ -3718,6 +3559,15 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					Optional.ofNullable(valFactTimeRemainMinutesAfter));
 		}
 
+		// 未消化数
+		UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
+		if (this.annleaUnusedMinutes != null){
+			valUnusedMinutes = UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(this.annleaUnusedMinutes));
+		}
+		AnnualLeaveUndigestedNumber annualLeaveUndigestedNumber = AnnualLeaveUndigestedNumber.of(
+				UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(this.annleaUnusedDays)),
+				Optional.ofNullable(valUnusedMinutes));
+
 		return AnnLeaRemNumEachMonth.of(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
@@ -3736,276 +3586,9 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						new MonthlyDays((double)this.annleaLaborDays),
 						new MonthlyDays((double)this.annleaPredeterminedDays),
 						new MonthlyDays((double)this.annleaDeductionDays)),
-				(this.annleaGrantAtr != 0));
+				(this.annleaGrantAtr != 0),
+				annualLeaveUndigestedNumber);
 
-
-
-//
-//
-//
-//
-//		// ----------------------------------------------------------------------------------------------
-//		AnnLeaRemNumEachMonth c = new AnnLeaRemNumEachMonth(
-//				this.krcdtMonRemainPk.getEmployeeId(),
-//				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
-//				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
-//				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0)));
-//
-////		/** 年休月別残数データ.締め処理状態 */
-////		c.getClosureStatus();
-//		/** 年休月別残数データ.年休.使用情報.合計.使用日数.使用日数 */
-//		c.getAnnualLeave().getUsedNumberInfo().getUsedNumber().getUsedDays().setUsedDayNumber(
-//				new AnnualLeaveUsedDayNumber(annleaUsedDays));
-//
-//		if ( annleaUsedMinutes != null ) {
-//			Optional<AnnualLeaveUsedTime> usedTime
-//				= Optional.of(AnnualLeaveUsedTime.of(new UsedMinutes(annleaUsedMinutes)));
-//			/** 年休月別残数データ.年休.使用情報.合計.使用時間.使用時間 */
-//			c.getAnnualLeave().getUsedNumberInfo().getUsedNumber().setUsedTime(usedTime);
-//		}
-//
-//		/** 年休月別残数データ.年休.使用情報.付与前.使用日数.使用日数 */
-//		c.getAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedDays().setUsedDayNumber(
-//				new AnnualLeaveUsedDayNumber(annleaUsedDaysBefore));
-//
-//		if ( annleaUsedMinutesBefore != null ) {
-//			Optional<AnnualLeaveUsedTime> usedTime
-//			= Optional.of(AnnualLeaveUsedTime.of(new UsedMinutes(annleaUsedMinutesBefore)));
-//			/** 年休月別残数データ.年休.使用情報.付与前.使用時間.使用時間 */
-//			c.getAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().setUsedTime(usedTime);
-//		}
-//
-//		if (annleaUsedDaysAfter != null
-//				&& annleaUsedMinutesAfter != null) {
-//			AnnualLeaveUsedNumber annualLeaveUsedNumber = AnnualLeaveUsedNumber.of(
-//					/** 年休月別残数データ.年休.使用情報.付与後.使用日数.使用日数 */
-//					AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(annleaUsedDaysAfter)),
-//					/** 年休月別残数データ.年休.使用情報.付与後.使用時間.使用時間 */
-//					Optional.of(AnnualLeaveUsedTime.of(new UsedMinutes(annleaUsedMinutesAfter)))
-//					);
-//			c.getAnnualLeave().getUsedNumberInfo().setUsedNumberAfterGrantOpt(Optional.of(annualLeaveUsedNumber));
-//		}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//		/** 年休月別残数データ.年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-//		c.getAnnualLeave().getUsedNumberInfo().getAnnualLeaveUsedTimes();
-//		/** 年休月別残数データ.年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
-//		c.getAnnualLeave().getUsedNumberInfo().getAnnualLeaveUsedDayTimes();
-//
-//
-//		/** 年休月別残数データ.年休.残数情報.合計.合計残日数 */
-//		c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays();
-//		if (c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()){
-//			/** 年休月別残数データ.年休.残数情報.合計.合計残時間 */
-//			c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().get();
-//		}
-//
-//		/** 年休月別残数データ.年休.残数情報.合計.明細 */
-//		c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getDetails();
-//		// !!リストの対応が必要
-//
-//		/** 年休月別残数データ.年休.残数情報.付与前.合計残日数 */
-//		c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays();
-//		if (c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
-//			/** 年休月別残数データ.年休.残数情報.付与前.合計残時間 */
-//			c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get();
-//		}
-//
-//		/** 年休月別残数データ.年休.残数情報.付与前.明細 */
-//		c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDetails();
-//		// !!リストの対応が必要
-//
-//		if (c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()){
-//			/** 年休月別残数データ.年休.残数情報.付与後.合計残日数 */
-//			c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingDays();
-//			if (c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingTime().isPresent()){
-//				/** 年休月別残数データ.年休.残数情報.付与後.合計残時間 */
-//				c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingTime().get();
-//			}
-//
-//			/** 年休月別残数データ.年休.残数情報.付与後.明細 */
-//			c.getAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDetails();
-//			// !!リストの対応が必要
-//
-//		}
-//
-//		/** 年休月別残数データ.実年休.使用情報.合計.使用日数.使用日数 */
-//		c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber();
-//		if (c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumber().getUsedTime().isPresent()){
-//			/** 年休月別残数データ.実年休.使用情報.合計.使用時間.使用時間 */
-//			c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime();
-//		}
-//
-//		/** 年休月別残数データ.実年休.使用情報.付与前.使用日数.使用日数 */
-//		c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedDays().getUsedDayNumber();
-//		if (c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedTime().isPresent()){
-//			/** 年休月別残数データ.実年休.使用情報.付与前.使用時間.使用時間 */
-//			c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedTime().get().getUsedTime();
-//		}
-//
-//		/** 年休月別残数データ.実年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-//		c.getRealAnnualLeave().getUsedNumberInfo().getAnnualLeaveUsedTimes();
-//		/** 年休月別残数データ.実年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
-//		c.getRealAnnualLeave().getUsedNumberInfo().getAnnualLeaveUsedDayTimes();
-//		if (c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent()){
-//			/** 年休月別残数データ.実年休.使用情報.付与後.使用日数.使用日数 */
-//			c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUsedDays().getUsedDayNumber();
-//			if (c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUsedTime().isPresent()){
-//				/** 年休月別残数データ.実年休.使用情報.付与後.使用時間.使用時間 */
-//				c.getRealAnnualLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUsedTime().get().getUsedTime();
-//			}
-//
-//		}
-//
-//		/** 年休月別残数データ.実年休.残数情報.合計.合計残日数 */
-//		c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays();
-//		if (c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()){
-//			/** 年休月別残数データ.実年休.残数情報.合計.合計残時間 */
-//			c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().get();
-//		}
-//
-//		/** 年休月別残数データ.実年休.残数情報.合計.明細 */
-//		c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumber().getDetails();
-//		// !!リストの対応が必要
-//
-//		/** 年休月別残数データ.実年休.残数情報.付与前.合計残日数 */
-//		c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays();
-//		if (c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
-//			/** 年休月別残数データ.実年休.残数情報.付与前.合計残時間 */
-//			c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get();
-//		}
-//
-//		/** 年休月別残数データ.実年休.残数情報.付与前.明細 */
-//		c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDetails();
-//		// !!リストの対応が必要
-//
-//		if (c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()){
-//			/** 年休月別残数データ.実年休.残数情報.付与後.合計残日数 */
-//			c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingDays();
-//			if (c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingTime().isPresent()){
-//				/** 年休月別残数データ.実年休.残数情報.付与後.合計残時間 */
-//				c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingTime().get();
-//			}
-//
-//			/** 年休月別残数データ.実年休.残数情報.付与後.明細 */
-//			c.getRealAnnualLeave().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDetails();
-//			// !!リストの対応が必要
-//
-//		}
-//
-//		if (c.getHalfDayAnnualLeave().isPresent()){
-//			/** 年休月別残数データ.半日年休.残数.回数 */
-//			c.getHalfDayAnnualLeave().get().getRemainingNum().getTimes();
-//			/** 年休月別残数データ.半日年休.残数.回数付与前 */
-//			c.getHalfDayAnnualLeave().get().getRemainingNum().getTimesBeforeGrant();
-//			if (c.getHalfDayAnnualLeave().get().getRemainingNum().getTimesAfterGrant().isPresent()){
-//				/** 年休月別残数データ.半日年休.残数.回数付与後 */
-//				c.getHalfDayAnnualLeave().get().getRemainingNum().getTimesAfterGrant().get();
-//			}
-//
-//			/** 年休月別残数データ.半日年休.使用数.回数 */
-//			c.getHalfDayAnnualLeave().get().getUsedNum().getTimes();
-//			/** 年休月別残数データ.半日年休.使用数.回数付与前 */
-//			c.getHalfDayAnnualLeave().get().getUsedNum().getTimesBeforeGrant();
-//			if (c.getHalfDayAnnualLeave().get().getUsedNum().getTimesAfterGrant().isPresent()){
-//				/** 年休月別残数データ.半日年休.使用数.回数付与後 */
-//				c.getHalfDayAnnualLeave().get().getUsedNum().getTimesAfterGrant().get();
-//			}
-//
-//		}
-//
-//		if (c.getRealHalfDayAnnualLeave().isPresent()){
-//			/** 年休月別残数データ.実半日年休.残数.回数 */
-//			c.getRealHalfDayAnnualLeave().get().getRemainingNum().getTimes();
-//			/** 年休月別残数データ.実半日年休.残数.回数付与前 */
-//			c.getRealHalfDayAnnualLeave().get().getRemainingNum().getTimesBeforeGrant();
-//			if (c.getRealHalfDayAnnualLeave().get().getRemainingNum().getTimesAfterGrant().isPresent()){
-//				/** 年休月別残数データ.実半日年休.残数.回数付与後 */
-//				c.getRealHalfDayAnnualLeave().get().getRemainingNum().getTimesAfterGrant().get();
-//			}
-//
-//			/** 年休月別残数データ.実半日年休.使用数.回数 */
-//			c.getRealHalfDayAnnualLeave().get().getUsedNum().getTimes();
-//			/** 年休月別残数データ.実半日年休.使用数.回数付与前 */
-//			c.getRealHalfDayAnnualLeave().get().getUsedNum().getTimesBeforeGrant();
-//			if (c.getRealHalfDayAnnualLeave().get().getUsedNum().getTimesAfterGrant().isPresent()){
-//				/** 年休月別残数データ.実半日年休.使用数.回数付与後 */
-//				c.getRealHalfDayAnnualLeave().get().getUsedNum().getTimesAfterGrant().get();
-//			}
-//
-//		}
-//
-//		if (c.getAnnualLeaveGrant().isPresent()){
-//			/** 年休月別残数データ.年休付与情報.付与日数 */
-//			c.getAnnualLeaveGrant().get().getGrantDays();
-//			/** 年休月別残数データ.年休付与情報.付与労働日数 */
-//			c.getAnnualLeaveGrant().get().getGrantWorkingDays();
-//			/** 年休月別残数データ.年休付与情報.付与所定日数 */
-//			c.getAnnualLeaveGrant().get().getGrantPrescribedDays();
-//			/** 年休月別残数データ.年休付与情報.付与控除日数 */
-//			c.getAnnualLeaveGrant().get().getGrantDeductedDays();
-//			/** 年休月別残数データ.年休付与情報.控除日数付与前 */
-//			c.getAnnualLeaveGrant().get().getDeductedDaysBeforeGrant();
-//			/** 年休月別残数データ.年休付与情報.控除日数付与後 */
-//			c.getAnnualLeaveGrant().get().getDeductedDaysAfterGrant();
-//			/** 年休月別残数データ.年休付与情報.出勤率 */
-//			c.getAnnualLeaveGrant().get().getAttendanceRate();
-//		}
-//
-//		if (c.getMaxRemainingTime().isPresent()){
-//			/** 年休月別残数データ.上限残時間.時間 */
-//			c.getMaxRemainingTime().get().getTime();
-//			/** 年休月別残数データ.上限残時間.時間付与前 */
-//			c.getMaxRemainingTime().get().getTimeBeforeGrant();
-//			if (c.getMaxRemainingTime().get().getTimeAfterGrant().isPresent()){
-//				/** 年休月別残数データ.上限残時間.時間付与後 */
-//				c.getMaxRemainingTime().get().getTimeAfterGrant().get();
-//			}
-//
-//		}
-//
-//		if (c.getRealMaxRemainingTime().isPresent()){
-//			/** 年休月別残数データ.実上限残時間.時間 */
-//			c.getRealMaxRemainingTime().get().getTime();
-//			/** 年休月別残数データ.実上限残時間.時間付与前 */
-//			c.getRealMaxRemainingTime().get().getTimeBeforeGrant();
-//			if (c.getRealMaxRemainingTime().get().getTimeAfterGrant().isPresent()){
-//				/** 年休月別残数データ.実上限残時間.時間付与後 */
-//				c.getRealMaxRemainingTime().get().getTimeAfterGrant().get();
-//			}
-//
-//		}
-//
-//		/** 年休月別残数データ.年休出勤率日数.労働日数 */
-//		c.getAttendanceRateDays().getWorkingDays();
-//		/** 年休月別残数データ.年休出勤率日数.所定日数 */
-//		c.getAttendanceRateDays().getPrescribedDays();
-//		/** 年休月別残数データ.年休出勤率日数.控除日数 */
-//		c.getAttendanceRateDays().getDeductedDays();
-//		/** 年休月別残数データ.付与区分 */
-//		c.isGrantAtr();
-//
-//		/** 年休月別残数データ.未消化.未消化日数.未消化日数 */
-//		c.getUndigestedNumber().getUndigestedDays().getUndigestedDays();
-//		if (c.getUndigestedNumber().getUndigestedTime().isPresent()){
-//			/** 年休月別残数データ.未消化.未消化時間.未消化時間 */
-//			c.getUndigestedNumber().getUndigestedTime().get().getUndigestedTime();
-//		}
-
-
-		return c;
 	}
 
 	/**
