@@ -364,6 +364,7 @@ public class ClassInfo {
 			  int beginIndex_import = -1;
 			  int beginIndex_class = -1;
 			  int beginIndex_extends = -1;
+			  int beginIndex_implements = -1;
 			  ArrayList<String> importList = new ArrayList<String>();
 
 			  while(str != null){
@@ -425,10 +426,20 @@ public class ClassInfo {
 				  beginIndex_class = str.indexOf("class ");
 				  beginIndex_extends = str.indexOf(" extends ");
 
+
+
+
 				  // class があるとき
 				  if (0 <= beginIndex_class) {
 					 String className = str.substring(beginIndex_class)
 							 .replace("class ", "").replace("{", "").replace(" extends ", "").trim();
+
+					 beginIndex_implements = className.indexOf(" implements ");
+					 if ( 0 < beginIndex_implements ) {
+						 className = className.substring(0, beginIndex_implements);
+					 }
+
+
 					 this.setClassName(className);
 
 					 comment = comment.replace("/*", "").replace("*", "").trim();

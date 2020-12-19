@@ -119,6 +119,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 //				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 		return null;
 	}
+
 	@Override
 	public YearMonth yearMonth() {
 		return ym;

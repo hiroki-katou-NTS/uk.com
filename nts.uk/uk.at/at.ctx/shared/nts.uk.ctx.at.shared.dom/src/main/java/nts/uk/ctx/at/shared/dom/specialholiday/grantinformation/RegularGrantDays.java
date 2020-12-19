@@ -31,4 +31,15 @@ public class RegularGrantDays {
 		return new RegularGrantDays(new GrantedDays(grantDays));
 	}
 
+	static public RegularGrantDays of(
+			/** 付与日数 */
+			GrantedDays grantDays
+		){
+			RegularGrantDays c = new RegularGrantDays();
+			/** 付与日数 */
+			c.grantDays=grantDays;
+
+			return c;
+		}
+
 }

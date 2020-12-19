@@ -28,12 +28,42 @@ public class CreateCodeTest {
 		packageRootPathList.add("nts.uk\\uk.at\\at.ctx\\record\\nts.uk.ctx.at.record.dom\\src\\main\\java\\");
 
 
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
+//		/** ルートクラスのクラス名 */
+//		String className = "SpecialHolidayRemainData";
+//		/** ルートクラスのコメント */
+//		String classComment = "特別休暇月別残数データ";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata";
+//		/** ルートクラスのクラス名 */
+//		String className = "InPeriodOfSpecialLeaveResultInfor";
+//		/** ルートクラスのコメント */
+//		String classComment = "特休の集計結果";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.specialholiday";
+//		/** ルートクラスのクラス名 */
+//		String className = "SpecialHoliday";
+//		/** ルートクラスのコメント */
+//		String classComment = "特別休暇";
+
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
+//		/** ルートクラスのクラス名 */
+//		String className = "SpecialLeaveUseNumber";
+//		/** ルートクラスのコメント */
+//		String classComment = "特別休暇使用数";
+
 		/** ルートクラスのパッケージ名 */
-		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
+		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave";
 		/** ルートクラスのクラス名 */
-		String className = "SpecialHolidayRemainData";
+		String className = "AnnLeaRemNumEachMonth";
 		/** ルートクラスのコメント */
-		String classComment = "特別休暇月別残数データ";
+		String classComment = "年休月別残数データ";
+
+
 
 
 		// リポジトリ -------------------------------------------------------------------

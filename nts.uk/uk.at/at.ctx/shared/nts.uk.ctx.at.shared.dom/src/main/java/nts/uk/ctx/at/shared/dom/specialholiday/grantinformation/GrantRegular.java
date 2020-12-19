@@ -43,6 +43,32 @@ public class GrantRegular extends DomainObject {
 		super.validate();
 	}
 
+	static public GrantRegular of(
+		/** 付与するタイミングの種類 */
+		TypeTime typeTime
+		/** 付与基準日 */
+		, Optional<GrantDate> grantDate
+		/** 指定日付与 */
+		, Optional<FixGrantDate> fixGrantDate
+		/** 付与日テーブル参照付与 */
+		, Optional<GrantDeadline> grantPeriodic
+		/** 期間付与 */
+		, Optional<PeriodGrantDate> periodGrantDate
+	){
+		GrantRegular c = new GrantRegular();
+		/** 付与するタイミングの種類 */
+		c.typeTime=typeTime;
+		/** 付与基準日 */
+		c.grantDate=grantDate;
+		/** 指定日付与 */
+		c.fixGrantDate=fixGrantDate;
+		/** 付与日テーブル参照付与 */
+		c.grantPeriodic=grantPeriodic;
+		/** 期間付与 */
+		c.periodGrantDate=periodGrantDate;
+
+		return c;
+	}
 
 	public Optional<Integer> getLimitAccumulationDays() {
 		if(this.typeTime==TypeTime.REFER_GRANT_DATE_TBL) {

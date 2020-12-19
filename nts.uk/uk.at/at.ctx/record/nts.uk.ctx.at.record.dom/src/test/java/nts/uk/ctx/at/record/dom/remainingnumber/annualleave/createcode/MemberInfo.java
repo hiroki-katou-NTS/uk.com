@@ -217,20 +217,67 @@ public class MemberInfo {
 	}
 
 	/**
+	 * メンバ変数名作成
+	 * @param member_number
+	 * @return
+	 */
+	private String createMemberValueName(Integer member_number) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("val_");
+		sb.append(this.memberName);
+		sb.append(member_number.toString());
+		return sb.toString();
+	}
+
+	/**
+	 * メンバ変数定義作成
+	 * @param member_number
+	 * @return
+	 */
+	private String createMemberDef(Integer member_number) {
+		StringBuilder sb = new StringBuilder();
+		if ( isOptional() ) {
+			sb.append("Optional<");
+		}
+		if ( isList() ) {
+			sb.append("List<");
+		}
+		sb.append(classType);
+		if ( isOptional() ) {
+			sb.append(">");
+		}
+		if ( isList() ) {
+			sb.append(">");
+		}
+		sb.append(" ");
+		sb.append(createMemberValueName(member_number));
+		return sb.toString();
+	}
+
+	/**
 	 * コード生成（of）
 	 * @param classInfoManager クラス情報管理
 	 * @param all_code ルートクラスから生成したコード全て
 	 * @param tab タブインデント
 	 * @param pre_comment このメンバ変数が定義されているクラスまでのコメント
 	 * @param pre_code　このメンバ変数が定義されているクラスまでのコード
+	 * @param member_number　このメンバ変数の番号
 	 */
-	public void setCode_of(
+	public int setCode_of(
 			ClassInfoManager classInfoManager,
 			StringBuilder all_code,
 			String tab,
 			String pre_comment,
-			String pre_code
+			String pre_code,
+			StringBuilder member_list_code,
+			int member_number,
+			boolean addComma
 			) {
+
+		String comma = "";
+		if (addComma ) {
+			comma = ", ";
+		}
 
 		// 内側インデントタブ
 		String tabInside = tab + "	";
@@ -249,7 +296,6 @@ public class MemberInfo {
 		all_code.append(" */");
 		all_code.append(System.lineSeparator());
 
-
 		// クラス情報を取得
 		// パッケージ名取得
 		String packageString = this.getClassInfoRef().getPackageName(this.getClassType());
@@ -261,22 +307,24 @@ public class MemberInfo {
 
 			// コード追加
 			all_code.append(tabInside);
-			if ( this.isOptional() ) { // Optionalのとき
-				all_code.append(tabInside);
-				all_code.append("Optional.of(");
-			}
-			all_code.append("// ");
-			all_code.append(classType);
-			all_code.append(" ");
-			all_code.append(this.getMemberName());
-			if (this.isList()) { // リストのとき
-				all_code.append("// !!リストの対応が必要");
-			}
-			all_code.append(System.lineSeparator());
+			all_code.append(comma);
+			all_code.append(this.createMemberValueName(member_number));
 			all_code.append(System.lineSeparator());
 
-			// Javaプリミティブ型まできたら終了
-			return;
+			// メンバリスト 同一コードあり ------------------------
+			member_list_code.append("/** ");
+			member_list_code.append(sb_comment.toString());
+			member_list_code.append(" */");
+			member_list_code.append(System.lineSeparator());
+
+			member_list_code.append(this.createMemberDef(member_number));
+			member_list_code.append(";");
+			member_number++;
+			member_list_code.append(System.lineSeparator());
+			// -------------------------------------------
+
+			// Javaプリミティブ型、リストまできたら終了
+			return member_number;
 		}
 
 		// Ntsプリミティブ型
@@ -285,39 +333,53 @@ public class MemberInfo {
 
 			// コード追加
 			all_code.append(tabInside);
-			if ( this.isOptional() ) { // Optionalのとき
-				all_code.append(tabInside);
-				all_code.append("Optional.of(");
-			}
-			all_code.append("// new ");
-			all_code.append(classType);
-			all_code.append("( XXXXX )");
-			all_code.append(this.getMemberName());
-			if (this.isList()) { // リストのとき
-				all_code.append("// !!リストの対応が必要");
-			}
-			all_code.append(System.lineSeparator());
+			all_code.append(comma);
+			all_code.append(this.createMemberValueName(member_number));
 			all_code.append(System.lineSeparator());
 
+			// メンバリスト 同一コードあり ------------------------
+			member_list_code.append("/** ");
+			member_list_code.append(sb_comment.toString());
+			member_list_code.append(" */");
+			member_list_code.append(System.lineSeparator());
+
+			member_list_code.append(this.createMemberDef(member_number));
+			member_list_code.append(";");
+			member_number++;
+			member_list_code.append(System.lineSeparator());
+			// -------------------------------------------
+
 			// Javaプリミティブ型まできたら終了
-			return;
+			return member_number;
 		}
 
 		// その他（クラス）
 		if (classInfoOpt.isPresent()) { // クラス情報があるとき
 			ClassInfo classInfo = classInfoOpt.get();
-
 			all_code.append(tabInside);
-			if ( this.isOptional() ) { // Optionalのとき
-				all_code.append(tabInside);
-				all_code.append("Optional.of(");
-			}
+
 
 			// メンバ変数がないとき
 			if ( classInfo.getMemberInfoList().size() == 0 ) {
-				all_code.append("/** new ");
-				all_code.append(classType);
-				all_code.append("( XXXXX ) */");
+				all_code.append(comma);
+				all_code.append(this.createMemberValueName(member_number));
+				all_code.append(System.lineSeparator());
+
+//				if ( this.isOptional() ) { // Optionalのとき
+//					all_code.append(")");
+//				}
+
+				// メンバリスト 同一コードあり ------------------------
+				member_list_code.append("/** ");
+				member_list_code.append(sb_comment.toString());
+				member_list_code.append(" */");
+				member_list_code.append(System.lineSeparator());
+
+				member_list_code.append(this.createMemberDef(member_number));
+				member_list_code.append(";");
+				member_number++;
+				member_list_code.append(System.lineSeparator());
+				// -------------------------------------------
 
 				// エラーがあるとき
 				if (0 < classInfo.getErrorMessage().length()) {
@@ -328,60 +390,77 @@ public class MemberInfo {
 					all_code.append(System.lineSeparator());
 				}
 
-			} else {
+			} else { //　メンバ情報があるとき
+
+				all_code.append(comma);
+				if ( this.isOptional() ) { // Optionalのとき
+					all_code.append("Optional.ofNullable(");
+				}
+
 				all_code.append(classType);
 				all_code.append(".of(");
 				all_code.append(System.lineSeparator());
 
 				//　再帰処理
+				boolean isFirst = true;
 				for( MemberInfo memberInfo : classInfo.getMemberInfoList() ) {
-					memberInfo.setCode_of(classInfoManager, all_code, tabInside, sb_comment.toString(), "");
+					member_number = memberInfo.setCode_of(
+							classInfoManager, all_code, tabInside, sb_comment.toString(),
+							"", member_list_code, member_number, !isFirst);
+					isFirst = false;
 				}
 
-				all_code.append(System.lineSeparator());
 				all_code.append(tabInside);
 				all_code.append(")");
+				if ( this.isOptional() ) { // Optionalのとき
+					all_code.append(")");
+				}
+				all_code.append(System.lineSeparator());
 			}
 
 		} else { // クラス情報がないとき
 
 			// コード追加
 			all_code.append(tabInside);
-			if ( this.isOptional() ) { // Optionalのとき
-				all_code.append(tabInside);
-				all_code.append("Optional.of(");
-			}
-//			all_code.append("/** ");
-//			all_code.append(classType);
-//			all_code.append(" */");
+			all_code.append(comma);
+			all_code.append(this.createMemberValueName(member_number));
+			all_code.append(System.lineSeparator());
 
-			all_code.append("// new ");
-			all_code.append(classType);
-			all_code.append("( XXXXX )");
+			// メンバリスト 同一コードあり ------------------------
+			member_list_code.append("/** ");
+			member_list_code.append(sb_comment.toString());
+			member_list_code.append(" */");
+			member_list_code.append(System.lineSeparator());
+
+			member_list_code.append(this.createMemberDef(member_number));
+			member_list_code.append(";");
+			member_number++;
+			member_list_code.append(System.lineSeparator());
+			// -------------------------------------------
 
 			if (this.isList()) { // リストのとき
+				all_code.append(tabInside);
 				all_code.append("// !!リストの対応が必要");
+				member_list_code.append(System.lineSeparator());
+				all_code.append(System.lineSeparator());
 			}
-			all_code.append(System.lineSeparator());
+
 			all_code.append(tabInside);
 			all_code.append("// !!クラス情報がありません");
 			all_code.append(System.lineSeparator());
 			all_code.append(System.lineSeparator());
 
 			// 終了
-			return;
+			return member_number;
 		}
 
-		all_code.append(tab);
-		all_code.append(")");
-		all_code.append(System.lineSeparator());
-
-		if ( this.isOptional() ) { // Optionalのとき
-			all_code.append(tabInside);
-			all_code.append(")");
-			all_code.append(System.lineSeparator());
-			all_code.append(System.lineSeparator());
-		}
+		return member_number;
+//		if ( this.isOptional() ) { // Optionalのとき
+//			all_code.append(tabInside);
+//			all_code.append(")");
+//			all_code.append(System.lineSeparator());
+//			all_code.append(System.lineSeparator());
+//		}
 	}
 
 	/**

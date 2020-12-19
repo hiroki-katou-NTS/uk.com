@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -20,6 +21,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
@@ -29,6 +31,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedDays;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.PeriodGrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.RegularGrantDays;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
@@ -220,7 +225,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		int ageHigherLimit = c.getInt("AGE_HIGHER_LIMIT") != null ? c.getInt("AGE_HIGHER_LIMIT") : 0;
 		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
 
-//		// 要修正 jinno 修正量多い
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(
 				companyId,
 				specialHolidayCode,
@@ -232,52 +236,44 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				1); // 要修正　grantDay
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
-		
+		/** 期間 */
 		DatePeriod period = new DatePeriod(
 				GeneralDate.ymd(9999, (int)(Math.floor(startDate / 100)), (int)(Math.floor(startDate % 100))),
 				GeneralDate.ymd(9999, (int)(Math.floor(endDate / 100)), (int)(Math.floor(endDate % 100))));
-		
 
-//		GrantRegular grantRegular = GrantRegular.createFromJavaType(
-//				companyId,
-//				specialHolidayCode,
-//				typeTime, grantDate, allowDisappear, grantTime);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//		AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
-//		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
-//		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
-//				companyId, specialHolidayCode, timeMethod, limitCarryoverDays,
-//				expirationDate.getMonths().v(), expirationDate.getYears().v());
-//
-//		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
-//		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
-//		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls,
-//				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
-//
-//		return SpecialHoliday.of(
-//				companyId, specialHolidayCode, specialHolidayName, grantRegular,
-//				specialLeaveRestriction, null, autoGrant, memo);
-		return null;
+		/** 期間付与 */
+		PeriodGrantDate periodGrantDate =
+			PeriodGrantDate.of(
+				/** 期間 */
+				period
+				/** 付与日数 */
+				,RegularGrantDays.of(
+					/** 付与日数.付与日数 */
+					 new GrantedDays(grantedDays)
+				)
+			);
+
+		AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
+		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
+		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
+				companyId, specialHolidayCode, timeMethod, limitCarryoverDays,
+				expirationDate.getMonths().v(), expirationDate.getYears().v());
+
+		GrantRegular grantRegular = GrantRegular.of(
+				EnumAdaptor.valueOf(typeTime, TypeTime.class),
+				Optional.of(EnumAdaptor.valueOf(grantDate, GrantDate.class)),
+				Optional.of(fixGrantDate),
+				Optional.of(grantPeriodic),
+				Optional.of(periodGrantDate));
+
+		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
+		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
+		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls,
+				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
+
+		return SpecialHoliday.of(
+				companyId, specialHolidayCode, specialHolidayName, grantRegular,
+				specialLeaveRestriction, null, autoGrant, memo);
 	}
 
 	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
@@ -373,18 +369,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		}
 
 		entity.timeMethod = timeSpecifyMethod;
-//		entity.startDate = domain.getGrantPeriodic().getAvailabilityPeriod().getStartDateValue();
-//		entity.endDate = domain.getGrantPeriodic().getAvailabilityPeriod().getEndDateValue();
 		if (domain.getGrantRegular().getPeriodGrantDate().isPresent()){
 			/** 特別休暇.付与・期限情報.期間付与.期間 */
 			entity.startDate = domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().month() * 100
 					+ domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().day();
 			entity.endDate = domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().month() * 100
 					+ domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().day();
-
 		}
-
-		entity.startDate = domain.get
 
 		if (domain.getGrantRegular().getFixGrantDate().isPresent()){
 			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */

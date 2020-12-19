@@ -77,6 +77,11 @@ public class CodeGenerator {
 		// 生成したコード全て
 		StringBuilder all_code = new StringBuilder();
 
+		// メンバ変数
+		StringBuilder member_list_code = new StringBuilder();
+		// メンバ変数番号
+		Integer member_number = 1;
+
 		String tab = "	";
 
 		all_code.append(tab);
@@ -85,14 +90,23 @@ public class CodeGenerator {
 		all_code.append(System.lineSeparator());
 
 		// メンバ変数を順番に処理
+		boolean isFirst = true;
 		for( MemberInfo memberInfo : rootClassInfo.getAllMemberInfoList(classInfoManager)) {
-			memberInfo.setCode_of(classInfoManager, all_code, tab, rootClassComment, "c");
+			member_number = memberInfo.setCode_of(
+					classInfoManager, all_code, tab, rootClassComment, "c", member_list_code, member_number, !isFirst);
+			isFirst = false;
 		}
 
 		all_code.append(System.lineSeparator());
 		all_code.append(");");
 		all_code.append(System.lineSeparator());
 
-		return all_code.toString();
+		StringBuilder code = new StringBuilder();
+		code.append(member_list_code);
+		code.append(System.lineSeparator());
+		code.append(all_code);
+
+
+		return code.toString();
 	}
 }
