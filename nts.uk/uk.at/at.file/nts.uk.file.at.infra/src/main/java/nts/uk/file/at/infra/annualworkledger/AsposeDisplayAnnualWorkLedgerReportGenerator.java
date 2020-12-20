@@ -25,12 +25,12 @@ import java.util.Locale;
 @Stateless
 public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsReportGenerator
         implements DisplayAnnualWorkLedgerReportGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR004.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR0004.xlsx";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
     private static final int EXPORT_EXCEL = 2;
-    private static final int NUMBER_ROW_OF_PAGE = 48;
+    private static final int NUMBER_ROW_OF_PAGE = 47;
     private static final int MAX_DAY_IN_MONTH = 31;
 
     @Override
@@ -84,12 +84,14 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         for (int i = 0; i < lstAnnualWorkLedgerContent.size(); i++) {
             AnnualWorkLedgerContent empInfo = lstAnnualWorkLedgerContent.get(i);
             int firstRow = (i ) * NUMBER_ROW_OF_PAGE;
-            int firstPage = (i + 1) * NUMBER_ROW_OF_PAGE;
-            cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
-            cells.clearContents(firstRow,0,cells.getMaxRow(),cells.getMaxColumn());
+            if(i>=1){
+                pageBreaks.add(firstRow);
+                cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
+                cells.clearContents(firstRow -1,0,cells.getMaxRow(),cells.getMaxColumn());
+            }
             this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
             this.printData(worksheet, firstRow, dataSource, empInfo);
-            pageBreaks.add(firstPage);
+
         }
     }
 
