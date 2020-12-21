@@ -12,6 +12,7 @@ module nts.uk.at.view.kmk004.b {
 	interface Params {
 		type: SIDEBAR_TYPE
 		selectId: KnockoutObservable<string>;
+		change: KnockoutObservable<string>
 	}
 
 	const template = `
@@ -112,47 +113,73 @@ module nts.uk.at.view.kmk004.b {
 		public tabSetting = new TabSetting();
 		public type: SIDEBAR_TYPE;
 		public selectId: KnockoutObservable<string> = ko.observable('');
+		public change: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
 			vm.type = params.type;
 			vm.selectId = params.selectId;
+			vm.change = params.change;
 
 			vm.reloadData();
 
 			vm.selectId
 				.subscribe(() => {
 					vm.reloadData();
-				})
+				});
+
+			vm.change
+				.subscribe(() => {
+					vm.reloadData();
+				});
 		}
 
 		mounted() {
 			const vm = this;
+			vm.init();
+		}
 
-			if (!ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
+		init() {
+			const vm = this;
+
+			if (ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
+				vm.model.surcharge1('KMK004_244');
+			} else {
 				vm.model.surcharge1('KMK004_245');
 			}
-			if (!ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
+			if (ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
+				vm.model.surcharge2('KMK004_216');
+			} else {
 				vm.model.surcharge2('KMK004_217');
 			}
-			if (!ko.unwrap(vm.tabSetting.deforWorkLegalHoliday)) {
+
+			if (ko.unwrap(vm.tabSetting.deforWorkLegalHoliday)) {
+				vm.model.surcharge3('KMK004_218');
+			} else {
 				vm.model.surcharge3('KMK004_219');
 			}
-			if (!ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
+
+			if (ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
+				vm.model.surchargeOvertime1('KMK004_250');
+			} else {
 				vm.model.surchargeOvertime1('KMK004_251');
 			}
-			if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
+
+			if (ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
+				vm.model.surchargeOvertime2('KMK004_216');
+			} else {
 				vm.model.surchargeOvertime2('KMK004_217');
 			}
-			if (!ko.unwrap(vm.tabSetting.outsidedeforWorkLegalHoliday)) {
+
+			if (ko.unwrap(vm.tabSetting.outsidedeforWorkLegalHoliday)) {
+				vm.model.surchargeOvertime3('KMK004_218');
+			} else {
 				vm.model.surchargeOvertime3('KMK004_219');
 			}
-
 		}
 
 		reloadData() {
 			const vm = this;
-			
 			switch (vm.type) {
 				case 'Com_Company':
 					vm.$blockui('invisible')
@@ -165,34 +192,35 @@ module nts.uk.at.view.kmk004.b {
 				case 'Com_Workplace':
 					if (ko.unwrap(vm.selectId) !== '') {
 						vm.$blockui('invisible')
-						.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
-						.then((data: ITabSetting) => {
-							vm.tabSetting.create(data)
-						})
-						.then(() => vm.$blockui('clear'));
+							.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
+							.then((data: ITabSetting) => {
+								vm.tabSetting.create(data)
+							})
+							.then(() => vm.$blockui('clear'));
 					}
 					break;
 				case 'Com_Employment':
 					if (ko.unwrap(vm.selectId) !== '') {
 						vm.$blockui('invisible')
-						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
-						.then((data: ITabSetting) => {
-							vm.tabSetting.create(data)
-						})
-						.then(() => vm.$blockui('clear'));
+							.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
+							.then((data: ITabSetting) => {
+								vm.tabSetting.create(data)
+							})
+							.then(() => vm.$blockui('clear'));
 					}
 					break;
 				case 'Com_Person':
-					if (ko.unwrap(vm.selectId) !== ''){
+					if (ko.unwrap(vm.selectId) !== '') {
 						vm.$blockui('invisible')
-						.then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
-						.then((data: ITabSetting) => {
-							vm.tabSetting.create(data)
-						})
-						.then(() => vm.$blockui('clear'));
+							.then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
+							.then((data: ITabSetting) => {
+								vm.tabSetting.create(data)
+							})
+							.then(() => vm.$blockui('clear'));
 					}
 					break;
 			}
+			vm.init();
 		}
 	}
 
@@ -206,12 +234,12 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	class DataModel {
-		surcharge1: KnockoutObservable<string> = ko.observable('KMK004_244'); //245
-		surcharge2: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
-		surcharge3: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
-		surchargeOvertime1: KnockoutObservable<string> = ko.observable('KMK004_250'); //251
-		surchargeOvertime2: KnockoutObservable<string> = ko.observable('KMK004_216'); //217
-		surchargeOvertime3: KnockoutObservable<string> = ko.observable('KMK004_218'); //219
+		surcharge1: KnockoutObservable<string> = ko.observable(''); //245
+		surcharge2: KnockoutObservable<string> = ko.observable(''); //217
+		surcharge3: KnockoutObservable<string> = ko.observable(''); //219
+		surchargeOvertime1: KnockoutObservable<string> = ko.observable(''); //251
+		surchargeOvertime2: KnockoutObservable<string> = ko.observable(''); //217
+		surchargeOvertime3: KnockoutObservable<string> = ko.observable(''); //219
 
 		public create(params?: IDataModel) {
 			const self = this;
@@ -249,12 +277,12 @@ module nts.uk.at.view.kmk004.b {
 	class TabSetting {
 		daily: KnockoutObservable<string> = ko.observable('0:00');
 		weekly: KnockoutObservable<string> = ko.observable('0:00');
-		deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-		deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
-		deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
-		outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-		outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);;
-		outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);;
+		deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
+		deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
+		deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
+		outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
+		outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
+		outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
 
 		public create(params?: ITabSetting) {
 			const self = this;
@@ -281,11 +309,11 @@ module nts.uk.at.view.kmk004.b {
 					lastWeekly = '0' + lastWeekly;
 				}
 
-				if (firstDaily === ''){
+				if (firstDaily === '') {
 					firstDaily = '0';
 				}
 
-				if (firstWeekly === ''){
+				if (firstWeekly === '') {
 					firstWeekly = '0';
 				}
 

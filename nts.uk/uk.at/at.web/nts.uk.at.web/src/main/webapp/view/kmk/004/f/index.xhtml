@@ -22,18 +22,19 @@
         <ui:define name="content">
             <div id="contents-area">
                 <div class="view-f">
-                    <label class="title" data-bind="i18n: input.type"></label>
+                    <label class="title" data-bind="i18n: $vm.type"></label>
                     <hr>
                     </hr>
                     <!-- Chưa ẩn hiện đc  -->
-                    <!-- ko if: attendance -->
-                        <div class="node" data-bind="i18n: 'KMK004_344'"></div>
+                    <!-- ko ifnot: attendance -->
+                    <div class="node" data-bind="i18n: 'KMK004_344'"></div>
                     <!-- /ko -->
                     <div class="cf">
-                        <div style="margin-top: 0px;" data-bind="ntsFormLabel: { inline: true, required: true}, i18n: 'KMK004_239'"></div>
+                        <div style="margin-top: 0px;"
+                            data-bind="ntsFormLabel: { inline: true, required: true}, i18n: 'KMK004_239'"></div>
                         <div class="content-change">
                             <label data-bind="i18n: 'KMK004_240'"></label>
-                            <input tabindex="1" class="lable-input input-forcus" data-bind="ntsTimeEditor: {value: model.workingTimeSetting.dailyTime, 
+                            <input tabindex="1" class="lable-input input-forcus" data-bind="ntsTimeEditor: {value: model.daily, 
                                 inputFormat: 'time',
                                 mode: 'time',
                                 option: {
@@ -41,7 +42,7 @@
                                     textalign: 'center'}, 
                                 constraint: 'DailyTime'}" />
                             <label data-bind="i18n: 'KMK004_241'"></label>
-                            <input tabindex="2" class="lable-input" data-bind="ntsTimeEditor: {value: model.workingTimeSetting.weeklyTime, 
+                            <input tabindex="2" class="lable-input" data-bind="ntsTimeEditor: {value: model.weekly, 
                                 inputFormat: 'time',
                                 mode: 'time',
                                 option: {
@@ -58,13 +59,11 @@
                             }">
                         </div>
                         <div class="list-check-box">
-                            <div tabindex="4"
-                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.aggregateTimeSet.legalOverTimeWork,
+                            <div tabindex="4" data-bind="ntsCheckBox: { checked: model.deforWorkSurchargeWeekMonth,
                                      enable: valueInsurrance() == 1}">
                                 #{i18n.getText('KMK004_246')}
                             </div>
-                            <div tabindex="5"
-                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.aggregateTimeSet.legalHoliday, 
+                            <div tabindex="5" data-bind="ntsCheckBox: { checked: model.deforWorkLegalHoliday, 
                                     enable: valueInsurrance() == 1}">
                                 #{i18n.getText('KMK004_247')}</div>
                         </div>
@@ -76,13 +75,11 @@
                             value: valueSurcharges}">
                         </div>
                         <div class="list-check-box">
-                            <div tabindex="7"
-                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.excessOutsideTimeSet.legalOverTimeWork, 
+                            <div tabindex="7" data-bind="ntsCheckBox: { checked: model.outsideSurchargeWeekMonth, 
                                     enable: valueSurcharges() == 1}">
                                 #{i18n.getText('KMK004_252')}
                             </div>
-                            <div tabindex="8"
-                                data-bind="ntsCheckBox: { checked: model.regularWorkTimeAggrSet.excessOutsideTimeSet.legalHoliday, 
+                            <div tabindex="8" data-bind="ntsCheckBox: { checked: model.outsidedeforWorkLegalHoliday, 
                                     enable: valueSurcharges() == 1}">
                                 #{i18n.getText('KMK004_253')}</div>
                         </div>
@@ -90,11 +87,11 @@
                 </div>
             </div>
             <div id="functions-area-bottom">
-                <button tabindex="9" class="proceed large button1" data-bind="i18n: 'KMK004_234'"></button>
-                <button tabindex="10"  data-bind="i18n: 'KMK004_235', click: closeDialog"></button>
+                <button tabindex="9" class="proceed large button1" data-bind="i18n: 'KMK004_234', click: add"></button>
+                <button tabindex="10" data-bind="i18n: 'KMK004_235', click: closeDialog"></button>
                 <!-- Chưa ẩn hiện đc  -->
-                <!-- ko if: attendance -->
-                    <button tabindex="11" class="danger button3" data-bind="i18n: 'KMK004_236'"></button>
+                <!-- ko ifnot: attendance -->
+                <button tabindex="11" class="danger button3" data-bind="i18n: 'KMK004_236'"></button>
                 <!-- /ko -->
             </div>
         </ui:define>

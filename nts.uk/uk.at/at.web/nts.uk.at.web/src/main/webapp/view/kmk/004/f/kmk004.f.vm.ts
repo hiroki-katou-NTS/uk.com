@@ -2,16 +2,29 @@
 
 module nts.uk.at.view.kmk004.f {
 
-    interface IInput {
+    interface IParams {
         type: string;
+        selectId: string;
     }
 
     const API = {
-		DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
-		GET_SETTING_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getBaseSetting',
-		GET_SETTING_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getBaseSetting',
-		GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting'
-	}
+        DISPLAY_BASICSETTING: 'screen/at/kmk004/getDisplayBasicSetting',
+        GET_SETTING_WORKPLACE: 'screen/at/kmk004/viewc/wkp/getBaseSetting',
+        GET_SETTING_EMPLOYMENT: 'screen/at/kmk004/viewd/emp/getBaseSetting',
+        GET_SETTING_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getBaseSetting',
+
+        ADD_OR_UPDATE_COM: 'screen/at/kmk004/viewf/com/setting/update',
+        DELETE_COM: 'screen/at/kmk004/viewf/com/setting/delete',
+
+        ADD_OR_UPDATE_WORKPLACE: 'screen/at/kmk004/viewf/wkp/setting/update',
+        DELETE_WORKPLACE: 'screen/at/kmk004/viewf/wkp/setting/delete',
+
+        ADD_OR_UPDATE_EMPLOYMENT: 'screen/at/kmk004/viewf/emp/setting/update',
+        DELETE_EMPLOYMENT: 'screen/at/kmk004/viewf/emp/setting/delete',
+
+        ADD_OR_UPDATE_EMPLOYEE: 'screen/at/kmk004/viewf/sha/setting/update',
+        DELETE_EMPLOYEE: 'screen/at/kmk004/viewf/sha/setting/delete',
+    }
 
     @bean()
     export class ViewModel extends ko.ViewModel {
@@ -28,28 +41,29 @@ module nts.uk.at.view.kmk004.f {
         public valueInsurrance: KnockoutObservable<string> = ko.observable('1');
         public valueSurcharges: KnockoutObservable<string> = ko.observable('1');
         public checkCompany: KnockoutObservable<boolean> = ko.observable(true);
-        public attendance: KnockoutObservable<boolean> = ko.observable(false);
+        public attendance: KnockoutObservable<boolean> = ko.observable(true);
+        public type = '';
+        public selectId = '';
 
         public model: Model = new Model();
-        public input: Input = new Input();
 
-        create() {
+        created(params?: IParams) {
             const vm = this;
 
-            vm.init();
-        }
-
-        mounted() {
-            const vm = this;
-            vm.$window
-                .storage('KMK004F')
-                .then((data: IInput) => {
-                    vm.input.update(data);
-                });
+            vm.type = params.type;
+            vm.selectId = params.selectId;
 
             $(document).ready(function () {
                 $('.input-forcus').focus();
             });
+        }
+
+        mounted() {
+            const vm = this;
+            vm.init();
+            vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
+            vm.model.outsideSurchargeWeekMonth.valueHasMutated();
+            vm.reloadData();
         }
 
         closeDialog() {
@@ -57,40 +71,136 @@ module nts.uk.at.view.kmk004.f {
             vm.$window.close();
         }
 
+        add() {
+            const vm = this;
+            switch (ko.unwrap(vm.valueInsurrance)) {
+                case '1':
+                    vm.model.deforWorkLegalOverTimeWork(false);
+                    break;
+                case '0':
+                    vm.model.deforWorkLegalOverTimeWork(true);
+                    break
+            }
+            switch (ko.unwrap(vm.valueSurcharges)) {
+                case '1':
+                    vm.model.outsidedeforWorkLegalOverTimeWork(false);
+                    break;
+                case '0':
+                    vm.model.outsidedeforWorkLegalOverTimeWork(true);
+                    break
+            }
+
+            const input = {
+                daily: ko.unwrap(vm.model.daily),
+                weekly: ko.unwrap(vm.model.weekly),
+                deforWorkSurchargeWeekMonth: ko.unwrap(vm.model.deforWorkSurchargeWeekMonth),
+                deforWorkLegalOverTimeWork: ko.unwrap(vm.model.deforWorkLegalOverTimeWork),
+                deforWorkLegalHoliday: ko.unwrap(vm.model.deforWorkLegalHoliday),
+                outsideSurchargeWeekMonth: ko.unwrap(vm.model.outsideSurchargeWeekMonth),
+                outsidedeforWorkLegalOverTimeWork: ko.unwrap(vm.model.outsidedeforWorkLegalOverTimeWork),
+                outsidedeforWorkLegalHoliday: ko.unwrap(vm.model.outsidedeforWorkLegalHoliday),
+            }
+
+            const inputById = {
+                id: ko.unwrap(vm.selectId),
+                handlerCommon: input
+            }
+
+            switch (vm.type) {
+                case 'Com_Company':
+                    vm.$ajax(API.ADD_OR_UPDATE_COM, input)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Workplace':
+                    vm.$ajax(API.ADD_OR_UPDATE_WORKPLACE, inputById)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Employment':
+                    vm.$ajax(API.ADD_OR_UPDATE_EMPLOYMENT, inputById)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Person':
+                    vm.$ajax(API.ADD_OR_UPDATE_EMPLOYEE, inputById)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+            }
+
+        }
+
+        delete() {
+
+        }
+
         init() {
             const vm = this;
-
-            vm.model.regularWorkTimeAggrSet.aggregateTimeSet.surchargeWeekMonth.subscribe(() => {
-                if (ko.unwrap(vm.model.regularWorkTimeAggrSet.aggregateTimeSet.surchargeWeekMonth)) {
+            vm.model.deforWorkLegalOverTimeWork.subscribe(() => {
+                if (ko.unwrap(vm.model.deforWorkLegalOverTimeWork)) {
                     vm.valueInsurrance('1');
                 } else {
                     vm.valueInsurrance('0');
                 }
-            })
+            });
 
-            vm.model.regularWorkTimeAggrSet.excessOutsideTimeSet.surchargeWeekMonth.subscribe(() => {
-                if (ko.unwrap(vm.model.regularWorkTimeAggrSet.excessOutsideTimeSet.surchargeWeekMonth)) {
+            vm.model.outsidedeforWorkLegalOverTimeWork.subscribe(() => {
+                if (ko.unwrap(vm.model.outsidedeforWorkLegalOverTimeWork)) {
                     vm.valueSurcharges('1');
                 } else {
                     vm.valueSurcharges('0');
                 }
-            })
+            });
         }
-    }
 
-    class Input{
-        type: KnockoutObservable<string> = ko.observable('Com_Company');
-
-        constructor(param?: IInput) {
-            const md = this;
-            if (param) {
-                md.update(param);
+        reloadData() {
+            const vm = this;
+            switch (vm.type) {
+                case 'Com_Company':
+                    vm.$blockui('invisible')
+                        .then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
+                        .then((data: IModel) => {
+                            vm.model.update(data)
+                            console.log(data);
+                        })
+                        .then(() => vm.$blockui('clear'));
+                    break;
+                case 'Com_Workplace':
+                    if (ko.unwrap(vm.selectId) !== '') {
+                        vm.$blockui('invisible')
+                            .then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
+                            .then((data: IModel) => {
+                                vm.model.update(data)
+                            })
+                            .then(() => vm.$blockui('clear'));
+                    }
+                    break;
+                case 'Com_Employment':
+                    if (ko.unwrap(vm.selectId) !== '') {
+                        vm.$blockui('invisible')
+                            .then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
+                            .then((data: IModel) => {
+                                vm.model.update(data)
+                            })
+                            .then(() => vm.$blockui('clear'));
+                    }
+                    break;
+                case 'Com_Person':
+                    if (ko.unwrap(vm.selectId) !== '') {
+                        vm.$blockui('invisible')
+                            .then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
+                            .then((data: IModel) => {
+                                vm.model.update(data)
+                            })
+                            .then(() => vm.$blockui('clear'));
+                    }
+                    break;
             }
-        }
-
-        update(param: IInput) {
-            const md = this;
-            md.type(param.type);
         }
     }
 }
@@ -100,84 +210,43 @@ interface ISwitch {
     name: string;
 }
 
-interface IWorkingTimeSetting {
-    dailyTime: number;
-    weeklyTime: number;
-}
-
-class WorkingTimeSetting {
-    dailyTime: KnockoutObservable<number> = ko.observable(480);
-    weeklyTime: KnockoutObservable<number> = ko.observable(2400);
-
-    constructor(params?: IWorkingTimeSetting) {
-        const md = this;
-
-        if (params) {
-            md.dailyTime(params.dailyTime);
-            md.weeklyTime(params.weeklyTime);
-        }
-    }
-}
-
-interface IExcessOutsideTimeSetReg {
-    legalOverTimeWork: boolean;
-    legalHoliday: boolean;
-    surchargeWeekMonth: boolean;
-    exceptLegalHdwk: boolean;
-}
-
-class ExcessOutsideTimeSetReg {
-    legalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);
-    legalHoliday: KnockoutObservable<boolean> = ko.observable(true);
-    surchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
-    exceptLegalHdwk: KnockoutObservable<boolean> = ko.observable(true);
-
-    constructor(params?: IExcessOutsideTimeSetReg) {
-        const md = this;
-
-        if (params) {
-            md.legalOverTimeWork(params.legalOverTimeWork);
-            md.legalHoliday(params.legalHoliday);
-            md.surchargeWeekMonth(params.surchargeWeekMonth);
-            md.exceptLegalHdwk(params.exceptLegalHdwk);
-        }
-    }
-}
-
-interface IRegularWorkTimeAggrSet {
-    aggregateTimeSet: IExcessOutsideTimeSetReg;
-    excessOutsideTimeSet: IExcessOutsideTimeSetReg;
-}
-
-class RegularWorkTimeAggrSet {
-    aggregateTimeSet: ExcessOutsideTimeSetReg = new ExcessOutsideTimeSetReg();
-    excessOutsideTimeSet: ExcessOutsideTimeSetReg = new ExcessOutsideTimeSetReg();
-
-    constructor(params?: IRegularWorkTimeAggrSet) {
-        const md = this;
-
-        if (params) {
-            md.aggregateTimeSet = new ExcessOutsideTimeSetReg(params.aggregateTimeSet);
-            md.excessOutsideTimeSet = new ExcessOutsideTimeSetReg(params.excessOutsideTimeSet);
-        }
-    }
-}
-
 interface IModel {
-    workingTimeSetting: IWorkingTimeSetting;
-    regularWorkTimeAggrSet: IRegularWorkTimeAggrSet;
+    daily: number;
+    weekly: number;
+    deforWorkSurchargeWeekMonth: boolean;
+    deforWorkLegalOverTimeWork: boolean;
+    deforWorkLegalHoliday: boolean;
+    outsideSurchargeWeekMonth: boolean
+    outsidedeforWorkLegalOverTimeWork: boolean;
+    outsidedeforWorkLegalHoliday: boolean;
 }
 
 class Model {
-    workingTimeSetting: WorkingTimeSetting = new WorkingTimeSetting();
-    regularWorkTimeAggrSet: RegularWorkTimeAggrSet = new RegularWorkTimeAggrSet();
+    daily: KnockoutObservable<number> = ko.observable(0);
+    weekly: KnockoutObservable<number> = ko.observable(0);
+    deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
+    deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
+    deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
+    outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
+    outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
+    outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
 
     constructor(params?: IModel) {
-        const md = this;
+        this.update(params);
+    }
+
+    public update(params?: IModel) {
+        const self = this;
 
         if (params) {
-            md.workingTimeSetting = new WorkingTimeSetting(params.workingTimeSetting);
-            md.regularWorkTimeAggrSet = new RegularWorkTimeAggrSet(params.regularWorkTimeAggrSet);
+            self.daily(params.daily);
+            self.weekly(params.weekly);
+            self.deforWorkSurchargeWeekMonth(params.deforWorkSurchargeWeekMonth);
+            self.deforWorkLegalOverTimeWork(params.deforWorkLegalOverTimeWork);
+            self.deforWorkLegalHoliday(params.deforWorkLegalHoliday);
+            self.outsideSurchargeWeekMonth(params.outsideSurchargeWeekMonth);
+            self.outsidedeforWorkLegalOverTimeWork(params.outsidedeforWorkLegalOverTimeWork);
+            self.outsidedeforWorkLegalHoliday(params.outsidedeforWorkLegalHoliday);
         }
     }
 }

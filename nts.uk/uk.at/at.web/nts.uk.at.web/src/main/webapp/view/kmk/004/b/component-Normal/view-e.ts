@@ -35,10 +35,10 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: model.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_241'"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_241', click: openDialogF"></button>
 					<!-- /ko -->
 					<!-- ko ifnot: model.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_240'"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_240', click: openDialogF"></button>
 					<!-- /ko -->
 				</div>
 				<!-- ko if: model.isAlreadySetting -->
@@ -46,7 +46,8 @@ module nts.uk.at.view.kmk004.b {
 						name: 'basic-setting',
 						params:{
 							type: type,
-							selectId: model.id
+							selectId: model.id,
+							change: change
 						}
 					}"></div>
 				<!-- /ko -->
@@ -104,7 +105,7 @@ module nts.uk.at.view.kmk004.b {
 		public type: SIDEBAR_TYPE = 'Com_Person';
 		public model: Employee = new Employee();
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
-
+		public change: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
@@ -142,6 +143,14 @@ module nts.uk.at.view.kmk004.b {
 		copy() {
 			$(document).ready(function () {
 				$('.listbox').focus();
+			});
+		}
+
+		openDialogF() {
+			const vm = this;
+			const params = { type: vm.type, selectId: ko.unwrap(vm.model.id) };
+			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
+				vm.change.valueHasMutated();
 			});
 		}
 

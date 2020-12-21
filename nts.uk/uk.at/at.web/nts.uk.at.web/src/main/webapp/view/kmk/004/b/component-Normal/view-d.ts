@@ -27,10 +27,10 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: emloyment.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_241'"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_241', click: openDialogF"></button>
 					<!-- /ko -->
 					<!-- ko ifnot: emloyment.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_240'"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_240', click: openDialogF"></button>
 					<!-- /ko -->
 				</div>
 				<!-- ko if: emloyment.isAlreadySetting -->
@@ -38,7 +38,8 @@ module nts.uk.at.view.kmk004.b {
 						name: 'basic-setting',
 						params:{
 							type: type,
-							selectId: emloyment.code
+							selectId: emloyment.code,
+							change: change
 						}
 					}"></div>
 				<!-- /ko -->
@@ -99,6 +100,7 @@ module nts.uk.at.view.kmk004.b {
 		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
+		public change: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
@@ -157,6 +159,14 @@ module nts.uk.at.view.kmk004.b {
 		remote() {
 			$(document).ready(function () {
 				$('.listbox').focus();
+			});
+		}
+
+		openDialogF() {
+			const vm = this;
+			const params = { type: vm.type, selectId: ko.unwrap(vm.emloyment.code) };
+			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
+				vm.change.valueHasMutated();
 			});
 		}
 
