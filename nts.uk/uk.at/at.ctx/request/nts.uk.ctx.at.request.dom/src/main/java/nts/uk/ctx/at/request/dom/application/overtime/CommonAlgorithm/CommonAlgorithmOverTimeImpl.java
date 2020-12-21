@@ -410,9 +410,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output.setOverTimeAppSet(overtimeAppSet);
 		output.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		output.setDivergenceTimeRoot(reasonDissociationOutput.getDivergenceTimeRoots());
-		if (agreeOverTimeOutputOp.isPresent()) {
-			output.setAgreeOverTimeOutput(agreeOverTimeOutputOp.get());
-		}
+		output.setAgreeOverTimeOutput(agreeOverTimeOutputOp);
 		if (overTimeReflectOp.isPresent()) {
 			output.setOverTimeReflect(overTimeReflectOp.get());
 		}

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.infra.repository.application.overtime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
 
 import javax.ejb.Stateless;
 
@@ -13,6 +12,9 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Worksheet;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.i18n.I18NText;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -27,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -36,12 +39,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class AsposeAppOverTime {
 	public static final String HALF_SIZE_SPACE = " ";
+	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
 	
-	public int printAppOverTimeContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
-		Stack<Integer> deleteRows = new Stack<>();
+	public AsposeAppOverTime.CalRange printAppOverTimeContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
 		Optional<DetailOutput> opDetailOutput = printContentOfApp.getOpDetailOutput();
-		if (!opDetailOutput.isPresent()) return 0 ;
+		if (!opDetailOutput.isPresent()) return new CalRange() ;
 		DisplayInfoOverTime displayInfoOverTime = opDetailOutput.get().getDisplayInfoOverTime();
 		AppOverTime appOverTime = opDetailOutput.get().getAppOverTime();
 		// 「申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
@@ -130,7 +133,6 @@ public class AsposeAppOverTime {
 		Cell cellD11 = cells.get("D11");
 		Cell cellD12 = cells.get("D12");
 	    
-		// if (c1) {
 			
 		cellB8.setValue(I18NText.getText("KAF005_34"));
 		
@@ -175,23 +177,35 @@ public class AsposeAppOverTime {
 			
 			
 		}
-		
+		StringBuilder contentD10 = new StringBuilder("");
+		StringBuilder contentD11 = new StringBuilder("");
 		appOverTime.getWorkHoursOp().orElse(Collections.emptyList())
 			.stream()
 			.forEach(x ->  {
 				if (x.getWorkNo().v() == 1) {
-					
-					cellD10.setValue("");
-				} else if (x.getWorkNo().v() == 2) {
-					cellD11.setValue("");
+					contentD10.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
+					contentD10.append(" ~ ");
+					contentD10.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
+				} else {
+					contentD11.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
+					contentD11.append(" ~ ");
+					contentD11.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
 				}
 			});
+		cellD10.setValue(contentD10);
+		cellD11.setValue(contentD11);
+		StringBuilder contentD12 = new StringBuilder("");
 		appOverTime.getBreakTimeOp().orElse(Collections.emptyList())
 			.stream()
 			.forEach(x ->  {
-				cellD12.setValue("");
+				if (x.getWorkNo().v() != 1) {
+					contentD12.append("`");
+				}
+				contentD12.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
+				contentD12.append(" ~ ");
+				contentD12.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());
 			});
-			
+		cellD12.setValue(contentD12);	
 		
 			
 			
@@ -217,11 +231,15 @@ public class AsposeAppOverTime {
 												.getOverTimeShiftNight()
 												.map(OverTimeShiftNight::getOverTimeMidNight)
 												.orElse(null));
+		cellF18.setValue(TIME_ZERO);
 		if (overTimeMidNight.isPresent()) {
-			cellF18.setValue(overTimeMidNight.get().v());			
+			cellF18.setValue(new TimeWithDayAttr(overTimeMidNight.get().v()).getInDayTimeWithFormat());			
 		}
 		Cell cellJ18 = cells.get("J18");
-		cellJ18.setValue(appOverTime.getApplicationTime().getFlexOverTime().orElse(null));
+		cellJ18.setValue(TIME_ZERO);
+		if (appOverTime.getApplicationTime().getFlexOverTime().isPresent()) {
+			cellJ18.setValue(new TimeWithDayAttr(appOverTime.getApplicationTime().getFlexOverTime().get().v()).getInDayTimeWithFormat());			
+		}
 		
 		
 		
@@ -259,7 +277,9 @@ public class AsposeAppOverTime {
 		Cell cellF23 = cells.get("F23");
 		
 		Cell cellF24 = cells.get("F24");
+		cellF24.setValue(TIME_ZERO);
 		Cell cellF25 = cells.get("F25");
+		cellF25.setValue(TIME_ZERO);
 		
 		
 		Cell cellJ19 = cells.get("J19");
@@ -269,6 +289,7 @@ public class AsposeAppOverTime {
 		Cell cellJ23 = cells.get("J23");
 		
 		Cell cellJ24 = cells.get("J24");
+		cellJ24.setValue(TIME_ZERO);
 		
 		
 		Cell cellJ13 = cells.get("J13");
@@ -278,10 +299,12 @@ public class AsposeAppOverTime {
 		Cell cellJ17 = cells.get("J17");
 		if (appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent()) {
 			List<HolidayMidNightTime> midNightHolidayTimes = appOverTime.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes();
-			
+			cellF24.setValue(TIME_ZERO);
+			cellF25.setValue(TIME_ZERO);
+			cellJ24.setValue(TIME_ZERO);
 			if (!CollectionUtil.isEmpty(midNightHolidayTimes)) {
 				midNightHolidayTimes.stream().forEach(x -> {
-					Integer time = x.getAttendanceTime().v();
+					String time = new TimeWithDayAttr(x.getAttendanceTime().v()).getInDayTimeWithFormat();
 					if (x.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
 						cellF24.setValue(time);
 					} else if (x.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
@@ -300,24 +323,34 @@ public class AsposeAppOverTime {
 							String nameWorkFrame = x.getOvertimeWorkFrName().v();
 							if (x.getOvertimeWorkFrNo().v().intValue() == 1) {
 								cellD13.setValue(nameWorkFrame);
+								cellF13.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 2) {
 								cellH13.setValue(nameWorkFrame);
+								cellJ13.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 3) {
 								cellD14.setValue(nameWorkFrame);
+								cellF14.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 4) {
 								cellH14.setValue(nameWorkFrame);
+								cellJ14.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 5) {
 								cellD15.setValue(nameWorkFrame);
+								cellF15.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 6) {
 								cellH15.setValue(nameWorkFrame);
+								cellJ15.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 7) {
 								cellD16.setValue(nameWorkFrame);
+								cellF16.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 8) {
 								cellH16.setValue(nameWorkFrame);
+								cellJ16.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 9) {
 								cellD17.setValue(nameWorkFrame);
+								cellF17.setValue(TIME_ZERO);
 							} else if (x.getOvertimeWorkFrNo().v().intValue() == 10) {
 								cellH17.setValue(nameWorkFrame);
+								cellJ17.setValue(TIME_ZERO);
 							} 
 						});
 		
@@ -328,7 +361,7 @@ public class AsposeAppOverTime {
 				  						.stream()
 				  						.forEach(x -> {
 				  							if (x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME) {
-				  								Integer time = x.getApplicationTime().v();
+				  								String time = x.getApplicationTime().getInDayTimeWithFormat();
 					  							if (x.getFrameNo().v() == 1) {
 					  								cellF13.setValue(time);
 					  							} else if (x.getFrameNo().v() == 2) {
@@ -351,7 +384,7 @@ public class AsposeAppOverTime {
 					  								cellJ17.setValue(time);
 					  							}
 				  							} else if (x.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
-				  								Integer time = x.getApplicationTime().v();
+				  								String time = x.getApplicationTime().getInDayTimeWithFormat();
 					  							if (x.getFrameNo().v() == 1) {
 					  								cellF19.setValue(time);
 					  							} else if (x.getFrameNo().v() == 2) {
@@ -410,34 +443,55 @@ public class AsposeAppOverTime {
 		
 		Cell cellB31 = cells.get("B31");
 		Cell cellD31 = cells.get("D31");
-		Cell cellB32 = cells.get("B32");
-		Cell cellD32 = cells.get("D32");
+		Cell cellB34 = cells.get("B34");
+		Cell cellD34 = cells.get("D34");
 		
-		if (!c1) {
-//			deleteRows.push(8);
-//			deleteRows.push(9);
-//			deleteRows.push(10);
+		cellB31.setValue(I18NText.getText("KAF005_93"));
+		cellD31.setValue("D31");
+		cellB34.setValue(I18NText.getText("KAF005_93"));
+		cellD34.setValue("D34");
+		
+		Cell cellB13 = cells.get("B13");
+		Cell cellB19 = cells.get("B19");
+		
+		cellB13.setValue(I18NText.getText("KAF005_50"));
+		cellB19.setValue(I18NText.getText("KAF005_70"));
+		AsposeAppOverTime.CalRange result = new CalRange();
+		if (!c7) {
+			cells.deleteRows(31, 3);
+			result.setStartReasonLabel(result.getStartReasonLabel() + 3);
 		}
-		if (!c2) {
-//			deleteRows.push(11);
-		}
-		if (!c3) {
-//			deleteRows.push(12);			
+		if (!c6) {
+			result.setStartReasonLabel(result.getStartReasonLabel() + 3);
+			cells.deleteRows(29, 3);
 		}
 		if (!c4 && !c5) {
-//			deleteRows.push(18);
+			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
+			cells.deleteRow(17);
 		}
-		if (!c6 && !c6_1 && !c6_2) {
-//			deleteRows.push(31);
+		if (!c3) {
+			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
+			cells.deleteRow(11);
 		}
-		if (!c7 && !c7_1 && !c7_2) {
-//			deleteRows.push(34);
-		}
-//		cells.deleteRows(34, 2);
-		cells.deleteRows(31, 5);
-		cells.deleteRows(28, 3);
-		return 0;
 		
+		if (!c2) {
+			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
+			cells.deleteRow(10);
+		}
+		if (!c1) {
+			result.setStartReasonCommon(result.getStartReasonCommon() + 3);
+			cells.deleteRows(7, 3);
+		}
+		return result;
+		
+		
+	}
+	@AllArgsConstructor
+	@Data
+	@NoArgsConstructor
+	public class CalRange {
+		private int startReasonCommon = 0;
+		private int startReasonLabel = 0;
 		
 	}
 }
