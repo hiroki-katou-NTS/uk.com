@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalRootStateImportDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 
@@ -28,7 +29,7 @@ public class CheckBeforeOutputMultiDto {
 	/**
 	 * List＜社員ID, 承認ルートの内容＞
 	 */
-	private Map<String, ApprovalRootContentImport_New> approvalRootContentMap;
+	private Map<String, ApprovalRootStateImportDto> approvalRootContentMap;
 	
 	/**
 	 * エラー対象者のビジネスネーム
@@ -36,6 +37,12 @@ public class CheckBeforeOutputMultiDto {
 	private String errorEmpBusinessName;
 
 	public static CheckBeforeOutputMultiDto fromDomain(CheckBeforeOutputMulti domain) {
-		return new CheckBeforeOutputMultiDto(domain.getConfirmMsgOutputMap(), domain.getApprovalRootContentMap(), domain.getErrorEmpBusinessName());
+		Map<String, ApprovalRootStateImportDto> approvalRootContentMap = new HashMap<String, ApprovalRootStateImportDto>();
+		domain.getApprovalRootContentMap().entrySet().forEach(entry -> {
+			approvalRootContentMap.put(entry.getKey(), ApprovalRootStateImportDto.fromDomain(entry.getValue().getApprovalRootState()));
+		});
+		return new CheckBeforeOutputMultiDto(domain.getConfirmMsgOutputMap(), 
+				approvalRootContentMap, 
+				domain.getErrorEmpBusinessName());
 	}
 }

@@ -81,9 +81,9 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		empList.forEach(empId -> {
 			//	ループする社員の休日出勤申請＝INPUT．休日出勤申請
 			AppHolidayWork empAppHolidayWork = appHolidayWork;
-			empAppHolidayWork.getApplication().setEmployeeID(empId);
+			empAppHolidayWork.setEmployeeID(empId);
 			String appId = IdentifierUtil.randomUniqueId();
-			empAppHolidayWork.getApplication().setAppID(appId);
+			empAppHolidayWork.setAppID(appId);
 			List<ApprovalPhaseStateImport_New> listApprovalPhaseState = approvalRootContentMap.get(empId).getApprovalRootState().getListApprovalPhaseState();
 			empAppHolidayWork.setAppOvertimeDetail(Optional.ofNullable(appOvertimeDetailMap.get(empId)));
 			//	List＜申請ID＞．Add(新しいGUID)

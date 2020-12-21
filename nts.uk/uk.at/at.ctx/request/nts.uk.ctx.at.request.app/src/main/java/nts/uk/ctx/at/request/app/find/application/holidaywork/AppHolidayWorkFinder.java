@@ -88,8 +88,8 @@ public class AppHolidayWorkFinder {
 		if (param.getAppDispInfoStartupOutput() != null
 				&& param.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput() != null) {
 			List<String> empListParam = new ArrayList<String>();
-			empListParam.add(param.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst()
-					.get(0).getSid());
+			param.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream()
+				.forEach(emp -> empListParam.add(emp.getSid()));
 			empList = Optional.of(empListParam);
 		}
 
@@ -97,7 +97,7 @@ public class AppHolidayWorkFinder {
 		if (param.getDateList() != null && !param.getDateList().isEmpty()) {
 			List<GeneralDate> dateList = new ArrayList<GeneralDate>();
 			param.getDateList().stream().filter(date -> StringUtils.isNotBlank(date))
-					.map(date -> dateList.add(GeneralDate.fromString(date, PATTERN_DATE)));
+					.forEach(date -> dateList.add(GeneralDate.fromString(date, PATTERN_DATE)));
 			if (!dateList.isEmpty()) {
 				dateListOptional = Optional.of(dateList);
 			}
