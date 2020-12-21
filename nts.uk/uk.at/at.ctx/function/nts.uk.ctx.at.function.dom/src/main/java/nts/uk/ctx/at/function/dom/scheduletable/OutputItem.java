@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.function.dom.scheduletable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.gul.util.OptionalUtil;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -23,22 +24,22 @@ public class OutputItem implements DomainValue {
 	/**
 	 * 	追加列情報の利用区分
 	 */
-	private final NotUseAtr additionalColumnUseAtr;
+	private NotUseAtr additionalColumnUseAtr;
 	
 	/**
 	 * シフト背景色の表示区分	
 	 */
-	private final NotUseAtr shiftBackgroundColorUseAtr;
+	private NotUseAtr shiftBackgroundColorUseAtr;
 	
 	/**
 	 * 	実績表示区分
 	 */
-	private final NotUseAtr dailyDataDisplayAtr;
+	private NotUseAtr dailyDataDisplayAtr;
 	
 	/**
 	 * 	詳細リスト	
 	 */
-	private final List<OneRowOutputItem> details;
+	private List<OneRowOutputItem> details;
 	
 	/**
 	 * 作る
@@ -55,41 +56,33 @@ public class OutputItem implements DomainValue {
 			List<OneRowOutputItem> details
 			) {
 		
-		// inv-1  1 <= 詳細リスト.size <= 10
+		// inv-1
 		if ( details.isEmpty() || details.size() > 10 ) {
 			throw new BusinessException("Msg_1975");
 		}
 		
-		if ( additionalColumnUseAtr == NotUseAtr.NOT_USE &&
-				details.stream().anyMatch( row -> row.getAdditionalInfo().isPresent()) ) {
-			throw new RuntimeException("Invalid data");
-		}
-		
-		// inv-2 詳細リストにある個人情報項目が重複しないこと。
-		List<ScheduleTablePersonalInfoItem> personalInfoList = details.stream().map( row -> {
-			List<ScheduleTablePersonalInfoItem> oneRowpersonalInfos = new ArrayList<>();
-			if ( row.getPersonalInfo().isPresent()) oneRowpersonalInfos.add(row.getPersonalInfo().get());
-			if (row.getAdditionalInfo().isPresent()) oneRowpersonalInfos.add(row.getAdditionalInfo().get());
-			
-			return oneRowpersonalInfos;
-		})
-		.flatMap(List::stream)
-		.collect(Collectors.toList());
+		// inv-2 and inv-4
+		List<ScheduleTablePersonalInfoItem> personalInfoList = details.stream()
+				.map( row -> additionalColumnUseAtr == NotUseAtr.USE ? 
+						Arrays.asList( row.getPersonalInfo(), row.getAdditionalInfo() ) : 
+						Arrays.asList( row.getPersonalInfo() ))
+				.flatMap( List::stream )
+				.flatMap( OptionalUtil::stream )
+				.collect( Collectors.toList() );
 		
 		if ( personalInfoList.isEmpty() ) {
 			throw new BusinessException("Msg_2006");
-		}
+		}	
 		
 		if ( personalInfoList.size() != new HashSet<>(personalInfoList).size() ) {
 			throw new BusinessException("Msg_1972");
 		}
 		
-		// inv-3  詳細リストにある勤怠項目が重複しないこと。
+		// inv-3 and inv-5
 		List<ScheduleTableAttendanceItem> attendanceItemList = details.stream()
-				.map( row -> row.getAttendanceItem())
-				.filter( Optional::isPresent )
-				.map( Optional::get )
-				.collect(Collectors.toList());
+				.map( row -> row.getAttendanceItem() )
+				.flatMap( OptionalUtil::stream ) 
+				.collect( Collectors.toList() );
 		
 		if ( attendanceItemList.isEmpty() ) {
 			throw new BusinessException("Msg_2007");
@@ -100,6 +93,16 @@ public class OutputItem implements DomainValue {
 		}
 		
 		return new OutputItem(additionalColumnUseAtr, shiftBackgroundColorUseAtr, dailyDataDisplayAtr, details);
+	}
+	
+	@Override
+	public OutputItem clone() {
+		
+		return new OutputItem(
+				this.additionalColumnUseAtr, 
+				this.shiftBackgroundColorUseAtr, 
+				this.dailyDataDisplayAtr, 
+				new ArrayList<>(this.details));
 	}
 	
 }

@@ -74,6 +74,7 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 	 * @param newCode
 	 * @param newName
 	 * @return
+	 * @throws CloneNotSupportedException 
 	 */
 	public ScheduleTableOutputSetting clone(
 			OutputSettingCode newCode,
@@ -82,7 +83,7 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 		return new ScheduleTableOutputSetting(
 				newCode, 
 				newName, 
-				this.outputItem,
+				this.outputItem.clone(),
 				new ArrayList<>(this.workplaceCounterCategories),
 				new ArrayList<>(this.personalCounterCategories));
 	}

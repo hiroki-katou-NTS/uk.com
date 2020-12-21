@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -58,6 +59,32 @@ public class ScheduleTableOutputSettingTest {
 							PersonalCounterCategory.MONTHLY_EXPECTED_SALARY,
 							PersonalCounterCategory.MONTHLY_EXPECTED_SALARY ))
 		);
+	}
+	
+	@Test
+	public void testCreate_successfully(
+			@Injectable OutputItem outputItem) {
+		
+		ScheduleTableOutputSetting result = ScheduleTableOutputSetting.create(
+				new OutputSettingCode("001"), 
+				new OutputSettingName("abc"), 
+				outputItem, 
+				Arrays.asList(
+						WorkplaceCounterCategory.LABOR_COSTS_AND_TIME,
+						WorkplaceCounterCategory.EMPLOYMENT_PEOPLE), 
+				Arrays.asList(
+						PersonalCounterCategory.MONTHLY_EXPECTED_SALARY));
+		
+		assertThat( result.getCode().v() ).isEqualTo( "001" );
+		assertThat( result.getName().v() ).isEqualTo( "abc" );
+		assertThat( result.getOutputItem() ).isEqualTo( outputItem );
+		assertThat( result.getWorkplaceCounterCategories() )
+			.containsExactly(
+					WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, 
+					WorkplaceCounterCategory.EMPLOYMENT_PEOPLE);
+		assertThat( result.getPersonalCounterCategories() )
+			.containsExactly( 
+					PersonalCounterCategory.MONTHLY_EXPECTED_SALARY);
 	}
 	
 	public void testClone_ok() {

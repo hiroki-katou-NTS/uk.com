@@ -99,29 +99,6 @@ public class OutputItemTest {
 	}
 	
 	@Test
-	public void testCreate_fail_with_additionalColumnUseAtr() {
-		
-		NtsAssert.systemError(
-				() -> OutputItem.create( 
-						NotUseAtr.NOT_USE, // additionalColumnUseAtr 
-						NotUseAtr.USE , 
-						NotUseAtr.USE, 
-						Arrays.asList(
-								// 0
-								OneRowOutputItem.create(
-										Optional.of(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME), 
-										Optional.empty(), 
-										Optional.of(ScheduleTableAttendanceItem.SHIFT)),
-								// 1
-								OneRowOutputItem.create(
-										Optional.empty(),  
-										Optional.of(ScheduleTablePersonalInfoItem.EMPLOYMENT), 
-										Optional.empty())
-								)) );
-		
-	}
-	
-	@Test
 	public void testCreate_exception_perInfos_isEmpty() {
 		
 		NtsAssert.businessException("Msg_2006", 
@@ -228,6 +205,27 @@ public class OutputItemTest {
 		assertThat(target.getShiftBackgroundColorUseAtr()).isEqualTo(NotUseAtr.NOT_USE);
 		assertThat(target.getDailyDataDisplayAtr()).isEqualTo(NotUseAtr.USE);
 		assertThat(target.getDetails()).containsExactly(element0, element1);
+	}
+	
+	@Test
+	public void testClone() {
+		OneRowOutputItem element0 = OneRowOutputItem.create(
+				Optional.of(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME), 
+				Optional.empty(),  
+				Optional.of(ScheduleTableAttendanceItem.SHIFT));
+				
+		OneRowOutputItem element1 = OneRowOutputItem.create(
+						Optional.empty(),
+						Optional.empty(),
+						Optional.of(ScheduleTableAttendanceItem.WORK_TYPE));
+		
+		OutputItem target = OutputItem.create( NotUseAtr.USE, NotUseAtr.USE , NotUseAtr.USE, 
+						Arrays.asList( element0, element1 ));
+		
+		OutputItem result = target.clone();
+		
+		assertThat( target != result ).isTrue();
+		assertThat( target.getDetails() != result.getDetails() ).isTrue();
 	}
 
 }

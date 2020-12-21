@@ -18,6 +18,7 @@ public class CopyScheduleTableOutputSettingService {
 	 * @param newCode
 	 * @param newName
 	 * @return
+	 * @throws CloneNotSupportedException 
 	 */
 	public static AtomTask copy(Require require,
 			ScheduleTableOutputSetting copySource,
