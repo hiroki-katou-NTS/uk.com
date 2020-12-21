@@ -124,20 +124,28 @@ module nts.uk.at.view.kmk004.b {
 			const input = { yearMonth: yearMonth, laborTime: times };
 			console.log(input);
 
-			vm.$ajax(API.ADD_WORK_TIME, input)
-				.done(() => {
-					vm.$dialog.info({ messageId: 'Msg_15' });
-					_.remove(ko.unwrap(vm.years), ((value) => {
-						return value.year == ko.unwrap(vm.selectedYear) as number;
-					}));
-					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-				})
-				.then(() => {
-					$(document).ready(function () {
-						$('.listbox').focus();
-					});
-				})
+			vm.validate()
+				.then((valid: boolean) => {
+					if (valid) {
+
+						vm.$ajax(API.ADD_WORK_TIME, input)
+							.done(() => {
+								vm.$dialog.info({ messageId: 'Msg_15' });
+								_.remove(ko.unwrap(vm.years), ((value) => {
+									return value.year == ko.unwrap(vm.selectedYear) as number;
+								}));
+								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+							})
+							.then(() => {
+								$(document).ready(function () {
+									$('.listbox').focus();
+								});
+							}).then(() => {
+								vm.$errors('clear');
+							});
+					}
+				});
 		}
 
 		remote() {
@@ -162,6 +170,8 @@ module nts.uk.at.view.kmk004.b {
 							$(document).ready(function () {
 								$('.listbox').focus();
 							});
+						}).then(() => {
+							vm.$errors('clear');
 						})
 						.always(() => vm.$blockui("clear"));
 				})
@@ -198,23 +208,6 @@ module nts.uk.at.view.kmk004.b {
 					/** Nếu có lỗi thì trả về false, không thì true */
 					.then(() => !$('.nts-input').ntsError('hasError'));
 			}
-		}
-	}
-
-	export class MonthlyWorkTimeSetCom {
-
-		laborAttr = 2;
-		//年月
-		yearMonth: number;
-
-		yearMonthText: string;
-		//月労働時間
-		laborTime: KnockoutObservable<MonthlyLaborTime>;
-
-		constructor(param: IMonthlyWorkTimeSetCom) {
-			this.yearMonth = param.yearMonth;
-			this.yearMonthText = param.yearMonth.toString().substring(4).replace(/^0+/, "");
-			this.laborTime = ko.observable(new MonthlyLaborTime(param.laborTime));
 		}
 	}
 }
