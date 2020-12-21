@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -132,6 +133,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(
@@ -989,7 +993,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				EnumAdaptor.valueOf(displayInfoOverTime.getCalculationResultOp().map(CalculationResult::getFlag).orElse(0), CalculatedFlag.class),
 				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		// 勤務種類、就業時間帯のマスタ未登録チェックする
-		otherCommonAlgorithm.checkWorkingInfo(
+		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
