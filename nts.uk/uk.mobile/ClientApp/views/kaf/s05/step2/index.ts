@@ -5,7 +5,7 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { DivergenceReasonSelect, DisplayInfoOverTime, DivergenceReasonInputMethod, DivergenceTimeRoot } from '../a/define.interface';
+import { DivergenceReasonSelect, DisplayInfoOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -60,13 +60,77 @@ export class KafS05Step2Component extends Vue {
     }
     public bindOverTime() {
         const self = this;
-
         let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
+        let overTimeQuotaList = displayInfoOverTime.infoBaseDateOutput.quotaOutput.overTimeQuotaList as Array<OvertimeWorkFrame>;
+        let overTimes = [];
+        // create overtime object
+        _.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
+            let overTime = {} as OverTime;
+            overTime.frameNo = String(item.overtimeWorkFrNo);
+            overTime.title = item.overtimeWorkFrName;
+            overTime.visible = self.$appContext.c4;
+            overTime.applicationTime = 0;
+            overTime.preApp = {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE,
 
-        return null;
+            };
+            overTime.actualApp = {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            };
+            overTimes.push(overTime);
+        });
+        // create overtime night and flex
+        {
+            let overTime = {} as OverTime;
+            overTime.frameNo = String(11);
+            overTime.title = self.$i18n('KAFS05_71');
+            overTime.visible = self.$appContext.c5;
+            overTime.applicationTime = 0;
+            overTime.preApp = {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE,
+
+            };
+            overTime.actualApp = {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            };
+            overTimes.push(overTime);
+        }
+
+        {
+            let overTime = {} as OverTime;
+            overTime.frameNo = String(12);
+            overTime.title = self.$i18n('KAFS05_72');
+            overTime.visible = self.$appContext.c6;
+            overTime.applicationTime = 0;
+            overTime.preApp = {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE,
+
+            };
+            overTime.actualApp = {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            };
+            overTimes.push(overTime);
+        }
+
+
+
+        self.overTimes = overTimes;
     }
     public createOverTime() {
         const self = this;
+
         {
             let overTime = {} as OverTime;
             overTime.frameNo = '1';
@@ -84,6 +148,7 @@ export class KafS05Step2Component extends Vue {
                 actualTime: 0,
                 actualExcess: ExcessTimeStatus.NONE
             };
+            overTime.type = AttendanceType.NORMALOVERTIME;
             self.overTimes.push(overTime);
         }
         
@@ -95,35 +160,25 @@ export class KafS05Step2Component extends Vue {
         {
             let holidaytime = {} as HolidayTime;
             holidaytime.frameNo = '1';
-            holidaytime.title = self.$i18n('KAFS05_73');
+            holidaytime.title = self.$i18n('KAFS05_73') + holidaytime.frameNo;
             holidaytime.visible = true;
             holidaytime.applicationTime = 0;
             holidaytime.preApp = {
                 preAppDisp: true,
-                preAppTime: null,
+                preAppTime: 0,
                 preAppExcess: ExcessTimeStatus.NONE,
 
             };
             holidaytime.actualApp = {
                 actualDisp: true,
-                actualTime: null,
+                actualTime: 0,
                 actualExcess: ExcessTimeStatus.NONE
             };
+            holidaytime.type = AttendanceType.BREAKTIME;
             self.holidayTimes.push(holidaytime);
         }
         
     }
-
-    public preApp: any = {
-        preAppDisp: true,
-        preAppTime: null,
-        preAppExcess: ExcessTimeStatus
-    };
-    public actualApp: any = {
-        actualDisp: true,
-        actualTime: null,
-        actualExcess: ExcessTimeStatus
-    };
     get $appContext(): KafS05Component {
         const self = this;
 
@@ -169,15 +224,17 @@ export class KafS05Step2Component extends Vue {
             code: null,
             text: self.$i18n('KAFS05_54')
         });
-        _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
-            let code = item.divergenceReasonCode;
-            let text = item.divergenceReasonCode + ' ' + item.reason;
-            reason.dropdownList.push({
-                code,
-                text
+        if (!_.isNil(divergenceReasonInputMethod)) {
+            _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
+                let code = item.divergenceReasonCode;
+                let text = item.divergenceReasonCode + ' ' + item.reason;
+                reason.dropdownList.push({
+                    code,
+                    text
+                });
+                
             });
-            
-        });
+        }
 
         return reason;
 
@@ -186,6 +243,7 @@ export class KafS05Step2Component extends Vue {
     public loadAllData() {
         const self = this;
         self.bindAllReason();
+        self.bindOverTime();
     }
 
 }
@@ -198,6 +256,7 @@ export interface OverTime {
     actualTime: number;
     preApp: any;
     actualApp: any;
+    type: AttendanceType;
 }
 export interface HolidayTime {
     frameNo: string;
@@ -208,6 +267,7 @@ export interface HolidayTime {
     actualTime: number;
     preApp: any;
     actualApp: any;
+    type: number;
 }
 export interface Reason {
     title?: string;

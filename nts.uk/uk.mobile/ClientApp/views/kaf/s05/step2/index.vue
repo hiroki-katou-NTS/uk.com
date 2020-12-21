@@ -19,12 +19,12 @@
 
     <!-- OverTime -->
     <div v-if="true" class="card card-label">
-      <div class="card-header uk-bg-accordion mt-2 mb-n2">
+      <div class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS05_70" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
-        <div class="card-body">
+      <div v-show="overTimes.length != 0 " v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
+        <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
             <div class="col-4">{{ item.title }}</div>
             <div class="col-8.5">
@@ -57,7 +57,7 @@
     <!-- HolidayTime -->
 
     <div v-if="true" class="card card-label">
-      <div class="card-header uk-bg-accordion mt-2 mb-n2">
+      <div class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS05_73" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
