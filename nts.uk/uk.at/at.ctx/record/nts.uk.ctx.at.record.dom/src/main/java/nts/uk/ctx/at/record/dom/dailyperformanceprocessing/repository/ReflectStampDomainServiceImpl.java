@@ -555,12 +555,14 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
+			Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformanceNew = this.workInformationRepository
+					.find(employeeId, processingDate);
 			// get workTimeCode of processingDate
 			String worktimeCode = this.stampRangeCheckWorkRecord(processingDate, employeeId);
-			if (worktimeCode != null) {
+			if (workInfoOfDailyPerformanceNew.isPresent() && worktimeCode != null) {
 				// 1日分の打刻反映範囲を取得
 				stampReflectRangeOutput = this.attendanSytemStampRange(new WorkTimeCode(worktimeCode), companyID,
-						workInfoOfDailyPerformance);
+						workInfoOfDailyPerformanceNew.get());
 
 				if (stampReflectRangeOutput != null
 						&& !stampReflectRangeOutput.getLstStampReflectTimezone().isEmpty()) {
