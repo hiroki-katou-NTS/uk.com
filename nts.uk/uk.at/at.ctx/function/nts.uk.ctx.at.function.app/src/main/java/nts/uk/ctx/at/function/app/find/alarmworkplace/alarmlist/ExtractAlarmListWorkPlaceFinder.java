@@ -158,7 +158,7 @@ public class ExtractAlarmListWorkPlaceFinder {
      * @param processingYm   当月の年月
      */
     private CheckConditionDto getBasicPeriod(RangeToExtract rangeToExtract, YearMonth processingYm) {
-        return getYmPeriod(rangeToExtract, processingYm);
+        return getYmPeriod(WorkplaceCategory.MASTER_CHECK_BASIC, rangeToExtract, processingYm);
     }
 
     /**
@@ -168,10 +168,10 @@ public class ExtractAlarmListWorkPlaceFinder {
      * @param processingYm   当月の年月
      */
     private CheckConditionDto getWorkplacePeriod(RangeToExtract rangeToExtract, YearMonth processingYm) {
-        return getYmPeriod(rangeToExtract, processingYm);
+        return getYmPeriod(WorkplaceCategory.MASTER_CHECK_WORKPLACE, rangeToExtract, processingYm);
     }
 
-    private CheckConditionDto getYmPeriod(RangeToExtract rangeToExtract, YearMonth processingYm) {
+    private CheckConditionDto getYmPeriod(WorkplaceCategory category, RangeToExtract rangeToExtract, YearMonth processingYm) {
         ExtractionPeriodMonthly period = (ExtractionPeriodMonthly) rangeToExtract;
         // 「Input．当月の年月」-「Input．開始月．抽出期間(月単位)．月数」を開始月とする
         Optional<MonthNo> startMonthNo = period.getStartMonth().getStrMonthNo();
@@ -186,7 +186,7 @@ public class ExtractAlarmListWorkPlaceFinder {
         if (endMonthNo.isPresent()) {
             endYm = YearMonth.of(processingYm.year(), endMonthNo.get().getMonthNo()).v();
         }
-        return new CheckConditionDto(WorkplaceCategory.MASTER_CHECK_BASIC, startYm, endYm);
+        return new CheckConditionDto(category, startYm, endYm);
     }
 
     /**
@@ -230,7 +230,7 @@ public class ExtractAlarmListWorkPlaceFinder {
             // ・開始日　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．開始日．締め日指定．月数」
             Optional<Month> strMonth = period.getStartDate().getStrMonth();
             int startYm = processingYm.month();
-            if (strMonth.isPresent()){
+            if (strMonth.isPresent()) {
                 startYm = YearMonth.of(processingYm.year(), period.getStartDate().getStrMonth().get().getMonth()).v();
             }
 
@@ -238,7 +238,7 @@ public class ExtractAlarmListWorkPlaceFinder {
             // ・終了日　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」
             Optional<Month> endMonth = period.getEndDate().getEndMonth();
             int endYm = processingYm.month();
-            if (endMonth.isPresent()){
+            if (endMonth.isPresent()) {
                 endYm = YearMonth.of(processingYm.year(), period.getEndDate().getEndMonth().get().getMonth()).v();
             }
 

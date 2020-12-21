@@ -41,7 +41,7 @@ public class JpaAlarmFixedExtractionItemRepository extends JpaRepository impleme
     @Override
     public Optional<AlarmFixedExtractionItem> getBy(FixedCheckItem no) {
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpFxexItm.class)
-            .setParameter("no", no)
+            .setParameter("no", no.value)
             .getSingle(KrcmtWkpFxexItm::toDomain);
     }
 
