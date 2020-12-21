@@ -89,6 +89,7 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 			default: 
 				break;
 		}
+		printContentOfApp.setOpPrintContentOfHolidayWork(opPrintContentOfEachApp.map(x -> x.getOpPrintContentOfHolidayWork()).orElse(Optional.empty()));
 		printContentOfApp.setOpPrintContentOfWorkChange(opPrintContentOfEachApp.map(x -> x.getOpPrintContentOfWorkChange()).orElse(Optional.empty()));
 		printContentOfApp.setOpAppStampOutput(opPrintContentOfEachApp.map(x -> x.getOpAppStampOutput()).orElse(Optional.empty()));
 		printContentOfApp.setOpArrivedLateLeaveEarlyInfo(opPrintContentOfEachApp.map(x -> x.getOpArrivedLateLeaveEarlyInfo()).orElse(Optional.empty()));

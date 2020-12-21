@@ -136,8 +136,8 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		if(!reasonDivergenceList.isEmpty()) {
 			ReasonDivergence reasonDivergence = reasonDivergenceList.get(0);
 			entity.divergenceTimeNo = reasonDivergence.getDiviationTime();
-			entity.divergenceCode = reasonDivergence.getReasonCode().v();
-			entity.divergenceReason = reasonDivergence.getReason().v();	
+			entity.divergenceCode = reasonDivergence.getReasonCode() != null ? reasonDivergence.getReasonCode().v() : null;
+			entity.divergenceReason = reasonDivergence.getReason() != null ? reasonDivergence.getReason().v() : null;	
 		}
 		
 		if (domain.getApplicationTime().getOverTimeShiftNight().isPresent()) {

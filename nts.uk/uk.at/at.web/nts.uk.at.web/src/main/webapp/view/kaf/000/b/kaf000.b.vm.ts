@@ -19,6 +19,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         application: KnockoutObservable<Application> = ko.observable(new Application(0));
         approvalReason: KnockoutObservable<string> = ko.observable("");
 		opPrintContentOfEachApp: PrintContentOfEachAppDto = {
+            opPrintContentOfHolidayWork: null,
 			opPrintContentOfWorkChange: null,
 			opAppStampOutput: null,
 			opArrivedLateLeaveEarlyInfo: null,
