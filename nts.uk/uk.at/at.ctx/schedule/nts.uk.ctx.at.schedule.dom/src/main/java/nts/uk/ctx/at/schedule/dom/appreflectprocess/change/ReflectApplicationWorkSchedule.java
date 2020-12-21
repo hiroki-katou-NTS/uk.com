@@ -25,11 +25,13 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDai
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author thanh_nx
@@ -38,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId, ApplicationShare application,
+	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ExecutionType type, ApplicationShare application,
 			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
@@ -66,7 +68,7 @@ public class ReflectApplicationWorkSchedule {
 
 		// input.日別勤怠(work）を[反映前の日別勤怠(work)]へコピーして保持する
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(workSchedule.getEmployeeID(), workSchedule.getYmd(),
-				workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), Optional.empty(), new ArrayList<>(),
+				workSchedule.getWorkInfo(), CalAttrOfDailyAttd.createAllCalculate(), workSchedule.getAffInfo(), Optional.empty(), new ArrayList<>(),
 				Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(),
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(),
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), snapshot);
@@ -94,7 +96,7 @@ public class ReflectApplicationWorkSchedule {
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(type, CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect));
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
@@ -162,7 +164,7 @@ public class ReflectApplicationWorkSchedule {
 		public void insertSchedule(WorkSchedule workSchedule);
 
 		// CalculateDailyRecordServiceCenterNew
-		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
 
 	}

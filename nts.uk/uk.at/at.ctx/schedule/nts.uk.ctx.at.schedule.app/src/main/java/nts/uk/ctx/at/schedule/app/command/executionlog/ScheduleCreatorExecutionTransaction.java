@@ -241,16 +241,16 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	
+
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSet;
-	
+
 	@Inject
 	private FlowWorkSettingRepository flowWorkSet;
-	
+
 	@Inject
-	private FlexWorkSettingRepository flexWorkSet ;
-	
+	private FlexWorkSettingRepository flexWorkSet;
+
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
@@ -317,7 +317,7 @@ public class ScheduleCreatorExecutionTransaction {
 					CompletionStatus.INTERRUPTION);
 
 			asyncTask.finishedAsCancelled();
-			
+
 			return;
 		} else {
 			// else 中断じゃない
@@ -330,17 +330,13 @@ public class ScheduleCreatorExecutionTransaction {
 					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
 
+			// 勤務予定を登録する
+			this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
+			
 			// Outputの勤務種類一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListWorkSchedule(), ws -> {
-						// 勤務予定を登録する
-						boolean checkUpdate = this.workScheduleRepository.checkExits(ws.getEmployeeID(), ws.getYmd());
-						if (checkUpdate) {
-							this.workScheduleRepository.update(ws);
-						} else {
-							this.workScheduleRepository.insert(ws);
-						}
-						;
 						// 暫定データの登録
 						this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
 								Arrays.asList(ws.getYmd()));
@@ -665,7 +661,8 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務情報が正常な状態かをチェックする
 
 				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
+						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
+						predetemineTimeSet);
 				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 				// 正常の場合
@@ -1113,10 +1110,13 @@ public class ScheduleCreatorExecutionTransaction {
 
 				// 取得した勤務予定一覧をメモリにキャッシュする
 				workSchedules = carrier.get("勤務予定", () -> workScheduleRepo);
+				if(workSchedules.isEmpty()) {
+					workSchedules = workScheduleRepo;
+				}
 			}
 		}
 		// コピー元対象日を計算する
-		DatePeriod targetPeriodCopy = new DatePeriod(dateInPeriod, targetPeriod.start());
+		DatePeriod targetPeriodCopy = new DatePeriod(targetPeriod.start(), dateInPeriod);
 		GeneralDate dateTargetCopy = command.getContent().getSpecifyCreation().getCopyStartDate().get()
 				.addDays(targetPeriodCopy.datesBetween().size() - 1);
 		workSchedules = workSchedules.stream().filter(x -> x.getYmd().equals(dateTargetCopy))
@@ -1473,13 +1473,7 @@ public class ScheduleCreatorExecutionTransaction {
 			WorkScheduleMasterReferenceAtr referenceBasicWork, GeneralDate dateInPeriod,
 			List<ExClassificationHistoryImported> mapClassificationHist,
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
-		
-//		WorkScheduleMasterReferenceAtr workplaceHistItem = itemDto.get().getScheduleMethod().get()
-//				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
-//
-//		WorkScheduleMasterReferenceAtr referenceBasicWork = itemDto.get().getScheduleMethod().get()
-//				.getWorkScheduleBusCal().get().getReferenceBasicWork();
-//		
+
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
 		// điều kiện 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
@@ -1689,16 +1683,16 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Inject
 		private BasicScheduleService basicScheduleService;
-		
+
 		@Inject
 		private FixedWorkSettingRepository fixedWorkSet;
-		
+
 		@Inject
 		private FlowWorkSettingRepository flowWorkSet;
-		
+
 		@Inject
-		private FlexWorkSettingRepository flexWorkSet ;
-		
+		private FlexWorkSettingRepository flexWorkSet;
+
 		@Inject
 		private PredetemineTimeSettingRepository predetemineTimeSet;
 
@@ -1721,7 +1715,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> workSetting =  flowWorkSet.find(companyId, code.v());
+			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
 			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 

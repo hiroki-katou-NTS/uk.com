@@ -68,10 +68,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -245,6 +241,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.res
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -632,6 +630,8 @@ public class RecordDomRequireService {
 	private GetProcessingDate getProcessingDate;
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
+	@Inject
+	private SuperHD60HConMedRepository superHD60HConMedRepo;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -722,7 +722,7 @@ public class RecordDomRequireService {
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, 
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				roleOfOpenPeriodRepo, snapshotAdapter);
+				roleOfOpenPeriodRepo, snapshotAdapter, superHD60HConMedRepo);
 	}
 	
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -841,7 +841,7 @@ public class RecordDomRequireService {
 				BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
-				DailySnapshotWorkAdapter snapshotAdapter) {
+				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -980,7 +980,10 @@ public class RecordDomRequireService {
 			this.getProcessingDate = getProcessingDate;
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
 			this.snapshotAdapter = snapshotAdapter;
+			this.superHD60HConMedRepo = superHD60HConMedRepo;
 		}
+		
+		private SuperHD60HConMedRepository superHD60HConMedRepo;
 		
 		private DailySnapshotWorkAdapter snapshotAdapter;
 		
@@ -2365,6 +2368,11 @@ public class RecordDomRequireService {
 			
 			return snapshotAdapter.find(employeeId, datePeriod)
 					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSnapshot().toDomain()));
+		}
+
+		@Override
+		public Optional<SuperHD60HConMed> superHD60HConMed(String cid) {
+			return superHD60HConMedRepo.findById(cid);
 		}
 	}
 }

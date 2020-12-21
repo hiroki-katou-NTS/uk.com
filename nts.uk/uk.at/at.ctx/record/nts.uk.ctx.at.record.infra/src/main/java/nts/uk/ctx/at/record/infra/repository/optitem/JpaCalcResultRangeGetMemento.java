@@ -6,10 +6,16 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcRangeCheck;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRangeGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DailyAmountRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DailyTimeRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DailyTimesRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.MonthlyAmountRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.MonthlyTimeRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.MonthlyTimesRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.NumberRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRange;
 
@@ -19,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRange;
 public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 
 	/** The type value. */
-	private KrcstCalcResultRange typeValue;
+	private KrcmtCalcResultRange typeValue;
 
 	/**
 	 * Instantiates a new jpa calc result range get memento.
@@ -27,7 +33,7 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCalcResultRangeGetMemento(KrcstCalcResultRange typeValue) {
+	public JpaCalcResultRangeGetMemento(KrcmtCalcResultRange typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -64,8 +70,13 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public Optional<NumberRange> getNumberRange() {
-		return Optional.of(new NumberRange(this.typeValue.getUpperNumberRange(),
-				this.typeValue.getLowerNumberRange()));
+//		return Optional.of(new NumberRange(this.typeValue.getUpperNumberRange(),
+//				this.typeValue.getLowerNumberRange()));
+	    return Optional.of(new NumberRange(
+	            Optional.of(new DailyTimesRange(this.typeValue.getUpperDayNumberRange(), this.typeValue.getLowerDayNumberRange())), 
+	            Optional.of(new MonthlyTimesRange(
+	                    this.typeValue.getUpperMonNumberRange() == null ? null : this.typeValue.getUpperMonNumberRange().doubleValue(), 
+	                    this.typeValue.getLowerMonNumberRange() == null ? null : this.typeValue.getLowerMonNumberRange().doubleValue()))));
 	}
 
 	/*
@@ -76,8 +87,11 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public Optional<TimeRange> getTimeRange() {
-		return Optional.of(new TimeRange(this.typeValue.getUpperTimeRange(),
-				this.typeValue.getLowerTimeRange()));
+//		return Optional.of(new TimeRange(this.typeValue.getUpperTimeRange(),
+//				this.typeValue.getLowerTimeRange()));
+	    return Optional.of(new TimeRange(
+	            Optional.of(new DailyTimeRange(this.typeValue.getUpperDayTimeRange(), this.typeValue.getLowerDayTimeRange())),
+	            Optional.of(new MonthlyTimeRange(this.typeValue.getUpperMonTimeRange(), this.typeValue.getLowerMonTimeRange()))));
 	}
 
 	/*
@@ -89,8 +103,11 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public Optional<AmountRange> getAmountRange() {
-		return Optional.of(new AmountRange(this.typeValue.getUpperAmountRange(),
-				this.typeValue.getLowerAmountRange()));
+//		return Optional.of(new AmountRange(this.typeValue.getUpperAmountRange(),
+//				this.typeValue.getLowerAmountRange()));
+	    return Optional.of(new AmountRange(
+	            Optional.of(new DailyAmountRange(this.typeValue.getUpperdayAmountRange(), this.typeValue.getLowerDayAmountRange())),
+	            Optional.of(new MonthlyAmountRange(this.typeValue.getUpperMonAmountRange(), this.typeValue.getLowerMonAmountRange()))));
 	}
 
 }

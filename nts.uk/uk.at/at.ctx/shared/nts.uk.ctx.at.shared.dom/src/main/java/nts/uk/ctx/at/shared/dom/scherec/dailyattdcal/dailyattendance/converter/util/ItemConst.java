@@ -312,4 +312,5 @@ public interface ItemConst extends Cloneable {
 	public final String TRANSFER_HOLIDAY = "振休";
 	public final String CHILD_CARE = "子の看護";
 	public final String CARE = "介護";
+	public final String SUPER_60 = "60H超休";
 }

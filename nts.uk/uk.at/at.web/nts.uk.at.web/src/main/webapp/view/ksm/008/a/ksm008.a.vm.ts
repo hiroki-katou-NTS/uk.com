@@ -111,9 +111,6 @@ module nts.uk.at.ksm008.a {
 
         mounted() {
             $("#fixed-table").ntsFixedTable({height: 480, width: 1200});
-            setTimeout(() => {
-                $("#pg-name").text("KSM008A " + nts.uk.resource.getText("KSM008_1"));
-            }, 300);
         }
 
         checkDisplayButton(data: any) {
