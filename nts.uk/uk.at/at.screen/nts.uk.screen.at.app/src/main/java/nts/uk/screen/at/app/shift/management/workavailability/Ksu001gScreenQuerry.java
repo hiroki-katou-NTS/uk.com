@@ -220,5 +220,11 @@ public class Ksu001gScreenQuerry {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
+
+		@Override
+		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
+			return shiftMasterRepo.checkExistsByCd(AppContexts.user().companyId(), shiftMasterCode.v());
+		}
+		
 	}
 }

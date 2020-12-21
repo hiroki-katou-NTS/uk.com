@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -41,18 +42,15 @@ public class RegisterWorkAvailabilityTest {
 	
 	private DatePeriod datePeriod;
 	
+	private List<WorkAvailabilityOfOneDay> workOneDays = new ArrayList<>();
+	
 	@Before
 	public void createDatePeriod(){
 		this.datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
 	}
 	
-	/**
-	 * input : シフト表のルール = empty
-	 * excepted: Msg_2049
-	 */
-	@Test
-	public void testCheckError_throw_Msg_2049() {
-		
+	@Before
+	public void createWorkAvaiOfOneDays() {
 		ShiftMasterCode shiftMasterCode = new ShiftMasterCode("001");
 		
 		new Expectations() {
@@ -62,7 +60,15 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
+		this.workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
+		
+	}
+	/**
+	 * input : シフト表のルール = empty
+	 * excepted: Msg_2049
+	 */
+	@Test
+	public void testCheckError_throw_Msg_2049() {
 		
 		new Expectations() {
 			{
@@ -80,17 +86,6 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2052() {
-		
-		ShiftMasterCode shiftMasterCode = new ShiftMasterCode("001");
-		
-		new Expectations() {
-			{
-				workRequire.shiftMasterIsExist(shiftMasterCode);
-				result = true;
-			}
-		};
-
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
 		
 		new Expectations() {{
 			service.get(require, (String) any, (GeneralDate) any);
@@ -110,17 +105,6 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2050() {
-		
-		ShiftMasterCode shiftMasterCode = new ShiftMasterCode("001");
-		
-		new Expectations() {
-			{
-				workRequire.shiftMasterIsExist(shiftMasterCode);
-				result = true;
-			}
-		};
-
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
 		
 		new Expectations() {
 			{			
@@ -145,6 +129,7 @@ public class RegisterWorkAvailabilityTest {
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2051() {
+		
 		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiHolidays(workRequire);
 		
 		new Expectations() {{
@@ -166,17 +151,6 @@ public class RegisterWorkAvailabilityTest {
 	
 	@Test
 	public void testRegister_success_1() {
-		
-		ShiftMasterCode shiftMasterCode = new ShiftMasterCode("001");
-		
-		new Expectations() {
-			{
-				workRequire.shiftMasterIsExist(shiftMasterCode);
-				result = true;
-			}
-		};
-
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
 		
 		new Expectations() {
 			{				
