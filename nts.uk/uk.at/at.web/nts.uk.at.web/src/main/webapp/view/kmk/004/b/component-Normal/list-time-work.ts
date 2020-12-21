@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk004.b {
         GET_WORKTIME_EMPLOYEE: 'screen/at/kmk004/viewe/sha/getWorkTimes'
     };
 
-    const TYPE = 0;
+    const TYPE = 1;
 
     const template = `
         <div class="list-time">
