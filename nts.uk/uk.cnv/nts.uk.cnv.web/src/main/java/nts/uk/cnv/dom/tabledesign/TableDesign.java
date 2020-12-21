@@ -10,7 +10,6 @@ import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.tabledefinetype.TableDefineType;
-import nts.uk.cnv.dom.tabledefinetype.UkDataType;
 
 @AllArgsConstructor
 @Getter
@@ -25,9 +24,9 @@ public class TableDesign {
 	private List<ColumnDesign> columns;
 	private List<Indexes> indexes;
 
-	public String createTableSql() {
-		return this.createSimpleTableSql(new UkDataType());
-	}
+//	public String createTableSql() {
+//		return this.createSimpleTableSql(new UkDataType());
+//	}
 
 	public String createSimpleTableSql(TableDefineType defineType) {
 		return createTableSql(defineType, false, true);
@@ -104,11 +103,11 @@ public class TableDesign {
 							.collect(Collectors.toList())
 					);
 	}
-	
+
 	private boolean containContractCd() {
 		return this.columns.stream()
 				.map(col -> col.isContractCd())
 				.anyMatch(con -> con == true);
 	}
-	
+
 }

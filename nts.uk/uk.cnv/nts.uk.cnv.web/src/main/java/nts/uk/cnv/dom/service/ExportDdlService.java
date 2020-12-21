@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
+import nts.uk.cnv.dom.tabledefinetype.TableDefineType;
+import nts.uk.cnv.dom.tabledefinetype.UkDataType;
 import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 
@@ -37,20 +39,20 @@ public class ExportDdlService {
 
 	private ExportDdlServiceResult exportDdl(Require require, TableDesign tableDesign, String type, boolean withComment) {
 
+		TableDefineType tableDefineType;
 		if("uk".equals(type)) {
-			return new ExportDdlServiceResult(tableDesign.createTableSql(),
-					tableDesign.getVer().get().getBranch(),
-					tableDesign.getVer().get().getDate().toString());
+			tableDefineType = new UkDataType();
 		}
-
-		DatabaseType dbtype = DatabaseType.valueOf(type);
+		else {
+			tableDefineType = DatabaseType.valueOf(type).spec();
+		}
 
 		String createTableSql;
 		if(withComment) {
-			createTableSql = tableDesign.createFullTableSql(dbtype.spec());
+			createTableSql = tableDesign.createFullTableSql(tableDefineType);
 		}
 		else {
-			createTableSql = tableDesign.createSimpleTableSql(dbtype.spec());
+			createTableSql = tableDesign.createSimpleTableSql(tableDefineType);
 		}
 
 		return new ExportDdlServiceResult(createTableSql,
