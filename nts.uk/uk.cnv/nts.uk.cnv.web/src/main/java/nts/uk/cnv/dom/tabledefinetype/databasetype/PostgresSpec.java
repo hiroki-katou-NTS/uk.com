@@ -64,7 +64,7 @@ public class PostgresSpec implements DatabaseSpec{
 	}
 
 	public String newUuid() {
-		return "gen_random_uuid()";
+		return "uuid_generate_v4()";
 	}
 
 	public String concat(String expression1, String expression2) {
