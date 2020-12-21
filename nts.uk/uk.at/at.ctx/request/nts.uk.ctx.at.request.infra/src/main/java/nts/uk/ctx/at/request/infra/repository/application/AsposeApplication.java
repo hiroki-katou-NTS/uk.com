@@ -29,7 +29,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOf
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
+import nts.uk.ctx.at.request.infra.repository.application.holidaywork.AsposeAppHolidayWork;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
+import nts.uk.ctx.at.request.infra.repository.application.overtime.AsposeAppOverTime;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -58,6 +60,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeGoReturnDirectly asposeGoReturnDirectly;
+	
+	@Inject
+	private AsposeAppOverTime asposeAppOverTime;
+	
+	@Inject
+	private AsposeAppHolidayWork asposeAppHolidayWork;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -130,6 +138,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
+			AsposeAppOverTime.CalRange result = asposeAppOverTime.printAppOverTimeContent(worksheet, printContentOfApp);
+			int startReasonCommon = result.getStartReasonCommon();
+			int startReasonLabel = result.getStartReasonLabel();
+			reasonLabel = worksheet.getCells().get("B" + (26 - startReasonCommon));
+			remarkLabel = worksheet.getCells().get("B" + (26 - startReasonCommon + 11 - startReasonLabel));
+			reasonContent = worksheet.getCells().get("D" + (28 - startReasonCommon));
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case ABSENCE_APPLICATION:
 			break;
@@ -155,6 +170,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
             printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case HOLIDAY_WORK_APPLICATION:
+			asposeAppHolidayWork.printAppHolidayWorkContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B27");
+			remarkLabel = worksheet.getCells().get("B33");
+			reasonContent = worksheet.getCells().get("D27");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case STAMP_APPLICATION:
 			if (mode.value == 0) {
@@ -189,7 +209,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private String getFileTemplate(ApplicationType appType) {
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			return "";
+			return "application/KAF005_template.xlsx";
 		case ABSENCE_APPLICATION:
 			return "";
 		case WORK_CHANGE_APPLICATION:
@@ -199,7 +219,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "application/KAF009_template.xlsx";
 		case HOLIDAY_WORK_APPLICATION:
-			return "";
+			return "application/KAF010_template.xlsx";
 		case STAMP_APPLICATION:
 			return "";
 		case ANNUAL_HOLIDAY_APPLICATION:

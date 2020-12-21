@@ -672,13 +672,13 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	}
 
 	@Override
-	public Map<String, String> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
 			return Collections.emptyMap();
 		}
-		Map<String, String> result = new HashMap<>();
+		Map<String, Pair<String, GeneralDate>> result = new HashMap<>();
 		String sql = 
-				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
+				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID,JCHOSN.RECORD_DATE " +
 				"FROM  ( " +
 				"                    SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
 				"                    FROM ( " +
@@ -770,11 +770,12 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"AND JCHOSN.RECORD_DATE <= SKBSYITERM.COMP_ED " +
 				"AND JCHOSN.RECORD_DATE <= SKBSYITERM.KYO_ED; ";
 		new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("startDate", startDate)
 				.paramDate("endDate", endDate)
 				.paramString("wkpIDLst", wkpIDLst)
 				.paramString("employmentCDLst", employmentCDLst)
 				.getList(rec -> {
-					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					result.put(rec.getString("WORKPLACE_ID"), Pair.of(rec.getString("SID"), rec.getGeneralDate("RECORD_DATE")) );
 					return null;
 		});
 		return result;

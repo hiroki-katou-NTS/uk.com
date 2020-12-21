@@ -17,8 +17,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.logging.log4j.util.Strings;
-
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -1002,5 +1000,18 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.paramDate("endDate", period.end())
 				.getList(rec -> toObject(rec));
 		return convertToEntity(mapLst).stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType) {
+		String companyID = AppContexts.user().companyId();
+		String sql = "select TOP 1 APP_ID from KRQDT_APPLICATION where CID = @companyID and APP_TYPE = @appType " +
+				"and APPLICANTS_SID = @employeeID and APP_DATE = @date and PRE_POST_ATR = 0 order by INPUT_DATE desc";
+		return new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", companyID)
+				.paramInt("appType", appType.value)
+				.paramString("employeeID", employeeID)
+				.paramDate("date", date)
+				.getSingle(rec -> rec.getString("APP_ID"));
 	}
 }

@@ -30,7 +30,7 @@ public interface ApprovalSttScreenRepository {
 	
 	public Map<String, String> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
-	public Map<String, String> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
+	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	
 	public Map<String, String> getMailCountUnConfirmMonth(GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst);
 	

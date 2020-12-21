@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 	import KAF018DParam = nts.uk.at.view.kaf018.d.viewmodel.KAF018DParam;
 	import KAF018FParam = nts.uk.at.view.kaf018.f.viewmodel.KAF018FParam;
+	import KAF018HParam = nts.uk.at.view.kaf018.h.viewmodel.KAF018HParam;
 	import ApprovalStatusMailType = kaf018.share.model.ApprovalStatusMailType;
 	import KAF018CParam = nts.uk.at.view.kaf018.c.viewmodel.KAF018CParam;
 	
@@ -400,16 +401,30 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			}
 			
 			if(ui.colKey=="countUnConfirmDay" || ui.colKey=="countUnApprDay" || ui.colKey=="countUnConfirmMonth" || ui.colKey=="countUnApprMonth") {
+				let currentWkp = _.find(vm.dataSource, o => o.wkpID == ui.rowKey);
+				if(!(currentWkp.countUnConfirmDay || currentWkp.countUnApprDay || currentWkp.countUnConfirmMonth || currentWkp.countUnApprMonth)) {
+					return;	
+				}
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					apprSttExeDtoLst = _.filter(vm.dataSource, o => {
-						let countUnApprApp = o.countUnApprApp ? true : false;
-						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+						let count = (o.countUnConfirmDay || o.countUnApprDay || o.countUnConfirmMonth || o.countUnApprMonth) ? true : false;
+						return count && _.includes(vm.pageData, o.wkpID);
 					}),
 					currentWkpID = ui.rowKey,
-					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID };
+					apprSttComfirmSet = vm.params.useSet,
+					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, apprSttComfirmSet };
 				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
+			}
+			if(ui.colKey=="displayConfirm") {
+				let closureItem = vm.closureItem,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					wkpInfo = _.find(vm.dataSource, o => o.wkpID==ui.rowKey),
+					displayConfirm = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).displayConfirm,
+					hParam: KAF018HParam = { closureItem, startDate, endDate, wkpInfo, displayConfirm };
+				vm.$window.modal('/view/kaf/018/h/index.xhtml', hParam);
 			}
 		}
 		

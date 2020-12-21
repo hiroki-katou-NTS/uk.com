@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
@@ -63,7 +63,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private ArrivedLateLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
 	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
+	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
