@@ -4,7 +4,10 @@ import nts.arc.enums.EnumAdaptor;
 
 /**
  * @author dan_pv
- *
+ * Do NOT use this. 
+ * please use nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory
+ * この列挙を使わないでください
+ * 本物のnts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategoryを使ってください。
  */
 public enum PersonalCounterCategory {
 	
