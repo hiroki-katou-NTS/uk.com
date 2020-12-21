@@ -122,7 +122,6 @@ module nts.uk.at.view.kmk004.b {
 				return ko.unwrap(value.yearMonth);
 			}));
 			const input = { yearMonth: yearMonth, laborTime: times };
-			console.log(input);
 
 			vm.validate()
 				.then((valid: boolean) => {
@@ -179,7 +178,7 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogF() {
 			const vm = this;
-			const params = { type: 'Com_Company', selectId: 'Chung dep trai' };
+			const params = { type: 'Com_Company', selectId: 'Chung dep trai', nameSynthetic: 'Com_Company', isSetting: true };
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
 			});
@@ -193,6 +192,7 @@ module nts.uk.at.view.kmk004.b {
 					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+					vm.selectedYear.valueHasMutated();
 				}
 			});
 		}
@@ -203,9 +203,7 @@ module nts.uk.at.view.kmk004.b {
 					.then(() => $('.nts-input').ntsError('clear'));
 			} else {
 				return $.Deferred().resolve()
-					/** Gọi xử lý validate của kiban */
 					.then(() => $('.nts-input').trigger("validate"))
-					/** Nếu có lỗi thì trả về false, không thì true */
 					.then(() => !$('.nts-input').ntsError('hasError'));
 			}
 		}

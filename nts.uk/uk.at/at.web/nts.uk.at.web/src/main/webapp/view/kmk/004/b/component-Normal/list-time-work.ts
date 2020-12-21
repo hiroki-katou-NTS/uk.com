@@ -198,7 +198,6 @@ module nts.uk.at.view.kmk004.b {
                     case 'Com_Employment':
                         vm.$ajax(API.GET_WORKTIME_EMPLOYMENT + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
                             .done((data: IWorkTime[]) => {
-                                console.log(data);
                                 if (data.length > 0) {
                                     const data1: IWorkTime[] = [];
                                     var check: boolean = true;

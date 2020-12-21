@@ -101,6 +101,7 @@ module nts.uk.at.view.kmk004.b {
 		name: KnockoutObservable<string> = ko.observable('');
 		workplaceName: KnockoutObservable<string> = ko.observable('');
 		isAlreadySetting: KnockoutObservable<boolean> = ko.observable(false);
+		nameSynthetic: KnockoutObservable<string> = ko.observable('');
 
 		constructor(params?: IEmployee) {
 			this.update(params);
@@ -113,8 +114,8 @@ module nts.uk.at.view.kmk004.b {
 				this.name(params.name);
 				this.workplaceName(params.workplaceName);
 				this.isAlreadySetting(params.isAlreadySetting);
+				this.nameSynthetic(params.code + ' ' + params.name);
 			}
 		}
-
 	}
 }

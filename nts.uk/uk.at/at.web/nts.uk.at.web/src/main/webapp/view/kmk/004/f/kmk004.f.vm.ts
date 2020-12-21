@@ -5,6 +5,8 @@ module nts.uk.at.view.kmk004.f {
     interface IParams {
         type: string;
         selectId: string;
+        nameSynthetic: string;
+        isSetting: boolean;
     }
 
     const API = {
@@ -44,6 +46,7 @@ module nts.uk.at.view.kmk004.f {
         public attendance: KnockoutObservable<boolean> = ko.observable(true);
         public type = '';
         public selectId = '';
+        public nameSynthetic = '';
 
         public model: Model = new Model();
 
@@ -52,14 +55,17 @@ module nts.uk.at.view.kmk004.f {
 
             vm.type = params.type;
             vm.selectId = params.selectId;
-
-            $(document).ready(function () {
-                $('.input-forcus').focus();
-            });
+            vm.nameSynthetic = params.nameSynthetic;
+            vm.attendance(params.isSetting);
         }
 
         mounted() {
             const vm = this;
+
+            $(document).ready(function () {
+                $('.input-forcus').focus();
+            });
+            
             vm.init();
             vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
             vm.model.outsideSurchargeWeekMonth.valueHasMutated();
