@@ -17,7 +17,7 @@ public class AttItemDto {
 
     private Integer typeOfAttendanceItem;
 
-    private int masterType;
+    private Integer masterType;
 
     private Integer attributes;
 
