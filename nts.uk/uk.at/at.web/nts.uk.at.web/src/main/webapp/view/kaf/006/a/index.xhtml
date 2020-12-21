@@ -109,45 +109,62 @@
                                                                             hdAppSet: hdAppSet,
                                                                             selectedType: selectedType
                                                                         } }"></div>
+
+
+                <div id="work-type-div" style="margin-top: 5px;">
+                    <div class="table">
+                        <div class="cell col-1">
+                            <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
+                        </div>
+                        <div class="cell">
+                            <div id="work-type-combobox" style="vertical-align: bottom;" data-bind="ntsComboBox: {
+                                name: $i18n('KAF006_16'),
+                                options: workTypeLst,
+                                optionsValue: 'workTypeCode',
+                                optionsText: 'name',
+                                value: selectedWorkTypeCD,
+                                required: true
+                            }"></div>
+                        </div>
+                    </div>
+                </div>
+                                                                        
                 <div
                     data-bind="component: { name: 'kaf006-shr-tab1', 
                                                                         params: {
+                                                                            isChangeWorkHour: isChangeWorkHour,
                                                                             appType: appType,
-                                                                            application: application,
-                                                                            workTypeLst: workTypeLst,
-                                                                            selectedWorkTypeCD: selectedWorkTypeCD
+                                                                            application: application
                                                                         } }, 
                                                                         visible: selectedType() === 0 || selectedType() === 2 || selectedType() === 4 || selectedType() === 5">
                 </div>
                 <div
                     data-bind="component: { name: 'kaf006-shr-tab2', 
                                                                         params: {
+                                                                            isChangeWorkHour: isChangeWorkHour,
                                                                             appType: appType,
-                                                                            application: application,
-                                                                            workTypeLst: workTypeLst,
-                                                                            selectedWorkTypeCD: selectedWorkTypeCD
+                                                                            application: application
                                                                         } }, 
                                                                         visible: selectedType() === 6">
                 </div>
                 <div
                     data-bind="component: { name: 'kaf006-shr-tab3', 
                                                                         params: {
+                                                                            isChangeWorkHour: isChangeWorkHour,
                                                                             appType: appType,
                                                                             application: application,
-                                                                            workTypeLst: workTypeLst,
-                                                                            selectedWorkTypeCD: selectedWorkTypeCD,
                                                                             dateSpecHdRelationLst: dateSpecHdRelationLst,
-                                                                            selectedDateSpec: selectedDateSpec
+                                                                            selectedDateSpec: selectedDateSpec,
+                                                                            relationshipReason: relationshipReason
                                                                         } }, 
                                                                         visible: selectedType() === 3">
                 </div>
                 <div
                     data-bind="component: { name: 'kaf006-shr-tab4', 
                                                                         params: {
+                                                                            isChangeWorkHour: isChangeWorkHour,
                                                                             appType: appType,
-                                                                            application: application,
-                                                                            workTypeLst: workTypeLst,
-                                                                            selectedWorkTypeCD: selectedWorkTypeCD
+                                                                            application: application
                                                                         } }, 
                                                                         visible: selectedType() === 1">
                 </div>

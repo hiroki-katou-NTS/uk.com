@@ -5,23 +5,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
         name: 'kaf006-shr-tab4',
         template: `
         <div id="kaf006tab4">
-            <div class="table">
-                <div class="cell col-1">
-                    <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
-                </div>
-                <div class="cell">
-                    <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
-                        name: $i18n('KAF006_16'),
-                        options: $parent.workTypeLst,
-                        optionsValue: 'workTypeCode',
-                        optionsText: 'name',
-                        value: $parent.selectedWorkTypeCD,
-                        required: true
-                    }"></div>
-                </div>
-            </div>
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
-                checked: isChagneWorkHour,
+                checked: isChangeWorkHour,
                 text: $i18n('KAF006_18')
             }"></div>
             <hr style="width: 700px; margin-inline-start: initial;" />
@@ -44,7 +29,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_58'),
-                                value: startTime1,
+                                value: $parent.startTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -54,7 +39,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
-                                value: endTime1,
+                                value: $parent.endTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -70,7 +55,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_60'),
-                                value: startTime2,
+                                value: $parent.startTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -80,7 +65,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
-                                value: endTime2,
+                                value: $parent.endTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -155,11 +140,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
     class Kaf006Tab4ViewModel extends ko.ViewModel {
         // workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
         // selectedWorkTypeCD: KnockoutObservable<any>;
-        isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
-        startTime1: KnockoutObservable<number> = ko.observable();
-        endTime1: KnockoutObservable<number> = ko.observable();
-        startTime2: KnockoutObservable<number> = ko.observable();
-        endTime2: KnockoutObservable<number> = ko.observable();
+        isChangeWorkHour: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
@@ -167,6 +148,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             if (params) {
                 // vm.workTypeLst = params.workTypeLst;
                 // vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                vm.isChangeWorkHour = params.isChangeWorkHour;
             }
         }
 
@@ -175,7 +157,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
         }
 
         public openKDL036() {
-            Kaf006AViewModel.openKDL036();
+            ko.contextFor(this.$el).$parent.content.openKDL036();
         }
 
         public openKDL035() {

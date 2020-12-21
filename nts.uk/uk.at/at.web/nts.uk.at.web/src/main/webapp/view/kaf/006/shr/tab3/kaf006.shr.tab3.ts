@@ -4,23 +4,8 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
         name: 'kaf006-shr-tab3',
         template: `
         <div id="kaf006tab3">
-            <div class="table">
-                <div class="cell col-1">
-                    <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
-                </div>
-                <div class="cell">
-                    <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
-                        name: $i18n('KAF006_16'),
-                        options: $parent.workTypeLst,
-                        optionsValue: 'workTypeCode',
-                        optionsText: 'name',
-                        value: $parent.selectedWorkTypeCD,
-                        required: true
-                    }"></div>
-                </div>
-            </div>
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
-                checked: isChagneWorkHour,
+                checked: isChangeWorkHour,
                 text: $i18n('KAF006_18')
             }"></div>
             <hr style="width: 700px; margin-inline-start: initial;" />
@@ -43,7 +28,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_58'),
-                                value: startTime1,
+                                value: $parent.startTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -53,7 +38,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
-                                value: endTime1,
+                                value: $parent.endTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -69,7 +54,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_60'),
-                                value: startTime2,
+                                value: $parent.startTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -79,7 +64,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
-                                value: endTime2,
+                                value: $parent.endTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -139,11 +124,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
     class Kaf006Tab3ViewModel extends ko.ViewModel {
         // workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
         // selectedWorkTypeCD: KnockoutObservable<any>;
-        isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
-        startTime1: KnockoutObservable<number> = ko.observable();
-        endTime1: KnockoutObservable<number> = ko.observable();
-        startTime2: KnockoutObservable<number> = ko.observable();
-        endTime2: KnockoutObservable<number> = ko.observable();
+        isChangeWorkHour: KnockoutObservable<boolean> = ko.observable(true);
         dateSpecHdRelationLst: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedDateSpec: KnockoutObservable<any> = ko.observable();
         relationshipReason: KnockoutObservable<string> = ko.observable();
@@ -156,6 +137,8 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                 // vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
                 vm.dateSpecHdRelationLst = params.dateSpecHdRelationLst;
                 vm.selectedDateSpec = params.selectedDateSpec;
+                vm.relationshipReason = params.relationshipReason;
+                vm.isChangeWorkHour = params.isChangeWorkHour;
             }
         }
 

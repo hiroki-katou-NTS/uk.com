@@ -32,8 +32,15 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
@@ -44,9 +51,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMod
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
@@ -523,12 +532,33 @@ public class AppAbsenceFinder {
 	    // 会社ID
 	    String companyID = AppContexts.user().companyId();
 	    
+	    ApplyForLeave applyForLeave = param.getApplyForLeave().toDomain();
+	    Application application = Application.createFromNew(
+                EnumAdaptor.valueOf(param.getApplication().getPrePostAtr(), PrePostAtr.class),
+                param.getApplication().getEmployeeID(), EnumAdaptor.valueOf(param.getApplication().getAppType(), ApplicationType.class),
+                new ApplicationDate(GeneralDate.fromString(param.getApplication().getAppDate(), "yyyy/MM/dd")),
+                param.getApplication().getEmployeeID(),
+                param.getApplication().getOpStampRequestMode() == null ? Optional.empty()
+                        : Optional.of(EnumAdaptor.valueOf(param.getApplication().getOpStampRequestMode(),
+                                StampRequestMode.class)),
+                Optional.of(new ReasonForReversion(param.getApplication().getOpReversionReason())),
+                param.getApplication().getOpAppStartDate() == null ? Optional.empty()
+                        : Optional.of(new ApplicationDate(
+                                GeneralDate.fromString(param.getApplication().getOpAppStartDate(), "yyyy/MM/dd"))),
+                        param.getApplication().getOpAppEndDate() == null ? Optional.empty()
+                        : Optional.of(new ApplicationDate(
+                                GeneralDate.fromString(param.getApplication().getOpAppEndDate(), "yyyy/MM/dd"))),
+                Optional.of(new AppReason(param.getApplication().getOpAppReason())),
+                param.getApplication().getOpAppStandardReasonCD() == null ? 
+                        Optional.empty() : Optional.of(new AppStandardReasonCode(param.getApplication().getOpAppStandardReasonCD())));
+	    applyForLeave.setApplication(application);
+	    
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
 		
 		AbsenceCheckRegisterOutput result = absenseProcess.checkBeforeRegister(
 				companyID, 
 				appAbsenceStartInfoOutput, 
-				param.getApplyForLeave().toDomain(),
+				applyForLeave,
 				param.isAgentAtr());
 		return AbsenceCheckRegisterDto.fromDomain(result);
 	}

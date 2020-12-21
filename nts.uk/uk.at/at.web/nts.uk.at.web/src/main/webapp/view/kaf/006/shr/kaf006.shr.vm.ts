@@ -18,14 +18,16 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
             setShared("KDL035_PARAMS", params);
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
-                const linkingDates: Array<any> = getShared('linkingDates');
+                const linkingDates: Array<any> = getShared('KDL035_PARAMS');
                 console.log(linkingDates);
             });
         }
 
         public static openDialogKDL036(params: any) {
             console.log("Open KDL036");
-          modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
+
+            setShared("KDL036_PARAMS", params)
+            modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
             let listParam = getShared("KDL036_SHAREPARAM");
             console.log(listParam);
           });
@@ -45,5 +47,43 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
     export interface IWorkType {
         workTypeCode: string;
         name: string;
+    }
+
+    export class ApplicationDto {
+        version: number;
+        appId: string;
+        prePostAtr: number;
+        employeeID: string;
+        appType: number;
+        appDate: string;
+        enteredPerson: string;
+        inputDate: string;
+        reflectionStatus;
+        opStampRequestMode: number;
+        opReversionReason: string;
+        opAppStartDate: string;
+        opAppEndDate: string;
+        opAppReason: string;
+        opAppStandardReasonCD: number;
+
+        constructor(version, appId, prePostAtr, employeeID, appType, appDate, enteredPerson,
+            inputDate, reflectionStatus, opStampRequestMode, opReversionReason, opAppStartDate,
+            opAppEndDate, opAppReason, opAppStandardReasonCD) {
+                this.version = version;
+                this.appId = appId;
+                this.prePostAtr = prePostAtr;
+                this.employeeID = employeeID;
+                this.appType = appType;
+                this.appDate = appDate;
+                this.enteredPerson = enteredPerson;
+                this.inputDate = inputDate;
+                this.reflectionStatus = reflectionStatus;
+                this.opStampRequestMode = opStampRequestMode;
+                this.opReversionReason = opReversionReason;
+                this.opAppStartDate = opAppStartDate;
+                this.opAppEndDate = opAppEndDate;
+                this.opAppReason = opAppReason;
+                this.opAppStandardReasonCD = opAppStandardReasonCD
+        }
     }
 }

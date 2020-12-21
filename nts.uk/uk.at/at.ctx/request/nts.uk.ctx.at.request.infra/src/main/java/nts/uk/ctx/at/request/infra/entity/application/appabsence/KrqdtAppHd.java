@@ -116,8 +116,6 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
 
     public static final JpaEntityMapper<KrqdtAppHd> MAPPER = new JpaEntityMapper<KrqdtAppHd>(KrqdtAppHd.class);
     
-    private final String FORMAT_DATE = "yyyy/MM/dd";
-    
     /**
      * Convert from entity to domain
      * @return ApplyForLeave domain
@@ -159,8 +157,8 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
                         EnumAdaptor.valueOf(this.holidayAppType, HolidayAppType.class),
                         new SupplementInfoVacation(
                                 Optional.ofNullable(new DatePeriod(
-                                        GeneralDate.fromString(this.hdComStartDate, FORMAT_DATE), 
-                                        GeneralDate.fromString(this.hdComEndDate, FORMAT_DATE))),
+                                        GeneralDate.fromString(this.hdComStartDate, "yyyy/MM/dd"), 
+                                        GeneralDate.fromString(this.hdComEndDate, "yyyy/MM/dd"))),
                                 Optional.of(new ApplyforSpecialLeave(
                                         this.mournerFlg != null ? (this.mournerFlg == 1 ? true : false) : false,
                                         this.relationshipCD != null ? Optional.of(new RelationshipCDPrimitive(this.relationshipCD)) : Optional.empty(),
@@ -190,15 +188,22 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
         }
         
         if (reflectFreeTimeApp.getTimeDegestion().isPresent()) {
-            entity.setHourOfSixtyOvertime(reflectFreeTimeApp.getTimeDegestion().get().getOvertime60H().v());
-            entity.setHourOfCare(reflectFreeTimeApp.getTimeDegestion().get().getNursingTime().v());
-            entity.setHourOfChildCare(reflectFreeTimeApp.getTimeDegestion().get().getChildTime().v());
-            entity.setHourOfHdCom(reflectFreeTimeApp.getTimeDegestion().get().getTimeOff().v());
-            entity.setHourOfHdsp(reflectFreeTimeApp.getTimeDegestion().get().getTimeSpecialVacation().v());
-            entity.setHourOfHdPaid(reflectFreeTimeApp.getTimeDegestion().get().getTimeAnualLeave().v());
+            entity.setHourOfSixtyOvertime(reflectFreeTimeApp.getTimeDegestion().get().getOvertime60H() != null ? 
+                    reflectFreeTimeApp.getTimeDegestion().get().getOvertime60H().v() : null);
+            entity.setHourOfCare(reflectFreeTimeApp.getTimeDegestion().get().getNursingTime() != null ? 
+                    reflectFreeTimeApp.getTimeDegestion().get().getNursingTime().v() : null);
+            entity.setHourOfChildCare(reflectFreeTimeApp.getTimeDegestion().get().getChildTime() != null ? 
+                    reflectFreeTimeApp.getTimeDegestion().get().getChildTime().v() : null);
+            entity.setHourOfHdCom(reflectFreeTimeApp.getTimeDegestion().get().getTimeOff() != null ? 
+                    reflectFreeTimeApp.getTimeDegestion().get().getTimeOff().v() : null);
+            entity.setHourOfHdsp(reflectFreeTimeApp.getTimeDegestion().get().getTimeSpecialVacation() != null ? 
+                    reflectFreeTimeApp.getTimeDegestion().get().getTimeSpecialVacation().v() : null);
+            entity.setHourOfHdPaid(reflectFreeTimeApp.getTimeDegestion().get().getTimeAnualLeave() != null ? 
+                    reflectFreeTimeApp.getTimeDegestion().get().getTimeAnualLeave().v() : null);
             
             if (reflectFreeTimeApp.getTimeDegestion().get().getSpecialVacationFrameNO().isPresent()) {
-                entity.setFrameNoOfHdsp(reflectFreeTimeApp.getTimeDegestion().get().getSpecialVacationFrameNO().get());
+                entity.setFrameNoOfHdsp(reflectFreeTimeApp.getTimeDegestion().get().getSpecialVacationFrameNO().isPresent() ? 
+                        reflectFreeTimeApp.getTimeDegestion().get().getSpecialVacationFrameNO().get() : null);
             }
         }
         

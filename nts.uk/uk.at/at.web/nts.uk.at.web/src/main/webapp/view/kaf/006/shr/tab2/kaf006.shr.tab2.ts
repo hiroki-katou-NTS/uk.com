@@ -4,21 +4,6 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
         name: 'kaf006-shr-tab2',
         template: `
         <div id="kaf006tab2">
-            <div class="table">
-                <div class="cell col-1">
-                    <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
-                </div>
-                <div class="cell">
-                    <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
-                        name: $i18n('KAF006_16'),
-                        options: $parent.workTypeLst,
-                        optionsValue: 'workTypeCode',
-                        optionsText: 'name',
-                        value: $parent.selectedWorkTypeCD,
-                        required: true
-                    }"></div>
-                </div>
-            </div>
             <div class="table" style="margin-top: 5px;">
                 <div class="cell col-1">
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_28')"></div>
@@ -28,7 +13,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell col-1" data-bind="text: $i18n('Com_ExsessHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ExsessHoliday'),
-                            value: over60H,
+                            value: $parent.over60H,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time'
                         }" />
@@ -37,7 +22,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_30')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_30'),
-                            value: timeOff,
+                            value: $parent.timeOff,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time'
                         }" />
@@ -46,7 +31,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_29')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_29'),
-                            value: annualTime,
+                            value: $parent.annualTime,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time'
                         }" />
@@ -55,7 +40,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell col-1" data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ChildNurseHoliday'),
-                            value: childNursing,
+                            value: $parent.childNursing,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time'
                         }" />
@@ -64,7 +49,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell col-1" data-bind="text: $i18n('Com_CareHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_CareHoliday'),
-                            value: nursing,
+                            value: $parent.nursing,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time'
                         }" />
@@ -79,7 +64,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                 </div>
             </div>
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
-                checked: isChagneWorkHour,
+                checked: isChangeWorkHour,
                 text: $i18n('KAF006_18')
             }"></div>
             <hr style="width: 700px; margin-inline-start: initial;" />
@@ -102,7 +87,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_58'),
-                                value: startTime1,
+                                value: $parent.startTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -112,7 +97,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
-                                value: endTime1,
+                                value: $parent.endTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -128,7 +113,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_60'),
-                                value: startTime2,
+                                value: $parent.startTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -138,7 +123,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
-                                value: endTime2,
+                                value: $parent.endTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
@@ -156,7 +141,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
     class Kaf006Tab2ViewModel extends ko.ViewModel {
         // workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
         // selectedWorkTypeCD: KnockoutObservable<any>;
-        isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
+        isChangeWorkHour: KnockoutObservable<boolean> = ko.observable(true);
 
         // 60H超休
         over60H: KnockoutObservable<number> = ko.observable();
@@ -171,17 +156,13 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
 
         total: any = ko.observable('0:00');
 
-        startTime1: KnockoutObservable<number> = ko.observable();
-        endTime1: KnockoutObservable<number> = ko.observable();
-        startTime2: KnockoutObservable<number> = ko.observable();
-        endTime2: KnockoutObservable<number> = ko.observable();
-
         created(params: any) {
             const vm = this;
 
             if (params) {
                 // vm.workTypeLst = params.workTypeLst;
                 // vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                vm.isChangeWorkHour = params.isChangeWorkHour;
             }
 
             // vm.total = ko.observable(nts.uk.time.format.byId("Time_Short_HM", (vm.over60H() ? vm.over60H() : 0) + (vm.timeOff() ? vm.timeOff() : 0) 

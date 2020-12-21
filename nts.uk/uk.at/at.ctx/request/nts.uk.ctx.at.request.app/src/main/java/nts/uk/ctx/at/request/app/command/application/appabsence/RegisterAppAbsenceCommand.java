@@ -29,7 +29,7 @@ public class RegisterAppAbsenceCommand {
     private boolean mailServerSet;
     
     // 承認ルートインスタンス
-    private ApprovalPhaseStateForAppDto approvalRoot;
+    private List<ApprovalPhaseStateForAppDto> approvalRoot;
     
     private ApplicationDto application;
 }

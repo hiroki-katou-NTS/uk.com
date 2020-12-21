@@ -323,7 +323,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     	// 勤務種類・就業時間帯のマスタチェックする
     	detailBeforeUpdate.displayWorkingHourCheck(companyID
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()
-    			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v());
+    			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().isPresent() ? appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v() : null);
     	// 申請全般登録時チェック処理
     	result.setConfirmMsgLst(newBeforeRegister.processBeforeRegister_New(companyID
     			, EmploymentRootAtr.APPLICATION
@@ -985,7 +985,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         
         // 取得した「労働条件項目」をチェックする
         if (opWorkingConditionItem.isPresent() && opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-            return Optional.of(workingCondition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v()); 
+            return Optional.of(opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v()); 
         }
         
         // Emptyを返す
@@ -1032,7 +1032,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		if (selectedWorkTypeCD.isPresent()) {
 		    appAbsenceStartInfoOutput.setSelectedWorkTypeCD(
 		            appAbsenceStartInfoOutput.getWorkTypeLst().stream().filter(x -> x.getWorkTypeCode().v().equals(selectedWorkTypeCD)).collect(Collectors.toList()).size() > 0
-		                    ? appAbsenceStartInfoOutput.getSelectedWorkTypeCD() : Optional.of(workTypes.get(0).getWorkTypeCode().v()));
+		                    ? appAbsenceStartInfoOutput.getSelectedWorkTypeCD() : (workTypes.size() > 0 ? Optional.of(workTypes.get(0).getWorkTypeCode().v()) : Optional.empty()));
 		} else {
 		    appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.isEmpty() ? Optional.empty() : Optional.of(workTypes.get(0).getWorkTypeCode().v()));
 		}
@@ -1705,8 +1705,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         this.applicationService.insertApp(applyForLeave.getApplication(), approvalRoot);
         
         // アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-        // Pending
-//        this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), applyForLeave.getApplication());
+        this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), applyForLeave.getApplication());
         
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
@@ -1721,8 +1720,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     applyForLeave.getApplication().getAppDate().getApplicationDate();
                 
         List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
-        List<GeneralDate> listDatesTemp = new ArrayList<GeneralDate>();
-        Collections.copy(listDatesTemp, listDates);
+        List<GeneralDate> listDatesTemp = listDates;
+//        Collections.copy(listDatesTemp, listDates);
         
         List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
         for (GeneralDate date : listDatesTemp) {
