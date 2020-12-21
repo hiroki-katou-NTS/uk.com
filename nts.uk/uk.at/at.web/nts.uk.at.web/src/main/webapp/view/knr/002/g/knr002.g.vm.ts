@@ -84,6 +84,8 @@ module knr002.g {
                 if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
                     self.empInfoTerCode('');
                     self.empInfoTerName('');
+                    self.modelEmpInfoTerName('');
+                    self.workLocationName('');
                 }else{
 
                     //load process

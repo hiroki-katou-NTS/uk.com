@@ -16,7 +16,7 @@ module knr002.f {
             lastSuccessDate: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
             recoveryTargetList: KnockoutObservableArray<any>;
-            selectedList: KnockoutObservableArray<string>;
+            selectedList: Array<String>;
            
             
             constructor(){
@@ -28,7 +28,7 @@ module knr002.f {
                 self.lastSuccessDate = ko.observable("");
                 self.workLocationName = ko.observable("");
                 self.recoveryTargetList = ko.observableArray<EmpInfoTerminal>([]);
-                self.selectedList = ko.observableArray<string>([]);       
+                self.selectedList = [];       
             }
             /**
              * Start Page
@@ -54,7 +54,7 @@ module knr002.f {
                     self.lastSuccessDate('');
                     self.workLocationName('');
                     self.recoveryTargetList([]);
-                    self.selectedList([]);
+                    self.selectedList = [];
                     self.bindDestinationCopyList(); 
                 } else {             
                     service.getRecoveryTargeTertList(self.modelEmpInfoTer()).done((data)=>{
@@ -81,8 +81,7 @@ module knr002.f {
                                     recoveryTargetTempList.push(recoveryTargetTemp);
                                 }
                             }
-                            self.recoveryTargetList(recoveryTargetTempList);
-                            console.log("data1: ", self.recoveryTargetList());   
+                            self.recoveryTargetList(recoveryTargetTempList);   
                         }
                         self.bindDestinationCopyList(); 
                     });											
@@ -128,6 +127,35 @@ module knr002.f {
                 nts.uk.ui.windows.close();
             }
             /**
+             * click btn F6_1 復旧ボタン
+             */
+            private recovery(): void {
+                let self = this;
+                self.selectedList = [];             
+                _.forEach(self.recoveryTargetList(), e => {
+                    if(e.availability)
+                    self.selectedList.push(e.empInfoTerCode);
+                }); 
+                if(self.selectedList.length <= 0){
+                    dialog.error({messageId: "Msg_2035"}).then(()=>{
+                        return;
+                    }); 
+                } else {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                        blockUI.invisible();
+                        service.remove(self.currentFrameCd()).done(() => {
+                                dialog.info({ messageId: "Msg_16" }).then(function() {
+                                    
+                                });;
+                            })
+                            .fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                            .always(() => {
+                                blockUI.clear();
+                            });
+                    });
+                }   
+            }
+            /**
              * get Model Name
              */
             private getModelName(modelEmpInfoTer: Number): string{
@@ -164,6 +192,12 @@ module knr002.f {
                 this.empInfoTerName = empInfoTerName;
                 this.modelEmpInfoTerName = modelEmpInfoTerName;
                 this.availability = false;
+            }
+        }
+        class Dto{
+            empInfoTerCode: string;
+            constructor(empInfoTerCode: string){
+                this.empInfoTerCode = empInfoTerCode;
             }
         }
     }

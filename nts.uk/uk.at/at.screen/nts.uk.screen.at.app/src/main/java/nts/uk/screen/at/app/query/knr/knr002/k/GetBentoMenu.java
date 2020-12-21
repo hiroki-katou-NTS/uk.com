@@ -47,7 +47,7 @@ public class GetBentoMenu {
 			 List<DateHistoryItem> dateHistoryItem = bentoMenuHist.get().getHistoryItems()
 					 								 .stream().filter(e -> e.start().beforeOrEquals(date)&&e.end().afterOrEquals(date))
 					 								 .collect(Collectors.toList());
-			 if(dateHistoryItem.size() == 1) {
+			 if(dateHistoryItem.size() > 0) {
 				 BentoMenu bentoMenu = this.bentoMenuRepository
 						 				   .getBentoMenuByHistId(companyId, dateHistoryItem.get(0).identifier()); 
 				 dto.setBentoMenuList(bentoMenu.getMenu().stream().map(e -> {
