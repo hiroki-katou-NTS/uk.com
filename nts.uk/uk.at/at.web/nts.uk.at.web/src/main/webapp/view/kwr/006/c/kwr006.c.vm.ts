@@ -61,6 +61,10 @@ module nts.uk.at.view.kwr006.c {
                 self.outputItemList = ko.observableArray([]);
                 self.selectedCodeC2_3 = ko.observable();
 
+                self.currentCodeListSwap.subscribe(function(value) {
+                    self.fillterByAttendanceType(self.C5_4_value());
+                })
+
                 self.enableBtnDel = ko.observable(false);
                 self.enableCodeC3_2 = ko.observable(false);
                 self.selectedCodeC2_3.subscribe(function (value) {
@@ -148,7 +152,7 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
                 let lstSwapLeft =_.sortBy(self.outputItemPossibleLst(), i => i.code);
-                let lstSwapRight = [];
+                let lstSwapRight:any = [];
                 if (lstDisplayedAttendance) {
                     _.forEach(lstDisplayedAttendance, (item, index) => {
                         if (item.attendanceName) {
