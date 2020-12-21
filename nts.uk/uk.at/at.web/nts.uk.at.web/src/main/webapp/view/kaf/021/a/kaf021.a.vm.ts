@@ -18,10 +18,12 @@ module nts.uk.at.kaf021.a {
         empSearchItems: Array<EmployeeSearchDto> = [];
 
         setting: common.AgreementOperationSettingDto;
+        closurePeriods: Array<CurrentClosurePeriodDto> = [];
         processingMonth: number = 0;
 
-        appTypes: Array<AppType> = [];
+        appTypes: KnockoutObservableArray<AppType> = ko.observableArray([]);
         appTypeSelected: KnockoutObservable<common.AppTypeEnum> = ko.observable(null);
+        appTypeSubscription: any;
 
         datas: Array<EmployeeAgreementTime> = [];
 
@@ -78,48 +80,52 @@ module nts.uk.at.kaf021.a {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     vm.empSearchItems = data.listEmployee;
-                    vm.fetchData().done(() => {
-                        $("#grid").mGrid("destroy");
-                        vm.loadMGrid();
-                    });
+                    vm.getprocessingMonth(data.closureId);
+                    vm.reloadAppTypes();
+                    vm.appTypeSelected.valueHasMutated();
                 }
             }
         }
 
         created() {
             const vm = this;
-            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
-
-            if (vm.isReload != null) {
-                let cacheJson: string = localStorage.getItem(vm.getCacheKey());
-                let cache: CacheData = JSON.parse(cacheJson);
-                if (cache) {
-                    vm.datas = cache.datas;
-                    vm.empItems = cache.empItems;
-                    vm.empSearchItems = cache.empSearchItems;
-                    vm.canNextScreen(vm.empItems.length > 0);
-                    vm.appTypeSelected(cache.appType);
+            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
+                vm.$blockui("invisible");
+                if (vm.isReload != null) {
+                    let cacheJson: string = localStorage.getItem(vm.getCacheKey());
+                    let cache: CacheData = JSON.parse(cacheJson);
+                    if (cache) {
+                        vm.datas = cache.datas;
+                        vm.empItems = cache.empItems;
+                        vm.empSearchItems = cache.empSearchItems;
+                        vm.canNextScreen(vm.empItems.length > 0);
+                        vm.appTypeSelected(cache.appType);
+                        vm.processingMonth = cache.processingMonth;
+                    } else {
+                        vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
+                    }
                 } else {
                     vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
                 }
-            } else {
-                vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
-            }
 
-            vm.initData().done(() => {
-                vm.loadMGrid();
-                $('#A1_5').focus();
-                vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
-                    vm.fetchData().done(() => {
-                        $("#grid").mGrid("destroy");
-                        vm.loadMGrid();
-                    });
-                })
-
-                // Reload when back from screen B (Register success)
-                if (vm.isReload) {
-                    vm.appTypeSelected.valueHasMutated();
-                }
+                vm.initData().done(() => {
+                    vm.loadMGrid();
+                    $('#A1_5').focus();
+                    vm.$blockui("clear");
+                    if (vm.isReload == null) {
+                        // Fisrt load
+                        vm.getprocessingMonth(null);
+                    }
+                    vm.reloadAppTypes();
+                    // Reload when back from screen B (Register success)
+                    if (vm.isReload) {
+                        vm.$nextTick(() => {
+                            vm.appTypeSelected.valueHasMutated();
+                        })
+                    }
+                }).fail(() => {
+                    vm.$blockui("clear");
+                });
             });
 
             _.extend(window, { vm });
@@ -134,39 +140,60 @@ module nts.uk.at.kaf021.a {
         initData(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
-            vm.$blockui("invisible");
             vm.$ajax(API.INIT).done((data: StartupInfo) => {
-                vm.processingMonth = data.processingMonth;
                 vm.setting = data.setting;
-
+                vm.closurePeriods = data.closurePeriods;
                 if (!vm.setting.useSpecical) {
                     vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
                         vm.$jump('com', '/view/ccg/008/a/index.xhtml');
                     });
-                    vm.$blockui("clear");
-                    return;
                 }
-
-                let date = common.getProcessingDate(vm.processingMonth);
-                let currentMonth = date.getMonth() + 1;
-                date.setMonth(currentMonth);
-                let nextMonth = date.getMonth() + 1;
-
-                vm.appTypes.push(new AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), currentMonth)));
-                vm.appTypes.push(new AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), nextMonth)));
-                if (vm.setting.useYear) {
-                    vm.appTypes.push(new AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
-                }
-                vm.appTypeSelected.valueHasMutated();
-
-                vm.$blockui("clear");
                 dfd.resolve();
             }).fail((error: any) => {
-                vm.$blockui("clear");
+                dfd.reject();
                 vm.$dialog.error(error);
             });
 
             return dfd.promise();
+        }
+
+        reloadAppTypes(){
+            const vm = this;
+
+            let date = common.getProcessingDate(vm.processingMonth);
+            let currentMonth = date.getMonth() + 1;
+            date.setMonth(currentMonth);
+            let nextMonth = date.getMonth() + 1;
+            vm.appTypes.removeAll();
+            let appTypes = [];
+            appTypes.push(new AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), currentMonth)));
+            appTypes.push(new AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), nextMonth)));
+            if (vm.setting.useYear) {
+                appTypes.push(new AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
+            }
+            vm.appTypes(appTypes);
+            if (vm.appTypeSubscription){
+                vm.appTypeSubscription.dispose();
+            }
+            vm.appTypeSubscription = vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
+                vm.$blockui("invisible");
+                vm.fetchData().done(() => {
+                    $("#grid").mGrid("destroy");
+                    vm.loadMGrid();
+                }).always(() => {
+                    vm.$blockui("clear");
+                });
+            })
+        }
+
+        getprocessingMonth(closureId: number) {
+            const vm = this;
+            if (closureId == null) {
+                vm.processingMonth = _.first(vm.closurePeriods)?.processingYm
+            } else {
+                let closure = _.find(vm.closurePeriods, (item: CurrentClosurePeriodDto) => { return item.closureId == closureId });
+                vm.processingMonth = closure?.processingYm;
+            }
         }
 
         fetchData(): JQueryPromise<any> {
@@ -179,39 +206,38 @@ module nts.uk.at.kaf021.a {
                 dfd.resolve();
                 return dfd.promise();
             }
-            vm.$blockui("invisible");
             vm.datas = [];
+            let param = {
+                employees: vm.empSearchItems,
+                currentYm: vm.processingMonth
+            }
             switch (vm.appTypeSelected()) {
                 case common.AppTypeEnum.CURRENT_MONTH:
-                    vm.$ajax(API.CURRENT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = vm.convertData(data);
-                        dfd.resolve();
-                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+                    vm.$ajax(API.CURRENT_MONTH, param).done((data: any) => {
+                        vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_MONTH);
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => dfd.resolve());
                     break;
                 case common.AppTypeEnum.NEXT_MONTH:
-                    vm.$ajax(API.NEXT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = vm.convertData(data);
-                        dfd.resolve();
-                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+                    vm.$ajax(API.NEXT_MONTH, param).done((data: any) => {
+                        vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_MONTH);
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => dfd.resolve());
                     break;
                 case common.AppTypeEnum.YEARLY:
-                    vm.$ajax(API.YEAR, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = vm.convertData(data);
-                        dfd.resolve();
-                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+                    vm.$ajax(API.YEAR, param).done((data: any) => {
+                        vm.datas = vm.convertData(data, common.TypeAgreementApplicationEnum.ONE_YEAR);
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => dfd.resolve());
                     break;
                 default:
                     dfd.resolve();
-                    vm.$blockui("clear");
             }
             return dfd.promise();
         }
 
-        convertData(data: Array<IEmployeeAgreementTime>): Array<EmployeeAgreementTime> {
+        convertData(data: Array<IEmployeeAgreementTime>, typeAgreement: common.TypeAgreementApplicationEnum): Array<EmployeeAgreementTime> {
             const vm = this;
             let results: Array<EmployeeAgreementTime> = [];
             _.each(data, (item: IEmployeeAgreementTime) => {
-                let result = new EmployeeAgreementTime(item)
+                let result = new EmployeeAgreementTime(item, typeAgreement)
                 result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : "";
                 results.push(result);
             })
@@ -220,14 +246,9 @@ module nts.uk.at.kaf021.a {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 339;
-            let width = $(window).width() + 20 - 1170;
-
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1170px",
-                height: "200px",
-                subWidth: width + "px",
-                subHeight: height + "px",
+                subWidth: "130px",
+                subHeight: "240px",
                 headerHeight: '60px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
@@ -237,7 +258,7 @@ module nts.uk.at.kaf021.a {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 hidePrimaryKey: true,
                 columns: vm.getColumns(),
                 ntsControls: [
@@ -424,7 +445,7 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             let dataAll: Array<EmployeeAgreementTime> = $("#grid").mGrid("dataSource", true);
             let dataSelected = _.filter(dataAll, (item: EmployeeAgreementTime) => { return item.checked });
-            let cache = new CacheData(vm.appTypeSelected(), dataAll, vm.empItems, vm.empSearchItems);
+            let cache = new CacheData(vm.appTypeSelected(), vm.processingMonth, dataAll, vm.empItems, vm.empSearchItems);
             localStorage.setItem(vm.getCacheKey(), JSON.stringify(cache));
             vm.$jump('at', '/view/kaf/021/b/index.xhtml', {
                 datas: dataSelected,
@@ -500,12 +521,14 @@ module nts.uk.at.kaf021.a {
 
     class CacheData {
         appType: common.AppTypeEnum;
+        processingMonth: number;
         datas: Array<EmployeeAgreementTime>;
         empItems: Array<string> = [];
         empSearchItems: Array<EmployeeSearchDto> = [];
 
-        constructor(appType: common.AppTypeEnum, datas: Array<EmployeeAgreementTime>, empItems: Array<string> = [], empSearchItems: Array<EmployeeSearchDto>) {
+        constructor(appType: common.AppTypeEnum, processingMonth: number, datas: Array<EmployeeAgreementTime>, empItems: Array<string> = [], empSearchItems: Array<EmployeeSearchDto>) {
             this.appType = appType;
+            this.processingMonth = processingMonth;
             this.datas = datas;
             this.empItems = empItems;
             this.empSearchItems = empSearchItems;
@@ -514,7 +537,12 @@ module nts.uk.at.kaf021.a {
 
     interface StartupInfo {
         setting: common.AgreementOperationSettingDto;
-        processingMonth: number;
+        closurePeriods: Array<CurrentClosurePeriodDto>
+    }
+
+    interface CurrentClosurePeriodDto {
+        closureId: number;
+        processingYm: number;
     }
 
     class AppType {
@@ -702,7 +730,7 @@ module nts.uk.at.kaf021.a {
 
         exceededNumber: number;
 
-        constructor(data: IEmployeeAgreementTime) {
+        constructor(data: IEmployeeAgreementTime, typeAgreement: common.TypeAgreementApplicationEnum) {
             this.employeeId = data.employeeId;
             this.checked = false;
             this.status = data.status;
@@ -855,25 +883,27 @@ module nts.uk.at.kaf021.a {
             this.yearError = data.year?.time?.error;
             this.yearAlarm = data.year?.time?.alarm;
 
-            this.monthAverage2 = data.monthAverage2?.time;
-            this.monthAverage2Str = parseTime(this.monthAverage2, true).format();
-            this.monthAverage2Status = data.monthAverage2?.status;
+            if (typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
+                this.monthAverage2 = data.monthAverage2?.time;
+                this.monthAverage2Str = parseTime(this.monthAverage2, true).format();
+                this.monthAverage2Status = data.monthAverage2?.status;
 
-            this.monthAverage3 = data.monthAverage3?.time;
-            this.monthAverage3Str = parseTime(this.monthAverage3, true).format();
-            this.monthAverage3Status = data.monthAverage3?.status;
+                this.monthAverage3 = data.monthAverage3?.time;
+                this.monthAverage3Str = parseTime(this.monthAverage3, true).format();
+                this.monthAverage3Status = data.monthAverage3?.status;
 
-            this.monthAverage4 = data.monthAverage4?.time;
-            this.monthAverage4Str = parseTime(this.monthAverage4, true).format();
-            this.monthAverage4Status = data.monthAverage4?.status;
+                this.monthAverage4 = data.monthAverage4?.time;
+                this.monthAverage4Str = parseTime(this.monthAverage4, true).format();
+                this.monthAverage4Status = data.monthAverage4?.status;
 
-            this.monthAverage5 = data.monthAverage5?.time;
-            this.monthAverage5Str = parseTime(this.monthAverage5, true).format();
-            this.monthAverage5Status = data.monthAverage5?.status;
+                this.monthAverage5 = data.monthAverage5?.time;
+                this.monthAverage5Str = parseTime(this.monthAverage5, true).format();
+                this.monthAverage5Status = data.monthAverage5?.status;
 
-            this.monthAverage6 = data.monthAverage6?.time;
-            this.monthAverage6Str = parseTime(this.monthAverage6, true).format();
-            this.monthAverage6Status = data.monthAverage6?.status;
+                this.monthAverage6 = data.monthAverage6?.time;
+                this.monthAverage6Str = parseTime(this.monthAverage6, true).format();
+                this.monthAverage6Status = data.monthAverage6?.status;
+            }
 
             this.exceededNumber = data.exceededNumber;
         }
