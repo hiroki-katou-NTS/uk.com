@@ -51,8 +51,9 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpec
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestrictionPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantRegular;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantRegularPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstHdspGrant;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstHdspGrantPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshstGrantPeriodic;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshstGrantPeriodicPK;
 import nts.uk.shr.com.time.calendar.MonthDay;
@@ -321,25 +322,57 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSphdSpecLeaveLst;
 	}
 
-	private KshstGrantRegular createKshstGrantRegular(SpecialHoliday domain) {
+//	private KshstGrantRegular createKshstGrantRegular(SpecialHoliday domain) {
+//
+//		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
+//		int typeTime = TypeTime.REFER_GRANT_DATE_TBL.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
+//				interval = 0, grantedDays = 0;
+//		KshstGrantRegular entity = new KshstGrantRegular();
+//		entity.pk = new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+//		// update document ver 32
+//		if (isAutoGrant) {
+//			typeTime = domain.getGrantRegular().getTypeTime().value;
+//			grantDate = domain.getGrantRegular().getGrantDate().get().value;
+////			interval = domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
+//			if ( domain.getGrantRegular().getFixGrantDate().isPresent() ) {
+//				grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+//			}
+//		}
+//		entity.typeTime = typeTime;
+//		entity.grantDate = grantDate;
+//		entity.interval = interval;
+//		entity.grantedDays = grantedDays;
+//
+//		return entity;
+//	}
+
+	// KshstHdspGrant
+	private KshstHdspGrant createKshstHdspGrant(SpecialHoliday domain) {
 
 		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
 		int typeTime = TypeTime.REFER_GRANT_DATE_TBL.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
 				interval = 0, grantedDays = 0;
-		KshstGrantRegular entity = new KshstGrantRegular();
-		entity.pk = new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+		KshstHdspGrant entity = new KshstHdspGrant();
+		entity.pk = new KshstHdspGrantPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
 		// update document ver 32
 		if (isAutoGrant) {
 			typeTime = domain.getGrantRegular().getTypeTime().value;
 			grantDate = domain.getGrantRegular().getGrantDate().get().value;
 //			interval = domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
+			if (domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()){
+				/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
+				int month = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth();
+
+				/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
+				int day = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
+				entity.grantMd = month * 100 + day;
+			}
+
 			if ( domain.getGrantRegular().getFixGrantDate().isPresent() ) {
 				grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
 			}
 		}
-		entity.typeTime = typeTime;
-		entity.grantDate = grantDate;
-		entity.interval = interval;
+
 		entity.grantedDays = grantedDays;
 
 		return entity;
@@ -460,7 +493,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().insert(createSpecialHolidayFromDomain(specialHoliday));
 		this.commandProxy().insertAll(createKshstSphdAbsenceLst(specialHoliday));
 		this.commandProxy().insertAll(createKshstSphdSpecLeaveLst(specialHoliday));
-		this.commandProxy().insert(createKshstGrantRegular(specialHoliday));
+		this.commandProxy().insert(createKshstHdspGrant(specialHoliday));
 		this.commandProxy().insert(createKshstGrantPeriodic(specialHoliday));
 		this.commandProxy().insert(createKshstSpecialLeaveRestriction(specialHoliday));
 		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
@@ -513,10 +546,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		oldGrantPeriodic.limitCarryoverDays = limitCarryoverDays;
 		this.commandProxy().update(oldGrantPeriodic);
 
-		KshstGrantRegularPK grantRegularPK = new KshstGrantRegularPK(
+		KshstHdspGrantPK grantPK = new KshstHdspGrantPK(
 				specialHoliday.getCompanyId(),
 				specialHoliday.getSpecialHolidayCode().v());
-		KshstGrantRegular oldGrantRegular = this.queryProxy().find(grantRegularPK, KshstGrantRegular.class).orElse(null);
+		KshstHdspGrant oldGrant = this.queryProxy().find(grantPK, KshstHdspGrant.class).orElse(null);
 		GrantRegular grantRegular = specialHoliday.getGrantRegular();
 
 		if (isAutoGrant) {
@@ -531,12 +564,12 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			}
 		}
 
-		oldGrantRegular.typeTime = typeTime;
-		oldGrantRegular.grantDate = grantDate;
+//		oldGrant.typeTime = typeTime;
+//		oldGrant.grantDate = grantDate;
 //		oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
-		oldGrantRegular.interval = interval;
-		oldGrantRegular.grantedDays = grantedDays;
-		this.commandProxy().update(oldGrantRegular);
+//		oldGrant.interval = interval;
+		oldGrant.grantedDays = grantedDays;
+		this.commandProxy().update(oldGrant);
 
 		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
 				specialHoliday.getCompanyId(),
@@ -596,8 +629,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshstSpecialHoliday.class, pk);
 
-		KshstGrantRegularPK grantRegularPK = new KshstGrantRegularPK(companyId, specialHolidayCode);
-		this.commandProxy().remove(KshstGrantRegular.class, grantRegularPK);
+		KshstHdspGrantPK grantPK = new KshstHdspGrantPK(companyId, specialHolidayCode);
+		this.commandProxy().remove(KshstHdspGrant.class, grantPK);
 
 		KshstGrantPeriodicPK grantPeriodicPK = new KshstGrantPeriodicPK(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshstGrantPeriodic.class, grantPeriodicPK);
