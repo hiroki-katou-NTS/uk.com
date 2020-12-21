@@ -83,7 +83,7 @@
                   id="multiList"
                   tabindex="-1"
                   data-bind="ntsGridList: {
-                    height: 345,
+                    height: 312,
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
@@ -167,7 +167,7 @@
                   tabindex="10"
                   data-bind="ntsSwapList: {
                   showSearchBox: { showLeft : true, showRight: true},
-                  height: gridHeight,
+                  height: swapListHeight,
                   dataSource: listItemsSwap,
                   disableMoveButton: false,
                   primaryKey: 'attendanceItemId',
@@ -176,7 +176,8 @@
                   searchMode: 'filter',
                   searchCriterion: ['attendanceItemId', 'attendanceItemName'],
                   draggable: false,
-                  itemsLimit: { right: 100 },                 
+                  itemsLimit: { right: 100 },   
+                  enableRowNumbering: false,              
                   multipleDrag: { left: true, right: false },
                   innerDrag: { left: false, right: true },
                   outerDrag: { left: true, right: true } 

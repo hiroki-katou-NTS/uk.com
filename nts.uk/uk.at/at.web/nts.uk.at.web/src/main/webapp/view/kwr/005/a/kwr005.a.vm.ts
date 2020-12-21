@@ -270,7 +270,7 @@ module nts.uk.at.view.kwr005.a {
     getSettingListWorkStatus(type: number, dataFromB?: any) {
       const vm = this;
       let listWorkStatus: Array<ItemModel> = [];
-      console.log(dataFromB);
+     
       //定型選択		
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: type }).done((data) => {
         if (!_.isNil(data)) {

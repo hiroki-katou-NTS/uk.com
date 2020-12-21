@@ -34,7 +34,8 @@ module nts.uk.at.view.kwr005.b {
     currentCodeListSwap: KnockoutObservableArray<AttendanceDto> = ko.observableArray([]);
     keepListItemsSwap: KnockoutObservableArray<AttendanceDto> = ko.observableArray([]);
     listItemsSwap: KnockoutObservableArray<AttendanceDto> = ko.observableArray([]);
-    gridHeight: KnockoutObservable<number> = ko.observable(331);
+    isIE: KnockoutObservable<boolean> = ko.observable(false);
+    swapListHeight: KnockoutObservable<number> = ko.observable(329);
 
     mode: KnockoutObservable<ModelData> = ko.observable(new ModelData());
 
@@ -61,21 +62,28 @@ module nts.uk.at.view.kwr005.b {
 
       vm.columns = ko.observableArray([
         { headerText: vm.$i18n('KWR005_107'), key: 'attendanceItemId', width: 80, formatter: _.escape },
-        { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape },
+        { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label'  },
       ]);
-
-      
     }
 
     created(params: any) {
       const vm = this;
       const userAgent = window.navigator.userAgent;
       let msie = userAgent.match(/Trident.*rv\:11\./);
-      if (!_.isNil(msie) && msie.index > -1) vm.gridHeight(337);
+      if (!_.isNil(msie) && msie.index > -1) {
+        vm.isIE(true);
+        vm.swapListHeight(340);
+      }
     }
 
     mounted() {
-      const vm = this;     
+      const vm = this;
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if (!_.isNil(msie) && msie.index > -1)  {
+        $('.kwr-005b').addClass('ie');
+        $('#multiList_displayContainer').height(300);
+      }
       //$("#swapList-grid1").igGrid("container").focus();
     }
 
@@ -83,10 +91,10 @@ module nts.uk.at.view.kwr005.b {
     newSetting() {
       const vm = this;
 
-      nts.uk.ui.errors.clearAll();         
+      nts.uk.ui.errors.clearAll();
       vm.currentCodeList(null);
       vm.currentCodeListSwap([]);
-      vm.printPropertyCode(-1);   
+      vm.printPropertyCode(-1);
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
       vm.isEnableAttendanceCode(true);
@@ -179,7 +187,8 @@ module nts.uk.at.view.kwr005.b {
                 vm.$blockui('hide');
               })
             });
-        }
+        } else 
+          vm.$blockui('hide');
       });
     }
 
@@ -220,18 +229,24 @@ module nts.uk.at.view.kwr005.b {
      * Close dialog
      */
     closeDialog() {
-      const vm = this;      
-      vm.$window.close({ code: vm.mode().code() });
+      const vm = this;
+      let newCode = null;
+      if (!_.isNil(vm.mode().code()) && !_.isEmpty(vm.mode().code())) {
+        newCode = vm.mode().code();
+      }
+      vm.$window.close({ code: newCode });
     }
 
     /**
      * Get setting list items details
      */
     getSettingListItemsDetails(settingId: string): Array<AttendanceDto> {
-      const vm = this;     
-      
+      const vm = this;
+
       vm.currentCodeListSwap([]);
-      vm.resetListItemsSwap();
+      vm.resetListItemsSwap();      
+      $("#swapList-grid1").igGridSelection("clearSelection");
+      $("#swapList-grid2").igGridSelection("clearSelection");
       //call to server
       vm.$blockui('show');
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: settingId })
@@ -247,13 +262,13 @@ module nts.uk.at.view.kwr005.b {
               }
             });
           } else {
-            vm.$dialog.error({ messageId: 'Msg_1928'}).then(() => {
-              vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null});              
+            vm.$dialog.error({ messageId: 'Msg_1928' }).then(() => {
+              vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
             });
           }
           vm.$blockui('hide');
         })
-        .fail((error) => {})
+        .fail((error) => { })
         .always(() => vm.$blockui('hide'));
 
       return vm.currentCodeListSwap();
@@ -352,14 +367,14 @@ module nts.uk.at.view.kwr005.b {
       vm.$blockui('grayout');
       //sort by code with asc
       vm.settingListItems.removeAll();
-      
+
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: params.standOrFree }).done((data) => {
         if (!_.isNil(data) && data.length > 0) {
           _.forEach(data, (item) => {
             let code = _.padStart(item.settingDisplayCode, 2, '0');
             listWorkStatus.push(new ItemModel(code, _.trim(item.settingName), item.settingId));
           });
-          
+
           listWorkStatus = _.orderBy(listWorkStatus, ['code', 'asc']);
           vm.settingListItems(listWorkStatus);
 
@@ -431,10 +446,10 @@ module nts.uk.at.view.kwr005.b {
       vm.listItemsSwap(_.cloneDeep(vm.keepListItemsSwap()));
     }
 
-    afterMoveFromRightToLeft(toRight, oldSource, newI){      
+    afterMoveFromRightToLeft(toRight, oldSource, newI) {
       const vm = this;
       console.log(vm);
-      let newListItems: Array<AttendanceDto> = _.orderBy(newI, 'attendanceItemId', 'asc');  
+      let newListItems: Array<AttendanceDto> = _.orderBy(newI, 'attendanceItemId', 'asc');
       nts.uk.ui._viewModel.content.listItemsSwap.removeAll();
       nts.uk.ui._viewModel.content.listItemsSwap(newListItems);
     }

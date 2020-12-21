@@ -36,7 +36,12 @@
 .kwr-005b td.text-center {
   text-align: center;
 }
-
+.kwr-005b .ui-iggrid .ui-iggrid-tablebody td {
+  height: 22px;
+}
+.kwr-005b.ie .ui-iggrid .ui-iggrid-tablebody td {
+  height: 23px;
+}
 .ntsSwapComponent.ntsMoveDataArea {
   padding-left: 10px;
   padding-right: 10px;
