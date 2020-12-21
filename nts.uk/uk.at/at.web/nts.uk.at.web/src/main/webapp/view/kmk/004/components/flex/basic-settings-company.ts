@@ -1,11 +1,13 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
+import IDisplayFlexBasicSettingByCompanyDto = nts.uk.at.kmk004.components.flex.IDisplayFlexBasicSettingByCompanyDto;
+
 const template = `
 	<div   style="margin-top: 10px;"  >
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
 		<button data-bind="click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
-	<div class="div_line" 
+	<div data-bind="visible:showTable()" class="div_line" 
 		style="
 		width: auto;
 		border-radius: 15px;
@@ -52,10 +54,9 @@ const template = `
 		</div>
 	</div>
 	`;
-const COMPONENT_NAME = 'basic-settings-company';
 
 @component({
-	name: COMPONENT_NAME,
+	name: 'basic-settings-company',
 	template
 })
 
@@ -65,88 +66,129 @@ class BasicSettingsCompany extends ko.ViewModel {
 	screenMode: string = '';
 
 	created(params: IParam) {
-		let vm = this;
+		const vm = this;
 		vm.screenData = params.screenData;
 		vm.screenMode = params.screenMode;
 	}
 
 	openKDialog() {
 
-		let vm = this;
+		const vm = this;
 
 		if (vm.screenMode == 'Com_Company') {
 			vm.screenData().selectedName(vm.screenMode);
 		}
 
-		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName() });
+		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName() }).then(() => {
+			vm.reloadAfterChangeSetting();
+		});
 	}
-	getStartMonth(){
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+
+	reloadAfterChangeSetting() {
+		const vm = this;
+		let url;
+
+		if (vm.screenMode == 'Com_Company') {
+			url = API_G_URL.CHANGE_SETTING;
+		}
+
+		if (vm.screenMode == 'Com_Workplace') {
+			url = API_H_URL.CHANGE_SETTING + vm.screenData().selected();
+		}
+
+		if (vm.screenMode == 'Com_Workplace') {
+			url = API_I_URL.CHANGE_SETTING + vm.screenData().selected();
+		}
+
+		if (vm.screenMode == 'Com_Workplace') {
+			url = API_J_URL.CHANGE_SETTING + vm.screenData().selected();
+		}
+
+		vm.$blockui('invisible');
+		vm.$ajax(url).done((setting: IDisplayFlexBasicSettingByCompanyDto) => {
+			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
+			vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
+		}).always(() => { vm.$blockui('clear'); });
+
+
+
+
+	}
+
+	getStartMonth() {
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.screenData().comFlexMonthActCalSet().insufficSet.startMonth + '月';
 	}
-	
-	getStartPeriod(){
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+
+	getStartPeriod() {
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.screenData().comFlexMonthActCalSet().insufficSet.period + 'ヵ月'
 	}
 
 	getSettlePeriodText() {
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.$i18n.text(_.find(__viewContext.enums.SettlePeriod, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.settlePeriod]).name);
 	}
 
 	getCarryforwardSetText() {
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.carryforwardSet]).name);
 	}
 
 	getAggrMethodText() {
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().comFlexMonthActCalSet().aggrMethod]).name);
 	}
 
 	getReferenceText() {
-		let vm = this;
-		if(!vm.screenData().getFlexPredWorkTime()){
+		const vm = this;
+		if (!vm.screenData().getFlexPredWorkTime()) {
 			return '';
 		}
 		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
 	}
 
+	showTable() {
+		const vm = this;
+
+		return !(vm.screenData().comFlexMonthActCalSet() == null && vm.screenData().getFlexPredWorkTime() == null);
+
+	}
+
 	getIncludeOverTimeText() {
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
 	}
 
 	getIncludeIllegalHdwk() {
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
 	}
 
 	getAggregateSetText() {
-		let vm = this;
-		if(!vm.screenData().comFlexMonthActCalSet()){
+		const vm = this;
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 		return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().comFlexMonthActCalSet().legalAggrSet.aggregateSet]).name);

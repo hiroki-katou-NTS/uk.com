@@ -18,6 +18,6 @@ public class DisplayFlexBasicSettingByWorkPlaceDto {
 	// 職場別フレックス勤務集計方法
 	WkpFlexMonthActCalSetDto flexMonthActCalSet;
 	// フレックス勤務所定労働時間取得
-	GetFlexPredWorkTimeDto getFlexPredWorkTime;
+	GetFlexPredWorkTimeDto flexPredWorkTime;
 	
 }

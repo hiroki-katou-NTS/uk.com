@@ -46,14 +46,22 @@ const template = `
 						</div>
 					</div>
 	`;
-const COMPONENT_NAME = 'screen-i-component';
 
-const API_URL = {
-	START_PAGE: 'screen/at/kmk004/i/start-page'
+const BASE_I_URL = 'screen/at/kmk004/i/';
+
+const API_I_URL = {
+	START_PAGE: BASE_H_URL + 'init-screen',
+	CHANGE_YEAR: BASE_H_URL + 'change-year/',
+	CHANGE_EMPCD: BASE_H_URL + 'change-empcd/',
+	REGISTER: BASE_H_URL + 'register',
+	UPDATE: BASE_H_URL + 'update',
+	DELETE: BASE_H_URL + 'delete',
+	AFTER_COPY: BASE_H_URL + 'after-copy/',
+	CHANGE_SETTING: BASE_H_URL + 'change-setting/',
 };
 
 @component({
-	name: COMPONENT_NAME,
+	name: 'screen-i-component',
 	template
 })
 
@@ -69,13 +77,45 @@ class ScreenIComponent extends ko.ViewModel {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
+
+		vm.$blockui('invisible')
+			.then(() => vm.$ajax(API_I_URL.START_PAGE))
+			.done((data) => {
+				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+				vm.screenData().updateData(data);
+			})
+			.always(() => vm.$blockui('clear'));
+
 		vm.initEmploymentList();
-		/*	vm.$blockui('invisible')
-				.then(() => vm.$ajax(API_URL.START_PAGE))
-				.then((data: IScreenData) => {
-					vm.screenData(new FlexScreenData(data));
-				})
-				.then(() => vm.$blockui('clear'));*/
+
+		vm.screenData().selectedYear.subscribe((yearInput) => {
+
+			if (!yearInput) {
+				return;
+			}
+
+			let year = Number(yearInput);
+
+			//check if data has in unsave list => bind data from that
+			let unsaveItem = _.find(vm.screenData().unSaveSetComs, ['year', year]);
+
+			if (unsaveItem) {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				vm.screenData().serverData = unsaveItem;
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+			} else {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				//else load data from sever
+				vm.$blockui('invisible');
+				vm.$ajax(API_I_URL.CHANGE_YEAR + vm.screenData().selected() + '/' + year).done((data) => {
+					vm.screenData().setYM(year, data);
+				}).always(() => { vm.$blockui('clear'); });
+
+			}
+
+		});
 
 	}
 
@@ -108,15 +148,42 @@ class ScreenIComponent extends ko.ViewModel {
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
 
-			vm.screenData().selected.subscribe((value) => {
-				let datas: Array<EmploymentUnitModel> = $('#empt-list-setting').getDataList(),
+			vm.screenData().selected.subscribe((empCd) => {
 
-					selectedItem: EmploymentUnitModel = _.find(datas, ['code', value]);
-				vm.screenData().selectedName(selectedItem ? selectedItem.name : '');
+				vm.$blockui('invisible')
+					.then(() => vm.$ajax(API_I_URL.CHANGE_EMPCD + empCd))
+					.done((data) => {
+						vm.screenData().yearList(_.chain(data.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
+						vm.screenData().serverYears(data.yearList);
+						vm.screenData().unSaveSetComs = [];
+
+						if (vm.screenData().selectedYear() == data.yearList[0]) {
+							vm.screenData().selectedYear.valueHasMutated();
+						} else {
+							vm.screenData().selectedYear(data.yearList[0]);
+						}
+
+						vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					})
+					.always(() => vm.$blockui('clear'));
+
+				vm.setSelectedName(empCd);
+
+
 			});
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();
 		});
+	}
+
+	setSelectedName(empCd: string) {
+
+		const vm = this;
+		let datas: Array<EmploymentUnitModel> = $('#empt-list-setting').getDataList(),
+
+			selectedItem: EmploymentUnitModel = _.find(datas, ['code', empCd]);
+		vm.screenData().selectedName(selectedItem ? selectedItem.name : '');
+
 	}
 
 	mounted() {

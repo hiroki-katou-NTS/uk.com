@@ -38,6 +38,12 @@ public class DisplayMonthlyWorkingHoursByCompany {
 		// 1 年度の期間を取得(require, 会社ID, 年度)
 		YearMonthPeriod yearMonthPeriod = companyRepository.get(cid, param.year);
 		List<MonthlyWorkTimeSetCom> coms = new ArrayList<>();
+		
+		resutl = yearMonthPeriod.stream().map(m -> {
+			LaborTime laborTime = new LaborTime(0,0,0);
+			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.v(), laborTime);
+			return s;
+		}).collect(Collectors.toList());
 
 		switch (param.workType) {
 		case 0:
@@ -49,6 +55,10 @@ public class DisplayMonthlyWorkingHoursByCompany {
 		case 2:
 			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid, LaborWorkTypeAttr.FLEX, yearMonthPeriod);
 			break;
+		}
+		
+		if (coms.isEmpty()) {
+			return resutl;
 		}
 
 		resutl = coms.stream().map(m -> {

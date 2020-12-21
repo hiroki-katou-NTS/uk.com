@@ -34,7 +34,7 @@ public class DisplayFlexBasicSettingByWorkPlace {
 		// 2. get(ログイン会社ID,職場ID)
 		this.getFlexPredWorkTimeRepository.find(AppContexts.user().companyId()).ifPresent(x -> {
 
-			result.setGetFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
+			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 
 		return result;

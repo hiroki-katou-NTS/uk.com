@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.kmk004.i;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
+import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
 /**
  * 
@@ -13,10 +13,11 @@ import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
  */
 @Data
 public class DisplayInitialFlexScreenByEmploymentDto {
-	// フレックス勤務所定労働時間取得
-	private GetFlexPredWorkTimeDto getFlexPredWorkTime;
 	// 雇用リスト
 	private List<String> alreadySettings;
+
 	// 雇用を選択する
-	private SelectEmploymentFlexDto selectWorkPlaceFlex;
+	private DisplayFlexBasicSettingByEmploymentDto flexBasicSetting =  new DisplayFlexBasicSettingByEmploymentDto();
+	// 職場別年度リストを表示する
+	private List<YearDto> years;
 }

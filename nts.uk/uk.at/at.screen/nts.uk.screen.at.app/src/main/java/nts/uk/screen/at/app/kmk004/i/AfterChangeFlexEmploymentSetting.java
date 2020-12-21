@@ -24,9 +24,7 @@ public class AfterChangeFlexEmploymentSetting {
 	public AfterChangeFlexEmploymentSettingDto afterChangeFlexEmploymentSetting(String employmentCd) {
 		AfterChangeFlexEmploymentSettingDto result = new AfterChangeFlexEmploymentSettingDto();
 		// 雇用別基本設定（フレックス勤務）を表示する
-		result.setEmpFlexMonthActCalSet(
-				this.displayFlexBasicSettingByEmployment.displayFlexBasicSettingByEmployment(employmentCd));
-
+		result.setFlexBasicSetting(this.displayFlexBasicSettingByEmployment.displayFlexBasicSettingByEmployment(employmentCd));
 		// 雇用リストを表示する
 		result.setEmploymentList(this.employmentList.get(LaborWorkTypeAttr.FLEX));
 
