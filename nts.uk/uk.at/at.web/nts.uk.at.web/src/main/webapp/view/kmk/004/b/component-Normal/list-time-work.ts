@@ -150,9 +150,9 @@ module nts.uk.at.view.kmk004.b {
                 vm.ckeckNullYear(true);
             }
 
-            // const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year = ko.unwrap(vm.selectedYear));
+            const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
 
-            // if (exist) {
+            if (exist) {
                 switch (vm.type) {
                     case 'Com_Company':
                         vm.$ajax(API.GET_WORK_TIME, input)
@@ -175,23 +175,25 @@ module nts.uk.at.view.kmk004.b {
                         ;
                         break;
                     case 'Com_Workplace':
-                        vm.$ajax(API.GET_WORKTIME_WORKPLACE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
-                            .done((data: IWorkTime[]) => {
-                                if (data.length > 0) {
-                                    const data1: IWorkTime[] = [];
-                                    var check: boolean = true;
+                        if (ko.unwrap(vm.selectId) !== '') {
+                            vm.$ajax(API.GET_WORKTIME_WORKPLACE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                .done((data: IWorkTime[]) => {
+                                    if (data.length > 0) {
+                                        const data1: IWorkTime[] = [];
+                                        var check: boolean = true;
 
-                                    if (ko.unwrap(vm.checkEmployee)) {
-                                        check = false;
+                                        if (ko.unwrap(vm.checkEmployee)) {
+                                            check = false;
+                                        }
+                                        data.map(m => {
+                                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                            data1.push(s);
+                                        });
+
+                                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                     }
-                                    data.map(m => {
-                                        const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
-                                        data1.push(s);
-                                    });
-
-                                    vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-                                }
-                            });
+                                });
+                        }
                         break;
                     case 'Com_Employment':
                         vm.$ajax(API.GET_WORKTIME_EMPLOYMENT + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
@@ -231,9 +233,9 @@ module nts.uk.at.view.kmk004.b {
                             });
                         break
                 }
-            // } else {
-            //     vm.initList(9999, false);
-            // }
+            } else {
+                vm.initList(9999, false);
+            }
         }
 
         initList(year: number, check: boolean) {
