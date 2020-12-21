@@ -150,7 +150,7 @@ module nts.uk.at.view.kmk004.b {
                 vm.ckeckNullYear(true);
             }
 
-            const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year = ko.unwrap(vm.selectedYear));
+            const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number = ko.unwrap(vm.selectedYear));
 
             if (exist) {
                 if (!exist.isNew) {
