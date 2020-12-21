@@ -40,9 +40,9 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 const required = self.substituteHolidayList().length * self.daysUnit;
                 let selected = 0;
                 self.substituteWorkInfoList().forEach(info => {
-                    if (info.checked()) selected += info.remainingNumber
+                    if (info.checked()) selected += info.usedNumber;
                 });
-                return required - selected < 0 ? 0 : required - selected;
+                return required - selected;
             }, self);
             self.displayedPeriod = ko.computed(() => {
                 if (self.startDate() == self.endDate())
@@ -51,7 +51,7 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                     return getText("KDL035_12", [self.startDate(), self.endDate()]);
             }, self);
             self.displayedRequiredNumberOfDays = ko.computed(() => {
-                return getText("KDL035_4", [self.requiredNumberOfDays()]);
+                return getText("KDL035_4", [Math.max(self.requiredNumberOfDays(), 0)]);
             }, self);
 
             self.legendOptions = {
@@ -61,7 +61,7 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 ],
                 template : '<div class="label">#{labelText}</div>'
             };
-            $("#fixed-table").ntsFixedTable({ height: 314 });
+            $("#fixed-table").ntsFixedTable({ height: 313 });
         }
 
         startPage(): JQueryPromise<any> {
@@ -77,9 +77,6 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 actualContentDisplayList: _.cloneDeep(self.actualContentDisplayList),
                 managementData: _.cloneDeep(self.managementData)
             };
-            initParams.actualContentDisplayList.forEach(c => {
-                c.date = new Date(c.date).toISOString();
-            });
             initParams.managementData.forEach(d => {
                 d.outbreakDay = new Date(d.outbreakDay).toISOString();
                 d.dateOfUse = new Date(d.dateOfUse).toISOString();
@@ -88,8 +85,10 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 self.daysUnit = result.daysUnit;
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
-                const tmp = self.managementData.map(d => d.outbreakDay);
-                self.substituteWorkInfoList(result.substituteWorkInfoList.map(info => new SubstituteWorkInfo(tmp.indexOf(info.substituteWorkDate) >= 0, info, self.requiredNumberOfDays, self.startDate())));
+                self.substituteWorkInfoList(result.substituteWorkInfoList.map(info => {
+                    const tmp = _.find(self.managementData, d => d.outbreakDay == info.substituteWorkDate);
+                    return new SubstituteWorkInfo(!!tmp, info, self.requiredNumberOfDays, self.startDate(), tmp ? tmp.dayNumberUsed : 0);
+                }));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dialog.alert(error);
@@ -105,10 +104,7 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 dialog.alert({messageId: "Msg_1762"});
                 return;
             }
-            if (!self.checkNumberOfDays()) {
-                dialog.alert({messageId: "Msg_1761"});
-                return;
-            }
+
             const data: ParamsData = {
                 employeeId: self.employeeId,
                 daysUnit: self.daysUnit,
@@ -133,18 +129,6 @@ module nts.uk.at.view.kdl035.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
-        }
-
-        checkNumberOfDays(): boolean {
-            const self = this;
-            const required = self.substituteHolidayList().length * self.daysUnit;
-            let total = 0;
-            const selected: Array<SubstituteWorkInfo> = _.orderBy(self.substituteWorkInfoList().filter(i => i.checked()), ["remainingNumber"], ['desc']);
-            for (let i = 0; i < selected.length; i++) {
-                if (total >= required) return false;
-                total += selected[i].remainingNumber;
-            }
-            return true;
         }
 
     }
@@ -223,8 +207,9 @@ module nts.uk.at.view.kdl035.a.viewmodel {
         displayedExpiredDate: string;
         dataType: DataType;
         expiringThisMonth: boolean;
+        usedNumber: number;
 
-        constructor(checked: boolean, params: ISubstituteWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string) {
+        constructor(checked: boolean, params: ISubstituteWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string, usedNumber?: number) {
             this.enabled = ko.observable(new Date(params.expirationDate).getTime() > new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.substituteDate = params.substituteWorkDate;
@@ -239,11 +224,18 @@ module nts.uk.at.view.kdl035.a.viewmodel {
             this.displayedExpiredDate = nts.uk.time.formatPattern(params.expirationDate, "YYYY/MM/DD", "YYYY/MM/DD(ddd)");
             this.dataType = params.dataType;
             this.expiringThisMonth = params.expiringThisMonth;
+            this.usedNumber = usedNumber || 0;
             this.checked.subscribe(value => {
-                if (value && requiredNumberOfDays() <= 0) {
-                    dialog.alert({messageId: "Msg_1761"}).then(() => {
-                        this.checked(false);
-                    });
+                if (value) {
+                    if (requiredNumberOfDays() <= 0) {
+                        dialog.alert({messageId: "Msg_1761"}).then(() => {
+                            this.checked(false);
+                        });
+                    } else {
+                        this.usedNumber = Math.min(requiredNumberOfDays(), this.remainingNumber);
+                    }
+                } else {
+                    this.usedNumber = 0;
                 }
             });
         }
@@ -253,7 +245,7 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 dataType: this.dataType,
                 expirationDate: this.expiredDate,
                 expiringThisMonth: this.expiringThisMonth,
-                remainingNumber: this.remainingNumber,
+                remainingNumber: this.usedNumber,
                 substituteWorkDate: this.substituteDate
             }
         }

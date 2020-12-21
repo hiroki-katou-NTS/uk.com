@@ -74,7 +74,6 @@ export class KdlTests35Component extends Vue {
         vm.$modal('kdls35', params)
         .then((f: any) => {
             if (f) {
-                console.log(f);
                 vm.managementData = f.mngDisp;
             }
         });

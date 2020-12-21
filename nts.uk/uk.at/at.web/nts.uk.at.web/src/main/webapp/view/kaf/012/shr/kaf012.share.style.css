@@ -1,0 +1,23 @@
+#kaf012-share-component1 {
+	width: fit-content;
+}
+
+#kaf012-share-component1 .nts-fixed-table {
+	display: inline-block;
+}
+
+#remaining-table td {
+	height: 50px;
+}
+
+#kaf012-share-component2 .control-group .form-label {
+	width: 117px;
+}
+
+#kaf012-share-component2 .nts-fixed-table {
+    display: inline-block;
+}
+
+.color-header {
+	background-color: #CFF1A5;
+}

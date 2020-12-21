@@ -26,7 +26,7 @@ public interface AttendanceRecordDisplay {
 	 * @return the int
 	 */
 	//出力項目の登録先を切り替える
-	public int switchExportRegistrationDestination(ExportAtr outputAtr,int number);
+	public int switchExportRegistrationDestination(ExportAtr outputAtr, int number);
 	
 	/**
 	 * Return export item name.

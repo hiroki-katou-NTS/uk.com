@@ -1,6 +1,5 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-    let KEY = 'USER_INFOR';
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewAB: new ksu001.ab.viewmodel.ScreenModel(),
@@ -31,7 +30,7 @@ module nts.uk.at.view.ksu001.a {
                 $('.ntsButtonTableButton').addClass('nowithContent');
             }
             
-            let item = uk.localStorage.getItem('USER_INFOR');
+            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'copyPaste') {
                 setTimeout(() => {

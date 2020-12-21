@@ -58,21 +58,64 @@ export class KdlS36Component extends Vue {
     get requiredNumberOfDays() {
         const vm = this;
 
-        const { holidayWorkInfoList } = vm;
-        const required = vm.substituteHolidayList.length * vm.daysUnit;
-        let selected = 0;
+        const { holidayWorkInfoList, substituteHolidayList, daysUnit } = vm;
 
-        holidayWorkInfoList.forEach((m) => {
-            if (m.checked) {
-                selected += m.remainingNumber;
-            }
-        });
+        const counted = holidayWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, substituteHolidayList.length * daysUnit);
 
-        return required - selected < 0 ? 0 : required - selected;
+        return Math.max(counted, 0);
+    }
 
-        // return substituteWorkInfoList
-        //     .map((m) => m.checked ? m.remainingNumber : 0)
-        //     .reduce((p, c) => p + c, required);
+    public checkRequirementOfDay(item: ISubstituteWorkInfo) {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, holidayWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        const counted = holidayWorkInfoList
+            .filter((c) => !_.isEqual(c, item))
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+
+        if (Math.max(counted, 0) === 0 && item.checked) {
+            vm.$modal
+                .warn({ messageId: 'Msg_1758' })
+                .then(() => {
+                    item.checked = false;
+                    item.index = -1;
+                });
+        } else if (item.checked) {
+            item.index = _.filter(holidayWorkInfoList,(item) => item.checked === true ).length;
+        } else {
+            item.index = -1;
+        }
+    }
+
+    get itemDecided() {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, holidayWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        // tinh lai counted
+        const counted = holidayWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+        const lastIndex = holidayWorkInfoList.filter((f) => f.checked).length;
+
+        return holidayWorkInfoList
+            .map((m) => ({
+                ...m,
+                // tinh toan lai gia tri remain cua thang cuoi cung duoc check
+                remainingNumber: counted < 0 && lastIndex === m.index ? m.remainingNumber + counted :  m.remainingNumber
+            }));
+    }
+
+    public checkRequirementOfDayWithCheck(item: ISubstituteWorkInfo) {
+        const vm = this;
+
+        if (item.enable) {
+            item.checked = !item.checked;
+
+            vm.checkRequirementOfDay(item);
+        }
     }
 
     public back() {
@@ -103,7 +146,7 @@ export class KdlS36Component extends Vue {
             e.dateOfUse = new Date(e.dateOfUse).toISOString();
         });
 
-        vm.$http.post('at', servicesPath.init,initParams).then((result: { data: ParamsData }) => {
+        vm.$http.post('at', servicesPath.init, initParams).then((result: { data: ParamsData }) => {
             vm.$mask('hide');
 
             vm.startDate = vm.$dt(new Date(vm.startDate), 'YYYY/MM/DD');
@@ -136,7 +179,7 @@ export class KdlS36Component extends Vue {
                         console.log(event);
                     }
                 }));
-                  
+
             //const managementDataTmp = vm.managementData.map((management) => management.outbreakDay);
         }).catch((error: any) => {
             vm.showError(error);
@@ -177,7 +220,7 @@ export class KdlS36Component extends Vue {
             substituteHolidayList: vm.substituteHolidayList
                 .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
-            holidayWorkInfoList: vm.holidayWorkInfoList
+            holidayWorkInfoList: vm.itemDecided
                 .filter((item) => item.checked)
                 .map((m) => ({ ...m }))
         };
@@ -189,23 +232,16 @@ export class KdlS36Component extends Vue {
         vm.$mask('show');
         vm.$http
             .post('at', servicesPath.associate, data)
-            .then((result: {data: HolidayWorkSubHolidayLinkingMng[]}) => {
+            .then((result: { data: HolidayWorkSubHolidayLinkingMng[] }) => {
                 vm.$mask('hide');
-                vm.setData(result.data);
                 vm.$close({
-                    mngDisp: vm.managementData
+                    mngDisp: result.data
                 });
 
             })
             .catch((error: any) => {
                 vm.showError(error);
             });
-    }
-
-    private setData(data: HolidayWorkSubHolidayLinkingMng[]) {
-        const vm = this;
-
-        vm.managementData.push(...data);
     }
 }
 
@@ -285,6 +321,8 @@ interface ISubstituteWorkInfo {
     remainingNumber: number;
     holidayWorkDate: string;
     checked: boolean;
+    enable: boolean;
+    index: number;
 }
 
 enum DataType {
