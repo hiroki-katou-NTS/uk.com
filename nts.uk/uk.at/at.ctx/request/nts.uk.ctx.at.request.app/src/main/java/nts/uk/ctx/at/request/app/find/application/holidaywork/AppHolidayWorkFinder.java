@@ -171,7 +171,7 @@ public class AppHolidayWorkFinder {
 		Optional<AchievementDetail> achievementDetail = !opActualContentDisplayLst.isEmpty() ? 
 				opActualContentDisplayLst.get(0).getOpAchievementDetail() : Optional.empty();
 		
-		BreakTimeZoneSetting breakTimeZoneSettingList = commonOverTimeAlgorithm.selectWorkTypeAndTime(param.getCompanyId(), new WorkTypeCode(param.getWorkTimeCode()), 
+		BreakTimeZoneSetting breakTimeZoneSettingList = commonOverTimeAlgorithm.selectWorkTypeAndTime(param.getCompanyId(), new WorkTypeCode(param.getWorkTypeCode()), 
 				new WorkTimeCode(param.getWorkTimeCode()), Optional.of(new TimeWithDayAttr(param.getStartTime())), 
 				Optional.of(new TimeWithDayAttr(param.getEndTime())), achievementDetail);
 		appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));

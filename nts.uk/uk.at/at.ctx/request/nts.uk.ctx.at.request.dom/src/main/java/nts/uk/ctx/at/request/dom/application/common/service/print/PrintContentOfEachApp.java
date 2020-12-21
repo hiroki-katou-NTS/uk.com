@@ -27,6 +27,11 @@ public class PrintContentOfEachApp {
 	 */
 	
 	/**
+	 * 休日出勤の印刷内容
+	 */
+	private Optional<PrintContentOfHolidayWork> opPrintContentOfHolidayWork;
+	
+	/**
 	 * 勤務変更申請の印刷内容
 	 */
 	private Optional<PrintContentOfWorkChange> opPrintContentOfWorkChange;
@@ -59,6 +64,7 @@ public class PrintContentOfEachApp {
 	private Optional<DetailOutput> opDetailOutput;
 	
 	public PrintContentOfEachApp() {
+		this.opPrintContentOfHolidayWork = Optional.empty();
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();

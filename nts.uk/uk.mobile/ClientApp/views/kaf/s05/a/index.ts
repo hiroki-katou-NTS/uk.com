@@ -53,18 +53,28 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．残業休出申請共通設定．時間外表示区分」＝する
     public get c1() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let value = _.get(displayOverTime, 'infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr');
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr');
 
         return value == NotUseAtr.USE;
     }
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
     public get c3() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let value = _.get(displayOverTime, 'infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
 
         return value == NotUseAtr.USE;
+    }
+    // ※表15 = × AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」＝する
+    // ※表15 = ○ AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
+    public get c3_1_1() {
+        const self = this;
+        let model = self.model as Model;
+        let value1 = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak');
+        let value2 = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting');
+        
+        return (value1 == NotUseAtr.USE || value2 == NotUseAtr.USE);
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
     public get c3_1() {
@@ -72,20 +82,11 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return self.c3_1_1 || self.c3;
     }
-    // ※表15 = × AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」＝する
-    // ※表15 = ○ AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
-    public get c3_1_1() {
-        const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let value1 = _.get(displayOverTime, 'infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak');
-        let value2 = _.get(displayOverTime, 'infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting');
-        
-        return (value1 == NotUseAtr.USE || value2 == NotUseAtr.USE);
-    }
     //  c3 AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
     public get c3_2() {
         const self = this;
-        let value = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
         
         return value;
     }
@@ -95,24 +96,30 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
     public get c4() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let value = _.get(displayOverTime, 'infoBaseDateOutput.quotaOutput.overTimeQuotaList');
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoBaseDateOutput.quotaOutput.overTimeQuotaList');
 
         return !_.isEmpty(value);
+    }
+
+    public get c4_1() {
+        const self = this;
+
+        return self.application.prePostAtr == 1;
     }
     // 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
     public get c5() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let value = _.get(displayOverTime, 'infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr');
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.nightOvertimeReflectAtr');
 
         return value == NotUseAtr.USE; 
     }
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．フレックス時間表示区分」= true
     public get c6() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let value = _.get(displayOverTime, 'infoBaseDateOutput.quotaOutput.flexTimeClf');
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoBaseDateOutput.quotaOutput.flexTimeClf');
 
         return value;
     }
@@ -317,9 +324,9 @@ export class KafS05Component extends KafS00ShrComponent {
         }).then((result: any) => {
             if (result) {
                 if (vm.modeNew) {
-                    vm.model = {} as Model;
-                    vm.model.displayInfoOverTime = result.data.displayInfoOverTime;
-
+                    let modelClone = {} as Model;
+                    modelClone.displayInfoOverTime = result.data.displayInfoOverTime;
+                    vm.model = modelClone;
                     let step1 = vm.$refs.step1 as KafS05Step1Component;
                     step1.loadData(vm.model.displayInfoOverTime);
                
@@ -446,8 +453,8 @@ export class KafS05Component extends KafS00ShrComponent {
             let step1 = vm.$refs.step1 as KafS05Step1Component;
             vm.isValidateAll = vm.customValidate(step1);
             vm.$validate();
+            window.scrollTo(500, 0);
             if (!vm.$valid || !vm.isValidateAll) {
-                window.scrollTo(500, 0);
                 vm.$nextTick(() => {
                     vm.$mask('hide');
                 });
@@ -470,8 +477,11 @@ export class KafS05Component extends KafS00ShrComponent {
                 command
                 )
                     .then((res: any) => {
+                        vm.model.displayInfoOverTime.calculationResultOp = res.data.calculationResultOp;
+                        vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
                         vm.numb = value;
-    
+                        let step2 = vm.$refs.step2 as KafS05Step2Component;
+                        step2.loadAllData();
                         vm.$nextTick(() => {
                             vm.$mask('hide');
                         });
