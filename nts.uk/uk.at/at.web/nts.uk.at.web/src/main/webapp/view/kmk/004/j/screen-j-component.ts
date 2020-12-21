@@ -40,7 +40,7 @@ const template = `
 									}">
 							</div>
 							
-							<div style=" display: inline-block;" data-bind="component: {
+							<div style="margin-top:15px; display: inline-block;" data-bind="component: {
 									name: 'monthly-working-hours',
 									params: {
 												screenData:screenData,
@@ -53,14 +53,22 @@ const template = `
 						
 					</div>
 	`;
-const COMPONENT_NAME = 'screen-j-component';
 
-const API_URL = {
-	START_PAGE: 'screen/at/kmk004/j/start-page'
+const BASE_J_URL = 'screen/at/kmk004/j/';
+
+const API_J_URL = {
+	START_PAGE: BASE_J_URL + 'init-screen',
+	CHANGE_YEAR: BASE_J_URL + 'change-year/',
+	CHANGE_SHAID: BASE_J_URL + 'change-shaid/',
+	REGISTER: BASE_J_URL + 'register',
+	UPDATE: BASE_J_URL + 'update',
+	DELETE: BASE_J_URL + 'delete/',
+	AFTER_COPY: BASE_J_URL + 'after-copy/',
+	CHANGE_SETTING: BASE_J_URL + 'change-setting/',
 };
 
 @component({
-	name: COMPONENT_NAME,
+	name: 'screen-j-component',
 	template
 })
 
@@ -80,15 +88,59 @@ class ScreenJComponent extends ko.ViewModel {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
+
+		vm.startPage();
+
 		vm.initCCG001();
 
-		/*	vm.$blockui('invisible')
-				.then(() => vm.$ajax(API_URL.START_PAGE))
-				.then((data: IScreenData) => {
-					vm.screenData(new FlexScreenData(data));
-				})
-				.then(() => vm.$blockui('clear'));*/
+		vm.regSelectedYearEvent();
 
+	}
+
+	regSelectedYearEvent() {
+		const vm = this;
+
+		vm.screenData().selectedYear.subscribe((yearInput) => {
+
+			if (!yearInput && !vm.screenData().selected()) {
+				return;
+			}
+
+			let year = Number(yearInput);
+
+			//check if data has in unsave list => bind data from that
+			let unsaveItem = _.find(vm.screenData().unSaveSetComs, ['year', year]);
+
+			if (unsaveItem) {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				vm.screenData().serverData = unsaveItem;
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+			} else {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				//else load data from sever
+
+				let selectedEmp = _.find(vm.employeeList(), ['code', vm.screenData().selected()]);
+				vm.$blockui('invisible');
+				vm.$ajax(API_J_URL.CHANGE_YEAR + selectedEmp.id + '/' + year).done((data) => {
+					vm.screenData().setYM(year, data);
+				}).always(() => { vm.$blockui('clear'); });
+
+			}
+
+		});
+	}
+
+	startPage() {
+		const vm = this;
+
+		vm.$blockui('invisible')
+			.then(() => vm.$ajax(API_J_URL.START_PAGE))
+			.done((data) => {
+				vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+			})
+			.always(() => vm.$blockui('clear'));
 	}
 
 	mounted() {
@@ -187,15 +239,57 @@ class ScreenJComponent extends ko.ViewModel {
 			maxRows: 12
 		});
 
-		vm.screenData().selected.subscribe((value) => {
-			let datas: Array<EmployeeModel> = vm.employeeList(),
+		vm.regSelectedEvent();
 
-				selectedItem: EmployeeModel = _.find(datas, ['code', value]);
-
-			vm.screenData().selectedName(selectedItem ? selectedItem.name : '')
-		});
 		vm.$blockui("hide");
 		vm.screenData().selected.valueHasMutated();
+	}
+
+	regSelectedEvent() {
+		const vm = this;
+
+		vm.screenData().selected.subscribe((scd) => {
+
+			if (!scd) {
+				return;
+			}
+
+			let selectedEmp = _.find(vm.employeeList(), ['code', scd]);
+
+
+			vm.$blockui('invisible')
+				.then(() => vm.$ajax(API_J_URL.CHANGE_SHAID + selectedEmp.id))
+				.done((data) => {
+					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
+					vm.screenData().serverYears(data.yearList);
+					vm.screenData().unSaveSetComs = [];
+
+					if (vm.screenData().selectedYear() == data.yearList[0]) {
+						vm.screenData().selectedYear.valueHasMutated();
+					} else {
+						vm.screenData().selectedYear(data.yearList[0]);
+					}
+
+					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+				})
+				.always(() => vm.$blockui('clear'));
+
+			vm.setSelectedName(scd);
+
+
+		});
+
+	}
+
+	setSelectedName(scd: string) {
+		const vm = this;
+
+		let datas: Array<EmployeeModel> = vm.employeeList(),
+
+			selectedItem: EmployeeModel = _.find(datas, ['code', scd]);
+
+		vm.screenData().selectedName(selectedItem ? selectedItem.name : '')
+
 	}
 
 }

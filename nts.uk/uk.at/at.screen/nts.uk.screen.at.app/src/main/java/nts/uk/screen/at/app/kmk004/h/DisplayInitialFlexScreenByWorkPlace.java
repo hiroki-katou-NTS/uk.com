@@ -49,7 +49,7 @@ public class DisplayInitialFlexScreenByWorkPlace {
 					.selectWorkPlaceFlex(result.getAlreadySettings().get(0));
 			result.setFlexBasicSetting(selectWorkPlaceFlexDto.getFlexBasicSetting());
 			result.setYearList(
-					selectWorkPlaceFlexDto.getYearList().stream().map(x -> x.year).collect(Collectors.toList()));
+					selectWorkPlaceFlexDto.getYearList());
 
 		}
 

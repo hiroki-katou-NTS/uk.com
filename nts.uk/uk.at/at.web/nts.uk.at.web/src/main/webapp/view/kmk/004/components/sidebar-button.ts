@@ -56,9 +56,15 @@ class SidebarButton extends ko.ViewModel {
 
 		if (vm.screenMode == 'Com_Workplace') {
 
-			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
+			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+				wkpId = vm.screenData().selected();
+
+			_.forEach(workTimeSetComs, (timeSet) => {
+				timeSet.workplaceId = wkpId;
+			});
+
 			vm.$blockui('invisible');
-			vm.$ajax(API_H_URL.UPDATE, cmd).done(() => {
+			vm.$ajax(API_H_URL.UPDATE, { workTimeSetWkps: workTimeSetComs }).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
@@ -68,14 +74,47 @@ class SidebarButton extends ko.ViewModel {
 			}).always(() => {
 				vm.$blockui("clear");
 			});
-
-			//datas = $('#work-place-list').getDataList();
 		}
 		if (vm.screenMode == 'Com_Employment') {
-			datas = $('#empt-list-setting').getDataList();
+			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+				empCd = vm.screenData().selected();
+
+			_.forEach(workTimeSetComs, (timeSet) => {
+				timeSet.employmentCode = empCd;
+			});
+
+			vm.$blockui('invisible');
+			vm.$ajax(API_I_URL.UPDATE, { workTimeSetEmps: workTimeSetComs }).done(() => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
+					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+				});
+			}).fail((error) => {
+				vm.$dialog.error(error);
+			}).always(() => {
+				vm.$blockui("clear");
+			});
 		}
 		if (vm.screenMode == 'Com_Person') {
-			datas = $('#employee-list').getDataList();
+			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+				scd = vm.screenData().selected(),
+				selectedEmp: any = _.find(vm.getScreenDatas(), ['code', scd]);
+
+			_.forEach(workTimeSetComs, (timeSet) => {
+				timeSet.empId = selectedEmp.id;
+			});
+
+			vm.$blockui('invisible');
+			vm.$ajax(API_J_URL.UPDATE, { workTimeSetShas: workTimeSetComs }).done(() => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
+					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+				});
+			}).fail((error) => {
+				vm.$dialog.error(error);
+			}).always(() => {
+				vm.$blockui("clear");
+			});
 		}
 	}
 
@@ -116,7 +155,7 @@ class SidebarButton extends ko.ViewModel {
 			});
 
 			vm.$blockui('invisible');
-			vm.$ajax(API_H_URL.REGISTER, { workTimeSetComs }).done((data) => {
+			vm.$ajax(API_H_URL.REGISTER, { workTimeSetWkps: workTimeSetComs }).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
@@ -127,14 +166,51 @@ class SidebarButton extends ko.ViewModel {
 			}).always(() => {
 				vm.$blockui("clear");
 			});
-
-			//datas = $('#work-place-list').getDataList();
 		}
 		if (vm.screenMode == 'Com_Employment') {
-			datas = $('#empt-list-setting').getDataList();
+			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+				empCd = vm.screenData().selected();
+
+			_.forEach(workTimeSetComs, (timeSet) => {
+				timeSet.employmentCode = empCd;
+			});
+
+			vm.$blockui('invisible');
+			vm.$ajax(API_I_URL.REGISTER, { workTimeSetEmps: workTimeSetComs }).done((data) => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
+					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+					vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
+				});
+			}).fail((error) => {
+				vm.$dialog.error(error);
+			}).always(() => {
+				vm.$blockui("clear");
+			});
 		}
 		if (vm.screenMode == 'Com_Person') {
-			datas = $('#employee-list').getDataList();
+
+			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+				scd = vm.screenData().selected(),
+				selectedEmp: any = _.find(vm.getScreenDatas(), ['code', scd]);
+
+			_.forEach(workTimeSetComs, (timeSet) => {
+				timeSet.empId = selectedEmp.id;
+			});
+
+			vm.$blockui('invisible');
+			vm.$ajax(API_J_URL.REGISTER, { workTimeSetShas: workTimeSetComs }).done((data) => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
+					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+					vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
+				});
+			}).fail((error) => {
+				vm.$dialog.error(error);
+			}).always(() => {
+				vm.$blockui("clear");
+			});
+
 		}
 	}
 
@@ -153,7 +229,7 @@ class SidebarButton extends ko.ViewModel {
 			gridId = '#employee-list'
 		}
 
-		return $(gridId).getDataList();;
+		return $(gridId).getDataList();
 
 	}
 
@@ -205,37 +281,43 @@ class SidebarButton extends ko.ViewModel {
 			let cmd = { workplaceId: selectedId, year: selectedYear };
 
 			vm.$blockui('invisible');
-			vm.$ajax(API_H_URL.DELETE, cmd).done(() => {
+			vm.$ajax(API_H_URL.DELETE, cmd).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}
-		
+
 		if (vm.screenMode == 'Com_Employment') {
 			let cmd = { employmentCode: selectedId, year: selectedYear };
 
 			vm.$blockui('invisible');
-			vm.$ajax(API_I_URL.DELETE, cmd).done(() => {
+			vm.$ajax(API_I_URL.DELETE, cmd).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}
-		
+
 		if (vm.screenMode == 'Com_Person') {
-			let cmd = { sId: selectedId, year: selectedYear };
+
+			let selectedEmp: any = _.find(vm.getScreenDatas(), ['code', selectedId]);
+
+			let cmd = { sId: selectedEmp.id, year: selectedYear };
 
 			vm.$blockui('invisible');
-			vm.$ajax(API_J_URL.DELETE, cmd).done(() => {
+			vm.$ajax(API_J_URL.DELETE, cmd).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}

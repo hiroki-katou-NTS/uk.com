@@ -1,5 +1,7 @@
 package nts.uk.screen.at.ws.kmk.kmk004.g;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,7 +17,7 @@ import nts.uk.screen.at.app.kmk004.g.DisplayFlexBasicSettingByCompanyDto;
 import nts.uk.screen.at.app.kmk004.g.DisplayInitialFlexScreenByCompany;
 import nts.uk.screen.at.app.kmk004.g.DisplayInitialFlexScreenByCompanyDto;
 import nts.uk.screen.at.app.kmk004.g.SelectFlexYearByCompany;
-import nts.uk.screen.at.app.kmk004.g.SelectFlexYearByCompanyDto;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 
 @Path("screen/at/kmk004/g")
 @Produces("application/json")
@@ -47,7 +49,7 @@ public class Kmk004GWebService {
 
 	@POST
 	@Path("change-year/{year}")
-	public SelectFlexYearByCompanyDto changeYear(@PathParam("year") int year) {
+	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("year") int year) {
 		return this.selectYear.selectYearByCompany(year);
 	}
 

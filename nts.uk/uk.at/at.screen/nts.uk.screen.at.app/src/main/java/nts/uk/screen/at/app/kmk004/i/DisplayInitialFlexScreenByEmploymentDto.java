@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.kmk004.i;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
 /**
  * 
@@ -19,5 +18,5 @@ public class DisplayInitialFlexScreenByEmploymentDto {
 	// 雇用を選択する
 	private DisplayFlexBasicSettingByEmploymentDto flexBasicSetting =  new DisplayFlexBasicSettingByEmploymentDto();
 	// 職場別年度リストを表示する
-	private List<YearDto> years;
+	private List<Integer> yearList;
 }

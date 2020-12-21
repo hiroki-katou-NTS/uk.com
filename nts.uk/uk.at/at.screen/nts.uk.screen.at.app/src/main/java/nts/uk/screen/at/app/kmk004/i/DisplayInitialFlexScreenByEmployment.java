@@ -54,8 +54,8 @@ public class DisplayInitialFlexScreenByEmployment {
 					.selectEmploymentFlex(result.getAlreadySettings().get(0));
 
 			result.getFlexBasicSetting().setFlexMonthActCalSet(selectDto.getFlexBasicSetting().getFlexMonthActCalSet());
-			;
-			result.setYears(selectDto.getYears());
+			
+			result.setYearList(selectDto.getYearList());
 		}
 
 		return result;

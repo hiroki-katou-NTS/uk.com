@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.i;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -27,7 +29,8 @@ public class SelectEmploymentFlex {
 		result.setFlexBasicSetting(
 				this.displayFlexBasicSettingByEmployment.displayFlexBasicSettingByEmployment(employmentCd));
 		// 2. 雇用別年度リストを表示する
-		result.setYears(this.yearListByEmployment.get(employmentCd, LaborWorkTypeAttr.FLEX));
+		result.setYearList(this.yearListByEmployment.get(employmentCd, LaborWorkTypeAttr.FLEX).stream().map(x -> x.year)
+				.collect(Collectors.toList()));
 
 		return result;
 	}

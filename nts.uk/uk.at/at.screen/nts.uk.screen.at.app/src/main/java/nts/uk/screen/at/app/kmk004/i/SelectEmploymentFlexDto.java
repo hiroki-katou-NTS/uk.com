@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
 /**
  * 
@@ -17,5 +16,5 @@ public class SelectEmploymentFlexDto {
 	// 雇用を選択する
 	DisplayFlexBasicSettingByEmploymentDto flexBasicSetting;
 	// 職場別年度リストを表示する
-	List<YearDto> years;
+	List<Integer> yearList;
 }

@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.j;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,12 +25,14 @@ public class SelectEmployeeFlex {
 
 	public SelectEmployeeFlexDto selectEmployeeFlex(String sId) {
 		SelectEmployeeFlexDto result = new SelectEmployeeFlexDto();
-		
+
 		// 社員別基本設定（フレックス勤務）を表示する
-		result.setShaFlexMonthActCalSet(this.displayFlexBasicSettingByEmployee.displayFlexBasicSettingByEmployee(sId));
+		result.getFlexBasicSetting().setFlexMonthActCalSet(
+				this.displayFlexBasicSettingByEmployee.displayFlexBasicSettingByEmployee(sId).getFlexMonthActCalSet());
 
 		// 社員別年度リストを表示する
-		result.setYears(this.yearListByEmployee.get(sId, LaborWorkTypeAttr.FLEX));
+		result.setYearList(this.yearListByEmployee.get(sId, LaborWorkTypeAttr.FLEX).stream().map(x -> x.year)
+				.collect(Collectors.toList()));
 
 		return result;
 	}

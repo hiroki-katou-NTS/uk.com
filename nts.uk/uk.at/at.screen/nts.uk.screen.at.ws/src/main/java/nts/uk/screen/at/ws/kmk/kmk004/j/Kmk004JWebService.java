@@ -13,11 +13,11 @@ import nts.uk.screen.at.app.command.kmk.kmk004.j.DeleteFlexMonthlyWorkTimeSetSha
 import nts.uk.screen.at.app.command.kmk.kmk004.j.RegisterFlexMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.j.UpdateFlexMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.SaveMonthlyWorkTimeSetShaCommand;
-import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 import nts.uk.screen.at.app.kmk004.j.AfterChangeFlexEmployeeSetting;
 import nts.uk.screen.at.app.kmk004.j.AfterChangeFlexEmployeeSettingDto;
 import nts.uk.screen.at.app.kmk004.j.AfterCopyFlexMonthlyWorkTimeSetSha;
 import nts.uk.screen.at.app.kmk004.j.DisplayInitialFlexScreenByEmployee;
+import nts.uk.screen.at.app.kmk004.j.DisplayInitialFlexScreenByEmployeeDto;
 import nts.uk.screen.at.app.kmk004.j.SelectEmployeeFlex;
 import nts.uk.screen.at.app.kmk004.j.SelectEmployeeFlexDto;
 import nts.uk.screen.at.app.kmk004.j.SelectFlexYearByEmployee;
@@ -54,7 +54,7 @@ public class Kmk004JWebService {
 
 	@POST
 	@Path("init-screen")
-	public GetFlexPredWorkTimeDto initScreen() {
+	public DisplayInitialFlexScreenByEmployeeDto initScreen() {
 		return this.initScreen.displayInitialFlexScreenByEmployee();
 	}
 
@@ -65,8 +65,8 @@ public class Kmk004JWebService {
 	}
 
 	@POST
-	@Path("change-sId/{sId}")
-	public SelectEmployeeFlexDto changeShaCd(@PathParam("sId") String sId) {
+	@Path("change-shaid/{sId}")
+	public SelectEmployeeFlexDto changeShaId(@PathParam("sId") String sId) {
 		return this.selectShaFlex.selectEmployeeFlex(sId);
 	}
 

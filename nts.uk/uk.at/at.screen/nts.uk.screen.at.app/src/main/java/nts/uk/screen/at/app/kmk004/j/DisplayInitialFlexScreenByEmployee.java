@@ -1,11 +1,8 @@
 package nts.uk.screen.at.app.kmk004.j;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,16 +19,17 @@ public class DisplayInitialFlexScreenByEmployee {
 	@Inject
 	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
 
-	public GetFlexPredWorkTimeDto displayInitialFlexScreenByEmployee() {
+	public DisplayInitialFlexScreenByEmployeeDto displayInitialFlexScreenByEmployee() {
+
+		DisplayInitialFlexScreenByEmployeeDto result = new DisplayInitialFlexScreenByEmployeeDto();
 		// フレックス勤務所定労働時間取得
 		// 1. ログイン会社ID
-		Optional<GetFlexPredWorkTime> getFlexOpt = this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId());
+		this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
 
-		if (getFlexOpt.isPresent()) {
-			return GetFlexPredWorkTimeDto.fromDomain(getFlexOpt.get());
+			result.getFlexBasicSetting().setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
+		});
 
-		}
-		return null;
+		return result;
 	}
 
 }
