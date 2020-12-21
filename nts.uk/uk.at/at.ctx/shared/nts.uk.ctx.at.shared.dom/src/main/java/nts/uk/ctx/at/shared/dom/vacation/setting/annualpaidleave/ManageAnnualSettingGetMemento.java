@@ -8,20 +8,20 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
  * The Interface ManageAnnualSettingGetMemento.
  */
 public interface ManageAnnualSettingGetMemento {
-    
+
     /**
      * Gets the company id.
      *
      * @return the company id
      */
     String getCompanyId();
-    
-    /**
-     * Gets the maximum day vacation.
-     *
-     * @return the maximum day vacation
-     */
-    AnnualLeaveGrantDay getMaxGrantDay();
+
+//    /**
+//     * Gets the maximum day vacation.
+//     *
+//     * @return the maximum day vacation
+//     */
+//    AnnualLeaveGrantDay getMaxGrantDay();
 
     /**
      * Gets the half day manage.
@@ -50,7 +50,7 @@ public interface ManageAnnualSettingGetMemento {
      * @return the display setting
      */
     DisplaySetting getDisplaySetting();
-    
+
     /**
      * Gets the yearly of day.
      * @return

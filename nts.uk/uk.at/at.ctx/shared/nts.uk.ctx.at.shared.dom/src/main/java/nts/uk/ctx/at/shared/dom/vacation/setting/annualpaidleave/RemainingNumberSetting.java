@@ -24,7 +24,7 @@ public class RemainingNumberSetting implements Serializable{
     // 保持年数
     public RetentionYear retentionYear;
 
-    /** The remaining day max number. */
-    // 残数上限日数
-    public MaxRemainingDay remainingDayMaxNumber;
+//    /** The remaining day max number. */
+//    // 残数上限日数
+//    public MaxRemainingDay remainingDayMaxNumber;
 }

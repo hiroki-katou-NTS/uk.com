@@ -132,12 +132,11 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_186"), ColumnTextAlign.LEFT)
 					, new DataEachBox(isHalfRefer ? rs.getString("HALF_MAX_UNIFORM_COMP")  + I18NText.getText("KMF001_199") : null, ColumnTextAlign.RIGHT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_187"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
+//			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(I18NText.getText("KMF001_187"), ColumnTextAlign.LEFT)
+//					, new DataEachBox(null, ColumnTextAlign.LEFT)
 //					, new DataEachBox(CommonTempHolidays.getEnumRoundProcessingClassification(Integer.valueOf(rs.getString("ROUND_PRO_CLA"))), ColumnTextAlign.LEFT)));
-					, new DataEachBox(CommonTempHolidays.getEnumRoundProcessingClassification(-1), ColumnTextAlign.LEFT)));
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_188"), ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_189"), ColumnTextAlign.LEFT)
@@ -172,8 +171,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-//					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PRO_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
-					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(-1) : null, ColumnTextAlign.LEFT)));
+					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PRO_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
 		} else {
 
 			datas = buildMasterListData();

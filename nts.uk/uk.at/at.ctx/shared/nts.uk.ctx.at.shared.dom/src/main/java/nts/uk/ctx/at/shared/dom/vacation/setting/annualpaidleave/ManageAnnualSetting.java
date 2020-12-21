@@ -15,7 +15,7 @@ import nts.arc.layer.dom.DomainObject;
 // 年休管理設定
 @Getter
 public class ManageAnnualSetting extends DomainObject implements Serializable{
-    
+
     /**
 	 * Serializable
 	 */
@@ -24,26 +24,26 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
 	/** The maximum day vacation. */
     // 付与上限日数
     private AnnualLeaveGrantDay maxGrantDay;
-    
+
     /** The half day manage. */
     // 半日年休管理
     private HalfDayManage halfDayManage;
-    
+
     /** The work day calculate. */
     // 年休を出勤日数として加算する
     private boolean isWorkDayCalculate;
-    
+
     /** The remaining number setting. */
     // 残数設定
     private RemainingNumberSetting remainingNumberSetting;
-    
+
     /** The display setting. */
     // 表示設定
     private DisplaySetting displaySetting;
-    
+
     //年間所定労働日数
     private YearLyOfNumberDays yearlyOfNumberDays;
-    
+
     /**
      * Instantiates a new manage annual setting.
      *
@@ -51,14 +51,14 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
      */
     public ManageAnnualSetting(ManageAnnualSettingGetMemento memento) {
         super();
-        this.maxGrantDay = memento.getMaxGrantDay();
+//        this.maxGrantDay = memento.getMaxGrantDay();
         this.halfDayManage = memento.getHalfDayManage();
         this.isWorkDayCalculate = memento.getIsWorkDayCalculate();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
         this.displaySetting = memento.getDisplaySetting();
         this.yearlyOfNumberDays = memento.getYearLyOfDays();
     }
-    
+
     /**
      * Save to memento.
      *
