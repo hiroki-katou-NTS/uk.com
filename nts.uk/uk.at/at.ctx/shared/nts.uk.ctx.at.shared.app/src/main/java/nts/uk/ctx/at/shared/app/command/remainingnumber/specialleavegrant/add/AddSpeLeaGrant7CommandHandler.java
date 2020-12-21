@@ -20,7 +20,7 @@ public class AddSpeLeaGrant7CommandHandler
 		extends CommandHandlerWithResult<AddSpecialLeaveGrant7Command, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddSpecialLeaveGrant7Command> {
 
-		
+
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 
@@ -40,22 +40,24 @@ public class AddSpeLeaGrant7CommandHandler
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
 
-		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
-				command.getSid(), 7,
-				command.getGrantDate(),command.getDeadlineDate(), 
+		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
+				specialId,
+				cid,
+				command.getSid(),
+				command.getGrantDate(),
+				command.getDeadlineDate(),
 				command.getExpStatus().intValue(),
-				GrantRemainRegisterType.MANUAL.value, 
-				command.getNumberDayGrant(), 
+				GrantRemainRegisterType.MANUAL.value,
+				command.getNumberDayGrant().doubleValue(),
 				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null ,
-				command.getNumberDayUse(), 
-				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 
+				command.getNumberDayUse().doubleValue(),
+				command.getTimeUse() != null ? command.getTimeUse().intValue() : null,
 				null,
-				command.getNumberDaysOver(),
-				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
-				command.getNumberDayRemain(),
+				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
-				command.grantDateItemName, command.deadlineDateItemName);
-
+				0.0,
+				false,
+				7);
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
 	}
 }

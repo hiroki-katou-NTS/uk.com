@@ -21,37 +21,56 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 
 	@Override
 	protected void handle(CommandHandlerContext<SpecialLeaveRemainCommand> context) {
-		
+
 		SpecialLeaveRemainCommand command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
 		GeneralDate grantDate = GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd");
-		
+
 		boolean isHasData = this.repo.isHasData(command.getSid(), specialId, grantDate, command.getSpecialLeaCode());
-		
+
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0){
 			throw new BusinessException("Msg_1023");
 		}
-		
+
 		//update No.2845 theo mã bug 102061, ユニーク制約, 社員ID、付与日 #Msg_1456
 		if(isHasData == true) {
 			throw new BusinessException("Msg_1456");
 		}
 
+//		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
+//				specialId,cid, command.getSid(), command.getSpecialLeaCode(),
+//				grantDate,
+//				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),
+//				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
+//				command.getNumberDayGrant(), command.getTimeGrant(),
+//				command.getNumberDayUse(),command.getTimeUse(),
+//				null,
+//				command.getNumberDaysOver(),command.getTimeOver(),
+//				command.getNumberDayRemain(), command.getTimeRemain(),
+//				command.grantDateItemName, command.deadlineDateItemName);
+
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
-				specialId,cid, command.getSid(), command.getSpecialLeaCode(), 
+				specialId,
+				cid,
+				command.getSid(),
 				grantDate,
 				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),
-				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
-				command.getNumberDayGrant(), command.getTimeGrant(), 
-				command.getNumberDayUse(),command.getTimeUse(), 
-				null, 
-				command.getNumberDaysOver(),command.getTimeOver(), 
-				command.getNumberDayRemain(), command.getTimeRemain(),
-				command.grantDateItemName, command.deadlineDateItemName);
-		
+				command.getExpStatus(),
+				GrantRemainRegisterType.MANUAL.value,
+				command.getNumberDayGrant().doubleValue(),
+				command.getTimeGrant(),
+				command.getNumberDayUse().doubleValue(),
+				command.getTimeUse(),
+				null,
+				command.getNumberDayRemain().doubleValue(),
+				command.getTimeRemain(),
+				0.0,
+				false,
+				command.getSpecialLeaCode());
+
 		repo.add(data);
 	}
-		
+
 }

@@ -21,11 +21,11 @@ public enum TimeLimitSpecification {
 	/**
 	 * 次回付与日まで使用可能
 	 */
-	AVAILABLE_UNTIL_NEXT_GRANT_DATE(2),
-	/**
-	 * 使用可能期間を指定する
-	 */
-	USABLE_PERIOD(3);
+	AVAILABLE_UNTIL_NEXT_GRANT_DATE(2);
+//	/**
+//	 * 使用可能期間を指定する
+//	 */
+//	USABLE_PERIOD(3);
 	
 	public int value;
 	

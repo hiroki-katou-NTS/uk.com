@@ -25,10 +25,10 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtT
  */
 @Stateless
 public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implements AnnualPaidLeaveSettingRepository {
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * AnnualPaidLeaveSettingRepository#add(nts.uk.ctx.at.shared.dom.vacation.
      * setting.annualpaidleave.AnnualPaidLeaveSetting)
@@ -41,7 +41,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
      * AnnualPaidLeaveSettingRepository#update(nts.uk.ctx.pr.core.dom.vacation.
      * setting.annualpaidleave.AnnualPaidLeaveSetting)
@@ -53,7 +53,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
      * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
      */
@@ -61,6 +61,8 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
     @Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
+
+
 		String sqlJdbc = "SELECT *, KMAS.ROUND_PRO_CLA KMASROUND_PRO_CLA, KTAS.ROUND_PRO_CLA KTASROUND_PRO_CLA "
 				+ "FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
 				+ "LEFT JOIN KMAMT_MNG_ANNUAL_SET KMAS ON KAPL.CID = KMAS.CID "
@@ -75,7 +77,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 					.getSingle(rec -> {
 						KmamtMngAnnualSet kmamtMngAnnualSet = new KmamtMngAnnualSet();
 						kmamtMngAnnualSet.setCid(rec.getString("CID"));
-						kmamtMngAnnualSet.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
+//						kmamtMngAnnualSet.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
 						kmamtMngAnnualSet.setHalfMaxDayYear(rec.getInt("HALF_MAX_DAY_YEAR"));
 						kmamtMngAnnualSet.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
 						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
@@ -83,13 +85,13 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 								.setHalfMaxUniformComp(rec.getInt("HALF_MAX_UNIFORM_COMP"));
 						kmamtMngAnnualSet.setIsWorkDayCal(rec.getInt("IS_WORK_DAY_CAL"));
 						kmamtMngAnnualSet.setRetentionYear(rec.getInt("RETENTION_YEAR"));
-						kmamtMngAnnualSet.setRemainingMaxDay(rec.getDouble("REMAINING_MAX_DAY"));
-						kmamtMngAnnualSet
-								.setNextGrantDayDispAtr(rec.getInt("NEXT_GRANT_DAY_DISP_ATR"));
-						kmamtMngAnnualSet
-								.setRemainingNumDispAtr(rec.getInt("REMAINING_NUM_DISP_ATR"));
-						kmamtMngAnnualSet.setYearlyOfDays(rec.getDouble("YEARLY_OF_DAYS"));
-						kmamtMngAnnualSet.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
+//						kmamtMngAnnualSet.setRemainingMaxDay(rec.getDouble("REMAINING_MAX_DAY"));
+//						kmamtMngAnnualSet
+//								.setNextGrantDayDispAtr(rec.getInt("NEXT_GRANT_DAY_DISP_ATR"));
+//						kmamtMngAnnualSet
+//								.setRemainingNumDispAtr(rec.getInt("REMAINING_NUM_DISP_ATR"));
+//						kmamtMngAnnualSet.setYearlyOfDays(rec.getDouble("YEARLY_OF_DAYS"));
+//						kmamtMngAnnualSet.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
 
 						KtvmtTimeAnnualSet ktvmtTimeVacationSet = new KtvmtTimeAnnualSet();
 						ktvmtTimeVacationSet.setCid(rec.getString("CID"));
@@ -122,7 +124,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 					new JpaAnnualPaidLeaveSettingGetMemento(result.get()));
 		}
 	}
-    
+
     /**
      * To entity.
      *
@@ -145,7 +147,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 	@Override
 	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
 		// TODO Auto-generated method stub
-		
+
 	}
-    
+
 }

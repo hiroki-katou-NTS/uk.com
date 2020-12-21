@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.holidayover60h.HolidayOver60h;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 
 /**
- * 60H超休情報残数 
+ * 60H超休情報残数
  * @author masaaki_jinno
  *
  */
@@ -17,13 +17,24 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 @Setter
 public class HolidayOver60hRemainingNumber implements Cloneable {
 
-		/** 60H超休（マイナスあり） */
+		/**
+		 * 60H超休（マイナスあり）
+		 */
 		private HolidayOver60h holidayOver60hWithMinus;
-		/** 60H超休（マイナスなし） */
+
+		/**
+		 * 60H超休（マイナスなし）
+		 */
 		private HolidayOver60h holidayOver60hNoMinus;
-		/** 繰越時間 */
+
+		/**
+		 * 繰越時間
+		*/
 		private AnnualLeaveRemainingTime carryForwardTimes;
-		/** 未消化数 */
+
+		/**
+		 * 未消化数
+		*/
 		private AnnualLeaveRemainingTime holidayOver60hUndigestNumber;
 
 		/**

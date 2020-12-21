@@ -8,17 +8,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
+/**
+ *
+ * @author masaaki_jinno
+ *
+ */
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubtractUseDaysFromMngDataOut {
+
 	/**
-	 * 特別休暇の集計結果
-	 */
-	private InPeriodOfSpecialLeave speLeaveResult;
-	/**
-	 * 
+	 *
 	 */
 	private List<SpecialLeaveGrantRemainingData> lstSpeRemainData;
 }

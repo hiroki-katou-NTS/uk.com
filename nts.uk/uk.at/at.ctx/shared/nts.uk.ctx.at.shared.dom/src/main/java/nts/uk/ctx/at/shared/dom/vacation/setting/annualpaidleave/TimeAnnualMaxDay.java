@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -11,7 +13,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  * The Class YearVacationTimeMaxDay.
  */
 @Builder
-public class TimeAnnualMaxDay {
+public class TimeAnnualMaxDay implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** The manage max day vacation. */
     // 管理区分

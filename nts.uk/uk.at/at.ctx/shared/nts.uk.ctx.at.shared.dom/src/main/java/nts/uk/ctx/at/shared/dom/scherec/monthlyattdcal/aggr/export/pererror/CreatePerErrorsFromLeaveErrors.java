@@ -35,7 +35,7 @@ public class CreatePerErrorsFromLeaveErrors {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (annualLeaveErrors == null) return results;
-		
+
 		// 年休エラー処理
 		for (val annualLeaveError : annualLeaveErrors){
 			results.add(new EmployeeMonthlyPerError(
@@ -48,7 +48,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					annualLeaveError,
 					null));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -78,7 +78,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					reserveLeaveError));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -95,7 +95,7 @@ public class CreatePerErrorsFromLeaveErrors {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (pauseErrors == null) return results;
-		
+
 		// 振休エラー処理
 		if (pauseErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
@@ -108,7 +108,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					null));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -125,7 +125,7 @@ public class CreatePerErrorsFromLeaveErrors {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (dayOffErrors == null) return results;
-		
+
 		// 代休エラー処理
 		if (dayOffErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
@@ -138,7 +138,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					null));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -150,14 +150,14 @@ public class CreatePerErrorsFromLeaveErrors {
 	 * @param specialLeaveErrors 特別休暇エラー情報
 	 * @return 社員の月別残数エラー一覧
 	 */
-	
+
 	/** 特別休暇エラーから月別残数エラー一覧を作成する */
 	public static List<EmployeeMonthlyPerError> fromSpecialLeave(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, int specialLeaveNo, List<SpecialLeaveError> specialLeaveErrors) {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (specialLeaveErrors == null) return results;
-		
+
 		// 特別休暇エラー処理
 		if (specialLeaveErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
@@ -171,7 +171,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					null));
 		}
-		
+
 		return results;
 	}
 

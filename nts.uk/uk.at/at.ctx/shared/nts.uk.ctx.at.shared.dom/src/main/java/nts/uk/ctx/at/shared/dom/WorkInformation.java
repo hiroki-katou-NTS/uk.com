@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author ken_takasu
  *
  */
-public class WorkInformation {
+public class WorkInformation implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** 勤務種類コード **/
 	private WorkTypeCode workTypeCode;
@@ -237,10 +243,10 @@ public class WorkInformation {
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
 		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
 				.map( e -> (TimeZone) e).collect(Collectors.toList());
-		
-		return Optional.of( WorkInfoAndTimeZone.create( 
-				workType.get(), 
-				workTimeSetting.get(), 
+
+		return Optional.of( WorkInfoAndTimeZone.create(
+				workType.get(),
+				workTimeSetting.get(),
 				correctedTimezones));
 	}
 

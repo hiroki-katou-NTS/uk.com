@@ -22,7 +22,7 @@ public class TestDataTimeLeavingWork {
 				"/testdata/WithinWorkTimeSheetTest/parameter/TimeLeavingWork.csv",
 				buildTimeLeavingWork,
 				TimeLeavingWork.class);
-		
+
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class TestDataTimeLeavingWork {
 //				record.asEnum("timeChangeMeans", TimeChangeMeans.class),
 //				record.asEnum("engravingMethod", EngravingMethod.class));
 	};
-	
+
 	/**
 	 * TimeActualStamp
 	 */
@@ -45,7 +45,7 @@ public class TestDataTimeLeavingWork {
 		val stamp = record.child("stamp", buildWorkStamp).get();
 		return new TimeActualStamp(actualStamp, stamp, record.asInt("numberOfReflectionStamp"));
 	};
-	
+
 	/**
 	 * TimeLeavingWork
 	 */

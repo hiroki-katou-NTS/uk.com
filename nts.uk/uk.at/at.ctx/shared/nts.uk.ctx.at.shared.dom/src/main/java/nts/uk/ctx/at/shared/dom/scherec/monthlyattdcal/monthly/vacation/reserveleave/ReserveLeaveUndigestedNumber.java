@@ -12,15 +12,15 @@ public class ReserveLeaveUndigestedNumber implements Cloneable {
 
 	/** 未消化日数 */
 	private ReserveLeaveRemainingDayNumber undigestedDays;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public ReserveLeaveUndigestedNumber(){
-		
+
 		this.undigestedDays = new ReserveLeaveRemainingDayNumber(0.0);
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param undigestedDays 未消化日数
@@ -28,12 +28,15 @@ public class ReserveLeaveUndigestedNumber implements Cloneable {
 	 */
 	public static ReserveLeaveUndigestedNumber of(
 			ReserveLeaveRemainingDayNumber undigestedDays){
-		
+
 		ReserveLeaveUndigestedNumber domain = new ReserveLeaveUndigestedNumber();
 		domain.undigestedDays = undigestedDays;
 		return domain;
+
+
+
 	}
-	
+
 	@Override
 	public ReserveLeaveUndigestedNumber clone() {
 		ReserveLeaveUndigestedNumber cloned = new ReserveLeaveUndigestedNumber();

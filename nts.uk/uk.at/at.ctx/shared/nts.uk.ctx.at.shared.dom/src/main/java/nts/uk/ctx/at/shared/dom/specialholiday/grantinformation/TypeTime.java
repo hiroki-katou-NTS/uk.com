@@ -10,14 +10,26 @@ import nts.arc.enums.EnumAdaptor;
  */
 public enum TypeTime {
 
-	/**
-	 * 周期、日数を指定して付与する
-	 */
-	GRANT_START_DATE_SPECIFY(0),
+//	/**
+//	 * 周期、日数を指定して付与する
+//	 */
+//	GRANT_START_DATE_SPECIFY(0),
+	
 	/**
 	 * 付与テーブルを参照して付与する
 	 */
-	REFER_GRANT_DATE_TBL(1);
+	REFER_GRANT_DATE_TBL(1),
+	
+	/**
+	 * 指定日に付与する
+	 */
+	GRANT_SPECIFY_DATE(2),
+	
+	/**
+	 * 期間で付与する
+	 */
+	GRANT_PERIOD(3);
+	
 	
 	public int value;
 	

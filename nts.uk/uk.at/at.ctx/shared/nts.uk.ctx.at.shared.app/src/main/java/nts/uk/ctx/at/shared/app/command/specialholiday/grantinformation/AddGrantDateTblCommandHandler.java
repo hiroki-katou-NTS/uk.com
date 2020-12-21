@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepo
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ *
  * @author tanlv
  *
  */
@@ -28,32 +28,32 @@ public class AddGrantDateTblCommandHandler extends CommandHandlerWithResult<Gran
 		List<String> errList = new ArrayList<String>();
 		GrantDateTblCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
+
 		// check exists code
 		Optional<GrantDateTbl> grantDateTbl = repo.findByCode(companyId, command.getSpecialHolidayCode(), command.getGrantDateCode());
 		if (grantDateTbl.isPresent()) {
 			addMessage(errList, "Msg_3");
 		}
-		
+
 		GrantDateTbl domain = command.toDomain();
-		
+
 		errList.addAll(domain.validateInput());
-		
+
 		if (errList.isEmpty()) {
 			if(domain.isSpecified()) {
 				repo.changeAllProvision(command.getSpecialHolidayCode());
 			}
-			
-			// add to db		
+
+			// add to db
 			repo.add(domain);
 		}
 
 		return errList;
 	}
-	
+
 	/**
 	 * Add exception message
-	 * 
+	 *
 	 * @param exceptions
 	 * @param messageId
 	 */

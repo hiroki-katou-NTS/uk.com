@@ -24,7 +24,7 @@ public class AddSpeLeaGrant19ListCommandHandler
 extends CommandHandlerWithResult<List<AddSpecialLeaveGrant19Command>, List<MyCustomizeException>>
 implements PeregAddListCommandHandler<AddSpecialLeaveGrant19Command> {
 
-		
+
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 
@@ -46,27 +46,31 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant19Command> {
 		List<SpecialLeaveGrantRemainingData> insertLst = new ArrayList<>();
 		cmd.stream().forEach(c ->{
 			String specialId = IdentifierUtil.randomUniqueId();
-			SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
-					c.getSid(), 19,
-					c.getGrantDate(),c.getDeadlineDate(), 
+			SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
+					specialId,
+					cid,
+					c.getSid(),
+					c.getGrantDate(),
+					c.getDeadlineDate(),
 					c.getExpStatus().intValue(),
-					GrantRemainRegisterType.MANUAL.value, 
-					c.getNumberDayGrant(), 
+					GrantRemainRegisterType.MANUAL.value,
+					c.getNumberDayGrant().doubleValue(),
 					c.getTimeGrant() != null ? c.getTimeGrant().intValue() : null ,
-					c.getNumberDayUse(), 
-					c.getTimeUse() != null ? c.getTimeUse().intValue() : null, 
+					c.getNumberDayUse().doubleValue(),
+					c.getTimeUse() != null ? c.getTimeUse().intValue() : null,
 					null,
-					c.getNumberDaysOver(),
-					c.getTimeOver() != null ? c.getTimeOver().intValue() : null,
-					c.getNumberDayRemain(),
+					c.getNumberDayRemain().doubleValue(),
 					c.getTimeRemain() != null ? c.getTimeRemain().intValue() : null,
-					c.grantDateItemName, c.deadlineDateItemName);
+					0.0,
+					false,
+					19);
 			insertLst.add(domain);
+
 		});
 		if(!insertLst.isEmpty()) {
 			result.addAll(addSpeLeaveGrantCommandHandler.addHandler(insertLst));
 		}
-		
+
 		return result;
 	}
 

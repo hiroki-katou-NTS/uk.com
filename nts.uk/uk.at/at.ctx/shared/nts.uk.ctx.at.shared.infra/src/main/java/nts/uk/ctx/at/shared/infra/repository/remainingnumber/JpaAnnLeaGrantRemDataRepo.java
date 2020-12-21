@@ -101,7 +101,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	public void add(AnnualLeaveGrantRemainingData data) {
 		if(data != null) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();
-		entity.annLeavID = data.getAnnLeavID();
+		entity.annLeavID = data.getLeaveID();
 		entity.sid = data.getEmployeeId();
 		entity.cid = data.getCid();
 		updateValue(entity, data);
@@ -113,7 +113,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void update(AnnualLeaveGrantRemainingData data) {
 		if (data != null) {
-			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getAnnLeavID(),KRcmtAnnLeaRemain.class);
+			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),KRcmtAnnLeaRemain.class);
 			if (entityOpt.isPresent()) {
 				KRcmtAnnLeaRemain entity = entityOpt.get();
 				updateValue(entity, data);
@@ -127,7 +127,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		entity.expStatus = data.getExpirationStatus().value;
 		entity.registerType = data.getRegisterType().value;
 		entity.grantDate = data.getGrantDate();
-		AnnualLeaveNumberInfo details = data.getDetails();
+		AnnualLeaveNumberInfo details = (AnnualLeaveNumberInfo) data.getDetails();
 
 		// grant data
 		entity.grantDays = details.getGrantNumber().getDays().v();
@@ -381,7 +381,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-			sql = sql.replace("ANNLEAV_ID", "'" +  c.getAnnLeavID() + "'");
+			sql = sql.replace("ANNLEAV_ID", "'" +  c.getLeaveID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId()+ "'");
 			
@@ -392,7 +392,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			sql = sql.replace("REGISTER_TYPE_VAL", "" +  c.getRegisterType().value + "");
 			sql = sql.replace("GRANT_DAYS_VAL", "'" + c.getDeadline() + "'");
 			
-			AnnualLeaveNumberInfo details = c.getDetails();
+			AnnualLeaveNumberInfo details = (AnnualLeaveNumberInfo) c.getDetails();
 			// grant data
 			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");
 			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");

@@ -31,7 +31,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -55,35 +55,35 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = CLOSURE_STATE, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private int closureStatus;
-	
+
 	/** 特別休暇コード */
 	@AttendanceItemLayout(jpPropertyName = SPECIAL_HOLIDAY + CODE, layout = LAYOUT_C)
 	@AttendanceItemValue(type = ValueType.CODE)
 	private int no;
-	
+
 	/** 実特別休暇 */
 	@AttendanceItemLayout(jpPropertyName = REAL + SPECIAL_HOLIDAY, layout = LAYOUT_D)
 	private SpecialLeaveDto actualSpecial;
-	
+
 	/** 特別休暇*/
 	@AttendanceItemLayout(jpPropertyName = SPECIAL_HOLIDAY, layout = LAYOUT_E)
 	private SpecialLeaveDto specialLeave;
-	
+
 	/** 付与区分*/
 	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
-	
+
 	/** 特別休暇付与情報: 付与日数 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + DAYS, layout = LAYOUT_G)
 	@AttendanceItemValue(type = ValueType.DAYS)
 	private Double grantDays;
-	
+
 	@Override
 	public String employeeId() {
 		return employeeId;
 	}
-	
+
 	public static SpecialHolidayRemainDataDto from(SpecialHolidayRemainData domain){
 		SpecialHolidayRemainDataDto dto = new SpecialHolidayRemainDataDto();
 		if (domain != null) {
@@ -102,21 +102,24 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 		}
 		return dto;
 	}
-	
+
 	@Override
 	public SpecialHolidayRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return new SpecialHolidayRemainData(
-				employeeId,
-				ym,
-				closureID, 
-				datePeriod == null ? null : datePeriod.toDomain(), 
-				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				closureDate == null ? null : closureDate.toDomain(),
-				no, actualSpecial == null ? null : actualSpecial.toActualDomain(), 
-				specialLeave == null ? null : specialLeave.toDomain(),
-				grantAtr,
-				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+		// // ooooo要修正！！ Converter
+//		return new SpecialHolidayRemainData(
+//				employeeId,
+//				ym,
+//				closureID,
+//				datePeriod == null ? null : datePeriod.toDomain(),
+//				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
+//				closureDate == null ? null : closureDate.toDomain(),
+//				no, actualSpecial == null ? null : actualSpecial.toActualDomain(),
+//				specialLeave == null ? null : specialLeave.toDomain(),
+//				grantAtr,
+//				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+		return null;
 	}
+
 	@Override
 	public YearMonth yearMonth() {
 		return ym;

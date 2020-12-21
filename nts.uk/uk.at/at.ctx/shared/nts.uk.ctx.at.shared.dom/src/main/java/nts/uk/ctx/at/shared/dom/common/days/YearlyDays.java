@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.common.days;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
 
@@ -8,7 +10,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
  * @author shuichi_ishida
  */
 @HalfIntegerRange(min = 0, max = 366.0)
-public class YearlyDays extends HalfIntegerPrimitiveValue<YearlyDays> {
+public class YearlyDays extends HalfIntegerPrimitiveValue<YearlyDays> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

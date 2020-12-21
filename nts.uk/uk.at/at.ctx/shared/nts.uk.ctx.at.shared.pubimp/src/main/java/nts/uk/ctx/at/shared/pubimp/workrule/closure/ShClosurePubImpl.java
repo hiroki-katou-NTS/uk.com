@@ -21,7 +21,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.app.workrule.ClosureCache;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -57,6 +59,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<PresentClosingPeriodExport> find(String cId, int closureId) {
+<<<<<<< HEAD
 		//refactor chuyển lên dom phần nội dung hàm cho đúng theo thiết kế
 		//theo điều tra thì đây có vẻ là dành cho 処理年月と締め期間を取得する
 		//UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業締め日.アルゴリズム.Query.処理年月と締め期間を取得する.処理年月と締め期間を取得する
@@ -68,6 +71,32 @@ public class ShClosurePubImpl implements ShClosurePub {
 										.closureStartDate(dto.getClosureStartDate())
 										.closureEndDate(dto.getClosureEndDate())
 										.build());
+=======
+		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
+
+		// Check exist and active
+		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
+				.equals(UseClassification.UseClass_NotUse)) {
+			return Optional.empty();
+		}
+
+		Closure closure = optClosure.get();
+
+		// Get Processing Ym 処理年月
+		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		
+		ClosureDate closureDate = closure.getHistoryByYearMonth(processingYm).get().getClosureDate();
+
+		// Return
+		return Optional.of(PresentClosingPeriodExport.builder()
+				.processingYm(processingYm)
+				.closureStartDate(closurePeriod.start())
+				.closureEndDate(closurePeriod.end())
+				.closureDate(new ClosureDateExport(closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth()))
+				.build());
+>>>>>>> pj/at/jp_dev/nabe_team/jinno2
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
