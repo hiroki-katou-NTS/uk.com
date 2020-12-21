@@ -9,9 +9,9 @@ module nts.uk.at.view.kmk004.l {
 	<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Company'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="enable: enable, i18n: 'KMK004_225'"></button>
+		<button class="proceed" data-bind="enable: existYear, i18n: 'KMK004_225'"></button>
 		<button data-bind="visible: false, i18n: 'KMK004_226'"></button>
-		<button class="danger" data-bind="enable: enable, i18n: 'KMK004_227'"></button>
+		<button class="danger" data-bind="enable: existYear, i18n: 'KMK004_227'"></button>
 	</div>
 	<div class="view-l">
 				<div class="header-l">
@@ -65,7 +65,6 @@ module nts.uk.at.view.kmk004.l {
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public existYear: KnockoutObservable<boolean> = ko.observable(true);
 		public type: SIDEBAR_TYPE = 'Com_Company';
-		enable: KnockoutObservable<boolean> = ko.observable(false);
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(private params: IParam){
