@@ -109,15 +109,29 @@ public class PersonCostCalculationFinder {
      * @param personCostCalculation PersonCostCalculation Object
      * @return PersonCostCalculationSettingDto Object
      */
+
     private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation) {
         return new PersonCostCalculationSettingDto(
                 personCostCalculation.getCompanyID(),
                 personCostCalculation.getHistoryID(),
-
+                personCostCalculation.getStartDate(),
+                personCostCalculation.getEndDate(),
                 personCostCalculation.getUnitPrice().value,
                 personCostCalculation.getMemo().v(),
                 personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
     }
+
+
+
+//    private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation) {
+//        return new PersonCostCalculationSettingDto(
+//                personCostCalculation.getCompanyID(),
+//                personCostCalculation.getHistoryID(),
+//
+//                personCostCalculation.getUnitPrice().value,
+//                personCostCalculation.getMemo().v(),
+//                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
+//    }
 
     /**
      * convert PremiumSetting to PremiumSetDto

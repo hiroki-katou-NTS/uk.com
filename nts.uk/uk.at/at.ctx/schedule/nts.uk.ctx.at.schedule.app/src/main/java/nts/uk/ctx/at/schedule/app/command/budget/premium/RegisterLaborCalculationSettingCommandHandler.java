@@ -30,18 +30,18 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
-        val domain = new PersonCostCalculation(
-                roundingSetting,
-                cid,
-                new Remarks(command.getRemarks()),
-                null
-                ,
-                Optional.of(unitPrice),
-                EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
-                command.getHistoryId()
-        );
-        this.service.registerLaborCalculationSetting(domain);
+//        val domain = new PersonCostCalculation(
+//                roundingSetting,
+//                cid,
+//                new Remarks(command.getRemarks()),
+//                null
+//                ,
+//                Optional.of(unitPrice),
+//                EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
+//                new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
+//                command.getHistoryId()
+//        );
+//        this.service.registerLaborCalculationSetting(domain);
 
     }
 }
