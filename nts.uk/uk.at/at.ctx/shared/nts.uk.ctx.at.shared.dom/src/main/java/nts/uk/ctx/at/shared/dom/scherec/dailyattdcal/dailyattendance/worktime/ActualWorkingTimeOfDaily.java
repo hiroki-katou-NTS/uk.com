@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyl
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
@@ -131,21 +130,15 @@ public class ActualWorkingTimeOfDaily {
     
 	/**
 	 * 日別実績の実働時間の計算
-	 * @param recordClass 
-	 * @param vacationClass 
-	 * @param workType 
-	 * @param workTimeDailyAtr 
-	 * @param flexCalcMethod 
-	 * @param bonusPayAutoCalcSet 
-	 * @param eachCompanyTimeSet 
-	 * @param forCalcDivergenceDto 
-	 * @param divergenceTimeList 
-	 * @param conditionItem 
-	 * @param predetermineTimeSetByPersonInfo 
-	 * @param leaveLateSet 
 	 * @param workScheduleTime 
-	 * @param recordWorkTimeCode 
-	 * @param declareResult 申告時間帯作成結果
+	 * @param breakTimeCount 
+	 * @param schePreTimeSet 
+	 * @param schePreTimeSet 
+	 * @param ootsukaFixedCalcSet 
+	 * @param integrationOfDaily 
+	 * @param dailyUnit 
+	 * @param workScheduleTime 
+	 * @param flexSetting 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(ManageReGetClass recordClass,
 			   VacationClass vacationClass,
@@ -158,10 +151,8 @@ public class ActualWorkingTimeOfDaily {
 			   List<DivergenceTimeRoot> divergenceTimeList, 
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   DeductLeaveEarly leaveLateSet,
-			   WorkScheduleTimeOfDaily workScheduleTime,
-			   Optional<WorkTimeCode> recordWorkTimeCode,
-			   DeclareTimezoneResult declareResult) {
+			   DeductLeaveEarly leaveLateSet, WorkScheduleTimeOfDaily workScheduleTime,Optional<WorkTimeCode> recordWorkTimeCode) {
+
 		
 		/* 総労働時間の計算 */
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(recordClass,
@@ -174,8 +165,8 @@ public class ActualWorkingTimeOfDaily {
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
 					leaveLateSet,
-					recordWorkTimeCode,
-					declareResult);
+					recordWorkTimeCode
+					);
 		
 		TotalWorkingTime calcResultOotsuka;
 		if(workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()) {

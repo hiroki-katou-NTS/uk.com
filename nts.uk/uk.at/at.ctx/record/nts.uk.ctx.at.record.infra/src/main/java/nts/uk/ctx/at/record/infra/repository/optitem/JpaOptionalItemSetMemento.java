@@ -97,7 +97,6 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 		this.entity.setUsageAtr(optionalItemUsageAtr.value);
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 

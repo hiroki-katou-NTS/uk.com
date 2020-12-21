@@ -47,6 +47,7 @@ public class TimeLeavingWork extends DomainObject{
 	@Getter
 	private boolean CanceledEarlyLeave = false;
 	
+	@Getter
 	private TimeSpanForCalc timespan;
 	
 	

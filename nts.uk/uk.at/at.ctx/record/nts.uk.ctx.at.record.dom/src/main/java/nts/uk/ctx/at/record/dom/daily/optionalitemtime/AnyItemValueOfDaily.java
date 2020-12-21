@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.TermsOfUseForOptItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
@@ -92,7 +91,7 @@ public class AnyItemValueOfDaily {
         											 Optional.of(BigDecimal.valueOf(storedValue.get().getRowTime())),
         											Optional.of(BigDecimal.valueOf(storedValue.get().getRowAmount())));
         	}
-        	//日別利用条件の判定
+        	//利用条件の判定
         	else if(decisionCondition(optionalItem,empConditionList,bsEmploymentHistOpt)) {
         		List<Formula> optFormulas = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		List<FormulaDispOrder> optOrders = formulaOrderList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
@@ -155,7 +154,7 @@ public class AnyItemValueOfDaily {
     		empCondition = Optional.of(findResult.get(0));
     	}
     	
-    	return (optionalItem.checkTermsOfUseDaily(empCondition,bsEmploymentHistOpt) == TermsOfUseForOptItem.USE);
+    	return optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt);
     }
 
     public Optional<AnyItemValue> getNo(int no) {

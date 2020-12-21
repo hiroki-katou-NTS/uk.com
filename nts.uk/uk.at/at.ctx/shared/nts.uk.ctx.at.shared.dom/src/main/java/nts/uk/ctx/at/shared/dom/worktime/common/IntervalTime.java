@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 //インターバル時間
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class IntervalTime extends WorkTimeDomainObject implements Cloneable{
 	
 	/** The interval time. */

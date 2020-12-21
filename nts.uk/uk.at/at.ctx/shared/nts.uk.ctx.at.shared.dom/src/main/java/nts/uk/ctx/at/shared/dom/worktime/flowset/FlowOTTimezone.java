@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 流動残業時間帯
 @Getter
-@Setter
 @NoArgsConstructor
 public class FlowOTTimezone extends WorkTimeDomainObject implements Cloneable{
 

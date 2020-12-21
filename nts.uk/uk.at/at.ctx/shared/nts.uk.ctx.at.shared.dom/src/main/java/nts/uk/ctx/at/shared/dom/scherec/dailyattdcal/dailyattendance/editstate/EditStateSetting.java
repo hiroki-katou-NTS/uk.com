@@ -18,9 +18,7 @@ public enum EditStateSetting {
 	/** 申請反映 */
 	REFLECT_APPLICATION(2),
 	/** 打刻反映 */
-	IMPRINT(3),
-	/** 申告反映 */
-	DECLARE_APPLICATION(4);
+	IMPRINT(3);
 	
 	public final int value;
 }

@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
@@ -15,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
  */
 // 休出時間の時間帯設定
 @Getter
-@Setter
 @NoArgsConstructor
 public class HDWorkTimeSheetSetting extends WorkTimeDomainObject implements Cloneable{
 	

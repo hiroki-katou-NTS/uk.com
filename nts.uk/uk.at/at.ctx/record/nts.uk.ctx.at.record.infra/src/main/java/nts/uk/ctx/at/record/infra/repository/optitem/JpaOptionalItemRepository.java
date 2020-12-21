@@ -112,7 +112,6 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
-				item.setCalcAtr(rec.getInt("CALC_ATR"));
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
@@ -229,7 +228,6 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
-				item.setCalcAtr(rec.getInt("CALC_ATR"));
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -16,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 //時間帯別外出丸め設定
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject implements Cloneable{
 
 	/** The pub hol work timezone. */

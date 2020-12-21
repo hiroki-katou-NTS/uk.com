@@ -24,10 +24,9 @@ public class TimeDivergenceWithCalculation {
 		this.time = time==null?new AttendanceTime(0):time;
 		this.calcTime = calcTime==null?new AttendanceTime(0):calcTime;
 		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
-		// 大塚モード時の仕様のため、業務処理側で個別に判断する(2020/11/9 shuichi_ishida)
-//		if(this.divergenceTime.valueAsMinutes()<0) {
-//			this.divergenceTime = new AttendanceTime(0);
-//		}
+		if(this.divergenceTime.valueAsMinutes()<0) {
+			this.divergenceTime = new AttendanceTime(0);
+		}
 	}
 	
 	/**
@@ -68,15 +67,6 @@ public class TimeDivergenceWithCalculation {
 	 */
 	public void replaceCalcTime(AttendanceTime calcTime) {
 		this.calcTime = calcTime;
-	}
-	
-	/**
-	 * 時間のみを入れ替える(乖離計算あり)
-	 * @param time 入れ替える時間
-	 */
-	public void replaceTimeWithCalc(AttendanceTime time) {
-		this.time = time;
-		this.divergenceTime = this.time.minusMinutes(calcTime.valueAsMinutes());
 	}
 	
 	/**
@@ -131,12 +121,4 @@ public class TimeDivergenceWithCalculation {
 		this.divergenceTime = divergenceTime;
 	}
 	
-	/**
-	 * マイナスの乖離時間を0にする
-	 */
-	public void divergenceMinusValueToZero(){
-		if (this.divergenceTime.valueAsMinutes() < 0){
-			this.divergenceTime = new AttendanceTime(0);
-		}
-	}
 }
