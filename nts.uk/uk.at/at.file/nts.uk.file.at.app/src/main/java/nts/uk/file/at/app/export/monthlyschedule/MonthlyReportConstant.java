@@ -28,8 +28,8 @@ public class MonthlyReportConstant {
 	public static final String FONT_FAMILY = "ＭＳ ゴシック";
 
 	/** The Constant FONT_SIZE. */
-	public static final double BIG_SIZE = 6;
-	public static final double SMALL_SIZE = 4.5;
+	public static final double BIG_SIZE = 9;
+	public static final double SMALL_SIZE = 7;
 	public static final String BIG_SIZE_HEADER_SETTING = "16";
 	public static final String SMALL_SIZE_HEADER_SETTING = "12";
 	public static final String BIG_SIZE_HEADER_COMPANY_DATE = "9";
