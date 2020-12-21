@@ -50,9 +50,8 @@ module nts.uk.at.view.kmk004.l {
 										name: 'box-year',
 										params:{ 
 											selectedYear: selectedYear,
-											param: param,
 											type: type,
-											years: years
+											selectedId: selectedIdParam
 										}
 									}"></div>
 									
@@ -100,7 +99,7 @@ module nts.uk.at.view.kmk004.l {
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Workplace';
-		public param: KnockoutObservable<string> = ko.observable('');
+		public selectedIdParam: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		btn_text: KnockoutObservable<string> = ko.observable('');
@@ -152,7 +151,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.selectedItemText(selectedItem ? selectedItem.name : '');
 				vm.paramL.wkpId(data);
 				vm.paramL.titleName = vm.selectedItemText();
-				vm.param(data);
+				vm.selectedIdParam(data);
 				vm.btn_text(
 					vm.alreadySettingList().filter(i => data == i.id).length == 0 ? 'KMK004_338' : 'KMK004_339');
 			});

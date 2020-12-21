@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk004.p {
 		empId: KnockoutObservable<string>;
 		titleName: string;
 		isLoadData: KnockoutObservable<boolean>;
+		//isLoadInitData: KnockoutObservable<boolean>;
 	}
 
 	export interface IParamL {

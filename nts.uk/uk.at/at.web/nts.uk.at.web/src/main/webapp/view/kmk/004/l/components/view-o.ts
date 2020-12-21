@@ -51,9 +51,8 @@ module nts.uk.at.view.kmk004.l {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
-										param: param,
 										type: type,
-										years: years
+										selectedId: selectedId
 									}
 								}"></div>
 								
@@ -113,14 +112,15 @@ module nts.uk.at.view.kmk004.l {
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE = 'Com_Person';
-		public param: KnockoutObservable<string> = ko.observable('');
+		public selectedId: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('');
 
 		constructor(private params: IParam) {
 			super();
-		}
+			}
 
 		created() {
 			const vm = this;
@@ -205,7 +205,7 @@ module nts.uk.at.view.kmk004.l {
 				isShowSelectAllButton: vm.isShowSelectAllButton(),
 				disableSelection: vm.disableSelection()
 			};
-			vm.paramL = { isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
+			vm.paramL = {isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.selectedYear
 				.subscribe(() => {
 					if (vm.selectedYear != null) {
@@ -225,7 +225,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.currentItemName(selectedItem.code + " " + selectedItem.name);
 					vm.paramL.empId(newValue);
 					vm.paramL.titleName = vm.currentItemName();
-					vm.param(newValue);
+					vm.selectedId(newValue);
 				});
 			});
 		}

@@ -37,9 +37,8 @@ module nts.uk.at.view.kmk004.l {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
-										param: ko.observable(''),
 										type: type,
-										years: years
+										selectedId: ko.observable('')
 									}
 								}"></div>
 								

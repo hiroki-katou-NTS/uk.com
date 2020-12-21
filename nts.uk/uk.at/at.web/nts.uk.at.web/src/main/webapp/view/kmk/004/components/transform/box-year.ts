@@ -7,23 +7,22 @@ module nts.uk.at.view.kmk004.components.transform {
 
 	interface Params {
 		selectedYear: KnockoutObservable<number | null>;
-		param: KnockoutObservable<string>;
-		type: SIDEBAR_TYPE
-		years: KnockoutObservableArray<IYear>;
+		type: SIDEBAR_TYPE;
+		selectedId?: KnockoutObservable<string>;
 	}
 
 	const template = `
 		<button id = "btn_year" data-bind="click: openQDialog, i18n: 'KMK004_233'"></button>
         <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
-                options: itemList,
+                options: years,
                 optionsValue: 'year',
-                optionsText: 'yearName',
+                optionsText: 'year',
                 multiple: false,
                 value: selectedYear,
                 rows: 5,
                 columns: [
-                    { key: 'statusValue', length: 1 },
+                    { key: 'isChanged', length: 1 },
                     { key: 'yearName', length: 4 }
                 ]}"></div>
         </div>
@@ -36,51 +35,49 @@ module nts.uk.at.view.kmk004.components.transform {
 	})
 
 	class BoxYear extends ko.ViewModel {
-
-		public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
-		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-		public param: KnockoutObservable<string> = ko.observable('');
-		public type: SIDEBAR_TYPE;
+		
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
+		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
+		public type: SIDEBAR_TYPE;
+		public selectedId: KnockoutObservable<string> = ko.observable('');
+
 		
 		created(params: Params) {
 			const vm = this;
-
 			vm.selectedYear = params.selectedYear;
-			vm.param = params.param;
-			vm.type = params.type;
-			vm.itemList = params.years;
+            vm.type = params.type;
+ 			vm.selectedId = params.selectedId;
 		}
 
 		mounted() {
 			const vm = this;
 			vm.initData(0);
-			vm.param
+			vm.selectedId
 				.subscribe(() => {
 					vm.loadData(0);
 				});
 
-			vm.param.valueHasMutated();
+			vm.selectedId.valueHasMutated();
 		}
 
 		initData(selectedIndex: number = 0) {
 			
             const vm = this;
-            vm.itemList([]);
+            vm.years([]);
             switch (vm.type) {
                 case 'Com_Company':
                     vm.$ajax(KMK004_API.COM_INIT_SCREEN)
                         .then((data: any) => {
-                            var years = _.orderBy(data.years, ['year'], ['desc']);
+                            data = _.orderBy(data.years, ['year'], ['desc']);
 
-                            _.forEach(years, ((value: any) => {
+                            _.forEach(data, ((value: any) => {
                                 const y: IYear = new IYear(value.year);
-                                vm.itemList.push(y);
+                                vm.years.push(y);
                             }));
                         })
                         .then(() => {
-                            if(ko.unwrap(vm.itemList) != []){
-                                vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                            if(ko.unwrap(vm.years) != []){
+                                vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
                             }else {
                                 vm.selectedYear(null);
                             }
@@ -88,18 +85,19 @@ module nts.uk.at.view.kmk004.components.transform {
                     break;
 
                 case 'Com_Workplace':
-                    if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(KMK004_API.WKP_INIT_SCREEN + '/' + ko.toJS(vm.param()))
+                    if (ko.unwrap(vm.selectedId) != '') {
+                        vm.$ajax(KMK004_API.WKP_INIT_SCREEN)
                             .then((data: any) => {
-                                var years = _.orderBy(data.years, ['year'], ['desc']);
-                                _.forEach(years, ((value: any) => {
+                                data = _.orderBy(data.years, ['year'], ['desc']);
+
+                                _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    vm.years.push(y);
                                 }));
                             })
                             .then(() => {
-                                if(ko.unwrap(vm.itemList) != []){
-                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                if(ko.unwrap(vm.years) != []){
+                                    vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
                                 }else {
                                     vm.selectedYear(null);
                                 }
@@ -108,18 +106,18 @@ module nts.uk.at.view.kmk004.components.transform {
                     break;
 
                 case 'Com_Employment':
-                    if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(KMK004_API.EMP_INIT_SCREEN  + '/' + ko.toJS(vm.param()))
+                    if (ko.unwrap(vm.selectedId) != '') {
+                        vm.$ajax(KMK004_API.EMP_INIT_SCREEN)
                             .then((data: any) => {
-                                  var years = _.orderBy(data.years, ['year'], ['desc']);
-                                _.forEach(years, ((value: any) => {
+                                 data = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    vm.years.push(y);
                                 }));
                             })
                             .then(() => {
-                                if(ko.unwrap(vm.itemList) != []){
-                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                if(ko.unwrap(vm.years) != []){
+                                    vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
                                 }else {
                                     vm.selectedYear(null);
                                 }
@@ -128,24 +126,6 @@ module nts.uk.at.view.kmk004.components.transform {
                     break;
 
                 case 'Com_Person':
-                    if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
-                        vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.toJS(vm.param()))
-                            .then((data: any) => {
-                                var years = _.orderBy(data.years, ['year'], ['desc']);
-                                _.forEach(years, ((value: any) => {
-                                    const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
-                                }));
-                            })
-                            .then(() => {
-                                
-                                if(ko.unwrap(vm.itemList) != []){
-                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                                }else {
-                                    vm.selectedYear(null);
-                                }
-                            });
-                    }
                     break;
             }
         
@@ -154,24 +134,24 @@ module nts.uk.at.view.kmk004.components.transform {
 		loadData(selectedIndex: number = 0) {
 			
             const vm = this;
-            vm.itemList([]);
+            vm.years([]);
             switch (vm.type) {
                 case 'Com_Company':
                     break;
 
                 case 'Com_Workplace':
-                    if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(KMK004_API.WKP_SELECT + '/' + ko.toJS(vm.param()))
+                    if (ko.unwrap(vm.selectedId) != '') {
+                        vm.$ajax(KMK004_API.WKP_SELECT + '/' + ko.toJS(vm.selectedId()))
                             .then((data: any) => {
-                                var years = _.orderBy(data.years, ['year'], ['desc']);
-                                _.forEach(years, ((value: any) => {
+                                data = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    vm.years.push(y);
                                 }));
                             })
                             .then(() => {
-                                if(ko.unwrap(vm.itemList) != []){
-                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                if(ko.unwrap(vm.years) != []){
+                                    vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
                                 }else {
                                     vm.selectedYear(null);
                                 }
@@ -180,18 +160,18 @@ module nts.uk.at.view.kmk004.components.transform {
                     break;
 
                 case 'Com_Employment':
-                    if (ko.unwrap(vm.param) != '') {
-                        vm.$ajax(KMK004_API.EMP_SELECT  + '/' + ko.toJS(vm.param()))
+                    if (ko.unwrap(vm.selectedId) != '') {
+                        vm.$ajax(KMK004_API.EMP_SELECT  + '/' + ko.toJS(vm.selectedId()))
                             .then((data: any) => {
-                                  var years = _.orderBy(data.years, ['year'], ['desc']);
-                                _.forEach(years, ((value: any) => {
+                                  data = _.orderBy(data.years, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    vm.years.push(y);
                                 }));
                             })
                             .then(() => {
-                                if(ko.unwrap(vm.itemList) != []){
-                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                if(ko.unwrap(vm.years) != []){
+                                    vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
                                 }else {
                                     vm.selectedYear(null);
                                 }
@@ -200,24 +180,24 @@ module nts.uk.at.view.kmk004.components.transform {
                     break;
 
                 case 'Com_Person':
-                    /*if (ko.unwrap(vm.param) != null && ko.unwrap(vm.param) != '') {
-                        vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.toJS(vm.param()))
+                     if (ko.unwrap(vm.selectedId) != null && ko.unwrap(vm.selectedId) != '') {
+                        vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.unwrap(vm.selectedId))
                             .then((data: any) => {
-                                var years = _.orderBy(data.years, ['year'], ['desc']);
-                                _.forEach(years, ((value: any) => {
+                                data = _.orderBy(data, ['year'], ['desc']);
+                                _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    vm.years.push(y);
                                 }));
                             })
                             .then(() => {
-                                
-                                if(ko.unwrap(vm.itemList) != []){
-                                    vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-                                }else {
+
+                                if (ko.unwrap(vm.years) != []) {
+                                    vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+                                } else {
                                     vm.selectedYear(null);
                                 }
                             });
-                    }*/
+                    }
                     break;
             }
         
@@ -225,7 +205,7 @@ module nts.uk.at.view.kmk004.components.transform {
 
 		openQDialog() {
 			const vm = this;
-			const param = {years: ko.unwrap(vm.itemList).map((m: IYear) => m.year)};
+			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));

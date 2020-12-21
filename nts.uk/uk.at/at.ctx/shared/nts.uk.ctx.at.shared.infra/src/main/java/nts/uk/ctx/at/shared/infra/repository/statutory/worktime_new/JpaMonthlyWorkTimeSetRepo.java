@@ -303,12 +303,12 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMCom x "
 				+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
 				+ "AND x.pk.ym <= :end "
-				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMCom.class)
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMCom.class)
 					.setParameter("cid", cid)
 					.setParameter("start", Integer.parseInt(start))
 					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
-					.getList().forEach(c -> commandProxy().remove(cid));
+					.getList().forEach(c -> commandProxy().remove(c));
 	}
 
 	@Override
@@ -343,13 +343,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND x.pk.ym >= :start "
 				+ "AND x.pk.ym <= :end "
 				+ "AND x.pk.sid = :sid "
-				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
 					.setParameter("cid", cid)
 					.setParameter("sid", sid)
 					.setParameter("start", Integer.parseInt(start))
 					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
-					.getList().forEach(c -> commandProxy().remove(cid));
+					.getList().forEach(c -> commandProxy().remove(c));
 	}
 
 	@Override
@@ -383,14 +383,14 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "WHERE x.pk.cid = :cid  "
 				+ "AND x.pk.ym >= :start "
 				+ "AND x.pk.ym <= :end "
-				+ "AND c.pk.empCD = :empCD "
-				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMEmp.class)
+				+ "AND x.pk.empCD = :empCD "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMEmp.class)
 					.setParameter("cid", cid)
 					.setParameter("empCD", empCD)
 					.setParameter("start", Integer.parseInt(start))
 					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
-					.getList().forEach(c -> commandProxy().remove(cid));
+					.getList().forEach(c -> commandProxy().remove(c));
 	}
 
 	@Override
@@ -424,14 +424,14 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "WHERE x.pk.cid = :cid  "
 				+ "AND x.pk.ym >= :start "
 				+ "AND x.pk.ym <= :end "
-				+ "AND c.pk.wkpId = :wkpId "
-				+ "AND c.pk.type = :laborAttr", KshmtLegalTimeMWkp.class)
+				+ "AND x.pk.wkpId = :wkpId "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMWkp.class)
 					.setParameter("cid", cid)
 					.setParameter("wkpId", wkpId)
 					.setParameter("start", Integer.parseInt(start))
 					.setParameter("end", Integer.parseInt(end))
 					.setParameter("laborAttr", laborAttr)
-					.getList().forEach(c -> commandProxy().remove(cid));
+					.getList().forEach(c -> commandProxy().remove(c));
 	}
 
 
