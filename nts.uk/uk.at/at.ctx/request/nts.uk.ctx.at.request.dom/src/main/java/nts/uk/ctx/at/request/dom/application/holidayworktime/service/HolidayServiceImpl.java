@@ -141,7 +141,7 @@ public class HolidayServiceImpl implements HolidayService {
 		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
 		
 		//1-1.休日出勤申請（新規）起動時初期データを取得する
-		String applicantEmployeeId = empList.isPresent() ? empList.get().get(0) : "";
+		String applicantEmployeeId = empList.isPresent() ? (empList.get().isEmpty() ? empList.get().get(0) : "") : "";
 		Optional<GeneralDate> applicationDate = dateList.isPresent() ? Optional.of(dateList.get().get(0)) : Optional.empty();
 		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
 		PrePostInitAtr prePostAtr = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr();
