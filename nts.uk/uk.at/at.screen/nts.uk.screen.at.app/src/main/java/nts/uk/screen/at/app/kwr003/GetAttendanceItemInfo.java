@@ -9,7 +9,6 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttri
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,7 +16,6 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,11 +37,11 @@ public class GetAttendanceItemInfo {
     @Inject
     private GetAttendanceIdByFormNumberQuery getAttendanceIdByFormNumberQuery;
 
-    public  List<AttItemDto> getAttendanceItemInfo(DailyMonthlyClassification classification, int formNumberDisplay) {
+    public List<AttItemDto> getAttendanceItemInfo(DailyMonthlyClassification classification, int formNumberDisplay) {
         val cid = AppContexts.user().companyId();
         val roleId = Optional.ofNullable(AppContexts.user().roles().forAttendance());
         List<AttItemDto> rs = new ArrayList<AttItemDto>();
-        if (classification == DailyMonthlyClassification.DAILY ) {
+        if (classification == DailyMonthlyClassification.DAILY) {
             //  （1:日次）
             val listAttdanceIdOfDaily = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.DAILY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
@@ -81,33 +79,38 @@ public class GetAttendanceItemInfo {
     }
 
     private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, int masterType) {
-        if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
-                masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value) {
+        if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
+            //&& masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value
+                ) {
             return CommonAttributesOfForms.WORK_TYPE.value;
-        } else if (typeOfAttendanceItem == DailyAttendanceAtr.Code.value &&
-                masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value) {
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
+            // && masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value
+                ) {
             return CommonAttributesOfForms.WORKING_HOURS.value;
-        } else if (typeOfAttendanceItem == DailyAttendanceAtr.NumberOfTime.value) {
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.NumberOfTime.value)) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
-        } else if (typeOfAttendanceItem == DailyAttendanceAtr.AmountOfMoney.value) {
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.AmountOfMoney.value)) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
-        } else if (typeOfAttendanceItem == DailyAttendanceAtr.Time.value) {
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Time.value)) {
             return CommonAttributesOfForms.TIME.value;
-        } else
-            return null;
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.TimeOfDay.value)) {
+            return CommonAttributesOfForms.TIME_OF_DAY.value;
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.AmountOfMoney.value)) {
+            return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
+        }
+        return null;
     }
 
     private Integer convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
-        if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.TIME.value) {
+        if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.TIME.value)) {
             return CommonAttributesOfForms.TIME.value;
-        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.NUMBER.value) {
+        } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.NUMBER.value)) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
-        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.DAYS.value) {
+        } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.DAYS.value)) {
             return CommonAttributesOfForms.DAYS.value;
-        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.AMOUNT.value) {
+        } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.AMOUNT.value)) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
         } else
-
             return null;
     }
 

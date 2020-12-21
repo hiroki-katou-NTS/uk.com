@@ -1,17 +1,12 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.List;
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
-import nts.uk.ctx.sys.log.app.find.reference.LogSetItemDetailDto;
-
 
 @Setter
 @Getter
@@ -68,31 +63,8 @@ public class LogParams {
 	 */
 	private List<LogSettingDto> listLogSettingDto;
 	
-	private List<ConditionDto> listCondition;
-	
-	private List<LogOutputItemDto> lstHeaderDto;
-	private List<LogOutputItemDto> lstSupHeaderDto;
-	private List<LogBasicInfoDto> lstLogBasicInfoDto;
-	private List<LogBasicInfoAllDto> listLogBasicInfoAllDto;
-	private List<LogSetItemDetailDto> listLogSetItemDetailDto;
-	private List<Map<String, Object>> listDataExport;
-	
-
-	
 	/**
-	 * CLI003: fix bug #108872
-	 * EA修正履歴No3675
-	 * @param recordType
-	 * @param lstHeaderDto
-	 * @param lstSupHeaderDto
-	 * @param lstLogBasicInfoDto
+	 * This is condition we get from screen B (表示する項目)
 	 */
-	public LogParams(int recordType, List<LogOutputItemDto> lstHeaderDto, List<LogOutputItemDto> lstSupHeaderDto,
-			List<LogBasicInfoDto> lstLogBasicInfoDto) {
-		super();
-		this.recordType = recordType;
-		this.lstHeaderDto = lstHeaderDto;
-		this.lstSupHeaderDto = lstSupHeaderDto;
-		this.lstLogBasicInfoDto = lstLogBasicInfoDto;
-	}
+	private List<ConditionDto> listCondition;
 }

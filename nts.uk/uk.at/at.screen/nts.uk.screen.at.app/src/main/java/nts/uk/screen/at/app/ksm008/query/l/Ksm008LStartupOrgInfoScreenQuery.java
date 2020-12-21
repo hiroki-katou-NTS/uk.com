@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
+import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
@@ -51,6 +54,18 @@ public class Ksm008LStartupOrgInfoScreenQuery {
 
     @Inject
     MaxDayOfWorkTimeOrganizationRepo maxDayOfWorkTimeOrganizationRepo;
+
+    @Inject
+    private AlarmCheckConditionsQuery alarmCheckConditionsQuery;
+
+    /**
+     * コードと名称と説明を取得する
+     * @param code コード
+     * @return 勤務予定のアラームチェック条件
+     */
+    public AlarmCheckConditionsQueryDto getAlarmCheckConSche(String code) {
+        return alarmCheckConditionsQuery.getCodeNameDescription(code);
+    }
 
     /**
      * Get startup info

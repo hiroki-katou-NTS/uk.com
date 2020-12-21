@@ -4,6 +4,6 @@ import nts.arc.task.tran.AtomTask;
 
 public interface DeleteRequestSettingTimeRecordPub {
 
-	public AtomTask remove(Integer empInfoTerCode, String contractCode);
+	public AtomTask remove(String empInfoTerCode, String contractCode);
 	
 }

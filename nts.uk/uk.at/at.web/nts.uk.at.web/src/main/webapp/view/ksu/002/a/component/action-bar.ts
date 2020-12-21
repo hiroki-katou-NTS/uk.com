@@ -1,9 +1,8 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
+	import c = nts.uk.ui.calendar;
 	import k = nts.uk.ui.at.kcp013.shared;
-
-	const KSU_WORKDT = 'KSU_WORK_DATA';
 
 	const template = `
 	<div class="btn-action">
@@ -68,7 +67,7 @@ module nts.uk.ui.at.ksu002.a {
 					tabindex: $$tabindex
 				},
 				ntsComboBox: {
-					width: '430px',
+					width: 520,
 					name: $component.$i18n('KSU002_12'),
 					value: $component.workTypeData.selected,
 					options: $component.workTypeData.dataSources,
@@ -78,9 +77,9 @@ module nts.uk.ui.at.ksu002.a {
 					selectFirstIfNull: true,
 					visibleItemsCount: 10,
 					columns: [
-						{ prop: 'workTypeCode', length: 4 },
-						{ prop: 'name', length: 10 },
-						{ prop: 'memo', length: 10 },
+						{ prop: 'workTypeCode', length: 5 },
+						{ prop: 'name', length: 12 },
+						{ prop: 'memo', length: 1 },
 					]
 				}"></div>
 		</div>
@@ -303,8 +302,9 @@ module nts.uk.ui.at.ksu002.a {
 					const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
 					if (wtype && wtype.type === WORKTYPE_SETTING.NOT_REQUIRED) {
-						vm.$window.storage(KSU_WORKDT)
-							.then((stg: undefined | StorageData) => {
+						vm.$window
+							.storage(c.KSU_USER_DATA)
+							.then((stg: undefined | c.StorageData) => {
 								if (stg) {
 									if (stg.wtimec) {
 										selectedWtime(stg.wtimec);
@@ -340,7 +340,17 @@ module nts.uk.ui.at.ksu002.a {
 						} else {
 							const noD = ['none', 'deferred'].indexOf(wtimec) > -1;
 
-							vm.$window.storage(KSU_WORKDT, { wtypec, wtimec });
+							vm.$window
+								.storage(c.KSU_USER_DATA)
+								.then((v: undefined | c.StorageData) => {
+									if (v === undefined) {
+										vm.$window.storage(c.KSU_USER_DATA, { wtypec, wtimec });
+									} else {
+										const { fdate } = v;
+
+										vm.$window.storage(c.KSU_USER_DATA, { fdate, wtypec, wtimec });
+									}
+								});
 
 							data.selected({
 								wtype: {
@@ -353,8 +363,8 @@ module nts.uk.ui.at.ksu002.a {
 									code: hwt ? wtimec : null,
 									name: hwt ? wtime.nameAb : null,
 									value: {
-										begin: !hwt || noD ? null : wtime.tzStart1,
-										finish: !hwt || noD ? null : wtime.tzEnd1
+										begin: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzStart1,
+										finish: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzEnd1
 									}
 								}
 							});
@@ -365,8 +375,10 @@ module nts.uk.ui.at.ksu002.a {
 			});
 		}
 
-		created() {
+		mounted() {
 			const vm = this;
+
+			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 
 			vm.$ajax('at', API.WTYPE)
 				.then((response: WorkTypeResponse[]) => {
@@ -378,30 +390,19 @@ module nts.uk.ui.at.ksu002.a {
 							memo: vm.$i18n(m.workTypeDto.memo)
 						})));
 				})
-				.then(() => vm.$window.storage(KSU_WORKDT))
-				.then((stg: undefined | StorageData) => {
+				.then(() => vm.$window.storage(c.KSU_USER_DATA))
+				.then((stg: undefined | c.StorageData) => {
 					if (stg) {
 						if (stg.wtypec) {
 							vm.workTypeData.selected(stg.wtypec);
 						}
 
 						if (stg.wtimec) {
-							vm.workTimeData.selected(stg.wtypec);
+							vm.workTimeData.selected(stg.wtimec);
 						}
 					}
 				});
 		}
-
-		mounted() {
-			const vm = this;
-
-			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
-		}
-	}
-
-	interface StorageData {
-		wtypec: string;
-		wtimec: string;
 	}
 
 	export type EDIT_MODE = 'edit' | 'copy';

@@ -117,8 +117,9 @@ module nts.uk.time.minutesBased {
         }
         
         function createText(duration: DurationMinutesBasedTime): string {
-            return (duration.isNegative ? "-" : "")
-                + duration.asHoursInt + ":" + duration.minutePartText;
+            const { isNegative, asHoursInt, minutePart } = duration;
+
+            return `${isNegative ? '-' : ''}${asHoursInt}:${_.padStart(`${minutePart}`, 2, '0')}`.replace(/^\-{1,}/g, '-')
         }
         
     }

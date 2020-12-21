@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -388,10 +389,16 @@ public class ApplicationWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("checkBeforeRegisterSample")
+	@Path("initApp")
+	public boolean registerSample() {
+		return true;
+	}
+	
+	@POST
+	@Path("checkBeforeSample")
 	public List<ConfirmMsgOutput> checkBeforeRegisterSample(List<String> msgIDLst) {
-		if(msgIDLst.contains("Msg_234")) {
-			throw new BusinessException("Msg_234");
+		if(msgIDLst.contains("Msg_324") || msgIDLst.contains("Msg_197") || msgIDLst.contains("Msg_26")) {
+			throw new BusinessException(msgIDLst.get(0));
 		}
 		if(CollectionUtil.isEmpty(msgIDLst)) {
 			return Collections.emptyList();
@@ -400,7 +407,7 @@ public class ApplicationWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("registerSample")
+	@Path("changeDataSample")
 	public ProcessResult registerSample(List<String> msgIDLst) {
 		ProcessResult processResult = new ProcessResult();
 		processResult.setProcessDone(true);

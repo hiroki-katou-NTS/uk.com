@@ -83,32 +83,18 @@
 										optionsValue: 'codeCbb',
 										value: budgetAtr,
 										optionsText: 'nameCbb',
-										enable: true,
+										enable: $parent.isNew(),
 										columns: [
 											{ prop: 'nameCbb', length: 2 }
 										]}">
 								</div>
 							</td>
-						</tr>
-					<!-- 	<tr>
-							<td>
-								<div id="divAttribute" data-bind="name: '#[KDL024_9]',ntsFormLabel:{required: true}">#{i18n.getText('KDL024_9')}</div>
-							</td>
-							<td>
-								<div class="cf"
-									data-bind="ntsSwitchButton: {
-										options: $parent.roundingRules,
-										optionsValue: 'unitId',
-										optionsText: 'unitName',
-										value: unitAtr}" tabindex="9">
-								</div>
-							</td>
-						</tr> -->
+						</tr>					
+
 					</table>
 				</div>
 			</div>
 		</ui:define>
-
 	</ui:composition>
 </body>
 </html>

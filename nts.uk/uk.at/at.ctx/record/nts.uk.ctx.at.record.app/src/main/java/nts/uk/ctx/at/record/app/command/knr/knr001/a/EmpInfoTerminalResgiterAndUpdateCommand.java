@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class EmpInfoTerminalResgiterAndUpdateCommand {
 	
-	private int empInfoTerCode;
+	private String empInfoTerCode;
 	
 	private String empInfoTerName;
 	

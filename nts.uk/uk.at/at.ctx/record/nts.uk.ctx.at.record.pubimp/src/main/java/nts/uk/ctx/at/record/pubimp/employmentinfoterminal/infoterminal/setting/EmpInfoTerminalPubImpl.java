@@ -24,7 +24,7 @@ public class EmpInfoTerminalPubImpl implements EmpInfoTerminalPub {
 	private EmpInfoTerminalRepository repo;
 
 	@Override
-	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(Integer empInfoTerCode, String contractCode) {
+	public Optional<EmpInfoTerminalExport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
 
 		return repo.getEmpInfoTerminal(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode))
 				.map(x -> convertTo(x));

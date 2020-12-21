@@ -3,7 +3,6 @@
 module nts.uk.at.kaf021.a {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
-    import formatYearMonth = nts.uk.time.formatYearMonth;
     import common = nts.uk.at.kaf021.common;
 
     const API = {
@@ -148,7 +147,7 @@ module nts.uk.at.kaf021.a {
                     return;
                 }
 
-                let date = new Date(formatYearMonth(vm.processingMonth));
+                let date = common.getProcessingDate(vm.processingMonth);
                 let currentMonth = date.getMonth() + 1;
                 date.setMonth(currentMonth);
                 let nextMonth = date.getMonth() + 1;
@@ -368,7 +367,7 @@ module nts.uk.at.kaf021.a {
 
         getHeaderStyles(): Array<any> {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
+            let date = common.getProcessingDate(vm.processingMonth);
             let currentMonth = vm.getMonthKey(date.getMonth() + 1);
             return [
                 { key: "checked", colors: ['padding-5'] },
