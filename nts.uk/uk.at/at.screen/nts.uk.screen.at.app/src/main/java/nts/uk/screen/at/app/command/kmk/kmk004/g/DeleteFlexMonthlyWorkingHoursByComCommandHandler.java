@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DeleteFlexMonthlyWorkingHoursByComCommandHandler
-		extends CommandHandler<DeleteFlexMonthlyWorkingHoursByComCommand> {
+		extends CommandHandler<Integer> {
 
 	@Inject
 	private CompanyRepository companyRepo;
@@ -32,13 +32,12 @@ public class DeleteFlexMonthlyWorkingHoursByComCommandHandler
 	private DeleteMonthlyWorkTimeSetComCommandHandler deleteHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<DeleteFlexMonthlyWorkingHoursByComCommand> context) {
+	protected void handle(CommandHandlerContext<Integer> context) {
 
-		DeleteFlexMonthlyWorkingHoursByComCommand cmd = context.getCommand();
 		// 1. 年度の期間を取得(require, 会社ID, 年度)
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
 		YearMonthPeriod yearMonths = GetThePeriodOfTheYear.getPeriodOfTheYear(require, AppContexts.user().companyId(),
-				cmd.getYear());
+				 context.getCommand());
 
 		// 勤務区分 = 2：フレックス勤務
 		// 年月期間 = 取得した年月期間
