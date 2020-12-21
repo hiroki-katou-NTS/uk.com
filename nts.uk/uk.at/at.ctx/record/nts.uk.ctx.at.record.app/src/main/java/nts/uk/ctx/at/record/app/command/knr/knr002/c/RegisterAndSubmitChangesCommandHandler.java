@@ -12,9 +12,15 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ReqComStatusMonitoring;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.ReqComStatusMonitoringRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.SettingValue;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUpdate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUpdateList;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetUpdateListRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -60,8 +66,20 @@ public class RegisterAndSubmitChangesCommandHandler extends CommandHandler<Regis
 		// 3: delete(require, 契約コード, 就業情報端末コード<List>)
 		deleteCommandHandler.handle(listTimeRecordSetUpdateList);
 		
+		List<TimeRecordSetUpdate> listTimeRecordSetUpdate = command.getListTimeRecordSetUpdateDto().stream()
+																.map(e -> new TimeRecordSetUpdate(new VariableName(e.getVariableName()), new SettingValue(e.getUpdateValue())))
+																.collect(Collectors.toList());
+		
+		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateListForRegister = listEmpInfoTerminalCodes.stream()
+																					.map(e -> new TimeRecordSetUpdateList(e,
+																							new EmpInfoTerminalName(command.getEmpInfoTerName()),
+																							new NRRomVersion(command.getRomVersion()),
+																							ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()),
+																							listTimeRecordSetUpdate))
+																					.collect(Collectors.toList());
+		
 		// 4: 登録する(require, 契約コード、就業情報端末コード、タイムレコード設定更新リスト)
-//		registerTimeRecordSetUpdateListCommandHandler.handle(listTimeRecordSetUpdateList);
+		registerTimeRecordSetUpdateListCommandHandler.handle(listTimeRecordSetUpdateListForRegister);
 	}
 
 }

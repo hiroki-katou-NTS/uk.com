@@ -37,13 +37,22 @@ public class RemoteSettingsDto {
 	
 	private String updateValue;
 	
-	public static List<RemoteSettingsDto> toDto(List<TimeRecordSetFormat> lstTRSetFormat, List<TimeRecordSetUpdate> lstTRecordSetUpdate) {
-		List<RemoteSettingsDto> listDto = lstTRSetFormat.stream()
+	private String empInfoTerName; 
+	
+	private String romVersion;
+	
+	private int modelEmpInfoTer;
+	
+	public static List<RemoteSettingsDto> toDto(TimeRecordSetFormatList timeRecordSetFormatList, List<TimeRecordSetUpdate> lstTRecordSetUpdate) {
+		List<RemoteSettingsDto> listDto = timeRecordSetFormatList.getLstTRSetFormat().stream()
 													.map(e -> new RemoteSettingsDto(e.getMajorNo().v(),
 																e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(),
 																e.getVariableName().v(), e.getType().value, e.getNumberOfDigits().v(),
 																e.getInputRange().v(), e.getSettingValue().v(),
-																getUpdateValueByName(e.getVariableName().v(), lstTRecordSetUpdate)))
+																getUpdateValueByName(e.getVariableName().v(), lstTRecordSetUpdate),
+																timeRecordSetFormatList.getEmpInfoTerName().v(),
+																timeRecordSetFormatList.getRomVersion().v(),
+																timeRecordSetFormatList.getModelEmpInfoTer().value))
 													.collect(Collectors.toList());
 		return listDto;
 	}

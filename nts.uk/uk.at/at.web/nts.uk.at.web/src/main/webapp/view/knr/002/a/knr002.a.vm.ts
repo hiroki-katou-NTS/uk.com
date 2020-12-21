@@ -3,12 +3,11 @@ module nts.uk.at.view.knr002.a {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import service = nts.uk.at.view.knr002.a.service;
-    import modal =  nts.uk.ui.windows.sub.modal;;
+    import modal =  nts.uk.ui.windows.sub.modal;
 
 
     export module viewmodel{
         export class ScreenModel{
-            displaytext: String = 'hoi cham1';
 
             // switch button
             filterButton: KnockoutObservableArray<any>;
@@ -43,7 +42,7 @@ module nts.uk.at.view.knr002.a {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 vm.loadData();
-                setInterval(vm.loadData.bind(vm), 15000);
+                setInterval(vm.loadData.bind(vm), 300000);
                   																			
                 dfd.resolve();											
                 return dfd.promise();											

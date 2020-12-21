@@ -23,9 +23,10 @@ public class RegisterTimeRecordSetUpdateListCommandHandler extends CommandHandle
 	@Override
 	protected void handle(CommandHandlerContext<List<TimeRecordSetUpdateList>> context) {
 		
+		// 1:create(契約コード、就業情報端末コード<List>、タイムレコード設定更新リスト、機種名、ROMバージョン、機種区分)
 		List<TimeRecordSetUpdateList> listReqComStatusMonitoring = context.getCommand();
 		
-		// 1:create(契約コード、就業情報端末コード、タイムレコード設定更新リスト)
+		// 2: persist()
 		timeRecordSetUpdateListRepository.insert(listReqComStatusMonitoring);
 	}	
 }

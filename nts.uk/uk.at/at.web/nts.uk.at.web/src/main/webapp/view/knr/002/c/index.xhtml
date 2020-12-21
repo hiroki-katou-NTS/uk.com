@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="knr002.c.service.js" />
+			<com:scriptfile path="knr002.c.vm.js" />
+			<com:scriptfile path="knr002.c.start.js" />
+			<com:stylefile path="knr002.c.style.css" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="top-container">
+					<button>Click</button>
+					<p data-bind="text: displayText"></p>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

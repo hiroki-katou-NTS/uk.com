@@ -38,6 +38,6 @@ public class GetRemoteSettings {
 			return Collections.emptyList();
 		}
 		
-		return RemoteSettingsDto.toDto(timeRecordSetFormatList.get().getLstTRSetFormat(), timeRecordSetUpdateList.get().getLstTRecordSetUpdate());
+		return RemoteSettingsDto.toDto(timeRecordSetFormatList.get(), timeRecordSetUpdateList.get().getLstTRecordSetUpdate());
 	}
 }

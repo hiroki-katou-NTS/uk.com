@@ -13,7 +13,12 @@ public class RegisterAndSubmitChangesCommand {
 	
 	private List<String> empInfoTerCode;
 	
-	private String variableName;
+	private String empInfoTerName; 
 	
-	private String updateValue;
+	private String romVersion;
+	
+	private int modelEmpInfoTer;
+	
+	private List<TimeRecordSetUpdateDto> listTimeRecordSetUpdateDto;
+	
 }
