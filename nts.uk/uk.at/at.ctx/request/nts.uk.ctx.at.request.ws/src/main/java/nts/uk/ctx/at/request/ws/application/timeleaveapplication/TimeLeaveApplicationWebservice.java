@@ -5,7 +5,9 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.RegisterTimeLeaveApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.RegisterTimeLeaveApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.CheckBeforeRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.TimeLeaveApplicationFinder;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -24,6 +26,13 @@ public class TimeLeaveApplicationWebservice extends WebService {
 
     @Inject
     private RegisterTimeLeaveApplicationCommandHandler commandHandler;
+
+
+    @POST
+    @Path("initNewApp")
+    public TimeLeaveAppDisplayInfo checkBeforeRegister(AppDispInfoStartupDto appDispInfoStartupOutput) {
+        return this.finder.initNewTimeLeaveApplication(appDispInfoStartupOutput);
+    }
 
     /**
      * 登録前チェック
