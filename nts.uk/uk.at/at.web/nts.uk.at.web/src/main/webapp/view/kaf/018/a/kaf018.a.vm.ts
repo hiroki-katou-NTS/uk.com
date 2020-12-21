@@ -70,18 +70,18 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			vm.$ajax(API.getUseSetting).then((useSetResult: any) => {
 				if(useSetResult) {
 					if(useSetResult.usePersonConfirm && useSetResult.useBossConfirm) {
-						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_552');
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_552'));
 					} else if(useSetResult.usePersonConfirm){
-						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_553');
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_553'));
 					} else {
-						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_554');
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_554'));
 					}
 					if(useSetResult.monthlyIdentityConfirm && useSetResult.monthlyConfirm) {
-						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_555');		
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_555'));		
 					} else if(useSetResult.monthlyIdentityConfirm){
-						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_556');
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_556'));
 					} else {
-						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_557');
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_557'));
 					}
 					if((useSetResult.usePersonConfirm) || (useSetResult.useBossConfirm)) {
 						vm.confirmAndApprovalDailyFlg.enable(true);
@@ -326,11 +326,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	export class CheckBoxValue {
 		value: KnockoutObservable<boolean>;
 		enable: KnockoutObservable<boolean>;
-		text: string;
+		text: KnockoutObservable<string>;
 		constructor(value: boolean, enable: boolean, text: string) {
 			this.value = ko.observable(value);
 			this.enable = ko.observable(enable);
-			this.text = text;
+			this.text = ko.observable(text);
 		}
 	}
 
