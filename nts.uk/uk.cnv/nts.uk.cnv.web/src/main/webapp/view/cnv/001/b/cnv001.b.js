@@ -77,9 +77,9 @@ $(function(){
 			$("#categoryName").prop('disabled', true);
 		}
 
-		$.ajax(ajaxOption.build(servicePath.loaddata,
-			category
-		)).done(function (res) {
+		$.ajax(ajaxOption.build(servicePath.loaddata, {
+			category: category
+		})).done(function (res) {
 			var optionsSelected = $.map(res.selectedTables, function (value, index) {
 				return $('<option>', { value: index, text: value });
 			});

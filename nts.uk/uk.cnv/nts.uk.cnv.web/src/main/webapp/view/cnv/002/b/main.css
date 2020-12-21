@@ -1,0 +1,12 @@
+#header {
+	height: 61px;
+}
+
+textarea {
+	resize: none
+}
+
+#verlist {
+	width: 400px;
+	margin:5px;
+}

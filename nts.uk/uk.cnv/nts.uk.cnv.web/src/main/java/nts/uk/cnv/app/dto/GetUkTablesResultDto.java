@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class GetUkTablesDto {
+public class GetUkTablesResultDto {
 	String tableId;
 	String tableName;
 }

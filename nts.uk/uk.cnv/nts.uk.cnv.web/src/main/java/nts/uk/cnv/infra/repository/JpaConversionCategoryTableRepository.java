@@ -15,7 +15,10 @@ public class JpaConversionCategoryTableRepository extends JpaRepository implemen
 
 	@Override
 	public List<ConversionCategoryTable> get(String category) {
-		String query = "SELECT c FROM ScvmtConversionCategoryTables c WHERE c.pk.categoryName = :category ORDER BY c.sequenceNo ASC";
+		String query = "SELECT c"
+				+ " FROM ScvmtConversionCategoryTables c"
+				+ " WHERE c.pk.categoryName = :category"
+				+ " ORDER BY c.sequenceNo ASC";
 		return this.queryProxy().query(query, ScvmtConversionCategoryTables.class)
 			.setParameter("category", category)
 			.getList().stream()

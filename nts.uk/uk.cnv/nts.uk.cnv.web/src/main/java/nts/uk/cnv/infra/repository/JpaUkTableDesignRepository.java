@@ -2,12 +2,14 @@ package nts.uk.cnv.infra.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.app.dto.GetUkTablesDto;
+import nts.arc.time.GeneralDate;
+import nts.uk.cnv.app.dto.GetUkTablesResultDto;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
@@ -36,10 +38,10 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 	@Override
 	public boolean exists(String tableName) {
 		String sql = "SELECT td FROM ScvmtUkTableDesign td WHERE td.name = :name";
-		Optional<ScvmtUkTableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+		List<ScvmtUkTableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 				.setParameter("name", tableName)
-				.getSingle();
-		return result.isPresent();
+				.getList();
+		return (result.size() > 0);
 	}
 
 	private ScvmtUkTableDesign toEntity(TableDesign tableDesign) {
@@ -111,30 +113,99 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> find(String tablename) {
-		String sql = "SELECT td FROM ScvmtUkTableDesign td WHERE td.name = :name";
-		Optional<ScvmtUkTableDesign> parent = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-				.setParameter("name", tablename)
+	public Optional<TableDesign> findByKey(String tableId, String branch, GeneralDate date) {
+		String sql = "SELECT td FROM ScvmtUkTableDesign td "
+				+ " WHERE td.pk.tableId = :tableId"
+				+ " AND   td.pk.branch = :branch"
+				+ " AND   td.pk.date = :date";
+		Optional<ScvmtUkTableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+				.setParameter("tableId", tableId)
+				.setParameter("branch", branch)
+				.setParameter("date", date)
 				.getSingle();
-		if(!parent.isPresent()) return Optional.empty();
-
-		Optional<ScvmtUkTableDesign> result = this.queryProxy().find(parent.get().getPk(), ScvmtUkTableDesign.class);
-		if(!result.isPresent()) return Optional.empty();
 
 		return Optional.of(result.get().toDomain());
 	}
 
 	@Override
-	public List<GetUkTablesDto> getAllTableList() {
-		return getAll().stream()
-			.map(td -> new GetUkTablesDto(td.getId(), td.getName()))
+	@SneakyThrows
+	public List<TableDesign> find(String tableId, String branch, GeneralDate date) {
+		String sql;
+		List<TableDesign> result;
+
+		if (branch != null && !branch.isEmpty()) {
+			sql = "SELECT td FROM ScvmtUkTableDesign td "
+				+ " WHERE td.pk.tableId = :tableId"
+				+ " AND   td.pk.branch = :branch"
+				+ " AND   td.pk.date <= :date"
+				+ " ORDER BY td.pk.date DESC";
+			result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+					.setParameter("tableId", tableId)
+					.setParameter("branch", branch)
+					.setParameter("date", date)
+					.getList(td -> td.toDomain());
+		}
+		else {
+			sql = "SELECT td FROM ScvmtUkTableDesign td "
+					+ " WHERE td.pk.tableId = :tableId"
+					+ " AND   td.pk.date <= :date"
+					+ " ORDER BY td.pk.date DESC";
+			result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+					.setParameter("tableId", tableId)
+					.setParameter("date", date)
+					.getList(td -> td.toDomain());
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<GetUkTablesResultDto> getAllTableList(String branch, GeneralDate date) {
+		return getAll(branch, date).stream()
+			.map(td -> new GetUkTablesResultDto(td.getId(), td.getName()))
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<TableDesign> getAll() {
-		String sql = "SELECT td FROM ScvmtUkTableDesign td";
+	public List<TableDesign> getAll(String branch, GeneralDate date) {
+		String sql;
+		List<ScvmtUkTableDesign> list;
+		if (branch != null && !branch.isEmpty()) {
+			sql = "SELECT td FROM ScvmtUkTableDesign td"
+				+ " WHERE td.pk.branch = :branch"
+				+ " AND   td.pk.date <= :date"
+				+ " ORDER BY td.pk.tableId, td.pk.date DESC";
+			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+					.setParameter("branch", branch)
+					.setParameter("date", date)
+					.getList();
+		}
+		else {
+			sql = "SELECT td FROM ScvmtUkTableDesign td"
+				+ " WHERE td.pk.date <= :date"
+				+ " ORDER BY td.pk.tableId, td.pk.date DESC";
+			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+					.setParameter("date", date)
+					.getList();
+		}
+
+		Map<String, List<ScvmtUkTableDesign>> map = list.stream()
+				.collect(Collectors.groupingBy(rec -> rec.pk.getTableId()));
+
+		List<TableDesign> result = map.values().stream()
+			.map(rec -> rec.stream().findFirst().get().toDomain())
+			.collect(Collectors.toList());
+
+		return result;
+	}
+
+	@Override
+	public List<TableDesign> getByTableName(String tablename) {
+		String sql = "SELECT td FROM ScvmtUkTableDesign td "
+				+ " WHERE td.name = :name"
+				+ " ORDER BY td.pk.branch, td.pk.date DESC";
 		List<TableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
+				.setParameter("name", tablename)
 				.getList(rec -> rec.toDomain());
 
 		return result;

@@ -26,6 +26,7 @@ public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDes
 
 		UkTableDesignImportCommand command = context.getCommand();
 		RequireImpl require = new RequireImpl(tableDesignRepository);
+
 		transaction.execute(() -> {
 			AtomTask at;
 			try {

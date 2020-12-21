@@ -65,7 +65,7 @@ public class TableDesignTest {
 		Assert.assertTrue(result.contains(postgreSpec.tableCommentDdl("[TABLE_NAME]", "[TABLE_COMMENT]")));
 		Assert.assertTrue(result.contains(postgreSpec.columnCommentDdl("[TABLE_NAME]", "[COLUMN_NAME_1]", "[COLUMN_COMMENT]")));
 		Assert.assertTrue(result.contains(postgreSpec.columnCommentDdl("[TABLE_NAME]", "[COLUMN_NAME_2]", "[COLUMN_COMMENT]")));
-		Assert.assertTrue(result.contains(postgreSpec.rlsDdl("[TABLE_NAME]")));
+		//Assert.assertTrue(result.contains(postgreSpec.rlsDdl("[TABLE_NAME]")));
 	}
 
 	private TableDesign createDummy() {

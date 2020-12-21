@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.dom.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadDataDto;
+import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadParamDto;
 
 @Stateless
 public class Cnv001BService {
@@ -19,13 +20,13 @@ public class Cnv001BService {
 	@Inject
 	ConversionCategoryTableRepository repository;
 
-	public Cnv001BLoadDataDto loadData(String category) {
+	public Cnv001BLoadDataDto loadData(Cnv001BLoadParamDto param) {
 
-		List<String> conversionTableCategories = repository.get(category).stream()
+		List<String> conversionTableCategories = repository.get(param.getCategory()).stream()
 				.map(cate -> cate.getTablename())
 				.collect(Collectors.toList());
 
-		List<String> tables = ukTableDesignRepository.getAllTableList().stream()
+		List<String> tables = ukTableDesignRepository.getAllTableList(param.getBranch(), param.getDate()).stream()
 				.map(tb -> tb.getTableName())
 				.collect(Collectors.toList());
 

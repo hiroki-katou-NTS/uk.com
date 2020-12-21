@@ -11,5 +11,13 @@ public class UkTableDesignImportCommand {
 	private String commentSql;
 	private String type;
 	private String branch;
-	private GeneralDate date;
+	private String date;
+
+	public GeneralDate getDate() {
+		return (this.date.isEmpty())
+				? GeneralDate.today()
+				: (this.date.contains("/"))
+					? GeneralDate.fromString(this.date,"yyyy/MM/dd")
+					: GeneralDate.fromString(this.date,"yyyy-MM-dd");
+	}
 }

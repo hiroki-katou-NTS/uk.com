@@ -8,5 +8,13 @@ public class ImportFromFileDto {
 	String path;
 	String type;
 	String branch;
-	GeneralDate date;
+	String date;
+
+	public GeneralDate getDate() {
+		return (this.date.isEmpty())
+				? GeneralDate.today()
+				: (this.date.contains("/"))
+					? GeneralDate.fromString(this.date,"yyyy/MM/dd")
+					: GeneralDate.fromString(this.date,"yyyy-MM-dd");
+	}
 }

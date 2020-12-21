@@ -3,7 +3,8 @@ package nts.uk.cnv.dom.tabledesign;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.cnv.app.dto.GetUkTablesDto;
+import nts.arc.time.GeneralDate;
+import nts.uk.cnv.app.dto.GetUkTablesResultDto;
 
 public interface UkTableDesignRepository {
 
@@ -11,7 +12,10 @@ public interface UkTableDesignRepository {
 	void update(TableDesign tableDesign);
 	boolean exists(String tableName);
 
-	Optional<TableDesign> find(String tablename);
-	List<TableDesign> getAll();
-	List<GetUkTablesDto> getAllTableList();
+	List<TableDesign> getByTableName(String tablename);
+
+	Optional<TableDesign> findByKey(String tablename, String branch, GeneralDate date);
+	List<TableDesign> find(String tableId, String branch, GeneralDate date);
+	List<TableDesign> getAll(String branch, GeneralDate date);
+	List<GetUkTablesResultDto> getAllTableList(String branch, GeneralDate date);
 }

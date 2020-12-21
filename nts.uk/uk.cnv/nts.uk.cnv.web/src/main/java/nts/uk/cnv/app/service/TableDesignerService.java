@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +21,7 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.TransactionService;
+import nts.arc.time.GeneralDate;
 import nts.uk.cnv.app.command.ErpTableDesignImportCommand;
 import nts.uk.cnv.app.command.ErpTableDesignImportCommandHandler;
 import nts.uk.cnv.app.command.UkTableDesignImportCommand;
@@ -29,13 +29,15 @@ import nts.uk.cnv.app.command.UkTableDesignImportCommandHandler;
 import nts.uk.cnv.app.dto.ExportToFileDto;
 import nts.uk.cnv.app.dto.GetErpColumnsResultDto;
 import nts.uk.cnv.app.dto.GetUkColumnsResultDto;
-import nts.uk.cnv.app.dto.GetUkTablesDto;
+import nts.uk.cnv.app.dto.GetUkTablesParamsDto;
+import nts.uk.cnv.app.dto.GetUkTablesResultDto;
 import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
 import nts.uk.cnv.app.dto.TableDesignExportDto;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.service.ExportDdlService;
+import nts.uk.cnv.dom.service.ExportDdlServiceResult;
 import nts.uk.cnv.dom.tabledefinetype.UkDataType;
 import nts.uk.cnv.dom.tabledefinetype.databasetype.SqlServerSpec;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
@@ -66,10 +68,21 @@ public class TableDesignerService {
 	@Inject
 	private TransactionService transactionService;
 
-	public String exportDdl(TableDesignExportDto params) {
+	public List<ExportDdlServiceResult>  exportDdl(TableDesignExportDto params) {
 		RequireImpl require = new RequireImpl(ukTableDesignRepository);
-		return exportDdlService.exportDdl(require, params.getTableName(), params.getType(), params.isWithComment());
+
+		return exportDdlService.exportDdl(
+				require, params.getTableName(), params.getType(), params.isWithComment(), params.getBranch(), params.getDate());
 	}
+//
+//	private GeneralDate dateConvert(String dateString) {
+//		GeneralDate date = (dateString.isEmpty())
+//				? GeneralDate.today()
+//				: (dateString.contains("/"))
+//					? GeneralDate.fromString(dateString,"yyyy/MM/dd")
+//					: GeneralDate.fromString(dateString,"yyyy-MM-dd");
+//		return date;
+//	}
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements ExportDdlService.Require {
@@ -77,13 +90,13 @@ public class TableDesignerService {
 		private final UkTableDesignRepository tableDesignRepository;
 
 		@Override
-		public Optional<TableDesign> find(String tablename) {
-			return tableDesignRepository.find(tablename);
+		public List<TableDesign> find(String tableId, String branch, GeneralDate date) {
+			return tableDesignRepository.find(tableId, branch, date);
 		}
 
 		@Override
-		public List<TableDesign> findAll() {
-			return tableDesignRepository.getAll();
+		public List<TableDesign> findAll(String branch, GeneralDate date) {
+			return tableDesignRepository.getAll(branch, date);
 		}
 	}
 
@@ -100,7 +113,7 @@ public class TableDesignerService {
 				for (Map<String, String> ddl : createTableSql) {
 					UkTableDesignImportCommand command = new UkTableDesignImportCommand(
 							ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType(),
-							params.getBranch(), params.getDate()
+							params.getBranch(), params.getDate().toString()
 							);
 					handler.handle(command);
 					result.increment();
@@ -132,7 +145,7 @@ public class TableDesignerService {
 					inProcessingSql = ddl.get("CREATE TABLE");
 					UkTableDesignImportCommand command = new UkTableDesignImportCommand(
 							ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType(),
-							params.getBranch(), params.getDate()
+							params.getBranch(), params.getDate().toString()
 						);
 
 					TransactionService.newTran(() -> {
@@ -170,7 +183,7 @@ public class TableDesignerService {
 		}
 
 		if (params.isOneFile()) {
-			exportOneFile(params, require, folder);
+			exportOneFile(params, require, folder, params.getBranch(), params.getDate());
 		}
 		else {
 			exportMultipleFile(params, require, folder);
@@ -180,16 +193,25 @@ public class TableDesignerService {
 	}
 
 	private void exportMultipleFile(ExportToFileDto params, RequireImpl require, File folder) {
-		List<GetUkTablesDto> tableList = ukTableDesignRepository.getAllTableList();
+		List<GetUkTablesResultDto> tableList = ukTableDesignRepository.getAllTableList(params.getBranch(), params.getDate());
 
 		int total = 1;
-		for (GetUkTablesDto table : tableList) {
+		for (GetUkTablesResultDto table : tableList) {
 			String fileName = folder.getPath() + "\\" + table.getTableName() + ".sql";
 			File file = new File(fileName);
 			try {
 				FileWriter fileWriter = new FileWriter(file);
+				ExportDdlServiceResult result = exportDdlService.exportDdl(
+						require, table.getTableId(),
+						params.getType(),
+						params.isWithComment(),
+						params.getBranch(),
+						params.getDate())
+					.stream()
+					.findFirst()
+					.orElseThrow(RuntimeException::new);
 
-				String ddl = exportDdlService.exportDdl(require, table.getTableName(), params.getType(), params.isWithComment());
+				String ddl = result.getDdl();
 
 				folder.createNewFile();
 				file.createNewFile();
@@ -208,7 +230,7 @@ public class TableDesignerService {
 		return;
 	};
 
-	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder) {
+	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder, String branch, GeneralDate date) {
 		String fileName = folder.isFile()
 			? folder.getAbsolutePath()
 			: folder.getPath() + "\\" + "all.sql";
@@ -216,7 +238,7 @@ public class TableDesignerService {
 
 		try {
 			FileWriter fileWriter = new FileWriter(file);
-			String ddl = exportDdlService.exportDdlAll(require, params.getType(), params.isWithComment());
+			String ddl = exportDdlService.exportDdlAll(require, params.getType(), params.isWithComment(), branch, date);
 
 			folder.createNewFile();
 			file.createNewFile();
@@ -372,23 +394,23 @@ public class TableDesignerService {
 		return resultList;
 	}
 
-	public List<GetUkTablesDto> getUkTables() {
+	public List<GetUkTablesResultDto> getUkTables(GetUkTablesParamsDto params) {
 
-		return ukTableDesignRepository.getAllTableList();
+		return ukTableDesignRepository.getAllTableList(params.getBranch(), params.getDate());
 	}
 
 	public List<String> getErpTables() {
 		return erpTableDesignRepository.getAllTableList();
 	}
 
-	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableName, int recordNo) {
-		String name = tableName.replace("\"", "");
-		TableDesign td = ukTableDesignRepository.find(name)
+	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableId, int recordNo, String branch, GeneralDate date) {
+		String id = tableId.replace("\"", "");
+		TableDesign td = ukTableDesignRepository.findByKey(id, branch, date)
 				.orElseThrow(RuntimeException::new);
 
 		UkDataType dataType = new UkDataType();
 
-		List<OneColumnConversion> conversionTable = conversionTableRepository.find(category, tableName, recordNo);
+		List<OneColumnConversion> conversionTable = conversionTableRepository.find(category, td.getName(), recordNo);
 
 		return td.getColumns().stream()
 				.map(col -> {

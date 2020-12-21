@@ -1,6 +1,7 @@
 package nts.uk.cnv.app.dto;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 public class ExportToFileDto {
@@ -8,4 +9,6 @@ public class ExportToFileDto {
 	String type;
 	boolean withComment;
 	boolean oneFile;
+	private String branch;
+	private GeneralDate date;
 }

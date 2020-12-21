@@ -8,10 +8,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TableDesignExportDto {
-	String tableName;
-	String type;
-	boolean withComment;
+public class GetUkTablesParamsDto {
 	private String branch;
 	private String date;
 
@@ -22,4 +19,5 @@ public class TableDesignExportDto {
 					? GeneralDate.fromString(this.date,"yyyy/MM/dd")
 					: GeneralDate.fromString(this.date,"yyyy-MM-dd");
 	}
+
 }
