@@ -877,15 +877,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
 
-                    /*let param = {
+                    let param = {
                         workTypeCode: '',
                         workTimeCode: '',
                         startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
                         endTime:   nts.uk.time.minutesBased.duration.parseString(endTime).toValue(),
                     }
-                    self.inputDataValidate(param).done(() => {
-                        self.checkExitCellUpdated();
-                    });*/
+                    
+//                    self.inputDataValidate(param).done(() => {
+//                        self.checkExitCellUpdated();
+//                    });
+                    
                     self.checkExitCellUpdated();
                 } else {
                     self.checkExitCellUpdated();
@@ -2551,6 +2553,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.setPositionButonToRightToLeft();
                 
+                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
+                
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -2614,6 +2618,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.setPositionButonToRightToLeft();
+                
+                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                 
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
@@ -2874,6 +2880,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         dfd.resolve(true);
                     }
                 } else if (userInfor.disPlayFormat == 'shift') {
+                    //let obj = _.find(self.arrListCellLock, function(o) { return o.rowId == rowIdx + '' && o.columnId == key; });
+                    //if (!_.isNil(obj)) {
+                    //    return;
+                    //}
                     // truong hop listPage empty thi khong can validate
                     if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
                             dfd.reject();
