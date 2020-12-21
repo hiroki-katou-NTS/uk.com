@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
@@ -46,8 +46,18 @@ public class MonthlyWorkingHoursByEmployee {
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
 		YearMonthPeriod yearMonths = GetThePeriodOfTheYear.getPeriodOfTheYear(require, cid, year);
 		
+		result = yearMonths.stream().map(m -> {
+			LaborTime laborTime = new LaborTime(0,0,0);
+			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.v(), laborTime);
+			return s;
+		}).collect(Collectors.toList());
+		
 		//2 Call 社員別月単位労働時間
 		List<MonthlyWorkTimeSetSha> list = monthlyWorkTimeSetRepo.findEmployeeByPeriod(cid, sid, laborAttr, yearMonths);
+		
+		if (list.isEmpty()) {
+			return result;
+		}
 		
 		result = list.stream().map(m -> {
 			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(),

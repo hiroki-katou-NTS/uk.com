@@ -47,8 +47,18 @@ public class MonthlyWorkingHoursByWorkplace {
 		YearMonthPeriod yearMonths = GetThePeriodOfTheYear.getPeriodOfTheYear(require, cid,
 				year);
 		
+		result = yearMonths.stream().map(m -> {
+			LaborTime laborTime = new LaborTime(0,0,0);
+			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.v(), laborTime);
+			return s;
+		}).collect(Collectors.toList());
+		
 		//2 Call 職場別月単位労働時間
 		List<MonthlyWorkTimeSetWkp> workTimeSetWkps = workTimeSetRepo.findWorkplaceByPeriod(cid, workplaceId, laborAttr, yearMonths);
+		
+		if (workTimeSetWkps.isEmpty()) {
+			return result;
+		}
 		
 		result = workTimeSetWkps.stream().map(m -> {
 			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(),
