@@ -126,6 +126,18 @@ public class OutputItemTest {
 								))
 		); 
 		
+		// 追加列情報の利用区分 == しない場合は追加列情報の項目をチェックしない
+		OutputItem.create(
+				NotUseAtr.NOT_USE, // 追加列情報の利用区分
+				NotUseAtr.USE , 
+				NotUseAtr.USE, 
+				Arrays.asList(
+						OneRowOutputItem.create(
+								Optional.of(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME), 
+								Optional.of(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME),  
+								Optional.of(ScheduleTableAttendanceItem.SHIFT))
+						));
+		
 	}
 	
 	@Test
@@ -146,6 +158,24 @@ public class OutputItemTest {
 										Optional.of(ScheduleTableAttendanceItem.WORK_TYPE))
 								))
 		); 
+		
+		// 追加列情報の利用区分 == しない場合は追加列情報の項目をチェックしない
+		OutputItem.create( 
+				NotUseAtr.NOT_USE, // 追加列情報の利用区分
+				NotUseAtr.USE , 
+				NotUseAtr.USE, 
+				Arrays.asList(
+						// 0
+						OneRowOutputItem.create(
+								Optional.of(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME), 
+								Optional.of(ScheduleTablePersonalInfoItem.EMPLOYMENT),  //　追加列情報：　雇用
+								Optional.of(ScheduleTableAttendanceItem.SHIFT)),
+						// 1
+						OneRowOutputItem.create(
+								Optional.of(ScheduleTablePersonalInfoItem.EMPLOYMENT), // 個人情報：　雇用
+								Optional.empty(),
+								Optional.of(ScheduleTableAttendanceItem.WORK_TYPE))
+						));
 	}
 	
 	@Test
