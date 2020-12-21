@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk004.b {
             <div id="list-box" data-bind="ntsListBox: {
                 options: itemList,
                 optionsValue: 'year',
-                optionsText: 'year',
+                optionsText: 'nameYear',
                 multiple: false,
                 value: selectedYear,
                 rows: 5,
@@ -53,6 +53,11 @@ module nts.uk.at.view.kmk004.b {
             vm.type = params.type;
             vm.itemList = params.years;
 
+            vm.selectedYear
+                .subscribe(() => {
+                    console.log(ko.unwrap(vm.itemList));
+                });
+
         }
 
         mounted() {
@@ -63,10 +68,7 @@ module nts.uk.at.view.kmk004.b {
             vm.selectId
                 .subscribe(() => {
                     vm.reloadData(0);
-                    
                 });
-
-            vm.selectId.valueHasMutated();
         }
 
         reloadData(selectedIndex: number = 0) {

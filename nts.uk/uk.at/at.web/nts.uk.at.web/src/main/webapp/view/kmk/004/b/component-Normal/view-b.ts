@@ -64,7 +64,7 @@ module nts.uk.at.view.kmk004.b {
 	const API = {
 		ADD_WORK_TIME: 'screen/at/kmk004/viewB/com/monthlyWorkTime/add',
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewB/com/monthlyWorkTime/delete'
-    };
+	};
 
 	@component({
 		name: 'view-b',
@@ -83,10 +83,12 @@ module nts.uk.at.view.kmk004.b {
 		created() {
 			const vm = this;
 
-			vm.selectedYear
+			vm.years
 				.subscribe(() => {
-					if (vm.selectedYear != null) {
+					if (ko.unwrap(vm.years).length > 0) {
 						vm.existYear(true);
+					} else {
+						vm.existYear(false);
 					}
 				});
 		}
@@ -101,12 +103,31 @@ module nts.uk.at.view.kmk004.b {
 		add() {
 			const vm = this;
 
+			_.remove(ko.unwrap(vm.years), ((value) => {
+				return value.year == ko.unwrap(vm.selectedYear) as number;
+			}));
+			vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+			vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
 		}
 
 		remote() {
+			const vm = this;
+			const param = { year: ko.unwrap(vm.selectedYear), workType: 0 }
+			const index = _.map(ko.unwrap(vm.years), m => m.year).indexOf(ko.unwrap(vm.selectedYear));
+
+			vm.$ajax(API.DELETE_WORK_TIME, param)
+				.done(() => {
+					_.remove(ko.unwrap(vm.years), ((value) => {
+						return value.year == ko.unwrap(vm.selectedYear);
+					}));
+					vm.years(ko.unwrap(vm.years));
+					vm.selectedYear(ko.unwrap(vm.years)[index].year);
+				})
+
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
@@ -122,7 +143,7 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogQ() {
 			const vm = this;
-			const param = {years: ko.unwrap(vm.years).map((m: IYear) => m.year)};
+			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
@@ -130,6 +151,19 @@ module nts.uk.at.view.kmk004.b {
 					vm.selectedYear(ko.unwrap(vm.years)[0].year);
 				}
 			});
+		}
+
+		public validate(action: 'clear' | undefined = undefined) {
+			if (action === 'clear') {
+				return $.Deferred().resolve()
+					.then(() => $('.nts-input').ntsError('clear'));
+			} else {
+				return $.Deferred().resolve()
+					/** Gọi xử lý validate của kiban */
+					.then(() => $('.nts-input').trigger("validate"))
+					/** Nếu có lỗi thì trả về false, không thì true */
+					.then(() => !$('.nts-input').ntsError('hasError'));
+			}
 		}
 	}
 }
