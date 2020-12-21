@@ -13,5 +13,12 @@ public interface ExtraResultMonthlyRepository {
 	void updateExtraResultMonthly(ExtraResultMonthly extraResultMonthly);
 	
 	void deleteExtraResultMonthly(String errorAlarmCheckID);
+	/**
+	 * 抽出条件Idと使用区分から「月別実績の抽出条件」を取得
+	 * @param lstAnyId
+	 * @param useAtr
+	 * @return
+	 */
+	List<ExtraResultMonthly> getAnyItemBySidAndUseAtr(List<String> lstAnyId, boolean useAtr);
 }
 

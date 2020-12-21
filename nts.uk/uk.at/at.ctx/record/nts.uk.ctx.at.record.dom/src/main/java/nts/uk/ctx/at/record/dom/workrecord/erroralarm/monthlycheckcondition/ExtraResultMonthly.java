@@ -5,6 +5,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
 
 /**
  * 月別実績の抽出条件
@@ -29,6 +31,7 @@ public class ExtraResultMonthly extends AggregateRoot {
 	private Optional<MessageDisplay> displayMessage;
 	/**月次のチェック条件*/
 	private Optional<AttendanceItemCondition> checkConMonthly;
+
 	
 	public ExtraResultMonthly(String errorAlarmCheckID, int sortBy, NameAlarmExtractionCondition nameAlarmExtraCon, boolean useAtr, TypeMonCheckItem typeCheckItem, HowDisplayMessage howDisplayMessage,
 			MessageDisplay displayMessage, AttendanceItemCondition checkConMonthly) {

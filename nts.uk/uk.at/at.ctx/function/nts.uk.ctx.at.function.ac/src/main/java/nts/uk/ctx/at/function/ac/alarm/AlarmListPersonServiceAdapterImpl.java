@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
@@ -51,6 +52,22 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 			List<StatusOfEmployeeAdapter> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor) {
 		
+	}
+
+	@Override
+	public void extractMonthCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
+			List<String> lstAnyConID, List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor) {
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = lstWplHist.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList())))
+					.collect(Collectors.toList());		
+		extractService.extractMonthlyCheckResult(cid,
+				lstSid,
+				mPeriod,
+				fixConId,
+				lstAnyConID, lstWkpIdAndPeriod, lstResultCondition, lstCheckInfor);
 	}
 
 }

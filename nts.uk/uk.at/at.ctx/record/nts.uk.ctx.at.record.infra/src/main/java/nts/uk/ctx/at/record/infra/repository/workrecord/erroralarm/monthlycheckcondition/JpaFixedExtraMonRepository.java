@@ -14,7 +14,10 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondi
 public class JpaFixedExtraMonRepository extends JpaRepository implements FixedExtraMonRepository {
 
 	private static final String SELECT_FROM_FIXED_EXTRA = " SELECT c FROM KrcmtFixedExtraMon c "
-			+ " WHERE c.krcmtFixedExtraMonPK.monAlarmCheckID = :monAlarmCheckID";
+			+ " WHERE c.krcmtFixedExtraMonPK.monAlarmCheckID = :monAlarmCheckID ";
+	private static final String SELECT_FROM_FIXED_EXTRA_USEATR = " SELECT c FROM KrcmtFixedExtraMon c "
+			+ " WHERE c.krcmtFixedExtraMonPK.monAlarmCheckID = :monAlarmCheckID "
+			+ " AND c.useAtr = :useAtr";
 	
 	@Override
 	public List<FixedExtraMon> getByEralCheckID(String monAlarmCheckID) {
@@ -54,6 +57,15 @@ public class JpaFixedExtraMonRepository extends JpaRepository implements FixedEx
 		this.getEntityManager().createQuery(DELETE_FIXED_BY_ERAL_ID)
 		.setParameter("monAlarmCheckID", monAlarmCheckID).executeUpdate();
 		
+	}
+
+	@Override
+	public List<FixedExtraMon> getFixedItem(String anyId, boolean useAtr) {
+		List<FixedExtraMon> data = this.queryProxy().query(SELECT_FROM_FIXED_EXTRA_USEATR,KrcmtFixedExtraMon.class)
+				.setParameter("monAlarmCheckID", anyId)
+				.setParameter("useAtr", useAtr ? 1 : 0)
+				.getList(c->c.toDomain());
+		return data;
 	}
 
 }

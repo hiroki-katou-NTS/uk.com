@@ -22,6 +22,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
@@ -44,6 +45,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
@@ -301,6 +303,15 @@ public class AggregationProcessService {
 				case WEEKLY:
 					break;
 				case MONTHLY:
+					MonAlarmCheckCon monCheck = (MonAlarmCheckCon) x.getExtractionCondition();
+					extractAlarmService.extractMonthCheckResult(cid,
+							lstSidTmp,
+							new YearMonthPeriod(datePeriod.start().yearMonth(), datePeriod.end().yearMonth()),
+							monCheck.getMonAlarmCheckConID(),
+							monCheck.getArbExtraCon(),
+							getWplByListSidAndPeriod,
+							lstResultCondition,
+							lstCheckType);
 					break;
 				case APPLICATION_APPROVAL:
 					break;
