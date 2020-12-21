@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.app.command.budget.premium.command;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RegisterLaborCalculationSettingCommand {
-    boolean isNew;
-    private GeneralDate date;
+public class PersonCostCalculationDto {
+    private GeneralDate startDate;
+    private GeneralDate endDate;
     private String historyId;
 
     private Integer unitPrice;
@@ -29,5 +28,4 @@ public class RegisterLaborCalculationSettingCommand {
     private PerCostRoundSettingDto personCostRoundingSetting;
 
     private List<PremiumSettingDto> premiumSettingList;
-
 }

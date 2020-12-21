@@ -40,8 +40,6 @@ public class PersonCostCalculationWebService extends WebService {
     @Inject
     private UpdatePremiumItemCommandHandler updatePremiumItemCommandHandler;
 
-    @Inject
-    private InsertHistPersonCostCalculationCommandHandler insertHistCommandHandler;
 
     @Inject
     private UpdateHistPersonCostCalculationCommandHandler updateHistCommandHandler;
@@ -119,9 +117,15 @@ public class PersonCostCalculationWebService extends WebService {
     }
 
     @POST
-    @Path("create/hist")
-    public void createHistPersonCostCalculation(InsertHistPersonCostCalculationCommand command) {
-        this.insertHistCommandHandler.handle(command);
+    @Path("findHistId")
+    public PersonCostCalculationDto getHistPersonCost() {
+        return this.personCostCalculationSettingFinder.getHistPersonCost();
+    }
+
+    @POST
+    @Path("findByLastHist")
+    public PersonCostCalculationDto getLastPersonCost() {
+        return this.personCostCalculationSettingFinder.getHistPerson();
     }
 
     @POST
@@ -131,7 +135,7 @@ public class PersonCostCalculationWebService extends WebService {
     }
 
     @POST
-    @Path("registerLaborCalculationSetting")
+    @Path("register/hist")
     public void registerLaborCalculationSetting(RegisterLaborCalculationSettingCommand command) {
         this.registerLaborCalSettingCommandHandler.handle(command);
     }

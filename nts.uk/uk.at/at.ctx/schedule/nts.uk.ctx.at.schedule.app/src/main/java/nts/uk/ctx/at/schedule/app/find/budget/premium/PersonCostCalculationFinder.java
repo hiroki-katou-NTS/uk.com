@@ -5,6 +5,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
@@ -183,5 +184,13 @@ public class PersonCostCalculationFinder {
                 cid,
                 e.identifier()
         )).collect(Collectors.toList());
+    }
+    public PersonCostCalculationDto getLastPersonCost() {
+        val cid = AppContexts.user().companyId();
+        val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
+        if (!listItem.isPresent()) {
+            throw new BusinessException("Msg_2027");
+        }
+        return new PersonCostCalculationDto();
     }
 }
