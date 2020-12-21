@@ -132,7 +132,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            ResultCheckInputCode checkRequiredCode = businessTripService.checkRequireWorkTimeCode(wkTypeCd, wkTimeCd, workTimeStart, workTimeEnd, true);
+            ResultCheckInputCode checkRequiredCode = businessTripService.checkRequireWorkTimeCode(wkTypeCd, wkTimeCd, workTimeStart, workTimeEnd, false);
             if (!checkRequiredCode.isResult()) {
                 // エラーを「年月日＋メッセージ」とする
                 throw new BusinessException(checkRequiredCode.getMsg(), i.getDate().toString());
