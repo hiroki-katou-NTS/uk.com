@@ -61,7 +61,8 @@ module nts.uk.at.view.kwr004.b {
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     diligenceProjectsMonthly: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
-    attributeList: KnockoutObservableArray<> = ko.observableArray([]);
+    attributeList: KnockoutObservableArray<any> = ko.observableArray([]);
+
     constructor(params: any) {
       super();
 
@@ -120,8 +121,8 @@ module nts.uk.at.view.kwr004.b {
           new AttendanceType(3, vm.$i18n('KWR002_143'))
         ]
 
-        vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
-        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
+        vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047 - Daily
+        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048 - Daily
       });
     }
 
@@ -394,7 +395,7 @@ module nts.uk.at.view.kwr004.b {
       vm.$blockui('show');
       vm.settingListItemsDetails([]);
       vm.$ajax(PATH.getSettingDetail, { settingId: settingId })
-        .done((result) => {     
+        .done((result) => {
           if (_.isNil(result)) {
             vm.$dialog.error({ messageId: 'Msg_1898' }).then(() => {
               vm.getSettingItemsLeft(null); //left list    
@@ -583,8 +584,8 @@ module nts.uk.at.view.kwr004.b {
       const vm = this;
 
       let lisItems: Array<any> = [];
-      
-      vm.settingListItems.removeAll();      
+
+      vm.settingListItems.removeAll();
       vm.$ajax(PATH.getSetting, { settingClassification: vm.itemSelection() })
         .done((result) => {
 
@@ -598,7 +599,7 @@ module nts.uk.at.view.kwr004.b {
             });
 
             //sort by code with asc
-            lisItems = _.orderBy(lisItems, 'code', 'asc');            
+            lisItems = _.orderBy(lisItems, 'code', 'asc');
             vm.settingListItems(lisItems);
 
             let firstItem: any = _.head(vm.settingListItems());
@@ -620,7 +621,7 @@ module nts.uk.at.view.kwr004.b {
 
     openDialogKDL047(row: any) {
       const vm = this;
-
+      //１：勤務種類 - ２：就業時間帯 - ３：時刻			
       vm.shareParam.itemNameLine.name = row.name();
       vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category      
       vm.shareParam.attendanceItems = vm.diligenceProjects(); //KDL047
@@ -634,6 +635,7 @@ module nts.uk.at.view.kwr004.b {
         new AttendanceType(2, vm.$i18n('KWR002_142')),
         new AttendanceType(3, vm.$i18n('KWR002_143'))
       ]
+      //vm.shareParam.exportAtr = 1;
 
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
@@ -677,7 +679,8 @@ module nts.uk.at.view.kwr004.b {
 
     openDialogKDL048(row: any) {
       let vm = this;
-
+      //４：時間 - ５：回数 - ６：日数 - 7：金額		
+      vm.shareParam.exportAtr = 1;
       vm.shareParam.attribute.attributeList = [
         new AttendanceType(4, vm.$i18n('KWR002_180')),
         new AttendanceType(5, vm.$i18n('KWR002_181')),
@@ -685,6 +688,7 @@ module nts.uk.at.view.kwr004.b {
       ]
 
       if (!row.type) {
+        vm.shareParam.exportAtr = 2;
         vm.shareParam.attribute.attributeList.push(new AttendanceType(6, vm.$i18n('KWR002_182')));
         vm.shareParam.diligenceProjectList = vm.diligenceProjectsMonthly(); //KDL048
       } else
@@ -702,16 +706,16 @@ module nts.uk.at.view.kwr004.b {
 
         if (!attendanceItem) return;
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-        if (attendanceItem.selectedTimeList.length > 0) {
+        if (attendanceItem.attendanceId.length > 0) {
           //clear error on input
           if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
-          let dataSelection: string = vm.createDataSelection(attendanceItem.selectedTimeList);
+          let dataSelection: string = vm.createDataSelection(attendanceItem.attendanceId);
           if (index > -1) {
             //vm.settingListItemsDetails()[index].required(true);
-            vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute.selected);
+            vm.settingListItemsDetails()[index].itemAttribute(attendanceItem.attribute);
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
-            vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
-            vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
+            vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.attendanceId);
+            vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
             if (row.isChecked()) $('#textName' + row.id).focus();
           }
         } else {
@@ -746,14 +750,16 @@ module nts.uk.at.view.kwr004.b {
       vm.$blockui('grayout');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
+      //7：年間勤務台帳
       vm.$ajax(PATH.getInitDayMonth, { settingClassification: 1, formNumberDisplay: 7 }).done((result) => {
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
             vm.diligenceProjects.push(new DiligenceProject(
               item.attendanceItemId,
               item.attendanceItemName,
-              item.attributes,
-              item.attendanceItemDisplayNumber
+              item.attributes,//attendanceAtr
+              item.attendanceItemDisplayNumber,
+              item.masterType
             )
             );
           });
@@ -764,8 +770,9 @@ module nts.uk.at.view.kwr004.b {
             vm.diligenceProjectsMonthly.push(new DiligenceProject(
               item.attendanceItemId,
               item.attendanceItemName,
-              item.attributes,
-              item.attendanceItemDisplayNumber
+              item.attributes,//attendanceAtr
+              item.attendanceItemDisplayNumber,
+              item.masterType
             )
             );
           });
@@ -944,6 +951,14 @@ module nts.uk.at.view.kwr004.b {
     selectedTimeList: SelectedTimeListParam[] = [];
     // 選択済み勤怠項目ID
     selectedTime: number;
+    // 加減算する項目
+    attendanceIds: Array<any>;
+    // columnIndex
+    columnIndex: number;
+    // position
+    position: number;
+    // exportAtr
+    exportAtr: number;
   }
   export class SelectedTimeListParam {
     // 項目ID
@@ -1000,6 +1015,9 @@ module nts.uk.at.view.kwr004.b {
     attendanceItemName: any;
     attributes: any;
     displayNumbers: any;
+    attendanceAtr: any;
+    /** マスタの種類 */
+    masterType: number | null;
     //48
     // ID
     id: any;
@@ -1009,16 +1027,17 @@ module nts.uk.at.view.kwr004.b {
     //attributes: any;
     // 表示番号
     indicatesNumber: any;
-    constructor(id: any, name: any, attributes: any, indicatesNumber: any) {
+    constructor(id: any, name: any, attributes: any, indicatesNumber: any, masterType: number | null) {
       this.attendanceItemId = id;
       this.attendanceItemName = name;
       this.attributes = attributes;
       this.displayNumbers = indicatesNumber;
+      this.masterType = masterType;
       //48
       this.id = id;
       this.name = name;
-      //this.attributes = attributes;
       this.indicatesNumber = indicatesNumber;
+      this.attendanceAtr = attributes;
     }
   }
 }

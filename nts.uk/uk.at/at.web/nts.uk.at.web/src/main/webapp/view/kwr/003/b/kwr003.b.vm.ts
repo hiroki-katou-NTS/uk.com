@@ -597,17 +597,19 @@ module nts.uk.at.view.kwr003.b {
       const vm = this;
       let dfd = $.Deferred<any>();
 
-      vm.$blockui('show');
+      vm.$blockui('grayout');
 
       vm.workStatusTableOutputItem = ko.observable({ listDaily: [], listMonthly: [] });
+      //６：勤務状況表
       vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
             vm.diligenceProjects.push(new DiligenceProject(
               item.attendanceItemId,
               item.attendanceItemName,
-              item.attributes,
-              item.attendanceItemDisplayNumber
+              item.attributes, //attendanceAtr
+              item.attendanceItemDisplayNumber,
+              item.masterType
             )
             );
           });
@@ -684,15 +686,16 @@ module nts.uk.at.view.kwr003.b {
       vm.shareParam.itemNameLine.name = row.name();
       vm.shareParam.itemNameLine.displayFlag = true;
       vm.shareParam.attribute.selected = row.selected; //setting Category
-
+      //vm.shareParam.exportAtr = 1;
+      //１：勤務種類 - ２：就業時間帯 - ３：時刻		
       if (!_.isNil(row.selectedTimeList())) {
         vm.shareParam.selectedTimeList = row.selectedTimeList();
       }
       vm.shareParam.selectedTime = row.selectedTime;
       vm.shareParam.attribute.attributeList = [
-        new AttendaceType(1, vm.$i18n('KWR002_141')),
-        new AttendaceType(2, vm.$i18n('KWR002_142')),
-        new AttendaceType(3, vm.$i18n('KWR002_143')),
+        new AttendanceType(1, vm.$i18n('KWR002_141')),
+        new AttendanceType(2, vm.$i18n('KWR002_142')),
+        new AttendanceType(3, vm.$i18n('KWR002_143')),
       ];
 
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
@@ -744,16 +747,16 @@ module nts.uk.at.view.kwr003.b {
     openDialogKDL048(row: any) {
       let vm = this,
         selectionItem: Array<string> = [];
-
+        vm.shareParam.exportAtr = 1; //４：時間 - ５：回数 - 7：金額		
       vm.shareParam.attribute.attributeList = [
-        new AttendaceType(4, vm.$i18n('KWR002_180')),
-        new AttendaceType(5, vm.$i18n('KWR002_181')),
-        //new AttendaceType(6, vm.$i18n('KWR002_182')),
-        new AttendaceType(7, vm.$i18n('KWR002_183'))
+        new AttendanceType(4, vm.$i18n('KWR002_180')),
+        new AttendanceType(5, vm.$i18n('KWR002_181')),
+        //new AttendanceType(6, vm.$i18n('KWR002_182')),
+        new AttendanceType(7, vm.$i18n('KWR002_183'))
       ]
 
       vm.shareParam.itemNameLine.name = row.name();
-      vm.shareParam.attribute.selected = row.selected; //setting Category
+      vm.shareParam.attribute.selected = row.selected; //setting Category      
 
       if (!_.isNil(row.selectedTimeList())) {
         vm.shareParam.selectedTimeList = row.selectedTimeList();
@@ -765,15 +768,15 @@ module nts.uk.at.view.kwr003.b {
 
         if (!attendanceItem) return;
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-        if (attendanceItem.selectedTimeList.length > 0) {
+        if (attendanceItem.attendanceId.length > 0) {
           //clear error on input
           if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
-          let dataSelection: string = vm.createDataSelection(attendanceItem.selectedTimeList);
+          let dataSelection: string = vm.createDataSelection(attendanceItem.attendanceId);
           if (index > -1) {
-            vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
+            vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
             vm.settingListItemsDetails()[index].selectionItem(dataSelection);
-            vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
-            vm.settingListItemsDetails()[index].selected = attendanceItem.attribute.selected;
+            vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.attendanceId);
+            vm.settingListItemsDetails()[index].selected = attendanceItem.attribute;
             if (vm.settingListItemsDetails()[index].isChecked()) $('#textName' + row.id).focus();
           }
         } else {
@@ -887,12 +890,21 @@ module nts.uk.at.view.kwr003.b {
     // List<勤怠項目>KDL 048
     diligenceProjectList: DiligenceProject[] = [];
     // List<勤怠項目> KDL 047
-    attendanceItems: DiligenceProject[] = [];
+    attendanceItems: Array<DiligenceProject> = [];
     // List<選択済み勤怠項目>
-    selectedTimeList: selectedItemListParam[] = [];
+    selectedTimeList: Array<selectedItemListParam> = [];
     // 選択済み勤怠項目ID
     selectedTime: number;
+    // 加減算する項目
+    attendanceIds: Array<any>;
+    // columnIndex
+    columnIndex: number;
+    // position
+    position: number;
+    // exportAtr
+    exportAtr: number;
   }
+
   export class selectedItemListParam {
     // 項目ID
     itemId: any | null = null;
@@ -932,7 +944,7 @@ module nts.uk.at.view.kwr003.b {
     // 選択区分
     selectionCategory: number = 2;
     // List<属性>
-    attributeList: AttendaceType[] = [];
+    attributeList: AttendanceType[] = [];
     // 選択済み
     selected: number = 1;
 
@@ -941,7 +953,7 @@ module nts.uk.at.view.kwr003.b {
     }
   }
 
-  export class AttendaceType {
+  export class AttendanceType {
     attendanceTypeCode: number;
     attendanceTypeName: string;
     constructor(attendanceTypeCode: number, attendanceTypeName: string) {
@@ -951,10 +963,16 @@ module nts.uk.at.view.kwr003.b {
   }
 
   export class DiligenceProject {
+    /** 勤怠項目ID */
     attendanceItemId: any;
+    /** 勤怠項目名称 */
     attendanceItemName: any;
     attributes: any;
+    /** 表示番号 */
     displayNumbers: any;
+    attendanceAtr: any;
+    /** マスタの種類 */
+    masterType: number | null;
     //48
     // ID
     id: any;
@@ -964,16 +982,17 @@ module nts.uk.at.view.kwr003.b {
     //attributes: any;
     // 表示番号
     indicatesNumber: any;
-    constructor(id: any, name: any, attributes: any, indicatesNumber: any) {
+    constructor(id: any, name: any, attributes: any, indicatesNumber: any, masterType: number | null) {
       this.attendanceItemId = id;
       this.attendanceItemName = name;
       this.attributes = attributes;
       this.displayNumbers = indicatesNumber;
+      this.masterType = masterType;
       //48
       this.id = id;
       this.name = name;
-      //this.attributes = attributes;
       this.indicatesNumber = indicatesNumber;
+      this.attendanceAtr = attributes;
     }
   }
 
