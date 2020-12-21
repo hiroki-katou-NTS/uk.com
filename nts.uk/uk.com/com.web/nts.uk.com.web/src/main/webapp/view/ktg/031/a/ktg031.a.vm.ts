@@ -152,7 +152,7 @@ module nts.uk.com.view.ktg031.a {
       ]);
       vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
       vm.selectedAlarmType(0);
-      vm.isEmployee(__viewContext.user.isEmployee);
+      vm.isEmployee(__viewContext.user.role.isInCharge.attendance);
     }
 
     loadAlarmData(displayType: number) {
