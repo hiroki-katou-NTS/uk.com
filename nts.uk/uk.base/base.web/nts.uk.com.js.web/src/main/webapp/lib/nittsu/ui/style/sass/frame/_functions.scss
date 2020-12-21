@@ -1,10 +1,50 @@
 #functions-area {
-	height: $functions_area_height;
-	border-bottom: solid 1px $frame_border_color;
-	padding-top: 8px;
-  	padding-left: 5px;
+	padding: 25px 0 5px 0;
   	white-space: nowrap;
-  	overflow: hidden;
+	overflow: hidden;
+	box-sizing: border-box;
+
+	.pg-name {
+		float: left;
+		width: 320px;
+		font-size: 18px;
+		letter-spacing: 5%;
+		font-weight: 500;
+		line-height: 30px;
+		position: relative;
+		overflow: hidden;
+		cursor: pointer; 
+		color: #2B2E44;
+
+		&.navigator {
+			color: #30CC40;
+			padding-left: 30px;
+
+			&>svg {
+				position: absolute;
+				top: 5px;
+				left: 0;
+			}
+		}
+
+		&+.button-group {
+			margin-left: 320px;
+			text-align: right;
+
+			button {
+				&:not(:first-child) {
+					margin-left: 7px;
+				}
+			}
+		}
+	}
+
+	.button-group { 
+		&::after {
+			content: '';
+			clear: both;
+		}
+	}
 }
 
 #functions-area-bottom {

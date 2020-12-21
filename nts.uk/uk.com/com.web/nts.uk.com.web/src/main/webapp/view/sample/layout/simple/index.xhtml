@@ -1,25 +1,38 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-
+			<script type="text/javascript">
+				__viewContext.noHeader = false;
+			</script>
+			
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div data-bind="ui-master-functional: 'top'">
-                <button>Proceed</button>
-                <button>Normal</button>
-                <button>Danger</button>
-			</div>
-			<div id="contents-area">
+			<div class="single-panel">
+				<div data-bind="ui-function-bar: 'top', title: 'CAS001_1', back: ''">
+					<button class="green solid" data-bind="click: $vm.click">Solid</button>
+					<button class="green outline" data-bind="click: $vm.click">Outline</button>
+					<button class="green" data-bind="click: $vm.click">Proceed</button>
+					<button class="white" data-bind="click: $vm.click">Normal</button>
+					<button class="red" data-bind="click: $vm.click">Danger</button>
+				</div>
+				<div data-bind="ui-contents">
+					<pre data-bind="text: ko.toJSON($vm.text, null, 4)"></pre>
+					<input type="text" data-bind="value: $vm.text" />
+					<div style="height: 4000px; padding: 25px;">
+						<button data-bind="btn-schedule: $vm.text, icon: $vm.icon, size: $vm.size, state: $vm.state"></button>
+						<button data-bind="btn-schedule: '', icon: $vm.icon, size: $vm.size, state: $vm.state"></button>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>
