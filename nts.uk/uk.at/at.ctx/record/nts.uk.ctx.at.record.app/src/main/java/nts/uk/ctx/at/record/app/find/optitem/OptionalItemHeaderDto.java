@@ -40,6 +40,9 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	private int usageAtr;
+
+	/** The calculation atr. */
+	private int calcAtr;
 	
 	private String nameNotJP;
 
@@ -101,7 +104,6 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageClassification) {
 		this.usageAtr = optionalItemUsageClassification.value;
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

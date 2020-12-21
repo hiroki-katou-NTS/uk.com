@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.schedule.SCReflectBusinessTripApp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.schedule.SCReflectWorkStampApp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
  * @author thanh_nx
@@ -34,7 +34,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
 		
 		// TODO: typeDaikyu chua co domain
-		ApplicationReflect domainSetReflect = GetDomainReflectModelApp.process(require, companyId,
+		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId,
 				application.getAppType(), Optional.empty());
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
@@ -47,7 +47,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務予定）inprocess xu ly set stampsource
 			itemIds.addAll(SCReflectWorkChangeApp.reflect(require, (AppWorkChangeShare) application, dailyApp,
-					(ReflectWorkChangeApplication) domainSetReflect));
+					(ReflectWorkChangeApp) domainSetReflect));
 			break;
 		case BUSINESS_TRIP_APPLICATION:
 			// 3：出張申請の反映（勤務予定）
@@ -57,7 +57,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務予定）
 			itemIds.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, companyId, (GoBackDirectlyShare) application,
-					dailyApp, (ReflectGoBackDirectly) domainSetReflect));
+					dailyApp, (GoBackReflect) domainSetReflect));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			// TODO: 6：休日出勤申請を反映する（勤務予定）
@@ -65,7 +65,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
 			itemIds.addAll(SCReflectWorkStampApp.reflect(require, (AppStampShare) application, dailyApp,
-					(ReflectAppStamp) domainSetReflect));
+					(StampAppReflect) domainSetReflect));
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// TODO: 8：時間休暇申請を反映する

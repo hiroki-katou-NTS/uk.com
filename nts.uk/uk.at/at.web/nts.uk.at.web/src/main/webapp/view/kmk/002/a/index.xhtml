@@ -175,8 +175,8 @@
                               <tr>
                                  <td></td>
                                  <td></td>
-                                 <td class="text-center">日別範</td>
-                                 <td class="text-center">月別範</td>
+                                 <td class="text-center">#{i18n.getText('KMK002_115')}</td>
+                                 <td class="text-center">#{i18n.getText('KMK002_116')}</td>
                               </tr>
                               <tr>
                                  <!-- Calculation ResultRange -->
@@ -379,7 +379,7 @@
                         <div class="cell" style="padding-left: 10px;">
                            <div>
                               <div class="cell col-1">
-                                 <div data-bind="ntsFormLabel: {required: true, constraint: 'DescritionOptionalItem'}">
+                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
                                     #{i18n.getText('KMK002_105')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
@@ -387,7 +387,7 @@
                                                    value: description,
                                                    constraint: 'DescritionOptionalItem',
                                                    name: '#[KMK002_106]',
-                                                   required: true,
+                                                   required: false,
                                                    enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                    option: {
                                                       width: '300'

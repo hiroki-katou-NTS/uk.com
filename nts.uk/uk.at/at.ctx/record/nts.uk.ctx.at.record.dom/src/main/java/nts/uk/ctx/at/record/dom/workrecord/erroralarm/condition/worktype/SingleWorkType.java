@@ -5,12 +5,14 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -46,11 +48,11 @@ public class SingleWorkType extends WorkTypeCondition {
 	}
 
 	@Override
-	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot) {
 		if (this.targetWorkType != null) {
 			if(this.targetWorkType.isUse() && !this.targetWorkType.getLstWorkType().isEmpty()){
-				if(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(workInfo.getWorkInformation().getScheduleInfo().getWorkTypeCode()) && 
-						this.targetWorkType.contains(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode())){
+				if(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(snapshot.map(c -> c.getWorkInfo().getWorkTypeCode()).orElse(null)) 
+						&& this.targetWorkType.contains(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode())){
 					return WorkCheckResult.ERROR;
 				} 
 				return WorkCheckResult.NOT_ERROR;
