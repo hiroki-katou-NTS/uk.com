@@ -94,24 +94,50 @@ module nts.uk.at.view.kmk004.b {
 		}
 
 		mounted() {
+			const vm = this;
 
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
+
+			// setTimeout(() => {
+			// 	vm.workTimes
+			// 		.subscribe(() => {
+			// 			_.remove(ko.unwrap(vm.years), ((value) => {
+			// 				return value.year == ko.unwrap(vm.selectedYear) as number;
+			// 			}));
+			// 			vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, true));
+			// 			vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+			// 		});
+			// }, 1000);
 		}
 
 		add() {
 			const vm = this;
-
-			_.remove(ko.unwrap(vm.years), ((value) => {
-				return value.year == ko.unwrap(vm.selectedYear) as number;
+			const times = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				return ko.unwrap(value.laborTime);
 			}));
-			vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-			vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 
-			$(document).ready(function () {
-				$('.listbox').focus();
-			});
+			const yearMonth = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				return ko.unwrap(value.yearMonth);
+			}));
+			const input = { yearMonth: yearMonth, laborTime: times };
+			console.log(input);
+
+			vm.$ajax(API.ADD_WORK_TIME, input)
+				.done(() => {
+					vm.$dialog.info({ messageId: 'Msg_15' });
+					_.remove(ko.unwrap(vm.years), ((value) => {
+						return value.year == ko.unwrap(vm.selectedYear) as number;
+					}));
+					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+				})
+				.then(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
+				})
 		}
 
 		remote() {
@@ -119,18 +145,26 @@ module nts.uk.at.view.kmk004.b {
 			const param = { year: ko.unwrap(vm.selectedYear), workType: 0 }
 			const index = _.map(ko.unwrap(vm.years), m => m.year).indexOf(ko.unwrap(vm.selectedYear));
 
-			vm.$ajax(API.DELETE_WORK_TIME, param)
-				.done(() => {
-					_.remove(ko.unwrap(vm.years), ((value) => {
-						return value.year == ko.unwrap(vm.selectedYear);
-					}));
-					vm.years(ko.unwrap(vm.years));
-					vm.selectedYear(ko.unwrap(vm.years)[index].year);
+			nts.uk.ui.dialog
+				.confirm({ messageId: "Msg_18" })
+				.ifYes(() => {
+					vm.$blockui("invisible")
+						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
+						.done(() => {
+							_.remove(ko.unwrap(vm.years), ((value) => {
+								return value.year == ko.unwrap(vm.selectedYear);
+							}));
+							vm.years(ko.unwrap(vm.years));
+							vm.selectedYear(ko.unwrap(vm.years)[index].year);
+						})
+						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+						.then(() => {
+							$(document).ready(function () {
+								$('.listbox').focus();
+							});
+						})
+						.always(() => vm.$blockui("clear"));
 				})
-
-			$(document).ready(function () {
-				$('.listbox').focus();
-			});
 		}
 
 		openDialogF() {
@@ -164,6 +198,23 @@ module nts.uk.at.view.kmk004.b {
 					/** Nếu có lỗi thì trả về false, không thì true */
 					.then(() => !$('.nts-input').ntsError('hasError'));
 			}
+		}
+	}
+
+	export class MonthlyWorkTimeSetCom {
+
+		laborAttr = 2;
+		//年月
+		yearMonth: number;
+
+		yearMonthText: string;
+		//月労働時間
+		laborTime: KnockoutObservable<MonthlyLaborTime>;
+
+		constructor(param: IMonthlyWorkTimeSetCom) {
+			this.yearMonth = param.yearMonth;
+			this.yearMonthText = param.yearMonth.toString().substring(4).replace(/^0+/, "");
+			this.laborTime = ko.observable(new MonthlyLaborTime(param.laborTime));
 		}
 	}
 }

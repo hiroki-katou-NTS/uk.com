@@ -13,9 +13,11 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComInput;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.MonthlyWorkTimeSetComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.SaveMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
@@ -80,18 +82,17 @@ public class Kmk004WebService extends WebService {
 
 	@Inject
 	private YearListByEmployment yearListByEmployment;
-	
+
 	@Inject
 	private DisplayInitialScreenForRegistration initScreenViewA;
 
-	
 	// View A
 	@POST
 	@Path("viewA/init")
 	public DisplayInitialScreenForRegistrationDto getInitViewA() {
 		return this.initScreenViewA.get();
 	}
-	
+
 	// View S
 	@POST
 	@Path("getUsageUnitSetting")
@@ -113,14 +114,14 @@ public class Kmk004WebService extends WebService {
 		List<DisplayMonthlyWorkingDto> list = this.getworking.get(param);
 		result = list.stream().map(m -> {
 			WorkTimeComDto w = new WorkTimeComDto();
-			
+
 			w.setYearMonth(m.getYearMonth());
-			if (m.getLaborTime().getLegalLaborTime() == null){
+			if (m.getLaborTime().getLegalLaborTime() == null) {
 				w.setLaborTime(0);
-			}else {
+			} else {
 				w.setLaborTime(m.getLaborTime().getLegalLaborTime());
 			}
-			
+
 			return w;
 		}).collect(Collectors.toList());
 		return result;
@@ -128,8 +129,17 @@ public class Kmk004WebService extends WebService {
 
 	@POST
 	@Path("viewB/com/monthlyWorkTime/add")
-	public void addComMonthlyWorkTime(SaveMonthlyWorkTimeSetComCommand command) {
-		saveMonthlyWorkTimeSetComCommandHandler.handle(command);
+	public void addComMonthlyWorkTime(WorkTimeInputViewB input) {
+		List<MonthlyWorkTimeSetComCommand> result = new ArrayList<>();
+
+		for (int i = 0; i < input.getLaborTime().size(); i++) {
+			MonthlyWorkTimeSetComCommand s = new MonthlyWorkTimeSetComCommand(0, input.getYearMonth().get(i),
+					new MonthlyLaborTimeCommand(input.getLaborTime().get(i), null, null));
+			result.add(s);
+		}
+
+		SaveMonthlyWorkTimeSetComCommand comCommand = new SaveMonthlyWorkTimeSetComCommand(result);
+		saveMonthlyWorkTimeSetComCommandHandler.handle(comCommand);
 	}
 
 	@POST

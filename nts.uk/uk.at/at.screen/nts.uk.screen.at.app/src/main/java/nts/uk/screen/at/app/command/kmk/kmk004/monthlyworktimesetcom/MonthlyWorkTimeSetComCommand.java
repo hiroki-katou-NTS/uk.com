@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyWorkTimeSetCommand;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,6 +21,10 @@ public class MonthlyWorkTimeSetComCommand extends MonthlyWorkTimeSetCommand {
 		return MonthlyWorkTimeSetCom.of(AppContexts.user().companyId(),
 				EnumAdaptor.valueOf(this.getLaborAttr(), LaborWorkTypeAttr.class), new YearMonth(this.getYearMonth()),
 				this.getLaborTime().toDomain());
+	}
+	
+	public MonthlyWorkTimeSetComCommand(int laborAttr, int ym, MonthlyLaborTimeCommand laborTime) {
+		super(laborAttr, ym, laborTime);
 	}
 
 }
