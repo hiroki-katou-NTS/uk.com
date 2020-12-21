@@ -96,10 +96,9 @@ const template = `
 		<img id="G8_2" src="../img/IMG_KMK004_1.png" alt=""/>
 	</div>
 	`;
-const COMPONENT_NAME = 'monthly-working-hours';
 
 @component({
-	name: COMPONENT_NAME,
+	name: 'monthly-working-hours',
 	template
 })
 class MonthlyWorkingHours extends ko.ViewModel {

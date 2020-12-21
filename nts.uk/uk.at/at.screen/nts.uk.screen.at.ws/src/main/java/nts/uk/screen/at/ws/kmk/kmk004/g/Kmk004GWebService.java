@@ -1,14 +1,11 @@
 package nts.uk.screen.at.ws.kmk.kmk004.g;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.screen.at.app.command.kmk.kmk004.g.DeleteFlexMonthlyWorkingHoursByComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.g.DeleteFlexMonthlyWorkingHoursByComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.g.RegisterFlexMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.g.UpdateFlexMonthlyWorkTimeSetComCommandHandler;
@@ -18,7 +15,7 @@ import nts.uk.screen.at.app.kmk004.g.DisplayFlexBasicSettingByCompanyDto;
 import nts.uk.screen.at.app.kmk004.g.DisplayInitialFlexScreenByCompany;
 import nts.uk.screen.at.app.kmk004.g.DisplayInitialFlexScreenByCompanyDto;
 import nts.uk.screen.at.app.kmk004.g.SelectFlexYearByCompany;
-import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
+import nts.uk.screen.at.app.kmk004.g.SelectFlexYearByCompanyDto;
 
 @Path("screen/at/kmk004/g")
 @Produces("application/json")
@@ -50,7 +47,7 @@ public class Kmk004GWebService {
 
 	@POST
 	@Path("change-year/{year}")
-	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("year") int year) {
+	public SelectFlexYearByCompanyDto changeYear(@PathParam("year") int year) {
 		return this.selectYear.selectYearByCompany(year);
 	}
 
@@ -67,9 +64,9 @@ public class Kmk004GWebService {
 	}
 
 	@POST
-	@Path("delete")
-	public void delete(DeleteFlexMonthlyWorkingHoursByComCommand command) {
-		this.deleteHandler.handle(command);
+	@Path("delete/{year}")
+	public void delete(@PathParam("year") int year) {
+		this.deleteHandler.handle(year);
 	}
 
 	@POST

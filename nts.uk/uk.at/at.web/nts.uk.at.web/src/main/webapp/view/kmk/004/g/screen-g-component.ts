@@ -1,6 +1,8 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-
+import IMonthlyWorkTimeSetCom = nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom;
+import MonthlyWorkTimeSetCom = nts.uk.at.kmk004.components.flex.MonthlyWorkTimeSetCom;
+import IMonthlyLaborTime = nts.uk.at.kmk004.components.flex.IMonthlyLaborTime;
 const template = `
 					<div class="sidebar-content-header">
 					<!-- ko component: {
@@ -47,7 +49,7 @@ const API_G_URL = {
 	CHANGE_YEAR: BASE_G_URL + 'change-year/',
 	UPDATE: BASE_G_URL + 'update',
 	REGISTER: BASE_G_URL + 'register',
-	DELETE: BASE_G_URL + 'delete',
+	DELETE: BASE_G_URL + 'delete/',
 	CHANGE_SETTING: BASE_G_URL + 'change-setting',
 };
 
@@ -68,38 +70,68 @@ class ScreenGComponent extends ko.ViewModel {
 		vm.screenMode = params.screenMode;
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_G_URL.START_PAGE))
-			.then((data) => {
+			.done((data) => {
 				vm.screenData().updateData(data);
 			})
-			.then(() => vm.$blockui('clear'));
+			.always(() => vm.$blockui('clear'));
 
 		vm.screenData().selectedYear.subscribe((yearInput) => {
-			
+
+			if (!yearInput) {
+				return;
+			}
+
 			let year = Number(yearInput);
 			//check if data has in unsave list => bind data from that
 			let unsaveItem = _.find(vm.screenData().unSaveSetComs, ['year', year]);
-			
+
 			if (unsaveItem) {
 				let isChanged = vm.screenData().saveToUnSaveList();
-				if(isChanged){vm.screenData().setUpdateYear(vm.screenData().serverData.year);}
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
 				vm.screenData().serverData = unsaveItem;
-				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom) => { return new nts.uk.at.kmk004.components.flex.MonthlyWorkTimeSetCom(item); }));
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
 			} else {
 				let isChanged = vm.screenData().saveToUnSaveList();
-				if(isChanged){vm.screenData().setUpdateYear(vm.screenData().serverData.year);}
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
 				//else load data from sever
 				vm.$blockui('invisible');
-				vm.$ajax(API_G_URL.CHANGE_YEAR + year).done((timeSetComs: Array<nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom>) => {
-					vm.$blockui('clear');
-					vm.screenData().serverData = { year: year, data: timeSetComs };
-					vm.screenData().monthlyWorkTimeSetComs(_.map(timeSetComs, (item: nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom) => { return new nts.uk.at.kmk004.components.flex.MonthlyWorkTimeSetCom(item); }));
-				});
+				vm.$ajax(API_G_URL.CHANGE_YEAR + year).done((data) => {
+					vm.setYM(year, data);
+				}).always(() => { vm.$blockui('clear'); });
 
 			}
 		});
+
+
+
+
 	}
 
-	
+	setYM(year: number, data: any) {
+		const vm = this;
+
+		let timeSetComs: Array<IMonthlyWorkTimeSetCom> = [];
+
+		for (let i = 0; i < 12; i++) {
+
+			let ym = data.yearMonthPeriod.start + i,
+				timeSet: IMonthlyWorkTimeSetCom = _.find(data.timeSetComs, ['yearMonth', ym]);
+
+			timeSetComs.push({
+				yearMonth: ym, laborTime: timeSet ? timeSet.laborTime : {
+					withinLaborTime: 0,
+					legalLaborTime: 0,
+					weekAvgTime: 0
+				}
+			});
+		}
+
+		vm.screenData().serverData = { year: year, data: timeSetComs };
+
+		vm.screenData().monthlyWorkTimeSetComs(_.map(timeSetComs, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+	}
+
+
 
 	mounted() {
 		$("#year-list").focus();
