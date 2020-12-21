@@ -19,6 +19,8 @@ public interface CompanyEstablishmentRepository {
 	 * @return the optional
 	 */
 	public Optional<CompanyEstablishment> findById(String companyId, int targetYear);
+
+	public Optional<CompanyEstablishment> findById2(String companyId, int targetYear);
 	
 	
 	/**

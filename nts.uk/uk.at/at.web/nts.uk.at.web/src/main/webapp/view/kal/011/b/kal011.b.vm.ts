@@ -24,11 +24,11 @@ module nts.uk.at.kal011.B {
             vm.columns = [
                 { headerText: '', key: 'recordId', width: 1, hidden: true },
                 /**B3_2**/
-                { headerText: vm.$i18n('KAL011_13'), key: 'workplaceCode', width: 85 },
+                { headerText: vm.$i18n('KAL011_13'), key: 'workplaceCode', width: 100 },
                 /**B3_3**/
-                { headerText: vm.$i18n('KAL011_14'), key: 'workplaceName', width: 150 },
+                { headerText: vm.$i18n('KAL011_14'), key: 'workplaceName', width: 100 },
                 /**B3_4**/
-                { headerText: vm.$i18n('KAL011_15'), key: 'alarmValueDate', width: 100 },
+                { headerText: vm.$i18n('KAL011_15'), key: 'alarmValueDate', width: 135 },
                 /**B3_5**/
                 { headerText: vm.$i18n('KAL011_16'), key: 'categoryName', width: 150 },
                 /**B3_6**/

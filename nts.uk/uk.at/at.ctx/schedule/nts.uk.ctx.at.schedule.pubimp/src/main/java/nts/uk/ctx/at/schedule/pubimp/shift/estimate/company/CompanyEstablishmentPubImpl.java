@@ -16,8 +16,8 @@ public class CompanyEstablishmentPubImpl implements CompanyEstablishmentPub {
     private CompanyEstablishmentRepository companyEstablishmentRepo;
 
     @Override
-    public Optional<CompanyEstablishmentExport> findById(String companyId, int targetYear) {
-        Optional<CompanyEstablishment> comEstOpt = companyEstablishmentRepo.findById(companyId, targetYear);
+    public Optional<CompanyEstablishmentExport> findById2(String companyId, int targetYear) {
+        Optional<CompanyEstablishment> comEstOpt = companyEstablishmentRepo.findById2(companyId, targetYear);
         return comEstOpt.map(x -> new CompanyEstablishmentExport(x.getCompanyId().v(), x.getTargetYear().v()));
 
     }

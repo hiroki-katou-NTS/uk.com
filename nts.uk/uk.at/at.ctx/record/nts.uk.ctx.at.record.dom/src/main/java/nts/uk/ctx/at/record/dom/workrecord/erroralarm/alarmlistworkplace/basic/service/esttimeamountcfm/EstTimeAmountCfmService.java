@@ -50,7 +50,7 @@ public class EstTimeAmountCfmService {
         int endYear = period.end().year();
         while (startYear <= endYear) {
             // ドメインモデル「全社目安設定」を取得する。
-            Optional<CompanyEstablishmentImport> comEstOpt = companyEstablishmentAdaptor.findById(cid, startYear);
+            Optional<CompanyEstablishmentImport> comEstOpt = companyEstablishmentAdaptor.findById2(cid, startYear);
             if (!comEstOpt.isPresent()) {
                 // 「アラーム値メッセージ」を作成します。
                 String message = TextResource.localize("KAL020_8", String.valueOf(startYear), AppContexts.user().companyCode());

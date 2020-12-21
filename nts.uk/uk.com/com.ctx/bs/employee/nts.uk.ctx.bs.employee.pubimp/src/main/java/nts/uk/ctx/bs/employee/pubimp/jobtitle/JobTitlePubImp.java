@@ -526,9 +526,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					x.getJobTitleId(),
 					x.isManager(),
 					x.getJobTitleId(),
-					x.getJobTitleCode().v(),
-					x.getJobTitleName().v(),
-					x.getSequenceCode().v());
+					x.getJobTitleCode() == null ? null : x.getJobTitleCode().v(),
+					x.getJobTitleName() == null ? null : x.getJobTitleName().v(),
+					x.getSequenceCode() == null ? null : x.getSequenceCode().v());
 		}).collect(Collectors.toList());
 	}
 
@@ -537,9 +537,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		List<AffJobTitleHistory> findAllJobTitleHistory = affJobTitleHisRepo.getByEmployeeListPeriod(employeeIds, period);
 
 		List<String> histIds = new ArrayList<>();
-		findAllJobTitleHistory.forEach(x -> {
-			x.getHistoryItems().stream().map(i -> histIds.add(i.identifier()));
-		});
+		findAllJobTitleHistory.forEach(x -> x.getHistoryItems().forEach(i -> histIds.add(i.identifier())));
 
 		List<AffJobTitleHistoryItem> historyItems = affJobTitleHisItemRepo.findByHitoryIds(histIds);
 

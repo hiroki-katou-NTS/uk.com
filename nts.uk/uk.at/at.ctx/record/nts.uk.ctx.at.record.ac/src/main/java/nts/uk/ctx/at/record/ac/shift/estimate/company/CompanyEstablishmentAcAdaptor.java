@@ -16,8 +16,8 @@ public class CompanyEstablishmentAcAdaptor implements CompanyEstablishmentAdapto
     private CompanyEstablishmentPub companyEstablishmentPub;
 
     @Override
-    public Optional<CompanyEstablishmentImport> findById(String companyId, int targetYear) {
-        Optional<CompanyEstablishmentExport> comEstOpt = companyEstablishmentPub.findById(companyId, targetYear);
+    public Optional<CompanyEstablishmentImport> findById2(String companyId, int targetYear) {
+        Optional<CompanyEstablishmentExport> comEstOpt = companyEstablishmentPub.findById2(companyId, targetYear);
         return comEstOpt.map(x -> new CompanyEstablishmentImport(x.getCompanyId(), x.getTargetYear()));
     }
 }

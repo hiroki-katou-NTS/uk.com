@@ -67,7 +67,7 @@ public class ClsCodeCfmService {
                 EmployeeInfoImported empItem = empInfos.stream()
                         .filter(x -> x.getSid().equals(clsHist.getEmployeeId())).findFirst().get();
                 // 「アラーム値メッセージ」を作成します。
-                String message = TextResource.localize("KAL020_1", empItem.getEmployeeCode(),
+                String message = TextResource.localize("KAL020_2", empItem.getEmployeeCode(),
                         empItem.getEmployeeName(), clsHist.getClassificationCode());
 
                 // ドメインオブジェクト「抽出結果」を作成します。
@@ -75,7 +75,7 @@ public class ClsCodeCfmService {
                         new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
                                 Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd")))),
                         name.v(),
-                        Optional.ofNullable(TextResource.localize("KAL020_11")),
+                        Optional.ofNullable(TextResource.localize("KAL020_12", clsHist.getClassificationCode())), //TODO Q&A 38571
                         Optional.of(new MessageDisplay(displayMessage.v())),
                         empInfosByWp.getKey()
                 );
