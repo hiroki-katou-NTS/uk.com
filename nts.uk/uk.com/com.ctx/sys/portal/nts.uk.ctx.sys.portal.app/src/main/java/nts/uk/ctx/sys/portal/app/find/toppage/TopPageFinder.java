@@ -14,10 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
@@ -26,7 +23,6 @@ import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
-import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -97,39 +93,17 @@ public class TopPageFinder {
 		if (layoutType == LayoutType.FLOW_MENU.value) {
 			// アルゴリズム「フローメニューの作成リストを取得する」を実行する
 			// Inputフローコードが指定されている場合
-			if (layout1.get().getFlowMenuCd().isPresent() && !StringUtils.isEmpty(layout1.get().getFlowMenuCd().get().v())) {
-				Optional<CreateFlowMenu> data = CFlowMenuRepo.findByPk(cId, layout1.get().getFlowMenuCd().get().v());
-				if (data.isPresent()) {
-					FlowMenuOutput item = FlowMenuOutput.builder()
-							.flowCode(data.get().getFlowMenuCode().v())
-							.flowName(data.get().getFlowMenuName().v())
-							.fileId(data.get().getFlowMenuLayout().map(x -> x.getFileId()).orElse(""))
-							.build();
-					listFlow.add(item);
-				}
-			} else {
-				listFlow = CFlowMenuRepo.findByCid(cId).stream()
-						.map(item -> FlowMenuOutput.builder()
-								.flowCode(item.getFlowMenuCode().v())
-								.flowName(item.getFlowMenuName().v())
-								.fileId(item.getFlowMenuLayout().map(x -> x.getFileId()).orElse(""))
-								.build())
-						.collect(Collectors.toList());
-			}
+			listFlow = CFlowMenuRepo.findByCid(cId).stream()
+					.map(item -> FlowMenuOutput.builder()
+							.flowCode(item.getFlowMenuCode().v())
+							.flowName(item.getFlowMenuName().v())
+							.fileId(item.getFlowMenuLayout().map(x -> x.getFileId()).orElse(""))
+							.build())
+					.collect(Collectors.toList());
+			
 		} else if (layoutType == LayoutType.FLOW_MENU_UPLOAD.value) {
 			// アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
 			// Inputフローコードが指定されている場合
-			if (layout1.get().getFlowMenuCd().isPresent() && !StringUtils.isEmpty(layout1.get().getFlowMenuCd().get().v())) {
-				Optional<FlowMenu> data = flowMenuRepository.findByCodeAndType(cId, layout1.get().getFlowMenuCd().get().v(), TopPagePartType.FlowMenu.value);
-				if (data.isPresent()) {
-					FlowMenuOutput item = FlowMenuOutput.builder()
-							.flowCode(data.get().getCode().v())
-							.flowName(data.get().getName().v())
-							.fileId(data.get().getFileID())
-							.build();
-					listFlow.add(item);
-				}
-			} else {
 				listFlow = this.flowMenuRepository.findByType(cId, TopPagePartType.FlowMenu.value).stream()
 						.map(item -> FlowMenuOutput.builder()
 								.flowCode(item.getCode().v())
@@ -137,7 +111,7 @@ public class TopPageFinder {
 								.fileId(item.getFileID())
 								.build())
 						.collect(Collectors.toList());
-			}
+	
 		}
 		return listFlow;
 	}

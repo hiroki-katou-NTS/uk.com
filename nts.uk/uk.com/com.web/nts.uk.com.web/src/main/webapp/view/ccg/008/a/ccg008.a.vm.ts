@@ -104,8 +104,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
       });
 
       vm.reloadInterval.subscribe((data: any) => {
-        const minutes = vm.getMinutes(data);
-        const miliSeconds = minutes * MINUTESTOMILISECONDS;
+        let minutes = vm.getMinutes(data);
+        let miliSeconds = minutes * MINUTESTOMILISECONDS;
         if (data !== 0) {
           setInterval(() => {
             vm.callApiTopPage(vm);

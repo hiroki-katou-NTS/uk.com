@@ -235,10 +235,10 @@ public class DisplayMyPageFinder {
 				//	フローメニュー（アップロード）の場合
 				//	アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
 				//	Inputフローコードが指定されている場合
-				if (layout1.get().getFlowMenuCd().isPresent()) {
+				if (layout1.get().getFlowMenuUpCd().isPresent()) {
 					//	ドメインモデル「フローメニュー」を取得する
-					Optional<FlowMenu> data = this.flowMenuRepository.findByCodeAndType(cId
-							, layout1.get().getFlowMenuCd().get().v()
+					Optional<FlowMenu> data = this.flowMenuRepository.findByToppagePartCodeAndType(cId
+							, layout1.get().getFlowMenuUpCd().get().v()
 							, TopPagePartType.FlowMenu.value);
 					if (data.isPresent()) {
 						listFlow.add(FlowMenuOutputCCG008.builder()
