@@ -1018,7 +1018,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		this.commonAlgorithmAB(
 				companyId,
 				displayInfoOverTime,
-				appOverTime36,
+				appOverTime,
 				mode);
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		// output.setAppOverTime(appOverTime36);
