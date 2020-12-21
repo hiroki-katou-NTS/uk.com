@@ -6,7 +6,7 @@
                 <kafS05Step1Component v-bind:params="text1" ref="step1"></kafS05Step1Component>
             </div>
             <div v-show="step == 'step_2'">
-                <kafS05Step2Component ></kafS05Step2Component>
+                <kafS05Step2Component ref="step2"></kafS05Step2Component>
             </div> 
             <div v-show="step == 'step_3'">
                 <kafS05Step3Component></kafS05Step3Component>

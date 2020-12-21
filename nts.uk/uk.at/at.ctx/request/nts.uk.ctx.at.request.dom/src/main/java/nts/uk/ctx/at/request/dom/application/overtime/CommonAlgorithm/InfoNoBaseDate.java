@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class InfoNoBaseDate {
 	private OvertimeAppSet overTimeAppSet;
 	
 	// 申請用時間外労働時間パラメータ
-	private OverTimeWorkHoursOutput agreeOverTimeOutput;
+	private Optional<OverTimeWorkHoursOutput> agreeOverTimeOutput;
 	
 	// 利用する乖離理由(DivergenceReasonInputMethod at record , so create new class #112406)
 	private List<DivergenceReasonInputMethod> divergenceReasonInputMethod;

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -132,6 +133,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(
@@ -410,9 +414,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output.setOverTimeAppSet(overtimeAppSet);
 		output.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		output.setDivergenceTimeRoot(reasonDissociationOutput.getDivergenceTimeRoots());
-		if (agreeOverTimeOutputOp.isPresent()) {
-			output.setAgreeOverTimeOutput(agreeOverTimeOutputOp.get());
-		}
+		output.setAgreeOverTimeOutput(agreeOverTimeOutputOp);
 		if (overTimeReflectOp.isPresent()) {
 			output.setOverTimeReflect(overTimeReflectOp.get());
 		}
@@ -760,7 +762,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				
 			}
 			List<String> contentMsgs = new ArrayList<String>();
-			contentMsgs.add(appOverTime.getEmployeeID());
+			contentMsgs.add(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName());
 			contentMsgs.add(appOverTime.getApplication().getAppDate().getApplicationDate().toString());
 			// 取得した「事前申請・実績の超過状態．実績状態」をチェックする
 			if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ERROR) {
@@ -991,7 +993,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				EnumAdaptor.valueOf(displayInfoOverTime.getCalculationResultOp().map(CalculationResult::getFlag).orElse(0), CalculatedFlag.class),
 				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		// 勤務種類、就業時間帯のマスタ未登録チェックする
-		otherCommonAlgorithm.checkWorkingInfo(
+		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
@@ -1020,7 +1022,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		this.commonAlgorithmAB(
 				companyId,
 				displayInfoOverTime,
-				appOverTime36,
+				appOverTime,
 				mode);
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		// output.setAppOverTime(appOverTime36);

@@ -461,7 +461,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 							a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 						}	
 					} else {
-						a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));
+						a.push(new DateInfo(loopDate.format('YYYY/MM/DD'), CONFIRMSTATUS.NO_TARGET));
 					}
 				}
 				this.dateInfoLst = a;

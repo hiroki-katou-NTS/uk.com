@@ -31,7 +31,7 @@ public class InfoNoBaseDateDto {
 		return new InfoNoBaseDateDto(
 				AppReflectOtHdWorkDto.fromDomain(infoNoBaseDate.getOverTimeReflect()),
 				OvertimeAppSetDto.fromDomain(infoNoBaseDate.getOverTimeAppSet()),
-				OverTimeWorkHoursDto.fromDomain(infoNoBaseDate.getAgreeOverTimeOutput()),
+				OverTimeWorkHoursDto.fromDomain(infoNoBaseDate.getAgreeOverTimeOutput().orElse(null)),
 				infoNoBaseDate.getDivergenceReasonInputMethod()
 					.stream()
 					.map(x -> DivergenceReasonInputMethodDto.fromDomain(x))

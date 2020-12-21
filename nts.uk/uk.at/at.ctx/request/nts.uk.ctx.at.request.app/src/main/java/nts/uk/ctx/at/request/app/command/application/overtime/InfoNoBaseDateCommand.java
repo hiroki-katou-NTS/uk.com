@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -31,7 +32,7 @@ public class InfoNoBaseDateCommand {
 		return new InfoNoBaseDate(
 				overTimeReflect.toDomain(),
 				overTimeAppSet.toDomain(AppContexts.user().companyId()),
-				agreeOverTimeOutput.toDomain(),
+				agreeOverTimeOutput == null ? Optional.empty() : Optional.of(agreeOverTimeOutput.toDomain()),
 				CollectionUtil.isEmpty(divergenceReasonInputMethod) ? 
 						Collections.emptyList() :
 						divergenceReasonInputMethod.stream()

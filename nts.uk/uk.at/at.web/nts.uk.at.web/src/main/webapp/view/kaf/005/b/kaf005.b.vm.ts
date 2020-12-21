@@ -2336,8 +2336,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			visibleModel.c2(c2);
 			// 
 			let c6 = true;
-			visibleModel.c6(c6);
-
+			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
+				self.visibleModel.c6(false);
+			} else {
+				visibleModel.c6(c6);				
+			}
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
 			let c7 = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
 			visibleModel.c7(c7);
@@ -2441,21 +2444,27 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							{	
 								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
 								if (!_.isNil(result)) {
-									c30_2 = true;
+									if (result.attendanceTime > 0) {
+										c30_2 = true;										
+									}
 								}
 							}
 							
 							{	
 								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
 								if (!_.isNil(result)) {
-									c30_3 = true;
+									if (result.attendanceTime > 0) {
+										c30_3 = true;										
+									}
 								}
 							}
 							
 							{	
 								let result = _.find(self.dataSource.calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
 								if (!_.isNil(result)) {
-									c30_4 = true;
+									if (result.attendanceTime > 0) {
+										c30_4 = true;										
+									}
 								}
 							}
 						}

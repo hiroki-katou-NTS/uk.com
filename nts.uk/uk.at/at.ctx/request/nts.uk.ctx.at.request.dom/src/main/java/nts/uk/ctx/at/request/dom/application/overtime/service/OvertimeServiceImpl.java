@@ -638,7 +638,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				appOverTime,
 				displayInfoOverTime,
-				0); // QA input 112515 done
+				1); // QA input 112515 done
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		output.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
 		
