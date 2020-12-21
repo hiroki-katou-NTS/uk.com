@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 /**
  * 休日出勤申請の印刷内容
  * @author huylq
- *
+ * Refactor5
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -66,6 +67,11 @@ public class PrintContentOfHolidayWork {
 	private NotUseAtr overtimeMidnightUseAtr;
 	
 	/**
+	 * 残業時間枠
+	 */
+	private List<OvertimeWorkFrame> overtimeFrameList;
+	
+	/**
 	 * 休憩時間帯
 	 */
 	private Optional<List<TimeZoneWithWorkNo>> breakTimeList = Optional.empty();
@@ -88,5 +94,5 @@ public class PrintContentOfHolidayWork {
 	/**
 	 * 申請時間
 	 */
-	private List<ApplicationTime> applicationTimeList;
+	private ApplicationTime applicationTime;
 }

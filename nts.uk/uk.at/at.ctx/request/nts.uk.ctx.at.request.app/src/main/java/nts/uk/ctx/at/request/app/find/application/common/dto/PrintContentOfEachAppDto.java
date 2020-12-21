@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.app.command.application.holidaywork.PrintContentOfHolidayWorkCmd;
 import nts.uk.ctx.at.request.app.command.application.overtime.DetailOutputCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.DisplayInfoOverTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeOutputCmd;
@@ -23,6 +24,11 @@ public class PrintContentOfEachAppDto {
 	/**
 	 * 休暇申請の印刷内容
 	 */
+	
+	/**
+	 * 休日出勤の印刷内容
+	 */
+	public PrintContentOfHolidayWorkCmd opPrintContentOfHolidayWork;
 	
 	/**
 	 * 勤務変更申請の印刷内容
@@ -55,6 +61,9 @@ public class PrintContentOfEachAppDto {
 	
 	public PrintContentOfEachApp toDomain() {
 		PrintContentOfEachApp printContentOfEachApp = new PrintContentOfEachApp();
+		if(opPrintContentOfHolidayWork != null) {
+			printContentOfEachApp.setOpPrintContentOfHolidayWork(Optional.of(opPrintContentOfHolidayWork.toDomain()));
+		}
 		if(opPrintContentOfWorkChange != null) {
 			AppWorkChangeOutput appWorkChangeOutput = opPrintContentOfWorkChange.toDomain();
 			PrintContentOfWorkChange printContentOfWorkChange = new PrintContentOfWorkChange(

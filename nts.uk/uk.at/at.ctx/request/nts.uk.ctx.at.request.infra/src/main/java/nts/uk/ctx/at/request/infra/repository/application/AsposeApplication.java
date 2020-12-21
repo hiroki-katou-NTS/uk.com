@@ -171,7 +171,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case HOLIDAY_WORK_APPLICATION:
 			asposeAppHolidayWork.printAppHolidayWorkContent(worksheet, printContentOfApp);
 			reasonLabel = worksheet.getCells().get("B27");
-			remarkLabel = worksheet.getCells().get("B30");
+			remarkLabel = worksheet.getCells().get("B33");
 			reasonContent = worksheet.getCells().get("D27");
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;

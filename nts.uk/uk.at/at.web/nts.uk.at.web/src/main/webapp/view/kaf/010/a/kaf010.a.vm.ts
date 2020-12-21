@@ -316,6 +316,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			if(vm.divergenceReasonText()){
 				reasonDissociation.reason = vm.divergenceReasonText();
 			}
+			reasonDissociation.diviationTime = 0;
 
 			appHolidayWork.workInformation = {} as WorkInformationCommand;
 			appHolidayWork.workInformation.workType = vm.workInfo().workType().code;
@@ -368,10 +369,20 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		
 		register() {
 			const vm = this;
+			
+			if(vm.mode() != MODE.MULTiPLE_AGENT){
+				vm.registerSingle();
+			} else {
+				vm.registerMulti();
+			}
+		}
+
+		registerSingle(){
+			const vm = this;
 
 			vm.$blockui("show");
 			let appHolidayWork = vm.toAppHolidayWork();
-			
+
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
 					if (isValid) {
@@ -389,7 +400,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					}
 					
 					if(result) {
-						return vm.$ajax(API.checkBeforeRegister, commandCheck); // chua xong
+						return vm.$ajax(API.checkBeforeRegister, commandCheck);
 					}
 				}).then((result: CheckBeforeOutput) => {
 					if (!_.isNil(result)) {
@@ -405,6 +416,74 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							appTypeSetting : vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
 						};
 						return vm.$ajax('at', API.register, commandRegister).then(() => {
+							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+								return true;
+							});
+						});
+					}
+					
+				})
+				.done(result => {
+					
+				})
+				.fail(err => {
+					let messageId, messageParams;
+					if(err.errors) {
+						let errors = err.errors;
+						messageId = errors[0].messageId;
+					} else {
+						messageId = err.messageId;
+						messageParams = [err.parameterIds.join('、')];
+					}
+					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+				})
+				.always(() => vm.$blockui("hide"));
+		}
+
+		registerMulti(){
+			const vm = this;
+
+			vm.$blockui("show");
+			let appHolidayWork = vm.toAppHolidayWork();
+
+			let approvalRootContentMap: any = null;
+
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+				.then(isValid => {
+					if (isValid) {
+						return true;
+					}
+				})
+				.then(result => {
+					// check before 
+					let commandCheck = {
+						require: true,
+						companyId: vm.$user.companyId,
+						empList: vm.employeeIdLst,
+						appHdWorkDispInfo: vm.dataSource, 
+						appHolidayWork: appHolidayWork,
+					}
+					if(result) {
+						return vm.$ajax(API.checkBeforeRegisterMulti, commandCheck);
+					}
+				}).then((result: CheckBeforeOutputMulti) => {
+					if (!_.isNil(result)) {
+						// xử lý confirmMsg
+						approvalRootContentMap = result.approvalRootContentMap;
+						return vm.handleConfirmMessageMap(result.confirmMsgOutputMap);
+					}
+				}).then((result) => {
+					if (result) {
+						let commandRegister = {
+							companyId: vm.$user.companyId,
+							empList: vm.employeeIdLst,
+							appHdWorkDispInfo: vm.dataSource,
+							appHolidayWork: appHolidayWork,
+							approvalRootContentMap,
+							appOvertimeDetailMap: {} as Map<string, any>,
+							appTypeSetting : vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
+						};
+						return vm.$ajax('at', API.registerMulti, commandRegister).then(() => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								return true;
 							});
@@ -560,40 +639,42 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				holidayTimeArray.push(item);
 			}
 
-			{	// A6_27
-				let item = {} as HolidayTime;
-				item.frameNo = ko.observable(holidayTimeArray.length + 1);
-				item.frameName = ko.observable(self.$i18n('KAF005_342'));
-				item.start = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
-				item.preApp = ko.observable(null);
-				item.actualTime = ko.observable(null);
-				item.legalClf = ko.observable(0);
-				item.type = ko.observable(6);
-				holidayTimeArray.push(item);
-			}
-
-			{
-				let item = {} as HolidayTime;
-				item.frameNo = ko.observable(holidayTimeArray.length + 1);
-				item.frameName = ko.observable(self.$i18n('KAF005_343'));
-				item.start = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
-				item.preApp = ko.observable(null);
-				item.actualTime = ko.observable(null);
-				item.legalClf = ko.observable(1);
-				item.type = ko.observable(7);
-				holidayTimeArray.push(item);
-			}
-
-			{
-				let item = {} as HolidayTime;
-				item.frameNo = ko.observable(holidayTimeArray.length + 1);
-				item.frameName = ko.observable(self.$i18n('KAF005_344'));
-				item.start = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
-				item.preApp = ko.observable(null);
-				item.actualTime = ko.observable(null);
-				item.legalClf = ko.observable(2);
-				item.type = ko.observable(8);
-				holidayTimeArray.push(item);
+			if(self.nightOvertimeReflectAtrCheck()){
+				{	// A6_27
+					let item = {} as HolidayTime;
+					item.frameNo = ko.observable(holidayTimeArray.length + 1);
+					item.frameName = ko.observable(self.$i18n('KAF010_342'));
+					item.start = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
+					item.preApp = ko.observable(null);
+					item.actualTime = ko.observable(null);
+					item.legalClf = ko.observable(0);
+					item.type = ko.observable(6);
+					holidayTimeArray.push(item);
+				}
+	
+				{
+					let item = {} as HolidayTime;
+					item.frameNo = ko.observable(holidayTimeArray.length + 1);
+					item.frameName = ko.observable(self.$i18n('KAF010_343'));
+					item.start = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
+					item.preApp = ko.observable(null);
+					item.actualTime = ko.observable(null);
+					item.legalClf = ko.observable(1);
+					item.type = ko.observable(7);
+					holidayTimeArray.push(item);
+				}
+	
+				{
+					let item = {} as HolidayTime;
+					item.frameNo = ko.observable(holidayTimeArray.length + 1);
+					item.frameName = ko.observable(self.$i18n('KAF010_344'));
+					item.start = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
+					item.preApp = ko.observable(null);
+					item.actualTime = ko.observable(null);
+					item.legalClf = ko.observable(2);
+					item.type = ko.observable(8);
+					holidayTimeArray.push(item);
+				}
 			}
 
 			if (mode == 1) {
@@ -609,25 +690,27 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							})	
 						}
 						// A6_28 , A6_35, A6_40
-						let appRoot = calculationResultOp.applicationTime;
-						if (!_.isNil(appRoot.overTimeShiftNight)) {
-							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
-							if (!_.isEmpty(midNightHolidayTimes)) {
-								_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-									if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-										holidayTimeArray
-											.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_BREAK_TIME)
-											.map(holidayTime => holidayTime.start(item.attendanceTime));
-									} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
-										holidayTimeArray
-											.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY)
-											.map(holidayTime => holidayTime.start(item.attendanceTime));
-									} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
-										holidayTimeArray
-											.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY)
-											.map(holidayTime => holidayTime.start(item.attendanceTime));
-									}
-								});
+						if(self.nightOvertimeReflectAtrCheck()){
+							let appRoot = calculationResultOp.applicationTime;
+							if (!_.isNil(appRoot.overTimeShiftNight)) {
+								let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+								if (!_.isEmpty(midNightHolidayTimes)) {
+									_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+										if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+											holidayTimeArray
+												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_BREAK_TIME)
+												.map(holidayTime => holidayTime.start(item.attendanceTime));
+										} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+											holidayTimeArray
+												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY)
+												.map(holidayTime => holidayTime.start(item.attendanceTime));
+										} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+											holidayTimeArray
+												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY)
+												.map(holidayTime => holidayTime.start(item.attendanceTime));
+										}
+									});
+								}
 							}
 						}
 				}
@@ -646,25 +729,27 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							})
 						}
 						// A6_29 A6_36 A6_41
-						let appRoot = appHolidayWork.applicationTime;
-						if (!_.isNil(appRoot.overTimeShiftNight)) {
-							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
-							if (!_.isEmpty(midNightHolidayTimes)) {
-								_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-									if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-										holidayTimeArray
-											.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_BREAK_TIME)
-											.map(holidayTime => holidayTime.preApp(item.attendanceTime));
-									} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
-										holidayTimeArray
-											.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY)
-											.map(holidayTime => holidayTime.preApp(item.attendanceTime));
-									} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
-										holidayTimeArray
-											.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY)
-											.map(holidayTime => holidayTime.preApp(item.attendanceTime));
-									}
-								});
+						if(self.nightOvertimeReflectAtrCheck()){
+							let appRoot = appHolidayWork.applicationTime;
+							if (!_.isNil(appRoot.overTimeShiftNight)) {
+								let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+								if (!_.isEmpty(midNightHolidayTimes)) {
+									_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+										if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+											holidayTimeArray
+												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_BREAK_TIME)
+												.map(holidayTime => holidayTime.preApp(item.attendanceTime));
+										} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+											holidayTimeArray
+												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY)
+												.map(holidayTime => holidayTime.preApp(item.attendanceTime));
+										} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+											holidayTimeArray
+												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY)
+												.map(holidayTime => holidayTime.preApp(item.attendanceTime));
+										}
+									});
+								}
 							}
 						}
 					}	
@@ -684,25 +769,27 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 						}
 						// A6_30 A6_37 A6_42
-						let appRoot = res.hdWorkDispInfoWithDateOutput.actualApplicationTime;
-							if (!_.isNil(appRoot.overTimeShiftNight)) {
-								let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
-								if (!_.isEmpty(midNightHolidayTimes)) {
-									_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-										if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-											holidayTimeArray
-												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_BREAK_TIME)
-												.map(holidayTime => holidayTime.actualTime(item.attendanceTime));
-										} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
-											holidayTimeArray
-												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY)
-												.map(holidayTime => holidayTime.actualTime(item.attendanceTime));
-										} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
-											holidayTimeArray
-												.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY)
-												.map(holidayTime => holidayTime.actualTime(item.attendanceTime));
-										}
-									});
+						if(self.nightOvertimeReflectAtrCheck()){
+							let appRoot = res.hdWorkDispInfoWithDateOutput.actualApplicationTime;
+								if (!_.isNil(appRoot.overTimeShiftNight)) {
+									let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+									if (!_.isEmpty(midNightHolidayTimes)) {
+										_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+											if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+												holidayTimeArray
+													.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_BREAK_TIME)
+													.map(holidayTime => holidayTime.actualTime(item.attendanceTime));
+											} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+												holidayTimeArray
+													.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY)
+													.map(holidayTime => holidayTime.actualTime(item.attendanceTime));
+											} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+												holidayTimeArray
+													.filter(holidayTime => holidayTime.type() == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY)
+													.map(holidayTime => holidayTime.actualTime(item.attendanceTime));
+											}
+										});
+									}
 								}
 							}
 						}
@@ -926,7 +1013,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				overTimeArray.push(item);
 			}
 
-			{
+			if(self.nightOvertimeReflectAtrCheck()){
 				let item = {} as OverTime;
 				item.frameNo = ko.observable(overTimeArray.length + 1);
 				item.frameName = ko.observable(self.$i18n('KAF005_61'));
@@ -968,11 +1055,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 						// A7_13
 						// 計算結果．申請時間．就業時間外深夜時間 
-						let overTimeShiftNight = res.calculationResult.applicationTime.overTimeShiftNight;
-						if (!_.isNil(overTimeShiftNight)) {
-							overTimeArray
-								.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
-								.map(overTime => overTime.applicationTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? overTimeShiftNight.overTimeMidNight : null));													
+						if(self.nightOvertimeReflectAtrCheck()){
+							let overTimeShiftNight = res.calculationResult.applicationTime.overTimeShiftNight;
+							if (!_.isNil(overTimeShiftNight)) {
+								overTimeArray
+									.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
+									.map(overTime => overTime.applicationTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? overTimeShiftNight.overTimeMidNight : null));													
+							}
 						}
 					}
 				}
@@ -990,11 +1079,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									.map(overTime => overTime.preTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? item.applicationTime : null));
 							})
 							// A7_14
-							let overTimeShiftNight = applicationTime.overTimeShiftNight;
-							if (!_.isNil(overTimeShiftNight)) {
-								overTimeArray
-									.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
-									.map(overTime => overTime.preTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? overTimeShiftNight.overTimeMidNight : null));													
+							if(self.nightOvertimeReflectAtrCheck()){
+								let overTimeShiftNight = applicationTime.overTimeShiftNight;
+								if (!_.isNil(overTimeShiftNight)) {
+									overTimeArray
+										.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
+										.map(overTime => overTime.preTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? overTimeShiftNight.overTimeMidNight : null));													
+								}
 							}
 						}
 					}
@@ -1014,12 +1105,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						if (!_.isNil(applicationTimeRoot)) {
 							// A7_15
 							// 申請日に関係する情報．実績の申請時間．就業時間外深夜時間．残業深夜時間
-							let overTimeShiftNight = applicationTimeRoot.overTimeShiftNight;
-							if (!_.isNil(overTimeShiftNight)) {
-								overTimeArray
-									.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
-									.map(overTime => overTime.actualTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? overTimeShiftNight.overTimeMidNight : null));	
-							}				
+							if(self.nightOvertimeReflectAtrCheck()){
+								let overTimeShiftNight = applicationTimeRoot.overTimeShiftNight;
+								if (!_.isNil(overTimeShiftNight)) {
+									overTimeArray
+										.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
+										.map(overTime => overTime.actualTime(calculationResultOp && calculationResultOp.calculatedFlag == 0 ? overTimeShiftNight.overTimeMidNight : null));	
+								}		
+							}		
 						}
 					}
 				}	
@@ -1400,6 +1493,29 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					}
 				});
 		}
+
+		handleConfirmMessageMap(mapMes: Map<string, Array<any>>): any {
+			const vm = this;
+			if (_.isEmpty(mapMes)) {
+				return $.Deferred().resolve(true);
+			}
+			let keys = Object.keys(mapMes);
+			let listMes = (mapMes as any)[keys[0]];
+			
+			if (_.isEmpty(listMes)) {
+				return $.Deferred().resolve(true);
+			}
+			let msg = listMes[0];
+
+			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+				.then((value) => {
+					if (value === 'yes') {
+						return vm.handleConfirmMessage(_.drop(listMes));
+					} else {
+						return $.Deferred().resolve(false);
+					}
+				});
+		}
 	}
 
 	const API = {
@@ -1409,7 +1525,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		selectWorkInfo: "at/request/application/holidaywork/selectWork",
 		changeWorkHours:  "at/request/application/holidaywork/changeWorkHours",
 		checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
-		register: "at/request/application/holidaywork/register"
+		register: "at/request/application/holidaywork/register",
+		checkBeforeRegisterMulti: "at/request/application/holidaywork/checkBeforeRegisterMulti",
+		registerMulti: "at/request/application/holidaywork/registerMulti"
 	}
 	interface AppHdWorkDispInfo {
 		dispFlexTime: boolean;
@@ -1604,6 +1722,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	interface CheckBeforeOutput {
 		appOverTimeDetail: any;
 		confirmMsgOutputs: Array<any>;
+	}
+	interface CheckBeforeOutputMulti {
+		confirmMsgOutputMap: Map<string, Array<any>>;
+		approvalRootContentMap: Map<string, any>;
+		errorEmpBusinessName: string;
 	}
 	interface ComboDivergenceReason {
 		divergenceReasonCode: string;
