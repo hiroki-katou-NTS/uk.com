@@ -3370,17 +3370,6 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		/** 実年休.残数情報.付与後.明細 */
 		List<AnnualLeaveRemainingDetail> val_details40 = new ArrayList<AnnualLeaveRemainingDetail>();
 
-//		/** 付与区分 */
-//		boolean val_grantAtr69;
-//
-//		/** 未消化.未消化日数.未消化日数 */
-//		AnnualLeaveUsedDayNumber val_undigestedDays70;
-//
-//		/** 未消化.未消化時間.未消化時間 */
-//		UsedMinutes val_annleaUnusedMinutes;
-//		if ( this.annleaUnusedMinutes != null ) {
-//			val_annleaUnusedMinutes = new UsedMinutes(this.annleaUnusedMinutes);
-//		}
 
 		/** 実年休 */
 		AnnualLeave realAnnualLeave = AnnualLeave.of(

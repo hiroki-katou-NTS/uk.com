@@ -252,7 +252,7 @@ public class MemberInfo {
 		sb.append(" ");
 		sb.append(createMemberValueName(member_number));
 		if ( isOptional() ) {
-			sb.append("Optional.empty()");
+			sb.append(" = Optional.empty()");
 		} else {
 			sb.append(" = null");
 		}
