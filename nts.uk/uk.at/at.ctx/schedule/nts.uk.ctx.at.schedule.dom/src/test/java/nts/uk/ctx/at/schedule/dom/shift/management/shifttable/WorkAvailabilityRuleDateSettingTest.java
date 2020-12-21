@@ -18,7 +18,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 public class WorkAvailabilityRuleDateSettingTest {
@@ -83,18 +82,15 @@ public class WorkAvailabilityRuleDateSettingTest {
 		assertThat(isOverDeadline).isTrue();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testIsOverHolidayMaxdays_false() {
 		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		List<ShiftMaster> shiftMasters = WorkAvailabilityRuleDateSettingHelper.createShiftMasterList(Arrays.asList(new ShiftMasterCode("S01")));
-		
 		new Expectations() {
 			{
-				require.getShiftMaster((List<ShiftMasterCode>) any);
-				result = shiftMasters;
+				require.shiftMasterIsExist((ShiftMasterCode) any);
+				result = true;
 			}
 		};
 		
@@ -111,18 +107,15 @@ public class WorkAvailabilityRuleDateSettingTest {
 		assertThat(isOverHolidayMaxDays).isFalse();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testIsOverHolidayMaxdays_true() {
 		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		List<ShiftMaster> shiftMasters = WorkAvailabilityRuleDateSettingHelper.createShiftMasterList(Arrays.asList(new ShiftMasterCode("S01")));
-		
 		new Expectations() {
 			{
-				require.getShiftMaster((List<ShiftMasterCode>) any);
-				result = shiftMasters;
+				require.shiftMasterIsExist((ShiftMasterCode) any);
+				result = true;
 			}
 		};
 		

@@ -17,9 +17,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-@SuppressWarnings("unchecked")
 public class WorkAvailabilityRuleWeekSettingTest {
 	
 	@Test
@@ -100,12 +98,10 @@ public class WorkAvailabilityRuleWeekSettingTest {
 		
 		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper.defaultCreate();
 		
-		List<ShiftMaster> shiftMasters = WorkAvailabilityRuleWeekSettingHelper.createShiftMasterList(Arrays.asList(new ShiftMasterCode("S01")));
-		
 		new Expectations() {
 			{
-				require.getShiftMaster((List<ShiftMasterCode>) any);
-				result = shiftMasters;
+				require.shiftMasterIsExist((ShiftMasterCode) any);
+				result = true;
 			}
 		};
 

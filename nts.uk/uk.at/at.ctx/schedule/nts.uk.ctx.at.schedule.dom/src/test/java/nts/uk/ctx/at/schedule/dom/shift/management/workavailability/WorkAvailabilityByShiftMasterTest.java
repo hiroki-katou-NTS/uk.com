@@ -139,8 +139,48 @@ public class WorkAvailabilityByShiftMasterTest {
 		assertThat(displayInfo.getTimeZoneList()).isEmpty();
 	}
 	
+	/**
+	 * input: シフトマスタコード　= empty
+	 * output: systemError
+	 */
+	
 	@Test
-	public void create_throw_Msg_1705() {
+	public void create_throw_empty() {
+		
+		NtsAssert.systemError(() -> {
+			WorkAvailabilityByShiftMaster.create(require, Collections.emptyList());
+		});
+		
+	}
+	
+	/**
+	 * input: [S01, S02]
+	 * S01 = false
+	 * output: Msg_1705
+	 */
+	@Test
+	public void create_throw_Msg_1705_first_false() {
+		
+		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
+
+		new Expectations() {
+			{
+				require.shiftMasterIsExist(shiftMasterCodes.get(0));
+				result = false;
+			}
+		};
+
+		NtsAssert.businessException("Msg_1705",
+				() -> WorkAvailabilityByShiftMaster.create(require, shiftMasterCodes));
+	}
+	
+	/**
+	 * input: [S01, S02]
+	 * S01 = true, S02 = false
+	 * output: Msg_1705
+	 */
+	@Test
+	public void create_throw_Msg_1705_have_element_false() {
 		
 		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
 
@@ -158,15 +198,11 @@ public class WorkAvailabilityByShiftMasterTest {
 				() -> WorkAvailabilityByShiftMaster.create(require, shiftMasterCodes));
 	}
 	
-	@Test
-	public void create_throw_empty() {
-		
-		NtsAssert.systemError(() -> {
-			WorkAvailabilityByShiftMaster.create(require, Collections.emptyList());
-		});
-		
-	}
-	
+	/**
+	 * input: [S01, S02]
+	 * S01 = true, S02 = true
+	 * output: create success
+	 */
 	@Test
 	public void create_success() {
 		
