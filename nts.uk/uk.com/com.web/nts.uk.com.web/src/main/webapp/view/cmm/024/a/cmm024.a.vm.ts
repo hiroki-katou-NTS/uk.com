@@ -82,9 +82,11 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.companyScheduleHistorySelected.subscribe((value: string) => {
 				if (value === 'reload' || _.isNil(value)) return;
-				if (vm.isNoteSaveAfterClonedA())
+				if (vm.isNoteSaveAfterClonedA()) {			
+					vm.companyScheduleHistoryObjSelected(_.find(vm.companyScheduleHistoryList(), (x) => x.code === value));			
+					vm.screenAMode(ScreenModel.EDIT);
 					vm.companyScheduleHistoryListing();
-				else
+				} else
 					vm.displayInfoOnScreenA(value);
 			});
 
@@ -92,9 +94,11 @@ module nts.uk.com.view.cmm024.a {
 			vm.workplaceScheduleHistorySelected.subscribe((value: string) => {
 				if (value === 'reload' || _.isNil(value)) return;
 				if (vm.isShowPanelB()) {
-					if (vm.isNoteSaveAfterClonedB())
+					if (vm.isNoteSaveAfterClonedB()){
+						vm.workplaceScheduleHistoryObjSelected(_.find(vm.workplaceScheduleHistoryList(), (x) => x.code === value));
+						vm.screenBMode(ScreenModel.EDIT);
 						vm.workplaceScheduleHistoryListing();
-					else
+					} else
 						vm.displayInfoOnScreenB(value);
 				}
 			});
@@ -870,7 +874,7 @@ module nts.uk.com.view.cmm024.a {
 							vm.workplaceScheduleHistorySelected(null);
 							vm.workplaceScheduleHistoryObjSelected(null);
 							vm.modelB().approverPanel([]);
-							vm.modelB().employeesRepresentative([]);				
+							vm.modelB().employeesRepresentative([]);
 						}
 					}
 
