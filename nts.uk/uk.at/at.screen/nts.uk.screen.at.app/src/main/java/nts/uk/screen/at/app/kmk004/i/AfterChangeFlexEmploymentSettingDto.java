@@ -17,7 +17,7 @@ import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 public class AfterChangeFlexEmploymentSettingDto {
 	
 	// 雇用別フレックス勤務集計方法
-	EmpFlexMonthActCalSetDto empFlexMonthActCalSet;
+	DisplayFlexBasicSettingByEmploymentDto flexBasicSetting;
 	
 	List<EmploymentCodeDto> employmentList;
 }

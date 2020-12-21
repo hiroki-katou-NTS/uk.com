@@ -21,18 +21,20 @@ public class DisplayFlexBasicSettingByEmployment {
 	@Inject
 	private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
 
-	public EmpFlexMonthActCalSetDto displayFlexBasicSettingByEmployment(String employmentCd) {
+	public DisplayFlexBasicSettingByEmploymentDto displayFlexBasicSettingByEmployment(String employmentCd) {
 
+		DisplayFlexBasicSettingByEmploymentDto result = new DisplayFlexBasicSettingByEmploymentDto();
 		// 1. get(ログイン会社ID,雇用コード)
 		// 雇用別フレックス勤務集計方法
 		Optional<EmpFlexMonthActCalSet> empFlexOpt = this.empFlexMonthActCalSetRepo.find(AppContexts.user().companyId(),
 				employmentCd);
 
 		if (empFlexOpt.isPresent()) {
-			return EmpFlexMonthActCalSetDto.fromDomain(empFlexOpt.get());
+
+			result.setFlexMonthActCalSet(EmpFlexMonthActCalSetDto.fromDomain(empFlexOpt.get()));
 		}
 
-		return null;
+		return result;
 
 	}
 }

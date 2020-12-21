@@ -33,23 +33,29 @@ public class DisplayInitialFlexScreenByEmployment {
 
 		DisplayInitialFlexScreenByEmploymentDto result = new DisplayInitialFlexScreenByEmploymentDto();
 		String comId = AppContexts.user().companyId();
-		// 1.ログイン会社ID
+
+		// 1.フレックス勤務所定労働時間取得
 
 		this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
-			result.setGetFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
+			result.getFlexBasicSetting().setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
 
 		// 職場リストを表示する
 		// input： 勤務区分 ← 2：フレックス勤務
-		result.setAlreadySettings(this.employmentList.get(LaborWorkTypeAttr.FLEX).stream().map(x-> x.employmentCode).collect(Collectors.toList()));
+		result.setAlreadySettings(this.employmentList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.employmentCode)
+				.collect(Collectors.toList()));
 		if (!result.getAlreadySettings().isEmpty()) {
 
 			// 雇用を選択する（フレックス勤務）
 			// input：
 			// 雇用コード ← 雇用リストの先頭の雇用コード
 			// 勤務区分 ← 2：フレックス勤務
-			result.setSelectWorkPlaceFlex(this.selectEmploymentFlex
-					.selectEmploymentFlex(result.getAlreadySettings().get(0)));
+			SelectEmploymentFlexDto selectDto = this.selectEmploymentFlex
+					.selectEmploymentFlex(result.getAlreadySettings().get(0));
+
+			result.getFlexBasicSetting().setFlexMonthActCalSet(selectDto.getFlexBasicSetting().getFlexMonthActCalSet());
+			;
+			result.setYears(selectDto.getYears());
 		}
 
 		return result;

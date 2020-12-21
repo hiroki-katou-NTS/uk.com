@@ -65,7 +65,7 @@ public class Kmk004IWebService {
 	}
 
 	@POST
-	@Path("change-empCd/{empCd}")
+	@Path("change-empcd/{empCd}")
 	public SelectEmploymentFlexDto changeempCd(@PathParam("empCd") String empCd) {
 		return this.selectEmployment.selectEmploymentFlex(empCd);
 	}
