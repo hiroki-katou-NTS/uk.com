@@ -72,4 +72,9 @@ public class HistPersonCostCalculationDomainService implements IHistPersonCostCa
         personCostCalculationRepository.updateHistPersonCl(new HistPersonCostCalculation(companyId, listUpdate));
 
     }
+
+    @Override
+    public void registerLaborCalculationSetting(PersonCostCalculation domain) {
+
+    }
 }

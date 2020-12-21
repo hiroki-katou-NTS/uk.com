@@ -6,5 +6,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 public interface IHistPersonCostCalculationDomainService {
     public void createHistPersonCostCalculation(GeneralDate date);
+
     public void updateHistPersonCalculation(String histotyId, DatePeriod period);
+
+    public void registerLaborCalculationSetting(PersonCostCalculation domain);
 }

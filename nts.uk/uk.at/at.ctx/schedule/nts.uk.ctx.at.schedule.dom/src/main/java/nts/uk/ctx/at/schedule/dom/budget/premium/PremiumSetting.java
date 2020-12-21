@@ -29,7 +29,7 @@ public class PremiumSetting implements Validatable{
     private List<Integer> attendanceItems;
 
     public PremiumSetting(String companyID, String historyID, ExtraTimeItemNo iD, PremiumRate rate, UnitPrice unitPrice,
-			UseAttribute useAtr, List<Integer> attendanceItems) {
+		 List<Integer> attendanceItems) {
 		super();
 		this.companyID = companyID;
 		this.historyID = historyID;
