@@ -404,7 +404,12 @@ public class OvertimeLeaveAppCommonSet {
 		if (!isActualTime) return output;
 		// true INPUT．「事前の申請時間」があるかチェックする
 		if (!archivementOp.isPresent()) {
-			output.setExcessState(ExcessState.EXCESS_ERROR);
+			if (this.performanceExcessAtr == AppDateContradictionAtr.CHECKNOTREGISTER) {
+				output.setExcessState(ExcessState.EXCESS_ERROR);				
+			}
+			if ((this.performanceExcessAtr == AppDateContradictionAtr.CHECKREGISTER)) {
+				output.setExcessState(ExcessState.EXCESS_ALARM);	
+			}
 			if (!outDateApplication.getExcessStateDetail().isEmpty()) {
 				// loop 1
 				outDateApplication.getExcessStateDetail().forEach(item -> {
