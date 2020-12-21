@@ -60,7 +60,8 @@ module nts.uk.at.view.kmk004.l {
 									name: 'time-work',
 									params:{
 										selectedYear: selectedYear,
-										years: years
+										years: years,
+										checkEmployee: true
 									}
 								}"></div>
 							</div>

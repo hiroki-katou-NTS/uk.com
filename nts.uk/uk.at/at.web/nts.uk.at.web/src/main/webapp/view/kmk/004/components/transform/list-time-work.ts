@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk004.components {
 		GET_WORK_TIME: 'screen/at/kmk004/getWorkingHoursByCompany'
 	};
 
-	const TYPE = 0;
+	const TYPE = 1;
 
 	const template = `
         <div class="list-time">
@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk004.components {
                                 <input class="lable-input" 
                                     data-bind="ntsTimeEditor: {
                                         value: $data.legalLaborTime,
-                                        enable: $parent.ckeckNullYear, 
+                                        enable: $parent.checkNullYear, 
                                         inputFormat: 'time',
                                         option: {
                                             width: '60px',
@@ -90,7 +90,7 @@ module nts.uk.at.view.kmk004.components {
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public total: KnockoutObservable<string> = ko.observable('');
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-		public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
+		public checkNullYear: KnockoutObservable<boolean> = ko.observable(false);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public years: KnockoutObservableArray<IYear>;
 		
@@ -128,7 +128,7 @@ module nts.uk.at.view.kmk004.components {
 			const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
 
 			if (ko.unwrap(vm.selectedYear) != null) {
-				vm.ckeckNullYear(true);
+				vm.checkNullYear(true);
 			}
 
 			vm.$ajax(API.GET_WORK_TIME, input)

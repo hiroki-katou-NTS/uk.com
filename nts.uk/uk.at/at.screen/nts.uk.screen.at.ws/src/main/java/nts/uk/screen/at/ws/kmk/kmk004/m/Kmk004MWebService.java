@@ -48,19 +48,19 @@ public class Kmk004MWebService {
 
 	@POST
 	@Path("viewM/monthlyWorkTimeSet/add")
-	public void registerMonthlyWorkTimeSet(CommandHandlerContext<SaveMonthlyWorkTimeSetWkpCommand> command) {
+	public void registerMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetWkpCommand command) {
 		registerHandler.handle(command);
 	}
 
 	@POST
 	@Path("viewM/monthlyWorkTimeSet/update")
-	public void updateMonthlyWorkTimeSet(CommandHandlerContext<SaveMonthlyWorkTimeSetWkpCommand> command) {
+	public void updateMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetWkpCommand command) {
 		updateHandler.handle(command);
 	}
 
 	@POST
 	@Path("viewM/monthlyWorkTimeSet/delete")
-	public void deleteMonthlyWorkTimeSet(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetWkpCommand> command) {
+	public void deleteMonthlyWorkTimeSet(DeleteTransMonthlyWorkTimeSetWkpCommand command) {
 		deleteHandler.handle(command);
 	}
 	

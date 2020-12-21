@@ -43,25 +43,25 @@ public class Kmk004OWebService {
 
 	@POST
 	@Path("viewO/monthlyWorkTimeSet/add")
-	public void registerMonthlyWorkTimeSet(CommandHandlerContext<SaveMonthlyWorkTimeSetShaCommand> command) {
+	public void registerMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetShaCommand command) {
 		registerHandler.handle(command);
 	}
 
 	@POST
 	@Path("viewO/monthlyWorkTimeSet/update")
-	public void updateMonthlyWorkTimeSet(CommandHandlerContext<SaveMonthlyWorkTimeSetShaCommand> command) {
+	public void updateMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetShaCommand command) {
 		updateHandler.handle(command);
 	}
 
 	@POST
 	@Path("viewO/monthlyWorkTimeSet/delete")
-	public void deleteMonthlyWorkTimeSet(CommandHandlerContext<DeleteTransMonthlyWorkTimeSetShaCommand> command) {
+	public void deleteMonthlyWorkTimeSet(DeleteTransMonthlyWorkTimeSetShaCommand command) {
 		deleteHandler.handle(command);
 	}
 	
 	@POST
-	@Path("viewO/getBasicSetting/{empId}")
-	public DeforLaborMonthTimeShaDto getBasicSetting(@PathParam("empId") String empId) {
+	@Path("viewO/getBasicSetting/{employeeId}")
+	public DeforLaborMonthTimeShaDto getBasicSetting(@PathParam("employeeId") String empId) {
 		return dislaySetting.displayDeforBasicSettingByEmployee(empId);
 	}
 	
