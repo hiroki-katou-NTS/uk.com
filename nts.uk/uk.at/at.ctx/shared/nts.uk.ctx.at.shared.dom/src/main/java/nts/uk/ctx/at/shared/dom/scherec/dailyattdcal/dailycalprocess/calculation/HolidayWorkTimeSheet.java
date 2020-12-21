@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
@@ -23,6 +24,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
@@ -65,6 +69,8 @@ public class HolidayWorkTimeSheet{
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param integrationOfDaily 日別実績(Work)
+	 * @param declareResult 申告時間帯作成結果
+	 * @param upperControl 事前申請上限制御
 	 * @return 休出枠時間(List)
 	 */
 	public List<HolidayWorkFrameTime> collectHolidayWorkTime(
@@ -72,7 +78,9 @@ public class HolidayWorkTimeSheet{
 			WorkType workType,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			IntegrationOfDaily integrationOfDaily){
+			IntegrationOfDaily integrationOfDaily,
+			DeclareTimezoneResult declareResult,
+			boolean upperControl){
 		
 		Map<Integer,HolidayWorkFrameTime> holidayTimeFrameList = new HashMap<Integer, HolidayWorkFrameTime>();
 		//強制区分
@@ -123,11 +131,40 @@ public class HolidayWorkTimeSheet{
 			}
 			calcHolidayTimeWorkTimeList = reOrderList;
 		}
-		//staticがついていなので、4末緊急対応	
-		//事前申請を上限とする制御
-		val afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList,holidayAutoCalcSetting);
+		List<HolidayWorkFrameTime> afterCalcUpperTimeList = calcHolidayTimeWorkTimeList;
+		if (upperControl){
+			//staticがついていなので、4末緊急対応
+			//事前申請を上限とする制御
+			afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList, holidayAutoCalcSetting);
+		}
 		//振替処理
 		val aftertransTimeList = transProcess(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		if (declareResult.getCalcRangeOfOneDay().isPresent()){
+			//ループ処理
+			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
+			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
+			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
+				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
+				List<HolidayWorkFrameTime> declareFrameTimeList = declareSheet.collectHolidayWorkTime(
+						holidayAutoCalcSetting,
+						workType,
+						eachWorkTimeSet,
+						eachCompanyTimeSet,
+						integrationOfDaily,
+						new DeclareTimezoneResult(),
+						false);
+				//申告休出反映後リストの取得
+				HolidayWorkTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
+			}
+		}
+		//大塚モードの確認
+		if (true){
+			//マイナスの乖離時間を0にする
+			for (val aftertransTime : aftertransTimeList){
+				aftertransTime.getHolidayWorkTime().get().divergenceMinusValueToZero();
+				aftertransTime.getTransferTime().get().divergenceMinusValueToZero();
+			}
+		}
 		return aftertransTimeList;
 	}
 	
@@ -641,5 +678,60 @@ public class HolidayWorkTimeSheet{
 					processingTimezone));
 		}
 		return new HolidayWorkTimeSheet(holidayWorkFrameTimeSheets);
+	}
+	
+	/**
+	 * 申告休出反映後リストの取得
+	 * @param recordList 休出枠時間（実績用）
+	 * @param declareList 休出枠時間（申告用）
+	 * @param declareResult 申告時間帯作成結果
+	 */
+	private static void getListAfterReflectDeclare(
+			List<HolidayWorkFrameTime> recordList,
+			List<HolidayWorkFrameTime> declareList,
+			DeclareTimezoneResult declareResult){
+
+		// 申告Listから反映時間=0:00のデータを削除する
+		declareList.removeIf(c ->
+		(c.getHolidayWorkTime().get().getCalcTime().valueAsMinutes() + c.getTransferTime().get().getCalcTime().valueAsMinutes() == 0));
+		// 休出枠時間を確認する
+		for (HolidayWorkFrameTime record : recordList){
+			// 処理中の休出枠NOが申告用Listに存在するか確認
+			Optional<HolidayWorkFrameTime> declare = declareList.stream()
+					.filter(c -> c.getHolidayFrameNo().v() == record.getHolidayFrameNo().v()).findFirst();
+			if (declare.isPresent()){
+				// 処理中の休出枠時間に申告用の計算時間を反映
+				record.getHolidayWorkTime().get().replaceTimeWithCalc(declare.get().getHolidayWorkTime().get().getCalcTime());
+				record.getTransferTime().get().replaceTimeWithCalc(declare.get().getTransferTime().get().getCalcTime());
+				// 編集状態．休出に処理中の休出枠NOを追加する
+				if (declareResult.getDeclareCalcRange().isPresent()){
+					DeclareCalcRange calcRange = declareResult.getDeclareCalcRange().get();
+					calcRange.getEditState().getHolidayWork().add(record.getHolidayFrameNo());
+				}
+			}
+		}
+		// 申告用Listを確認する
+		for (HolidayWorkFrameTime declare : declareList){
+			// 処理中の休出枠NOが申告用Listに存在するか確認
+			Optional<HolidayWorkFrameTime> record = recordList.stream()
+					.filter(c -> c.getHolidayFrameNo().v() == declare.getHolidayFrameNo().v()).findFirst();
+			if (!record.isPresent()){
+				// 処理中の休出枠時間を反映後Listに追加
+				recordList.add(new HolidayWorkFrameTime(
+						declare.getHolidayFrameNo(),
+						Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
+								declare.getHolidayWorkTime().get().getCalcTime(),
+								new AttendanceTime(0))),
+						Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
+								declare.getTransferTime().get().getCalcTime(),
+								new AttendanceTime(0))),
+						Finally.of(new AttendanceTime(0))));
+				// 編集状態．休出に処理中の休出枠NOを追加する
+				if (declareResult.getDeclareCalcRange().isPresent()){
+					DeclareCalcRange calcRange = declareResult.getDeclareCalcRange().get();
+					calcRange.getEditState().getHolidayWork().add(declare.getHolidayFrameNo());
+				}
+			}
+		}
 	}
 }
