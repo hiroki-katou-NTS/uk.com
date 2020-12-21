@@ -107,7 +107,7 @@
       <button
         type="button"
         class="btn btn-success btn-block text-center mb-3"
-        v-on:click="next()"
+        v-on:click="nextToStep2()"
         v-if="mode"
       >
         {{ "KAFS12_19" | i18n }}
@@ -115,7 +115,7 @@
       <button
         type="button"
         class="btn btn-primary btn-block text-center mb-3"
-        v-on:click="next()"
+        v-on:click="nextToStep2()"
         v-if="!mode"
       >
         {{ "KAFS12_19" | i18n }}

@@ -257,6 +257,12 @@ export class KafS12A2Component extends KafS00ShrComponent {
             });
     }
 
+    public nextToStep3() {
+        const vm = this;
+
+        vm.$emit('next-to-step-three',{});
+    }
+
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const vm = this;
         vm.application.opAppStandardReasonCD = opAppStandardReasonCD;

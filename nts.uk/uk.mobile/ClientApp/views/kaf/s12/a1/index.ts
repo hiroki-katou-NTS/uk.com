@@ -100,7 +100,7 @@ export class KafS12A1Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
-
+       
         if (vm.params) {
             vm.mode = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
@@ -127,6 +127,7 @@ export class KafS12A1Component extends KafS00ShrComponent {
                     vm.updateKaf000_A_Params(vm.user);
                     vm.updateKaf000_B_Params(vm.mode);
                     vm.updateKaf000_C_Params(vm.mode);
+                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
                     if (vm.mode) {
                         return vm.$http.post('at', API.initAppNew, {});
                     }
@@ -152,6 +153,12 @@ export class KafS12A1Component extends KafS00ShrComponent {
             .then(() => {
                 vm.$mask('hide');
             });
+    }
+
+    public nextToStep2() {
+        const vm = this;
+
+        vm.$emit('next-to-step-two',{data: 'this is data'});
     }
 
     public kaf000BChangeDate(objectDate) {
