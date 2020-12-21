@@ -25,8 +25,10 @@ public class AfterChangeFlexWorkPlaceSetting {
 		AfterChangeFlexWorkPlaceSettingDto result = new AfterChangeFlexWorkPlaceSettingDto();
 
 		// 職場別基本設定（フレックス勤務）を表示する
-		result.setDisplayFlexBasicSettingByWorkPlace(
-				this.displayFlexBasicSettingByWorkPlace.displayFlexBasicSettingByWokPlace(wkpId));
+		DisplayFlexBasicSettingByWorkPlaceDto displayFlexDto =  this.displayFlexBasicSettingByWorkPlace.displayFlexBasicSettingByWokPlace(wkpId);
+		
+		result.setFlexMonthActCalSet(displayFlexDto.getFlexMonthActCalSet());
+		result.setFlexPredWorkTime(displayFlexDto.getFlexPredWorkTime());
 		// 職場リストを表示する
 		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.FLEX));
 

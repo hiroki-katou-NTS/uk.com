@@ -19,9 +19,9 @@ import nts.uk.screen.at.app.kmk004.h.AfterCopyFlexMonthlyWorkTimeSetWkp;
 import nts.uk.screen.at.app.kmk004.h.DisplayInitialFlexScreenByWorkPlace;
 import nts.uk.screen.at.app.kmk004.h.DisplayInitialFlexScreenByWorkPlaceDto;
 import nts.uk.screen.at.app.kmk004.h.SelectFlexYearByWorkPlace;
+import nts.uk.screen.at.app.kmk004.h.SelectFlexYearByWorkPlaceDto;
 import nts.uk.screen.at.app.kmk004.h.SelectWorkPlaceFlex;
 import nts.uk.screen.at.app.kmk004.h.SelectWorkPlaceFlexDto;
-import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 
 @Path("screen/at/kmk004/h")
@@ -60,12 +60,12 @@ public class Kmk004HWebService {
 
 	@POST
 	@Path("change-year/{wkpId}/{year}")
-	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("wkpId") String wkpId, @PathParam("year") int year) {
+	public SelectFlexYearByWorkPlaceDto changeYear(@PathParam("wkpId") String wkpId, @PathParam("year") int year) {
 		return this.selectFlexYear.selectFlexYearByWorkPlace(wkpId, year);
 	}
 
 	@POST
-	@Path("change-wkpid/{wkpId}/{year}")
+	@Path("change-wkpid/{wkpId}")
 	public SelectWorkPlaceFlexDto changeWkpId(@PathParam("wkpId") String wkpId) {
 		return this.selectWorkPlace.selectWorkPlaceFlex(wkpId);
 	}
@@ -95,8 +95,8 @@ public class Kmk004HWebService {
 	}
 
 	@POST
-	@Path("change-setting")
-	public AfterChangeFlexWorkPlaceSettingDto changeSetting(String wkpId) {
+	@Path("change-setting/{wkpId}")
+	public AfterChangeFlexWorkPlaceSettingDto changeSetting(@PathParam("wkpId") String wkpId) {
 		return this.afterChangeSetting.afterChangeFlexWorkPlaceSetting(wkpId);
 	}
 

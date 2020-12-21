@@ -45,14 +45,22 @@ const template = `
 						</div>
 					</div>
 	`;
-const COMPONENT_NAME = 'screen-h-component';
 
-const API_URL = {
-	START_PAGE: 'screen/at/kmk004/h/start-page'
+const BASE_H_URL = 'screen/at/kmk004/h/';
+
+const API_H_URL = {
+	START_PAGE: BASE_H_URL + 'init-screen',
+	CHANGE_YEAR: BASE_H_URL + 'change-year/',
+	CHANGE_WKPID: BASE_H_URL + 'change-wkpid/',
+	REGISTER: BASE_H_URL + 'register',
+	UPDATE: BASE_H_URL + 'update',
+	DELETE: BASE_H_URL + 'delete',
+	AFTER_COPY: BASE_H_URL + 'after-copy/',
+	CHANGE_SETTING: BASE_H_URL + 'change-setting/',
 };
 
 @component({
-	name: COMPONENT_NAME,
+	name: 'screen-h-component',
 	template
 })
 
@@ -66,15 +74,47 @@ class ScreenHComponent extends ko.ViewModel {
 		const vm = this;
 
 		vm.screenMode = params.screenMode;
-		/*	vm.$blockui('invisible')
-				.then(() => vm.$ajax(API_URL.START_PAGE))
-				.then((data: IScreenData) => {
-					vm.screenData(new FlexScreenData(data));
-				})
-				.then(() => vm.$blockui('clear'));*/
+		vm.$blockui('invisible')
+			.then(() => vm.$ajax(API_H_URL.START_PAGE))
+			.done((data) => {
+				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+				vm.screenData().updateData(data);
+			})
+			.always(() => vm.$blockui('clear'));
 		vm.initWorkPlaceList();
 
+		vm.screenData().selectedYear.subscribe((yearInput) => {
+
+			if (!yearInput) {
+				return;
+			}
+
+			let year = Number(yearInput);
+
+			//check if data has in unsave list => bind data from that
+			let unsaveItem = _.find(vm.screenData().unSaveSetComs, ['year', year]);
+
+			if (unsaveItem) {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				vm.screenData().serverData = unsaveItem;
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+			} else {
+				let isChanged = vm.screenData().saveToUnSaveList();
+				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				//else load data from sever
+				vm.$blockui('invisible');
+				vm.$ajax(API_H_URL.CHANGE_YEAR + vm.screenData().selected() + '/' + year).done((data) => {
+					vm.screenData().setYM(year, data);
+				}).always(() => { vm.$blockui('clear'); });
+
+			}
+
+		});
+
 	}
+
+	
 
 	initWorkPlaceList() {
 		const vm = this, StartMode = {
@@ -107,20 +147,47 @@ class ScreenHComponent extends ko.ViewModel {
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
 
-			vm.screenData().selected.subscribe((value) => {
-				let datas: Array<UnitModel> = $('#work-place-list').getDataList()
+			vm.screenData().selected.subscribe((wkpId) => {
 
-					, flat: any = function(wk: UnitModel) {
-						return [wk, _.flatMap(wk.children, flat)];
-					},
-					flatMapItems = _.flatMapDeep(datas, flat),
+				vm.$blockui('invisible')
+					.then(() => vm.$ajax(API_H_URL.CHANGE_WKPID + wkpId))
+					.done((data) => {
+						vm.screenData().yearList(_.chain(data.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
+						vm.screenData().serverYears(data.yearList);
+						vm.screenData().unSaveSetComs = [];
 
-					selectedItem: UnitModel = _.find(flatMapItems, ['id', value]);
-				vm.screenData().selectedName(selectedItem ? selectedItem.name : '');
+						if (vm.screenData().selectedYear() == data.yearList[0]) {
+							vm.screenData().selectedYear.valueHasMutated();
+						} else {
+							vm.screenData().selectedYear(data.yearList[0]);
+						}
+						
+						vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+						vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+					})
+					.always(() => vm.$blockui('clear'));
+
+				vm.setSelectedName(wkpId);
+
 			});
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();
 		});
+
+	}
+
+	setSelectedName(wkpId: string) {
+		const vm = this;
+
+		let datas: Array<UnitModel> = $('#work-place-list').getDataList()
+
+			, flat: any = function(wk: UnitModel) {
+				return [wk, _.flatMap(wk.children, flat)];
+			},
+			flatMapItems = _.flatMapDeep(datas, flat),
+
+			selectedItem: UnitModel = _.find(flatMapItems, ['id', wkpId]);
+		vm.screenData().selectedName(selectedItem ? selectedItem.name : '');
 
 	}
 
