@@ -81,12 +81,14 @@ module knr002.b {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 //getShared from A Screen
-                self.empInfoTerCode(getShared('KNR002B_empInfoTerCode'));
-                self.empInfoTerName(getShared('KNR002B_empInfoTerName'));
-                self.modelEmpInfoTer(getShared('KNR002B_modelEmpInfoTer'));
-                self.workLocationName(getShared('KNR002B_workLocationName'));
-                self.lastSuccessDate(getShared('KNR002B_lastSuccessDate'));
-                self.status(getShared('KNR002B_status'));
+                let data: any = getShared('knr002-b');
+                console.log(data, 'from A');
+                self.empInfoTerCode(data.empInfoTerCode);
+                self.empInfoTerName(data.empInfoTerName);
+                self.modelEmpInfoTer(data.displayModelEmpInfoTer);
+                self.workLocationName(data.workLocationName);
+                self.lastSuccessDate(data.signalLastTime);
+                self.status(data.terminalCurrentState);
                 // load List Log in the Period
                 self.loadLogInPeriod(self.empInfoTerCode(), self.sTime(), self.eTime()); 
 

@@ -1,9 +1,9 @@
 module nts.uk.at.view.knr002.a {
     import blockUI = nts.uk.ui.block;
-    // import dialog = nts.uk.ui.dialog;
-    // import alertError = nts.uk.ui.alertError;
     import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
     import service = nts.uk.at.view.knr002.a.service;
+    import modal =  nts.uk.ui.windows.sub.modal;;
 
 
     export module viewmodel{
@@ -21,6 +21,8 @@ module nts.uk.at.view.knr002.a {
             numNormalState: KnockoutObservable<number> = ko.observable(0);
             numOfRegTerminals: KnockoutObservable<number> = ko.observable(0);
             numUntransmitted: KnockoutObservable<number> = ko.observable(0);
+            
+
             
             constructor() {
                 const vm = this;
@@ -41,7 +43,8 @@ module nts.uk.at.view.knr002.a {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 vm.loadData();
-                blockUI.clear();   																			
+                setInterval(vm.loadData.bind(vm), 15000);
+                  																			
                 dfd.resolve();											
                 return dfd.promise();											
             }
@@ -53,14 +56,14 @@ module nts.uk.at.view.knr002.a {
                 $('#grid_table_headers th:nth-child(10)').addClass('bl-0');
             }
 
-            private loadData() {
+            public loadData() {
                 let vm = this;
                 blockUI.invisible();
                 
                 service.getAll()
                 .done((res: ResponseData) => {
                     if (res) {
-                        console.log(res, 'data');
+                        console.log(res, 'data1');
                         vm.dataSource(res);
                         vm.numOfRegTerminals(res.numOfRegTerminals);
                         vm.numAbnormalState(res.numAbnormalState);
@@ -102,8 +105,20 @@ module nts.uk.at.view.knr002.a {
                     }
                 })
                 .fail(res => console.log('fail roi'))
-                .always(() => console.log('Always'));
+                .always(() => blockUI.clear() );
             }
+
+            public openKNR002BDialog(data: any) {
+                const vm = this;
+                console.log(data, 'zzzzdata');
+                blockUI.invisible();
+                setShared('knr002-b', data);
+                modal('/view/knr/002/b/index.xhtml', { title: 'B_Screen', }).onClosed(() => {
+                    console.log('b closed');
+                    blockUI.clear();
+                });
+            }
+            
 
             private filterHandle(value: string) {
                 $("#grid").igGridFiltering('filter', ([{ fieldName: "terminalCurrentState", expr: parseInt(value), cond: "equals"}]));
@@ -122,6 +137,18 @@ module nts.uk.at.view.knr002.a {
 
             private loadGrid() {
                 let vm = this;
+
+                var stateTable: any = [];
+                
+                vm.dataSource().listEmpInfoTerminalDto.forEach((e, index) => {
+                    if (e.terminalCurrentState !== 1)  return;
+                    [ "empInfoTerCode", "terminalCurrentState", "empInfoTerName", "displayModelEmpInfoTer",
+                        "workLocationName",  "signalLastTime", "displayCurrentState", "open", "open1", "open2", "displayFlag" ].forEach(column => {
+                        stateTable.push(new CellState(e.empInfoTerCode, column, ["bg-red"]));
+                    });
+                    
+                    
+                });
                     
                 $("#grid").ntsGrid({
                     width: '800px',
@@ -151,8 +178,15 @@ module nts.uk.at.view.knr002.a {
                                 renderFilterButton : false
                             }
                         ],
+                    ntsFeatures: [
+                        { name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: stateTable },
+                    ],
                     ntsControls: [
-                        { name: 'Button7', text: getText("KNR002_50"), click: function() { console.log('Button7'); }, controlType: 'Button' },
+                        { name: 'Button7', text: getText("KNR002_50"), click: function(e: any) {vm.openKNR002BDialog(e)}, controlType: 'Button' },
                         { name: 'Button8', text: getText("KNR002_51"), click: function() { console.log('Button8'); }, controlType: 'Button' },
                         { name: 'Button9', text: getText("KNR002_52"), click: function() { console.log('Button9'); }, controlType: 'Button' }
                     ],
@@ -181,6 +215,18 @@ module nts.uk.at.view.knr002.a {
             displayModelEmpInfoTer: string,
             displayCurrentState: string,
             displayFlag: string
+        }
+
+        class CellState {
+            rowId: string;
+            columnKey: string;
+            state: Array<any>;
+
+            constructor(rowId: string, columnKey: string, state: Array<any>) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.state = state;
+            }
         }
     }
 }
