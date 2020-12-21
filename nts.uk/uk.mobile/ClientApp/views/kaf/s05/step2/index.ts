@@ -153,7 +153,9 @@ export class KafS05Step2Component extends Vue {
         }
         
     }
-
+    public bindHolidayTime() {
+        console.log('bindHolidayTime');
+    }
 
     public createHolidayTime() {
         const self = this;
@@ -213,7 +215,7 @@ export class KafS05Step2Component extends Vue {
     public bindReason(divergenceTimeRoot: DivergenceTimeRoot, divergenceReasonInputMethod: DivergenceReasonInputMethod) {
         const self = this;
         let reason = {} as Reason;
-        reason.title = '';
+        reason.title = ' ';
         reason.reason = null;
         reason.selectedValue = null;
         if (!_.isNil(divergenceTimeRoot)) {
