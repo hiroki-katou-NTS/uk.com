@@ -528,7 +528,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
 		
-		return new RCDailyCorrectionResult(domainDailyNew, (month == null || !month.getDomainMonth().isPresent()) ? null : Arrays.asList(month.getDomainMonth().get()), commandNew, commandOld, dailyItems, isUpdate);
+		return new RCDailyCorrectionResult(domainDailyNew, (month == null || !month.getDomainMonth().isPresent()) ? Collections.emptyList() : Arrays.asList(month.getDomainMonth().get()), commandNew, commandOld, dailyItems, isUpdate);
 	}
 	
 	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
