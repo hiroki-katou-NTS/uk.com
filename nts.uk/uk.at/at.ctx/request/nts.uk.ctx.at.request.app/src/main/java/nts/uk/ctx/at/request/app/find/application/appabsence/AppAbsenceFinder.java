@@ -15,6 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceStartScreenBOutput;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AccumulatedRestManagementDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AnualLeaveManagementDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.Overtime60HMana
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SubstituteLeaveManagementDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDetailScreenInfoDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
@@ -46,11 +48,13 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppForLeaveStartOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
@@ -127,27 +131,6 @@ public class AppAbsenceFinder {
 		
 		// 1.休暇申請（新規）起動処理
 		AppAbsenceStartInfoDto appDispInfoStartup = AppAbsenceStartInfoDto.fromDomain(absenseProcess.getVacationActivation(companyID, appDispInfo.toDomain()));
-		
-		// 休暇申請設定を取得する
-//		AppAbsenceStartInfoDto holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
-//		result.hdAppSet = HdAppSetDto.convertToDto(holidayRequestSetOutput.getHdAppSet());
-//		result.displayReasonLst = holidayRequestSetOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
-//		// 休暇残数情報を取得する
-//		RemainVacationInfo remainVacationInfo = absenseProcess.getRemainVacationInfo(
-//				companyID, 
-//				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getSid(), 
-//				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
-//		result.remainVacationInfo = remainVacationInfo;
-//		// 取得した情報もとに「休暇残数情報」にセットして返す
-//		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
-//		holidayAppTypes = this.getHolidayAppTypeName(
-//				Optional.of(holidayRequestSetOutput.getHdAppSet()),
-//				holidayAppTypes,
-//				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
-//		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
-//		result.holidayAppTypeName = holidayAppTypes;
-		
-		
 		
 		return appDispInfoStartup;
 	}
@@ -648,5 +631,11 @@ public class AppAbsenceFinder {
 	            wtAfter != null ? wtAfter.toDomain() : null, 
 	            leaveComDayOffMana.stream().map(item -> item.toDomain()).collect(Collectors.toList()), 
 	            payoutSubofHDManagements.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
+	}
+	
+	public AbsenceStartScreenBOutput getAppForLeaveStartB(String companyID, String appID, AppDispInfoStartupDto appDispInfoStartupOutput) {
+	    AppForLeaveStartOutput appForLeaveStart = absenseProcess.getAppForLeaveStartB(companyID, appID, appDispInfoStartupOutput.toDomain());
+	    
+	    return null;
 	}
 }

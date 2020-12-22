@@ -15,8 +15,10 @@ import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsence
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceStartScreenBOutput;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForLeaveStartBCommand;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeWorkTypeParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckTyingManagementParam;
@@ -31,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/appforleave")
 @Produces("application/json")
@@ -62,32 +65,32 @@ public class AppForLeaveWebService extends WebService{
 				param.getHolidayAppType(),
 				param.getAppWithDate());
 	}
-	@POST
-	@Path("getChangeAllDayHalfDay")
-	public AppAbsenceStartInfoDto getChangeAllDayHalfDay(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(
-				param.getAppAbsenceStartInfoDto(),
-				param.isDisplayHalfDayValue(),
-				param.getAlldayHalfDay(),
-				param.getHolidayType());
-	}
-	@POST
-	@Path("getChangeAllDayHalfDayForDetail")
-	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeByAllDayOrHalfDayForUIDetail(param);
-	}
-	@POST
-	@Path("findChangeDisplayHalfDay")
-	public AppAbsenceStartInfoDto getChangeDisplayHalfDay(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeDisplayHalfDay(
-				param.getStartAppDate(),
-				param.isDisplayHalfDayValue(),
-				param.getEmployeeID(),
-				param.getWorkTypeCode(),
-				param.getHolidayType(),
-				param.getAlldayHalfDay(),
-				param.getAppAbsenceStartInfoDto());
-	}
+//	@POST
+//	@Path("getChangeAllDayHalfDay")
+//	public AppAbsenceStartInfoDto getChangeAllDayHalfDay(ParamGetAllAppAbsence param) {
+//		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(
+//				param.getAppAbsenceStartInfoDto(),
+//				param.isDisplayHalfDayValue(),
+//				param.getAlldayHalfDay(),
+//				param.getHolidayType());
+//	}
+//	@POST
+//	@Path("getChangeAllDayHalfDayForDetail")
+//	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetAllAppAbsence param) {
+//		return this.appForLeaveFinder.getChangeByAllDayOrHalfDayForUIDetail(param);
+//	}
+//	@POST
+//	@Path("findChangeDisplayHalfDay")
+//	public AppAbsenceStartInfoDto getChangeDisplayHalfDay(ParamGetAllAppAbsence param) {
+//		return this.appForLeaveFinder.getChangeDisplayHalfDay(
+//				param.getStartAppDate(),
+//				param.isDisplayHalfDayValue(),
+//				param.getEmployeeID(),
+//				param.getWorkTypeCode(),
+//				param.getHolidayType(),
+//				param.getAlldayHalfDay(),
+//				param.getAppAbsenceStartInfoDto());
+//	}
 	@POST
 	@Path("findChangeWorkType")
 	public AppAbsenceStartInfoDto getChangeWorkType(ChangeWorkTypeParam param) {
@@ -108,11 +111,11 @@ public class AppForLeaveWebService extends WebService{
 	public ProcessResult insert(RegisterAppAbsenceCommand param) {
 		return creatAppAbsence.handle(param);
 	}
-	@POST
-	@Path("getByAppID")
-	public AppAbsenceDetailDto getByAppID(String appID) {
-		return this.appForLeaveFinder.getByAppID(appID);
-	}
+//	@POST
+//	@Path("getByAppID")
+//	public AppAbsenceDetailDto getByAppID(String appID) {
+//		return this.appForLeaveFinder.getByAppID(appID);
+//	}
 	
 	@POST
 	@Path("update")
@@ -142,6 +145,15 @@ public class AppForLeaveWebService extends WebService{
 	@Path("checkVacationTyingManage")
 	public VacationCheckOutput checkVacationTyingManage(CheckTyingManagementParam checkTyingManageparam) {
 	    return appForLeaveFinder.checkVacationTyingManage(checkTyingManageparam.getWtBefore(), checkTyingManageparam.getWtAfter(), checkTyingManageparam.getLeaveComDayOffMana(), checkTyingManageparam.getPayoutSubofHDManagements());
+	}
+	
+	// ScreenB
+	@POST
+	@Path("getAppForLeaveStartB")
+	public AbsenceStartScreenBOutput getAppForLeaveStartB(AppForLeaveStartBCommand param) {
+	    String companyID = AppContexts.user().companyId();
+	    
+	    return appForLeaveFinder.getAppForLeaveStartB(companyID, param.getAppID(), param.getAppDispInfoStartupOutput());
 	}
 }
 

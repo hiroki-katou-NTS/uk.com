@@ -34,6 +34,7 @@ public class TimeDigestApplication {
             AttendanceTime timeSpecialVacation, 
             AttendanceTime timeAnualLeave, 
             Optional<Integer> specialVacationFrameNO) {
+        this.overtime60H = overtime60H;
         this.nursingTime = nursingTime;
         this.childTime = childTime;
         this.timeOff = timeOff;

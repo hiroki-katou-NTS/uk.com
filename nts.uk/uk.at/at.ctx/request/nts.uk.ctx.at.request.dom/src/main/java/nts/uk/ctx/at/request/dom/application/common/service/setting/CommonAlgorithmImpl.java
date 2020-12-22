@@ -766,46 +766,55 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
 		// to do // KAF006: -PhuongDV domain fix pending
 		//時間代休 = 0 AND 60H超休 = 0 AND 時間年休 = 0 AND 子の看護時間 = 0 AND 介護時間 = 0 AND 時間特別休暇 = 0
-		if ((timeDigestApplication.getChildTime() == null 
-		        && timeDigestApplication.getNursingTime() == null 
-		        && timeDigestApplication.getOvertime60H() == null 
-		        && timeDigestApplication.getTimeAnualLeave() == null 
-		        && timeDigestApplication.getTimeOff() == null 
-		        && timeDigestApplication.getTimeSpecialVacation() == null) || 
-		        (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() == 0
-				&& timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() == 0
-				&& timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() == 0
-				&& timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() == 0
-				&& timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() == 0
-				&& timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() == 0)) {
-			throw new BusinessException("Msg_511");
-		}
+//		if ((timeDigestApplication.getChildTime() == null 
+//		        && timeDigestApplication.getNursingTime() == null 
+//		        && timeDigestApplication.getOvertime60H() == null 
+//		        && timeDigestApplication.getTimeAnualLeave() == null 
+//		        && timeDigestApplication.getTimeOff() == null 
+//		        && timeDigestApplication.getTimeSpecialVacation() == null) || 
+//		        (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() == 0
+//				&& timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() == 0
+//				&& timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() == 0
+//				&& timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() == 0
+//				&& timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() == 0
+//				&& timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() == 0)) {
+//			throw new BusinessException("Msg_511");
+//		}
+		
+		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnualLeave()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeOff()) &&
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeSpecialVacation())) {
+            throw new BusinessException("Msg_511");
+        }
 		
 		if (timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() > 0) {
 		    int remain60H = 0;
 		    if (superHolidayUnit.isPresent()) {
 		        switch (superHolidayUnit.get()) {
                 case OneMinute:
-                    remain60H = timeDigestApplication.getOvertime60H().v() / 1;
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 1;
                     break;
                 case FifteenMinute:
-                    remain60H = timeDigestApplication.getOvertime60H().v() / 15;
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 15;
                     break;
                 case ThirtyMinute:
-                    remain60H = timeDigestApplication.getOvertime60H().v() / 30;
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 30;
                     break;
                 case OneHour:
-                    remain60H = timeDigestApplication.getOvertime60H().v() / 60;
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 60;
                     break;
                 case TwoHour:
-                    remain60H = timeDigestApplication.getOvertime60H().v() / 120;
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 120;
                     break;
                 default:
                     break;
                 }
 		        
 		        if (remain60H != 0) {
-		            throw new BusinessException("Msg_478");
+		            throw new BusinessException("Msg_478", superHolidayUnit.get().description);
 		        }
 		    }
 		}
@@ -815,26 +824,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    if (substituteHoliday.isPresent()) {
 		        switch (substituteHoliday.get()) {
 		        case OneMinute:
-		            remainTimeOff = timeDigestApplication.getTimeOff().v() / 1;
+		            remainTimeOff = timeDigestApplication.getTimeOff().v() % 1;
                     break;
                 case FifteenMinute:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 15;
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 15;
                     break;
                 case ThirtyMinute:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 30;
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 30;
                     break;
                 case OneHour:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 60;
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 60;
                     break;
                 case TwoHour:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 120;
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 120;
                     break;
                 default:
                     break;
                 }
 		        
 		        if (remainTimeOff != 0) {
-		            throw new BusinessException("Msg_477");
+		            throw new BusinessException("Msg_477", substituteHoliday.get().description);
                 }
 		    }
 		}
@@ -844,26 +853,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    if (annualLeaveUnit.isPresent()) {
 		        switch (substituteHoliday.get()) {
                 case OneMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 1;
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 1;
                     break;
                 case FifteenMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 15;
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 15;
                     break;
                 case ThirtyMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 30;
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 30;
                     break;
                 case OneHour:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 60;
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 60;
                     break;
                 case TwoHour:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 120;
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 120;
                     break;
                 default:
                     break;
                 }
                 
                 if (remainAnnual != 0) {
-                    throw new BusinessException("Msg_476");
+                    throw new BusinessException("Msg_476", annualLeaveUnit.get().description);
                 }
 		    }
 		}
@@ -873,26 +882,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    if (childNursingUnit.isPresent()) {
 		        switch (substituteHoliday.get()) {
                 case OneMinute:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() / 1;
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 1;
                     break;
                 case FifteenMinute:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() / 15;
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 15;
                     break;
                 case ThirtyMinute:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() / 30;
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 30;
                     break;
                 case OneHour:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() / 60;
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 60;
                     break;
                 case TwoHour:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() / 120;
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 120;
                     break;
                 default:
                     break;
                 }
                 
                 if (childTimeRemain != 0) {
-                    throw new BusinessException("Msg_1686");
+                    throw new BusinessException("Msg_1686", "#Com_ChildNurseHoliday", childNursingUnit.get().description);
                 }
 		    }
 		}
@@ -902,26 +911,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    if (nursingUnit.isPresent()) {
 		        switch (substituteHoliday.get()) {
                 case OneMinute:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() / 1;
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 1;
                     break;
                 case FifteenMinute:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() / 15;
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 15;
                     break;
                 case ThirtyMinute:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() / 30;
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 30;
                     break;
                 case OneHour:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() / 60;
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 60;
                     break;
                 case TwoHour:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() / 120;
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 120;
                     break;
                 default:
                     break;
                 }
                 
                 if (nursingRemain != 0) {
-                    throw new BusinessException("Msg_1686");
+                    throw new BusinessException("Msg_1686", "#Com_CareHoliday", nursingUnit.get().description);
                 }
 		    }
 		}
@@ -931,26 +940,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    if (pendingUnit.isPresent()) {
 		        switch (substituteHoliday.get()) {
 		        case OneMinute:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 1;
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 1;
 		            break;
 		        case FifteenMinute:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 15;
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 15;
 		            break;
 		        case ThirtyMinute:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 30;
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 30;
 		            break;
 		        case OneHour:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 60;
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 60;
 		            break;
 		        case TwoHour:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 120;
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 120;
 		            break;
 		        default:
 		            break;
 		        }
 		        
 		        if (timeSpecialRemain != 0) {
-		            throw new BusinessException("Msg_1686");
+		            throw new BusinessException("Msg_1686", "#KAFS12_46", pendingUnit.get().description);
 		        }
 		    }
 		}
@@ -970,5 +979,13 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				return workingConditionRepository.getBySidAndStandardDate(companyId, employeeId, baseDate);
 			}
 		};
+	}
+	
+	private boolean isValidAttendanceTime(AttendanceTime time) {
+	    if (time != null && time.v() != 0) {
+	        return true;
+	    }
+	    
+	    return false;
 	}
 }
