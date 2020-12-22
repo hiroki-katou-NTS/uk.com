@@ -45,6 +45,7 @@ import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInfor;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInputParam;
@@ -64,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
@@ -86,6 +88,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrecti
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfterCalcDaily;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
@@ -102,6 +105,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorD
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -179,6 +183,39 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private RecordDomRequireService requireService;
+	public RCDailyCorrectionResult handleUpdate(List<DailyRecordDto> dtoOlds,
+			List<DailyRecordDto> dtoNews, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
+			boolean flagCalculation, Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
+		
+		if (!flagCalculation) {
+			val result =  this.handler.processCalcDaily(commandNew, commandOld, dailyItems, true, month, ExecutionType.NORMAL_EXECUTION);
+			validatorDataDaily.removeErrorRemarkAll(AppContexts.user().companyId(), result.getLstDailyDomain(), dtoNews);
+			return result;
+		} else {
+//			List<EmployeeDailyPerErrorDto> lstErrorDto = dtoNews.stream().map(result -> result.getErrors())
+//					.flatMap(List::stream).collect(Collectors.toList());
+//			List<EmployeeDailyPerError> lstError = lstErrorDto.stream()
+//					.map(x -> x.toDomain(x.getEmployeeID(), x.getDate())).collect(Collectors.toList());
+//			lstError = validatorDataDaily.removeErrorRemark(AppContexts.user().companyId(), lstError, dtoNews);
+			val result = this.handler.handlerNoCalc(commandNew, commandOld, new ArrayList<>(), dailyItems, true, month, mode,
+					lstAttendanceItem);
+			validatorDataDaily.removeErrorRemarkAll(AppContexts.user().companyId(), result.getLstDailyDomain(), dtoNews);
+//			if (dataParent.getSpr() != null) {
+//				processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
+//						dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+//			}
+			return result;
+		}
+	}
+
+	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
+		List<EditStateOfDailyPerformance> editData = query.getItemValues().stream().map(x -> {
+			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.itemId(), query.getBaseDate(),
+					sid.equals(query.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
+							: EditStateSetting.HAND_CORRECTION_OTHER);
+		}).collect(Collectors.toList());
+		return editData;
+	}
 
 	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
 			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
@@ -793,7 +830,7 @@ public class DailyModifyResCommandFacade {
 		List<DailyModifyQuery> querys = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream()
-					.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
+					.map(y -> new ItemValue(y.getValue(), null, "",
 							y.getItemId()))
 					.collect(Collectors.toList()).stream().filter(ProcessCommonCalc.distinctByKey(p -> p.itemId()))
 					.collect(Collectors.toList());
@@ -1039,8 +1076,47 @@ public class DailyModifyResCommandFacade {
 				item.getLineBreakPosition(), item.getAttendanceAtr(), item.getTypeGroup(), item.getPrimitive());
 	}
 
-	private Map<Pair<String, GeneralDate>, List<DPItemValue>> releaseSign(List<DPItemCheckBox> dataCheckApproval,
-			List<DPItemValue> resultError, List<DailyRecordDto> dailys, String employeeId, boolean onlyCheckBox) {
+	private ItemFlex convertMonthToItem(MonthlyRecordWorkDto monthDto, DPMonthValue monthValue) {
+		ItemFlex itemResult = new ItemFlex();
+		MonthlyModifyResult result = MonthlyModifyResult.builder()
+				.items(AttendanceItemUtil.toItemValues(monthDto, Arrays.asList(18, 21, 189, 190, 191),
+						AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
+				.employeeId(monthValue.getEmployeeId()).yearMonth(monthValue.getYearMonth())
+				.closureId(monthValue.getClosureId()).closureDate(monthValue.getClosureDate())
+				.version(monthValue.getVersion()).completed();
+		mapValue(result.getItems(), itemResult);
+		return itemResult;
+	}
+
+	private void mapValue(List<ItemValue> items, ItemFlex dataCalc) {
+		for (ItemValue item : items) {
+			setValueMonth(dataCalc, item);
+		}
+	}
+
+	private void setValueMonth(ItemFlex dataCalc, ItemValue item) {
+		switch (item.itemId()) {
+		case 18:
+			dataCalc.setValue18(item);
+			break;
+		case 21:
+			dataCalc.setValue21(item);
+			break;
+		case 189:
+			dataCalc.setValue189(item);
+			break;
+		case 190:
+			dataCalc.setValue190(item);
+			break;
+		case 191:
+			dataCalc.setValue191(item);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private Map<Pair<String, GeneralDate>, List<DPItemValue>> releaseSign(List<DPItemCheckBox> dataCheckApproval, List<DPItemValue> resultError, List<DailyRecordDto> dailys, String employeeId, boolean onlyCheckBox) {
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> itemUi = new HashMap<>();
 		if (resultError.isEmpty() && !onlyCheckBox)
 			return itemUi;
@@ -1190,6 +1266,17 @@ public class DailyModifyResCommandFacade {
 			flexShortageRCDto.setVersion(monthValue.getVersion());
 			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
 		}
+		if (mode == 0 && monthlyParam.getHasFlex() != null && monthlyParam.getHasFlex()) {
+			val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(), monthlyParam);
+			if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
+				hasError = true;
+				if(!resultIU.getLstMonthDomain().isEmpty())
+					flexShortageRCDto.createDataCalc(convertMonthToItem(
+							MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), monthValue));
+			}
+			flexShortageRCDto.setVersion(monthValue.getVersion());
+			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
+		}
 		// 残数系のエラーチェック（月次集計なし）
 		val sidChange = ProcessCommonCalc.itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
 		val pairError = mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),
@@ -1226,42 +1313,42 @@ public class DailyModifyResCommandFacade {
 				x -> x.getEmployeeId().equals(dtoEdit.getEmployeeId()) && x.getBaseDate().equals(dtoEdit.getDate()))
 				.flatMap(x -> x.getItemValues().stream()).collect(Collectors.toList());
 		List<ItemValue> itemValue = itemValueTempDay.stream()
-				.filter(x -> DPText.ITEM_INSERT_STAMP_SOURCE.contains(x.getItemId())).collect(Collectors.toList());
+				.filter(x -> DPText.ITEM_INSERT_STAMP_SOURCE.contains(x.itemId())).collect(Collectors.toList());
 		itemValue.stream().forEach(x -> {
 			try {
-				switch (x.getItemId()) {
+				switch (x.itemId()) {
 				case 75:
 				case 79:
 				case 73:
 					dtoEdit.getAttendanceLeavingGate().get().getAttendanceLeavingGateTime()
-							.get(Math.abs(75 - x.getItemId()) / 4).getStart().setStampSourceInfo(stampSource);
+							.get(Math.abs(75 - x.itemId()) / 4).getStart().setStampSourceInfo(stampSource);
 					break;
 				case 77:
 				case 81:
 				case 85:
 					dtoEdit.getAttendanceLeavingGate().get().getAttendanceLeavingGateTime()
-							.get(Math.abs(77 - x.getItemId()) / 4).getEnd()
+							.get(Math.abs(77 - x.itemId()) / 4).getEnd()
 							.setStampSourceInfo(TimeChangeMeans.HAND_CORRECTION_OTHERS.value);
 					break;
 				case 31:
 				case 41:
-					if (x.getItemId() == 31 && dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getWorking()
+					if (x.itemId() == 31 && dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getWorking()
 							.getTime().getStampSourceInfo() != TimeChangeMeans.SPR_COOPERATION.value) {
-						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(31 - x.getItemId()) / 10)
+						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(31 - x.itemId()) / 10)
 								.getWorking().getTime().setStampSourceInfo(stampSource);
-					} else if (x.getItemId() == 41) {
+					} else if (x.itemId() == 41) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(1).getWorking().getTime()
 								.setStampSourceInfo(stampSource);
 					}
 					break;
 				case 34:
 				case 44:
-					if (x.getItemId() == 34
-							&& dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(34 - x.getItemId()) / 10)
+					if (x.itemId() == 34
+							&& dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(34 - x.itemId()) / 10)
 									.getLeave().getTime().getStampSourceInfo() != TimeChangeMeans.SPR_COOPERATION.value) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getLeave().getTime()
 								.setStampSourceInfo(stampSource);
-					} else if (x.getItemId() == 44) {
+					} else if (x.itemId() == 44) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(1).getLeave().getTime()
 								.setStampSourceInfo(stampSource);
 					}
@@ -1269,13 +1356,13 @@ public class DailyModifyResCommandFacade {
 				case 51:
 				case 59:
 				case 67:
-					dtoEdit.getTemporaryTime().get().getWorkLeaveTime().get(Math.abs(51 - x.getItemId()) / 8)
+					dtoEdit.getTemporaryTime().get().getWorkLeaveTime().get(Math.abs(51 - x.itemId()) / 8)
 							.getWorking().getTime().setStampSourceInfo(stampSource);
 					break;
 				case 53:
 				case 61:
 				case 69:
-					dtoEdit.getTemporaryTime().get().getWorkLeaveTime().get(Math.abs(53 - x.getItemId()) / 8).getLeave()
+					dtoEdit.getTemporaryTime().get().getWorkLeaveTime().get(Math.abs(53 - x.itemId()) / 8).getLeave()
 							.getTime().setStampSourceInfo(stampSource);
 					break;
 
@@ -1283,7 +1370,7 @@ public class DailyModifyResCommandFacade {
 					break;
 				}
 			} catch (Exception e) {
-				System.out.print("Lỗi map createStampSourceInfo itemId: " + x.getItemId());
+				System.out.print("Lỗi map createStampSourceInfo itemId: " + x.itemId());
 			}
 		});
 	}

@@ -268,12 +268,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private DailyRecordAdUpService dailyRecordAdUpService;
 
-	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE, DAILY_WORK_INFO_CODE);
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_NAME, DAILY_OPTIONAL_ITEM_NAME, DAILY_WORK_INFO_NAME);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
-		DOMAIN_CHANGED_BY_EVENT.put(DAILY_WORK_INFO_CODE, getArray(DAILY_ATTENDACE_LEAVE_CODE, DAILY_BREAK_TIME_CODE));
-		DOMAIN_CHANGED_BY_EVENT.put(DAILY_ATTENDACE_LEAVE_CODE, getArray(DAILY_BREAK_TIME_CODE));
+		DOMAIN_CHANGED_BY_EVENT.put(DAILY_WORK_INFO_NAME, getArray(DAILY_ATTENDACE_LEAVE_NAME, DAILY_BREAK_TIME_NAME));
+		DOMAIN_CHANGED_BY_EVENT.put(DAILY_ATTENDACE_LEAVE_NAME, getArray(DAILY_BREAK_TIME_NAME));
 	}
 
 	private String[] getArray(String... arrays) {
@@ -523,14 +523,14 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		executorService.submit(task);
 	}
 
-	public RCDailyCorrectionResult handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
-			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month) {
+	public RCDailyCorrectionResult handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeDailyPerError> lstError,
+			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode, Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
 		
 		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
 		
-		return new RCDailyCorrectionResult(domainDailyNew, (month == null || !month.getDomainMonth().isPresent()) ? null : Arrays.asList(month.getDomainMonth().get()), commandNew, commandOld, dailyItems, isUpdate);
+		return new RCDailyCorrectionResult(domainDailyNew, (month == null || !month.getDomainMonth().isPresent()) ? Collections.emptyList() : Arrays.asList(month.getDomainMonth().get()), commandNew, commandOld, dailyItems, isUpdate);
 	}
-
+	
 	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
 		updateWorkInfoAfterCalc(calced);
 
@@ -614,15 +614,15 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handleEditStates(boolean isUpdate, DailyRecordWorkCommand command) {
-		CommandFacade<T> handler = (CommandFacade<T>) getHandler(DAILY_EDIT_STATE_CODE, isUpdate);
+		CommandFacade<T> handler = (CommandFacade<T>) getHandler(DAILY_EDIT_STATE_NAME, isUpdate);
 //		List<ItemValue> itemValues = command.itemValues();
-		List<Integer> itemIds = command.itemValues().stream().map(x -> x.getItemId()).collect(Collectors.toList());
+		List<Integer> itemIds = command.itemValues().stream().map(x -> x.itemId()).collect(Collectors.toList());
 //		List<EditStateOfDailyPerformance> data = command.getEditState().getData().stream().filter(x -> itemIds.contains(x.getAttendanceItemId())).collect(Collectors.toList());
 //		command.getEditState().getData().clear();
 //		command.getEditState().updateDatas(data);
 		command.getEditState().itemChanged(itemIds);
 		if (handler != null) {
-			handler.handle((T) command.getCommand(DAILY_EDIT_STATE_CODE));
+			handler.handle((T) command.getCommand(DAILY_EDIT_STATE_NAME));
 		}
 	}
 
@@ -632,45 +632,41 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	private CommandFacade<?> getHandler(String layout, boolean isUpdate) {
 		switch (layout) {
-		case DAILY_WORK_INFO_CODE:
+		case DAILY_WORK_INFO_NAME:
 			return isUpdate ? this.workInfoUpdateHandler : this.workInfoAddHandler;
-		case DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_NAME:
 			return isUpdate ? this.calcAttrUpdateHandler : this.calcAttrAddHandler;
-		case DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_NAME:
 			return isUpdate ? this.affiliationInfoUpdateHandler : this.affiliationInfoAddHandler;
-		case DAILY_OUTING_TIME_CODE:
+		case DAILY_OUTING_TIME_NAME:
 			return isUpdate ? this.outingTimeUpdateHandler : this.outingTimeAddHandler;
-		case DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_NAME:
 			return isUpdate ? this.breakTimeUpdateHandler : this.breakTimeAddHandler;
-		case DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_NAME:
 			return isUpdate ? this.attendanceTimeUpdateHandler : this.attendanceTimeAddHandler;
-		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
 			return isUpdate ? this.attendanceTimeByWorkUpdateHandler : this.attendanceTimeByWorkAddHandler;
-		case DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_NAME:
 			return isUpdate ? this.timeLeavingUpdatedHandler : this.timeLeavingAddHandler;
-		case DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_NAME:
 			return isUpdate ? this.shortWorkTimeUpdateHandler : this.shortWorkTimeAddHandler;
-		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
 			return isUpdate ? this.specificDateAttrUpdateHandler : this.specificDateAttrAddHandler;
-		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
 			return isUpdate ? this.attendanceLeavingGateUpdateHandler : this.attendanceLeavingGateAddHandler;
-		case DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_NAME:
 			return isUpdate ? this.optionalItemUpdateHandler : this.optionalItemAddHandler;
-		case DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_NAME:
 			return isUpdate ? this.editStateUpdateHandler : this.editStateAddHandler;
-		case DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_NAME:
 			return isUpdate ? this.temporaryTimeUpdateHandler : this.temporaryTimeAddHandler;
-		case DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_NAME:
 			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
-		case DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_NAME:
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		default:
 			return null;
 		}
-	}
-
-	private String getGroup(ItemValue c) {
-		return String.valueOf(c.layoutCode().charAt(0));
 	}
 
 	private Map<String, List<GeneralDate>> toMapParam(List<DailyRecordWorkCommand> commands) {
