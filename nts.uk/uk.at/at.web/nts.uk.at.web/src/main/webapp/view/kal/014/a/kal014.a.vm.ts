@@ -699,7 +699,6 @@ module nts.uk.at.kal014.a {
         constructor(data: IWkpAlarmPermissionSettingDto){
             this.authSetting(_.isNil(data) ? 0 : data.authSetting);
             this.roleIds(_.isNil(data) ? [] : data.roleIds);
-            this.roleIdDis(_.isNil(data) ? "" :_.join(data.roleIds, ','))
         }
 
         update(data: IWkpAlarmPermissionSettingDto){
