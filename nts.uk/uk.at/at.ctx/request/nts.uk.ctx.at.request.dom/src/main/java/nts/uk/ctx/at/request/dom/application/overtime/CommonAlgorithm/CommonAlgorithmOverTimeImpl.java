@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -519,7 +520,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			// 勤務時間外の休憩時間を除く
 			output = this.createBreakTime(startTimeOp, endTimeOp, output);
 		}
-		
+		// 「開始時刻」の昇順にソートする(in excel)
+		output.setTimeZones(output.getTimeZones().stream().sorted(Comparator.comparing(DeductionTime::getStart)).collect(Collectors.toList()));
 		return output;
 		
 	}
