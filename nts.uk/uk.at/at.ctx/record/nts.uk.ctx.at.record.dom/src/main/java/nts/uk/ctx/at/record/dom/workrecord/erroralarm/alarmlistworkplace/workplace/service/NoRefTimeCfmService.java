@@ -60,9 +60,9 @@ public class NoRefTimeCfmService {
                 monthTimeWps.addAll(monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, MonthlyWorkTimeSet.LaborWorkTypeAttr.DEFOR_LABOR, startYear));
                 monthTimeWps.addAll(monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, MonthlyWorkTimeSet.LaborWorkTypeAttr.FLEX, startYear));
 
-                if (!CollectionUtil.isEmpty(monthTimeWps)) {
+                if (CollectionUtil.isEmpty(monthTimeWps)) {
                     // 「アラーム値メッセージ」を作成します。
-                    String message = TextResource.localize("KAL020_200", String.valueOf(startYear), workplaceId);
+                    String message = TextResource.localize("KAL020_200", String.valueOf(startYear), workplaceId); //TODO Q&A 38606
 
                     // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
