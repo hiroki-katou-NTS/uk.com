@@ -177,6 +177,8 @@ module nts.uk.at.view.kwr006.c {
             */
             openScreenD() {
                 var self = this;
+                const oldSelectedCodeC2_3 = self.selectedCodeC2_3();
+                const oldCurrentCodeListSwap = self.currentCodeListSwap();
                 if (!_.isEmpty(self.selectedCodeC2_3())) {
                     self.storeCurrentCodeBeforeCopy(self.selectedCodeC2_3());
                 }
@@ -216,11 +218,23 @@ module nts.uk.at.view.kwr006.c {
                         self.dataCoppy = ko.observable(nts.uk.ui.windows.getShared('KWR006_D'));
                         if (_.size(KWR006DOutput.lstAtdChoose.errorList)) {
                             nts.uk.ui.dialog.alertError({ messageId: KWR006DOutput.lstAtdChoose.errorList }).then(() => {
-                                self.saveData().always(() => self.dataCoppy(null));
+                                self.saveData()
+                                .fail(() => {
+                                    self.selectedCodeC2_3(oldSelectedCodeC2_3);
+                                    self.currentCodeListSwap(oldCurrentCodeListSwap);
+                                    if (_.isEmpty(oldSelectedCodeC2_3)) {
+                                        self.C3_2_value('');
+                                        self.C3_3_value('');
+                                    }
+                                })
+                                .always(() => self.dataCoppy(null));
                             });
                         }
                         else {
-                            self.saveData();
+                            self.saveData().fail(() => {
+                                self.selectedCodeC2_3(oldSelectedCodeC2_3);
+                                self.currentCodeListSwap(oldCurrentCodeListSwap);
+                            });
                         }
                     } else {
                         self.selectedCodeC2_3(self.storeCurrentCodeBeforeCopy());
