@@ -92,9 +92,12 @@ public interface PersonCostCalculationRepository {
     //=============================Update KML 001
 
     public Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid);
-    public Optional<HistPersonCostCalculation> getLastPersonCost(String cid);
+
+    public Optional<PersonCostCalculation> getLastPersonCost(String cid, String histId);
 
     public void createHistPersonCl(HistPersonCostCalculation domain);
 
     public void updateHistPersonCl(HistPersonCostCalculation domain);
+
+
 }

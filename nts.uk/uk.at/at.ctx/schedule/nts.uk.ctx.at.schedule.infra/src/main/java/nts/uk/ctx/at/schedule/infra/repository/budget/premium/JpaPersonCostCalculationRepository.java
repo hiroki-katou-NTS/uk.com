@@ -449,6 +449,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     }
 
     // ============================================Update kml001
+
     @Override
     public Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid) {
         StringBuilder query = new StringBuilder();
@@ -468,19 +469,33 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             return Optional.of(result);
         }
         return Optional.empty();
-    }   @Override
-    public Optional<HistPersonCostCalculation> getLastPersonCost(String cid) {
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT a FROM KscmtHistPersonCostCalculation a ");
-        query.append(" WHERE a.pk.companyID = :cid ");
-        query.append("  ORDER BY a.startDate DESC ");
+    }
 
-        List<KscmtHistPersonCostCalculation> listEntity = this.queryProxy().query(query.toString(), KscmtHistPersonCostCalculation.class)
+    @Override
+    public Optional<PersonCostCalculation> getLastPersonCost(String cid, String histId) {
+        StringBuilder queryRate = new StringBuilder();
+        queryRate.append("SELECT a FROM KscmtPerCostPremiRate a ");
+        queryRate.append(" WHERE a.pk.companyID = :cid ");
+        queryRate.append(" WHERE a.pk.histID = :histId ");
+        queryRate.append("  ORDER BY a.startDate DESC ");
+        List<KscmtPerCostPremiRate> listEntityRate = this.queryProxy().query(queryRate.toString(), KscmtPerCostPremiRate.class)
                 .setParameter("cid", cid)
+                .setParameter("histID", histId)
                 .getList();
+
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT a FROM KscmtPerCostCal a ");
+        query.append(" WHERE a.pk.companyID = :cid ");
+        query.append(" WHERE a.pk.histID = :histId ");
+        query.append("  ORDER BY a.startDate DESC ");
+        val listEntityPerCostCal = this.queryProxy().query(query.toString(), KscmtPerCostCal.class)
+                .setParameter("cid", cid)
+                .setParameter("histID", histId)
+                .getSingle();
+
         if (!listEntity.isEmpty()) {
-           DateHistoryItem historyItems ;
-           // HistPersonCostCalculation result = new HistPersonCostCalculation(cid, historyItems);
+            DateHistoryItem historyItems;
+            // HistPersonCostCalculation result = new HistPersonCostCalculation(cid, historyItems);
             //return Optional.of();
         }
         return Optional.empty();

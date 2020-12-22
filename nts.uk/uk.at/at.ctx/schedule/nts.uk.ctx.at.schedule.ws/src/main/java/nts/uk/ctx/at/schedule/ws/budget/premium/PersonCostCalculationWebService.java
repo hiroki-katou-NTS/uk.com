@@ -4,6 +4,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.*;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.*;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.HistAndPersonCostLastDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.HistPersonCostCalculationDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
@@ -110,10 +111,10 @@ public class PersonCostCalculationWebService extends WebService {
 
 
     //=================================== Update KML 001 ==================
-
+    // Init screen
     @POST
     @Path("findHistByCompanyID")
-    public List<HistPersonCostCalculationDto> getHistPersonCostCalculations() {
+    public HistAndPersonCostLastDto getHistPersonCostCalculations() {
         return this.personCostCalculationSettingFinder.getHistPersonCost();
     }
 

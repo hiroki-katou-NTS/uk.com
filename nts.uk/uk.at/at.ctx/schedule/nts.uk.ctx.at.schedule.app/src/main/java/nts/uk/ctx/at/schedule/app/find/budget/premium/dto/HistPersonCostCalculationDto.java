@@ -15,4 +15,5 @@ public class HistPersonCostCalculationDto {
     private String companyId;
     private String historyId;
 
+
 }
