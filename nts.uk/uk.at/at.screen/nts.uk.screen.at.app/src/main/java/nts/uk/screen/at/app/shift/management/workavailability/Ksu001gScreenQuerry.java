@@ -221,5 +221,12 @@ public class Ksu001gScreenQuerry {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
+
+		@Override
+		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+		
 	}
 }

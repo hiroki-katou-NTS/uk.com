@@ -290,6 +290,12 @@ public class GetInformationStartup {
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
 			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
 		}
+
+		@Override
+		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	}
 
 }

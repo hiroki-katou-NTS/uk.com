@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.common.timerounding;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -164,6 +165,21 @@ public class TimeRoundingSetting extends DomainObject implements Cloneable{
 	 */
 	public TimeRoundingSetting getReverseRounding() {
 		return new TimeRoundingSetting(this.roundingTime, this.rounding.getReverseRounding());
+	}
+	
+	public RoundingMode getRoundingMode() {
+		
+		switch (this.rounding) {
+		case ROUNDING_DOWN_OVER:
+			return RoundingMode.HALF_UP;
+		case ROUNDING_DOWN:
+			return RoundingMode.DOWN;
+		case ROUNDING_UP:
+			return RoundingMode.UP;
+
+		default:
+			throw new RuntimeException("invalid case: " + this.rounding);
+		}
 	}
 	
 	@Override
