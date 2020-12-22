@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
 
 public class OvertimeWorkFrameCommand implements OvertimeWorkFrameGetMemento{
 	
@@ -58,5 +59,19 @@ public class OvertimeWorkFrameCommand implements OvertimeWorkFrameGetMemento{
 	@Override
 	public OvertimeWorkFrameName getOvertimeWorkFrameName() {
 		return new OvertimeWorkFrameName(this.overtimeWorkFrName);
+	}
+
+
+	@Override
+	public RoleOvertimeWork getRole() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public NotUseAtr getTransferAtr() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
