@@ -5,7 +5,7 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { DivergenceReasonSelect, DisplayInfoOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType } from '../a/define.interface';
+import { DivergenceReasonSelect, DisplayInfoOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -154,7 +154,91 @@ export class KafS05Step2Component extends Vue {
         
     }
     public bindHolidayTime() {
-        console.log('bindHolidayTime');
+        const self = this;
+        let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
+        let workdayoffFrames = _.get(displayInfoOverTime, 'workdayoffFrames') as Array<WorkdayoffFrame>;
+        let holidayTimes = [] as Array<HolidayTime>;
+        if (!_.isNil(workdayoffFrames)) {
+            _.forEach(workdayoffFrames, (item: WorkdayoffFrame) => {
+                let holidayTime = {} as HolidayTime;
+                holidayTime.frameNo = String(item.workdayoffFrNo);
+                holidayTime.title = item.workdayoffFrName;
+                holidayTime.visible = true;
+                holidayTime.applicationTime = 0;
+                holidayTime.preApp = {
+                    preAppDisp: true,
+                    preAppTime: 0,
+                    preAppExcess: ExcessTimeStatus.NONE,
+
+                };
+                holidayTime.actualApp = {
+                    actualDisp: true,
+                    actualTime: 0,
+                    actualExcess: ExcessTimeStatus.NONE
+                };
+                holidayTime.type = AttendanceType.BREAKTIME;
+                holidayTimes.push(holidayTime);
+            });
+        }
+        _.forEach(_.range(1, 4), (item: any) => {
+            let holidayTime = {} as HolidayTime;
+            holidayTime.frameNo = '11';
+            if (item == 1) {
+                holidayTime.type = AttendanceType.MIDDLE_BREAK_TIME;
+                holidayTime.title = self.$i18n('KAFS05_85');
+            } else if (item == 2) {
+                holidayTime.type = AttendanceType.MIDDLE_EXORBITANT_HOLIDAY;
+                holidayTime.title = self.$i18n('KAFS05_86');
+            } else {
+                holidayTime.type = AttendanceType.MIDDLE_HOLIDAY_HOLIDAY;
+                holidayTime.title = self.$i18n('KAFS05_87');
+            }
+            holidayTime.visible = true;
+            holidayTime.applicationTime = 0;
+            holidayTime.preApp = {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE,
+
+            };
+            holidayTime.actualApp = {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            };
+            holidayTimes.push(holidayTime);
+        });
+
+        
+        // let midNightHolidayTimes = _.get(displayInfoOverTime,'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        // _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+        //     let holidayTime = {} as HolidayTime;
+        //     holidayTime.frameNo = '11';
+        //     if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+        //         holidayTime.type = AttendanceType.MIDDLE_BREAK_TIME;
+
+        //     } else if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+        //         holidayTime.type = AttendanceType.MIDDLE_EXORBITANT_HOLIDAY;
+        //     } else {
+        //         holidayTime.type = AttendanceType.MIDDLE_HOLIDAY_HOLIDAY;
+        //     }
+        //     holidayTime.visible = true;
+        //     holidayTime.applicationTime = 0;
+        //     holidayTime.preApp = {
+        //         preAppDisp: true,
+        //         preAppTime: 0,
+        //         preAppExcess: ExcessTimeStatus.NONE,
+
+        //     };
+        //     holidayTime.actualApp = {
+        //         actualDisp: true,
+        //         actualTime: 0,
+        //         actualExcess: ExcessTimeStatus.NONE
+        //     };
+        // });
+
+
+        self.holidayTimes = holidayTimes;
     }
 
     public createHolidayTime() {
@@ -246,6 +330,7 @@ export class KafS05Step2Component extends Vue {
         const self = this;
         self.bindAllReason();
         self.bindOverTime();
+        self.bindHolidayTime();
     }
 
 }
