@@ -119,6 +119,7 @@ module nts.uk.at.view.kwr006.a {
                 self.monthlyWorkScheduleConditionModel.itemSettingType.subscribe((value) => {
                     self.enableA7_3(value == 0);
                     self.enableA7_11(value == 1);
+                    nts.uk.ui.errors.clearAll();
                 });
             }
 
