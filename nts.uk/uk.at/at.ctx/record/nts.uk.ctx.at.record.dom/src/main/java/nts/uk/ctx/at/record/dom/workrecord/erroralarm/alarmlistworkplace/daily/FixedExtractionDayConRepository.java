@@ -10,4 +10,6 @@ public interface FixedExtractionDayConRepository {
      * @return List アラームリスト（職場）日別の固定抽出条件
      */
     List<FixedExtractionDayCon> getRange(List<String> errorAlarmWorkplaceId);
+
+    void register(List<FixedExtractionDayCon> domain);
 }

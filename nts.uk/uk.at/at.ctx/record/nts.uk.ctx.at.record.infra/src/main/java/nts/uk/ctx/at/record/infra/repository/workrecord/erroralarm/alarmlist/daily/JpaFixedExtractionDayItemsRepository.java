@@ -34,4 +34,10 @@ public class JpaFixedExtractionDayItemsRepository extends JpaRepository implemen
                 }).collect(Collectors.toList()))
                 .getList(KrcmtWkpFxexDayItm::toDomain);
     }
+
+    @Override
+    public List<FixedExtractionDayItems> getAll() {
+        return this.queryProxy().query(SELECT_ALL_FXEX_DAY_ITM, KrcmtWkpFxexDayItm.class)
+                .getList(KrcmtWkpFxexDayItm::toDomain);
+    }
 }

@@ -10,7 +10,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -19,6 +21,8 @@ public class JpaFixedExtractionMonthlyConRepository extends JpaRepository implem
     private static final String SELECT;
 
     private static final String FIND_BY_IDS_AND_USEATR;
+
+    private static final String GET_BY_IDS;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -30,6 +34,11 @@ public class JpaFixedExtractionMonthlyConRepository extends JpaRepository implem
         builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids AND a.useAtr = :useAtr ");
         FIND_BY_IDS_AND_USEATR = builderString.toString();
 
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids ");
+        GET_BY_IDS = builderString.toString();
+
     }
 
     @Override
@@ -39,5 +48,20 @@ public class JpaFixedExtractionMonthlyConRepository extends JpaRepository implem
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)
             .getList(KrcmtWkpMonFxexCon::toDomain);
+    }
+
+    @Override
+    public List<FixedExtractionMonthlyCon> getByIds(List<String> ids) {
+        if (ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonFxexCon.class)
+                .setParameter("ids", ids)
+                .getList(KrcmtWkpMonFxexCon::toDomain);
+    }
+
+    @Override
+    public void register(List<FixedExtractionMonthlyCon> domain) {
+        this.commandProxy().insertAll(domain.stream().map(KrcmtWkpMonFxexCon::fromDomain).collect(Collectors.toList()));
     }
 }

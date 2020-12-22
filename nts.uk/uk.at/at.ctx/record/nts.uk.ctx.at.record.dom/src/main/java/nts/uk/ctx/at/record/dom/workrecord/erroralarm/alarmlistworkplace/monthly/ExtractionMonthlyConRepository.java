@@ -5,4 +5,6 @@ import java.util.List;
 public interface ExtractionMonthlyConRepository {
 
     List<ExtractionMonthlyCon> getBy(List<String> ids, boolean useAtr);
+
+    List<ExtractionMonthlyCon> getByIds(List<String> ids);
 }

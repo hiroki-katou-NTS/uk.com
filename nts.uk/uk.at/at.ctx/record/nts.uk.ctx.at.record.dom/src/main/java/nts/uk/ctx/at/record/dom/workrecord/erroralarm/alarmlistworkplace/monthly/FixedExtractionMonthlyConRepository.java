@@ -5,4 +5,8 @@ import java.util.List;
 public interface FixedExtractionMonthlyConRepository {
 
     List<FixedExtractionMonthlyCon> getBy(List<String> ids, boolean useAtr);
+
+    List<FixedExtractionMonthlyCon> getByIds(List<String> ids);
+
+    void register(List<FixedExtractionMonthlyCon> domain);
 }

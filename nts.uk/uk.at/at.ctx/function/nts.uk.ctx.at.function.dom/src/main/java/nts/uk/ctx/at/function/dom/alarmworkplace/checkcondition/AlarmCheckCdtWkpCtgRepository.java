@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface AlarmCheckCdtWkpCtgRepository {
 
-    Optional<AlarmCheckCdtWorkplaceCategory> getByID(String id, int category, String categoryItemCD);
+    Optional<AlarmCheckCdtWorkplaceCategory> getByID(int category, String categoryItemCD);
 
     List<AlarmCheckCdtWorkplaceCategory> getByCategory(WorkplaceCategory category);
 
@@ -17,7 +17,7 @@ public interface AlarmCheckCdtWkpCtgRepository {
 
     void update(AlarmCheckCdtWorkplaceCategory domain);
 
-    void delete(String id);
+    void delete(int category, String categoryItemCD);
 
 
 

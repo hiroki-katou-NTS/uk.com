@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface FixedExtractionMonthlyItemsRepository {
 
     List<FixedExtractionMonthlyItems> getBy(List<FixedCheckMonthlyItemName> nos);
+
+    List<FixedExtractionMonthlyItems> getAll();
 }

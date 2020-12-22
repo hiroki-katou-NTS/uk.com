@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -62,7 +63,13 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
 
     @Override
     public void register(BasicFixedExtractionCondition domain) {
+        this.commandProxy().insert(KrcmtWkpBasicFxexCon.toEntity(domain));
+    }
 
+    @Override
+    public void registerAll(List<BasicFixedExtractionCondition> domain) {
+        this.commandProxy()
+                .insertAll(domain.stream().map(KrcmtWkpBasicFxexCon::toEntity).collect(Collectors.toList()));
     }
 
     @Override
