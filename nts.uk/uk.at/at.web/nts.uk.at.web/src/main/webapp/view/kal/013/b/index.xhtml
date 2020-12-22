@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 1000,
-                height: 450
+                width: 950,
+                height: 400
             };
         </script>
 
@@ -19,6 +19,9 @@
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
             <!--Monthly-->
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberDays
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio
 
             <!--Daily-->
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.primitivevalue.NumberOfPeople
@@ -33,10 +36,13 @@
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.CheckMonthlyItemsType
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.CheckDayItemsType
+            <!--Daily-->
             nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ContrastType
-            <!--nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageNumberOfDays-->
-            <!--nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageNumberOfDays.AverageNumberOfTimes-->
-            <!--nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageNumberOfDays.AverageRatio-->
+            <!--Monthly-->
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageTime
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageNumberOfDays
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageNumberOfTimes
+            nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio
         </com:EnumScript>
 
         <com:scriptfile set="IGNITE"/>
@@ -47,7 +53,6 @@
     <ui:define name="content">
         <div id="contents-area">
             <table data-bind="with: $vm.pattern">
-                <!--<com:ko-if bind=" $vm.category() == 5">-->
                     <tr class="row">
                         <td>
                             <!--B1_1-->
@@ -69,126 +74,123 @@
                         </td>
                     </tr>
 
-                        <tr  class="row">
+                    <tr  class="row">
+                        <td>
+                            <!--B2_1-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_58')"></div>
+                        </td>
+                        <com:ko-if bind="$vm.switchPatternA()">
                             <td class="pad_left_5px">
-                                <!--B2_1-->
-                                <div class="label" data-bind="text: $vm.$i18n('KAL003_58')"></div>
-                            </td>
-                            <com:ko-if bind="$vm.switchPatternA()">
-                                <td class="pad_left_5px">
-                                    <!--B2_2-->
-                                    <button tabindex="4"
-                                            data-bind="click: $vm.btnSettingB2_2_click.bind($vm), text: $vm.$i18n('KAL003_57')">
-                                    </button>
+                                <!--B2_2-->
+                                <button tabindex="4"
+                                        data-bind="click: $vm.btnSettingB2_2_click.bind($vm), text: $vm.$i18n('KAL003_57')">
+                                </button>
 
-                                    <!--B2_3-->
-                                    <input data-bind="ntsTextEditor: {
-                                            name: '#{i18n.getText('KAL003_59')}',
-                                            value: checkCondDis,
-                                            readonly: true
-                                        }"/>
-                                </td>
-                            </com:ko-if>
-                            <com:ko-if bind="$vm.switchPatternA() == false">
-                                <td class="pad_left_5px">
-                                    <div tabindex="5" data-bind="ntsComboBox: {
-                                    name: '#{i18n.getText('KAL003_60')}',
-                                    options: $vm.contrastTypeList,
-                                    optionsValue: 'value',
-                                    value: checkCondB,
-                                    optionsText: 'name',
-                                    columns: [
-                                        { prop: 'name', length: 16 }
-                                ]}">
-                                    </div>
-                                </td>
+                                <!--B2_3-->
+                                <input data-bind="ntsTextEditor: {
+                                        name: '#{i18n.getText('KAL003_59')}',
+                                        value: checkCondDis,
+                                        readonly: true
+                                    }"/>
+                            </td>
                         </com:ko-if>
+                        <com:ko-if bind="$vm.switchPatternA() == false">
                             <td class="pad_left_5px">
-                                <div tabindex="5" id="combo-box-check-item" data-bind="ntsComboBox: {
-                                    name: '#{i18n.getText('KAL003_60')}',
-                                    options: $vm.listSingleValueCompareTypes,
-                                    optionsValue: 'value',
-                                    value: operator,
-                                    optionsText: 'localizedName',
-                                    columns: [
-                                        { prop: 'localizedName', length: 16 }
-                                ]}">
+                                <div tabindex="5" data-bind="ntsComboBox: {
+                                name: '#{i18n.getText('KAL003_60')}',
+                                options: $vm.contrastTypeList,
+                                optionsValue: 'value',
+                                value: checkCondB,
+                                optionsText: 'name',
+                                columns: [
+                                    { prop: 'name', length: 16 }
+                            ]}">
                                 </div>
                             </td>
-                            <com:ko-if bind="$vm.timeControl() ==  false">
-                                <td class="pad_left_5px">
-                                        <input class ="strValue" tabindex="6" data-bind="ntsNumberEditor: {
-                                            name: '#{i18n.getText('KAL003_64')}',
-                                            value: minValue,
-                                            constraint: $vm.constraint,
-                                            required: true,
-                                            option: new nts.uk.ui.option.NumberEditorOption({
-		                											grouplength: 0,
-		                											decimallength: 1,
-		                											placeholder: ''
-	            												})
-                                        }"/>
-                                </td>
-                                <td class="pad_left_5px">
-                                        <!--B2_7-->
-                                        <input class ="endValue" tabindex="7" data-bind="ntsNumberEditor: {
-                                            name: '#{i18n.getText('KAL003_65')}',
-                                            value: maxValue,
-                                            constraint: $vm.constraint,
-                                            required: $vm.enableMaxValue(),
-                                            enable: $vm.enableMaxValue(),
-                                            option: new nts.uk.ui.option.NumberEditorOption({
-		                											grouplength: 0,
-		                											decimallength: 1,
-		                											placeholder: ''
-	            												})
-                                        }"/>
-                                </td>
-                            </com:ko-if>
-                            <com:ko-if bind="$vm.timeControl()== true">
-                                <td class="pad_left_5px">
-                                    <input class ="strValue" tabindex="6" data-bind="ntsTimeEditor: {
-                                            name: '#{i18n.getText('KAL003_64')}',
-                                            value: minValue,
-                                            constraint: $vm.constraint,
-                                            required: true,
-                                            mode: 'time',
-                                            inputFormat: 'time'
-                                        }"/>
-                                </td>
-                                <td class="pad_left_5px">
+                    </com:ko-if>
+                        <td class="pad_left_5px">
+                            <div tabindex="5" id="combo-box-check-item" data-bind="ntsComboBox: {
+                                name: '#{i18n.getText('KAL003_60')}',
+                                options: $vm.listSingleValueCompareTypes,
+                                optionsValue: 'value',
+                                value: operator,
+                                optionsText: 'localizedName',
+                                columns: [
+                                    { prop: 'localizedName', length: 16 }
+                            ]}">
+                            </div>
+                        </td>
+                        <com:ko-if bind="$vm.timeControl() ==  false">
+                            <td class="pad_left_5px">
+                                    <input class ="strValue" tabindex="6" data-bind="ntsNumberEditor: {
+                                        name: '#{i18n.getText('KAL003_64')}',
+                                        value: minValue,
+                                        constraint: $vm.constraint,
+                                        required: true,
+                                        option: new nts.uk.ui.option.NumberEditorOption({
+                                                                grouplength: 0,
+                                                                decimallength: 1,
+                                                                placeholder: ''
+                                                            })
+                                    }"/>
+                            </td>
+                            <td class="pad_left_5px">
                                     <!--B2_7-->
-                                    <input class ="endValue" tabindex="7" data-bind="ntsTimeEditor: {
-                                            name: '#{i18n.getText('KAL003_65')}',
-                                            value: maxValue,
-                                            constraint: $vm.constraint,
-                                            required: $vm.enableMaxValue(),
-                                            enable: $vm.enableMaxValue(),
-                                            mode: 'time',
-                                            inputFormat: 'time'
-                                        }"/>
-                                </td>
-                            </com:ko-if>
-                        </tr>
-                    <!--</com:ko-if>-->
+                                    <input class ="endValue" tabindex="7" data-bind="ntsNumberEditor: {
+                                        name: '#{i18n.getText('KAL003_65')}',
+                                        value: maxValue,
+                                        constraint: $vm.constraint,
+                                        required: $vm.enableMaxValue(),
+                                        enable: $vm.enableMaxValue(),
+                                        option: new nts.uk.ui.option.NumberEditorOption({
+                                                                grouplength: 0,
+                                                                decimallength: 1,
+                                                                placeholder: ''
+                                                            })
+                                    }"/>
+                            </td>
+                        </com:ko-if>
+                        <com:ko-if bind="$vm.timeControl()== true">
+                            <td class="pad_left_5px">
+                                <input class ="strValue" tabindex="6" data-bind="ntsTimeEditor: {
+                                        name: '#{i18n.getText('KAL003_64')}',
+                                        value: minValue,
+                                        constraint: $vm.constraint,
+                                        required: true,
+                                        mode: 'time',
+                                        inputFormat: 'time'
+                                    }"/>
+                            </td>
+                            <td class="pad_left_5px">
+                                <!--B2_7-->
+                                <input class ="endValue" tabindex="7" data-bind="ntsTimeEditor: {
+                                        name: '#{i18n.getText('KAL003_65')}',
+                                        value: maxValue,
+                                        constraint: $vm.constraint,
+                                        required: $vm.enableMaxValue(),
+                                        enable: $vm.enableMaxValue(),
+                                        mode: 'time',
+                                        inputFormat: 'time'
+                                    }"/>
+                            </td>
+                        </com:ko-if>
+                    </tr>
 
-                <!--</com:ko-if>-->
-
-                <tr class="last-row">
-                    <td>
-                        <!--B3_1-->
-                        <div class="label" data-bind="text: $vm.$i18n('KAL003_25')"></div>
-                    </td>
-                    <td colspan="4" class="pad_left_5px">
-                        <!--B3_2-->
-                        <textarea style="width: 462px; height: 90px;" tabindex="9"
-                                  data-name="message" data-bind="ntsMultilineEditor: {
-                            name: '#{i18n.getText('KAL003_25')}',
-                            value: displayMessage,
-                            constraint: 'MessageDisplay'
-                        }"/>
-                    </td>
-                </tr>
+                    <tr class="last-row">
+                        <td>
+                            <!--B3_1-->
+                            <div class="label" data-bind="text: $vm.$i18n('KAL003_25')"></div>
+                        </td>
+                        <td colspan="4" class="pad_left_5px">
+                            <!--B3_2-->
+                            <textarea style="width: 462px; height: 90px;" tabindex="9"
+                                      data-name="message" data-bind="ntsMultilineEditor: {
+                                name: '#{i18n.getText('KAL003_25')}',
+                                value: displayMessage,
+                                constraint: 'MessageDisplay'
+                            }"/>
+                        </td>
+                    </tr>
             </table>
         </div>
 
