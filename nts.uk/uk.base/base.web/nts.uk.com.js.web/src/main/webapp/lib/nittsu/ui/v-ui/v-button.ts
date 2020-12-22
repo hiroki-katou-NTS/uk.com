@@ -1,6 +1,76 @@
 
 module nts.ui.controls.buttons {
 
+    export module links {
+        const COMPONENT_NAME = 'btn-link';
+
+        @handler({
+            bindingName: COMPONENT_NAME,
+            validatable: true,
+            virtual: false
+        })
+        export class ButtonLinkBindingHandler implements KnockoutBindingHandler {
+            init(element: SVGElement, valueAccessor: () => string | KnockoutObservable<string>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+                element.removeAttribute('data-bind');
+                const name = COMPONENT_NAME;
+
+                const text = valueAccessor();
+                const icon = allBindingsAccessor.get('icon');
+                const width = allBindingsAccessor.get('size') || allBindingsAccessor.get('width');
+                const height = allBindingsAccessor.get('size') || allBindingsAccessor.get('height');
+
+                const params = { text, icon, width, height };
+                ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+
+        @component({
+            name: COMPONENT_NAME,
+            template: `<svg class="svg" data-bind="
+                svg-icon: $component.params.icon,
+                width: $component.params.width,
+                height: $component.params.height
+            "></svg>
+            <span data-bind="i18n: $component.params.text"></span>
+            <svg data-bind="
+                svg-icon: 'ARROW_RIGHT',
+                size: 10
+            "></svg>`
+        })
+        export class ButtonLinkViewModel extends ko.ViewModel {
+            constructor(private params: any) {
+                super();
+            }
+
+            mounted() {
+                const vm = this;
+                const { params } = vm;
+
+                $(vm.$el)
+                    .addClass('link');
+
+                ko.computed({
+                    read: () => {
+                        const icon = ko.unwrap(params.icon);
+
+                        if (icon && !vm.$el.classList.contains('large')) {
+                            $(vm.$el).addClass('icon');
+                        } else {
+                            $(vm.$el).removeClass('icon');
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: vm.$el
+                });
+            }
+
+            destroyed() {
+
+            }
+        }
+    }
+
     export module schedules {
         const COMPONENT_NAME = 'btn-schedule';
 
@@ -9,7 +79,7 @@ module nts.ui.controls.buttons {
             validatable: true,
             virtual: false
         })
-        export class SvgIconBindingHandler implements KnockoutBindingHandler {
+        export class ButtonScheduleBindingHandler implements KnockoutBindingHandler {
             init(element: SVGElement, valueAccessor: () => string | KnockoutObservable<string>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
                 element.removeAttribute('data-bind');
                 const name = COMPONENT_NAME;
@@ -17,10 +87,11 @@ module nts.ui.controls.buttons {
                 const text = valueAccessor();
                 const icon = allBindingsAccessor.get('icon');
                 const state = allBindingsAccessor.get('state');
+                const value = allBindingsAccessor.get('value');
                 const width = allBindingsAccessor.get('size') || allBindingsAccessor.get('width');
                 const height = allBindingsAccessor.get('size') || allBindingsAccessor.get('height');
 
-                const params = { text, icon, width, state, height };
+                const params = { text, icon, width, state, value, height };
                 ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
 
                 return { controlsDescendantBindings: true };
@@ -28,23 +99,24 @@ module nts.ui.controls.buttons {
         }
 
         type BS_PARAMS = {
+            state: any | KnockoutObservable<any> | KnockoutObservableArray<any>;
+            value: any | KnockoutObservable<any>;
             text: string | KnockoutObservable<string>;
             icon: string | KnockoutObservable<string>;
-            state: boolean | KnockoutObservable<boolean>;
             width: number | KnockoutObservable<number>;
             height: number | KnockoutObservable<number>;
         }
 
         @component({
             name: COMPONENT_NAME,
-            template: `<svg data-bind="
+            template: `<svg class="svg" data-bind="
                 svg-icon: $component.icon,
                 width: $component.params.width,
                 height: $component.params.height
             "></svg>
             <span data-bind="i18n: $component.params.text"></span>`
         })
-        export class ScheduleButtonViewModel extends ko.ViewModel {
+        export class ButtonScheduleViewModel extends ko.ViewModel {
             icon!: KnockoutComputed<string>;
             active: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -53,15 +125,34 @@ module nts.ui.controls.buttons {
 
                 this.icon = ko.computed({
                     read: () => {
-                        const icon = ko.unwrap(this.params.icon);
-                        const state = ko.unwrap(this.params.state);
+                        const { params } = this;
                         const active = ko.unwrap(this.active);
 
-                        if (state || active) {
+                        const icon = ko.unwrap(params.icon);
+                        const state = ko.unwrap(params.state);
+                        const value = ko.unwrap(params.value);
+
+                        if (active) {
                             return `${icon}_SELECT`;
-                        } else {
+                        }
+
+                        if (value === undefined) {
+                            if (!!state) {
+                                return `${icon}_SELECT`;
+                            }
+
                             return `${icon}_UNSELECT`;
                         }
+
+                        if (!_.isArray(state)) {
+                            if (_.isEqual(state, value)) {
+                                return `${icon}_SELECT`;
+                            }
+
+                            return `${icon}_UNSELECT`;
+                        }
+
+                        return _.some(state, (c: any) => _.isEqual(c, value)) ? `${icon}_SELECT` : `${icon}_UNSELECT`;
                     }
                 });
             }
@@ -73,15 +164,32 @@ module nts.ui.controls.buttons {
                 $(vm.$el)
                     .addClass('proceed')
                     .addClass('schedule')
-                    .on('click', () => {
-                        if (ko.isObservable(params.state)) {
-                            params.state(!ko.unwrap(params.state));
-                        } else {
-                            params.state = !ko.unwrap(params.state);
-                        }
-                    })
                     .on('mouseup', () => vm.active(false))
-                    .on('mousedown', () => vm.active(true));
+                    .on('mousedown', () => {
+                        vm.active(true);
+
+                        if (ko.isObservable(params.state)) {
+                            const value = ko.unwrap(params.value);
+
+                            if (value !== undefined) {
+                                if (_.get(params.state, 'remove')) {
+                                    const state = ko.unwrap<any[]>(params.state);
+
+                                    if (_.some(state, (c: any) => _.isEqual(value, c))) {
+                                        _.remove(state, (c: any) => _.isEqual(value, c));
+                                    } else {
+                                        state.push(value);
+                                    }
+
+                                    params.state(state);
+                                } else {
+                                    params.state(value);
+                                }
+                            } else {
+                                params.state(!ko.unwrap(params.state));
+                            }
+                        }
+                    });
 
                 ko.computed({
                     read: () => {
@@ -99,8 +207,9 @@ module nts.ui.controls.buttons {
                 ko.computed({
                     read: () => {
                         const state = ko.unwrap(params.state);
+                        const value = ko.unwrap(params.value);
 
-                        if (state) {
+                        if (value === undefined ? !!state : (_.get(state, 'push') ? _.some(state, (c: any) => _.isEqual(c, value)) : _.isEqual(state, value))) {
                             $(vm.$el).addClass('selected');
                         } else {
                             $(vm.$el).removeClass('selected');

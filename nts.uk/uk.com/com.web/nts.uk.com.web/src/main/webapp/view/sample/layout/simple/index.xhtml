@@ -25,9 +25,30 @@
 				<div data-bind="ui-contents">
 					<pre data-bind="text: ko.toJSON($vm.text, null, 4)"></pre>
 					<input type="text" data-bind="value: $vm.text" />
+					<div data-bind="text: ko.toJSON($vm.state, null, 4)"></div>
 					<div style="height: 4000px; padding: 25px;">
-						<button data-bind="btn-schedule: $vm.text, icon: $vm.icon, size: $vm.size, state: $vm.state"></button>
-						<button data-bind="btn-schedule: '', icon: $vm.icon, size: $vm.size, state: $vm.state"></button>
+						<div style="margin-bottom: 5px">Toggle button group (single select)</div>
+						<button data-bind="btn-schedule: $vm.text, icon: $vm.icon, size: 21, state: $vm.vstate, value: 1"></button>
+						<button data-bind="btn-schedule, icon: $vm.icon, size: 21, state: $vm.vstate, value: 2"></button>
+						<br />
+						<br />
+						<div style="margin-bottom: 5px">Toggle button group (multi select)</div>
+						<button data-bind="btn-schedule: $vm.text, icon: $vm.icon, size: 21, state: $vm.vstatem, value: 1"></button>
+						<button data-bind="btn-schedule, icon: $vm.icon, size: 21, state: $vm.vstatem, value: 2"></button>
+						<br />
+						<br />
+						<div style="margin-bottom: 5px">Toggle button single</div>
+						<button data-bind="btn-schedule: $vm.text, icon: $vm.icon, size: 21, state: $vm.state1"></button>
+						<button data-bind="btn-schedule, icon: $vm.icon, size: 21, state: $vm.state2"></button>
+						<br />
+						<br />
+						<button data-bind="btn-link: $vm.text, icon: 'LIST_PLUS', size: 32"></button>
+						<br />
+						<br />
+						<button data-bind="btn-link: $vm.text"></button>
+						<br />
+						<br />
+						<button data-bind="btn-link: $vm.text, icon: 'LIST_PLUS', size: 32" class="large icon"></button>
 					</div>
 				</div>
 			</div>

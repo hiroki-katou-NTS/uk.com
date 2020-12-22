@@ -9,7 +9,11 @@ module nts.uk.ui.sample.layout.simple {
         size: KnockoutObservable<number> = ko.observable(20);
         icon: KnockoutObservable<string> = ko.observable('SELECTED');
 
-        state: KnockoutObservable<boolean> = ko.observable(false);
+        vstate: KnockoutObservable<number> = ko.observable(1);
+        vstatem: KnockoutObservableArray<number> = ko.observableArray([]);
+
+        state1: KnockoutObservable<boolean> = ko.observable(false);
+        state2: KnockoutObservable<boolean> = ko.observable(true);
 
         click() {
             const vm = this;

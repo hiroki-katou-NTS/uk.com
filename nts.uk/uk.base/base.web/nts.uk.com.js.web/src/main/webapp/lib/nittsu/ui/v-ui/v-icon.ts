@@ -19,23 +19,25 @@ module nts.ui.icons {
             const width: number = ko.unwrap(allBindingsAccessor.get('width'));
             const height: number = ko.unwrap(allBindingsAccessor.get('height'));
 
-            element.innerHTML = '';
+            if (element.tagName.toUpperCase() === 'SVG') {
+                element.innerHTML = '';
 
-            const div = document.createElement('div');
+                const div = document.createElement('div');
 
-            $(element).replaceWith(div);
+                $(element).replaceWith(div);
 
-            div.innerHTML = `<svg fill="none" xmls="http://www.w3.org/2000/svg" width="${size || width || 32}" height="${size || height || 32}" viewBox="0 0 ${size || width || 32} ${size || height || 32}">${_.get(nts.ui.icons, icon) || ''}</svg>`;
+                div.innerHTML = `<svg fill="none" xmls="http://www.w3.org/2000/svg" width="${size || width || 32}" height="${size || height || 32}" viewBox="0 0 ${size || width || 32} ${size || height || 32}">${_.get(nts.ui.icons, icon) || ''}</svg>`;
 
-            element.setAttribute('fill', 'none');
-            element.setAttribute('width', `${size || width || 32}`);
-            element.setAttribute('height', `${size || height || 32}`);
-            element.setAttribute('viewBox', `0 0 ${size || width || 32} ${size || height || 32}`);
-            element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                element.setAttribute('fill', 'none');
+                element.setAttribute('width', `${size || width || 32}`);
+                element.setAttribute('height', `${size || height || 32}`);
+                element.setAttribute('viewBox', `0 0 ${size || width || 32} ${size || height || 32}`);
+                element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
-            _.each(div.firstElementChild.childNodes, (c: HTMLElement) => element.appendChild(c.cloneNode(true)));
+                _.each(div.firstElementChild.childNodes, (c: HTMLElement) => element.appendChild(c.cloneNode(true)));
 
-            $(div).replaceWith(element);
+                $(div).replaceWith(element);
+            }
         }
     }
 
@@ -60,6 +62,8 @@ module nts.ui.icons {
     <path d="M6 11.4834C5.72386 11.4834 5.5 11.2595 5.5 10.9834C5.5 10.7073 5.72386 10.4834 6 10.4834V11.4834ZM14.3536 10.6298C14.5488 10.8251 14.5488 11.1417 14.3536 11.337L11.1716 14.5189C10.9763 14.7142 10.6597 14.7142 10.4645 14.5189C10.2692 14.3237 10.2692 14.0071 10.4645 13.8118L13.2929 10.9834L10.4645 8.15497C10.2692 7.95971 10.2692 7.64313 10.4645 7.44786C10.6597 7.2526 10.9763 7.2526 11.1716 7.44786L14.3536 10.6298ZM6 10.4834H14V11.4834H6V10.4834Z" fill="#30CC40"/>`;
 
     export const ARROW_RIGHT = `<path d="M1 4.5C0.723858 4.5 0.5 4.27614 0.5 4C0.5 3.72386 0.723858 3.5 1 3.5L1 4.5ZM9.35355 3.64645C9.54882 3.84171 9.54882 4.15829 9.35355 4.35355L6.17157 7.53553C5.97631 7.7308 5.65973 7.7308 5.46447 7.53553C5.2692 7.34027 5.2692 7.02369 5.46447 6.82843L8.29289 4L5.46447 1.17157C5.2692 0.976311 5.2692 0.659728 5.46447 0.464466C5.65973 0.269204 5.97631 0.269204 6.17157 0.464466L9.35355 3.64645ZM1 3.5L9 3.5V4.5H1L1 3.5Z" fill="#30CC40"/>`;
+
+    export const AR = `<path d="M1.38867 4.59155C1.11253 4.59155 0.888672 4.3677 0.888672 4.09155C0.888672 3.81541 1.11253 3.59155 1.38867 3.59155L1.38867 4.59155ZM9.74223 3.738C9.93749 3.93326 9.93749 4.24984 9.74223 4.44511L6.56024 7.62709C6.36498 7.82235 6.0484 7.82235 5.85314 7.62709C5.65788 7.43182 5.65788 7.11524 5.85314 6.91998L8.68157 4.09155L5.85314 1.26313C5.65788 1.06786 5.65788 0.751281 5.85314 0.556019C6.0484 0.360757 6.36498 0.360757 6.56024 0.556019L9.74223 3.738ZM1.38867 3.59155L9.38867 3.59155V4.59155H1.38867L1.38867 3.59155Z" fill="#30CC40"/>`;
 
     export const PEOPLES = `<path fill-rule="evenodd" clip-rule="evenodd" d="M15.5445 4C14.9922 4 14.5445 4.44772 14.5445 5V11C14.5445 11.5523 14.9922 12 15.5445 12H21.5245C22.0768 12 22.5245 11.5523 22.5245 11V5C22.5245 4.44772 22.0768 4 21.5245 4H15.5445ZM12.9697 15.9992C12.4174 15.9992 11.9697 16.4469 11.9697 16.9992V31.9992H24.9372V16.9992C24.9372 16.4469 24.4894 15.9992 23.9372 15.9992H12.9697Z" fill="#30CC40"/>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M9.55455 1H3.57459L3.57459 7H9.55455L9.55455 1ZM3.57459 0C3.02231 0 2.57459 0.447715 2.57459 1V7C2.57459 7.55228 3.0223 8 3.57459 8H9.55455C10.1068 8 10.5546 7.55228 10.5546 7V1C10.5546 0.447715 10.1068 0 9.55455 0H3.57459ZM11.9674 13.4119H1L1 27.4119H10V28.4119H1H0V27.4119V13.4119C0 12.8596 0.447715 12.4119 1 12.4119H11.9674C12.5197 12.4119 12.9674 12.8596 12.9674 13.4119V14.051H12.112C12.063 14.051 12.0148 14.0516 11.9674 14.053V13.4119ZM27 28.4119H35.9999H36.9999V27.4119V13.4119C36.9999 12.8596 36.5522 12.4119 35.9999 12.4119H25.0324C24.4801 12.4119 24.0324 12.8596 24.0324 13.4119V14.051H25.0324V13.4119H35.9999V27.4119H27V28.4119ZM27.6082 1H33.5882V7H27.6082V1ZM26.6082 1C26.6082 0.447715 27.0559 0 27.6082 0H33.5882C34.1404 0 34.5882 0.447715 34.5882 1V7C34.5882 7.55228 34.1404 8 33.5882 8H27.6082C27.0559 8 26.6082 7.55228 26.6082 7V1Z" fill="#30CC40"/>`;
