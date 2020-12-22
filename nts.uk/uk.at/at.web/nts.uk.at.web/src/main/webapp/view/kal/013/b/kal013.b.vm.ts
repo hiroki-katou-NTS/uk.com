@@ -27,13 +27,13 @@ module nts.uk.at.view.kal013.b {
             [4, "RatioComparison"]
         ]);
         monthlyContraint: Map<number,string> = new Map([
-            [1, "AverageTime"], // AVERAGE_TIME(1, "平均時間"),
-            [2, "AverageNumberOfDays"], // AVERAGE_NUMBER_DAY(2, "平均日数"),
-            [3, "AverageNumberOfTimes"], //AVERAGE_NUMBER_TIME(3, "平均回数"),
-            [4, "AverageRatio"], // AVERAGE_RATIO(4, "平均比率"),
-            [5, "AverageTime"], // TIME_FREEDOM(5, "平均時間自由"),
-            [6, "AverageNumberOfDays"], // AVERAGE_DAY_FREE(6, "平均日数自由")
-            [7, "AverageNumberOfTimes"], // AVERAGE_TIME_FREE(7, "平均回数自由")
+            [1, "Time"], // AVERAGE_TIME(1, "平均時間"),
+            [2, "NumberOfPeople"], // AVERAGE_NUMBER_DAY(2, "平均日数"),
+            [3, "NumberOfPeople"], //AVERAGE_NUMBER_TIME(3, "平均回数"),
+            [4, "NumberOfPeople"], // AVERAGE_RATIO(4, "平均比率"),
+            [5, "Time"], // TIME_FREEDOM(5, "平均時間自由"),
+            [6, "NumberOfPeople"], // AVERAGE_DAY_FREE(6, "平均日数自由")
+            [7, "NumberOfPeople"], // AVERAGE_TIME_FREE(7, "平均回数自由")
         ]);
 
         constructor(params: IParentParams) {
