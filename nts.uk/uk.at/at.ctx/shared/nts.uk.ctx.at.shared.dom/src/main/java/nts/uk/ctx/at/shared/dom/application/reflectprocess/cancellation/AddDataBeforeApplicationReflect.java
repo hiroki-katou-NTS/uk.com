@@ -30,7 +30,7 @@ public class AddDataBeforeApplicationReflect {
 		for (AttendanceBeforeApplicationReflect data : attendanceBeforeReflect) {
 
 			// [反映前の日別勤怠(Work）]から、該当する値を取得
-			String value = itemValue.get(data.getAttendanceId()).getValue();
+			String value = itemValue.containsKey(data.getAttendanceId()) ? itemValue.get(data.getAttendanceId()).getValue() : "";
 
 			// 取得した値を該当する[反映前の勤怠（List）]に追加する
 			data.setValue(value);
