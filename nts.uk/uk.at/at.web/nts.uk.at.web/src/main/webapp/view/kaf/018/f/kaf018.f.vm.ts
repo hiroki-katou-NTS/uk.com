@@ -395,7 +395,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		/**
 		 * 上司確認
 		 */
-		bossConfirm: boolean;
+		bossConfirm: number;
 	}
 	
 	export class EmpConfirmInfo {
@@ -413,7 +413,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				this.empCD = apprSttConfirmEmp.empCD;
 				this.empName = apprSttConfirmEmp.empName;
 				this.sttUnConfirmDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.personConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
-				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.bossConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => o.bossConfirm!=2).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
 				this.sttUnConfirmMonth = apprSttConfirmEmp.monthConfirm ? vm.$i18n('KAF018_530') : "";
 				this.sttUnApprMonth = apprSttConfirmEmp.monthApproval ? vm.$i18n('KAF018_530') : "";
 				let a: Array<DateInfo> = [],

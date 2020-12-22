@@ -451,7 +451,8 @@ public interface ApprovalStatusService {
 	/**
 	 * G:月別承認の進捗を取得する
 	 */
-	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
+	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate, ApprSttComfirmSet apprSttComfirmSet);
 	
 	/**
 	 * G:月別の承認者を取得する
