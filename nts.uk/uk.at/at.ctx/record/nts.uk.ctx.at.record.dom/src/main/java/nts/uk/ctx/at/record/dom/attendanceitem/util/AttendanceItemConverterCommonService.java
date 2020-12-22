@@ -132,14 +132,13 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	protected Object getDomain(String type) {
 		
-		Object merged = mergeAndGet(type);
-		if (merged != null) {
-			return merged;
+		Optional<Object> merged = mergeAndGet(type);
+		if (merged.isPresent()) {
+			return merged.get();
 		}
 		
 		if (this.domainSource.get(type) != null) {
 			convertDomainToDto(type);
-//			return this.domainSource.get(type);
 		}
 		
 		if (this.dtoSource.get(type) != null) {
@@ -155,9 +154,9 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	protected Object getDomains(String type) {
 		
-		Object merged = mergeAndGet(type);
-		if (merged != null) {
-			return merged;
+		Optional<Object> merged = mergeAndGet(type);
+		if (merged.isPresent()) {
+			return merged.get();
 		}
 		
 		if (this.domainSource.get(type) != null) {
@@ -171,7 +170,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		return new ArrayList<>();
 	}
 	
-	private Object mergeAndGet(String type) {
+	private Optional<Object> mergeAndGet(String type) {
 		loadMergeGroup();
 		
 		if (this.mergeGroups.containsKey(type)) {
@@ -179,16 +178,20 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 			
 			Object dto = this.dtoSource.get(type);
 			
+			if(!Optional.ofNullable(dto).isPresent()) {
+				return Optional.empty();
+			}
+			
 			AttendanceItemCommon merged = internalMerge(type, (AttendanceItemCommon) dto);
 			if (isOpyionalItem(type)) {
 				
-				return correctOptionalItem(this.dtoSource.get(type));
+				return Optional.of(correctOptionalItem(this.dtoSource.get(type)));
 			}
 			
-			return toDomain(merged);
+			return Optional.of(toDomain(merged));
 		}
 		
-		return null;
+		return Optional.empty();
 	}
 
 	private List<ItemValue> internalConvert(Collection<Integer> attendanceItemIds) {
