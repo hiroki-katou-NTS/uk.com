@@ -57,12 +57,21 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		created(params: AppInitParam) {
 			const vm = this;
 
+			let dataTransfer: DataTransfer;
+			if (_.isNil(params)) {
+				dataTransfer = __viewContext.transferred.value; // from spr		
+			}
+			__viewContext.transferred.value = undefined;
+
 			vm.createRestTime();
 			vm.setMode(params);
 			// vm.createOverTime();
 
 			let empList: Array<string> = [],
 				dateList: Array<string> = [];
+			if (!_.isNil(dataTransfer)) {
+				dateList.push(dataTransfer.appDate);
+			}	
 			if (!_.isEmpty(params)) {
 				if (!_.isEmpty(params.employeeIds)) {
 					empList = params.employeeIds;
@@ -79,6 +88,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				}
 			}
 			vm.isSendMail = ko.observable(false);
+			if (!_.isNil(dataTransfer)) {
+				vm.application().appDate(dataTransfer.appDate);
+				vm.application().opAppStartDate(dataTransfer.appDate);
+				vm.application().opAppEndDate(dataTransfer.appDate);
+			}
+			if (!_.isNil(params)) {
+				if (!_.isNil(params.baseDate)) {
+					vm.application().appDate(moment(params.baseDate).format('YYYY/MM/DD'));					
+				}
+			}
 
 			vm.$blockui("show");
 			vm.loadData(empList, dateList, vm.appType())
@@ -1787,5 +1806,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	interface ExcessStateMidnight {
 		excessState: number;
 		legalCfl: number;
+	}
+	interface DataTransfer {
+		startTime: number;
+		endTime: number;
+		employeeID: string;
+		appDate: string;
+		applicationReason: string;
 	}
 }
