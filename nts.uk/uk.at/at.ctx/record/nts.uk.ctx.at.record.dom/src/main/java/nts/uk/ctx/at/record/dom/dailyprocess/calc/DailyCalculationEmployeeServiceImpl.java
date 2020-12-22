@@ -158,12 +158,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		Optional<IdentityProcessUseSet> iPUSOptTemp = identityProcessUseRepository.findByKey(cid);
 		Optional<ApprovalProcessingUseSetting> approvalSetTemp = approvalSettingRepo.findByCompanyId(cid);
 		this.parallel.forEach(employeeIds, employeeId -> {
-			
-//			// 中断処理　（中断依頼が出されているかチェックする）
-//			if (asyncContext.hasBeenRequestedToCancel()) {
-//				counter.accept(ProcessState.INTERRUPTION);
-//				return;
-//			}
+
 			Optional<EmpCalAndSumExeLog> log = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 			if(!log.isPresent()) {
 				counter.accept(ProcessState.INTERRUPTION);
@@ -176,20 +171,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					return;
 				}
 			}
-			//日別実績(WORK取得)
-		//	List<IntegrationOfDaily> createList = createIntegrationOfDaily(employeeId,datePeriod);
-			
-			//締め一覧取得
-		//	List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId), datePeriod);
 			
 			ManageProcessAndCalcStateResult afterCalcRecord =null;
 			Pair<Integer, ManageProcessAndCalcStateResult> result = null;
 			result = runWhenOptimistLockError(cid, employeeId, datePeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
-			if(result.getLeft() == 0) { 
-				counter.accept(ProcessState.SUCCESS);
-				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
-				return;
-			}
 			
 			if(result.getLeft() == 1) {  //co loi haita
 				result = runWhenOptimistLockError(cid, employeeId, datePeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
@@ -197,50 +182,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					isHappendOptimistLockError.add(true);
 				}
 			}
-/*			if (createList.isEmpty()) {
+			
+			if(result.getLeft() == 0 || result.getLeft() == 2) { 
 				counter.accept(ProcessState.SUCCESS);
-				
-				//１：日別計算(ENUM)
-				//0:計算完了
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
-			} else {
-				//計算処理を呼ぶ
-				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList,closureList,reCalcAtr,empCalAndSumExecLogID);
-				//１：日別計算(ENUM)
-				//0:計算完了
-				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
-
-				//データ更新
-				for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-					
-					try {
-						//update record
-						updateRecord(stateInfo.integrationOfDaily);
-						clearConfirmApproval(stateInfo.integrationOfDaily,iPUSOptTemp,approvalSetTemp);
-						upDateCalcState(stateInfo);
-					} catch (Exception ex) {
-						boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-						if (!isOptimisticLock) {
-							throw ex;
-						}
-						//create error message
-						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-								new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class), 
-								stateInfo.getIntegrationOfDaily().getYmd(),
-								new ErrMessageContent(TextResource.localize("Msg_1541")));
-						//regist error message 
-						this.errMessageInfoRepository.add(employmentErrMes);
-						
-						
-						isHappendOptimistLockError.add(true);
-					}
-				}
-				
-				//暫定データ
-				interimData.registerDateChange(cid , employeeId, datePeriod.datesBetween());
-				//
-				counter.accept(afterCalcRecord.getPs() == ProcessState.SUCCESS?ProcessState.SUCCESS:ProcessState.INTERRUPTION);
-			}*/
+				return;
+			}
 		});
 		return isHappendOptimistLockError;
 	}
@@ -251,7 +198,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		//if check = 0 : createListNew : null
 		//if check = 1 : has error optimistic lock (lan 1)
 		//if check = 2 : done
-		Integer check =2;
+		Integer check = 2;
 		
 //		List<Boolean> isHappendOptimistLockError = new ArrayList<>(); 
 
