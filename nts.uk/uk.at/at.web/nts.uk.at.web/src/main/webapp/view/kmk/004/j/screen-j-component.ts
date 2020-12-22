@@ -102,7 +102,7 @@ class ScreenJComponent extends ko.ViewModel {
 
 		vm.screenData().selectedYear.subscribe((yearInput) => {
 
-			if (!yearInput && !vm.screenData().selected()) {
+			if (!yearInput || !vm.screenData().selected()) {
 				return;
 			}
 

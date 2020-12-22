@@ -15,7 +15,8 @@ module nts.uk.at.view.kmk004.b {
 					name: 'kcp004',
 					params:{
 						selectedId: selectedId,
-						model: model
+						model: model,
+						isChange: change
 					}
 				}"></div>
 			</div>

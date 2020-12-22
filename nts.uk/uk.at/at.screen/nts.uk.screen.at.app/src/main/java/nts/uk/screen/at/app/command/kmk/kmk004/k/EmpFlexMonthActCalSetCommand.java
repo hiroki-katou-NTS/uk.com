@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
 
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class EmpFlexMonthActCalSetCommand extends FlexMonthWorkTimeAggrSetCommand {
 	/** 雇用コード */
 	private String employmentCode;
@@ -24,4 +24,11 @@ public class EmpFlexMonthActCalSetCommand extends FlexMonthWorkTimeAggrSetComman
 				this.getFlexTimeHandle().toDomain(), 
 				new EmploymentCode(this.employmentCode));
 	}
+
+	public EmpFlexMonthActCalSetCommand(String employmentCode, int aggrMethod, ShortageFlexSettingCommand insufficSet,
+			AggregateTimeSettingCommand legalAggrSet, FlexTimeHandleCommand flexTimeHandle) {
+		super(aggrMethod, insufficSet, legalAggrSet, flexTimeHandle);
+		this.employmentCode = employmentCode;
+	}
+	
 }

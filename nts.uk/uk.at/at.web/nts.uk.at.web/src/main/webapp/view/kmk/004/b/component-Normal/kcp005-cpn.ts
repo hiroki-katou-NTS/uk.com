@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk004.b {
     export interface ParamsKcp005 {
         selectedCode: KnockoutObservable<string>;
         employees: KnockoutObservableArray<IEmployee>;
+        isChange: KnockoutObservable<string>;
     }
 
     const API = {
@@ -26,11 +27,13 @@ module nts.uk.at.view.kmk004.b {
         public selectedCode: KnockoutObservable<string> = ko.observable('');
         public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
+        public isChange: KnockoutObservable<string> = ko.observable('');
 
         created(params: ParamsKcp005) {
             const vm = this;
             vm.selectedCode = params.selectedCode;
             vm.employees = params.employees;
+            vm.isChange = params.isChange;
 
             vm.reload();
 
@@ -38,25 +41,35 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.$blockui('invisible')
                         .then(() => {
-                            vm.$ajax(API.GET_EMPLOYEEIDS)
-                                .then((data: any) => {
-                                    let list: UnitAlreadySettingModel[] = [];
-                                    _.forEach(data, ((value) => {
-                                        const setting: IEmployee = _.find(ko.unwrap(vm.employees), e => e.id === value.employeeId);
-
-                                        if (setting) {
-                                            let object = { code: setting.code, isAlreadySetting: true } as UnitAlreadySettingModel;
-                                            list.push(object);
-                                        }
-                                    }));
-                                    vm.alreadySettingList(list);
-                                });
+                            vm.reloadIsCheck();
                         })
                         .then(() => {
                             vm.$blockui('clear');
                         });
-                })
+                });
 
+            vm.isChange
+                .subscribe(() => {
+                    vm.reloadIsCheck();
+                });
+
+        }
+
+        reloadIsCheck() {
+            const vm = this;
+            vm.$ajax(API.GET_EMPLOYEEIDS)
+                .then((data: any) => {
+                    let list: UnitAlreadySettingModel[] = [];
+                    _.forEach(data, ((value) => {
+                        const setting: IEmployee = _.find(ko.unwrap(vm.employees), e => e.id === value.employeeId);
+
+                        if (setting) {
+                            let object = { code: setting.code, isAlreadySetting: true } as UnitAlreadySettingModel;
+                            list.push(object);
+                        }
+                    }));
+                    vm.alreadySettingList(list);
+                });
         }
 
         reload() {

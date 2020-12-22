@@ -11,7 +11,11 @@ module nts.uk.at.view.kmk004.a {
 
 		create() {
 			const vm = this;
-			debugger;
+
+		}
+
+		mounted() {
+			const vm = this;
 
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax('screen/at/kmk004/viewA/init'))
@@ -20,10 +24,6 @@ module nts.uk.at.view.kmk004.a {
 					vm.useDeformedLabor(data.useDeformedLabor);
 				})
 				.then(() => vm.$blockui('clear'));
-
-		}
-
-		mounted() {
 		}
 
 		openDialog() {

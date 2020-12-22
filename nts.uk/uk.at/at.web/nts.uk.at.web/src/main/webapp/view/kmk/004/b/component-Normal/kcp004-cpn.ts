@@ -5,14 +5,15 @@ module nts.uk.at.view.kmk004.b {
 		<div id="tree-grid">
 		</div>
     `;
-    
+
     const API = {
-		GET_WORKPLACE_ID: 'screen/at/kmk004/viewc/wkp/getWorkPlaceId'
-	};
+        GET_WORKPLACE_ID: 'screen/at/kmk004/viewc/wkp/getWorkPlaceId'
+    };
 
     interface Params {
-        selectedId: KnockoutObservable<string>,
-        model: Model
+        selectedId: KnockoutObservable<string>;
+        model: Model;
+        isChange: KnockoutObservable<string>;
     }
 
     @component({
@@ -26,30 +27,40 @@ module nts.uk.at.view.kmk004.b {
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
         public model: Model;
         public data: UnitModel[];
+        public isChange: KnockoutObservable<string> = ko.observable('');
 
         created(params: Params) {
             const vm = this;
 
             vm.selectedId = params.selectedId;
             vm.model = params.model;
+            vm.isChange = params.isChange;
 
-            vm.$ajax(API.GET_WORKPLACE_ID)
-				.then((data: any) => {
-                    let settings: UnitAlreadySettingModel[] = [];
-					_.forEach(data, ((value) =>{
-                        let s: UnitAlreadySettingModel = {workplaceId: value.workplaceId ,isAlreadySetting: true};
-                        settings.push(s);
-                    }));
-                    vm.alreadySettingList(settings);
-                })
-                .then(() => {
-                    vm.reloadData();
+            vm.reloadData();
+            vm.reloadIsCheck();
+
+            vm.isChange
+                .subscribe(() => {
+                    vm.reloadIsCheck();
                 });
 
             // vm.selectedId
             //     .subscribe(() =>{
             //         vm.reloadData();
             //     });
+        }
+
+        reloadIsCheck() {
+            const vm = this;
+            vm.$ajax(API.GET_WORKPLACE_ID)
+                .then((data: any) => {
+                    let settings: UnitAlreadySettingModel[] = [];
+                    _.forEach(data, ((value) => {
+                        let s: UnitAlreadySettingModel = { workplaceId: value.workplaceId, isAlreadySetting: true };
+                        settings.push(s);
+                    }));
+                    vm.alreadySettingList(settings);
+                })
         }
 
         mounted() {
@@ -65,7 +76,7 @@ module nts.uk.at.view.kmk004.b {
         reloadData() {
             const vm = this;
             console.log(ko.unwrap(vm.alreadySettingList));
-            
+
             vm.$blockui("invisible")
                 .then(() => $('#tree-grid')
                     .ntsTreeComponent({
