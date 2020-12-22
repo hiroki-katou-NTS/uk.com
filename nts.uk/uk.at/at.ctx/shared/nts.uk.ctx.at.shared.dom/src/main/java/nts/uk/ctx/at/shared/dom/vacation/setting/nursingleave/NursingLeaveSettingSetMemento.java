@@ -66,7 +66,9 @@ public interface NursingLeaveSettingSetMemento {
     
     void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet);
 
-
+    void setNumPer1(Integer numPer1);
+    
+    void setNumPer2(Integer numPer2);
 
 
 }

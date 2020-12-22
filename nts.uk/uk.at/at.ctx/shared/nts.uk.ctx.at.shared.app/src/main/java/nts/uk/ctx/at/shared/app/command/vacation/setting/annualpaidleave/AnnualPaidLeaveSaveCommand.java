@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingGetMemento;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
@@ -345,6 +347,12 @@ public class AnnualPaidLeaveSaveCommand {
         @Override
         public boolean isEnoughTimeOneDay() {
             return false;
-        }		
+        }
+
+		@Override
+		public TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay() {
+			
+			return null;
+		}		
     }
 }

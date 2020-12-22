@@ -84,8 +84,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setStartMonthDay(Integer startMonthDay) {
-//    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
-//    	this.entityNursing.setStartMonthDay(monthday);
+    	this.entityNursing.setStartMonthDay(startMonthDay);
     }
 
     /*
@@ -97,8 +96,8 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-        JpaMaxPersonSettingSetMemento memento = new JpaMaxPersonSettingSetMemento(this.entityNursing);
-        maxPersonSetting.saveToMemento(memento);
+    	this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
+    	this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
     }
 
 	@Override
@@ -121,6 +120,18 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
 		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
 		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
+		
+	}
+
+	@Override
+	public void setNumPer1(Integer numPer1) {
+		this.entityNursing.setNursingNumPerson(1);
+		
+	}
+
+	@Override
+	public void setNumPer2(Integer numPer2) {
+		this.entityNursing.setNursingNumPerson2(2);
 		
 	}
 

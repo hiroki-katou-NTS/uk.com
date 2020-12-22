@@ -320,11 +320,12 @@ module nts.uk.pr.view.kmf001.l {
                 ob().selectedtimeManagement(1);
                 ob().monthDay(object.startMonthDay);
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
-                ob().nursingNumberPerson(object.nursingNumberPerson);
+                ob().nursingNumberPerson(object.nursingNumberLeaveDay2);
                 ob().nursingLeaveSpecialHoliday(object.specialHolidayFrame);
                 ob().nursingLeaveWorkAbsence(object.absenceWorkDay);
                 //L4_4 and L5_4
-                ob().timeDigestiveUnit(0);
+                ob().timeDigestiveUnit(object.timeDigestiveUnit);
+                ob().selectedtimeManagement(object.manageDistinct);
             }
             
         }
