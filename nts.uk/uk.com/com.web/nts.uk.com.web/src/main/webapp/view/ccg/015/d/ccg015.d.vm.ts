@@ -104,6 +104,7 @@ module nts.uk.com.view.ccg015.d {
         .then((result: any) => {
           if (result && layoutType === LayoutType.FLOW_MENU) {
             vm.listFlowMenu(result);
+            vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
             vm.listTopPagePart(result);
           } else {
