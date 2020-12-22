@@ -2498,6 +2498,48 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				
 				
 			}
+			// fix visible holiday time when starting
+			if (self.isStart) {
+				let applicationTime = _.get(self.appOverTime, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+				if (!_.isNil(applicationTime)) {
+					let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => i.attendanceType == AttendanceType.BREAKTIME);
+					if (!_.isNil(result)) {
+						c30_1 = true;
+					}
+				}
+				let midNightHolidayTimes = _.get(self.appOverTime, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+				if (!_.isNil(midNightHolidayTimes)) {
+					{
+						let result = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+						if (!_.isNil(result)) {
+							if (result.attendanceTime > 0) {
+								c30_2 = true;										
+							}
+						}
+						
+					}
+					
+					{
+						let result = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+						if (!_.isNil(result)) {
+							if (result.attendanceTime > 0) {
+								c30_3 = true;										
+							}
+						}
+						
+					}
+					
+					{
+						let result = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+						if (!_.isNil(result)) {
+							if (result.attendanceTime > 0) {
+								c30_4 = true;										
+							}
+						}
+						
+					}
+				}
+			}
 			visibleModel.c30_1(c30_1);
 			visibleModel.c30_2(c30_2);
 			visibleModel.c30_3(c30_3);
