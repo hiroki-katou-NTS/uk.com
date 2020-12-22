@@ -8,6 +8,7 @@ module nts.uk.at.view.kmk004.b {
     interface Params {
         emloyment: Employment;
         alreadySettings: KnockoutObservableArray<AlreadySettingEmployment>;
+        isChange: KnockoutObservable<string>;
     }
 
     const API = {
@@ -26,11 +27,32 @@ module nts.uk.at.view.kmk004.b {
         public closureSelectionType: KnockoutObservable<number> = ko.observable(1);
         public employmentList: KnockoutObservableArray<IEmployment> = ko.observableArray([]);
         public employment: Employment;
+        public isChange: KnockoutObservable<string> = ko.observable('');
 
         created(params: Params) {
             const vm = this;
             vm.employment = params.emloyment;
+            vm.isChange = params.isChange;
 
+            vm.reload();
+
+            vm.reloadIsCheck();
+
+            vm.selectedCode.subscribe(() => {
+                const exist = _.find(ko.unwrap(vm.employmentList), (emp: IEmployment) => emp.code === ko.unwrap(vm.selectedCode));
+                if (exist) {
+                    vm.employment.update(exist);
+                }
+            });
+
+            vm.isChange
+                .subscribe(() => {
+                    vm.reloadIsCheck();
+                });
+        }
+
+        reloadIsCheck() {
+            const vm = this;
             vm.$ajax(API.GET_LIST_EMPLOYMENT)
                 .then((data: any) => {
                     if (data) {
@@ -42,16 +64,6 @@ module nts.uk.at.view.kmk004.b {
                         vm.alreadySettings(list);
                     }
                 })
-                .then(() => {
-                    vm.reload();
-                });
-
-            vm.selectedCode.subscribe(() => {
-                const exist = _.find(ko.unwrap(vm.employmentList), (emp: IEmployment) => emp.code === ko.unwrap(vm.selectedCode));
-                if (exist) {
-                    vm.employment.update(exist);
-                }
-            });
         }
 
         reload() {

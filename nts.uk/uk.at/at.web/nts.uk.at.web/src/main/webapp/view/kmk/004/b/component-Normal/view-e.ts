@@ -23,7 +23,8 @@ module nts.uk.at.view.kmk004.b {
 				name: 'kcp005',
 				params:{
 					selectedCode: selectedCode,
-					employees: employees
+					employees: employees,
+					isChange: change
 				}
 			}"></div>
 		</div>

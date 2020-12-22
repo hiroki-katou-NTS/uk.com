@@ -15,7 +15,8 @@ module nts.uk.at.view.kmk004.b {
 				name: 'kcp001',
 				params:{
 					emloyment: emloyment,
-					alreadySettings: alreadySettings
+					alreadySettings: alreadySettings,
+					isChange: change
 				}
 			}"></div>
 		</div>

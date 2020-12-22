@@ -16,6 +16,7 @@ module nts.uk.at.view.kmk004.a {
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax('screen/at/kmk004/viewA/init'))
 				.then((data: any) => {
+					console.log(data);
 					vm.flexWorkManaging(data.flexWorkManaging);
 					vm.useDeformedLabor(data.useDeformedLabor);
 				})
