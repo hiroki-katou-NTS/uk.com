@@ -9,7 +9,8 @@ module nts.uk.at.view.kmk004.l {
 	
 	const KMK004O_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/update',
-		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete'
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete',
+		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeId'
 	};
 
 	const template = `
@@ -66,8 +67,10 @@ module nts.uk.at.view.kmk004.l {
 									params:{
 										selectedYear: selectedYear,
 										years: years,
-										checkEmployee: true,
-										workTimes: workTimes
+										checkEmployee: checkEmployee,
+										workTimes: workTimes,
+										type: type,
+										selectId: paramL.empId()
 									}
 								}"></div>
 							</div>
@@ -138,6 +141,7 @@ module nts.uk.at.view.kmk004.l {
 		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
+		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 
 		constructor(private params: IParam) {
 			super();
@@ -207,11 +211,18 @@ module nts.uk.at.view.kmk004.l {
 			vm.isShowSelectAllButton = ko.observable(false);
 			vm.disableSelection = ko.observable(false);
 			vm.currentItemName = ko.observable('');
-			vm.alreadySettingList = ko.observableArray([
-				{ code: '1', isAlreadySetting: true },
-				{ code: '2', isAlreadySetting: true }
-			]);
-
+			
+			vm.$ajax(KMK004O_API.GET_EMPLOYEE_ID)
+				.done((data: any) => {
+					let settings: UnitAlreadySettingModel[] = [];
+					_.forEach(data, ((value) => {
+						let s: UnitAlreadySettingModel = { code: value.employeeId, isAlreadySetting: true };
+						settings.push(s);
+						
+						}));
+						vm.alreadySettingList(settings);
+					})
+					
 			vm.listComponentOption = {
 				isShowAlreadySet: vm.isShowAlreadySet(),
 				isMultiSelect: vm.isMultiSelect(),
@@ -257,7 +268,7 @@ module nts.uk.at.view.kmk004.l {
 			let param: IWorkTimeSetCom[] = [];
 
 			_.forEach(ko.unwrap(vm.workTimes), ((value) => {
-				const t: IWorkTimeSetCom = { empId: vm.paramL.empId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.legalLaborTime(), withinLaborTime: null, weekAvgTime: null } };
+				const t: IWorkTimeSetCom = { empId: vm.paramL.empId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
 				param.push(t);
 			}));
 
@@ -286,7 +297,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 				if (result === 'yes') {
 					vm.$blockui("invisible");
-					vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), empId: vm.paramL.empId()})).done(() => {
+					vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), employeeId: vm.paramL.empId()})).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
 							$('#box-year').focus();

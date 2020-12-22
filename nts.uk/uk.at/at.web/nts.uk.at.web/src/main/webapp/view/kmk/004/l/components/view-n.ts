@@ -63,7 +63,9 @@ module nts.uk.at.view.kmk004.l {
 									params:{
 										selectedYear: selectedYear,
 										years: years,
-										workTimes: workTimes
+										workTimes: workTimes,
+										type: type,
+										selectId: paramL.empCode()
 									}
 								}"></div>
 							</div>
@@ -227,7 +229,7 @@ module nts.uk.at.view.kmk004.l {
 			let param: IWorkTimeSetCom[] = [];
 
 			_.forEach(ko.unwrap(vm.workTimes), ((value) => {
-				const t: IWorkTimeSetCom = { employmentCode: vm.paramL.empCode(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.legalLaborTime(), withinLaborTime: null, weekAvgTime: null } };
+				const t: IWorkTimeSetCom = { employmentCode: vm.paramL.empCode(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
 				param.push(t);
 			}));
 

@@ -183,7 +183,8 @@ module nts.uk.at.view.kmk004.components.transform {
                      if (ko.unwrap(vm.selectedId) != null && ko.unwrap(vm.selectedId) != '') {
                         vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.unwrap(vm.selectedId))
                             .then((data: any) => {
-                                data = _.orderBy(data, ['year'], ['desc']);
+                                data = _.orderBy(data.years, ['year'], ['desc']);
+								vm.years([]);
                                 _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
                                     vm.years.push(y);

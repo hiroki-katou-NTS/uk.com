@@ -1,12 +1,14 @@
 package nts.uk.screen.at.ws.kmk.kmk004.o;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.SaveMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.o.DeleteTransMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.o.DeleteTransMonthlyWorkTimeSetShaCommandHandler;
@@ -16,6 +18,11 @@ import nts.uk.screen.at.app.kmk004.o.DeforLaborMonthTimeShaDto;
 import nts.uk.screen.at.app.kmk004.o.DisplayDeforBasicSettingByEmployee;
 import nts.uk.screen.at.app.kmk004.o.SelectEmployeeDefor;
 import nts.uk.screen.at.app.kmk004.o.SelectEmployeeDeforDto;
+import nts.uk.screen.at.app.kmk004.o.SelectYearByEmployee;
+import nts.uk.screen.at.app.query.kmk004.b.WorkTimeComDto;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingByShaInputDto;
+import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
+import nts.uk.screen.at.app.query.kmk004.common.EmployeeList;
 
 /**
  * 
@@ -40,6 +47,12 @@ public class Kmk004OWebService {
 	
 	@Inject
 	private SelectEmployeeDefor select;
+	
+	@Inject
+	private SelectYearByEmployee selectYearByEmployee;
+
+	@Inject
+	private EmployeeList employeeList;
 
 	@POST
 	@Path("viewO/monthlyWorkTimeSet/add")
@@ -69,5 +82,17 @@ public class Kmk004OWebService {
 	@Path("viewO/selectSha/{empId}")
 	public SelectEmployeeDeforDto selectWkp(@PathParam("empId") String empId) {
 		return select.selectEmployeeDefor(empId);
+	}
+	
+	@POST
+	@Path("viewO/getWorkingHoursByEmployee")
+	public List<WorkTimeComDto> getWorkingHoursBySha(DisplayMonthlyWorkingByShaInputDto param) {
+		return selectYearByEmployee.getDeforDisplayMonthlyWorkingHoursByEmployee(param) ;
+	}
+	
+	@POST
+	@Path("viewO/getEmployeeId")
+	public List<EmployeeIdDto> getEmployeeId() {
+		return this.employeeList.get(LaborWorkTypeAttr.DEFOR_LABOR);
 	}
 }

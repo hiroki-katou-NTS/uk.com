@@ -1,11 +1,12 @@
 package nts.uk.screen.at.ws.kmk.kmk004.l;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.screen.at.app.command.kmk.kmk004.l.DeleteTransMonthlyWorkTimeSetComCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.l.DeleteTransMonthlyWorkTimeSetComCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.l.RegisterTransMonthlyWorkTimeSetComCommandHandler;
@@ -15,6 +16,9 @@ import nts.uk.screen.at.app.kmk004.l.DeforLaborMonthTimeComDto;
 import nts.uk.screen.at.app.kmk004.l.DisplayDeforBasicSettingByCompany;
 import nts.uk.screen.at.app.kmk004.l.DisplayInitialDeforScreenByCom;
 import nts.uk.screen.at.app.kmk004.l.DisplayInitialDeforScreenByCompanyDto;
+import nts.uk.screen.at.app.kmk004.l.SelectYearByCompany;
+import nts.uk.screen.at.app.query.kmk004.b.WorkTimeComDto;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingInput;
 
 /**
  * 
@@ -39,6 +43,9 @@ public class Kmk004LWebService {
 	
 	@Inject
 	private DisplayInitialDeforScreenByCom initScreen;
+	
+	@Inject
+	private SelectYearByCompany selectYearByCompany;
 
 	@POST
 	@Path("viewL/monthlyWorkTimeSet/add")
@@ -68,6 +75,12 @@ public class Kmk004LWebService {
 	@Path("viewL/initScreen")
 	public DisplayInitialDeforScreenByCompanyDto initScreen() {
 		return initScreen.displayInitialDeforScreenByCom() ;
+	}
+	
+	@POST
+	@Path("viewL/getWorkingHoursByCompany")
+	public List<WorkTimeComDto> getWorkingHoursByCompany(DisplayMonthlyWorkingInput param) {
+		return selectYearByCompany.getDeforDisplayMonthlyWorkingHoursByCompany(param) ;
 	}
 	
 }

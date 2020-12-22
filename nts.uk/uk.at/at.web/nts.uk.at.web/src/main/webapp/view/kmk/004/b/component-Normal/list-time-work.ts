@@ -239,7 +239,7 @@ module nts.uk.at.view.kmk004.b {
 
         initList(year: number, check: boolean) {
             const vm = this
-            var check: boolean = check;
+            var check: boolean = true;
 
             if (ko.unwrap(vm.checkEmployee)) {
                 check = false;
