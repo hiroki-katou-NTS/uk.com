@@ -172,7 +172,7 @@ public class PersonCostCalculationFinder {
      * Get 人件費計算設定の履歴
      */
 
-    public List<HistPersonCostCalculationDto> getHistPersonCostCalculations() {
+    public List<HistPersonCostCalculationDto> getHistPersonCost() {
         val cid = AppContexts.user().companyId();
         val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
         if (!listItem.isPresent()) {
@@ -187,10 +187,13 @@ public class PersonCostCalculationFinder {
     }
     public PersonCostCalculationDto getLastPersonCost() {
         val cid = AppContexts.user().companyId();
-        val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
-        if (!listItem.isPresent()) {
+        val optItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
+        if (!optItem.isPresent()) {
             throw new BusinessException("Msg_2027");
         }
-        return new PersonCostCalculationDto();
+        val item = optItem.get();
+        return new PersonCostCalculationDto(
+                item.
+        );
     }
 }

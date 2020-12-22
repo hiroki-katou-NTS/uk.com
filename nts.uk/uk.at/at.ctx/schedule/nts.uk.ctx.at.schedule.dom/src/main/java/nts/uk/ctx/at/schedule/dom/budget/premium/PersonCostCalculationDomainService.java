@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.budget.premium;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.primitive.Memo;
 /**
  * 
@@ -40,4 +41,16 @@ public interface PersonCostCalculationDomainService {
 	 * @param personCostCalculation Person Cost Calculation
 	 */
 	public void deletePersonCostCalculation(PersonCostCalculation personCostCalculation);
+
+	//=========================================================================
+
+	public void updateHistPersonCalculation(PersonCostCalculation domain,String histotyId, DatePeriod period);
+
+	public void registerLaborCalculationSetting(PersonCostCalculation domain, GeneralDate date);
+
+
+
+
+
+
 }

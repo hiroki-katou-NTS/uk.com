@@ -22,7 +22,7 @@ import java.util.Optional;
 @Transactional
 public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandler<UpdateHistPersonCostCalculationCommand> {
     @Inject
-    IHistPersonCostCalculationDomainService service;
+    PersonCostCalculationDomainService service;
 
     @Override
     protected void handle(CommandHandlerContext<UpdateHistPersonCostCalculationCommand> commandHandlerContext) {

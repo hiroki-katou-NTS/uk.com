@@ -125,7 +125,7 @@ public class PersonCostCalculationWebService extends WebService {
     @POST
     @Path("findByLastHist")
     public PersonCostCalculationDto getLastPersonCost() {
-        return this.personCostCalculationSettingFinder.getHistPerson();
+        return this.personCostCalculationSettingFinder.getLastPersonCost();
     }
 
     @POST

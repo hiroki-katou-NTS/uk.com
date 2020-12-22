@@ -17,7 +17,7 @@ import java.util.Optional;
 public class RegisterLaborCalculationSettingCommandHandler extends CommandHandler<RegisterLaborCalculationSettingCommand> {
 
     @Inject
-    IHistPersonCostCalculationDomainService service;
+    PersonCostCalculationDomainService service;
 
     @Override
     protected void handle(CommandHandlerContext<RegisterLaborCalculationSettingCommand> commandHandlerContext) {

@@ -449,7 +449,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         StringBuilder query = new StringBuilder();
         query.append("SELECT a FROM KscmtHistPersonCostCalculation a ");
         query.append(" WHERE a.pk.companyID = :cid ");
-        query.append("  ORDER BY a.startDate ASC ");
+        query.append("  ORDER BY a.startDate DESC ");
 
         List<KscmtHistPersonCostCalculation> listEntity = this.queryProxy().query(query.toString(), KscmtHistPersonCostCalculation.class)
                 .setParameter("cid", cid)
@@ -459,6 +459,22 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             listEntity.forEach((item) -> {
                 historyItems.add(new DateHistoryItem(item.pk.histID, new DatePeriod(item.startDate, item.endDate)));
             });
+            HistPersonCostCalculation result = new HistPersonCostCalculation(cid, historyItems);
+            return Optional.of(result);
+        }
+        return Optional.empty();
+    }   @Override
+    public Optional<HistPersonCostCalculation> getLastPersonCost(String cid) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT a FROM KscmtHistPersonCostCalculation a ");
+        query.append(" WHERE a.pk.companyID = :cid ");
+        query.append("  ORDER BY a.startDate DESC ");
+
+        List<KscmtHistPersonCostCalculation> listEntity = this.queryProxy().query(query.toString(), KscmtHistPersonCostCalculation.class)
+                .setParameter("cid", cid)
+                .getList();
+        if (!listEntity.isEmpty()) {
+           DateHistoryItem historyItems ;
             HistPersonCostCalculation result = new HistPersonCostCalculation(cid, historyItems);
             return Optional.of(result);
         }
