@@ -162,7 +162,7 @@ module nts.uk.at.view.kmk004.b {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
 							vm.years(ko.unwrap(vm.years));
-							vm.selectedYear(ko.unwrap(vm.years)[index].year);
+							vm.selectedYear(ko.unwrap(vm.years)[index === ko.unwrap(vm.years).length - 1 ? index - 1 : index].year);
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {

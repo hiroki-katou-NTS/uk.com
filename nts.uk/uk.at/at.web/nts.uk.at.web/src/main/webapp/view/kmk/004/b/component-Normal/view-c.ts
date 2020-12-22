@@ -205,7 +205,12 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogF() {
 			const vm = this;
-			const params = { type: vm.type, selectId: ko.unwrap(vm.selectedId), nameSynthetic: ko.unwrap(vm.model.name), isSetting: false };
+			const params = {
+				type: vm.type,
+				selectId: ko.unwrap(vm.selectedId),
+				nameSynthetic: ko.unwrap(vm.model.name),
+				isSetting: ko.unwrap(vm.model.isAlreadySetting)
+			};
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
 			});

@@ -42,8 +42,11 @@ module nts.uk.at.view.kmk004.f {
         ];
         public valueInsurrance: KnockoutObservable<string> = ko.observable('1');
         public valueSurcharges: KnockoutObservable<string> = ko.observable('1');
-        public checkCompany: KnockoutObservable<boolean> = ko.observable(true);
-        public attendance: KnockoutObservable<boolean> = ko.observable(true);
+        public checkCompany: KnockoutObservable<boolean> = ko.observable(false);
+        public checkWorkPlace: KnockoutObservable<boolean> = ko.observable(true);
+        public checkEmployment: KnockoutObservable<boolean> = ko.observable(true);
+        public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
+        public attendance: KnockoutObservable<boolean> = ko.observable(false);
         public type = '';
         public selectId = '';
         public nameSynthetic = '';
@@ -57,6 +60,22 @@ module nts.uk.at.view.kmk004.f {
             vm.selectId = params.selectId;
             vm.nameSynthetic = params.nameSynthetic;
             vm.attendance(params.isSetting);
+
+            switch (vm.type) {
+                case 'Com_Company':
+                    vm.checkCompany(true);
+                    vm.attendance(true);
+                    break;
+                case 'Com_Workplace':
+                    vm.checkWorkPlace(false);
+                    break;
+                case 'Com_Employment':
+                    vm.checkEmployment(false);
+                    break;
+                case 'Com_Person':
+                    vm.checkEmployee(false);
+                    break;
+            }
         }
 
         mounted() {
@@ -65,7 +84,7 @@ module nts.uk.at.view.kmk004.f {
             $(document).ready(function () {
                 $('.input-forcus').focus();
             });
-            
+
             vm.init();
             vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
             vm.model.outsideSurchargeWeekMonth.valueHasMutated();

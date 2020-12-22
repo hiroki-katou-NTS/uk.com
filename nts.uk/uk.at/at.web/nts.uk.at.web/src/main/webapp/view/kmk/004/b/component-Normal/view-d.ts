@@ -82,7 +82,7 @@ module nts.uk.at.view.kmk004.b {
 	const API = {
 		ADD_WORK_TIME: 'screen/at/kmk004/viewd/emp/monthlyWorkTime/add',
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewd/emp/monthlyWorkTime/delete'
-    };
+	};
 
 	@component({
 		name: 'view-d',
@@ -132,7 +132,7 @@ module nts.uk.at.view.kmk004.b {
 			const yearMonth = _.map(ko.unwrap(vm.workTimes), ((value) => {
 				return ko.unwrap(value.yearMonth);
 			}));
-			const input = {employmentCode: ko.unwrap(vm.emloyment.code), yearMonth: yearMonth, laborTime: times};
+			const input = { employmentCode: ko.unwrap(vm.emloyment.code), yearMonth: yearMonth, laborTime: times };
 
 			vm.$ajax(API.ADD_WORK_TIME, input)
 				.done(() => {
@@ -191,7 +191,12 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogF() {
 			const vm = this;
-			const params = { type: vm.type, selectId: ko.unwrap(vm.emloyment.code), nameSynthetic: ko.unwrap(vm.emloyment.name), isSetting: false };
+			const params = {
+				type: vm.type,
+				selectId: ko.unwrap(vm.emloyment.code),
+				nameSynthetic: ko.unwrap(vm.emloyment.name),
+				isSetting: !ko.unwrap(vm.emloyment.isAlreadySetting)
+			};
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
 			});

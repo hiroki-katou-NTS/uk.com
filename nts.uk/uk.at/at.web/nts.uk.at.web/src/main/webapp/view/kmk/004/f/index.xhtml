@@ -25,8 +25,16 @@
                     <label class="title" data-bind="i18n: $vm.nameSynthetic"></label>
                     <hr>
                     </hr>
-                    <div data-bind="if: attendance">
-                        <div class="node" data-bind="i18n: 'KMK004_344'"></div>
+                    <div data-bind="ifnot: attendance">
+                        <com:ko-if bind="!checkWorkPlace()">
+                            <div class="node" data-bind="i18n: 'KMK004_344'"></div>
+                        </com:ko-if>
+                        <com:ko-if bind="!checkEmployment()">
+                            <div class="node" data-bind="i18n: 'KMK004_345'"></div>
+                        </com:ko-if>
+                        <com:ko-if bind="!checkEmployee()">
+                            <div class="node" data-bind="i18n: 'KMK004_346'"></div>
+                        </com:ko-if>
                     </div>
                     <div class="cf">
                         <div style="margin-top: 0px;"

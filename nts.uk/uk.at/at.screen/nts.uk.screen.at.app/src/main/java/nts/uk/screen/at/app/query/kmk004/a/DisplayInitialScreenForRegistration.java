@@ -5,10 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.workingform.SettingFlexWork;
-import nts.uk.ctx.at.shared.dom.workingform.SettingFlexWorkRepository;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DisplayInitialScreenForRegistration {
 	
 	@Inject
-	private SettingFlexWorkRepository flexWorkRepository;
+	private FlexWorkMntSetRepository flexWorkRepository;
 	
 	@Inject
 	private AggDeformedLaborSettingRepository aggDeformedLaborSettingRepository;
@@ -34,9 +34,11 @@ public class DisplayInitialScreenForRegistration {
 		String cid = AppContexts.user().companyId();
 		
 		Optional<AggDeformedLaborSetting> agg = this.aggDeformedLaborSettingRepository.findByCid(cid);
-		SettingFlexWork flex = this.flexWorkRepository.find(cid);
+		Optional<FlexWorkSet> flex = this.flexWorkRepository.find(cid);
 		
-		result.setFlexWorkManaging(flex.isFlexWorkManaging());
+		if (flex.isPresent()) {
+			result.setFlexWorkManaging(flex.get().getUseFlexWorkSetting().isUse());
+		}
 		result.setUseDeformedLabor(agg.map(m -> m.getUseDeformedLabor().isUse()).orElse(false));
 		
 		return result;
