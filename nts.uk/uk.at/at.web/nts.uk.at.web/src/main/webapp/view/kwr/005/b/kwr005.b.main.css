@@ -24,9 +24,11 @@
 }
 
 .kwr-005b .pull-left .panel.ntsPanel {
-  height: 437px;
+  height: 400px;
 }
-
+.kwr-005b.ie .pull-left .panel.ntsPanel {
+  height: 415px;
+}
 .kwr-005b .nts-editor-wrapped .nts-editor.code {
   max-width: 30px;
   text-align: center;
