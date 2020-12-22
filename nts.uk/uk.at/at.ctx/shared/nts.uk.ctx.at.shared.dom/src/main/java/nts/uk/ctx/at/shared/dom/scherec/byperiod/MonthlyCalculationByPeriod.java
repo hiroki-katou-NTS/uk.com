@@ -94,6 +94,7 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		this.aggregateTime.aggregate(require, period,
 				calcDailys.getAttendanceTimeOfDailyMap(),
 				calcDailys.getWorkInfoOfDailyMap(),
+				calcDailys.getSnapshots(),
 				companySets);
 
 		// フレックス時間の集計

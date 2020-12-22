@@ -200,7 +200,7 @@ public class DisplayWorkInfoByDateSc {
 						shortTime) ;
 				
 				// List＜休憩時間帯＞＝勤務予定．休憩時間帯
-				List<BreakTimeSheet> timeSheets = value.get().getLstBreakTime().stream().flatMap(x-> x.getBreakTimeSheets().stream()).collect(Collectors.toList());
+				List<BreakTimeSheet> timeSheets = value.get().getLstBreakTime().map(x-> x.getBreakTimeSheets()).orElse(new ArrayList<>());
 				// comment tạm, cần sửa lại TQP
 				List<TimeSpanForCalcDto> listBreakTimeZoneDto = inforDto.getListBreakTimeZoneDto(); //timeSheets.stream().map(x-> new TimeSpanForCalcDto(x.getStartTime().v(), x.getEndTime().v())).collect(Collectors.toList()); 
 				

@@ -157,7 +157,7 @@ module nts.uk.at.view.kmk008.k {
 
                 vm.$dialog.error({
                     messageId: "Msg_61",
-                    messageParams: [vm.currentSelectItem().yearOrYearMonthValue().toString()]
+                    messageParams: vm.isYearMonth ?  ["年月"] : ["年度"]
                 }).then(() => {
                     $("#txt-year").focus();
                 });

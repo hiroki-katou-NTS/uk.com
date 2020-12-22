@@ -230,7 +230,7 @@ module nts.uk.ui.at.ksu002.a {
 
 											if (specificDay || !!optCompanyEventName || !!optWorkplaceEventName) {
 												const events: string[] = [];
-												events.push('<table><colgroup><col width="75"></col><col width="10"></col></colgroup><tbody>');
+												events.push('<table><colgroup><col width="90"></col><col width="10"></col></colgroup><tbody>');
 
 												events.push(`<tr class="cen"><td>${vm.$i18n('KSU001_4014')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!optCompanyEventName ? _.escape(optCompanyEventName) : vm.$i18n('KSU001_4019')}</td></tr>`);
 
@@ -285,7 +285,7 @@ module nts.uk.ui.at.ksu002.a {
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
 					// soft reset (only undo, redo)
-					vm.schedules.reset(!(undo || redo));
+					vm.schedules.reset(!(undo || redo) || arch === NO);
 
 					// reset data
 					_.each(schedules, (sc) => {

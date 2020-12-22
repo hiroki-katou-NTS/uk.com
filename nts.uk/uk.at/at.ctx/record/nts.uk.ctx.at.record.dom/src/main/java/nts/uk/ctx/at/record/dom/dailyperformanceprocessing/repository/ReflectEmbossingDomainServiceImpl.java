@@ -1180,10 +1180,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private TimeLeavingWork putTimeLeaveForActualAndStamp(String companyId, WorkInfoOfDailyPerformance WorkInfo,
 			String attendanceClass, List<Stamp> stamps, Stamp x, ProcessTimeOutput processTimeOutput,
 			TimeLeavingWork timeLeavingWork) {
+		
 		// 臨時時刻を丸める
-
-		RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+		RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 						"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 				: null;
 		InstantRounding instantRounding = null;
@@ -1246,8 +1246,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						? timeLeavingWork.getLeaveStamp().get().getActualStamp().get() : null;
 		if (leaveStamp == null) {
 			// 臨時時刻を丸める
-			RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+			RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 							"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 					: null;
 			InstantRounding instantRounding = null;
@@ -1486,8 +1486,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// 臨時時刻を丸める
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+		RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 						"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 				: null;
 		InstantRounding instantRounding = null;
@@ -1549,8 +1549,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (actualStamp == null) {
 			// 臨時時刻を丸める
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+			RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 							"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 					: null;
 			InstantRounding instantRounding = null;
@@ -2053,8 +2053,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				&& o.getGoOut().get().getActualStamp().isPresent()) ? o.getGoOut().get().getActualStamp().get() : null;
 		if (actualStamp == null) {
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+			RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 							"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
 					: null;
 			InstantRounding instantRounding = null;
@@ -2147,8 +2147,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (actualStamp == null) {
 			// 外出・休憩時刻を丸める
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+			RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+					? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 							"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
 					: null;
 			InstantRounding instantRounding = null;
@@ -2262,8 +2262,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// lý)
 
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+		RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 						"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
 				: null;
 		InstantRounding instantRounding = null;
@@ -2343,8 +2343,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 外出・休憩時刻を丸める
 		// 7.2.1* Làm tròn 打刻時刻 đang xử ly
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+		RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+				? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 						"外出".equals(attendanceClass) ? Superiority.GO_OUT : Superiority.TURN_BACK)
 				: null;
 		InstantRounding instantRounding = null;
@@ -2573,8 +2573,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// timePrintDestinationCopy
 					if ("打刻".equals(actualStampClass)) {
 
-						RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-								? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+						RoundingSet roudingTime = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+								? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
 										"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 								: null;
 						InstantRounding instantRounding = null;

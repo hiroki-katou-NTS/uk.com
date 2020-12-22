@@ -52,7 +52,7 @@ module nts.uk.at.view.kml002.d {
 
     closeDialog() {
       const vm = this;
-      vm.$window.storage('LABOR_COST_TIME_SETTING', {setting: vm.isSettingLaborCostTime()}).then(() => {
+      vm.$window.storage('LABOR_COST_TIME_SETTING', { setting: vm.isSettingLaborCostTime() }).then(() => {
         vm.$window.close();
       });
     }
@@ -64,9 +64,7 @@ module nts.uk.at.view.kml002.d {
       if (vm.d31totalUsage() === UsageClassification.NotUse
         && vm.d41WorkingHours() === UsageClassification.NotUse
         && vm.d51Overtime() === UsageClassification.NotUse) {
-        vm.$dialog.error({ messageId: 'Msg_1836' }).then(() => {
-          $('#D32').focus();
-        });
+        vm.$dialog.error({ messageId: 'Msg_1836' }).then(() => {});
         return;
       }
 
@@ -74,28 +72,22 @@ module nts.uk.at.view.kml002.d {
       if (vm.d31totalUsage()
         && vm.d31TimeReference() === UsageClassification.NotUse
         && vm.d31LaborCosts() === UsageClassification.NotUse
-        && vm.d31Budget() === UsageClassification.NotUse) {
-        vm.$dialog.error({ messageId: 'Msg_1953' }).then(() => {
-          $('#D32').focus();
-        });
+        && vm.d31Budget() === UsageClassification.NotUse) {         
+          vm.$dialog.error({ messageId: 'Msg_1953' }).then(() => {});
         return;
       }
 
       if (vm.d41WorkingHours()
         && vm.d41TimeReference() === UsageClassification.NotUse
-        && vm.d41LaborCosts() === UsageClassification.NotUse) {
-        vm.$dialog.error({ messageId: 'Msg_1953' }).then(() => {
-          $('#D42').focus();
-        });
+        && vm.d41LaborCosts() === UsageClassification.NotUse) {         
+        vm.$dialog.error({ messageId: 'Msg_1953' }).then(() => {});
         return;
       }
 
       if (vm.d51Overtime()
         && vm.d51TimeReference() === UsageClassification.NotUse
-        && vm.d51LaborCosts() === UsageClassification.NotUse) {
-        vm.$dialog.error({ messageId: 'Msg_1953' }).then(() => {
-          $('#D52').focus();
-        });
+        && vm.d51LaborCosts() === UsageClassification.NotUse) {          
+          vm.$dialog.error({ messageId: 'Msg_1953' }).then(() => { });
         return;
       }
 
@@ -111,8 +103,8 @@ module nts.uk.at.view.kml002.d {
       vm.$blockui('show');
 
       vm.$ajax(PATH.wkpLaborCostAndTimeGetById).done((data) => {
-        if (!_.isNil(data) && data.length > 0 ) {
-          
+        if (!_.isNil(data) && data.length > 0) {
+
           vm.isSettingLaborCostTime(true);
           //sort asc
           let laborCostTimeBudget: any = _.orderBy(data, 'laborCostAndTimeType', 'asc');
@@ -142,7 +134,7 @@ module nts.uk.at.view.kml002.d {
         }
         vm.$blockui('hide');
       })
-        .fail((err) => {})
+        .fail((err) => { })
         .always(() => vm.$blockui('hide'));
     }
 
@@ -179,9 +171,9 @@ module nts.uk.at.view.kml002.d {
       ];
 
       vm.$ajax(PATH.wkpLaborCostAndTimeRegister, { laborCostAndTimes: params }).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {      
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.isSettingLaborCostTime(true);
-          vm.$blockui('hide');                   
+          vm.$blockui('hide');
         });
       })
         .fail((error) => { })

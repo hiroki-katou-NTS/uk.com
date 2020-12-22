@@ -8,6 +8,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
@@ -97,12 +98,14 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
+	 * @param snapshots 日別実績のスナップショット
 	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregate(RequireM1 require,
 			DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
+			Map<GeneralDate, SnapShot> snapshots,
 			MonAggrCompanySettings companySets){
 		
 		// 就業時間の集計
@@ -136,7 +139,7 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		this.vacationUseTime.aggregate(datePeriod);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap, snapshots);
 		this.prescribedWorkingTime.aggregate(datePeriod);
 	}
 	
