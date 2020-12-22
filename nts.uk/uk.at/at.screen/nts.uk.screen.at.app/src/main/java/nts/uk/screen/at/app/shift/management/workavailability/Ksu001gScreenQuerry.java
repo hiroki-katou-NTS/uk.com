@@ -223,7 +223,8 @@ public class Ksu001gScreenQuerry {
 
 		@Override
 		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
-			return shiftMasterRepo.checkExistsByCd(AppContexts.user().companyId(), shiftMasterCode.v());
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
 		}
 		
 	}
