@@ -31,16 +31,24 @@ public interface WorkScheduleRepository {
 	 */
 	void insert(WorkSchedule workSchedule); 
 	
+	
+	
 	/**
-	 * [3] Update(勤務予定)
+	 * [5] InsertAll(会社ID, 勤務予定リスト)
+	 * @param cid
 	 * @param workSchedule
 	 */
+	void insertAll(String cID, List<WorkSchedule> workSchedule);
 	
-	void update(WorkSchedule workSchedule);
+	/**
+	 * [6] Update(社員ID, 期間)
+	 * @param sid
+	 * @param datePeriod
+	 */
+	void delete(String sid, DatePeriod datePeriod);
+	
 	/** Delete (勤務予定) **/
 	void delete(String sid , GeneralDate ymd);
-
-	void delete(String sid, DatePeriod datePeriod);
 
 	boolean checkExits(String employeeID, GeneralDate ymd);
 
@@ -57,6 +65,5 @@ public interface WorkScheduleRepository {
 	void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID);
 
 	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
-	
 }
 
