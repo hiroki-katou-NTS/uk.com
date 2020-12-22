@@ -17,7 +17,6 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -69,17 +68,15 @@ public class WorkAvailabilityOfOneDayTest {
 				new ShiftMasterCode("S01"),
 				new ShiftMasterCode("S02"));
 		
-		List<ShiftMaster> shiftMasters = Arrays.asList(
-				new ShiftMaster("companyId",new ShiftMasterCode("01"), null, "workTypeCode", "workTimeCode"),
-				new ShiftMaster("companyId",new ShiftMasterCode("01"), null, "workTypeCode", "workTimeCode")
-				);
-		
 		new Expectations() {
-            {
-            	require.getShiftMaster(shiftCodeList);
-            	result = shiftMasters;
-            }
-        };
+			{
+				require.shiftMasterIsExist(shiftCodeList.get(0));
+				result = true;
+				
+				require.shiftMasterIsExist(shiftCodeList.get(1));
+				result = true;
+			}
+		};
         
 		
 		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDay
@@ -190,16 +187,13 @@ public class WorkAvailabilityOfOneDayTest {
 	public void testGetDisplayInformation() {
 		
 		List<ShiftMasterCode> shiftCodes = Arrays.asList(new ShiftMasterCode("S01"));
-		List<ShiftMaster> shiftMasters = Arrays.asList(
-				new ShiftMaster("companyId",new ShiftMasterCode("01"), null, "workTypeCode", "workTimeCode")
-				);
 		
 		new Expectations() {
-            {
-            	require.getShiftMaster(shiftCodes);
-            	result = shiftMasters;
-            }
-        };
+			{
+				require.shiftMasterIsExist(shiftCodes.get(0));
+				result = true;
+			}
+		};
 		
 		WorkAvailabilityOfOneDay workAvailability = WorkAvailabilityOfOneDay
 				.create(require,
