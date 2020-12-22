@@ -1389,16 +1389,20 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} 
 			command.actualApplicationTime = self.dataSource.hdWorkDispInfoWithDateOutput.actualApplicationTime;
 
-			for (let i = 1; i <= 2; i++) {
-				if(i == 2 && !self.managementMultipleWorkCyclescheck()){
-					break;
-				}
-				let timeZone = {} as TimeZone;
-				if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
-					timeZone.frameNo = i;
-					timeZone.start = workInfo.workHours1.start();
-					timeZone.end = workInfo.workHours1.end();
-					timeZoneArray.push(timeZone);
+			let timeZone1 = {} as TimeZone;
+			if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
+				timeZone1.frameNo = 1;
+				timeZone1.start = workInfo.workHours1.start();
+				timeZone1.end = workInfo.workHours1.end();
+				timeZoneArray.push(timeZone1);
+			}
+			if(!self.managementMultipleWorkCyclescheck()){
+				let timeZone2 = {} as TimeZone;
+				if (!(_.isNil(workInfo.workHours2.start()) || _.isNil(workInfo.workHours2.end()))) {
+					timeZone2.frameNo = 2;
+					timeZone2.start = workInfo.workHours2.start();
+					timeZone2.end = workInfo.workHours2.end();
+					timeZoneArray.push(timeZone2);
 				}
 			}
 			restTime.forEach(item => {
@@ -1474,7 +1478,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		
 		getFormatTime(number: number) {
 			if (_.isNil(number)) return '';
-			return (formatTime("Time_Short_HM", number));
+			return String(formatTime("Clock_Short_HM", number));
 		}
 
 		handleConfirmMessage(listMes: any): any {
