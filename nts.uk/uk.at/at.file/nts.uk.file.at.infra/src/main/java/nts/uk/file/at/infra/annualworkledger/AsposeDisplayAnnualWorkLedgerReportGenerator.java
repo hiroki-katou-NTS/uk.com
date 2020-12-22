@@ -87,7 +87,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             if(i>=1){
                 pageBreaks.add(firstRow);
                 cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
-                cells.clearContents(firstRow -1,0,cells.getMaxRow(),cells.getMaxColumn());
+                cells.clearContents(firstRow ,0,cells.getMaxRow(),cells.getMaxColumn());
             }
             this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
             this.printData(worksheet, firstRow, dataSource, empInfo);

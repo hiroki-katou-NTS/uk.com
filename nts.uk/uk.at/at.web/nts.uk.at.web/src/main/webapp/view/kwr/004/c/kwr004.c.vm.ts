@@ -84,7 +84,7 @@ module nts.uk.at.view.kwr004.c {
           });
           break;
 
-        case 'Msg_1753':
+        case 'Msg_1859':
           $('#KWR004_C23').ntsError('set', { messageId: messageId });
           $('#KWR004_C23').focus();
           break;

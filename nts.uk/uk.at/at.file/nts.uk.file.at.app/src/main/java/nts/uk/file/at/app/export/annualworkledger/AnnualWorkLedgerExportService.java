@@ -101,7 +101,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
         val basedateNow = GeneralDate.today();
         if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("Còn QA");
+            throw new BusinessException("");
         }
         val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
         List<String> lstEmpIds = query.getLstEmpIds();
