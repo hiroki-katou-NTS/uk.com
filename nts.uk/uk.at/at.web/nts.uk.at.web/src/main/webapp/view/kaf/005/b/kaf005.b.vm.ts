@@ -198,7 +198,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
         reload() {
             const vm = this;
-            if (vm.appType() == vm.application().appType) {
+            if (vm.appType() == AppType.OVER_TIME_APPLICATION) {
 				vm.isStart = true;
             	vm.initAppDetail();
             }
