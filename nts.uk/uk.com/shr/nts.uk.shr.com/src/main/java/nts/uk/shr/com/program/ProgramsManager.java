@@ -2483,6 +2483,9 @@ public class ProgramsManager {
             "/view/kwr/002/d/index.xhtml");
     public static final Program KWR002E = new Program(WebAppId.AT, ProgramIdConsts.KWR002E, "KWR002_5",
             "/view/kwr/002/e/index.xhtml");
+    public static final Program KWR002F = new Program(WebAppId.AT, ProgramIdConsts.KWR002F, "KWR002_6",
+            "/view/kwr/002/f/index.xhtml");
+
 
     /**
      * KDM001

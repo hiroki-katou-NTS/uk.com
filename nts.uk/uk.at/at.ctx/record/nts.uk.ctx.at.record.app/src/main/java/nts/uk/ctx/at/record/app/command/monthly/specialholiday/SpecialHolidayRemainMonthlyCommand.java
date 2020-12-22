@@ -13,12 +13,12 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 public class SpecialHolidayRemainMonthlyCommand extends MonthlyWorkCommonCommand{
 
 	@Getter
-	private List<SpecialHolidayRemainDataDto> data = new ArrayList<>();
+	private SpecialHolidayRemainDataDto data;
 	
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			this.data.add((SpecialHolidayRemainDataDto) item);
+			this.data= (SpecialHolidayRemainDataDto) item;
 		}
 	}
 
@@ -30,7 +30,7 @@ public class SpecialHolidayRemainMonthlyCommand extends MonthlyWorkCommonCommand
 
 	@Override
 	public List<SpecialHolidayRemainData> toDomain() {
-		return data.stream().map(d -> d.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate())).collect(Collectors.toList());
+		return data == null ? new ArrayList<>() : data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
 	}
 	
 	

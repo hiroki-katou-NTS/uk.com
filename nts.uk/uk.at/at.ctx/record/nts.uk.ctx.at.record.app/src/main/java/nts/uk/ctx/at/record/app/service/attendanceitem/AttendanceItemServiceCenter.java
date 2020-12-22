@@ -55,11 +55,11 @@ public class AttendanceItemServiceCenter implements AttendanceItemService {
 		Map<Integer, Integer> optionalItems = AttendanceItemIdContainer.mapOptionalItemIdsToNos(type);
 		
 		return source.stream().filter(c -> {
-			if(!constraints.contains(c.getValueType())){
+			if(!constraints.contains(c.type())){
 				return false;
 			}
 			if(AttendanceItemIdContainer.isOptionalItem(c)){
-				Integer itemNo = optionalItems.get(c.getItemId());
+				Integer itemNo = optionalItems.get(c.itemId());
 				OptionalItem optionalItem = optionalMaster.get(itemNo);
 				if(optionalItem == null){
 					return false;

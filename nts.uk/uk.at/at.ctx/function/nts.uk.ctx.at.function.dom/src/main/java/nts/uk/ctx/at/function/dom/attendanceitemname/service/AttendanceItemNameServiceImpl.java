@@ -28,6 +28,8 @@ import nts.uk.ctx.at.function.dom.adapter.OptionalItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.OptionalItemImport;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapter;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapterDto;
+import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdater;
+import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdaterDto;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
 import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuAdaptor;
@@ -116,7 +118,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	
 	@Inject
 	private BentoMenuAdaptor bentoMenuAdaptor;
-
+	
 	@Inject
 	private TempAbsenceFrameApdater tempAbsenceFrameApdater;
 

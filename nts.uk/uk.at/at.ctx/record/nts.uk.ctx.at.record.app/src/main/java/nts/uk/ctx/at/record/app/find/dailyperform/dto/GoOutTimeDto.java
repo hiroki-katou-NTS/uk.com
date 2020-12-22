@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoOutTimeDto implements ItemConst {
+public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 戻り: 勤怠打刻(実打刻付き) */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = BACK)
@@ -29,21 +30,51 @@ public class GoOutTimeDto implements ItemConst {
 	private WithActualTimeStampDto outing;
 
 	/** 外出時間: 勤怠時間 */
-//	@AttendanceItemLayout(layout = "C")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer outingTime;
 	
 	private Integer outingTimeCalc;
 
 	/** 外出枠NO: 外出枠NO */
-//	@AttendanceItemLayout(layout = "D")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer no;
+	private int no;
 
 	/** 外出理由: 外出理由 */
-//	@AttendanceItemLayout(layout = "E")
-//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int outingReason;
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case BACK:
+		case (GO_OUT):
+			return new WithActualTimeStampDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (BACK):
+			return Optional.ofNullable(comeBack);
+		case (GO_OUT):
+			return Optional.ofNullable(outing);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (BACK):
+			comeBack = (WithActualTimeStampDto) value;
+			break;
+		case (GO_OUT):
+			outing = (WithActualTimeStampDto) value;
+			break;
+		default:
+		}
+	}
 	
 	public static GoOutTimeDto toDto(OutingTimeSheet domain){
 		return domain == null ? null : new GoOutTimeDto(

@@ -26,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME)
 public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_ATTENDANCE_TIME_BY_WORK_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
