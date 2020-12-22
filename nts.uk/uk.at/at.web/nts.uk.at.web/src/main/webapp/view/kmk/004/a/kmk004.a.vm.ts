@@ -3,6 +3,7 @@
 module nts.uk.at.view.kmk004.a {
 
 
+
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		public flexWorkManaging: KnockoutObservable<boolean> = ko.observable(true);
@@ -15,8 +16,8 @@ module nts.uk.at.view.kmk004.a {
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax('screen/at/kmk004/viewA/init'))
 				.then((data: any) => {
-					console.log(data);
-					debugger;
+					vm.flexWorkManaging(data.flexWorkManaging);
+					vm.useDeformedLabor(data.useDeformedLabor);
 				})
 				.then(() => vm.$blockui('clear'));
 
