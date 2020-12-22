@@ -1822,9 +1822,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 					}
 					// A7_13 A7_17 A7_21
-					let appRoot = opPreAppContentDisplayLst[0];
-						if (!_.isNil(appRoot.overTimeShiftNight)) {
-							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+					let appRoot = _.get(apOptional, 'applicationTime.overTimeShiftNight') as OverTimeShiftNight;
+						if (!_.isNil(appRoot)) {
+							let midNightHolidayTimes = appRoot.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
 								_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
 									if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
@@ -1989,9 +1989,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 					}
 					// A7_13 A7_17 A7_21
-					let appRoot = opPreAppContentDisplayLst[0];
-						if (!_.isNil(appRoot.overTimeShiftNight)) {
-							let midNightHolidayTimes = appRoot.overTimeShiftNight.midNightHolidayTimes;
+					let appRoot = _.get(apOptional, 'applicationTime.overTimeShiftNight') as OverTimeShiftNight;
+						if (!_.isNil(appRoot)) {
+							let midNightHolidayTimes = appRoot.midNightHolidayTimes;
 							if (!_.isEmpty(midNightHolidayTimes)) {
 								_.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
 									if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
