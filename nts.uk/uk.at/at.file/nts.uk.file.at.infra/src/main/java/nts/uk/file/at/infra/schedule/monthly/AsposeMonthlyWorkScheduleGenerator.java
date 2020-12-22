@@ -1887,7 +1887,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            start = i * 10;
 				            length = Math.min(errorDetail.length() - start, 15);
 				            
-				            remarkContentRow = errorDetail.substring(start, start + length);
+				            // add ... to remark when remark length > 45
+							remarkContentRow = errorDetail.length() > maxPossibleRow * length && (i == (maxPossibleRow - 1))
+								            		? (errorDetail.substring(start, start + length) + "...")
+						            				: errorDetail.substring(start, start + length);
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
@@ -2586,7 +2589,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            start = i * 10;
 			            length = Math.min(errorDetail.length() - start, 15);
 
-			            remarkContentRow = errorDetail.substring(start, start + length);
+		            	// add ... to remark when remark length > 45
+						remarkContentRow = errorDetail.length() > maxPossibleRow * length && (i == (maxPossibleRow - 1))
+							            		? (errorDetail.substring(start, start + length) + "...")
+					            				: errorDetail.substring(start, start + length);
 			            
 			            for (int j = 0; j < length; j++) {
 			            	// Column 4, 6, 8,...
