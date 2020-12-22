@@ -48,7 +48,9 @@ public class CreateWorkLedgerDisplayContentDomainService {
             List<EmployeeInfor> employeeInfoList,
             WorkLedgerOutputItem workLedgerOutputItem,
             List<WorkPlaceInfo> workPlaceInfo) {
-
+        if (workLedgerOutputItem == null) {
+            throw new BusinessException("Msg_1926");
+        }
         val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
         // ① = call() [RQ 588]  社員の指定期間中の所属期間を取得する
         val listEmployeeStatus = require.getAffiliateEmpListDuringPeriod(datePeriod, listSid);
