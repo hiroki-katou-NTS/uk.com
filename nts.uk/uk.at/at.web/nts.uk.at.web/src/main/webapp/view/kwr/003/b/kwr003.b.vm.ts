@@ -48,7 +48,7 @@ module nts.uk.at.view.kwr003.b {
     isEnableTextEditor: KnockoutObservable<number> = ko.observable(2);
     comboSelected: KnockoutObservable<any> = ko.observable(null);
     tableSelected: KnockoutObservable<any> = ko.observable(null);
-
+    //isIE: KnockoutObservable<boolean> = ko.observable(false);
 
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
@@ -112,13 +112,19 @@ module nts.uk.at.view.kwr003.b {
 
     created(params: any) {
       const vm = this;
+      /* const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if (!_.isNil(msie) && msie.index > -1) {
+        vm.isIE(true);
+      } */
     }
 
     mounted() {
       const vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)){
         $("#multiGridList").ntsFixedTable({ height: 'auto' });
-      else
+        $('.kwr-003b').addClass('ie');        
+      }  else
         $("#multiGridList").ntsFixedTable({ height: 370 });
     }
 
