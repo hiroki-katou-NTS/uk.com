@@ -106,13 +106,13 @@
 												<td>
 													<!-- A7_3 -->
 													<div tabindex="7" id="combo-box" data-bind="ntsComboBox: {
-														name: '#[KWR006_13]',
+														name: '#{i18n.getText('KWR006_13')}',
 														options: itemCodeStandardSelection,
 														optionsValue: 'code',
 														visibleItemsCount: 10,
 														value: monthlyWorkScheduleConditionModel.selectedCode,
 														optionsText: 'name',
-														required: false,
+														required: true,
 														enable: enableA7_3,
 														columns: [
 															{ prop: 'code', length: 2 },
@@ -145,7 +145,7 @@
 												<td>
 													<!-- A7_11 -->
 													<div tabindex="10" id="combo-box" data-bind="ntsComboBox: {
-														name: '#[KWR006_85]',
+														name: '#{i18n.getText('KWR006_85')}',
 														options: itemCodeFreeSetting,
 														optionsValue: 'code',
 														visibleItemsCount: 10,
