@@ -119,8 +119,8 @@ public class AppHolidayWorkFinder {
 
 		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(companyId,
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-				!param.getDateList().isEmpty()
-						? Optional.of(GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE))
+				dateListOptional.isPresent()
+						? Optional.of(dateListOptional.get().get(0))
 						: Optional.empty(),
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr(),
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(),
