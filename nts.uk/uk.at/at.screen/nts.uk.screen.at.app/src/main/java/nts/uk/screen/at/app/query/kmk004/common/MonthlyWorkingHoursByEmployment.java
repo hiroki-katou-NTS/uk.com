@@ -61,13 +61,15 @@ public class MonthlyWorkingHoursByEmployment {
 			return result;
 		}
 		
-		result = emps.stream().map(m -> {
-			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(),
-					new LaborTime(m.getLaborTime().getLegalLaborTime().v(),
-							m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
-							m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
-			return s;
-		}).collect(Collectors.toList());
+		result.stream().forEach(m -> {
+			Optional<MonthlyWorkTimeSetEmp> setEmp = emps.stream()
+					.filter(x -> x.getYm().v() == m.getYearMonth()).findFirst();
+			if (setEmp.isPresent()) {
+				m.setLaborTime(new LaborTime(setEmp.get().getLaborTime().getLegalLaborTime().v(),
+						setEmp.get().getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
+						setEmp.get().getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
+			}
+		});
 		
 		return result;
 	}
