@@ -8,6 +8,7 @@ module nts.uk.at.view.kmk004.components {
 		selectedYear: KnockoutObservable<number | null>;
 		checkEmployee?: KnockoutObservable<boolean>
 		years: KnockoutObservableArray<IYear>;
+		workTimes: KnockoutObservableArray<WorkTimeL>;
 	}
 
 	const API = {
@@ -99,6 +100,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectedYear = params.selectedYear;
 			vm.years = params.years;
 			vm.checkEmployee = params.checkEmployee;
+			vm.workTimes = params.workTimes;
 
 			vm.initList(2020);
 			vm.reloadData();

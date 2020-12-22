@@ -6,14 +6,19 @@ module nts.uk.at.view.kmk004.l {
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 	const DATE_FORMAT = 'YYYY/MM/DD';
+	
+	const KMK004O_API = {
+		REGISTER_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/update',
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete'
+	};
 
 	const template = `
 		<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Person'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="enable: existYear, i18n: 'KMK004_225'"></button>
+		<button class="proceed" data-bind="enable: existYear, click: register, i18n: 'KMK004_225'"></button>
 		<button data-bind="visible: true, i18n: 'KMK004_226'"></button>
-		<button class="danger" data-bind="enable: existYear, i18n: 'KMK004_227'"></button>
+		<button class="danger" data-bind="enable: existYear, click: remove, i18n: 'KMK004_227'"></button>
 	</div>
 	
 	<div class="view-o">
@@ -47,7 +52,7 @@ module nts.uk.at.view.kmk004.l {
 					</div>
 					<div class="content">
 						<div class="div_row"> 
-							<div class= "box-year" data-bind="component: {
+							<div class= "box-year" id= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
@@ -61,7 +66,8 @@ module nts.uk.at.view.kmk004.l {
 									params:{
 										selectedYear: selectedYear,
 										years: years,
-										checkEmployee: true
+										checkEmployee: true,
+										workTimes: workTimes
 									}
 								}"></div>
 							</div>
@@ -82,8 +88,21 @@ module nts.uk.at.view.kmk004.l {
 	}
 
 	interface UnitAlreadySettingModel {
-		id: string;
+		code: string;
 		isAlreadySetting: boolean;
+	}
+	
+	interface IWorkTimeSetCom {
+		empId: string;
+		laborAttr: number;
+		yearMonth: number;
+		laborTime: ILaborTime;
+	}
+
+	interface ILaborTime {
+		legalLaborTime: number,
+		withinLaborTime: number,
+		weekAvgTime: number
 	}
 
 	@component({
@@ -118,6 +137,7 @@ module nts.uk.at.view.kmk004.l {
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('');
+		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 
 		constructor(private params: IParam) {
 			super();
@@ -188,8 +208,8 @@ module nts.uk.at.view.kmk004.l {
 			vm.disableSelection = ko.observable(false);
 			vm.currentItemName = ko.observable('');
 			vm.alreadySettingList = ko.observableArray([
-				{ id: '1', isAlreadySetting: true },
-				{ id: '2', isAlreadySetting: true }
+				{ code: '1', isAlreadySetting: true },
+				{ code: '2', isAlreadySetting: true }
 			]);
 
 			vm.listComponentOption = {
@@ -229,6 +249,66 @@ module nts.uk.at.view.kmk004.l {
 					vm.selectedId(newValue);
 				});
 			});
+		}
+		
+		register() {
+			const vm = this;
+
+			let param: IWorkTimeSetCom[] = [];
+
+			_.forEach(ko.unwrap(vm.workTimes), ((value) => {
+				const t: IWorkTimeSetCom = { empId: vm.paramL.empId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.legalLaborTime(), withinLaborTime: null, weekAvgTime: null } };
+				param.push(t);
+			}));
+
+			vm.$validate('.nts-editor').then((valid: boolean) => {
+				if (!valid) {
+					return;
+				}
+
+				vm.$ajax(KMK004O_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetShas: param })).done(() => {
+					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+						vm.close();
+						$('#box-year').focus();
+					})
+
+				}).fail((error) => {
+					vm.$dialog.error(error);
+				}).always(() => {
+					vm.$blockui("clear");
+				});
+			});
+		}
+		
+		
+		remove() {
+			const vm = this;
+			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+				if (result === 'yes') {
+					vm.$blockui("invisible");
+					vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), empId: vm.paramL.empId()})).done(() => {
+						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+							vm.close();
+							$('#box-year').focus();
+						})
+
+					}).fail((error) => {
+						vm.$dialog.error(error);
+					}).always(() => {
+						vm.$blockui("clear");
+
+					});
+
+				} else {
+					$('#box-year').focus();
+				}
+			});
+
+		}
+		
+		close() {
+			const vm = this;
+			vm.$window.close();
 		}
 
 		openViewP() {
