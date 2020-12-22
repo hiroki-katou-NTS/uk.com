@@ -12,6 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalSttScreenRepository;
@@ -519,14 +520,14 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	}
 
 	@Override
-	public Map<String, Pair<String, GeneralDate>> getCountWorkConfirm(ClosureId closureId, YearMonth yearMonth, String companyID, List<String> wkpIDLst) {
-		Map<String, Pair<String, GeneralDate>> result = new HashMap<>();
+	public Map<String, Pair<String, GeneralDateTime>> getCountWorkConfirm(ClosureId closureId, YearMonth yearMonth, String companyID, List<String> wkpIDLst) {
+		Map<String, Pair<String, GeneralDateTime>> result = new HashMap<>();
 		String sql = 
-				"SELECT  KWF.WKPID,KWF.CONFIRM_PID,KWF.FIXED_DATE " +
-				"FROM  KRCST_WORK_FIXED KWF " +
-				"WHERE KWF.CLOSURE_ID = @closureId " +
-				"AND   KWF.PROCESS_YM = @yearMonth " +
-				"AND   KWF.CID        = @companyID " +
+				"SELECT  KWF.WKPID,KWF.CONFIRM_SID,KWF.CONFIRM_DATE_TIME " + 
+				"FROM  KRCDT_WORK_FIXED KWF " + 
+				"WHERE KWF.CLOSURE_ID = @closureId " + 
+				"AND   KWF.PROCESS_YM = @yearMonth " + 
+				"AND   KWF.CID        = @companyID " + 
 				"AND   KWF.WKPID IN @wkpIDLst ;";
 		new NtsStatement(sql, this.jdbcProxy())
 				.paramInt("closureId", closureId.value)
@@ -535,8 +536,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				.paramString("wkpIDLst", wkpIDLst)
 				.getList(rec -> {
 					String wkpID = rec.getString("WKPID");
-					String confirmPID = rec.getString("CONFIRM_PID");
-					GeneralDate fixedDate = rec.getGeneralDate("FIXED_DATE");
+					String confirmPID = rec.getString("CONFIRM_SID");
+					GeneralDateTime fixedDate = rec.getGeneralDateTime("CONFIRM_DATE_TIME");
 					result.put(wkpID, Pair.of(confirmPID, fixedDate));
 					return null;
 				});

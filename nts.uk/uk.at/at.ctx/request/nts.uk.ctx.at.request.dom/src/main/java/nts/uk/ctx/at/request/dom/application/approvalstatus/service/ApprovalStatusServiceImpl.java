@@ -26,6 +26,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -85,6 +86,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Workp
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -242,6 +244,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
+	@Inject
+	private SyEmployeeAdapter syEmployeeAdapter;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -1322,7 +1327,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		}
 		// アルゴリズム「状況取得_就業確定」を実行する
 		if(initDisplayOfApprovalStatus.isConfirmEmploymentFlg()) {
-			Map<String, Pair<String, GeneralDate>> mapUnConfirmEmploymentCount = this.getStatusEmploymentConfirm(closureId, processingYm, displayWorkplaceLst);
+			Map<String, Pair<String, GeneralDateTime>> mapUnConfirmEmploymentCount = this.getStatusEmploymentConfirm(closureId, processingYm, displayWorkplaceLst);
 			mapUnConfirmEmploymentCount.entrySet().stream().forEach(x -> {
 				result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
 					z.setDisplayConfirm(true);
@@ -1440,10 +1445,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<String, Pair<String, GeneralDate>> getStatusEmploymentConfirm(ClosureId closureId, YearMonth yearMonth, List<DisplayWorkplace> displayWorkplaceLst) {
+	public Map<String, Pair<String, GeneralDateTime>> getStatusEmploymentConfirm(ClosureId closureId, YearMonth yearMonth, List<DisplayWorkplace> displayWorkplaceLst) {
 		String companyID = AppContexts.user().companyId();
 		// クエリモデル「対象職場の締めの確定状況を取得する」を実行する
-		Map<String, Pair<String, GeneralDate>> mapCountWorkConfirm = approvalSttScreenRepository.getCountWorkConfirm(
+		Map<String, Pair<String, GeneralDateTime>> mapCountWorkConfirm = approvalSttScreenRepository.getCountWorkConfirm(
 				closureId, 
 				yearMonth, 
 				companyID, 
@@ -2467,5 +2472,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			result.put(loopDate, phaseApproverSttLst);
 		}
 		return result;
+	}
+
+	@Override
+	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
+		String companyID = AppContexts.user().companyId();
+		// 職場管理者を取得する　　　　　　　　　リクエストリストNo.653
+		Map<String, String> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), Arrays.asList(wkpID));
+		// imported（就業）「個人社員基本情報」を取得する
+		return employeeRequestAdapter.getApprovalStatusEmpMailAddr(infoMap.values().stream().collect(Collectors.toList()));
 	}
 }

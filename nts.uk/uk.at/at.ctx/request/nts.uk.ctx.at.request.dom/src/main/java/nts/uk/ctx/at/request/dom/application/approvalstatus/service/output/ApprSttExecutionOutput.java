@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * refactor 5
@@ -72,7 +72,7 @@ public class ApprSttExecutionOutput {
 	/**
 	 * 日付
 	 */
-	private GeneralDate date;
+	private GeneralDateTime date;
 	
 	public ApprSttExecutionOutput(DisplayWorkplace displayWorkplace) {
 		this.wkpID = displayWorkplace.getId();

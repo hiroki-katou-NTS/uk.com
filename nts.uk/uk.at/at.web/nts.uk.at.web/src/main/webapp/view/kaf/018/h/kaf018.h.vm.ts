@@ -11,6 +11,9 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 		endDate: string;
 		wkpInfo: ApprSttExecutionDto;
 		confirmMode: KnockoutObservable<boolean> = ko.observable(true);
+		empLstStr: KnockoutObservable<string> = ko.observable("");
+		confirmEmp: string;
+		confirmDate: string;
 		
         created(params: KAF018HParam) {
 			const vm = this;
@@ -19,6 +22,14 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 			vm.endDate = params.endDate;
 			vm.wkpInfo = params.wkpInfo;
 			vm.confirmMode(params.displayConfirm);
+			vm.confirmEmp = params.confirmEmp;
+			vm.confirmDate = params.confirmDate;
+			vm.$blockui('show');
+			vm.$ajax(`${API.getEmploymentConfirmInfo}/${params.wkpInfo.wkpID}`).done((data: any) => {
+				if(!_.isEmpty(data)) {
+					vm.empLstStr(_.chain(data).map((o: any) => o.sname).join(vm.$i18n('KAF018_504')).value());		
+				}
+			}).always(() => vm.$blockui('hide'));
         }
 
 		activeConfirm() {
@@ -30,9 +41,10 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 				currentMonth: vm.closureItem.processingYm,
 				confirmEmployment: vm.confirmMode()
 			};
-			return vm.$ajax(API.activeConfirm, [wsParam]).done((data: any) => {
-				vm.$window.close({});
-			});
+			vm.$blockui('show');
+			vm.$ajax(API.activeConfirm, [wsParam]).done(() => {
+				vm.$window.close({isActiveConfirm: true});
+			}).always(() => vm.$blockui('hide'));
 		}
 
 		close() {
@@ -47,9 +59,12 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 		endDate: string;
 		wkpInfo: ApprSttExecutionDto;
 		displayConfirm: boolean;
+		confirmEmp: string;
+		confirmDate: string;
 	}
 
     const API = {
+		getEmploymentConfirmInfo: "at/request/application/approvalstatus/getEmploymentConfirmInfo",
 		activeConfirm: "screen/at/kdl006/save"
     }
 }
