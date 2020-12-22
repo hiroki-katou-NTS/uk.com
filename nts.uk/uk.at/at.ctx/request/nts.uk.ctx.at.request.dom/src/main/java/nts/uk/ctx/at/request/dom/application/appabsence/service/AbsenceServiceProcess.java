@@ -18,6 +18,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -359,5 +361,5 @@ public interface AbsenceServiceProcess {
 	 * @param mailServerSet
 	 * @param approvalRoot
 	 */
-	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot);
+	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting applicationSetting);
 }

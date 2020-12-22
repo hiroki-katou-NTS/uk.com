@@ -762,21 +762,199 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Override
 	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
-			, TimeDigestiveUnit superHolidayUnit, TimeDigestiveUnit substituteHoliday
-			, TimeDigestiveUnit annualLeaveUnit, TimeDigestiveUnit childNursingUnit
-			, TimeDigestiveUnit nursingUnit, TimeDigestiveUnit pendingUnit) {
+			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
+			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
+			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
 		// to do // KAF006: -PhuongDV domain fix pending
 		//時間代休 = 0 AND 60H超休 = 0 AND 時間年休 = 0 AND 子の看護時間 = 0 AND 介護時間 = 0 AND 時間特別休暇 = 0
-		if (timeDigestApplication.getChildTime().minute() == 0
-				&& timeDigestApplication.getNursingTime().minute() == 0
-				&& timeDigestApplication.getOvertime60H().minute() == 0
-				&& timeDigestApplication.getTimeAnualLeave().minute() == 0
-				&& timeDigestApplication.getTimeOff().minute() == 0
-				&& timeDigestApplication.getTimeSpecialVacation().minute() == 0) {
+		if ((timeDigestApplication.getChildTime() == null 
+		        && timeDigestApplication.getNursingTime() == null 
+		        && timeDigestApplication.getOvertime60H() == null 
+		        && timeDigestApplication.getTimeAnualLeave() == null 
+		        && timeDigestApplication.getTimeOff() == null 
+		        && timeDigestApplication.getTimeSpecialVacation() == null) || 
+		        (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() == 0
+				&& timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() == 0
+				&& timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() == 0
+				&& timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() == 0
+				&& timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() == 0
+				&& timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() == 0)) {
 			throw new BusinessException("Msg_511");
 		}
 		
-		// -PhuongDV- --Continue
+		if (timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() > 0) {
+		    int remain60H = 0;
+		    if (superHolidayUnit.isPresent()) {
+		        switch (superHolidayUnit.get()) {
+                case OneMinute:
+                    remain60H = timeDigestApplication.getOvertime60H().v() / 1;
+                    break;
+                case FifteenMinute:
+                    remain60H = timeDigestApplication.getOvertime60H().v() / 15;
+                    break;
+                case ThirtyMinute:
+                    remain60H = timeDigestApplication.getOvertime60H().v() / 30;
+                    break;
+                case OneHour:
+                    remain60H = timeDigestApplication.getOvertime60H().v() / 60;
+                    break;
+                case TwoHour:
+                    remain60H = timeDigestApplication.getOvertime60H().v() / 120;
+                    break;
+                default:
+                    break;
+                }
+		        
+		        if (remain60H != 0) {
+		            throw new BusinessException("Msg_478");
+		        }
+		    }
+		}
+		
+		if (timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() > 0) {
+		    int remainTimeOff = 0;
+		    if (substituteHoliday.isPresent()) {
+		        switch (substituteHoliday.get()) {
+		        case OneMinute:
+		            remainTimeOff = timeDigestApplication.getTimeOff().v() / 1;
+                    break;
+                case FifteenMinute:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 15;
+                    break;
+                case ThirtyMinute:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 30;
+                    break;
+                case OneHour:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 60;
+                    break;
+                case TwoHour:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() / 120;
+                    break;
+                default:
+                    break;
+                }
+		        
+		        if (remainTimeOff != 0) {
+		            throw new BusinessException("Msg_477");
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() > 0) {
+		    int remainAnnual = 0;
+		    if (annualLeaveUnit.isPresent()) {
+		        switch (substituteHoliday.get()) {
+                case OneMinute:
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 1;
+                    break;
+                case FifteenMinute:
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 15;
+                    break;
+                case ThirtyMinute:
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 30;
+                    break;
+                case OneHour:
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 60;
+                    break;
+                case TwoHour:
+                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() / 120;
+                    break;
+                default:
+                    break;
+                }
+                
+                if (remainAnnual != 0) {
+                    throw new BusinessException("Msg_476");
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() > 0) {
+		    int childTimeRemain = 0;
+		    if (childNursingUnit.isPresent()) {
+		        switch (substituteHoliday.get()) {
+                case OneMinute:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() / 1;
+                    break;
+                case FifteenMinute:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() / 15;
+                    break;
+                case ThirtyMinute:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() / 30;
+                    break;
+                case OneHour:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() / 60;
+                    break;
+                case TwoHour:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() / 120;
+                    break;
+                default:
+                    break;
+                }
+                
+                if (childTimeRemain != 0) {
+                    throw new BusinessException("Msg_1686");
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() > 0) {
+		    int nursingRemain = 0;
+		    if (nursingUnit.isPresent()) {
+		        switch (substituteHoliday.get()) {
+                case OneMinute:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() / 1;
+                    break;
+                case FifteenMinute:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() / 15;
+                    break;
+                case ThirtyMinute:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() / 30;
+                    break;
+                case OneHour:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() / 60;
+                    break;
+                case TwoHour:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() / 120;
+                    break;
+                default:
+                    break;
+                }
+                
+                if (nursingRemain != 0) {
+                    throw new BusinessException("Msg_1686");
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() > 0) {
+		    int timeSpecialRemain = 0;
+		    if (pendingUnit.isPresent()) {
+		        switch (substituteHoliday.get()) {
+		        case OneMinute:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 1;
+		            break;
+		        case FifteenMinute:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 15;
+		            break;
+		        case ThirtyMinute:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 30;
+		            break;
+		        case OneHour:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 60;
+		            break;
+		        case TwoHour:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() / 120;
+		            break;
+		        default:
+		            break;
+		        }
+		        
+		        if (timeSpecialRemain != 0) {
+		            throw new BusinessException("Msg_1686");
+		        }
+		    }
+		}
 		return;
 	}
 	

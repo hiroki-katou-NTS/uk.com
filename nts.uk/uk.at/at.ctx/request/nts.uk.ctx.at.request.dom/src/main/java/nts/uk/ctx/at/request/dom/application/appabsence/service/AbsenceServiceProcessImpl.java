@@ -60,7 +60,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
@@ -1377,12 +1379,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// KAF006: -PhuongDV domain fix pending- team C - Hiếu xác nhận với Hoa
 		// 11.時間消化登録時のエラーチェック
 		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication
-				, remainVacationInfo.getOvertime60hManagement().getSuper60HDigestion()
-				, remainVacationInfo.getSubstituteLeaveManagement().getTimeDigestiveUnit()
-				, remainVacationInfo.getAnnualLeaveManagement().getTimeAnnualLeave()
-				, remainVacationInfo.getNursingCareLeaveManagement().getTimeChildNursingDigestive()
-				, remainVacationInfo.getNursingCareLeaveManagement().getTimeCareDigestive()
-				, null);
+				, Optional.ofNullable(remainVacationInfo.getOvertime60hManagement().getSuper60HDigestion())
+				, Optional.ofNullable(remainVacationInfo.getSubstituteLeaveManagement().getTimeDigestiveUnit())
+				, Optional.ofNullable(remainVacationInfo.getAnnualLeaveManagement().getTimeAnnualLeave())
+				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeChildNursingDigestive())
+				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeCareDigestive())
+				, Optional.empty());
 	}
 
 	@Override
@@ -1697,7 +1699,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     @Override
     public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates,
             List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements,
-            boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot) {
+            boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting appTypeSetting) {
         String companyId = AppContexts.user().companyId();
         
         // ドメインモデル「休暇申請」を１件INSERTする)
@@ -1731,11 +1733,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         }
         
         // 暫定データの登録
-        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
+//        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
         
         // アルゴリズム「新規画面登録後の処理」を実行する
         // Pending
-        ProcessResult result = this.afterRegisterService.processAfterRegister(applyForLeave.getApplication().getAppID(), null, mailServerSet);
+        ProcessResult result = this.afterRegisterService.processAfterRegister(applyForLeave.getApplication().getAppID(), appTypeSetting, mailServerSet);
         
         return result;
     }

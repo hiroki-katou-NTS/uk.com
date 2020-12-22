@@ -46,9 +46,9 @@
                 <button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty"
                     tabindex="1">#{i18n.getText('KAF006_1')}</button>
                 <!-- A1_7 -->
-                <button data-bind="click: annualHolidayRefer" tabindex="3">#{i18n.getText('KAF006_67')}</button>
+                <button data-bind="click: annualHolidayRefer, visible: condition10" tabindex="3">#{i18n.getText('KAF006_67')}</button>
                 <!-- A1_8 -->
-                <button data-bind="click: openHolidays" tabindex="3">#{i18n.getText('KAF006_68')}</button>
+                <button data-bind="click: openHolidays, visible: condition10" tabindex="3">#{i18n.getText('KAF006_68')}</button>
                 <div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
@@ -143,7 +143,12 @@
                                                                         params: {
                                                                             isChangeWorkHour: isChangeWorkHour,
                                                                             appType: appType,
-                                                                            application: application
+                                                                            application: application,
+                                                                            over60H: over60H,
+                                                                            timeOff: timeOff,
+                                                                            annualTime: annualTime,
+                                                                            childNursing: childNursing,
+                                                                            nursing: nursing
                                                                         } }, 
                                                                         visible: selectedType() === 6">
                 </div>
