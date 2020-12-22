@@ -150,7 +150,8 @@ module nts.uk.at.view.kmk004.b {
 		remote() {
 			const vm = this;
 			const param = { year: ko.unwrap(vm.selectedYear), workType: 0 }
-			const index = _.map(ko.unwrap(vm.years), m => m.year).indexOf(ko.unwrap(vm.selectedYear));
+			const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
+			const old_index = index === ko.unwrap(vm.years).length - 1 ? index - 1 : index;
 
 			nts.uk.ui.dialog
 				.confirm({ messageId: "Msg_18" })
@@ -162,7 +163,7 @@ module nts.uk.at.view.kmk004.b {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
 							vm.years(ko.unwrap(vm.years));
-							vm.selectedYear(ko.unwrap(vm.years)[index === ko.unwrap(vm.years).length - 1 ? index - 1 : index].year);
+							vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
@@ -173,7 +174,7 @@ module nts.uk.at.view.kmk004.b {
 							vm.$errors('clear');
 						})
 						.always(() => vm.$blockui("clear"));
-				})
+				});
 		}
 
 		openDialogF() {
