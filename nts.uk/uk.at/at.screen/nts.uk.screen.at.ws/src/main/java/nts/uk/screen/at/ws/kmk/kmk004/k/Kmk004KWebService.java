@@ -21,9 +21,9 @@ import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByEmploym
 import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByWorkPlaceCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.WkpFlexMonthActCalSetCommand;
 import nts.uk.screen.at.app.kmk004.g.DisplayFlexBasicSettingByCompanyDto;
-import nts.uk.screen.at.app.kmk004.h.WkpFlexMonthActCalSetDto;
-import nts.uk.screen.at.app.kmk004.i.EmpFlexMonthActCalSetDto;
-import nts.uk.screen.at.app.kmk004.j.ShaFlexMonthActCalSetDto;
+import nts.uk.screen.at.app.kmk004.h.DisplayFlexBasicSettingByWorkPlaceDto;
+import nts.uk.screen.at.app.kmk004.i.DisplayFlexBasicSettingByEmploymentDto;
+import nts.uk.screen.at.app.kmk004.j.DisplayFlexBasicSettingByEmployeeDto;
 import nts.uk.screen.at.app.kmk004.k.DisplayInitialFlexBasicSettingByCompany;
 import nts.uk.screen.at.app.kmk004.k.DisplayInitialFlexBasicSettingByEmployee;
 import nts.uk.screen.at.app.kmk004.k.DisplayInitialFlexBasicSettingByEmployment;
@@ -70,19 +70,19 @@ public class Kmk004KWebService {
 
 	@POST
 	@Path("display-wkp/{wkpId}")
-	public WkpFlexMonthActCalSetDto displayWkpSetting(@PathParam("wkpId") String wkpId) {
+	public DisplayFlexBasicSettingByWorkPlaceDto displayWkpSetting(@PathParam("wkpId") String wkpId) {
 		return this.displayWkp.displayInitialFlexBasicSettingByWorkPlace(wkpId);
 	}
 
 	@POST
-	@Path("display-emp/{empId}")
-	public EmpFlexMonthActCalSetDto displayEmpSetting(@PathParam("empId") String empId) {
-		return this.displayEmp.displayInitialFlexBasicSettingByEmployment(empId);
+	@Path("display-emp/{empCd}")
+	public DisplayFlexBasicSettingByEmploymentDto displayEmpSetting(@PathParam("empCd") String empCd) {
+		return this.displayEmp.displayInitialFlexBasicSettingByEmployment(empCd);
 	}
 
 	@POST
 	@Path("display-sha/{sId}")
-	public ShaFlexMonthActCalSetDto displayShaSetting(@PathParam("sId") String sId) {
+	public DisplayFlexBasicSettingByEmployeeDto displayShaSetting(@PathParam("sId") String sId) {
 		return this.displaySha.displayInitialFlexBasicSettingByEmployee(sId);
 	}
 

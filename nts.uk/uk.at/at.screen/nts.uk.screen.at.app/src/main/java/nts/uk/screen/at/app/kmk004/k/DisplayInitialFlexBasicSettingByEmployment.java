@@ -1,12 +1,10 @@
 package nts.uk.screen.at.app.kmk004.k;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
+import nts.uk.screen.at.app.kmk004.i.DisplayFlexBasicSettingByEmploymentDto;
 import nts.uk.screen.at.app.kmk004.i.EmpFlexMonthActCalSetDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,17 +20,17 @@ public class DisplayInitialFlexBasicSettingByEmployment {
 	@Inject
 	private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
 
-	public EmpFlexMonthActCalSetDto displayInitialFlexBasicSettingByEmployment(String employmentCd) {
+	public DisplayFlexBasicSettingByEmploymentDto displayInitialFlexBasicSettingByEmployment(String employmentCd) {
+
+		DisplayFlexBasicSettingByEmploymentDto result = new DisplayFlexBasicSettingByEmploymentDto();
 
 		// 雇用別フレックス勤務集計方法
-		Optional<EmpFlexMonthActCalSet> empFlexOpt = this.empFlexMonthActCalSetRepo.find(AppContexts.user().companyId(),
-				employmentCd);
+		this.empFlexMonthActCalSetRepo.find(AppContexts.user().companyId(), employmentCd).ifPresent(x -> {
 
-		if (empFlexOpt.isPresent()) {
-			return EmpFlexMonthActCalSetDto.fromDomain(empFlexOpt.get());
-		}
+			result.setFlexMonthActCalSet(EmpFlexMonthActCalSetDto.fromDomain(x));
+		});
 
-		return null;
+		return result;
 
 	}
 

@@ -1,12 +1,10 @@
 package nts.uk.screen.at.app.kmk004.k;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.screen.at.app.kmk004.j.DisplayFlexBasicSettingByEmployeeDto;
 import nts.uk.screen.at.app.kmk004.j.ShaFlexMonthActCalSetDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,18 +19,18 @@ public class DisplayInitialFlexBasicSettingByEmployee {
 	@Inject
 	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
 
-	public ShaFlexMonthActCalSetDto displayInitialFlexBasicSettingByEmployee(String sId) {
+	public DisplayFlexBasicSettingByEmployeeDto displayInitialFlexBasicSettingByEmployee(String sId) {
+
+		DisplayFlexBasicSettingByEmployeeDto result = new DisplayFlexBasicSettingByEmployeeDto();
 
 		// 社員別フレックス勤務集計方法
 
-		Optional<ShaFlexMonthActCalSet> ShaFlexOpt = this.shaFlexMonthActCalSetRepo.find(AppContexts.user().companyId(),
-				sId);
+		this.shaFlexMonthActCalSetRepo.find(AppContexts.user().companyId(), sId).ifPresent(x -> {
 
-		if (ShaFlexOpt.isPresent()) {
-			return ShaFlexMonthActCalSetDto.fromDomain(ShaFlexOpt.get());
-		}
+			result.setFlexMonthActCalSet(ShaFlexMonthActCalSetDto.fromDomain(x));
+		});
 
-		return null;
+		return result;
 
 	}
 

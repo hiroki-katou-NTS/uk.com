@@ -1,12 +1,10 @@
 package nts.uk.screen.at.app.kmk004.k;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
+import nts.uk.screen.at.app.kmk004.h.DisplayFlexBasicSettingByWorkPlaceDto;
 import nts.uk.screen.at.app.kmk004.h.WkpFlexMonthActCalSetDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,18 +20,16 @@ public class DisplayInitialFlexBasicSettingByWorkPlace {
 	@Inject
 	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
 
-	public WkpFlexMonthActCalSetDto displayInitialFlexBasicSettingByWorkPlace(String wkpId) {
-
+	public DisplayFlexBasicSettingByWorkPlaceDto displayInitialFlexBasicSettingByWorkPlace(String wkpId) {
+		DisplayFlexBasicSettingByWorkPlaceDto result = new DisplayFlexBasicSettingByWorkPlaceDto();
 		// 職場別フレックス勤務集計方法
 
-		Optional<WkpFlexMonthActCalSet> wkpFlexOpt = this.wkpFlexMonthActCalSetRepo.find(AppContexts.user().companyId(),
-				wkpId);
+		this.wkpFlexMonthActCalSetRepo.find(AppContexts.user().companyId(),
+				wkpId).ifPresent(x->{
+					result.setFlexMonthActCalSet(WkpFlexMonthActCalSetDto.fromDomain(x));
+					
+				});
 
-		if (wkpFlexOpt.isPresent()) {
-			return WkpFlexMonthActCalSetDto.fromDomain(wkpFlexOpt.get());
-
-		}
-
-		return null;
+		return result;
 	}
 }

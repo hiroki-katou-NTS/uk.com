@@ -37,12 +37,12 @@
 					<div style="margin-left: 70px;"
 						data-bind="ntsSwitchButton: {
 									name: '#[KMK004_271]',
-									options: [ { code: 1, name: '#{i18n.getText('KMK004_272')}'},
-									            { code: 2, name: '#{i18n.getText('KMK004_273')}'}]
+									options: [ { code: 0, name: '#{i18n.getText('KMK004_272')}'},
+									            { code: 1, name: '#{i18n.getText('KMK004_273')}'}]
 									            ,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: screenData().clearingPeriod,
+									value: screenData().flexMonthActCalSet().insufficSet().settlePeriod,
 									required: false,
 									enable: true }"></div>
 				</div>
@@ -56,10 +56,10 @@
 											options: startMonthLst,
 											optionsValue: 'code',
 											visibleItemsCount: 12,
-											value: screenData().selectedMonth,
+											value: screenData().flexMonthActCalSet().insufficSet().startMonth,
 											optionsText: 'name',
 											editable: false,
-											enable: screenData().clearingPeriod() == 2 ,
+											enable: screenData().flexMonthActCalSet().insufficSet().settlePeriod() == 1 ,
 											width:'65px',
 											required: false,
 											selectFirstIfNull: true,
@@ -78,11 +78,11 @@
 									            { code: 3, name: '3ヶ月'}],
 											optionsValue: 'code',
 											visibleItemsCount: 12,
-											value: screenData().selectedStage,
+											value: screenData().flexMonthActCalSet().insufficSet().period,
 											optionsText: 'name',
 											editable: false,
 											width:'75px',
-											enable: screenData().clearingPeriod() == 2,
+											enable: screenData().flexMonthActCalSet().insufficSet().settlePeriod() == 1,
 											required: false,
 											selectFirstIfNull: true,
 											columns: [
@@ -100,9 +100,9 @@
 									options: carryforwardSetInShortageFlex,
 									optionsValue: 'value',
 									optionsText: 'name',
-									value: screenData().selectedInShortageFlex,
+									value: screenData().flexMonthActCalSet().insufficSet().carryforwardSet,
 									required: false,
-									enable: screenData().clearingPeriod() == 2 }"></div>
+									enable: screenData().flexMonthActCalSet().insufficSet().settlePeriod() == 1 }"></div>
 				</div>
 				<div class="div_line">
 					<!-- K4_1-->
@@ -110,11 +110,11 @@
 					<!-- K4_2-->
 					<div id="month-counting" style="margin:10px 0px 0px 25px;"
 						data-bind="ntsRadioBoxGroup: {
-								options: [{id:1, name:'#{i18n.getText('KMK004_280')}'},
-								{id:2, name:'#{i18n.getText('KMK004_281')}'}],
+								options: [{id:0, name:'#{i18n.getText('KMK004_280')}'},
+								{id:1, name:'#{i18n.getText('KMK004_281')}'}],
 								optionsValue: 'id',
 								optionsText: 'name',
-								value: screenData().monthCountingMethod,
+								value: screenData().flexMonthActCalSet().aggrMethod,
 								enable: true}"></div>
 				</div>
 				<div class="div_line">
@@ -124,10 +124,10 @@
 				<div class="div_line">
 					<!-- K5_2-->
 					<div class="ml-20"
-						data-bind="ntsCheckBox: { checked: screenData().includeOvertimeHours,enable:screenData().monthCountingMethod() == 1 }">#{i18n.getText('KMK004_283')}</div>
+						data-bind="ntsCheckBox: { checked: screenData().flexMonthActCalSet().flexTimeHandle().includeOverTime ,enable:screenData().flexMonthActCalSet().aggrMethod() == 0 }">#{i18n.getText('KMK004_283')}</div>
 					<!-- K5_3-->
 					<div class="ml-20"
-						data-bind="ntsCheckBox: { checked: screenData().includeNonStatutoryLeave}">#{i18n.getText('KMK004_284')}</div>
+						data-bind="ntsCheckBox: { checked: screenData().flexMonthActCalSet().flexTimeHandle().includeIllegalHdwk}">#{i18n.getText('KMK004_284')}</div>
 				</div>
 				<div class="div_line">
 					<!-- K6_1-->
@@ -135,9 +135,9 @@
 				</div>
 				<div class="div_line">
 
-					<!-- K5_2-->
+					<!-- K6_2-->
 					<div class="ml-20"
-						data-bind="ntsCheckBox: { checked: screenData().legalFlextime }">#{i18n.getText('KMK004_286')}</div>
+						data-bind="ntsCheckBox: { checked: screenData().flexMonthActCalSet().legalAggrSet().aggregateSet }">#{i18n.getText('KMK004_286')}</div>
 				</div>
 
 				<div class="div_line" data-bind="if:screenMode == 'Com_Company'">
@@ -147,11 +147,11 @@
 					<div
 						data-bind="ntsSwitchButton: {
 									name: '#[KMK004_287]',
-									options: [ { code: 1, name: '#{i18n.getText('KMK004_288')}'},
-									            { code: 2, name: '#{i18n.getText('KMK004_289')}'}],
+									options: [ { code: 0, name: '#{i18n.getText('KMK004_288')}'},
+									            { code: 1, name: '#{i18n.getText('KMK004_289')}'}],
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: screenData().useRegularWorkingHours,
+									value: screenData().flexPredWorkTime().reference,
 									required: false,
 									enable: true }"></div>
 
