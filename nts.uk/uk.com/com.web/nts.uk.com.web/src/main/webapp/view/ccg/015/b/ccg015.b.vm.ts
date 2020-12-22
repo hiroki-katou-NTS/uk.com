@@ -132,10 +132,13 @@ module nts.uk.com.view.ccg015.b {
           // if data # empty
           if (data.length > 0) {
             const listTopPage: Node[] = _.map(data, (item) => new Node(item.topPageCode, item.topPageName, null));
-            const lstSort =  _.orderBy(listTopPage, ["code"], ["asc"])
+            const lstSort =  _.orderBy(listTopPage, ["code"], ["asc"]);
             vm.listTopPage(lstSort);
+            const selectToppage = _.find(vm.listTopPage(), item => { return item.code === selectedCode; })
             vm.isDisableNewBtn(false);
             vm.toppageSelectedCode(selectedCode || data[0].topPageCode);
+            vm.topPageModel().topPageName(selectToppage.name)
+            $("#inp_name").focus();
           } else {
             vm.listTopPage([]);
             vm.topPageModel(new TopPageViewModel());

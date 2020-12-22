@@ -6,7 +6,6 @@ package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,11 +83,6 @@ public class TopPageFinder {
 
 	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, String topPageCd, int layoutType) {
 		List<FlowMenuOutput> listFlow = new ArrayList<FlowMenuOutput>();
-		// ドメインモデル「レイアウト」を取得する
-		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
-		if (!layout1.isPresent()) {
-			return Collections.emptyList();
-		}
 		// アルゴリズム「フローメニューの作成リストを取得する」を実行する
 		if (layoutType == LayoutType.FLOW_MENU.value) {
 			// アルゴリズム「フローメニューの作成リストを取得する」を実行する
