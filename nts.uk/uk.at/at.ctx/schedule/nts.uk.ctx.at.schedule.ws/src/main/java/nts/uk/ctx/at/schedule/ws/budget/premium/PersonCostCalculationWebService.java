@@ -108,18 +108,19 @@ public class PersonCostCalculationWebService extends WebService {
         return this.personCostCalculationSettingFinder.findWorkTypeLanguage(langId);
     }
 
+
     //=================================== Update KML 001 ==================
 
     @POST
     @Path("findHistByCompanyID")
     public List<HistPersonCostCalculationDto> getHistPersonCostCalculations() {
-        return this.personCostCalculationSettingFinder.getHistPersonCostCalculations();
+        return this.personCostCalculationSettingFinder.getHistPersonCost();
     }
 
     @POST
     @Path("findHistId")
-    public PersonCostCalculationDto getHistPersonCost() {
-        return this.personCostCalculationSettingFinder.getHistPersonCost();
+    public PersonCostCalculationDto getHistPersonCost(PersonCostDto prams) {
+        return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistId());
     }
 
     @POST

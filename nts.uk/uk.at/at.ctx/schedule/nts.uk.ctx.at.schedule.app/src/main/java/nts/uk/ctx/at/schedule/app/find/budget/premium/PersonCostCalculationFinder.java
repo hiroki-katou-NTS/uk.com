@@ -94,14 +94,16 @@ public class PersonCostCalculationFinder {
     }
 
     private PersonCostCalculationSettingDto convertToSimpleDto(PersonCostCalculation personCostCalculation) {
-        return new PersonCostCalculationSettingDto(
-                personCostCalculation.getCompanyID(),
-                personCostCalculation.getHistoryID(),
-                personCostCalculation.getStartDate(),
-                personCostCalculation.getEndDate(),
-                personCostCalculation.getUnitPrice().value,
-                personCostCalculation.getMemo().v(),
-                Collections.emptyList());
+//        return new PersonCostCalculationSettingDto(
+//                personCostCalculation.getCompanyID(),
+//                personCostCalculation.getHistoryID(),
+//                personCostCalculation.getStartDate(),
+//                personCostCalculation.getEndDate(),
+//                personCostCalculation.getUnitPrice().value,
+//                personCostCalculation.getMemo().v(),
+//                Collections.emptyList());
+
+        return null;
     }
 
     /**
@@ -112,14 +114,16 @@ public class PersonCostCalculationFinder {
      */
 
     private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation) {
-        return new PersonCostCalculationSettingDto(
-                personCostCalculation.getCompanyID(),
-                personCostCalculation.getHistoryID(),
-                personCostCalculation.getStartDate(),
-                personCostCalculation.getEndDate(),
-                personCostCalculation.getUnitPrice().value,
-                personCostCalculation.getMemo().v(),
-                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
+//        return new PersonCostCalculationSettingDto(
+//                personCostCalculation.getCompanyID(),
+//                personCostCalculation.getHistoryID(),
+//                personCostCalculation.getStartDate(),
+//                personCostCalculation.getEndDate(),
+//                personCostCalculation.getUnitPrice().value,
+//                personCostCalculation.getMemo().v(),
+//                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
+
+        return null;
     }
 
 
@@ -184,7 +188,18 @@ public class PersonCostCalculationFinder {
                 cid,
                 e.identifier()
         )).collect(Collectors.toList());
+
     }
+    public PersonCostCalculationDto getHistPersonCostByHistId(String histId) {
+        val cid = AppContexts.user().companyId();
+        val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
+        if (!listItem.isPresent()) {
+            throw new BusinessException("Msg_2027");
+        };
+        return null;
+    }
+
+
     public PersonCostCalculationDto getLastPersonCost() {
         val cid = AppContexts.user().companyId();
         val optItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
@@ -193,7 +208,7 @@ public class PersonCostCalculationFinder {
         }
         val item = optItem.get();
         return new PersonCostCalculationDto(
-                item.
+
         );
     }
 }

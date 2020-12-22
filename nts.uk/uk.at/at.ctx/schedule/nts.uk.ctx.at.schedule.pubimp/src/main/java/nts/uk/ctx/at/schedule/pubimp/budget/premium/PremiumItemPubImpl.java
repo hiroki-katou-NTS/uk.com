@@ -68,7 +68,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {
 				pc.getPremiumSettings().stream().filter(ps -> preiumItems.contains(ps.getDisplayNumber())).forEach(ps -> {
-					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(), 
+					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(),
 							new DatePeriod(pc.getStartDate(), pc.getEndDate())));
 				});
 			});
@@ -91,7 +91,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする
 			personCosts.stream().forEach(pc -> {
 				pc.getPremiumSettings().stream().forEach(ps -> {
-					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(), 
+					result.add(new PersonCostSettingExport(ps.getRate().v(), ps.getDisplayNumber(), ps.getAttendanceItems(),
 							new DatePeriod(pc.getStartDate(), pc.getEndDate())));
 				});
 			});

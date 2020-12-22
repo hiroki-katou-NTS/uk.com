@@ -11,9 +11,13 @@ import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
+@Stateless
+@Transactional
 public class RegisterLaborCalculationSettingCommandHandler extends CommandHandler<RegisterLaborCalculationSettingCommand> {
 
     @Inject

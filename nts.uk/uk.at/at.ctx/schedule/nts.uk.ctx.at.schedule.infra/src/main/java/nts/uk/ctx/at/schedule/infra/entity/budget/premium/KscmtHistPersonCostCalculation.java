@@ -15,6 +15,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,10 @@ import java.util.List;
 @Table(name = "KSCMT_PERSON_COST_CALCULATION_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtHistPersonCostCalculation extends UkJpaEntity {
+public class KscmtHistPersonCostCalculation extends UkJpaEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @EmbeddedId
     public KscmtHistPersonCostCalculationPk pk;
 

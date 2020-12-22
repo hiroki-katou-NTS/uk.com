@@ -100,43 +100,43 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     @Override
     public void update(PersonCostCalculation personCostCalculation) {
-        KmlmtPersonCostCalculation currentEntity = this.queryProxy()
-                .find(new KmlmpPersonCostCalculationPK(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID()), KmlmtPersonCostCalculation.class)
-                .get();
-        currentEntity.setStartDate(personCostCalculation.getStartDate());
-        currentEntity.setEndDate(personCostCalculation.getEndDate());
-        currentEntity.setUnitPrice(personCostCalculation.getUnitPrice().value);
-        currentEntity.setMemo(personCostCalculation.getMemo().v());
-        if (personCostCalculation.getPremiumSettings() != null) {
-            for (int i = 0; i < personCostCalculation.getPremiumSettings().size(); i++) {
-                int id = personCostCalculation.getPremiumSettings().get(i).getDisplayNumber();
-                Optional<KmlstPremiumSet> premiumSet = currentEntity.kmlstPremiumSets.stream().filter(x -> x.kmlspPremiumSet.displayNumber == id).findFirst();
-                if (premiumSet.isPresent()) {
-                    premiumSet.get().setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
-                    premiumSet.get().setKmldtPremiumAttendances(
-                            personCostCalculation.getPremiumSettings().get(i).getAttendanceItems()
-                                    .stream()
-                                    .map(x -> toPremiumAttendanceEntity(
-                                            personCostCalculation.getCompanyID(),
-                                            personCostCalculation.getHistoryID(),
-                                            id,
-                                            x))
-                                    .collect(Collectors.toList())
-                    );
-                } else {
-                    PremiumSetting premiumSetting = new PremiumSetting(
-                            currentEntity.kmlmpPersonCostCalculationPK.companyID,
-                            currentEntity.kmlmpPersonCostCalculationPK.historyID,
-                            personCostCalculation.getPremiumSettings().get(i).getDisplayNumber(),
-                            personCostCalculation.getPremiumSettings().get(i).getRate(),
-                            personCostCalculation.getPremiumSettings().get(i).getName(),
-                            personCostCalculation.getPremiumSettings().get(i).getUseAtr(),
-                            personCostCalculation.getPremiumSettings().get(i).getAttendanceItems());
-                    currentEntity.kmlstPremiumSets.add(toPremiumSetEntity(premiumSetting));
-                }
-            }
-        }
-        this.commandProxy().update(currentEntity);
+//        KmlmtPersonCostCalculation currentEntity = this.queryProxy()
+//                .find(new KmlmpPersonCostCalculationPK(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID()), KmlmtPersonCostCalculation.class)
+//                .get();
+//        currentEntity.setStartDate(personCostCalculation.getStartDate());
+//        currentEntity.setEndDate(personCostCalculation.getEndDate());
+//        currentEntity.setUnitPrice(personCostCalculation.getUnitPrice().value);
+//        currentEntity.setMemo(personCostCalculation.getMemo().v());
+//        if (personCostCalculation.getPremiumSettings() != null) {
+//            for (int i = 0; i < personCostCalculation.getPremiumSettings().size(); i++) {
+//                int id = personCostCalculation.getPremiumSettings().get(i).getDisplayNumber();
+//                Optional<KmlstPremiumSet> premiumSet = currentEntity.kmlstPremiumSets.stream().filter(x -> x.kmlspPremiumSet.displayNumber == id).findFirst();
+//                if (premiumSet.isPresent()) {
+//                    premiumSet.get().setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
+//                    premiumSet.get().setKmldtPremiumAttendances(
+//                            personCostCalculation.getPremiumSettings().get(i).getAttendanceItems()
+//                                    .stream()
+//                                    .map(x -> toPremiumAttendanceEntity(
+//                                            personCostCalculation.getCompanyID(),
+//                                            personCostCalculation.getHistoryID(),
+//                                            id,
+//                                            x))
+//                                    .collect(Collectors.toList())
+//                    );
+//                } else {
+//                    PremiumSetting premiumSetting = new PremiumSetting(
+//                            currentEntity.kmlmpPersonCostCalculationPK.companyID,
+//                            currentEntity.kmlmpPersonCostCalculationPK.historyID,
+//                            personCostCalculation.getPremiumSettings().get(i).getDisplayNumber(),
+//                            personCostCalculation.getPremiumSettings().get(i).getRate(),
+//                            personCostCalculation.getPremiumSettings().get(i).getName(),
+//                            personCostCalculation.getPremiumSettings().get(i).getUseAtr(),
+//                            personCostCalculation.getPremiumSettings().get(i).getAttendanceItems());
+//                    currentEntity.kmlstPremiumSets.add(toPremiumSetEntity(premiumSetting));
+//                }
+//            }
+//        }
+//        this.commandProxy().update(currentEntity);
     }
 
     @Override
@@ -146,14 +146,15 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     }
 
     private PersonCostCalculation toSimpleDomain(KmlmtPersonCostCalculation kmlmtPersonCostCalculation) {
-        return new PersonCostCalculation(
-                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID,
-                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID,
-                kmlmtPersonCostCalculation.startDate,
-                kmlmtPersonCostCalculation.endDate,
-                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class),
-                new Memo(kmlmtPersonCostCalculation.memo),
-                Collections.emptyList());
+//        return new PersonCostCalculation(
+//                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID,
+//                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID,
+//                kmlmtPersonCostCalculation.startDate,
+//                kmlmtPersonCostCalculation.endDate,
+//                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class),
+//                new Memo(kmlmtPersonCostCalculation.memo),
+//                Collections.emptyList());
+        return null;
     }
 
     /**
@@ -163,14 +164,15 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      * @return PersonCostCalculation Domain Object
      */
     private PersonCostCalculation toDomainPersonCostCalculation(KmlmtPersonCostCalculation kmlmtPersonCostCalculation) {
-        return new PersonCostCalculation(
-                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID,
-                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID,
-                kmlmtPersonCostCalculation.startDate,
-                kmlmtPersonCostCalculation.endDate,
-                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class),
-                new Memo(kmlmtPersonCostCalculation.memo),
-                kmlmtPersonCostCalculation.kmlstPremiumSets.stream().map(x -> toDomainPremiumSetting(x)).collect(Collectors.toList()));
+//        return new PersonCostCalculation(
+////                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID,
+////                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID,
+////                kmlmtPersonCostCalculation.startDate,
+////                kmlmtPersonCostCalculation.endDate,
+////                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class),
+////                new Memo(kmlmtPersonCostCalculation.memo),
+////                kmlmtPersonCostCalculation.kmlstPremiumSets.stream().map(x -> toDomainPremiumSetting(x)).collect(Collectors.toList()));
+        return null;
     }
 
     /**
@@ -197,16 +199,18 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      * @return PersonCostCalculation Entity Object
      */
     private KmlmtPersonCostCalculation toPersonCostCalculationEntity(PersonCostCalculation personCostCalculation) {
-        return new KmlmtPersonCostCalculation(
-                new KmlmpPersonCostCalculationPK(
-                        personCostCalculation.getCompanyID(),
-                        personCostCalculation.getHistoryID()
-                ),
-                personCostCalculation.getStartDate(),
-                personCostCalculation.getEndDate(),
-                personCostCalculation.getUnitPrice().value,
-                personCostCalculation.getMemo().v(),
-                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetEntity(x)).collect(Collectors.toList()));
+//        return new KmlmtPersonCostCalculation(
+//                new KmlmpPersonCostCalculationPK(
+//                        personCostCalculation.getCompanyID(),
+//                        personCostCalculation.getHistoryID()
+//                ),
+//                personCostCalculation.getStartDate(),
+//                personCostCalculation.getEndDate(),
+//                personCostCalculation.getUnitPrice().value,
+//                personCostCalculation.getMemo().v(),
+//                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetEntity(x)).collect(Collectors.toList()));
+
+        return null;
     }
 
     /**
@@ -239,7 +243,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      *
      * @param companyID    company ID
      * @param historyID    history ID
-     * @param premiumID    premium ID
      * @param attendanceID attendance ID
      * @return PremiumAttendance Entity Object
      */
@@ -333,28 +336,29 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 statement.setInt(i + 4, itemNos.get(i));
             }
 
-            return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-                Map<String, Object> val = new HashMap<>();
-                val.put("HIS_ID", rec.getString("HIS_ID"));
-                val.put("PREMIUM_NO", rec.getInt("PREMIUM_NO"));
-                val.put("PREMIUM_RATE", rec.getInt("PREMIUM_RATE"));
-                val.put("ATTENDANCE_ID", rec.getInt("ATTENDANCE_ID"));
-                val.put("END_DATE", rec.getGeneralDate("END_DATE"));
-                val.put("START_DATE", rec.getGeneralDate("START_DATE"));
-                return val;
-            }).stream().collect(Collectors.groupingBy(c -> (String) c.get("HIS_ID"), Collectors.toList())).entrySet()
-                    .stream().map(et -> {
-                        List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> (Integer) r.get("PREMIUM_NO"),
-                                Collectors.toList())).entrySet().stream().map(ps -> {
-                            return new PremiumSetting(companyID, et.getKey(), ps.getKey(),
-                                    new PremiumRate((Integer) ps.getValue().get(0).get("PREMIUM_RATE")), null, null,
-                                    ps.getValue().stream().map(at -> (Integer) at.get("ATTENDANCE_ID")).filter(at -> at != null)
-                                            .collect(Collectors.toList()));
-                        }).collect(Collectors.toList());
-                        return new PersonCostCalculation(companyID, et.getKey(), (GeneralDate) et.getValue().get(0).get("START_DATE"),
-                                (GeneralDate) et.getValue().get(0).get("END_DATE"), null, null, premiumSettings);
-                    }).collect(Collectors.toList());
+//            return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+//                Map<String, Object> val = new HashMap<>();
+//                val.put("HIS_ID", rec.getString("HIS_ID"));
+//                val.put("PREMIUM_NO", rec.getInt("PREMIUM_NO"));
+//                val.put("PREMIUM_RATE", rec.getInt("PREMIUM_RATE"));
+//                val.put("ATTENDANCE_ID", rec.getInt("ATTENDANCE_ID"));
+//                val.put("END_DATE", rec.getGeneralDate("END_DATE"));
+//                val.put("START_DATE", rec.getGeneralDate("START_DATE"));
+//                return val;
+//            }).stream().collect(Collectors.groupingBy(c -> (String) c.get("HIS_ID"), Collectors.toList())).entrySet()
+//                    .stream().map(et -> {
+//                        List<PremiumSetting> premiumSettings = et.getValue().stream().collect(Collectors.groupingBy(r -> (Integer) r.get("PREMIUM_NO"),
+//                                Collectors.toList())).entrySet().stream().map(ps -> {
+//                            return new PremiumSetting(companyID, et.getKey(), ps.getKey(),
+//                                    new PremiumRate((Integer) ps.getValue().get(0).get("PREMIUM_RATE")), null, null,
+//                                    ps.getValue().stream().map(at -> (Integer) at.get("ATTENDANCE_ID")).filter(at -> at != null)
+//                                            .collect(Collectors.toList()));
+//                        }).collect(Collectors.toList());
+//                        return new PersonCostCalculation(companyID, et.getKey(), (GeneralDate) et.getValue().get(0).get("START_DATE"),
+//                                (GeneralDate) et.getValue().get(0).get("END_DATE"), null, null, premiumSettings);
+//                    }).collect(Collectors.toList());
 
+            return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -413,14 +417,15 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private PersonCostCalculation toDomainPersonCostCalculation(KmlmtPersonCostCalculation kmlmtPersonCostCalculation,
                                                                 List<KmlstPremiumSet> premiumSet, List<KmldtPremiumAttendance> attendanceItems, List<KmnmtPremiumItem> premiumItem) {
-        return new PersonCostCalculation(
-                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID,
-                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID,
-                kmlmtPersonCostCalculation.startDate,
-                kmlmtPersonCostCalculation.endDate,
-                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class),
-                new Memo(kmlmtPersonCostCalculation.memo),
-                premiumSet.stream().map(x -> toDomainPremiumSetting(x, premiumItem, attendanceItems)).collect(Collectors.toList()));
+//        return new PersonCostCalculation(
+//                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID,
+//                kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID,
+//                kmlmtPersonCostCalculation.startDate,
+//                kmlmtPersonCostCalculation.endDate,
+//                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class),
+//                new Memo(kmlmtPersonCostCalculation.memo),
+//                premiumSet.stream().map(x -> toDomainPremiumSetting(x, premiumItem, attendanceItems)).collect(Collectors.toList()));
+        return null;
     }
 
     /**
@@ -475,8 +480,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 .getList();
         if (!listEntity.isEmpty()) {
            DateHistoryItem historyItems ;
-            HistPersonCostCalculation result = new HistPersonCostCalculation(cid, historyItems);
-            return Optional.of(result);
+           // HistPersonCostCalculation result = new HistPersonCostCalculation(cid, historyItems);
+            //return Optional.of();
         }
         return Optional.empty();
     }
