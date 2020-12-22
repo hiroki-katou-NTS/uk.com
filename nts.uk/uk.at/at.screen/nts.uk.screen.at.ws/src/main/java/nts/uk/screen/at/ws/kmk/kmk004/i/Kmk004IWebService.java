@@ -21,6 +21,7 @@ import nts.uk.screen.at.app.kmk004.i.DisplayInitialFlexScreenByEmploymentDto;
 import nts.uk.screen.at.app.kmk004.i.SelectEmploymentFlex;
 import nts.uk.screen.at.app.kmk004.i.SelectEmploymentFlexDto;
 import nts.uk.screen.at.app.kmk004.i.SelectFlexYearByEmployment;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
@@ -59,9 +60,9 @@ public class Kmk004IWebService {
 	}
 
 	@POST
-	@Path("change-year/{empCd}")
-	public List<YearDto> changeYear(@PathParam("empCd") String empCd) {
-		return this.selectFlexYear.selectFlexYearByEmployment(empCd);
+	@Path("change-year/{empCd}/{year}")
+	public List<DisplayMonthlyWorkingDto> changeYear(@PathParam("empCd") String empCd, @PathParam("year") int year) {
+		return this.selectFlexYear.selectFlexYearByEmployment(empCd, year);
 	}
 
 	@POST

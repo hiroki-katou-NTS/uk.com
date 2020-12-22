@@ -35,7 +35,7 @@ const template = `
 										}
 								}">
 						</div>
-						<div style=" display: inline-block;"  data-bind="component: {
+						<div style="margin-top:15px; display: inline-block;"  data-bind="component: {
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
@@ -50,14 +50,14 @@ const template = `
 const BASE_I_URL = 'screen/at/kmk004/i/';
 
 const API_I_URL = {
-	START_PAGE: BASE_H_URL + 'init-screen',
-	CHANGE_YEAR: BASE_H_URL + 'change-year/',
-	CHANGE_EMPCD: BASE_H_URL + 'change-empcd/',
-	REGISTER: BASE_H_URL + 'register',
-	UPDATE: BASE_H_URL + 'update',
-	DELETE: BASE_H_URL + 'delete',
-	AFTER_COPY: BASE_H_URL + 'after-copy/',
-	CHANGE_SETTING: BASE_H_URL + 'change-setting/',
+	START_PAGE: BASE_I_URL + 'init-screen',
+	CHANGE_YEAR: BASE_I_URL + 'change-year/',
+	CHANGE_EMPCD: BASE_I_URL + 'change-empcd/',
+	REGISTER: BASE_I_URL + 'register',
+	UPDATE: BASE_I_URL + 'update',
+	DELETE: BASE_I_URL + 'delete',
+	AFTER_COPY: BASE_I_URL + 'after-copy/',
+	CHANGE_SETTING: BASE_I_URL + 'change-setting/',
 };
 
 @component({
@@ -78,19 +78,21 @@ class ScreenIComponent extends ko.ViewModel {
 
 		vm.screenMode = params.screenMode;
 
-		vm.$blockui('invisible')
-			.then(() => vm.$ajax(API_I_URL.START_PAGE))
-			.done((data) => {
-				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
-				vm.screenData().updateData(data);
-			})
-			.always(() => vm.$blockui('clear'));
+		vm.startPage();
 
 		vm.initEmploymentList();
 
+		vm.regSelectedYearEvent();
+
+	}
+
+	regSelectedYearEvent() {
+
+		const vm = this;
+
 		vm.screenData().selectedYear.subscribe((yearInput) => {
 
-			if (!yearInput) {
+			if (!yearInput || !vm.screenData().selected()) {
 				return;
 			}
 
@@ -116,7 +118,18 @@ class ScreenIComponent extends ko.ViewModel {
 			}
 
 		});
+	}
 
+	startPage() {
+		const vm = this;
+
+		vm.$blockui('invisible')
+			.then(() => vm.$ajax(API_I_URL.START_PAGE))
+			.done((data) => {
+				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
+				vm.screenData().updateData(data);
+			})
+			.always(() => vm.$blockui('clear'));
 	}
 
 	initEmploymentList() {
@@ -148,31 +161,41 @@ class ScreenIComponent extends ko.ViewModel {
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
 
-			vm.screenData().selected.subscribe((empCd) => {
+			vm.regSelectedEvent();
 
-				vm.$blockui('invisible')
-					.then(() => vm.$ajax(API_I_URL.CHANGE_EMPCD + empCd))
-					.done((data) => {
-						vm.screenData().yearList(_.chain(data.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
-						vm.screenData().serverYears(data.yearList);
-						vm.screenData().unSaveSetComs = [];
-
-						if (vm.screenData().selectedYear() == data.yearList[0]) {
-							vm.screenData().selectedYear.valueHasMutated();
-						} else {
-							vm.screenData().selectedYear(data.yearList[0]);
-						}
-
-						vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
-					})
-					.always(() => vm.$blockui('clear'));
-
-				vm.setSelectedName(empCd);
-
-
-			});
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();
+		});
+	}
+
+	regSelectedEvent() {
+		const vm = this;
+		vm.screenData().selected.subscribe((empCd) => {
+
+			if (!empCd) {
+				return;
+			}
+
+			vm.$blockui('invisible')
+				.then(() => vm.$ajax(API_I_URL.CHANGE_EMPCD + empCd))
+				.done((data) => {
+					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
+					vm.screenData().serverYears(data.yearList);
+					vm.screenData().unSaveSetComs = [];
+
+					if (vm.screenData().selectedYear() == data.yearList[0]) {
+						vm.screenData().selectedYear.valueHasMutated();
+					} else {
+						vm.screenData().selectedYear(data.yearList[0]);
+					}
+
+					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+				})
+				.always(() => vm.$blockui('clear'));
+
+			vm.setSelectedName(empCd);
+
+
 		});
 	}
 

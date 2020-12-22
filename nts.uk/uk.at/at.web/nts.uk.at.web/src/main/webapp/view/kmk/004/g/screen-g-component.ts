@@ -30,7 +30,7 @@ const template = `
 										}
 								}">
 							</div>
-							<div style=" display: inline-block;" data-bind="component: {
+							<div style="margin-top:15px; display: inline-block;" data-bind="component: {
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
@@ -96,42 +96,12 @@ class ScreenGComponent extends ko.ViewModel {
 				//else load data from sever
 				vm.$blockui('invisible');
 				vm.$ajax(API_G_URL.CHANGE_YEAR + year).done((data) => {
-					vm.setYM(year, data);
+					vm.screenData().setYM(year, data);
 				}).always(() => { vm.$blockui('clear'); });
 
 			}
 		});
-
-
-
-
 	}
-
-	setYM(year: number, data: any) {
-		const vm = this;
-
-		let timeSetComs: Array<IMonthlyWorkTimeSetCom> = [];
-
-		for (let i = 0; i < 12; i++) {
-
-			let ym = data.yearMonthPeriod.start + i,
-				timeSet: IMonthlyWorkTimeSetCom = _.find(data.timeSetComs, ['yearMonth', ym]);
-
-			timeSetComs.push({
-				yearMonth: ym, laborTime: timeSet ? timeSet.laborTime : {
-					withinLaborTime: 0,
-					legalLaborTime: 0,
-					weekAvgTime: 0
-				}
-			});
-		}
-
-		vm.screenData().serverData = { year: year, data: timeSetComs };
-
-		vm.screenData().monthlyWorkTimeSetComs(_.map(timeSetComs, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
-	}
-
-
 
 	mounted() {
 		$("#year-list").focus();

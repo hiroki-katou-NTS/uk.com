@@ -53,11 +53,6 @@ module nts.uk.at.view.kmk004.b {
             vm.type = params.type;
             vm.itemList = params.years;
 
-            vm.selectedYear
-                .subscribe(() => {
-                    console.log(ko.unwrap(vm.itemList));
-                });
-
         }
 
         mounted() {

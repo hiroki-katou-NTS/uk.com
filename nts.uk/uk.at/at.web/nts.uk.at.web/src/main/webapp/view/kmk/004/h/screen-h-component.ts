@@ -34,7 +34,7 @@ const template = `
 										}
 								}">
 						</div>
-						<div style=" display: inline-block;" data-bind="component: {
+						<div style="margin-top:15px; display: inline-block;" data-bind="component: {
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
@@ -74,18 +74,24 @@ class ScreenHComponent extends ko.ViewModel {
 		const vm = this;
 
 		vm.screenMode = params.screenMode;
-		vm.$blockui('invisible')
-			.then(() => vm.$ajax(API_H_URL.START_PAGE))
-			.done((data) => {
-				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
-				vm.screenData().updateData(data);
-			})
-			.always(() => vm.$blockui('clear'));
+		
 		vm.initWorkPlaceList();
+
+		vm.startPage();
+
+		vm.regSelectedYearEvent();
+
+
+	}
+
+	regSelectedYearEvent() {
+
+		const vm = this;
 
 		vm.screenData().selectedYear.subscribe((yearInput) => {
 
-			if (!yearInput) {
+			if (!yearInput || !vm.screenData().selected()) {
+				
 				return;
 			}
 
@@ -114,7 +120,20 @@ class ScreenHComponent extends ko.ViewModel {
 
 	}
 
-	
+	startPage() {
+		const vm = this;
+
+
+		vm.$blockui('invisible')
+			.then(() => vm.$ajax(API_H_URL.START_PAGE))
+			.done((data) => {
+				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+				vm.screenData().updateData(data);
+			})
+			.always(() => vm.$blockui('clear'));
+	}
+
+
 
 	initWorkPlaceList() {
 		const vm = this, StartMode = {
@@ -147,33 +166,44 @@ class ScreenHComponent extends ko.ViewModel {
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
 
-			vm.screenData().selected.subscribe((wkpId) => {
+			vm.regSelectedEvent();
 
-				vm.$blockui('invisible')
-					.then(() => vm.$ajax(API_H_URL.CHANGE_WKPID + wkpId))
-					.done((data) => {
-						vm.screenData().yearList(_.chain(data.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
-						vm.screenData().serverYears(data.yearList);
-						vm.screenData().unSaveSetComs = [];
-
-						if (vm.screenData().selectedYear() == data.yearList[0]) {
-							vm.screenData().selectedYear.valueHasMutated();
-						} else {
-							vm.screenData().selectedYear(data.yearList[0]);
-						}
-						
-						vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
-						vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
-					})
-					.always(() => vm.$blockui('clear'));
-
-				vm.setSelectedName(wkpId);
-
-			});
 			vm.$blockui("hide");
 			vm.screenData().selected.valueHasMutated();
 		});
 
+	}
+
+	regSelectedEvent() {
+		const vm = this;
+
+		vm.screenData().selected.subscribe((wkpId) => {
+
+			if (!wkpId) {
+				return;
+			}
+
+			vm.$blockui('invisible')
+				.then(() => vm.$ajax(API_H_URL.CHANGE_WKPID + wkpId))
+				.done((data) => {
+					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
+					vm.screenData().serverYears(data.yearList);
+					vm.screenData().unSaveSetComs = [];
+
+					if (vm.screenData().selectedYear() == data.yearList[0]) {
+						vm.screenData().selectedYear.valueHasMutated();
+					} else {
+						vm.screenData().selectedYear(data.yearList[0]);
+					}
+
+					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+				})
+				.always(() => vm.$blockui('clear'));
+
+			vm.setSelectedName(wkpId);
+
+		});
 	}
 
 	setSelectedName(wkpId: string) {

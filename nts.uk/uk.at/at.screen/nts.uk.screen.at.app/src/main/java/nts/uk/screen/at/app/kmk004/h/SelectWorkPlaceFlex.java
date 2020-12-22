@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.h;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -30,7 +32,8 @@ public class SelectWorkPlaceFlex {
 				this.displayFlexBasicSettingByWokPlace.displayFlexBasicSettingByWokPlace(wkpId));
 		// 2 　職場ID＝選択中の職場ID
 		// 勤務区分＝2：フレックス勤務
-		result.setYearList(this.yearlyListByWorkplace.get(wkpId, LaborWorkTypeAttr.FLEX));
+		result.setYearList(this.yearlyListByWorkplace.get(wkpId, LaborWorkTypeAttr.FLEX).stream().map(x -> x.year)
+				.collect(Collectors.toList()));
 
 		return result;
 	}

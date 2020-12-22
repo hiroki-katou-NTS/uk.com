@@ -17,7 +17,7 @@ public class AfterChangeFlexEmployeeSettingDto {
 
 	// 社員別フレックス勤務集計方法
 
-	private ShaFlexMonthActCalSetDto shaFlexMonthActCalSet;
+	private ShaFlexMonthActCalSetDto flexMonthActCalSet;
 
 	private List<EmployeeIdDto> employeeIds;
 }

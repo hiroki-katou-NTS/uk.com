@@ -3,17 +3,17 @@
 import IDisplayFlexBasicSettingByCompanyDto = nts.uk.at.kmk004.components.flex.IDisplayFlexBasicSettingByCompanyDto;
 
 const template = `
-	<div   style="margin-top: 10px;"  >
+	<div   style="margin-top: 10px; margin-bottom:15px;"  >
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
-		<button data-bind="click: openKDialog , i18n: 'KMK004_231'" ></button>
+		<button data-bind="enable:screenData().selectedName() != null,click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
-	<div data-bind="visible:showTable()" class="div_line" 
+	<div data-bind="visible:screenData().comFlexMonthActCalSet() != null" class="div_line" 
 		style="
 		width: auto;
 		border-radius: 15px;
 	    border: 2px solid #B1B1B1;
 	    padding: 15px;
-		margin:15px 0px 15px 15px;
+		margin-left:15px;
 		">
 		<table class="basic-settings">
 			<tr class="bg-green">
@@ -79,7 +79,9 @@ class BasicSettingsCompany extends ko.ViewModel {
 			vm.screenData().selectedName(vm.screenMode);
 		}
 
-		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName() }).then(() => {
+		let selected = vm.screenMode == 'Com_Person' ? _.find($('#employee-list').getDataList(), ['code', vm.screenData().selected()]).id : vm.screenData().selected();
+
+		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName(), selected: selected }).then(() => {
 			vm.reloadAfterChangeSetting();
 		});
 	}
@@ -96,12 +98,15 @@ class BasicSettingsCompany extends ko.ViewModel {
 			url = API_H_URL.CHANGE_SETTING + vm.screenData().selected();
 		}
 
-		if (vm.screenMode == 'Com_Workplace') {
+		if (vm.screenMode == 'Com_Employment') {
 			url = API_I_URL.CHANGE_SETTING + vm.screenData().selected();
 		}
 
-		if (vm.screenMode == 'Com_Workplace') {
-			url = API_J_URL.CHANGE_SETTING + vm.screenData().selected();
+		if (vm.screenMode == 'Com_Person') {
+
+			let selectedEmp: any = _.find($('#employee-list').getDataList(), ['code', vm.screenData().selected()]);
+
+			url = API_J_URL.CHANGE_SETTING + selectedEmp.id;
 		}
 
 		vm.$blockui('invisible');
@@ -109,9 +114,6 @@ class BasicSettingsCompany extends ko.ViewModel {
 			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
 			vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
 		}).always(() => { vm.$blockui('clear'); });
-
-
-
 
 	}
 
@@ -161,13 +163,6 @@ class BasicSettingsCompany extends ko.ViewModel {
 			return '';
 		}
 		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
-	}
-
-	showTable() {
-		const vm = this;
-
-		return !(vm.screenData().comFlexMonthActCalSet() == null && vm.screenData().getFlexPredWorkTime() == null);
-
 	}
 
 	getIncludeOverTimeText() {

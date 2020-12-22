@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk004.b {
 				.then((data: any) => {
                     let settings: UnitAlreadySettingModel[] = [];
 					_.forEach(data, ((value) =>{
-                        let s: UnitAlreadySettingModel = {id: value.workplaceId ,isAlreadySetting: true};
+                        let s: UnitAlreadySettingModel = {workplaceId: value.workplaceId ,isAlreadySetting: true};
                         settings.push(s);
                     }));
                     vm.alreadySettingList(settings);
@@ -129,7 +129,7 @@ module nts.uk.at.view.kmk004.b {
     }
 
     interface UnitAlreadySettingModel {
-        id: string;
+        workplaceId: string;
         isAlreadySetting: boolean;
     }
 

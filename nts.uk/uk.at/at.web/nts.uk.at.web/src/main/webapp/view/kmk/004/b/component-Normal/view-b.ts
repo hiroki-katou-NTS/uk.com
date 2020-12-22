@@ -94,24 +94,57 @@ module nts.uk.at.view.kmk004.b {
 		}
 
 		mounted() {
+			const vm = this;
 
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
+
+			// setTimeout(() => {
+			// 	vm.workTimes
+			// 		.subscribe(() => {
+			// 			_.remove(ko.unwrap(vm.years), ((value) => {
+			// 				return value.year == ko.unwrap(vm.selectedYear) as number;
+			// 			}));
+			// 			vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, true));
+			// 			vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+			// 		});
+			// }, 1000);
 		}
 
 		add() {
 			const vm = this;
-
-			_.remove(ko.unwrap(vm.years), ((value) => {
-				return value.year == ko.unwrap(vm.selectedYear) as number;
+			const times = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				return ko.unwrap(value.laborTime);
 			}));
-			vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-			vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 
-			$(document).ready(function () {
-				$('.listbox').focus();
-			});
+			const yearMonth = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				return ko.unwrap(value.yearMonth);
+			}));
+			const input = { yearMonth: yearMonth, laborTime: times };
+
+			vm.validate()
+				.then((valid: boolean) => {
+					if (valid) {
+
+						vm.$ajax(API.ADD_WORK_TIME, input)
+							.done(() => {
+								vm.$dialog.info({ messageId: 'Msg_15' });
+								_.remove(ko.unwrap(vm.years), ((value) => {
+									return value.year == ko.unwrap(vm.selectedYear) as number;
+								}));
+								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+							})
+							.then(() => {
+								$(document).ready(function () {
+									$('.listbox').focus();
+								});
+							}).then(() => {
+								vm.$errors('clear');
+							});
+					}
+				});
 		}
 
 		remote() {
@@ -119,23 +152,33 @@ module nts.uk.at.view.kmk004.b {
 			const param = { year: ko.unwrap(vm.selectedYear), workType: 0 }
 			const index = _.map(ko.unwrap(vm.years), m => m.year).indexOf(ko.unwrap(vm.selectedYear));
 
-			vm.$ajax(API.DELETE_WORK_TIME, param)
-				.done(() => {
-					_.remove(ko.unwrap(vm.years), ((value) => {
-						return value.year == ko.unwrap(vm.selectedYear);
-					}));
-					vm.years(ko.unwrap(vm.years));
-					vm.selectedYear(ko.unwrap(vm.years)[index].year);
+			nts.uk.ui.dialog
+				.confirm({ messageId: "Msg_18" })
+				.ifYes(() => {
+					vm.$blockui("invisible")
+						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
+						.done(() => {
+							_.remove(ko.unwrap(vm.years), ((value) => {
+								return value.year == ko.unwrap(vm.selectedYear);
+							}));
+							vm.years(ko.unwrap(vm.years));
+							vm.selectedYear(ko.unwrap(vm.years)[index].year);
+						})
+						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+						.then(() => {
+							$(document).ready(function () {
+								$('.listbox').focus();
+							});
+						}).then(() => {
+							vm.$errors('clear');
+						})
+						.always(() => vm.$blockui("clear"));
 				})
-
-			$(document).ready(function () {
-				$('.listbox').focus();
-			});
 		}
 
 		openDialogF() {
 			const vm = this;
-			const params = { type: 'Com_Company', selectId: 'Chung dep trai' };
+			const params = { type: 'Com_Company', selectId: 'Chung dep trai', nameSynthetic: 'Com_Company', isSetting: true };
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
 			});
@@ -149,6 +192,7 @@ module nts.uk.at.view.kmk004.b {
 					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+					vm.selectedYear.valueHasMutated();
 				}
 			});
 		}
@@ -159,9 +203,7 @@ module nts.uk.at.view.kmk004.b {
 					.then(() => $('.nts-input').ntsError('clear'));
 			} else {
 				return $.Deferred().resolve()
-					/** Gọi xử lý validate của kiban */
 					.then(() => $('.nts-input').trigger("validate"))
-					/** Nếu có lỗi thì trả về false, không thì true */
 					.then(() => !$('.nts-input').ntsError('hasError'));
 			}
 		}

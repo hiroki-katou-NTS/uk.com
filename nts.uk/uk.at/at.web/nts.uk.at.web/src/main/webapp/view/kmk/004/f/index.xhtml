@@ -22,13 +22,12 @@
         <ui:define name="content">
             <div id="contents-area">
                 <div class="view-f">
-                    <label class="title" data-bind="i18n: $vm.type"></label>
+                    <label class="title" data-bind="i18n: $vm.nameSynthetic"></label>
                     <hr>
                     </hr>
-                    <!-- Chưa ẩn hiện đc  -->
-                    <!-- ko ifnot: attendance -->
-                    <div class="node" data-bind="i18n: 'KMK004_344'"></div>
-                    <!-- /ko -->
+                    <div data-bind="if: attendance">
+                        <div class="node" data-bind="i18n: 'KMK004_344'"></div>
+                    </div>
                     <div class="cf">
                         <div style="margin-top: 0px;"
                             data-bind="ntsFormLabel: { inline: true, required: true}, i18n: 'KMK004_239'"></div>
@@ -89,10 +88,9 @@
             <div id="functions-area-bottom">
                 <button tabindex="9" class="proceed large button1" data-bind="i18n: 'KMK004_234', click: add"></button>
                 <button tabindex="10" data-bind="i18n: 'KMK004_235', click: closeDialog"></button>
-                <!-- Chưa ẩn hiện đc  -->
-                <!-- ko ifnot: attendance -->
-                <button tabindex="11" class="danger button3" data-bind="i18n: 'KMK004_236'"></button>
-                <!-- /ko -->
+                <com:ko-if bind="!attendance()">
+                    <button tabindex="11" class="danger button3" data-bind="i18n: 'KMK004_236'"></button>
+                </com:ko-if>
             </div>
         </ui:define>
     </ui:composition>

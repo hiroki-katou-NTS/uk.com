@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.screen.at.app.query.kmk004.common.YearDto;
-import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
+import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
+import nts.uk.screen.at.app.query.kmk004.common.MonthlyWorkingHoursByEmployment;
 
 /**
  * 
@@ -19,11 +19,13 @@ import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployment;
 public class SelectFlexYearByEmployment {
 
 	@Inject
-	private YearListByEmployment yearListByEmployment;
+	private MonthlyWorkingHoursByEmployment monthlyWorkingHoursByEmployment;
 
-	public List<YearDto> selectFlexYearByEmployment(String employmentCd) {
+	public List<DisplayMonthlyWorkingDto> selectFlexYearByEmployment(String employmentCd, int year) {
 
-		return this.yearListByEmployment.get(employmentCd, LaborWorkTypeAttr.FLEX);
+		// 雇用別月単位労働時間を表示する
+
+		return this.monthlyWorkingHoursByEmployment.get(employmentCd, LaborWorkTypeAttr.FLEX, year);
 	}
 
 }

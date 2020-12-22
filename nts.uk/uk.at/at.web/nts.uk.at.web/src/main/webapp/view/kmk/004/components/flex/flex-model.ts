@@ -89,25 +89,9 @@ module nts.uk.at.kmk004.components.flex {
 		setYM(year: number, data: any) {
 			const vm = this;
 
-			let timeSetComs: Array<IMonthlyWorkTimeSetCom> = [];
+			vm.serverData = { year: year, data: data };
 
-			for (let i = 0; i < 12; i++) {
-
-				let ym = data.yearMonthPeriod.start + i,
-					timeSet: IMonthlyWorkTimeSetCom = _.find(data.timeSetComs, ['yearMonth', ym]);
-
-				timeSetComs.push({
-					yearMonth: ym, laborTime: timeSet ? timeSet.laborTime : {
-						withinLaborTime: 0,
-						legalLaborTime: 0,
-						weekAvgTime: 0
-					}
-				});
-			}
-
-			vm.serverData = { year: year, data: timeSetComs };
-
-			vm.monthlyWorkTimeSetComs(_.map(timeSetComs, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+			vm.monthlyWorkTimeSetComs(_.map(data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
 		}
 
 		clearUpdateYear(year: number) {
@@ -203,8 +187,7 @@ module nts.uk.at.kmk004.components.flex {
 			let workTimes = ko.toJS(vm.monthlyWorkTimeSetComs());
 
 			_.forEach(workTimes, function(item: IMonthlyWorkTimeSetCom) {
-				//thêm 1 năm cho yearMonth vì format là YYYYMM nên + thêm 100 đơn vị sẽ thành năm sau
-				item.yearMonth = item.yearMonth + 100;
+				item.yearMonth = (year * 100) + (item.yearMonth % 100);
 				item.laborTime.withinLaborTime = 0;
 				item.laborTime.legalLaborTime = 0;
 				item.laborTime.weekAvgTime = 0;

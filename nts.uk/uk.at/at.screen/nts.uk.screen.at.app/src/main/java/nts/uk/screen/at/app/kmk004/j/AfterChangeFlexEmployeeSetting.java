@@ -24,7 +24,7 @@ public class AfterChangeFlexEmployeeSetting {
 	public AfterChangeFlexEmployeeSettingDto afterChangeFlexEmployeeSetting(String sId) {
 		AfterChangeFlexEmployeeSettingDto result = new AfterChangeFlexEmployeeSettingDto();
 		// 社員別基本設定（フレックス勤務）を表示する
-		result.setShaFlexMonthActCalSet(this.displayFlexBasicSettingByEmployee.displayFlexBasicSettingByEmployee(sId));
+		result.setFlexMonthActCalSet(this.displayFlexBasicSettingByEmployee.displayFlexBasicSettingByEmployee(sId).getFlexMonthActCalSet());
 
 		// 社員リストを表示する
 		result.setEmployeeIds(this.employeeList.get(LaborWorkTypeAttr.FLEX));
