@@ -1870,6 +1870,29 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}).collect(Collectors.toList());
 			break;
 		case WORK_CONFIRMATION:
+			// アルゴリズム「メール送信_対象再取得_就業確定」を実行
+			Map<String, String> mapWorkConfirm = this.getMailCountWorkConfirm(
+					period, 
+					closureId, 
+					processingYm, 
+					companyId, 
+					displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList()), 
+					employmentCDLst);
+			List<ApprSttWkpEmpMailOutput> wkpEmpMailWorkLstQuery = apprSttExecutionOutputLst.stream().map(x -> new ApprSttWkpEmpMailOutput(
+					x.getWkpID(), 
+					x.getWkpCD(), 
+					x.getWkpName(), 
+					x.getHierarchyCode(), 
+					0, 
+					Collections.emptyList()))
+					.collect(Collectors.toList());
+			mapWorkConfirm.entrySet().stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
+				wkpEmpMailWorkLstQuery.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+					z.setCountEmp(x.getValue().size());
+					z.setEmpMailLst(x.getValue().stream().map(t -> new ApprSttEmpMailOutput(t.getValue(), "", "")).collect(Collectors.toList()));
+				});
+			});
+			wkpEmpMailLst = wkpEmpMailWorkLstQuery;
 			break;
 		default:
 			break;
@@ -1944,7 +1967,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				companyID, 
 				wkpIDLst, 
 				employmentCDLst);
-		return null;
+		if(CollectionUtil.isEmpty(wkpIDLstQuery)) {
+			return Collections.emptyMap();
+		}
+		// 職場の管理者を求める　　　　　　　　　　　リクエストリストNo.653
+		Map<String, String> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), wkpIDLstQuery);
+		return infoMap;
 	}
 	
 	@Override
