@@ -26,7 +26,7 @@ module nts.ui.icons {
 
                 $(element).replaceWith(div);
 
-                div.innerHTML = `<svg fill="none" xmls="http://www.w3.org/2000/svg" width="${size || width || 32}" height="${size || height || 32}" viewBox="0 0 ${size || width || 32} ${size || height || 32}">${_.get(nts.ui.icons, icon) || ''}</svg>`;
+                div.innerHTML = `<svg fill="none" xmls="http://www.w3.org/2000/svg" width="${size || width || 32}" height="${size || height || 32}" viewBox="0 0 ${size || width || 32} ${size || height || 32}">${(_.get(nts.ui.icons, icon) || _.get(nts.ui.icons, (icon || '').replace(/_(UN)?SELECT/g, ''))) || ''}</svg>`;
 
                 element.setAttribute('fill', 'none');
                 element.setAttribute('width', `${size || width || 32}`);

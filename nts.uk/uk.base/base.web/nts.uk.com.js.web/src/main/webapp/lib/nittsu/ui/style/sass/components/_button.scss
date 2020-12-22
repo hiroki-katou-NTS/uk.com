@@ -22,7 +22,7 @@ $button-disabled-base-color: #888888;
     box-sizing: border-box;
     height: 30px;
     min-width: 90px;
-    padding: 0;
+    padding: 0 7px;
     margin: 0;
     font-family: 'Noto Sans JP';
     vertical-align: top;
@@ -163,6 +163,14 @@ button {
             min-height: 105px;
             height: 105px;
 
+            &:not(.large) {
+                &:active,
+                &.selected {
+                    color: #fff;
+                    background-color: #30CC40;                
+                }
+            }
+
             .svg {
                 display: inline;
             }
@@ -194,7 +202,7 @@ button {
 
             &:active {
                 .svg {
-                    background-color: #EAE8F2;
+                    background-color: transparent;
                 }                
             }
             
