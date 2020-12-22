@@ -3169,7 +3169,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
             // A3_1
             Cell workplaceTagCell = cells.get(currentRow, 0);
-            workplaceTagCell.setValue(TextResource.localize(WorkScheOutputConstants.WORKPLACE) + "　"
+            workplaceTagCell.setValue(TextResource.localize("KWR006_68") + "　"
                     + workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
             currentRow++;
         }
