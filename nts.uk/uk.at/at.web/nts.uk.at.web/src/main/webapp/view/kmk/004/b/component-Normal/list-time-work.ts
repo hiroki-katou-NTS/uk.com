@@ -101,6 +101,7 @@ module nts.uk.at.view.kmk004.b {
         public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
         public type: SIDEBAR_TYPE;
         public selectId: KnockoutObservable<string>;
+        public mode: KnockoutObservable<'New' | 'Update'> = ko.observable('New');
 
         created(params: Params) {
             const vm = this;
@@ -124,10 +125,25 @@ module nts.uk.at.view.kmk004.b {
                 }
 
                 vm.total(finst + ':' + last);
+
+                if (ko.unwrap(vm.selectedYear) != null) {
+                    const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
+
+                    if (ko.unwrap(vm.mode) === 'Update') {
+                        if (!ko.unwrap(vm.years)[index].isNew) {
+                            _.remove(ko.unwrap(vm.years), ((value) => {
+                                return value.year == ko.unwrap(vm.selectedYear);
+                            }));
+                            vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
+                            vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+                        }
+                    }
+                }
             });
 
             vm.selectedYear
                 .subscribe(() => {
+                    vm.mode("New")
                     if (vm.type === 'Com_Person') {
                         setTimeout(() => {
                             if (ko.unwrap(vm.years).length == 0) {
@@ -140,6 +156,7 @@ module nts.uk.at.view.kmk004.b {
                         vm.reloadData();
                     }
                 });
+
         }
 
         reloadData() {
@@ -170,6 +187,7 @@ module nts.uk.at.view.kmk004.b {
                                     });
 
                                     vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                    vm.mode('Update');
                                 }
                             });
                         ;
@@ -192,6 +210,7 @@ module nts.uk.at.view.kmk004.b {
 
                                         vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                     }
+                                    vm.mode('Update');
                                 });
                         }
                         break;
@@ -212,6 +231,7 @@ module nts.uk.at.view.kmk004.b {
 
                                     vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                 }
+                                vm.mode('Update');
                             });
                         break;
                     case 'Com_Person':
@@ -229,6 +249,7 @@ module nts.uk.at.view.kmk004.b {
 
                                     vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                 }
+                                vm.mode('Update');
                             });
                         break
                 }
@@ -330,21 +351,3 @@ class WorkTime {
         }
     }
 }
-
-// class LaborTime {
-//     legalLaborTime: KnockoutObservable<number | null> = ko.observable(null);
-//     withinLaborTime: KnockoutObservable<number | null> = ko.observable(null);
-//     weekAvgTime: KnockoutObservable<number | null> = ko.observable(null);
-
-//     constructor(params?: ILaborTime) {
-//         const md = this;
-//         md.create(params);
-//     }
-
-//     public create(param?: ILaborTime) {
-//         const md = this;
-//         md.legalLaborTime(param.legalLaborTime);
-//         md.withinLaborTime(param.withinLaborTime);
-//         md.weekAvgTime(param.weekAvgTime);
-//     }
-// }
