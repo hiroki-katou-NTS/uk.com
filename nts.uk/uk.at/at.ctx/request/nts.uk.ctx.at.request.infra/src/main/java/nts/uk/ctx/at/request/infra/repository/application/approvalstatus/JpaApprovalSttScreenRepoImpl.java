@@ -987,11 +987,10 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                ) SKBSYITERM " +
 				"LEFT JOIN  ( " +
 				"		SELECT    KWF.WKPID " +
-				"		FROM      KRCST_WORK_FIXED KWF " +
+				"		FROM      KRCDT_WORK_FIXED KWF " +
 				"		WHERE KWF.CLOSURE_ID = @closureId " +
 				"		AND   KWF.PROCESS_YM = @yearMonth " +
 				"		AND   KWF.CID        = @companyID " +
-				"		AND   KWF.CONFIRM_CLS = '1' " +
 				"		) SGK " +
 				"ON         SGK.WKPID = SKBSYITERM.WORKPLACE_ID " +
 				"WHERE    SGK.WKPID IS NULL;";
