@@ -44,26 +44,27 @@ module nts.uk.at.view.kwr005.b {
 
       const vm = this;
 
-      vm.getWorkStatusTableOutput();
-      vm.getSettingList(params);
-      vm.printAttributes();
-
-      vm.currentCodeList.subscribe((newValue: any) => {
-        nts.uk.ui.errors.clearAll();
-        if (!newValue) return;
-        vm.getSettingListForPrint(newValue);
-      });
-
-      vm.printPropertyCode.subscribe((newValue: any) => {
-        $('#swapList-search-area-clear-btn').trigger('click');
-        $('.ntsSwapSearchRight #swapList-search-area-input').val(null);
-        vm.filterListMonthly(newValue);
-      });
-
       vm.columns = ko.observableArray([
         { headerText: vm.$i18n('KWR005_107'), key: 'attendanceItemId', width: 80, formatter: _.escape },
         { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label'  },
       ]);
+
+      vm.getWorkStatusTableOutput().done(() => {
+        vm.getSettingList(params);
+        vm.printAttributes();
+  
+        vm.currentCodeList.subscribe((newValue: any) => {
+          nts.uk.ui.errors.clearAll();
+          if (!newValue) return;
+          vm.getSettingListForPrint(newValue);
+        });
+  
+        vm.printPropertyCode.subscribe((newValue: any) => {
+          $('#swapList-search-area-clear-btn').trigger('click');
+          $('.ntsSwapSearchRight #swapList-search-area-input').val(null);
+          vm.filterListMonthly(newValue);
+        });
+      }); 
     }
 
     created(params: any) {
@@ -147,8 +148,12 @@ module nts.uk.at.view.kwr005.b {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           if (vm.isNewMode()) {
             vm.loadSettingList({ standOrFree: params.settingCategory, code: params.code });
-          } else vm.isNewMode(false); //edit
-
+          } else {
+            let index = _.findIndex(vm.settingListItems(), (x) => x.code === vm.mode().code());
+            if( index >= 0) vm.settingListItems()[index].name = vm.mode().name();
+            vm.settingListItems.valueHasMutated();
+            vm.isNewMode(false); //edit
+          }
         });
         vm.$blockui('hide');
       }).fail((error) => {
@@ -322,9 +327,9 @@ module nts.uk.at.view.kwr005.b {
       return dfd.promise();
     }
 
-    getWorkStatusTableOutput() {
+    getWorkStatusTableOutput() : JQueryPromise<any> {
       const vm = this;
-
+      const deferred = $.Deferred<any>();
       vm.$blockui('show');
 
       vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {
@@ -349,7 +354,15 @@ module nts.uk.at.view.kwr005.b {
           //vm.listItemsSwap(_.cloneDeep(vm.keepListItemsSwap()));
         }
         vm.$blockui('hide');
-      }).always(() => vm.$blockui('hide'));
+        deferred.resolve();
+      })
+      .fail(() => {
+        deferred.reject();
+        vm.$blockui('hide');
+      })
+      .always(() => vm.$blockui('hide'));
+
+      return deferred.promise();
     }
 
     getSettingList(params: any) {
