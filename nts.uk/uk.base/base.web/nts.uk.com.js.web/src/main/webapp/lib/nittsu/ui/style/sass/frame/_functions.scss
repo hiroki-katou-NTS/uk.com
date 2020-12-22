@@ -40,10 +40,14 @@
 		}
 	}
 
-	.button-group { 
+	.button-group {
 		&::after {
 			content: '';
 			clear: both;
+		}
+
+		button {
+			min-width: 90px;
 		}
 	}
 }
