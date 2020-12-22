@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.adapter.workschedule;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -27,22 +25,22 @@ public class WorkScheduleWorkInforImport  {
 	/*0 : しない区分   1: する区分*/
 	private int backStraightAtr;
 	
-	private List<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = new ArrayList<>();
+	private Optional<BreakTimeOfDailyAttdImport> breakTime = Optional.empty();
 	
 	
 	///** 日別勤怠の出退勤**/
-	private Optional<TimeLeavingOfDailyAttdImport> timeLeavingOfDailyAttd;
+	private Optional<TimeLeavingOfDailyAttdImport> timeLeaving = Optional.empty();
 
 	public WorkScheduleWorkInforImport(String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdImport timeLeavingOfDailyAttd,
-			List<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport) {
+			Optional<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport) {
 		super();
 		this.workTyle = workTyle;
 		this.workTime = workTime;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
-		this.timeLeavingOfDailyAttd = Optional.ofNullable(timeLeavingOfDailyAttd);
-		this.listBreakTimeOfDailyAttdImport = listBreakTimeOfDailyAttdImport;
+		this.timeLeaving = Optional.ofNullable(timeLeavingOfDailyAttd);
+		this.breakTime = listBreakTimeOfDailyAttdImport;
 	}
 	
 }

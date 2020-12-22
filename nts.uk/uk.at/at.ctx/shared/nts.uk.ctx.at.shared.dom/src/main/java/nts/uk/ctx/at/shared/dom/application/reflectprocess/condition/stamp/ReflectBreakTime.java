@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 
 /**
  * @author thanh_nx
@@ -28,39 +26,23 @@ public class ReflectBreakTime {
 
 		listTimeStampAppOther.stream().forEach(data -> {
 
-			if (!dailyApp.getBreakTime().isEmpty()) {
+			if (dailyApp.getBreakTime().isPresent()) {
 
-				Optional<BreakTimeOfDailyAttd> breakTimeOpt = dailyApp.getBreakTime().stream()
-						.filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME).findFirst();
-
-				if (breakTimeOpt.isPresent()) {
-					Optional<BreakTimeSheet> brs = breakTimeOpt.get().getBreakTimeSheets().stream().filter(
-							y -> y.getBreakFrameNo().v() == data.getDestinationTimeZoneApp().getEngraveFrameNo())
+					Optional<BreakTimeSheet> brs = dailyApp.getBreakTime().get()
+							.getBreakTimeSheets().stream().filter(y ->
+								y.getBreakFrameNo().v() == data.getDestinationTimeZoneApp().getEngraveFrameNo())
 							.findFirst();
 					if (brs.isPresent()) {
 						brs.get().setStartTime(data.getTimeZone().getStartTime());
 						brs.get().setEndTime(data.getTimeZone().getEndTime());
 					} else {
-						breakTimeOpt.get().getBreakTimeSheets().add(create(data));
+						dailyApp.getBreakTime().get().getBreakTimeSheets().add(create(data));
 					}
-				} else {
-					List<BreakTimeSheet> lstBreak = new ArrayList<>();
-					lstBreak.add(create(data));
-					dailyApp.getBreakTime().add(new BreakTimeOfDailyAttd(
-							dailyApp.getClassification() == ScheduleRecordClassifi.SCHEDULE ? BreakType.REFER_SCHEDULE
-									: BreakType.REFER_WORK_TIME,
-							lstBreak));
-				}
 
 			} else {
 				List<BreakTimeSheet> lstBreak = new ArrayList<>();
 				lstBreak.add(create(data));
-				List<BreakTimeOfDailyAttd> lstAttd = new ArrayList<>();
-				lstAttd.add(new BreakTimeOfDailyAttd(
-						dailyApp.getClassification() == ScheduleRecordClassifi.SCHEDULE ? BreakType.REFER_SCHEDULE
-								: BreakType.REFER_WORK_TIME,
-						lstBreak));
-				dailyApp.setBreakTime(lstAttd);
+				dailyApp.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(lstBreak)));
 			}
 			lstItemId.addAll(createId(data.getDestinationTimeZoneApp().getEngraveFrameNo()));
 		});

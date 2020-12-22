@@ -43,7 +43,7 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 		return domain == null ? null : new WorkScheduleTimeDailyPerformDto(
 						getWorkSchedule(domain.getWorkScheduleTime()),
 						getAttendanceTime(domain.getRecordPrescribedLaborTime()),
-						getAttendanceTime(domain.getSchedulePrescribedLaborTime()));
+						0);
 	}
 
 	private static WorkScheduleTimeDto getWorkSchedule(WorkScheduleTime domain) {
@@ -62,7 +62,7 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 																		new AttendanceTime(workSchedule.getTotal()),
 																		new AttendanceTime(workSchedule.getExcessOfStatutoryTime()),
 																		new AttendanceTime(workSchedule.getWithinStatutoryTime())),
-																		new AttendanceTime(schedulePrescribedLaborTime), 
+//																		new AttendanceTime(schedulePrescribedLaborTime), 
 																		new AttendanceTime(recordPrescribedLaborTime));
 	}
 }

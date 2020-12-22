@@ -2307,7 +2307,9 @@ module cmm045.a.viewmodel {
 								comfirmData.push(obj);
 							}
 						});
-						return service.approverAfterConfirm(comfirmData);
+						return service.approverAfterConfirm(comfirmData).done((data)=>{
+							service.reflectListApp(Object.keys(data.successMap));
+						});
 					}
 				}).then((data: any) => {
 					if(data) {

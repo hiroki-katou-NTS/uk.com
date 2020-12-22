@@ -204,7 +204,7 @@ public class UpdateErrorAlarmWrCommand {
 			// Set WorkTypeCondition
 			condition.createWorkTypeCondition(workTypeCondition.isUseAtr(),
 					workTypeCondition.getComparePlanAndActual());
-			if (workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
+			if (workTypeCondition.getComparePlanAndActual() != FilterByCompare.SELECTED.value) {
 				condition.setWorkTypePlan(workTypeCondition.isPlanFilterAtr(), workTypeCondition.getPlanLstWorkType());
 				condition.setWorkTypeActual(workTypeCondition.isActualFilterAtr(),
 						workTypeCondition.getActualLstWorkType());
@@ -216,7 +216,7 @@ public class UpdateErrorAlarmWrCommand {
 			// Set WorkTimeCondtion
 			condition.createWorkTimeCondition(workTimeCondition.isUseAtr(),
 					workTimeCondition.getComparePlanAndActual());
-			if (workTimeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
+			if (workTimeCondition.getComparePlanAndActual() != FilterByCompare.SELECTED.value) {
 				condition.setWorkTimePlan(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
 				condition.setWorkTimeActual(workTimeCondition.isActualFilterAtr(),
 						workTimeCondition.getActualLstWorkTime());
