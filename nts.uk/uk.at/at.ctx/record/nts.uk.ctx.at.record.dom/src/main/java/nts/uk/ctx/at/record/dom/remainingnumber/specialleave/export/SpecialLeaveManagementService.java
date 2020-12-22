@@ -28,7 +28,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -1880,7 +1880,7 @@ public class SpecialLeaveManagementService {
 		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
 
 		/** 所属会社履歴 */
-		List<AffCompanyHistImport> listAffCompanyHistImport(List listAppId, DatePeriod period);
+		List<AffCompanyHistImport> listAffCompanyHistImport(List<String> listAppId, DatePeriod period);
 
 		/** 締め状態管理 */
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);

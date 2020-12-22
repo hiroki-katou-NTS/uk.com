@@ -54,13 +54,12 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePers
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.cancelactuallock.CancelActualLock;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess.MonthlyClosureUpdateLogProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr.MonthlyUpdateMgr;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updateremainnum.RemainAnnualLeaveUpdating;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
@@ -86,7 +85,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Tar
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -114,6 +112,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
@@ -139,6 +138,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
@@ -153,6 +153,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepos
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.MonthlyCalculationByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -169,7 +170,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
@@ -198,6 +198,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkRepository;
@@ -212,7 +213,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.Vertica
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.*;
@@ -227,7 +227,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.CalcFlexChangeDto;
@@ -293,7 +292,6 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
@@ -340,8 +338,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantProcKdm002;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
-import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
 
 @Stateless
 public class RecordDomRequireService {
@@ -582,8 +579,6 @@ public class RecordDomRequireService {
 	@Inject
 	protected GrantDateTblRepository grantDateTblRepo;
 	@Inject
-	protected ElapseYearRepository ElapseYearRepository;
-	@Inject
 	protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
 	@Inject
 	protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
@@ -647,8 +642,9 @@ public class RecordDomRequireService {
 	private DailySnapshotWorkAdapter snapshotAdapter;
 	@Inject
 	private SuperHD60HConMedRepository superHD60HConMedRepo;
+	@Inject
+	protected ElapseYearRepository ElapseYearRepository;
 
-	// Require の不整合によるエラー
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
 		CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -663,11 +659,7 @@ public class RecordDomRequireService {
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1,
 		ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2, AgreementDomainService.RequireM5,
 		AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1,
-		GetExcessTimesYear.RequireM2, SpecialLeaveManagementService.RequireM5,
-		FlexTimeOfMonthly.RequireM3, AggregateMonthlyRecordServiceProc.RequireM2,
-		MonthlyOldDatas.RequireM1, MonthlyAggregationService.RequireM2,
-		RemainAnnualLeaveUpdating.RequireM3
-		{
+		GetExcessTimesYear.RequireM2 {
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 
@@ -676,7 +668,7 @@ public class RecordDomRequireService {
 	public Require createRequire() {
 		return new RequireImpl(comSubstVacationRepo, compensLeaveComSetRepo,
 				specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
-				ElapseYearRepository, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
+				annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 				specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo,
 				interimRemainRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo,
 				interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter,
@@ -699,16 +691,9 @@ public class RecordDomRequireService {
 				remainCreateInforByApplicationData, usageUnitSettingRepo,
 				affWorkplaceAdapter, timeLeavingOfDailyPerformanceRepo,
 				temporaryTimeOfDailyPerformanceRepo, specificDateAttrOfDailyPerforRepo,
-<<<<<<< HEAD
-				employeeDailyPerErrorRepo, anyItemValueOfDailyRepo, 
-				pcLogOnInfoOfDailyRepo, attendanceTimeRepo, payItemCountOfMonthlyRepo, optionalItemRepo,
-				empConditionRepo, formulaRepo, formulaDispOrderRepo, 
-=======
 				employeeDailyPerErrorRepo, anyItemValueOfDailyRepo,
-				pcLogOnInfoOfDailyRepo, workTypeOfDailyPerforRepo,
-				attendanceTimeRepo, payItemCountOfMonthlyRepo, optionalItemRepo,
+				pcLogOnInfoOfDailyRepo, attendanceTimeRepo, payItemCountOfMonthlyRepo, optionalItemRepo,
 				empConditionRepo, formulaRepo, formulaDispOrderRepo,
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 				actualLockRepo, legalTransferOrderSetOfAggrMonthlyRepo,
 				roleOvertimeWorkRepo, holidayAddtionRepo, monthlyAggrSetOfFlexRepo,
 				getFlexPredWorkTimeRepo, insufficientFlexHolidayMntRepo,
@@ -722,13 +707,8 @@ public class RecordDomRequireService {
 				agreementUnitSetRepo, agreementTimeWorkPlaceRepo,
 				affClassficationAdapter, syEmploymentAdapter,
 				agreementTimeOfEmploymentRepo, agreementTimeOfClassificationRepo,
-<<<<<<< HEAD
 				agreementTimeCompanyRepo, remainMergeRepo,
-				agreementYearSettingRepo, agreementMonthSettingRepo, 
-=======
-				basicAgreementSettingRepo, agreementTimeCompanyRepo, remainMergeRepo,
 				agreementYearSettingRepo, agreementMonthSettingRepo,
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 				agreementTimeOfManagePeriodRepo, targetPersonRepo, errMessageInfoRepo,
 				interimRemainRepo, basicScheduleAdapter,
 				substitutionOfHDManaDataRepo, payoutManagementDataRepo,
@@ -752,14 +732,10 @@ public class RecordDomRequireService {
 				wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo,
 				monthlyWorkTimeSetRepo, executionLogRepo,
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
-<<<<<<< HEAD
-				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, 
+				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				roleOfOpenPeriodRepo, snapshotAdapter, superHD60HConMedRepo);
-=======
-				bentoReservationRepo, bentoMenuRepo, dailyCalculationEmployeeService,
-				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate);
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
+				roleOfOpenPeriodRepo, snapshotAdapter, superHD60HConMedRepo,
+				ElapseYearRepository);
 	}
 
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -767,7 +743,6 @@ public class RecordDomRequireService {
 		public RequireImpl(ComSubstVacationRepository comSubstVacationRepo,
 				CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
 				EmpEmployeeAdapter empEmployeeAdapter, GrantDateTblRepository grantDateTblRepo,
-				ElapseYearRepository elapseYearRepo,
 				AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo, SpecialHolidayRepository specialHolidayRepo,
 				InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
 				SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo,
@@ -878,14 +853,10 @@ public class RecordDomRequireService {
 				StampCardRepository stampCardRepo, BentoReservationRepository bentoReservationRepo,
 				BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
-<<<<<<< HEAD
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
-				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
-			
-=======
-				GetProcessingDate getProcessingDate) {
+				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
+				ElapseYearRepository elapseYearRepo) {
 
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, elapseYearRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, interimRemainRepo,
@@ -1025,11 +996,11 @@ public class RecordDomRequireService {
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 		}
-		
+
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
-		
+
 		private DailySnapshotWorkAdapter snapshotAdapter;
-		
+
 		private GetProcessingDate getProcessingDate;
 
 		private RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
@@ -1085,13 +1056,7 @@ public class RecordDomRequireService {
 		private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 
 		private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
-<<<<<<< HEAD
-	
-=======
 
-		private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepo;
-
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 		private AttendanceTimeRepository attendanceTimeRepo;
 
 		private PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo;
@@ -1153,37 +1118,19 @@ public class RecordDomRequireService {
 		private UpdateAllDomainMonthService updateAllDomainMonthService;
 
 		private AgreementUnitSettingRepository agreementUnitSetRepo;
-<<<<<<< HEAD
-	
+
 		private Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo;
-	
-=======
 
-		private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
-
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 		private AffClassificationAdapter affClassficationAdapter;
 
 		private SyEmploymentAdapter syEmploymentAdapter;
-<<<<<<< HEAD
-	
+
 		private Employment36HoursRepository agreementTimeOfEmploymentRepo;
-	
+
 		private Classification36AgreementTimeRepository agreementTimeOfClassificationRepo;
-	
+
 		private Company36AgreedHoursRepository agreementTimeCompanyRepo;
-	
-=======
 
-		private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
-
-		private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
-
-		private BasicAgreementSettingRepository basicAgreementSettingRepo;
-
-		private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
-
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 		private RemainMergeRepository remainMergeRepo;
 
 		private AgreementYearSettingRepository agreementYearSettingRepo;
@@ -1293,15 +1240,9 @@ public class RecordDomRequireService {
 		private BentoMenuRepository bentoMenuRepo;
 
 		private WeekRuleManagementRepo weekRuleManagementRepo;
-<<<<<<< HEAD
-		
+
 		private IntegrationOfDailyGetter integrationOfDailyGetter;
-		
-=======
 
-		private DailyCalculationEmployeeService dailyCalculationEmployeeService;
-
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate) {
@@ -1686,10 +1627,10 @@ public class RecordDomRequireService {
 			updateAllDomainMonthService.merge(domains, targetDate);
 		}
 
-//		@Override
-//		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
-//			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
-//		}
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
+		}
 
 		@Override
 		public List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod) {
@@ -2382,13 +2323,8 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
-<<<<<<< HEAD
-			
-			return integrationOfDailyGetter.getIntegrationOfDaily(sid, period);
-=======
 
-			return dailyCalculationEmployeeService.getIntegrationOfDaily(sid, period);
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
+			return integrationOfDailyGetter.getIntegrationOfDaily(sid, period);
 		}
 
 		@Override
@@ -2442,9 +2378,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-<<<<<<< HEAD
 		public Map<GeneralDate, SnapShot> snapshot(String employeeId, DatePeriod datePeriod) {
-			
+
 			return snapshotAdapter.find(employeeId, datePeriod)
 					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSnapshot().toDomain()));
 		}
@@ -2452,41 +2387,6 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<SuperHD60HConMed> superHD60HConMed(String cid) {
 			return superHD60HConMedRepo.findById(cid);
-=======
-		public List<AffCompanyHistImport> listAffCompanyHistImport(List listAppId, DatePeriod period) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-//		@Override
-//		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-
-		@Override
-		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-			return specialLeaveGrantRepo.getBySpecialId(specialId);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-
-			return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-
-			return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
-					deadlineDate);
-		}
-
-		@Override
-		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-			return interimSpecialHolidayMngRepo.findById(mngId);
 		}
 
 		@Override
@@ -2498,11 +2398,68 @@ public class RecordDomRequireService {
 		}
 
 		@Override
+		public Optional<AffiliationInforOfDailyAttd> dailyAffiliationInfor(String employeeId, GeneralDate ymd) {
+			return affiliationInforOfDailyPerforRepo.findByKey(employeeId, ymd).map(c -> c.getAffiliationInfor());
+		}
+
+		@Override
 		public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
->>>>>>> pj/at/jp_dev/nabe_team/jinno2
 		}
+
+		@Override
+		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UnitAtr use) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+//		@Override
+//		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
+//			// TODO 自動生成されたメソッド・スタブ
+//			return null;
+//		}
+
+		@Override
+		public List<AffCompanyHistImport> listAffCompanyHistImport(List<String> listAppId, DatePeriod period) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD,
+				UseAtr use) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+
 	}
 }

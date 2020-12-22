@@ -67,6 +67,19 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
+
+	}
+
+	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, CalculationState calculationState,
+			NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr, DayOfWeek dayOfWeek,
+			List<ScheduleTimeSheet> scheduleTimeSheets) {
+		super();
+		this.recordInfo = recordInfo;
+		this.calculationState = calculationState;
+		this.goStraightAtr = goStraightAtr;
+		this.backStraightAtr = backStraightAtr;
+		this.dayOfWeek = dayOfWeek;
+		this.scheduleTimeSheets = scheduleTimeSheets;
 	}
 
 	/**
@@ -161,6 +174,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			});
 		});
 	}
+
 
 	public static interface Require extends WorkInformation.Require {
 
