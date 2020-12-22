@@ -64,4 +64,9 @@ public class JpaFixedExtractionMonthlyConRepository extends JpaRepository implem
     public void register(List<FixedExtractionMonthlyCon> domain) {
         this.commandProxy().insertAll(domain.stream().map(KrcmtWkpMonFxexCon::fromDomain).collect(Collectors.toList()));
     }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpMonFxexCon.class, ids);
+    }
 }

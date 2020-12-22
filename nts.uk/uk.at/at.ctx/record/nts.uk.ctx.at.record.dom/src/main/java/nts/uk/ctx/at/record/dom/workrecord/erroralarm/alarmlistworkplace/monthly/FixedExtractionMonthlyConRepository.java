@@ -9,4 +9,6 @@ public interface FixedExtractionMonthlyConRepository {
     List<FixedExtractionMonthlyCon> getByIds(List<String> ids);
 
     void register(List<FixedExtractionMonthlyCon> domain);
+
+    void delete(List<String> ids);
 }

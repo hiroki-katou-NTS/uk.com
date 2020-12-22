@@ -54,4 +54,9 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
     public void register(List<FixedExtractionAppapvCon> domain) {
         this.commandProxy().insertAll(domain.stream().map(KrcmtWkpfxexAppapvCon::fromDomain).collect(Collectors.toList()));
     }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpfxexAppapvCon.class, ids);
+    }
 }

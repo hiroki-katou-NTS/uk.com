@@ -9,7 +9,5 @@ public class DeleteAlarmCheckCdtWkpCommand {
     private int category;
     // コード
     private String code;
-    // 職場のエラームチェックID
-    private String wkpErrorCheckId;
 
 }

@@ -151,7 +151,7 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
         // Insert main table
         this.commandProxy().insert(KfnmtWkpAlstchkConcat.toEntity(domain));
         // Insert sub table
-        this.commandProxy().insert(KfnmtCatMapEachType.toEntity(domain));
+        this.commandProxy().insertAll(KfnmtCatMapEachType.toEntity(domain));
     }
 
     @Override
@@ -173,15 +173,12 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
     }
 
     @Override
-    public void delete(int category, String categoryItemCD) {
-        Optional<AlarmCheckCdtWorkplaceCategory> domain = this.getByID(category, categoryItemCD);
-        if (domain.isPresent()) {
-            List<KfnmtCatMapEachType> subEntities = KfnmtCatMapEachType.toEntity(domain.get());
-            // Remove main table
-            this.commandProxy().remove(KfnmtWkpAlstchkConcat.toEntity(domain.get()).pk);
-            // Remove sub table
-            this.commandProxy().removeAll(subEntities.stream().map(KfnmtCatMapEachType::getPk).collect(Collectors.toList()));
-        }
+    public void delete(AlarmCheckCdtWorkplaceCategory domain) {
+        List<KfnmtCatMapEachType> subEntities = KfnmtCatMapEachType.toEntity(domain);
+        // Remove main table
+        this.commandProxy().remove(KfnmtWkpAlstchkConcat.class, KfnmtWkpAlstchkConcat.toEntity(domain).pk);
+        // Remove sub table
+        this.commandProxy().removeAll(KfnmtCatMapEachType.class, subEntities.stream().map(KfnmtCatMapEachType::getPk).collect(Collectors.toList()));
     }
 
 }

@@ -9,4 +9,6 @@ public interface FixedExtractionScheduleConRepository {
     List<FixedExtractionScheduleCon> getByIds(List<String> ids);
 
     void register(List<FixedExtractionScheduleCon> domain);
+
+    void delete(List<String> ids);
 }

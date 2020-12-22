@@ -12,4 +12,6 @@ public interface FixedExtractionDayConRepository {
     List<FixedExtractionDayCon> getRange(List<String> errorAlarmWorkplaceId);
 
     void register(List<FixedExtractionDayCon> domain);
+
+    void delete(List<String> ids);
 }

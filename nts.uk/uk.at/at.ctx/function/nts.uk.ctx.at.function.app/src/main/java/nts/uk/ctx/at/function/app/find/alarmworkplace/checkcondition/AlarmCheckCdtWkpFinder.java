@@ -74,6 +74,8 @@ public class AlarmCheckCdtWkpFinder {
 
     public ScreenContentDto getExtractItemsByCategory(int category) {
 
+        WorkplaceCategory ctg = EnumAdaptor.valueOf(category, WorkplaceCategory.class);
+
         List<AlarmCheckCdtWorkplaceCategory> alarmCheck = alarmCheckCdtWkpCtgRepo
                 .getByCategory(EnumAdaptor.valueOf(category, WorkplaceCategory.class))
                 .stream()
@@ -81,85 +83,83 @@ public class AlarmCheckCdtWkpFinder {
                 .collect(Collectors.toList());
         List<FixedExtractionItemDto> fixedItemsByCtg = new ArrayList<>();
 
-        if (!alarmCheck.isEmpty()) {
-            switch (alarmCheck.get(0).getCategory()) {
-                case MASTER_CHECK_BASIC: {
-                    // ドメインモデル「アラームリスト（職場）基本の固定抽出項目」を取得する。
-                    List<BasicFixedExtractionItem> fixedItems = basicFixedExtractionItemRepo.getAll();
-                    fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
-                            null,
-                            i.getNo().value,
-                            i.getCheckCls().value,
-                            i.getName().v(),
-                            i.getDisplayMessage().v()
-                    )).collect(Collectors.toList());
-                    break;
-                }
-                // マスタチェック(職場)
-                case MASTER_CHECK_WORKPLACE: {
-                    // ドメインモデル「アラームリスト（職場）固定抽出項目」を取得する。
-                    List<AlarmFixedExtractionItem> fixedItems = alarmFixedExtractionItemRepo.getAll();
-                    fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
-                            null,
-                            i.getNo().value,
-                            i.getAlarmCheckCls().value,
-                            i.getWorkplaceCheckName().v(),
-                            i.getDisplayMessage().v()
-                    )).collect(Collectors.toList());
-                    break;
-                }
-                // マスタチェック(日次)
-                case MASTER_CHECK_DAILY: {
-                    // ドメインモデル「アラームリスト（職場）日別の固定抽出項目」を取得する。
-                    List<FixedExtractionDayItems> fixedItems = fixedExtractionDayItemsRepo.getAll();
-                    fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
-                            null,
-                            i.getFixedCheckDayItems().value,
-                            i.getAlarmCheckCls().value,
-                            i.getDailyCheckName(),
-                            i.getFirstMessageDisp().v()
-                    )).collect(Collectors.toList());
-                    break;
-                }
-                // スケジュール／日次
-                case SCHEDULE_DAILY: {
-                    // ドメインモデル「アラームリスト（職場別）スケジュール／日次の固定抽出項目」を取得する。
-                    List<FixedExtractionScheduleItems> fixedItems = fixedExtractionScheduleItemsRepo.getAll();
-                    fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
-                            null,
-                            i.getFixedCheckDayItemName().value,
-                            i.getAlarmCheckCls().value,
-                            i.getScheduleCheckName(),
-                            i.getFirstMessageDisp().v()
-                    )).collect(Collectors.toList());
-                    break;
-                }
-                // 月次
-                case MONTHLY: {
-                    // ドメインモデル「アラームリスト（職場）月次の固定抽出項目」を取得する。
-                    List<FixedExtractionMonthlyItems> fixedItems = fixedExtractionMonthlyItemsRepo.getAll();
-                    fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
-                            null,
-                            i.getNo().value,
-                            i.getAlarmCheckCls().value,
-                            i.getMonthlyCheckName(),
-                            i.getFirstMessageDisp().v()
-                    )).collect(Collectors.toList());
-                    break;
-                }
-                // 申請承認
-                case APPLICATION_APPROVAL: {
-                    // ドメインモデル「アラームリスト（職場）申請承認の固定抽出項目」を取得する。
-                    List<FixedExtractionAppapvItems> fiexedItems = fixedExtractionAppapvItemsRepo.getAll();
-                    fixedItemsByCtg = fiexedItems.stream().map(i -> new FixedExtractionItemDto(
-                            null,
-                            i.getCheckItemAppapv().value,
-                            i.getAlarmCheckCls().value,
-                            i.getAppapvCheckName(),
-                            i.getFirstMessageDisp().v()
-                    )).collect(Collectors.toList());
-                    break;
-                }
+        switch (ctg) {
+            case MASTER_CHECK_BASIC: {
+                // ドメインモデル「アラームリスト（職場）基本の固定抽出項目」を取得する。
+                List<BasicFixedExtractionItem> fixedItems = basicFixedExtractionItemRepo.getAll();
+                fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
+                        null,
+                        i.getNo().value,
+                        i.getCheckCls().value,
+                        i.getName().v(),
+                        i.getDisplayMessage().v()
+                )).collect(Collectors.toList());
+                break;
+            }
+            // マスタチェック(職場)
+            case MASTER_CHECK_WORKPLACE: {
+                // ドメインモデル「アラームリスト（職場）固定抽出項目」を取得する。
+                List<AlarmFixedExtractionItem> fixedItems = alarmFixedExtractionItemRepo.getAll();
+                fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
+                        null,
+                        i.getNo().value,
+                        i.getAlarmCheckCls().value,
+                        i.getWorkplaceCheckName().v(),
+                        i.getDisplayMessage().v()
+                )).collect(Collectors.toList());
+                break;
+            }
+            // マスタチェック(日次)
+            case MASTER_CHECK_DAILY: {
+                // ドメインモデル「アラームリスト（職場）日別の固定抽出項目」を取得する。
+                List<FixedExtractionDayItems> fixedItems = fixedExtractionDayItemsRepo.getAll();
+                fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
+                        null,
+                        i.getFixedCheckDayItems().value,
+                        i.getAlarmCheckCls().value,
+                        i.getDailyCheckName(),
+                        i.getFirstMessageDisp().v()
+                )).collect(Collectors.toList());
+                break;
+            }
+            // スケジュール／日次
+            case SCHEDULE_DAILY: {
+                // ドメインモデル「アラームリスト（職場別）スケジュール／日次の固定抽出項目」を取得する。
+                List<FixedExtractionScheduleItems> fixedItems = fixedExtractionScheduleItemsRepo.getAll();
+                fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
+                        null,
+                        i.getFixedCheckDayItemName().value,
+                        i.getAlarmCheckCls().value,
+                        i.getScheduleCheckName(),
+                        i.getFirstMessageDisp().v()
+                )).collect(Collectors.toList());
+                break;
+            }
+            // 月次
+            case MONTHLY: {
+                // ドメインモデル「アラームリスト（職場）月次の固定抽出項目」を取得する。
+                List<FixedExtractionMonthlyItems> fixedItems = fixedExtractionMonthlyItemsRepo.getAll();
+                fixedItemsByCtg = fixedItems.stream().map(i -> new FixedExtractionItemDto(
+                        null,
+                        i.getNo().value,
+                        i.getAlarmCheckCls().value,
+                        i.getMonthlyCheckName(),
+                        i.getFirstMessageDisp().v()
+                )).collect(Collectors.toList());
+                break;
+            }
+            // 申請承認
+            case APPLICATION_APPROVAL: {
+                // ドメインモデル「アラームリスト（職場）申請承認の固定抽出項目」を取得する。
+                List<FixedExtractionAppapvItems> fiexedItems = fixedExtractionAppapvItemsRepo.getAll();
+                fixedItemsByCtg = fiexedItems.stream().map(i -> new FixedExtractionItemDto(
+                        null,
+                        i.getCheckItemAppapv().value,
+                        i.getAlarmCheckCls().value,
+                        i.getAppapvCheckName(),
+                        i.getFirstMessageDisp().v()
+                )).collect(Collectors.toList());
+                break;
             }
         }
 
@@ -174,9 +174,8 @@ public class AlarmCheckCdtWkpFinder {
 
     public ExtractionCondtionsDto getCategoryItemInfo(InitScreenDto param) {
 
-        List<FixedExtractionConditionDto> fixedExtractConditions = new ArrayList<>();
-        List<OptionalItemDto> optionalItems = new ArrayList<>();
-        ExtractionCondtionsDto result = new ExtractionCondtionsDto();
+        List<FixedExtractionConditionDto> fixedExtractConditions = Collections.emptyList();
+        List<OptionalItemDto> optionalItems = Collections.emptyList();
 
         Optional<AlarmCheckCdtWorkplaceCategory> alarmCheck = alarmCheckCdtWkpCtgRepo
                 .getByID(param.getCategory(), param.getCode());
@@ -292,9 +291,7 @@ public class AlarmCheckCdtWkpFinder {
             }
         }
 
-        result.setConditions(fixedExtractConditions);
-        result.setOptionalItems(optionalItems);
-        return result;
+        return new ExtractionCondtionsDto(fixedExtractConditions, optionalItems);
 
     }
 }

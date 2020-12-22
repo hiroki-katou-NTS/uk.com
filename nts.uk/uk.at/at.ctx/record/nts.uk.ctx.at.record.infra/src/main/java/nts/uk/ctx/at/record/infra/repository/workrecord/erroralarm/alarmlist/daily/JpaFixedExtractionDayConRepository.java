@@ -37,4 +37,9 @@ public class JpaFixedExtractionDayConRepository extends JpaRepository implements
         this.commandProxy().insertAll(domain.stream().map(KrcmtWkpFxexDayCon::fromDomain).collect(Collectors.toList()));
     }
 
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpFxexDayCon.class, ids);
+    }
+
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
@@ -34,12 +35,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workpla
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionItemRepository;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Stateless
 public class AddAlarmCheckCdtWkpCommandHandler extends CommandHandler<AddAlarmCheckCdtWkpCommand> {
 
     @Inject
@@ -93,6 +94,12 @@ public class AddAlarmCheckCdtWkpCommandHandler extends CommandHandler<AddAlarmCh
         List<String> fixedIds = new ArrayList<>();
         List<String> optionalIds = new ArrayList<>();
         ExtractionCondition condition = null;
+
+        Optional<AlarmCheckCdtWorkplaceCategory> checkExist = alarmCheckCdtWkpCtgRepo
+                .getByID(command.getAlarmCheck().getCategory(), command.getAlarmCheck().getCode());
+        if (checkExist.isPresent()) {
+            throw new BusinessException("Msg_3");
+        }
 
         WorkplaceCategory category = EnumAdaptor.valueOf(command.getAlarmCheck().getCategory(), WorkplaceCategory.class);
         switch (category) {
@@ -155,7 +162,9 @@ public class AddAlarmCheckCdtWkpCommandHandler extends CommandHandler<AddAlarmCh
                                 i.getMessage()
                         ))
                         .collect(Collectors.toList());
-//                condition = new AlarmScheduleCheckCdt(extractionIDs, optionalIDs);
+                condition = new AlarmScheduleCheckCdt(
+                        conItems.stream().map(FixedExtractionScheduleCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
+                        Collections.emptyList());
                 fixedExtractionScheduleConRepo.register(conItems);
                 break;
             }
@@ -171,7 +180,10 @@ public class AddAlarmCheckCdtWkpCommandHandler extends CommandHandler<AddAlarmCh
                                 i.getMessage()
                         ))
                         .collect(Collectors.toList());
-//                condition = new AlarmMonthlyCheckCdt(extractionIDs, optionalIDs);
+                condition = new AlarmMonthlyCheckCdt(
+                        conItems.stream().map(FixedExtractionMonthlyCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
+                        Collections.emptyList()
+                );
                 fixedExtractionMonthlyConRepo.register(conItems);
                 break;
             }

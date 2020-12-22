@@ -16,6 +16,6 @@ public interface BasicFixedExtractionConditionRepository {
 
     void update(BasicFixedExtractionCondition domain);
 
-    void delete(String id);
+    void delete(List<String> ids);
 
 }

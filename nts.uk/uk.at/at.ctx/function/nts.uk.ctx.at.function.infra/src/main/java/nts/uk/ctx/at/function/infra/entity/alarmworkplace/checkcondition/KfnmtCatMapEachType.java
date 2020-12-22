@@ -84,7 +84,7 @@ public class KfnmtCatMapEachType extends UkJpaEntity implements Serializable {
                     domain.getCategory().value,
                     domain.getCode().v(),
                     i,
-                    false
+                    true
             );
             entities.add(new KfnmtCatMapEachType(
                     key,
@@ -97,7 +97,7 @@ public class KfnmtCatMapEachType extends UkJpaEntity implements Serializable {
                     domain.getCategory().value,
                     domain.getCode().v(),
                     i,
-                    true
+                    false
             );
             entities.add(new KfnmtCatMapEachType(
                     key,

@@ -17,7 +17,7 @@ public interface AlarmCheckCdtWkpCtgRepository {
 
     void update(AlarmCheckCdtWorkplaceCategory domain);
 
-    void delete(int category, String categoryItemCD);
+    void delete(AlarmCheckCdtWorkplaceCategory domain);
 
 
 

@@ -8,7 +8,8 @@ module nts.uk.at.view.kal013.a {
         getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category",
         changeCategory: "alarmworkplace/checkCondition/getByCategory",
         changeAlarmCode: "alarmworkplace/checkCondition/getByCategoryItemCD",
-        register: "alarmworkplace/checkCondition/register"
+        register: "alarmworkplace/checkCondition/register",
+        delete: "alarmworkplace/checkCondition/delete"
     };
 
     @bean()
@@ -48,6 +49,8 @@ module nts.uk.at.view.kal013.a {
         uniqueConditions: KnockoutObservable<tab.UniqueCondition>;
         checkConditions: KnockoutObservable<tab.CheckCondition>;
 
+        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+
         constructor(params: any) {
             super();
             const vm = this;
@@ -59,7 +62,6 @@ module nts.uk.at.view.kal013.a {
             vm.tabSelections();
 
             vm.selectedCategoryCode.subscribe((newCode: any) => {
-                if (!newCode) return;
                 vm.getSelectedCategory(newCode);
 
                 //reload with new category
@@ -117,6 +119,7 @@ module nts.uk.at.view.kal013.a {
             const vm = this;
 
             vm.$errors("clear");
+            vm.isNewMode(true);
             vm.currentCode(null);
             vm.currentName(null);
             vm.selectedAlarmCode(null);
@@ -151,7 +154,7 @@ module nts.uk.at.view.kal013.a {
                     });
                     let fixedItems = _.map(res.fixedItems, function (i: any) {
                         return new common.AlarmDto(
-                            false,
+                            true,
                             i.no,
                             i.classification,
                             i.name,
@@ -162,10 +165,13 @@ module nts.uk.at.view.kal013.a {
                     vm.fixedItems(fixedItems);
 
                     if (categoryItem.length) {
+                        vm.isNewMode(false);
                         vm.alarmListItems(categoryItem);
                         vm.selectedAlarmCode("");
                         vm.selectedAlarmCode(categoryItem[0].code);
                     } else {
+                        vm.isNewMode(true);
+                        vm.alarmListItems([]);
                         vm.actualFixedItems(fixedItems);
                     }
 
@@ -179,6 +185,7 @@ module nts.uk.at.view.kal013.a {
         changeAlarmCode() {
             const vm = this;
 
+            vm.isNewMode(false);
             let params = {
                 category: vm.selectedCategoryCode(),
                 code: vm.selectedAlarmCode()
@@ -193,17 +200,24 @@ module nts.uk.at.view.kal013.a {
             vm.$blockui("grayout");
             vm.$ajax(PATH_API.changeAlarmCode, params).done((res: any) => {
                 if (res) {
-                    let fixed = _.cloneDeep(vm.fixedItems());
+                    let fixed = ko.toJS(vm.fixedItems());
                     let actual = _.map(fixed, function (i: common.AlarmDto) {
                         if (res.conditions && res.conditions.length) {
                             let con = res.conditions;
-                            let itemHasSameNo = _.find(con, (x: FixedExtractionConditionDto) => x.no == i.no());
+                            let itemHasSameNo = _.find(con, (x: FixedExtractionConditionDto) => x.no == i.no);
                             if (itemHasSameNo) {
-                                i.message(itemHasSameNo.displayMessage);
-                                i.isChecked(itemHasSameNo.useAtr);
+                                i.message = itemHasSameNo.displayMessage;
+                                // i.isChecked(itemHasSameNo.useAtr);
+                                i.isChecked = itemHasSameNo.useAtr;
                             }
                         }
-                        return i;
+                        return new common.AlarmDto(
+                            i.isChecked,
+                            i.no,
+                            i.classification,
+                            i.name,
+                            i.message
+                        );
                     });
 
                     vm.actualFixedItems(actual);
@@ -235,7 +249,7 @@ module nts.uk.at.view.kal013.a {
             const vm = this;
 
             let alarmCheck = {
-                category: vm.selectedCategory(),
+                category: vm.selectedCategoryCode(),
                 code: vm.currentCode(),
                 name: vm.currentName()
             };
@@ -255,7 +269,11 @@ module nts.uk.at.view.kal013.a {
 
             vm.$blockui("grayout");
             vm.$ajax(PATH_API.register, param).done((res) => {
-                vm.$dialog.info({messageId: "Msg_15"});
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.changeCategory().then(() => {
+                        vm.selectedAlarmCode(alarmCheck.code);
+                    });
+                });
             }).fail((err) => {
                 vm.$dialog.error(err);
             }).always(() => vm.$blockui("clear"));
@@ -266,9 +284,23 @@ module nts.uk.at.view.kal013.a {
          */
         deleteAlarmListByWorkplace() {
             const vm = this;
-            const param = {
-                categoryID: 1
+
+            let param = {
+                category: vm.selectedCategoryCode(),
+                code: vm.selectedAlarmCode()
             };
+            let alarmList = ko.toJS(vm.alarmListItems());
+            let index = _.findIndex(alarmList, (i: any) => i.code == vm.selectedAlarmCode());
+
+
+            vm.$blockui("grayout");
+            vm.$ajax(PATH_API.delete, param).done((res: any) => {
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.changeCategory();
+                });
+            }).fail((err) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui("clear"));
 
 
         }

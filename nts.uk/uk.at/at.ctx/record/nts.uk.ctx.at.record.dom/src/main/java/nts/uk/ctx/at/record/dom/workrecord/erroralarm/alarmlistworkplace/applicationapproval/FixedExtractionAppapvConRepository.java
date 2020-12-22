@@ -16,4 +16,6 @@ public interface FixedExtractionAppapvConRepository {
     List<FixedExtractionAppapvCon> getBy(List<String> ids, boolean useAtr);
 
     void register(List<FixedExtractionAppapvCon> domain);
+
+    void delete(List<String> ids);
 }

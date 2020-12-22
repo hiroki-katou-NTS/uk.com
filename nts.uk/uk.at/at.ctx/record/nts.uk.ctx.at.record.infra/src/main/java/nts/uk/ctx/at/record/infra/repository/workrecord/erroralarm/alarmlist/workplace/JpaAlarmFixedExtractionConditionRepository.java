@@ -5,6 +5,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionConditionRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.workplace.KrcmtWkpFxexCon;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.workplace.KrcmtWkpFxexConPk;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -44,6 +45,11 @@ public class JpaAlarmFixedExtractionConditionRepository extends JpaRepository im
     public void register(List<AlarmFixedExtractionCondition> domain) {
         this.commandProxy()
                 .insertAll(domain.stream().map(KrcmtWkpFxexCon::toEntity).collect(Collectors.toList()));
+    }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpFxexCon.class, ids.stream().map(KrcmtWkpFxexConPk::new).collect(Collectors.toList()));
     }
 
 }

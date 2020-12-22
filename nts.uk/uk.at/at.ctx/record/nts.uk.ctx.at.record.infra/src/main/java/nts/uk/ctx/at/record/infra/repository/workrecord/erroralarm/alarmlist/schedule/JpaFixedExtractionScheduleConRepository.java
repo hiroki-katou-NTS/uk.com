@@ -64,4 +64,9 @@ public class JpaFixedExtractionScheduleConRepository extends JpaRepository imple
     public void register(List<FixedExtractionScheduleCon> domain) {
         this.commandProxy().insertAll(domain.stream().map(KrcmtWkpSchedaiFxexCon::fromDomain).collect(Collectors.toList()));
     }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpSchedaiFxexCon.class, ids);
+    }
 }

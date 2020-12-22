@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class FixedExtractionConditionDto {
 

@@ -10,4 +10,6 @@ public interface AlarmFixedExtractionConditionRepository {
 
     void register(List<AlarmFixedExtractionCondition> domain);
 
+    void delete(List<String> ids);
+
 }
