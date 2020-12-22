@@ -251,7 +251,7 @@ public class SubHolidaySubWorkAssociationFinder {
         List<PayoutSubofHDManagementDto> result = new ArrayList<>();
         for (GeneralDate holiday : inputData.getSubstituteHolidayList()) {
             double requiredNumber = inputData.getDaysUnit();
-            while (requiredNumber > 0.0) {
+            while (requiredNumber > 0.0 && inputData.getSubstituteWorkInfoList().stream().anyMatch(i -> i.getRemainingNumber() > 0)) {
                 // 同一日かチェックする
                 if (inputData.getSubstituteWorkInfoList().stream()
                         .anyMatch(subWorkData -> holiday.compareTo(subWorkData.getSubstituteWorkDate()) == 0)) {

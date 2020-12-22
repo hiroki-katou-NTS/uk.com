@@ -99,9 +99,6 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 4:
 								vm.workConfirmation(temp);
 								break;
-							case 5:
-								vm.monthlyUnconfirmByPrincipal(temp);
-								break;
 						}
 					});
 				
@@ -235,9 +232,6 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 'tab-5':
 								mailType = 4;
 								break;
-							case 'tab-6':
-								mailType = 5;
-								break;
 						}
 						vm.$blockui("show");
 						vm.$ajax('at', nts.uk.text.format(API.sendTestMail, mailType)).done(function(result: any) {
@@ -267,10 +261,10 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 	}
 
 	const API = {
-		getMailTemp: "at/request/application/approvalstatus/getMailTemp",
-		registerMail: "at/request/application/approvalstatus/registerMail",
-		confirmSenderMail: "at/request/application/approvalstatus/confirmSenderMail",
-		sendTestMail: "at/request/application/approvalstatus/sendTestMail/{0}",
+		getMailTemp: "at/screen/application/approvalstatus/getMailTemp",
+		registerMail: "at/screen/application/approvalstatus/registerMail",
+		confirmSenderMail: "at/screen/application/approvalstatus/confirmSenderMail",
+		sendTestMail: "at/screen/application/approvalstatus/sendTestMail/{0}",
 		getUseSetting: "at/record/application/realitystatus/getUseSetting"
 	}
 }

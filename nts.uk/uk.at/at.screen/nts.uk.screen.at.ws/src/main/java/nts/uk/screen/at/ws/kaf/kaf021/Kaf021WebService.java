@@ -33,19 +33,19 @@ public class Kaf021WebService extends WebService {
     @POST
     @Path("get-current-month")
     public List<EmployeeAgreementTimeDto> getCurrentMonth(EmployeeInfoParam param) {
-        return this.query.getEmloyeeInfoForCurrentMonth(param.getEmployees());
+        return this.query.getEmloyeeInfoForCurrentMonth(param.getEmployees(), param.getCurrentYm());
     }
 
     @POST
     @Path("get-next-month")
     public List<EmployeeAgreementTimeDto> getNextMonth(EmployeeInfoParam param) {
-        return this.query.getEmloyeeInfoForNextMonth(param.getEmployees());
+        return this.query.getEmloyeeInfoForNextMonth(param.getEmployees(), param.getCurrentYm());
     }
 
     @POST
     @Path("get-year")
     public List<EmployeeAgreementTimeDto> getYear(EmployeeInfoParam param) {
-        return this.query.getEmloyeeInfoForYear(param.getEmployees());
+        return this.query.getEmloyeeInfoForYear(param.getEmployees(), param.getCurrentYm());
     }
 
     @POST

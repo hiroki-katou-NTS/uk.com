@@ -1,9 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.print;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -14,8 +10,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoI
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * refactor 4
@@ -26,71 +27,71 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStan
 @Setter
 @Getter
 public class PrintContentOfApp {
-	
+
 	/**
 	 * 会社名
 	 */
 	private String companyName;
-	
+
 	/**
 	 * 事前事後区分
 	 */
 	private PrePostAtr prePostAtr;
-	
+
 	/**
 	 * 承認者欄の内容
 	 */
 	private ApproverColumnContents approverColumnContents;
-	
+
 	/**
 	 * 申請開始日
 	 */
 	private GeneralDate appStartDate;
-	
+
 	/**
 	 * 申請者の社員情報
 	 */
 	private List<EmployeeInfoImport> employeeInfoLst;
-	
+
 	/**
 	 * 申請者の職場表示名
 	 */
 	private String workPlaceName;
-	
+
 	/**
 	 * 申請終了日
 	 */
 	private GeneralDate appEndDate;
-	
+
 	/**
 	 * 申請対象日
 	 */
 	private GeneralDate appDate;
-	
+
 	/**
 	 * 申請定型理由
 	 */
 	private AppReasonStandard appReasonStandard;
-	
+
 	/**
 	 * 申請名
 	 */
 	private String applicationName;
-	
+
 	/**
 	 * 申請理由
 	 */
 	private AppReason opAppReason;
-	
+
 	/**
 	 * 複数回勤務の管理
 	 */
 	private boolean managementMultipleWorkCycles;
-	
+
 	/**
 	 * 休暇申請の印刷内容
 	 */
-	
+
 	/**
 	 * 休日出勤の印刷内容
 	 */
@@ -100,30 +101,37 @@ public class PrintContentOfApp {
 	 * 勤務変更申請の印刷内容
 	 */
 	private Optional<PrintContentOfWorkChange> opPrintContentOfWorkChange;
-	
+
 	/**
 	 * 時間休暇申請の印刷内容
 	 */
-	
+
 	/**
 	 * 出張申請の印刷内容
 	 */
 	private Optional<BusinessTripPrintContent> opBusinessTripPrintContent;
-	
+
+
+    /**
+     *  任意項目申請の印刷内容
+     */
+
+    private Optional<OptionalItemPrintContent> optionalItemPrintContent;
+
 	/**
 	 * 振休振出申請の印刷内容
 	 */
-	
+
 	/**
 	 * 打刻申請の印刷内容
 	 */
 	private Optional<AppStampOutput> opAppStampOutput;
-	
+
 	/**
 	 * 遅刻早退取消申請の印刷内容
 	 */
 	private Optional<ArrivedLateLeaveEarlyInfoOutput> opArrivedLateLeaveEarlyInfo;
-	
+
 	/**
 	 * 直行直帰申請の印刷内容
 	 */
@@ -135,7 +143,7 @@ public class PrintContentOfApp {
 	/**
 	 * 任意項目申請の印刷内容
 	 */
-	
+
 	public PrintContentOfApp() {
 		this.employeeInfoLst = Collections.emptyList();
 		this.opPrintContentOfWorkChange = Optional.empty();
@@ -143,5 +151,6 @@ public class PrintContentOfApp {
 		this.opAppStampOutput = Optional.empty();
 		this.opBusinessTripPrintContent = Optional.empty();
 		this.opDetailOutput = Optional.empty();
+		this.optionalItemPrintContent = Optional.empty();
 	}
 }

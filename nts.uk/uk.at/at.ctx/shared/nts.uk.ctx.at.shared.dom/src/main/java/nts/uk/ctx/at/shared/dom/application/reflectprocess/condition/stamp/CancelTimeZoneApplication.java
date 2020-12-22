@@ -27,21 +27,20 @@ public class CancelTimeZoneApplication {
 
 			if (data.getTimeZoneStampClassification() == TimeZoneStampClassificationShare.BREAK) {
 				// 処理中の打刻枠NOの休憩時間帯をクリアする
-				dailyApp.getBreakTime().stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
-						.forEach(x -> {
-							x.getBreakTimeSheets().stream()
-									.filter(y -> y.getBreakFrameNo().v() == data.getEngraveFrameNo().intValue())
-									.map(y -> {
-										y.setStartTime(null);
-										y.setEndTime(null);
+				dailyApp.getBreakTime().ifPresent(x -> {
+					x.getBreakTimeSheets().stream()
+							.filter(y -> y.getBreakFrameNo().v() == data.getEngraveFrameNo().intValue())
+							.map(y -> {
+								y.setStartTime(null);
+								y.setEndTime(null);
 //							※日別勤怠(work）.予定実績区分＝[実績]の場合のみ
 //									　　日別勤怠の休憩時間帯.時間帯.開始.時刻変更理由.時刻変更手段 ← 1:申請
 //									　　日別勤怠の休憩時間帯.時間帯.終了.時刻変更理由.時刻変更手段 ← 1:申請
 // 							domain ko co truong day can xu ly
-										lstItemId.addAll(createItemId(data));
-										return y;
-									}).collect(Collectors.toList());
-						});
+								lstItemId.addAll(createItemId(data));
+								return y;
+							}).collect(Collectors.toList());
+				});
 			} else {
 				dailyApp.getShortTime().ifPresent(x -> {
 					// 処理中の打刻枠NOがキーとなる[短時間勤務時間帯]を削除する

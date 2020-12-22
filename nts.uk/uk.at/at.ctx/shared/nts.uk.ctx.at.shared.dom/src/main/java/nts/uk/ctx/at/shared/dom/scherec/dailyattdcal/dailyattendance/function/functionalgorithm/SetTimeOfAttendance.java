@@ -35,7 +35,7 @@ public class SetTimeOfAttendance {
 			AutoStampSetClassifi autoStampClasssifi) {
 		// INPUT．「日別実績の勤務情報」の勤務実績と勤務予定を比較する
 		List<TimeLeavingWork> lstTimeLeavingWork = new ArrayList<>();
-		if (compareWorkInfo(workInfo.getRecordInfo(), workInfo.getScheduleInfo())) {
+//		if (compareWorkInfo(workInfo.getRecordInfo(), workInfo.getScheduleInfo())) {
 			// 「出退勤（List）」を作成する
 			lstTimeLeavingWork.addAll(workInfo.getScheduleTimeSheets().stream().map(x -> {
 				return new TimeLeavingWork(x.getWorkNo(),
@@ -51,12 +51,12 @@ public class SetTimeOfAttendance {
 										Optional.empty()),
 								0));
 			}).collect(Collectors.toList()));
-		} else {
-			// 所定時間帯をセットする
-			lstTimeLeavingWork
-					.addAll(setPredetermineTimeZone.setTimeZone(companyId, workInfo.getRecordInfo().getWorkTypeCode(),
-							workInfo.getRecordInfo().getWorkTimeCode(), autoStampClasssifi));
-		}
+//		} else {
+//			// 所定時間帯をセットする
+//			lstTimeLeavingWork
+//					.addAll(setPredetermineTimeZone.setTimeZone(companyId, workInfo.getRecordInfo().getWorkTypeCode(),
+//							workInfo.getRecordInfo().getWorkTimeCode(), autoStampClasssifi));
+//		}
 
 //		// ジャスト遅刻早退時刻を補正する
 //		correctLateArrivalDepartureTime.process(companyId, workInfo.getRecordInfo().getWorkTimeCode().v(),

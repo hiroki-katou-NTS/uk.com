@@ -100,6 +100,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStick);
+                    let shiftPalletPositionNumberCom = {};
+                    shiftPalletPositionNumberCom.row = userInfor.shiftPalletPositionNumberCom.row;
+                    shiftPalletPositionNumberCom.column = userInfor.shiftPalletPositionNumberCom.column;
+                    shiftPalletPositionNumberCom.data = userInfor.shiftPalletPositionNumberCom.data;
+                    self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
                 } else {
                     let isMasterNotReg = false;
                     let mami = nts.uk.resource.getText('KSU001_94');
@@ -181,7 +186,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (value.column !== -1 && value.row !== -1) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor: any = JSON.parse(data);
-                        userInfor.shiftPalletPositionNumberCom = { column: self.selectedButtonTableCompany().column, row: self.selectedButtonTableCompany().row };
+                        userInfor.shiftPalletPositionNumberCom = { column: self.selectedButtonTableCompany().column, row: self.selectedButtonTableCompany().row, data : value.data  };
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
                 }
@@ -200,6 +205,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStickWkp);
+                    let shiftPalletPositionNumberOrg = {};
+                    shiftPalletPositionNumberOrg.row = userInfor.shiftPalletPositionNumberOrg.row;
+                    shiftPalletPositionNumberOrg.column = userInfor.shiftPalletPositionNumberOrg.column;
+                    shiftPalletPositionNumberOrg.data = userInfor.shiftPalletPositionNumberOrg.data;
+                    self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
                 } else {
                     let isMasterNotReg = false;
                     for (let i = 0; i < value.data.data.length; i++) {
@@ -279,7 +289,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (value.column !== -1 && value.row !== -1) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor: IUserInfor = JSON.parse(data);
-                        userInfor.shiftPalletPositionNumberOrg = { column: self.selectedButtonTableWorkplace().column, row: self.selectedButtonTableWorkplace().row };
+                        userInfor.shiftPalletPositionNumberOrg = { column: self.selectedButtonTableWorkplace().column, row: self.selectedButtonTableWorkplace().row, data : value.data };
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
                 }
@@ -294,7 +304,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
-            
+
         }
         
         /**

@@ -48,7 +48,7 @@ public class OptionalItem extends AggregateRoot {
 	/** The usage atr. */
 	// 任意項目利用区分
 	private OptionalItemUsageAtr usageAtr;
-
+	
 	/** The emp condition atr. */
 	// 雇用条件区分
 	private EmpConditionAtr empConditionAtr;
@@ -67,7 +67,19 @@ public class OptionalItem extends AggregateRoot {
 
 	/** The unit. */
 	// 単位
-	private UnitOfOptionalItem unit;
+	private Optional<UnitOfOptionalItem> unit;
+	
+	/** The Calculation Classification */
+	// 計算区分
+	private CalculationClassification calcAtr;
+	
+	/** The note */
+	// 任意項目のメモ
+	private Optional<NoteOptionalItem> note;
+	
+	/** The Description */
+	// 説明文
+	private Optional<DescritionOptionalItem> description;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
@@ -78,24 +90,46 @@ public class OptionalItem extends AggregateRoot {
 		if (this.calcResultRange.hasBothLimit()) {
 			BundledBusinessException be = BundledBusinessException.newInstance();
 			be.addMessage("Msg_574");
-			switch (this.optionalItemAtr) {
-			case NUMBER:
-				if (this.calcResultRange.getNumberRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case AMOUNT:
-				if (this.calcResultRange.getAmountRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			case TIME:
-				if (this.calcResultRange.getTimeRange().get().isInvalidRange()) {
-					be.throwExceptions();
-				}
-				break;
-			default:
-				throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
+			    switch (this.optionalItemAtr) {
+			    case NUMBER:
+			        if (this.calcResultRange.getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case AMOUNT:
+			        if (this.calcResultRange.getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    case TIME:
+			        if (this.calcResultRange.getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
+			            be.throwExceptions();
+			        }
+			        break;
+			    default:
+			        throw new RuntimeException("unknown value of enum OptionalItemAtr");
+			    }
+			} else {
+			    switch (this.optionalItemAtr) {
+                case NUMBER:
+                    if (this.calcResultRange.getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case AMOUNT:
+                    if (this.calcResultRange.getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                case TIME:
+                    if (this.calcResultRange.getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
+                        be.throwExceptions();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("unknown value of enum OptionalItemAtr");
+                }
 			}
 		}
 	}
@@ -124,6 +158,9 @@ public class OptionalItem extends AggregateRoot {
 		this.performanceAtr = memento.getPerformanceAtr();
 		this.calcResultRange = memento.getCalculationResultRange();
 		this.unit = memento.getUnit();
+		this.calcAtr = memento.getCalcAtr();
+		this.note = memento.getNote();
+		this.description = memento.getDescription();
 	}
 
 	/**
@@ -141,6 +178,9 @@ public class OptionalItem extends AggregateRoot {
 		memento.setPerformanceAtr(this.performanceAtr);
 		memento.setCalculationResultRange(this.calcResultRange);
 		memento.setUnit(this.unit);
+		memento.setCalAtr(this.calcAtr);
+		memento.setNote(this.note);
+		memento.setDescription(this.description);
 	}
 
 	/* (non-Javadoc)
@@ -179,26 +219,69 @@ public class OptionalItem extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
+
+	/**
+	 * 日別利用条件の判定
+	 * @param empCondition 適用する雇用条件
+	 * @param bsEmploymentHistOpt 個人の雇用条件
+	 * @return 利用条件
+	 */
+	public TermsOfUseForOptItem checkTermsOfUseDaily(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt){
+		
+		// 利用区分の確認
+		if (this.usageAtr == OptionalItemUsageAtr.NOT_USE) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 実績区分の確認
+		if (this.performanceAtr == PerformanceAtr.MONTHLY_PERFORMANCE) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 計算条件の判定
+		if (!this.checkTermsOfCalc(empCondition, bsEmploymentHistOpt)) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 「利用する」を返す
+		return TermsOfUseForOptItem.USE;
+	}
 	
 	/**
-	 * 利用条件の判定
-	 * @return
+	 * 月別利用条件の判定
+	 * @param empCondition 適用する雇用条件
+	 * @param bsEmploymentHistOpt 個人の雇用条件
+	 * @return 利用条件
 	 */
-	public boolean checkTermsOfUse(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
-		//利用区分をチェック
-		if(this.usageAtr.isNotUse()) {
+	public TermsOfUseForOptItem checkTermsOfUseMonth(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt){
+		
+		// 利用区分の確認
+		if (this.usageAtr == OptionalItemUsageAtr.NOT_USE) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 計算条件の判定
+		if (!this.checkTermsOfCalc(empCondition, bsEmploymentHistOpt)) return TermsOfUseForOptItem.NOT_USE;
+			
+		// 実績区分の確認
+		if (this.performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) return TermsOfUseForOptItem.DAILY_VTOTAL;
+
+		// 「利用する」を返す
+		return TermsOfUseForOptItem.USE;
+	}
+	
+	/**
+	 * 計算条件の判定
+	 * @param empCondition 適用する雇用条件
+	 * @param bsEmploymentHistOpt 個人の雇用条件
+	 * @return true=計算する,false=計算しない
+	 */
+	public boolean checkTermsOfCalc(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
+		// 計算区分を確認
+		if(this.calcAtr == CalculationClassification.NOT_CALC) {
 			return false;
 		}
-		//雇用条件区分をチェック
+		// 雇用条件区分を確認
 		if(this.empConditionAtr.isNoCondition()) {
 			return true;
 		}
-		//適用する雇用条件が取得できたかチェック
+		// 「適用する雇用条件」を取得
 		if(!empCondition.isPresent()||empCondition.get().getEmpConditions().isEmpty()) {
 			return true;
 		}
-		//雇用条件判断
+		// 雇用条件判断
 		return empCondition.get().checkEmpCondition(bsEmploymentHistOpt);
 	}
 	
@@ -270,7 +353,7 @@ public class OptionalItem extends AggregateRoot {
 //        }
         
         //上限下限チェック
-        result = this.calcResultRange.checkRange(result, this.optionalItemAtr);
+        result = this.calcResultRange.checkRange(result, this);
         
         return result;
     }

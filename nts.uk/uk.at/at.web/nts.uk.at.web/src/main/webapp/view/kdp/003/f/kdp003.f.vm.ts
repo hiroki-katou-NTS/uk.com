@@ -282,9 +282,13 @@ module nts.uk.at.kdp003.f {
 				});
 
 			$(vm.$el)
-				.on('keyup', '#password-input, #employee-code-inp-2', evt => {
+				.on('keyup', '#password-input, #employee-code-inp-2', evt => {					
 					if (evt.keyCode === 13) {
+						// hook blur for update value from input to model
+						$(evt.target).trigger('blur');
 						const { employeeCode, password } = vm.model;
+
+						console.log(ko.unwrap(employeeCode), ko.unwrap(password));
 
 						if (!!ko.unwrap(employeeCode) && !!ko.unwrap(password)) {
 							vm.submitLogin();

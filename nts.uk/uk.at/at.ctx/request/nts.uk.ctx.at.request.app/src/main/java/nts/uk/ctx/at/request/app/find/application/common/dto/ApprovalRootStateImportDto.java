@@ -29,4 +29,11 @@ public class ApprovalRootStateImportDto {
 				approvalRootStateImport.getListApprovalPhaseState().stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList()), 
 				approvalRootStateImport.getDate());
 	}
+	
+	public ApprovalRootStateImport_New toDomain() {
+		return new ApprovalRootStateImport_New(
+				rootStateID, 
+				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				date);
+	}
 }

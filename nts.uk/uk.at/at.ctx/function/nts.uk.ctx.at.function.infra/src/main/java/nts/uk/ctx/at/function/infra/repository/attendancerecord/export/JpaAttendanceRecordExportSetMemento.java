@@ -6,7 +6,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportSetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.AttendanceRecordDisplay;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 
 /**
  * The Class JpaAttendanceRecordExportSetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 public class JpaAttendanceRecordExportSetMemento implements AttendanceRecordExportSetMemento {
 
 	/** The entity. */
-	private KfnstAttndRec entity;
+	private KfnmtRptWkAtdOutframe entity;
 
 	/**
 	 * Instantiates a new jpa attendance record export set memento.
@@ -29,7 +29,7 @@ public class JpaAttendanceRecordExportSetMemento implements AttendanceRecordExpo
 	 *
 	 * @param entity the entity
 	 */
-	public JpaAttendanceRecordExportSetMemento(KfnstAttndRec entity) {
+	public JpaAttendanceRecordExportSetMemento(KfnmtRptWkAtdOutframe entity) {
 		this.entity = entity;
 	}
 

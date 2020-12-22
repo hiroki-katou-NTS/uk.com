@@ -421,15 +421,39 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// Type = 加給時間
 			if (_.isNil(vm.dataSource.calculationResultOp)) {
 				let calculationResult = vm.dataSource.calculationResultOp;
-				if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
-					if (!_.isEmpty(calculationResult.applicationTimes)) {
-						let applicationTime_ = calculationResult.applicationTimes[0];
-						if (!_.isEmpty(applicationTime_.applicationTime)) {
-							_.forEach(applicationTime_.applicationTime, (item: OvertimeApplicationSetting) => {
-								applicationTime.applicationTime.push(item);
-							});
+				if (!_.isNil(calculationResult)) {
+					if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
+						if (!_.isEmpty(calculationResult.applicationTimes)) {
+							let applicationTime_ = calculationResult.applicationTimes[0];
+							if (!_.isEmpty(applicationTime_.applicationTime)) {
+								_.forEach(applicationTime_.applicationTime, (item: OvertimeApplicationSetting) => {
+									if (item.attendanceType == AttendanceType.BONUSPAYTIME) {
+										applicationTime.applicationTime.push(item);										
+									}
+								});
+							}
 						}
 					}
+					
+				}
+			}
+			// Type = 特定日加給時間
+			if (_.isNil(vm.dataSource.calculationResultOp)) {
+				let calculationResult = vm.dataSource.calculationResultOp;
+				if (!_.isNil(calculationResult)) {
+					if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
+						if (!_.isEmpty(calculationResult.applicationTimes)) {
+							let applicationTime_ = calculationResult.applicationTimes[0];
+							if (!_.isEmpty(applicationTime_.applicationTime)) {
+								_.forEach(applicationTime_.applicationTime, (item: OvertimeApplicationSetting) => {
+									if (item.attendanceType == AttendanceType.BONUSSPECIALDAYTIME) {
+										applicationTime.applicationTime.push(item);										
+									}
+								});
+							}
+						}
+					}
+					
 				}
 			}
 			

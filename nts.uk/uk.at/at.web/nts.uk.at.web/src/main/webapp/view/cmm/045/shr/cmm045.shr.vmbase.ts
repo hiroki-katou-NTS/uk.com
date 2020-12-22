@@ -432,11 +432,11 @@ module cmm045.shr {
 		}
 		export class columnWidth {
 			appLstAtr: boolean;
-			width: number;
+			width: any;
 			cID: string;
 			sID: string;
 
-			constructor(appLstAtr: boolean, width: number, cID: string, sID: string) {
+			constructor(appLstAtr: boolean, width: any, cID: string, sID: string) {
 				this.appLstAtr = appLstAtr;
 				this.width = width;
 				this.cID = cID;

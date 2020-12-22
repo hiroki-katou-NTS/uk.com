@@ -77,7 +77,6 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -584,8 +583,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getOneDay());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -593,8 +592,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getMorning());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -602,8 +601,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getMorning(), workTypeActual.getDailyWork().getOneDay());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -611,8 +610,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getMorning(), workTypeActual.getDailyWork().getMorning());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -620,8 +619,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getAfternoon());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -629,8 +628,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getAfternoon(), workTypeActual.getDailyWork().getOneDay());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -638,8 +637,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getAfternoon(), workTypeActual.getDailyWork().getAfternoon());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 	}
