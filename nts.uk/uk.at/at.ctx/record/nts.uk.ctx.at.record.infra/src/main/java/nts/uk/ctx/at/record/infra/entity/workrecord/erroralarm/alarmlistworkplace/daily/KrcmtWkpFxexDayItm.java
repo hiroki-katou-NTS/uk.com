@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkpla
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayItems;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_FXEX_DAY_ITM")
-public class KrcmtWkpFxexDayItm extends ContractUkJpaEntity implements Serializable {
+public class KrcmtWkpFxexDayItm extends UkJpaEntity implements Serializable {
 
     /* No */
     @Id
@@ -48,10 +47,6 @@ public class KrcmtWkpFxexDayItm extends ContractUkJpaEntity implements Serializa
     @Column(name = "MESSAGE_COLOR")
     public String messageColor;
 
-    /* 会社ID */
-    @Column(name = "CID")
-    public String cid;
-
     @Override
     protected Object getKey() {
         return fixedCheckDayItems;
@@ -66,7 +61,6 @@ public class KrcmtWkpFxexDayItm extends ContractUkJpaEntity implements Serializa
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
         entity.boldAtr = domain.isBoldAtr();
         entity.messageColor = domain.getMessageColor().map(i -> i.v()).orElse(null);
-        entity.cid = AppContexts.user().companyId();
 
         return entity;
     }

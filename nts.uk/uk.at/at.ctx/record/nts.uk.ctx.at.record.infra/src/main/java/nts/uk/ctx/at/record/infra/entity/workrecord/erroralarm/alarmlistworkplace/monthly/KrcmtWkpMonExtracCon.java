@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attenda
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKPMON_EXTRAC_CON")
-public class KrcmtWkpMonExtracCon extends ContractUkJpaEntity  implements Serializable {
+public class KrcmtWkpMonExtracCon extends UkJpaEntity implements Serializable {
 
     /* 月次抽出条件ID */
     @Id
@@ -78,10 +79,6 @@ public class KrcmtWkpMonExtracCon extends ContractUkJpaEntity  implements Serial
     @Column(name = "CONDITION_COMPARE_ID")
     public String errorAlarmCheckID;
 
-    /* 会社ID */
-    @Column(name = "CID")
-    public String cid;
-
     @Override
     protected Object getKey() {
         return errorAlarmWorkplaceId;
@@ -111,8 +108,6 @@ public class KrcmtWkpMonExtracCon extends ContractUkJpaEntity  implements Serial
         }
 
         entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
-        entity.cid = AppContexts.user().companyId();
-
         return entity;
     }
 

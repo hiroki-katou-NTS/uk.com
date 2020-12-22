@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkpla
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_MON_FXEX_CON")
-public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity implements Serializable {
+public class KrcmtWkpMonFxexCon extends UkJpaEntity implements Serializable {
 
     /* 職場のエラーアラームチェックID */
     @Id
@@ -40,10 +39,6 @@ public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity implements Serializa
     @Column(name = "MESSAGE_DISPLAY")
     public String messageDisp;
 
-    /* 会社ID */
-    @Column(name = "CID")
-    public String cid;
-
     @Override
     protected Object getKey() {
         return errorAlarmWorkplaceId;
@@ -56,8 +51,6 @@ public class KrcmtWkpMonFxexCon extends ContractUkJpaEntity implements Serializa
         entity.no = domain.getNo().value;
         entity.useAtr = domain.isUseAtr();
         entity.messageDisp = domain.getMessageDisp().v();
-        entity.cid = AppContexts.user().companyId();
-
         return entity;
     }
 

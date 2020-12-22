@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayCon;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,11 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WKP_FXEX_DAY_CON")
-public class KrcmtWkpFxexDayCon extends ContractUkJpaEntity implements Serializable {
-
-    /* 会社ID */
-    @Column(name = "CID")
-    public String cid;
+public class KrcmtWkpFxexDayCon extends UkJpaEntity implements Serializable {
 
     /* 職場のエラーアラームチェックID */
     @Id
@@ -55,8 +51,6 @@ public class KrcmtWkpFxexDayCon extends ContractUkJpaEntity implements Serializa
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
         entity.fixedCheckDayItems = domain.getFixedCheckDayItems().value;
         entity.messageDisp = domain.getMessageDisp().v();
-        entity.cid = AppContexts.user().companyId();
-
         return entity;
     }
 
