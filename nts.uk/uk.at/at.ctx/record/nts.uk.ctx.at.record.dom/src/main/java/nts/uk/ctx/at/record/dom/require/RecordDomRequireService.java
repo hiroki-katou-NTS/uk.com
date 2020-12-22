@@ -2415,12 +2415,6 @@ public class RecordDomRequireService {
 			return null;
 		}
 
-//		@Override
-//		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
-//			// TODO 自動生成されたメソッド・スタブ
-//			return null;
-//		}
-
 		@Override
 		public List<AffCompanyHistImport> listAffCompanyHistImport(List<String> listAppId, DatePeriod period) {
 			// TODO 自動生成されたメソッド・スタブ
