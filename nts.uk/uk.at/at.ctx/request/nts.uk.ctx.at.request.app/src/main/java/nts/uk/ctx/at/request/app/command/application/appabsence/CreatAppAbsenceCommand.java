@@ -17,4 +17,5 @@ public class CreatAppAbsenceCommand {
 	
 	private boolean agentAtr;
 	
+	private ApplicationDto application;
 }

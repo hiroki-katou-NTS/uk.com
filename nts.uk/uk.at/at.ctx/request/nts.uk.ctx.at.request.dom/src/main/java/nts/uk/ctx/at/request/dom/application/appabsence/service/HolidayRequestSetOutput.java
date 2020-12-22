@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 
 
+
 /**
  * 
  * @author Doan Duy Hung
@@ -20,6 +21,7 @@ public class HolidayRequestSetOutput {
 	 * 休暇申請設定
 	 */
 	private HolidayApplicationSetting hdAppSet;
+
 
 	
 //	/**

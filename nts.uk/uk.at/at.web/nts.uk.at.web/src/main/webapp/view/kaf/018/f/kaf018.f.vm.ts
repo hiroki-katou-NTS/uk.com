@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
+		apprSttComfirmSet: any;
 		apprSttExeDtoLst: Array<ApprSttExecutionDto> = [];
 		currentApprSttExeDto: KnockoutObservable<ApprSttExecutionDto> = ko.observable(null);
 		headers: Array<any> = [];
@@ -39,16 +40,21 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			const vm = this;
 			vm.legendWithTemplateOptions = {
 				items: [
-	                { colorCode: '#ff0000', labelText: vm.$i18n("KAF018_403") },
-	                { colorCode: '#00AA00', labelText: vm.$i18n("KAF018_404") },
-	                { colorCode: '#0000FF', labelText: vm.$i18n("KAF018_405") }
+	                { color: '', background: '#BFEA60', icon: vm.$i18n('KAF018_560'), text: vm.$i18n('KAF018_403') },
+	                { color: '#FF2D2D', background: '', icon: vm.$i18n('KAF018_561'), text: vm.$i18n('KAF018_404') },
+	                { color: '', background: '', icon: vm.$i18n('KAF018_562'), text: vm.$i18n('KAF018_405') },
+					{ color: '#a9a9a9', background: '#a9a9a9', icon: '未', text: vm.$i18n('KAF018_406') },
 	            ],
-	            template : '<div style="color: #{colorCode}; "> #{labelText} </div>'	
+	            template : `<div>
+								<div style="color: #{color}; background-color: #{background}; border: 1px solid #a9a9a9; display: inline-block;">#{icon}</div>
+								<div style="display: inline-block;">#{text}</div>
+							</div>`	
 			}
 			vm.$blockui('show');
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
+			vm.apprSttComfirmSet = params.apprSttComfirmSet;
 			vm.apprSttExeDtoLst = params.apprSttExeDtoLst;
 			vm.currentApprSttExeDto(_.find(params.apprSttExeDtoLst, o => o.wkpID == params.currentWkpID));
 			vm.columns.push(
@@ -70,28 +76,28 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				},
 				{
 					headerText: vm.$i18n('KAF018_408'),
-					key: 'sttUnConfirmDay',
-					width: 40,
-					headerCssClass: 'kaf018-f-header-stt',
-					columnCssClass: 'kaf018-f-column-stt',
-				},
-				{ 
-					headerText: vm.$i18n('KAF018_409'),
-					key: 'sttUnApprDay',
-					width: 40,
-					headerCssClass: 'kaf018-f-header-stt',
-					columnCssClass: 'kaf018-f-column-stt',
-				},
-				{ 
-					headerText: vm.$i18n('KAF018_410'),
 					key: 'sttUnConfirmMonth',
 					width: 40,
 					headerCssClass: 'kaf018-f-header-stt',
 					columnCssClass: 'kaf018-f-column-stt',
 				},
 				{ 
-					headerText: vm.$i18n('KAF018_411'),
+					headerText: vm.$i18n('KAF018_409'),
 					key: 'sttUnApprMonth',
+					width: 40,
+					headerCssClass: 'kaf018-f-header-stt',
+					columnCssClass: 'kaf018-f-column-stt',
+				},
+				{ 
+					headerText: vm.$i18n('KAF018_410'),
+					key: 'sttUnConfirmDay',
+					width: 40,
+					headerCssClass: 'kaf018-f-header-stt',
+					columnCssClass: 'kaf018-f-column-stt',
+				},
+				{ 
+					headerText: vm.$i18n('KAF018_411'),
+					key: 'sttUnApprDay',
 					width: 40,
 					headerCssClass: 'kaf018-f-header-stt',
 					columnCssClass: 'kaf018-f-column-stt',
@@ -147,11 +153,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			for(let j = 0; j <= dateRangeNumber; j++) {
 				dateInfoLst.push({
 					date: moment(moment(vm.startDate,'YYYY/MM/DD').add(j, 'd')).format('YYYY/MM/DD'),
-					status: ''
+					status: CONFIRMSTATUS.NO_TARGET
 				});
 			}
-			vm.dataSource.push({ empID, empCD, empName, sttUnConfirmDay, sttUnApprDay, sttUnConfirmMonth, sttUnApprMonth, dateInfoLst });
-			$("fGrid").css('visibility','hidden');
+			// vm.dataSource.push({ empID, empCD, empName, sttUnConfirmDay, sttUnApprDay, sttUnConfirmMonth, sttUnApprMonth, dateInfoLst });
+			vm.dataSource.push(new EmpConfirmInfo(null, vm));
+			$("#fGrid").css('visibility','hidden');
+			$('#kaf018-f-dynamic-header').css('visibility','hidden');
 			vm.createIggrid();
 			vm.refreshDataSource();
 		}
@@ -179,9 +187,56 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			let key = moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('YYYY/MM/DD'),
 				itemValue = _.find(value, o => o.date == key);
 			if(itemValue) {
-				return itemValue.status;
+				switch(itemValue.status) {
+					//実績確認済      
+			        case CONFIRMSTATUS.CONFIRMED: 
+						return '済';
+			        //実績上司未確認
+			        case CONFIRMSTATUS.BOSS_UNCONFIRMED: 
+						return '未';
+			        //本人未確認
+			        case CONFIRMSTATUS.SELF_UNCONFIRMED: 
+						return '未';
+			        //実績対象外
+			        case CONFIRMSTATUS.NO_TARGET: 
+						return '';
+					default:
+						return '';
+				}
 			}
 			return '';
+		}
+		
+		updateCellStyles() {
+			const vm = this;
+			_.forEach(vm.dataSource, (item: EmpConfirmInfo) => {
+				for(let i=0; i<item.dateInfoLst.length; i++) {
+					let dateInfoItem = item.dateInfoLst[i];
+					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-confirmed');
+					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-boss-unconfirmed');
+					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-no-target');
+					switch(dateInfoItem.status) {
+						//実績確認済      
+				        case CONFIRMSTATUS.CONFIRMED:
+							
+							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.add('kaf018-f-stt-confirmed');
+							break;
+				        //実績上司未確認
+				        case CONFIRMSTATUS.BOSS_UNCONFIRMED:
+							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.add('kaf018-f-stt-boss-unconfirmed');
+							break;
+				        //本人未確認
+				        case CONFIRMSTATUS.SELF_UNCONFIRMED:
+							break;
+				        //実績対象外
+				        case CONFIRMSTATUS.NO_TARGET:
+							$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.add('kaf018-f-stt-no-target');
+							break;
+						default:
+							return '';
+					}	
+				}
+			});
 		}
 		
 		createIggrid() {
@@ -195,6 +250,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				virtualization: true,
 				virtualizationMode: 'continuous',
 				dataRendered: () => {
+					vm.updateCellStyles();
 					vm.$nextTick(() => {
 						vm.$blockui('hide');
 					});
@@ -241,10 +297,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			const vm = this;
 			if(ui.colKey=="empName") {
 				let empInfoLst = vm.dataSource,
+					closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
+					currentWkpID = vm.currentApprSttExeDto().wkpID,
+					apprSttComfirmSet = vm.apprSttComfirmSet,
 					currentEmpID = ui.rowKey,
-					gParam: KAF018GParam = { empInfoLst, startDate, endDate, currentEmpID };
+					gParam: KAF018GParam = { empInfoLst, closureItem, startDate, endDate, currentWkpID, apprSttComfirmSet, currentEmpID };
 				vm.$window.modal('/view/kaf/018/g/index.xhtml', gParam);
 			}
 		}
@@ -278,12 +337,23 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				startDate = vm.startDate,
 				endDate = vm.endDate,
 				empPeriodLst = vm.currentApprSttExeDto().empPeriodLst,
-				wsParam = { wkpID, startDate, endDate, empPeriodLst };
+				apprSttComfirmSet = vm.apprSttComfirmSet,
+				yearMonth = vm.closureItem.processingYm,
+				closureId = vm.closureItem.closureId,
+				closureDay =  vm.closureItem.closureDay,
+				lastDayOfMonth = vm.closureItem.lastDayOfMonth,
+				wsParam = { wkpID, startDate, endDate, empPeriodLst, apprSttComfirmSet, yearMonth, closureId, closureDay, lastDayOfMonth };
 			vm.$blockui('show');
-			vm.$ajax(API.getApprSttStartByEmp, wsParam).done((data) => {
-				vm.dataSource = data;
+			vm.$ajax(API.getConfirmSttByEmp, wsParam).done((data: Array<ApprSttConfirmEmp>) => {
+				let a: Array<EmpConfirmInfo> = [];
+				_.forEach(empPeriodLst, item => {
+					let apprSttConfirmEmp = _.find(data, o => o.listDailyConfirm[0].empID==item.empID);
+					a.push(new EmpConfirmInfo(apprSttConfirmEmp, vm));	
+				});
+				vm.dataSource = _.sortBy(a, 'empCD');
 				$("#fGrid").igGrid("option", "dataSource", vm.dataSource);
 				$("#fGrid").css('visibility','visible');
+				$('#kaf018-f-dynamic-header').css('visibility','visible');
 			});
 		}
 	}
@@ -294,9 +364,41 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		endDate: string;
 		apprSttExeDtoLst: Array<ApprSttExecutionDto>;
 		currentWkpID: string;
+		apprSttComfirmSet: any;
 	}
 	
-	export interface EmpConfirmInfo {
+	interface ApprSttConfirmEmp {
+		listDailyConfirm: Array<DailyConfirmOutput>;
+		empCD: string;
+		empName: string;
+		monthConfirm: boolean;
+		monthApproval: boolean;
+	}
+	
+	interface DailyConfirmOutput {
+		/**
+		 * 職場ID
+		 */
+		wkpID: string;
+		/**
+		 * 社員ID
+		 */
+		empID: string;
+		/**
+		 * 対象日
+		 */
+		targetDate: string;
+		/**
+		 * 本人確認
+		 */
+		personConfirm: boolean;
+		/**
+		 * 上司確認
+		 */
+		bossConfirm: boolean;
+	}
+	
+	export class EmpConfirmInfo {
 		empID: string;
 		empCD: string;
 		empName: string;
@@ -305,14 +407,98 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		sttUnConfirmMonth: string;
 		sttUnApprMonth: string;
 		dateInfoLst: Array<DateInfo>;
+		constructor(apprSttConfirmEmp: ApprSttConfirmEmp, vm: any) {
+			if(apprSttConfirmEmp) {
+				this.empID = apprSttConfirmEmp.listDailyConfirm[0].empID;
+				this.empCD = apprSttConfirmEmp.empCD;
+				this.empName = apprSttConfirmEmp.empName;
+				this.sttUnConfirmDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.personConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.bossConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
+				this.sttUnConfirmMonth = apprSttConfirmEmp.monthConfirm ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprMonth = apprSttConfirmEmp.monthApproval ? vm.$i18n('KAF018_530') : "";
+				let a: Array<DateInfo> = [],
+					apprSttComfirmSet = vm.apprSttComfirmSet,
+					dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
+				for(let i = 0; i <= dateRangeNumber; i++) {
+					let loopDate = moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')),
+						item = _.find(apprSttConfirmEmp.listDailyConfirm, o => moment(o.targetDate,'YYYY/MM/DD').isSame(loopDate));	
+					if(item) {
+						if(apprSttComfirmSet.usePersonConfirm && apprSttComfirmSet.useBossConfirm) {
+							if(_.isNull(item.bossConfirm) && _.isNull(item.personConfirm)) {
+								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
+							} else {
+								if(item.bossConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
+								} else if(item.personConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
+								} else {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.SELF_UNCONFIRMED));	
+								}		
+							}
+							
+							
+						} else if(apprSttComfirmSet.usePersonConfirm && !apprSttComfirmSet.useBossConfirm) {
+							if(_.isNull(item.personConfirm)) {
+								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
+							} else {
+								if(item.personConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));		
+								} else {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.SELF_UNCONFIRMED));		
+								}		
+							}
+						} else if(!apprSttComfirmSet.usePersonConfirm && apprSttComfirmSet.useBossConfirm) {
+							if(_.isNull(item.bossConfirm)) {
+								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
+							} else {
+								if(item.bossConfirm) {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
+								} else {
+									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
+								}	
+							}
+						} else {
+							a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
+						}	
+					} else {
+						a.push(new DateInfo(loopDate.format('YYYY/MM/DD'), CONFIRMSTATUS.NO_TARGET));
+					}
+				}
+				this.dateInfoLst = a;
+			} else {
+				this.empID = "";
+				this.empCD = "";
+				this.empName = "";
+				this.sttUnConfirmDay = "";
+				this.sttUnApprDay = "";
+				this.sttUnConfirmMonth = "";
+				this.sttUnApprMonth = "";
+				this.dateInfoLst = [];
+			}
+		}
 	}
 	
-	interface DateInfo {
+	class DateInfo {
 		date: string;
-		status: string;
+		status: CONFIRMSTATUS;
+		constructor(date: string, status: CONFIRMSTATUS) {
+			this.date = date;
+			this.status = status;
+		}
 	}
+	
+	enum CONFIRMSTATUS {
+        //実績確認済      
+        CONFIRMED = 0,
+        //実績上司未確認
+        BOSS_UNCONFIRMED = 1,
+        //本人未確認
+        SELF_UNCONFIRMED = 2,
+        //実績対象外
+        NO_TARGET = 3
+    }
 
 	const API = {
-		getApprSttStartByEmp: "at/request/application/approvalstatus/getApprSttStartByEmp",
+		getConfirmSttByEmp: "at/request/application/approvalstatus/getConfirmApprSttByEmp",
 	}
 }

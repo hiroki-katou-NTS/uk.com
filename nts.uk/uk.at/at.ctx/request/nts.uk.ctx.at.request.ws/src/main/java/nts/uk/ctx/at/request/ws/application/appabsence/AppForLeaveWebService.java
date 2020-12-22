@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.appabsence.RegisterAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
@@ -17,13 +18,19 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckReg
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeWorkTypeParam;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckTyingManagementParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 @Path("at/request/application/appforleave")
 @Produces("application/json")
@@ -83,7 +90,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("findChangeWorkType")
-	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getChangeWorkType(ChangeWorkTypeParam param) {
 		return this.appForLeaveFinder.getChangeWorkType(param);
 	}
 	@POST
@@ -98,7 +105,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("insert")
-	public ProcessResult insert(CreatAppAbsenceCommand param) {
+	public ProcessResult insert(RegisterAppAbsenceCommand param) {
 		return creatAppAbsence.handle(param);
 	}
 	@POST
@@ -129,6 +136,12 @@ public class AppForLeaveWebService extends WebService{
 	@Path("checkBeforeUpdate")
 	public AbsenceCheckRegisterDto checkBeforeRegister(UpdateAppAbsenceCommand param){
 		return appForLeaveFinder.checkBeforeUpdate(param);
+	}
+	
+	@POST
+	@Path("checkVacationTyingManage")
+	public VacationCheckOutput checkVacationTyingManage(CheckTyingManagementParam checkTyingManageparam) {
+	    return appForLeaveFinder.checkVacationTyingManage(checkTyingManageparam.getWtBefore(), checkTyingManageparam.getWtAfter(), checkTyingManageparam.getLeaveComDayOffMana(), checkTyingManageparam.getPayoutSubofHDManagements());
 	}
 }
 

@@ -1,30 +1,17 @@
 module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
+    import Kaf006AViewModel =  nts.uk.at.view.kaf006_ref.a.viewmodel.Kaf006AViewModel;
 
     @component({
         name: 'kaf006-shr-tab4',
         template: `
         <div id="kaf006tab4">
-            <div class="table">
-                <div class="cell col-1">
-                    <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
-                </div>
-                <div class="cell">
-                    <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
-                        name: $i18n('KAF006_16'),
-                        options: workTypeLst,
-                        optionsValue: 'workTypeCode',
-                        optionsText: 'name',
-                        value: selectedWorkTypeCD,
-                        required: true
-                    }"></div>
-                </div>
-            </div>
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
-                checked: isChagneWorkHour,
-                text: $i18n('KAF006_18')
+                checked: isChangeWorkHour,
+                text: $i18n('KAF006_18'),
+                visible: $parent.condition11
             }"></div>
-            <hr style="width: 700px; margin-inline-start: initial;" />
-            <div class="table">
+            <hr style="width: 700px; margin-inline-start: initial;" data-bind="visible: $parent.condition11" />
+            <div class="table" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
                 <div class="cell">
                     <div style="padding-bottom: 5px;">
@@ -32,7 +19,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
                         <div class="cell">
-                            <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20')"></button>
+                            <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour"></button>
                         </div>
                         <div class="cell" data-bind="text: $i18n('KAF006_21')"></div>
                     </div>
@@ -43,49 +30,49 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_58'),
-                                value: startTime1,
+                                value: $parent.startTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }" />
+                            }, enable: $parent.checkCondition30" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
-                                value: endTime1,
+                                value: $parent.endTime1,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }" />
+                            }, enable: $parent.checkCondition30" />
                         </div>
                     </div>
-                    <div style="padding-bottom: 5px;">
+                    <div style="padding-bottom: 5px;" data-bind="visible: $parent.condition12">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_23')"></div>
                         </div>
                         <div class="cell">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_60'),
-                                value: startTime2,
+                                value: $parent.startTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }" />
+                            }, enable: $parent.checkCondition30" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
-                                value: endTime2,
+                                value: $parent.endTime2,
                                 constraint: 'TimeWithDayAttr',
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }" />
+                            }, enable: $parent.checkCondition30" />
                         </div>
                     </div>
                 </div>
@@ -94,7 +81,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: $parent.openKDL036"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: openKDL036"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
             </div>
             <div class="table" style="margin: 10px 0;">
@@ -123,7 +110,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: $parent.openKDL035"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: openKDL035"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
             </div>
             <div class="table" style="margin: 10px 0;">
@@ -152,25 +139,30 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
     })
 
     class Kaf006Tab4ViewModel extends ko.ViewModel {
-        workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedWorkTypeCD: KnockoutObservable<any> = ko.observable();
-        isChagneWorkHour: KnockoutObservable<boolean> = ko.observable(true);
-        startTime1: KnockoutObservable<number> = ko.observable();
-        endTime1: KnockoutObservable<number> = ko.observable();
-        startTime2: KnockoutObservable<number> = ko.observable();
-        endTime2: KnockoutObservable<number> = ko.observable();
+        // workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        // selectedWorkTypeCD: KnockoutObservable<any>;
+        isChangeWorkHour: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: any) {
             const vm = this;
 
             if (params) {
-                vm.workTypeLst = params.workTypeLst;
-                vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                // vm.workTypeLst = params.workTypeLst;
+                // vm.selectedWorkTypeCD = params.selectedWorkTypeCD;
+                vm.isChangeWorkHour = params.isChangeWorkHour;
             }
         }
 
         mounted() {
 
+        }
+
+        public openKDL036() {
+            ko.contextFor(this.$el).$parent.content.openKDL036();
+        }
+
+        public openKDL035() {
+            ko.contextFor(this.$el).$parent.content.openKDL035();
         }
     }
 }

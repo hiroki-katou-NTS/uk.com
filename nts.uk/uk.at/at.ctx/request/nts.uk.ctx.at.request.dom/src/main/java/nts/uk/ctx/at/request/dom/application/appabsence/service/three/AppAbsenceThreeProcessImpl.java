@@ -153,7 +153,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 //      result = disOrderList;
 		// INPUT．「休暇申請対象勤務種類」を確認する
 		List<WorkType> workTypes = new ArrayList<WorkType>();
-		if (targetWorkTypes.isPresent()) {
+		if (!targetWorkTypes.isPresent()) {
 		    workTypes = getWorkTypeByHolidayType(companyID,holidayType.value);
 		} else {
 		    if (CollectionUtil.isEmpty(targetWorkTypes.get())) {

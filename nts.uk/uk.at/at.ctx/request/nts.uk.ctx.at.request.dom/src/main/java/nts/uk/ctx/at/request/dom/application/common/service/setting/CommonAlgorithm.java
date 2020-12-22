@@ -219,7 +219,7 @@ public interface CommonAlgorithm {
 	 * @param pendingUnit 時間特別休暇の消化単位
 	 */
 	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
-			, TimeDigestiveUnit superHolidayUnit, TimeDigestiveUnit substituteHoliday
-			, TimeDigestiveUnit annualLeaveUnit, TimeDigestiveUnit childNursingUnit
-			, TimeDigestiveUnit nursingUnit, TimeDigestiveUnit pendingUnit);
+			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
+			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
+			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit);
 }

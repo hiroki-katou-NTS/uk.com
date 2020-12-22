@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectStartEndWork;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.schedule.SCReflectWorkStampApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.support.ReflectSupportProcess;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 
 /**
  * @author thanh_nx
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
  */
 public class RCReflectWorkStampApp {
 	public static Collection<Integer> reflect(Require require, AppStampShare application,
-			DailyRecordOfApplication dailyApp, ReflectAppStamp reflectApp) {
+			DailyRecordOfApplication dailyApp, StampAppReflect reflectApp) {
 
 		Set<Integer> lstItemId = new HashSet<>();
 

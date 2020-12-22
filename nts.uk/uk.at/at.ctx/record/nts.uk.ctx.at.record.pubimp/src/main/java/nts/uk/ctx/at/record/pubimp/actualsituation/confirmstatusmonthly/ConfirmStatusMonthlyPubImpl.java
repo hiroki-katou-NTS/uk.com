@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusResult;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyPerformaceLockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.StatusConfirmMonthDto;
 import nts.uk.ctx.at.record.pub.actualsituation.confirmstatusmonthly.ConfirmStatusMonthlyPub;
 import nts.uk.ctx.at.record.pub.actualsituation.confirmstatusmonthly.ConfirmStatusResultEx;
@@ -20,8 +21,9 @@ public class ConfirmStatusMonthlyPubImpl implements ConfirmStatusMonthlyPub {
 	private ConfirmStatusMonthly confirmStatusMonthly;
 	@Override
 	public Optional<StatusConfirmMonthEx> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
-			YearMonth yearmonthInput, Integer clsId, boolean clearState) {
-		Optional<StatusConfirmMonthDto> data = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, clearState);
+			YearMonth yearmonthInput, Integer clsId, Optional<MonthlyPerformaceLockStatus> lockData) {
+		Optional<StatusConfirmMonthDto> data = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, lockData);
+
 		if(!data.isPresent()) {
 			return Optional.empty();
 		}
