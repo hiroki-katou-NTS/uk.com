@@ -1,72 +1,83 @@
-.ui-widget.ui-tabs {
-	border: none;
-	
-	> .ui-tabs-nav {
-		background: transparent;
-		border: none;
-	    padding: .2em .4em 0;
-    	
-		> li { 
-			border-color: $frame_border_color;
-			border-radius: 5px 5px 0 0;
-			box-sizing: border-box;
-			
-			> a { 
-				float: none;
-				display: block;
-				outline: none;
-			}
-			&.ui-tabs-active {
-				background-color: $activated_color;
-				border-color: $frame_border_color;
-				margin-top: -2px;
-				margin-bottom: -4px;
-				padding-top: 2px;
-				padding-bottom: 4px;
-				border-radius: 5px;
+.tabs-panel {
+	width: 100%;
+	overflow: hidden;
+
+	.tabs-list {
+		box-sizing: border-box;
+		background-color: #F1FDFB;
+
+		button {
+			cursor: pointer;
+
+			&:disabled {
+				cursor: not-allowed;
 			}
 		}
 	}
-	
-	> .ui-tabs-panel {
-		border: 2px solid $frame_border_color;
-		border-radius: 7px;
-		display: block !important;
-		
-		&.disappear {
-			> div {
-				height: 100% !important;
-				overflow: hidden !important;
-			}
-		}
+
+	.tabs-content {
+		padding: 10px;
+		box-sizing: border-box;
+		border: 1px dashed #EAE8F2
 	}
-	
+
 	&.vertical {
-		display: flex;
-		
-		> .ui-tabs-nav { 
+		&>.tabs-list {
+			width:  224px;
+			padding: 15px;
 			float: left;
-			padding: .4em 0;
-			border-radius: 0;
-			
-			> li {
-				clear: left;
-				width: 100%;
-				margin: -1px 0 0 0;
-				border-radius: 0;
-				border-width: 1px 0;
-				
-				&.ui-tabs-active {
-					padding: 0;
-					margin: 0;
-					border-color: $activated_color;
+
+			button {
+				&:not(:first-child) {
+					margin-top: 5px;
 				}
 			}
 		}
-		> .ui-tabs-panel {
-			width: 100%;
-			overflow: hidden;
-			padding: 1em;
+		
+		&>.tabs-content {
+			margin-left: 224px;
+			overflow: hidden auto;
+
+			&::after {
+				content: '';
+				clear: both;
+			}
+		}
+	}
+
+	&.horizontal {
+		&>.tabs-list {
+			padding: 20px 15px 15px 15px;
+
+			button {
+				border-width: 0;
+				background-color: transparent;
+				position: relative;
+
+				&.active {
+					z-index: 9;
+					background-color: #fff;
+					box-shadow: 0px 8px 12px rgba(199, 255, 241, 0.6);
+
+					&:not(:disabled) {
+						color: #000;
+					}
+
+					&:after {
+						content: '';
+						position: absolute;
+						width: 16px;
+						height: 2px;
+						bottom: 0;
+						left: calc(50%  - 8px);
+						background-color: #44E08C;
+					}
+				}
+
+				&:not(.active):not(:disabled) {
+					color: #898989;
+				}
+			}
 		}
 	}
 }
