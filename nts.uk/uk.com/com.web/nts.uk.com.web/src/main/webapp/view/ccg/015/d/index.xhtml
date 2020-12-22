@@ -123,9 +123,7 @@
                     </div>
                   </com:ko-if>
                   <com:ko-if bind="contentTopPagePart()">
-                    <div>
-                      <iframe id="frameF2" ></iframe>
-                    </div>
+                    <iframe  id="frameF2" style="width: 100%; height: 100%;" data-bind="attr: {src: filePath}"/>
                   </com:ko-if>
                   <com:ko-if bind="contentUrl()">
                     <iframe class="iframe_fix" id="preview-iframe" data-bind="attr: { src: urlIframe3 }"></iframe>
