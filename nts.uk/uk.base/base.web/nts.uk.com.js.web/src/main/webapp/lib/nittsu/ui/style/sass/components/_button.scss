@@ -21,15 +21,36 @@ $button-disabled-base-color: #888888;
     border-radius: 2px;
     box-sizing: border-box;
     height: 30px;
-    min-width: 90px;
     padding: 0 7px;
     margin: 0;
-    font-family: 'Noto Sans JP';
-    vertical-align: top;
 }
 
 button {
     @extend %btn-default;
+
+    &.small {
+        height: 25px;
+        font-size: 12px;
+        padding: 0 4px;
+    }
+
+    &.large {
+        height: 34px;
+        font-size: 15px;
+        padding: 0 10px;
+    }
+
+    &.x-large {
+        height: 45px;
+        font-size: 22px;
+        padding: 0 20px;
+    }
+
+    &.auto-height {
+        height: auto;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
 
     &:focus,
     &:hover {
@@ -123,9 +144,23 @@ button {
             }
 
             &.icon {
-                min-width: 60px;
+                min-width: 50px;
+                height: 50px;
                 padding: 0;
                 text-align: center;
+
+                &.top {
+                    vertical-align: top;
+                }
+
+                &.bottom {
+                    vertical-align: bottom;
+                }
+
+                &.middle {
+                    vertical-align: top;
+                    margin-top: 5px;
+                }
 
                 &>span {
                     display: none;
