@@ -96,6 +96,12 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemD
 			return Optional.of(ItemValue.builder().value(weeklyTotalPremiumTime).valueType(ValueType.TIME));
 		case (IRREGULAR + CARRY_FORWARD):
 			return Optional.of(ItemValue.builder().value(deformationCarryforwardTime).valueType(ValueType.TIME));
+		case (SUPER_60 + GRANT):
+			return Optional.of(ItemValue.builder().value(superHD60GrantTime).valueType(ValueType.TIME));
+		case (SUPER_60 + CALC):
+			return Optional.of(ItemValue.builder().value(superHD60PayoffTime).valueType(ValueType.TIME));
+		case (SUPER_60 + TRANSFER):
+			return Optional.of(ItemValue.builder().value(superHD60ConversionTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -115,6 +121,9 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemD
 		case MONTHLY_PREMIUM:
 		case WEEKLY_PREMIUM:
 		case (IRREGULAR + CARRY_FORWARD):
+		case (SUPER_60 + GRANT):
+		case (SUPER_60 + CALC):
+		case (SUPER_60 + TRANSFER):
 			return PropType.VALUE;
 		case TIME:
 			return PropType.IDX_LIST;
@@ -143,6 +152,15 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemD
 			break;
 		case (IRREGULAR + CARRY_FORWARD):
 			deformationCarryforwardTime = value.valueOrDefault(0);
+			break;
+		case (SUPER_60 + GRANT):
+			superHD60GrantTime = value.valueOrDefault(0);
+			break;
+		case (SUPER_60 + CALC):
+			superHD60PayoffTime = value.valueOrDefault(0);
+			break;
+		case (SUPER_60 + TRANSFER):
+			superHD60ConversionTime = value.valueOrDefault(0);
 			break;
 		default:
 		}
