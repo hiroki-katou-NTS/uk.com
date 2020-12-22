@@ -1,11 +1,11 @@
-module nts.uk.at.view.kaf018.h.viewmodel {
+module nts.uk.at.view.kaf018_old.h.viewmodel {
     import text = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.alertError;
     import ntsError = nts.uk.ui.errors;
     import confirm = nts.uk.ui.dialog.confirm;
-    import shareModel = kaf018.share.model;
+    import shareModel = kaf018_old.share.model;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;

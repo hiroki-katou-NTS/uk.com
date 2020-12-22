@@ -30,17 +30,19 @@ public class GetNewestStampNotRegisteredServiceTest {
 	private Require require;
 	
 	@Test
-	public void getters() {
-		GetNewestStampNotRegisteredService getNewestStampNotRegisteredService = new GetNewestStampNotRegisteredService();
-		NtsAssert.invokeGetters(getNewestStampNotRegisteredService);
-	}
-	
-	@Test
 	public void test_get_null() {
 		
-		GetNewestStampNotRegisteredService getNewestStampNotRegisteredService = new GetNewestStampNotRegisteredService();
+		new Expectations() {
+			{	
+				require.getStempRcNotResgistNumber(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+				
+				require.getStempRcNotResgistNumberStamp(anyString, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+			}
+		};
 		
-		List<StampInfoDisp> disps = getNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, 
+				new DatePeriod(GeneralDate.today(), GeneralDate.today()),
+				"contractCode");
 		
 		assertThat(disps).isEmpty();
 	}
@@ -48,21 +50,20 @@ public class GetNewestStampNotRegisteredServiceTest {
 	@Test
 	public void test_get() {
 		
-		GetNewestStampNotRegisteredService getNewestStampNotRegisteredService = new GetNewestStampNotRegisteredService();
-		
 		new Expectations() {
 			{	
 				require.getStempRcNotResgistNumber(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp("DUMMY",new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+				require.getStempRcNotResgistNumberStamp(anyString, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				result = StampHelper.getListStampDefault();
 			}
 		};
 		
-		List<StampInfoDisp> disps = getNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, 
+				new DatePeriod(GeneralDate.today(), GeneralDate.today()),
+				"contractCode");
 		
 		assertThat(disps).isNotEmpty();
 	}
-
 }

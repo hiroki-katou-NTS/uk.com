@@ -3,15 +3,22 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfoma
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 日別勤怠の勤務情報
@@ -41,6 +48,10 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private DayOfWeek dayOfWeek;
 	// 勤務予定時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+	//振休振出として扱う日数
+	@Setter
+	private Optional<NumberOfDaySuspension> numberDaySuspension = Optional.empty();
+	
 	//Ver
 	@Setter
 	@Getter
@@ -116,6 +127,41 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		return false;
 	}
 	
+	// 勤務情報と始業終業を変更する
+	public void changeWorkSchedule(Require require, WorkInfoDto workInfo, boolean changeWorkType,
+			boolean changeWorkTime) {
+		// 勤務情報を変更する
+		Optional<WorkTypeCode> workTypeCode = Optional.ofNullable(this.recordInfo.getWorkTypeCode());
+		Optional<WorkTimeCode> workTimeCode = this.recordInfo.getWorkTimeCodeNotNull();
+
+		if (changeWorkType) {
+			workTypeCode = workInfo.getWorkTypeCode();
+		}
+
+		if (changeWorkTime) {
+			workTimeCode = workInfo.getWorkTimeCode();
+		}
+
+		this.recordInfo = new WorkInformation(workTypeCode.orElse(null), workTimeCode.orElse(null));
+
+		// 所定時間帯を取得する
+		Optional<WorkInfoAndTimeZone> timeZoneOpt = this.recordInfo.getWorkInfoAndTimeZone(require);
+
+		// 始業終業に取得した所定時間帯をセットする
+		timeZoneOpt.ifPresent(workInfoTimeZone -> {
+			List<TimeZone> lstTimeZone = workInfoTimeZone.getTimeZones().stream()
+					.sorted((x, y) -> x.getStart().v() - y.getStart().v()).collect(Collectors.toList());
+			this.getScheduleTimeSheets().forEach(x -> {
+				TimeZone timeZone = (lstTimeZone.size() <= (x.getWorkNo().v() - 1)) ? null
+						: lstTimeZone.get(x.getWorkNo().v() - 1);
+				if (timeZone != null) {
+					x.setAttendance(timeZone.getStart());
+					x.setLeaveWork(timeZone.getEnd());
+				}
+			});
+		});
+	}
+
 	public static interface Require extends WorkInformation.Require {
 		
 	}

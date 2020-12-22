@@ -14,12 +14,12 @@ public enum FlexWorkAtr {
 	/**
 	 * フレックス時間勤務
 	 */
-	FLEX_TIME(0, "フレックス時間勤務"),
+	FLEX_TIME(1, "フレックス時間勤務"),
 	
 	/**
 	 * フレックス時間勤務以外
 	 */
-	OTHER(1, "フレックス時間勤務以外");
+	OTHER(0, "フレックス時間勤務以外");
 	
 	public final int value;
 	

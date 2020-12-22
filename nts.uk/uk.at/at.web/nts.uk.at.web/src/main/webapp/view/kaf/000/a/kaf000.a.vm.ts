@@ -27,9 +27,44 @@ module nts.uk.at.view.kaf000.a.viewmodel {
                 return false;
             });
         }
+
+		sendMailAfterRegister(mailServerSet: boolean, sendMailHandler: boolean) {
+			const vm = this;
+			return vm.$ajax(API.sendMailAfterRegister)
+			.then((data: any) => {
+				if(data) {
+					if(data.isAutoSendMail) {
+						let mailResult = [];
+						mailResult.push({ value: data.autoSuccessMail, type: 'info' });
+						mailResult.push({ value: data.autoFailMail, type: 'error' });
+						mailResult.push({ value: data.autoFailServer, type: 'error' });
+						CommonProcess.showMailResult(_.slice(mailResult, 1), vm).then(() => window.location.reload());
+					}
+					return data;
+				}
+			}).then((data: any) => {
+				if(data) {
+					if(sendMailHandler) {
+						let command = { appID: data.appID };
+						vm.$window.modal('/view/screen/a/index.xhtml', command)
+	            		.then(() => window.location.reload());	
+					}
+				}
+			});	
+		}
+		
+		handleErrorCommon(failData: any) {
+			const vm = this;
+			if(failData.messageId == "Msg_324") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+				return;
+			}	
+			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+		}
     }
 
     const API = {
-        startNew: "at/request/application/getStartPC"
+        startNew: "at/request/application/getStartPC",
+		sendMailAfterRegister: ""
     }
 }

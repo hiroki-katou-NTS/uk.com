@@ -17,8 +17,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -56,12 +56,12 @@ public class KscmtPaletteCmpCombi extends ContractUkJpaEntity {
 		return this.pk;
 	}
 
-	public ShiftPalletCombinations toDomain() {
-		return new ShiftPalletCombinations(pk.position, new ShiftCombinationName(positionName),
+	public ShiftPaletteCombinations toDomain() {
+		return new ShiftPaletteCombinations(pk.position, new ShiftCombinationName(positionName),
 				cmpCombiDtls.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 
-	public static KscmtPaletteCmpCombi fromDomain(ShiftPalletCombinations shiftPalletCombinations,
+	public static KscmtPaletteCmpCombi fromDomain(ShiftPaletteCombinations shiftPalletCombinations,
 			KscmtPaletteCmpPk pk) {
 		KscmtPaletteCmpCombiPk cmpCombiPk = new KscmtPaletteCmpCombiPk(AppContexts.user().companyId(), pk.page,
 				shiftPalletCombinations.getPositionNumber());
@@ -70,7 +70,7 @@ public class KscmtPaletteCmpCombi extends ContractUkJpaEntity {
 						.map(x -> KscmtPaletteCmpCombiDtl.fromDomain(x, cmpCombiPk)).collect(Collectors.toList()));
 	}
 	
-	public static KscmtPaletteCmpCombi fromOneDomain(ShiftPalletCombinations shiftPalletCombinations,
+	public static KscmtPaletteCmpCombi fromOneDomain(ShiftPaletteCombinations shiftPalletCombinations,
 			KscmtPaletteCmpPk pk) {
 		KscmtPaletteCmpCombiPk cmpCombiPk = new KscmtPaletteCmpCombiPk(AppContexts.user().companyId(), pk.page,
 				shiftPalletCombinations.getPositionNumber());
@@ -78,7 +78,7 @@ public class KscmtPaletteCmpCombi extends ContractUkJpaEntity {
 				null);
 	}
 
-	public void toEntity(ShiftPalletCombinations shiftPalletCombinations) {
+	public void toEntity(ShiftPaletteCombinations shiftPalletCombinations) {
 		this.positionName = shiftPalletCombinations.getCombinationName().v();
 		cmpCombiDtls.stream().forEach(x -> {
 			if(shiftPalletCombinations.getCombinations().stream()

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.nrl.request;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.app.nrl.Command;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.function.app.nrl.xml.Frame;
  *
  * @param <T>
  */
+@Stateless
 public abstract class NRLRequest<T extends MeanCarryable> implements BCCCalculable {
 	
 	/**

@@ -10,13 +10,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringCharType(CharType.ALPHA_NUMERIC)
 public class FileCompressionPassword extends StringPrimitiveValue<FileCompressionPassword>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public FileCompressionPassword(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 }

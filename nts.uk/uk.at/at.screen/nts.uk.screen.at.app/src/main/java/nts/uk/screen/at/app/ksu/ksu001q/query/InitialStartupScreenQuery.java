@@ -62,12 +62,12 @@ public class InitialStartupScreenQuery {
 			TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(target.getId());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
-			dto.setOrgName(infoOrganization.getName());
+			dto.setOrgName(infoOrganization.getDisplayName());
 		} else {
 			TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(target.getId());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
-			dto.setOrgName(infoOrganization.getName());
+			dto.setOrgName(infoOrganization.getDisplayName());
 		}
 
 		// 2. 取得する
@@ -78,7 +78,7 @@ public class InitialStartupScreenQuery {
 			budgetItem.setCode(x.getExternalBudgetCd().v());
 			budgetItem.setName(x.getExternalBudgetName().v());
 			budgetItem.setAttribute(x.getBudgetAtr().toName());
-			budgetItem.setUnit(x.getUnitAtr().toName());
+		//	budgetItem.setUnit(x.getUnitAtr().toName());
 			return budgetItem;
 		}).sorted((o1, o2) -> o1.getCode().compareTo(o2.getCode())).collect(Collectors.toList());
 

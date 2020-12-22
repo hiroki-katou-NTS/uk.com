@@ -170,7 +170,8 @@ public class EnterStampFromPersonalStampServiceTest {
 		TimeStampInputResult timeStampInputResult = EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
 				null);
 		
-		assertThat(timeStampInputResult.stampDataReflectResult.getReflectDate()).isEmpty();
+		assertThat(timeStampInputResult.at).isNotEmpty();
+		assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();
 	}
 	
 }

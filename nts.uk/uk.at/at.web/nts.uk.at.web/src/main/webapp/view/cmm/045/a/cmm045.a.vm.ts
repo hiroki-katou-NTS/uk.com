@@ -51,13 +51,14 @@ module cmm045.a.viewmodel {
         selectedAppId: KnockoutObservableArray<string> = ko.observableArray([]);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
-        columnWidth: vmbase.columnWidth = new vmbase.columnWidth(true, 340);
+        columnWidth: vmbase.columnWidth = new vmbase.columnWidth(true, 340, "", "");
         appListInfo: any = null;
         appListAtr: number;
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
         isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
         isApprove: KnockoutObservable<boolean>;
+        isActiveApprove: any;
 
         constructor() {
             let self = this;
@@ -184,13 +185,123 @@ module cmm045.a.viewmodel {
              }
             }
 
-            window.onresize = function(event) {
-                if($('#grid1').length){//approval
-                    $("#grid1").igGrid("option", "height", window.innerHeight - 350  + "px");
-                }
-                if($('#grid2').length){//application
-                    $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");
-                }
+            window.onresize = function(event: any) {
+				if(self.mode()==1) {
+					character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
+						$('#status-div').width(955);
+						if(window.innerWidth-90 < 965) {
+							$('#app-resize').width(920);
+							$('.nts-fixed-header-container .fixed-table').width(920);
+							$('.nts-fixed-header-wrapper').width(937);
+							$('.nts-fixed-header-container').width(920);
+							$('.nts-fixed-header-container').css('max-width', 920);
+							$('.nts-fixed-body-wrapper').width(920);
+							$('.nts-fixed-body-table').width(920);
+							$('.nts-fixed-body-container').width(937);
+							$('.nts-fixed-body-container').css('max-width', 953);
+						} else {
+							$('#app-resize').width(window.innerWidth-134);
+							$('.nts-fixed-header-container .fixed-table').width(window.innerWidth-134);
+							$('.nts-fixed-header-wrapper').width(window.innerWidth-117);
+							$('.nts-fixed-header-container').width(window.innerWidth-134);
+							$('.nts-fixed-header-container').css('max-width', window.innerWidth-134);
+							$('.nts-fixed-body-wrapper').width(window.innerWidth-134);
+							$('.nts-fixed-body-table').width(window.innerWidth-134);
+							$('.nts-fixed-body-container').width(window.innerWidth-117);
+							$('.nts-fixed-body-container').css('max-width', window.innerWidth-101);
+						}
+	                    if(obj !== undefined) {
+							$("col.check").width(obj.width.check);
+							$("col.details").width(obj.width.details);
+							$("col.applicantName").width(obj.width.applicantName);
+							$("col.appType").width(obj.width.appType);
+							$("col.prePostAtr").width(obj.width.prePostAtr);
+							$("col.appDate").width(obj.width.appDate);
+							$("col.appContent").width(obj.width.appContent);
+							$("col.inputDate").width(obj.width.inputDate);
+							$("col.reflectionStatus").width(obj.width.reflectionStatus);
+							$("col.opApprovalStatusInquiry").width(obj.width.opApprovalStatusInquiry);
+							$('.nts-fixed-header-container .fixed-table').width(_.sum(_.values(obj.width)));
+							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
+	                    } else {
+	                        if($('.nts-fixed-header-container').width()-812 < 70) {
+								$('col.appContent').width(70);	
+							} else {
+								$('col.appContent').width($('.nts-fixed-header-container').width()-812);
+							}
+	                    }
+						if(window.innerHeight-374 < 60) {
+							$('.nts-fixed-body-container').height(60);
+							$('.nts-fixed-body-wrapper').height(44);
+						} else {
+							$('.nts-fixed-body-container').height(window.innerHeight-374);
+							$('.nts-fixed-body-wrapper').height(window.innerHeight-390);
+						}
+						let headerSize = $('.nts-fixed-header-wrapper .ui-widget-header').length,
+							leftValue = 0;
+						for(let i = 0; i < headerSize; i++) {
+							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
+							$('.resize-handle')[i].style.left = leftValue + 'px';		
+						}
+	                });
+	            } else {
+					character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
+						$('#status-div').width(880);
+		                if(window.innerWidth-90 < 880) {
+							$('#app-resize').width(845);
+							$('.nts-fixed-header-container .fixed-table').width(845);
+							$('.nts-fixed-header-wrapper').width(862);
+							$('.nts-fixed-header-container').width(845);
+							$('.nts-fixed-header-container').css('max-width', 845);
+							$('.nts-fixed-body-wrapper').width(845);
+							$('.nts-fixed-body-table').width(845);
+							$('.nts-fixed-body-container').width(862);
+							$('.nts-fixed-body-container').css('max-width', 878);
+						} else {
+							$('#app-resize').width(window.innerWidth-129);
+							$('.nts-fixed-header-container .fixed-table').width(window.innerWidth-129);
+							$('.nts-fixed-header-wrapper').width(window.innerWidth-112);
+							$('.nts-fixed-header-container').width(window.innerWidth-129);
+							$('.nts-fixed-header-container').css('max-width', window.innerWidth-129);
+							$('.nts-fixed-body-wrapper').width(window.innerWidth-129);
+							$('.nts-fixed-body-table').width(window.innerWidth-129);
+							$('.nts-fixed-body-container').width(window.innerWidth-112);
+							$('.nts-fixed-body-container').css('max-width', window.innerWidth-96);
+						}
+	                    if(obj !== undefined) {
+							$("col.details").width(obj.width.details);
+							$("col.applicantName").width(obj.width.applicantName);
+							$("col.appType").width(obj.width.appType);
+							$("col.prePostAtr").width(obj.width.prePostAtr);
+							$("col.appDate").width(obj.width.appDate);
+							$("col.appContent").width(obj.width.appContent);
+							$("col.inputDate").width(obj.width.inputDate);
+							$("col.reflectionStatus").width(obj.width.reflectionStatus);
+							$("col.opApprovalStatusInquiry").width(obj.width.opApprovalStatusInquiry);
+							$('.nts-fixed-header-container .fixed-table').width(_.sum(_.values(obj.width)));
+							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
+	                    } else {
+	                        if($('.nts-fixed-header-container').width()-775 < 70) {
+								$('col.appContent').width(70);	
+							} else {
+								$('col.appContent').width($('.nts-fixed-header-container').width()-775);
+							}
+	                    }
+						if(window.innerHeight-340 < 60) {
+							$('.nts-fixed-body-container').height(60);
+							$('.nts-fixed-body-wrapper').height(44);
+						} else {
+							$('.nts-fixed-body-container').height(window.innerHeight-340);
+							$('.nts-fixed-body-wrapper').height(window.innerHeight-356);
+						}
+						let headerSize = $('.nts-fixed-header-wrapper .ui-widget-header').length,
+							leftValue = 0;
+						for(let i = 0; i < headerSize; i++) {
+							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
+							$('.resize-handle')[i].style.left = leftValue + 'px';		
+						}
+	                });
+				}
             }
 
 			self.selectedIds.subscribe(value => {
@@ -230,32 +341,75 @@ module cmm045.a.viewmodel {
 
         saveContentWidth() {
             let self = this;
-            var contentWidth = $(".appContent").outerWidth();
+            var contentWidth = $("col.appContent").width();
 
             if(self.mode() == 0) {
                 self.columnWidth.appLstAtr = true;
-                self.columnWidth.width = contentWidth;
+				self.columnWidth.width = {
+					'details': $("col.details").width(),
+					'applicantName': $("col.applicantName").width(),
+					'appType': $("col.appType").width(),
+					'prePostAtr': $("col.prePostAtr").width(),
+					'appDate': $("col.appDate").width(),
+					'appContent': $("col.appContent").width(),
+					'inputDate': $("col.inputDate").width(),
+					'reflectionStatus': $("col.reflectionStatus").width(),
+					'opApprovalStatusInquiry': $("col.opApprovalStatusInquiry").width()
+				};
+                self.columnWidth.cID = __viewContext.user.companyId;
+                self.columnWidth.sID = __viewContext.user.employeeId;
             } else {
                 self.columnWidth.appLstAtr = false;
-                self.columnWidth.width = contentWidth;
+				self.columnWidth.width = {
+					'check': $("col.check").width(),
+					'details': $("col.details").width(),
+					'applicantName': $("col.applicantName").width(),
+					'appType': $("col.appType").width(),
+					'prePostAtr': $("col.prePostAtr").width(),
+					'appDate': $("col.appDate").width(),
+					'appContent': $("col.appContent").width(),
+					'inputDate': $("col.inputDate").width(),
+					'reflectionStatus': $("col.reflectionStatus").width(),
+					'opApprovalStatusInquiry': $("col.opApprovalStatusInquiry").width()
+				};
+                self.columnWidth.cID = __viewContext.user.companyId;
+                self.columnWidth.sID = __viewContext.user.employeeId;
             }
             console.log(contentWidth);
 
-            character.restore('TableColumnWidth').then((obj) => {
-                if(obj !== undefined) {
-                    if(contentWidth !== obj.width) {
-                        character.save('TableColumnWidth', self.columnWidth).then(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_357" });
-                        });
+            if (self.mode() == 0) {
+                character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
+                    if(obj !== undefined) {
+                        if(contentWidth !== obj.width.appContent) {
+                            character.save('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
+                    } else {
+                        if(contentWidth !== 340) {
+                            character.save('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
                     }
-                } else {
-                    if(contentWidth !== 340) {
-                        character.save('TableColumnWidth', self.columnWidth).then(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_357" });
-                        });
+                });
+            } else {
+                character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
+                    if(obj !== undefined) {
+                        if(contentWidth !== obj.width.appContent) {
+                            character.save('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
+                    } else {
+                        if(contentWidth !== 340) {
+                            character.save('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
 		checkConditionParam() {
@@ -279,12 +433,16 @@ module cmm045.a.viewmodel {
                 return false;
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
-				nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" }).then(() => {
+                    $(".popup-panel").ntsPopup("toggle");
+                });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
-				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" }).then(() => {
+                    $(".popup-panel").ntsPopup("toggle");
+                });
                 return false;
 			}
 			return true;
@@ -661,7 +819,12 @@ module cmm045.a.viewmodel {
           	}
             self.isLimit500(appListInfo.moreThanDispLineNO);
             self.isApprove = ko.computed(() => {
-                return self.mode() == 1 && self.items().length > 0;
+                return self.mode() == 1 && self.items().length > 0 && _.filter(self.items(), x => {
+					return x.checkAtr && moment(x.opAppStartDate).add(-(self.appListInfo.displaySet.appDateWarningDisp), "days").isSameOrBefore(moment.utc())
+				}).length > 0 && self.appListInfo.displaySet.appDateWarningDisp !== 0;
+            }, self);
+            self.isActiveApprove = ko.computed(() => {
+                return self.items().length > 0 && _.filter(self.items(), x => x.checkAtr).length > 0;
             }, self);
 
 			/*self.appList(data.appListInfo);
@@ -749,10 +912,11 @@ module cmm045.a.viewmodel {
                     $("<col/>")
                         .attr("width", column.width)
                         .appendTo($colgroup)
-                        .addClass(column.key === 'appContent' ? 'appContent' : '');
+                        .addClass(column.key);
 
                     let $th = $("<th/>")
-                        .addClass("ui-widget-header");
+                        .addClass("ui-widget-header")
+						.addClass(column.key);
 
                     // batch check
                     if (column.checkbox !== undefined) {
@@ -874,7 +1038,7 @@ module cmm045.a.viewmodel {
 
                     if (column.checkbox !== undefined) {
                         var extraClass = "";
-                        if(moment(item.opAppStartDate).add(-(self.appListInfo.displaySet.appDateWarningDisp), "days") <= moment.utc()) {
+                        if(self.appListInfo.displaySet.appDateWarningDisp !== 0 && moment(item.opAppStartDate).add(-(self.appListInfo.displaySet.appDateWarningDisp), "days") <= moment.utc()) {
                             extraClass = "approvalCell";
                         } else {
                             extraClass = "";
@@ -970,7 +1134,7 @@ module cmm045.a.viewmodel {
             }
             if(key=='inputDate') {
                 var cl = "";
-                var time = moment(item[key]).format("M/D(ddd) h:mm");
+                var time = moment(item[key]).format("M/D(ddd) H:mm");
                 // var time = nts.uk.time.formatDate(new Date(item[key]), "m/dD hh:mm");
 
                 if(_.includes(time, ''))
@@ -988,20 +1152,33 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? 1175 : 1110;
             // let widthAuto = isHidden == false ? 1250 : 1185;
             // widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
-            widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
-
-            var contentWidth = 340;
-            character.restore('TableColumnWidth').then((obj) => {
-                if(obj !== undefined) {
-                    if(self.mode() === 0 && obj.appLstAtr === true) {
-                        contentWidth = obj.width;
+            widthAuto = window.innerWidth - 90 > 880 ? window.innerWidth - 129 : 845;
+            var detailsWidth = 55,
+				applicantNameWidth = 120,
+				appTypeWidth = 90,
+				prePostAtrWidth = 65,
+				appDateWidth = 155,
+				contentWidth = 340,
+				inputDateWidth = 120,
+				reflectionStatusWidth = 75,
+				opApprovalStatusInquiryWidth = 95;
+            character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
+                    if(obj !== undefined && self.mode() === 0 && obj.appLstAtr === true && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
+						detailsWidth = obj.width.details,
+						applicantNameWidth = obj.width.applicantName,
+						appTypeWidth = obj.width.appType,
+						prePostAtrWidth = obj.width.prePostAtr,
+						appDateWidth = obj.width.appDate,
+						contentWidth = obj.width.appContent,
+						inputDateWidth = obj.width.inputDate,
+						reflectionStatusWidth = obj.width.reflectionStatus,
+						opApprovalStatusInquiryWidth = obj.width.opApprovalStatusInquiry;
+                    } else {
+                        contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95 - 5;
                     }
-                } else {
-                    contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95;
-                }
             }).then(() => {
                 let columns = [
-                    { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
+                    { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
                         text: getText('CMM045_50'),
                         click: (e) => {
                             let targetAppId = $(e.target).closest("td").data("app-id");
@@ -1012,17 +1189,17 @@ module cmm045.a.viewmodel {
 							});
                         }
                     } },
-                    { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
-                    { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
-                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
-                    { headerText: getText('CMM045_54'), key: 'appDate', width: '155px'},
+                    { headerText: getText('CMM045_51'), key: 'applicantName', width: applicantNameWidth,  },
+                    { headerText: getText('CMM045_52'), key: 'appType', width: appTypeWidth},
+                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: prePostAtrWidth, hidden: false},
+                    { headerText: getText('CMM045_54'), key: 'appDate', width: appDateWidth},
                     { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
                     // { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
-                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
+                    { headerText: getText('CMM045_56'), key: 'inputDate', width: inputDateWidth},
+                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: reflectionStatusWidth, extraClassProperty: "appStatusName"},
+                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: opApprovalStatusInquiryWidth }
                 ];
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 305;
+                let heightAuto = window.innerHeight - 340 > 60 ? window.innerHeight - 340 : 60;
                 // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
@@ -1267,24 +1444,39 @@ module cmm045.a.viewmodel {
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
             // widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
-            widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
-
-            var contentWidth = 340;
-            character.restore('TableColumnWidth').then((obj) => {
-                if(obj !== undefined) {
-                    if(self.mode() === 1 && obj.appLstAtr === false) {
-                        contentWidth = obj.width;
+            widthAuto = window.innerWidth - 90 > 965 ? window.innerWidth - 134 : 920;
+            var checkWidth = 35,
+				detailsWidth = 55,
+				applicantNameWidth = 120,
+				appTypeWidth = 90,
+				prePostAtrWidth = 65,
+				appDateWidth = 157,
+				contentWidth = 340,
+				inputDateWidth = 120,
+				reflectionStatusWidth = 75,
+				opApprovalStatusInquiryWidth = 95;
+            character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
+                    if(obj !== undefined && self.mode() === 1 && obj.appLstAtr === false && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
+						checkWidth = obj.width.check,
+						detailsWidth = obj.width.details,
+						applicantNameWidth = obj.width.applicantName,
+						appTypeWidth = obj.width.appType,
+						prePostAtrWidth = obj.width.prePostAtr,
+						appDateWidth = obj.width.appDate,
+						contentWidth = obj.width.appContent,
+						inputDateWidth = obj.width.inputDate,
+						reflectionStatusWidth = obj.width.reflectionStatus,
+						opApprovalStatusInquiryWidth = obj.width.opApprovalStatusInquiry;
+                    } else {
+                        contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95 - 5;
                     }
-                } else {
-                    contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95;
-                }
             }).then(() => {
                 let columns = [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: checkWidth, checkbox: {
                         visible: item => item.checkAtr === true,
                         applyToProperty: "check"
                     } },
-                    { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
+                    { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
                         text: getText('CMM045_50'),
                         click: (e) => {
                             let targetAppId = $(e.target).closest("td").data("app-id");
@@ -1295,16 +1487,16 @@ module cmm045.a.viewmodel {
 							});
                         }
                     } },
-                    { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
-                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
+                    { headerText: getText('CMM045_51'), key: 'applicantName', width: applicantNameWidth },
+                    { headerText: getText('CMM045_52'), key: 'appType', width: appTypeWidth},
+                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: prePostAtrWidth, hidden: isHidden},
+                    { headerText: getText('CMM045_54'), key: 'appDate', width: appDateWidth},
                     { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
-                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
+                    { headerText: getText('CMM045_56'), key: 'inputDate', width: inputDateWidth},
+                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: reflectionStatusWidth, extraClassProperty: "appStatusName"},
+                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: opApprovalStatusInquiryWidth },
                 ]
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 272;
+                let heightAuto = window.innerHeight - 364 > 60 ? window.innerHeight - 364 : 60;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
@@ -2026,10 +2218,13 @@ module cmm045.a.viewmodel {
             lstApp.appLst = ko.toJS(self.items);
             lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
             lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
-
+			block.invisible();
             const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
-            service.print(command);
-            $('#daterangepicker .ntsEndDatePicker').focus();
+            service.print(command).always(() => { 
+				block.clear(); 
+				$('#daterangepicker .ntsEndDatePicker').focus();
+			});
+            
         }
 
         // getNtsFeatures(): Array<any> {
@@ -2112,7 +2307,9 @@ module cmm045.a.viewmodel {
 								comfirmData.push(obj);
 							}
 						});
-						return service.approverAfterConfirm(comfirmData);
+						return service.approverAfterConfirm(comfirmData).done((data)=>{
+							service.reflectListApp(Object.keys(data.successMap));
+						});
 					}
 				}).then((data: any) => {
 					if(data) {

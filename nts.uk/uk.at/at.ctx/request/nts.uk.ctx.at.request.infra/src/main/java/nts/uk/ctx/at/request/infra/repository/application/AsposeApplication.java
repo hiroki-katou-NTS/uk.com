@@ -5,6 +5,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptionalItem;
 import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.Cell;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintD
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
+import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
@@ -54,6 +56,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	@Inject
 	private AposeBusinessTrip aposeBusinessTrip;
+
+	@Inject
+	private AposeOptionalItem aposeOptionalItem;
+	
+	@Inject
+	private AsposeGoReturnDirectly asposeGoReturnDirectly;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -130,10 +138,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ABSENCE_APPLICATION:
 			break;
 		case WORK_CHANGE_APPLICATION:
-			asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B15");
-			remarkLabel = worksheet.getCells().get("B18");
-			reasonContent = worksheet.getCells().get("D15");
+			int deleteCntWC = asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B" + (15- deleteCntWC));
+			remarkLabel = worksheet.getCells().get("B" + (18- deleteCntWC));
+			reasonContent = worksheet.getCells().get("D" + (15- deleteCntWC));
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:
@@ -144,6 +152,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
+		    int deleteCnt = asposeGoReturnDirectly.printContentGoReturn(worksheet, printContentOfApp);
+		    reasonLabel = worksheet.getCells().get("B" + (13 - deleteCnt));
+            remarkLabel = worksheet.getCells().get("B" + (16 - deleteCnt));
+            reasonContent = worksheet.getCells().get("D" + (13 - deleteCnt));
+            printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			break;
@@ -171,6 +184,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case COMPLEMENT_LEAVE_APPLICATION:
 			break;
 		case OPTIONAL_ITEM_APPLICATION:
+			aposeOptionalItem.printOptionalItem(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B20");
+			remarkLabel = worksheet.getCells().get("B23");
+			reasonContent = worksheet.getCells().get("D20");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
+			aposeOptionalItem.deleteEmptyRow(worksheet);
 			break;
 		default:
 			break;
@@ -188,7 +207,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case BUSINESS_TRIP_APPLICATION:
 			return "application/KAF008_template.xlsx";
 		case GO_RETURN_DIRECTLY_APPLICATION:
-			return "";
+			return "application/KAF009_template.xlsx";
 		case HOLIDAY_WORK_APPLICATION:
 			return "";
 		case STAMP_APPLICATION:
@@ -200,7 +219,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case COMPLEMENT_LEAVE_APPLICATION:
 			return "";
 		case OPTIONAL_ITEM_APPLICATION:
-			return "";
+			return "application/KAF020_template.xlsx";
 		default:
 			return "testAppTemplate";
 		}

@@ -103,9 +103,11 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				command.getSettingNoneStatutoryHolidays().getWorkingCode());
 
 		// check pair public holiday
-		basicScheduleService.checkPairWorkTypeWorkTime(
-				command.getSettingPublicHolidays().getWorkTypeCode(),
-				command.getSettingPublicHolidays().getWorkingCode());
+		if (command.getSettingPublicHolidays() != null){
+			basicScheduleService.checkPairWorkTypeWorkTime(
+					command.getSettingPublicHolidays().getWorkTypeCode(),
+					command.getSettingPublicHolidays().getWorkingCode());
+		}
 
 		// find by id monthly pattern code
 		Optional<MonthlyPattern> opMonthlyPattern = this.monthlyPatternRepository

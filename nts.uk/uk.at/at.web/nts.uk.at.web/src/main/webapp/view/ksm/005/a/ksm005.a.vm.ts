@@ -49,7 +49,7 @@ module nts.uk.at.view.ksm005.a {
             reflectionSetting: ReflectionSetting;
             calendarOptions: KnockoutObservableArray<any>;
             cssRangerYM = ko.observable({});
-            currentMonthlyPattern: KnockoutObservable<number>;
+            reloadYM: boolean = true;
 
             workStyle: string;
 
@@ -70,8 +70,6 @@ module nts.uk.at.view.ksm005.a {
 
                 // now month setting kcp006
                 self.yearMonthPicked = ko.observable(0); //monthlyPatternCode
-                //self.yearMonthPicked.extend({ notify: 'always' });
-                self.currentMonthlyPattern = ko.observable(0); //keep before change
 
                 self.monthlyPatternModel().name.subscribe(() => {
                     const mvm = new ko.ViewModel();
@@ -80,15 +78,17 @@ module nts.uk.at.view.ksm005.a {
                 });
 
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
-                    blockUI.invisible();
                     if (self.isBuild) {
                         self.clearValiate();
                     }
 
                     if (monthlyPatternCode) {
-                        self.yearMonthPicked(self.getMonth());
-	                    self.currentMonthlyPattern(self.yearMonthPicked());
-		                self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
+                        self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
+                        if (self.yearMonthPicked() == self.getMonth() || !self.reloadYM){
+                            self.yearMonthPicked.valueHasMutated();
+                        } else{
+                            self.yearMonthPicked(self.getMonth());
+                        }
                         self.enableDelete(true);
 	                    self.enableUpdate(true);
                         $('#inp_monthlyPatternName').focus();
@@ -104,13 +104,15 @@ module nts.uk.at.view.ksm005.a {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
+
                     if($('#yMPicker').ntsError('hasError')){
                         return; 
                     }
-                    if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE
-	                    && self.currentMonthlyPattern() !== month ) {
+                    // Reset value, always reload yearMonthPicker
+                    self.reloadYM = true;
+
+                    if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
-	                    self.currentMonthlyPattern(month);
                     }
 
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
@@ -142,7 +144,7 @@ module nts.uk.at.view.ksm005.a {
                 self.workplaceId = ko.observable("0");
                 self.workplaceName = ko.observable("");
                 self.eventDisplay = ko.observable(true);
-                self.eventUpdatable = ko.observable(true);
+                self.eventUpdatable = ko.observable(false);
                 self.holidayDisplay = ko.observable(true);
                 self.cellButtonDisplay = ko.observable(false);
 
@@ -205,7 +207,8 @@ module nts.uk.at.view.ksm005.a {
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/b/index.xhtml").onClosed(function() {
                     let isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
                     if (isCancelSave != null && isCancelSave != undefined && !isCancelSave) {
-                        self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
+                        let endYearMonth: number = nts.uk.ui.windows.getShared("endYearMonth");
+                        self.setYearMonthPicked(Number(endYearMonth))
                     }
                     if(self.selectMonthlyPattern()) {
                         $('#inp_monthlyPatternName').focus();
@@ -236,6 +239,7 @@ module nts.uk.at.view.ksm005.a {
 			            self.enableDelete(false);
 			            self.resetData();
 		            }else {
+                        self.reloadYM = true;
 			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
                     dfd.resolve(self);
@@ -312,19 +316,36 @@ module nts.uk.at.view.ksm005.a {
                         if(self.isLastMonthlyPattern(selectedCode)){
                             self.lstMonthlyPattern(data);
                             self.monthlyPatternModel().updateEnable(false);
-                            self.selectMonthlyPattern(data[data.length-1].code);
+                            self.setSelectMonthlyPattern(data[data.length-1].code);
                             return;
                         }
                         let i = _.findIndex(self.lstMonthlyPattern(), item => item.code == selectedCode);
                         self.lstMonthlyPattern(data);
-                        self.selectMonthlyPattern(data[i].code);
+                        self.setSelectMonthlyPattern(data[i].code);
                         return;
                     }
                     self.lstMonthlyPattern(data);
-                    self.selectMonthlyPattern(selectedCode);
+                    self.setSelectMonthlyPattern(selectedCode);
                     self.monthlyPatternModel().updateEnable(false);
-                    self.detailMonthlyPattern(self.selectMonthlyPattern(), self.yearMonthPicked());
                 }); 
+            }
+
+            setSelectMonthlyPattern(value: string){
+                const self = this;
+                if (self.selectMonthlyPattern() == value){
+                    self.selectMonthlyPattern.valueHasMutated();
+                } else {
+                    self.selectMonthlyPattern(value);
+                }
+            }
+
+            setYearMonthPicked(value: number){
+                const self = this;
+                if (self.yearMonthPicked() == value){
+                    self.yearMonthPicked.valueHasMutated();
+                } else {
+                    self.yearMonthPicked(value);
+                }
             }
             
             /**
@@ -353,7 +374,7 @@ module nts.uk.at.view.ksm005.a {
 			            startDate: currentMonth.startDate,
 			            endDate: currentMonth.endDate
 		            };
-
+                blockUI.invisible();
 	            service.getMonthlyPattern( params ).done( (data) => {
                     let a = {};
                     a[Math.floor(self.yearMonthPicked() / 100)] = data.listMonthYear;
@@ -362,7 +383,6 @@ module nts.uk.at.view.ksm005.a {
                         service.findByIdMonthlyPattern(monthlyPatternCode)
 	                    .done(function(response) {
 	                        self.monthlyPatternModel().updateData( response );
-	                        self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE );
 	                        self.monthlyPatternModel().updateEnable( false );
 	                        self.enableDelete( true );
 	                        if ( data.monthlyPatternDtos.length > 0 ) {
@@ -396,6 +416,7 @@ module nts.uk.at.view.ksm005.a {
                     self.clearValiate();
                 }
                 let dfd = $.Deferred();
+                self.cssRangerYM({});
                 self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
                 self.yearMonthPicked(self.getMonth());
                 self.monthlyPatternModel().resetData();
@@ -502,7 +523,8 @@ module nts.uk.at.view.ksm005.a {
                                                     self.modeMonthlyPattern()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
+                        // reload pa
+                        self.reloadYM = false;
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     });
                 }).fail(function(error) {
@@ -526,6 +548,7 @@ module nts.uk.at.view.ksm005.a {
                     service.deleteMonthlyPattern(self.monthlyPatternModel().code()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
                             // reload page
+                             self.reloadYM = true;
                             self.reloadPage(self.monthlyPatternModel().code(), true);
                             nts.uk.ui.errors.clearAll()
                         });
@@ -555,17 +578,17 @@ module nts.uk.at.view.ksm005.a {
 		        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
 			        let childData = nts.uk.ui.windows.getShared('childData');
 
-			        service.getWorkStyle(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode).done(data => {
-                        if(data.typeColor == TypeColor.HOLIDAY  ) {
-                            self.workStyle = TypeColor.HOLIDAY_COLOR
-                        } else if(data.typeColor == TypeColor.ATTENDANCE) {
-                            self.workStyle = TypeColor.ATTENDANCE_COLOR
-                        } else {
-                            self.workStyle = TypeColor.HALF_DAY_WORK_COLOR
-                        }
-                    });
-
 			        if (childData) {
+                        service.getWorkStyle(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode).done(data => {
+                            if(data.typeColor == TypeColor.HOLIDAY  ) {
+                                self.workStyle = TypeColor.HOLIDAY_COLOR
+                            } else if(data.typeColor == TypeColor.ATTENDANCE) {
+                                self.workStyle = TypeColor.ATTENDANCE_COLOR
+                            } else {
+                                self.workStyle = TypeColor.HALF_DAY_WORK_COLOR
+                            }
+                        });
+
 				        self.typeOfWorkCode(childData.selectedWorkTypeCode);
 				        self.typeOfWorkName(childData.selectedWorkTypeName);
 				        if (childData.selectedWorkTypeCode) {
@@ -607,7 +630,8 @@ module nts.uk.at.view.ksm005.a {
 			        let dto = nts.uk.ui.windows.getShared('returnedData');
 
 			        if(dto) {
-                        self.reloadPage(self.selectMonthlyPattern(), false);
+                        let endYearMonth: number = nts.uk.ui.windows.getShared("endYearMonth");
+                        self.setYearMonthPicked(Number(endYearMonth))
                     }
 
 			        if(self.selectMonthlyPattern()) {
@@ -624,28 +648,21 @@ module nts.uk.at.view.ksm005.a {
 
             private clearWorkMothly() {
                 let self = this;
+                if (self.isBuild)  self.clearValiate();
 
-                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-
-                    if (self.isBuild)  self.clearValiate();
-
-                    let dataUpdate: WorkMonthlySettingDto[] = [];
-                    for (let item of self.lstWorkMonthlySetting()) {
-                        item.workTypeCode ='';
-                        item.workTypeName = '';
-                        item.workingCode ='';
-                        item.workingName = '';
-                        item.typeColor = TypeColor.HOLIDAY;
-                        dataUpdate.push(item);
-                    }
-                    self.lstWorkMonthlySetting(dataUpdate);
-                    self.updateWorkMothlySetting(dataUpdate);
-                    //self.enableDelete(false);
-                    //self.enableUpdate(false);
-
-                }).ifNo(function() {
-                    return;
-                })
+                let dataUpdate: WorkMonthlySettingDto[] = [];
+                for (let item of self.lstWorkMonthlySetting()) {
+                    item.workTypeCode ='';
+                    item.workTypeName = '';
+                    item.workingCode ='';
+                    item.workingName = '';
+                    item.typeColor = TypeColor.HOLIDAY;
+                    dataUpdate.push(item);
+                }
+                self.lstWorkMonthlySetting(dataUpdate);
+                self.updateWorkMothlySetting(dataUpdate);
+                //self.enableDelete(false);
+                //self.enableUpdate(false);
             }
 
 	        /*

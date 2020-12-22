@@ -51,12 +51,19 @@ module nts.uk.at.view.ksu001.q {
 				self.selectItemCode.subscribe(function(codeEB) {
 					if (codeEB) {
 						self.budgetData.itemCode = codeEB;
-						self.listperiodsTemp = [];
+						self.listperiodsTemp = [];						
 						self.arrayDate.forEach((x) => {
-							self.listperiodsTemp.push(new ItemModel(x, ''));
-						});
+							self.listperiodsTemp.push(new ItemModel(x, ''));							
+						});		
+						let size = self.arrayDate.length ;
+						while (size < 10){
+							self.listperiodsTemp.push(new ItemModel('', ''));
+							size++;
+						}			
 						self.listperiods.removeAll();
-						self.loadFindBudgetDaily(self.budgetData).done(() => {
+						blockUI.invisible();
+						self.loadFindBudgetDaily(self.budgetData).done(() => {		
+							nts.uk.ui.errors.clearAll();			
 							self.listperiods(self.listperiodsTemp);
 							var externalBudget = self.externalBudgetModel().externalBudgetItems().filter(x => { return x.code === codeEB })[0].attribute;
 							switch (externalBudget) {
@@ -89,20 +96,26 @@ module nts.uk.at.view.ksu001.q {
 									self.check3(true);
 									break;
 							};
-							$("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
+							
+							// $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
 							$("table tbody tr td:nth-child(1):contains(土)").css("background-color", "#8bd8ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("background-color", "#fabf8f");
 							$("table tbody tr td:nth-child(1)").css("color", "#404040");
 							$("table tbody tr td:nth-child(1):contains(土)").css("color", "#0000ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("color", "#ff0000");
+						}).always(function(){
+							blockUI.clear();
+							nts.uk.ui.errors.clearAll();
 						});
 					}
 				});
 
-				self.getDaysArray = function(start, end) {
-					for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+				self.getDaysArray = function(start, end) {					
+					let arr = [];
+					// let datePlus = new Date(end);		
+					for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
 						arr.push(new Date(dt));
-					}
+					}					
 					return arr;
 				};
 
@@ -125,6 +138,7 @@ module nts.uk.at.view.ksu001.q {
 				self.currencyeditor = {
 					option: new nts.uk.ui.option.CurrencyEditorOption({
 						grouplength: 3,
+						currencyposition:"right",	
 						currencyformat: "JPY"
 					}),
 				};
@@ -133,9 +147,9 @@ module nts.uk.at.view.ksu001.q {
 			// External budget actual amount
 			private loadFindBudgetDaily(data: any): JQueryPromise<void> {
 				let self = this;
-				var dfd = $.Deferred();
+				var dfd = $.Deferred();							
 				service.findBudgetDaily(data).done(function(items: any) {
-					if (items) {
+					if (items) {						
 						self.listBudgetDaily = items;
 						items.forEach(item => {
 							// self.listperiods.push(item);
@@ -148,25 +162,30 @@ module nts.uk.at.view.ksu001.q {
 					}
 
 					dfd.resolve();
+				}).always(function(){
+					self.clearError();
 				});
 				return dfd.promise();
 			}
 
 			public startPage(): JQueryPromise<void> {
 				let self = this;
-				var dfd = $.Deferred();
-
+				var dfd = $.Deferred();		
+				blockUI.invisible();		
 				service.findExtBudget(self.targetData).done(function(ExtBudget: any) {
 					if (ExtBudget.externalBudgetItems.length == 0) {
-						nts.uk.ui.dialog.error({ messageId: "Msg_1643" });
-						self.closeDialog();
+						nts.uk.ui.dialog.error({ messageId: "Msg_1917" }).then(function(){
+							self.closeDialog();
+						});						
 					} else {
 						self.externalBudgetModel().updateData(ExtBudget);
 						self.organizationName(ExtBudget.orgName);
 						self.selectItemCode(self.externalBudgetModel().externalBudgetItems()[0].code);
 					}
+					blockUI.clear();
 					dfd.resolve();
 				});
+				blockUI.clear();
 				return dfd.promise();
 			}
 
@@ -177,30 +196,62 @@ module nts.uk.at.view.ksu001.q {
 			}
 
 			public register() {
-				let self = this;
+				let self = this;			
 				let command: any = {};
+				let requestBudget = {};
+				if(self.validateAll()){
+					return;
+				}	
 				command.unit = self.targetData.unit;
 				command.id = self.targetData.id;
 				command.itemCode = self.selectItemCode();
-				var dateValues = [];
+				var dateValues = [];				
 				self.listperiods().forEach((x) => {
-					dateValues.push({
-						date: x.date().slice(0, 10),
-						value: x.value()
-					});
+					if(x.date() != ''){
+						dateValues.push({
+							date: x.date().slice(0, 10),
+							value: x.value()
+						});
+					}					
 				});
-				command.dateAndValues = dateValues;
+				command.dateAndValues = dateValues;				
 				command.type = self.labelQ32();
 
+				requestBudget.id = command.id;
+				requestBudget.unit = command.unit;
+				requestBudget.itemCode = command.itemCode;
+				requestBudget.startDate = dateValues[0].date;
+				requestBudget.endDate = dateValues[dateValues.length -1].date;
 				service.register(command).done(() => {
 					blockUI.invisible();
-					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-					self.EndStatus = 'update';
+					nts.uk.ui.dialog.info({ messageId: "Msg_15" });	
+					self.loadFindBudgetDaily(requestBudget);
+					self.EndStatus = 'update';					
+					blockUI.clear();					
+				}).always (function() {
+					self.clearError();
 					blockUI.clear();
 				});
-
 			}
 
+			private validateAll(): boolean {
+				$('#extBudgetTime').ntsEditor('validate');
+				$('#extBudgetMoney').ntsEditor('validate');
+				$('#extBudgetNumberPerson').ntsEditor('validate');
+				$('#extBudgetNumericalVal').ntsEditor('validate');
+                if (nts.uk.ui.errors.hasError()) {                    
+                    return true;
+                }
+                return false;
+            }
+
+			private clearError(): void {
+                $('#extBudgetTime').ntsError('clear');
+                $('#extBudgetMoney').ntsError('clear');
+				$('#extBudgetNumberPerson').ntsError('clear');
+				$('#extBudgetNumericalVal').ntsError('clear');
+				$(".nts-input").ntsError("clear");
+            }
 		}
 
 		export class ExternalBudgetModel {

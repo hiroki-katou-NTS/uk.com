@@ -27,7 +27,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
@@ -87,10 +86,6 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
-	
-	@Inject
-	private CommonAlgorithmMobile algorithmMobile;
-	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	
@@ -120,7 +115,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				this.initWorkTypeWorkTime(companyID, employeeID, date, workTypeLst, workTimeLst);
 		// 勤務種類・就業時間帯を変更する時
 		String workTypeCD = workTypeWorkTimeSelect.getWorkType().getWorkTypeCode().v();
-		String workTimeCD = workTypeWorkTimeSelect.getWorkTime() == null ? null : workTypeWorkTimeSelect.getWorkTime().getWorktimeCode().v();
+		String workTimeCD = !workTypeWorkTimeSelect.getWorkTime().isPresent() ? null : workTypeWorkTimeSelect.getWorkTime().get().getWorktimeCode().v();
 		ChangeWkTypeTimeOutput changeWkTypeTimeOutput =
 				this.changeWorkTypeWorkTime(companyID, workTypeCD, Optional.ofNullable(workTimeCD), appWorkChangeSet);
 		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットしてを返す
@@ -130,7 +125,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		result.setSetupType(Optional.of(changeWkTypeTimeOutput.getSetupType()));
 		result.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
 		result.setWorkTypeCD(Optional.of(workTypeCD));
-		result.setWorkTimeCD(Optional.of(workTimeCD));
+		result.setWorkTimeCD(Optional.ofNullable(workTimeCD));
 		result.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
 		return result;
 	}
@@ -172,7 +167,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		if(!personalLablorCodition.isPresent()) {
 			// OUTPUT「選択する勤務種類」と「選択する就業時間帯」をセットする
 			result.setWorkType(workTypeLst.get(0));
-			result.setWorkTime(workTimeLst.get(0));
+			result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
 			// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 			return result;
 		}
@@ -192,7 +187,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			if(checkWorkingInfoResult.isWkTypeError()) {
 				// OUTPUT「選択する勤務種類」と「選択する就業時間帯」をセットする
 				result.setWorkType(workTypeLst.get(0));
-				result.setWorkTime(workTimeLst.get(0));
+				result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
 				// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 				return result;
 			}
@@ -205,7 +200,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		List<String> workTimeCDLst = workTimeLst.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		if(!opConditionWktimeCD.isPresent() && !workTimeCDLst.contains(opConditionWktimeCD.get().v())) {
 			// OUTPUT「選択する就業時間帯」をセットする
-			result.setWorkTime(workTimeLst.get(0));
+			result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
 			// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 			return result;
 		}
@@ -213,13 +208,13 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		String conditionWktimeCD = opConditionWktimeCD.get().v();
 		WorkTimeSetting selectedWorkTime = workTimeLst.stream().filter(x -> x.getWorktimeCode().v().equals(conditionWktimeCD))
 				.findFirst().orElse(null);
-		result.setWorkTime(selectedWorkTime);
+		result.setWorkTime(Optional.ofNullable(selectedWorkTime));
 		// 12.マスタ勤務種類、就業時間帯データをチェック
 		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm
 				.checkWorkingInfo(companyID, null, conditionWktimeCD);
 		if(checkWorkingInfoResult.isWkTimeError()) {
 			// OUTPUT「選択する就業時間帯」をセットする
-			result.setWorkTime(workTimeLst.get(0));
+			result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
 		}
 		// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 		return result;
@@ -518,9 +513,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 勤務種類・就業時間帯を変更する時
 		Optional<String> workTimeOp = Optional.empty();
 		if (woSelect != null) {
-			if (woSelect.getWorkTime() != null) {
-				if (woSelect.getWorkTime().getWorktimeCode() != null) {
-					workTimeOp = Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v());
+			if (woSelect.getWorkTime().isPresent()) {
+				if (woSelect.getWorkTime().get().getWorktimeCode() != null) {
+					workTimeOp = Optional.ofNullable(woSelect.getWorkTime().get().getWorktimeCode().v());
 				}
 				
 			}

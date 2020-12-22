@@ -121,3 +121,7 @@ span {
 body {
 	overflow-y: hidden; /* Hide scrollbars */
 }
+
+.ntsControl.symbol:after {
+    top: 2px !important;
+}

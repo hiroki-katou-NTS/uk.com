@@ -1,13 +1,29 @@
 package nts.uk.ctx.at.request.infra.repository.application.businesstrip;
 
-import lombok.val;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
@@ -19,12 +35,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-
-import javax.ejb.Stateless;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaBusinessTripRepository extends JpaRepository implements BusinessTripRepository {
@@ -64,19 +74,26 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         this.commandProxy().insertAll(entities);
     }
 
+    private static String FIND_BY_APP_ID_AND_DATE = "select f from KrqdtAppTrip f where f.krqdtAppTripPK.companyID = :cid and f.krqdtAppTripPK.appID = :appID and f.krqdtAppTripPK.targetDate in :dates";
+
     @Override
     public void update(BusinessTrip domain) {
-        List<KrqdtAppTrip> entities = toEntity(domain);
-        entities.stream().forEach(i ->{
-            val item = this.queryProxy().find(i.getKrqdtAppTripPK(), KrqdtAppTrip.class).get();
-            item.setWorkTypeCD(i.getWorkTypeCD());
-            item.setWorkTimeCD(i.getWorkTimeCD());
-            item.setWorkTimeStart(i.getWorkTimeStart());
-            item.setWorkTimeEnd(i.getWorkTimeEnd());
-            item.setStartTime(i.getStartTime());
-            item.setArrivalTime(i.getArrivalTime());
-            this.commandProxy().update(item);
+        String cid = AppContexts.user().companyId();
+        Map<GeneralDate, KrqdtAppTrip> mapEntity = this.queryProxy().query(FIND_BY_APP_ID_AND_DATE, KrqdtAppTrip.class)
+                .setParameter("cid", cid)
+                .setParameter("appID", domain.getAppID())
+                .setParameter("dates", domain.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()))
+                .getList().stream().collect(Collectors.toMap(i -> i.getAppDate(), i-> i));
+        domain.getInfos().forEach(i -> {
+            KrqdtAppTrip currentContent = mapEntity.get(i.getDate());
+            currentContent.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
+            currentContent.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
+            currentContent.setWorkTimeStart(i.getWorkingHours().map(x -> x.get(0).getTimeZone().getStartTime().v()).orElse(null));
+            currentContent.setWorkTimeEnd(i.getWorkingHours().map(x -> x.get(0).getTimeZone().getEndTime().v()).orElse(null));
+            currentContent.setStartTime(domain.getDepartureTime().map(PrimitiveValueBase::v).orElse(null));
+            currentContent.setArrivalTime(domain.getReturnTime().map(x -> x.v()).orElse(null));
         });
+        this.commandProxy().updateAll(mapEntity.values());
     }
 
     @Override
@@ -158,7 +175,7 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         }
         domain.getInfos().stream().forEach(i -> {
             KrqdtAppTrip entity = new KrqdtAppTrip();
-            entity.setKrqdtAppTripPK(new KrqdtAppTripPK(cid, domain.getAppID(), i.getDate().toString()));
+            entity.setKrqdtAppTripPK(new KrqdtAppTripPK(cid, domain.getAppID(), i.getDate()));
             entity.setContractCD(contractCd);
             entity.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
             entity.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
@@ -171,4 +188,12 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 
         return entities;
     }
+
+	@Override
+	public Optional<BusinessTrip> findByAppId(String companyId, String appId, Application app) {
+		return this.findByAppId(companyId, appId).map(c ->{
+			c.setReflectionStatus(app.getReflectionStatus());
+			return c;
+		});
+	}
 }

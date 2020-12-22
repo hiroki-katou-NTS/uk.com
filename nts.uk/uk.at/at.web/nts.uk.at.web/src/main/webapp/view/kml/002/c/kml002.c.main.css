@@ -1,0 +1,57 @@
+.kml-002-c {
+}
+.functions-area {
+  overflow: inherit !important;
+}
+.functions-area .ntsFunctionPanel {
+  margin-right: 10px;
+  position: relative;
+}
+
+.functions-area .ntsFunctionPanel .function-icon {
+  display: flex;
+  align-items: center;
+}
+.functions-area .ntsFunctionPanel .function-header,
+.functions-area .ntsFunctionPanel .function-item-container {
+  padding-left: 10px;
+  display: flex;
+  width: 190px !important;
+  align-items: center;
+}
+
+.kml-002-c .content-table {
+  border-top: solid 1px #B1B1B1;
+  margin-top: 10px;
+  padding-top: 10px;
+  max-width: 975px;
+}
+
+#master-wrapper div#contents-area.kml-002-c {
+  padding-left: 30px;
+}
+
+.kml-002-c .content-table .text-center {
+  text-align: center;
+}
+.kml-002-c .content-table tbody td:first-child {
+  background-color: #edfac2;
+}
+.kml-002-c .content-table tbody td:nth-child(4) {
+  white-space: break-spaces;
+}
+#fixed-table {
+  width: 100%;
+}
+#fixed-table tbody tr td:nth-child(2) {
+  text-align: center;
+}
+#fixed-table tbody tr td:nth-child(3) button {
+  width: 100%;
+  margin-top: 2px;
+  margin-bottom: 5px;
+}
+#fixed-table tbody tr td:nth-child(2) button {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}

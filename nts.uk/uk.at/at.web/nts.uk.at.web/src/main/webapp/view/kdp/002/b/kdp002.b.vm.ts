@@ -40,11 +40,6 @@ module nts.uk.at.view.kdp002.b {
 					{ headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_46") + "</div>", key: 'stampHowAndTime', width: 90 },
 					{ headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_47") + "</div>", key: 'timeStampType', width: 180 }
 				]);
-				self.currentCode.subscribe(newValue => {
-					if (newValue != null && newValue != "") {
-						self.getDataById(newValue);
-					}
-				});
 			}
 
             /**
@@ -114,7 +109,7 @@ module nts.uk.at.view.kdp002.b {
 								sr.stampTime
 							));
 						});
-						self.currentCode(self.items()[0].id);
+						self.getDataById(self.items()[0].id);
 						dfd.resolve();
 					} else {
 						nts.uk.ui.dialog.alertError("Stamp Data Not Found!!!").then(() => {
@@ -131,19 +126,17 @@ module nts.uk.at.view.kdp002.b {
 				let value = sr.buttonValueType;
 				if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
 
-					sr.timeStampType = `<div class='full-width' style='text-align: left'>` + sr.stampArtName + '</div>';
-					return;
+					return `<div class='full-width' style='text-align: left'>` + sr.stampArtName + '</div>';
 
 				}
 
 				if (ButtonType.WORKING_OUT == value) {
 
-					sr.timeStampType = `<div class='full-width' style='text-align: right'>` + sr.stampArtName + '</div>';
-					return;
+					return `<div class='full-width' style='text-align: right'>` + sr.stampArtName + '</div>';
 
 				}
 
-				sr.timeStampType = sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
+				return sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
 
 			}
 

@@ -39,13 +39,15 @@ public class LogDisplaySettingCommand {
 	/** the list of log setting output item */
 	private List<LogSetOutputItemCommand> logSetOutputItems;
 	
-	public LogDisplaySetting toDomain(String logSetId, String cid) {
+	public LogDisplaySetting toDomain (String logSetId, String cid) {
 		return new LogDisplaySetting(logSetId, cid
 				, new LogSettingCode(code)
 				, new LogSettingName(name)
 				, DataTypeEnum.valueOf(dataType)
 				, RecordTypeEnum.valueOf(recordType)
 				, SystemTypeEnum.valueOf(systemType)
-				,logSetOutputItems.stream().map(item -> item.toDomain(logSetId)).collect(Collectors.toList()));			
+				, logSetOutputItems.stream()
+					.map(item -> item.toDomain(logSetId,cid))
+					.collect(Collectors.toList()));
 	}
 }

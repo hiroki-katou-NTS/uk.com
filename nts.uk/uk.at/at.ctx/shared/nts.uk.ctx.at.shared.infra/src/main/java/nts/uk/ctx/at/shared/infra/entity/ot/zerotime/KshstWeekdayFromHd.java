@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.WeekdayHoliday;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

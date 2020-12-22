@@ -1,18 +1,14 @@
 package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 
 /**
- * The Enum DayCountCategory.
+ * 半日勤務カウント区分
  */
-// 半日勤務カウント区分
-
 public enum CountAtr {
 
-	/** The halfday. */
-	// 0.5回
+	/** 0.5回 */
 	HALFDAY(0, "Enum_CountAtr_Halfday", "0.5回"),
 
-	/** The oneday. */
-	// 1回
+	/** 1回 */
 	ONEDAY(1, "Enum_CountAtr_Oneday", "1回");
 
 	/** The value. */

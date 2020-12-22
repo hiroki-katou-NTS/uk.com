@@ -8,6 +8,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -35,11 +37,17 @@ public class SspmtTargetCategory extends UkJpaEntity implements Serializable
     }
 
     public TargetCategory toDomain() {
-        return new TargetCategory(targetCategoryPk.storeProcessingId, targetCategoryPk.categoryId);
+        return new TargetCategory(targetCategoryPk.storeProcessingId, 
+        						targetCategoryPk.categoryId,
+        						EnumAdaptor.valueOf(targetCategoryPk.systemType, SystemType.class)
+        						);
     }
     
     public static SspmtTargetCategory toEntity(TargetCategory domain) {
-        return new SspmtTargetCategory(new SspmtTargetCategoryPk(domain.getStoreProcessingId(), domain.getCategoryId()));
+        return new SspmtTargetCategory(new SspmtTargetCategoryPk(
+        		domain.getStoreProcessingId(), 
+        		domain.getCategoryId(),
+        		domain.getSystemType().value));
     }
 
 }

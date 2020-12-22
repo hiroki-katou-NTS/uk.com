@@ -28,7 +28,7 @@ public class ReflectionImageTest {
 
     @Test
     public void addByWeeklyWorkingTest_1() {
-        WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+        WorkInformation workInformation = new WorkInformation( "workTypeCode","workTimeCode");
         ReflectionImage target = ReflectionImage.create();
         target.addByWeeklyWorking(GeneralDate.today(), workInformation);
 
@@ -59,7 +59,7 @@ public class ReflectionImageTest {
     @Test
     public void addByWeeklyWorkingTest_3() {
         WorkInformation workHolidayWorkInfor = new WorkInformation("workholiday-workTypeCode", "workholiday-workTimeCode");
-        WorkInformation workInformation = new WorkInformation("weekly-workTimeCode", "weekly-workTypeCode");
+        WorkInformation workInformation = new WorkInformation("weekly-workTypeCode","weekly-workTimeCode");
 
         ReflectionImage target = ReflectionImage.create();
         target.addHolidays(GeneralDate.today(), workHolidayWorkInfor);
@@ -75,7 +75,7 @@ public class ReflectionImageTest {
 
     @Test
     public void addHolidaysTest_1() {
-        WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+        WorkInformation workInformation = new WorkInformation("workTypeCode","workTimeCode");
         ReflectionImage target = ReflectionImage.create();
         target.addHolidays(GeneralDate.today(), workInformation);
 

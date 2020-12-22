@@ -33,7 +33,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	
 	private String GET_BY_SID_DATE = GET_BYSID + " AND a.dayOff < :dayOff";
 
-	private static final String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
+	private static final String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays <> 0");
 
 	private static final String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0 OR "
 			+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
@@ -55,6 +55,12 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			+ " AND a.sID = :employeeId"
 			+ " AND (a.dayOff < :dayOff OR a.dayOff is null)"
 			+ " AND (a.remainDays > 0 OR a.remainTimes > 0)";
+	private static final String GET_ALL_DATA = "SELECT a FROM KrcmtComDayoffMaData a";
+	
+	private static final String GET_BY_LST_DAYOFF_DATE = "SELECT a FROM KrcmtComDayoffMaData a"
+			+ " WHERE a.cID = :cId"
+			+ " AND a.dayOff IN :lstDate";
+	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_SID_DATE, KrcmtComDayoffMaData.class)
@@ -387,7 +393,35 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+		
+	
 	}
+	
+	@Override
+	public List<CompensatoryDayOffManaData> getAllData() {
+		List<KrcmtComDayoffMaData> allData = this.queryProxy().query(GET_ALL_DATA, KrcmtComDayoffMaData.class)
+				.getList();
+
+		return allData.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Get data by list dayoff date
+	 * @param cid
+	 * @param lstDate
+	 * @return
+	 */
+	@Override
+	public List<CompensatoryDayOffManaData> getByLstDate(String cid, List<GeneralDate> lstDate) {
+		return this.queryProxy().query(GET_BY_LST_DAYOFF_DATE, KrcmtComDayoffMaData.class)
+				.setParameter("cId", cid)
+				.setParameter("lstDate", lstDate)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository#getAllBySidWithReDay(java.lang.String, java.util.List)

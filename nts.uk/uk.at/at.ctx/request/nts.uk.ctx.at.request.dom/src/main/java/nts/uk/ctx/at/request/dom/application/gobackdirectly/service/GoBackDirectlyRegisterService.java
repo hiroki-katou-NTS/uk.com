@@ -101,7 +101,14 @@ public interface GoBackDirectlyRegisterService {
 	 */
 	public ProcessResult register(GoBackDirectly goBackDirectly, Application application, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput); 
 	
-	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF009_直行直帰の申請.A:直行直帰の申請（新規）.アルゴリズム.直行直帰登録
+	 * @param companyId
+	 * @param application
+	 * @param goBackDirectly
+	 * @param inforGoBackCommonDirectOutput
+	 * @return
+	 */
 	public ProcessResult update(String companyId, Application application, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput); 
 	
 	

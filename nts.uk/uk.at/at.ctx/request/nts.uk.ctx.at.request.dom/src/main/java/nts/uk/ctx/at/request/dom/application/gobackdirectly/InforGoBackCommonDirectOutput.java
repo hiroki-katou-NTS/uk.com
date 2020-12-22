@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Data
 @AllArgsConstructor
@@ -27,4 +29,6 @@ public class InforGoBackCommonDirectOutput {
 	private List<WorkType> lstWorkType;
 //	直行直帰申請
 	private Optional<GoBackDirectly> goBackDirectly = Optional.ofNullable(null);
+//	時間帯(使用区分付き)
+	private List<TimezoneUse> timezones = Collections.emptyList();
 }

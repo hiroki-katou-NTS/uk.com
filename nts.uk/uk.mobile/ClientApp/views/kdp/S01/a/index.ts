@@ -153,7 +153,7 @@ export class KdpS01AComponent extends Vue {
 
             let stampToSuppress: model.IStampToSuppress = result.data;
 
-            _.forEach(vm.setting.buttons, function(button) {
+            _.forEach(vm.setting.buttons, function (button) {
 
                 vm.setBtnColor(button, stampToSuppress);
 
@@ -183,7 +183,8 @@ export class KdpS01AComponent extends Vue {
                         backGroundColor: '',
                         displayBackGroundColor: ''
                     },
-                    usrArt: 1
+                    usrArt: 1,
+                    buttonType: null
                 };
 
 
@@ -222,26 +223,24 @@ export class KdpS01AComponent extends Vue {
                         vm.$mask('hide');
                         vm.getStampToSuppress();
 
-                        switch (button.buttonValueType) {
-                            case 1:
-                            case 3:
-                            case 4:
-                                vm.openDialogB(command.stampButton);
-                                break;
+                        if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
 
-                            case 2: {
-                                if (vm.setting.usrAtrValue === 1) {
-                                    vm.openDialogC(command.stampButton);
-                                } else {
+                            vm.openDialogB(command.stampButton);
+                        } else {
+                            let changeClockArt = button.buttonType.stampType.changeClockArt;
+                            switch (changeClockArt) {
+                                case 1:
+                                    if (vm.setting.usrAtrValue === 1) {
+                                        vm.openDialogC(command.stampButton);
+                                    } else {
+                                        vm.openDialogB(command.stampButton);
+                                    }
+                                    break;
+                                default:
                                     vm.openDialogB(command.stampButton);
-                                }
-                                break;
+                                    break;
                             }
-                            default:
-                                vm.openDialogB(command.stampButton);
-                                break;
                         }
-
                     }).catch((res: any) => {
                         vm.showError(res);
                     });

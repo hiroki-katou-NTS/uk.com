@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessApprovalOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 
 /**
@@ -21,7 +21,7 @@ public interface DetailAfterApproval {
 	 * @param memo 承認コメント
 	 * @return
 	 */
-	public ProcessResult doApproval(String companyID, String appID, Application application, 
+	public ProcessApprovalOutput doApproval(String companyID, String appID, Application application, 
 			AppDispInfoStartupOutput appDispInfoStartupOutput, String memo);
 	
 }

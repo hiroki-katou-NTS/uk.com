@@ -21,8 +21,8 @@ module nts.uk.at.view.kaf000.a.component7.viewmodel {
             vm.dispCheckBox = ko.observable(true);
 
             vm.appDispInfoStartupOutput.subscribe(value => {
-                vm.dispCheckBox(!value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister &&
-                                    value.appDispInfoNoDateOutput.mailServerSet);
+				let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());
+                vm.dispCheckBox(!appTypeSetting.sendMailWhenRegister && value.appDispInfoNoDateOutput.mailServerSet);
                 if(vm.dispCheckBox()) {
                     vm.checkBoxValue(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr==1);
                 } else {

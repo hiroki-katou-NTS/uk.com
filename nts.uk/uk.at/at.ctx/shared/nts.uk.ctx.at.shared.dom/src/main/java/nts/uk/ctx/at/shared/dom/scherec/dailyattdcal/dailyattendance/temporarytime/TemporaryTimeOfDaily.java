@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime;
 
+import java.util.ArrayList;
 //import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class TemporaryTimeOfDaily {
 
 	public TemporaryTimeOfDaily() {
 		super();
+		this.temporaryTime = new ArrayList<>();
 	}
 	
 	/**

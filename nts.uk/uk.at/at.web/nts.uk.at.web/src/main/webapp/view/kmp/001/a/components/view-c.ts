@@ -2,8 +2,8 @@
 
 module nts.uk.at.view.kmp001.c {
 	const template = `
-		<div class="sidebar-content-header">
-			<span class="title" data-bind= "text: $i18n('KMP001_3')"></span>
+		<div id="functions-area">
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button class="proceed" data-bind= "text: $i18n('KMP001_5'), click: addStampCard"></button>
 		</div>
 		<div class="view-kmp">
@@ -56,7 +56,7 @@ module nts.uk.at.view.kmp001.c {
 					<div>
 						<table id="card-list" 
 							data-bind="ntsGridList: {
-								height: 300,
+								height: 310,
 								dataSource: items,
 								optionsValue: 'stampNumber',
 								columns: [

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service;
 
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 /**
@@ -19,5 +18,5 @@ public interface ApprovalMailSendCheck {
 	 * @param allApprovalFlg
 	 * @return
 	 */
-	public ProcessResult sendMail(AppTypeSetting appTypeSetting, Application application, Boolean allApprovalFlg);
+	public String sendMail(AppTypeSetting appTypeSetting, Application application, Boolean allApprovalFlg);
 }

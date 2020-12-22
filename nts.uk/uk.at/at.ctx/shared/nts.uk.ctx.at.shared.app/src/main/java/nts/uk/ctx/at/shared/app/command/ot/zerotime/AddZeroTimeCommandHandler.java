@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
@@ -19,6 +18,7 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 
 /**
  * @author laitv

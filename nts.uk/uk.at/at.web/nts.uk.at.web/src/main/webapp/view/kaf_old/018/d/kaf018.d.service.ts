@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.d.service {
+module nts.uk.at.view.kaf018_old.d.service {
     var paths: any = {
         initApprovalSttRequestContentDis: "at/request/application/approvalstatus/initApprovalSttRequestContentDis"
     }

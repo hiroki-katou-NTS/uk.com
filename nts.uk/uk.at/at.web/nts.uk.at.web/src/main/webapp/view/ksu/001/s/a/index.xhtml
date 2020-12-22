@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width:650, height: 370 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.sa.main.css" />
+			<com:scriptfile path="ksu001.sa.service.js" />
+			<com:scriptfile path="ksu001.sa.vm.js" />
+			<com:scriptfile path="ksu001.sa.start.js" />
+
+		</ui:define>
+		<ui:define name="content">
+
+			<div id="content-area">
+				<div class="text">
+					<span>#{i18n.getText('KSU001_4041')}</span>
+				</div>
+
+				<div id="right-content">
+					<div id="swap-list"
+						data-bind="ntsSwapList: {
+								showSearchBox: { showLeft : false, showRight: false},
+										height: 180,
+										width : 440,
+										dataSource: listEmployeeSwap,
+										primaryKey: 'code',
+										leftColumns: columnsLeftSwap,
+										rightColumns: columnsRightSwap,
+										value: selectedEmployeeSwap,
+										searchMode: 'highlight',
+										multiple: true,
+										searchCriterion:['priority','name'],
+										enableRowNumbering: false ,
+										showNumbering: false,
+										showSort:{ showLeft : false, showRight: false}
+							}"></div>
+
+
+					<!-- Updown Button -->
+					<div id="up-down"
+						data-bind="ntsUpDown: {
+						targetSource: selectedEmployeeSwap,
+						primaryKey: 'code',
+						comId: '#swap-list',
+						type: 'swap',
+						swapTarget: 'right'
+						}"></div>
+					<div class="btn-large">
+						<button data-bind = "click: openDialog" >#{i18n.getText('KSU001_4045')}</button>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind = " click : save" id="save" tabindex="4">#{i18n.getText('KSU001_4046')}</button>
+				<button id="cancel" data-bind = " click : cancel_Dialog" tabindex="5">#{i18n.getText('KDL010_4')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

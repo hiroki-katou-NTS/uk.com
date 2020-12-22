@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.shared.app.command.remainingnumber.subhdmana;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
@@ -67,4 +69,5 @@ public class AddSubHdManagementCommand {
 	private Double dayRemaining;
 
 	private int closureId;
+	private List<String> lstLinkingDate;
 }

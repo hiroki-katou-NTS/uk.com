@@ -29,6 +29,7 @@
 		<jar-file>lib/nts.uk.screen.at.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.shr.com.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.schedulealarm.infra.jar</jar-file>
 		
 		
 		<class>nts.uk.shr.infra.i18n.entity.CompanyResource</class>

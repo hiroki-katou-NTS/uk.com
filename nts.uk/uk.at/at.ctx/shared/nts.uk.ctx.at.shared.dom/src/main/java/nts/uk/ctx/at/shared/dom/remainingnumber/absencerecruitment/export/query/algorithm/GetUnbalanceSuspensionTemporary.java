@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
@@ -20,8 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 
 /**
  * @author ThanhNX
@@ -69,31 +69,25 @@ public class GetUnbalanceSuspensionTemporary {
 		ProcessDataTemporary.processOverride(input, input.getUseAbsMng(), lstInterimMng, lstAbsMng);
 
 		// 取得した件数をチェックする
-		List<String> mapId = lstAbsMng.stream().map(x -> x.getAbsenceMngId()).collect(Collectors.toList());
-		List<InterimRecAbsMng> lstInterimRecAbsMng = require.getRecOrAbsMngs(mapId, false, DataManagementAtr.INTERIM);
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
 			InterimRemain remainData = lstInterimMng.stream()
 					.filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
 					.collect(Collectors.toList()).get(0);
 			// アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
-			lstOutput.add(getNotTypeRec(interimAbsMng, remainData, lstInterimRecAbsMng));
+			lstOutput.add(getNotTypeRec(require, interimAbsMng, remainData));
 		}
 		return lstOutput;
 
 	}
 
 	// 3-1.振出と紐付けをしない振休を取得する
-	public static AccumulationAbsenceDetail getNotTypeRec(InterimAbsMng absMng, InterimRemain remainData,
-			List<InterimRecAbsMng> lstInterimRecAbsMng) {
+	public static AccumulationAbsenceDetail getNotTypeRec(Require require, InterimAbsMng absMng, InterimRemain remainData) {
 
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する
-		List<InterimRecAbsMng> lstInterimMng = lstInterimRecAbsMng.stream()
-				.filter(x -> x.getAbsenceMngId().equals(absMng.getAbsenceMngId())).collect(Collectors.toList());
+		List<PayoutSubofHDManagement> lstInterimRecAbsMng = require.getBySubId(remainData.getSID(), remainData.getYmd());
 		double unOffsetDays = absMng.getRequeiredDays().v();
-		if (!lstInterimMng.isEmpty()) {
-			for (InterimRecAbsMng recAbsData : lstInterimMng) {
-				unOffsetDays -= recAbsData.getUseDays().v();
-			}
+		for (PayoutSubofHDManagement recAbsData : lstInterimRecAbsMng) {
+			unOffsetDays -= recAbsData.getAssocialInfo().getDayNumberUsed().v();
 		}
 
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
@@ -124,8 +118,8 @@ public class GetUnbalanceSuspensionTemporary {
 		// InterimRecAbasMngRepository
 		List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period);
 
-		// InterimRecAbasMngRepository
-		List<InterimRecAbsMng> getRecOrAbsMngs(List<String> interimIds, boolean isRec, DataManagementAtr mngAtr);
+		// PayoutSubofHDManaRepository
+		List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate);
 	}
 
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex;
 import java.io.Serializable;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
 /**

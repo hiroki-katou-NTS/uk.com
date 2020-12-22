@@ -25,10 +25,10 @@ public class ApprovalRootImport {
 	private GeneralDate startDate;
 	/** 完了日 */
 	private GeneralDate endDate;
-	/** 分岐ID */
-	private String branchId;
-	/** 任意項目申請ID */
-	private String anyItemApplicationId;
+//	/** 分岐ID */
+//	private String branchId;
+//	/** 任意項目申請ID */
+//	private String anyItemApplicationId;
 	/** 確認ルート種類 */
 	private Integer confirmationRootType;
 	/** 就業ルート区分 */
@@ -71,8 +71,10 @@ public class ApprovalRootImport {
 	}
 
 	public ApprovalRootImport(String companyId, String workplaceId, String approvalId, String employeeId,
-			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
-			String anyItemApplicationId, Integer confirmationRootType, int employmentRootAtr,
+			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, 
+			// String branchId,
+			// String anyItemApplicationId, 
+			Integer confirmationRootType, int employmentRootAtr,
 			List<ApprovalPhaseImport> beforeApprovers, List<ApprovalPhaseImport> afterApprovers,
 			ErrorFlagImport errorFlag) {
 		super();
@@ -84,8 +86,8 @@ public class ApprovalRootImport {
 		this.applicationType = applicationType;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.branchId = branchId;
-		this.anyItemApplicationId = anyItemApplicationId;
+		// this.branchId = branchId;
+		// this.anyItemApplicationId = anyItemApplicationId;
 		this.confirmationRootType = confirmationRootType;
 		this.employmentRootAtr = employmentRootAtr;
 		this.beforeApprovers = beforeApprovers;

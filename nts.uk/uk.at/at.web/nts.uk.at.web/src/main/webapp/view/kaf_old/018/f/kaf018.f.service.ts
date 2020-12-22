@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.f.service {
+module nts.uk.at.view.kaf018_old.f.service {
     var paths: any = {
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
         getEmpPerformance: "at/record/application/realitystatus/getEmpPerformance",

@@ -76,23 +76,24 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					empId,
 					ymd,
 					wi.getWorkInformation(), //workInformation
-					null, //affiliationInfor
 					null, //calAttr
-					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
-					new ArrayList<>(),//breakTime
-					Optional.empty(),//outingTime
-					Optional.empty(), //shortTime
-					Optional.empty(), //tempTime
-					al.isPresent()?Optional.of(al.get().getTimeZone()):Optional.empty(),//attendanceLeavingGate
-					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
-					Optional.empty(), //specDateAttr
-					new ArrayList<>(),//employeeError
-					new ArrayList<>(),//editState
-					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
+					null, //affiliationInfor
 					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
+					new ArrayList<>(),//employeeError
+					Optional.empty(),//outingTime
+					Optional.empty(),//breakTime
+					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
+					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
+					Optional.empty(), //shortTime
+					Optional.empty(), //specDateAttr
+					al.isPresent()?Optional.of(al.get().getTimeZone()):Optional.empty(),//attendanceLeavingGate
+					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
+					new ArrayList<>(),//editState
+					Optional.empty(), //tempTime
 					new ArrayList<>(),//remarks
 					ouenTimes.stream().map(o->o.getOuenTime()).collect(Collectors.toList()),//ouenTime
 					new ArrayList<>());//ouenTimeSheet
+					Optional.empty());//snapshot
 			addAndUpdate(daily);
 		});
 	}

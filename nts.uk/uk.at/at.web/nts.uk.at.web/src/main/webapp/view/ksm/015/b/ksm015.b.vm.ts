@@ -64,7 +64,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.shiftMasters(sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
-					self.getWorkStyle();
+					//self.getWorkStyle();
 					$('#requiredName').focus();
 				} else {
 					self.clearPreviewColor();

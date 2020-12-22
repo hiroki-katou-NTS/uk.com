@@ -8,19 +8,24 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcmtLeaveDayOffManaPK implements Serializable{
+public class KrcmtLeaveDayOffManaPK implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	// 休出ID
-	@Column(name="LEAVE_ID")
-	public String leaveID;
 	
-	// 代休ID	
-	@Column(name="COM_DAYOFF_ID")
-	public String comDayOffID;
+	//社員ID
+	@Column(name = "SID")
+	public String sid;
+
+	// 発生日
+	@Column(name = "OCCURRENCE_DATE")
+	public GeneralDate occDate;
+
+	// 使用日
+	@Column(name = "DIGESTION_DATE")
+	public GeneralDate digestDate;
 }

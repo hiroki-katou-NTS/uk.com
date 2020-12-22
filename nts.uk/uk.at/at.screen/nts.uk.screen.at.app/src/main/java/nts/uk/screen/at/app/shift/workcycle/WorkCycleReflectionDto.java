@@ -5,16 +5,17 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.shr.com.context.AppContexts;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 勤務サイクル反映ダイアログDto
@@ -62,11 +63,14 @@ public class WorkCycleReflectionDto {
 
 		private int workStyles;
 
-		public static RefImageEachDayDto fromDomain(RefImageEachDay domain, WorkInformation.Require require,
-													WorkTypeFinder workTypeFinder, WorkTimeSettingRepository workTimeSettingRepository){
+		public static RefImageEachDayDto fromDomain(
+				RefImageEachDay domain,
+				WorkInformation.Require require,
+				WorkTimeSettingRepository workTimeSettingRepository,
+				Map<String , String> workTypeCodeName){
             Optional<WorkStyle> workStyle = domain.getWorkInformation().getWorkStyle(require);
 			String workTypeCode = domain.getWorkInformation().getWorkTypeCode() == null ? "" : domain.getWorkInformation().getWorkTypeCode().v();
-			String workTypeName = getWorkTypeName(workTypeCode, workTypeFinder);
+			String workTypeName =  workTypeCodeName.get(workTypeCode);
 			String workTimeCode = domain.getWorkInformation().getWorkTimeCode() == null ? "" : domain.getWorkInformation().getWorkTimeCode().v();
 			String workTimeName = getWorkTimeName(workTimeCode, workTimeSettingRepository);
 			return new WorkCycleReflectionDto.RefImageEachDayDto(
@@ -82,12 +86,6 @@ public class WorkCycleReflectionDto {
             );
 		}
 
-		private static String getWorkTypeName(String workTypeCode, WorkTypeFinder workTypeFinder){
-			if(StringUtil.isNullOrEmpty(workTypeCode, true))
-				return "";
-			List<WorkTypeInfor> getPossibleWorkType = workTypeFinder.getPossibleWorkTypeKDL002(Arrays.asList(workTypeCode));
-			return CollectionUtil.isEmpty(getPossibleWorkType) ? "" : getPossibleWorkType.get(0).getName();
-		}
 		private static String getWorkTimeName(String workTimeCode, WorkTimeSettingRepository workTimeSettingRepository){
 			if(StringUtil.isNullOrEmpty(workTimeCode, true))
 				return "";

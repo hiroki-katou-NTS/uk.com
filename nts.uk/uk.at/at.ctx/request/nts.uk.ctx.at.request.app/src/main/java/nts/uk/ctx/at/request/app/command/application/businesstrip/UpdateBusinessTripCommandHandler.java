@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.businesstrip;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -25,13 +26,17 @@ import nts.uk.shr.com.context.AppContexts;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<UpdateBusinessTripCommand, ProcessResult> {
 
     @Inject
@@ -103,7 +108,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 //                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
+        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID(), infoOutput.getAppDispInfoStartup());
     }
 
     private void checkBeforeUpdate(BusinessTrip businessTrip, AppDispInfoStartupOutput appDispInfoStartupOutput) {
@@ -128,18 +133,20 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(wkTypeCd,
-                    wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
-
-            List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
-            // 申請の矛盾チェック
-            this.commonAlgorithm.appConflictCheck(
-                    cid,
-                    employeeInfoImports.get(0),
-                    Arrays.asList(i.getDate()),
-                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-            );
+            businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
         });
+
+        List<GeneralDate> dates = businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList());
+        List<String> workTypeCodes = businessTrip.getInfos().stream().map(i -> i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
+
+        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
+        // 申請の矛盾チェック
+        this.commonAlgorithm.appConflictCheck(
+                cid,
+                employeeInfoImports.get(0),
+                dates,
+                workTypeCodes,
+                appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
+        );
     }
 }

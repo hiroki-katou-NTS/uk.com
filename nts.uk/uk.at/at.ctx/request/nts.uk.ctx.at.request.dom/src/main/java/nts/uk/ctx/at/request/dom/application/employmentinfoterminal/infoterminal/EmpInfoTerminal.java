@@ -1,30 +1,30 @@
 package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppLateReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppStampReceptionData;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppVacationReceptionData;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkHolidayReceptionData;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkChangeReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationCategory;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ReasonLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Select;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * @author ThanhNX
@@ -37,31 +37,31 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * IPアドレス
 	 */
 	@Getter
-	private final String ipAddress;
+	private Optional<String> ipAddress;
 
 	/**
 	 * MACアドレス
 	 */
 	@Getter
-	private final String macAddress;
+	private String macAddress;
 
 	/**
 	 * コード
 	 */
 	@Getter
-	private final Integer empInfoTerCode;
+	private final String empInfoTerCode;
 
 	/**
 	 * シリアルNO
 	 */
 	@Getter
-	private final String terSerialNo;
+	private Optional<String> terSerialNo;
 
 	/**
 	 * 名称
 	 */
 	@Getter
-	private final String empInfoTerName;
+	private String empInfoTerName;
 
 	/**
 	 * 契約コード
@@ -79,13 +79,19 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * 機種
 	 */
 	@Getter
-	private final Integer modelEmpInfoTer;
+	private Integer modelEmpInfoTer;
 
 	/**
 	 * 監視間隔時間
 	 */
 	@Getter
-	private final Integer intervalTime;
+	private Integer intervalTime;
+
+	/**
+	 * 就業情報端末のメモ
+	 */
+	@Getter
+	private Optional<String> empInfoTerMemo;
 
 	public EmpInfoTerminal(EmpInfoTerminalBuilder builder) {
 		super();
@@ -97,10 +103,11 @@ public class EmpInfoTerminal implements DomainAggregate {
 		this.contractCode = builder.contractCode;
 		this.modelEmpInfoTer = builder.modelEmpInfoTer;
 		this.intervalTime = builder.intervalTime;
+		this.empInfoTerMemo = builder.empInfoTerMemo;
 	}
 
 	// [３] 申請
-	public <T extends ApplicationReceptionData> Object createApplication(String companyId, T recept,
+	public <T extends ApplicationReceptionData> Application createApplication(String companyId, T recept,
 			Optional<WorkType> workTypeOpt, Optional<WorkingConditionItem> workingConItemOpt, String employeeId) {
 
 		ApplicationCategory cate = ApplicationCategory.valueStringOf(recept.getApplicationCategory());
@@ -110,23 +117,21 @@ public class EmpInfoTerminal implements DomainAggregate {
 		case STAMP:
 			// AppStamp
 			AppStampReceptionData appStampData = (AppStampReceptionData) recept;
-			Application_New appStampNew = recept.createAplication(companyId, employeeId,
+			Application appStampNew = recept.createAplication(companyId, employeeId,
 					Integer.parseInt(appStampData.getTypeBeforeAfter()),
 					NRHelper.convertAppType(recept.getApplicationCategory()),
 					Optional.of(NRHelper.createGeneralDate(appStampData.getAppYMD())), Optional.empty(),
-					appStampData.getReason());
-//			AppStamp appStamp = new AppStamp(StampRequestMode.STAMP_ONLINE_RECORD, appStampNew, Collections.emptyList(),
-//					Collections.emptyList(), Collections.emptyList(),
-//					Optional.of(new AppStampOnlineRecord(appStampData.convertCombi(),
-//							NRHelper.toMinute(appStampData.getAppTime()))));// TODO: thieu 外出区分 ->外出理由
-//			return appStamp;
-			return null;
+					appStampData.getReason(), true);
+			AppRecordImage appImg = new AppRecordImage(appStampData.convertCombi(),
+					new AttendanceClock(NRHelper.toMinute(appStampData.getAppTime())),
+					GoingOutReason.corvert(Integer.parseInt(appStampData.getGoOutCategory())), appStampNew);
+			return appImg;
 
 		// 残業申請
 		case OVERTIME:
 			// AppOverTime
 //			AppOverTimeReceptionData appOverTimeData = (AppOverTimeReceptionData) recept;
-//			Application_New appOverNew = recept.createAplication(companyId, employeeId,
+//			Application appOverNew = recept.createAplication(companyId, employeeId,
 //					Integer.parseInt(appOverTimeData.getTypeBeforeAfter()),
 //					NRHelper.convertAppType(recept.getApplicationCategory()),
 //					Optional.of(NRHelper.createGeneralDate(appOverTimeData.getAppYMD())), Optional.empty(),
@@ -135,17 +140,17 @@ public class EmpInfoTerminal implements DomainAggregate {
 //					OverTimeAtr.ALL, null, null, workClockFrom1, workClockTo1, workClockFrom2, workClockTo2,
 //					divergenceReason, flexExessTime, overTimeShiftNight);
 			// TODO : ko map duoc domain
-			return Optional.empty();
+			return null;
 
 		// 休暇申請
 		case VACATION:
 			// AppAbsence
-			AppVacationReceptionData appAbsenceData = (AppVacationReceptionData) recept;
-			Application_New appAbsenceNew = recept.createAplication(companyId, employeeId,
-					Integer.parseInt(appAbsenceData.getTypeBeforeAfter()),
-					NRHelper.convertAppType(recept.getApplicationCategory()),
-					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getStartDate())),
-					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getEndDate())), appAbsenceData.getReason());
+//			AppVacationReceptionData appAbsenceData = (AppVacationReceptionData) recept;
+//			Application appAbsenceNew = recept.createAplication(companyId, employeeId,
+//					Integer.parseInt(appAbsenceData.getTypeBeforeAfter()),
+//					NRHelper.convertAppType(recept.getApplicationCategory()),
+//					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getStartDate())),
+//					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getEndDate())), appAbsenceData.getReason());
 //			AppAbsence appAbsence = new AppAbsence(companyId, appAbsenceNew.getAppID(),
 //					workTypeOpt.isPresent() ? NRHelper.convertHolidayType(workTypeOpt.get().getDailyWork().getOneDay()).value : null,
 //					appAbsenceData.getWorkType(), null, true, false, AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE.value, null,
@@ -156,59 +161,70 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 		// 勤務変更申請
 		case WORK_CHANGE:
-			// AppWorkChange
-			// TODO: sua thiet ke, chua sua code
-			return Optional.empty();
+
+			AppWorkChangeReceptionData appWorkData = (AppWorkChangeReceptionData) recept;
+
+			Application appWorkNew = recept.createAplication(companyId, employeeId,
+					Integer.parseInt(appWorkData.getTypeBeforeAfter()),
+					NRHelper.convertAppType(recept.getApplicationCategory()),
+					Optional.of(NRHelper.createGeneralDate(appWorkData.getStartDate())),
+					Optional.of(NRHelper.createGeneralDate(appWorkData.getEndDate())), appWorkData.getReason());
+
+			AppWorkChange appChange = new AppWorkChange(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, Optional.empty(),
+					Optional.of(new WorkTimeCode(appWorkData.getWorkTime())), new ArrayList<TimeZoneWithWorkNo>(),
+					appWorkNew);
+			return appChange;
 
 		// 休日出勤時間申請
 		case WORK_HOLIDAY:
 			// AppHolidayWork
-			AppWorkHolidayReceptionData appHolidayData = (AppWorkHolidayReceptionData) recept;
-			Application_New appHolidayNew = recept.createAplication(companyId, employeeId,
-					Integer.parseInt(appHolidayData.getTypeBeforeAfter()),
-					NRHelper.convertAppType(recept.getApplicationCategory()),
-					Optional.of(NRHelper.createGeneralDate(appHolidayData.getAppYMD())), Optional.empty(),
-					appHolidayData.getReason());
-			SingleDaySchedule singleDay = workingConItemOpt.isPresent() ? workingConItemOpt.get().getWorkCategory().getHolidayTime() : null;
-			AppHolidayWork appHoliday = AppHolidayWork.createSimpleFromJavaType(companyId, appHolidayNew.getAppID(),
-					(singleDay != null && singleDay.getWorkTypeCode().isPresent())
-							? singleDay.getWorkTypeCode().get().v()
-							: null,
-					(singleDay != null && singleDay.getWorkTimeCode().isPresent())
-							? singleDay.getWorkTimeCode().get().v()
-							: null,
-					null, null, null, null, 0, 0, 0, 0, "", 0);
-			appHoliday.setHolidayWorkInputs(appHolidayData.holidayWorkInput(companyId, appHolidayNew.getAppID()));
-			// 乖離理由 -> ""
-			// 就業時間外深夜時間 -> 0
-			return appHoliday;
+//			AppWorkHolidayReceptionData appHolidayData = (AppWorkHolidayReceptionData) recept;
+//			Application appHolidayNew = recept.createAplication(companyId, employeeId,
+//					Integer.parseInt(appHolidayData.getTypeBeforeAfter()),
+//					NRHelper.convertAppType(recept.getApplicationCategory()),
+//					Optional.of(NRHelper.createGeneralDate(appHolidayData.getAppYMD())), Optional.empty(),
+//					appHolidayData.getReason());
+//			SingleDaySchedule singleDay = workingConItemOpt.isPresent()
+//					? workingConItemOpt.get().getWorkCategory().getHolidayTime()
+//					: null;
+//			AppHolidayWork appHoliday = AppHolidayWork.createSimpleFromJavaType(companyId, appHolidayNew.getAppID(),
+//					(singleDay != null && singleDay.getWorkTypeCode().isPresent())
+//							? singleDay.getWorkTypeCode().get().v()
+//							: null,
+//					(singleDay != null && singleDay.getWorkTimeCode().isPresent())
+//							? singleDay.getWorkTimeCode().get().v()
+//							: null,
+//					null, null, null, null, 0, 0, 0, 0, "", 0);
+//			appHoliday.setHolidayWorkInputs(appHolidayData.holidayWorkInput(companyId, appHolidayNew.getAppID()));
+//			// 乖離理由 -> ""
+//			// 就業時間外深夜時間 -> 0
+			return null;
 
 		// 遅刻早退取消申請
 		case LATE:
 			// LateOrLeaveEarly
 			AppLateReceptionData appLateData = (AppLateReceptionData) recept;
-			Application_New appLateNew = recept.createAplication(companyId, employeeId,
+			Application appLateNew = recept.createAplication(companyId, employeeId,
 					Integer.parseInt(appLateData.getTypeBeforeAfter()),
 					NRHelper.convertAppType(recept.getApplicationCategory()),
 					Optional.of(NRHelper.createGeneralDate(appLateData.getAppYMD())), Optional.empty(),
 					appLateData.getReason());
-//			LateOrLeaveEarly late = new LateOrLeaveEarly(appLateNew, 1,
-//					appLateData.getReasonLeave().equals(ReasonLeaveEarly.EARLY.value) ? Select.SELECTED
-//							: Select.NOTSLECTED,
-//					new TimeDay(0),
-//					appLateData.getReasonLeave().equals(ReasonLeaveEarly.LATE.value) ? Select.SELECTED
-//							: Select.NOTSLECTED,
-//					new TimeDay(0), Select.NOTSLECTED, new TimeDay(0), Select.NOTSLECTED, new TimeDay(0));
-//			return late;
-			return null;
+			ArrivedLateLeaveEarly appLate = new ArrivedLateLeaveEarly(appLateNew);
+			appLate.setLateOrLeaveEarlies(new ArrayList<>());
+			List<LateCancelation> lateCancelation = new ArrayList<>();
+			lateCancelation.add(new LateCancelation(1,
+					appLateData.getReasonLeave().equals(ReasonLeaveEarly.EARLY.value) ? LateOrEarlyAtr.EARLY
+							: LateOrEarlyAtr.LATE));
+			appLate.setLateCancelation(lateCancelation);
+			return appLate;
 
 		// 時間年休申請
 		case ANNUAL:
 			// TODO: chua co domain
-			return Optional.empty();
+			return null;
 
 		default:
-			return Optional.empty();
+			return null;
 		}
 	}
 
@@ -216,7 +232,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * IPアドレス
 		 */
-		private String ipAddress;
+		private Optional<String> ipAddress;
 
 		/**
 		 * MACアドレス
@@ -226,12 +242,12 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * コード
 		 */
-		private Integer empInfoTerCode;
+		private String empInfoTerCode;
 
 		/**
 		 * シリアルNO
 		 */
-		private String terSerialNo;
+		private Optional<String> terSerialNo;
 
 		/**
 		 * 名称
@@ -253,8 +269,14 @@ public class EmpInfoTerminal implements DomainAggregate {
 		 */
 		private Integer intervalTime;
 
-		public EmpInfoTerminalBuilder(String ipAddress, String macAddress, Integer empInfoTerCode, String terSerialNo,
-				String empInfoTerName, String contractCode) {
+		/**
+		 * 就業情報端末のメモ
+		 */
+		@Getter
+		private Optional<String> empInfoTerMemo;
+
+		public EmpInfoTerminalBuilder(Optional<String> ipAddress, String macAddress, String empInfoTerCode,
+				Optional<String> terSerialNo, String empInfoTerName, String contractCode) {
 			this.ipAddress = ipAddress;
 			this.macAddress = macAddress;
 			this.empInfoTerCode = empInfoTerCode;
@@ -270,6 +292,11 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 		public EmpInfoTerminalBuilder intervalTime(Integer intervalTime) {
 			this.intervalTime = intervalTime;
+			return this;
+		}
+
+		public EmpInfoTerminalBuilder empInfoTerMemo(Optional<String> empInfoTerMemo) {
+			this.empInfoTerMemo = empInfoTerMemo;
 			return this;
 		}
 

@@ -20,5 +20,6 @@ public class EmployeeRankDto {
 	
 	public  String SID;
 	public  String emplRankCode;
+	public  Integer priority;
 
 }

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -40,6 +39,7 @@ import nts.uk.ctx.at.record.pub.workinformation.export.WrTimeLeavingWorkExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrWorkStampExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrWorkTimeInformationExport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -60,8 +60,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
 @Stateless
@@ -168,12 +167,12 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				record.setChildCareTime(
 						totalWT.getShotrTimeOfDaily().getTotalTime().getTotalTime().getTime().valueAsMinutes());
 			}
-			totalWT.getOutingTimeByReason(GoOutReason.OFFICAL).ifPresent(ot -> {
+			totalWT.getOutingTimeByReason(GoingOutReason.UNION).ifPresent(ot -> {
 				if (ot.getRecordTotalTime() != null && ot.getRecordTotalTime().getTotalTime() != null) {
 					record.setOutingTimePrivate(ot.getRecordTotalTime().getTotalTime().getTime().valueAsMinutes());
 				}
 			});
-			totalWT.getOutingTimeByReason(GoOutReason.SUPPORT).ifPresent(ot -> {
+			totalWT.getOutingTimeByReason(GoingOutReason.PRIVATE).ifPresent(ot -> {
 				if (ot.getRecordTotalTime() != null && ot.getRecordTotalTime().getTotalTime() != null) {
 					record.setOutingTimePrivate(ot.getRecordTotalTime().getTotalTime().getTime().valueAsMinutes());
 				}
@@ -242,9 +241,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setListShortWorkingTimeSheet(shortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets());
 			
 		}
-		List<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPer =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		Optional<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPer =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
 		List<BreakTimeSheet> listBreakTimeSheet = new ArrayList<>();
-		listBreakTimeOfDailyPer.stream().map(c->listBreakTimeSheet.addAll(c.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList());
+		listBreakTimeOfDailyPer.ifPresent(c-> listBreakTimeSheet.addAll(c.getTimeZone().getBreakTimeSheets()));
 		record.setListBreakTimeSheet(listBreakTimeSheet);
 		
 		return record;
@@ -270,7 +269,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	}
 
 	private WrWorkStampExport convertToWorkStamp(WorkStamp domain) {
-		return new WrWorkStampExport(domain.getAfterRoundingTime().v(), new WrWorkTimeInformationExport(
+		return new WrWorkStampExport(new WrWorkTimeInformationExport(
 				new WrReasonTimeChangeExport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod().isPresent()
 								? domain.getTimeDay().getReasonTimeChange().getEngravingMethod().get().value : null),
@@ -464,8 +463,8 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 //	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．外出時間
 	    	List<OutingTimeOfDaily> outingTimeOfDailyPerformance = totalWorkingTime.getOutingTimeOfDailyPerformance() ;
 	    	{
-	    		Optional<OutingTimeOfDaily> support = outingTimeOfDailyPerformance.stream().filter(x -> x.getReason() == GoOutReason.SUPPORT).findFirst();
-	    		Optional<OutingTimeOfDaily> offical = outingTimeOfDailyPerformance.stream().filter(x -> x.getReason() == GoOutReason.OFFICAL).findFirst();
+	    		Optional<OutingTimeOfDaily> support = outingTimeOfDailyPerformance.stream().filter(x -> x.getReason() == GoingOutReason.PRIVATE).findFirst();
+	    		Optional<OutingTimeOfDaily> offical = outingTimeOfDailyPerformance.stream().filter(x -> x.getReason() == GoingOutReason.UNION).findFirst();
 	    		if (support.isPresent()) {
 	    			record.setOutTime1(Optional.of(support.get().getRecordTotalTime().getTotalTime().getTime()));
 	    		}
@@ -567,10 +566,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setShortWorkingTimeSheets(shOptional.get().getShortWorkingTimeSheets());
 		}
 //		breakTimeSheets do not repo
-		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
-		if (!CollectionUtil.isEmpty(breakTimeOfDailyPerformanceLst)) {
-			List<BreakTimeSheet> breakTimeSheetsSet = 
-					breakTimeOfDailyPerformanceLst.get(0).getTimeZone().getBreakTimeSheets();
+		Optional<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		if (breakTimeOfDailyPerformanceLst.isPresent()) {
+			List<BreakTimeSheet> breakTimeSheetsSet = breakTimeOfDailyPerformanceLst.get().getTimeZone().getBreakTimeSheets();
 			record.setBreakTimeSheets(breakTimeSheetsSet);
 		}
 		

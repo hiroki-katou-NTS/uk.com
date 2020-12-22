@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.totaltimes;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
 
 /**
@@ -58,8 +60,12 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	 * getThresoldUpperLimit()
 	 */
 	@Override
-	public ConditionThresholdLimit getThresoldUpperLimit() {
-		return new ConditionThresholdLimit(this.entity.getThresoldUpperLimit().intValue());
+	public Optional<ConditionThresholdLimit> getThresoldUpperLimit() {
+		if (this.entity.getThresoldUpperLimit() == null) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(new ConditionThresholdLimit(this.entity.getThresoldUpperLimit()));
 	}
 
 	/*
@@ -70,8 +76,12 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	 * getThresoldLowerLimit()
 	 */
 	@Override
-	public ConditionThresholdLimit getThresoldLowerLimit() {
-		return new ConditionThresholdLimit(this.entity.getThresoldLowerLimit().intValue());
+	public Optional<ConditionThresholdLimit> getThresoldLowerLimit() {
+		if (this.entity.getThresoldLowerLimit() == null) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(new ConditionThresholdLimit(this.entity.getThresoldLowerLimit()));
 	}
 	
 	
@@ -79,8 +89,9 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento#getAttendanceItemId()
 	 */
 	@Override
-	public Integer getAttendanceItemId() {
-		return this.entity.getAttendanceItemId();
+	public Optional<Integer> getAttendanceItemId() {
+		
+		return Optional.ofNullable(this.entity.getAttendanceItemId());
 	}
 
 }

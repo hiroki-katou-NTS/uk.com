@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.app.find.ot.autocalsetting.wkpjob;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 
 @Getter
 @Setter

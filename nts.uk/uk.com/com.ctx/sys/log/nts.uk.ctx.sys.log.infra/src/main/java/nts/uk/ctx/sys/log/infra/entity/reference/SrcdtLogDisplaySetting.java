@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -64,7 +65,7 @@ public class SrcdtLogDisplaySetting extends UkJpaEntity implements Serializable 
 	@Column(name = "SYSTEM_TYPE")
 	private int systemType;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "logDisplaySetCond", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "logDisplaySetCond", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SrcdtLogSetOutputItem> listLogSetOutputItems;
 
 	@Override

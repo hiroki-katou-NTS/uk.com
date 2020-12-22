@@ -1,131 +1,34 @@
-.divHeader {
-	margin: 5px;
-	min-width: 1360px;
+#contents-area, #functions-area-bottom {
+	background-color: rgb(235, 255, 235);
 }
 
-.btnStyle {
-	width: 70px;
-	margin-right: 5px;
+#functions-area-bottom {
+	height: 75px;
 }
 
-.tr360 {
-	width: 360px !important;
+#functions-area-bottom-label {
+	padding: 0px 10px 5px 10px; 
+	text-align: left; 
+	line-height: 0.6em; 
+	height: 2em;
 }
 
-.tr120 {
-	width: 120px !important;
+.w230 {
+	width: 230px;
 }
 
-.tr180 {
-	width: 180px !important;
+.w100 {
+	width: 100px;
 }
 
-.tr500 {
-	width: 500px !important;
+.p10 {
+	padding: 10px;
 }
 
-.tr240 {
-	width: 240px !important;
+.m-l-10 {
+	margin-left: 10px;
 }
 
-.tr40 {
-	width: 40px !important;
-}
-
-.tr50 {
-	width: 50px !important;
-}
-
-.tr90 {
-	width: 90px !important;
-}
-
-.left20 {
-	margin-left: 20px;
-}
-
-.labelRed {
-	font-weight: bold;
-	color: red;
-}
-
-#btn_delete {
-	margin-left: 200px;
-}
-
-#lbl_registrationOfLaborInsurancePlant {
-	float: right;
-}
-
-#contents-left, #contents-right {
-	padding: 20px;
-	vertical-align: top !important;
-}
-
-#contents-right {
-	padding-left: 40px !important;
-}
-
-.leftTop {
-	display: inline;
-	width: 100%;
-}
-
-#SCH_001 {
-	width: 100%;
-}
-
-.spanSearch {
-	float: right;
-	width: 20%;
-}
-
-.contentsRL {
-	width: 50%;
-	padding-bottom: 5px;
-}
-
-.contentsRR {
-	width: 70%;
-}
-
-#tableRight {
-	width: 100%;
-}
-
-button.nts-switch-button {
-	min-width: 80px;
-}
-
-#searchlaborInsuranceOffice {
-	margin-top: 20px;
-}
-
-.border_none {
-	border: none !important;
-}
-
-.tr240 {
-	width: 240px !important;
-}
-
-.tr110 {
-	width: 110px !important;
-}
-
-#inp-name {
-	width: 240px !important;
-}
-
-.pad_top_20 {
-	padding-top: 20px;
-}
-
-.pad_left_20 {
-	padding-left: 20px;
-}
-
-.bg-yellow {
-	padding: 10px 5px;
-	margin: 11px 156px;
+.pre-wrap {
+	white-space: pre-wrap;
 }

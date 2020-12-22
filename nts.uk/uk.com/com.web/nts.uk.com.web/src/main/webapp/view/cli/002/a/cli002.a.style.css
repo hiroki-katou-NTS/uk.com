@@ -2,26 +2,29 @@
   float: left;
 }
 
-.view-cli .model-component {
-  margin-left: 30px;
+.view-cli .float-right {
+  float: right;
+}
+
+@media only screen and (max-width: 800px) {
+  .view-cli .model-component {
+    position: absolute;
+  }
 }
 
 .model-component {
-	float: left;
+  margin-left: 40px;
+}
+
+.list-component > .caret-right.caret-background.bg-green {
+  width: 200px;
+  padding: 30px 10px 30px 20px;
 }
 
 .ntsSearchBox {
-  width: 350px;
+  width: 380px;
 }
 
-#item-list .mcell:not(.mgrid-no):not(.mlabel) {
+#item-list tbody tr td div {
   text-align: center;
-}
-
-#item-list .mgrid-free-table tr+tr td {
-  border-top: none !important;
-}
-
-#item-list .mgrid-free-table tr:first-child:not(:last-child) td:not(:nth-child(1)):not(:nth-child(2)) {
-  border-bottom: none !important;
 }

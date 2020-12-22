@@ -1,31 +1,42 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+
+    interface Accessor {
+        inline?: KnockoutObservable<boolean> | boolean;
+        enable?: KnockoutObservable<boolean> | boolean;
+        required?: KnockoutObservable<boolean> | boolean;
+        text?: KnockoutObservable<string> | string;
+        cssClass?: KnockoutObservable<string> | string;
+        constraint?: KnockoutObservable<string | string[]> | string | string[];
+    }
     /**
      * FormLabel
      */
-    class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
-
-        /**
-         * Init.
-         */
-        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+    @handler({
+        bindingName: 'ntsFormLabel'
+    })
+    export class NtsFormLabelBindingHandler implements KnockoutBindingHandler { /**
+        * Init.
+        */
+        init(element: HTMLElement): void {
             element.classList.add('form-label');
         }
-
         /**
          * Update
          */
-        update(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let accessor: any = valueAccessor(),
-                label = element.querySelector('label'),
-                constraint = element.querySelector('i'),
-                isInline = ko.unwrap(accessor.inline) === true,
-                isEnable = ko.unwrap(accessor.enable) !== false,
-                isRequired = ko.unwrap(accessor.required) === true,
-                text: string = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML),
-                cssClass: string = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '',
-                primitive: string = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+        update = (element: HTMLElement, valueAccessor: () => Accessor, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void => {
+            const accessor = valueAccessor();
+            let label = element.querySelector('label');
+            let constraint = element.querySelector('i');
+            const isInline = ko.unwrap(accessor.inline) === true;
+            const isEnable = ko.unwrap(accessor.enable) !== false;
+            const isRequired = ko.unwrap(accessor.required) === true;
+            const text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML);
+            const cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '';
+            const primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+
+            const { primitiveValueConstraints } = __viewContext;
 
             // clear old html
             element.innerHTML = '';
@@ -52,6 +63,9 @@ module nts.uk.ui.koExtentions {
                 element.style.lineHeight = '37px';
             } else {
                 element.classList.remove('inline');
+                // fix height (not inline mode)
+                element.style.height = null;
+                element.style.lineHeight = null;
             }
 
             // init new label element
@@ -67,13 +81,13 @@ module nts.uk.ui.koExtentions {
             // append label tag to control
             element
                 .appendChild(label);
+
             label.innerHTML = text;
 
             // add css class to label
             if (!!cssClass) {
                 label.classList.add(cssClass);
             }
-
 
             // show primitive constraint if exist
             if (!!primitive) {
@@ -83,16 +97,17 @@ module nts.uk.ui.koExtentions {
 
                 // append constraint
                 element.appendChild(constraint);
-                if (_.isArray(primitive)) {
-                    let miss = _.map(primitive, p => __viewContext.primitiveValueConstraints[p]);
 
-                    if (miss.indexOf(false) > -1) {
+                if (_.isArray(primitive)) {
+                    let miss = _.map(primitive, (p: string) => primitiveValueConstraints[p]);
+
+                    if (miss.indexOf(undefined) > -1) {
                         constraint.innerHTML = 'UNKNOW_PRIMITIVE';
                     } else {
                         constraint.innerHTML = util.getConstraintMes(primitive);
                     }
                 } else {
-                    if (!__viewContext.primitiveValueConstraints[primitive]) {
+                    if (!primitiveValueConstraints[primitive]) {
                         constraint.innerHTML = 'UNKNOW_PRIMITIVE';
                     } else {
                         constraint.innerHTML = util.getConstraintMes(primitive);
@@ -101,6 +116,4 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
-
-    ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
 }

@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
@@ -51,13 +54,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
@@ -304,34 +305,34 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application) {
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, String appName) {
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
-		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String appName) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
-		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(Application application) {
+	public MailResult sendMailApplicantApprove(Application application, String appName) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText);
+		MailResult mailResult = sendMailApplicant(application, inputText, appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantDeny(Application application) {
+	public MailResult sendMailApplicantDeny(Application application, String appName) {
 		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText);
+		MailResult mailResult = sendMailApplicant(application, inputText, appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String appName) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>(); 
@@ -382,27 +383,24 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						"", 
 						employeeID);
 			};
-			Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
-			if(!opAppDispName.isPresent() || opAppDispName.get().getDispName()==null){
-				throw new RuntimeException("no setting AppDispName 申請表示名");
-			}
-			AppDispName appDispName = opAppDispName.get();
-			//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
+			// メール送信時申請内容の作成
 			String appContent = applicationContentService.getApplicationContent(application);
+			// 申請を差し戻すメール本文の編集
 			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, 
 					newText,
 					application.getAppDate().getApplicationDate().toLocalDate().toString(), 
-					appDispName.getDispName().toString(),
+					appName,
 					applicantName, 
 					application.getAppDate().getApplicationDate().toLocalDate().toString(),
 					appContent, 
 					loginName, 
 					loginMail);
-			String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+			String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
 			String mailBody = mailContentToSend;
 			try {
+				// メールを送信する(gửi mail)
 				mailsender.sendFromAdmin(approverMail, new MailContents(mailTitle, mailBody));
 				successList.add(employeeName);
 			} catch (Exception e) {
@@ -412,7 +410,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
-	public MailResult sendMailApplicant(Application application, String text) {
+	public MailResult sendMailApplicant(Application application, String text, String appName) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>();
@@ -459,27 +457,24 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					"", 
 					employeeID);
 		};
-		Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
-		if(!opAppDispName.isPresent() || opAppDispName.get().getDispName()==null){
-			throw new RuntimeException("no setting AppDispName 申請表示名");
-		}
-		AppDispName appDispName = opAppDispName.get();
-		// 申請を差し戻すメール本文の編集
+		// メール送信時申請内容の作成
 		String appContent = applicationContentService.getApplicationContent(application);
+		// 申請を差し戻すメール本文の編集
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String mailContentToSend = I18NText.getText("Msg_703",
 				loginName, 
 				newText,
 				application.getAppDate().getApplicationDate().toLocalDate().toString(), 
-				appDispName.getDispName().toString(),
+				appName,
 				applicantName, 
 				application.getAppDate().getApplicationDate().toLocalDate().toString(),
 				appContent, 
 				loginName, 
 				loginMail);
-		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
 		String mailBody = mailContentToSend;
 		try {
+			// メールを送信する
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
 			successList.add(employeeName);
 		} catch (Exception e) {
@@ -567,12 +562,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 			if(holidayType.isPresent()){
 				//ドメインモデル「申請理由表示」を取得する
-				Optional<DisplayReason> disReason = displayRep.findByHdType(companyId, application.getAppType().value);
-				if(disReason.isPresent() && disReason.get().getDisplayFixedReason().equals(DisplayAtr.NOT_DISPLAY)
-						 && disReason.get().getDisplayAppReason().equals(DisplayAtr.NOT_DISPLAY)){
-					//定型理由の表示＝しない　AND 申請理由の表示＝しない
-					return false;//output：・結果＝未使用
-				}
+//				Optional<DisplayReason> disReason = displayRep.findByHolidayAppType(companyId, EnumAdaptor.valueOf(application.getAppType().value, HolidayAppType.class));
+//				if(disReason.isPresent() && disReason.get().getDisplayFixedReason().equals(DisplayAtr.NOT_DISPLAY)
+//						 && disReason.get().getDisplayAppReason().equals(DisplayAtr.NOT_DISPLAY)){
+//					//定型理由の表示＝しない　AND 申請理由の表示＝しない
+//					return false;//output：・結果＝未使用
+//				}
 				return true;//output：・結果＝使用
 			}
 			return true;
@@ -664,7 +659,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
 		if (isWkTypeCDNotEmpty) {
 			String WkTypeName = null;
-			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findByPK(companyID, wkTypeCode);
+			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findNoAbolishByPK(companyID, wkTypeCode);
 			if (wkTypeOpt.isPresent()) {
 				WkTypeName = wkTypeOpt.get().getName().v();
 			}
@@ -680,7 +675,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		if (isWkTimeCDNotEmpty) {
 			// 「就業時間帯名称を取得する」＝＝ NULL をチェック
 			String WkTimeName = null;
-			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCode(companyID, wkTimeCode);
+			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCodeAndAbolishCondition(companyID, wkTimeCode, AbolishAtr.NOT_ABOLISH);
 			if (wwktimeOpt.isPresent()) {
 				WkTimeName = wwktimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

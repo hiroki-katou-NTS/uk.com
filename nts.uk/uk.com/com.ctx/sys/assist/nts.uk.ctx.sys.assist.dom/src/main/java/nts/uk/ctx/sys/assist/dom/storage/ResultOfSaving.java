@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -30,24 +31,24 @@ public class ResultOfSaving extends AggregateRoot
     private String cid;
     
     /**
-    * システム種類
-    */
-    private SystemType systemType;
-    
-    /**
     * ファイル容量
     */
     private Optional<Long> fileSize;
     
     /**
-    * 保存セットコード
+    * パターンコード
     */
-    private Optional<SaveSetCode> saveSetCode;
+    private PatternCode patternCode;
     
     /**
     * 保存ファイル名
     */
     private Optional<SaveFileName> saveFileName;
+    
+    /**
+    * パターン区分
+    */
+    private int patternClassification;
     
     /**
     * 保存名称
@@ -84,6 +85,9 @@ public class ResultOfSaving extends AggregateRoot
     */
     private String practitioner;
     
+    //field 実行結果
+    private List<ResultLogSaving> listResultLogSavings;
+    
     /**
     * 対象人数
     */
@@ -107,18 +111,17 @@ public class ResultOfSaving extends AggregateRoot
     //field ログイン情報
     private LoginInfo loginInfo;
 
-	public ResultOfSaving(String storeProcessingId, String cid, int systemType, Long fileSize,
-			String saveSetCode, String saveFileName, String saveName, int saveForm,
+	public ResultOfSaving(String storeProcessingId, String cid, Long fileSize,
+			String patternCode, String saveFileName, String saveName, int saveForm,
 			GeneralDateTime saveEndDatetime, GeneralDateTime saveStartDatetime, int deletedFiles,
-			String compressedPassword, String practitioner, Integer targetNumberPeople,
-			Integer saveStatus, int saveForInvest, String fileId, LoginInfo logInfo) {
+			String compressedPassword, String practitioner,List<ResultLogSaving> listResultLogSavings,
+			Integer targetNumberPeople, Integer saveStatus, int saveForInvest, String fileId, LoginInfo logInfo) {
 		super();
 		this.storeProcessingId = storeProcessingId;
 		this.cid = cid;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.fileSize = Optional.ofNullable(fileSize);
-		this.saveSetCode = saveSetCode == null ? Optional.empty() : Optional.of(new SaveSetCode(saveSetCode));
-		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveName));
+		this.patternCode = new PatternCode(patternCode);
+		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveFileName));
 		this.saveName = new SaveName(saveName);
 		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
 		this.saveEndDatetime = Optional.ofNullable(saveEndDatetime);
@@ -126,6 +129,7 @@ public class ResultOfSaving extends AggregateRoot
 		this.deletedFiles = EnumAdaptor.valueOf(deletedFiles, NotUseAtr.class);;
 		this.compressedPassword = compressedPassword == null ? Optional.empty() : Optional.of(new FileCompressionPassword(compressedPassword));
 		this.practitioner = practitioner;
+		this.listResultLogSavings = listResultLogSavings;
 		this.targetNumberPeople = Optional.ofNullable(targetNumberPeople); 
 		this.saveStatus = saveStatus == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(saveStatus, SaveStatus.class));
 		this.saveForInvest = EnumAdaptor.valueOf(saveForInvest, NotUseAtr.class);;

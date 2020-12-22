@@ -14,10 +14,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppInfoMasterOutput;
@@ -46,9 +46,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppDataCreationImpl implements AppDataCreation {
 	
-	private static final int PC = 0;
-	private static final int MOBILE = 1;
-	
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
 
@@ -64,8 +61,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 	@Inject
 	private AppContentService appContentService;
 	
-	@Inject
-	private ManagedParallelWithContext parallel;
+//	@Inject
+//	private ManagedParallelWithContext parallel;
 	
 	@Inject
 	private AgentAdapter agentAdapter;
@@ -81,7 +78,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		}
 		List<WorkType> workTypeLst = new ArrayList<>();
 		List<WorkTimeSetting> workTimeSettingLst = new ArrayList<>();
-		if(device==PC) {
+		if(device==ApprovalDevice.PC.value) {
 			// ドメインモデル「就業時間帯」を取得
 			workTypeLst = workTypeRepository.findByCompanyId(companyID);
 			// ドメインモデル「勤務種類」を取得
@@ -145,7 +142,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		appListInfo.setAppLst(appOutputLst);
 		// アルゴリズム「申請一覧の並び順を変更する」を実行する
 		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);
-		if(mode == ApplicationListAtr.APPROVER && device == PC) {
+		if(mode == ApplicationListAtr.APPROVER && device == ApprovalDevice.PC.value) {
 			// アルゴリズム「申請一覧リスト取得承認件数」を実行する(Thực hiện thuật toán [so luong approve lấy list danh sách đơn xin])
 			ApplicationStatus applicationStatus = appListInitialRepository.countAppListApproval(appListInfo.getAppLst(), appListInfo.getNumberOfApp());
 			appListInfo.setNumberOfApp(applicationStatus);
@@ -192,7 +189,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 			break;
 		}
 		// デバイス
-		if(device == PC) {
+		if(device == ApprovalDevice.PC.value) {
 			// 申請が501件以上存在するかを確認する
 			if(appListInfo.getAppLst().size() > 500) {
 				// 申請一覧情報.表示行数超にTrueをセットし、申請一覧を先頭から５００行を残して削除する

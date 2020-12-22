@@ -39,8 +39,11 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.ScEmployeeGeneralInfoAdapt
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistItemImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethod;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
@@ -49,17 +52,18 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
+import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -142,7 +146,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
 
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
@@ -171,8 +175,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	@Inject
 	private I18NResourcesForUK internationalization;
 
-	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
+//	@Inject
+//	private EmpEmployeeAdapter empEmployeeAdapter;
 
 	@Inject
 	private EmpComHisAdapter comHisAdapter;
@@ -277,27 +281,52 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId())
 					.get();
 			command.setContent(scheCreContent);
-
 			command.setConfirm(scheCreContent.getConfirm());
 			// register personal schedule
-
 			this.registerPersonalSchedule(command, scheduleExecutionLog, context, companyId);
-			return;
+		} else {
+			// ドメインモデル「スケジュール作成実行ログ」を新規登録する
+			ScheduleExecutionLog scheduleExecutionLogAuto = ScheduleExecutionLog.creator(
+					companyId,
+					command.getScheduleExecutionLog().getExecutionId(), 
+					loginUserContext.employeeId(),
+					command.getScheduleExecutionLog().getPeriod(), 
+					command.getScheduleExecutionLog().getExeAtr());
+			// ドメインモデル「スケジュール作成内容」を新規登録する
+			SpecifyCreation specifyCreation = new SpecifyCreation(
+					CreationMethod.PERSONAL_INFO,				// 作成方法←"個人情報"
+					Optional.empty(),							// コピー開始日←optional.empty
+					Optional.empty(),							// マスタ参照先←optional.empty
+					Optional.empty());							// 月間パターンコード←optional.empty
+			ConditionEmployee conditionEmployee = new ConditionEmployee(
+					command.getRecreateTransfer(),				// 更新処理自動実行」.再実行条件.異動者を再作成する
+					false,										// TODO: domain 「更新処理自動実行」  missing attribute
+					false,										// 短時間勤務者←false
+					false);										// 労働条件変更者←false
+			RecreateCondition recreateCondition = new RecreateCondition(
+					command.getIsReExecution(),					// 対象者を限定する
+					false,										// 確定済みも対象とする←false
+					false,										// 手修正・申請反映も対象とする←false
+					Optional.ofNullable(conditionEmployee));	// 対象者の条件
+			ScheduleCreateContent scheCreContent = new ScheduleCreateContent(
+					command.getExecutionId(),					// 実行ID←input.実行ID
+					false,										// 確定済みにする←false
+					ImplementAtr.CREATE_NEW_ONLY,				// 作成種類←"新規作成"
+					specifyCreation,							// 作成方法の指定
+					Optional.ofNullable(recreateCondition));	// 再作成条件
+			command.setContent(scheCreContent);
+			command.setConfirm(scheCreContent.getConfirm());
+			try {
+				this.registerPersonalSchedule(command, scheduleExecutionLogAuto, context, companyId);
+			} catch(Exception ex) {
+				command.setIsExForKBT(true);
+				throw ex;
+			} finally {
+				if (command.getCountDownLatch() != null) {
+					command.getCountDownLatch().countDown();
+				}
+			}
 		}
-
-		ScheduleExecutionLog scheduleExecutionLogAuto = ScheduleExecutionLog.creator(companyId,
-				command.getScheduleExecutionLog().getExecutionId(), loginUserContext.employeeId(),
-				command.getScheduleExecutionLog().getPeriod(), command.getScheduleExecutionLog().getExeAtr());
-		try {
-		this.registerPersonalSchedule(command, scheduleExecutionLogAuto, context, companyId);
-		} catch(Exception ex) {
-			command.setIsExForKBT(true);
-			if(command.getCountDownLatch() != null)
-				command.getCountDownLatch().countDown();
-			throw ex;
-		}
-		if(command.getCountDownLatch() != null)
-			command.getCountDownLatch().countDown();
 	}
 
 	@Inject
@@ -490,8 +519,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		// ドメインモデル「社員の勤務種別」を取得する
 		// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
-		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, employeeIds, period);
+		List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis = this.businessTypeOfEmpHisService.find(employeeIds, period);
 		empGeneralInfo.setListBusTypeOfEmpHis(listBusTypeOfEmpHis);
 		// Imported(就業)「社員の在職状態」を取得する
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = this.employmentStatusAdapter

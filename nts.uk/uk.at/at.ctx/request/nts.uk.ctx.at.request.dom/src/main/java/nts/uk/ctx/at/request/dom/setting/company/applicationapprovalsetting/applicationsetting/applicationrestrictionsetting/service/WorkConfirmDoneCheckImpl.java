@@ -56,7 +56,7 @@ public class WorkConfirmDoneCheckImpl implements WorkConfirmDoneCheck {
 						"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
 			}
 			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分をチェックする
-			if (this.workFixedAdater.getEmploymentFixedStatus(companyID, appDate, wkpHistImport.getWorkplaceId(),
+			if (this.workFixedAdater.checkWkpConfirmedToWork(companyID, appDate, wkpHistImport.getWorkplaceId(),
 					closureEmployment.get().getClosureId())) {
 				return true;
 			}

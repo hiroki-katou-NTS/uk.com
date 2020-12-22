@@ -14,8 +14,8 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySetting;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySettingRepo;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
@@ -40,7 +40,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ScreenQueryGetInforOfInitStartup {
 
 	@Inject
-	private WorkScheDisplaySettingRepo workScheDisplaySettingRepo;
+	private DisplaySettingByWorkplaceRepository workScheDisplaySettingRepo;
 	@Inject
 	private EmpOrganizationPub empOrganizationPub;
 	
@@ -54,7 +54,7 @@ public class ScreenQueryGetInforOfInitStartup {
 	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
-		Optional<WorkScheDisplaySetting> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
+		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
 		if (!workScheDisplaySettingOpt.isPresent()) {
 			return new DataScreenQueryGetInforDto(null, null, null, null);
 		}

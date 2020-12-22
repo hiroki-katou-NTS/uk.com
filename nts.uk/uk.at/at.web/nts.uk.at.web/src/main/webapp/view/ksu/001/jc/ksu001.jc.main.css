@@ -47,13 +47,13 @@ div.label {
 .table-calendar {
 	display: flex;
 	flex-wrap: wrap;
-	padding: 20px 0 0;
-	width: 805px;
+	padding: 20px 0px 0px 25px;
+	width: 875px;
 	margin-top: 5px;
 }
 .table-border{
 	border: 1px solid #777;
-	width: 810px;
+	width: 920px;
 	height: 420px;
 	margin-top: 30px;
 }
@@ -61,7 +61,7 @@ div.label {
 	position: relative;
 	border: 1px solid #777;
 	width: 85px;
-	margin: 0 0 25px 25px;
+	margin: 0 10px 25px 25px;
 }
 
 .table-calendar .day-box {
@@ -75,7 +75,7 @@ div.label {
 	right: 100%;
 	border: 7px solid transparent;
 	border-left-color: #97D155;
-	margin: 20px 0 0 10px;
+	margin: 20px 5px 0px 5px;
 }
 .table-calendar .day-item:first-child:after { visibility: hidden; }
 .table-calendar .day-header {
@@ -107,6 +107,6 @@ div.label {
 	content: '';
 	border: 7px solid transparent;
 	border-left-color: #97D155;
-	margin: 20px 0 0 10px;
+	margin: 20px 5px 0px 5px;
 	height: 1px;
 }

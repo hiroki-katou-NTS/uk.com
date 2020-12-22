@@ -9,7 +9,7 @@
 		<!-- b Screen -->
 		<div class="contentAll">
 			<div class="contentL">
-				<table class="tableContentL">
+				<!-- <table class="tableContentL">
 					<tr>
 						<td>
 							<div tabindex="1" data-bind="ntsRadioButton: { checked: rdSelected, enable: 'true', option: optionCategory, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"/>
@@ -22,28 +22,50 @@
 							</div>
 						</td>
 					</tr>
-				<!-- <tr>
+				 <tr>
 						<td>
 							<div tabindex="3" data-bind="ntsRadioButton: {checked: rdSelected, enable: 'true', option: optionDeleteSet, optionValue: 'value', optionText: 'text', group: 'ntsControl'}" />
 						</td> 
-					</tr>-->
-				</table>
+					</tr>
+        </table> -->
+        
+         <!-- B3_3 削除セット選択(パネル) -->
+         <div id="B3_3" data-bind="ntsPanel: { width: '70%', height: '550px', direction: 'right', showIcon: true, visible: true }">
+          <!-- B3_3_2 絞り込み検索 -->
+          <div id="B3_3_2" data-bind="ntsSearchBox: {
+            searchMode: 'highlight',
+            targetKey: 'displayCode',
+            comId: 'B3_4',
+            items: patternList,
+            selected: selectedPatternId,
+            selectedKey: 'displayCode',
+            mode: 'igGrid',
+            fields: ['displayCode', 'patternName']
+          }" tabindex="1"></div>
+          <!-- B3_4 削除セット一覧 -->
+          <table id="B3_4" data-bind="ntsGridList: {
+            name: '#[CMF005_143]',
+            options: patternList,
+            optionsValue: 'displayCode',
+            columns: patternColumns,
+            multiple: false,
+            value: selectedPatternId,
+            rows: 20
+          }" tabindex="2"></table>
+        </div>
 			</div>
 			<div class="contentR">
 				<div id="fixed-flex-layout-right">
 					<div class="line-height flex">
-						<div>
-							<!--B4_1-->
-							<div class="float_left display_block" data-bind="ntsFormLabel: {required : true ,constraint:['DelName'] }">#{i18n.getText('CMF005_20')}</div>
-							<input id="B4_2" tabindex="4" class="validate_form"
-								data-bind="ntsTextEditor: { value: deleteSetName, required: true, constraint: 'DelName', option: {width: '200px'}, name: '#[CMF005_21]'}" />
+						<div class="flex halign-center">
+							<!--B11_1-->
+							<div class="float_left display_block" data-bind="ntsFormLabel: {required : true ,constraint:['PatternName'] }">#{i18n.getText('CMF005_224')}</div>
+							<label id="B11_2" data-bind="text: savedName"></label>
 						</div>
 					</div>
 					<div class="flex">
 						<!--B5_1-->
 						<div data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_22')}</div>
-						<div id="B5_2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_23')}</div>
-						<span id="B5_2_2" />
 					</div>
 
 					<div class="flex">
@@ -54,7 +76,7 @@
 							width: 500,
 							showNumbering: false,
 							dataSource: listDataCategory,
-							primaryKey: 'categoryId',
+							primaryKey: 'id',
 							columns: listColumnHeader,
 							multiple: false,
 							value : currentCategory,
@@ -129,11 +151,22 @@
 						<!--B9_1-->
 						<div data-bind="ntsFormLabel: { constraint:['SupplementExplanation'] }">#{i18n.getText('CMF005_39')}</div>
 						<input id="B9_2" tabindex="13" data-bind="ntsTextEditor: {name: '#[CMF005_39]', value: supplementExplanation, constraint:'SupplementExplanation'}" />
-					</div>
-
+          </div>
+          <div class="valign-center control-group">
+            <!-- B12_1 対象社員選択(ラベル) -->
+            <div id="B12_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF005_50')}</div>
+            <!-- B12_2 対象社員選択 -->
+            <div id="B12_2" class="box-list" data-bind="ntsRadioBoxGroup: {
+              name: '#[CMF005_50]',
+              options: itemTitleAtr,
+              optionsValue: 'value',
+              optionsText: 'titleAtrName',
+              value: selectedTitleAtr,	
+              enable: true
+            }" tabindex="10"></div>
+          </div>
 					<div style="text-align: center; margin-top: 20px">
-						<button id="B20_1" class="large" tabindex="14" data-bind="click: backScreenA">#{i18n.getText('CMF005_42')}</button>
-						<button id="B20_2" class="x-large proceed" data-bind="click: nextScreenD">#{i18n.getText('CMF005_43')}</button>
+						<button id="B20_2" class="x-large proceed" data-bind="click: nextScreenD, text: nextButtonText, enable: buttonEnable"></button>
 					</div>
 
 				</div>

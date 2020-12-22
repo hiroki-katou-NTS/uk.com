@@ -67,7 +67,6 @@ public class PCLogOnInfoOfDailyAttd implements DomainObject {
 
 				
 				//出勤または退勤時間の取得
-				if(!attendanceLeave.isPresent()) continue;
 				if(!attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).isPresent()) continue;
 						
 				Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getAttendanceStamp():

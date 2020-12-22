@@ -759,8 +759,8 @@ public class DailyPerformanceCorrectionProcessor {
 						if (!value.isEmpty()) {
 							// convert HH:mm
 							int minute =0 ;
-							if(Integer.parseInt(value) >= 0){
-								minute = Integer.parseInt(value);
+							if(Integer.parseInt(value.equals("0.0") ? "0" : value) >= 0){
+								minute = Integer.parseInt(value.equals("0.0") ? "0" : value);
 							}else{
 								if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 									minute = 0 - ((Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / DPText.MINUTES_OF_DAY) * DPText.MINUTES_OF_DAY));
@@ -1672,7 +1672,7 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attOpt.isPresent()) {
 						Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 						if (workStampOpt.isPresent() && stampSourceAt) {
-									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+									workStampOpt.get().setPropertyWorkStamp(
 											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
 													? workStampOpt.get().getTimeDay().getTimeWithDay().get()
 													: null,
@@ -1686,7 +1686,7 @@ public class DailyPerformanceCorrectionProcessor {
 					Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
 					if (leavOpt.isPresent() && stampSourceLeav) {
 						Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+								workStampOpt.get().setPropertyWorkStamp(
 										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
 												? workStampOpt.get().getTimeDay().getTimeWithDay().get()
 												: null,

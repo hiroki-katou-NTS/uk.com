@@ -14,8 +14,10 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         selectedOption: KnockoutObservable<number>;
         targetList: KnockoutObservableArray<any>;
         selectedTarget: KnockoutObservable<number>;
+        selectFirst: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
+            self.selectFirst = ko.observable(true);
             self.isMultiSelect = ko.observable(true);
             self.inputWorkplaceIds = ko.observable('');
             self.selectedIds = ko.observableArray([]);
@@ -74,7 +76,9 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
                 // For Workplace List Kcp004
                 baseDate: self.baseDate(),
                 // Workplace or Department
-                target: self.target()
+                target: self.target(),
+                // fist item is selected
+                selectFirst: self.selectFirst()
             }, true);
 
             nts.uk.ui.windows.sub.modal("/view/cdl/009/a/index.xhtml").onClosed(function() {

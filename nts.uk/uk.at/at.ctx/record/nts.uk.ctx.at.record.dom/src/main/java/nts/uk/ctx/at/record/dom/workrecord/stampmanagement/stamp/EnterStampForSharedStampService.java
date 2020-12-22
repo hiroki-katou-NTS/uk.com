@@ -48,7 +48,7 @@ public class EnterStampForSharedStampService {
 			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , RefectActualResult refActualResult) {
 		
 		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()
-		Optional<StampSetCommunal> setShareTStamp = require.gets(AppContexts.user().companyId());
+		Optional<StampSetCommunal> setShareTStamp = require.gets();
 		
 		if (!setShareTStamp.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -73,7 +73,7 @@ public class EnterStampForSharedStampService {
 		 * 
 		 * 	共有打刻の打刻設定Repository.取得する()										
 		 */
-		Optional<StampSetCommunal> gets(String comppanyID);
+		Optional<StampSetCommunal> gets();
 	}
 
 }

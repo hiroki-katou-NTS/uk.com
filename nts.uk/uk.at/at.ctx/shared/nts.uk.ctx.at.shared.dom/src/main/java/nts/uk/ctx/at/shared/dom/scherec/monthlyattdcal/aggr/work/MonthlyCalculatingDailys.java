@@ -16,6 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
@@ -36,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -75,6 +76,8 @@ public class MonthlyCalculatingDailys {
 	
 	private Map<GeneralDate, WorkingConditionItem> workConditions;
 	
+	private Map<GeneralDate, SnapShot> snapshots;
+	
 	public MonthlyCalculatingDailys(){
 		this.attendanceTimeOfDailyMap = new HashMap<>();
 		this.workInfoOfDailyMap = new HashMap<>();
@@ -88,6 +91,24 @@ public class MonthlyCalculatingDailys {
 		this.rsvGrantRemainingDatas = new ArrayList<>();
 		this.affiInfoOfDailyMap = new HashMap<>();
 		this.workConditions = new HashMap<>();
+		this.snapshots = new HashMap<>();
+	}
+	
+	public List<IntegrationOfDaily> getDailyWorks(String sid) {
+		
+		return workInfoOfDailyMap.entrySet().stream().map(wi -> {
+
+			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(), 
+					null, affiInfoOfDailyMap.get(wi.getKey()), 
+					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(), 
+					Optional.empty(), Optional.empty(), 
+					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())), 
+					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(), 
+					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())), 
+					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
+					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())), 
+					new ArrayList<>(), Optional.ofNullable(snapshots.get(wi.getKey())));
+		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -381,7 +402,6 @@ public class MonthlyCalculatingDailys {
 		if (workInfo.getRecordInfo().isExamWorkTime()) {
 			
 			WorkScheduleTimeOfDaily correctedSche = new WorkScheduleTimeOfDaily(atTime.getWorkScheduleTimeOfDaily().getWorkScheduleTime(),
-																				new AttendanceTime(0), 
 																				atTime.getWorkScheduleTimeOfDaily().getRecordPrescribedLaborTime());
 			
 			ActualWorkingTimeOfDaily beforeActualWork = atTime.getActualWorkingTimeOfDaily();
@@ -501,6 +521,12 @@ public class MonthlyCalculatingDailys {
 			val ymd = workType.getKey();
 			this.affiInfoOfDailyMap.putIfAbsent(ymd, workType.getValue());
 		}
+		
+		val snapshots = require.snapshot(employeeId, period);
+		for (val snapshot : snapshots.entrySet()){
+			val ymd = snapshot.getKey();
+			this.snapshots.putIfAbsent(ymd, snapshot.getValue());
+		}
 	}
 	
 	/**
@@ -607,6 +633,8 @@ public class MonthlyCalculatingDailys {
 	public static interface RequireM4 extends RequireM1, RequireM3 {}
 	
 	public static interface RequireM1 extends RequireM2 {
+		
+		Map<GeneralDate, SnapShot> snapshot(String employeeId, DatePeriod datePeriod);
 		
 		Map<GeneralDate, TimeLeavingOfDailyAttd> dailyTimeLeavings(String employeeId, DatePeriod datePeriod);
 		

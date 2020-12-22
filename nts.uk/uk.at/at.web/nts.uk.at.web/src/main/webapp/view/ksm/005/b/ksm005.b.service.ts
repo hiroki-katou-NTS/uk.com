@@ -130,6 +130,8 @@ module nts.uk.at.view.ksm005.b {
                 workingCode: string;
                 // 社員ID
                 employeeId: string;
+                // 祝日優先か
+                isHolidayPriority: boolean;
                 //稼働日区分
                 businessDayClassification: BusinessDayClassification;
             }

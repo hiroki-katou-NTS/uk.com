@@ -8,14 +8,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TypeOffsetJudgment;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SyEmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmpAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -40,6 +46,9 @@ public class AddSubHdManagementService {
 
 	@Inject
 	private LeaveComDayOffManaRepository repoLeaveComDayOffMana;
+	
+	@Inject
+	private SysEmpAdapter syEmployeeAdapter;
 
 	/**
 	 * @param subHdManagementData
@@ -98,20 +107,92 @@ public class AddSubHdManagementService {
 				}
 			}
 
-			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
-				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
-				int targetSelectionAtr = 2; // 固定値：手動
-				int usedHours = 0;
-				if (subHdManagementData.getCheckedSplit()) {
-					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(leaveId,
-							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
+//			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
+//				// 	ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
+//				int targetSelectionAtr = 2; // 固定値：手動
+//				int usedHours = 0;
+//				if (subHdManagementData.getCheckedSplit()) {
+//					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(
+//							subHdManagementData.getEmployeeId(),
+//							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
+//					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
+//				} 
+//				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
+//						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
+//				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
+//			}
+			
+		}
+		//	Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
+		if (subHdManagementData.getLstLinkingDate() != null && !subHdManagementData.getLstLinkingDate().isEmpty()) {
+			//	ドメインモデル「休出管理データ」を取得 Nhận domain model 「休出管理データ」
+			List<LeaveManagementData> lstLeaveManagement = repoLeaveManaData.getBySidAndDatOff(
+					subHdManagementData.getEmployeeId(),
+					subHdManagementData.getLstLinkingDate().stream()
+					.map(x -> GeneralDate.fromString(x, "yyyy-MM-dd")).collect(Collectors.toList()));
+			String comDayOffID = IdentifierUtil.randomUniqueId();
+			String comDayOffIDSub = IdentifierUtil.randomUniqueId();
+			//	List＜代休管理データ＞
+			List<CompensatoryDayOffManaData> lstSubstituteLeaveManagement = new ArrayList<CompensatoryDayOffManaData>();
+			if (subHdManagementData.getCheckedSplit()) {
+				CompensatoryDayOffManaData item1 = new CompensatoryDayOffManaData(comDayOffID,
+						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+						subHdManagementData.getDateOptionSubHoliday(),
+						subHdManagementData.getSelectedCodeOptionSubHoliday(), 0,
+						subHdManagementData.getSelectedCodeOptionSubHoliday(), 0);
+				lstSubstituteLeaveManagement.add(item1);
+			}
+			CompensatoryDayOffManaData item2 = new CompensatoryDayOffManaData(comDayOffIDSub,
+					AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+					subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
+					subHdManagementData.getSelectedCodeSubHoliday(), 0);
+			lstSubstituteLeaveManagement.add(item2);
+			// 未使用日数
+			Double unUsedDay = 0.0;
+			// 未使用時間数
+			int unUsedHour = 0;
+			//	Input．List＜代休管理データ＞をループする Loop Input．List＜代休管理データ＞
+			for (CompensatoryDayOffManaData compensatoryDayOffManaData : lstSubstituteLeaveManagement) {
+				//	取得したList＜休出管理データ＞をループする Loop list ＜休出管理データ＞ đã nhận
+				for (LeaveManagementData leaveManagementData : lstLeaveManagement) {
+					//	未使用日数、未使用時間数を計算 Tính toán số ngày/ số giờ chưa sử dụng
+					if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() > 0) {
+						unUsedDay = leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v();
+					}
+					
+					if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() <= 0.0 || unUsedDay > 0) {
+						unUsedDay = 0.0;
+					}
+					
+					if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() > 0) {
+						unUsedHour = leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v();
+					}
+					
+					if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() < 0 || unUsedHour > 0) {
+						unUsedHour = 0;
+					}
+					//	ループ中の「休出管理データ」を更新する Update "Data quản lý đi làm ngày nghỉ" trong vòng lặp
+					LeaveManagementData updateData = new LeaveManagementData(leaveManagementData.getID(),
+							leaveManagementData.getCID(), leaveManagementData.getSID(), false,
+							leaveManagementData.getComDayOffDate().getDayoffDate().get() , leaveManagementData.getExpiredDate(),
+							leaveManagementData.getOccurredDays(), leaveManagementData.getOccurredTimes(), unUsedDay,
+							unUsedHour, 1, leaveManagementData.getFullDayTime(), leaveManagementData.getHalfDayTime(),
+							leaveManagementData.getDisapearDate());
+					repoLeaveManaData.update(updateData);
+					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(subHdManagementData.getEmployeeId(),
+							leaveManagementData.getComDayOffDate().getDayoffDate().get(), 
+							compensatoryDayOffManaData.getDayOffDate().getDayoffDate().get(),
+							compensatoryDayOffManaData.getRequireDays().v(), 
+							TargetSelectionAtr.MANUAL.value);
 					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
-				} 
-				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
-						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
-				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
+					//	計算した未使用日数　＝　0 AND　計算した未使用時間数　＝　0
+					if(!(unUsedDay == 0.0 && unUsedHour == 0)) {
+						break;
+					}
+				}
 			}
 		}
+
 		return Collections.emptyList();
 	}
 
@@ -190,6 +271,11 @@ public class AddSubHdManagementService {
 		}
 		// アルゴリズム「休出代休日数チェック処理」を実行する
 		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));
+		this.checkHistoryOfCompany(subHdManagementData.getEmployeeId()
+				, subHdManagementData.getDuedateHoliday()
+				, subHdManagementData.getDateSubHoliday()
+				, subHdManagementData.getDateOptionSubHoliday()
+				, TypeOffsetJudgment.REAMAIN.value);
 		return errorList;
 	}
 
@@ -253,7 +339,7 @@ public class AddSubHdManagementService {
 				errorList.add("Msg_1441");
 			}
 			// 分割消化.代休（年月日）と締め日をチェックする
-			if (!closureDate.get().after(splitDate.get())) {
+			if (closureDate.isPresent() && !closureDate.get().after(splitDate.get())) {
 				errorList.add("Msg_1442");
 			}
 			// 分割消化.休出（年月日）と代休（年月日）をチェックする
@@ -341,5 +427,49 @@ public class AddSubHdManagementService {
 			return Optional.empty();
 		}
 		return Optional.of(closurePeriod.start());
+	}
+	
+	/**
+	 * 所属会社履歴をチェック
+	 * @param sid 社員ID
+	 * @param occurrenceDate 発生日
+	 * @param digestionDate 消化日
+	 * @param dividedDigestionDate 分割消化日
+	 * @param flag 振休・代休区分
+	 */
+	private void checkHistoryOfCompany(String sid, GeneralDate occurrenceDate, GeneralDate digestionDate, GeneralDate dividedDigestionDate, Integer flag) {
+		SyEmployeeImport sysEmp = syEmployeeAdapter.getPersonInfor(sid);
+		
+		if (flag == TypeOffsetJudgment.ABSENCE.value) {
+			if (occurrenceDate != null && occurrenceDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_SubstituteWork");
+			} else if (digestionDate != null && digestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_SubstituteHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "分割消化");
+			} else if (occurrenceDate != null && occurrenceDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_SubstituteWork");
+			} else if (digestionDate != null && digestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_SubstituteHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "分割消化");
+			}
+		}
+		
+		if (flag == TypeOffsetJudgment.REAMAIN.value) {
+			if (occurrenceDate != null && occurrenceDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "休出");
+			} else if (digestionDate != null && digestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_CompensationHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "分割消化");
+			} else if (occurrenceDate != null && occurrenceDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "休出");
+			} else if (digestionDate != null && digestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_CompensationHoliday");
+			} else if (dividedDigestionDate != null && dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "分割消化");
+			}
+		}
 	}
 }

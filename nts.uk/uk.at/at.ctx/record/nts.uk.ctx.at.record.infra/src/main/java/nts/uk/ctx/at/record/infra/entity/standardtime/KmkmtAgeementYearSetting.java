@@ -24,10 +24,10 @@ public class KmkmtAgeementYearSetting extends UkJpaEntity implements Serializabl
 	public KmkmtAgeementYearSettingPK kmkmtAgeementYearSettingPK;
 	
 	@Column(name ="ERROR_YEARLY")
-	public BigDecimal errorOneYear;
+	public int errorOneYear;
 	
 	@Column(name ="ALARM_YEARLY")
-	public BigDecimal alarmOneYear;
+	public int alarmOneYear;
 	
 	@Override
 	protected Object getKey() {

@@ -12,7 +12,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.SnapshotImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -29,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -53,6 +58,9 @@ public class RegisterDailyWork {
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
 	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
+	
 	public void register(IntegrationOfDaily integrationOfDaily,List<Stamp> listStamp) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
@@ -74,8 +82,8 @@ public class RegisterDailyWork {
 		}
 		
 		//日別実績の休憩時間帯を登録する
-		List<BreakTimeOfDailyPerformance> breakTimes = integrationOfDaily.getBreakTime().stream()
-				.map(c -> new BreakTimeOfDailyPerformance(employeeId, ymd, c)).collect(Collectors.toList());
+		Optional<BreakTimeOfDailyPerformance> breakTimes = integrationOfDaily.getBreakTime()
+				.map(c -> new BreakTimeOfDailyPerformance(employeeId, ymd, c));
 		dailyRecordAdUpService.adUpBreakTime(breakTimes);
 		
 		//日別実績の勤務種別を登録する (đã xóa nên k insert)
@@ -116,6 +124,8 @@ public class RegisterDailyWork {
 		
 		//日別実績の外出時間帯を登録する
 		if (integrationOfDaily.getOutingTime().isPresent()) {
+			List<OutingTimeSheet> listOutingTimeSheet = checkExistOuting(integrationOfDaily.getOutingTime().get().getOutingTimeSheets());
+			integrationOfDaily.getOutingTime().get().setOutingTimeSheets(listOutingTimeSheet);
 			dailyRecordAdUpService.adUpOutTime(Optional
 					.of(new OutingTimeOfDailyPerformance(employeeId, ymd, integrationOfDaily.getOutingTime().get())));
 		}
@@ -158,6 +168,21 @@ public class RegisterDailyWork {
 					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
 					true);
 		}
+		
+		integrationOfDaily.getSnapshot().ifPresent(ss -> {
+			val oldSnapshot = snapshotAdapter.find(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
+			if (!oldSnapshot.isPresent()) {
+				snapshotAdapter.save(DailySnapshotWorkImport.builder()
+						.sid(integrationOfDaily.getEmployeeId())
+						.ymd(integrationOfDaily.getYmd())
+						.snapshot(SnapshotImport.builder()
+											.workTime(ss.getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()))
+											.workType(ss.getWorkInfo().getWorkTypeCode().v())
+											.predetermineTime(ss.getPredetermineTime().v())
+											.build())
+						.build());
+			}
+		});
 	}
 	private List<TimeLeavingWork> checkExist(List<TimeLeavingWork> listTimeLeavingWork){
 		List<TimeLeavingWork> datas = new ArrayList<>();
@@ -179,6 +204,16 @@ public class RegisterDailyWork {
 			}
 		}
 		
+		return datas;
+	}
+	
+	private List<OutingTimeSheet> checkExistOuting(List<OutingTimeSheet> listOutingTimeSheet){
+		List<OutingTimeSheet> datas = new ArrayList<>();
+		for(OutingTimeSheet ots : listOutingTimeSheet) {
+			if(ots.getComeBack().isPresent() || ots.getGoOut().isPresent()) {
+				datas.add(ots);
+			}
+		}
 		return datas;
 	}
 	

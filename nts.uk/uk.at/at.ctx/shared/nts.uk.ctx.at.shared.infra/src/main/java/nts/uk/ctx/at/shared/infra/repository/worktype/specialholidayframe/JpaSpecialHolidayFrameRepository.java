@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,6 +25,11 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	private static final String GET_ALL = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId ";
 	private static final String GET_ALL_BY_LIST_FRAME_NO = GET_ALL
 			+ " AND a.kshmtSpecialHolidayFramePK.specialHdFrameNo IN :frameNos ";
+	
+	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshmtSpecialHolidayFrame a"
+			+ "	WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId"
+			+ "		AND a.abolishAtr = :abolishAtr";
+
 	private static SpecialHolidayFrame toDomain(KshmtSpecialHolidayFrame entity) {
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,
 				entity.kshmtSpecialHolidayFramePK.specialHdFrameNo,
@@ -97,5 +103,15 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 								.getList(x -> convertToDoma(x)));
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<SpecialHolidayFrame> findByCompanyIdAndUseCls(String companyId, int useCls) {
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshmtSpecialHolidayFrame.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", useCls)
+				.getList().stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
 	}
 }

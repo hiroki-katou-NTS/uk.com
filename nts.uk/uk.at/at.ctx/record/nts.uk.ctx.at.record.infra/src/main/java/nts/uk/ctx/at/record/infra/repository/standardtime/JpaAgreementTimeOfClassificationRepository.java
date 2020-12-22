@@ -101,16 +101,18 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 
 	@Override
 	public List<AgreementTimeOfClassification> find(String companyId, List<String> classificationCode) {
-		if(classificationCode.isEmpty()){
-			return new ArrayList<>();
-		}
-		String query = "SELECT a FROM KmkmtAgeementTimeClass a WHERE a.kmkmtAgeementTimeClassPK.companyId = :companyId "
-				+ "AND a.kmkmtAgeementTimeClassPK.classificationCode in :classificationCode ";
-		
-		return this.queryProxy().query(query, KmkmtAgeementTimeClass.class)
-				.setParameter("companyId", companyId)
-				.setParameter("classificationCode", classificationCode)
-				.getList(f -> toDomain(f));
+//		if(classificationCode.isEmpty()){
+//			return new ArrayList<>();
+//		}
+//		String query = "SELECT a FROM KmkmtAgeementTimeClass a WHERE a.kmkmtAgeementTimeClassPK.companyId = :companyId "
+//				+ "AND a.kmkmtAgeementTimeClassPK.classificationCode in :classificationCode ";
+//		
+//		return this.queryProxy().query(query, KmkmtAgeementTimeClass.class)
+//				.setParameter("companyId", companyId)
+//				.setParameter("classificationCode", classificationCode)
+//				.getList(f -> toDomain(f));
+
+		return new ArrayList<>();
 	}
 
 	private KmkmtAgeementTimeClass toEntity(AgreementTimeOfClassification agreementTimeOfClassification) {

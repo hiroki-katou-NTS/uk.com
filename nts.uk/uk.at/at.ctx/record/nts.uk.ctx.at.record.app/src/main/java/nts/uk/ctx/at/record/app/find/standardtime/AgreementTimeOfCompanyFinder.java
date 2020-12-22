@@ -1,19 +1,16 @@
 package nts.uk.ctx.at.record.app.find.standardtime;
 
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfCompanyDto;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * 
@@ -25,9 +22,6 @@ public class AgreementTimeOfCompanyFinder {
 
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
-
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
 	public AgreementTimeOfCompanyDto findAll(int laborSystemAtr) {
 		LoginUserContext login = AppContexts.user();

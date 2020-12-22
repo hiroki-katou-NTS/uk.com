@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
+import java.util.List;
+
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessDeleteResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 
 /**
@@ -19,6 +20,6 @@ public interface AfterProcessDelete {
 	 * @param appDispInfoStartupOutput
 	 * @return
 	 */
-	public ProcessDeleteResult screenAfterDelete(String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public List<String> screenAfterDelete(String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput);
 
 }

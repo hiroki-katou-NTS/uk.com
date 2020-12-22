@@ -18,13 +18,9 @@ module nts.uk.at.view.kdl044.a {
             gridFields: Array<String>;
             constructor() {
                 let self = this;
-                let holders = getText('KDL044_2') + '・'
-                    + getText('KDL044_3') + '・'
-                    + getText('KDL044_4') + '・'
-                    + getText('KDL044_5') + '・'
-                    + getText('KDL044_6') + '・'
-                    + getText('KDL044_8') + 'で検索…';
-                self.placeHolders = holders.replace("１", "");
+                let holders = getText('KDL044_2') + '・' + getText('KDL044_3') + '・' + getText('KDL044_6') + '・'
+                    + getText('KDL044_7') + '・' + getText('KDL044_8') +  'で検索…';
+                self.placeHolders = holders;
             }
 
             startPage(): JQueryPromise<any> {
@@ -84,9 +80,14 @@ module nts.uk.at.view.kdl044.a {
                                 }   
                             }
                             self.listShifuto();
+                            let differentFromCurrents = null;
+                            if (data.isMultiSelect == true) {
+								differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
+							} else {
+								differentFromCurrents = _.filter(result, (val) => { return val.shiftMasterCode != data.shiftCodeExpel });
+                            }
                             
-							let differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
-							self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
+                            self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
                             }

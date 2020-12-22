@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
-import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand_Old;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateApprovalSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateJobAssignSettingCommandHandler;
@@ -118,7 +118,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		displayReasonRepo.saveHolidayAppReason(companyId, reasonDisplaySettings);
 
 		updateJobAssign.handle(new JobAssignSettingCommand(BooleanUtils.toBoolean(kaf022.getIncludeConcurrentPersonel())));
-		updateAppro.handle(new ApprovalSettingCommand(kaf022.getApprovalByPersonAtr()));
+		updateAppro.handle(new ApprovalSettingCommand_Old(kaf022.getApprovalByPersonAtr()));
 		appReflectConditionRepo.save(kaf022.getAppReflectCondition().toDomain(companyId));
 
 		overtimeAppSetRepo.saveOvertimeAppSet(kaf022.getOvertimeApplicationSetting().toDomain(companyId), kaf022.getOvertimeApplicationReflect().toDomain());
@@ -171,13 +171,20 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 					if (target.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByHolidayAppType(companyId, target.getOpHolidayAppType().get());
 						if (!optionalAppReasonStandard.isPresent()
-								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
-							throw new BusinessException("Msg_1751", target.getAppType().name);
+								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
+							BusinessException exception = new BusinessException("Msg_1751", target.getOpHolidayAppType().get().name);
+							exception.setSuppliment("appType", target.getAppType().value);
+							exception.setSuppliment("holidayAppType", target.getHolidayAppType());
+							throw exception;
+						}
 					} else {
 						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByAppType(companyId, target.getAppType());
 						if (!optionalAppReasonStandard.isPresent()
-								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
-							throw new BusinessException("Msg_1751", target.getAppType().name);
+								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
+							BusinessException exception = new BusinessException("Msg_1751", target.getAppType().name);
+							exception.setSuppliment("appType", target.getAppType().value);
+							throw exception;
+						}
 					}
 				}
 			}

@@ -525,7 +525,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.$ajax(API.updateInfo,
                 {
                     application: params,
-                    arrivedLateLeaveEarlyDto: vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly
+                    arrivedLateLeaveEarlyDto: vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly,
+					appDispInfoStartupDto: vm.appDispInfoStartupOutput()
                 }).done((success: any) => {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" });
@@ -585,13 +586,13 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 if (ko.toJS(this.application().prePostAtr) === 1) {
                     switch (idItem) {
                         case IdItem.B6_7: {
-                            return vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isCheck();
+                            return vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isActive();
                         } case IdItem.B6_13: {
-                            return vm.lateOrEarlyInfo2().isIndicated() && vm.lateOrEarlyInfo2().isCheck();
+                            return vm.lateOrEarlyInfo2().isIndicated() && vm.lateOrEarlyInfo2().isActive();
                         } case IdItem.B6_19: {
-                            return vm.lateOrEarlyInfo3().isIndicated() && vm.lateOrEarlyInfo3().isCheck();
+                            return vm.lateOrEarlyInfo3().isIndicated() && vm.lateOrEarlyInfo3().isActive();
                         } case IdItem.B6_25: {
-                            return vm.lateOrEarlyInfo4().isIndicated() && vm.lateOrEarlyInfo4().isCheck();
+                            return vm.lateOrEarlyInfo4().isIndicated() && vm.lateOrEarlyInfo4().isActive();
                         } default: {
                             return true;
                         }

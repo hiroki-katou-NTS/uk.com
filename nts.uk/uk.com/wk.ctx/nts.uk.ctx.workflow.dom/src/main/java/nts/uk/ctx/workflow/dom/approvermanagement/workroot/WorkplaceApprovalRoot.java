@@ -30,8 +30,8 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 	
 	public static WorkplaceApprovalRoot createSimpleFromJavaType(String companyId,
 			String approvalId, String workplaceId, String historyId, Integer applicationType,
-			String startDate, String endDate, String branchId,
-			String anyItemApplicationId, Integer confirmationRootType,
+			String startDate, String endDate,
+			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
@@ -41,15 +41,15 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			workplaceId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-					branchId, employmentAppHistorys,
+					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					anyItemApplicationId, noticeId, busEventId));
+					noticeId, busEventId));
 	}
 	public static WorkplaceApprovalRoot convert(String companyId,
 			String approvalId, String workplaceId, String historyId, Integer applicationType,
-			GeneralDate startDate, GeneralDate endDate, String branchId,
-			String anyItemApplicationId, Integer confirmationRootType,
+			GeneralDate startDate, GeneralDate endDate, 
+			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
@@ -59,10 +59,10 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			workplaceId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-					branchId, employmentAppHistorys,
+					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					anyItemApplicationId, noticeId, busEventId));
+					noticeId, busEventId));
 	}
 	public static WorkplaceApprovalRoot updateEdate(WorkplaceApprovalRoot wpApprovalRoot, String eDate){
 		WorkplaceApprovalRoot wp = wpApprovalRoot;

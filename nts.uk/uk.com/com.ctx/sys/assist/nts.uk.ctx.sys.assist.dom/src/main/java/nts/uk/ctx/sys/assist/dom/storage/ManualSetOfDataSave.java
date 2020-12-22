@@ -29,11 +29,6 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	private String storeProcessingId;
 
 	/**
-	 * システム種類
-	 */
-	private SystemType systemType;
-
-	/**
 	 * パスワード有無
 	 */
 	private NotUseAtr passwordAvailability;
@@ -71,12 +66,12 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	/**
 	 * 月次保存終了日
 	 */
-	private GeneralDate monthSaveEndDate;
+	private String monthSaveEndDate;
 
 	/**
 	 * 月次保存開始日
 	 */
-	private GeneralDate monthSaveStartDate;
+	private String monthSaveStartDate;
 
 	/**
 	 * 補足説明
@@ -97,11 +92,11 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	 * 社員指定の有無
 	 */
 	private NotUseAtr presenceOfEmployee;
-
+	
 	/**
-	 * 調査用保存の識別
+	 * 実行区分
 	 */
-	private NotUseAtr identOfSurveyPre;
+	private StorageClassification saveType;
 
 	/**
 	 * 実行者
@@ -110,17 +105,16 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	private List<TargetEmployees> employees;
 	private List<TargetCategory> category;
 
-	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
+	public ManualSetOfDataSave(String cid, String storeProcessingId, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
-			Integer endYear, Integer startYear, int presenceOfEmployee, int identOfSurveyPre,
-			String practitioner) {
+			String monthSaveEndDate, String monthSaveStartDate, String suppleExplanation,
+			Integer endYear, Integer startYear, int presenceOfEmployee,
+			String practitioner, int saveType) {
 
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
@@ -134,21 +128,20 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.endYear = endYear != null ? Optional.of(new Year(endYear)) : Optional.empty();
 		this.startYear = startYear != null ? Optional.of(new Year(startYear)) : Optional.empty();
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
-		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
+		this.saveType = EnumAdaptor.valueOf(saveType, StorageClassification.class);
 	}
 
-	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
+	public ManualSetOfDataSave(String cid, String storeProcessingId, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
-			Integer endYear, Integer startYear, int presenceOfEmployee, int identOfSurveyPre,
-			String practitioner, List<TargetEmployees> employees, List<TargetCategory> category) {
+			String monthSaveEndDate, String monthSaveStartDate, String suppleExplanation,
+			Integer endYear, Integer startYear, int presenceOfEmployee, String practitioner,
+			int saveType, List<TargetEmployees> employees, List<TargetCategory> category) {
 
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
@@ -162,8 +155,8 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.endYear = endYear != null ? Optional.of(new Year(endYear)) : Optional.empty();
 		this.startYear = startYear != null ? Optional.of(new Year(startYear)) : Optional.empty();
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
-		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
+		this.saveType = EnumAdaptor.valueOf(saveType, StorageClassification.class);
 		this.employees = employees;
 		this.category = category;
 	}

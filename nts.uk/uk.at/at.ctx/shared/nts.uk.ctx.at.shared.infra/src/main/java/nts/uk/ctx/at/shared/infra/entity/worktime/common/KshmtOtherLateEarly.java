@@ -43,9 +43,7 @@ public class KshmtOtherLateEarly extends UkJpaEntity implements Serializable {
 	@Column(name = "DEDUCTION_ROUNDING")
 	private int deductionRounding;
 
-	/** The extract late early time. */
-	@Column(name = "EXTRACT_LATE_EARLY_TIME")
-	private int extractLateEarlyTime;
+
 
 	/** The include worktime. */
 	@Column(name = "INCLUDE_WORKTIME")

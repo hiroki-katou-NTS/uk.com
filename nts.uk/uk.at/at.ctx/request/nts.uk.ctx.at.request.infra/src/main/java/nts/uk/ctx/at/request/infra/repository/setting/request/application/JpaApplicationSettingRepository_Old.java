@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.App
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ReflectAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApproverRegisterSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
@@ -78,8 +77,7 @@ public class JpaApplicationSettingRepository_Old extends JpaRepository implement
 				EnumAdaptor.valueOf(entity.priorityTimeReflectFlg,PriorityFLg.class),
 				EnumAdaptor.valueOf(entity.attendentTimeReflectFlg,ReflectionFlg.class),
 				EnumAdaptor.valueOf(entity.classScheAchi, ClassifyScheAchieveAtr.class),
-				EnumAdaptor.valueOf(entity.reflecTimeofSche, ApplyTimeSchedulePriority.class),
-				ApproverRegisterSet.toDomain(entity.companyUnit, entity.workplaceUnit, entity.employeeUnit));
+				EnumAdaptor.valueOf(entity.reflecTimeofSche, ApplyTimeSchedulePriority.class));
 	}
 
 	private AppReflectAfterConfirm toDomainRef(KrqstApplicationSetting entity){
@@ -122,9 +120,6 @@ public class JpaApplicationSettingRepository_Old extends JpaRepository implement
 		entity.scheduleConfirmedAtr = domainRef.getScheduleConfirmedAtr().value;
 		entity.classScheAchi = domain.getClassScheAchi().value;
 		entity.reflecTimeofSche = domain.getReflecTimeofSche().value;
-		entity.companyUnit = domain.getApproverResSet().getCompanyUnit().value;
-		entity.workplaceUnit = domain.getApproverResSet().getWorkplaceUnit().value;
-		entity.employeeUnit = domain.getApproverResSet().getEmployeeUnit().value;
 		return entity;
 	}
 	

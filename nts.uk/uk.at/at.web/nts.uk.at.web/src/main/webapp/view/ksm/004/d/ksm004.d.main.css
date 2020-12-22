@@ -1,7 +1,7 @@
 #table-top {
 	width: 440px;
-	margin-top: 10px;
-	margin-left: 10px;
+	margin-left: 7px;
+	margin-top: 7px;
 }
 
 #table-top tr td:nth-child(1){
@@ -12,6 +12,7 @@
 }
 
 #table-top .ntsCheckBox{
+	margin-top: 1px;
 	padding-left: 0px;
 }
 
@@ -20,8 +21,8 @@
 }
 
 .nts-fixed-table{
-	margin-left: 90px;
-	margin-top: 10px;
+	margin-left: 87px;
+	margin-top: 4px;
 }
 
 .nts-fixed-table th{
@@ -65,9 +66,17 @@
     padding: 5px;
 }
 .ntsCheckBox-label-bottom{
-    margin: 2px 0 10px 0;
+    margin: 5px 0 12px 0;
 }
 
 #functions-area-bottom{
 	 height: 110px;
+}
+
+.nts-fixed-table table.fixed-table > tbody > tr:hover > td {
+	background-color: #FFFFFF;
+}
+
+.nts-fixed-table table.fixed-table > tbody > tr > td:nth-child(2):hover {
+	background-color: #c5f1f7;
 }

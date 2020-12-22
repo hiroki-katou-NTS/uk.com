@@ -25,10 +25,6 @@ public class ManualSetDelDto {
 		/** The company Id. */
 		private String companyId;
 
-		// システム種類
-		/** The system type. */
-		private int systemType;
-
 		// 削除名称
 		/** The deletion name. */
 		private String delName;
@@ -91,7 +87,7 @@ public class ManualSetDelDto {
 
 	public static ManualSetDelDto fromDomain(ManualSetDeletion domain) {
 
-		return new ManualSetDelDto(domain.getDelId(), domain.getCompanyId(), domain.getSystemType(), domain.getDelName().v(),
+		return new ManualSetDelDto(domain.getDelId(), domain.getCompanyId(), domain.getDelName().v(),
 				domain.isSaveBeforeDeleteFlg(), domain.isExistCompressPassFlg(), 
 				domain.getPasswordCompressFileEncrypt().isPresent() ? CommonKeyCrypt.decrypt(domain.getPasswordCompressFileEncrypt().get().v()) : null, 
 				domain.isHaveEmployeeSpecifiedFlg(), domain.getSId(),
@@ -106,7 +102,7 @@ public class ManualSetDelDto {
 				domain.getEndYearOfMonthly().isPresent() ? domain.getEndYearOfMonthly().get() : null);
 	}
 
-	public ManualSetDelDto(String delId, String companyId, int systemType, String delName,
+	public ManualSetDelDto(String delId, String companyId, String delName,
 			boolean isSaveBeforeDeleteFlg, boolean isExistCompressPassFlg,
 			String passwordCompressFile, boolean haveEmployeeSpecifiedFlg, String sId,
 			String supplementExplanation, GeneralDate referenceDate, GeneralDateTime executionDateTime,
@@ -115,7 +111,6 @@ public class ManualSetDelDto {
 		super();
 		this.delId = delId;
 		this.companyId = companyId;
-		this.systemType = systemType;
 		this.delName = delName;
 		this.isSaveBeforeDeleteFlg = isSaveBeforeDeleteFlg;
 		this.isExistCompressPassFlg = isExistCompressPassFlg;

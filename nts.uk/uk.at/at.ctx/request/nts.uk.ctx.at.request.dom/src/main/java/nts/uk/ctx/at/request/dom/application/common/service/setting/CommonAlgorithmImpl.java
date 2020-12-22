@@ -73,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -429,10 +430,18 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．対象日リストをループする
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
+			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
 			Optional<ActualContentDisplay> opActualContentDisplay = actualContentDisplayLst.stream().filter(x -> x.getDate().equals(loopDate)).findAny();
-			if(!opActualContentDisplay.isPresent()) {
+			if(opActualContentDisplay.isPresent()) {
+				opAchievementDetail = opActualContentDisplay.get().getOpAchievementDetail();
+			}
+			if(!opAchievementDetail.isPresent()) {
 				// エラーメッセージ(Msg_1715)を表示
 				throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
+			}
+			// INPUT．申請する勤務種類リストをチェックする
+			if(CollectionUtil.isEmpty(workTypeLst)) {
+				return;
 			}
 			// 勤務種類を取得する
 			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
@@ -443,6 +452,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if(!opWorkTypeFirst.isPresent() || !opWorkTypeActual.isPresent()) {
 				continue;
 			}
+			// 日ごとに申請の矛盾チェック
+			this.inconsistencyCheckApplication(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
+			// 日ごとに休日区分の矛盾チェック
+			this.inconsistencyCheckHoliday(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
 		}
 		// INPUT．申請する勤務種類リストをチェックする
 		if(workTypeLst.size() <= 1) {
@@ -475,32 +488,43 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date, List<WorkType> workTypeLst,
-			List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail) {
+	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(
+			String employeeID,
+			GeneralDate date,
+			GeneralDate inputDate,
+			List<WorkType> workTypeLst,
+			List<WorkTimeSetting> workTimeLst,
+			AchievementDetail achievementDetail) {
 		String companyID = AppContexts.user().companyId();
 		// 申請日付チェック
-		if(date != null && achievementDetail != null) {
+		if(inputDate != null && achievementDetail != null) {
 			// INPUT．「実績詳細」をチェックする
 			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) 
-					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
-				// 12.マスタ勤務種類、就業時間帯データをチェック
-				CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
-						companyID, 
-						achievementDetail.getWorkTypeCD(), 
-						achievementDetail.getWorkTimeCD());
-				// 勤務種類エラーFlgをチェック
-				String resultWorkType = Strings.EMPTY;
-				if(checkWorkingInfoResult.isWkTypeError()) {
-					// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-					resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
+					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())
+					) {
+				// #112367
+				if (workTypeLst.stream().anyMatch(x -> x.getWorkTypeCode().v().equals(achievementDetail.getWorkTypeCD()))
+						&& workTimeLst.stream().anyMatch(x -> x.getWorktimeCode().v().equals(achievementDetail.getWorkTimeCD()))) {
+					// 取得した勤務種類と就業時間帯を初期選択値とする
+					String resultWorkType = achievementDetail.getWorkTypeCD();
+					String resultWorkTime = achievementDetail.getWorkTimeCD();
+					// 12.マスタ勤務種類、就業時間帯データをチェック
+					CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
+							companyID, 
+							achievementDetail.getWorkTypeCD(), 
+							achievementDetail.getWorkTimeCD());
+					// 勤務種類エラーFlgをチェック
+					if(checkWorkingInfoResult.isWkTypeError()) {
+						// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+						resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
+					}
+					// 就業時間帯エラーFlgをチェック
+					if(checkWorkingInfoResult.isWkTimeError()) {
+						// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
+						resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
+					}
+					return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);		
 				}
-				// 就業時間帯エラーFlgをチェック
-				String resultWorkTime = Strings.EMPTY;
-				if(checkWorkingInfoResult.isWkTimeError()) {
-					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-					resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
-				}
-				return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
 			}
 		}
 		// 社員の労働条件を取得する(get điiều kiện lao đọng của employee)
@@ -536,18 +560,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				processWorkType, 
 				processWorkTime);
 		// 勤務種類エラーFlgをチェック
-		String resultWorkType = null;
 		if(checkWorkingInfoResult.isWkTypeError()) {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-			resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
+			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 		}
 		// 就業時間帯エラーFlgをチェック
-		String resultWorkTime = null;
 		if(checkWorkingInfoResult.isWkTimeError()) {
 			// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-			resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
+			processWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 		}
-		return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
+		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime);
 	}
 
 	@Override
@@ -688,8 +710,31 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return;
 		}
 		// 法定区分をチェックする
-		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
-		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeApp.isOneDay()) {
+				return workTypeApp.getDailyWork().getOneDay()==WorkTypeClassification.HolidayWork;
+			}
+			// 午前と午後
+			else {
+				return workTypeApp.getDailyWork().getMorning()==WorkTypeClassification.HolidayWork || 
+						workTypeApp.getDailyWork().getAfternoon()==WorkTypeClassification.HolidayWork;
+			}
+		}).findFirst().orElse(null);
+		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeActual.isOneDay()) {
+				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.Holiday;
+			}
+			// 午前と午後
+			else {
+				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.Holiday || 
+						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.Holiday;
+			}
+		}).findFirst().orElse(null);
+		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
+			return;
+		}
 		if(appWorkTypeSet.getHolidayAtr() == actualWorkTypeSet.getHolidayAtr()) {
 			return;
 		}

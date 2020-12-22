@@ -22,7 +22,7 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button class="proceed" data-bind="click: saveOTQuotaSet">#{i18n.getText('KAF022_1')}</button>
+            <button class="proceed" data-bind="click: saveOTQuotaSet, enable: enableRegister">#{i18n.getText('KAF022_1')}</button>
             <button style="float: right; margin-right: 100px" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
         </div>
         <div id="contents-area">
@@ -59,19 +59,21 @@
                 <div style="padding-top: 10px">
                     <table id="fixed-table-o4">
                         <colgroup>
-                            <col width="50px"/>
-                            <col width="200px"/>
+                            <col width="70px"/>
+                            <col width="180px"/>
                         </colgroup>
                         <thead>
                             <tr>
-                                <th class="ui-widget-header">#{i18n.getText('KAF022_458')}</th>
-                                <th class="ui-widget-header">#{i18n.getText('KAF022_765')}</th>
+                                <th class="ui-widget-header">
+                                    <div data-bind="ntsCheckBox: { checked: allChecked }">#{i18n.getText('KAF022_458')}</div>
+                                </th>
+                                <th class="ui-widget-header">#{i18n.getText('KAF022_774')}</th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach : overtimeWorkFrames">
                             <tr>
                                 <td style="text-align: center">
-                                    <div data-bind="ntsCheckBox: { checked: checked }"/>
+                                    <div data-bind="ntsCheckBox: { checked: checked, enable: enable }"/>
                                 </td>
                                 <td>
                                     <span class="label" data-bind="text: name" />

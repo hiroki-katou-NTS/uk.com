@@ -57,4 +57,8 @@ public class KrqdtAppTrip extends UkJpaEntity implements Serializable {
         return this.krqdtAppTripPK;
     }
 
+    public GeneralDate getAppDate() {
+        return this.getKrqdtAppTripPK().getTargetDate();
+    }
+
 }

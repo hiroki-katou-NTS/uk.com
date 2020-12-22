@@ -11,14 +11,7 @@ import { component, Prop, Watch } from '@app/core/component';
 })
 export class KafS00AComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: { 
-        companyID: string, 
-        employeeID: string,
-        employmentCD: string,
-        applicationUseSetting: any,
-        receptionRestrictionSetting: any,
-        opOvertimeAppAtr?: any,
-    };
+    public params: KAFS00AParams;
 
     public appMsg: string = '';
     public appMsgForCurrentMonth: string = '';
@@ -33,6 +26,20 @@ export class KafS00AComponent extends Vue {
 
     public created() {
         const self = this;
+        self.initFromParams();
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        self.initFromParams();
+    }
+
+    private initFromParams() {
+        const self = this;
+        if (!self.params) {
+            return;
+        }
         self.$mask('show');
         self.$http.post('at', API.getRequestMsg, {  
             companyID: self.params.companyID,
@@ -42,7 +49,7 @@ export class KafS00AComponent extends Vue {
             receptionRestrictionSetting: self.params.receptionRestrictionSetting,
             opOvertimeAppAtr: self.params.opOvertimeAppAtr
         }).then((data: any) => {
-            self.appMsg = data.data.applicationUseSetting.memo;
+            self.appMsg = _.escape(data.data.applicationUseSetting.memo).replace(/\n/g, '<br/>');
             self.appMsgForCurrentMonth = self.$i18n('KAFS00_3', self.$dt(data.data.deadlineLimitCurrentMonth.opAppDeadline, 'M月D日')) ;
             if (data.data.preAppAcceptLimit.opAvailableTime) {
                 self.preAppPeriod = self.$i18n('KAFS00_22', self.$dt.timedr(data.data.preAppAcceptLimit.opAvailableTime));    
@@ -63,6 +70,15 @@ export class KafS00AComponent extends Vue {
         });
     }
 
+}
+
+export interface KAFS00AParams {
+    companyID: string;
+    employeeID: string;
+    employmentCD: string;
+    applicationUseSetting: any;
+    receptionRestrictionSetting: any;
+    opOvertimeAppAtr?: any;
 }
 
 const API = {

@@ -1,0 +1,60 @@
+.kaf021b-content{
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+#B1_2{
+    margin-top: 5px;
+    width: 500px;
+}
+
+#B1_2 .label{
+    white-space: pre-wrap;
+}
+
+#tbl-control{
+    margin-top: 5px;
+    width: 1250px;
+}
+
+#tbl-control .cell:nth-child(1){
+    width: 215px;
+}
+
+#tbl-control .cell:nth-child(2){
+    width: auto;
+}
+
+#tbl-control .cell:nth-child(3){
+    width: 200px;
+    text-align: right;
+    padding-right: 17px;
+}
+
+#grid{
+    margin-top: 5px;
+}
+
+#grid .mgrid-header td{
+    vertical-align: middle !important;
+}
+
+#grid .mgrid-free:not(.mgrid-header) .mgrid-free-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space){
+    height: 50px !important;
+}
+
+#grid .cell-edit .medit-container{
+    height: 47px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
+}
+
+.center-align {
+    text-align: center;
+}

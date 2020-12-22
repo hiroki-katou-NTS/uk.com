@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
@@ -44,12 +44,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -337,7 +337,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, appId);
 		AppAbsence appAbsence = absence.get();
 		// get 特別休暇申請
-		Optional<AppForSpecLeave> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appId);
+		Optional<AppForSpecLeave_Old> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appId);
 		if (appSpec.isPresent()) {
 			appAbsence.setAppForSpecLeave(appSpec.get());
 		}
@@ -358,7 +358,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		String endTime2 = appAbsence.getEndTime2() == null ? ""
 				: appAbsence.getEndTime2().getDayDivision().description
 						+ appAbsence.getEndTime2().getInDayTimeWithFormat();
-		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = "";

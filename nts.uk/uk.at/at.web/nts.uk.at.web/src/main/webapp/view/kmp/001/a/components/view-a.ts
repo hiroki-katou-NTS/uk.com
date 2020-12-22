@@ -3,17 +3,14 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const template = `
-		<div id="com-ccg001"></div>
-		<div class="sidebar-content-header">
-			<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
-			<!--
-			<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
-			-->
+		<div data-bind="component: { 
+					name: 'ccg001', 
+					params: { employees: employees, baseDate: baseDate }}">
+		</div>
+		<div id="functions-area">
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button id="add" class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
-			<!-- ko if: attendance -->
-			<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
-			<!-- /ko -->
 		</div>
 		<div class="view-kmp">
 			<div class="list-component float-left viewa">
@@ -22,12 +19,15 @@ module nts.uk.at.view.kmp001.a {
 			<div class="float-left model-component" 
 				data-bind="component: { 
 					name: 'editor-area', 
-					params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}"></div>
+					params: { model: model, 
+						stampCardEdit: stampCardEdit, 
+						textInput: textInput, 
+						methodEdit: methodEdit}}">
+			</div>
 		<div>
 `;
 
 	const KMP001A_API = {
-		GET_STAMPCARDDIGIT: 'screen/pointCardNumber/getStampCardDigit',
 		GET_STATUS_SETTING: 'screen/pointCardNumber/getStatusEmployeeSettingStampCard',
 		GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber',
 		ADD: 'at/record/register-stamp-card/view-a/save',
@@ -42,23 +42,56 @@ module nts.uk.at.view.kmp001.a {
 		template
 	})
 	class ViewA extends ko.ViewModel {
-		attendance: KnockoutObservable<boolean> = ko.observable(true);
 
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public model: share.Model = new share.Model();
 		public settings: KnockoutObservableArray<ISetting> = ko.observableArray([]);
-		public employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
 		public stampCardEdit: share.StampCardEdit = new share.StampCardEdit();
 		public textInput: KnockoutObservable<string> = ko.observable('');
+		public methodEdit: KnockoutObservable<boolean> = ko.observable(false);
 
 		created() {
 			const vm = this;
 
-			$(document).ready(function() {
-				$('#com-ccg001').focus();
+			$(window).click(() => {
+				var stampInput = ko.toJS(vm.textInput);
+				if (stampInput != '') {
+					if (!ko.unwrap(vm.methodEdit)) {
+						var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
+
+						if (s > 0) {
+							switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
+								case 1:
+									for (var i = 0; i < s; i++) {
+										stampInput = "0" + stampInput;
+									}
+									vm.textInput(stampInput);
+									break;
+								case 2:
+									for (var i = 0; i < s; i++) {
+										stampInput = stampInput + "0";
+									}
+									vm.textInput(stampInput);
+									break;
+								case 3:
+									for (var i = 0; i < s; i++) {
+										stampInput = " " + stampInput;
+									}
+									vm.textInput(stampInput);
+									break;
+								case 4:
+									for (var i = 0; i < s; i++) {
+										stampInput = stampInput + " ";
+									}
+									vm.textInput(stampInput);
+									break;
+							}
+						}
+					}
+				}
 			});
 
 			vm.model.code
@@ -89,7 +122,7 @@ module nts.uk.at.view.kmp001.a {
 								})
 							});
 					}
-					$(document).ready(function() {
+					$(document).ready(function () {
 						$('.ip-stamp-card').focus();
 					});
 				});
@@ -106,7 +139,7 @@ module nts.uk.at.view.kmp001.a {
 							break;
 						}
 					}
-					
+
 					if (checkModeDelete) {
 						vm.mode('update');
 					} else {
@@ -118,11 +151,10 @@ module nts.uk.at.view.kmp001.a {
 				.subscribe(() => {
 					vm.reloadData(0);
 					vm.model.code.valueHasMutated();
-					$(document).ready(function() {
+					$(document).ready(function () {
 						$('.ip-stamp-card').focus();
 					});
-				})
-
+				});
 		}
 
 		mounted() {
@@ -130,12 +162,6 @@ module nts.uk.at.view.kmp001.a {
 			const dataFormate = 'YYYY/MM/DD';
 
 			vm.$errors('clear');
-
-			if (vm.$user.role.isInCharge.attendance) {
-				vm.attendance(true);
-			} else {
-				vm.attendance(false);
-			}
 
 			$('#list-employee').ntsListComponent(
 				{
@@ -151,88 +177,10 @@ module nts.uk.at.view.kmp001.a {
 					isShowSelectAllButton: false,  //全選択表示
 					isSelectAllAfterReload: true,
 					disableSelection: false,
-					maxRows: 20,
+					maxRows: 21,
 					maxWidth: 450
 				} as any
 			);
-
-			$('#com-ccg001')
-				.ntsGroupComponent({
-					/** Common properties */
-					systemType: 2, //システム区分	
-					showEmployeeSelection: true,
-					showQuickSearchTab: true, //クイック検索
-					showAdvancedSearchTab: true,
-					showBaseDate: true, //基準日利用
-					showClosure: false, //就業締め日利用
-					showAllClosure: false, //全締め表示
-					showPeriod: false, //対象期間利用
-					periodFormatYM: true, //対象期間精度
-					maxPeriodRange: 'oneMonth', //最長期間
-
-					/** Required parameter */
-					baseDate: ko.observable(moment().format(dataFormate)),
-					periodStartDate: ko.observable(moment.utc('1900/01/01', dataFormate).format(dataFormate)),
-					periodEndDate: ko.observable(moment.utc('9999/12/31', dataFormate).format(dataFormate)),
-					inService: true,
-					leaveOfAbsence: true,
-					closed: true,
-					retirement: true,
-
-					/** Quick search tab options */
-					showAllReferableEmployee: true, //参照可能な社員すべて
-					showOnlyMe: true, //自分だけ
-					showSameDepartment: false,
-					showSameDepartmentAndChild: false,
-					showSameWorkplace: true, //同じ職場の社員
-					showSameWorkplaceAndChild: true, //同じ職場とその配下の社員
-
-					/** Advanced search properties */
-					showEmployment: true, //雇用条件
-					showDepartment: false,
-					showWorkplace: true, //職場条件
-					showClassification: true, //分類条件
-					showJobTitle: true, //職位条件
-					showWorktype: false, //勤種条件
-					isMutipleCheck: true, //選択モード
-
-					/**
-					* Self-defined function: Return data from CCG001
-					* @param: data: the data return from CCG001
-					*/
-					returnDataFromCcg001: function(data: any) {
-						vm.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
-
-						vm.employees([]);
-
-						for (var i = 0; i < data.listEmployee.length; i++) {
-							vm.employeeIds.push(data.listEmployee[i].employeeId);
-						}
-
-						const employees = data.listEmployee
-							.map(m => ({
-								affiliationId: m.affiliationId,
-								affiliationName: m.affiliationName,
-								code: m.employeeCode,
-								name: m.employeeName,
-								employeeId: m.employeeId
-							}));
-
-						vm.employees(employees);
-						vm.model.clear();
-						vm.reloadData();
-					}
-				});
-		}
-
-		showDiaLog() {
-			const vm = this;
-
-			vm.$window
-				.modal('/view/kmp/001/d/index.xhtml')
-				.then((data: IStampCardEdit) => {
-					vm.stampCardEdit.update(data);
-				});
 		}
 
 		/*addNew() {
@@ -266,7 +214,7 @@ module nts.uk.at.view.kmp001.a {
 					})
 
 			}
-			$(document).ready(function() {
+			$(document).ready(function () {
 				$('.ip-stamp-card').focus();
 			});
 		}
@@ -276,75 +224,64 @@ module nts.uk.at.view.kmp001.a {
 				model: IModel = ko.toJS(vm.model),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
-			var stampInput = ko.toJS(vm.textInput);
+			setTimeout(() => {
+				var stampInput = ko.toJS(vm.textInput);
 
-			if (ko.unwrap(vm.model.code) != '') {
+				if (ko.unwrap(vm.model.code) != '') {
 
-				/*if (ko.toJS(vm.model.stampCardDto).length > 0) {
-					const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
-					stampInput = stamp.stampNumber;
-				} else {
-					stampInput = ko.toJS(vm.textInput);
-				}*/
+					/*if (ko.toJS(vm.model.stampCardDto).length > 0) {
+						const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
+						stampInput = stamp.stampNumber;
+					} else {
+						stampInput = ko.toJS(vm.textInput);
+					}*/
 
-				if (stampInput == '') {
-					vm.$dialog.info({ messageId: "Msg_1679" });
-				} else {
-					vm.validate()
-						.then((valid: boolean) => {
-							if (valid) {
-								var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
+					if (stampInput == '') {
+						vm.$dialog.info({ messageId: "Msg_1679" });
+					} else {
+						vm.validate()
+							.then((valid: boolean) => {
+								if (valid) {
 
-								if (s > 0) {
-									switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
-										case 1:
-											for (var i = 0; i < s; i++) {
-												stampInput = "0" + stampInput;
+									const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
+
+									vm.$ajax(KMP001A_API.ADD, commandNew)
+										.then(() => {
+											if (ko.unwrap(vm.methodEdit)) {
+												vm.$errors('clear');
 											}
-											break;
-										case 2:
-											for (var i = 0; i < s; i++) {
-												stampInput = stampInput + "0";
+											vm.$dialog.info({ messageId: 'Msg_15' });
+										})
+										.then(() => vm.$blockui("invisible"))
+										.then(() => vm.textInput(''))
+										.then(() => vm.reloadData(index))
+										.then(() => vm.model.code.valueHasMutated())
+										.fail((err: any) => {
+											if (ko.unwrap(vm.methodEdit)) {
+												vm.$errors('clear');
 											}
-											break;
-										case 3:
-											for (var i = 0; i < s; i++) {
-												stampInput = " " + stampInput;
-											}
-											break;
-										case 4:
-											for (var i = 0; i < s; i++) {
-												stampInput = stampInput + " ";
-											}
-											break;
-									}
+											$('.ip-stamp-card').blur();
+											setTimeout(() => {
+												vm.$dialog.error({ messageId: err.messageId });
+											}, 50);
+										})
+										.always(() => vm.$blockui("clear"));
 								}
-
-								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
-
-								vm.$ajax(KMP001A_API.ADD, commandNew)
-									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-									.then(() => vm.$blockui("invisible"))
-									.then(() => vm.textInput(''))
-									.then(() => vm.reloadData(index))
-									.then(() => vm.model.code.valueHasMutated())
-									.fail((err: any) => {
-										nts.uk.ui.dialog.error({ messageId: err.messageId });
-									})
-									.always(() => vm.$blockui("clear"));
-							}
-						});
+							});
+					}
 				}
-			}
-			$(document).ready(function() {
-				$('.ip-stamp-card').focus();
-			});
+				$(document).ready(function () {
+					$('.ip-stamp-card').focus();
+				});
+			}, 100);
 		}
 
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
+			const empids = ko.unwrap(vm.employees).map(m => m.employeeId);
+
 			vm.$blockui("invisible")
-			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
+				.then(() => vm.$ajax(KMP001A_API.GET_STATUS_SETTING, empids))
 				.then((data: IEmployeeId[]) => {
 					vm.settings([]);
 					const employees: IModel[] = ko.toJS(vm.employees);

@@ -74,7 +74,7 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 					// 勤務種類が公休を消化するか判断(check thông tin 公休を消化する của worktype)
 					if(workTypeSet.get().getDigestPublicHd().isCheck()) {
 						// 公休出勤時の勤務情報が存在するか確認する (Kiểm tra có tồn tại 公休出勤時の勤務情報không)
-						if(!optpublicHoliday.isPresent())
+						if(optpublicHoliday.isPresent())
 						// 終了状態：公休出勤時
 						return optpublicHoliday;
 					}

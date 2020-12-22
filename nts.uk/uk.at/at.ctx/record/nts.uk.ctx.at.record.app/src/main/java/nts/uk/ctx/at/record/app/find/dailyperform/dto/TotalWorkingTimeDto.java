@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
@@ -23,9 +26,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporaryti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.shr.com.time.AttendanceClock;
 
 
@@ -177,7 +179,10 @@ public class TotalWorkingTimeDto implements ItemConst {
 				: new ValicationUseDto(getAttendanceTime(c.getTimeAnnualLeaveUseTime()),
 						getAttendanceTime(c.getSixtyHourExcessHolidayUseTime()),
 						getAttendanceTime(c.getTimeSpecialHolidayUseTime()),
-						getAttendanceTime(c.getTimeCompensatoryLeaveUseTime()));
+						getAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
+						c.getSpecialHolidayFrameNo().map(n -> n.v()).orElse(null),
+						getAttendanceTime(c.getTimeChildCareHolidayUseTime()),
+						getAttendanceTime(c.getTimeCareHolidayUseTime()));
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime domain) {
@@ -222,10 +227,15 @@ public class TotalWorkingTimeDto implements ItemConst {
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {
-		return new TimevacationUseTimeOfDaily(toAttendanceTime(c == null ? null : c.getTimeAnnualLeaveUseTime()),
+		return new TimevacationUseTimeOfDaily(
+						toAttendanceTime(c == null ? null : c.getTimeAnnualLeaveUseTime()),
 						toAttendanceTime(c == null ? null : c.getTimeCompensatoryLeaveUseTime()),
 						toAttendanceTime(c == null ? null : c.getExcessHolidayUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()));
+						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()),
+						Optional.ofNullable(c.specialHdFrameNo == null ? null : new SpecialHdFrameNo(c.specialHdFrameNo)),
+						toAttendanceTime(c == null ? null : c.getChildCareUseTime()),
+						toAttendanceTime(c == null ? null : c.getCareUseTime())
+						);
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {

@@ -12,13 +12,13 @@ public interface LogSettingRepository {
 	 * @return List＜ログ設定＞
 	 */
 	List<LogSetting> findBySystem(String companyId, int systemType);
-
+	
 	/**
 	 * ドメインモデル「ログ設定」を削除
 	 * @param contractCode
-	 * @param domain
+	 * @param listDomain
 	 */
-	void add(String contractCode, LogSetting domain);
+	void addAll(String contractCode, List<LogSetting> listDomain);
 
 	/**
 	 * ドメインモデル「ログ設定」に追加する
@@ -26,5 +26,5 @@ public interface LogSettingRepository {
 	 * @param systemType
 	 * @param programId
 	 */
-	void delete(String companyId, Integer systemType, String programId);
+	void delete(String companyId, Integer systemType);
 }

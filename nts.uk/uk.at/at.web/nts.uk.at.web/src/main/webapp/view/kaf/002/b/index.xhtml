@@ -60,7 +60,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="text:this.$i18n('KAF009_3'), click: register"></button>
+				<button class="proceed" data-bind="text: $vm.$i18n('KAF009_3'), click: register"></button>
 				<div
 					data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
@@ -82,7 +82,8 @@
 									params: {
 										appType: appType,
 										application: application,
-										appDispInfoStartupOutput: appDispInfoStartupOutput
+										appDispInfoStartupOutput: appDispInfoStartupOutput,
+										isAgentMode: isAgentMode
                                           } }"></div>
                   	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
 									params: {

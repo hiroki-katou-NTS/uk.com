@@ -20,8 +20,8 @@ public class DataBasicDto {
 	public  int unit; //WORKPLACE(0), //WORKPLACE_GROUP(1);
 	public  String workplaceId;
 	public  String workplaceGroupId;
-	public String designation ; // 
-	public String targetOrganizationName ;   //  表示名  Aa1_2_2
+	public String designation ; //  Aa1_2_2
+	public String targetOrganizationName ;   // A2_2	 表示名 
 	public String code;
 	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {
 		this.startDate = resultStep1.startDate;

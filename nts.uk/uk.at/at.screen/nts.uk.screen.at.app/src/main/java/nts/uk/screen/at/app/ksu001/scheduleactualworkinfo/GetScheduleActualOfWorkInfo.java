@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 
 /**
  * @author laitv
