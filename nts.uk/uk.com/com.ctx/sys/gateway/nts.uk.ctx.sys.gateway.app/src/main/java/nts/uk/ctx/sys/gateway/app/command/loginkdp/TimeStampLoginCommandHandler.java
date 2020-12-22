@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.loginkdp;
 
 /**
- * 
+ *
  */
 import java.util.Optional;
 
@@ -48,47 +48,47 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
- * @author laitv 
- * algorithm: 打刻入力ログイン 
+ * @author laitv
+ * algorithm: 打刻入力ログイン
  * path: UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG007_ログイン
  *         (Login).打刻入力ログイン.アルゴリズム.打刻入力ログイン
  */
-@Stateless 
+@Stateless
 public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandler<TimeStampLoginCommand> {
-	
+
 	@Inject
 	private LoginService employeeCodeSetting;
-	
+
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
-	
+
 	/** The service. */
 	@Inject
 	private LoginRecordRegistService service;
-	
+
 	@Inject
 	private AccountLockPolicyRepository accountLockPolicyRepository;
-	
+
 	@Inject
 	private LockOutDataRepository lockOutDataRepository;
-	
+
 	@Inject
 	private UserAdapter userAdapter;
-	
+
 	@Inject
 	private LoginLogRepository loginLogRepository;
-	
+
 	@Inject
 	private SystemSuspendService systemSuspendService;
-	
-	
+
+
 	@Override
 	public TimeStampInputLoginDto internalHanler(CommandHandlerContext<TimeStampLoginCommand> context) {
-		
+
 		TimeStampLoginCommand command = context.getCommand();
 		String companyId = command.getCompanyId();
 		String contractCode = command.getContractCode();
-		
+
 		String remarkMessage = "";
 		EmployeeImport em = new EmployeeImport();
 		UserImportNew user = new UserImportNew();
@@ -103,19 +103,19 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 
 		// note: Edit employee code
 		String employeeCode = this.employeeCodeSetting.employeeCodeEdit(command.getEmployeeCode(), companyId);
-		
+
 		// note: Imported（GateWay）「社員」を取得する
 		em = this.getEmployee(companyId, employeeCode, remarkMessage);
-		
+
 		// note: アルゴリズム「社員が削除されたかを取得」を実行する
 		this.checkEmployeeDelStatus(em.getEmployeeId(), command.getEmployeeCode(), companyId, remarkMessage);
-		
+
 		// note: imported（ゲートウェイ）「ユーザ」を取得する
 		user = this.getUser(em.getPersonalId(), companyId, employeeCode, em.getEmployeeId(), remarkMessage);
-		
+
 		// note: アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
 		this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId );
-		
+
 		// note: パラメータ：パスワード無効
 		if (!command.isPasswordInvalid() && command.getPassword() != null) {
 			String msgErrorId = this.compareHashPassword(user, command.getPassword());
@@ -123,52 +123,52 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 				String remarkText = employeeCode + " " + remarkMessage + " " + TextResource.localize("Msg_302");
 				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
 						LoginStatus.Fail.value, remarkText, null);
-				
+
 				this.service.callLoginRecord(param);
 				throw new BusinessException("Msg_302");
-			} 
+			}
 		}
-		
+
 		// note: ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
 		this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
-		
+
 		// note: 実行時環境作成
 		if(command.isRuntimeEnvironmentCreate()){
 			// note: set info to session
 			command.getRequest().changeSessionId();
-			
+
 			// note: ログインセッション作成 (Create login session)
 	        this.initSessionC(user, em, command.getCompanyCode());
 		}
-		
+
 		// note: アルゴリズム「システム利用停止の確認」を実行する
         SystemSuspendOutput systemSuspendOutput = this.checkSystemStop(command);
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
-		
+
 		// note: アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, remarkMessage, em.getEmployeeId());
 		this.service.callLoginRecord(param);
-		
+
 		// note: アルゴリズム「ログインログを削除」を実行する
 		this.deleteLoginLog(user.getUserId());
-		
+
 		// note: アルゴリズム「ログイン後チェック」を実行する
 		if (command.getPassword() != null) {
 			CheckChangePassDto checkChangePass = this.checkAfterLogin(user, command.getPassword(), false);
 		}
-		
+
 		TimeStampInputLoginDto result = new TimeStampInputLoginDto();
 
 		result.setEm(em);
 		result.setResult(true);
 		result.setErrorMessage(null);
 		result.setSuccessMsg(systemSuspendOutput.getMsgID());
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Gets the employee.
 	 *
@@ -184,34 +184,34 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			String remarkText = employeeCode + " " + remarkMessage + " " + TextResource.localize("Msg_301");
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
 					LoginStatus.Fail.value, remarkText, null);
-			
+
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
 		}
 	}
-	
+
 	// アルゴリズム「社員が削除されたかを取得」を実行する
 	protected Boolean checkEmployeeDelStatus(String sid, String employeeCode, String companyId, String remarkMessage) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
-		
+
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
 			String remarkText = employeeCode + " " + remarkMessage + " " + TextResource.localize("Msg_301");
-			
+
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
 					remarkText, sid);
-			
+
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
-			
+
 			throw new BusinessException("Msg_301");
 		}
 
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Gets the user.
 	 *
@@ -227,13 +227,13 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			String remarkText = employeeCode + " " + remarkMessage + " " + TextResource.localize("Msg_301");
 			ParamLoginRecord param = new ParamLoginRecord(cid, LoginMethod.NORMAL_LOGIN.value,
 					LoginStatus.Fail.value, remarkText, employeeId);
-			
+
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
 		}
 	}
-	
+
 	protected void checkAccoutLock(String loginId, String contractCode, String userId, String companyId) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
@@ -246,11 +246,11 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 
 				if (lockoutData.isPresent()) {
 					Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
-					
+
 					String remarkText = loginId + " " + accountLockPolicy.getLockOutMessage().v();
 					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
 							remarkText, null);
-					
+
 					// アルゴリズム「ログイン記録」を実行する１
 					this.service.callLoginRecord(param);
 
@@ -260,7 +260,7 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			}
 		}
 	}
-	
+
 	protected String compareHashPassword(UserImportNew user, String password) {
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			// アルゴリズム「ロックアウト」を実行する ※２次対応
@@ -301,7 +301,7 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 		LoginLog loginLog = new LoginLog(dto);
 		this.loginLogRepository.add(loginLog);
 	}
-	
+
 	private boolean checkLoginLog(String userId, AccountLockPolicy accountLockPolicy) {
 		GeneralDateTime startTime = GeneralDateTime.now();
 		// Check the domain model [Account lock policy. Error interval]
@@ -321,20 +321,20 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			return true;
 		}
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void checkLimitTime(UserImportNew user, String companyId, String employeeCode, String sid,  String remarkMessage) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			String remarkText = employeeCode + " " + remarkMessage + " " + TextResource.localize("Msg_316");
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
 					LoginStatus.Fail.value, remarkText, sid);
-			
+
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_316");
 		}
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public SystemSuspendOutput checkSystemStop(TimeStampLoginCommand command) {
 		// アルゴリズム「システム利用停止の確認」を実行する
@@ -346,5 +346,5 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 		}
 		return systemSuspendOutput;
 	}
-	
+
 }
