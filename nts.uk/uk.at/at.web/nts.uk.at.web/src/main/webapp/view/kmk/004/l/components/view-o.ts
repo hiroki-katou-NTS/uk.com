@@ -41,7 +41,7 @@ module nts.uk.at.view.kmk004.l {
 						
 						<div class="header_title">
 							<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: 'KMK004_338', click: openViewP"></button>
+							<button data-bind="i18n: btn_text, click: openViewP"></button>
 						</div>
 						<div class="header_content">
 							<div data-bind="component: {
@@ -139,7 +139,7 @@ module nts.uk.at.view.kmk004.l {
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		//isLoadInitData: KnockoutObservable<boolean>;
-		btn_text: KnockoutObservable<string> = ko.observable('');
+		btn_text: KnockoutObservable<string> = ko.observable('KMK004_338');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -258,6 +258,8 @@ module nts.uk.at.view.kmk004.l {
 					vm.paramL.empId(newValue);
 					vm.paramL.titleName = vm.currentItemName();
 					vm.selectedId(newValue);
+					vm.btn_text(
+					vm.alreadySettingList().filter(i => newValue == i.code).length == 0 ? 'KMK004_338' : 'KMK004_339');
 				});
 			});
 		}
