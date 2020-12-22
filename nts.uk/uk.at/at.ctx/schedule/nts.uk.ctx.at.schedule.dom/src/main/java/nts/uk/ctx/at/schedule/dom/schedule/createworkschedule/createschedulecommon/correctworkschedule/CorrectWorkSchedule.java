@@ -46,7 +46,7 @@ public class CorrectWorkSchedule {
 		//(tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
 		
 		// để tạm để ko bị oẳng vì xử lý của Thanh đẹp zai
-		CalAttrOfDailyAttd calAttrOfDailyAttd = CalAttrOfDailyAttd.defaultData();
+		CalAttrOfDailyAttd calAttrOfDailyAttd = CalAttrOfDailyAttd.createAllCalculate();
 		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(employeeId, targetDate, workSchedule.getWorkInfo(), calAttrOfDailyAttd, workSchedule.getAffInfo(), 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
@@ -60,7 +60,7 @@ public class CorrectWorkSchedule {
 		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
 		
 		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
-				integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
+				integrationOfDaily.getYmd(), workSchedule.getConfirmedATR(), integrationOfDaily.getWorkInformation(),
 				integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 				integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
 				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());

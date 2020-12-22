@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.applicationcancel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,9 +72,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -237,14 +233,6 @@ public class ReflectApplicationHelper {
 				tempTime, new ArrayList<>(), Optional.empty());
 		domainDaily.setOuenTimeSheet(ouenTimeSheet);
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
-	}
-
-	public static PredetermineTimeSetForCalc createPredeteTimeSet(int start, int end, int no) {
-		List<TimezoneUse> timeZones = Arrays
-				.asList(new TimezoneUse(new TimeWithDayAttr(start), new TimeWithDayAttr(end), UseSetting.USE, no));
-		PredetermineTimeSetForCalc result = new PredetermineTimeSetForCalc();
-		result.setTimezones(timeZones);
-		return result;
 	}
 
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre) {

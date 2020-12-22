@@ -8,11 +8,11 @@ import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarly
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateOrEarlyAtrShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 
 /**
  * @author thanh_nx
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.La
 public class RCReflectArrivedLateLeaveEarlyApp {
 
 	public static List<Integer> reflect(ArrivedLateLeaveEarlyShare appWorkChange, DailyRecordOfApplication dailyApp,
-			ReflectArrivedLateLeaveEarly reflectApp) {
+			LateEarlyCancelReflect reflectApp) {
 
 		List<Integer> lstItemId = new ArrayList<>();
 		// [input.遅刻早退取消申請.取消（List）]でループ

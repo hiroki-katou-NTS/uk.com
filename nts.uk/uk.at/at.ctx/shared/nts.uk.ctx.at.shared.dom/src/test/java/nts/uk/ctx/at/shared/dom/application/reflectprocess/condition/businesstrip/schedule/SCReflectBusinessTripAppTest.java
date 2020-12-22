@@ -84,7 +84,7 @@ public class SCReflectBusinessTripAppTest {
 		actualResult.addAll(SCReflectBusinessTripApp.reflect(require, createTripInfo(Collections.emptyList()), dailyApp,
 				new ReflectBusinessTripApp("1"), GeneralDate.ymd(2020, 10, 10)));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(1, 1292, 1293, 2));
+		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 
 	}
 
@@ -110,7 +110,7 @@ public class SCReflectBusinessTripAppTest {
 		actualResult.addAll(SCReflectBusinessTripApp.reflect(require, createTripInfoWorkHour(), dailyApp,
 				new ReflectBusinessTripApp("1"), GeneralDate.ymd(2020, 10, 10)));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(1, 1292, 1293, 2, 3, 4, 5, 6, 859, 860));
+		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29, 3, 4, 5, 6, 859, 860));
 
 	}
 

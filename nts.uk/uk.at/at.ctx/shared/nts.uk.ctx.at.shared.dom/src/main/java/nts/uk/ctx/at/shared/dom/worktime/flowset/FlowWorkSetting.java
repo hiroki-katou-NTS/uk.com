@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
@@ -70,6 +71,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/** The common setting. */
 	// 共通設定
+	@Setter
 	private WorkTimezoneCommonSet commonSetting;
 
 	/** The flow setting. */

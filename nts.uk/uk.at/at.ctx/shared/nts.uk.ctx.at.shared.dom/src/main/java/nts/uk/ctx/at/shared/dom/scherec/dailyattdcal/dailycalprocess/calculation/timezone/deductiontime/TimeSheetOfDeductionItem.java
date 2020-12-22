@@ -118,6 +118,22 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 	 * @return　控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem replaceTimeSpan(Optional<TimeSpanForDailyCalc> timeSpan) {
+
+		return copyWithNewSpan(timeSpan, this.deductionAtr);
+	}
+	
+	/**
+	 * 受けとった計算範囲で計上なし時間として入れ替える
+	 * @param timeSpan　時間帯
+	 * @return　控除項目の時間帯
+	 */
+	public TimeSheetOfDeductionItem createNoRecord(Optional<TimeSpanForDailyCalc> timeSpan) {
+		return copyWithNewSpan(timeSpan, DeductionClassification.NON_RECORD);
+	}
+	
+	private TimeSheetOfDeductionItem copyWithNewSpan(Optional<TimeSpanForDailyCalc> timeSpan,
+			DeductionClassification dedAtr) {
+		
 		if(timeSpan.isPresent()) {
 			return new TimeSheetOfDeductionItem(
 											timeSpan.get(),
@@ -128,9 +144,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 											this.goOutReason,
 											this.breakAtr,
 											this.shortTimeSheetAtr,
-											this.deductionAtr,
-											this.childCareAtr
-											);
+											dedAtr,
+											this.childCareAtr);
 		}
 		else {
 			return new TimeSheetOfDeductionItem(
@@ -142,9 +157,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 					this.goOutReason,
 					this.breakAtr,
 					this.shortTimeSheetAtr,
-					this.deductionAtr,
-					this.childCareAtr
-					);
+					dedAtr,
+					this.childCareAtr);
 		}
 	}
 	
@@ -542,16 +556,14 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 	 * @param deplicateoneTimeRange 1日の範囲と控除時間帯の重複部分
 	 * @return
 	 */
-	public List<TimeSpanForDailyCalc> getBreakCalcRange(List<TimeLeavingWork> timeList,RestTimeOfficeWorkCalcMethod calcMethod,Optional<TimeSpanForDailyCalc> deplicateOneTimeRange) {
+	public List<TimeSheetOfDeductionItem> getBreakCalcRange(List<TimeLeavingWork> timeList,RestTimeOfficeWorkCalcMethod calcMethod,
+			Optional<TimeSpanForDailyCalc> deplicateOneTimeRange, DeductionAtr dedAtr) {
 		if(!deplicateOneTimeRange.isPresent()) {
 			return Collections.emptyList();
 		}
-		List<TimeSpanForDailyCalc> timesheets = new ArrayList<TimeSpanForDailyCalc>();
+		List<TimeSheetOfDeductionItem> timesheets = new ArrayList<>();
 		for(TimeLeavingWork time : timeList) {
-			Optional<TimeSpanForDailyCalc> timeSpan = getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, deplicateOneTimeRange.get());
-			if(timeSpan.isPresent()) {
-				timesheets.add(timeSpan.get());
-			}
+			timesheets.addAll(getIncludeAttendanceOrLeaveDuplicateTimeSheet(time, calcMethod, dedAtr, deplicateOneTimeRange.get()));
 		}
 		return timesheets;
 	}
@@ -563,8 +575,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 	 * @param oneDayRange 1日の範囲
 	 * @return
 	 */
-	public Optional<TimeSpanForDailyCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time, RestTimeOfficeWorkCalcMethod calcMethod, TimeSpanForDailyCalc oneDayRange) {
+	public List<TimeSheetOfDeductionItem> getIncludeAttendanceOrLeaveDuplicateTimeSheet(
+			TimeLeavingWork time, RestTimeOfficeWorkCalcMethod calcMethod, DeductionAtr dedAtr,
+			TimeSpanForDailyCalc oneDayRange) {
 		
+		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
@@ -574,24 +589,33 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 			if(oneDayRange.contains(time.getTimespan().getStart())){
 				newStart = time.getTimespan().getStart();
 			}
+			
+			if (dedAtr == DeductionAtr.Deduction) {
+				result.add(replaceTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, time.getTimespan().getEnd()))));
+				return result;
+			}
 		
 			switch(calcMethod) {
 				//計上しない
 				case NOT_APPROP_ALL:
-					return Optional.empty();
+					result.add(createNoRecord(Optional.empty()));
+					return result;
 				//全て計上
 				case APPROP_ALL:
-					return Optional.of(new TimeSpanForDailyCalc(newStart,newEnd));
+					return result;
 				//退勤時間まで計上
 				case OFFICE_WORK_APPROP_ALL:
-					return Optional.of(new TimeSpanForDailyCalc(newStart,time.getTimespan().getEnd()));
+					result.add(createNoRecord(Optional.of(new TimeSpanForDailyCalc(newStart, time.getTimespan().getEnd()))));
+					result.add(createNoRecord(Optional.of(new TimeSpanForDailyCalc(time.getTimespan().getEnd(), newEnd))));
+					return result;
 				//例外
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
 		} else {
 			//1日の計算範囲と出退勤の重複範囲取得
-			return oneDayRange.getDuplicatedWith(new TimeSpanForDailyCalc(time.getTimespan()));
+			result.add(replaceTimeSpan(oneDayRange.getDuplicatedWith(new TimeSpanForDailyCalc(time.getTimespan()))));
+			return result;
 		}
 	}
 	

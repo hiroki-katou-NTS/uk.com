@@ -82,7 +82,6 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     const COMPONENT_NAME = 'scheduler';
-    const CL_VALUE = Number(!!b.version.match(/IE/));
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -252,31 +251,32 @@ module nts.uk.ui.at.ksu002.a {
                     float: left;
                     display: block;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtype .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-begin .data-info .work-time .join input,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-finish .data-info .work-time .leave input {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join input,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave input {
                     background-color: #bfea60;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtype .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-begin .data-info .work-time .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-finish .data-info .work-time .leave {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave {
                     background-color: #cee6ff;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtype .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-begin .data-info .work-time .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-finish .data-info .work-time .leave {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave {
                     background-color: #94b7fe;
                 }
                 .scheduler .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
                     background-color: #eccefb;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.diff-month .data-info,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info {
+                    background-color: #ddddd2;                    
+                }
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
-                    background-color: #d9d9d9;
+                    background-color: #ddddd2;
                 }
                 .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .join,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .leave {
@@ -295,7 +295,7 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .join,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .leave,
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-time input {
-                    color: #00cc00;
+                    color: #008000;
                 }
                 .scheduler .calendar+.calendar {
                     width: 201px;
@@ -599,8 +599,8 @@ module nts.uk.ui.at.ksu002.a {
             name: COMPONENT_NAME,
             template: `
             <div class="work-type cf">
-                <div class="join" data-bind="i18n: text.wtype, attr: { title: $component.$i18n(text.wtype) }"></div>
-                <div class="leave" data-bind="i18n: text.wtime, attr: { title: $component.$i18n(text.wtime) }"></div>
+                <div class="join" data-bind="i18n: text.wtype"></div>
+                <div class="leave" data-bind="i18n: text.wtime"></div>
             </div>
             <div class="work-time cf">
                 <div class="join">
@@ -613,7 +613,7 @@ module nts.uk.ui.at.ksu002.a {
                         attr: {
                             tabindex: $tabindex
                         },
-                        ntsTimeEditor: {
+                        ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_28'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
@@ -621,7 +621,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.begin,
                             readonly: false,
                             enable: $component.enable,
-                            required: $component.model.required
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
@@ -638,7 +641,7 @@ module nts.uk.ui.at.ksu002.a {
                         attr: {
                             tabindex: $tabindex
                         },
-                        ntsTimeEditor: {
+                        ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_29'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
@@ -646,7 +649,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.finish,
                             readonly: false,
                             enable: $component.enable,
-                            required: $component.model.required
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
@@ -666,8 +672,8 @@ module nts.uk.ui.at.ksu002.a {
                 };
 
             click: WorkTimeRange<number> = {
-                begin: ko.observable(CL_VALUE),
-                finish: ko.observable(CL_VALUE)
+                begin: ko.observable(0),
+                finish: ko.observable(0)
             };
 
             text: {
@@ -702,6 +708,7 @@ module nts.uk.ui.at.ksu002.a {
                         read: () => {
                             return context.$editable()
                                 && !(data.confirmed() || data.achievement())
+                                && data.classification() !== WORK_STYLE.HOLIDAY
                                 && !!data.wtime.code()
                                 && data.value.required() === WORKTYPE_SETTING.REQUIRED;
                         },
@@ -794,7 +801,7 @@ module nts.uk.ui.at.ksu002.a {
                     const f = ko.unwrap(model.finish);
 
                     if (ko.unwrap(enable)) {
-                        if (_.isNumber(b) && _.isNumber(f) && b > f) {
+                        if (_.isNumber(b) && _.isNumber(f) && b >= f) {
                             if (!$begin.ntsError('hasError')) {
                                 $begin.ntsError('set', { messageId: MSG_1811 });
                             }
@@ -824,7 +831,7 @@ module nts.uk.ui.at.ksu002.a {
                             if (readonly) {
                                 $begin.attr(RO, RO);
                             } else {
-                                $begin.removeAttr(RO);
+                                $begin.removeAttr(RO).select();
                             }
                         }
                     },
@@ -840,7 +847,7 @@ module nts.uk.ui.at.ksu002.a {
                             if (readonly) {
                                 $finish.attr(RO, RO);
                             } else {
-                                $finish.removeAttr(RO);
+                                $finish.removeAttr(RO).select();
                             }
                         }
                     },
@@ -873,9 +880,9 @@ module nts.uk.ui.at.ksu002.a {
                 const vm = this;
 
                 if (input === 'begin') {
-                    vm.click.begin(CL_VALUE);
+                    vm.click.begin(0);
                 } else if (input === 'finish') {
-                    vm.click.finish(CL_VALUE);
+                    vm.click.finish(0);
                 }
             }
 

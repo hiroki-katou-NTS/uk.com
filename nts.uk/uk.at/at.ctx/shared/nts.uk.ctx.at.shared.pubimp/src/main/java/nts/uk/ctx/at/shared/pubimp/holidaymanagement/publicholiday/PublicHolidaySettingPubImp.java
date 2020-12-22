@@ -25,9 +25,6 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 	@Inject
 	private PublicHolidaySettingRepository pubHdSetRepo;
 	
-	private static final Integer NOT_MANAGE = 0;
-	private static final Integer MANAGE = 1;
-	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.pub.holidaysetting.configuration.PublicHolidaySettingPub#FindPublicHolidaySetting()
 	 */
@@ -36,11 +33,11 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 		String companyId = AppContexts.user().companyId();
 		PublicHolidaySettingDto dto = new PublicHolidaySettingDto();
 		
-		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.findByCID(companyId);
+		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.get(companyId);
 		if (optPubHDSet.isPresent()) {
 			PublicHolidaySetting pubHDSet = optPubHDSet.get();
 			dto.setCompanyId(pubHDSet.getCompanyID());
-			dto.setIsManageComPublicHd(pubHDSet.isManageComPublicHd() == true ? MANAGE : NOT_MANAGE);
+			dto.setIsManageComPublicHd(pubHDSet.getIsManagePublicHoliday());
 			return Optional.of(dto);
 		} 
 		return Optional.empty();

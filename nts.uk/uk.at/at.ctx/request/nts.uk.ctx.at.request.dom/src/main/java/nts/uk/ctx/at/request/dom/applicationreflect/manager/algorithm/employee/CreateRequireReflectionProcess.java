@@ -10,10 +10,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -29,16 +29,17 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.Ref
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResult;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
+import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResultRepo;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CreateRequireReflectionProcess {
@@ -67,21 +68,30 @@ public class CreateRequireReflectionProcess {
 	@Inject
 	private CreateEditStatusHistAppReasonAdapter createEditStatusHistAppReasonAdapter;
 
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
+//	@Inject
+//	private RequestSettingRepository requestSettingRepository;
 
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 
+	@Inject
+	private AppReflectExeConditionRepository appReflectExeConditionRepository;
+
+	@Inject
+	private ReasonApplicationDailyResultRepo reasonApplicationDailyResultRepo;
+
 	public RequireImpl createImpl() {
-		return new RequireImpl(eflectApplicationWorkScheduleAdapter, scBasicScheduleAdapter, identificationAdapter,
-				determineActualResultLockAdapter, employeeRequestAdapter, workFixedAdapter,
-				reflectApplicationWorkRecordAdapter, createEditStatusHistAppReasonAdapter, requestSettingRepository,
-				closureEmploymentRepository);
+		return new RequireImpl(AppContexts.user().companyId(), eflectApplicationWorkScheduleAdapter,
+				scBasicScheduleAdapter, identificationAdapter, determineActualResultLockAdapter, employeeRequestAdapter,
+				workFixedAdapter, reflectApplicationWorkRecordAdapter, createEditStatusHistAppReasonAdapter,
+				closureEmploymentRepository, appReflectExeConditionRepository,
+				reasonApplicationDailyResultRepo);
 	}
 
 	@AllArgsConstructor
 	public class RequireImpl implements ReflectionProcess.Require {
+
+		private final String cid;
 
 		private final ReflectApplicationWorkScheduleAdapter eflectApplicationWorkScheduleAdapter;
 
@@ -99,14 +109,19 @@ public class CreateRequireReflectionProcess {
 
 		private final CreateEditStatusHistAppReasonAdapter createEditStatusHistAppReasonAdapter;
 
-		private final RequestSettingRepository requestSettingRepository;
+		//private final RequestSettingRepository requestSettingRepository;
 
 		private final ClosureEmploymentRepository closureEmploymentRepository;
 
+		private final AppReflectExeConditionRepository appReflectExeConditionRepository;
+
+		private final ReasonApplicationDailyResultRepo reasonApplicationDailyResultRepo;
+
 		@Override
-		public Pair<Object, AtomTask> process(ApplicationShare application, GeneralDate date,
-				ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
-			return eflectApplicationWorkScheduleAdapter.process(application, date, reflectStatus, preAppWorkScheReflectAttr);
+		public Pair<Object, AtomTask> process(ExecutionType excutionType, ApplicationShare application,
+				GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
+			return eflectApplicationWorkScheduleAdapter.process(excutionType.value, application, date, reflectStatus,
+					preAppWorkScheReflectAttr);
 		}
 
 		@Override
@@ -140,22 +155,23 @@ public class CreateRequireReflectionProcess {
 		}
 
 		@Override
-		public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Application application, GeneralDate date,
-				ReflectStatusResultShare reflectStatus) {
-			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus);
+		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ExecutionType excutionType,
+				ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
+			return reflectApplicationWorkRecordAdapter.process(EnumAdaptor.valueOf(excutionType.value,
+					nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType.class),
+					application, date, reflectStatus);
 		}
 
 		@Override
 		public List<ReasonApplicationDailyResult> findReasonAppDaily(String employeeId, GeneralDate date,
 				PrePostAtr preAtr, ApplicationType apptype, Optional<OvertimeAppAtr> overAppAtr) {
-			// TODO Auto-generated method stub
-			return null;
+			return reasonApplicationDailyResultRepo.findReasonAppDaily(employeeId, date, preAtr, apptype, overAppAtr);
 		}
 
 		@Override
 		public void addUpdateReason(List<ReasonApplicationDailyResult> reason) {
-			// TODO Auto-generated method stub
 
+			reasonApplicationDailyResultRepo.addUpdateReason(cid, reason);
 		}
 
 		@Override
@@ -165,22 +181,21 @@ public class CreateRequireReflectionProcess {
 		}
 
 		@Override
-		public Optional<AppReflectExecCond> findAppReflectExecCond(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<AppReflectExecutionCondition> findAppReflectExecCond(String companyId) {
+			return appReflectExeConditionRepository.findByCompanyId(companyId);
 		}
 
-		@Override
-		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType) {
-			// TODO: ????? apptype
-			return requestSettingRepository.getAppReflectionSetting(companyId);
-		}
+//		@Override
+//		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType) {
+//			// ????? apptype
+//			return requestSettingRepository.getAppReflectionSetting(companyId);
+//		}
 
-		@Override
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+//		@Override
+//		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
+//			// TODO ??? repo
+//			return Optional.empty();
+//		}
 
 		@Override
 		public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
