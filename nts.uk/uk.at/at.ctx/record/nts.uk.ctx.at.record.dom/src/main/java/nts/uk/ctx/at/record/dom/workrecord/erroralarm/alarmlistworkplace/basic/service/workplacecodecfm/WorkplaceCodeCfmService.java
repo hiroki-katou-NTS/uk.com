@@ -59,7 +59,7 @@ public class WorkplaceCodeCfmService {
             String message = TextResource.localize("KAL020_4");
             // ドメインオブジェクト「抽出結果」を作成します。
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                    new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                     name.v(),
                     Optional.ofNullable(TextResource.localize("KAL020_14", empInfosByWp.getKey())),
                     Optional.of(new MessageDisplay(displayMessage.v())),

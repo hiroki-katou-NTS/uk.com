@@ -58,7 +58,7 @@ public class PersonEligibleAnnualLeaveCheckService {
                             grantDate.toString("yyyy/MM/dd"));
                     // 抽出結果を作成
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                            new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                             null,
                             Optional.ofNullable(TextResource.localize("KAL020_120", grantDate.toString("yyyy/MM/dd"))),
                             Optional.empty(),

@@ -73,7 +73,7 @@ public class PositionCodeCfmService {
 
                 // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                         name.v(),
                         Optional.ofNullable(TextResource.localize("KAL020_13")),
                         Optional.of(new MessageDisplay(displayMessage.v())),

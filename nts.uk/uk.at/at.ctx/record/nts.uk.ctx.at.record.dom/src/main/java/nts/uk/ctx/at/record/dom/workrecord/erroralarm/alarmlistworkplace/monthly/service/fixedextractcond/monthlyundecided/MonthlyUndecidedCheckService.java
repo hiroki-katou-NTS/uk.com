@@ -51,7 +51,7 @@ public class MonthlyUndecidedCheckService {
 
                     // 抽出結果を作成
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_400", closure.getClosureName())),
-                            new AlarmValueDate(ym.v(), Optional.empty()),
+                            new AlarmValueDate(String.valueOf(ym.v()), Optional.empty()),
                             null,
                             Optional.ofNullable(TextResource.localize("KAL020_400", closure.getClosureName())),
                             Optional.empty(),

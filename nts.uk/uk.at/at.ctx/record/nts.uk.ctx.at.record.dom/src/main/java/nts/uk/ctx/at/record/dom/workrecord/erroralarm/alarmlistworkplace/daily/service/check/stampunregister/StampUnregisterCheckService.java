@@ -35,7 +35,7 @@ public class StampUnregisterCheckService {
             // 抽出結果を作成
             String message = TextResource.localize("KAL020_104", "card no"); //TODO
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(Integer.valueOf("0000"), Optional.empty()), //TODO
+                    new AlarmValueDate("0000", Optional.empty()), //TODO
                     null,
                     Optional.ofNullable(TextResource.localize("KAL020_119", "card no")), //TODO
                     Optional.empty(),

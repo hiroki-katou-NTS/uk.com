@@ -52,10 +52,10 @@ public class KfndtAlarmExtractWpl extends ContractUkJpaEntity implements Seriali
     public String hierarchyCode;
 
     @Column(name = "ALARM_STARTDATE")
-    public int startDate;
+    public String startDate;
 
     @Column(name = "ALARM_ENDDATE")
-    public Integer endDate;
+    public String endDate;
 
     @Column(name = "CATEGORY")
     public int category;

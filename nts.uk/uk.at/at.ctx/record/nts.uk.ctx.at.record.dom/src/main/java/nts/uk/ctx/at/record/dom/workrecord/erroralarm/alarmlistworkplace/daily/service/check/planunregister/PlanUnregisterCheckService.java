@@ -58,7 +58,7 @@ public class PlanUnregisterCheckService {
             }
             String message = TextResource.localize("KAL020_106", actualValueName);
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                    new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                     null,
                     Optional.ofNullable(TextResource.localize("KAL020_115")),
                     Optional.empty(),

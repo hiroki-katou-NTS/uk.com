@@ -69,7 +69,7 @@ public class PersonNotEligibleCheckService {
                 String message = TextResource.localize("KAL020_111", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName(),
                         String.valueOf(endRemain), String.valueOf(endRemain), ymd.toString("yyyy/MM/dd"));
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                         null,
                         Optional.ofNullable(TextResource.localize("KAL020_121", ymd.toString("yyyy/MM/dd"))),
                         Optional.empty(),

@@ -64,7 +64,7 @@ public class UnsetHdCfmService {
 
                     // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(startYear, Optional.empty()),
+                            new AlarmValueDate(String.valueOf(startYear), Optional.empty()),
                             workplaceCheckName.v(),
                             Optional.of(message),
                             Optional.of(new MessageDisplay(displayMessage.v())),

@@ -39,7 +39,7 @@ public class NewEmployeeCheckService {
                     period.end().afterOrEquals(jobEntryDate)) {
                 // 抽出結果を作成
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_100", personInfo.getEmployeeCode(), personInfo.getBusinessName())),
-                        new AlarmValueDate(Integer.valueOf(jobEntryDate.toString("yyyyMMdd")), Optional.empty()),
+                        new AlarmValueDate(jobEntryDate.toString("yyyyMMdd"), Optional.empty()),
                         null,
                         Optional.ofNullable(TextResource.localize("KAL020_114", jobEntryDate.toString("yyyy/MM/dd"))),
                         Optional.empty(),

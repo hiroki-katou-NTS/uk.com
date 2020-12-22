@@ -69,8 +69,8 @@ public class FixedExtractCondAlarmValueService {
                             String message = TextResource.localize("KAL020_317", String.valueOf(count));
                             // ドメインオブジェクト「抽出結果」を作成します。
                             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
-                                            Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd")))),
+                                    new AlarmValueDate(period.start().toString("yyyyMMdd"),
+                                            Optional.of(period.end().toString("yyyyMMdd"))),
                                     item.getScheduleCheckName(),
                                     Optional.ofNullable(TextResource.localize("KAL020_318", String.valueOf(count))),
                                     Optional.of(new MessageDisplay(item.getFirstMessageDisp().v())),

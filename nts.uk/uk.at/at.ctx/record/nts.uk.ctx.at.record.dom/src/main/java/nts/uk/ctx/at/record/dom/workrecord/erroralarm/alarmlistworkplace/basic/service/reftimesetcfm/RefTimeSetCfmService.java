@@ -57,7 +57,7 @@ public class RefTimeSetCfmService {
                         AppContexts.user().companyCode());
                 // ドメインオブジェクト「抽出結果」を作成します。
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(startYear, Optional.empty()),
+                        new AlarmValueDate(String.valueOf(startYear), Optional.empty()),
                         name.v(),
                         Optional.ofNullable(TextResource.localize("KAL020_15")),
                         Optional.of(new MessageDisplay(displayMessage.v())),

@@ -56,8 +56,8 @@ public class ReflectionStatusCheckService {
             return null;
         }
 
-        AlarmValueDate alarmValueDate = new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
-                Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd"))));
+        AlarmValueDate alarmValueDate = new AlarmValueDate(period.start().toString("yyyyMMdd"),
+                Optional.of(period.end().toString("yyyyMMdd")));
         String message = "";
         switch (reflectState) {
             case 1:

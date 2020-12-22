@@ -21,12 +21,12 @@ public class ExtractResultExport {
     /**
      * アラーム値日付
      */
-    private int startDate;
+    private String startDate;
 
     /**
      * アラーム値日付
      */
-    private Integer endDate;
+    private String endDate;
 
     /**
      * アラーム項目名

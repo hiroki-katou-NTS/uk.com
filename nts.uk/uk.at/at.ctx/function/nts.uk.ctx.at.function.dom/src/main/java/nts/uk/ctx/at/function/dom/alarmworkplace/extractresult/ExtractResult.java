@@ -62,7 +62,7 @@ public class ExtractResult {
      */
     private Optional<String> hierarchyCode;
 
-    public ExtractResult(String alarmValueMessage, int startDate, Integer endDate, String alarmItemName,
+    public ExtractResult(String alarmValueMessage, String startDate, String endDate, String alarmItemName,
                          String checkTargetValue, String comment, String workplaceId) {
         this.alarmValueMessage = new AlarmValueMessage(alarmValueMessage);
         this.alarmValueDate = new AlarmValueDate(startDate, Optional.ofNullable(endDate));
@@ -81,7 +81,7 @@ public class ExtractResult {
         this.hierarchyCode = Optional.ofNullable(hierarchyCode);
     }
 
-    public ExtractResult(String alarmValueMessage, int startDate, Integer endDate, String alarmItemName,
+    public ExtractResult(String alarmValueMessage, String startDate, String endDate, String alarmItemName,
                          String checkTargetValue, String comment, String workplaceId,
                          String workplaceCode, String workplaceName, String hierarchyCode) {
         this.alarmValueMessage = new AlarmValueMessage(alarmValueMessage);

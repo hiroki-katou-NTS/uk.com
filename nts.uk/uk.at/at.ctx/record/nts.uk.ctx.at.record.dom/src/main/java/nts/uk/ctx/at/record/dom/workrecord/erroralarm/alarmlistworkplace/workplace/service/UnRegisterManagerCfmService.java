@@ -54,8 +54,8 @@ public class UnRegisterManagerCfmService {
 
             // ドメインオブジェクト「抽出結果」を作成します。
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
-                            Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd")))),
+                    new AlarmValueDate(period.start().toString("yyyyMMdd"),
+                            Optional.of(period.end().toString("yyyyMMdd"))),
                     workplaceCheckName.v(),
                     Optional.ofNullable(message),
                     Optional.of(new MessageDisplay(displayMessage.v())),

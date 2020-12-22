@@ -55,7 +55,7 @@ public class StampAfterRetirementCheckService {
                     // 抽出結果を作成
                     String message = TextResource.localize("KAL020_117", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName());
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                            new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                             null,
                             Optional.ofNullable(TextResource.localize("KAL020_118", retirementDate.toString("yyyy/MM/dd"), datetimeError)),
                             Optional.empty(),

@@ -67,8 +67,8 @@ public class LeaveCheckService {
             // 抽出結果を作成してList＜抽出結果＞に追加
             String message = TextResource.localize("KAL020_101", empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName(), error);
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
-                            Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd")))),
+                    new AlarmValueDate(period.start().toString("yyyyMMdd"),
+                            Optional.of(period.end().toString("yyyyMMdd"))),
                     null,
                     Optional.ofNullable(TextResource.localize("KAL020_112")),
                     Optional.empty(),

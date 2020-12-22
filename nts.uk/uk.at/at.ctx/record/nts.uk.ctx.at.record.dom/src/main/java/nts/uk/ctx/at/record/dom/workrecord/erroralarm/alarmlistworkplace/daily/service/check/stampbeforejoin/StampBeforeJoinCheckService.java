@@ -55,7 +55,7 @@ public class StampBeforeJoinCheckService {
                     // 抽出結果を作成
                     String message = TextResource.localize("KAL020_110", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName());
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                            new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                             null,
                             Optional.ofNullable(TextResource.localize("KAL020_116", jobEntryDate.toString("yyyy/MM/dd"), datetimeError)),
                             Optional.empty(),

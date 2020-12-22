@@ -59,7 +59,7 @@ public class ComparisonProcessingService {
         // 抽出結果を作成
         // 作成した抽出結果を返す
         return new ExtractResultDto(new AlarmValueMessage(message),
-                new AlarmValueDate(ym.v(), Optional.empty()),
+                new AlarmValueDate(String.valueOf(ym.v()), Optional.empty()),
                 condition.getMonExtracConName().v(),
                 Optional.ofNullable(TextResource.localize("KAL020_408", avgTime.toString())),
                 Optional.of(new MessageDisplay(condition.getMessageDisp().v())),

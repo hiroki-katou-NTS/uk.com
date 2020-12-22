@@ -115,15 +115,14 @@ public class AlarmListExtractResultWorkplaceData {
         return extractResultDtos.stream().sorted(compare).collect(Collectors.toList());
     }
 
-    private static String convertAlarmValueDate(int date) {
-        String dateStr = String.valueOf(date);
-        switch (dateStr.length()) {
+    private static String convertAlarmValueDate(String date) {
+        switch (date.length()) {
             case 4:
-                return dateStr;
+                return date;
             case 6:
-                return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
+                return date.substring(0, 4) + "/" + date.substring(4, 6);
             case 8:
-                return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
+                return date.substring(0, 4) + "/" + date.substring(4, 6) + "/" + date.substring(6, 8);
         }
         return null;
     }

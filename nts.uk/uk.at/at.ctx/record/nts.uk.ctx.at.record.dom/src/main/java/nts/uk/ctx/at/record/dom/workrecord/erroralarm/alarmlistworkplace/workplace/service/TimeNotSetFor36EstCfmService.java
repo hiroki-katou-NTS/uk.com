@@ -59,7 +59,7 @@ public class TimeNotSetFor36EstCfmService {
 
                 // 抽出結果を作成する
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                         workplaceCheckName.v(),
                         Optional.ofNullable(message),
                         Optional.of(new MessageDisplay(displayMessage.v())),
@@ -76,7 +76,7 @@ public class TimeNotSetFor36EstCfmService {
 
                 // 抽出結果を作成する
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")), Optional.empty()),
+                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
                         workplaceCheckName.v(),
                         Optional.ofNullable(message),
                         Optional.of(new MessageDisplay(displayMessage.v())),

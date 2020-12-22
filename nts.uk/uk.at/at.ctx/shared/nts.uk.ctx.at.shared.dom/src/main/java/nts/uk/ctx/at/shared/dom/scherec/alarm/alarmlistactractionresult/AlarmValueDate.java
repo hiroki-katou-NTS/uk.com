@@ -17,9 +17,9 @@ public class AlarmValueDate {
     /**
      * 開始日
      */
-    private int startDate;
+    private String startDate;
     /**
      * 終了日
      */
-    private Optional<Integer> endDate;
+    private Optional<String> endDate;
 }

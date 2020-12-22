@@ -72,8 +72,8 @@ public class ClsCodeCfmService {
 
                 // ドメインオブジェクト「抽出結果」を作成します。
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(Integer.valueOf(period.start().toString("yyyyMMdd")),
-                                Optional.of(Integer.valueOf(period.end().toString("yyyyMMdd")))),
+                        new AlarmValueDate(period.start().toString("yyyyMMdd"),
+                                Optional.of(period.end().toString("yyyyMMdd"))),
                         name.v(),
                         Optional.ofNullable(TextResource.localize("KAL020_12", clsHist.getClassificationCode())), //TODO Q&A 38571
                         Optional.of(new MessageDisplay(displayMessage.v())),
