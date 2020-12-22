@@ -5,7 +5,7 @@ import IDisplayFlexBasicSettingByCompanyDto = nts.uk.at.kmk004.components.flex.I
 const template = `
 	<div   style="margin-top: 10px; margin-bottom:15px;"  >
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
-		<button data-bind="enable:screenData().selectedName() != null,click: openKDialog , i18n: 'KMK004_231'" ></button>
+		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n: 'KMK004_231'" ></button>
 	</div>
 	<div data-bind="visible:screenData().comFlexMonthActCalSet() != null" class="div_line" 
 		style="
@@ -84,6 +84,15 @@ class BasicSettingsCompany extends ko.ViewModel {
 		vm.$window.modal('/view/kmk/004/k/index.xhtml', { screenMode: vm.screenMode, title: vm.screenData().selectedName(), selected: selected }).then(() => {
 			vm.reloadAfterChangeSetting();
 		});
+	}
+
+	enableKButton() {
+		const vm = this;
+		if (vm.screenMode == 'Com_Company') {
+			return true;
+		}
+
+		return vm.screenData().selectedName() != null;
 	}
 
 	reloadAfterChangeSetting() {

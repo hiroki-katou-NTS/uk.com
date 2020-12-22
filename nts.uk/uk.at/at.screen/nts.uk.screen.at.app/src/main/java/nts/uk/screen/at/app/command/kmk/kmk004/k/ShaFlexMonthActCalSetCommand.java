@@ -7,8 +7,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSet;
 import nts.uk.shr.com.context.AppContexts;
 
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class ShaFlexMonthActCalSetCommand extends FlexMonthWorkTimeAggrSetCommand {
 	/** 社員ID */
 	private String empId;
@@ -22,4 +22,11 @@ public class ShaFlexMonthActCalSetCommand extends FlexMonthWorkTimeAggrSetComman
 				this.getFlexTimeHandle().toDomain(), 
 				this.empId);
 	}
+
+	public ShaFlexMonthActCalSetCommand(String empId,int aggrMethod, ShortageFlexSettingCommand insufficSet,
+			AggregateTimeSettingCommand legalAggrSet, FlexTimeHandleCommand flexTimeHandle) {
+		super(aggrMethod, insufficSet, legalAggrSet, flexTimeHandle);
+		this.empId = empId;
+	}
+	
 }

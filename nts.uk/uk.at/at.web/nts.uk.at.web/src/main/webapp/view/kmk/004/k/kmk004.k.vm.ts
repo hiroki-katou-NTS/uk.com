@@ -36,6 +36,8 @@ module nts.uk.at.kmk004.k {
 
 		carryforwardSetInShortageFlex = ko.observableArray(__viewContext.enums.CarryforwardSetInShortageFlex);
 
+		notSetting: KnockoutObservable<boolean> = ko.observable(true);
+
 		created(param?: any) {
 			const vm = this;
 			vm.initMonthLst();
@@ -60,9 +62,11 @@ module nts.uk.at.kmk004.k {
 
 			vm.$blockui('invisible');
 			vm.$ajax(START_URL).done((data: IScreenData) => {
-				if (data) {
-					vm.screenData().updateData(data);
-				}
+
+				vm.screenData().updateData(data);
+				vm.notSetting(data.flexMonthActCalSet == null);
+
+
 			}).always(() => { vm.$blockui('clear'); });
 		}
 
@@ -79,8 +83,77 @@ module nts.uk.at.kmk004.k {
 
 		register() {
 			const vm = this;
-			vm.$window.close();
 
+			if (vm.notSetting()) {
+				vm.registerSetting();
+			} else {
+				vm.updateSetting();
+			}
+		}
+
+		updateSetting() {
+			const vm = this;
+
+			let UPDATE_URL,
+				cmd = ko.toJS(vm.screenData());
+			cmd.flexMonthActCalSet.legalAggrSet.aggregateSet = cmd.flexMonthActCalSet.legalAggrSet.aggregateSet == true ? 1 : 0;
+
+			if (vm.screenMode == 'Com_Company') {
+				UPDATE_URL = API.UPDATE_COM;
+			}
+
+			if (vm.screenMode == 'Com_Workplace') {
+				UPDATE_URL = API.UPDATE_WKP;
+				cmd.flexMonthActCalSet.workplaceId = vm.selected;
+
+			}
+			if (vm.screenMode == 'Com_Employment') {
+				cmd.flexMonthActCalSet.employmentCode = vm.selected;
+				UPDATE_URL = API.UPDATE_EMP;
+			}
+
+			if (vm.screenMode == 'Com_Person') {
+				cmd.flexMonthActCalSet.empId = vm.selected;
+				UPDATE_URL = API.UPDATE_SHA;
+			}
+
+			vm.$blockui('invisible');
+			vm.$ajax(UPDATE_URL, cmd).done(() => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.$window.close();
+				});
+			}).always(() => { vm.$blockui('clear'); });
+		}
+
+		registerSetting() {
+			const vm = this;
+
+			let REGISTER_URL,
+				cmd = ko.toJS(vm.screenData());
+			cmd.flexMonthActCalSet.legalAggrSet.aggregateSet = cmd.flexMonthActCalSet.legalAggrSet.aggregateSet == true ? 1 : 0;
+
+			if (vm.screenMode == 'Com_Workplace') {
+				REGISTER_URL = API.REGISTER_WKP;
+				cmd.flexMonthActCalSet.workplaceId = vm.selected;
+
+			}
+
+			if (vm.screenMode == 'Com_Employment') {
+				cmd.flexMonthActCalSet.employmentCode = vm.selected;
+				REGISTER_URL = API.REGISTER_EMP;
+			}
+
+			if (vm.screenMode == 'Com_Person') {
+				cmd.flexMonthActCalSet.empId = vm.selected;
+				REGISTER_URL = API.REGISTER_SHA;
+			}
+
+			vm.$blockui('invisible');
+			vm.$ajax(REGISTER_URL, cmd).done(() => {
+				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+					vm.$window.close();
+				});
+			}).always(() => { vm.$blockui('clear'); });
 		}
 
 		getMessage() {
@@ -102,6 +175,42 @@ module nts.uk.at.kmk004.k {
 
 		remove() {
 			const vm = this;
+			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+				if (result === 'yes') {
+
+					vm.deleteData();
+
+				}
+			});
+		}
+
+		deleteData() {
+			const vm = this;
+
+			let DELETE_URL;
+
+			if (vm.screenMode == 'Com_Workplace') {
+				DELETE_URL = API.DELETE_WKP;
+
+			}
+			if (vm.screenMode == 'Com_Employment') {
+				DELETE_URL = API.DELETE_EMP;
+			}
+
+			if (vm.screenMode == 'Com_Person') {
+				DELETE_URL = API.DELETE_SHA;
+			}
+
+			vm.$blockui('invisible');
+
+			let cmd = vm.selected;
+
+			vm.$ajax('at', DELETE_URL, cmd).done((data) => {
+				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+					vm.$window.close();
+				});
+			}).always(() => { vm.$blockui("clear"); });
+
 		}
 
 
@@ -185,7 +294,9 @@ module nts.uk.at.kmk004.k {
 		reference: KnockoutObservable<number> = ko.observable(0);
 
 		update(param: IGetFlexPredWorkTime) {
-			this.reference(param.reference);
+			if (param) {
+				this.reference(param.reference);
+			}
 		}
 	}
 
@@ -215,10 +326,10 @@ module nts.uk.at.kmk004.k {
 	}
 
 	class AggregateTimeSetting {
-		aggregateSet: KnockoutObservable<number> = ko.observable(0);
+		aggregateSet: KnockoutObservable<boolean> = ko.observable(false);
 
 		update(param: IAggregateTimeSetting) {
-			this.aggregateSet(param.aggregateSet);
+			this.aggregateSet(param.aggregateSet == 0 ? false : true);
 		}
 
 	}

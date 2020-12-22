@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,12 +18,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteFlexBasicSettingByWorkPlaceCommandHandler extends CommandHandler<String> {
 
 	@Inject
-	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
+	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
 		// 社員別フレックス勤務集計方法を削除する
-		this.shaFlexMonthActCalSetRepo.remove(AppContexts.user().companyId(), context.getCommand());
+		this.wkpFlexMonthActCalSetRepo.remove(AppContexts.user().companyId(), context.getCommand());
 	}
 
 }

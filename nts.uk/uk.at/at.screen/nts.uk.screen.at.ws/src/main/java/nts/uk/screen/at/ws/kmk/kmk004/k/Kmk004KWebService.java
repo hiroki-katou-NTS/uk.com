@@ -9,17 +9,17 @@ import javax.ws.rs.Produces;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.DeleteFlexBasicSettingByEmployeeCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.DeleteFlexBasicSettingByEmploymentCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.DeleteFlexBasicSettingByWorkPlaceCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.k.EmpFlexMonthActCalSetCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.RegisterFlexBasicSettingByEmployeeCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.RegisterFlexBasicSettingByEmploymentCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.RegisterFlexBasicSettingByWorkPlaceCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.k.ShaFlexMonthActCalSetCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByCompanyCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByCompanyCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByEmployeeCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByEmployeeCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByEmploymentCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByEmploymentCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByWorkPlaceCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.k.UpdateFlexBasicSettingByWorkPlaceCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.k.WkpFlexMonthActCalSetCommand;
 import nts.uk.screen.at.app.kmk004.g.DisplayFlexBasicSettingByCompanyDto;
 import nts.uk.screen.at.app.kmk004.h.DisplayFlexBasicSettingByWorkPlaceDto;
 import nts.uk.screen.at.app.kmk004.i.DisplayFlexBasicSettingByEmploymentDto;
@@ -94,37 +94,37 @@ public class Kmk004KWebService {
 
 	@POST
 	@Path("update-wkp")
-	public void updateWkp(WkpFlexMonthActCalSetCommand command) {
+	public void updateWkp(UpdateFlexBasicSettingByWorkPlaceCommand command) {
 		this.updateWkpHandler.handle(command);
 	}
 
 	@POST
 	@Path("update-emp")
-	public void updateEmp(EmpFlexMonthActCalSetCommand command) {
+	public void updateEmp(UpdateFlexBasicSettingByEmploymentCommand command) {
 		this.updateEmpHandler.handle(command);
 	}
 
 	@POST
 	@Path("update-sha")
-	public void updateSha(ShaFlexMonthActCalSetCommand command) {
+	public void updateSha(UpdateFlexBasicSettingByEmployeeCommand command) {
 		this.updateShaHandler.handle(command);
 	}
 
 	@POST
 	@Path("register-wkp")
-	public void registerWkp(WkpFlexMonthActCalSetCommand command) {
+	public void registerWkp(UpdateFlexBasicSettingByWorkPlaceCommand command) {
 		this.registerWkpHandler.handle(command);
 	}
 
 	@POST
 	@Path("register-emp")
-	public void registerEmp(EmpFlexMonthActCalSetCommand command) {
+	public void registerEmp(UpdateFlexBasicSettingByEmploymentCommand command) {
 		this.registerEmpHandler.handle(command);
 	}
 
 	@POST
 	@Path("register-sha")
-	public void registerSha(ShaFlexMonthActCalSetCommand command) {
+	public void registerSha(UpdateFlexBasicSettingByEmployeeCommand command) {
 		this.registerShaHandler.handle(command);
 	}
 

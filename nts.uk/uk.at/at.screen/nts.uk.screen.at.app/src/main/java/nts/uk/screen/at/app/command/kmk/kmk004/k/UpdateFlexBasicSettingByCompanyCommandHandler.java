@@ -29,10 +29,10 @@ public class UpdateFlexBasicSettingByCompanyCommandHandler
 
 		UpdateFlexBasicSettingByCompanyCommand cmd = context.getCommand();
 		// フレックス勤務所定労働時間取得を登録・更新する
-		this.getFlexPredWorkTimeRepo.persistAndUpdate(cmd.getGetFlexPredWorkTime().toDomain());
+		this.getFlexPredWorkTimeRepo.persistAndUpdate(cmd.getFlexPredWorkTime().toDomain());
 		// 会社別フレックス勤務集計方法を更新する
 
-		this.comFlexMonthActCalSetRepo.update(cmd.getComFlexMonthActCalSet().toDomain());
+		this.comFlexMonthActCalSetRepo.update(cmd.getFlexMonthActCalSet().toDomain());
 	}
 
 }
