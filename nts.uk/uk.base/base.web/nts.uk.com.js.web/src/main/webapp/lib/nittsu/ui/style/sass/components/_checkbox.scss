@@ -1,7 +1,7 @@
 ﻿.ntsCheckBox {
 	display: inline-block;
 	box-sizing: border-box;
-
+	vertical-align: top;
 	padding: 1px 5px 3px 4px;
 	border: solid 1px transparent;
 
@@ -64,7 +64,7 @@
 			cursor: pointer;
 			display: inline-block;
 			user-select: none;
-			line-height: 19px;
+			line-height: 28px;
 			vertical-align: middle;
 		}
 

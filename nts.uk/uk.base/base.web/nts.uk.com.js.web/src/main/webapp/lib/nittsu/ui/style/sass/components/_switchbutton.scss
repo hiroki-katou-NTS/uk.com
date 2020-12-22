@@ -21,7 +21,10 @@ button.nts-switch-button {
   	box-shadow: 0 0 $button-boxshadow-base-color;
    	margin-left: 0px;
    	margin-right: 0px;
-   	margin-bottom: 0px;
+	margin-bottom: 0px;
+	z-index: 1;
+	position: relative;
+
    	&:active {
    		top: 0;
    		box-shadow: 0 0 $button-boxshadow-base-color;
@@ -33,23 +36,41 @@ button.nts-switch-button {
        	top: 0;
        	
         color: #fff;
-        background-color: $activated_color;
+		background-color: #30CC40;
+		border-color: #30CC40;
+		border-radius: 2px;
 
         &:hover {
             color: #fff;
-            background-color: $activated_color;
+            background-color: #30CC40;
         }
    	}
    	
    	&[disabled] {
    		background-color: darken($button-normal-base-color, 15%);
-   		&:hover {
+		   
+		&:hover {
    			background-color: darken($button-normal-base-color, 15%);
-   		}
+		}
+		   
    		&.selected {
-   			background-color: #7b8;
+   			background-color: lighten($color: #30CC40, $amount: 15%);
    		}
-   	}
+	}
+	   
+	&:not(:first-child) {
+		margin-left: -1px;
+	}
+
+	&:first-child {
+		border-top-left-radius: 2px;
+		border-bottom-left-radius: 2px;
+	}
+
+	&:last-child {
+		border-top-right-radius: 2px;
+		border-bottom-right-radius: 2px;
+	}
 }
 
 .switchButton-wrapper{
@@ -65,5 +86,17 @@ button.nts-switch-button {
 		button {
 			border-color: #ff6666;
 		}
+	}
+
+	.nts-switch-button {
+		&.selected {
+			z-index: 2;
+		}
+	}
+
+	&:focus,
+	&:active {
+		box-shadow: none;
+		outline: none;
 	}
 }
