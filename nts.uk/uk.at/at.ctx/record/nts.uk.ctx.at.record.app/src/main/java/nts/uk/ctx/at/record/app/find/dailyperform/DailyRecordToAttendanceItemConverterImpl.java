@@ -306,7 +306,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	@SuppressWarnings("unchecked")
 	public Optional<BreakTimeOfDailyAttd> breakTime() {
 
-		return Optional.ofNullable((BreakTimeOfDailyAttd) getDomains(ItemConst.DAILY_BREAK_TIME_NAME));
+		return Optional.ofNullable((BreakTimeOfDailyAttd) getDomain(ItemConst.DAILY_BREAK_TIME_NAME));
 	}
 
 	@Override
