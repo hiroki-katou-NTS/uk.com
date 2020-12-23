@@ -75,7 +75,6 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 					.getSingle(rec -> {
 						KmamtMngAnnualSet kmamtMngAnnualSet = new KmamtMngAnnualSet();
 						kmamtMngAnnualSet.setCid(rec.getString("CID"));
-						kmamtMngAnnualSet.setHalfMaxDayYear(rec.getInt("HALF_MAX_DAY_YEAR"));
 						kmamtMngAnnualSet.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
 						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
 						kmamtMngAnnualSet
@@ -96,8 +95,6 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 								.setTimeMaxDayReference(rec.getInt("TIME_MAX_DAY_REFERENCE"));
 						ktvmtTimeVacationSet
 								.setTimeMaxDayUnifComp(rec.getInt("TIME_MAX_DAY_UNIF_COMP"));
-						ktvmtTimeVacationSet
-								.setIsEnoughTimeOneDay(rec.getInt("IS_ENOUGH_TIME_ONE_DAY"));
 						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("ROUND_PROC"));
 
 						KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();

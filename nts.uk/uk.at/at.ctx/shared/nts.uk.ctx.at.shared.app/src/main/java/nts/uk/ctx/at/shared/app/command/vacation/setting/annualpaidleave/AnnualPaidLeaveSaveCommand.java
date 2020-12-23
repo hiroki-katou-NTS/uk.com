@@ -344,10 +344,6 @@ public class AnnualPaidLeaveSaveCommand {
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
          */
-        @Override
-        public boolean isEnoughTimeOneDay() {
-            return false;
-        }
 
 		@Override
 		public TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay() {

@@ -91,10 +91,7 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
      */
-    @Override
-    public boolean isEnoughTimeOneDay() {
-        return this.entity.getIsEnoughTimeOneDay() == 1 ? true : false;
-    }
+   
 
 	@Override
 	public TimeAnnualRoundProcesCla GetRoundProcessClassific() {		
