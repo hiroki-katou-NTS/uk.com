@@ -117,7 +117,7 @@ module nts.uk.at.view.kwr005.a {
         showBaseDate: true, //基準日利用
         showClosure: true,
         showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
-        showPeriod: false, //対象期間利用
+        showPeriod: true, //対象期間利用
         periodFormatYM: false,
 
         /** Required parameter */
@@ -329,7 +329,7 @@ module nts.uk.at.view.kwr005.a {
 
         hasError.error = true;
         hasError.focusId = 'KWR005_106';
-        $('#' + hasError.focusId).ntsError('check');
+        //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
       //定型選択が選択されていません。 
@@ -337,7 +337,7 @@ module nts.uk.at.view.kwr005.a {
         vm.$dialog.error({ messageId: 'Msg_1925' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR005_105';
-        $('#' + hasError.focusId).ntsError('check');
+        //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
 
