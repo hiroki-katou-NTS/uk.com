@@ -91,7 +91,7 @@ public class Kmk004OWebService {
 	}
 	
 	@POST
-	@Path("viewO/getEmployeeId")
+	@Path("viewO/getEmployeeIds")
 	public List<EmployeeIdDto> getEmployeeId() {
 		return this.employeeList.get(LaborWorkTypeAttr.DEFOR_LABOR);
 	}
