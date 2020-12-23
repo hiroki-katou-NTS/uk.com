@@ -193,7 +193,7 @@ module nts.uk.at.kmk004.r {
 		data: Array<any>;//EMPLOYEE = UnitModel
 		selected: string;
 		year: number;
-		laborAttr: 1 | 2 | 3;
+		laborAttr: 0 | 1 | 2;
 	}
 
 
