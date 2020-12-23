@@ -56,7 +56,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			vm.bindMessageInfo(null);
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
-			if (!_.isNil(dataTransfer.appDate)) {
+			if (!_.isNil(_.get(dataTransfer, 'appDate'))) {
 				dateLst.push(dataTransfer.appDate);
 			}	
 			if (!_.isEmpty(params)) {
