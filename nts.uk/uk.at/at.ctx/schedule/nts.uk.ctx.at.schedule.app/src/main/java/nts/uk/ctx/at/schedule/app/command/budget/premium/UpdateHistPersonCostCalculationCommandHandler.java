@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdateHistPersonCostCalculationCommand;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
@@ -16,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -35,11 +37,17 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
+        val premiumSettings = command.getPremiumSettingList().stream().map(e->new PremiumSetting(
+                EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
+                new PremiumRate(e.getRate()),
+                EnumAdaptor.valueOf(e.getUnitPrice(),UnitPrice.class),
+                e.getAttendanceItems()
+        )).collect(Collectors.toList()) ;
         val domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
                 new Remarks(command.getRemarks()),
-                null
+                premiumSettings
                 ,
                 Optional.of(unitPrice),
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),

@@ -12,8 +12,6 @@ import nts.arc.time.GeneralDate;
 public class HistPersonCostCalculationDto {
     private GeneralDate startDate;
     private GeneralDate endDate;
-    private String companyId;
-    private String historyId;
-
-
+    private String companyID;
+    private String historyID;
 }

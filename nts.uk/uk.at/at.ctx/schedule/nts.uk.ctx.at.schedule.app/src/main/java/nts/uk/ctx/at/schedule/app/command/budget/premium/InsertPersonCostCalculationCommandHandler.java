@@ -38,26 +38,26 @@ public class InsertPersonCostCalculationCommandHandler extends CommandHandler<Pe
 	protected void handle(CommandHandlerContext<PersonCostCalculationCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		PersonCostCalculationCommand command = context.getCommand();
-//		this.personCostCalculationDomainService.insertPersonCostCalculation(
-//				new PersonCostCalculation(
-//						companyID,
-//						command.getHistoryID(),
-//						GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"),
-//						GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
-//						EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
-//						new Memo(command.getMemo()),
-//						command.getPremiumSets().stream()
-//							.map(x -> new PremiumSetting(
-//									x.getCompanyID(),
-//									x.getHistoryID(),
-//									x.getDisplayNumber(),
-//									new PremiumRate(x.getRate()),
-//									new PremiumName(x.getName()),
-//									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class),
-//									x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
-//							.collect(Collectors.toList())
-//					)
-//		);
+		this.personCostCalculationDomainService.insertPersonCostCalculation(
+				new PersonCostCalculation(
+						companyID,
+						command.getHistoryID(),
+						GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"),
+						GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
+						EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
+						new Memo(command.getMemo()),
+						command.getPremiumSets().stream()
+							.map(x -> new PremiumSetting(
+									x.getCompanyID(),
+									x.getHistoryID(),
+									x.getDisplayNumber(),
+									new PremiumRate(x.getRate()),
+									new PremiumName(x.getName()),
+									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class),
+									x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
+							.collect(Collectors.toList())
+					)
+		);
 	}
 	
 }

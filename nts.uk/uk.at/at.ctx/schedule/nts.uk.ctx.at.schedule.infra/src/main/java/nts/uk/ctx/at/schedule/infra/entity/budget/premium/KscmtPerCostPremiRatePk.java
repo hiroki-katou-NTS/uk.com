@@ -18,7 +18,7 @@ public class KscmtPerCostPremiRatePk implements Serializable {
 
     @Column(name = "HIST_ID")
     public String histID;
-
+    // 割増設定.割増時間項目NO
     @Column(name = "PREMIUM_NO")
     public int premiumNo;
 }

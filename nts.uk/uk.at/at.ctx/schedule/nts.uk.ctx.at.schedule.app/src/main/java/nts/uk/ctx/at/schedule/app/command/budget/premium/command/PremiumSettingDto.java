@@ -11,10 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class PremiumSettingDto {
-    private String companyID;
-
-    private String historyID;
-
     private int iD;
 
     private Integer rate;

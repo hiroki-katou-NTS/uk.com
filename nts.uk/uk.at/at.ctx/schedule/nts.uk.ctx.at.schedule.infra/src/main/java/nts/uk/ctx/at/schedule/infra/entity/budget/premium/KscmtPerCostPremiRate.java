@@ -26,10 +26,11 @@ public class KscmtPerCostPremiRate extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
     public KscmtPerCostPremiRatePk pk;
-
+    // 割増設定-割増率
     @Column(name = "PREMIUM_RATE")
     public int premiumRate;
 
+    // 単価 ->人件費計算設定.単価
     @Column(name = "UNIT_PRICE")
     public int unitPrice;
 

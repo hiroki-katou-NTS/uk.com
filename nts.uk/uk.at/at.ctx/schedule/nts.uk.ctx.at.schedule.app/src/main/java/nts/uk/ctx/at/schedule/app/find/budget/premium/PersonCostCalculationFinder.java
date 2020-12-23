@@ -188,11 +188,11 @@ public class PersonCostCalculationFinder {
                 cid,
                 e.identifier()
         )).collect(Collectors.toList());
-
         if(lisHist!= null ){
-            val histId = lisHist.get(0).getHistoryId();
+            val histId = lisHist.get(0).getHistoryID();
 
         }
+
         return new HistAndPersonCostLastDto();
     }
     public PersonCostCalculationDto getHistPersonCostByHistId(String histId) {
@@ -203,7 +203,6 @@ public class PersonCostCalculationFinder {
         };
         return null;
     }
-
 
     public PersonCostCalculationDto getLastPersonCost() {
         val cid = AppContexts.user().companyId();
