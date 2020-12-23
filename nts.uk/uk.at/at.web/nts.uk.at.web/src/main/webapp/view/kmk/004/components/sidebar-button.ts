@@ -5,7 +5,7 @@ const template = `
 		<div class="title" data-bind="i18n:screenMode"></div>
 		<a class="goback"  data-bind="ntsLinkButton: { jump: '../a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button data-bind=" enable:enableSave() ,click: register,i18n: 'KMK004_225'" class="proceed"></button>
-		<button data-bind="enable:screenData().yearList().length > 0 ,click: copy,visible:screenMode != 'Com_Company' ,i18n: 'KMK004_226'"></button>
+		<button data-bind="enable:enableCopy() ,click: copy,visible:screenMode != 'Com_Company' ,i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="enable:enableDelete()  ,click: remove,i18n: 'KMK004_227'"></button>
 	`;
 
@@ -129,6 +129,11 @@ class SidebarButton extends ko.ViewModel {
 
 		return _.filter(ko.toJS(vm.screenData().monthlyWorkTimeSetComs()), ['laborTime.checkbox', true]).length > 0 && vm.screenData().yearList().length > 0;
 
+	}
+
+	enableCopy() {
+		const vm = this;
+		return vm.screenData().yearList().length > 0 && vm.screenData().updateMode();
 	}
 
 	registerData() {
