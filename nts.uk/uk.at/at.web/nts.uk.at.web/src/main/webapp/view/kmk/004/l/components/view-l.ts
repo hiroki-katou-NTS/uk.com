@@ -43,7 +43,8 @@ module nts.uk.at.view.kmk004.l {
 									params:{ 
 										selectedYear: selectedYear,
 										type: type,
-										selectedId: ko.observable('')
+										selectedId: ko.observable(''),
+										isLoadInitData: isLoadInitData
 									}
 								}"></div>
 								
@@ -86,6 +87,7 @@ module nts.uk.at.view.kmk004.l {
 		public existYear: KnockoutObservable<boolean> = ko.observable(true);
 		public type: SIDEBAR_TYPE = 'Com_Company';
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
+		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(private params: IParam) {
 			super();
@@ -93,7 +95,7 @@ module nts.uk.at.view.kmk004.l {
 
 		created() {
 			let vm = this;
-			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Company", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
+			vm.params = { isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Company", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
 			vm.selectedYear
 				.subscribe(() => {
 					vm.$errors('clear');
@@ -130,6 +132,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.$ajax(KMK004L_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetComs: param })).done(() => {
 					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 						vm.close();
+						vm.isLoadInitData(true);
 						$('#box-year').focus();
 					})
 
@@ -146,9 +149,10 @@ module nts.uk.at.view.kmk004.l {
 			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 				if (result === 'yes') {
 					vm.$blockui("invisible");
-					vm.$ajax(KMK004L_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear()})).done(() => {
+					vm.$ajax(KMK004L_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear() })).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
+							vm.isLoadInitData(true);
 							$('#box-year').focus();
 						})
 

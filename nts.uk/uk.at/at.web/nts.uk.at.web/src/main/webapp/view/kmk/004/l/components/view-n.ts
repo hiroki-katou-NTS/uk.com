@@ -54,7 +54,8 @@ module nts.uk.at.view.kmk004.l {
 									params:{ 
 										selectedYear: selectedYear,
 										type: type,
-										selectedId: selectedId
+										selectedId: selectedId,
+										isLoadInitData: isLoadInitData
 									}
 								}"></div>
 								
@@ -147,17 +148,11 @@ module nts.uk.at.view.kmk004.l {
 		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
-
+		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
+		
 		constructor(private params: IParam) {
 			super();
 			
-		/*	vm.isLoadInitData = vm.params.isLoadInitData; 
-			vm.isLoadInitData.subscribe((value: boolean) => {
-				if (value) {
-					vm.reloadInitData();
-					vm.isLoadInitData(false);
-				}
-			});*/
 		}
 
 		created() {
@@ -194,7 +189,7 @@ module nts.uk.at.view.kmk004.l {
 
 			vm.employeeList = ko.observableArray<UnitModel>([]);
 			vm.currentItemName = ko.observable('');
-			vm.paramL = {isLoadData: vm.isLoadData, sidebarType: "Com_Employment", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
+			vm.paramL = { isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Employment", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
 			vm.selectedYear
 				.subscribe(() => {
 					if (vm.selectedYear != null) {
@@ -241,6 +236,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.$ajax(KMK004N_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetEmps: param })).done(() => {
 					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 						vm.close();
+						vm.isLoadInitData(true);
 						$('#box-year').focus();
 					})
 
@@ -260,6 +256,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.$ajax(KMK004N_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(),  employmentCode: vm.paramL.empCode()})).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
+							vm.isLoadInitData(true);
 							$('#box-year').focus();
 						})
 
@@ -286,8 +283,6 @@ module nts.uk.at.view.kmk004.l {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {
 				vm.isLoadData(true);
-				//vm.isLoadInitData(true);
-				
 			});
 		}
 		
