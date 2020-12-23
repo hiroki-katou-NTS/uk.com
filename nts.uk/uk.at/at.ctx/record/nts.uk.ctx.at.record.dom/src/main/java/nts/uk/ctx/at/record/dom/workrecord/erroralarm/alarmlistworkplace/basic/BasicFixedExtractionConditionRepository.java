@@ -12,8 +12,10 @@ public interface BasicFixedExtractionConditionRepository {
 
     void register(BasicFixedExtractionCondition domain);
 
+    void registerAll(List<BasicFixedExtractionCondition> domain);
+
     void update(BasicFixedExtractionCondition domain);
 
-    void delete(String id);
+    void delete(List<String> ids);
 
 }

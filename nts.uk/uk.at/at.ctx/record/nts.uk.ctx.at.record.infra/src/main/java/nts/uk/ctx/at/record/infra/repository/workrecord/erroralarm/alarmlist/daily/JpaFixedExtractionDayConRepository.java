@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -44,4 +45,15 @@ public class JpaFixedExtractionDayConRepository extends JpaRepository implements
                 .setParameter("useAtr", useAtr)
                 .getList(KrcmtWkpFxexDayCon::toDomain);
     }
+
+    @Override
+    public void register(List<FixedExtractionDayCon> domain) {
+        this.commandProxy().insertAll(domain.stream().map(KrcmtWkpFxexDayCon::fromDomain).collect(Collectors.toList()));
+    }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpFxexDayCon.class, ids);
+    }
+
 }

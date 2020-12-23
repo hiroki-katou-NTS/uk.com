@@ -27,35 +27,30 @@ module nts.uk.at.view.kal013.b {
             [4, "RatioComparison"]
         ]);
         monthlyContraint: Map<number,string> = new Map([
-            [1, "Time"], // AVERAGE_TIME(1, "平均時間"),
-            [2, "NumberOfPeople"], // AVERAGE_NUMBER_DAY(2, "平均日数"),
-            [3, "NumberOfPeople"], //AVERAGE_NUMBER_TIME(3, "平均回数"),
-            [4, "NumberOfPeople"], // AVERAGE_RATIO(4, "平均比率"),
-            [5, "Time"], // TIME_FREEDOM(5, "平均時間自由"),
-            [6, "NumberOfPeople"], // AVERAGE_DAY_FREE(6, "平均日数自由")
-            [7, "NumberOfPeople"], // AVERAGE_TIME_FREE(7, "平均回数自由")
+            [1, "AverageTime"], // AVERAGE_TIME(1, "平均時間"),
+            [2, "AverageNumberDays"], // AVERAGE_NUMBER_DAY(2, "平均日数"),
+            [3, "AverageNumberTimes"], //AVERAGE_NUMBER_TIME(3, "平均回数"),
+            [4, "AverageRatio"], // AVERAGE_RATIO(4, "平均比率"),
+            [5, "AverageTime"], // TIME_FREEDOM(5, "平均時間自由"),
+            [6, "AverageNumberDays"], // AVERAGE_DAY_FREE(6, "平均日数自由")
+            [7, "AverageNumberTimes"], // AVERAGE_TIME_FREE(7, "平均回数自由")
         ]);
 
         constructor(params: IParentParams) {
             super();
             const vm = this;
 
-            // スケジュール／日次
-            // SCHEDULE_DAILY(3, "KAL020_300"),
-            // 月次
-            // MONTHLY(4, "KAL020_401"),
+            let option: IPattern = {checkItem: 1, checkCond: ["1","2"], checkCondB:1,
+                operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
 
-            // let option: IPattern = {checkItem: 1, checkCond: ["1","2"], checkCondB:1,
-            //     operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
-            //
-            // params = {category: 3, condition: option};
+            params = {category: WorkplaceCategory.MONTHLY, condition: option};
 
-            if (params.category == 4) {
+            if (params.category == WorkplaceCategory.MONTHLY) {
                 vm.listTypeCheck(__viewContext.enums.CheckMonthlyItemsType);
             } else {
                 vm.listTypeCheck(__viewContext.enums.CheckDayItemsType);
             }
-            vm.contrastTypeList(__viewContext.enums.ContrastType);
+
             vm.getEnum().done(()=>{
 
             });
@@ -78,22 +73,41 @@ module nts.uk.at.view.kal013.b {
             });
 
             vm.pattern().checkItem.subscribe((value)=>{
-
+                vm.$errors("clear",".endValue");
                 vm.switchPatternA(true)
                 // 対比の場合 - スケジュール／日次
-               if (vm.category() == 3 && value == 0) {
+               if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 0) {
                     vm.switchPatternA(false);
+                    vm.contrastTypeList(__viewContext.enums.ContrastType);
+               } else if (vm.category() == WorkplaceCategory.MONTHLY
+                   && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
+                       CheckMonthlyItemsType.AVERAGE_TIME_FREE],value) != -1 ){
+                   vm.switchPatternA(false);
+                    switch (value){
+                        case CheckMonthlyItemsType.TIME_FREEDOM:
+                            vm.contrastTypeList(__viewContext.enums.AverageTime);
+                            break;
+                        case CheckMonthlyItemsType.AVERAGE_DAY_FREE:
+                            vm.contrastTypeList(__viewContext.enums.AverageNumberOfDays);
+                            break;
+                        case CheckMonthlyItemsType.AVERAGE_TIME_FREE:
+                            vm.contrastTypeList(__viewContext.enums.AverageNumberOfTimes);
+                            break;
+                        default:
+                            vm.contrastTypeList([]);
+                            break;
+                    }
                }
                // Kind of control
                 vm.timeControl(false);
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
-                if ((vm.category() == 4 && value == 1)
-                    || (vm.category() == 3 && value == 2) ){
+                if ((vm.category() == WorkplaceCategory.MONTHLY && value == 1)
+                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 2) ){
                     vm.timeControl(true);
                 }
 
                 // Contraint
-                if (vm.category() == 3){
+                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
                     vm.constraint(vm.dailyContraint.get(value));
                 } else{
                     vm.constraint(vm.monthlyContraint.get(value));
@@ -104,6 +118,7 @@ module nts.uk.at.view.kal013.b {
             });
 
             vm.pattern().checkCondB.subscribe((value)=>{
+                vm.$errors("clear",".endValue");
                 vm.timeControl(false);
                 if (_.indexOf([2,5,8],value) != -1){
                     vm.timeControl(true);
@@ -118,6 +133,9 @@ module nts.uk.at.view.kal013.b {
                 }
             })
 
+            vm.pattern().operator.subscribe((value)=>{
+                vm.$errors("clear",".endValue");
+            });
         }
 
         mounted() {
@@ -150,7 +168,7 @@ module nts.uk.at.view.kal013.b {
             const vm = this;
             let dfd = $.Deferred();
             vm.$ajax(PATH_API.GET_ENUM_OPERATOR).done((
-                listSingleValueCompareTypse: Array<EnumModel>) => {
+                listSingleValueCompareTypse: Array<IEnumModel>) => {
                 vm.listSingleValueCompareTypes(vm.getLocalizedNameForEnum(listSingleValueCompareTypse));
                 dfd.resolve();
 
@@ -161,28 +179,34 @@ module nts.uk.at.view.kal013.b {
             return dfd.promise();
         }
 
-        private getLocalizedNameForEnum(listEnum: Array<EnumModel>): Array<EnumModel> {
-            if (listEnum) {
-                for (var i = 0; i < listEnum.length; i++) {
-                    if (listEnum[i].localizedName) {
-                        listEnum[i].localizedName = resource.getText(listEnum[i].localizedName);
-                    }
-                }
-                return listEnum;
-            }
-            return [];
+        private getLocalizedNameForEnum(listEnum: Array<IEnumModel>): Array<EnumModel> {
+            const vm = this;
+            let result = _.map(listEnum,(item) =>{
+                let enumValue: IEnumModel = {value: item.value, fieldName: item.fieldName,
+                    localizedName: vm.$i18n(item.localizedName)};
+                return new EnumModel(enumValue);
+            });
+            return result;
         }
 
-        validate(){
+        validate(): boolean{
             const vm = this;
-            if  (vm.pattern().minValue() > vm.pattern().maxValue()){
-                vm.$errors("#end1", "Msg_927");
+            if  ((( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
+                    && vm.pattern().minValue() >= vm.pattern().maxValue() ))
+                    || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
+                    && vm.pattern().minValue() > vm.pattern().maxValue() ))
+            {
+                vm.$errors(".endValue", "Msg_927");
+                return false;
             }
+            return true;
         }
+
+
         btnDecision() {
             const vm = this;
             $('.nts-input').filter(":enabled").trigger("validate");
-            if (errors.hasError() === true) {
+            if (errors.hasError() === true || !vm.validate()) {
                 return;
             }
             let shareParam: IPattern = ko.toJS(vm.pattern());
@@ -292,5 +316,40 @@ module nts.uk.at.view.kal013.b {
     interface IParentParams {
         category: number;
         condition: IPattern;
+    }
+
+    enum RangeCompareType{
+        // 範囲の間（境界値を含まない）（＜＞）
+        BETWEEN_RANGE_OPEN = 6,
+        /* 範囲の間（境界値を含む）（≦≧） */
+        BETWEEN_RANGE_CLOSED = 7,
+        /* 範囲の外（境界値を含まない）（＞＜） */
+        OUTSIDE_RANGE_OPEN = 8,
+        /* 範囲の外（境界値を含む）（≧≦） */
+        OUTSIDE_RANGE_CLOSED = 9,
+    }
+
+    enum WorkplaceCategory {
+        // スケジュール／日次
+        SCHEDULE_DAILY = 3, // 月次
+        MONTHLY = 4
+    }
+
+    enum CheckMonthlyItemsType {
+
+        /* 平均時間 */
+        AVERAGE_TIME  = 1,
+        /* 平均日数 */
+        AVERAGE_NUMBER_DAY = 2,
+        /* 平均回数 */
+        AVERAGE_NUMBER_TIME = 3,
+        /* 平均比率 */
+        AVERAGE_RATIO = 4,
+        /* 平均時間自由 */
+        TIME_FREEDOM = 5,
+        /* 平均日数自由 */
+        AVERAGE_DAY_FREE = 6,
+        /* 平均回数自由 */
+        AVERAGE_TIME_FREE = 7
     }
 }

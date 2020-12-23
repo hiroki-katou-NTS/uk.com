@@ -12,9 +12,11 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategor
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.applicationapproval.AlarmAppApprovalCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.basic.AlarmMasterBasicCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.daily.AlarmMasterDailyCheckCdt;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.monthly.AlarmMonthlyCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.schedule.AlarmScheduleCheckCdt;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.workplace.AlarmMasterWkpCheckCdt;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.checkcondition.KfnmtCatMapEachType;
+import nts.uk.ctx.at.function.infra.entity.alarmworkplace.checkcondition.KfnmtCatMapEachTypePk;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.checkcondition.KfnmtWkpAlstchkConcat;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,15 +39,26 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
     private static final String GET_SUB_BY_CTG = GET_ALL_SUB + " where f.pk.companyID = :cid and f.pk.category = :ctg";
     private static final String GET_SUB_BY_CTG_AND_CODES  = GET_ALL_SUB + " where f.pk.companyID = :cid and f.pk.category = :ctg " +
             " and f.pk.categoryItemCD IN :ctgCDs";
+    private static final String GET_SUB_BY_CTG_AND_CODE  = GET_ALL_SUB + " where f.pk.companyID = :cid and f.pk.category = :ctg " +
+            " and f.pk.categoryItemCD = :ctgCD";
 
     @Override
-    public Optional<AlarmCheckCdtWorkplaceCategory> getByID(String id, int category, String categoryItemCD) {
+    public Optional<AlarmCheckCdtWorkplaceCategory> getByID(int category, String categoryItemCD) {
         Optional<KfnmtWkpAlstchkConcat> entity = this.queryProxy().query(GET_BY_ID, KfnmtWkpAlstchkConcat.class)
-                .setParameter("cid", id)
+                .setParameter("cid", AppContexts.user().companyId())
                 .setParameter("ctg", category)
                 .setParameter("ctgCD", categoryItemCD)
                 .getSingle();
-        return entity.map(KfnmtWkpAlstchkConcat::toDomain);
+        if (entity.isPresent()) {
+            List<KfnmtCatMapEachType> entitySub = this.queryProxy()
+                    .query(GET_SUB_BY_CTG_AND_CODE, KfnmtCatMapEachType.class)
+                    .setParameter("cid", AppContexts.user().companyId())
+                    .setParameter("ctg", category)
+                    .setParameter("ctgCD", categoryItemCD)
+                    .getList();
+            return Optional.ofNullable(this.toDomain(Arrays.asList(entity.get()), entitySub).get(0));
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -114,7 +127,7 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
                     break;
                 }
                 case MONTHLY: {
-                    condition = new AlarmScheduleCheckCdt(extractionIDs, optionalIDs);
+                    condition = new AlarmMonthlyCheckCdt(extractionIDs, optionalIDs);
                     break;
                 }
                 case APPLICATION_APPROVAL: {
@@ -135,16 +148,37 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
 
     @Override
     public void register(AlarmCheckCdtWorkplaceCategory domain) {
+        // Insert main table
         this.commandProxy().insert(KfnmtWkpAlstchkConcat.toEntity(domain));
+        // Insert sub table
+        this.commandProxy().insertAll(KfnmtCatMapEachType.toEntity(domain));
     }
 
     @Override
     public void update(AlarmCheckCdtWorkplaceCategory domain) {
+        // Update main table
+        this.commandProxy().update(domain);
+        // Update sub table
+        List<KfnmtCatMapEachType> entitySub = this.queryProxy()
+                .query(GET_SUB_BY_CTG_AND_CODE, KfnmtCatMapEachType.class)
+                .setParameter("cid", AppContexts.user().companyId())
+                .setParameter("ctg", domain.getCategory().value)
+                .setParameter("ctgCD", domain.getCode().v())
+                .getList();
+        this.commandProxy().removeAll(entitySub.stream().map(KfnmtCatMapEachType::getPk).collect(Collectors.toList()));
+
+        List<KfnmtCatMapEachType> entitiesSubAfterUpdate = KfnmtCatMapEachType.toEntity(domain);
+        this.commandProxy().insertAll(entitiesSubAfterUpdate);
 
     }
 
     @Override
-    public void delete(String id) {
-        this.commandProxy().remove(KfnmtWkpAlstchkConcat.class, id);
+    public void delete(AlarmCheckCdtWorkplaceCategory domain) {
+        List<KfnmtCatMapEachType> subEntities = KfnmtCatMapEachType.toEntity(domain);
+        // Remove main table
+        this.commandProxy().remove(KfnmtWkpAlstchkConcat.class, KfnmtWkpAlstchkConcat.toEntity(domain).pk);
+        // Remove sub table
+        this.commandProxy().removeAll(KfnmtCatMapEachType.class, subEntities.stream().map(KfnmtCatMapEachType::getPk).collect(Collectors.toList()));
     }
+
 }

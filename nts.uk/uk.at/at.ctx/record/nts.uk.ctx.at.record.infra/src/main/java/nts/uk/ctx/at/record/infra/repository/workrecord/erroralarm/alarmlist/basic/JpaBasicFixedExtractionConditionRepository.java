@@ -5,12 +5,14 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicFixedExtractionConditionRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.basic.KrcmtWkpBasicFxexCon;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.basic.KrcmtWkpBasicFxexConPk;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -62,7 +64,13 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
 
     @Override
     public void register(BasicFixedExtractionCondition domain) {
+        this.commandProxy().insert(KrcmtWkpBasicFxexCon.toEntity(domain));
+    }
 
+    @Override
+    public void registerAll(List<BasicFixedExtractionCondition> domain) {
+        this.commandProxy()
+                .insertAll(domain.stream().map(KrcmtWkpBasicFxexCon::toEntity).collect(Collectors.toList()));
     }
 
     @Override
@@ -71,7 +79,7 @@ public class JpaBasicFixedExtractionConditionRepository extends JpaRepository im
     }
 
     @Override
-    public void delete(String id) {
-
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpBasicFxexCon.class, ids.stream().map(KrcmtWkpBasicFxexConPk::new).collect(Collectors.toList()));
     }
 }

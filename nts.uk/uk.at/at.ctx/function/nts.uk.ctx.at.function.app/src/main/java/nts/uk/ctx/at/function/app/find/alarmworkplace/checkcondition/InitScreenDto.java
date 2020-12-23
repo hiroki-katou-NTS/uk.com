@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class InitScreenDto {
 
-    private int categoryID;
+    private int category;
+
+    private String code;
 
 }

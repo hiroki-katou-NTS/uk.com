@@ -39,6 +39,8 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
 
     private static final String FIND_BY_IDS_AND_USEATR;
 
+    public static final String GET_BY_IDS;
+
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT a FROM KrcmtWkpSchedaiExCon a ");
@@ -48,6 +50,11 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
         builderString.append(SELECT);
         builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids AND a.useAtr = :useAtr ");
         FIND_BY_IDS_AND_USEATR = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids ");
+        GET_BY_IDS = builderString.toString();
 
     }
 
@@ -63,6 +70,19 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)
             .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
+    }
+
+    @Override
+    public List<ExtractionScheduleCon> getByIds(List<String> ids) {
+        if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
+
+        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
+        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
+        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
+
+        return this.queryProxy().query(GET_BY_IDS, KrcmtWkpSchedaiExCon.class)
+                .setParameter("ids", ids)
+                .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
     }
 
 }

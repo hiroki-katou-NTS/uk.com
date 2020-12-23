@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class FixedExtractionCdtOutput {
+public class FixedExtractionItemDto {
 
     // ID
     private String id;
