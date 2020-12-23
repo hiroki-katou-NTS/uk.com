@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -44,7 +45,7 @@ public class TopPageDisplayTimeOfMonthlyDto implements ItemConst {
 		return TopPageDisplayOfMonthly.of(
 				new AttendanceTimeMonth(overtime),
 				new AttendanceTimeMonth(holidayWorkTime), 
-				new AttendanceTimeMonth(flexTime));
+				new AttendanceTimeMonthWithMinus(flexTime));
 	}
 }
 
