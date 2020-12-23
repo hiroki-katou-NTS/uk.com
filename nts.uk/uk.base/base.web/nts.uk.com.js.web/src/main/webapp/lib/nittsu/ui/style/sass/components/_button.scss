@@ -23,27 +23,92 @@ $button-disabled-base-color: #888888;
     height: 30px;
     padding: 0 7px;
     margin: 0;
+    position: relative;
 }
 
 button {
     @extend %btn-default;
 
+    &>span {
+        vertical-align: top;
+    }
+
+    &>svg {
+        width: 18px;
+        height: 18px;
+        vertical-align: top;
+    }
+
+    &>svg:first-child {
+        &+span:last-child {
+            margin-left: 10px;
+        }
+    }
+
+    &>span:first-child {
+        &+svg:last-child {
+            margin-left: 10px;
+        }
+    }
+
+    &.block {
+        width: 100%;
+        display: block;
+        position: relative;
+
+        &>svg:first-child {
+            &+span:last-child {
+                margin-left: 10px;
+            }
+        }
+    
+        &>span:first-child {
+            &+svg:last-child {
+                margin-left: 10px;
+            }
+        }
+    }
+
     &.small {
         height: 25px;
         font-size: 12px;
         padding: 0 4px;
+        &>span {
+            font-size: 12px;
+        }
+
+        &>svg {
+            width: 16px;
+            height: 16px;
+        }
     }
 
     &.large {
         height: 34px;
         font-size: 15px;
         padding: 0 10px;
+        &>span {
+            font-size: 15px;
+        }
+
+        &>svg {
+            width: 19px;
+            height: 19px;
+        }
     }
 
     &.x-large {
         height: 45px;
         font-size: 22px;
         padding: 0 20px;
+        &>span {
+            font-size: 22px;
+        }
+
+        &>svg {
+            width: 28px;
+            height: 28px;
+        }
     }
 
     &.auto-height {
