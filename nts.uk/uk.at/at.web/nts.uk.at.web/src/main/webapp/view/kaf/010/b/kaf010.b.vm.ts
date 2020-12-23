@@ -180,9 +180,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			let printContentOfHolidayWork = {} as any;
 			printContentOfHolidayWork.useInputDivergenceReason = res.appHdWorkDispInfoOutput.useInputDivergenceReason;
 			printContentOfHolidayWork.useComboDivergenceReason = res.appHdWorkDispInfoOutput.useComboDivergenceReason;
-			printContentOfHolidayWork.divergenceReasonReflect = res.appHdWorkDispInfoOutput.hdWorkOvertimeReflect.holidayWorkAppReflect.reflectDivergence;
+			printContentOfHolidayWork.divergenceReasonReflect = res.appHdWorkDispInfoOutput.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr;
 			printContentOfHolidayWork.workdayoffFrameList = res.appHdWorkDispInfoOutput.workdayoffFrameList;
-			printContentOfHolidayWork.breakReflect = res.appHdWorkDispInfoOutput.hdWorkOvertimeReflect.holidayWorkAppReflect.reflectBreakOuting;
+			printContentOfHolidayWork.breakReflect = res.appHdWorkDispInfoOutput.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr;
 			printContentOfHolidayWork.workTypeCode = res.appHolidayWork.workInformation.workType;
 			printContentOfHolidayWork.workTimeCode = res.appHolidayWork.workInformation.workTime;
 			printContentOfHolidayWork.overtimeMidnightUseAtr = res.appHdWorkDispInfoOutput.hdWorkOvertimeReflect.nightOvertimeReflectAtr;
@@ -468,13 +468,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			// ※28
 			self.managementMultipleWorkCyclescheck(self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);		
 			// ※27
-			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.reflectDivergence == 1 && self.dataSource.useInputDivergenceReason == true) {
+			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useInputDivergenceReason == true) {
 				self.inputReflectDivergenceCheck(true);
 			} else {
 				self.inputReflectDivergenceCheck(false);
 			}
 			// ※26
-			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.reflectDivergence == 1 && self.dataSource.useComboDivergenceReason == true) {
+			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useComboDivergenceReason == true) {
 				self.selectReflectDivergenceCheck(true);
 			} else {
 				self.selectReflectDivergenceCheck(false);
@@ -508,7 +508,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
 			}
 			// ※16
-			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.reflectBreakOuting == 1) {
+			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr == 1) {
 				self.restTimeTableVisible(true);
 			} else {
 				self.restTimeTableVisible(false);
