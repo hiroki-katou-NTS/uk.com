@@ -326,7 +326,7 @@ module nts.uk.at.view.kwr003.a {
 
         hasError.error = true;
         hasError.focusId = 'KWR003_106';
-        $('#' + hasError.focusId).ntsError('check');
+        //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
       //定型選択が選択されていません。 
@@ -334,7 +334,7 @@ module nts.uk.at.view.kwr003.a {
         vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR003_105';
-        $('#' + hasError.focusId).ntsError('check');
+        //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
 
@@ -362,7 +362,6 @@ module nts.uk.at.view.kwr003.a {
         if (!_.isNull(validateError.focusId)) {
           $('#' + validateError.focusId).focus();
         }
-
         return;
       }
 
