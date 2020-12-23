@@ -38,7 +38,7 @@ public class RetireeCheckService {
             if (period.start().beforeOrEquals(retirementDate) &&
                     period.end().afterOrEquals(retirementDate)) {
                 // 抽出結果を作成
-                String message = TextResource.localize("KAL020_103", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName(),
+                String message = TextResource.localize("KAL020_102", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName(),
                         retirementDate.toString("yyyy/MM/dd"));
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
                         new AlarmValueDate(retirementDate.toString("yyyyMMdd"), Optional.empty()),

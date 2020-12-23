@@ -52,7 +52,7 @@ module nts.uk.at.kal011.B {
                 $("#grid").igGrid({
                     height: '450px',
                     dataSource: vm.dataSource,
-                    primaryKey: 'guid',
+                    primaryKey: 'recordId',
                     columns: vm.columns,
                     tabIndex: 4,
                     features: [

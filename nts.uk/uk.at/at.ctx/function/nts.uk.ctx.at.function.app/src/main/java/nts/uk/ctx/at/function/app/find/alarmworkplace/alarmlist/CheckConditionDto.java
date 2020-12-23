@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 import lombok.Getter;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.shr.com.i18n.TextResource;
@@ -20,18 +21,18 @@ public class CheckConditionDto {
         this.periodType = 1;
     }
 
-    public CheckConditionDto(WorkplaceCategory workplaceCategory, Integer startYm,  Integer endYm) {
+    public CheckConditionDto(WorkplaceCategory workplaceCategory, YearMonth startYm, YearMonth endYm) {
         this.category = workplaceCategory.value;
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
-        this.startYm = startYm;
-        this.endYm = endYm;
+        this.startYm = startYm == null ? null : startYm.v();
+        this.endYm = endYm == null ? null : endYm.v();
         this.periodType = 2;
     }
 
-    public CheckConditionDto(WorkplaceCategory workplaceCategory, Integer yearMonth) {
+    public CheckConditionDto(WorkplaceCategory workplaceCategory, YearMonth yearMonth) {
         this.category = workplaceCategory.value;
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
-        this.yearMonth = yearMonth;
+        this.yearMonth = yearMonth == null ? null : yearMonth.v();
         this.periodType = 3;
     }
 
