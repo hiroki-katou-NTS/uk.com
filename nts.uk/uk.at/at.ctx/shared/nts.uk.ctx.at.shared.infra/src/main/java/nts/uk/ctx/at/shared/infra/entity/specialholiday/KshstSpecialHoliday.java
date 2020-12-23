@@ -20,8 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-// @Table(name = "KSHST_SPECIAL_HOLIDAY")
-@Table(name = "KSHMT_HDSP")
+@Table(name = "KSHST_SPECIAL_HOLIDAY")
 public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
@@ -47,6 +46,10 @@ public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	/* メモ */
 	@Column(name = "MEMO")
 	public String memo;
+
+	/* 付与するタイミングの種類*/
+	@Column(name="GRANT_TIMING")
+	public int grantTiming;
 
 	@Override
 	protected Object getKey() {

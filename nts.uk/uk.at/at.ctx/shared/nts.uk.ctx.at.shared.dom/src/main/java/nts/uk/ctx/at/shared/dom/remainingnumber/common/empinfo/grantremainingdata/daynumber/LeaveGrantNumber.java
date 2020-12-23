@@ -8,13 +8,12 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
- * 休暇付与数  
+ * 休暇付与数
  * @author masaaki_jinno
  *
  */
 @Getter
 @Setter
-@NoArgsConstructor
 public class LeaveGrantNumber {
 
 	/**
@@ -26,6 +25,11 @@ public class LeaveGrantNumber {
 	 * 時間
 	 */
 	protected Optional<LeaveGrantTime> minutes;
+
+	public LeaveGrantNumber() {
+		days = new LeaveGrantDayNumber(0.0);
+		minutes = Optional.empty();
+	}
 
 	@Override
 	public LeaveGrantNumber clone() {
@@ -41,7 +45,7 @@ public class LeaveGrantNumber {
 		}
 		return cloned;
 	}
-	
+
 	protected LeaveGrantNumber(double days, Integer minutes) {
 		this.days = new LeaveGrantDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new LeaveGrantTime(minutes)) : Optional.empty();

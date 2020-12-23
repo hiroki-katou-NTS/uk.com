@@ -19,13 +19,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HDSP_GRANT")
-public class KshstHdspGrant extends UkJpaEntity implements Serializable {
+@Table(name = "KSHMT_HDSP_GRANT")
+public class KshmtHdspGrant extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KshstHdspGrantPK pk;
+	public KshmtHdspGrantPK pk;
 
 	/* 付与月日 */
 	@Column(name = "GRANT_MD")
@@ -40,8 +40,8 @@ public class KshstHdspGrant extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	public KshstHdspGrant(
-			KshstHdspGrantPK pk, int grantMd, int grantedDays) {
+	public KshmtHdspGrant(
+			KshmtHdspGrantPK pk, int grantMd, int grantedDays) {
 		this.pk = pk;
 		this.grantMd = grantMd;
 		this.grantedDays = grantedDays;
@@ -53,7 +53,7 @@ public class KshstHdspGrant extends UkJpaEntity implements Serializable {
 	 * @param domain
 	 * @return
 	 */
-	public static KshstHdspGrant toEntity(
+	public static KshmtHdspGrant toEntity(
 			String companyId,
 			int specialHolidayCode,
 			FixGrantDate domain){
@@ -65,8 +65,8 @@ public class KshstHdspGrant extends UkJpaEntity implements Serializable {
 					+ domain.getGrantMonthDay().get().getDay();
 		}
 
-		return new KshstHdspGrant(
-				new KshstHdspGrantPK(companyId, specialHolidayCode),
+		return new KshmtHdspGrant(
+				new KshmtHdspGrantPK(companyId, specialHolidayCode),
 				grantMd,
 				domain.getGrantDays().getGrantDays().v());
 	}
