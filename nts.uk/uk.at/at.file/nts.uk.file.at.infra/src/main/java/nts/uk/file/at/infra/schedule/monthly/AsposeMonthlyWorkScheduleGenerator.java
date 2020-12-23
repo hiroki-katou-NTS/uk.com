@@ -924,7 +924,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			lstEmloyeeDto = lstEmloyeeDto.stream().sorted((a,b)-> (a.getEmployeeCode().compareTo(b.getEmployeeCode()))).collect(Collectors.toList());
 			for (EmployeeDto dto: lstEmloyeeDto) {
-				collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
+				collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, finalDate);
 			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay, lstAtdCanBeAggregate);
@@ -968,7 +968,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param employeeDto the employee dto
 	 * @return the employee report data
 	 */
-	private EmployeeReportData collectEmployeePerformanceDataByEmployee(MonthlyPerformanceReportData reportData, WorkScheduleMonthlyQueryData queryData, EmployeeDto employeeDto) {
+	private EmployeeReportData collectEmployeePerformanceDataByEmployee(MonthlyPerformanceReportData reportData
+																	  , WorkScheduleMonthlyQueryData queryData
+																	  , EmployeeDto employeeDto
+																	  , GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		//YearMonth endMonth = query.getEndYearMonth();
@@ -995,7 +998,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<CodeName> lstBussinessType = queryData.getLstBussinessType();
 		boolean isDisplayCode = query.getCondition().getItemDisplaySwitch() == ItemDisplaySwitchEnum.CODE.indicator;
 		
-		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
+		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), baseDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
 		EmployeeReportData employeeData = new EmployeeReportData();
 		
 		// Employee code and name
@@ -1003,7 +1006,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		employeeData.employeeCode = employeeDto.getEmployeeCode();
 		
 		// Employment
-		Optional<EmploymentHistoryImported> optEmploymentImport = employmentAdapter.getEmpHistBySid(companyId, employeeId, endDate);
+		Optional<EmploymentHistoryImported> optEmploymentImport = employmentAdapter.getEmpHistBySid(companyId, employeeId, baseDate);
 		if (optEmploymentImport.isPresent()) {
 			String employmentCode = optEmploymentImport.get().getEmploymentCode();
 			Optional<Employment> optEmployment = employmentRepository.findEmployment(companyId, employmentCode);
