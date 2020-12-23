@@ -20,17 +20,18 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 職場別月単位労働時間を表示する
  * UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK004_法定労働時間の登録（New）.メニュー別OCD（共通）.職場別月単位労働時間を表示する.職場別月単位労働時間を表示する
+ * 
  * @author chungnt
  *
  */
 @Stateless
 public class MonthlyWorkingHoursByWorkplace {
-	
+
 	@Inject
 	private CompanyRepository companyRepo;
 	@Inject
 	private MonthlyWorkTimeSetRepo workTimeSetRepo;
-	
+
 	/**
 	 * 
 	 * @param workplaceId	職場ID
@@ -59,18 +60,20 @@ public class MonthlyWorkingHoursByWorkplace {
 		if (workTimeSetWkps.isEmpty()) {
 			return result;
 		}
-		
-		result = workTimeSetWkps.stream().map(m -> {
-			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(),
-					new LaborTime(m.getLaborTime().getLegalLaborTime().v(),
-							m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
-							m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
-			return s;
-		}).collect(Collectors.toList());
-		
+
+		result.stream().forEach(m -> {
+			Optional<MonthlyWorkTimeSetWkp> setWkp = workTimeSetWkps.stream()
+					.filter(x -> x.getYm().v() == m.getYearMonth()).findFirst();
+			if (setWkp.isPresent()) {
+				m.setLaborTime(new LaborTime(setWkp.get().getLaborTime().getLegalLaborTime().v(),
+						setWkp.get().getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
+						setWkp.get().getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
+			}
+		});
+
 		return result;
 	}
-	
+
 	private class GetThePeriodOfTheYearImpl implements GetThePeriodOfTheYear.Require {
 
 		@Override

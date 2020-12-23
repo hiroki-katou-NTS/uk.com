@@ -4,21 +4,19 @@ module nts.uk.at.kmk004.r {
 
 
 	const API = {
+		COPY_WKP: 'screen/at/kmk004/r/copy-wkp',
+		COPY_EMP: 'screen/at/kmk004/r/copy-emp',
+		COPY_SHA: 'screen/at/kmk004/r/copy-sha'
 	};
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
-		param: IParam = {
-			screenMode: 'Com_Employment',
-			data: [],
-			selectedCode: null,
-			alreadySettingList: []
-		};
+		param: IParam = null;
 
 		screenData: KnockoutObservable<ScreenData> = ko.observable(new ScreenData(this.param));
 
 		getTitleText() {
-			let vm = this;
+			const vm = this;
 			if (vm.param.screenMode === 'Com_Workplace') {
 				return vm.$i18n.text('KMK004_347');
 			}
@@ -31,19 +29,48 @@ module nts.uk.at.kmk004.r {
 
 		}
 
-		register() {
+		copy() {
+			const vm = this;
 
+			let ULR = '',
+				cmd: ICopyCommand = {
+					// 複写元職場ID
+					copySource: vm.param.selected,
+					// 勤務区分
+					laborAttr: vm.param.laborAttr,
+					// 年度
+					year: vm.param.year,
+					// 複写先職場ID（List）
+					copyDestinations: ko.toJS(vm.screenData().selecteds())
+				};
+
+			if (vm.param.screenMode === 'Com_Workplace') {
+				ULR = API.COPY_WKP;
+			}
+			if (vm.param.screenMode === 'Com_Employment') {
+				ULR = API.COPY_EMP;
+			}
+			if (vm.param.screenMode === 'Com_Person') {
+				ULR = API.COPY_SHA;
+			}
+
+			vm.$blockui('invisible')
+				.then(() => vm.$ajax(ULR, cmd))
+				.done(() => {
+					vm.$window.close();
+				})
+				.always(() => vm.$blockui('clear'));
 		}
 
 		close() {
-			let vm = this;
+			const vm = this;
 			vm.$window.close();
 		}
 
 
 		created(param: IParam) {
 
-			let vm = this;
+			const vm = this;
 			if (param) {
 				vm.param = param;
 
@@ -75,35 +102,35 @@ module nts.uk.at.kmk004.r {
 					SELECT_FIRST_ITEM: 3,
 					NO_SELECT: 4
 				};
-				let wpOption = {
-					isShowAlreadySet: false,
-					isMultipleUse: false,
-					isMultiSelect: true,
-					startMode: StartMode.WORKPLACE,
-					selectedId: vm.screenData().selectedCode,
-					baseDate: ko.observable(new Date()),
-					selectType: SelectionType.SELECT_BY_SELECTED_CODE,
-					isShowSelectButton: true,
-					isDialog: true,
-					alreadySettingList: ko.observableArray([]),
-					maxRows: 12,
-					tabindex: 1,
-					systemType: 2
-				};
+			let wpOption = {
+				isShowAlreadySet: false,
+				isMultipleUse: false,
+				isMultiSelect: true,
+				startMode: StartMode.WORKPLACE,
+				selectedId: vm.screenData().selecteds,
+				baseDate: ko.observable(new Date()),
+				selectType: SelectionType.SELECT_BY_SELECTED_CODE,
+				isShowSelectButton: true,
+				isDialog: true,
+				alreadySettingList: ko.observableArray([]),
+				maxRows: 12,
+				tabindex: 1,
+				systemType: 2
+			};
 			var windowSize = nts.uk.ui.windows.getSelf();
-            windowSize.$dialog.dialog("option", "width", 500);
-            windowSize.$dialog.dialog("option", "height", 530);
+			windowSize.$dialog.dialog("option", "width", 500);
+			windowSize.$dialog.dialog("option", "height", 530);
 			$('#work-place-list').ntsTreeComponent(wpOption);
 		}
 
 		initEmployment() {
-			let vm = this,
+			const vm = this,
 				empOption = {
 					isShowAlreadySet: false,
 					isMultiSelect: true,
 					listType: ListType.EMPLOYMENT,
 					selectType: SelectType.SELECT_BY_SELECTED_CODE,
-					selectedCode: vm.screenData().selectedCode,
+					selectedCode: vm.screenData().selecteds,
 					isDialog: true,
 					isShowNoSelectRow: false,
 					alreadySettingList: ko.observableArray([]),
@@ -113,34 +140,46 @@ module nts.uk.at.kmk004.r {
 		}
 
 		initEmployee() {
-			let vm = this;
-			let employeeOption = {
-				isShowAlreadySet: false,
-				isMultiSelect: true,
-				listType: ListType.EMPLOYEE,
-				employeeInputList: vm.screenData().data,
-				selectType: SelectType.SELECT_BY_SELECTED_CODE,
-				selectedCode: vm.screenData().selectedCode,
-				isDialog: true,
-				isShowNoSelectRow: false,
-				alreadySettingList: ko.observableArray([]),
-				isShowWorkPlaceName: false,
-				isShowSelectAllButton: false,
-				disableSelection: false,
-				maxRows: 12
-			};
+			const vm = this,
+				employeeOption = {
+					isShowAlreadySet: false,
+					isMultiSelect: true,
+					listType: ListType.EMPLOYEE,
+					employeeInputList: vm.screenData().data,
+					selectType: SelectType.SELECT_BY_SELECTED_CODE,
+					selectedCode: vm.screenData().selecteds,
+					isDialog: true,
+					isShowNoSelectRow: false,
+					alreadySettingList: ko.observableArray([]),
+					isShowWorkPlaceName: false,
+					isShowSelectAllButton: false,
+					disableSelection: false,
+					maxRows: 12
+				};
 
 			$('#employee-list').ntsListComponent(employeeOption);
 			var windowSize = nts.uk.ui.windows.getSelf();
-            windowSize.$dialog.dialog("option", "width", 380);
-            windowSize.$dialog.dialog("option", "height", 450);
+			windowSize.$dialog.dialog("option", "width", 380);
+			windowSize.$dialog.dialog("option", "height", 450);
 
 		}
 	}
 
+	interface ICopyCommand {
+		// 複写元職場ID
+		copySource: string;
+		// 勤務区分
+		laborAttr: number;
+		// 年度
+		year: number;
+		// 複写先職場ID（List）
+		copyDestinations: Array<string>;
+
+	}
+
 	export class ScreenData {
 		data: KnockoutObservableArray<any> = ko.observableArray([]);
-		selectedCode: KnockoutObservable<string> = ko.observable();
+		selecteds: KnockoutObservableArray<string> = ko.observableArray([]);
 		constructor(param?: IParam) {
 			if (param) {
 				this.data(param.data);
@@ -150,10 +189,11 @@ module nts.uk.at.kmk004.r {
 	}
 
 	interface IParam {
-		screenMode: 'Com_Company' | 'Com_Workplace' | 'Com_Employment' | 'Com_Person';
+		screenMode: 'Com_Workplace' | 'Com_Employment' | 'Com_Person';
 		data: Array<any>;//EMPLOYEE = UnitModel
-		selectedCode: string;
-		alreadySettingList: Array<any>;
+		selected: string;
+		year: number;
+		laborAttr: 0 | 1 | 2;
 	}
 
 

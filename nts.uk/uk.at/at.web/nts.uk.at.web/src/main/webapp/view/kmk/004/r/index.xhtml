@@ -40,7 +40,9 @@
 
 			<div id="functions-area-bottom">
 				<!-- Q2_1 -->
-				<button data-bind="click: register" class="proceed large">#{i18n.getText('KMK004_329')}</button>
+				<button
+					data-bind="click: copy,enable:screenData().selecteds().length>0"
+					class="proceed large">#{i18n.getText('KMK004_329')}</button>
 				<!-- Q2_2 -->
 				<button data-bind="click: close">#{i18n.getText('KMK004_330')}</button>
 			</div>

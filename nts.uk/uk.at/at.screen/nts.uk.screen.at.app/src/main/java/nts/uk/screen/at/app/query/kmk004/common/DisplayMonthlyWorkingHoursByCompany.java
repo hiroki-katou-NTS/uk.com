@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kmk004.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,7 +41,7 @@ public class DisplayMonthlyWorkingHoursByCompany {
 		List<MonthlyWorkTimeSetCom> coms = new ArrayList<>();
 		
 		resutl = yearMonthPeriod.stream().map(m -> {
-			LaborTime laborTime = new LaborTime(0,0,0);
+			LaborTime laborTime = new LaborTime(0, 0, 0);
 			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.v(), laborTime);
 			return s;
 		}).collect(Collectors.toList());
@@ -56,27 +57,22 @@ public class DisplayMonthlyWorkingHoursByCompany {
 			coms = monthlyWorkTimeSetRepo.findCompanyByPeriod(cid, LaborWorkTypeAttr.FLEX, yearMonthPeriod);
 			break;
 		}
-		
+
 		if (coms.isEmpty()) {
 			return resutl;
 		}
 
-		resutl = coms.stream().map(m -> {
-			
-			LaborTime laborTime = new LaborTime();
-			laborTime.setLegalLaborTime(m.getLaborTime().getLegalLaborTime().v());
-			
-			if(m.getLaborTime().getWithinLaborTime().isPresent()){
-				laborTime.setWithinLaborTime(m.getLaborTime().getWithinLaborTime().get().v());
+		List<MonthlyWorkTimeSetCom> coms1 = coms;
+
+		resutl.stream().forEach(m -> {
+			Optional<MonthlyWorkTimeSetCom> setCom = coms1.stream().filter(x -> x.getYm().v() == m.getYearMonth())
+					.findFirst();
+			if (setCom.isPresent()) {
+				m.setLaborTime(new LaborTime(setCom.get().getLaborTime().getLegalLaborTime().v(),
+						setCom.get().getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
+						setCom.get().getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
 			}
-			
-			if(m.getLaborTime().getWeekAvgTime().isPresent()){
-				laborTime.setWeekAvgTime(m.getLaborTime().getWeekAvgTime().get().v());
-			}
-			
-			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.getYm().v(), laborTime);
-			return s;
-		}).collect(Collectors.toList());
+		});
 
 		return resutl;
 	}

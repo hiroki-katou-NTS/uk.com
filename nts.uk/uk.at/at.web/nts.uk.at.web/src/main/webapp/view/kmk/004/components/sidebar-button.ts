@@ -4,8 +4,8 @@
 const template = `
 		<div class="title" data-bind="i18n:screenMode"></div>
 		<a class="goback"  data-bind="ntsLinkButton: { jump: '../a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button data-bind=" enable:screenData().yearList().length > 0,click: register,i18n: 'KMK004_225'" class="proceed"></button>
-		<button data-bind="enable:screenData().yearList().length > 0 ,click: openRDialog,visible:screenMode != 'Com_Company' ,i18n: 'KMK004_226'"></button>
+		<button data-bind=" enable:enableSave() ,click: register,i18n: 'KMK004_225'" class="proceed"></button>
+		<button data-bind="enable:screenData().yearList().length > 0 ,click: copy,visible:screenMode != 'Com_Company' ,i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="enable:enableDelete()  ,click: remove,i18n: 'KMK004_227'"></button>
 	`;
 
@@ -124,6 +124,13 @@ class SidebarButton extends ko.ViewModel {
 		return vm.screenData().yearList().length > 0 && vm.screenData().updateMode();
 	}
 
+	enableSave() {
+		const vm = this;
+
+		return _.filter(ko.toJS(vm.screenData().monthlyWorkTimeSetComs()), ['laborTime.checkbox', true]).length > 0 && vm.screenData().yearList().length > 0;
+
+	}
+
 	registerData() {
 		const vm = this;
 
@@ -198,6 +205,8 @@ class SidebarButton extends ko.ViewModel {
 				timeSet.empId = selectedEmp.id;
 			});
 
+			workTimeSetComs = _.filter(workTimeSetComs, ['laborTime.checkbox', true]);
+
 			vm.$blockui('invisible');
 			vm.$ajax(API_J_URL.REGISTER, { workTimeSetShas: workTimeSetComs }).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -233,15 +242,38 @@ class SidebarButton extends ko.ViewModel {
 
 	}
 
-	openRDialog() {
+	copy() {
 		const vm = this;
 
 		vm.$window.modal('/view/kmk/004/r/index.xhtml', {
 			screenMode: vm.screenMode,
 			data: vm.getScreenDatas(),
-			selectedCode: vm.screenData().selected(),
-			alreadySettingList: vm.screenData().alreadySettingList()
+			selected: vm.screenData().selected(),
+			year: vm.screenData().selectedYear(),
+			laborAttr: 2,
 		}).then(() => {
+
+			vm.$blockui('invisible');
+			if (vm.screenMode == 'Com_Workplace') {
+
+				vm.$ajax(API_H_URL.AFTER_COPY).done((data) => {
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+				}).always(() => { vm.$blockui("clear"); });
+			}
+			if (vm.screenMode == 'Com_Employment') {
+
+				vm.$ajax(API_I_URL.AFTER_COPY).done((data) => {
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+				}).always(() => { vm.$blockui("clear"); });
+			}
+			if (vm.screenMode == 'Com_Person') {
+
+				vm.$ajax(API_J_URL.AFTER_COPY).done((data) => {
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+				}).always(() => { vm.$blockui("clear"); });
+
+			}
+
 
 		});
 	}
@@ -251,9 +283,7 @@ class SidebarButton extends ko.ViewModel {
 
 		vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 			if (result === 'yes') {
-
 				vm.deleteData();
-
 			}
 		});
 
@@ -264,10 +294,9 @@ class SidebarButton extends ko.ViewModel {
 
 		let selectedYear = vm.screenData().selectedYear(),
 			selectedId = vm.screenData().selected();
-
+		vm.$blockui('invisible');
 		if (vm.screenMode === 'Com_Company') {
 
-			vm.$blockui('invisible');
 			vm.$ajax(API_G_URL.DELETE + selectedYear).done(() => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
@@ -280,7 +309,6 @@ class SidebarButton extends ko.ViewModel {
 		if (vm.screenMode == 'Com_Workplace') {
 			let cmd = { workplaceId: selectedId, year: selectedYear };
 
-			vm.$blockui('invisible');
 			vm.$ajax(API_H_URL.DELETE, cmd).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
@@ -294,7 +322,6 @@ class SidebarButton extends ko.ViewModel {
 		if (vm.screenMode == 'Com_Employment') {
 			let cmd = { employmentCode: selectedId, year: selectedYear };
 
-			vm.$blockui('invisible');
 			vm.$ajax(API_I_URL.DELETE, cmd).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
@@ -311,7 +338,6 @@ class SidebarButton extends ko.ViewModel {
 
 			let cmd = { sId: selectedEmp.id, year: selectedYear };
 
-			vm.$blockui('invisible');
 			vm.$ajax(API_J_URL.DELETE, cmd).done((data) => {
 				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 					vm.screenData().setSelectedAfterRemove(selectedYear);

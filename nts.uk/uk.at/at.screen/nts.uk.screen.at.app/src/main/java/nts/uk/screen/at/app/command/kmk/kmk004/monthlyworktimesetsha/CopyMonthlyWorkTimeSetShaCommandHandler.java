@@ -25,10 +25,11 @@ import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CopyMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetShaCommand> {
+public class CopyMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetCommand> {
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
@@ -39,9 +40,9 @@ public class CopyMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<Copy
 	private SaveMonthlyWorkTimeSetShaCommandHandler saveHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetShaCommand> context) {
+	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetCommand> context) {
 
-		CopyMonthlyWorkTimeSetShaCommand cmd = context.getCommand();
+		CopyMonthlyWorkTimeSetCommand cmd = context.getCommand();
 
 		// 1. 年度の期間を取得(require, 会社ID, 年度)
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
@@ -51,13 +52,13 @@ public class CopyMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<Copy
 		// 2. get(ログイン会社ID,社員ID,勤務区分,年月期間)
 
 		List<MonthlyWorkTimeSetShaCommand> workTimeSetShas = this.monthlyWorkTimeSetRepo
-				.findEmployeeByPeriod(AppContexts.user().companyId(), cmd.getCopySourceSid(),
+				.findEmployeeByPeriod(AppContexts.user().companyId(), cmd.getCopySource(),
 						EnumAdaptor.valueOf(cmd.getLaborAttr(), LaborWorkTypeAttr.class), yearMonths)
 				.stream().map(sha -> fromDomainToCommand(sha)).collect(Collectors.toList());
 
 		// 3 .社員別月単位労働時間（List)
 
-		cmd.getCopyDestinationSids().forEach(empId -> {
+		cmd.getCopyDestinations().forEach(empId -> {
 			// ※複写元の社員IDで取得した社員別月単位労働時間の 社員IDに複写先社員IDをセットする
 			workTimeSetShas.forEach(sha -> {
 				sha.setEmpId(empId);

@@ -9,7 +9,7 @@ const template = `
 	
 	<div style="padding-left:10px;"> 
 		<div class="div_line">
-			<button data-bind="click: openQDialog , i18n: 'KMK004_233'" ></button>
+			<button data-bind="enable:enableQButton(),click: openQDialog , i18n: 'KMK004_233'" ></button>
 		</div>
 	
 		<div class="div_line" >
@@ -129,6 +129,14 @@ class MonthlyWorkingHours extends ko.ViewModel {
 		});
 	}
 
+	enableQButton() {
+		const vm = this;
+		if (vm.screenMode == 'Com_Company') {
+			return true;
+		}
+		return vm.screenData().selected() != null;
+	}
+
 	mounted() {
 
 	}
@@ -145,8 +153,8 @@ class MonthlyWorkingHours extends ko.ViewModel {
 			}
 		});
 	}
-	
-	
+
+
 
 	calTotalTime(attributeName: string) {
 		let vm = this,

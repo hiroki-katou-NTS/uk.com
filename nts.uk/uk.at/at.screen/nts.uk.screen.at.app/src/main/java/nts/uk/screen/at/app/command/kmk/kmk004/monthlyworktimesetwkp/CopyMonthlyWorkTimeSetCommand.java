@@ -11,13 +11,13 @@ import lombok.Value;
  *         職場別月単位労働時間を複写する
  */
 @Value
-public class CopyMonthlyWorkTimeSetWkpCommand {
+public class CopyMonthlyWorkTimeSetCommand {
 	// 複写元職場ID
-	private String copySourceWorkplaceId;
+	private String copySource;
 	// 勤務区分
 	private int laborAttr;
 	// 年度
 	private int year;
 	// 複写先職場ID（List）
-	private List<String> copyDestinationWorkplaceIds;
+	private List<String> copyDestinations;
 }
