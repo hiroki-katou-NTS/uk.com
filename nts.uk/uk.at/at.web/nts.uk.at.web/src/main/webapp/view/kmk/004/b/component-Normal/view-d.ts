@@ -6,8 +6,8 @@ module nts.uk.at.view.kmk004.b {
 		<div class="title" data-bind="i18n: 'Com_Employment'"></div>
 		<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
-		<button tabindex="3" data-bind="i18n: 'KMK004_226', click: copy, enable: existYear"></button>
-		<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: existYear"></button>
+		<button tabindex="3" data-bind="i18n: 'KMK004_226', click: copy, enable: checkDelete"></button>
+		<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: checkDelete"></button>
 	</div>
 	<div class="view-d-kmk004">
 		<div class="left-content">
@@ -102,6 +102,7 @@ module nts.uk.at.view.kmk004.b {
 		public type: SIDEBAR_TYPE = 'Com_Employment';
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 		public change: KnockoutObservable<string> = ko.observable('');
+		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;
@@ -114,8 +115,24 @@ module nts.uk.at.view.kmk004.b {
 						vm.existYear(false);
 						vm.selectedYear(null);
 					}
-				})
+				});
 
+			vm.selectedYear
+				.subscribe(() => {
+					const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+
+					if (exist) {
+						if (ko.unwrap(vm.existYear)) {
+							if (exist.isNew) {
+								vm.checkDelete(false);
+							} else {
+								vm.checkDelete(true);
+							}
+						} else {
+							vm.checkDelete(true);
+						}
+					}
+				});
 		}
 
 		mounted() {

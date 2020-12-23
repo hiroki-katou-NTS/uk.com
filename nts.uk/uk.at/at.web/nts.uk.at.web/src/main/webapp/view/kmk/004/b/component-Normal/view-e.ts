@@ -5,16 +5,17 @@ module nts.uk.at.view.kmk004.b {
 	<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Person'"></div>
 		<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: existYear"></button>
-		<button tabindex="3" data-bind="i18n: 'KMK004_226', click: copy, enable: existYear"></button>
-		<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: existYear"></button>
+		<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', click: add, enable: checkAdd"></button>
+		<button tabindex="3" data-bind="i18n: 'KMK004_226', click: copy, enable: checkDelete"></button>
+		<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: checkDelete"></button>
 	</div>
 	<div class="cpn-ccg001"
 			style="margin-left: 1px;"
 			data-bind="component: {
 				name: 'ccg001',
 				params:{
-					employees: employees
+					employees: employees,
+					selectedCode: selectedCode
 				}
 			}"></div>
 	<div class="view-e-kmk004">
@@ -36,10 +37,10 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: model.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_243', click: openDialogF"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_243', click: openDialogF, enable: existEmployee"></button>
 					<!-- /ko -->
 					<!-- ko ifnot: model.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_242', click: openDialogF"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_242', click: openDialogF, enable: existEmployee"></button>
 					<!-- /ko -->
 				</div>
 				<!-- ko if: model.isAlreadySetting -->
@@ -55,7 +56,7 @@ module nts.uk.at.view.kmk004.b {
 				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
 					<div>
-						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
+						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ, enable: existEmployee"></button>
 					</div>
 					<div class="year">
 						<div class= "box-year" data-bind="component: {
@@ -112,6 +113,9 @@ module nts.uk.at.view.kmk004.b {
 		public model: Employee = new Employee();
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 		public change: KnockoutObservable<string> = ko.observable('');
+		public existEmployee: KnockoutObservable<boolean> = ko.observable(false);
+		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
+		public checkAdd: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;
@@ -132,6 +136,47 @@ module nts.uk.at.view.kmk004.b {
 						vm.selectedYear.valueHasMutated();
 					}
 				})
+
+			vm.employees
+				.subscribe(() => {
+					if (ko.unwrap(vm.employees).length == 0) {
+						vm.existEmployee(false);
+					} else {
+						vm.existEmployee(true);
+					}
+				});
+
+			vm.workTimes
+				.subscribe(() => {
+					let check = false;
+					_.forEach(ko.unwrap(vm.workTimes), ((value) => {
+						if (ko.unwrap(value.check)) {
+							check = true;
+						}
+					}));
+					if (ko.unwrap(vm.existYear)) {
+						vm.checkAdd(check);
+					} else {
+						vm.checkAdd(false);
+					}
+				});
+
+			vm.selectedYear
+				.subscribe(() => {
+					const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+
+					if (exist) {
+						if (ko.unwrap(vm.existYear)) {
+							if (exist.isNew) {
+								vm.checkDelete(false);
+							} else {
+								vm.checkDelete(true);
+							}
+						} else {
+							vm.checkDelete(true);
+						}
+					}
+				});
 		}
 
 		mounted() {

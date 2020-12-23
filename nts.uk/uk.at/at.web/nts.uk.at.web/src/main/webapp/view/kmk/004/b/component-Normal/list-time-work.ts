@@ -390,6 +390,7 @@ class WorkTime {
 
         md.create(params);
         this.laborTime.subscribe(c => params.parrent.valueHasMutated());
+        this.check.subscribe(c => params.parrent.valueHasMutated());
     }
 
     public create(param?: IWorkTime) {
