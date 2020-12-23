@@ -1,10 +1,10 @@
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00DComponent } from 'views/kaf/s00/d';
 import { DispInfoOfTimeLeaveRequest, GoBackTime } from '../shr/';
 import { KafS00SubP1Component, ExcessTimeStatus } from 'views/kaf/s00/sub/p1/';
-
+import { IAppDispInfoStartupOutput, IOpActualContentDisplayLst } from '../../s04/a/define';
 @component({
     name: 'kafs12a1',
     route: '/kaf/s12/a1',
@@ -26,30 +26,35 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public application: Application = null;
     public mode: boolean = true;
     public user: any = null;
+    public condition: ICondition = null;
 
     //Disp Infomation Time Leave Request Value
     public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_5', frame: 0, attendanceTimeLabel: 'KAFS12_6',
         attendanceTime: null, titleOfAttendanceTime: 'KAFS12_5',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null
+        numberOfHoursLeft: null,
+        destination: null,
     });
     public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_7', frame: 1, attendanceTimeLabel: 'KAFS12_8',
         attendanceTime: null, titleOfAttendanceTime: 'KAFS12_7',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null
+        numberOfHoursLeft: null,
+        destination: null,
     });
     public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_9', frame: 2, attendanceTimeLabel: 'KAFS12_10',
         attendanceTime: null, titleOfAttendanceTime: 'KAFS12_9',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null
+        numberOfHoursLeft: null,
+        destination: null,
     });
     public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({
         header: 'KAFS12_11', frame: 3, attendanceTimeLabel: 'KAFS12_12', attendanceTime: null, titleOfAttendanceTime: 'KAFS12_11',
         kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null
+        numberOfHoursLeft: null,
+        destination: null,
     });
 
     //Dis Information Leave Request List
@@ -100,7 +105,7 @@ export class KafS12A1Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
-       
+
         if (vm.params) {
             vm.mode = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
@@ -129,15 +134,31 @@ export class KafS12A1Component extends KafS00ShrComponent {
                     vm.updateKaf000_C_Params(vm.mode);
                     vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
                     if (vm.mode) {
-                        return vm.$http.post('at', API.initAppNew, {});
+                        return vm.$http.post('at', API.initAppNew, vm.appDispInfoStartupOutput);
                     }
 
                     return true;
                 }
             })
-            .then((result: any) => {
+            .then((result: { data: IResult }) => {
                 if (result) {
+                    const { data } = result;
+                    const { reflectSetting, appDispInfoStartupOutput } = data;
+                    const { appDispInfoNoDateOutput } = appDispInfoStartupOutput;
+                    const { managementMultipleWorkCycles } = appDispInfoNoDateOutput;
+                    const { destination } = reflectSetting;
+                    const { firstAfterWork, firstBeforeWork, privateGoingOut, secondAfterWork, secondBeforeWork, unionGoingOut } = destination;
 
+                    vm.condition = {
+                        firstAfterWork,
+                        firstBeforeWork,
+                        privateGoingOut,
+                        secondAfterWork,
+                        secondBeforeWork,
+                        unionGoingOut,
+                        managementMultipleWorkCycles
+                    };
+                    console.log(vm.condition);
                 } else {
 
                 }
@@ -158,10 +179,10 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public nextToStep2() {
         const vm = this;
 
-        vm.$emit('next-to-step-two',{data: 'this is data'});
+        vm.$emit('next-to-step-two');
     }
 
-    public kaf000BChangeDate(objectDate) {
+    public kaf000BChangeDate(objectDate: IObjectChangeDate) {
         const vm = this;
         if (objectDate.startDate) {
             if (vm.mode) {
@@ -170,6 +191,150 @@ export class KafS12A1Component extends KafS00ShrComponent {
                 vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
                 // console.log('changeDateCustom');
             }
+        }
+
+
+        const { DispInfoOfTimeLeaveRequestLst } = vm;
+        const { appDispInfoStartupOutput } = objectDate;
+        const { appDispInfoWithDateOutput } = appDispInfoStartupOutput;
+        const { opActualContentDisplayLst } = appDispInfoWithDateOutput;
+
+        DispInfoOfTimeLeaveRequestLst.forEach((i) => {
+            opActualContentDisplayLst.forEach((f) => {
+                if (i.frame === 0) {
+                    i.attendanceTime = f.opAchievementDetail.opWorkTime;
+                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                }
+                if (i.frame === 1) {
+                    i.attendanceTime = f.opAchievementDetail.opLeaveTime;
+                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                }
+                if (i.frame === 2) {
+                    i.attendanceTime = f.opAchievementDetail.opWorkTime2;
+                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                }
+                if (i.frame === 3) {
+                    i.attendanceTime = f.opAchievementDetail.opDepartureTime2;
+                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                }
+            });
+        });
+    }
+
+
+    // ※2
+    get condition2() {
+        const vm = this;
+
+        if (vm.condition) {
+            if (vm.condition.firstBeforeWork === 1) {
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    // ※3
+    get condition3() {
+        const vm = this;
+
+        if (vm.condition) {
+            if (vm.condition.firstAfterWork === 1) {
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    //※7
+    get condition7() {
+        const vm = this;
+
+        if (vm.condition) {
+            if (vm.condition.managementMultipleWorkCycles) {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    //※8
+    get condition8() {
+        const vm = this;
+
+        if (vm.condition) {
+            if (vm.condition.secondBeforeWork === 1) {
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    //※9
+    get condition9() {
+        const vm = this;
+
+        return vm.condition7 && vm.condition8;
+    }
+
+    //※11
+    get condition11() {
+        const vm = this;
+
+        if (vm.condition) {
+            if (vm.condition.secondAfterWork === 1) {
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    //※12
+    get condition12() {
+        const vm = this;
+
+        return vm.condition7 && vm.condition11;
+    }
+
+    //※15
+    get condition15() {
+        const vm = this;
+
+        if (vm.condition) {
+            const { condition } = vm;
+            const { unionGoingOut, privateGoingOut } = condition;
+
+            if (unionGoingOut === 1 || privateGoingOut === 1) {
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+    //※16
+    get condition16() {
+        const vm = this;
+
+        if (vm.condition) {
+            const { condition } = vm;
+            const { unionGoingOut, privateGoingOut } = condition;
+
+            if (unionGoingOut === 1 && privateGoingOut === 1) {
+
+                return true;
+            }
+
+            return false;
         }
     }
 
@@ -232,5 +397,37 @@ export class KafS12A1Component extends KafS00ShrComponent {
 
 
 const API = {
-    initAppNew: 'at/request/application/initApp',
+    initAppNew: 'at/request/application/timeLeave/initNewApp',
 };
+
+export interface IObjectChangeDate {
+    startDate: Date;
+    endDate: Date;
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+}
+
+export interface IResult {
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+    reflectSetting: {
+        condition: {},
+        destination: {
+            firstAfterWork: 0 | 1
+            firstBeforeWork: 0 | 1
+            privateGoingOut: 0 | 1;
+            secondAfterWork: 0 | 1;
+            secondBeforeWork: 0 | 1;
+            unionGoingOut: 0 | 1;
+        }
+    };
+    reflectActualTimeZone: number;
+}
+
+export interface ICondition {
+    firstAfterWork: number;
+    firstBeforeWork: number;
+    privateGoingOut: number;
+    secondAfterWork: number;
+    secondBeforeWork: number;
+    unionGoingOut: number;
+    managementMultipleWorkCycles: boolean;
+}

@@ -1,5 +1,6 @@
-import {Vue,_} from '@app/provider';
-import {KAFS00P1Params} from 'views/kaf/s00/sub/p1';
+import { Vue, _ } from '@app/provider';
+import { KAFS00P1Params } from 'views/kaf/s00/sub/p1';
+import { IAppDispInfoStartupOutput, IOpActualContentDisplayLst } from '../../s04/a/define';
 
 export class DispInfoOfTimeLeaveRequest {
     public frame: number | null;
@@ -9,7 +10,15 @@ export class DispInfoOfTimeLeaveRequest {
     public titleOfAttendanceTime: string;
     public kafS00P1Params: KAFS00P1Params;
     public numberOfHoursLeft: number | null;
-    
+    public destination = {
+        firstAfterWork: 0,
+        firstBeforeWork: 0,
+        privateGoingOut: 0,
+        secondAfterWork: 0,
+        secondBeforeWork: 0,
+        unionGoingOut: 0,
+    };
+
     constructor(iDispInfoOfTimeLeaveRequest: IDispInfoOfTimeLeaveRequest) {
         this.frame = iDispInfoOfTimeLeaveRequest.frame;
         this.header = iDispInfoOfTimeLeaveRequest.header;
@@ -18,6 +27,7 @@ export class DispInfoOfTimeLeaveRequest {
         this.titleOfAttendanceTime = iDispInfoOfTimeLeaveRequest.titleOfAttendanceTime;
         this.kafS00P1Params = iDispInfoOfTimeLeaveRequest.kafS00P1Params;
         this.numberOfHoursLeft = iDispInfoOfTimeLeaveRequest.numberOfHoursLeft;
+        this.destination = iDispInfoOfTimeLeaveRequest.destination;
     }
 }
 
@@ -28,7 +38,7 @@ export class CalculationResult {
     public frame: number;
     public appliesTime: IAppliesTime[];
 
-    constructor (iCalculationResult: ICalculationResult) {
+    constructor(iCalculationResult: ICalculationResult) {
         this.workHeader = iCalculationResult.workHeader;
         this.requiredTime = iCalculationResult.requiredTime;
         this.applicationTime = iCalculationResult.applicationTime;
@@ -41,9 +51,9 @@ export class GoBackTime {
     public frame: number;
     public name: string;
     public swtOutClassification: number;
-    public goBackTime = {start: null,end: null};
+    public goBackTime = { start: null, end: null };
 
-    constructor (iGoBackTime: IGoBackTime) {
+    constructor(iGoBackTime: IGoBackTime) {
         this.frame = iGoBackTime.frame;
         this.goBackTime.start = iGoBackTime.startTime;
         this.goBackTime.end = iGoBackTime.endTime;
@@ -51,7 +61,9 @@ export class GoBackTime {
         this.swtOutClassification = iGoBackTime.swtOutClassification;
     }
 }
-export interface  IDispInfoOfTimeLeaveRequest {
+
+//時間休暇申請の表示情報
+export interface IDispInfoOfTimeLeaveRequest {
     frame: number | null;
     header: string;
     attendanceTimeLabel: string;
@@ -59,6 +71,14 @@ export interface  IDispInfoOfTimeLeaveRequest {
     titleOfAttendanceTime: string;
     kafS00P1Params: KAFS00P1Params;
     numberOfHoursLeft: number | null;
+    destination: {
+        firstAfterWork: number;
+        firstBeforeWork: number;
+        privateGoingOut: number;
+        secondAfterWork: number;
+        secondBeforeWork: number;
+        unionGoingOut: number;
+    };
 }
 
 export interface IGoBackTime {
