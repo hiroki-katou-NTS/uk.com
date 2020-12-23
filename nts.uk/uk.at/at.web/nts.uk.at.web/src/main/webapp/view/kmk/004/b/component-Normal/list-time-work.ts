@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk004.b {
             vm.selectId = params.selectId;
             vm.workTimes = params.workTimes;
 
-            vm.initList(9999, false);
+            vm.initList();
             vm.reloadData();
 
             vm.workTimes.subscribe((wts) => {
@@ -147,7 +147,7 @@ module nts.uk.at.view.kmk004.b {
                     if (vm.type === 'Com_Person') {
                         setTimeout(() => {
                             if (ko.unwrap(vm.years).length == 0) {
-                                vm.initList(9999, false);
+                                vm.initList();
                             } else {
                                 vm.reloadData();
                             }
@@ -254,31 +254,39 @@ module nts.uk.at.view.kmk004.b {
                         break
                 }
             } else {
-                vm.initList(9999, false);
+                vm.initList();
             }
         }
 
-        initList(year: number, check: boolean) {
+        initList() {
             const vm = this
-            var check: boolean = true;
+            var check: boolean = false;
 
-            if (ko.unwrap(vm.checkEmployee)) {
-                check = false;
+            if (vm.type === 'Com_Person') {
+                check = true;
             }
 
-            const IWorkTime1: IWorkTime[] = [{ check: check, yearMonth: year * 100 + 1, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 2, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 3, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 4, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 5, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 6, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 7, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 8, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 9, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 10, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 11, laborTime: 0 },
-            { check: check, yearMonth: year * 100 + 12, laborTime: 0 }];
-            vm.workTimes(IWorkTime1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+            const input = { workType: TYPE, year: 9998 };
+
+            vm.$ajax(API.GET_WORK_TIME, input)
+                .done((data: IWorkTime[]) => {
+                    if (data.length > 0) {
+                        const data1: IWorkTime[] = [];
+                        var check: boolean = true;
+
+                        if (ko.unwrap(vm.checkEmployee)) {
+                            check = false;
+                        }
+                        data.map(m => {
+                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                            data1.push(s);
+                        });
+
+                        vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                        vm.mode('Update');
+                    }
+                });
+            ;
         }
     }
 }
