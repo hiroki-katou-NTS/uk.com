@@ -39,11 +39,11 @@ module nts.uk.at.view.kal013.b {
         constructor(params: IParentParams) {
             super();
             const vm = this;
-
-            let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
-                operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
-
-            params = {category: WorkplaceCategory.MONTHLY, condition: option};
+            //
+            // let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
+            //     operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
+            //
+            // params = {category: WorkplaceCategory.MONTHLY, condition: option};
 
             if (params.category == WorkplaceCategory.MONTHLY) {
                 vm.listTypeCheck(__viewContext.enums.CheckMonthlyItemsType);
@@ -143,9 +143,9 @@ module nts.uk.at.view.kal013.b {
 
         created(params: IParentParams) {
             const vm = this;
-            let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
-                operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
-            params = {category: WorkplaceCategory.MONTHLY, condition: option};
+            // let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
+            //     operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
+            // params = {category: WorkplaceCategory.MONTHLY, condition: option};
 
             vm.category(params.category);
             vm.pattern().update(params.condition);
