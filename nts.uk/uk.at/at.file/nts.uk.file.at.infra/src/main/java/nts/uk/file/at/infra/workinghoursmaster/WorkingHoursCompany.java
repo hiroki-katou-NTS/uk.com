@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.aspose.cells.Cells;
@@ -14,7 +15,6 @@ import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.file.at.app.export.workinghours.CompanyTimeWorkExport;
-import nts.uk.file.at.app.export.workinghours.CompanyExportDatasource;
 import nts.uk.file.at.app.export.workinghours.YearsInput;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  * @author chungnt
  *
  */
-
+@Stateless
 public class WorkingHoursCompany extends AsposeCellsReportGenerator implements CompanyTimeWorkExport {
 
 	@Inject

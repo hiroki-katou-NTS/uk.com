@@ -16,12 +16,12 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 @Stateless
 public class CompanyExportSevice extends ExportService<YearsInput> {
 
-//	@Inject
-//	private CompanyTimeWorkExport companyExport;
+	@Inject
+	private CompanyTimeWorkExport companyExport;
 
 	@Override
 	protected void handle(ExportServiceContext<YearsInput> context) {
-//		this.companyExport.export(context.getGeneratorContext(), context.getQuery());
+		this.companyExport.export(context.getGeneratorContext(), context.getQuery());
 		
 	}
 }
