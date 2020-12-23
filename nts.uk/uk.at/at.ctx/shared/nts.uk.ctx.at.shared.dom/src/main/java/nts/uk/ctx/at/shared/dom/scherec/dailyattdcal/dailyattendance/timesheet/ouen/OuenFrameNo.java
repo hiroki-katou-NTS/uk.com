@@ -15,4 +15,8 @@ public class OuenFrameNo extends IntegerPrimitiveValue<OuenFrameNo> {
 	public OuenFrameNo(Integer rawValue) {
 		super(rawValue);
 	}
+	
+	public static OuenFrameNo of(Integer value) {
+		return new OuenFrameNo(value);
+	}
 }

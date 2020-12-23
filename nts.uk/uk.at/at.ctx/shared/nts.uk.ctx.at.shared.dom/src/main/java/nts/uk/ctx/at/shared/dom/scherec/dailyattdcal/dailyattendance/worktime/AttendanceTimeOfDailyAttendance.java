@@ -14,26 +14,32 @@ import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportWorkTimeOfDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareEditState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -42,6 +48,9 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -49,7 +58,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 /**
  * 日別勤怠の勤怠時間 (new)
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.実働時間.日別勤怠の勤怠時間
@@ -121,6 +129,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		this.budgetTimeVariance = budgetTimeVariance;
 		this.medicalCareTime = medicalCareTime;
 	}
+
 	/**
 	 * エラーチェックの指示メソッド 
 	 * @param attendanceItemConverter 
@@ -169,6 +178,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 * @param personalSetting 
 	 * @param recordWorkTimeCode 
 	 * @param integrationOfDaily2 
+	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別実績(Work)クラス
 	 */
 	public static IntegrationOfDaily calcTimeResult(
@@ -178,8 +188,9 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			List<DivergenceTimeRoot> divergenceTimeList,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 			ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred,
-			DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting, Optional<WorkTimeCode> recordWorkTimeCode) {
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet,
+			DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting, List<PersonnelCostSettingImport> personalSetting, Optional<WorkTimeCode> recordWorkTimeCode,
+			DeclareTimezoneResult declareResult) {
 
 		Optional<AttendanceTimeOfDailyAttendance> calcResult = Optional.empty();
 		
@@ -204,7 +215,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 																   conditionItem, 
 																   predetermineTimeSetByPersonInfo, 
 																   scheleaveLateSet, 
-																   schePred,
 																   recordWorkTimeCode));
 			// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 			List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
@@ -240,8 +250,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 															  predetermineTimeSetByPersonInfo,
 															  leaveLateSet,
 															  scheleaveLateSet,
-															  schePred,
-															  recordWorkTimeCode));
+															  recordWorkTimeCode,
+															  declareResult));
 			// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 			List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
@@ -258,6 +268,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 
 				// 手修正された項目の値を計算前に戻す
 				copyIntegrationOfDaily = afterDailyRecordDto.toDomain();
+				// マイナスの乖離時間を0にする
+				AttendanceTimeOfDailyAttendance.divergenceMinusValueToZero(copyIntegrationOfDaily);
 			}
 
 			// 手修正後の再計算
@@ -273,7 +285,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 					workType,
 					recordWorkTimeCode,
 					predetermineTimeSetByPersonInfo,
-					schePred,
 					bonusPayAutoCalcSet,
 					calculateOfTotalConstraintTime,
 					converter));
@@ -284,10 +295,37 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				DailyRecordToAttendanceItemConverter afterReCalcDto = forCalcDivergenceDto.setData(result);
 				afterReCalcDto.merge(itemValueList);
 				result = afterReCalcDto.toDomain();
+				// マイナスの乖離時間を0にする
+				AttendanceTimeOfDailyAttendance.divergenceMinusValueToZero(result);
 			}
 
 		}
+		// 申告結果に応じて編集状態を更新する
+		AttendanceTimeOfDailyAttendance.updateEditStateForDeclare(result, declareResult);
+		// 日別実績(Work)を返す
 		return result;	
+	}
+	
+	/**
+	 * マイナスの乖離時間を0にする
+	 * @param itgOfDaily 日別実績(Work)
+	 */
+	private static void divergenceMinusValueToZero(IntegrationOfDaily itgOfDaily){
+		
+		if (!itgOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) return;
+		AttendanceTimeOfDailyAttendance attendanceTime = itgOfDaily.getAttendanceTimeOfDailyPerformance().get();
+		TotalWorkingTime totalWorkingTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		ExcessOfStatutoryTimeOfDaily excessStatTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		// 残業枠時間
+		if (excessStatTime.getOverTimeWork().isPresent()){
+			OverTimeOfDaily overtime = excessStatTime.getOverTimeWork().get();
+			OverTimeOfDaily.divergenceMinusValueToZero(overtime.getOverTimeWorkFrameTime());
+		}
+		// 休出枠時間
+		if (excessStatTime.getWorkHolidayTime().isPresent()){
+			HolidayWorkTimeOfDaily holidayWorkTime = excessStatTime.getWorkHolidayTime().get();
+			HolidayWorkTimeOfDaily.divergenceMinusValueToZero(holidayWorkTime.getHolidayWorkFrameTime());
+		}
 	}
 	
 	/**
@@ -393,6 +431,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 						.recalcActualTime().valueAsMinutes());
 			}
 		}
+
 		// 乖離時間計算用 勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
 
@@ -634,13 +673,13 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			VacationClass vacation, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, ManageReGetClass scheduleReGetClass, WorkingConditionItem conditionItem, 
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, DeductLeaveEarly scheleaveLateSet, 
-			Optional<PredetermineTimeSetForCalc> schePred, Optional<WorkTimeCode> recordWorkTimeCode){
+			Optional<WorkTimeCode> recordWorkTimeCode){
 		
 		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 												   vacation, 
 												   flexCalcMethod, bonusPayAutoCalcSet, 
 												   eachCompanyTimeSet, scheduleReGetClass,conditionItem,
-												   predetermineTimeSetByPersonInfo,scheleaveLateSet,schePred,recordWorkTimeCode);
+												   predetermineTimeSetByPersonInfo,scheleaveLateSet,recordWorkTimeCode);
 		
 		return new AttendanceTimeOfDailyAttendance(
 				workScheduleTime,
@@ -661,6 +700,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 * @param integrationOfDaily 
 	 * @param flexSetting 
 	 * @param 1日の範囲クラス
+	 * @param declareResult 申告時間帯作成結果
 	 * @return 計算結果
 	 */
 	private static AttendanceTimeOfDailyAttendance collectCalculationResult(
@@ -670,14 +710,19 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTimeRoot> divergenceTimeList,
 				CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 				ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
-				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred, Optional<WorkTimeCode> recordWorkTimeCode) {
+				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+				DeductLeaveEarly leaveLateSet,
+				DeductLeaveEarly scheleaveLateSet,
+//				Optional<PredetermineTimeSetForCalc> schePred,
+				Optional<WorkTimeCode> recordWorkTimeCode,
+				DeclareTimezoneResult declareResult) {
 		
 		/*日別実績の勤務予定時間の計算*/
 		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 													vacation, 
 												   flexCalcMethod, bonusPayAutoCalcSet, 
 												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
-												    predetermineTimeSetByPersonInfo,scheleaveLateSet,schePred,
+												    predetermineTimeSetByPersonInfo,scheleaveLateSet,
 												    recordWorkTimeCode);
 		
 			/*日別実績の実績時間の計算*/
@@ -696,9 +741,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
 				leaveLateSet,
-				workScheduleTime, recordWorkTimeCode);
-	
-	
+				workScheduleTime, recordWorkTimeCode,
+				declareResult);
 
 		/* 滞在時間の計算 */
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(
@@ -792,7 +836,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 															   ManageReGetClass scheRegetManage
 															   ,WorkingConditionItem conditionItem,
 															   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-															   DeductLeaveEarly leaveLateSet, Optional<PredetermineTimeSetForCalc> schePred, Optional<WorkTimeCode> recordWorkTimeCode) {
+															   DeductLeaveEarly leaveLateSet, Optional<WorkTimeCode> recordWorkTimeCode) {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformastionOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		AttendanceTime scheTotalTime = new AttendanceTime(0);
@@ -807,12 +851,11 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 //									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
 									:recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());	
 		//予定勤務種類が設定されてなかったら、実績の所定労働のみ埋めて返す
-		if(!scheRegetManage.getWorkType().isPresent()) return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),new AttendanceTime(0),actualPredWorkTime);
+		if(!scheRegetManage.getWorkType().isPresent()) return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime), actualPredWorkTime);
 		
 		Optional<WorkTimeDailyAtr> workDailyAtr = (scheRegetManage.getWorkTimeSetting() != null && scheRegetManage.getWorkTimeSetting().isPresent()) ? Optional.of(scheRegetManage.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()) : Optional.empty();
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.createAllZEROInstance();
 		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
-		AttendanceTime shedulePreWorkTime = new AttendanceTime(0);
 		if(!scheRegetManage.getIntegrationOfWorkTime().isPresent() && recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
 			totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
 																   vacationClass, 
@@ -824,8 +867,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 																   conditionItem,
 																   predetermineTimeSetByPersonInfo,
 																   leaveLateSet,
-																   recordWorkTimeCode
-																   );
+																   recordWorkTimeCode,
+																   new DeclareTimezoneResult());
 			scheTotalTime = totalWorkingTime.getTotalTime();
 			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)
 				scheWithinTotalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime();
@@ -836,13 +879,53 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			scheExcessTotalTime = new AttendanceTime(overWorkTime + holidayWorkTime);
 			//計画所定時間の計算
 			schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
-			shedulePreWorkTime = (schePreTimeSet.isPresent() && !scheRegetManage.getWorkType().get().getDailyWork().isHolidayWork())
-//									  ? schePreTimeSet.get().getPredetermineTimeByAttendanceAtr(scheRegetManage.getWorkType().get().getDailyWork().decisionNeedPredTime())
-					                  ? schePreTimeSet.get().getpredetermineTime(scheRegetManage.getWorkType().get().getDailyWork())
-									  :new AttendanceTime(0);
 		}
-		shedulePreWorkTime = schePred.isPresent()?schePred.get().getpredetermineTime(scheRegetManage.getWorkType().get().getDailyWork()):shedulePreWorkTime;
-		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),shedulePreWorkTime,actualPredWorkTime);
+		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime), actualPredWorkTime);
+	}
+
+	/**
+	 * 申告結果に応じて編集状態を更新する
+	 * @param itgOfDaily 日別実績(Work)(ref)
+	 * @param declareResult 申告時間帯作成結果
+	 */
+	private static void updateEditStateForDeclare(
+			IntegrationOfDaily itgOfDaily,
+			DeclareTimezoneResult declareResult){
+		
+		if (!declareResult.getDeclareCalcRange().isPresent()) return;
+		DeclareEditState editState = declareResult.getDeclareCalcRange().get().getEditState();
+		AttendanceItemDictionaryForCalc attdIdDic = AttendanceItemDictionaryForCalc.setDictionaryValue();
+		
+		// 申告編集状態．残業を確認する
+		for (OverTimeFrameNo frameNo : editState.getOvertime()){
+			// 申告用編集状態を追加する
+			attdIdDic.findId("残業時間" + frameNo.v()).ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+			attdIdDic.findId("振替残業時間" + frameNo.v()).ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+		}
+		// 申告編集状態．休出を確認する
+		for (HolidayWorkFrameNo frameNo : editState.getHolidayWork()){
+			// 申告用編集状態を追加する
+			attdIdDic.findId("休出時間" + frameNo.v()).ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+			attdIdDic.findId("振替時間" + frameNo.v()).ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+		}
+		// 申告編集状態．残業深夜を確認する
+		if (editState.isOvertimeMn()){
+			attdIdDic.findId("就外残業深夜時間").ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+		}
+		// 申告編集状態．休出深夜を確認する
+		for (StaturoryAtrOfHolidayWork statAtr : editState.getHolidayWorkMn()){
+			switch(statAtr){
+			case WithinPrescribedHolidayWork:
+				attdIdDic.findId("法内休出外深夜").ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+				break;
+			case ExcessOfStatutoryHolidayWork:
+				attdIdDic.findId("法外休出外深夜").ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+				break;
+			case PublicHolidayWork:
+				attdIdDic.findId("就外法外祝日深夜").ifPresent(itemId -> itgOfDaily.addEditStateForDeclare(itemId));
+				break;
+			}
+		}
 	}
 
 	/**
@@ -865,7 +948,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			WorkType workType,
 			Optional<WorkTimeCode> recordWorkTimeCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<PredetermineTimeSetForCalc> schePred,
 			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime,
 			DailyRecordToAttendanceItemConverter converter,
@@ -890,8 +972,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				predetermineTimeSetByPersonInfo,
 				recordReGetClass.getLeaveLateSet(),
 				scheduleReGetClass.getLeaveLateSet(),
-				schePred,
-				recordWorkTimeCode);
+				recordWorkTimeCode,
+				new DeclareTimezoneResult());
 	}
 	
 	/**
@@ -921,3 +1003,4 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getOutingTimeOfDailyPerformance();
 	}
 }
+

@@ -12,9 +12,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -62,7 +62,6 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	 * @param workType 勤務種類
 	 * @param recordWorkTimeCode 就業時間帯コード
 	 * @param predetermineTimeSetByPersonInfo 所定時間設定(計算用クラス)
-	 * @param schePred 所定時間設定（予定用)
 	 * @param bonusPayAutoCalcSet 加給自動計算設定
 	 * @param calculateOfTotalConstraintTime  総拘束時間の計算
 	 * @param converter コンバーター
@@ -76,7 +75,6 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 			WorkType workType,
 			Optional<WorkTimeCode> recordWorkTimeCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<PredetermineTimeSetForCalc> schePred,
 			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime,
 			DailyRecordToAttendanceItemConverter converter,
@@ -90,7 +88,6 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				workType,
 				recordWorkTimeCode,
 				predetermineTimeSetByPersonInfo,
-				schePred,
 				bonusPayAutoCalcSet,
 				calculateOfTotalConstraintTime,
 				converter,
@@ -103,7 +100,6 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				workType,
 				recordWorkTimeCode,
 				predetermineTimeSetByPersonInfo,
-				schePred,
 				bonusPayAutoCalcSet,
 				calculateOfTotalConstraintTime,
 				converter,

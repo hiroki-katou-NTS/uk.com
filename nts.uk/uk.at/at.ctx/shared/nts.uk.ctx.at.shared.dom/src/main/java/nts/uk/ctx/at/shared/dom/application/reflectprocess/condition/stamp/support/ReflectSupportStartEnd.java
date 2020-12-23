@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -36,7 +37,7 @@ public class ReflectSupportStartEnd {
 		listTimeStampApp.stream().forEach(data -> {
 
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream().filter(
-					x -> x.getWorkNo() == data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE))
+					x -> x.getWorkNo().v() == data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE))
 					.findFirst();
 
 			if (ouenOpt.isPresent()) {
@@ -89,7 +90,7 @@ public class ReflectSupportStartEnd {
 		WorkContent workContent = WorkContent.create(require.getCId(), workplace, Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
-						data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE), workContent, sheet),
+						OuenFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet),
 				lstItemId);
 
 	}
