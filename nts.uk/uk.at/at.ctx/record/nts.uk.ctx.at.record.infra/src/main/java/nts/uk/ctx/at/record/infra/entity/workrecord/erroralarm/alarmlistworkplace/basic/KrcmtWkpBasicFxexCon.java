@@ -47,4 +47,13 @@ public class KrcmtWkpBasicFxexCon extends UkJpaEntity implements Serializable {
         );
     }
 
+    public static KrcmtWkpBasicFxexCon toEntity(BasicFixedExtractionCondition domain) {
+        return new KrcmtWkpBasicFxexCon(
+                new KrcmtWkpBasicFxexConPk(domain.getId()),
+                domain.getNo().value,
+                domain.getDisplayMessage().v(),
+                domain.isUseAtr()
+        );
+    }
+
 }

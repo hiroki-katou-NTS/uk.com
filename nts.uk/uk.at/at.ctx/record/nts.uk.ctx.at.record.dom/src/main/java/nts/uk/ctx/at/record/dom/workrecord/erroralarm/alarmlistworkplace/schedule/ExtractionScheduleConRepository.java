@@ -5,4 +5,6 @@ import java.util.List;
 public interface ExtractionScheduleConRepository {
 
     List<ExtractionScheduleCon> getBy(List<String> ids, boolean useAtr);
+
+    List<ExtractionScheduleCon> getByIds(List<String> ids);
 }

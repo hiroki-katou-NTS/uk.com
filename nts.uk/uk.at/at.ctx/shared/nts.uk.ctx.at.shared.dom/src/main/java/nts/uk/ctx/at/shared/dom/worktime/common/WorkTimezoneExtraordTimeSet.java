@@ -6,7 +6,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -85,5 +87,20 @@ public class WorkTimezoneExtraordTimeSet extends WorkTimeDomainObject implements
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 就業時間帯の臨時時間設定
+	 */
+	public static WorkTimezoneExtraordTimeSet generateDefault(){
+		WorkTimezoneExtraordTimeSet domain = new WorkTimezoneExtraordTimeSet();
+		domain.holidayFrameSet = new HolidayFramset(
+				new BreakoutFrameNo(1), new BreakoutFrameNo(1), new BreakoutFrameNo(1));
+		domain.timeRoundingSet = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		domain.oTFrameSet = new ExtraordWorkOTFrameSet(
+				new OTFrameNo(1), new OTFrameNo(1), new SettlementOrder(1));
+		domain.calculateMethod = ExtraordTimeCalculateMethod.RECORD_TEMP_TIME;
+		return domain;
 	}
 }

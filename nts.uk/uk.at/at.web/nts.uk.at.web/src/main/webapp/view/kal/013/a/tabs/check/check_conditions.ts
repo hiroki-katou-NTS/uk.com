@@ -36,7 +36,7 @@ module nts.uk.at.view.kal013.a.tab {
 
         let checkSelected = _.some(vm.checkConditionsList(), (x) => x.isChecked() === true);
         vm.isEnableRemove(checkSelected);
-      })
+      });
 
       vm.getCheckConditionsListByCategory();
     }
@@ -53,11 +53,6 @@ module nts.uk.at.view.kal013.a.tab {
       /* vm.$ajax(PATH.getAlarmList, params).done((data: any) => {
         vm.$blockui('hide');
       }).always(() => vm.$blockui('hide') ); */
-
-      for (let i = 0; i < 10; i++) {
-        let newCheckCondition = new common.CheckConditionDto(i, false, '名称 ' + (i + 1), null,'表示するメッセージ ' + (i + 1), 0);
-        vm.addNewItem(newCheckCondition);
-      }
     }
 
     /**

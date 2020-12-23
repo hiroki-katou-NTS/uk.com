@@ -1,66 +1,66 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:com="http://xmlns.jcp.org/jsf/component"
-  xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:com="http://xmlns.jcp.org/jsf/component"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
 >
-  <body>
-    <ui:composition template="../../../../master/base.xhtml">
-      <ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE" />
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
         <com:ValidatorScript>
-          nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode
-          nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
+            nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode
+            nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName
         </com:ValidatorScript>
 
-        <com:stylefile path="kal013.a.css" />
-        <com:scriptfile path="../d/kal013.common.js" />
-        <com:scriptfile path="tabs/unique/unique_check.js" />
-        <com:scriptfile path="tabs/check/check_conditions.js" />
-        <com:scriptfile path="kal013.a.vm.js" />
-      </ui:define>
+        <com:stylefile path="kal013.a.css"/>
+        <com:scriptfile path="../d/kal013.common.js"/>
+        <com:scriptfile path="tabs/unique/unique_check.js"/>
+        <com:scriptfile path="tabs/check/check_conditions.js"/>
+        <com:scriptfile path="kal013.a.vm.js"/>
+    </ui:define>
 
-      <ui:define name="content">
+    <ui:define name="content">
         <div id="functions-area">
-          <!-- Go back Style -->
-          <a
-            tabindex="1"
-            id="a14"
-            class="goback"
-            data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $i18n('KAL013_8')"
+            <!-- Go back Style -->
+            <a
+                    tabindex="1"
+                    id="a14"
+                    class="goback"
+                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $i18n('KAL013_8')"
             >振込元銀行の登録へ</a
-          >
-          <button
-            tabindex="2"
-            id="a11"
-            data-bind="text: $i18n('KAL013_5'), click: openScreenB"
-          />
-          <button
-            tabindex="3"
-            id="a12"
-            class="proceed"
-            data-bind="text: $i18n('KAL013_6'), registerAlarmWorkplace"
-          />
-          <button
-            tabindex="4"
-            id="a13"
-            class="danger"
-            data-bind="text: $i18n('KAL013_7'), deleteAlarmWorkplace"
-          />
-          <button tabindex="6" id="a16" data-bind="text: $i18n('KAL013_50')" />
+            >
+            <button
+                    tabindex="2"
+                    id="a11"
+                    data-bind="text: $i18n('KAL013_5'), click: switchNewMode"
+            />
+            <button
+                    tabindex="3"
+                    id="a12"
+                    class="proceed"
+                    data-bind="text: $i18n('KAL013_6'), click: registerAlarmListByWorkplace"
+            />
+            <button
+                    tabindex="4"
+                    id="a13"
+                    class="danger"
+                    data-bind="text: $i18n('KAL013_7'), click: deleteAlarmListByWorkplace, enable: !isNewMode()"
+            />
+            <button tabindex="6" id="a16" data-bind="text: $i18n('KAL013_50'), click: copyAlarm"/>
         </div>
         <div id="contents-area" class="cf">
-          <div class="pull-left">
-            <div class="bg-green caret-right caret-background grid-list">
-              <div class="d-fix">
-                <lable data-bind="text: $i18n('KAL013_9')"></lable>
-                <div
-                  tabindex="7"
-                  id="KAL013_10"
-                  class="combo-box"
-                  data-bind="ntsComboBox: {
+            <div class="pull-left">
+                <div class="bg-green caret-right caret-background grid-list">
+                    <div class="d-fix">
+                        <label data-bind="text: $i18n('KAL013_9')"></label>
+                        <div
+                                tabindex="7"
+                                id="KAL013_10"
+                                class="combo-box"
+                                data-bind="ntsComboBox: {
 										name: 'KAL013_10',
 										options: categoryList,
 										optionsValue: 'code',
@@ -70,13 +70,13 @@
 										required: true,
 										selectFirstIfNull: true
 									}"
-                ></div>
-              </div>
-              <div class="tableList">
-                <table
-                  id="alarm-list"
-                  tabindex="8"
-                  data-bind="ntsGridList: {								
+                        ></div>
+                    </div>
+                    <div class="tableList">
+                        <table
+                                id="alarm-list"
+                                tabindex="8"
+                                data-bind="ntsGridList: {
 									height: 350,
 									dataSource: alarmListItems,
 									primaryKey: 'code',
@@ -85,142 +85,136 @@
 										{headerText: $i18n('KAL013_12'), key: 'code', width: 70,},
 										{headerText: $i18n('KAL013_12'), key: 'name', width: 200,}
 									]}"
-                ></table>
-              </div>
+                        ></table>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="pull-left pull-left-right">
-            <div class="current-alarm">
-              <div class="row" data-bind="with: currentAlarm">
-                <div>
-                  <div
-                    data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL013_12')"
-                  ></div>
-                </div>
-                <div>
-                  <input
-                    tabindex="9"
-                    size="5"
-                    data-bind="ntsTextEditor: {
-										value: code,
+            <div class="pull-left pull-left-right">
+                <div class="current-alarm">
+                    <div class="row">
+                        <div>
+                            <div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL013_12')"></div>
+                        </div>
+                        <div>
+                            <input tabindex="9"
+                                    size="5"
+                                    data-bind="ntsTextEditor: {
+										value: currentCode,
 										required: true,
-                    name: $vm.$i18n('KAL013_12'),
-                    constraint: 'AlarmPatternCode'
-									}"
-                  />
-                </div>
-                <div>
-                  <div
-                    data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL013_13')"
-                  ></div>
-                </div>
-                <div>
-                  <input
-                    tabindex="10"
-                    size="15"
-                    data-bind="ntsTextEditor: {
-										value: name,
+                                        name: $vm.$i18n('KAL013_12'),
+                                        constraint: 'AlarmCheckConditionCode'
+                                        }"
+                            />
+                        </div>
+                        <div>
+                            <div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL013_13')"></div>
+                        </div>
+                        <div>
+                            <input tabindex="10"
+                                    size="15"
+                                    data-bind="ntsTextEditor: {
+										value: currentName,
 										required: true,
-                    name: $vm.$i18n('KAL013_13'),
-                    constraint: 'AlarmPatternName'
+                                        name: $vm.$i18n('KAL013_13'),
+                                        constraint: 'AlarmCheckConditionName'
 									}"
-                  />
+                            />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div>
+                            <div
+                                    data-bind="ntsFormLabel: { required: true }, text: $i18n('KAL013_14')"
+                            ></div>
+                        </div>
+                        <div data-bind="with: selectedCategory" class="category-name">
+                            <label data-bind="text: name"></label>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="row">
-                <div>
-                  <div
-                    data-bind="ntsFormLabel: { required: true }, text: $i18n('KAL013_14')"
-                  ></div>
-                </div>
-                <div data-bind="with: selectedCategory" class="category-name">
-                  <label data-bind="text: name"></label>
-                </div>
-              </div>
-            </div>
-            <div
-              id="tab-panel"
-              tabindex="11"
-              data-bind="ntsTabPanel: { 
+                <div
+                        id="tab-panel"
+                        tabindex="11"
+                        data-bind="ntsTabPanel: {
 								dataSource: tabs,
 								active: selectedTab
 							}"
-            >
-              <div class="tab-content-1">
-               <div data-bind="with: uniqueConditions">
-									<ui:include src="tabs/unique/index.xhtml" />
-								</div>
-               <!--  <div class="ui-iggrid">
-                  <table id="fixedTable">
-                    <colgroup>
-                      <col width="35px" />
-                      <col width="40px" />
-                      <col width="50px" />
-                      <col width="200px" />
-                      <col width="250px" />
-                    </colgroup>
-                    <thead>
-                      <tr>
-                        <th
-                          class="ui-iggrid-header ui-widget-header text-center"
-                        >
-                          <div
-                            data-bind="ntsCheckBox: { checked: selectedAll }"
-                          ></div>
-                        </th>
-                        <th
-                          class="ui-iggrid-header ui-widget-header text-center"
-                          data-bind="text: $i18n('KAL013_17')"
-                        ></th>
-                        <th
-                          class="ui-iggrid-header ui-widget-header text-center"
-                          data-bind="text: $i18n('KAL013_51')"
-                        ></th>
-                        <th
-                          class="ui-iggrid-header ui-widget-header"
-                          data-bind="text: $i18n('KAL013_13')"
-                        ></th>
-                        <th
-                          class="ui-iggrid-header ui-widget-header"
-                          data-bind="text: $i18n('KAL013_18')"
-                        ></th>
-                      </tr>
-                    </thead>
-                    <tbody data-bind="foreach: alarmArrangeList">
-                      <tr>
-                        <td class="text-center">
-                          <div
-                            data-bind="ntsCheckBox: { checked: isChecked }"
-                          ></div>
-                        </td>
-                        <td class="text-center">
-                          <span data-bind="text: $index() + 1"></span>
-                        </td>
-                        <td class="text-center">
-                          <span data-bind="text: register"></span>
-                        </td>
-                        <td><span data-bind="text: name"></span></td>
-                        <td>
-                          <input
-                            tabindex="10"
-                            data-bind="ntsTextEditor: { 
-                              value: message,
-															name: $vm.$i18n('KAL013_13')
-														}"
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div> -->
-              </div>             
-                <div class="tab-content-2" data-bind="with: checkConditions">
-                  <ui:include src="tabs/check/index.xhtml" />
+                >
+                    <div class="tab-content-1">
+                        <div data-bind="with: uniqueConditions">
+                            <ui:include src="tabs/unique/index.xhtml"/>
+                        </div>
+                        <!--  <div class="ui-iggrid">
+                           <table id="fixedTable">
+                             <colgroup>
+                               <col width="35px" />
+                               <col width="40px" />
+                               <col width="50px" />
+                               <col width="200px" />
+                               <col width="250px" />
+                             </colgroup>
+                             <thead>
+                               <tr>
+                                 <th
+                                   class="ui-iggrid-header ui-widget-header text-center"
+                                 >
+                                   <div
+                                     data-bind="ntsCheckBox: { checked: selectedAll }"
+                                   ></div>
+                                 </th>
+                                 <th
+                                   class="ui-iggrid-header ui-widget-header text-center"
+                                   data-bind="text: $i18n('KAL013_17')"
+                                 ></th>
+                                 <th
+                                   class="ui-iggrid-header ui-widget-header text-center"
+                                   data-bind="text: $i18n('KAL013_51')"
+                                 ></th>
+                                 <th
+                                   class="ui-iggrid-header ui-widget-header"
+                                   data-bind="text: $i18n('KAL013_13')"
+                                 ></th>
+                                 <th
+                                   class="ui-iggrid-header ui-widget-header"
+                                   data-bind="text: $i18n('KAL013_18')"
+                                 ></th>
+                               </tr>
+                             </thead>
+                             <tbody data-bind="foreach: alarmArrangeList">
+                               <tr>
+                                 <td class="text-center">
+                                   <div
+                                     data-bind="ntsCheckBox: { checked: isChecked }"
+                                   ></div>
+                                 </td>
+                                 <td class="text-center">
+                                   <span data-bind="text: $index() + 1"></span>
+                                 </td>
+                                 <td class="text-center">
+                                   <span data-bind="text: register"></span>
+                                 </td>
+                                 <td><span data-bind="text: name"></span></td>
+                                 <td>
+                                   <input
+                                     tabindex="10"
+                                     data-bind="ntsTextEditor: {
+                                       value: message,
+                                                                     name: $vm.$i18n('KAL013_13')
+                                                                 }"
+                                   />
+                                 </td>
+                               </tr>
+                             </tbody>
+                           </table>
+                         </div> -->
+                    </div>
+                    <div class="tab-content-2" data-bind="with: checkConditions">
+                        <ui:include src="tabs/check/index.xhtml"/>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
-      </ui:define>
-    </ui:composition>
-  </body>
+    </ui:define>
+</ui:composition>
+</body>
 </html>

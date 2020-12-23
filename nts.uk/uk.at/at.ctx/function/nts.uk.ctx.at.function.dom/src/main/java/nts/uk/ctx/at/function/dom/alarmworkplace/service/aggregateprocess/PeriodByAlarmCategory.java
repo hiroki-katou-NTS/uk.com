@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess;
 
 import lombok.*;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-
-import java.util.ArrayList;
-import java.util.List;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * カテゴリ別期間
@@ -15,9 +13,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PeriodByAlarmCategory {
-
     int category;
-    GeneralDate startDate;
-    GeneralDate endDate;
-    private YearMonth yearMonth;
+    DatePeriod period;
+    YearMonthPeriod ymPeriod;
+    YearMonth yearMonth;
 }

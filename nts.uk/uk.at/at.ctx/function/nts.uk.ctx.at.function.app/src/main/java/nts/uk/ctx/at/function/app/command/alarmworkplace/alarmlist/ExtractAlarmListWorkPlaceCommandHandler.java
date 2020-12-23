@@ -7,6 +7,8 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlaceRepository;
@@ -101,11 +103,23 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
     }
 
     private List<PeriodByAlarmCategory> convertPeriods(List<CategoryPeriodCommand> categoryPeriods) {
-        List<PeriodByAlarmCategory> periods = categoryPeriods.stream()
-                .map(x -> new PeriodByAlarmCategory(x.getCategory(), x.getStartDate(), x.getEndDate(),
-                        x.getYearMonth() == null ? null : new YearMonth(x.getYearMonth())))
+        return categoryPeriods.stream()
+                .map(x -> {
+                    DatePeriod period = null;
+                    YearMonthPeriod ymPeriod = null;
+                    YearMonth yearMonth = null;
+                    if (x.getStartDate() != null && x.getEndDate() != null) {
+                        period = new DatePeriod(x.getStartDate(), x.getEndDate());
+                    }
+                    if (x.getStartYm() != null && x.getEndYm() != null) {
+                        ymPeriod = new YearMonthPeriod(YearMonth.of(x.getStartYm()), YearMonth.of(x.getEndYm()));
+                    }
+                    if (x.getYearMonth() != null) {
+                        yearMonth = YearMonth.of(x.getYearMonth());
+                    }
+                    return new PeriodByAlarmCategory(x.getCategory(), period, ymPeriod, yearMonth);
+                })
                 .collect(Collectors.toList());
-        return periods;
     }
 
     private Boolean shouldStop(String cid, CommandHandlerContext<ExtractAlarmListWorkPlaceCommand> context,

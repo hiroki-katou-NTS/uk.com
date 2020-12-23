@@ -13,7 +13,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.PremiumExtra60HRateDto;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.SuperHD60HConMedDto;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,6 +29,9 @@ public class SuperHD60HConMedFinder {
 	/** The repository. */
 	@Inject
 	private SuperHD60HConMedRepository repository;
+	
+	@Inject
+	private OutsideOTSettingRepository outSiteRepo;
 	
 	/**
 	 * Find all.
@@ -45,18 +49,7 @@ public class SuperHD60HConMedFinder {
 		// call repository find data
 		Optional<SuperHD60HConMed> superHoliday = this.repository.findById(companyId);
 
-		
-		SuperHD60HConMedDto dto = new SuperHD60HConMedDto();
-		
-		dto.setSetting(false);
-		
-		// check exist data
-		if(superHoliday.isPresent()){
-			superHoliday.get().saveToMemento(dto);
-			dto.setSetting(true);
-		}
-		
-		return dto;
+		return superHoliday.map(c -> SuperHD60HConMedDto.of(c)).orElse(new SuperHD60HConMedDto());
 
 	}
 	
@@ -74,13 +67,12 @@ public class SuperHD60HConMedFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		List<PremiumExtra60HRate> premiumExtraRates = this.repository.findAllPremiumRate(companyId);
+		List<OutsideOTBRDItem> premiumExtraRates = this.outSiteRepo.findAllUseBRDItem(companyId);
 
-		return premiumExtraRates.stream().map(domain -> {
-			PremiumExtra60HRateDto dto = new PremiumExtra60HRateDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		return premiumExtraRates.stream().map(d -> {
+			return d.getPremiumExtra60HRates().stream().map(c -> PremiumExtra60HRateDto.of(d.getBreakdownItemNo().value, c))
+											.collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
 
 	}
 }

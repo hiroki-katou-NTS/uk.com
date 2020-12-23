@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.alarmlistworkplace;
 
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.applicationapproval.service.AggregateProcessAppApprovalService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.AggregateProcessMasterCheckBasicService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.AggregateProcessMasterCheckDailyService;
@@ -35,10 +36,10 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
     private AggregateProcessAppApprovalService aggregateProcessAppApprovalService;
 
     @Override
-    public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckBasic(String cid, DatePeriod period,
+    public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckBasic(String cid, YearMonthPeriod ymPeriod,
                                                                                 List<String> alarmCheckWkpId,
                                                                                 List<String> workplaceIds) {
-        return convert(aggregateProcessMasterCheckBasicService.process(cid, period, alarmCheckWkpId, workplaceIds));
+        return convert(aggregateProcessMasterCheckBasicService.process(cid, ymPeriod, alarmCheckWkpId, workplaceIds));
     }
 
     @Override
@@ -49,10 +50,10 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
     }
 
     @Override
-    public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckWorkplace(String cid, DatePeriod period,
+    public List<AlarmListExtractionInfoWorkplaceExport> processMasterCheckWorkplace(String cid, YearMonthPeriod ymPeriod,
                                                                                     List<String> alarmCheckWkpId,
                                                                                     List<String> workplaceIds) {
-        return convert(aggregateProcessMasterCheckWorkplaceService.process(cid, period, alarmCheckWkpId, workplaceIds));
+        return convert(aggregateProcessMasterCheckWorkplaceService.process(cid, ymPeriod, alarmCheckWkpId, workplaceIds));
     }
 
     @Override
@@ -69,7 +70,6 @@ public class AggregateProcessPubImpl implements AggregateProcessPub {
                                                                        List<String> extractCondIds,
                                                                        List<String> workplaceIds) {
         return convert(aggregateProcessMonthlyService.process(cid, ym, fixedExtractCondIds, extractCondIds, workplaceIds));
-
     }
 
     @Override

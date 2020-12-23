@@ -169,7 +169,7 @@ module nts.uk.at.kal011.a {
             vm.$validate("#B3_2").then((valid: boolean) => {
                 if (!valid) return;
                 if (_.isEmpty(vm.workplaceIds())) {
-                    vm.$dialog.error({ messageId: "Msg_719" }); //TODO Q&A 37827
+                    vm.$dialog.error({ messageId: "Msg_719" });
                     return
                 }
                 let conditionSelecteds = _.filter(vm.conditions(), (condition: CheckCondition) => condition.isChecked());
@@ -192,14 +192,14 @@ module nts.uk.at.kal011.a {
                                 endDate: condition.dateRange().endDate.toISOString()
                             }
                         case PeriodType.PERIOD_YM:
-                            let start = condition.dateRangeYm().startDate.toString();
-                            let startDate = new Date(Number(start.substr(0, 4)), Number(start.substr(4, 6)) - 1, 1);
-                            let end = condition.dateRangeYm().endDate.toString();
-                            let endDate = new Date(Number(end.substr(0, 4)), Number(end.substr(4, 6)), 0);
+                            // let start = condition.dateRangeYm().startDate.toString();
+                            // let startDate = new Date(Number(start.substr(0, 4)), Number(start.substr(4, 6)) - 1, 1);
+                            // let end = condition.dateRangeYm().endDate.toString();
+                            // let endDate = new Date(Number(end.substr(0, 4)), Number(end.substr(4, 6)), 0);
                             return {
                                 category: condition.category,
-                                startDate: startDate.toISOString(),
-                                endDate: endDate.toISOString()
+                                startYm: condition.dateRangeYm().startDate,
+                                endYm: condition.dateRangeYm().endDate
                             }
                         case PeriodType.SINGLE_MONTH:
                             return {

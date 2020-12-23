@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
     private static final String SELECT;
 
     private static final String FIND_BY_IDS_AND_USEATR;
+
+    private static final String GET_BY_IDS;
 
     private static final String SELECT_COMPARE_SINGLE =
         " SELECT a FROM KrcstErAlCompareSingle a " +
@@ -50,6 +53,11 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids AND a.useAtr = :useAtr ");
         FIND_BY_IDS_AND_USEATR = builderString.toString();
 
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids ");
+        GET_BY_IDS = builderString.toString();
+
     }
 
     @Override
@@ -64,5 +72,20 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)
             .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
+    }
+
+    @Override
+    public List<ExtractionMonthlyCon> getByIds(List<String> ids) {
+        if (ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
+        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
+        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
+
+        return this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonExtracCon.class)
+                .setParameter("ids", ids)
+                .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
     }
 }

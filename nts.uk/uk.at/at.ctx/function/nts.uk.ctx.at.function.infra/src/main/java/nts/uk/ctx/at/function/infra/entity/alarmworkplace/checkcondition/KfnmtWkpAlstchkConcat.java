@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -30,13 +31,15 @@ public class KfnmtWkpAlstchkConcat extends UkJpaEntity implements Serializable {
         return this.pk;
     }
 
-    public AlarmCheckCdtWorkplaceCategory toDomain() {
-        return new AlarmCheckCdtWorkplaceCategory(
-
-        );
-    }
-
     public static KfnmtWkpAlstchkConcat toEntity(AlarmCheckCdtWorkplaceCategory domain) {
-        return null;
+        return new KfnmtWkpAlstchkConcat(
+                new KfnmtWkpAlstchkConcatPk(
+                        AppContexts.user().companyId(),
+                        domain.getCategory().value,
+                        domain.getCode().v()
+                        ),
+                AppContexts.user().contractCode(),
+                domain.getName().v()
+        );
     }
 }

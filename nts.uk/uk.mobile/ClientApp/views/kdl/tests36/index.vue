@@ -40,6 +40,7 @@
       <div class="text-center mt-3">
         <button v-on:click="openKDLS36" type="button" class="btn btn-primary">Open Dialog KDLS36</button>
       </div>
+      <pre>{{managementData}}</pre>
     </div>
   </div>
 </template>

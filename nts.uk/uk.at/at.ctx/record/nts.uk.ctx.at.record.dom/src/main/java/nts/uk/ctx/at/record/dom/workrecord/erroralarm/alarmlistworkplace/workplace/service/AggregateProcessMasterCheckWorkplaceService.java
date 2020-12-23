@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.service;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
@@ -42,13 +44,15 @@ public class AggregateProcessMasterCheckWorkplaceService {
      * マスタチェック(職場)の集計処理
      *
      * @param cid             会社ID
-     * @param period          期間
+     * @param ymPeriod        期間
      * @param alarmCheckWkpId List＜職場のエラームチェックID＞
      * @param workplaceIds    List＜職場ID＞
      * @return List＜アラームリスト抽出情報（職場）＞
      */
-    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
+    public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, YearMonthPeriod ymPeriod, List<String> alarmCheckWkpId,
                                                              List<String> workplaceIds) {
+        DatePeriod period = new DatePeriod(GeneralDate.ymd(ymPeriod.start().year(), ymPeriod.start().month(), 1),
+                GeneralDate.ymd(ymPeriod.end().year(), ymPeriod.end().month(), 1).addMonths(1).addDays(-1));
         // 職場ID一覧から社員情報を取得する。
         Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
 
@@ -70,21 +74,21 @@ public class AggregateProcessMasterCheckWorkplaceService {
             switch (wp.getNo()) {
                 case NO_REF_TIME:
                     // 基準時間の未設定を確認する。
-                    extractResults = noRefTimeCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = noRefTimeCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
                     break;
                 case TIME_NOT_SET_FOR_36_ESTIMATED:
                     // 36協定目安時間の未設定を確認する
-                    extractResults = timeNotSetFor36EstCfmService.confirm(wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = timeNotSetFor36EstCfmService.confirm(wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
                     break;
                 case UNSET_OF_HD:
                     // 公休日数の未設定を確認する。
-                    extractResults = unsetHdCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = unsetHdCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
                     break;
                 case ESTIMATED_OR_AMOUNT_TIME_NOT_SET:
                     break;
                 case NOT_REGISTERED:
                     // 管理者を確認する。
-                    extractResults = unRegisterManagerCfmService.confirm(wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = unRegisterManagerCfmService.confirm(wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), ymPeriod, workplaceIds);
                     break;
             }
 

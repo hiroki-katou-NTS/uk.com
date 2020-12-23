@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.publichdcfm;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicCheckName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -41,10 +41,10 @@ public class PublicHdCfmService {
      * @param cid            会社ID
      * @param name           アラーム項目名
      * @param displayMessage 表示するメッセージ.
-     * @param period         期間
+     * @param ymPeriod       期間
      * @return List＜抽出結果＞
      */
-    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage, DatePeriod period) {
+    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage, YearMonthPeriod ymPeriod) {
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
@@ -57,8 +57,8 @@ public class PublicHdCfmService {
         }
 
         // 「Input．期間．開始日．年」から「Input．期間．終了日．年」までループする。
-        int startYear = period.start().year();
-        int endYear = period.end().year();
+        int startYear = ymPeriod.start().year();
+        int endYear = ymPeriod.end().year();
         while (startYear <= endYear) {
             // ドメインモデル「会社月間日数設定」を取得する。
             Optional<CompanyMonthDaySetting> comMonDaySetOpt = comMonthDaySettingRepo.findByYear(new CompanyId(cid), new Year(startYear));

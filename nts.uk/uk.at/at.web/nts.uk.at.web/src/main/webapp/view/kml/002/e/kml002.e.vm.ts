@@ -150,6 +150,9 @@ module nts.uk.at.view.kml002.e {
     registerTimeZone() {
       const vm = this;
 
+      $('.time-zone').trigger('validate');
+      if(nts.uk.ui.errors.hasError()) return;
+      
       //時間帯一覧は1～24で指定してください。
       if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 24) {
         vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {

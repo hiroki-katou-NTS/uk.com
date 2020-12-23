@@ -10,4 +10,6 @@ public interface FixedExtractionDayItemsRepository {
      * @return List アラームリスト（職場）日別の固定抽出項目
      */
     List<FixedExtractionDayItems> get(List<FixedCheckDayItems> fixedCheckDayItems);
+
+    List<FixedExtractionDayItems> getAll();
 }

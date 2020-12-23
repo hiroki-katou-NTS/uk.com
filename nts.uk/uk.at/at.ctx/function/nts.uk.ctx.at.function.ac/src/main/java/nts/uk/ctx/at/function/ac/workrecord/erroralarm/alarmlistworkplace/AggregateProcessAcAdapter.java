@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.ac.workrecord.erroralarm.alarmlistworkplace;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
@@ -22,10 +23,10 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
     private AggregateProcessPub aggregateProcessPub;
 
     @Override
-    public List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period,
+    public List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, YearMonthPeriod ymPeriod,
                                                                        List<String> alarmCheckWkpId,
                                                                        List<String> workplaceIds) {
-        return convert(aggregateProcessPub.processMasterCheckBasic(cid, period, alarmCheckWkpId, workplaceIds));
+        return convert(aggregateProcessPub.processMasterCheckBasic(cid, ymPeriod, alarmCheckWkpId, workplaceIds));
     }
 
     @Override
@@ -36,10 +37,10 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
     }
 
     @Override
-    public List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, DatePeriod period,
+    public List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, YearMonthPeriod ymPeriod,
                                                                            List<String> alarmCheckWkpId,
                                                                            List<String> workplaceIds) {
-        return convert(aggregateProcessPub.processMasterCheckWorkplace(cid, period, alarmCheckWkpId, workplaceIds));
+        return convert(aggregateProcessPub.processMasterCheckWorkplace(cid, ymPeriod, alarmCheckWkpId, workplaceIds));
     }
 
     @Override
@@ -48,7 +49,6 @@ public class AggregateProcessAcAdapter implements AggregateProcessAdapter {
                                                                List<String> extractCondIds,
                                                                List<String> workplaceIds) {
         return convert(aggregateProcessPub.processSchedule(cid, period, fixedExtractCondIds, extractCondIds, workplaceIds));
-
     }
 
     @Override

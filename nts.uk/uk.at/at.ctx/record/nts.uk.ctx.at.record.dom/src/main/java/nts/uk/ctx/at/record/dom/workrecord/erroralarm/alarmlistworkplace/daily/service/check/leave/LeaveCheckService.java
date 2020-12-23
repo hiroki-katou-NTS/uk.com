@@ -70,7 +70,7 @@ public class LeaveCheckService {
                     new AlarmValueDate(period.start().toString("yyyyMMdd"),
                             Optional.of(period.end().toString("yyyyMMdd"))),
                     null,
-                    Optional.ofNullable(TextResource.localize("KAL020_112")),
+                    Optional.ofNullable(TextResource.localize("KAL020_112", error)),
                     Optional.empty(),
                     null
             );

@@ -10,7 +10,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -19,6 +21,8 @@ public class JpaFixedExtractionScheduleConRepository extends JpaRepository imple
     private static final String SELECT;
 
     private static final String FIND_BY_IDS_AND_USEATR;
+
+    private static final String SELECT_BY_IDS;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -30,6 +34,11 @@ public class JpaFixedExtractionScheduleConRepository extends JpaRepository imple
         builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids AND a.useAtr = :useAtr ");
         FIND_BY_IDS_AND_USEATR = builderString.toString();
 
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids ");
+        SELECT_BY_IDS = builderString.toString();
+
     }
 
     @Override
@@ -39,5 +48,25 @@ public class JpaFixedExtractionScheduleConRepository extends JpaRepository imple
             .setParameter("ids", ids)
             .setParameter("useAtr", useAtr)
             .getList(KrcmtWkpSchedaiFxexCon::toDomain);
+    }
+
+    @Override
+    public List<FixedExtractionScheduleCon> getByIds(List<String> ids) {
+       if (ids.isEmpty()) {
+           return Collections.emptyList();
+       }
+       return this.queryProxy().query(SELECT_BY_IDS, KrcmtWkpSchedaiFxexCon.class)
+               .setParameter("ids", ids)
+               .getList(KrcmtWkpSchedaiFxexCon::toDomain);
+    }
+
+    @Override
+    public void register(List<FixedExtractionScheduleCon> domain) {
+        this.commandProxy().insertAll(domain.stream().map(KrcmtWkpSchedaiFxexCon::fromDomain).collect(Collectors.toList()));
+    }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpSchedaiFxexCon.class, ids);
     }
 }

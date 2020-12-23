@@ -38,7 +38,9 @@ public class NewEmployeeCheckService {
             if (period.start().beforeOrEquals(jobEntryDate) &&
                     period.end().afterOrEquals(jobEntryDate)) {
                 // 抽出結果を作成
-                ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(TextResource.localize("KAL020_100", personInfo.getEmployeeCode(), personInfo.getBusinessName())),
+                String message = TextResource.localize("KAL020_100", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName(),
+                        jobEntryDate.toString("yyyy/MM/dd"));
+                ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
                         new AlarmValueDate(jobEntryDate.toString("yyyyMMdd"), Optional.empty()),
                         null,
                         Optional.ofNullable(TextResource.localize("KAL020_114", jobEntryDate.toString("yyyy/MM/dd"))),

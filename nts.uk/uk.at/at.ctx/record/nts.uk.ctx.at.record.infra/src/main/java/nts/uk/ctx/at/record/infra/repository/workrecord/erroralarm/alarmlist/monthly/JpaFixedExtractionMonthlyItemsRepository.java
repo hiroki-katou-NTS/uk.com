@@ -41,4 +41,10 @@ public class JpaFixedExtractionMonthlyItemsRepository extends JpaRepository impl
             .setParameter("nos", nos)
             .getList(KrcmtWkpMonFxexItm::toDomain);
     }
+
+    @Override
+    public List<FixedExtractionMonthlyItems> getAll() {
+        return this.queryProxy().query(SELECT, KrcmtWkpMonFxexItm.class)
+                .getList(KrcmtWkpMonFxexItm::toDomain);
+    }
 }

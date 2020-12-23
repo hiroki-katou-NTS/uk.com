@@ -10,12 +10,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -28,19 +27,12 @@ public class BreakTimeDailyFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public BreakTimeDailyDto find(String employeeId, GeneralDate baseDate) {
-		List<BreakTimeOfDailyPerformance> domains = this.repo.findByKey(employeeId, baseDate);
-		if (!domains.isEmpty()) {
-			return BreakTimeDailyDto.getDto(domains.get(0));
-		}
-		return new BreakTimeDailyDto();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<BreakTimeDailyDto> finds(String employeeId, GeneralDate baseDate) {
-		return this.repo.findByKey(employeeId, baseDate).stream().map(x -> {
-			return BreakTimeDailyDto.getDto(x);
-		}).collect(Collectors.toList());
+//		Optional<BreakTimeOfDailyPerformance> domains = this.repo.findByKey(employeeId, baseDate);
+//		if (!domains.isEmpty()) {
+//			return BreakTimeDailyDto.getDto(domains.get());
+//		}
+		return this.repo.findByKey(employeeId, baseDate).map(c -> BreakTimeDailyDto.getDto(c))
+				.orElse(new BreakTimeDailyDto());
 	}
 	
 	@SuppressWarnings("unchecked")

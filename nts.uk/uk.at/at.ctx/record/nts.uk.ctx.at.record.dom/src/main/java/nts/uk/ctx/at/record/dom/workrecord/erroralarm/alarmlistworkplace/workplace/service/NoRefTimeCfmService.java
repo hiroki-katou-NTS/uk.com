@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.service;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.WorkplaceCheckName;
@@ -36,21 +36,21 @@ public class NoRefTimeCfmService {
      * @param cid                会社ID
      * @param workplaceCheckName アラーム項目名
      * @param displayMessage     表示するメッセージ
-     * @param period             期間
+     * @param ymPeriod           期間
      * @param workplaceIds       List＜職場ID＞
      * @return List＜抽出結果＞
      */
     public List<ExtractResultDto> confirm(String cid,
                                           WorkplaceCheckName workplaceCheckName,
                                           DisplayMessage displayMessage,
-                                          DatePeriod period,
+                                          YearMonthPeriod ymPeriod,
                                           List<String> workplaceIds) {
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
         // 「Input．期間．開始日．年」から「Input．期間．終了日．年」までループする。
-        int startYear = period.start().year();
-        int endYear = period.end().year();
+        int startYear = ymPeriod.start().year();
+        int endYear = ymPeriod.end().year();
         while (startYear <= endYear) {
             // Input．List＜職場ID＞をループする
             for (String workplaceId : workplaceIds) {

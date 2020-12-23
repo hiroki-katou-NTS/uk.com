@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.service.aggregateprocess;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkplace.AggregateProcessAdapter;
@@ -104,36 +105,32 @@ public class AggregateProcessService {
             switch (category) {
                 case MASTER_CHECK_BASIC:
                     // アルゴリズム「マスタチェック(基本)の集計処理」を実行する
-                    extractInfos = aggregateProcessAdapter.processMasterCheckBasic(cid,
-                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
+                    extractInfos = aggregateProcessAdapter.processMasterCheckBasic(cid, ctgPeriod.getYmPeriod(),
                             alarmCheckWkpId, workplaceIds);
                     break;
                 case MASTER_CHECK_DAILY:
-                    extractInfos = aggregateProcessAdapter.processMasterCheckDaily(cid,
-                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
+                    extractInfos = aggregateProcessAdapter.processMasterCheckDaily(cid, ctgPeriod.getPeriod(),
                             alarmCheckWkpId, workplaceIds);
                     // アルゴリズム「マスタチェック(日別)の集計処理」を実行する
                     break;
                 case MASTER_CHECK_WORKPLACE:
                     // アルゴリズム「マスタチェック(職場)の集計処理」を実行する
-                    extractInfos = aggregateProcessAdapter.processMasterCheckWorkplace(cid,
-                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
+                    extractInfos = aggregateProcessAdapter.processMasterCheckWorkplace(cid, ctgPeriod.getYmPeriod(),
                             alarmCheckWkpId, workplaceIds);
                     break;
                 case SCHEDULE_DAILY:
                     // アルゴリズム「スケジュール／日次の集計処理」を実行する
-                    extractInfos = aggregateProcessAdapter.processSchedule(cid,
-                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
+                    extractInfos = aggregateProcessAdapter.processSchedule(cid, ctgPeriod.getPeriod(),
                             alarmCheckWkpId, optionalIds, workplaceIds);
                     break;
                 case MONTHLY:
                     // アルゴリズム「月次の集計処理」を実行する
-                    extractInfos = aggregateProcessAdapter.processMonthly(cid, ctgPeriod.getYearMonth(), alarmCheckWkpId, optionalIds, workplaceIds);
+                    extractInfos = aggregateProcessAdapter.processMonthly(cid, ctgPeriod.getYearMonth(),
+                            alarmCheckWkpId, optionalIds, workplaceIds);
                     break;
                 case APPLICATION_APPROVAL:
                     // アルゴリズム「申請承認の集計処理」を実行する
-                    extractInfos = aggregateProcessAdapter.processAppApproval(
-                            new DatePeriod(ctgPeriod.getStartDate(), ctgPeriod.getEndDate()),
+                    extractInfos = aggregateProcessAdapter.processAppApproval(ctgPeriod.getPeriod(),
                             alarmCheckWkpId, workplaceIds);
                     break;
             }

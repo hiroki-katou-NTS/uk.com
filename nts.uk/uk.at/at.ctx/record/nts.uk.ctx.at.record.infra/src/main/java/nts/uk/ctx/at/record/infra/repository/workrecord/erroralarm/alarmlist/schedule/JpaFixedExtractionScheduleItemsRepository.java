@@ -40,4 +40,9 @@ public class JpaFixedExtractionScheduleItemsRepository extends JpaRepository imp
             .setParameter("nos", nos)
             .getList(KrcmtWkpSchedaiFxexItm::toDomain);
     }
+
+    @Override
+    public List<FixedExtractionScheduleItems> getAll() {
+        return this.queryProxy().query(SELECT, KrcmtWkpSchedaiFxexItm.class).getList(KrcmtWkpSchedaiFxexItm::toDomain);
+    }
 }
