@@ -8,5 +8,7 @@ public class CategoryPeriodCommand {
     private int category;
     private GeneralDate startDate;
     private GeneralDate endDate;
+    private Integer startYm;
+    private Integer endYm;
     private Integer yearMonth;
 }

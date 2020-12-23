@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.est36timecfm;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicCheckName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -35,10 +35,10 @@ public class Est36TimeCfmService {
      * @param cid            会社ID
      * @param name           アラーム項目名
      * @param displayMessage 表示するメッセージ.
-     * @param period         期間
+     * @param ymPeriod       期間
      * @return List＜抽出結果＞
      */
-    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage, DatePeriod period) {
+    public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage, YearMonthPeriod ymPeriod) {
         List<ExtractResultDto> results = new ArrayList<>();
 
         // ドメインモデル「会社３６協定時間」を取得する。
@@ -56,7 +56,7 @@ public class Est36TimeCfmService {
 
             // ドメインオブジェクト「抽出結果」を作成して返す
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
+                    new AlarmValueDate(ymPeriod.start().toString(), Optional.empty()),
                     name.v(),
                     Optional.ofNullable(TextResource.localize("KAL020_17")),
                     Optional.of(new MessageDisplay(displayMessage.v())),
@@ -71,7 +71,7 @@ public class Est36TimeCfmService {
 
             // ドメインオブジェクト「抽出結果」を作成して返す
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
+                    new AlarmValueDate(ymPeriod.start().toString(), Optional.empty()),
                     name.v(),
                     Optional.ofNullable(TextResource.localize("KAL020_17")),
                     Optional.of(new MessageDisplay(displayMessage.v())),

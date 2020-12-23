@@ -192,14 +192,14 @@ module nts.uk.at.kal011.a {
                                 endDate: condition.dateRange().endDate.toISOString()
                             }
                         case PeriodType.PERIOD_YM:
-                            let start = condition.dateRangeYm().startDate.toString();
-                            let startDate = new Date(Number(start.substr(0, 4)), Number(start.substr(4, 6)) - 1, 1);
-                            let end = condition.dateRangeYm().endDate.toString();
-                            let endDate = new Date(Number(end.substr(0, 4)), Number(end.substr(4, 6)), 0);
+                            // let start = condition.dateRangeYm().startDate.toString();
+                            // let startDate = new Date(Number(start.substr(0, 4)), Number(start.substr(4, 6)) - 1, 1);
+                            // let end = condition.dateRangeYm().endDate.toString();
+                            // let endDate = new Date(Number(end.substr(0, 4)), Number(end.substr(4, 6)), 0);
                             return {
                                 category: condition.category,
-                                startDate: startDate.toISOString(),
-                                endDate: endDate.toISOString()
+                                startYm: condition.dateRangeYm().startDate,
+                                endYm: condition.dateRangeYm().endDate
                             }
                         case PeriodType.SINGLE_MONTH:
                             return {

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class UpdateAlarmListExtractProcessStatusWorkplaceCommand {
-    private String processStatusId;
+    private String processId;
     private int status;
 }

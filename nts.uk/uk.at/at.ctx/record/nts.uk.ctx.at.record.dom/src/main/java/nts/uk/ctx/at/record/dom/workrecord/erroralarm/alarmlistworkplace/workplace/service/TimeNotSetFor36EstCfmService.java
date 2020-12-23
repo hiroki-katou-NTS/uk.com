@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.service;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.WorkplaceCheckName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -34,13 +34,13 @@ public class TimeNotSetFor36EstCfmService {
      *
      * @param workplaceCheckName アラーム項目名
      * @param displayMessage     表示するメッセージ
-     * @param period             期間
+     * @param ymPeriod           期間
      * @param workplaceIds       List＜職場ID＞
      * @return List＜抽出結果＞
      */
     public List<ExtractResultDto> confirm(WorkplaceCheckName workplaceCheckName,
                                           DisplayMessage displayMessage,
-                                          DatePeriod period,
+                                          YearMonthPeriod ymPeriod,
                                           List<String> workplaceIds) {
         // 空欄のリスト「アラーム抽出結果（職場別）」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
@@ -59,7 +59,7 @@ public class TimeNotSetFor36EstCfmService {
 
                 // 抽出結果を作成する
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
+                        new AlarmValueDate(ymPeriod.start().toString(), Optional.empty()),
                         workplaceCheckName.v(),
                         Optional.ofNullable(message),
                         Optional.of(new MessageDisplay(displayMessage.v())),
@@ -76,7 +76,7 @@ public class TimeNotSetFor36EstCfmService {
 
                 // 抽出結果を作成する
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
+                        new AlarmValueDate(ymPeriod.start().toString(), Optional.empty()),
                         workplaceCheckName.v(),
                         Optional.ofNullable(message),
                         Optional.of(new MessageDisplay(displayMessage.v())),

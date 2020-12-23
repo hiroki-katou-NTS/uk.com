@@ -18,7 +18,7 @@ public class CheckConditionDto {
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.startDate = startDate;
         this.endDate = endDate;
-        this.periodType = 1;
+        this.periodType = PeriodType.DATE.value;
     }
 
     public CheckConditionDto(WorkplaceCategory workplaceCategory, YearMonth startYm, YearMonth endYm) {
@@ -26,14 +26,14 @@ public class CheckConditionDto {
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.startYm = startYm == null ? null : startYm.v();
         this.endYm = endYm == null ? null : endYm.v();
-        this.periodType = 2;
+        this.periodType = PeriodType.YM.value;
     }
 
     public CheckConditionDto(WorkplaceCategory workplaceCategory, YearMonth yearMonth) {
         this.category = workplaceCategory.value;
         this.categoryName = TextResource.localize(workplaceCategory.nameId);
         this.yearMonth = yearMonth == null ? null : yearMonth.v();
-        this.periodType = 3;
+        this.periodType = PeriodType.MONTH.value;
     }
 
     /**

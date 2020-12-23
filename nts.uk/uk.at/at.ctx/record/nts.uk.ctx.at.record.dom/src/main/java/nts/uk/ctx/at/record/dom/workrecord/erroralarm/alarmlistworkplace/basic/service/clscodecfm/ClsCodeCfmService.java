@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.service.clscodecfm;
 
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.ClassificationImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.BasicCheckName;
@@ -40,11 +42,13 @@ public class ClsCodeCfmService {
      * @param name            アラーム項目名
      * @param displayMessage  表示するメッセージ.
      * @param empInfosByWpMap Map＜職場ID、List＜社員情報＞＞
-     * @param period          期間
+     * @param ymPeriod        期間
      * @return List＜抽出結果＞
      */
     public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage,
-                                          Map<String, List<EmployeeInfoImported>> empInfosByWpMap, DatePeriod period) {
+                                          Map<String, List<EmployeeInfoImported>> empInfosByWpMap, YearMonthPeriod ymPeriod) {
+        DatePeriod period = new DatePeriod(GeneralDate.ymd(ymPeriod.start().year(), ymPeriod.start().month(), 1),
+                GeneralDate.ymd(ymPeriod.end().year(), ymPeriod.end().month(), 1).addMonths(1).addDays(-1));
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 

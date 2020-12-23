@@ -1,9 +1,9 @@
 module nts.uk.at.kal011.d {
 
     const API = {
-        extractStart: "at/function/alarm-workplace/alarm-list/extract/start",
-        extractExecute: "at/function/alarm-workplace/alarm-list/extract/execute",
-        extractUpdateStatus: "at/function/alarm-workplace/alarm-list/extract/update-status",
+        EXTRACT_START: "at/function/alarm-workplace/alarm-list/extract/start",
+        EXTRACT_EXECUTE: "at/function/alarm-workplace/alarm-list/extract/execute",
+        EXTRACT_UPDATE_STATUS: "at/function/alarm-workplace/alarm-list/extract/update-status",
     }
 
     @bean()
@@ -53,6 +53,7 @@ module nts.uk.at.kal011.d {
                 console.log(data);
                 vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
             }).fail((err: any) => {
+                vm.extractUpdateStatus(ExtractState.ABNORMAL_TERMI);
                 vm.$dialog.error(err);
             }).always(() => {
                 vm.setFinished();
@@ -63,7 +64,7 @@ module nts.uk.at.kal011.d {
             const vm = this;
             let dfd = $.Deferred();
 
-            vm.$ajax(API.extractStart).done((processId: string) => {
+            vm.$ajax(API.EXTRACT_START).done((processId: string) => {
                 vm.processId = processId;
                 let param: any = {
                     workplaceIds: vm.workplaceIds,
@@ -73,7 +74,7 @@ module nts.uk.at.kal011.d {
                 }
                 // 抽出処理が実行中である場合
                 vm.setControlStatus(ScreenMode.IN_PROGRESS);
-                vm.$ajax(API.extractExecute, param).done((task: any) => {
+                vm.$ajax(API.EXTRACT_EXECUTE, param).done((task: any) => {
                     vm.taskId = task.id;
                     nts.uk.deferred.repeat(conf => conf.task(() => {
                         return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function (res: any) {
@@ -120,10 +121,10 @@ module nts.uk.at.kal011.d {
             const vm = this;
             let dfd = $.Deferred();
             let param = {
-                processStatusId: vm.processStatusId,
+                processId: vm.processId,
                 status: status
             }
-            vm.$ajax(API.extractUpdateStatus, param).done(() => dfd.resolve()).fail((err: any) => dfd.reject(err));
+            vm.$ajax(API.EXTRACT_UPDATE_STATUS, param).done(() => dfd.resolve()).fail((err: any) => dfd.reject(err));
             return dfd.promise();
         }
 

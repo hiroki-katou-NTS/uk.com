@@ -33,7 +33,7 @@ public class UpdateAlarmListExtractProcessStatusWorkplaceCommandHandler extends 
         String cid = AppContexts.user().companyId();
         UpdateAlarmListExtractProcessStatusWorkplaceCommand command = commandHandlerContext.getCommand();
         Optional<AlarmListExtractProcessStatusWorkplace> processOpt = alarmListExtractProcessStatusWorkplaceRepo
-                .getBy(cid, command.getProcessStatusId());
+                .getBy(cid, command.getProcessId());
         if (processOpt.isPresent()) {
             AlarmListExtractProcessStatusWorkplace process = processOpt.get();
             process.setStatus(EnumAdaptor.valueOf(command.getStatus(), ExtractState.class));

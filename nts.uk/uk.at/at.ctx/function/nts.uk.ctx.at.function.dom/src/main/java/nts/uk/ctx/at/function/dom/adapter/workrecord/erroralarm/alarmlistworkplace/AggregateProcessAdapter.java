@@ -2,13 +2,13 @@ package nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.alarmlistworkpl
 
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplace;
 
 import java.util.List;
 
 public interface AggregateProcessAdapter {
-    List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, DatePeriod period,
+    List<AlarmListExtractInfoWorkplace> processMasterCheckBasic(String cid, YearMonthPeriod ymPeriod,
                                                                 List<String> alarmCheckWkpId,
                                                                 List<String> workplaceIds);
 
@@ -16,7 +16,7 @@ public interface AggregateProcessAdapter {
                                                                 List<String> alarmCheckWkpId,
                                                                 List<String> workplaceIds);
 
-    List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, DatePeriod period,
+    List<AlarmListExtractInfoWorkplace> processMasterCheckWorkplace(String cid, YearMonthPeriod ymPeriod,
                                                                     List<String> alarmCheckWkpId,
                                                                     List<String> workplaceIds);
 

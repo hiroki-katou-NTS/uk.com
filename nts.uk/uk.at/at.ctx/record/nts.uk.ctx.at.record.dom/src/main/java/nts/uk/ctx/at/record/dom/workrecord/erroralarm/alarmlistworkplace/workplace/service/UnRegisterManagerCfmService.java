@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.service;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.adapter.auth.wkpmanager.WorkplaceManagerAdapter;
 import nts.uk.ctx.at.record.dom.adapter.auth.wkpmanager.WorkplaceManagerImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
@@ -33,29 +35,30 @@ public class UnRegisterManagerCfmService {
      *
      * @param workplaceCheckName アラーム項目名
      * @param displayMessage     表示するメッセージ
-     * @param period             期間
+     * @param ymPeriod           期間
      * @param workplaceIds       List＜職場ID＞
      * @return List＜抽出結果＞
      */
     public List<ExtractResultDto> confirm(WorkplaceCheckName workplaceCheckName,
                                           DisplayMessage displayMessage,
-                                          DatePeriod period,
+                                          YearMonthPeriod ymPeriod,
                                           List<String> workplaceIds) {
+        DatePeriod period = new DatePeriod(GeneralDate.ymd(ymPeriod.start().year(), ymPeriod.start().month(), 1),
+                GeneralDate.ymd(ymPeriod.end().year(), ymPeriod.end().month(), 1).addMonths(1).addDays(-1));
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
         // ドメインモデル「職場管理者」を取得する。
         List<WorkplaceManagerImport> wpMngs = workplaceManagerAdapter.findByPeriodAndWkpIds(workplaceIds, period);
-        for (String workplaceId: workplaceIds){
-            if(wpMngs.stream().anyMatch(x -> x.getWorkplaceId().equals(workplaceId))) continue;
+        for (String workplaceId : workplaceIds) {
+            if (wpMngs.stream().anyMatch(x -> x.getWorkplaceId().equals(workplaceId))) continue;
 
             // 「アラーム値メッセージ」を作成します。
             String message = TextResource.localize("KAL020_207");
 
             // ドメインオブジェクト「抽出結果」を作成します。
             ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                    new AlarmValueDate(period.start().toString("yyyyMMdd"),
-                            Optional.of(period.end().toString("yyyyMMdd"))),
+                    new AlarmValueDate(ymPeriod.start().toString(), Optional.empty()),
                     workplaceCheckName.v(),
                     Optional.ofNullable(message),
                     Optional.of(new MessageDisplay(displayMessage.v())),
