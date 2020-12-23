@@ -1018,7 +1018,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		
 		// Job title
-		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, endDate);
+		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, baseDate);
 		if (optJobTitle.isPresent()) {
 			employeeData.position = optJobTitle.get().getJobTitleName();
 			employeeData.jobTitleCode = optJobTitle.get().getJobCode();
