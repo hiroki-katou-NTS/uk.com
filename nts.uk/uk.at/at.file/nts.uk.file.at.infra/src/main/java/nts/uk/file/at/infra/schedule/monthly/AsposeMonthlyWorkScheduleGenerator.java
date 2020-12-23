@@ -1507,9 +1507,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				List<ActualValue> lstActualValue = data.getActualValue();
 				if (lstActualValue == null) continue;
 				lstActualValue.forEach(actualValue -> {
+					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();						
+					Optional<TotalValue> optTotalWorkplaceVal = lstTotalHierarchyValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					if (lstAtdCanAggregate.contains(actualValue.getAttendanceId())) {
 						int valueType = actualValue.getValueType();
-						Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 						TotalValue totalValue;
 						if (optTotalVal.isPresent()) {
 							if (actualValue.value() == null) return;
@@ -1538,8 +1539,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							totalValue.setValueType(valueType);
 							lstTotalValue.add(totalValue);
 						}
-						
-						Optional<TotalValue> optTotalWorkplaceVal = lstTotalHierarchyValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
+
 						TotalValue totalWorkplaceValue;
 						if (optTotalWorkplaceVal.isPresent()) {
 							totalWorkplaceValue = optTotalWorkplaceVal.get();
@@ -1569,8 +1569,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							lstTotalHierarchyValue.add(totalWorkplaceValue);
 						}
 					} else {
-						lstTotalValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
-						lstTotalHierarchyValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+						if (!optTotalVal.isPresent()) {
+							lstTotalValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+						}
+						if (!optTotalWorkplaceVal.isPresent()) {
+							lstTotalHierarchyValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+						}
 					}
 				});
 			}
@@ -1581,9 +1585,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		lstReportData.values().forEach((value) -> {
 			List<TotalValue> lstActualValue = value.getWorkplaceTotal().getTotalWorkplaceValue();
 			lstActualValue.forEach(actualValue -> {
+				Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 				if (lstAtdCanAggregate.contains(actualValue.getAttendanceId())) {
 					int valueType = actualValue.getValueType();
-					Optional<TotalValue> optTotalVal = lstTotalValue.stream().filter(x -> x.getAttendanceId() == actualValue.getAttendanceId()).findFirst();
 					TotalValue totalValue;
 					if (optTotalVal.isPresent()) {
 						if (actualValue.value() == null) return;
@@ -1613,7 +1617,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						lstTotalValue.add(totalValue);
 					}
 				} else {
-					lstTotalValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+					if (!optTotalVal.isPresent()) {
+						lstTotalValue.add(new TotalValue(actualValue.getAttendanceId(), "", TotalValue.STRING));
+					}
 				}
 			});
 		});
@@ -1633,9 +1639,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			WorkplaceTotal workplaceTotal = workplaceDaily.getLstWorkplaceData().getWorkplaceTotal();
 			List<TotalValue> lstTotalVal = workplaceTotal.getTotalWorkplaceValue();
 			lstTotalVal.stream().forEach(totalVal -> {
+				// Literally 0-1 result in list
+				Optional<TotalValue> optGrossTotal = lstGrossTotal.stream().filter(x -> x.getAttendanceId() == totalVal.getAttendanceId()).findFirst();
 				if (lstAtdCanAggregate.contains(totalVal.getAttendanceId())) {
-					// Literally 0-1 result in list
-					Optional<TotalValue> optGrossTotal = lstGrossTotal.stream().filter(x -> x.getAttendanceId() == totalVal.getAttendanceId()).findFirst();
 					TotalValue totalValue;
 					if (optGrossTotal.isPresent()) {
 						if (totalVal.value() == null) return;
@@ -1659,7 +1665,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						lstGrossTotal.add(totalValue);
 					}
 				} else {
-					lstGrossTotal.add(new TotalValue(totalVal.getAttendanceId(), "", TotalValue.STRING));
+					if (!optGrossTotal.isPresent()) {
+						lstGrossTotal.add(new TotalValue(totalVal.getAttendanceId(), "", TotalValue.STRING));
+					}
 				}
 			});
 		});
