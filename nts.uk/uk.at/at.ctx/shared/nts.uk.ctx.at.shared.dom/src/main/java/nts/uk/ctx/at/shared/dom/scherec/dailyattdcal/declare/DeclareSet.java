@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareAttdLeave;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -118,16 +119,20 @@ public class DeclareSet extends AggregateRoot {
 	/**
 	 * 残業休出枠設定を調整する
 	 * @param itgOfWorkTime 統合就業時間帯(ref)
+	 * @param calAttr 日別勤怠の計算区分
 	 * @param calcRange 申告計算範囲
 	 * @param workType 勤務種類
 	 */
 	public void adjustOvertimeHolidayWorkFrameSet(
 			IntegrationOfWorkTime itgOfWorkTime,
+			CalAttrOfDailyAttd calAttr,
 			DeclareCalcRange calcRange,
 			WorkType workType){
 		
 		// 「枠設定」を確認する
 		if (calcRange.getDeclareSet().getFrameSet() == DeclareFrameSet.WORKTIME_SET) return;
+		// 法定内自動計算しない設定にする
+		calAttr.SetLegalAutoCalToNot();
 		// 申告残業枠の設定
 		{
 			// 固定勤務の申告残業枠の設定

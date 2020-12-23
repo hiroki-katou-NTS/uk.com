@@ -100,4 +100,11 @@ public class CalAttrOfDailyAttd implements DomainObject {
 		
 		return new CalAttrOfDailyAttd(flexExcessTime, rasingSalarySetting, holidayTimeSetting, overtimeSetting, leaveEarlySetting, divergenceTime);
 	}
+	
+	/**
+	 * 法定内自動計算しない設定にする
+	 */
+	public void SetLegalAutoCalToNot(){
+		this.overtimeSetting = this.overtimeSetting.changeNormalAutoCalcSetting(AutoCalAtrOvertime.APPLYMANUALLYENTER);
+	}
 }
