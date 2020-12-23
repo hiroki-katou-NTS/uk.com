@@ -27,8 +27,7 @@ const template = `
 						
 							<div style="padding-bottom: 20px;display:inline-block;">
 								<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
-								<hr style="width: 518px;
-								    text-align: left;
+								<hr style="text-align: left;
 								    margin-left: 0;"  />
 								<label id="selected-employee" data-bind="i18n:screenData().selectedName"></label>
 								<div style="margin-top: 10px;" data-bind="component: {

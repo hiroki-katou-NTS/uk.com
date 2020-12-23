@@ -19,8 +19,7 @@ const template = `
 								overflow: hidden scroll;">
 						<div id="right-layout" style="margin: 10px 20px;">
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
-						<hr style="width: 518px;
-						    text-align: left;
+						<hr style=" text-align: left;
 						    margin-left: 0;" />
 							<div data-bind="component: {
 								name: 'basic-settings-company',

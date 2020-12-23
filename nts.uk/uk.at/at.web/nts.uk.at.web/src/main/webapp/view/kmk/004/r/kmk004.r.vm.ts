@@ -32,6 +32,11 @@ module nts.uk.at.kmk004.r {
 		copy() {
 			const vm = this;
 
+			if (!vm.screenData().selecteds().length) {
+				vm.$dialog.error({ messageId: 'Msg_1907' });
+				return;
+			}
+
 			let ULR = '',
 				cmd: ICopyCommand = {
 					// 複写元職場ID
@@ -104,7 +109,7 @@ module nts.uk.at.kmk004.r {
 				};
 			let wpOption = {
 				isShowAlreadySet: false,
-				isMultipleUse: false,
+				isMultipleUse: true,
 				isMultiSelect: true,
 				startMode: StartMode.WORKPLACE,
 				selectedId: vm.screenData().selecteds,
@@ -118,8 +123,8 @@ module nts.uk.at.kmk004.r {
 				systemType: 2
 			};
 			var windowSize = nts.uk.ui.windows.getSelf();
-			windowSize.$dialog.dialog("option", "width", 500);
-			windowSize.$dialog.dialog("option", "height", 530);
+			windowSize.$dialog.dialog("option", "width", 530);
+			windowSize.$dialog.dialog("option", "height", 570);
 			$('#work-place-list').ntsTreeComponent(wpOption);
 		}
 
@@ -159,8 +164,8 @@ module nts.uk.at.kmk004.r {
 
 			$('#employee-list').ntsListComponent(employeeOption);
 			var windowSize = nts.uk.ui.windows.getSelf();
-			windowSize.$dialog.dialog("option", "width", 380);
-			windowSize.$dialog.dialog("option", "height", 450);
+			windowSize.$dialog.dialog("option", "width", 430);
+			windowSize.$dialog.dialog("option", "height", 530);
 
 		}
 	}
