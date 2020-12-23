@@ -170,4 +170,9 @@ public class SqlServerSpec implements DatabaseSpec{
 		return "";
 	}
 
+	@Override
+	public String convertBoolDefault(String value) {
+		return value;
+	}
+
 }

@@ -30,9 +30,19 @@ public class ColumnDesign {
 		return "\t" + this.name + " " +
 				datatypedefine.dataType(this.type, this.maxLength, this.scale) +
 			(this.nullable ? " NULL" : " NOT NULL") +
-			(this.defaultValue != null && !this.defaultValue.isEmpty() ? " DEFAULT " + this.defaultValue : "");
+			(
+				this.defaultValue != null && !this.defaultValue.isEmpty()
+				? " DEFAULT " + getDefaultValue(this.defaultValue, datatypedefine)
+				: ""
+			);
 	}
-	
+
+	private String getDefaultValue(String value, TableDefineType datatypedefine) {
+		if (this.type != DataType.BOOL) return value;
+
+		return datatypedefine.convertBoolDefault(value);
+	}
+
 	public boolean isContractCd() {
 		return this.name.equals("CONTRACT_CD");
 	}

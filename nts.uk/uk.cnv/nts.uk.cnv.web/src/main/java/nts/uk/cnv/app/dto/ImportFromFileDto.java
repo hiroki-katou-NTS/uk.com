@@ -11,7 +11,7 @@ public class ImportFromFileDto {
 	String date;
 
 	public GeneralDate getDate() {
-		return (this.date.isEmpty())
+		return (this.date == null || this.date.isEmpty())
 				? GeneralDate.today()
 				: (this.date.contains("/"))
 					? GeneralDate.fromString(this.date,"yyyy/MM/dd")

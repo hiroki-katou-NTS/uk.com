@@ -16,7 +16,7 @@ public class PostgresSpec implements DatabaseSpec{
 	public String dataType(DataType type, Integer... length) {
 		switch (type) {
 		case BOOL:
-			return "NUMERIC(1)";
+			return "BOOLEAN";
 		case INT:
 			return String.format("NUMERIC(%d)", (Object[]) length);
 		case REAL:
@@ -169,6 +169,24 @@ public class PostgresSpec implements DatabaseSpec{
 				+ policyForAdmin + "\r\n"
 				+ policyForOthers + "\r\n"
 				+ policyGrant + "\r\n";
+	}
+
+	@Override
+	public String convertBoolDefault(String value) {
+		// nullやemptyの場合このメソッドは呼ばれないが、念のため
+		if(value == null || value.isEmpty()) return "FALSE";
+
+		if(value == "NULL") return value;
+
+		try {
+			int intValue = Integer.parseInt(value);
+			return (intValue == 0) ? "FALSE" : "TRUE";
+		}
+		catch (NumberFormatException ex) {
+
+		}
+
+		return "TRUE";
 	}
 
 }

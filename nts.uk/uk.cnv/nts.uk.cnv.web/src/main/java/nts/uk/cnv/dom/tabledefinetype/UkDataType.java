@@ -55,4 +55,9 @@ public class UkDataType implements TableDefineType {
 	public String rlsDdl(String tableName) {
 		return "";
 	}
+
+	@Override
+	public String convertBoolDefault(String value) {
+		return value;
+	}
 }

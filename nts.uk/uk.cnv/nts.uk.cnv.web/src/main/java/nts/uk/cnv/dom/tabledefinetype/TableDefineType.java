@@ -8,4 +8,5 @@ public interface TableDefineType {
 	public String tableCommentDdl(String tableName, String comment);
 	public String columnCommentDdl(String tableName, String columnName, String comment);
 	public String rlsDdl(String tableName);
+	public String convertBoolDefault(String value);
 }

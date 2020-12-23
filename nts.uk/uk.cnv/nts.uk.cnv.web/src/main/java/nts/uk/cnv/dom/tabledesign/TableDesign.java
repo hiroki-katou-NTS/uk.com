@@ -29,7 +29,7 @@ public class TableDesign {
 //	}
 
 	public String createSimpleTableSql(TableDefineType defineType) {
-		return createTableSql(defineType, false, true);
+		return createTableSql(defineType, false, false);
 	}
 
 	public String createFullTableSql(TableDefineType defineType) {
