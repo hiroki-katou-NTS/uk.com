@@ -89,6 +89,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 			vm.isSendMail = ko.observable(false);
 			if (!_.isNil(dataTransfer)) {
+				vm.application().prePostAtr(1);
 				vm.application().appDate(dataTransfer.appDate);
 				vm.application().opAppStartDate(dataTransfer.appDate);
 				vm.application().opAppEndDate(dataTransfer.appDate);
@@ -123,11 +124,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 							
 							$('.table-time3 .nts-fixed-header-wrapper').width(224);
-							if (vm.overTime().length > 6) {
+							// if (vm.overTime().length > 6) {
 								$('.table-time3 .nts-fixed-body-wrapper').width(208);
-							} else {
-								$('.table-time3 .nts-fixed-body-wrapper').width(225);
-							}
+							// } else {
+							// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
+							// }
 							
 						} else {
 							console.log('trigger2')
@@ -182,11 +183,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 							
 							$('.table-time3 .nts-fixed-header-wrapper').width(224);
-							if (vm.overTime().length > 6) {
+							// if (vm.overTime().length > 6) {
 								$('.table-time3 .nts-fixed-body-wrapper').width(208);
-							} else {
-								$('.table-time3 .nts-fixed-body-wrapper').width(225);
-							}
+							// } else {
+							// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
+							// }
 						} 
 					}
 				}).fail((failData: any) => {
