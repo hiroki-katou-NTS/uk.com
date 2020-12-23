@@ -351,6 +351,7 @@ module nts.uk.at.ksm008.f {
             vm.setNewEmpsCanNotSameHolidays();
             vm.setNewReference();
 
+            vm.$blockui("grayout");
             vm.$ajax(PATH_API.getBanHolidayByCode,
                 {
                     unit: vm.unit,
@@ -418,7 +419,7 @@ module nts.uk.at.ksm008.f {
                 })
                 .fail(res => {
                     vm.$dialog.error(res);
-                });
+                }).always(() => vm.$blockui("clear"));
         }
 
         insertOrUpdateClick() {
@@ -672,11 +673,21 @@ module nts.uk.at.ksm008.f {
         openDiaglogKDL046() {
             const vm = this;
 
-            setShared("dataShareDialog046", {
-                unit: vm.unit,
-                workplaceId: vm.workplaceId,
-                workplaceGroupId: vm.workplaceGroupId
-            });
+            let param;
+
+            if (vm.unit == 1) {
+                param = {
+                    unit: vm.unit,
+                    workplaceGroupId: vm.workplaceGroupId
+                }
+            } else {
+                param = {
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId
+                }
+            }
+
+            setShared("dataShareDialog046", param);
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
@@ -703,6 +714,7 @@ module nts.uk.at.ksm008.f {
                 vm.getEmployeeInfo().done(() => {
                     vm.getAllBanHolidayTogether().done(() => {
                         if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
+                            vm.selectedCode(null);
                             vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
                         }
                         vm.$blockui("clear");
