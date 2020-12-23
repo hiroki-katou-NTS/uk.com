@@ -141,7 +141,7 @@ module nts.uk.at.view.kmk004.components {
 			const empInput = { employmentCode: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear()};
 			const shaInput = { sId: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear()};
 
-			if (!vm.selectId){
+			if (vm.type !== 'Com_Company' && !vm.selectId){
 				return;
 			}
 			if (ko.unwrap(vm.selectedYear) != null) {
