@@ -199,10 +199,12 @@ button {
             height: 105px;
 
             &:not(.large) {
-                &:active,
-                &.selected {
-                    color: #fff;
-                    background-color: #30CC40;                
+                &:not(:disabled) {
+                    &:active,
+                    &.selected {
+                        color: #fff;
+                        background-color: #30CC40;
+                    }
                 }
             }
 

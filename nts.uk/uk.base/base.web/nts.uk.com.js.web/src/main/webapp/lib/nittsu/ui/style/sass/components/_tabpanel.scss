@@ -26,8 +26,13 @@
 			width:  224px;
 			padding: 15px;
 			float: left;
+			overflow: hidden;
 
 			button {
+				width: 100%;
+				min-width: 0;
+				display: block;
+
 				&:not(:first-child) {
 					margin-top: 5px;
 				}

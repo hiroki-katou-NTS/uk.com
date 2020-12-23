@@ -66,37 +66,42 @@ module nts.uk.ui.koExtentions {
                         .addClass('hidden');
 
                     _.each(dataSource, (tab: TabModel) => {
-                        if (ko.unwrap<boolean>(tab.visible)) {
+                        const { id, title, enable, icon, visible, content } = tab;
+
+                        if (ko.unwrap<boolean>(visible)) {
                             const btn = $('<button>', {
-                                id: tab.id || '',
-                                text: mvm.$i18n(tab.title),
-                                disabled: !ko.unwrap<boolean>(tab.enable),
+                                id: id || '',
+                                text: mvm.$i18n(title),
+                                disabled: !ko.unwrap<boolean>(enable),
                                 class: direction === 'vertical' ? 'link icon' : ''
                             })
                                 .appendTo($tabs)
                                 .on('click', () => {
                                     if (direction === 'horizontal') {
                                         if (ko.isObservable(data.active)) {
-                                            data.active(tab.id);
+                                            data.active(id);
                                         }
                                     }
                                 });
 
                             if (direction === 'vertical') {
                                 ko.applyBindingsToNode(btn.get(0), {
-                                    'btn-link': tab.title,
-                                    icon: tab.icon || 'PEOPLES',
+                                    'btn-link': title,
+                                    icon: icon || 'CHECKBOX',
                                     width: 40,
-                                    height: 32
+                                    height: 32,
+                                    state: data.active,
+                                    value: id,
+                                    disabled: !ko.unwrap<boolean>(enable),
                                 });
                             }
 
-                            if (active === tab.id) {
+                            if (active === id) {
                                 btn
                                     .addClass('active');
 
                                 $(element)
-                                    .find(tab.content)
+                                    .find(content)
                                     .removeClass('hidden');
                             }
                         }
