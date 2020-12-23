@@ -5,7 +5,7 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { DivergenceReasonSelect, DisplayInfoOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
+import { DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -52,8 +52,8 @@ export class KafS05Step2Component extends Vue {
 
     public created() {
         const self = this;
-        self.createOverTime();
-        self.createHolidayTime();
+        // self.createOverTime();
+        // self.createHolidayTime();
     }
     public mounted() {
 
@@ -66,10 +66,11 @@ export class KafS05Step2Component extends Vue {
         // create overtime object
         _.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
             let overTime = {} as OverTime;
+            overTime.type = AttendanceType.NORMALOVERTIME;
             overTime.frameNo = String(item.overtimeWorkFrNo);
             overTime.title = item.overtimeWorkFrName;
-            overTime.visible = self.$appContext.c4;
             overTime.applicationTime = 0;
+            overTime.visible = self.$appContext.c4;
             overTime.preApp = {
                 preAppDisp: true,
                 preAppTime: 0,
@@ -86,10 +87,11 @@ export class KafS05Step2Component extends Vue {
         // create overtime night and flex
         {
             let overTime = {} as OverTime;
+            overTime.type = AttendanceType.MIDNIGHT_OUTSIDE;
             overTime.frameNo = String(11);
             overTime.title = self.$i18n('KAFS05_71');
-            overTime.visible = self.$appContext.c5;
             overTime.applicationTime = 0;
+            overTime.visible = self.$appContext.c5;
             overTime.preApp = {
                 preAppDisp: true,
                 preAppTime: 0,
@@ -106,10 +108,11 @@ export class KafS05Step2Component extends Vue {
 
         {
             let overTime = {} as OverTime;
+            overTime.type = AttendanceType.FLEX_OVERTIME;
             overTime.frameNo = String(12);
             overTime.title = self.$i18n('KAFS05_72');
-            overTime.visible = self.$appContext.c6;
             overTime.applicationTime = 0;
+            overTime.visible = self.$appContext.c6;
             overTime.preApp = {
                 preAppDisp: true,
                 preAppTime: 0,
@@ -123,36 +126,130 @@ export class KafS05Step2Component extends Vue {
             };
             overTimes.push(overTime);
         }
-
-
-
-        self.overTimes = overTimes;
-    }
-    public createOverTime() {
-        const self = this;
-
+        let calculationResultOp = displayInfoOverTime.calculationResultOp;
+        // bind calculate 
         {
-            let overTime = {} as OverTime;
-            overTime.frameNo = '1';
-            overTime.title = self.$i18n('KAFS05_70') + overTime.frameNo;
-            overTime.visible = true;
-            overTime.applicationTime = 0;
-            overTime.preApp = {
-                preAppDisp: true,
-                preAppTime: 0,
-                preAppExcess: ExcessTimeStatus.NONE,
-
-            };
-            overTime.actualApp = {
-                actualDisp: true,
-                actualTime: 0,
-                actualExcess: ExcessTimeStatus.NONE
-            };
-            overTime.type = AttendanceType.NORMALOVERTIME;
-            self.overTimes.push(overTime);
+            // AttendanceType.NORMALOVERTIME
+            let applicationTime = _.get(calculationResultOp, 'applicationTimes[0].applicationTime') as Array<OvertimeApplicationSetting>;
+            _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.applicationTime = item.applicationTime;
+                }
+            });
+            // AttendanceType.MIDNIGHT_OUTSIDE
+            {
+                let overTimeMidNight = _.get(calculationResultOp, 'applicationTimes[0].overTimeShiftNight.overTimeMidNight');
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.applicationTime = overTimeMidNight || 0; 
+                }
+            }
+            // AttendanceType.FLEX_OVERTIME
+            {
+                let flexOverTime = _.get(calculationResultOp, 'applicationTimes[0].flexOverTime');
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.FLEX_OVERTIME) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.applicationTime = flexOverTime || 0; 
+                }
+            }
         }
-        
+        // bind advanceApp
+        let apOptional = _.get(displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].apOptional') as AppOverTime;
+        if (!_.isNil(apOptional)) {
+            // AttendanceType.NORMALOVERTIME
+            {
+                let applicationTime = _.get(apOptional, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+                    let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
+                    if (!_.isNil(findResult)) {
+                        findResult.preApp.preAppTime = item.applicationTime;
+                    }
+                });
+            }
+
+            // AttendanceType.MIDNIGHT_OUTSIDE
+            {
+                let overTimeMidNight = _.get(apOptional, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.preApp.preAppTime = overTimeMidNight || 0; 
+                }
+            }
+            // AttendanceType.FLEX_OVERTIME
+            {
+                let flexOverTime = _.get(apOptional, 'applicationTime.flexOverTime');
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.FLEX_OVERTIME) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.preApp.preAppTime = flexOverTime || 0; 
+                }
+            }
+    
+        }
+        // bind archivementApp
+        let infoWithDateApplicationOp = displayInfoOverTime.infoWithDateApplicationOp;
+
+        if (!_.isNil(infoWithDateApplicationOp)) {
+            // AttendanceType.NORMALOVERTIME
+            {
+                let applicationTime = _.get(infoWithDateApplicationOp, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+                    let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
+                    if (!_.isNil(findResult)) {
+                        findResult.actualApp.actualTime = item.applicationTime;
+                    }
+                });
+            }
+
+            // AttendanceType.MIDNIGHT_OUTSIDE
+            {
+                let overTimeMidNight = _.get(infoWithDateApplicationOp, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.actualApp.actualTime = overTimeMidNight || 0; 
+                }
+            }
+            // AttendanceType.FLEX_OVERTIME
+            {
+                let flexOverTime = _.get(infoWithDateApplicationOp, 'applicationTime.flexOverTime');
+                let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.FLEX_OVERTIME) as OverTime;
+                if (!_.isNil(findResult)) {
+                    findResult.actualApp.actualTime = flexOverTime || 0; 
+                }
+            }
+        }
+
+        // bind origin array
+        self.overTimes = overTimes;
+
     }
+
+    
+    // public createOverTime() {
+    //     const self = this;
+
+    //     {
+    //         let overTime = {} as OverTime;
+    //         overTime.frameNo = '1';
+    //         overTime.title = self.$i18n('KAFS05_70') + overTime.frameNo;
+    //         overTime.visible = true;
+    //         overTime.applicationTime = 0;
+    //         overTime.preApp = {
+    //             preAppDisp: true,
+    //             preAppTime: 0,
+    //             preAppExcess: ExcessTimeStatus.NONE,
+
+    //         };
+    //         overTime.actualApp = {
+    //             actualDisp: true,
+    //             actualTime: 0,
+    //             actualExcess: ExcessTimeStatus.NONE
+    //         };
+    //         overTime.type = AttendanceType.NORMALOVERTIME;
+    //         self.overTimes.push(overTime);
+    //     }
+        
+    // }
     public bindHolidayTime() {
         const self = this;
         let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
@@ -161,9 +258,10 @@ export class KafS05Step2Component extends Vue {
         if (!_.isNil(workdayoffFrames)) {
             _.forEach(workdayoffFrames, (item: WorkdayoffFrame) => {
                 let holidayTime = {} as HolidayTime;
+                holidayTime.type = AttendanceType.BREAKTIME;
                 holidayTime.frameNo = String(item.workdayoffFrNo);
                 holidayTime.title = item.workdayoffFrName;
-                holidayTime.visible = true;
+                holidayTime.visible = self.$appContext.c16_1;
                 holidayTime.applicationTime = 0;
                 holidayTime.preApp = {
                     preAppDisp: true,
@@ -176,25 +274,26 @@ export class KafS05Step2Component extends Vue {
                     actualTime: 0,
                     actualExcess: ExcessTimeStatus.NONE
                 };
-                holidayTime.type = AttendanceType.BREAKTIME;
                 holidayTimes.push(holidayTime);
             });
         }
         _.forEach(_.range(1, 4), (item: any) => {
             let holidayTime = {} as HolidayTime;
             holidayTime.frameNo = '11';
+            holidayTime.applicationTime = 0;
             if (item == 1) {
                 holidayTime.type = AttendanceType.MIDDLE_BREAK_TIME;
                 holidayTime.title = self.$i18n('KAFS05_85');
+                holidayTime.visible = self.$appContext.c16_2;
             } else if (item == 2) {
                 holidayTime.type = AttendanceType.MIDDLE_EXORBITANT_HOLIDAY;
                 holidayTime.title = self.$i18n('KAFS05_86');
+                holidayTime.visible = self.$appContext.c16_3;
             } else {
                 holidayTime.type = AttendanceType.MIDDLE_HOLIDAY_HOLIDAY;
                 holidayTime.title = self.$i18n('KAFS05_87');
+                holidayTime.visible = self.$appContext.c16_4;
             }
-            holidayTime.visible = true;
-            holidayTime.applicationTime = 0;
             holidayTime.preApp = {
                 preAppDisp: true,
                 preAppTime: 0,
@@ -209,62 +308,133 @@ export class KafS05Step2Component extends Vue {
             holidayTimes.push(holidayTime);
         });
 
-        
-        // let midNightHolidayTimes = _.get(displayInfoOverTime,'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
-        // _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-        //     let holidayTime = {} as HolidayTime;
-        //     holidayTime.frameNo = '11';
-        //     if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-        //         holidayTime.type = AttendanceType.MIDDLE_BREAK_TIME;
+        let calculationResultOp = displayInfoOverTime.calculationResultOp;
+        // bind calculate
+        {
+            // AttendanceType.BREAKTIME
+            let applicationTime = _.get(calculationResultOp, 'applicationTimes[0].applicationTime') as Array<OvertimeApplicationSetting>;
+            _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+                let findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo));
+                if (!_.isNil(findResult)) {
+                    findResult.applicationTime = item.applicationTime;
+                }
+            });
 
-        //     } else if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-        //         holidayTime.type = AttendanceType.MIDDLE_EXORBITANT_HOLIDAY;
-        //     } else {
-        //         holidayTime.type = AttendanceType.MIDDLE_HOLIDAY_HOLIDAY;
-        //     }
-        //     holidayTime.visible = true;
-        //     holidayTime.applicationTime = 0;
-        //     holidayTime.preApp = {
-        //         preAppDisp: true,
-        //         preAppTime: 0,
-        //         preAppExcess: ExcessTimeStatus.NONE,
+            let midNightHolidayTimes = _.get(calculationResultOp, 'applicationTimes[0].overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+            _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+                let findResult: HolidayTime;
+                // AttendanceType.MIDDLE_BREAK_TIME
+                if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+                    findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+                } else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) { // AttendanceType.MIDDLE_EXORBITANT_HOLIDAY
+                    findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+                } else {
+                    findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY); // AttendanceType.MIDDLE_HOLIDAY_HOLIDAY
+                }
+                if (!_.isNil(findResult)) {
+                    findResult.applicationTime = item.attendanceTime || 0;
+                }
 
-        //     };
-        //     holidayTime.actualApp = {
-        //         actualDisp: true,
-        //         actualTime: 0,
-        //         actualExcess: ExcessTimeStatus.NONE
-        //     };
-        // });
+            });
+
+        }
+
+        // bind advanceApp
+        let apOptional = _.get(displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].apOptional') as AppOverTime;
+        if (!_.isNil(apOptional)) {
+            // AttendanceType.BREAKTIME
+            {
+                let applicationTime = _.get(apOptional, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+                    let findResult = _.findLast(holidayTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as HolidayTime;
+                    if (!_.isNil(findResult)) {
+                        findResult.preApp.preAppTime = item.applicationTime;
+                    }
+                });
+            }
+
+            {
+                let midNightHolidayTimes = _.get(apOptional, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+                _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+                    let findResult: HolidayTime;
+                    // AttendanceType.MIDDLE_BREAK_TIME
+                    if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+                        findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+                    } else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) { // AttendanceType.MIDDLE_EXORBITANT_HOLIDAY
+                        findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+                    } else {
+                        findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY); // AttendanceType.MIDDLE_HOLIDAY_HOLIDAY
+                    }
+                    if (!_.isNil(findResult)) {
+                        findResult.preApp.preAppTime = item.attendanceTime || 0;
+                    }
+    
+                });
+            }
+        }
+
+        // bind archivementApp
+        let infoWithDateApplicationOp = displayInfoOverTime.infoWithDateApplicationOp;
+        if (!_.isNil(infoWithDateApplicationOp)) {
+            // AttendanceType.BREAKTIME
+            {
+                let applicationTime = _.get(infoWithDateApplicationOp, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+                    let findResult = _.findLast(holidayTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as HolidayTime;
+                    if (!_.isNil(findResult)) {
+                        findResult.actualApp.actualTime = item.applicationTime;
+                    }
+                });
+            }
+
+            {
+                let midNightHolidayTimes = _.get(infoWithDateApplicationOp, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+                _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
+                    let findResult: HolidayTime;
+                    // AttendanceType.MIDDLE_BREAK_TIME
+                    if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+                        findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
+                    } else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) { // AttendanceType.MIDDLE_EXORBITANT_HOLIDAY
+                        findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
+                    } else {
+                        findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY); // AttendanceType.MIDDLE_HOLIDAY_HOLIDAY
+                    }
+                    if (!_.isNil(findResult)) {
+                        findResult.actualApp.actualTime = item.attendanceTime || 0;
+                    }
+    
+                });
+            }
+        }
 
 
         self.holidayTimes = holidayTimes;
     }
 
-    public createHolidayTime() {
-        const self = this;
-        {
-            let holidaytime = {} as HolidayTime;
-            holidaytime.frameNo = '1';
-            holidaytime.title = self.$i18n('KAFS05_73') + holidaytime.frameNo;
-            holidaytime.visible = true;
-            holidaytime.applicationTime = 0;
-            holidaytime.preApp = {
-                preAppDisp: true,
-                preAppTime: 0,
-                preAppExcess: ExcessTimeStatus.NONE,
+    // public createHolidayTime() {
+    //     const self = this;
+    //     {
+    //         let holidaytime = {} as HolidayTime;
+    //         holidaytime.frameNo = '1';
+    //         holidaytime.title = self.$i18n('KAFS05_73') + holidaytime.frameNo;
+    //         holidaytime.visible = true;
+    //         holidaytime.applicationTime = 0;
+    //         holidaytime.preApp = {
+    //             preAppDisp: true,
+    //             preAppTime: 0,
+    //             preAppExcess: ExcessTimeStatus.NONE,
 
-            };
-            holidaytime.actualApp = {
-                actualDisp: true,
-                actualTime: 0,
-                actualExcess: ExcessTimeStatus.NONE
-            };
-            holidaytime.type = AttendanceType.BREAKTIME;
-            self.holidayTimes.push(holidaytime);
-        }
+    //         };
+    //         holidaytime.actualApp = {
+    //             actualDisp: true,
+    //             actualTime: 0,
+    //             actualExcess: ExcessTimeStatus.NONE
+    //         };
+    //         holidaytime.type = AttendanceType.BREAKTIME;
+    //         self.holidayTimes.push(holidaytime);
+    //     }
         
-    }
+    // }
     get $appContext(): KafS05Component {
         const self = this;
 
@@ -341,8 +511,8 @@ export interface OverTime {
     applicationTime: number;
     preTime: number;
     actualTime: number;
-    preApp: any;
-    actualApp: any;
+    preApp: ExtraTime;
+    actualApp: ExtraTime;
     type: AttendanceType;
 }
 export interface HolidayTime {
@@ -352,8 +522,8 @@ export interface HolidayTime {
     applicationTime: number;
     preTime: number;
     actualTime: number;
-    preApp: any;
-    actualApp: any;
+    preApp: ExtraTime;
+    actualApp: ExtraTime;
     type: number;
 }
 export interface Reason {
@@ -362,4 +532,12 @@ export interface Reason {
     selectedValue: string;
     titleDrop?: string;
     dropdownList: Array<Object>;
+}
+export interface ExtraTime {
+    preAppDisp?: boolean;
+    preAppTime?: number;
+    preAppExcess?: ExcessTimeStatus;
+    actualDisp?: boolean;
+    actualTime?: number;
+    actualExcess?: ExcessTimeStatus;
 }
