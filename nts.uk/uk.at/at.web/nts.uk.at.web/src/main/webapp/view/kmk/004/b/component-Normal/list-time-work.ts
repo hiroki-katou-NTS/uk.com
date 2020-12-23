@@ -102,6 +102,7 @@ module nts.uk.at.view.kmk004.b {
         public type: SIDEBAR_TYPE;
         public selectId: KnockoutObservable<string>;
         public mode: KnockoutObservable<'New' | 'Update'> = ko.observable('New');
+        public workTimeSaves: KnockoutObservableArray<WorkTimeSave> = ko.observableArray([]);
 
         created(params: Params) {
             const vm = this;
@@ -137,7 +138,10 @@ module nts.uk.at.view.kmk004.b {
                             vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
                             vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
                         }
+
                     }
+                    vm.updateListSave();
+
                 }
             });
 
@@ -157,6 +161,11 @@ module nts.uk.at.view.kmk004.b {
                     }
                 });
 
+            vm.selectId
+                .subscribe(() => {
+                    vm.workTimeSaves([]);
+                });
+
         }
 
         reloadData() {
@@ -172,29 +181,13 @@ module nts.uk.at.view.kmk004.b {
             if (exist) {
                 switch (vm.type) {
                     case 'Com_Company':
-                        vm.$ajax(API.GET_WORK_TIME, input)
-                            .done((data: IWorkTime[]) => {
-                                if (data.length > 0) {
-                                    const data1: IWorkTime[] = [];
-                                    var check: boolean = true;
+                        const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
-                                    if (ko.unwrap(vm.checkEmployee)) {
-                                        check = false;
-                                    }
-                                    data.map(m => {
-                                        const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
-                                        data1.push(s);
-                                    });
-
-                                    vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-                                    vm.mode('Update');
-                                }
-                            });
-                        ;
-                        break;
-                    case 'Com_Workplace':
-                        if (ko.unwrap(vm.selectId) !== '') {
-                            vm.$ajax(API.GET_WORKTIME_WORKPLACE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                        if (exist) {
+                            vm.workTimes(exist.worktimes.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                            vm.mode('Update');
+                        } else {
+                            vm.$ajax(API.GET_WORK_TIME, input)
                                 .done((data: IWorkTime[]) => {
                                     if (data.length > 0) {
                                         const data1: IWorkTime[] = [];
@@ -209,48 +202,96 @@ module nts.uk.at.view.kmk004.b {
                                         });
 
                                         vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                        vm.mode('Update');
                                     }
-                                    vm.mode('Update');
                                 });
+                            ;
+                        }
+                        break;
+                    case 'Com_Workplace':
+                        if (ko.unwrap(vm.selectId) !== '') {
+                            const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+
+                            if (exist) {
+                                vm.workTimes(exist.worktimes.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                vm.mode('Update');
+                            } else {
+
+                                vm.$ajax(API.GET_WORKTIME_WORKPLACE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                    .done((data: IWorkTime[]) => {
+                                        if (data.length > 0) {
+                                            const data1: IWorkTime[] = [];
+                                            var check: boolean = true;
+
+                                            if (ko.unwrap(vm.checkEmployee)) {
+                                                check = false;
+                                            }
+                                            data.map(m => {
+                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                data1.push(s);
+                                            });
+
+                                            vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                        }
+                                        vm.mode('Update');
+                                    });
+                            }
                         }
                         break;
                     case 'Com_Employment':
-                        vm.$ajax(API.GET_WORKTIME_EMPLOYMENT + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
-                            .done((data: IWorkTime[]) => {
-                                if (data.length > 0) {
-                                    const data1: IWorkTime[] = [];
-                                    var check: boolean = true;
+                        if (ko.unwrap(vm.selectId) !== '') {
+                            const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
-                                    if (ko.unwrap(vm.checkEmployee)) {
-                                        check = false;
-                                    }
-                                    data.map(m => {
-                                        const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
-                                        data1.push(s);
-                                    });
-
-                                    vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-                                }
+                            if (exist) {
+                                vm.workTimes(exist.worktimes.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                 vm.mode('Update');
-                            });
+                            } else {
+                                vm.$ajax(API.GET_WORKTIME_EMPLOYMENT + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                    .done((data: IWorkTime[]) => {
+                                        if (data.length > 0) {
+                                            const data1: IWorkTime[] = [];
+                                            var check: boolean = true;
+
+                                            if (ko.unwrap(vm.checkEmployee)) {
+                                                check = false;
+                                            }
+                                            data.map(m => {
+                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                data1.push(s);
+                                            });
+
+                                            vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                        }
+                                        vm.mode('Update');
+                                    });
+                            }
+                        }
                         break;
                     case 'Com_Person':
+                        if (ko.unwrap(vm.selectId) !== '') {
+                            const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
-                        vm.$ajax(API.GET_WORKTIME_EMPLOYEE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
-                            .done((data: IWorkTime[]) => {
-                                if (data.length > 0) {
-                                    const data1: IWorkTime[] = [];
-                                    var check: boolean = true;
-
-                                    data.map(m => {
-                                        const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
-                                        data1.push(s);
-                                    });
-
-                                    vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
-                                }
+                            if (exist) {
+                                vm.workTimes(exist.worktimes.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                 vm.mode('Update');
-                            });
+                            } else {
+                                vm.$ajax(API.GET_WORKTIME_EMPLOYEE + '/' + ko.unwrap(vm.selectId) + '/' + ko.unwrap(vm.selectedYear))
+                                    .done((data: IWorkTime[]) => {
+                                        if (data.length > 0) {
+                                            const data1: IWorkTime[] = [];
+                                            var check: boolean = true;
+
+                                            data.map(m => {
+                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                data1.push(s);
+                                            });
+
+                                            vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
+                                        }
+                                        vm.mode('Update');
+                                    });
+                            }
+                        }
                         break
                 }
             } else {
@@ -272,7 +313,6 @@ module nts.uk.at.view.kmk004.b {
                 .done((data: IWorkTime[]) => {
                     if (data.length > 0) {
                         const data1: IWorkTime[] = [];
-                        var check: boolean = true;
 
                         if (ko.unwrap(vm.checkEmployee)) {
                             check = false;
@@ -288,6 +328,47 @@ module nts.uk.at.view.kmk004.b {
                 });
             ;
         }
+
+        updateListSave() {
+            const vm = this;
+
+            const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+
+            if (exist) {
+                _.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
+                    return value.year == ko.unwrap(vm.selectedYear) as number;
+                }));
+
+                let s: IWorkTime[] = [];
+
+                _.map(ko.unwrap(vm.workTimes), ((value) => {
+                    const t = { check: ko.unwrap(value.check), yearMonth: ko.unwrap(value.yearMonth), laborTime: ko.unwrap(value.laborTime) };
+                    s.push(t);
+                }));
+
+                vm.workTimeSaves.push(new WorkTimeSave(ko.unwrap(vm.selectedYear), s));
+
+            } else {
+                let s: IWorkTime[] = [];
+
+                _.map(ko.unwrap(vm.workTimes), ((value) => {
+                    const t = { check: ko.unwrap(value.check), yearMonth: ko.unwrap(value.yearMonth), laborTime: ko.unwrap(value.laborTime) };
+                    s.push(t);
+                }));
+
+                vm.workTimeSaves.push(new WorkTimeSave(ko.unwrap(vm.selectedYear), s));
+            }
+        }
+    }
+}
+
+class WorkTimeSave {
+    year: number;
+    worktimes: IWorkTime[] = [];
+
+    constructor(year: number, workTimes: IWorkTime[]) {
+        this.year = year;
+        this.worktimes = workTimes;
     }
 }
 
