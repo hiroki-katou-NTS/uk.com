@@ -23,7 +23,6 @@ import nts.uk.screen.at.app.kmk004.i.SelectEmploymentFlexDto;
 import nts.uk.screen.at.app.kmk004.i.SelectFlexYearByEmployment;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
-import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 
 @Path("screen/at/kmk004/i")
 @Produces("application/json")
@@ -54,9 +53,9 @@ public class Kmk004IWebService {
 	private AfterChangeFlexEmploymentSetting afterChangeSetting;
 
 	@POST
-	@Path("init-screen")
-	public DisplayInitialFlexScreenByEmploymentDto initScreen() {
-		return this.initScreen.displayInitialFlexScreenByEmployment();
+	@Path("init-screen/{empCd}")
+	public DisplayInitialFlexScreenByEmploymentDto initScreen(@PathParam("empCd") String empCd) {
+		return this.initScreen.displayInitialFlexScreenByEmployment(empCd);
 	}
 
 	@POST
