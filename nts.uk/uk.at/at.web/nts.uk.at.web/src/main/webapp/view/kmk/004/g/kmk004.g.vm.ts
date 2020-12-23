@@ -11,6 +11,8 @@ module nts.uk.at.kmk004.g {
 	export class ViewModel extends ko.ViewModel {
 		selected = ko.observable('Com_Company');
 
+		startYM: KnockoutObservable<number> = ko.observable();
+
 		created() {
 
 		}

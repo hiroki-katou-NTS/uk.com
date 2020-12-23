@@ -5,11 +5,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.CopyMonthlyWorkTimeSetEmpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.CopyMonthlyWorkTimeSetEmpCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.CopyMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.CopyMonthlyWorkTimeSetShaCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetWkpCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetWkpCommandHandler;
 
 @Path("screen/at/kmk004/r")
@@ -25,19 +23,19 @@ public class Kmk004RWebService {
 
 	@POST
 	@Path("copy-wkp")
-	public void copyWkp(CopyMonthlyWorkTimeSetWkpCommand command) {
+	public void copyWkp(CopyMonthlyWorkTimeSetCommand command) {
 		this.copyWkpHandlder.handle(command);
 	}
 
 	@POST
 	@Path("copy-emp")
-	public void copyEmp(CopyMonthlyWorkTimeSetEmpCommand command) {
+	public void copyEmp(CopyMonthlyWorkTimeSetCommand command) {
 		this.copyEmpHandlder.handle(command);
 	}
 
 	@POST
 	@Path("copy-sha")
-	public void copySha(CopyMonthlyWorkTimeSetShaCommand command) {
+	public void copySha(CopyMonthlyWorkTimeSetCommand command) {
 		this.copyShaHandlder.handle(command);
 	}
 }

@@ -28,7 +28,7 @@ import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CopyMonthlyWorkTimeSetWkpCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetWkpCommand> {
+public class CopyMonthlyWorkTimeSetWkpCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetCommand> {
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
@@ -39,9 +39,9 @@ public class CopyMonthlyWorkTimeSetWkpCommandHandler extends CommandHandler<Copy
 	private SaveMonthlyWorkTimeSetWkpCommandHandler saveHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetWkpCommand> context) {
+	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetCommand> context) {
 
-		CopyMonthlyWorkTimeSetWkpCommand cmd = context.getCommand();
+		CopyMonthlyWorkTimeSetCommand cmd = context.getCommand();
 
 		// 1. 年度の期間を取得(require, 会社ID, 年度)
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
@@ -51,13 +51,13 @@ public class CopyMonthlyWorkTimeSetWkpCommandHandler extends CommandHandler<Copy
 		// 2. get(ログイン会社ID,職場ID,勤務区分,年月期間)
 
 		List<MonthlyWorkTimeSetWkpCommand> workTimeSetWkps = this.monthlyWorkTimeSetRepo
-				.findWorkplaceByPeriod(AppContexts.user().companyId(), cmd.getCopySourceWorkplaceId(),
+				.findWorkplaceByPeriod(AppContexts.user().companyId(), cmd.getCopySource(),
 						EnumAdaptor.valueOf(cmd.getLaborAttr(), LaborWorkTypeAttr.class), yearMonths)
 				.stream().map(wkp -> fromDomainToCommand(wkp)).collect(Collectors.toList());
 
 		// 3 .職場別月単位労働時間（List）
 
-		cmd.getCopyDestinationWorkplaceIds().forEach(wkpId -> {
+		cmd.getCopyDestinations().forEach(wkpId -> {
 			// ※複写元の職場IDで取得した職場別月単位労働時間の 職場IDに複写先職場IDをセットする
 			workTimeSetWkps.forEach(wkp -> {
 				wkp.setWorkplaceId(wkpId);

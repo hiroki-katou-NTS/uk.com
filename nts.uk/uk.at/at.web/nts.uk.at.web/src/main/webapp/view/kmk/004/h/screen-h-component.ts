@@ -75,12 +75,13 @@ class ScreenHComponent extends ko.ViewModel {
 
 		vm.screenMode = params.screenMode;
 		
+		vm.screenData().initDumpData(params.startYM());
+		
+		vm.regSelectedYearEvent();
+		
 		vm.initWorkPlaceList();
 
 		vm.startPage();
-
-		vm.regSelectedYearEvent();
-
 
 	}
 
@@ -89,8 +90,16 @@ class ScreenHComponent extends ko.ViewModel {
 		const vm = this;
 
 		vm.screenData().selectedYear.subscribe((yearInput) => {
+			
 
 			if (!yearInput || !vm.screenData().selected()) {
+				
+				_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+					item.laborTime().checkbox(false);
+					item.laborTime().legalLaborTime(0);
+					item.laborTime().weekAvgTime(0);
+					item.laborTime().withinLaborTime(0);
+				});
 				
 				return;
 			}

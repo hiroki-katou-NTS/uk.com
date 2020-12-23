@@ -86,7 +86,20 @@ module nts.uk.at.kmk004.components.flex {
 
 		}
 
-		setYM(year: number, data: any) {
+		initDumpData(ym: number) {
+			const vm = this;
+			let workTimes: Array<IMonthlyWorkTimeSetCom> = [];
+			for (let i = 0; i < 12; i++) {
+				workTimes.push({ yearMonth: Number(moment().format("YYYY")) * 100 + (ym % 100) + i, laborTime: { withinLaborTime: 0, legalLaborTime: 0, weekAvgTime: 0 } });
+			}
+			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
+			vm.monthlyWorkTimeSetComs(setComs);
+			_.forEach(vm.monthlyWorkTimeSetComs(), (item) => {
+				item.laborTime().checkbox(false);
+			});
+		}
+
+		setYM(year: number, data: Array<IMonthlyWorkTimeSetCom>) {
 			const vm = this;
 
 			vm.serverData = { year: year, data: data };

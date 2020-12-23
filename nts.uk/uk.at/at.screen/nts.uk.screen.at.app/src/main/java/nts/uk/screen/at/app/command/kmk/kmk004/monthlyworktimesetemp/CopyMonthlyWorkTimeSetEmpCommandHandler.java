@@ -25,10 +25,11 @@ import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetEmpCommand> {
+public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetCommand> {
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
@@ -39,9 +40,9 @@ public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<Copy
 	private SaveMonthlyWorkTimeSetEmpCommandHandler saveHandler;
 
 	@Override
-	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetEmpCommand> context) {
+	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetCommand> context) {
 
-		CopyMonthlyWorkTimeSetEmpCommand cmd = context.getCommand();
+		CopyMonthlyWorkTimeSetCommand cmd = context.getCommand();
 
 		// 1. 年度の期間を取得(require, 会社ID, 年度)
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
@@ -51,13 +52,13 @@ public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<Copy
 		// 2. get(ログイン会社ID,雇用コード,勤務区分,年月期間)
 
 		List<MonthlyWorkTimeSetEmpCommand> workTimeSetEmps = this.monthlyWorkTimeSetRepo
-				.findEmploymentByPeriod(AppContexts.user().companyId(), cmd.getCopySourceEmploymentCode(),
+				.findEmploymentByPeriod(AppContexts.user().companyId(), cmd.getCopySource(),
 						EnumAdaptor.valueOf(cmd.getLaborAttr(), LaborWorkTypeAttr.class), yearMonths)
 				.stream().map(emp -> fromDomainToCommand(emp)).collect(Collectors.toList());
 
 		// 3 .職場別月単位労働時間（List）
 
-		cmd.getCopyDestinationEmploymentCodes().forEach(empCd -> {
+		cmd.getCopyDestinations().forEach(empCd -> {
 			// ※複写元の職場IDで取得した職場別月単位労働時間の 職場IDに複写先職場IDをセットする
 			workTimeSetEmps.forEach(emp -> {
 				emp.setEmploymentCode(empCd);

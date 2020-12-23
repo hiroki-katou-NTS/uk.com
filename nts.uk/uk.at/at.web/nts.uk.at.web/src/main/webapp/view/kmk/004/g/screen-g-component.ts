@@ -64,13 +64,17 @@ class ScreenGComponent extends ko.ViewModel {
 
 	screenMode = '';
 
+	startYM: KnockoutObservable<number> = ko.observable();
+
 	created(params: any) {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
+		vm.startYM = params.startYM;
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_G_URL.START_PAGE))
 			.done((data) => {
+
 				vm.screenData().updateData(data);
 			})
 			.always(() => vm.$blockui('clear'));
@@ -93,9 +97,11 @@ class ScreenGComponent extends ko.ViewModel {
 			} else {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+
 				//else load data from sever
 				vm.$blockui('invisible');
-				vm.$ajax(API_G_URL.CHANGE_YEAR + year).done((data) => {
+				vm.$ajax(API_G_URL.CHANGE_YEAR + year).done((data: Array<IMonthlyWorkTimeSetCom>) => {
+					vm.startYM(data[0].yearMonth);
 					vm.screenData().setYM(year, data);
 				}).always(() => { vm.$blockui('clear'); });
 
