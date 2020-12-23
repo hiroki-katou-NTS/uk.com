@@ -212,9 +212,10 @@ module nts.uk.at.kmk004.components.flex {
 		}
 
 		updateData(param: IScreenData) {
+			param.yearList.reverse();
 			this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 			this.serverYears(param.yearList);
-			this.selectedYear(this.yearList()[0].year);
+			this.selectedYear(param.yearList[0]);
 			this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
 			this.getFlexPredWorkTime(param.flexBasicSetting.flexPredWorkTime);
 		}

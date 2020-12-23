@@ -29,7 +29,7 @@ public class DisplayInitialFlexScreenByWorkPlace {
 	@Inject
 	private SelectWorkPlaceFlex selectWorkPlaceFlex;
 
-	public DisplayInitialFlexScreenByWorkPlaceDto displayInitialFlexScreenByWorkPlace() {
+	public DisplayInitialFlexScreenByWorkPlaceDto displayInitialFlexScreenByWorkPlace(String wkpId) {
 
 		DisplayInitialFlexScreenByWorkPlaceDto result = new DisplayInitialFlexScreenByWorkPlaceDto();
 		String comId = AppContexts.user().companyId();
@@ -42,16 +42,11 @@ public class DisplayInitialFlexScreenByWorkPlace {
 		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
 				.collect(Collectors.toList()));
 
-		if (!result.getAlreadySettings().isEmpty()) {
-			// 3.職場を選択する（フレックス勤務）
+		// 3.職場を選択する（フレックス勤務）
 
-			SelectWorkPlaceFlexDto selectWorkPlaceFlexDto = this.selectWorkPlaceFlex
-					.selectWorkPlaceFlex(result.getAlreadySettings().get(0));
-			result.setFlexBasicSetting(selectWorkPlaceFlexDto.getFlexBasicSetting());
-			result.setYearList(
-					selectWorkPlaceFlexDto.getYearList());
-
-		}
+		SelectWorkPlaceFlexDto selectWorkPlaceFlexDto = this.selectWorkPlaceFlex.selectWorkPlaceFlex(wkpId);
+		result.setFlexBasicSetting(selectWorkPlaceFlexDto.getFlexBasicSetting());
+		result.setYearList(selectWorkPlaceFlexDto.getYearList());
 
 		return result;
 	}

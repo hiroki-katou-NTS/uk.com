@@ -49,7 +49,7 @@ const template = `
 const BASE_H_URL = 'screen/at/kmk004/h/';
 
 const API_H_URL = {
-	START_PAGE: BASE_H_URL + 'init-screen',
+	START_PAGE: BASE_H_URL + 'init-screen/',
 	CHANGE_YEAR: BASE_H_URL + 'change-year/',
 	CHANGE_WKPID: BASE_H_URL + 'change-wkpid/',
 	REGISTER: BASE_H_URL + 'register',
@@ -74,15 +74,14 @@ class ScreenHComponent extends ko.ViewModel {
 		const vm = this;
 
 		vm.screenMode = params.screenMode;
-		
+
 		vm.screenData().initDumpData(params.startYM());
-		
+
 		vm.regSelectedYearEvent();
-		
-		vm.initWorkPlaceList();
 
-		vm.startPage();
-
+		vm.initWorkPlaceList().done((selectedId) => {
+			vm.startPage(selectedId);
+		});
 	}
 
 	regSelectedYearEvent() {
@@ -90,17 +89,17 @@ class ScreenHComponent extends ko.ViewModel {
 		const vm = this;
 
 		vm.screenData().selectedYear.subscribe((yearInput) => {
-			
+
 
 			if (!yearInput || !vm.screenData().selected()) {
-				
+
 				_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
 					item.laborTime().checkbox(false);
 					item.laborTime().legalLaborTime(0);
 					item.laborTime().weekAvgTime(0);
 					item.laborTime().withinLaborTime(0);
 				});
-				
+
 				return;
 			}
 
@@ -129,12 +128,12 @@ class ScreenHComponent extends ko.ViewModel {
 
 	}
 
-	startPage() {
+	startPage(selectedId: string) {
 		const vm = this;
 
 
 		vm.$blockui('invisible')
-			.then(() => vm.$ajax(API_H_URL.START_PAGE))
+			.then(() => vm.$ajax(API_H_URL.START_PAGE + selectedId))
 			.done((data) => {
 				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
 				vm.screenData().updateData(data);
@@ -144,7 +143,7 @@ class ScreenHComponent extends ko.ViewModel {
 
 
 
-	initWorkPlaceList() {
+	initWorkPlaceList(): JQueryPromise<any> {
 		const vm = this, StartMode = {
 			WORKPLACE: 0,
 			DEPARTMENT: 1
@@ -156,7 +155,7 @@ class ScreenHComponent extends ko.ViewModel {
 				NO_SELECT: 4
 			}
 
-		let workPlaceGrid = {
+		let dfd = $.Deferred(), workPlaceGrid = {
 			isShowAlreadySet: true,
 			isMultipleUse: false,
 			isMultiSelect: false,
@@ -178,9 +177,12 @@ class ScreenHComponent extends ko.ViewModel {
 			vm.regSelectedEvent();
 
 			vm.$blockui("hide");
-			vm.screenData().selected.valueHasMutated();
-		});
 
+			vm.screenData().selected.valueHasMutated();
+
+			dfd.resolve(vm.screenData().selected());
+		});
+		return dfd.promise();
 	}
 
 	regSelectedEvent() {

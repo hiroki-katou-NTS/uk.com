@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
@@ -35,6 +36,15 @@ public class SaveMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<Save
 		// 3.BusinessException=0件
 		List<MonthlyWorkTimeSetSha> setShas = cmd.getWorkTimeSetShas().stream().map(wkTimeset -> wkTimeset.toDomain())
 				.collect(Collectors.toList());
+		
+		Long totalLegalLaborTime = setShas.stream().map(x -> x.getLaborTime().getLegalLaborTime().v())
+				.collect(Collectors.counting());
+
+		Long totalWeekAvgTime = setShas.stream().map(x -> x.getLaborTime().getWeekAvgTime().map(y -> y.v()).orElse(0))
+				.collect(Collectors.counting());
+		if (totalWeekAvgTime > totalLegalLaborTime) {
+			throw new BusinessException("Msg_1906");
+		}
 
 		setShas.forEach(setSha -> {
 			// 1.get(ログイン会社ID,社員ID,勤務区分,年月)

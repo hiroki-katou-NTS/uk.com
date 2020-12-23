@@ -53,9 +53,9 @@ public class Kmk004HWebService {
 	private AfterChangeFlexWorkPlaceSetting afterChangeSetting;
 
 	@POST
-	@Path("init-screen")
-	public DisplayInitialFlexScreenByWorkPlaceDto initScreen() {
-		return this.initScreen.displayInitialFlexScreenByWorkPlace();
+	@Path("init-screen/{wkpId}")
+	public DisplayInitialFlexScreenByWorkPlaceDto initScreen(@PathParam("wkpId") String wkpId) {
+		return this.initScreen.displayInitialFlexScreenByWorkPlace(wkpId);
 	}
 
 	@POST
