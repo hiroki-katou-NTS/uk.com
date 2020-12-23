@@ -258,11 +258,20 @@ module nts.uk.at.view.ksm008.g {
         openDiaglog() {
             const vm = this;
 
-            setShared("dataShareDialog046", {
-                unit: vm.unit,
-                workplaceId: vm.workplaceId,
-                workplaceGroupId: vm.workplaceGroupId
-            });
+            let param;
+            if (vm.unit == 1) {
+                param = {
+                    unit: vm.unit,
+                    workplaceGroupId: vm.workplaceGroupId
+                }
+            } else {
+                param = {
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId
+                }
+            }
+
+            setShared("dataShareDialog046", param);
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
