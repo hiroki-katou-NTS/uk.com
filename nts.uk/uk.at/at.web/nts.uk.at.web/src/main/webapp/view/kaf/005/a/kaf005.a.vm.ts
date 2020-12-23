@@ -666,6 +666,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// đăng kí 
 						return vm.$ajax('at', API.register, commandRegister).then(() => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+								window.location.reload();
 								return true;
 							});
 						});
