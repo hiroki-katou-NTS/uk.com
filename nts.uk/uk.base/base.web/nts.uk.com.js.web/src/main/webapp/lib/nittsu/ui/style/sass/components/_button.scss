@@ -24,6 +24,7 @@ $button-disabled-base-color: #888888;
     padding: 0 7px;
     margin: 0;
     position: relative;
+    vertical-align: bottom;
 }
 
 button {
@@ -275,6 +276,8 @@ button {
 
             .svg {
                 display: inline;
+                width: 40px;
+                height: 32px;
             }
             
             &>span {
