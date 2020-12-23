@@ -154,13 +154,9 @@ module nts.uk.at.view.kmk004.components {
 						.then((data: IWorkTimeL[]) => {
 							if (data.length > 0) {
 								const workTime: IWorkTimeL[] = [];
-								var check: boolean = true;
 
-								if (ko.unwrap(vm.checkEmployee)) {
-									check = false;
-								}
 								data.map(m => {
-									const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+									const s: IWorkTimeL = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
 									workTime.push(s);
 								});
 
@@ -174,13 +170,9 @@ module nts.uk.at.view.kmk004.components {
 						.then((data: IWorkTimeL[]) => {
 							if (data.length > 0) {
 								const workTime: IWorkTimeL[] = [];
-								var check: boolean = true;
 
-								if (ko.unwrap(vm.checkEmployee)) {
-									check = false;
-								}
 								data.map(m => {
-									const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+									const s: IWorkTimeL = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
 									workTime.push(s);
 								});
 
@@ -194,13 +186,9 @@ module nts.uk.at.view.kmk004.components {
 						.then((data: IWorkTimeL[]) => {
 							if (data.length > 0) {
 								const workTime: IWorkTimeL[] = [];
-								var check: boolean = true;
-
-								if (ko.unwrap(vm.checkEmployee)) {
-									check = false;
-								}
+								
 								data.map(m => {
-									const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+									const s: IWorkTimeL = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
 									workTime.push(s);
 								});
 
@@ -215,10 +203,11 @@ module nts.uk.at.view.kmk004.components {
 							if (data.length > 0) {
 								const workTime: IWorkTimeL[] = [];
 								var check: boolean = true;
-
+								
 								if (ko.unwrap(vm.checkEmployee)) {
 									check = false;
 								}
+								
 								data.map(m => {
 									const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
 									workTime.push(s);
@@ -279,10 +268,7 @@ class WorkTimeL {
 		const md = this;
 		md.check(param.check);
 		md.yearMonth(param.yearMonth);
-
-		if (param.check) {
-			md.laborTime(param.laborTime);
-		}
+		md.laborTime(param.laborTime);
 
 		switch (param.yearMonth.toString().substring(4, 6)) {
 			case "01":
