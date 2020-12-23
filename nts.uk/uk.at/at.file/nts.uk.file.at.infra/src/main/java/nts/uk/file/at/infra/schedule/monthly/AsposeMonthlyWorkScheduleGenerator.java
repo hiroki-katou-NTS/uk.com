@@ -1895,7 +1895,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            start = i * 10;
 				            length = Math.min(errorDetail.length() - start, 15);
 				            
-				            // add ... to remark when remark length > 45
+				            // add ... to remark when remark length > maximum possible length
 							remarkContentRow = errorDetail.length() > maxPossibleRow * length && (i == (maxPossibleRow - 1))
 								            		? (errorDetail.substring(start, start + length) + "…")
 						            				: errorDetail.substring(start, start + length);
@@ -1970,15 +1970,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 			            	if (lstAtdCanBeAggregate.contains(totalValue.getAttendanceId())) {
 			            		if (valueTypeEnum.isIntegerCountable()) {
-				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT_NUM) && value != null) {
-										cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? ""
-												: format.format(Integer.parseInt(value)), false);
-				            		} else {
-				            			if (value != null)
+			            			switch (valueTypeEnum) {
+									case COUNT:
+										cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? "" : value, true);
+										break;
+									case AMOUNT_NUM:
+										cell.putValue((condition.getDisplayType() == DisplayTypeEnum.HIDE.value
+												&& Integer.parseInt(value) == 0) ? "" : format.format(Integer.parseInt(value)), false);
+										break;
+									default:
+										if (value != null)
 											cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 										else
 											cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
-				            		}
+										break;
+									}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
@@ -2054,24 +2060,27 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	Style style = cell.getStyle();
 	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 	            	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT_NUM) && value != null) {
-							cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? ""
-									: format.format(Integer.parseInt(value)), false);
-	            		} else {
-	            			if (value != null)
+	            		switch (valueTypeEnum) {
+						case COUNT:
+							cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? "" : value, true);
+							break;
+						case AMOUNT_NUM:
+							cell.putValue((condition.getDisplayType() == DisplayTypeEnum.HIDE.value
+									&& Integer.parseInt(value) == 0) ? "" : format.format(Integer.parseInt(value)), false);
+							break;
+						default:
+							if (value != null)
 								cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 							else
 								cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
-	            		}
+							break;
+						}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		value = condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Double.parseDouble(value) == 0d ? "" : value;
 	            		cell.putValue(valueTypeEnum == ValueType.AMOUNT ? format.format(Double.parseDouble(value)) : value, true);
 	            	}
-//	            	else if (valueTypeEnum == ValueType.TEXT && value != null) {
-//	            		cell.putValue(value, false);
-//	            	}
 	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2219,15 +2228,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	Style style = cell.getStyle();
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 				            	if (valueTypeEnum.isIntegerCountable()) {
-				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT_NUM) && value != null) {
-										cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? ""
-												: format.format(Integer.parseInt(value)), false);
-				            		} else {
-				            			if (value != null)
+				            		switch (valueTypeEnum) {
+									case COUNT:
+										cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? "" : value, true);
+										break;
+									case AMOUNT_NUM:
+										cell.putValue((condition.getDisplayType() == DisplayTypeEnum.HIDE.value
+												&& Integer.parseInt(value) == 0) ? "" : format.format(Integer.parseInt(value)), false);
+										break;
+									default:
+										if (value != null)
 											cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 										else
 											cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
-				            		}
+										break;
+									}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
@@ -2595,7 +2610,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            start = i * 10;
 			            length = Math.min(errorDetail.length() - start, 15);
 
-		            	// add ... to remark when remark length > 45
+		            	// add ... to remark when remark length >  maximum possible length
 						remarkContentRow = errorDetail.length() > maxPossibleRow * length && (i == (maxPossibleRow - 1))
 							            		? (errorDetail.substring(start, start + length) + "…")
 					            				: errorDetail.substring(start, start + length);
@@ -2812,18 +2827,22 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		        	Style style = cell.getStyle();
 		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 		        	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT_NUM) && value != null) {
-							cell.putValue(zeroSetting == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? ""
-									: format.format(Integer.parseInt(value)), false);
-	            		} else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value,false, zeroSetting));
+		        		switch (valueTypeEnum) {
+						case COUNT:
+							cell.putValue(zeroSetting == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? "" : value, false);
+							break;
+						case AMOUNT_NUM:
+							cell.putValue((zeroSetting == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0) ? "" : format.format(Integer.parseInt(value)), false);
+							break;
+						default:
+							if (value != null)
+								cell.setValue(getTimeAttr(value, false, zeroSetting));
 							else
-								cell.setValue(getTimeAttr("0",false, zeroSetting));
-	            		}
+								cell.setValue(getTimeAttr("0", false, zeroSetting));
+							break;
+						}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
+					} else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		value = zeroSetting == DisplayTypeEnum.HIDE.value && Double.parseDouble(value) == 0d ? "" : value;
 	            		cell.putValue(valueTypeEnum == ValueType.AMOUNT ? format.format(Double.parseDouble(value)) : value, true);
 	            	}
@@ -2888,15 +2907,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		        	Style style = cell.getStyle();
 		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 		        	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT_NUM) && value != null) {
-							cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? ""
-									: format.format(Integer.parseInt(value)), false);
-	            		} else {
-	            			if (value != null)
+		        		switch (valueTypeEnum) {
+						case COUNT:
+							cell.putValue(condition.getDisplayType() == DisplayTypeEnum.HIDE.value && Integer.parseInt(value) == 0 ? "" : value, true);
+							break;
+						case AMOUNT_NUM:
+							cell.putValue((condition.getDisplayType() == DisplayTypeEnum.HIDE.value
+									&& Integer.parseInt(value) == 0) ? "" : format.format(Integer.parseInt(value)), false);
+							break;
+						default:
+							if (value != null)
 								cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 							else
 								cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
-	            		}
+							break;
+						}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
