@@ -32,7 +32,7 @@ public class WorkingHoursCompany extends AsposeCellsReportGenerator implements C
 	@Inject
 	private CompanyRepository companyRepository;
 
-	private static final String TEMPLATE_FILE = "report/KMP004_Company.xlsx";
+	private static final String TEMPLATE_FILE = "report/KMP004.xlsx";
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
 	
 	private final int ROW_TITLE = 9;
@@ -88,7 +88,7 @@ public class WorkingHoursCompany extends AsposeCellsReportGenerator implements C
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					"KMK004_" + "ChungDepTrai" + "_"
+					"KMK004_" + "法定労働時間マスタ" + "_"
 							+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
 							+ REPORT_FILE_EXTENSION));
 
