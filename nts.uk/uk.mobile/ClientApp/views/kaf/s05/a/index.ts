@@ -8,6 +8,7 @@ import { KafS05Step3Component } from '../step3';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
+import { OverTime} from '../step2/index';
 
 @component({
     name: 'kafs05',
@@ -443,6 +444,28 @@ export class KafS05Component extends KafS00ShrComponent {
 
 
         return appOverTimeInsert;
+    }
+    public toAppOverTimeForRegister() {
+        const self = this;
+        let appOverTime = self.model.appOverTime as AppOverTime;
+        let step2 = self.$refs.step2 as KafS05Step2Component;
+
+        let overTimes = step2.overTimes as Array<OverTime>;
+        // AttendanceType.NORMALOVERTIME
+        let applicationTime = appOverTime.applicationTime = {} as ApplicationTime;
+        let applicationTimes = applicationTime.applicationTime = [] as Array<OvertimeApplicationSetting>;
+        _.forEach(overTimes, (item: OverTime) => {
+            if (item.type == AttendanceType.NORMALOVERTIME && item.applicationTime > 0) {
+                let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+                overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
+                overtimeApplicationSetting.frameNo = Number(item.frameNo);
+                overtimeApplicationSetting.applicationTime = item.applicationTime;
+                applicationTimes.push(overtimeApplicationSetting);
+            }
+            
+        });
+        // assign value to overtime and holidaytime
+        
     }
 
     public toStep(value: number) {

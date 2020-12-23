@@ -29,6 +29,8 @@ export class KafS05Step2Component extends Vue {
     public overTimes: Array<OverTime> = [];
     public holidayTimes: Array<HolidayTime> = [];
 
+    public readonly SPACE_STRING = ' ';
+
     public reason1: Reason = {
         title: '',
         reason: null,
@@ -469,7 +471,7 @@ export class KafS05Step2Component extends Vue {
     public bindReason(divergenceTimeRoot: DivergenceTimeRoot, divergenceReasonInputMethod: DivergenceReasonInputMethod) {
         const self = this;
         let reason = {} as Reason;
-        reason.title = ' ';
+        reason.title = self.SPACE_STRING;
         reason.reason = null;
         reason.selectedValue = null;
         if (!_.isNil(divergenceTimeRoot)) {
