@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformation
 import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 
 /**
  * @author thanhpv
@@ -30,6 +31,8 @@ public class RecruitmentAppCmd {
 	public List<TimeZoneWithWorkNoDto> workingHours;
 	
 	public WorkInformationDto workInformation;
+	
+	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
 	/** Use for save KAF011A */
 	public RecruitmentApp toDomainInsert() {

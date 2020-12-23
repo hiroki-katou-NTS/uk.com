@@ -16,6 +16,8 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformation
 import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -39,6 +41,10 @@ public class AbsenceLeaveAppCmd {
 	public Integer workChangeUse;
 	
 	public String changeSourceHoliday;
+	
+	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
+	
+	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 	
 	/** Use for Insert KAF011A */
 	public AbsenceLeaveApp toDomainInsert() {

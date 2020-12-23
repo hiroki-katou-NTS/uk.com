@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -47,22 +46,25 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	 * @param represent 代行申請か
 	 * @param opErrorFlag 承認ルートのエラーフラグ
 	 * @param opActualContentDisplayLst 表示する実績内容
-	 * @param employeeInfo 社員情報
-	 * @param employmentCode 雇用コード
+	 * @param appDispInfoStartupOutput 表示する実績内容 
+	 * 
 	 */
-	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, int opErrorFlag, List<ActualContentDisplay> opActualContentDisplayLst, EmployeeInfoImport employeeInfo, String employmentCode, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, ErrorFlagImport opErrorFlag, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup) {
 		
 		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
-		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, opActualContentDisplayLst, employeeInfo, employmentCode);
+		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, 
+												opActualContentDisplayLst,
+												appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
+												appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
-		this.checkForInsufficientNumberOfHolidays(companyId, employeeInfo.getSid(), abs, rec);
+		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		
 		if(rec.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, rec.get(), null, EnumAdaptor.valueOf(opErrorFlag, ErrorFlagImport.class), new ArrayList<>(), appDispInfoStartupOutput);
+			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, rec.get(), null, opErrorFlag, new ArrayList<>(), appDispInfoStartup);
 		}
 		
 		if(abs.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, abs.get(), null, EnumAdaptor.valueOf(opErrorFlag, ErrorFlagImport.class), new ArrayList<>(), appDispInfoStartupOutput);
+			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, abs.get(), null, opErrorFlag, new ArrayList<>(), appDispInfoStartup);
 		}
 		//TODO
 	}
@@ -123,14 +125,6 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 		}
 		*/
 	}
-	
-	/**
-	 * 2-1.新規画面登録前の処理
-	 */
-	public void processingBeforeNewScreenRegistration() {
-		
-	}
-	
 }
 
 
