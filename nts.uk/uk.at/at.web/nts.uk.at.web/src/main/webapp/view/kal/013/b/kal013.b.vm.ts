@@ -12,7 +12,7 @@ module nts.uk.at.view.kal013.b {
     @bean()
     export class KAL013BViewModel extends ko.ViewModel {
         listTypeCheck    : KnockoutObservableArray<ItemEnumModel> = ko.observableArray([]);
-        pattern : KnockoutObservable<Pattern> = ko.observable(null);
+        pattern : KnockoutObservable<Pattern> = ko.observable(new Pattern());
         listSingleValueCompareTypes: KnockoutObservableArray<EnumModel> = ko.observableArray([]);
         contrastTypeList:  KnockoutObservableArray<ItemEnumModel> = ko.observableArray([]);
         category: KnockoutObservable<number> = ko.observable(null);
@@ -40,7 +40,7 @@ module nts.uk.at.view.kal013.b {
             super();
             const vm = this;
 
-            let option: IPattern = {checkItem: 1, checkCond: ["1","2"], checkCondB:1,
+            let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
                 operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
 
             params = {category: WorkplaceCategory.MONTHLY, condition: option};
@@ -54,35 +54,32 @@ module nts.uk.at.view.kal013.b {
             vm.getEnum().done(()=>{
 
             });
-
-            vm.category(params.category);
-            vm.pattern(new Pattern(params.condition));
-
-        }
-
-        created(params: IParentParams) {
-            const vm = this;
-            errors.clearAll();
             vm.pattern().operator.subscribe((value)=>{
-               if (_.indexOf([6,7,8,9],value) != -1 ){
-                   vm.enableMaxValue(true);
-               } else {
-                   vm.enableMaxValue(false);
-                   vm.pattern().clearMaxValue();
-               }
+                vm.$errors("clear",".endValue");
+                if (_.indexOf([6,7,8,9],value) != -1 ){
+                    vm.enableMaxValue(true);
+                } else {
+                    vm.enableMaxValue(false);
+                    vm.pattern().clearMaxValue();
+                }
             });
 
             vm.pattern().checkItem.subscribe((value)=>{
-                vm.$errors("clear",".endValue");
+
+                // Clear error
+                nts.uk.ui.errors.clearAll();
+                vm.pattern().clearCheckCod();
+
+                // Change pattern
                 vm.switchPatternA(true)
                 // 対比の場合 - スケジュール／日次
-               if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 0) {
+                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 0) {
                     vm.switchPatternA(false);
                     vm.contrastTypeList(__viewContext.enums.ContrastType);
-               } else if (vm.category() == WorkplaceCategory.MONTHLY
-                   && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
-                       CheckMonthlyItemsType.AVERAGE_TIME_FREE],value) != -1 ){
-                   vm.switchPatternA(false);
+                } else if (vm.category() == WorkplaceCategory.MONTHLY
+                    && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
+                        CheckMonthlyItemsType.AVERAGE_TIME_FREE],value) != -1 ){
+                    vm.switchPatternA(false);
                     switch (value){
                         case CheckMonthlyItemsType.TIME_FREEDOM:
                             vm.contrastTypeList(__viewContext.enums.AverageTime);
@@ -97,15 +94,17 @@ module nts.uk.at.view.kal013.b {
                             vm.contrastTypeList([]);
                             break;
                     }
-               }
-               // Kind of control
-                vm.timeControl(false);
+                }
+
+                // Kind of control
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
                 if ((vm.category() == WorkplaceCategory.MONTHLY && value == 1)
                     || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 2) ){
                     vm.timeControl(true);
+                } else{
+                    vm.timeControl(false);
                 }
-
+                console.log("timeControl: "+ vm.timeControl());
                 // Contraint
                 if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
                     vm.constraint(vm.dailyContraint.get(value));
@@ -118,6 +117,9 @@ module nts.uk.at.view.kal013.b {
             });
 
             vm.pattern().checkCondB.subscribe((value)=>{
+                if (vm.switchPatternA()){
+                    return;
+                }
                 vm.$errors("clear",".endValue");
                 vm.timeControl(false);
                 if (_.indexOf([2,5,8],value) != -1){
@@ -133,26 +135,34 @@ module nts.uk.at.view.kal013.b {
                 }
             })
 
-            vm.pattern().operator.subscribe((value)=>{
-                vm.$errors("clear",".endValue");
+            vm.pattern().checkCond.subscribe((value)=>{
+                vm.$errors("clear","#check-condition");
             });
+
+        }
+
+        created(params: IParentParams) {
+            const vm = this;
+            let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
+                operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
+            params = {category: WorkplaceCategory.MONTHLY, condition: option};
+
+            vm.category(params.category);
+            vm.pattern().update(params.condition);
+            console.log("timeControl1: "+ vm.timeControl());
         }
 
         mounted() {
             const vm = this;
-
-            $("#table-group1condition").ntsFixedTable();
-            $("#table-group2condition").ntsFixedTable();
+            console.log("timeControl2: "+ vm.timeControl());
             $('#cbxTypeCheckWorkRecordcategory5').focus();
-            $('#cbxTypeCheckWorkRecordcategory7').focus();
-            $('#cbxTypeCheckWorkRecordcategory9').focus();
         }
 
         //openSelectAtdItemDialogTarget() {
         btnSettingB2_2_click(params: any) {
             const vm = this;
             let param: any = {
-                isMulti: true,
+                isMulti: false,
                 selecteds: [
                     params.checkCond()
                 ]
@@ -191,14 +201,35 @@ module nts.uk.at.view.kal013.b {
 
         validate(): boolean{
             const vm = this;
-            if  ((( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
-                    && vm.pattern().minValue() >= vm.pattern().maxValue() ))
-                    || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
-                    && vm.pattern().minValue() > vm.pattern().maxValue() ))
+            let result: boolean = true;
+            if (vm.switchPatternA() && _.isEmpty(vm.pattern().checkCond())){
+                vm.$errors("#check-condition",{ messageId: 'MsgB_1', messageParams: [vm.$i18n("KAL003_25")] });
+                result = false;
+            }
+
+            if  (!vm.validateStartEnd())
             {
                 vm.$errors(".endValue", "Msg_927");
+                result = false;
+            }
+            return result;
+        }
+
+        validateStartEnd(): boolean{
+            const vm = this;
+            if (_.isNil(vm.pattern().maxValue()) ){
+                return true;
+            }
+
+            if  ((( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
+                    && vm.pattern().minValue() >= vm.pattern().maxValue() ))
+                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
+                    && vm.pattern().minValue() > vm.pattern().maxValue() ))
+            {
                 return false;
             }
+
+
             return true;
         }
 
@@ -225,26 +256,28 @@ module nts.uk.at.view.kal013.b {
 
     class Pattern{
         checkItem: KnockoutObservable<number> = ko.observable(0);
-        checkCond: KnockoutObservableArray<string> = ko.observableArray([]);
+        checkCond: KnockoutObservable<string> = ko.observable("");
         checkCondDis: KnockoutObservable<string> = ko.observable("");
         checkCondB: KnockoutObservable<number> = ko.observable(0);
         operator: KnockoutObservable<number> = ko.observable(0);
         minValue: KnockoutObservable<number> = ko.observable(0);
         maxValue: KnockoutObservable<number> = ko.observable(0);
         displayMessage: KnockoutObservable<string> = ko.observable("");
-        constructor(params: IPattern){
-            this.checkItem(params.checkItem);
-            this.checkCond(params.checkCond);
-            this.checkCondB(params.checkCondB);
-            this.operator(params.operator);
-            this.minValue(params.minValue);
-            this.maxValue(params.maxValue);
-            this.displayMessage(params.displayMessage);
+        constructor(){
+            this.checkItem(null);
+            this.checkCond(null);
+            this.checkCondDis(null);
+            this.checkCondB(null);
+            this.operator(null);
+            this.minValue(null);
+            this.maxValue(null);
+            this.displayMessage(null);
         }
 
         update(params: IPattern){
             this.checkItem(params.checkItem);
             this.checkCond(params.checkCond);
+            this.checkCondDis(params.checkCond);
             this.checkCondB(params.checkCondB);
             this.operator(params.operator);
             this.minValue(params.minValue);
@@ -252,19 +285,23 @@ module nts.uk.at.view.kal013.b {
             this.displayMessage(params.displayMessage);
         }
 
-        updateCheckCond(checkCondItem: Array<string>){
+        updateCheckCond(checkCondItem: string){
             this.checkCond(checkCondItem);
-            this.checkCondDis(_.join(checkCondItem,'、'));
+            this.checkCondDis(checkCondItem);
         }
 
         clearMaxValue(){
             this.maxValue(null);
         }
+        clearCheckCod(){
+            this.checkCond(null);
+            this.checkCondDis("");
+        }
     }
 
     interface IPattern{
         checkItem: number;
-        checkCond: Array<string>;
+        checkCond: string;
         checkCondB: number;
         operator: number;
         minValue: number;

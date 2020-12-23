@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 950,
+                width: 1080,
                 height: 400
             };
         </script>
@@ -54,40 +54,43 @@
         <div id="contents-area">
             <table data-bind="with: $vm.pattern">
                     <tr class="row">
-                        <td>
+                        <td class="pad_left_20px">
                             <!--B1_1-->
                             <div class="label" data-bind="text: $vm.$i18n('KAL003_26')"></div>
                         </td>
                         <td class="pad_left_5px">
                             <!--B1_2-->
-                            <div tabindex="1" id="cbxTypeCheckWorkRecordcategory5" data-bind="ntsComboBox: {
-                            name: '#{i18n.getText('KAL003_27')}',
-                            required: true,
-                            options: $vm.listTypeCheck,
-                            optionsValue: 'value',
-                            value: checkItem,
-                            optionsText: 'name',
-                            columns: [
-                                { prop: 'name', length: 5 },
-                            ]} ">
+                            <div tabindex="1" id="cbxTypeCheckWorkRecordcategory5" class="fix-length-combobox"
+                                 data-bind="ntsComboBox: {
+                                name: '#{i18n.getText('KAL003_27')}',
+                                required: true,
+                                options: $vm.listTypeCheck,
+                                optionsValue: 'value',
+                                value: checkItem,
+                                optionsText: 'name',
+                                columns: [
+                                    { prop: 'name', length: 5 },
+                                ]} ">
                             </div>
                         </td>
                     </tr>
 
                     <tr  class="row">
-                        <td>
+                        <td class="pad_left_20px">
                             <!--B2_1-->
                             <div class="label" data-bind="text: $vm.$i18n('KAL003_58')"></div>
                         </td>
                         <com:ko-if bind="$vm.switchPatternA()">
                             <td class="pad_left_5px">
                                 <!--B2_2-->
-                                <button tabindex="4"
-                                        data-bind="click: $vm.btnSettingB2_2_click.bind($vm), text: $vm.$i18n('KAL003_57')">
+                                <button id = "button-selection" tabindex="2"
+                                        data-bind="click: $vm.btnSettingB2_2_click.bind($vm),
+                                        name: '#{i18n.getText('KAL003_59')}',
+                                        text: $vm.$i18n('KAL003_57')">
                                 </button>
 
                                 <!--B2_3-->
-                                <input data-bind="ntsTextEditor: {
+                                <input id ="check-condition" data-bind="ntsTextEditor: {
                                         name: '#{i18n.getText('KAL003_59')}',
                                         value: checkCondDis,
                                         readonly: true
@@ -96,7 +99,7 @@
                         </com:ko-if>
                         <com:ko-if bind="$vm.switchPatternA() == false">
                             <td class="pad_left_5px">
-                                <div tabindex="5" data-bind="ntsComboBox: {
+                                <div tabindex="2" class="fix-length-combobox" data-bind="ntsComboBox: {
                                 name: '#{i18n.getText('KAL003_60')}',
                                 options: $vm.contrastTypeList,
                                 optionsValue: 'value',
@@ -108,8 +111,8 @@
                                 </div>
                             </td>
                     </com:ko-if>
-                        <td class="pad_left_5px">
-                            <div tabindex="5" id="combo-box-check-item" data-bind="ntsComboBox: {
+                        <td class="pad_left_20px">
+                            <div tabindex="3" id="combo-box-check-item" data-bind="ntsComboBox: {
                                 name: '#{i18n.getText('KAL003_60')}',
                                 options: $vm.listSingleValueCompareTypes,
                                 optionsValue: 'value',
@@ -122,7 +125,7 @@
                         </td>
                         <com:ko-if bind="$vm.timeControl() ==  false">
                             <td class="pad_left_5px">
-                                    <input class ="strValue" tabindex="6" data-bind="ntsNumberEditor: {
+                                    <input class ="strValue" tabindex="4" data-bind="ntsNumberEditor: {
                                         name: '#{i18n.getText('KAL003_64')}',
                                         value: minValue,
                                         constraint: $vm.constraint,
@@ -136,7 +139,7 @@
                             </td>
                             <td class="pad_left_5px">
                                     <!--B2_7-->
-                                    <input class ="endValue" tabindex="7" data-bind="ntsNumberEditor: {
+                                    <input class ="endValue" tabindex="5" data-bind="ntsNumberEditor: {
                                         name: '#{i18n.getText('KAL003_65')}',
                                         value: maxValue,
                                         constraint: $vm.constraint,
@@ -152,7 +155,7 @@
                         </com:ko-if>
                         <com:ko-if bind="$vm.timeControl()== true">
                             <td class="pad_left_5px">
-                                <input class ="strValue" tabindex="6" data-bind="ntsTimeEditor: {
+                                <input class ="strValue" tabindex="4" data-bind="ntsTimeEditor: {
                                         name: '#{i18n.getText('KAL003_64')}',
                                         value: minValue,
                                         constraint: $vm.constraint,
@@ -163,7 +166,7 @@
                             </td>
                             <td class="pad_left_5px">
                                 <!--B2_7-->
-                                <input class ="endValue" tabindex="7" data-bind="ntsTimeEditor: {
+                                <input class ="endValue" tabindex="5" data-bind="ntsTimeEditor: {
                                         name: '#{i18n.getText('KAL003_65')}',
                                         value: maxValue,
                                         constraint: $vm.constraint,
@@ -177,13 +180,13 @@
                     </tr>
 
                     <tr class="last-row">
-                        <td>
+                        <td class="pad_left_20px">
                             <!--B3_1-->
                             <div class="label" data-bind="text: $vm.$i18n('KAL003_25')"></div>
                         </td>
                         <td colspan="4" class="pad_left_5px">
                             <!--B3_2-->
-                            <textarea style="width: 462px; height: 90px;" tabindex="9"
+                            <textarea class="text-area-style" tabindex="6"
                                       data-name="message" data-bind="ntsMultilineEditor: {
                                 name: '#{i18n.getText('KAL003_25')}',
                                 value: displayMessage,
@@ -196,10 +199,10 @@
 
         <!--B4-->
         <div id="functions-area-bottom">
-            <button tabindex="4" class="large proceed"
+            <button tabindex="7" class="large proceed"
                     data-bind="click: btnDecision, text: $vm.$i18n('KAL003_14')">
             </button>
-            <button tabindex="5" data-bind="click: closeDialog, text: $vm.$i18n('KAL003_30')">
+            <button tabindex="8" data-bind="click: closeDialog, text: $vm.$i18n('KAL003_30')">
             </button>
         </div>
     </ui:define>
