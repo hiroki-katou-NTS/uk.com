@@ -49,10 +49,9 @@ public class WorkAvailabilityRuleDateSetting implements WorkAvailabilityRule, Do
 	}
 
 	@Override
-	public boolean isOverHolidayMaxDays(List<WorkAvailabilityOfOneDay> workAvailabilityList) {
-		
+	public boolean isOverHolidayMaxDays(WorkAvailabilityOfOneDay.Require require, List<WorkAvailabilityOfOneDay> workAvailabilityList) {
 		List<WorkAvailabilityOfOneDay> holidayAvailability = workAvailabilityList.stream()
-																.filter( e -> e.isHolidayAvailability() )
+																.filter( e -> e.isHolidayAvailability(require) )
 																.collect(Collectors.toList());
 		
 		return holidayAvailability.size() > this.holidayMaxDays.v();

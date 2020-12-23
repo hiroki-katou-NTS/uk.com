@@ -42,7 +42,7 @@ public class RegisterWorkAvailability {
 			throw new BusinessException("Msg_2050");
 		}
 
-		if (shiftTableRule.isOverHolidayMaxDays(workOneDays)) {
+		if (shiftTableRule.isOverHolidayMaxDays(require, workOneDays)) {
 			throw new BusinessException("Msg_2051");
 		}
 		
@@ -53,11 +53,10 @@ public class RegisterWorkAvailability {
 		
 	}
 	
-	public static interface Require extends GetUsingShiftTableRuleOfEmployeeService.Require{
+	public static interface Require extends GetUsingShiftTableRuleOfEmployeeService.Require, WorkAvailabilityOfOneDay.Require{
 		
 		/**
 		 * [R-1] 一日分の勤務希望を追加する
-		 * @param workOneDay　一日分の勤務希望リスト
 		 */
 		void insertAllWorkAvailabilityOfOneDay(List<WorkAvailabilityOfOneDay> workOneDays);
 		
