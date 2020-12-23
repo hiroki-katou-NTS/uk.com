@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.timeleaveapplication;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * AggregateRoot : 時間休暇申請
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class TimeLeaveApplication extends Application {
 

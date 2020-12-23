@@ -6,7 +6,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.*;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -45,7 +44,6 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
     protected ProcessResult handle(CommandHandlerContext<RegisterTimeLeaveApplicationCommand> context) {
 
         RegisterTimeLeaveApplicationCommand command = context.getCommand();
-        BusinessTripInfoOutput businessTripInfoOutput = command.getBusinessTripInfoOutput().toDomain();
         String loginSid = AppContexts.user().employeeId();
         ApplicationDto applicationDto = command.getApplication();
 
@@ -57,8 +55,8 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
             loginSid,
             Optional.empty(),
             Optional.empty(),
-            Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-            Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+            Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+            Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
             applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
             applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
             ));
@@ -72,18 +70,18 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         //暫定データの登録
         this.interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), application.getEmployeeID(), Arrays.asList(application.getAppDate().getApplicationDate()));
 
-        Optional<AppTypeSetting> appTypeSet = businessTripInfoOutput
+        Optional<AppTypeSetting> appTypeSet = command.getTimeLeaveApplicationOutput()
             .getAppDispInfoStartup()
             .getAppDispInfoNoDateOutput()
             .getApplicationSetting()
-            .getAppTypeSettings().stream().filter(i -> i.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION)
+            .getAppTypeSettings().stream().filter(i -> i.getAppType() == ApplicationType.ANNUAL_HOLIDAY_APPLICATION)
             .findFirst();
 
         //2-3.新規画面登録後の処理
         return this.newAfterRegister.processAfterRegister(
             application.getAppID(),
             appTypeSet.get(),
-            businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()
+            command.getTimeLeaveApplicationOutput().getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()
         );
     }
 }
