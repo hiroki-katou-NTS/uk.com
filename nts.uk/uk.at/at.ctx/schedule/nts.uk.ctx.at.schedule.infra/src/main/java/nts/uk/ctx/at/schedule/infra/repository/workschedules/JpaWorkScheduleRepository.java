@@ -193,7 +193,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				if (!oldData.get().kscdtSchTime.bonusPays.isEmpty()) {
 					for (KscdtSchBonusPay y : newData.kscdtSchTime.bonusPays) {
 						oldData.get().kscdtSchTime.bonusPays.forEach(x -> {
-							if (y.pK.frameNo == x.pK.frameNo && y.pK.bonuspayType == x.pK.bonuspayType) {
+							if (y.pk.frameNo == x.pk.frameNo && y.pk.bonuspayType == x.pk.bonuspayType) {
 								x.cid = y.cid;
 								x.premiumTime = y.premiumTime;
 								x.premiumTimeWithIn = y.premiumTimeWithIn;
