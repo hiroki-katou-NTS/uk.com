@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -49,7 +50,7 @@ public class TopPageDisplayTimeOfMonthlyDto implements ItemConst, AttendanceItem
 		return TopPageDisplayOfMonthly.of(
 				new AttendanceTimeMonth(overtime),
 				new AttendanceTimeMonth(holidayWorkTime), 
-				new AttendanceTimeMonth(flexTime));
+				new AttendanceTimeMonthWithMinus(flexTime));
 	}
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
