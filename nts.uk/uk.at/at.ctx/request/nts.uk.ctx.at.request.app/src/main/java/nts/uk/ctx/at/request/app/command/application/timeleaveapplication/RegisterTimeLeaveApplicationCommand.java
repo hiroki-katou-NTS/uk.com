@@ -9,9 +9,6 @@ public class RegisterTimeLeaveApplicationCommand {
 
     private TimeLeaveApplicationCommand timeLeaveApplicationCommand;
 
-    // 出張申請の表示情報
-    private BusinessTripInfoOutputCommand businessTripInfoOutput;
-
     // 申請
     private ApplicationDto application;
 

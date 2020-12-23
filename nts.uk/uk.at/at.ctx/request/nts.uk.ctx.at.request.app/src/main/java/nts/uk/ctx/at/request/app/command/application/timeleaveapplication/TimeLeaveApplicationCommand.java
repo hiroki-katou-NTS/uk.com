@@ -3,10 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.AttendanceTime;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestApplication;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.*;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
@@ -20,7 +17,8 @@ import java.util.stream.Collectors;
 @Data
 public class TimeLeaveApplicationCommand {
 
-    private int typeApplicationTime;
+    //A3_2
+    private int timeDigestAppType;
 
     // A5_2
     private Integer specialHdFrameNo;
@@ -44,7 +42,7 @@ public class TimeLeaveApplicationCommand {
                 result.add(new TimeLeaveApplicationDetail(
                     EnumAdaptor.valueOf(x.getAppTimeType(), AppTimeType.class),
                     Arrays.asList(new TimeZoneWithWorkNo(x.getWorkNo(),x.getStartTime(),x.getEndTime())),
-                    setTimeDigest(this.typeApplicationTime,this.specialHdFrameNo,x.getApplicationTime())
+                    setTimeDigest(this.timeDigestAppType,this.specialHdFrameNo,x.getApplicationTime())
                 ));
             }
         });
@@ -55,7 +53,7 @@ public class TimeLeaveApplicationCommand {
             result.add(new TimeLeaveApplicationDetail(
                 EnumAdaptor.valueOf(typePrivate.get(0).getAppTimeType(), AppTimeType.class),
                 timeZoneWithWorkNoLst,
-                setTimeDigest(this.typeApplicationTime,this.specialHdFrameNo,typePrivate.get(0).getApplicationTime())
+                setTimeDigest(this.timeDigestAppType,this.specialHdFrameNo,typePrivate.get(0).getApplicationTime())
             ));
         }
 
@@ -65,25 +63,25 @@ public class TimeLeaveApplicationCommand {
             result.add(new TimeLeaveApplicationDetail(
                 EnumAdaptor.valueOf(typeUnion.get(0).getAppTimeType(), AppTimeType.class),
                 timeZoneWithWorkNoLst,
-                setTimeDigest(this.typeApplicationTime,this.specialHdFrameNo,typeUnion.get(0).getApplicationTime())
+                setTimeDigest(this.timeDigestAppType,this.specialHdFrameNo,typeUnion.get(0).getApplicationTime())
             ));
         }
         return result;
     }
 
-    private static TimeDigestApplication setTimeDigest(int typeApplicationTime, Integer specialHdFrameNo, int applicationTime) {
+    public static TimeDigestApplication setTimeDigest(int timeDigestAppType, Integer specialHdFrameNo, int applicationTime) {
         TimeDigestApplication result = new TimeDigestApplication();
-        if (typeApplicationTime == 0) {
+        if (timeDigestAppType == TimeDigestAppType.HOURS_OF_SUB_HOLIDAY.value) {
             result.setHoursOfSubHoliday(new AttendanceTime(applicationTime));
-        } else if (typeApplicationTime == 1) {
+        } else if (timeDigestAppType == TimeDigestAppType.HOURS_OF_HOLIDAY.value) {
             result.setHoursOfHoliday(new AttendanceTime(applicationTime));
-        } else if (typeApplicationTime == 2) {
+        } else if (timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME.value) {
             result.setChildNursingTime(new AttendanceTime(applicationTime));
-        } else if (typeApplicationTime == 3) {
+        } else if (timeDigestAppType == TimeDigestAppType.NURSING_TIME.value) {
             result.setNursingTime(new AttendanceTime(applicationTime));
-        } else if (typeApplicationTime == 4) {
+        } else if (timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME.value) {
             result.setSixtyHOvertime(new AttendanceTime(applicationTime));
-        } else if (typeApplicationTime == 5) {
+        } else if (timeDigestAppType == TimeDigestAppType.TIME_SPECIAL_VACATION.value) {
             result.setTimeSpecialVacation(new AttendanceTime(applicationTime));
             result.setSpecialHdFrameNo(specialHdFrameNo == null ? Optional.empty() : Optional.of(new SpecialHdFrameNo(specialHdFrameNo)));
         } else {
