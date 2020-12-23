@@ -56,7 +56,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			vm.bindMessageInfo(null);
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
-			if (!_.isNil(dataTransfer)) {
+			if (!_.isNil(dataTransfer.appDate)) {
 				dateLst.push(dataTransfer.appDate);
 			}	
 			if (!_.isEmpty(params)) {
@@ -340,15 +340,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				endTimeSPR: param1.endTimeSPR,
 				overTimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
 				worktypes: self.dataSource.infoBaseDateOutput.worktypes,
-				prePost: prePost
+				prePost: prePost,
+				employeeId: self.isAgentMode() ? self.employeeIDLst[0] : self.$user.employeeId
 			}
 			self.$ajax(API.changeDate, command)
 				.done((res: DisplayInfoOverTime) => {
 					self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
 					self.dataSource.calculationResultOp = res.calculationResultOp;
 					self.dataSource.workdayoffFrames = res.workdayoffFrames;
+					self.dataSource.calculatedFlag = res.calculatedFlag;
 					self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
-
+					self.createVisibleModel(self.dataSource);
 					self.bindOverTimeWorks(self.dataSource);
 					self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
 					self.bindRestTime(self.dataSource);
@@ -468,7 +470,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (_.isNil(vm.dataSource.calculationResultOp)) {
 				let calculationResult = vm.dataSource.calculationResultOp;
 				if (!_.isNil(calculationResult)) {
-					if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
+					if (vm.dataSource.calculatedFlag == CalculatedFlag.CALCULATED) {
 						if (!_.isEmpty(calculationResult.applicationTimes)) {
 							let applicationTime_ = calculationResult.applicationTimes[0];
 							if (!_.isEmpty(applicationTime_.applicationTime)) {
@@ -487,7 +489,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (_.isNil(vm.dataSource.calculationResultOp)) {
 				let calculationResult = vm.dataSource.calculationResultOp;
 				if (!_.isNil(calculationResult)) {
-					if (calculationResult.flag == 0 && calculationResult.overTimeZoneFlag == 0) {
+					if (vm.dataSource.calculatedFlag == CalculatedFlag.CALCULATED) {
 						if (!_.isEmpty(calculationResult.applicationTimes)) {
 							let applicationTime_ = calculationResult.applicationTimes[0];
 							if (!_.isEmpty(applicationTime_.applicationTime)) {
@@ -811,6 +813,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					if (self.visibleModel.c29()) {
 						workHours2.start(workHoursDto.startTimeOp2);
 						workHours2.end(workHoursDto.endTimeOp2);						
+					}
+				} else {
+					if (mode == ACTION.CHANGE_WORK) {
+						workHours1.start(null);
+						workHours1.end(null);
+						if (self.visibleModel.c29()) {
+							workHours2.start(null);
+							workHours2.end(null);						
+						}
 					}
 				}
 
@@ -2157,6 +2168,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
 								self.dataSource.calculationResultOp = res.calculationResultOp;
 								self.dataSource.workdayoffFrames = res.workdayoffFrames;
+								self.dataSource.calculatedFlag = res.calculatedFlag;
 								self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
 								self.createVisibleModel(self.dataSource);
 						
@@ -2274,7 +2286,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 			// ※15-3 = ×　AND　
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
-			let c18_1 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak == NotUseAtr.USE;
+			let c18_1_1 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak == NotUseAtr.USE;
+			// ※15-3 = ○　AND
+			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
+			let c18_1_2 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting == NotUseAtr.USE;
+			let c18_1 = (!c15_3 && c18_1_1) || (c15_3 && c18_1_2);
 			visibleModel.c18_1(c18_1);
 
 			// ※7 = ○　OR　※18-1 = ○
@@ -2488,6 +2504,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					if (res) {
 						self.dataSource.calculationResultOp = res.calculationResultOp;
 						self.dataSource.workdayoffFrames = res.workdayoffFrames;
+						self.dataSource.calculatedFlag = res.calculatedFlag;
 						self.isCalculation = true;
 						self.createVisibleModel(self.dataSource);
 						self.bindOverTime(self.dataSource, 1);
@@ -2602,6 +2619,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isProxy: Boolean;
 		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
+		calculatedFlag: number;
 	}
 	export interface WorkdayoffFrame {
 		workdayoffFrNo: number;
@@ -2999,6 +3017,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		NORMAL,
 		SINGLE_AGENT,
 		MULTiPLE_AGENT
+	}
+	enum CalculatedFlag {
+		CALCULATED, // 計算済
+		UNCALCULATED // 未計算
 	}
 	interface DataTransfer {
 		startTime: number;

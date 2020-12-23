@@ -34,7 +34,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.Calcula
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
-import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
@@ -729,7 +728,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		 * OR
 			INPUT．「残業申請の表示情報．計算結果．残業時間帯修正フラグ」　＝　1
 		 */
-		Boolean c2 = displayInfoOverTime.getCalculationResultOp().map(x -> x.getOverTimeZoneFlag()).orElse(0) == 1;
+		Boolean c2 = displayInfoOverTime.getCalculatedFlag() == CalculatedFlag.UNCALCULATED;
 		OverStateOutput overStateOutput = null;
 		if (c1 || c2) {
 			// 事前申請・実績の時間超過をチェックする
@@ -992,7 +991,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		CheckBeforeOutput output = new CheckBeforeOutput();
 		// 未計算チェックする
 		commonOvertimeholiday.calculateButtonCheck(
-				EnumAdaptor.valueOf(displayInfoOverTime.getCalculationResultOp().map(CalculationResult::getFlag).orElse(0), CalculatedFlag.class),
+				displayInfoOverTime.getCalculatedFlag(),
 				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
 		// 勤務種類、就業時間帯のマスタ未登録チェックする
 		detailBeforeUpdate.displayWorkingHourCheck(
