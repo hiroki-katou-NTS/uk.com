@@ -50,7 +50,7 @@ const template = `
 const BASE_I_URL = 'screen/at/kmk004/i/';
 
 const API_I_URL = {
-	START_PAGE: BASE_I_URL + 'init-screen',
+	START_PAGE: BASE_I_URL + 'init-screen/',
 	CHANGE_YEAR: BASE_I_URL + 'change-year/',
 	CHANGE_EMPCD: BASE_I_URL + 'change-empcd/',
 	REGISTER: BASE_I_URL + 'register',
@@ -77,16 +77,18 @@ class ScreenIComponent extends ko.ViewModel {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
-		
+
 		vm.screenData().initDumpData(params.startYM());
-		
+
 		vm.regSelectedYearEvent();
 
-		vm.startPage();
 
-		vm.initEmploymentList();
 
-		
+		vm.initEmploymentList().done((selected) => {
+			vm.startPage(selected);
+		});
+
+
 
 	}
 
@@ -130,11 +132,11 @@ class ScreenIComponent extends ko.ViewModel {
 		});
 	}
 
-	startPage() {
+	startPage(selected: string) {
 		const vm = this;
 
 		vm.$blockui('invisible')
-			.then(() => vm.$ajax(API_I_URL.START_PAGE))
+			.then(() => vm.$ajax(API_I_URL.START_PAGE + selected))
 			.done((data) => {
 				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
 				vm.screenData().updateData(data);
@@ -142,7 +144,7 @@ class ScreenIComponent extends ko.ViewModel {
 			.always(() => vm.$blockui('clear'));
 	}
 
-	initEmploymentList() {
+	initEmploymentList(): JQueryPromise<any> {
 		const vm = this,
 			ListType = {
 				EMPLOYMENT: 1, // 雇用
@@ -168,14 +170,21 @@ class ScreenIComponent extends ko.ViewModel {
 				alreadySettingList: vm.screenData().alreadySettingList,
 				maxRows: 12
 			};
+
+		let dfd = $.Deferred();
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
 
 			vm.regSelectedEvent();
 
 			vm.$blockui("hide");
+
 			vm.screenData().selected.valueHasMutated();
+
+			dfd.resolve(vm.screenData().selected());
 		});
+
+		return dfd.promise();
 	}
 
 	regSelectedEvent() {
