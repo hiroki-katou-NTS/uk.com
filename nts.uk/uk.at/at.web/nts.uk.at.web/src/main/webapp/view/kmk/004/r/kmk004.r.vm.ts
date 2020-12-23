@@ -57,7 +57,7 @@ module nts.uk.at.kmk004.r {
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax(ULR, cmd))
 				.done(() => {
-
+					vm.$window.close();
 				})
 				.always(() => vm.$blockui('clear'));
 		}

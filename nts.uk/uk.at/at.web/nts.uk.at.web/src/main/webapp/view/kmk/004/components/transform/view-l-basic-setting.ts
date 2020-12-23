@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk004 {
 	import SettingDto = nts.uk.at.view.kmk004.p.SettingDto;
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 	import DeforLaborTimeCom = nts.uk.at.view.kmk004.p.DeforLaborTimeCom;
+	import ExcessOutsideTimeSetReg = nts.uk.at.view.kmk004.p.ExcessOutsideTimeSetReg;
 
 	export const KMK004_API = {
 		COM_INIT_SCREEN: 'screen/at/kmk004/viewL/initScreen',

@@ -56,7 +56,8 @@ module nts.uk.at.view.kmk004.l {
 										params:{ 
 											selectedYear: selectedYear,
 											type: type,
-											selectedId: selectedIdParam
+											selectedId: selectedIdParam,
+											isLoadInitData: isLoadInitData
 										}
 									}"></div>
 									
@@ -125,7 +126,8 @@ module nts.uk.at.view.kmk004.l {
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
-
+		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
+		
 		constructor(public params: IParam) {
 			super();
 		}
@@ -159,7 +161,7 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-			vm.paramL = { isLoadData: vm.isLoadData, sidebarType: "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
+			vm.paramL = { isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
 			vm.selectedYear
 				.subscribe(() => {
 					vm.$errors('clear');
@@ -207,6 +209,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.$ajax(KMK004M_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetWkps: param })).done(() => {
 					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 						vm.close();
+						vm.isLoadInitData(true);
 						$('#box-year').focus();
 					})
 
@@ -227,6 +230,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.paramL.wkpId()})).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
+							vm.isLoadInitData(true);
 							$('#box-year').focus();
 						})
 

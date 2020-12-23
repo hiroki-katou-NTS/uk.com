@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk004.l {
 	const KMK004O_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/update',
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete',
-		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeId'
+		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeIds'
 	};
 
 	const template = `
@@ -58,7 +58,8 @@ module nts.uk.at.view.kmk004.l {
 									params:{ 
 										selectedYear: selectedYear,
 										type: type,
-										selectedId: selectedId
+										selectedId: selectedId,
+										isLoadInitData: isLoadInitData
 									}
 								}"></div>
 								
@@ -142,7 +143,8 @@ module nts.uk.at.view.kmk004.l {
 		btn_text: KnockoutObservable<string> = ko.observable('KMK004_338');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
-
+		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
+		
 		constructor(private params: IParam) {
 			super();
 			}
@@ -237,7 +239,7 @@ module nts.uk.at.view.kmk004.l {
 				isShowSelectAllButton: vm.isShowSelectAllButton(),
 				disableSelection: vm.disableSelection()
 			};
-			vm.paramL = {isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
+			vm.paramL = {isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.selectedYear
 				.subscribe(() => {
 					if (vm.selectedYear != null) {
@@ -282,6 +284,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.$ajax(KMK004O_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetShas: param })).done(() => {
 					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 						vm.close();
+						vm.isLoadInitData(true);
 						$('#box-year').focus();
 					})
 
@@ -302,6 +305,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), employeeId: vm.paramL.empId()})).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
+							vm.isLoadInitData(true);
 							$('#box-year').focus();
 						})
 
