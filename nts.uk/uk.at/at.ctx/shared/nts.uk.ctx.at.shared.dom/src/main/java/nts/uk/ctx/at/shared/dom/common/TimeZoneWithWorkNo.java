@@ -32,4 +32,9 @@ public class TimeZoneWithWorkNo {
 		this.workNo = new WorkNo(workNo);
 		this.timeZone = new TimeZone(startTime, endTime);
 	}
+
+	public TimeZoneWithWorkNo(WorkNo workNo, TimeZone timeZone) {
+		this.workNo = workNo;
+		this.timeZone = timeZone;
+	}
 }

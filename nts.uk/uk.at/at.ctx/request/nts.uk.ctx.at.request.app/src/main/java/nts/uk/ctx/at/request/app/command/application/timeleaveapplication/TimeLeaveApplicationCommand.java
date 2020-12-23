@@ -37,8 +37,7 @@ public class TimeLeaveApplicationCommand {
         List<TimeLeaveApplicationDetail> result = new ArrayList<>();
 
         commands.forEach(x -> {
-            if (x.getAppTimeType()== AppTimeType.ATWORK.value || x.getAppTimeType()== AppTimeType.OFFWORK.value ||
-                x.getAppTimeType()== AppTimeType.ATWORK2.value || x.getAppTimeType()== AppTimeType.OFFWORK2.value){
+            if (x.getAppTimeType() != AppTimeType.PRIVATE.value && x.getAppTimeType()== AppTimeType.UNION.value ){
                 result.add(new TimeLeaveApplicationDetail(
                     EnumAdaptor.valueOf(x.getAppTimeType(), AppTimeType.class),
                     Arrays.asList(new TimeZoneWithWorkNo(x.getWorkNo(),x.getStartTime(),x.getEndTime())),
@@ -89,5 +88,4 @@ public class TimeLeaveApplicationCommand {
         }
         return result;
     }
-
 }

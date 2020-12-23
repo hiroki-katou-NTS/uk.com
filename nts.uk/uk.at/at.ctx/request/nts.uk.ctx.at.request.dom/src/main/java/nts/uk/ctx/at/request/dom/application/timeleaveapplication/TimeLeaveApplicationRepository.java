@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface TimeLeaveApplicationRepository {
 
-    Optional<TimeLeaveApplication> findByKeys(String companyId, String appId, int appTimeType,int frameNo);
+    Optional<TimeLeaveApplication> findById(String companyId, String appId);
 
     void add(TimeLeaveApplication domain);
 
