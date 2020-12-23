@@ -32,7 +32,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<!--A5_5 休憩時間順序-->
 						<td class="header" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
-						<td><input tabindex="12" class="right-content"
+						<td><input class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
@@ -41,7 +41,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
-						<td><input tabindex="12" class="right-content"
+						<td><input class="right-content"
 							data-bind="
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_338]', 
@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input
-							tabindex="12" class="right-content overtimeHoursCheck"
+							class="right-content overtimeHoursCheck"
 							data-bind=" 
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
@@ -145,7 +145,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A6_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input
-							tabindex="12" class="right-content overtimeHoursCheck"
+							class="right-content overtimeHoursCheck"
 							data-bind=" 
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
@@ -204,7 +204,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
 						<td data-bind="style: {'background-color': backgroundColor()}">
-						<input tabindex="12" class="right-content"
+						<input class="right-content"
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
@@ -245,7 +245,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<td class="header" data-bind="text: displayNo"></td>
 						<!--A5_6 開始時刻-->
 						<td data-bind="style: {'background-color': backgroundColor()}">
-						<input tabindex="12" class="right-content"
+						<input class="right-content"
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
@@ -272,8 +272,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
-
 
 
 	`

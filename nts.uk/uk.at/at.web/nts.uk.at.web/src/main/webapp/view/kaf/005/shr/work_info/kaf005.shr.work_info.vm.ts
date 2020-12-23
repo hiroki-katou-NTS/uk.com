@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		</div>
 		<div class="cell valign-top" data-bind="if: visibleModel.c26() && visibleModel.c7()" style="width: 25px;">
 			<!--A4_7 選択ボタン-->
-			<button tabindex="7" style="margin-left: 18px" class="workSelect"
+			<button style="margin-left: 18px" class="workSelect"
 				data-bind="enable: true, click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
 		</div>
 		<div class="cell valign-center">
@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div class="cell valign-center">
 				<div>
 					<!--A4_9 勤務時間From1-->
-					<input tabindex="8"
+					<input 
 						class="row-cell-margin inputTime-kaf005 right-content"
 						id="inpStartTime1"
 						data-bind="ntsTimeWithDayEditor: { 
@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div class="cell valign-center">
 				<div class="row-cell-margin">
 					<!--A4_11 勤務時間To1-->
-					<input tabindex="9" id="inpEndTime1"
+					<input id="inpEndTime1"
 						class="right-content inputTime-kaf005"
 						data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_334]',
 						 constraint:'TimeWithDayAttr',
@@ -87,7 +87,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div class="cell valign-center">
 				<div>
 					<!--A4_12 勤務時間From1-->
-					<input tabindex="8"
+					<input
 						class="row-cell-margin inputTime-kaf005 right-content"
 						id="inpStartTime2"
 						data-bind="ntsTimeWithDayEditor: { 
@@ -105,7 +105,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div class="cell valign-center">
 				<div class="row-cell-margin">
 					<!--A4_14 勤務時間To1-->
-					<input tabindex="9" id="inpEndTime2"
+					<input id="inpEndTime2"
 						class="right-content inputTime-kaf005"
 						data-bind="ntsTimeWithDayEditor: {
 						name: '#[KAF005_334]',
