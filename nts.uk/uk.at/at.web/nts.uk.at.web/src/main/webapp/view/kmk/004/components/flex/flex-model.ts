@@ -90,7 +90,7 @@ module nts.uk.at.kmk004.components.flex {
 			const vm = this;
 			let workTimes: Array<IMonthlyWorkTimeSetCom> = [];
 			for (let i = 0; i < 12; i++) {
-				workTimes.push({ yearMonth: Number(moment().format("YYYY")) * 100 + (ym % 100) + i, laborTime: { withinLaborTime: 0, legalLaborTime: 0, weekAvgTime: 0 } });
+				workTimes.push({ yearMonth: Number(moment().format("YYYY")) * 100 + (ym % 100) + i, laborTime: { withinLaborTime: null, legalLaborTime: null, weekAvgTime: null } });
 			}
 			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
 			vm.monthlyWorkTimeSetComs(setComs);
@@ -207,8 +207,8 @@ module nts.uk.at.kmk004.components.flex {
 			});
 			vm.serverData = { year: year, data: workTimes };
 			vm.unSaveSetComs.push({ year: year, data: workTimes });
-			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
-			vm.monthlyWorkTimeSetComs(setComs);
+			/*let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
+			vm.monthlyWorkTimeSetComs(setComs);*/
 		}
 
 		updateData(param: IScreenData) {

@@ -105,9 +105,9 @@ class ScreenJComponent extends ko.ViewModel {
 			if (!yearInput || !vm.screenData().selected()) {
 				_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
 					item.laborTime().checkbox(false);
-					item.laborTime().legalLaborTime(0);
-					item.laborTime().weekAvgTime(0);
-					item.laborTime().withinLaborTime(0);
+					item.laborTime().legalLaborTime(null);
+					item.laborTime().weekAvgTime(null);
+					item.laborTime().withinLaborTime(null);
 				});
 				return;
 			}
@@ -269,7 +269,7 @@ class ScreenJComponent extends ko.ViewModel {
 					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 					vm.screenData().serverYears(data.yearList);
 					vm.screenData().unSaveSetComs = [];
-
+					data.yearList.reverse();
 					if (vm.screenData().selectedYear() == data.yearList[0]) {
 						vm.screenData().selectedYear.valueHasMutated();
 					} else {

@@ -148,8 +148,8 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				let yearList = vm.screenData().yearList();
 				yearList.push(new YearItem(Number(result.year), true));
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
-				vm.screenData().setNewYear(vm.screenData().yearList()[0].year);
 				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
+				vm.screenData().setNewYear(vm.screenData().yearList()[0].year);
 			}
 		});
 	}
@@ -161,7 +161,11 @@ class MonthlyWorkingHours extends ko.ViewModel {
 			data = ko.mapping.toJS(vm.screenData().monthlyWorkTimeSetComs()),
 			total = _.sumBy(data, 'laborTime.' + attributeName);
 
-		if (!vm.screenData().monthlyWorkTimeSetComs().length) {
+		if (
+			!vm.screenData().monthlyWorkTimeSetComs().length
+			|| data[0].laborTime.withinLaborTime == null
+			|| data[0].laborTime.legalLaborTime == null
+			|| data[0].laborTime.weekAvgTime == null) {
 			return '';
 		}
 		return nts.uk.time.format.byId("Clock_Short_HM", total);

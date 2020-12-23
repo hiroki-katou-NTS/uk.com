@@ -95,9 +95,9 @@ class ScreenHComponent extends ko.ViewModel {
 
 				_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
 					item.laborTime().checkbox(false);
-					item.laborTime().legalLaborTime(0);
-					item.laborTime().weekAvgTime(0);
-					item.laborTime().withinLaborTime(0);
+					item.laborTime().legalLaborTime(null);
+					item.laborTime().weekAvgTime(null);
+					item.laborTime().withinLaborTime(null);
 				});
 
 				return;

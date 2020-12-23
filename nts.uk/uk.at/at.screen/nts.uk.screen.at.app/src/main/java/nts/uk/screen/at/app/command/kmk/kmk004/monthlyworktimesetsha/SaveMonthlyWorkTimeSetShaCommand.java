@@ -2,14 +2,16 @@ package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * 
  * @author sonnlb
  *
  */
-@Value
+@AllArgsConstructor
+@Data
 public class SaveMonthlyWorkTimeSetShaCommand {
 	// 社員別月単位労働時間（List）
 	private List<MonthlyWorkTimeSetShaCommand> workTimeSetShas;

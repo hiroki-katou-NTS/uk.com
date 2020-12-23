@@ -3,15 +3,15 @@ package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 
 /**
  * 
  * @author sonnlb
  *
  */
-@Value
 @AllArgsConstructor
+@Data
 public class SaveMonthlyWorkTimeSetWkpCommand {
 	// 職場別月単位労働時間（List）
 	private List<MonthlyWorkTimeSetWkpCommand> workTimeSetWkps;

@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.command.kmk.kmk004;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-@AllArgsConstructor
 public class MonthlyWorkTimeSetCommand {
 
 	/** 勤務区分 */
@@ -22,4 +20,12 @@ public class MonthlyWorkTimeSetCommand {
 
 	/** 月労働時間 */
 	private MonthlyLaborTimeCommand laborTime;
+
+	public MonthlyWorkTimeSetCommand(int laborAttr, int yearMonth, MonthlyLaborTimeCommand laborTime) {
+		super();
+		this.laborAttr = laborAttr;
+		this.yearMonth = yearMonth;
+		this.laborTime = laborTime;
+	}
+
 }
