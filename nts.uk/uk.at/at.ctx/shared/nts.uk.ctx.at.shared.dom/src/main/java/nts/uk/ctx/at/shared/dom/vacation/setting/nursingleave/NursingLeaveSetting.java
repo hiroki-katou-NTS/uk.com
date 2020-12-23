@@ -43,6 +43,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 
 	/** 欠勤枠NO */
 	private Optional<Integer> workAbsence;
+	
 	/** 時間介護看護設定 */
 	private TimeCareNursingSet timeCareNursingSetting;
 
@@ -87,6 +88,11 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setHdspFrameNo(this.specialHolidayFrame);
 		memento.setAbsenceFrameNo(this.workAbsence);
 		memento.setTimeCareNursingSet(this.timeCareNursingSetting);
+		memento.setNumPer1(1);
+		memento.setNumPer2(2);
+	
+		
+		
 	}
 //	/**
 //	 * 家族情報から対象人数を履歴で求める

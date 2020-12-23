@@ -44,13 +44,13 @@ public class GetSettingCompensaLeave {
 				Optional<ComSubstVacation> comSub = require.findComById(companyID);
 				if (comSub.isPresent()) {
 					ComSubstVacation comSubSet = comSub.get();
-					/*if (comSubSet.isManaged()) {
+					if (comSubSet.isManaged()) {
 						subManageFlag = true;
 						// 振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
 						expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
 						// refactor RQ204
 						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
-					}*/
+					}
 				}
 			}
 		}

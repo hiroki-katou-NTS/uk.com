@@ -28,48 +28,20 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
         this.entity = entity;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingSetMemento#setCompanyId(java.lang.String)
-     */
     @Override
     public void setCompanyId(String companyId) {
         this.entity.setCid(companyId);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingSetMemento#setTimeManageType(nts.uk.ctx.at.shared.dom.
-     * vacation.setting.ManageDistinct)
-     */
     @Override
     public void setTimeManageType(ManageDistinct timeManageType) {
         this.entity.setTimeManageAtr(timeManageType.value);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingSetMemento#setTimeUnit(nts.uk.ctx.at.shared.dom.
-     * vacation.setting.TimeVacationDigestiveUnit)
-     */
     @Override
     public void setTimeUnit(TimeDigestiveUnit timeUnit) {
         this.entity.setTimeUnit(timeUnit.value);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingSetMemento#setMaxYearDayLeave(nts.uk.ctx.at.shared.dom
-     * .vacation.setting.annualpaidleave.YearVacationTimeMaxDay)
-     */
     @Override
     public void setMaxYearDayLeave(TimeAnnualMaxDay maxYearDayLeave) {
         this.entity.setTimeMaxDayManageAtr(maxYearDayLeave.manageType.value);
@@ -77,23 +49,6 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
         this.entity.setTimeMaxDayUnifComp(maxYearDayLeave.maxNumberUniformCompany.v());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingSetMemento#setEnoughTimeOneDay(boolean)
-     */
-    @Override
-    public void setEnoughTimeOneDay(boolean isEnoughTimeOneDay) {
-        this.entity.setIsEnoughTimeOneDay(isEnoughTimeOneDay == true ? 1 : 0);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeAnnualSettingSetMemento#setRoundProcessClassific
-     * (nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla)
-     */
 	@Override
 	public void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla) {
 		this.entity.setRoundProcessCla(timeAnnualRoundProcesCla.value);

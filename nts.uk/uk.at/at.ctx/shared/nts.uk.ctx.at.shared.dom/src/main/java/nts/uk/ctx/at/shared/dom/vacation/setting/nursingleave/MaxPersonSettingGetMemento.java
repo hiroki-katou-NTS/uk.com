@@ -21,5 +21,5 @@ public interface MaxPersonSettingGetMemento {
      *
      * @return the nursing number person
      */
-    NumberDayNursing getNursingNumberPerson();
+    NumberDayNursing getNursingNumberLeaveDay2();
 }

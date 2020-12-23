@@ -108,13 +108,13 @@ public class AbsenceTenProcess {
 				if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
 					result.setSubstitutionFlg(true);
-					result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+				/*	result.setExpirationOfsubstiHoliday(
+							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);*/
 					// add refactor RequestList203
-					result.setAdvancePayment(compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
+				/*	result.setAdvancePayment(compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);*/
+					/*isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
+							.getIsManageByTime().value;*/
+				/*	digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;*/
 				} else {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理しない
 					result.setSubstitutionFlg(false);
@@ -186,7 +186,7 @@ public class AbsenceTenProcess {
 			}else{//０件(0 data)
 				//ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
 				Optional<ComSubstVacation>  comSub = require.comSubstVacation(companyID);
-			/*	if(comSub.isPresent()){
+				if(comSub.isPresent()){
 					ComSubstVacation comSubSet = comSub.get();
 					if(comSubSet.isManaged()){
 						subManageFlag = true;
@@ -195,7 +195,7 @@ public class AbsenceTenProcess {
 						//refactor RQ204
 						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
 					}
-				}*/
+				}
 			}
 		}
 		return new LeaveSetOutput(subManageFlag, expirationOfLeave, applyPermission);
