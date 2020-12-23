@@ -1494,7 +1494,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as OverTime;
 	
 								if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
-									findOverTimeArray.actualTime(item.applicationTime);
+									if (item.applicationTime > 0) {
+										findOverTimeArray.actualTime(item.applicationTime);										
+									}
 								}
 							})
 							
@@ -1508,7 +1510,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							if (!_.isNil(overTimeShiftNight)) {
 								let findItem = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.MIDNIGHT_OUTSIDE);
 								if (!_.isNil(findItem)) {
-									findItem.actualTime(overTimeShiftNight.overTimeMidNight);
+									let time = overTimeShiftNight.overTimeMidNight || 0;
+									if (time > 0) {
+										findItem.actualTime(overTimeShiftNight.overTimeMidNight);										
+									}
 								}
 							}
 							
@@ -1517,7 +1522,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							{
 								let findItem = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(findItem)) {
-									findItem.actualTime(applicationTimeRoot.flexOverTime);
+									let time = applicationTimeRoot.flexOverTime || 0;
+									if (time > 0) {
+										findItem.actualTime(applicationTimeRoot.flexOverTime);										
+									}
 								}
 							}
 							
@@ -1638,7 +1646,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								let findOverTimeArray = _.find(overTimeArray, { frameNo: String(item.frameNo) }) as OverTime;
 	
 								if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
-									findOverTimeArray.actualTime(item.applicationTime);
+									if (item.applicationTime > 0) {
+										findOverTimeArray.actualTime(item.applicationTime);										
+									}
 								}
 							})
 							
@@ -1652,7 +1662,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							if (!_.isNil(overTimeShiftNight)) {
 								let findItem = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.MIDNIGHT_OUTSIDE);
 								if (!_.isNil(findItem)) {
-									findItem.actualTime(overTimeShiftNight.overTimeMidNight);
+									let time = overTimeShiftNight.overTimeMidNight || 0;
+									if (time > 0) {
+										findItem.actualTime(overTimeShiftNight.overTimeMidNight);										
+									}
 								}
 							}
 							
@@ -1661,7 +1674,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							{
 								let findItem = _.find(overTimeArray, (item: OverTime) => item.type == AttendanceType.FLEX_OVERTIME);
 								if (!_.isNil(findItem)) {
-									findItem.actualTime(applicationTimeRoot.flexOverTime);
+									let time = applicationTimeRoot.flexOverTime || 0;
+									if (time > 0) {
+										findItem.actualTime(applicationTimeRoot.flexOverTime);										
+									}
 								}
 							}
 							
@@ -1866,7 +1882,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 									let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
 		
 									if (!_.isNil(findHolidayTimeArray) && item.attendanceType == AttendanceType.BREAKTIME) {
-										findHolidayTimeArray.actualTime(item.applicationTime);
+										if (item.applicationTime > 0) {
+											findHolidayTimeArray.actualTime(item.applicationTime);											
+										}
 									}
 								})
 							}
@@ -1880,17 +1898,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 										if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
 											let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
 											if (!_.isNil(findItem)) {
-												findItem.actualTime(item.attendanceTime);
+												if (item.attendanceTime > 0) {
+													findItem.actualTime(item.attendanceTime);													
+												}
 											}
 										} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
 											let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
 											if (!_.isNil(findItem)) {
-												findItem.actualTime(item.attendanceTime);
+												if (item.attendanceTime > 0) {
+													findItem.actualTime(item.attendanceTime);													
+												}
 											}
 										} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
 											let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
 											if (!_.isNil(findItem)) {
-												findItem.actualTime(item.attendanceTime);
+												if (item.attendanceTime > 0) {
+													findItem.actualTime(item.attendanceTime);													
+												}
 											}
 										}
 									});
@@ -2033,7 +2057,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 									let findHolidayTimeArray = _.find(holidayTimeArray, { frameNo: String(item.frameNo) }) as HolidayTime;
 		
 									if (!_.isNil(findHolidayTimeArray) && item.attendanceType == AttendanceType.BREAKTIME) {
-										findHolidayTimeArray.actualTime(item.applicationTime);
+										if (item.applicationTime > 0) {
+											findHolidayTimeArray.actualTime(item.applicationTime);											
+										}
 									}
 								})
 							}
@@ -2047,17 +2073,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 										if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
 											let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_BREAK_TIME);
 											if (!_.isNil(findItem)) {
-												findItem.actualTime(item.attendanceTime);
+												if (item.attendanceTime > 0) {
+													findItem.actualTime(item.attendanceTime);													
+												}
 											}
 										} else if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
 											let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY);
 											if (!_.isNil(findItem)) {
-												findItem.actualTime(item.attendanceTime);
+												if (item.attendanceTime > 0) {
+													findItem.actualTime(item.attendanceTime);													
+												}
 											}
 										} else if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
 											let findItem = _.find(holidayTimeArray, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY);
 											if (!_.isNil(findItem)) {
-												findItem.actualTime(item.attendanceTime);
+												if (item.attendanceTime > 0) {
+													findItem.actualTime(item.attendanceTime);													
+												}
 											}
 										}
 									});
