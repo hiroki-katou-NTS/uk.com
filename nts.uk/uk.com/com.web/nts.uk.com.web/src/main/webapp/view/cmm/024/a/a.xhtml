@@ -54,7 +54,7 @@
                                 data-bind="with: modelA" tabindex="-1">
                                 <div data-bind="foreach: approverPanel">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
-                                                        action: function($data){ vm.showDialogScreenF(1, 'A') } 
+                                                        action: function($data){ $vm.showDialogScreenF(1, 'A') } 
                                                     }, 
                                                     text: displayName,
                                                     css: {
@@ -76,7 +76,7 @@
                                 tabindex="-1">
                                 <div data-bind="foreach: employeesRepresentative">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
-                                                        action: function($data){ vm.showDialogScreenF(2, 'A') } 
+                                                        action: function($data){ $vm.showDialogScreenF(2, 'A') } 
                                                     }, 
                                                     text: displayName,
                                                     css: {

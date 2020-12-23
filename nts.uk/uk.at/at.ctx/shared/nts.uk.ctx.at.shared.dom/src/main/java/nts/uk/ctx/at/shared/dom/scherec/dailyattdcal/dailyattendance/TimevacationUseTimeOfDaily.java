@@ -108,7 +108,6 @@ public class TimevacationUseTimeOfDaily {
 		return result;
 	}
 	
-	
 	/**
 	 * 
 	 * 合計使用時間の計算
@@ -117,11 +116,11 @@ public class TimevacationUseTimeOfDaily {
 		int result = 0;
 		
 		result = this.timeAnnualLeaveUseTime.valueAsMinutes()
-				+this.timeCompensatoryLeaveUseTime.valueAsMinutes()
-				+this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
-				+this.timeSpecialHolidayUseTime.valueAsMinutes()
-				+this.timeChildCareHolidayUseTime.valueAsMinutes()
-				+this.timeCareHolidayUseTime.valueAsMinutes();
+				+ this.timeCompensatoryLeaveUseTime.valueAsMinutes()
+				+ this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
+				+ this.timeSpecialHolidayUseTime.valueAsMinutes()
+				+ this.timeChildCareHolidayUseTime.valueAsMinutes()
+				+ this.timeCareHolidayUseTime.valueAsMinutes();
 		return result;
 	}
 }

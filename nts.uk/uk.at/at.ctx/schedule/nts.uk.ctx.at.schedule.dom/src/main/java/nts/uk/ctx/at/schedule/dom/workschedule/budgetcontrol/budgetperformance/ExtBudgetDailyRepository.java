@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
