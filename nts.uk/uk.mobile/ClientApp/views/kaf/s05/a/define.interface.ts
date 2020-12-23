@@ -208,16 +208,26 @@ export enum OvertimeAppAtr {
 export enum AttendanceType {
 
     NORMALOVERTIME,
+
     BREAKTIME,
+
     BONUSPAYTIME,
+
     BONUSSPECIALDAYTIME,
+
     MIDNIGHT,
+
     SHIFTNIGHT,
-    MIDDLE_BREAK_TIME,
-    MIDDLE_EXORBITANT_HOLIDAY,
-    MIDDLE_HOLIDAY_HOLIDAY,
-    FLEX_OVERTIME,
-    MIDNIGHT_OUTSIDE
+
+    MIDDLE_BREAK_TIME, // 法定内休出
+
+    MIDDLE_EXORBITANT_HOLIDAY, // 法定外休出
+
+    MIDDLE_HOLIDAY_HOLIDAY, // 祝日休出
+
+    FLEX_OVERTIME, // フレックス超過時間
+
+    MIDNIGHT_OUTSIDE // 残業深夜時間
     
     
     

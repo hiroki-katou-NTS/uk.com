@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -167,6 +168,7 @@ public class OvertimeLeaveAppCommonSet {
 					excessStateMidnights = midNightHolidayTimes.stream()
 															   .map(x -> new ExcessStateMidnight(ExcessState.NO_EXCESS, x.getLegalClf()) )
 															   .collect(Collectors.toList());
+					outDateApplication.setExcessStateMidnight(excessStateMidnights);
 					
 				}
 				
@@ -191,7 +193,7 @@ public class OvertimeLeaveAppCommonSet {
 		// true INPUT．「事前の申請時間」があるかチェックする
 		if (!advanceOp.isPresent()) {
 			output.setIsAlarm(true);
-			if (!outDateApplication.getExcessStateDetail().isEmpty()) {
+			if (!CollectionUtil.isEmpty(outDateApplication.getExcessStateDetail())) {
 				// loop 1
 				outDateApplication.getExcessStateDetail().forEach(item -> {
 					if (item.getType() == AttendanceType_Update.NORMALOVERTIME) {
@@ -224,7 +226,13 @@ public class OvertimeLeaveAppCommonSet {
 			}
 			// loop3
 			outDateApplication.getExcessStateMidnight().forEach(item -> {
-				Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get().getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
+				Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get()
+						.getOverTimeShiftNight()
+						.map(x -> x.getMidNightHolidayTimes())
+						.orElse(Collections.emptyList())
+						.stream()
+						.filter(x -> x.getLegalClf() == item.getLegalCfl())
+						.findFirst();
 				Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(0);
 				if (time2 > 0) {
 					item.setExcessState(ExcessState.EXCESS_ALARM);
@@ -248,7 +256,7 @@ public class OvertimeLeaveAppCommonSet {
 		}
 		ApplicationTime advance = advanceOp.get();
 		
-		if (!outDateApplication.getExcessStateDetail().isEmpty()) {
+		if (!CollectionUtil.isEmpty(outDateApplication.getExcessStateDetail())) {
 			// loop 1
 			outDateApplication.getExcessStateDetail().forEach(item -> {
 				if (item.getType() == AttendanceType_Update.NORMALOVERTIME) {
@@ -288,8 +296,20 @@ public class OvertimeLeaveAppCommonSet {
 		}
 		// loop3
 		outDateApplication.getExcessStateMidnight().forEach(item -> {
-			Optional<HolidayMidNightTime> advanceResultOp = advance.getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
-			Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get().getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
+			Optional<HolidayMidNightTime> advanceResultOp = advance
+					.getOverTimeShiftNight()
+					.flatMap(x -> Optional.ofNullable(x.getMidNightHolidayTimes()))
+					.orElse(Collections.emptyList())
+					.stream()
+					.filter(x -> x.getLegalClf() == item.getLegalCfl())
+					.findFirst();
+			Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get()
+					.getOverTimeShiftNight()
+					.flatMap(x -> Optional.ofNullable(x.getMidNightHolidayTimes()))
+					.orElse(Collections.emptyList())
+					.stream()
+					.filter(x -> x.getLegalClf() == item.getLegalCfl())
+					.findFirst();
 			Integer time1 = advanceResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
 			Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
 			if (isGreater(time1, time2)) {
@@ -381,6 +401,7 @@ public class OvertimeLeaveAppCommonSet {
 				// INPUT．「事後の申請時間．休出深夜時間．法定区分 = 祝日休出」がある場合：
 				if (!CollectionUtil.isEmpty(midNightHolidayTimes)) {
 					excessStateMidnights = midNightHolidayTimes.stream().map(x -> new ExcessStateMidnight(ExcessState.NO_EXCESS, x.getLegalClf()) ).collect(Collectors.toList());
+					outDateApplication.setExcessStateMidnight(excessStateMidnights);
 					
 				}
 				
@@ -410,7 +431,7 @@ public class OvertimeLeaveAppCommonSet {
 			if ((this.performanceExcessAtr == AppDateContradictionAtr.CHECKREGISTER)) {
 				output.setExcessState(ExcessState.EXCESS_ALARM);	
 			}
-			if (!outDateApplication.getExcessStateDetail().isEmpty()) {
+			if (!CollectionUtil.isEmpty(outDateApplication.getExcessStateDetail())) {
 				// loop 1
 				outDateApplication.getExcessStateDetail().forEach(item -> {
 					if (item.getType() == AttendanceType_Update.NORMALOVERTIME) {
@@ -461,7 +482,7 @@ public class OvertimeLeaveAppCommonSet {
 		}
 		ApplicationTime archivement = archivementOp.get();
 		
-		if (!outDateApplication.getExcessStateDetail().isEmpty()) {
+		if (!CollectionUtil.isEmpty(outDateApplication.getExcessStateDetail())) {
 			// loop 1
 			outDateApplication.getExcessStateDetail().forEach(item -> {
 				if (item.getType() == AttendanceType_Update.NORMALOVERTIME) {
@@ -493,8 +514,19 @@ public class OvertimeLeaveAppCommonSet {
 		}
 		// loop3
 		outDateApplication.getExcessStateMidnight().forEach(item -> {
-			Optional<HolidayMidNightTime> archivementResultOp = archivement.getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
-			Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get().getOverTimeShiftNight().get().getMidNightHolidayTimes().stream().filter(x -> x.getLegalClf() == item.getLegalCfl()).findFirst();
+			Optional<HolidayMidNightTime> archivementResultOp = archivement.getOverTimeShiftNight()
+					.map(x -> x.getMidNightHolidayTimes())
+					.orElse(Collections.emptyList())
+					.stream()
+					.filter(x -> x.getLegalClf() == item.getLegalCfl())
+					.findFirst();
+			Optional<HolidayMidNightTime> subsequentResultOp = subsequentOp.get()
+					.getOverTimeShiftNight()
+					.map(x -> x.getMidNightHolidayTimes())
+					.orElse(Collections.emptyList())
+					.stream()
+					.filter(x -> x.getLegalClf() == item.getLegalCfl())
+					.findFirst();
 			Integer time1 = archivementResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
 			Integer time2 = subsequentResultOp.flatMap(x -> Optional.ofNullable(x.getAttendanceTime())).map(x -> x.v()).orElse(null);
 			if (isGreater(time1, time2)) {

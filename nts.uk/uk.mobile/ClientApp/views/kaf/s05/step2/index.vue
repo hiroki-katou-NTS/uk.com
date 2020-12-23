@@ -46,7 +46,7 @@
               name=""
               v-bind:require="false"
               v-bind:showTitle="true"
-              v-bind:disabled="false"
+              v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
           </div>
@@ -88,7 +88,7 @@
               name=""
               v-bind:require="false"
               v-bind:showTitle="true"
-              v-bind:disabled="false"
+              v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
           </div>

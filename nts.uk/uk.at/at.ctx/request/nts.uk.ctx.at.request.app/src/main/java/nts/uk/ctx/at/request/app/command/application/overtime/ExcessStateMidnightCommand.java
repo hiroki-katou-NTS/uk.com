@@ -6,6 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessStateMidnight;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +19,6 @@ public class ExcessStateMidnightCommand {
 	public ExcessStateMidnight toDomain() {
 		return new ExcessStateMidnight(
 				EnumAdaptor.valueOf(excessState, ExcessState.class),
-				EnumAdaptor.valueOf(legalCfl, StaturoryAtrOfHolidayWork.class));
+				StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(EnumAdaptor.valueOf(legalCfl, HolidayAtr.class)));
 	}
 }

@@ -298,9 +298,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_342') + '</p>', 
 								key: 'confirmPerson', 
 								dataType: 'string', 
-								width: '75px', 
+								width: '150px', 
 								headerCssClass: 'kaf018-b-header-emp-confirm',
-								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: string) => {
 									if(!key) {
 										return "";
@@ -311,15 +310,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							{ 
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_343') + '</p>', 
 								key: 'date', 
-								dataType: 'date', 
-								width: '75px', 
+								dataType: 'string', 
+								width: '100px', 
 								headerCssClass: 'kaf018-b-header-emp-confirm',
-								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: any) => {
 									if(!key) {
 										return "";
 									}
-									return key;
+									return moment(key).format('YYYY/MM/DD');
 								},
 							}
 						]
@@ -422,9 +420,38 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					wkpInfo = _.find(vm.dataSource, o => o.wkpID==ui.rowKey),
-					displayConfirm = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).displayConfirm,
-					hParam: KAF018HParam = { closureItem, startDate, endDate, wkpInfo, displayConfirm };
-				vm.$window.modal('/view/kaf/018/h/index.xhtml', hParam);
+					displayConfirm = wkpInfo.displayConfirm,
+					confirmEmp = wkpInfo.confirmPerson,
+					confirmDate = wkpInfo.date,
+					hParam: KAF018HParam = { closureItem, startDate, endDate, wkpInfo, displayConfirm, confirmEmp, confirmDate };
+				vm.$window.modal('/view/kaf/018/h/index.xhtml', hParam).then((result: any) => {
+					if(result) {
+						if(result.isActiveConfirm) {
+							let closureId = closureItem.closureId,
+								processingYm = closureItem.processingYm,
+								wkpInfoLst = [_.find(vm.selectWorkplaceInfo, o => o.id==ui.rowKey)],
+								afterConfirmParam = {closureId, processingYm, wkpInfoLst};
+							vm.$blockui('show');
+							vm.$ajax('at', API.getEmploymentConfirmInfoAfter, afterConfirmParam).then((afterConfirmData: any) => {
+								_.forEach(vm.dataSource, x => {
+									if(x.wkpID!=ui.rowKey) {
+										return;	
+									}
+									if(afterConfirmData) {
+										x.displayConfirm = true;
+										x.confirmPerson = _.keys(afterConfirmData)[0];
+										x.date = _.values(afterConfirmData)[0].toString();
+									} else {
+										x.displayConfirm = false;
+										x.confirmPerson = '';
+										x.date = '';
+									}
+								});
+								$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
+							});
+						}
+					}	
+				});
 			}
 		}
 		
@@ -451,7 +478,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
 							return o.countUnApprMonth;
 						case ApprovalStatusMailType.WORK_CONFIRMATION:
-							return o.displayConfirm;
+							return o.countEmp > 0 && !o.displayConfirm;
 						default:
 							return false;
 					}
@@ -502,6 +529,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	}	
 
 	const API = {
-		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution"
+		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution",
+		getEmploymentConfirmInfoAfter: "at/request/application/approvalstatus/getEmploymentConfirmInfoAfter"
 	}
 }

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
@@ -54,7 +55,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private AppRecordImageRepository appRecordImageRepository;
 
 	@Inject
-	private OvertimeRepository overtimeRepository;
+	private AppOverTimeRepository overtimeRepository;
 
 	@Inject
 	private GoBackDirectlyRepository goBackDirectlyRepository;
@@ -100,7 +101,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 			}
 			break;
 		case OVER_TIME_APPLICATION:
-			overtimeRepository.delete(companyID, appID);
+			overtimeRepository.remove(companyID, appID);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			goBackDirectlyRepository.delete(companyID, appID);
