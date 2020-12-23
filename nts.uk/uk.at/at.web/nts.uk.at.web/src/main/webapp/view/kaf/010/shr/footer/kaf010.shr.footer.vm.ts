@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
     const template = `
 	<div id="kaf000-a-component5">
 	<div class="table" style="margin-bottom: 5px;" data-bind="visible: $parent.selectReflectDivergenceCheck()">
-		<div class="cell col-1">
+		<div class="cell" style="width: 120px;">
 			<div class="cell valign-center" data-bind="ntsFormLabel: { text: $i18n('KAF010_90') }"></div>
 		</div>
 		<div class="cell valign-center">
@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 		</div>
 	</div>
 	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.selectReflectDivergenceCheck()">
-		<div class="cell col-1">
+		<div class="cell" style="width: 120px;">
 			<div class="cell valign-center" data-bind="ntsFormLabel: { 
 													text: $i18n('KAF010_92'),
 													constraint: 'DivergenceReasonContent',

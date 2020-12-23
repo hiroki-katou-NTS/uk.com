@@ -116,6 +116,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						if(vm.mode() == MODE.MULTiPLE_AGENT){
 							return;
 						}
+						vm.itemControlHandler();
 						if (value == 0) {
 							console.log('trigger1')
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
@@ -230,16 +231,17 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			// ※28
 			self.managementMultipleWorkCyclescheck(self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
 			
-			// ※27
-			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useInputDivergenceReason == true) {
-				self.inputReflectDivergenceCheck(true);
+			if(self.application().prePostAtr() == 1){
+				// ※27
+				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useInputDivergenceReason == true) {
+					self.inputReflectDivergenceCheck(true);
+				}
+				// ※26
+				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useComboDivergenceReason == true) {
+					self.selectReflectDivergenceCheck(true);
+				}
 			} else {
 				self.inputReflectDivergenceCheck(false);
-			}
-			// ※26
-			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useComboDivergenceReason == true) {
-				self.selectReflectDivergenceCheck(true);
-			} else {
 				self.selectReflectDivergenceCheck(false);
 			}
 			// ※23
@@ -405,7 +407,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			vm.$blockui("show");
 			let appHolidayWork = vm.toAppHolidayWork();
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inpStartTime1', '#inpEndTime1')
 				.then(isValid => {
 					if (isValid) {
 						return true;
@@ -470,7 +472,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 			let approvalRootContentMap: any = null;
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inpStartTime1', '#inpEndTime1')
 				.then(isValid => {
 					if (isValid) {
 						return true;
@@ -532,8 +534,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		setComboDivergenceReason(res: AppHdWorkDispInfo) {
 			const self = this;
-			if(res.comboDivergenceReason){
-				self.comboDivergenceReason([res.comboDivergenceReason]);
+			if(res.comboDivergenceReason && res.comboDivergenceReason.length > 0){
+				self.comboDivergenceReason(res.comboDivergenceReason);
 			}
 			let defaultReasonTypeItem = _.find(res.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
 			if(_.isUndefined(defaultReasonTypeItem)) {
@@ -1253,8 +1255,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		openDialogKdl005() {
 			const self = this;
+			let employeeIdList = [];
+			if(self.employeeIdLst && self.employeeIdLst.length > 0){
+				employeeIdList = self.employeeIdLst;
+			} else {
+				employeeIdList = [self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].sid];
+			}
 			nts.uk.ui.windows.setShared( 'KDL005_DATA', {
-				employeeIds: self.employeeIdLst,
+				employeeIds: employeeIdList,
 				baseDate: self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate.replaceAll('/', ""),
             }, true);
 
@@ -1391,111 +1399,116 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		calculate() {
 			const self = this;
 			
-			let command = {} as ParamCalculationHolidayWork;
-			let workContent = {} as WorkContent;
-			let workInfo = self.workInfo() as WorkInfo;
-			workContent.workTypeCode = workInfo.workType().code as string;
-			workContent.workTimeCode = workInfo.workTime().code as string;
-			let breakTimeArray = [] as Array<BreakTime>;
-			let restTime = self.restTime() as Array<RestTime>;
-			let timeZoneArray = [] as Array<TimeZone>;
+			self.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inpStartTime1', '#inpEndTime1')
+				.then(isValid => {
+					if (isValid) {
+						let command = {} as ParamCalculationHolidayWork;
+						let workContent = {} as WorkContent;
+						let workInfo = self.workInfo() as WorkInfo;
+						workContent.workTypeCode = workInfo.workType().code as string;
+						workContent.workTimeCode = workInfo.workTime().code as string;
+						let breakTimeArray = [] as Array<BreakTime>;
+						let restTime = self.restTime() as Array<RestTime>;
+						let timeZoneArray = [] as Array<TimeZone>;
 
-			command.companyId = self.$user.companyId;
-			command.employeeId = self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].sid;
-			command.date = self.application().appDate();
-			command.prePostAtr = self.application().prePostAtr();
-			command.overtimeLeaveAppCommonSet = self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet;
-			if (!_.isNil(self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst)) {
-				command.preApplicationTime = self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].appHolidayWork && 
-					self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].appHolidayWork.applicationTime;
-			} 
-			command.actualApplicationTime = self.dataSource.hdWorkDispInfoWithDateOutput.actualApplicationTime;
+						command.companyId = self.$user.companyId;
+						command.employeeId = self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].sid;
+						command.date = self.application().appDate();
+						command.prePostAtr = self.application().prePostAtr();
+						command.overtimeLeaveAppCommonSet = self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet;
+						if (!_.isNil(self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst)) {
+							command.preApplicationTime = self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].appHolidayWork && 
+								self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].appHolidayWork.applicationTime;
+						} 
+						command.actualApplicationTime = self.dataSource.hdWorkDispInfoWithDateOutput.actualApplicationTime;
 
-			let timeZone1 = {} as TimeZone;
-			if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
-				timeZone1.frameNo = 1;
-				timeZone1.start = workInfo.workHours1.start();
-				timeZone1.end = workInfo.workHours1.end();
-				timeZoneArray.push(timeZone1);
-			}
-			if(!self.managementMultipleWorkCyclescheck()){
-				let timeZone2 = {} as TimeZone;
-				if (!(_.isNil(workInfo.workHours2.start()) || _.isNil(workInfo.workHours2.end()))) {
-					timeZone2.frameNo = 2;
-					timeZone2.start = workInfo.workHours2.start();
-					timeZone2.end = workInfo.workHours2.end();
-					timeZoneArray.push(timeZone2);
-				}
-			}
-			restTime.forEach(item => {
-				if (!(_.isNil(ko.toJS(item.start)) || _.isNil(ko.toJS(item.end)))) {
-					let breakTime = {} as BreakTime;
-					breakTime.breakFrameNo = Number(item.frameNo);
-					breakTime.startTime = ko.toJS(item.start);
-					breakTime.endTime = ko.toJS(item.end);
-					breakTime.breakTime = 0;
-					breakTimeArray.push(breakTime);
-				}
-			})
-			workContent.breakTimes = breakTimeArray;
-			workContent.timeZones = timeZoneArray;
-			command.workContent = workContent;
-			console.log(command, 'calCMD');
-			self.$ajax(API.calculate, command)
-				.done((res: HolidayWorkCalculationResult) => {
-					if (res) {
-						self.dataSource.calculationResult = res;
-						self.itemControlHandler();
-						self.bindOverTime(self.dataSource, 1);
-						self.bindHolidayTime(self.dataSource, 1);
-						// let appTimeList = res.applicationTime.applicationTime;
-						// let holidayTimeArray = self.holidayTime();
-						// let overTimeArray = self.overTime();
-						// console.log(holidayTimeArray, 'HLDARR');
-						// console.log(self.overTime(), "OVTARR");
-						// console.log(res, 'calRes');
-						// appTimeList.forEach((appTime: OvertimeApplicationSetting) => {
-						// 	holidayTimeArray.forEach((holidayTime: HolidayTime) => {
-						// 		// A6_8
-						// 		if (appTime.frameNo === holidayTime.frameNo() && appTime.attendanceType === 1) {
-						// 			holidayTime.start(appTime.applicationTime);
-						// 		}
-						// 	})
-						// 	overTimeArray.forEach((overTime: OverTime) => {
-						// 		// A7_8
-						// 		if (appTime.frameNo === overTime.frameNo() && appTime.attendanceType === 0) {
-						// 			overTime.applicationTime(appTime.applicationTime);
-						// 		} 
-						// 	})
-						// })
-						// //A7_13
-						// let length = overTimeArray.length;
-						// overTimeArray[length - 1].applicationTime(res.applicationTime.overTimeShiftNight.overTimeMidNight);
-						// //A6_28
-						// for (let item of res.applicationTime.overTimeShiftNight.midNightHolidayTimes) {
-						// 	switch (item.legalClf) {
-						// 		case 0:
-						// 			holidayTimeArray[length-3].start(item.attendanceTime);
-						// 			break;
-						// 		case 1:
-						// 			holidayTimeArray[length-2].start(item.attendanceTime);
-						// 			break;
-						// 		case 2: 
-						// 			holidayTimeArray[length-1].start(item.attendanceTime);
-						// 			break;
-						// 	}
-							
-						// } 
-						// self.holidayTime(holidayTimeArray);
-						// self.overTime(overTimeArray);
+						let timeZone1 = {} as TimeZone;
+						if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
+							timeZone1.frameNo = 1;
+							timeZone1.start = workInfo.workHours1.start();
+							timeZone1.end = workInfo.workHours1.end();
+							timeZoneArray.push(timeZone1);
+						}
+						if(!self.managementMultipleWorkCyclescheck()){
+							let timeZone2 = {} as TimeZone;
+							if (!(_.isNil(workInfo.workHours2.start()) || _.isNil(workInfo.workHours2.end()))) {
+								timeZone2.frameNo = 2;
+								timeZone2.start = workInfo.workHours2.start();
+								timeZone2.end = workInfo.workHours2.end();
+								timeZoneArray.push(timeZone2);
+							}
+						}
+						restTime.forEach(item => {
+							if (!(_.isNil(ko.toJS(item.start)) || _.isNil(ko.toJS(item.end)))) {
+								let breakTime = {} as BreakTime;
+								breakTime.breakFrameNo = Number(item.frameNo);
+								breakTime.startTime = ko.toJS(item.start);
+								breakTime.endTime = ko.toJS(item.end);
+								breakTime.breakTime = 0;
+								breakTimeArray.push(breakTime);
+							}
+						})
+						workContent.breakTimes = breakTimeArray;
+						workContent.timeZones = timeZoneArray;
+						command.workContent = workContent;
+
+						self.$ajax(API.calculate, command)
+							.done((res: HolidayWorkCalculationResult) => {
+								if (res) {
+									self.dataSource.calculationResult = res;
+									self.itemControlHandler();
+									self.bindOverTime(self.dataSource, 1);
+									self.bindHolidayTime(self.dataSource, 1);
+									// let appTimeList = res.applicationTime.applicationTime;
+									// let holidayTimeArray = self.holidayTime();
+									// let overTimeArray = self.overTime();
+									// console.log(holidayTimeArray, 'HLDARR');
+									// console.log(self.overTime(), "OVTARR");
+									// console.log(res, 'calRes');
+									// appTimeList.forEach((appTime: OvertimeApplicationSetting) => {
+									// 	holidayTimeArray.forEach((holidayTime: HolidayTime) => {
+									// 		// A6_8
+									// 		if (appTime.frameNo === holidayTime.frameNo() && appTime.attendanceType === 1) {
+									// 			holidayTime.start(appTime.applicationTime);
+									// 		}
+									// 	})
+									// 	overTimeArray.forEach((overTime: OverTime) => {
+									// 		// A7_8
+									// 		if (appTime.frameNo === overTime.frameNo() && appTime.attendanceType === 0) {
+									// 			overTime.applicationTime(appTime.applicationTime);
+									// 		} 
+									// 	})
+									// })
+									// //A7_13
+									// let length = overTimeArray.length;
+									// overTimeArray[length - 1].applicationTime(res.applicationTime.overTimeShiftNight.overTimeMidNight);
+									// //A6_28
+									// for (let item of res.applicationTime.overTimeShiftNight.midNightHolidayTimes) {
+									// 	switch (item.legalClf) {
+									// 		case 0:
+									// 			holidayTimeArray[length-3].start(item.attendanceTime);
+									// 			break;
+									// 		case 1:
+									// 			holidayTimeArray[length-2].start(item.attendanceTime);
+									// 			break;
+									// 		case 2: 
+									// 			holidayTimeArray[length-1].start(item.attendanceTime);
+									// 			break;
+									// 	}
+										
+									// } 
+									// self.holidayTime(holidayTimeArray);
+									// self.overTime(overTimeArray);
+								}
+							})
+							.fail((res) => { 
+								console.log('calculate fail');
+							})
+							.always(() => {
+								self.$blockui("hide");
+							});
 					}
-				 })
-				 .fail((res) => { 
-					 console.log('calculate fail');
-				 })
-				 .always(() => {
-					 self.$blockui("hide");
-				 });
+				});
 		}
 		
 		getFormatTime(number: number) {
@@ -1566,7 +1579,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		appDispInfoStartupOutput: any;
 		overtimeFrameList: Array<OvertimeWorkFrame>;
 		holidayWorkAppSet: any;
-		comboDivergenceReason: ComboDivergenceReason;
+		comboDivergenceReason: Array<ComboDivergenceReason>;
 		hdWorkOvertimeReflect: any;
 	}
 	interface OvertimeWorkFrame {
