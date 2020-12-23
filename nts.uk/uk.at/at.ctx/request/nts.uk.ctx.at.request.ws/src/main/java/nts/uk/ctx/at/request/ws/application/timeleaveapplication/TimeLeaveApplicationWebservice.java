@@ -6,6 +6,8 @@ import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.Regist
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.RegisterTimeLeaveApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.CheckBeforeRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.RequestParam;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.RequestParam;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.TimeLeaveApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -39,7 +41,7 @@ public class TimeLeaveApplicationWebservice extends WebService {
      */
     @POST
     @Path("checkBeforeRegister")
-    public List<ConfirmMsgOutput> checkBeforeRegister(CheckBeforeRegisterDto param) {
+    public List<ConfirmMsgOutput> checkBeforeRegister(RequestParam param) {
         return this.finder.checkBeforeRegister(param);
     }
 

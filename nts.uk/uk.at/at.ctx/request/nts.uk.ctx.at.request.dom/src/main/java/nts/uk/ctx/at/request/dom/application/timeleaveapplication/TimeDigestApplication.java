@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.timeleaveapplication;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TimeDigestApplication {
 
     /**
