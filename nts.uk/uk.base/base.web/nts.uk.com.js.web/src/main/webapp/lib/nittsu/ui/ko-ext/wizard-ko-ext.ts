@@ -22,6 +22,7 @@ module nts.uk.ui.koExtentions {
             init(element: HTMLElement, valueAccessor: () => WZ_PARAM, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
                 const data = valueAccessor();
 
+                element.classList.add('cf');
                 element.classList.add('nts-wizard');
 
                 element.removeAttribute('data-bind');
@@ -95,24 +96,32 @@ module nts.uk.ui.koExtentions {
             update(element: HTMLElement, valueAccessor: () => WZ_PARAM, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
                 const data = valueAccessor();
                 const index = ko.unwrap<number>(data.active);
-                const steps = ko.unwrap<Array<string | WZ_STEP>>(data.steps);
-
+                const steps = ko.unwrap<Array<string | WZ_STEP>>(data.steps) || [];
+                const active = steps[index];
                 const contents = steps.map((c) => _.isString(c) ? c : c.content).join(', ');
-
-                const $contents = $(element).find('.contents').get(0);
 
                 $(element)
                     .find('.contents')
                     .find(contents)
                     .addClass('hidden');
 
-                const active = steps[index];
-
                 if (active) {
                     $(element)
                         .find('.contents')
                         .find(_.isString(active) ? active : active.content)
                         .removeClass('hidden');
+                } else if (steps.length === 0) {
+
+                    $(element)
+                        .find('.contents')
+                        .children()
+                        .each((i: number, e: HTMLElement) => {
+                            if (i !== index) {
+                                e.classList.add('hidden');
+                            } else {
+                                e.classList.remove('hidden');
+                            }
+                        });
                 }
             }
         }
