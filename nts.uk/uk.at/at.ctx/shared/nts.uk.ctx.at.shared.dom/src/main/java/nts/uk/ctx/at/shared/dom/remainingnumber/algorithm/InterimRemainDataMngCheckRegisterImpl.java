@@ -37,10 +37,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.AnnualLeaveErrorSharedImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ComplileInPeriodOfSpecialLeaveSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.GetAnnLeaRemNumWithinPeriodSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ReserveLeaveErrorImport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -58,8 +56,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	private CompensLeaveComSetRepository leaveSetRepos;
 	@Inject
 	private GetAnnLeaRemNumWithinPeriodSharedImport annualService;
-	@Inject
-	private ComplileInPeriodOfSpecialLeaveSharedImport specialLeaveService;
+//	@Inject
+//	private ComplileInPeriodOfSpecialLeaveSharedImport specialLeaveService;
 
 
 	/** REQUIRE対応 */

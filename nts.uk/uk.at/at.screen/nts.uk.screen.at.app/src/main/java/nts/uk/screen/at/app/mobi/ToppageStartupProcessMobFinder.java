@@ -29,7 +29,6 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -124,8 +123,8 @@ public class ToppageStartupProcessMobFinder {
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
-	@Inject
-	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
+//	@Inject
+//	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
 
 	@Inject
 	private RecordDomRequireService requireService;

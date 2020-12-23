@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
@@ -24,6 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author masaaki_jinno
  *
  */
+@Stateless
 public class JpaElapseYearRepository extends JpaRepository implements ElapseYearRepository{
 
 	/**
