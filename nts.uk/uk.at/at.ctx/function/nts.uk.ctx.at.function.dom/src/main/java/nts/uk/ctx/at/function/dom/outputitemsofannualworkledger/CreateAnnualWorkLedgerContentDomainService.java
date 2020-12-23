@@ -135,6 +135,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
         // Loop 出力項目 日次
         for (int index = 0; index < dailyOutputItemList.size(); index++) {
             DailyOutputItemsAnnualWorkLedger item = dailyOutputItemList.get(index);
+            val rank = item.getRank();
             if (index > 1) {
                 break;
             }
@@ -163,7 +164,7 @@ public class CreateAnnualWorkLedgerContentDomainService {
                     }
 
                 });
-                if (index == 0) {
+                if (rank == 1) {
                     leftColumnName = item.getName().v();
                     leftAttribute = item.getItemDetailAttributes();
                     lstLeftValue.addAll(itemValue);
