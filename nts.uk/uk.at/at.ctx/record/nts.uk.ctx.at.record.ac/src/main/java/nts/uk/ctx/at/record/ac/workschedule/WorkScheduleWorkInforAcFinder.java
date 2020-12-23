@@ -47,15 +47,13 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 		return workSchedulePub.getList(sids, period).stream().map(this::convert).collect(Collectors.toList());
 	}
 
-	private WorkScheduleWorkInforImport convert(WorkScheduleExport data){
-		List<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = data.getListBreakTimeOfDaily()
-				.stream()
-				.map(c -> new BreakTimeOfDailyAttdImport(c.getBreakType(),
+	private WorkScheduleWorkInforImport convert(WorkScheduleExport data) {
+		Optional<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = data.getListBreakTimeOfDaily()
+				.map(c -> new BreakTimeOfDailyAttdImport(
 						c.getBreakTimeSheets().stream()
 								.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
 										x.getEndTime(), x.getBreakTime()))
-								.collect(Collectors.toList())))
-				.collect(Collectors.toList());
+								.collect(Collectors.toList())));
 		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getWorkTyle(), data.getWorkTime(),
 				data.getGoStraightAtr(), data.getBackStraightAtr(),
 				!data.getTimeLeavingOfDailyAttd().isPresent() ? null

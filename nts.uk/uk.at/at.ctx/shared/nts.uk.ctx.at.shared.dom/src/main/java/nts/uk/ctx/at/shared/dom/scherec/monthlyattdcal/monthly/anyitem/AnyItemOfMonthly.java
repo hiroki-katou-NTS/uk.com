@@ -120,9 +120,9 @@ public class AnyItemOfMonthly extends AggregateRoot implements SerializableWithO
 		
 		AnyItemOfMonthly domain = new AnyItemOfMonthly(
 				employeeId, yearMonth, closureId, closureDate, aggrResult.getOptionalItemNo());
-		domain.time = Optional.ofNullable(aggrResult.getAnyTime());
-		domain.times = Optional.ofNullable(aggrResult.getAnyTimes());
-		domain.amount = Optional.ofNullable(aggrResult.getAnyAmount());
+		domain.time = aggrResult.getAnyTime();
+		domain.times = aggrResult.getAnyTimes();
+		domain.amount = aggrResult.getAnyAmount();
 		return domain;
 	}
 	

@@ -40,9 +40,9 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 const required = self.substituteHolidayList().length * self.daysUnit;
                 let selected = 0;
                 self.substituteWorkInfoList().forEach(info => {
-                    if (info.checked()) selected += info.remainingNumber
+                    if (info.checked()) selected += info.usedNumber;
                 });
-                return required - selected < 0 ? 0 : required - selected;
+                return required - selected;
             }, self);
             self.displayedPeriod = ko.computed(() => {
                 if (self.startDate() == self.endDate())
@@ -51,7 +51,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                     return getText("KDL036_12", [self.startDate(), self.endDate()]);
             }, self);
             self.displayedRequiredNumberOfDays = ko.computed(() => {
-                return getText("KDL036_4", [self.requiredNumberOfDays()]);
+                return getText("KDL036_4", [Math.max(self.requiredNumberOfDays(), 0)]);
             }, self);
 
             self.legendOptions = {
@@ -61,7 +61,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 ],
                 template : '<div class="label">#{labelText}</div>'
             };
-            $("#fixed-table").ntsFixedTable({ height: 314 });
+            $("#fixed-table").ntsFixedTable({ height: 313 });
         }
 
         startPage(): JQueryPromise<any> {
@@ -77,9 +77,6 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 actualContentDisplayList: _.cloneDeep(self.actualContentDisplayList),
                 managementData: _.cloneDeep(self.managementData)
             };
-            initParams.actualContentDisplayList.forEach(c => {
-                c.date = new Date(c.date).toISOString();
-            });
             initParams.managementData.forEach(d => {
                 d.outbreakDay = new Date(d.outbreakDay).toISOString();
                 d.dateOfUse = new Date(d.dateOfUse).toISOString();
@@ -88,8 +85,10 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 self.daysUnit = result.daysUnit;
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
-                const tmp = self.managementData.map(d => d.outbreakDay);
-                self.substituteWorkInfoList(result.holidayWorkInfoList.map(info => new HolidayWorkInfo(tmp.indexOf(info.holidayWorkDate) >= 0, info, self.requiredNumberOfDays, self.startDate())));
+                self.substituteWorkInfoList(result.holidayWorkInfoList.map(info => {
+                    const tmp = _.find(self.managementData, i => i.outbreakDay == info.holidayWorkDate);
+                    return new HolidayWorkInfo(!!tmp, info, self.requiredNumberOfDays, self.startDate(), tmp ? tmp.dayNumberUsed : 0);
+                }));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dialog.alert(error);
@@ -208,8 +207,9 @@ module nts.uk.at.view.kdl036.a.viewmodel {
         displayedExpiredDate: string;
         dataType: DataType;
         expiringThisMonth: boolean;
+        usedNumber: number;
 
-        constructor(checked: boolean, params: IHolidayWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string) {
+        constructor(checked: boolean, params: IHolidayWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string, usedNumber?: number) {
             this.enabled = ko.observable(new Date(params.expirationDate).getTime() > new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.holidayWorkDate = params.holidayWorkDate;
@@ -224,11 +224,18 @@ module nts.uk.at.view.kdl036.a.viewmodel {
             this.displayedExpiredDate = nts.uk.time.formatPattern(params.expirationDate, "YYYY/MM/DD", "YYYY/MM/DD(ddd)");
             this.dataType = params.dataType;
             this.expiringThisMonth = params.expiringThisMonth;
+            this.usedNumber = usedNumber || 0;
             this.checked.subscribe(value => {
-                if (value && requiredNumberOfDays() <= 0) {
-                    dialog.alert({messageId: "Msg_1758"}).then(() => {
-                        this.checked(false);
-                    });
+                if (value) {
+                    if (requiredNumberOfDays() <= 0) {
+                        dialog.alert({messageId: "Msg_1758"}).then(() => {
+                            this.checked(false);
+                        });
+                    } else {
+                        this.usedNumber = Math.min(requiredNumberOfDays(), this.remainingNumber);
+                    }
+                } else {
+                    this.usedNumber = 0;
                 }
             });
         }
@@ -238,7 +245,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 dataType: this.dataType,
                 expirationDate: this.expiredDate,
                 expiringThisMonth: this.expiringThisMonth,
-                remainingNumber: this.remainingNumber,
+                remainingNumber: this.usedNumber,
                 holidayWorkDate: this.holidayWorkDate
             }
         }

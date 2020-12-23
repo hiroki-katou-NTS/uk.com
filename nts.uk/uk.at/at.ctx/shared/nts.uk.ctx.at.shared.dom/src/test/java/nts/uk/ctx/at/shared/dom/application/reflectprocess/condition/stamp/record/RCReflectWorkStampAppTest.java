@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -59,13 +59,13 @@ public class RCReflectWorkStampAppTest {
 				1, true);// no = 1
 		AppStampShare application = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.POSTERIOR);
 		List<Integer> actualResult = new ArrayList<Integer>();
-		ReflectAppStamp reflectApp = reflectTimeLeav(NotUseAtr.USE);
+		StampAppReflect reflectApp = reflectTimeLeav(NotUseAtr.USE);
 		actualResult.addAll(RCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp));
 		assertThat(actualResult).isEqualTo(Arrays.asList(30, 31));
 	}
 
-	private ReflectAppStamp reflectTimeLeav(NotUseAtr atr) {
-		return new ReflectAppStamp("", atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	private StampAppReflect reflectTimeLeav(NotUseAtr atr) {
+		return new StampAppReflect("", atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 }

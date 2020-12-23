@@ -29,12 +29,12 @@ public class WorkScheduleExport  {
 	/*0 : しない区分   1: する区分*/
 	private int backStraightAtr;
 	
-	private Optional<TimeLeavingOfDailyAttdExport> timeLeavingOfDailyAttd;
+	private Optional<TimeLeavingOfDailyAttdExport> timeLeavingOfDailyAttd = Optional.empty();
 	
-	private List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = new ArrayList<>();
-
+	private Optional<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = Optional.empty();
+	
 	public WorkScheduleExport(String employeeId, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
-			TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd,List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily) {
+			TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd,Optional<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily) {
 		super();
 		this.employeeId = employeeId;
 		this.workTyle = workTyle;

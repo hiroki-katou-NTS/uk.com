@@ -51,18 +51,18 @@ public class GetApplicationRequireImpl {
 		private final AppWorkChangeRepository repoWorkChange;
 
 		@Override
-		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID) {
-			return repoWorkChange.findbyID(companyId, appID);
+		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
+			return repoWorkChange.findbyID(companyId, appID, app);
 		}
 
 		@Override
-		public Optional<GoBackDirectly> findGoBack(String companyId, String appID) {
-			return repoGoBack.find(companyId, appID);
+		public Optional<GoBackDirectly> findGoBack(String companyId, String appID, Application app) {
+			return repoGoBack.find(companyId, appID,app);
 		}
 
 		@Override
-		public Optional<AppStamp> findAppStamp(String companyId, String appID) {
-			return repoStamp.findByAppID(companyId, appID);
+		public Optional<AppStamp> findAppStamp(String companyId, String appID, Application app) {
+			return repoStamp.findByAppID(companyId, appID, app);
 		}
 
 		@Override
@@ -73,8 +73,8 @@ public class GetApplicationRequireImpl {
 		}
 
 		@Override
-		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID) {
-			return repoBusTrip.findByAppId(companyId, appID);
+		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app) {
+			return repoBusTrip.findByAppId(companyId, appID,app);
 		}
 
 	}

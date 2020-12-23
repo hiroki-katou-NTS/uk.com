@@ -406,11 +406,11 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		KscdtSchHolidayWork kscdtSchHolidayWork = new KscdtSchHolidayWork();
 
 		ExcessOfStatutoryMidNightTime nightTime = new ExcessOfStatutoryMidNightTime(
-				new TimeDivergenceWithCalculation(new AttendanceTime(this.extMidNiteTotal), new AttendanceTime(0), new AttendanceTime(0)),
+				new TimeDivergenceWithCalculation(new AttendanceTime(this.extMidNiteTotal), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0)),
 				new AttendanceTime(this.extMidNiteTotalPreApp));
 
 		ExcessOverTimeWorkMidNightTime midNightTimes = new ExcessOverTimeWorkMidNightTime(
-				new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteTotalPreApp), new AttendanceTime(0), new AttendanceTime(0)));
+				new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteTotalPreApp), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0)));
 		OverTimeOfDaily overTimeOfDaily = new OverTimeOfDaily(new ArrayList<>(), new ArrayList<>(),
 				Finally.of(midNightTimes), new AttendanceTime(extVarwkOtwTimeLegal),
 				new FlexTime(
@@ -433,7 +433,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 
 		// WithinStatutoryMidNightTime
 		WithinStatutoryMidNightTime midNightTime = new WithinStatutoryMidNightTime(
-				new TimeDivergenceWithCalculation(new AttendanceTime(prsMidniteTime), new AttendanceTime(0), new AttendanceTime(0)));
+				new TimeDivergenceWithCalculation(new AttendanceTime(prsMidniteTime), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0)));
 		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(
 				new AttendanceTime(this.prsWorkTime), new AttendanceTime(this.prsWorkTimeAct),
 				new AttendanceTime(this.prsPrimeTime), midNightTime);

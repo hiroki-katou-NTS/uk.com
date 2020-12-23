@@ -24,7 +24,7 @@ public interface DailyRecordCreateErrorAlermService {
 	//打刻順序不正
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithm(IntegrationOfDaily integrationOfDaily);
 	//打刻順序不正(出退勤打刻のみ)
-	public EmployeeDailyPerError stampIncorrect(IntegrationOfDaily integrationOfDaily);
+	public Optional<EmployeeDailyPerError> stampIncorrect(IntegrationOfDaily integrationOfDaily);
 	//打刻順序不正(出退勤打刻以外)
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithmOtherStamp(IntegrationOfDaily integrationOfDaily);
 	//打刻二重チェック

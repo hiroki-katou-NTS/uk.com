@@ -3,19 +3,15 @@ package nts.uk.ctx.at.shared.dom.scherec.byperiod;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
-import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 
 /**
  * 期間別の任意項目
@@ -76,74 +72,18 @@ public class AnyItemByPeriod implements Cloneable {
 			DatePeriod period,
 			MonthlyCalculatingDailys calcDailys,
 			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets){
+			MonAggrEmployeeSettings employeeSets) {
 		
-		// 任意項目ごとに集計する
-		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
-		for (val anyItemValueOfDaily : calcDailys.getAnyItemValueOfDailyList().entrySet()){
-			if (!period.contains(anyItemValueOfDaily.getKey())) continue;
-			if (anyItemValueOfDaily.getValue().getItems() == null) continue;
-			val ymd = anyItemValueOfDaily.getKey();
-			for (val item : anyItemValueOfDaily.getValue().getItems()){
-				if (item.getItemNo() == null) continue;
-				Integer itemNo = item.getItemNo().v();
-				
-				if (period.contains(ymd)){
-					anyItemTotals.putIfAbsent(itemNo, new AggregateAnyItem(itemNo));
-					anyItemTotals.get(itemNo).addFromDaily(item);
-				}
-			}
-		}
+		val result = AggregateMonthlyRecordServiceProc.aggregateAnyItemPeriod(period, false, true, 
+				null, calcDailys, companySets, employeeSets, (optionalItem) -> null, (anyItemAggrResult) -> {});
 		
-		// 任意項目を取得
-		for (val optionalItem : companySets.getOptionalItemMap().values()){
-			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
+		result.entrySet().forEach(r -> {
 
-			// 利用条件の判定
-			Optional<EmpCondition> empCondition = Optional.empty();
-			if (companySets.getEmpConditionMap().containsKey(optionalItemNo)){
-				empCondition = Optional.of(companySets.getEmpConditionMap().get(optionalItemNo));
-			}
-			val bsEmploymentHistOpt = employeeSets.getEmployment(period.end());
-			if (optionalItem.checkTermsOfUse(empCondition, bsEmploymentHistOpt))
-			{
-				// 属性に応じて初期化
-				AnyTimeMonth anyTime = null;
-				AnyTimesMonth anyTimes = null;
-				AnyAmountMonth anyAmount = null;
-				switch (optionalItem.getOptionalItemAtr()){
-				case TIME:
-					anyTime = new AnyTimeMonth(0);
-					break;
-				case NUMBER:
-					anyTimes = new AnyTimesMonth(0.0);
-					break;
-				case AMOUNT:
-					anyAmount = new AnyAmountMonth(0);
-					break;
-				}
-				
-				// 日別実績　縦計処理
-				if (anyItemTotals.containsKey(optionalItemNo)){
-					val anyItemTotal = anyItemTotals.get(optionalItemNo);
-					if (anyItemTotal.getTime().isPresent()){
-						if (anyTime == null) anyTime = new AnyTimeMonth(0);
-						anyTime = anyTime.addMinutes(anyItemTotal.getTime().get().v());
-					}
-					if (anyItemTotal.getTimes().isPresent()){
-						if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
-						anyTimes = anyTimes.addTimes(anyItemTotal.getTimes().get().v().doubleValue());
-					}
-					if (anyItemTotal.getAmount().isPresent()){
-						if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
-						anyAmount = anyAmount.addAmount(anyItemTotal.getAmount().get().v());
-					}
-				}
-				
-				// 任意項目集計結果を返す
-				this.anyItemValues.put(optionalItemNo,
-						AggregateAnyItem.of(optionalItemNo, anyTime, anyTimes, anyAmount));
-			}
-		}
+			// 任意項目集計結果を返す
+			this.anyItemValues.put(r.getKey(), AggregateAnyItem.of(r.getKey(), 
+																	r.getValue().getAnyTime(), 
+																	r.getValue().getAnyTimes(), 
+																	r.getValue().getAnyAmount()));
+		});
 	}
 }

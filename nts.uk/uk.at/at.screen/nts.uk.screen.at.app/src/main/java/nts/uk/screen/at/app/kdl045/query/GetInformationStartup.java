@@ -227,11 +227,12 @@ public class GetInformationStartup {
 			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+//				Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,
@@ -276,6 +277,12 @@ public class GetInformationStartup {
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
 			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
+		}
+
+		@Override
+		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 	}
 
