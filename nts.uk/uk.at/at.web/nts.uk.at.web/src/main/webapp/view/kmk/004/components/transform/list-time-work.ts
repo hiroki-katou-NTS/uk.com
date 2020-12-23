@@ -136,9 +136,9 @@ module nts.uk.at.view.kmk004.components {
 
 		reloadData() {
 			const vm = this;
-			const comInput = { workType: DEFOR_TYPE, year: vm.selectedYear() == null ? 9999 : vm.selectedYear()};
-			const wkpInput = { workplaceId: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear() == null ? 9999 : vm.selectedYear()};
-			const empInput = { employmentCode: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear() == null ? 9999 : vm.selectedYear()};
+			const comInput = { workType: DEFOR_TYPE, year: vm.selectedYear()};
+			const wkpInput = { workplaceId: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear()};
+			const empInput = { employmentCode: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear()};
 			const shaInput = { sId: vm.selectId, workType: DEFOR_TYPE, year: vm.selectedYear()};
 
 			if (ko.unwrap(vm.selectedYear) != null) {
