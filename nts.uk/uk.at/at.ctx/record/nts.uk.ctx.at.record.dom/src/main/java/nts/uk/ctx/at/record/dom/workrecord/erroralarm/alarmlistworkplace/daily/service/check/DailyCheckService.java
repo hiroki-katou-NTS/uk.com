@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extract
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
+import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -82,12 +83,16 @@ public class DailyCheckService {
         // Input．List＜アラームリスト（職場）日別の固定抽出条件＞をループする
         for (FixedExtractionDayCon fixedExtractDayCon : fixedExtractDayCons) {
             List<ExtractResultDto> extractResults = new ArrayList<>();
+            Optional<FixedExtractionDayItems> itemOpt = fixedCheckDayItems.stream()
+                    .filter(x -> x.getFixedCheckDayItems().equals(fixedExtractDayCon.getFixedCheckDayItems())).findFirst();
+            if (!itemOpt.isPresent()) continue;
+            FixedExtractionDayItems item = itemOpt.get();
 
             // Input．Map＜職場ID、List＜社員情報＞＞をループする
             for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
                 List<ExtractResultDto> results = new ArrayList<>();
                 // Noをチェックする
-                switch (fixedExtractDayCon.getFixedCheckDayItems()) {
+                switch (item.getFixedCheckDayItems()) {
                     case NEW_EMPLOYEE:
                         // 1.入社者をチェック
                         results = newEmployeeCheckService.check(personInfos, period);
@@ -137,6 +142,10 @@ public class DailyCheckService {
                 }
 
                 // 取得したList＜抽出結果＞を総合List＜抽出結果＞に追加
+                results.forEach(x -> {
+                    x.setAlarmItemName(item.getDailyCheckName());
+                    x.setComment(Optional.of(new MessageDisplay(fixedExtractDayCon.getMessageDisp().v())));
+                });
                 extractResults.addAll(results);
             }
 

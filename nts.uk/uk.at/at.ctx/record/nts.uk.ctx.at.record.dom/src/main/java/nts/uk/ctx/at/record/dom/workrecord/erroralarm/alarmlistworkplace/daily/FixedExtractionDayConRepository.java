@@ -9,5 +9,8 @@ public interface FixedExtractionDayConRepository {
      * @param errorAlarmWorkplaceId List 職場のエラーアラームチェックID
      * @return List アラームリスト（職場）日別の固定抽出条件
      */
-    List<FixedExtractionDayCon> getRange(List<String> errorAlarmWorkplaceId);
+    List<FixedExtractionDayCon> getRange(List<String> ids);
+
+    List<FixedExtractionDayCon> getBy(List<String> ids, boolean useAtr);
+
 }

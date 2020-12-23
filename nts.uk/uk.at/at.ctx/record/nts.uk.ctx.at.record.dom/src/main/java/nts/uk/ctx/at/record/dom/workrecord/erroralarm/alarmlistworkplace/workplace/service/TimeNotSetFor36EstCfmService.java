@@ -72,7 +72,7 @@ public class TimeNotSetFor36EstCfmService {
 
             if (!agreeSystemOpt.isPresent()) {
                 // 「アラーム値メッセージ」を作成します。
-                String message = TextResource.localize("KAL020_209 ");
+                String message = TextResource.localize("KAL020_209");
 
                 // 抽出結果を作成する
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),

@@ -52,7 +52,7 @@ public class AggregateProcessMasterCheckDailyService {
             return new ArrayList<>();
         }
         // ドメインモデル「アラームリスト（職場）日別の固定抽出条件」を取得する
-        List<FixedExtractionDayCon> fixedExtractDayCons = fixedExtractionDayConRepo.getRange(alarmCheckWkpId);
+        List<FixedExtractionDayCon> fixedExtractDayCons = fixedExtractionDayConRepo.getBy(alarmCheckWkpId, true);
 
         List<FixedCheckDayItems> fixedCheckDayItems = fixedExtractDayCons.stream()
                 .map(FixedExtractionDayCon::getFixedCheckDayItems).collect(Collectors.toList());

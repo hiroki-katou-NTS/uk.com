@@ -70,21 +70,21 @@ public class AggregateProcessMasterCheckWorkplaceService {
             switch (wp.getNo()) {
                 case NO_REF_TIME:
                     // 基準時間の未設定を確認する。
-                    extractResults = noRefTimeCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = noRefTimeCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), period, workplaceIds);
                     break;
                 case TIME_NOT_SET_FOR_36_ESTIMATED:
                     // 36協定目安時間の未設定を確認する
-                    extractResults = timeNotSetFor36EstCfmService.confirm(wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = timeNotSetFor36EstCfmService.confirm(wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), period, workplaceIds);
                     break;
                 case UNSET_OF_HD:
                     // 公休日数の未設定を確認する。
-                    extractResults = unsetHdCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = unsetHdCfmService.confirm(cid, wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), period, workplaceIds);
                     break;
                 case ESTIMATED_OR_AMOUNT_TIME_NOT_SET:
                     break;
                 case NOT_REGISTERED:
                     // 管理者を確認する。
-                    extractResults = unRegisterManagerCfmService.confirm(wpItem.getWorkplaceCheckName(), wpItem.getDisplayMessage(), period, workplaceIds);
+                    extractResults = unRegisterManagerCfmService.confirm(wpItem.getWorkplaceCheckName(), wp.getDisplayMessage(), period, workplaceIds);
                     break;
             }
 

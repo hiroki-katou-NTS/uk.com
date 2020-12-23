@@ -169,7 +169,7 @@ module nts.uk.at.kal011.a {
             vm.$validate("#B3_2").then((valid: boolean) => {
                 if (!valid) return;
                 if (_.isEmpty(vm.workplaceIds())) {
-                    vm.$dialog.error({ messageId: "Msg_719" }); //TODO Q&A 37827
+                    vm.$dialog.error({ messageId: "Msg_719" });
                     return
                 }
                 let conditionSelecteds = _.filter(vm.conditions(), (condition: CheckCondition) => condition.isChecked());

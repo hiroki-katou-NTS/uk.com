@@ -526,9 +526,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 					x.getJobTitleId(),
 					x.isManager(),
 					x.getJobTitleId(),
-					x.getJobTitleCode() == null ? null : x.getJobTitleCode().v(),
-					x.getJobTitleName() == null ? null : x.getJobTitleName().v(),
-					x.getSequenceCode() == null ? null : x.getSequenceCode().v());
+					x.getJobTitleCode() == null || x.getJobTitleCode() == null ? null : x.getJobTitleCode().v(),
+					x.getJobTitleName() == null || x.getJobTitleName().v() == null ? null : x.getJobTitleName().v(),
+					x.getSequenceCode() == null || x.getSequenceCode().v() == null ? null : x.getSequenceCode().v());
 		}).collect(Collectors.toList());
 	}
 
