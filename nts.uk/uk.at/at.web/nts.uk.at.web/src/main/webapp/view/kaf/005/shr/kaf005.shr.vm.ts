@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
