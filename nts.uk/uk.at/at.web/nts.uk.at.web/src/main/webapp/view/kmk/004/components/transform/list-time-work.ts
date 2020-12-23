@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectId = params.selectId;
 			vm.type = params.type;
 			vm.initList(9999, false);
-			vm.reloadData();
+			//vm.reloadData();
 
 			vm.workTimes.subscribe((wts) => {
 				const total: number = wts.reduce((p, c) => p += Number(c.laborTime()), 0);

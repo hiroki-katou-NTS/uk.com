@@ -139,7 +139,6 @@ module nts.uk.at.view.kmk004.l {
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
-		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('KMK004_338');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
