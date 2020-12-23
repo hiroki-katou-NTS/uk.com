@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -272,8 +272,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
-
 
 
 
