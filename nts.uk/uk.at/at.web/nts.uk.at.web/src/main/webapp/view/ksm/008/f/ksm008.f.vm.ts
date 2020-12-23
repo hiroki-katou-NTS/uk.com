@@ -694,16 +694,16 @@ module nts.uk.at.ksm008.f {
                 .then((data) => {
                     if (data) {
 
-                        if (dto.unit === 1) {
+                        if (data.unit === 1) {
                             vm.unit = 1;
-                            vm.workplaceGroupId = dto.workplaceGroupID;
-                            vm.orgCode(dto.workplaceGroupCode);
-                            vm.orgDisplayName(dto.workplaceGroupName);
+                            vm.workplaceGroupId = data.workplaceGroupID;
+                            vm.orgCode(data.workplaceGroupCode);
+                            vm.orgDisplayName(data.workplaceGroupName);
                         } else {
                             vm.unit = 0;
-                            vm.workplaceId = dto.workplaceId;
-                            vm.orgCode(dto.workplaceCode);
-                            vm.orgDisplayName(dto.workplaceName);
+                            vm.workplaceId = data.workplaceId;
+                            vm.orgCode(data.workplaceCode);
+                            vm.orgDisplayName(data.workplaceName);
                         }
 
                         vm.getEmployeeInfo().done(() => {
