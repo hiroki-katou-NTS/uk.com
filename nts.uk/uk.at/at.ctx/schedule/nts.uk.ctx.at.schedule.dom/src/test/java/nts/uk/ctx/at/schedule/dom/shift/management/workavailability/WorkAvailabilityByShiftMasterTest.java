@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +18,12 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-
+@SuppressWarnings("unchecked")
 @RunWith(JMockit.class)
 public class WorkAvailabilityByShiftMasterTest {
 	
@@ -43,12 +45,55 @@ public class WorkAvailabilityByShiftMasterTest {
 		assertThat(shiftExp.getAssignmentMethod()).isEqualTo(AssignmentMethod.SHIFT);
 	}
 	
+	/**
+	 * input: 全部シフトマスタの出勤・休日系の判定　: empty
+	 * output: false
+	 */
 	@Test
-	public void testIsHolidayAvailability() {
+	public void testIsHolidayAvailability_false() {
 		
-		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.defaultCreate();
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		new Expectations(shiftMaster1, shiftMaster2) {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				
+				shiftMaster1.getWorkStyle(require);
+				
+				shiftMaster2.getWorkStyle(require);
+			}
+		};
 		
-		assertThat(shiftExp.isHolidayAvailability()).isFalse();
+		assertThat(shiftExp.isHolidayAvailability(require)).isFalse();
+	}
+	
+	/**
+	 * input: シフトマスタリスト中にいずれかの出勤・休日系の判定　＝＝ 休日
+	 * output: true 
+	 */
+	@Test
+	public void testIsHolidayAvailability_true() {
+		
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		new Expectations(shiftMaster1,  shiftMaster2) {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				
+				shiftMaster1.getWorkStyle(require);
+				
+				//出勤・休日系の判定　＝＝ 休日
+				shiftMaster2.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_REST);
+				
+			}
+		};
+		
+		assertThat(shiftExp.isHolidayAvailability(require)).isTrue();
 	}
 	
 	@Test
@@ -119,24 +164,31 @@ public class WorkAvailabilityByShiftMasterTest {
 	@Test
 	public void testGetDisplayInformation() {
 		
-		 WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02", "S03");
-		
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02", "S03");
 		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
 		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
-		
 		new Expectations() {
             {
-            	require.getShiftMaster(shiftExp.getWorkableShiftCodeList());
-            	result = Arrays.asList(shiftMaster1, shiftMaster2);
+            	require.getShiftMaster(Arrays.asList(new ShiftMasterCode("S01")));
+            	result = Arrays.asList(shiftMaster1);
+            	
+            	require.getShiftMaster(Arrays.asList(new ShiftMasterCode("S02")));
+            	result = Arrays.asList(shiftMaster2);
+            	
+            	require.getShiftMaster(Arrays.asList(new ShiftMasterCode("S03")));
             }
         };
 		
 		WorkAvailabilityDisplayInfo displayInfo = shiftExp.getDisplayInformation(require);
 		
 		assertThat(displayInfo.getMethod()).isEqualTo(AssignmentMethod.SHIFT);
-		assertThat(displayInfo.getNameList())
-				.containsOnly("S01-name", "S02-name");
+		assertThat(displayInfo.getShiftList().entrySet())
+				.extracting(d -> d.getKey().v(), d -> d.getValue().isPresent() == true? d.getValue().get(): "")
+				.contains( tuple("S01", "S01-name")
+						 , tuple("S02", "S02-name")
+						 , tuple("S03", ""));
 		assertThat(displayInfo.getTimeZoneList()).isEmpty();
+		
 	}
 	
 	/**

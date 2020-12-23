@@ -16,13 +16,12 @@ import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 public class WorkAvailabilityRuleDateSettingTest {
 	@Injectable
-	WorkAvailability.Require require;
+	WorkAvailabilityOfOneDay.Require require;
 	
 	@Test
 	public void getters() {
@@ -102,7 +101,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
 				);
 
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
 		
 		assertThat(isOverHolidayMaxDays).isFalse();
 	}
@@ -128,7 +127,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 6), AssignmentMethod.HOLIDAY)
 				);
 		
-		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
+		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
 		
 		assertThat(isOverHolidayMaxDays).isTrue();
 	}
