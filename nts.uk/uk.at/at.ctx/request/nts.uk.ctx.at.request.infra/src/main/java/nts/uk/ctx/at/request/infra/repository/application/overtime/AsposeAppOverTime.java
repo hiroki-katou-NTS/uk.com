@@ -39,6 +39,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class AsposeAppOverTime {
 	public static final String HALF_SIZE_SPACE = " ";
+	public static final String EMPTY_STRING = "";
+	public static final String SPLIT_TIME = "、";
 	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
 	
@@ -199,7 +201,7 @@ public class AsposeAppOverTime {
 			.stream()
 			.forEach(x ->  {
 				if (x.getWorkNo().v() != 1) {
-					contentD12.append("`");
+					contentD12.append(SPLIT_TIME);
 				}
 				contentD12.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
 				contentD12.append(" ~ ");
@@ -446,10 +448,34 @@ public class AsposeAppOverTime {
 		Cell cellB34 = cells.get("B34");
 		Cell cellD34 = cells.get("D34");
 		
-		cellB31.setValue(I18NText.getText("KAF005_93"));
-		cellD31.setValue("D31");
-		cellB34.setValue(I18NText.getText("KAF005_93"));
-		cellD34.setValue("D34");
+		String b31 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
+					.stream()
+					.filter(x -> x.getDivergenceTimeNo() == 1)
+					.map(x -> x.getDivTimeName().v())
+					.findFirst()
+					.orElse(EMPTY_STRING);
+		String b34 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
+					.stream()
+					.filter(x -> x.getDivergenceTimeNo() == 2)
+					.map(x -> x.getDivTimeName().v())
+					.findFirst()
+					.orElse(EMPTY_STRING);
+		cellB31.setValue(I18NText.getText("KAF005_93", b31));
+		cellB34.setValue(I18NText.getText("KAF005_93", b34));
+		if (appOverTime.getApplicationTime().getReasonDissociation().isPresent()) {
+			String d31 = opDetailOutput.get().getAppOverTime().getApplicationTime().getReasonDissociation().get()
+				.stream()
+				.filter(x -> x.getDiviationTime() == 1)
+				.map(x -> x.getReason() == null ? "" : x.getReason().v())
+				.findFirst().orElse("");
+			cellD31.setValue(d31);
+			String d34 = opDetailOutput.get().getAppOverTime().getApplicationTime().getReasonDissociation().get()
+					.stream()
+					.filter(x -> x.getDiviationTime() == 2)
+					.map(x -> x.getReason() == null ? "" : x.getReason().v())
+					.findFirst().orElse("");
+			cellD34.setValue(d34);
+		}
 		
 		Cell cellB13 = cells.get("B13");
 		Cell cellB19 = cells.get("B19");
