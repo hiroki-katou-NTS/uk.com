@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import nts.arc.layer.infra.data.EntityManagerLoader;
-import nts.arc.scoped.session.SessionContextProvider;
 
 /**
  * DefaultEntityManagerLoader
