@@ -29,7 +29,14 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 				if(!_.isEmpty(data)) {
 					vm.empLstStr(_.chain(data).map((o: any) => o.sname).join(vm.$i18n('KAF018_504')).value());		
 				}
-			}).always(() => vm.$blockui('hide'));
+			}).always(() => {
+				if(vm.confirmMode()) {
+					$('#kaf018-release').focus();
+				} else {
+					$('#kaf018-confirm').focus();
+				}
+				vm.$blockui('hide');	
+			});
         }
 
 		activeConfirm() {
