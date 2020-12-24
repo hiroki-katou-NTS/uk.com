@@ -46,6 +46,7 @@ module nts.uk.at.view.kmk004.p {
 	export interface IResponse {
 		deforLaborTimeComDto: DeforLaborTimeComDto; //会社別変形労働法定労働時間
 		settingDto: SettingDto; //会社別変形労働集計設定
+		//isSinglemonth: number;
 	}
 
 	export enum SCREEN_MODE {
@@ -61,7 +62,7 @@ module nts.uk.at.view.kmk004.p {
 
 		itemListP3_3: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 		selectedP3_3: KnockoutObservable<number> = ko.observable(0);
-		itemListP3_5: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+		itemListP3_5: KnockoutObservableArray<MonthModel> = ko.observableArray([]);
 		itemListP3_7: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
 		visibleP6_3: KnockoutObservable<boolean> = ko.observable(false);
@@ -75,13 +76,13 @@ module nts.uk.at.view.kmk004.p {
 				var vm = this;
 
 				vm.itemListP3_3 = ko.observableArray<ItemModel>([
-					new ItemModel('0', vm.$i18n("KMK004_313")), //単月
-					new ItemModel('1', vm.$i18n("KMK004_314")) //複数月
+					new ItemModel('1', vm.$i18n("KMK004_313")), //単月
+					new ItemModel('0', vm.$i18n("KMK004_314")) //複数月
 				]);
 
 				let tg = [], tg1 = [];
 				for (let i = 1; i <= 12; i++) {
-					tg.push(new ItemModel(i.toString(), i.toString() + '月'));
+					tg.push(new MonthModel(i.toString(), i.toString() + '月'));
 					tg1.push(new ItemModel(i.toString(), i.toString() + 'ヶ月'));
 				}
 				vm.itemListP3_5(tg);
@@ -104,6 +105,7 @@ module nts.uk.at.view.kmk004.p {
 			if (vm.params.sidebarType == 'Com_Company') {
 				vm.mode(SCREEN_MODE.UPDATE);
 				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING).done((data: IResponse) => {
+					//data.isSinglemonth = vm.selectedP3_3();
 					vm.bindingData(data);
 					vm.checkDisplay();
 
@@ -535,6 +537,7 @@ module nts.uk.at.view.kmk004.p {
 		update(param: SettlementPeriod) {
 			this.startMonth(param.startMonth);
 			this.period(param.period);
+			//this.period(param.isSingleMonth == 0 ? 1: param.period);
 			this.repeatAtr(param.repeatAtr);
 		}
 	}
@@ -589,7 +592,17 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	class ItemModel {
-		code: string;
+		code: string = '0';
+		name: string;
+
+		constructor(code: string, name: string) {
+			this.code = code;
+			this.name = name;
+		}
+	}
+	
+	class MonthModel {
+		code: string = new Date().getMonth().toString();
 		name: string;
 
 		constructor(code: string, name: string) {

@@ -80,7 +80,7 @@
 									value: screenPData.settingDto.settlementPeriod.startMonth,
 									optionsText: 'name',
 									editable:  false,
-									enable: selectedP3_3() == 1,
+									enable: selectedP3_3() == 0,
 									required: requiredP3,
 									columns: [{ prop: 'name', length: 5 }]}">
 							</div>
@@ -101,14 +101,14 @@
 									value: screenPData.settingDto.settlementPeriod.period,
 									optionsText: 'name',
 									editable:  false,
-									enable: selectedP3_3() == 1,
+									enable: selectedP3_3() == 0,
 									required: requiredP3,
 									columns: [{ prop: 'name', length: 5 }]}">
 							</div>
 						</td>
 						<td>
 							<!-- P3_8 -->
-							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenPData.settingDto.settlementPeriod.repeatAtr, enable: selectedP3_3() == 1 } ">
+							<div tabindex="6" data-bind="ntsCheckBox: { checked: screenPData.settingDto.settlementPeriod.repeatAtr, enable: selectedP3_3() == 0 } ">
 							#{i18n.getText('KMK004_317')}
 							</div>
 						</td>
