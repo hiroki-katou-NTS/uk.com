@@ -32,8 +32,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigest
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppForLeaveStartOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationLinkManageInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
@@ -49,15 +51,18 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
@@ -80,6 +85,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
@@ -1557,40 +1563,39 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 	}
 	@Override
-	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
+	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, ApplyForLeave appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
-//		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-////		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
-////				.findFirst().orElse(null);
-////		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-////		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-////			geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().get().value == appAbsence.getHolidayAppType().value : geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().get().value == appAbsence.getHolidayAppType().value : false
-////				
-////				).findFirst();
-////		AppEmploymentSetting employmentSet = employmentSetLst;
-//		// 選択可能の勤務種類を取得する
-//		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
-//				employmentSet,
-//				companyID,
-//				appAbsence.getHolidayAppType(),
-//				appAbsence.getAllDayHalfDayLeaveAtr().value, 
-//				appAbsence.isHalfDayFlg());
-//		// 申請済み勤務種類の存在判定と取得
-//		ApplyWorkTypeOutput applyWorkTypeOutput = commonAlgorithm.appliedWorkType(companyID, workTypeLst, appAbsence.getWorkTypeCode().v());
-//		// INPUT．「休暇申請起動時の表示情報」を更新する
-//		appAbsenceStartInfoOutput.setWorkTypeLst(applyWorkTypeOutput.getWkTypes());
-//		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(appAbsence.getWorkTypeCode().v()));
-//		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()));
-//		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
-//		// 勤務種類変更時処理
-//		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
-//				companyID, 
-//				appAbsenceStartInfoOutput, 
-//				appAbsence.getHolidayAppType(), 
-//				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
-//		// 返ってきた「休暇申請起動時の表示情報」を返す
-//		return appAbsenceStartInfoOutput;
-		return null;
+		// 選択可能の勤務種類を取得する
+		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
+		        companyID, 
+		        appAbsence.getVacationInfo().getHolidayApplicationType(), 
+		        appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? 
+                        Optional.ofNullable(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().get().getTargetWorkTypeByAppLst()) : Optional.empty());
+		// 申請済み勤務種類の存在判定と取得
+		ApplyWorkTypeOutput applyWorkTypeOutput = commonAlgorithm.appliedWorkType(companyID, workTypeLst, 
+		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v());
+		// INPUT．「休暇申請起動時の表示情報」を更新する
+		appAbsenceStartInfoOutput.setWorkTypeLst(workTypeLst);
+		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.ofNullable(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
+		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(Optional.ofNullable(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v()));
+		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
+		
+		List<String> appDates = new ArrayList<String>();
+		if (appAbsence.getApplication().getOpAppStartDate().isPresent()) {
+		    appDates.add(appAbsence.getApplication().getOpAppStartDate().get().getApplicationDate().toString());
+		}
+		if (appAbsence.getApplication().getOpAppEndDate().isPresent()) {
+		    appDates.add(appAbsence.getApplication().getOpAppEndDate().get().getApplicationDate().toString());
+		}
+		// 勤務種類変更時処理
+		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
+				companyID, 
+				appDates, 
+				appAbsenceStartInfoOutput, 
+				appAbsence.getVacationInfo().getHolidayApplicationType(),
+				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
+		// 返ってきた「休暇申請起動時の表示情報」を返す
+		return appAbsenceStartInfoOutput;
 	}
     @Override
     public AppAbsenceStartInfoOutput getVacationActivation(String companyID,
