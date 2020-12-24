@@ -28,6 +28,9 @@
           <com:ko-if bind="visible()">
             <div class="contents_1" id="F1">
               <layout1-component params= "item: paramIframe1()"></layout1-component>
+              <com:ko-if bind="isNoContent">
+                 <h2 style="text-align: center;">#{i18n.getText('CCG015_39')}</h2>
+              </com:ko-if>
             </div>
           </com:ko-if>
           <com:ko-if bind="layoutDisplayType() === 1">
@@ -40,6 +43,7 @@
               <layout2-component params= "{item:paramWidgetLayout3(), isLayout: 3}"></layout2-component>
             </div>
           </com:ko-if>
+         
       </div>
       <div id="functions-area-bottom">
         <!-- btn close dialog -->
