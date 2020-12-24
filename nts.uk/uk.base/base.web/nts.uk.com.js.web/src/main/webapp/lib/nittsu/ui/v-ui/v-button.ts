@@ -186,6 +186,29 @@ module nts.ui.controls.buttons {
                                 params.state(!ko.unwrap(params.state));
                             }
                         }
+                    })
+                    .on('click', () => {
+                        if (ko.isObservable(params.state)) {
+                            const value = ko.unwrap(params.value);
+
+                            if (value !== undefined) {
+                                if (_.get(params.state, 'remove')) {
+                                    const state = ko.unwrap<any[]>(params.state);
+
+                                    if (_.some(state, (c: any) => _.isEqual(value, c))) {
+                                        _.remove(state, (c: any) => _.isEqual(value, c));
+                                    } else {
+                                        state.push(value);
+                                    }
+
+                                    params.state(state);
+                                } else {
+                                    params.state(value);
+                                }
+                            } else {
+                                params.state(!ko.unwrap(params.state));
+                            }
+                        }
                     });
 
                 ko.computed({
