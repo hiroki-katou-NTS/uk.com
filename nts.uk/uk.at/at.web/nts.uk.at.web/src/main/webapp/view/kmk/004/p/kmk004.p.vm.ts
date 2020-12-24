@@ -61,7 +61,7 @@ module nts.uk.at.view.kmk004.p {
 		message: KnockoutObservable<string> = ko.observable('');
 
 		itemListP3_3: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-		selectedP3_3: KnockoutObservable<number> = ko.observable(0);
+		selectedP3_3: KnockoutObservable<number> = ko.observable(1);
 		itemListP3_5: KnockoutObservableArray<MonthModel> = ko.observableArray([]);
 		itemListP3_7: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
@@ -95,6 +95,14 @@ module nts.uk.at.view.kmk004.p {
 			const vm = this;
 			if (vm.params)
 				vm.loadData();
+				
+			vm.selectedP3_3
+				.subscribe((data) => {
+					if (data == 1) {
+						vm.screenPData.settingDto.settlementPeriod.period(1);
+					}
+
+				});
 		}
 
 		loadData() {
@@ -110,9 +118,9 @@ module nts.uk.at.view.kmk004.p {
 					vm.checkDisplay();
 
 					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
-						vm.selectedP3_3(0);
-					} else {
 						vm.selectedP3_3(1);
+					} else {
+						vm.selectedP3_3(0);
 					}
 				}).always(() => vm.$blockui("clear"));
 			}
@@ -123,11 +131,14 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
-						vm.selectedP3_3(0);
-					} else {
-						vm.selectedP3_3(1);
+					if (vm.mode() == SCREEN_MODE.UPDATE) {
+						if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
+							vm.selectedP3_3(1);
+						} else {
+							vm.selectedP3_3(0);
+						}
 					}
+
 				}).always(() => vm.$blockui("clear"));
 			}
 
@@ -137,10 +148,12 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
-						vm.selectedP3_3(0);
-					} else {
-						vm.selectedP3_3(1);
+					if (vm.mode() == SCREEN_MODE.UPDATE) {
+						if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
+							vm.selectedP3_3(1);
+						} else {
+							vm.selectedP3_3(0);
+						}
 					}
 				}).always(() => vm.$blockui("clear"));
 
@@ -152,10 +165,12 @@ module nts.uk.at.view.kmk004.p {
 					vm.bindingData(data);
 					vm.checkDisplay();
 
-					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
-						vm.selectedP3_3(0);
-					} else {
-						vm.selectedP3_3(1);
+					if (vm.mode() == SCREEN_MODE.UPDATE) {
+						if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
+							vm.selectedP3_3(1);
+						} else {
+							vm.selectedP3_3(0);
+						}
 					}
 				}).always(() => vm.$blockui("clear"));
 			}
@@ -592,7 +607,7 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	class ItemModel {
-		code: string = '0';
+		code: string;
 		name: string;
 
 		constructor(code: string, name: string) {
@@ -600,9 +615,9 @@ module nts.uk.at.view.kmk004.p {
 			this.name = name;
 		}
 	}
-	
+
 	class MonthModel {
-		code: string = new Date().getMonth().toString();
+		code: string;
 		name: string;
 
 		constructor(code: string, name: string) {
