@@ -60,7 +60,7 @@ export class KafS05Step1Component extends Vue {
         command.startTime = self.workHours1.start;
         command.endTime = self.workHours1.end;
         command.companyId = parent.user.companyId;
-        command.actualContentDisplayDto = _.get(parent.model.displayInfoOverTime,'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst');
+        command.actualContentDisplayDtos = _.get(parent.model.displayInfoOverTime,'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst');
         parent.getBreakTime(command);
         
     }
@@ -202,40 +202,36 @@ export class KafS05Step1Component extends Vue {
 
     public loadWorkHours(object?: DisplayInfoOverTime) {
         const self = this;
-        if (!_.isNil(object)) {
-            if (!_.isNil(object.infoWithDateApplicationOp)) {
-                let workHours = object.infoWithDateApplicationOp.workHours;
-                if (!_.isNil(workHours)) {
-                    if (!_.isNil(workHours.startTimeOp1)) {
-                        if (_.isNil(self.workHours1)) {
-                            self.workHours1 = {} as ValueTime;
-                        }
-                        self.workHours1.start = workHours.startTimeOp1;
-                    }
-
-                    if (!_.isNil(workHours.endTimeOp1)) {
-                        if (_.isNil(self.workHours1)) {
-                            self.workHours1 = {} as ValueTime;
-                        }
-                        self.workHours1.end = workHours.endTimeOp1;
-                    }
-
-                    if (!_.isNil(workHours.startTimeOp2)) {
-                        if (_.isNil(self.workHours2)) {
-                            self.workHours2 = {} as ValueTime;
-                        }
-                        self.workHours2.start = workHours.startTimeOp2;
-                    }
-
-                    if (!_.isNil(workHours.endTimeOp2)) {
-                        if (_.isNil(self.workHours2)) {
-                            self.workHours2 = {} as ValueTime;
-                        }
-                        self.workHours2.end = workHours.endTimeOp2;
-                    }
+ 
+        let workHours = _.get(object, 'infoWithDateApplicationOp.workHours');
+        if (!_.isNil(workHours)) {
+            if (!_.isNil(workHours.startTimeOp1)) {
+                if (_.isNil(self.workHours1)) {
+                    self.workHours1 = {} as ValueTime;
                 }
+                self.workHours1.start = workHours.startTimeOp1;
             }
 
+            if (!_.isNil(workHours.endTimeOp1)) {
+                if (_.isNil(self.workHours1)) {
+                    self.workHours1 = {} as ValueTime;
+                }
+                self.workHours1.end = workHours.endTimeOp1;
+            }
+
+            if (!_.isNil(workHours.startTimeOp2)) {
+                if (_.isNil(self.workHours2)) {
+                    self.workHours2 = {} as ValueTime;
+                }
+                self.workHours2.start = workHours.startTimeOp2;
+            }
+
+            if (!_.isNil(workHours.endTimeOp2)) {
+                if (_.isNil(self.workHours2)) {
+                    self.workHours2 = {} as ValueTime;
+                }
+                self.workHours2.end = workHours.endTimeOp2;
+            }
         }
 
     }
