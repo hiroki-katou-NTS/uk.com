@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -101,7 +102,7 @@ public class ReflectApplicationHelper {
 						DayOfWeek.FRIDAY, scheduleTimeSheets),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}
 
@@ -133,7 +134,7 @@ public class ReflectApplicationHelper {
 						DayOfWeek.FRIDAY, new ArrayList<>()),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),
 				attendanceLeave, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}
 
@@ -198,7 +199,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の応援作業時間帯
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
-		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(no,
+		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(OuenFrameNo.of(no),
 				WorkContent.create("1", WorkplaceOfWorkEachOuen.create("11111", new WorkLocationCD("AAAA")),
 						Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(no),
@@ -231,7 +232,7 @@ public class ReflectApplicationHelper {
 						DayOfWeek.FRIDAY, new ArrayList<>()),
 				null, null, Optional.empty(), new ArrayList<>(), outingTime, breakTime, Optional.of(attTime),
 				attendanceLeave, shortTime, Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>(),
-				tempTime, new ArrayList<>(), Optional.empty());
+				tempTime, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
 		domainDaily.setOuenTimeSheet(ouenTimeSheet);
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}

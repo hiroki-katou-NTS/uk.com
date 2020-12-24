@@ -641,11 +641,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
 				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode(),
 						recordReGetClass.getCompanyCommonSetting().getShareContainer(), workType.get()),
-				recordReGetClass.getLeaveLateSet().isPresent() ? recordReGetClass.getLeaveLateSet().get()
-						: new DeductLeaveEarly(1, 1),
-				scheduleReGetClass.getLeaveLateSet().isPresent() ? scheduleReGetClass.getLeaveLateSet().get()
-						: new DeductLeaveEarly(1, 1),
-				converter, recordReGetClass.getCompanyCommonSetting(), personalSetting,
+				recordReGetClass.getLeaveLateSet(),
+				scheduleReGetClass.getLeaveLateSet(),
+				converter, recordReGetClass.getCompanyCommonSetting(),
 				decisionWorkTimeCode(recordReGetClass.getIntegrationOfDaily().getWorkInformation(), recordReGetClass.getPersonDailySetting(), workType),
 				declareResult));
 

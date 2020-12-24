@@ -41,7 +41,7 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst {
 	
 	public OuenWorkTimeOfDailyAttendance toDomain() {
 		return OuenWorkTimeOfDailyAttendance.create(
-				new OuenFrameNo(this.no),
+				OuenFrameNo.of(this.no),
 				this.workTime.toDomain(),
 				this.moveTime.toDomain(),
 				new AttendanceAmountDaily(this.amount),

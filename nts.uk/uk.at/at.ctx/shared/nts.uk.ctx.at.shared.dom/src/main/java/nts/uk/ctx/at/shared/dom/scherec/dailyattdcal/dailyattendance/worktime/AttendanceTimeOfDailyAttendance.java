@@ -189,7 +189,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 			ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet,
-			DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting, List<PersonnelCostSettingImport> personalSetting, Optional<WorkTimeCode> recordWorkTimeCode,
+			DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting, Optional<WorkTimeCode> recordWorkTimeCode,
 			DeclareTimezoneResult declareResult) {
 
 		Optional<AttendanceTimeOfDailyAttendance> calcResult = Optional.empty();

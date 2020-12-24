@@ -92,7 +92,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					Optional.empty(), //tempTime
 					new ArrayList<>(),//remarks
 					ouenTimes.stream().map(o->o.getOuenTime()).collect(Collectors.toList()),//ouenTime
-					new ArrayList<>());//ouenTimeSheet
+					new ArrayList<>(),//ouenTimeSheet
 					Optional.empty());//snapshot
 			addAndUpdate(daily);
 		});

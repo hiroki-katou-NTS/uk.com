@@ -204,6 +204,8 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
 					temporaryTimeOfDailyAttd,
 					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
+					new ArrayList<>(),
+					new ArrayList<>(),
 					snapshot.map(c -> c.getSnapshot().toDomain())
 					));
 		}

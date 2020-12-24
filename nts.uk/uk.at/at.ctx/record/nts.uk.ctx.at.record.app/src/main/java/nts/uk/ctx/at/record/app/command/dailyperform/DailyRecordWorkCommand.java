@@ -334,6 +334,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 										this.getEditState().toDomain().stream().map(c->c.getEditState()).collect(Collectors.toList()), 
 										temporaryTime,
 										this.getRemarks().toDomain().stream().map(c->c.getRemarks()).collect(Collectors.toList()),
+										new ArrayList<>(),
+										new ArrayList<>(),
 										snapshot);
 	}
 

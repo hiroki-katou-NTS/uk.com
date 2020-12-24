@@ -437,7 +437,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
 				this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(employeeId, date),
 				this.ouenWorkTime.stream().map(o -> o.toDomain(employeeId, date).getOuenTime()).collect(Collectors.toList()),
-				new ArrayList<>()
+				new ArrayList<>(),
 				this.snapshot.map(c -> c.toDomain(employeeId, date))
 				);
 	}
@@ -470,6 +470,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setTemporaryTime(temporaryTime.map(t -> t.clone()));
 		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
 		dto.setRemarks(remarks == null ? null : remarks.clone());
+		dto.setOuenWorkTime(ouenWorkTime.stream().map(r -> r.clone()).collect(Collectors.toList()));
 		dto.setSnapshot(snapshot.map(ss -> ss.clone()));
 		if(isHaveData()){
 			dto.exsistData();
