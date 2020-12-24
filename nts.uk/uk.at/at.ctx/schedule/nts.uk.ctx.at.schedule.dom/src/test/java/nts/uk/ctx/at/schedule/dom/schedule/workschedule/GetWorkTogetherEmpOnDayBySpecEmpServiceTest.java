@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author lan_lt
  *
  */
+@SuppressWarnings("static-access")
 @RunWith(JMockit.class)
 public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	
@@ -43,62 +42,88 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	
 	@Mocked 
 	GetEmpCanReferBySpecOrganizationService empCanReferBySpeOrgService;
-	
+	/**
+	 * input 社員ID = "sid_0"
+	 *       List<組織に出勤する社員ID> = "sid_1", "sid_2", "sid_3"
+	 *       sid_1、sid_2: 出勤です。
+	 *       sid_3: 休日です。
+	 * output: "sid_1", "sid_2"
+	 * 
+	 */
 	@Test
-	public void getWorkTogetherEmployeeOnDay(@Mocked 
-			GetTargetIdentifiInforService targetOrgService, @Mocked 
-			GetEmpCanReferBySpecOrganizationService empCanReferBySpeOrgService) {
-		val sid = "sid";
-		val targetOrg= TargetOrgIdenInfor.creatIdentifiWorkplace("wkplaceId");
-		val empSameOrgs = Arrays.asList("sid_1", "sid_2", "sid_3", "sid_4");
+	public void getWorkTogetherEmployeeOnDay(@Mocked GetTargetIdentifiInforService targetOrgService
+			, @Mocked GetEmpCanReferBySpecOrganizationService empSameOrgService) {
+		val sid = "sid_0";
 		val baseDate = GeneralDate.today();
-		List<WorkInfoOfDailyAttendance> workInfoDailyAttds = Helper.createWorkInfoOfDailyAttendanceList(Arrays.asList(
-				new WorkInformation("01", "01"), new WorkInformation("02", "02"), new WorkInformation("03", "03")));
-		val workSchedule1 = Helper.createWorkSchedule("sid_1", baseDate, workInfoDailyAttds.get(0));
-		val workSchedule2 = Helper.createWorkSchedule("sid_2", baseDate, workInfoDailyAttds.get(1));
-		val workSchedule3 = Helper.createWorkSchedule("sid_3", baseDate, workInfoDailyAttds.get(2));
+		val empSameOrgs = Arrays.asList("sid_1", "sid_2", "sid_3");
+		val targetOrg= TargetOrgIdenInfor.creatIdentifiWorkplace("wkplaceId");
+		val workInfoAttd1 = Helper.createWorkInfoOfDailyAttendance(new WorkInformation("01", "01"));
+		val workInfoAttd2 = Helper.createWorkInfoOfDailyAttendance(new WorkInformation("02", "02"));
+		val workInfoAttd3 = Helper.createWorkInfoOfDailyAttendance(new WorkInformation("03", "03"));
+		val workSchedule1 = Helper.createWorkSchedule("sid_1", baseDate, workInfoAttd1);
+		val workSchedule2 = Helper.createWorkSchedule("sid_2", baseDate, workInfoAttd2);
+		val workSchedule3 = Helper.createWorkSchedule("sid_3", baseDate, workInfoAttd3);
 		
-		new Expectations(targetOrg, empSameOrgs, workSchedule1, workSchedule2, workSchedule3) {
+		new Expectations(workSchedule1, workSchedule2, workSchedule3) {
 			{
 				targetOrgService.get(require, baseDate, sid);
 				result = targetOrg;
 				
-				empCanReferBySpeOrgService.getListEmpID(require, baseDate, sid, targetOrg);
+				empSameOrgService.getListEmpID(require, baseDate, sid, targetOrg);
 				result = empSameOrgs;
 				
 				require.getWorkSchedule(empSameOrgs, (DatePeriod) any);
 				result = Arrays.asList(workSchedule1, workSchedule2, workSchedule3);
+				
+				workSchedule1.getWorkInfo().isAttendanceRate(require);
+				result = true;
+				
+				workSchedule2.getWorkInfo().isAttendanceRate(require);
+				result = true;
+				
+				workSchedule3.getWorkInfo().isAttendanceRate(require);
+				result = false;
 			}
 			
 		};
 		
 		val result = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, sid, baseDate);
-		assertThat(result).isEmpty();
 		
+		assertThat(result).containsExactlyElementsOf(Arrays.asList("sid_1", "sid_2"));
 		
 	}
 	
 	public static class Helper{
+		/**
+		 *　勤務予定を作る
+		 * @param sid　社員ID
+		 * @param date　基準日
+		 * @param workInfo　勤務情報
+		 * @return
+		 */
 		public static WorkSchedule createWorkSchedule(String sid, GeneralDate date, WorkInfoOfDailyAttendance workInfo) {
 			return new WorkSchedule(sid, date, ConfirmedATR.CONFIRMED
 					, workInfo, null
-					, Collections.emptyList(), Collections.emptyList()
-					, Optional.empty(), Optional.empty()
+					, Optional.empty()
+					, Collections.emptyList()
+					, Optional.empty()
+					, Optional.empty()
+					, Optional.empty()
 					, Optional.empty());
 		}
 
+		/**
+		 * 日別勤怠の勤務情報を作る
+		 * @param recordInfo 勤務情報
+		 * @return
+		 */
 		public static WorkInfoOfDailyAttendance createWorkInfoOfDailyAttendance(WorkInformation recordInfo) {
 			return new WorkInfoOfDailyAttendance(
-					  recordInfo
-					, recordInfo
+					recordInfo
 					, CalculationState.Calculated
 					, NotUseAttribute.Not_use
 					, NotUseAttribute.Not_use
 					, DayOfWeek.FRIDAY, Collections.emptyList());
-		}
-		
-		public static List<WorkInfoOfDailyAttendance> createWorkInfoOfDailyAttendanceList(List<WorkInformation> workInfos){
-			return workInfos.stream().map(c -> Helper.createWorkInfoOfDailyAttendance(c)).collect(Collectors.toList());
 		}
 	}
 	
