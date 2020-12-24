@@ -36,11 +36,11 @@ public class CreateCodeTest {
 //		String classComment = "特別休暇月別残数データ";
 
 		/** ルートクラスのパッケージ名 */
-		String packageName = "nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata";
+		String packageName = "nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param";
 		/** ルートクラスのクラス名 */
-		String className = "InPeriodOfSpecialLeaveResultInfor";
+		String className = "AggrResultOfAnnualLeave";
 		/** ルートクラスのコメント */
-		String classComment = "特休の集計結果";
+		String classComment = "年休の集計結果";
 
 //		/** ルートクラスのパッケージ名 */
 //		String packageName = "nts.uk.ctx.at.shared.dom.specialholiday";

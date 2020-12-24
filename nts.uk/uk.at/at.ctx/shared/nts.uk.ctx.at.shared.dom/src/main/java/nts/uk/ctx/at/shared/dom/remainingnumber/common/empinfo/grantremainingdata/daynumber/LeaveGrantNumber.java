@@ -55,4 +55,9 @@ public class LeaveGrantNumber {
 		return new LeaveGrantNumber(days, minutes);
 	}
 
+	public LeaveGrantTime getMinutesOrZero() {
+		if(!this.getMinutes().isPresent())return new LeaveGrantTime(0);
+		return this.getMinutes().get();
+	}
+
 }

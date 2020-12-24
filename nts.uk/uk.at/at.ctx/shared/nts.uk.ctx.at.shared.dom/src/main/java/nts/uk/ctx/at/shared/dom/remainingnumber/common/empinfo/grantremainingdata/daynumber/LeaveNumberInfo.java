@@ -32,7 +32,6 @@ public class LeaveNumberInfo implements Cloneable {
 	/**
 	 * 残数
 	 */
-	@Setter
 	protected LeaveRemainingNumber remainingNumber;
 
 	/**

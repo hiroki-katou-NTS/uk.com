@@ -376,15 +376,15 @@ public class AnnualPaidLeaveSaveCommand {
 			return TimeAnnualRoundProcesCla.valueOf(this.command.roundProcessClassific);
 		}
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-         * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
-         */
-        @Override
-        public boolean isEnoughTimeOneDay() {
-            return false;
-        }
+//        /*
+//         * (non-Javadoc)
+//         *
+//         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+//         * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
+//         */
+//        @Override
+//        public boolean isEnoughTimeOneDay() {
+//            return false;
+//        }
     }
 }

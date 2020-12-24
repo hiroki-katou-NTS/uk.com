@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
 
 /**
- * 休暇使用数  
+ * 休暇使用数
  * @author masaaki_jinno
  *
  */
@@ -34,13 +34,13 @@ public class LeaveUsedNumber{
 	 * 積み崩し日数
 	 */
 	protected Optional<LeaveUsedDayNumber> stowageDays;
-	
+
 	/**
 	 * 上限超過消滅日数
 	 */
 	public Optional<LeaveOverNumber> leaveOverLimitNumber;
-	
-	
+
+
 	/**
 	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す
 	 * @return
@@ -58,7 +58,7 @@ public class LeaveUsedNumber{
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 日数＞０または時間＞０のときはTrue,それ以外はfalseを返す
 	 * @return
@@ -76,7 +76,7 @@ public class LeaveUsedNumber{
 			return false;
 		}
 	}
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -98,27 +98,46 @@ public class LeaveUsedNumber{
 		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
 		this.stowageDays = stowageDays != null ? Optional.of(new LeaveUsedDayNumber(stowageDays))
 				: Optional.empty();
+		this.leaveOverLimitNumber=Optional.empty();
 	}
+
+
+	/**
+	 * コンストラクタ
+	 */
+	public LeaveUsedNumber(double days, Integer minutes){
+		this.days = new LeaveUsedDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
+		this.stowageDays=Optional.empty();
+		this.leaveOverLimitNumber=Optional.empty();
+	}
+
 
 	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
 		return new LeaveUsedNumber(days, minutes, stowageDays);
 	}
-	
+
+
+	public LeaveUsedTime getMinutesOrZero() {
+		if(!this.minutes.isPresent())return new LeaveUsedTime(0);
+		return this.minutes.get();
+	}
+
 	/**
 	 * 使用数を加算
 	 * @param aLeaveRemainingNumber
 	 */
 	public void add(LeaveUsedNumber leaveUsedNumber){
-		
+
 		// 日付加算
 		days = new LeaveUsedDayNumber(this.getDays().v() + leaveUsedNumber.getDays().v());
-		
+
 		// 時間加算
 		if ( leaveUsedNumber.getMinutes().isPresent() ){
 			if ( this.getMinutes().isPresent() ){
 				this.setMinutes(
 					Optional.of(new LeaveUsedTime(
-							this.getMinutes().get().v() + 
+							this.getMinutes().get().v() +
 							leaveUsedNumber.getMinutes().get().v())));
 			}
 			else
@@ -144,5 +163,5 @@ public class LeaveUsedNumber{
 		}
 		return cloned;
 	}
-	
+
 }

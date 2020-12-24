@@ -62,9 +62,11 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
 
-
-		String sqlJdbc = "SELECT *, KMAS.ROUND_PRO_CLA KMASROUND_PRO_CLA, KTAS.ROUND_PRO_CLA KTASROUND_PRO_CLA "
-				+ "FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
+		String sqlJdbc = "SELECT *, KTAS.ROUND_PRO_CLA KTASROUND_PRO_CLA,"
+    	//String sqlJdbc = "SELECT *,"
+				+ " KMAS.HALF_ROUND_PROC KMASHALF_ROUND_PROC, KMAS.SCHEDULD_WORKING_DAYS KMASSCHEDULD_WORKING_DAYS, "
+				+ " KTAS.TIME_OF_DAY_REFERENCE KTASTIME_OF_DAY_REFERENCE, KTAS.UNIFORM_TIME KTASUNIFORM_TIME, KTAS.CONTRACT_TIME_ROUND KTASCONTRACT_TIME_ROUND"
+				+ " FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
 				+ "LEFT JOIN KMAMT_MNG_ANNUAL_SET KMAS ON KAPL.CID = KMAS.CID "
 				+ "LEFT JOIN KTVMT_TIME_ANNUAL_SET KTAS ON KAPL.CID = KTAS.CID "
 				+ "WHERE KAPL.CID = ?";
@@ -78,13 +80,14 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 						KmamtMngAnnualSet kmamtMngAnnualSet = new KmamtMngAnnualSet();
 						kmamtMngAnnualSet.setCid(rec.getString("CID"));
 //						kmamtMngAnnualSet.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
-						kmamtMngAnnualSet.setHalfMaxDayYear(rec.getInt("HALF_MAX_DAY_YEAR"));
 						kmamtMngAnnualSet.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
 						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
 						kmamtMngAnnualSet
 								.setHalfMaxUniformComp(rec.getInt("HALF_MAX_UNIFORM_COMP"));
 						kmamtMngAnnualSet.setIsWorkDayCal(rec.getInt("IS_WORK_DAY_CAL"));
 						kmamtMngAnnualSet.setRetentionYear(rec.getInt("RETENTION_YEAR"));
+						kmamtMngAnnualSet.setHalfRoundProc(rec.getInt("KMASHALF_ROUND_PROC"));
+						kmamtMngAnnualSet.setScheduleWorkingDays(rec.getDouble("KMASSCHEDULD_WORKING_DAYS"));
 //						kmamtMngAnnualSet.setRemainingMaxDay(rec.getDouble("REMAINING_MAX_DAY"));
 //						kmamtMngAnnualSet
 //								.setNextGrantDayDispAtr(rec.getInt("NEXT_GRANT_DAY_DISP_ATR"));
@@ -103,9 +106,10 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 								.setTimeMaxDayReference(rec.getInt("TIME_MAX_DAY_REFERENCE"));
 						ktvmtTimeVacationSet
 								.setTimeMaxDayUnifComp(rec.getInt("TIME_MAX_DAY_UNIF_COMP"));
-						ktvmtTimeVacationSet
-								.setIsEnoughTimeOneDay(rec.getInt("IS_ENOUGH_TIME_ONE_DAY"));
 						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("KTASROUND_PRO_CLA"));
+						ktvmtTimeVacationSet.setTimeOfDayReference(rec.getInt("KTASTIME_OF_DAY_REFERENCE"));
+						ktvmtTimeVacationSet.setUniformTime(rec.getInt("KTASUNIFORM_TIME"));
+						ktvmtTimeVacationSet.setContractTimeRound(rec.getInt("KTASCONTRACT_TIME_ROUND"));
 
 						KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
 						entity.setCid(rec.getString("CID"));

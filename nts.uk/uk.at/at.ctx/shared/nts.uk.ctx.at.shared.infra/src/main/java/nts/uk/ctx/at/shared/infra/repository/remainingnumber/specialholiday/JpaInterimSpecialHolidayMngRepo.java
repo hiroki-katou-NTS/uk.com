@@ -24,36 +24,36 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	private InterimSpecialHolidayMng toDomain(KrcmtInterimSpeHoliday c) {
 		return new InterimSpecialHolidayMng(
 				c.pk.specialHolidayId,
-				c.pk.specialHolidayCode, 
-				EnumAdaptor.valueOf(c.mngAtr, ManagermentAtr.class), 
-				Optional.of(new UseTime(c.useTimes)), 
-				Optional.of(new UseDay(c.useDays)));
+				c.pk.specialHolidayCode,
+				EnumAdaptor.valueOf(c.mngAtr, ManagermentAtr.class),
+				Optional.of(new UseTime(c.usedTime)),
+				Optional.of(new UseDay(c.usedDays)));
 	}
 	@Override
 	public void persistAndUpdateInterimSpecialHoliday(InterimSpecialHolidayMng domain) {
 		KrcmtInterimSpeHolidayPK key = new KrcmtInterimSpeHolidayPK(domain.getSpecialHolidayId(), domain.getSpecialHolidayCode());
 		KrcmtInterimSpeHoliday entity = this.getEntityManager().find(KrcmtInterimSpeHoliday.class, key);
-		
+
 		if(entity == null) {
 			entity = new KrcmtInterimSpeHoliday();
 			entity.mngAtr = domain.getMngAtr().value;
-			entity.useDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0;
-			entity.useTimes = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
+			entity.usedDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0.0;
+			entity.usedTime = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
 			key.specialHolidayId = domain.getSpecialHolidayId();
 			key.specialHolidayCode = domain.getSpecialHolidayCode();
 			entity.pk = key;
 			this.getEntityManager().persist(entity);
-		} else {	
+		} else {
 			entity.mngAtr = domain.getMngAtr().value;
-			entity.useDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0;
-			entity.useTimes = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
+			entity.usedDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0.0;
+			entity.usedTime = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
 			this.commandProxy().update(entity);
 		}
 		this.getEntityManager().flush();
 	}
 	@Override
 	public void deleteSpecialHoliday(String specialId) {
-		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("specialHolidayId", specialId).executeUpdate();	
+		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("specialHolidayId", specialId).executeUpdate();
 	}
 	@Override
 	public List<InterimSpecialHolidayMng> findById(String mngId) {

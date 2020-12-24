@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
@@ -29,6 +30,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
@@ -470,6 +474,9 @@ public class AnnualLeaveInfo implements Cloneable {
 			List<TmpAnnualLeaveMngWork> tempAnnualLeaveMngs,
 			AggrResultOfAnnualLeave aggrResult){
 
+		// 年休使用数WORK
+		AnnualLeaveUsedNumber usedNumber = new AnnualLeaveUsedNumber();
+
 		// 「暫定年休管理データリスト」を取得する
 		tempAnnualLeaveMngs.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		for (val tempAnnualLeaveMng : tempAnnualLeaveMngs){
@@ -477,11 +484,6 @@ public class AnnualLeaveInfo implements Cloneable {
 
 			// 年休を消化する
 			{
-				// 年休使用数WORK
-				ManagementDays useDaysWork = new ManagementDays(tempAnnualLeaveMng.getUseDays().v());
-				// 年休使用残数WORK
-				ManagementDays remainDaysWork = new ManagementDays(tempAnnualLeaveMng.getUseDays().v());
-
 				// 年休付与残数を取得
 				List<LeaveGrantRemainingData> targetRemainingDatas
 					= new ArrayList<LeaveGrantRemainingData>();
@@ -509,12 +511,22 @@ public class AnnualLeaveInfo implements Cloneable {
 				leaveUsedNumber.setDays(new LeaveUsedDayNumber(tempAnnualLeaveMng.getUseDays().v()));
 				// ooooo 要時間　leaveUsedNumber.setMinutes(minutes);
 
+
+				//使用数に加算する
+				AnnualLeaveUsedDays days = new AnnualLeaveUsedDays();
+				days.addUsedDays(leaveUsedNumber.getDays().v());
+				Optional<AnnualLeaveUsedTime>times =
+						Optional.of(AnnualLeaveUsedTime.of(new UsedMinutes(leaveUsedNumber.getMinutesOrZero().valueAsMinutes())));
+
+				AnnualLeaveUsedNumber addNumber = AnnualLeaveUsedNumber.of(days,times);
+				usedNumber.addUsedNumber(addNumber);
+
 				// 「休暇残数シフトリストWORK」一時変数を作成
 				RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
 
 				boolean isForcibly = true; // ooooo
 
-				// 消化する
+				// 休暇残数を指定使用数消化する
 				LeaveGrantRemainingData.digest(
 						require,
 						targetRemainingDatas,
@@ -547,53 +559,16 @@ public class AnnualLeaveInfo implements Cloneable {
 
 					// 付与残数データに追加
 					this.grantRemainingList.add(dummyRemainData);
-
 				}
-
-////
-////				for (val targetRemainingData : targetRemainingDatas){
-////
-//////					// 年休を指定日数消化する
-////					remainDaysWork = new ManagementDays(targetRemainingData.digest(remainDaysWork.v(), false));
-////
-////					// 休暇残数を指定日数消化する
-//
-//
-//
-//
-//
-//				}
-//
-//				// 消化しきれなかった年休の消化処理
-//				if (remainDaysWork.v() > 0.0)
-//				{
-//					// 「年休付与残数データ」を作成する
-//					val dummyRemainData = new AnnualLeaveGrantRemaining(AnnualLeaveGrantRemainingData.createFromJavaType(
-//							"",
-//							companyId, employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
-//							LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-//							0.0, null,
-//							0.0, null, null,
-//							0.0, null,
-//							0.0,
-//							null, null, null));
-//					dummyRemainData.setDummyAtr(true);
-//
-//					// 年休を指定日数消化する
-//					remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
-//
-//					// 付与残数データに追加
-//					this.grantRemainingList.add(dummyRemainData);
-//				}
-//
-//				// 実年休（年休（マイナスあり））に使用数を加算する
-//				this.remainingNumber.getAnnualLeaveWithMinus().addUsedNumber(
-//						useDaysWork.v(), aggregatePeriodWork.isAfterGrant());
-//
-//				// 年休情報残数を更新
-//				this.updateRemainingNumber();
 			}
 		}
+		// 実年休（年休（マイナスあり））に使用数を加算する
+		this.getRemainingNumber().getAnnualLeaveWithMinus().addUsedNumber(
+				usedNumber, aggregatePeriodWork.isAfterGrant());
+
+
+		// 年休情報残数を更新
+		this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
 
 		// 残数不足エラーをチェックする
 		{

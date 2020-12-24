@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcmtInterimAnnualMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtInterimHdpaid;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -29,18 +29,18 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<TmpAnnualHolidayMng> getById(String mngId) {
-		Optional<TmpAnnualHolidayMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcmtInterimAnnualMng.class)
+		Optional<TmpAnnualHolidayMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtInterimHdpaid.class)
 				.map(x -> toDomain(x));
 		return optTmpAnnualHolidayMng;
 	}
 
-	private TmpAnnualHolidayMng toDomain(KrcmtInterimAnnualMng x) {
+	private TmpAnnualHolidayMng toDomain(KrcdtInterimHdpaid x) {
 		return new TmpAnnualHolidayMng(x.annualMngId, x.workTypeCode, new UseDay(x.useDays));
 	}
 
 	@Override
 	public void deleteById(String mngId) {
-		Optional<KrcmtInterimAnnualMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcmtInterimAnnualMng.class);
+		Optional<KrcdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtInterimHdpaid.class);
 		optTmpAnnualHolidayMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
@@ -49,14 +49,14 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 
 	@Override
 	public void persistAndUpdate(TmpAnnualHolidayMng dataMng) {
-		Optional<KrcmtInterimAnnualMng> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcmtInterimAnnualMng.class);
+		Optional<KrcdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcdtInterimHdpaid.class);
 		if(optTmpAnnualHolidayMng.isPresent()) {
-			KrcmtInterimAnnualMng entity = optTmpAnnualHolidayMng.get();
+			KrcdtInterimHdpaid entity = optTmpAnnualHolidayMng.get();
 			entity.useDays = dataMng.getUseDays().v();
 			entity.workTypeCode = dataMng.getWorkTypeCode();
 			this.commandProxy().update(entity);
 		} else {
-			KrcmtInterimAnnualMng entity = new KrcmtInterimAnnualMng();
+			KrcdtInterimHdpaid entity = new KrcdtInterimHdpaid();
 			entity.annualMngId = dataMng.getAnnualId();
 			entity.useDays = dataMng.getUseDays().v();
 			entity.workTypeCode = dataMng.getWorkTypeCode();

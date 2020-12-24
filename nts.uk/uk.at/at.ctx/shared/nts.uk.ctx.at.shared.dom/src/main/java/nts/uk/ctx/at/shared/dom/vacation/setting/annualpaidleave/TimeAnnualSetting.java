@@ -38,18 +38,18 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     // 上限日数:時間年休の上限日数
     private TimeAnnualMaxDay maxYearDayLeave;
 
-    /** The is enough time one day. */
-    // 1日の時間未満の時間年休を積立年休とする
-    private boolean isEnoughTimeOneDay;
-    
+//    /** The is enough time one day. */
+//    // 1日の時間未満の時間年休を積立年休とする
+//    private boolean isEnoughTimeOneDay;
+
     /** 端数処理区分 */
     // 端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
-    
+
     /** 1日の時間 */
-    // 1日の時間 
+    // 1日の時間
     private Optional<AnnualTimePerDay> annualTimePerDay;
-    
+
     /**
      * Instantiates a new time vacation setting.
      *
@@ -59,10 +59,10 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         this.timeManageType = memento.getTimeManageType();
         this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
-        this.isEnoughTimeOneDay = memento.isEnoughTimeOneDay();
+//        this.isEnoughTimeOneDay = memento.isEnoughTimeOneDay();
         this.roundProcessClassific = memento.GetRoundProcessClassific();
     }
-    
+
     /**
      * Save to memento.
      *
@@ -72,7 +72,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         memento.setTimeManageType(this.timeManageType);
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
-        memento.setEnoughTimeOneDay(this.isEnoughTimeOneDay);
+//        memento.setEnoughTimeOneDay(this.isEnoughTimeOneDay);
         memento.setRoundProcessClassific(this.roundProcessClassific);
     }
 }

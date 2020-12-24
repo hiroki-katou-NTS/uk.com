@@ -155,6 +155,7 @@ public class RemNumShiftListWork {
 		if ( remNumShiftWorkLast.getRefLeaveGrantRemainingData() != null ){
 			remNumShiftWorkLast.getRefLeaveGrantRemainingData().getDetails().setRemainingNumber(
 					leaveRemainingNumberOpt.get());
+			remNumShiftWorkLast.calcUsedNumber(require, companyId, employeeId, baseDate);
 		}
 	}
 

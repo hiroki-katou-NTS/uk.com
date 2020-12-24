@@ -41,7 +41,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
@@ -512,6 +515,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 「年休付与残数データ」を取得  要修正　のちに対応
 		List<AnnualLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+		List<AnnualLeaveGrantRemainingData> remainings = require.annualLeaveGrantRemainingData(employeeId);
+
+		GeneralDate closureStartDate = closureStart;
+		remainings.stream()
+			.filter(c->c.getDeadline().afterOrEquals(closureStartDate)
+					&& c.getGrantDate().beforeOrEquals(closureStartDate)
+					&& c.getExpirationStatus().IsAVAILABLE())
+			.forEach(c->remainingDatas.add(new AnnualLeaveGrantRemaining(c)));
+
 //		for (val grantRemainingData : grantRemainingDatas){
 //			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 //			if (grantRemainingData.getGrantDate().after(closureStartOpt.get())) continue;
@@ -746,6 +758,17 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val data = tmpAnnualLeaveMngOpt.get();
 				results.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
+
+			//テスト用
+			results.add(TmpAnnualLeaveMngWork.of("",
+			GeneralDate.ymd(2020, 10, 20),
+			"060",
+			new UseDay(1.0),
+			CreateAtr.RECORD,
+			RemainAtr.SINGLE));
+
+
+
 
 			// 年休フレックス補填分を暫定年休データに反映する
 			{
