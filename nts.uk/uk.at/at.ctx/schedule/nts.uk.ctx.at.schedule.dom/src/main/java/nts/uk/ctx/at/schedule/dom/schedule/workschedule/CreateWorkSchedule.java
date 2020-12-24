@@ -155,11 +155,11 @@ public class CreateWorkSchedule {
 			Map<Integer, T> updateInfoMap
 			) {
 		
-		T time  = updateInfoMap.get( workTimeZone.attendanceItemId );
-		if ( time == null ) {
+		if ( !updateInfoMap.containsKey(workTimeZone.attendanceItemId) ) {
 			return Optional.empty();
 		}
 		
+		T time  = updateInfoMap.get( workTimeZone.attendanceItemId );
 		ContainsResult stateOfTime = 
 				workInformation.containsOnChangeableWorkingTime(require, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
 		if ( stateOfTime.isContains() ) {
