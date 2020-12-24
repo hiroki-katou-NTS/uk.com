@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.dto.HolidayShipmentRefactor5Command;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
