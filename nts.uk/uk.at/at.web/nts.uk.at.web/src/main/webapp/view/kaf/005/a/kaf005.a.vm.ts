@@ -386,10 +386,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					appOverTime.workInfoOp = workInfoOp;
 				}
 				appOverTime.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-				if (!_.isNil(workInfo.workHours1.start())
-					&& !_.isEqual(workInfo.workHours1.start() , '')
-					&& !_.isNil(workInfo.workHours1.end())
-					&& !_.isEqual(workInfo.workHours1.end() , '')
+				if (_.isNumber(workInfo.workHours1.start())
+					&& _.isNumber(workInfo.workHours1.end())
 					) {
 					let timeZone = {} as TimeZoneWithWorkNo;
 					timeZone.workNo = 1;
@@ -402,10 +400,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 				
 	
-				if (!_.isNil(workInfo.workHours2.start())
-					&& !_.isEqual(workInfo.workHours2.start() , '')
-					&& !_.isNil(workInfo.workHours2.end())
-					&& !_.isEqual(workInfo.workHours2.end() , '')
+				if (_.isNumber(workInfo.workHours2.start())
+					&& _.isNumber(workInfo.workHours2.end())
 					) {
 					let timeZone = {} as TimeZoneWithWorkNo;
 					timeZone.workNo = 2;
@@ -422,7 +418,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let restTime = vm.restTime() as Array<RestTime>;
 			appOverTime.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
 			_.forEach(restTime, (item: RestTime) => {
-				if (!_.isNil(item.start()) && !_.isNil(item.end())) {
+				if (_.isNumber(item.start()) && _.isNumber(item.end())) {
 					let timeZone = {} as TimeZoneWithWorkNo;
 					timeZone.workNo = Number(item.frameNo);
 					timeZone.timeZone = {} as TimeZone_New;
@@ -637,7 +633,58 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// validate riêng cho màn hình
 						return vm.$validate('.inputTime');
 					}
-				}).then((result) => {
+				})
+				.then((result) => {
+					if (result) {
+						// let inpStartTime1 = $('#inpStartTime1');
+						// let inpEndTime1 = $('#inpEndTime1');
+						let inpStartTime2 = $('#inpStartTime2');
+						let inpEndTime2 = $('#inpEndTime2');
+						
+						let start1 = vm.workInfo().workHours1.start();
+						let end1 = vm.workInfo().workHours1.end();
+						let start2 = vm.workInfo().workHours2.start();
+						let end2 = vm.workInfo().workHours2.end();
+						
+						// ・開始時刻1 > 終了時刻1　の場合エラーメッセージ(Msg_307)を表示する
+						if (start1 > end1) {
+							vm.$errors('#inpStartTime1', 'Msg_307');
+							vm.$errors('#inpEndTime1', 'Msg_307');
+							return false;
+						}
+						// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
+						if (inpStartTime2 && inpEndTime2 && start2 && end2) {
+							if (start2 > end2) {
+								vm.$errors('#inpStartTime2', 'Msg_307');
+								vm.$errors('#inpEndTime2', 'Msg_307');
+								return false;
+							}
+						}
+						
+						// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
+						if (start2 && inpStartTime2) {
+							if (start2 < end1) {
+								vm.$errors('#inpEndTime1', 'Msg_581');
+								vm.$errors('#inpStartTime2', 'Msg_581');
+								return false;
+							}
+						}
+						// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
+						if (inpStartTime2 && inpEndTime2) {
+							if (!(start2 && end2)) {
+								if (!start2) {
+									vm.$errors('#inpStartTime2', 'Msg_307');									
+								}
+								if (!end2) {
+									vm.$errors('#inpEndTime2', 'Msg_307');																	
+								}
+								return false;
+							}
+						}
+						return true;						
+					}
+				})
+				.then((result) => {
 					// check trước khi đăng kí
 					if (result) {
 						return vm.$ajax('at', API.checkBefore, commandCheck);
@@ -2461,10 +2508,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 			let timeZoneArray = [] as Array<TimeZone>;
 			let timeZone = {} as TimeZone;
-			if ((!_.isNil(workInfo.workHours1.start()) 
-				&& !_.isEqual(workInfo.workHours1.start() , '')
-				&& !_.isNil(workInfo.workHours1.end())
-				&& !_.isEqual(workInfo.workHours1.end() , ''))
+			if ((_.isNumber(workInfo.workHours1.start()) 
+				&& _.isNumber(workInfo.workHours1.end()))
 			) {
 				timeZone.frameNo = 1;
 				timeZone.start = workInfo.workHours1.start();
@@ -2472,10 +2517,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				timeZoneArray.push(timeZone);
 			} 
 			timeZone = {} as TimeZone;
-			if ((!_.isNil(workInfo.workHours2.start()) 
-				&& !_.isEqual(workInfo.workHours2.start() , '')
-				&& !_.isNil(workInfo.workHours2.end())
-				&& !_.isEqual(workInfo.workHours2.end() , ''))
+			if ((_.isNumber(workInfo.workHours2.start()) 
+				&& _.isNumber(workInfo.workHours2.end()))
 			) {
 				timeZone.frameNo = 2;
 				timeZone.start = workInfo.workHours2.start();
@@ -2488,7 +2531,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let restTime = self.restTime() as Array<RestTime>;
 
 			_.forEach(restTime, (item: RestTime) => {
-				if (!(_.isNil(ko.toJS(item.start)) || _.isNil(ko.toJS(item.end)))) {
+				if ((_.isNumber(ko.toJS(item.start)) && _.isNumber(ko.toJS(item.end)))) {
 					let breakTimeSheet = {} as BreakTimeSheet;
 					breakTimeSheet.breakFrameNo = Number(item.frameNo);
 					breakTimeSheet.startTime = ko.toJS(item.start);
