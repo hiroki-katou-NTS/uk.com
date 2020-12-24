@@ -71,6 +71,15 @@ module nts.uk.ui {
                         $('body>div:first-child').removeClass('view');
                     }
                 });
+
+            vm.header
+                .subscribe((c) => {
+                    if (!c) {
+                        $('body #header').addClass('hidden');
+                    } else {
+                        $('body #header').removeClass('hidden');
+                    }
+                });
         }
     }
 
@@ -92,6 +101,9 @@ module nts.uk.ui {
 
                 // update header 
                 kiban.header(!__viewContext.noHeader);
+
+                // update notification
+                kiban.notification(__viewContext.program.operationSetting.message);
 
                 _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
 

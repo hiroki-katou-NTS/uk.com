@@ -165,10 +165,11 @@ module nts.uk.ui.layout {
         }
         update(element: HTMLElement, valueAccessor: () => number, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
             const root: nts.uk.ui.RootViewModel = bindingContext.$root;
+            const header = ko.unwrap<boolean>(root.kiban.header);
             const size = ko.unwrap<nts.uk.ui.WindowSize>(root.kiban.size);
 
             $.Deferred()
-                .resolve(size)
+                .resolve({ size, header })
                 .then(() => {
                     element.classList.add('padding-0');
                     element.classList.add('overflow-hidden');
