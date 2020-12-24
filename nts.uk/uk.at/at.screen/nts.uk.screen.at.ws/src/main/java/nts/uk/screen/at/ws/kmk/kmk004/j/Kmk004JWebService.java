@@ -16,13 +16,13 @@ import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.SaveMonthly
 import nts.uk.screen.at.app.kmk004.j.AfterChangeFlexEmployeeSetting;
 import nts.uk.screen.at.app.kmk004.j.AfterChangeFlexEmployeeSettingDto;
 import nts.uk.screen.at.app.kmk004.j.AfterCopyFlexMonthlyWorkTimeSetSha;
+import nts.uk.screen.at.app.kmk004.j.AfterSearchEmployees;
 import nts.uk.screen.at.app.kmk004.j.DisplayInitialFlexScreenByEmployee;
 import nts.uk.screen.at.app.kmk004.j.DisplayInitialFlexScreenByEmployeeDto;
 import nts.uk.screen.at.app.kmk004.j.SelectEmployeeFlex;
 import nts.uk.screen.at.app.kmk004.j.SelectEmployeeFlexDto;
 import nts.uk.screen.at.app.kmk004.j.SelectFlexYearByEmployee;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
-import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
 
 @Path("screen/at/kmk004/j")
 @Produces("application/json")
@@ -52,6 +52,9 @@ public class Kmk004JWebService {
 	@Inject
 	private AfterChangeFlexEmployeeSetting afterChangeSetting;
 
+	@Inject
+	private AfterSearchEmployees afterSearchEmployees;
+
 	@POST
 	@Path("init-screen")
 	public DisplayInitialFlexScreenByEmployeeDto initScreen() {
@@ -72,7 +75,7 @@ public class Kmk004JWebService {
 
 	@POST
 	@Path("register")
-	public List<EmployeeIdDto> register(SaveMonthlyWorkTimeSetShaCommand command) {
+	public List<String> register(SaveMonthlyWorkTimeSetShaCommand command) {
 		return this.registerHandler.handle(command);
 	}
 
@@ -84,13 +87,13 @@ public class Kmk004JWebService {
 
 	@POST
 	@Path("delete")
-	public List<EmployeeIdDto> delete(DeleteFlexMonthlyWorkTimeSetShaCommand command) {
+	public List<String> delete(DeleteFlexMonthlyWorkTimeSetShaCommand command) {
 		return this.deleteHandler.handle(command);
 	}
 
 	@POST
 	@Path("after-copy")
-	public List<EmployeeIdDto> afterCopy() {
+	public List<String> afterCopy() {
 		return this.afterCopy.afterCopyFlexMonthlyWorkTimeSetSha();
 	}
 
@@ -98,6 +101,12 @@ public class Kmk004JWebService {
 	@Path("change-setting/{sId}")
 	public AfterChangeFlexEmployeeSettingDto changeSetting(@PathParam("sId") String sId) {
 		return this.afterChangeSetting.afterChangeFlexEmployeeSetting(sId);
+	}
+
+	@POST
+	@Path("after-search")
+	public List<String> afterSearchEmployees() {
+		return this.afterSearchEmployees.afterSearchEmployees();
 	}
 
 }

@@ -72,7 +72,7 @@ public class Kmk004HWebService {
 
 	@POST
 	@Path("register")
-	public List<WorkplaceIdDto> register(SaveMonthlyWorkTimeSetWkpCommand command) {
+	public List<String> register(SaveMonthlyWorkTimeSetWkpCommand command) {
 		return this.registerHandler.handle(command);
 	}
 
@@ -84,13 +84,13 @@ public class Kmk004HWebService {
 
 	@POST
 	@Path("delete")
-	public List<WorkplaceIdDto> delete(DeleteFlexMonthlyWorkTimeSetWkpCommand command) {
+	public List<String> delete(DeleteFlexMonthlyWorkTimeSetWkpCommand command) {
 		return this.deleteHandler.handle(command);
 	}
 
 	@POST
 	@Path("after-copy")
-	public List<WorkplaceIdDto> afterCopy() {
+	public List<String> afterCopy() {
 		return this.afterCopy.afterCopyFlexMonthlyWorkTimeSetWkp();
 	}
 

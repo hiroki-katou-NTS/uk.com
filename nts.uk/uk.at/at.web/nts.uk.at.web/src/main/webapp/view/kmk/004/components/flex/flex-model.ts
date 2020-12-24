@@ -285,7 +285,22 @@ module nts.uk.at.kmk004.components.flex {
 			this.withinLaborTime(param.withinLaborTime);
 			this.legalLaborTime(param.legalLaborTime);
 			this.weekAvgTime(param.weekAvgTime);
+
+			this.checkbox.subscribe((state) => {
+				if (state) {
+					this.withinLaborTime(0);
+					this.legalLaborTime(0);
+					this.weekAvgTime(0);
+				} else {
+
+					this.withinLaborTime(null);
+					this.legalLaborTime(null);
+					this.weekAvgTime(null);
+				}
+			});
 		}
+
+
 	}
 
 

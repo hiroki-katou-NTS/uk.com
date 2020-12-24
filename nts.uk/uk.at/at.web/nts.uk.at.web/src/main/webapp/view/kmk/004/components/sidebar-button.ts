@@ -35,7 +35,7 @@ class SidebarButton extends ko.ViewModel {
 
 	updateData() {
 		const vm = this;
-		let cmd, datas;
+		let cmd;
 
 		if (vm.screenMode == 'Com_Company') {
 
@@ -139,7 +139,7 @@ class SidebarButton extends ko.ViewModel {
 	registerData() {
 		const vm = this;
 
-		let cmd, datas;
+		let cmd;
 
 		if (vm.screenMode == 'Com_Company') {
 			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };

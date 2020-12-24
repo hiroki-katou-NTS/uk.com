@@ -64,6 +64,7 @@ const API_J_URL = {
 	DELETE: BASE_J_URL + 'delete/',
 	AFTER_COPY: BASE_J_URL + 'after-copy/',
 	CHANGE_SETTING: BASE_J_URL + 'change-setting/',
+	AFTER_SEARCH: BASE_J_URL + 'after-search'
 };
 
 @component({
@@ -85,9 +86,9 @@ class ScreenJComponent extends ko.ViewModel {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
-		
+
 		vm.screenData().initDumpData(params.startYM());
-		
+
 		vm.regSelectedYearEvent();
 
 		vm.startPage();
@@ -202,6 +203,8 @@ class ScreenJComponent extends ko.ViewModel {
 				returnDataFromCcg001: function(data: Ccg001ReturnedData) {
 					let listEmployee = _.map(data.listEmployee, (item) => { return new EmployeeModel(item); });
 					vm.employeeList(listEmployee);
+					vm.setAlreadySettingList();
+
 					if (listEmployee.length) {
 						vm.screenData().selected(listEmployee[0].code);
 						$("#year-list").focus();
@@ -210,6 +213,25 @@ class ScreenJComponent extends ko.ViewModel {
 			};
 
 		$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption);
+	}
+
+	setAlreadySettingList() {
+		const vm = this;
+
+		vm.$ajax(API_J_URL.AFTER_SEARCH).done((data) => {
+
+			let alreadySettingList = _.map(data, (selectedId) => {
+				let emp: any = _.find(vm.employeeList(), ['id', selectedId]);
+				if (!emp) {
+					return { code: null, isAlreadySetting: false };
+				}
+				return { code: emp.code, isAlreadySetting: true };
+			});
+
+			alreadySettingList = _.filter(alreadySettingList, ['isAlreadySetting', true]);
+
+			vm.screenData().alreadySettingList(alreadySettingList);
+		}).always(() => { vm.$blockui("clear"); });
 	}
 
 	initEmployeeList() {

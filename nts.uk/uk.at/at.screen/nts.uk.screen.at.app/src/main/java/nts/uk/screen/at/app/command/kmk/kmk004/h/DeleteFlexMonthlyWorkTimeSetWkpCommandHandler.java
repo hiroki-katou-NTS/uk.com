@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.command.kmk.kmk004.h;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,7 +17,6 @@ import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommandHandler;
-import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceList;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DeleteFlexMonthlyWorkTimeSetWkpCommandHandler
-		extends CommandHandlerWithResult<DeleteFlexMonthlyWorkTimeSetWkpCommand, List<WorkplaceIdDto>> {
+		extends CommandHandlerWithResult<DeleteFlexMonthlyWorkTimeSetWkpCommand, List<String>> {
 
 	@Inject
 	private CompanyRepository companyRepo;
@@ -40,7 +40,7 @@ public class DeleteFlexMonthlyWorkTimeSetWkpCommandHandler
 	private WorkplaceList workplaceList;
 
 	@Override
-	protected List<WorkplaceIdDto> handle(CommandHandlerContext<DeleteFlexMonthlyWorkTimeSetWkpCommand> context) {
+	protected List<String> handle(CommandHandlerContext<DeleteFlexMonthlyWorkTimeSetWkpCommand> context) {
 
 		DeleteFlexMonthlyWorkTimeSetWkpCommand cmd = context.getCommand();
 		// 1. 年度の期間を取得(require, 会社ID, 年度)
@@ -55,7 +55,8 @@ public class DeleteFlexMonthlyWorkTimeSetWkpCommandHandler
 				.handle(new DeleteMonthlyWorkTimeSetWkpCommand(cmd.getWorkplaceId(), LaborWorkTypeAttr.FLEX.value,
 						new YearMonthPeriodCommand(yearMonths.start().v(), yearMonths.end().v())));
 		// 職場リストを表示する
-		return this.workplaceList.get(LaborWorkTypeAttr.FLEX);
+		return this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
+				.collect(Collectors.toList());
 
 	}
 

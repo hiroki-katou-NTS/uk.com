@@ -90,7 +90,7 @@ public class Kmk004IWebService {
 
 	@POST
 	@Path("after-copy")
-	public List<EmploymentCodeDto> afterCopy() {
+	public List<String> afterCopy() {
 		return this.afterCopy.afterCopyFlexMonthlyWorkTimeSetEmp();
 	}
 

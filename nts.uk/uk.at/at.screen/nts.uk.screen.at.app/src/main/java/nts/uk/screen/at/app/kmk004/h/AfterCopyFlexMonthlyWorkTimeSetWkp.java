@@ -1,12 +1,12 @@
 package nts.uk.screen.at.app.kmk004.h;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceList;
 
 /**
@@ -21,8 +21,9 @@ public class AfterCopyFlexMonthlyWorkTimeSetWkp {
 	@Inject
 	private WorkplaceList workplaceList;
 
-	public List<WorkplaceIdDto> afterCopyFlexMonthlyWorkTimeSetWkp() {
+	public List<String> afterCopyFlexMonthlyWorkTimeSetWkp() {
 		// 職場リストを表示する
-		return this.workplaceList.get(LaborWorkTypeAttr.FLEX);
+		return this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
+				.collect(Collectors.toList());
 	}
 }

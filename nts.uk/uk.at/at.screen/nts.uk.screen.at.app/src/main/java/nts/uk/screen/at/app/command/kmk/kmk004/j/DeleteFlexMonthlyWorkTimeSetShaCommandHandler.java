@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.command.kmk.kmk004.j;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,7 +17,6 @@ import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.DeleteMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.DeleteMonthlyWorkTimeSetShaCommandHandler;
-import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmployeeList;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DeleteFlexMonthlyWorkTimeSetShaCommandHandler
-		extends CommandHandlerWithResult<DeleteFlexMonthlyWorkTimeSetShaCommand, List<EmployeeIdDto>> {
+		extends CommandHandlerWithResult<DeleteFlexMonthlyWorkTimeSetShaCommand, List<String>> {
 
 	@Inject
 	private CompanyRepository companyRepo;
@@ -40,10 +40,10 @@ public class DeleteFlexMonthlyWorkTimeSetShaCommandHandler
 	private EmployeeList employeeList;
 
 	@Override
-	protected List<EmployeeIdDto> handle(CommandHandlerContext<DeleteFlexMonthlyWorkTimeSetShaCommand> context) {
+	protected List<String> handle(CommandHandlerContext<DeleteFlexMonthlyWorkTimeSetShaCommand> context) {
 
 		DeleteFlexMonthlyWorkTimeSetShaCommand cmd = context.getCommand();
-		
+
 		// 年度の期間を取得
 		GetThePeriodOfTheYearImpl require = new GetThePeriodOfTheYearImpl();
 		YearMonthPeriod yearMonths = GetThePeriodOfTheYear.getPeriodOfTheYear(require, AppContexts.user().companyId(),
@@ -53,7 +53,8 @@ public class DeleteFlexMonthlyWorkTimeSetShaCommandHandler
 		this.deleteHandler.handle(new DeleteMonthlyWorkTimeSetShaCommand(cmd.getSId(), LaborWorkTypeAttr.FLEX.value,
 				new YearMonthPeriodCommand(yearMonths.start().v(), yearMonths.end().v())));
 		// 社員リストを表示する
-		return this.employeeList.get(LaborWorkTypeAttr.FLEX);
+		return this.employeeList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.employeeId)
+				.collect(Collectors.toList());
 	}
 
 	private class GetThePeriodOfTheYearImpl implements GetThePeriodOfTheYear.Require {
