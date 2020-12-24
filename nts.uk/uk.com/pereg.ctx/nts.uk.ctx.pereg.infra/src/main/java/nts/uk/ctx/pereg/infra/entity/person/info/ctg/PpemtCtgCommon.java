@@ -10,15 +10,19 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.CopiedOnTenantCreated;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_CTG_COMMON")
-public class PpemtCtgCommon extends UkJpaEntity implements Serializable {
+public class PpemtCtgCommon extends UkJpaEntity implements Serializable, CopiedOnTenantCreated {
 	
     private static final long serialVersionUID = 1L;
+    
+    public static final JpaEntityMapper<PpemtCtgCommon> MAPPER = new JpaEntityMapper<>(PpemtCtgCommon.class);
     
     @EmbeddedId
     public PpemtPerInfoCtgCmPK ppemtPerInfoCtgCmPK;
@@ -68,5 +72,10 @@ public class PpemtCtgCommon extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoCtgCmPK;
+	}
+
+	@Override
+	public void changeContractCode(String newContractCode) {
+		ppemtPerInfoCtgCmPK.contractCd = newContractCode;
 	}
 }

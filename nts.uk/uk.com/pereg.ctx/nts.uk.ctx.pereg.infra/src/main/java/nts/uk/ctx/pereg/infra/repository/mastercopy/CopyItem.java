@@ -43,7 +43,6 @@ public class CopyItem {
 		
 		// ITEM系のテーブルはCIDを持たないので、CategoryIDを使って参照、コピーする
 		val sourceCategoryIds = categoryIds.getAllIdsSource();
-		val targetCategoryIds = categoryIds.getAllIdsCopied();
 		
 		val itemIdGenerator = new IdContainer.IdGenerator();
 		

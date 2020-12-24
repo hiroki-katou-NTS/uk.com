@@ -5,4 +5,6 @@ package nts.uk.ctx.pereg.dom.mastercopy;
  */
 public interface CopyPerInfoRepository {
     void personalInfoDefCopy(String companyId, int copyMethod);
+    
+    void copyOnTenantCreated(String newTenantCode);
 }
