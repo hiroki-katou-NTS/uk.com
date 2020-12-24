@@ -43,7 +43,7 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 		return this.queryProxy().query(FIND_CONTRACTCD_CODE_CONNECTING, KrcdtTrRqStMonitor.class)
 					.setParameter("contractCode", contractCode.v())
 					.setParameter("listCode", listTerminalCode)
-					.setParameter("connecting", connecting).getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
+					.setParameter("connecting", connecting ? 1 : 0).getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
 	}
 
 }
