@@ -48,7 +48,7 @@ public class OptionalItem extends AggregateRoot {
 	/** The usage atr. */
 	// 任意項目利用区分
 	private OptionalItemUsageAtr usageAtr;
-
+	
 	/** The emp condition atr. */
 	// 雇用条件区分
 	private EmpConditionAtr empConditionAtr;
@@ -219,26 +219,69 @@ public class OptionalItem extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
+
+	/**
+	 * 日別利用条件の判定
+	 * @param empCondition 適用する雇用条件
+	 * @param bsEmploymentHistOpt 個人の雇用条件
+	 * @return 利用条件
+	 */
+	public TermsOfUseForOptItem checkTermsOfUseDaily(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt){
+		
+		// 利用区分の確認
+		if (this.usageAtr == OptionalItemUsageAtr.NOT_USE) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 実績区分の確認
+		if (this.performanceAtr == PerformanceAtr.MONTHLY_PERFORMANCE) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 計算条件の判定
+		if (!this.checkTermsOfCalc(empCondition, bsEmploymentHistOpt)) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 「利用する」を返す
+		return TermsOfUseForOptItem.USE;
+	}
 	
 	/**
-	 * 利用条件の判定
-	 * @return
+	 * 月別利用条件の判定
+	 * @param empCondition 適用する雇用条件
+	 * @param bsEmploymentHistOpt 個人の雇用条件
+	 * @return 利用条件
 	 */
-	public boolean checkTermsOfUse(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
-		//利用区分をチェック
-		if(this.usageAtr.isNotUse()) {
+	public TermsOfUseForOptItem checkTermsOfUseMonth(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt){
+		
+		// 利用区分の確認
+		if (this.usageAtr == OptionalItemUsageAtr.NOT_USE) return TermsOfUseForOptItem.NOT_USE;
+		
+		// 計算条件の判定
+		if (!this.checkTermsOfCalc(empCondition, bsEmploymentHistOpt)) return TermsOfUseForOptItem.NOT_USE;
+			
+		// 実績区分の確認
+		if (this.performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) return TermsOfUseForOptItem.DAILY_VTOTAL;
+
+		// 「利用する」を返す
+		return TermsOfUseForOptItem.USE;
+	}
+	
+	/**
+	 * 計算条件の判定
+	 * @param empCondition 適用する雇用条件
+	 * @param bsEmploymentHistOpt 個人の雇用条件
+	 * @return true=計算する,false=計算しない
+	 */
+	public boolean checkTermsOfCalc(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
+		// 計算区分を確認
+		if(this.calcAtr == CalculationClassification.NOT_CALC) {
 			return false;
 		}
-		//雇用条件区分をチェック
+		// 雇用条件区分を確認
 		if(this.empConditionAtr.isNoCondition()) {
 			return true;
 		}
-		//適用する雇用条件が取得できたかチェック
+		// 「適用する雇用条件」を取得
 		if(!empCondition.isPresent()||empCondition.get().getEmpConditions().isEmpty()) {
 			return true;
 		}
-		//雇用条件判断
+		// 雇用条件判断
 		return empCondition.get().checkEmpCondition(bsEmploymentHistOpt);
 	}
 	
@@ -310,7 +353,7 @@ public class OptionalItem extends AggregateRoot {
 //        }
         
         //上限下限チェック
-        result = this.calcResultRange.checkRange(result, this.optionalItemAtr);
+        result = this.calcResultRange.checkRange(result, this);
         
         return result;
     }

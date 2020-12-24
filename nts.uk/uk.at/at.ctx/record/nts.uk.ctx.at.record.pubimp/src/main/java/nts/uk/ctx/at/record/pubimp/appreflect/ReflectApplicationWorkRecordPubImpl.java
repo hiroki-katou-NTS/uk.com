@@ -33,10 +33,6 @@ import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
@@ -52,12 +48,25 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -114,16 +123,42 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	@Inject
 	private RCRequestSettingAdapter requestSettingAdapter;
 
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	
+	@Inject
+	private GoBackReflectRepository goBackReflectRepository;
+	
+	@Inject
+	private StampAppReflectRepository stampAppReflectRepository;
+	
+	@Inject
+    private LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
+    
+	@Inject
+    private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+
 	@Override
-	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
+	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(ExecutionType type, Object application, GeneralDate date,
 			ReflectStatusResultShare reflectStatus) {
 		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
 				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd,
 				checkRangeReflectLeavingWork, temporarilyReflectStampDailyAttd, dailyRecordShareFinder,
 				convertDailyRecordToAd, calculateDailyRecordServiceCenter, dailyRecordAdUpService,
-				requestSettingAdapter);
-		return ReflectApplicationWorkRecord.process(impl, (ApplicationShare) application, date, reflectStatus);
+				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
+				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
+				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository);
+		return ReflectApplicationWorkRecord.process(impl, type ,(ApplicationShare) application, date, reflectStatus);
 	}
 
 	@AllArgsConstructor
@@ -163,6 +198,22 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		private final RCRequestSettingAdapter requestSettingAdapter;
 
+		private final FlexWorkSettingRepository flexWorkSettingRepository;
+
+		private final PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+
+		private final FixedWorkSettingRepository fixedWorkSettingRepository;
+
+		private final FlowWorkSettingRepository flowWorkSettingRepository;
+		
+		private final GoBackReflectRepository goBackReflectRepository;
+		
+		private final StampAppReflectRepository stampAppReflectRepository;
+		
+        private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
+        
+        private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
 			return stampCardRepository.getLstStampCardBySidAndContractCd(contractCode, sid);
@@ -188,11 +239,12 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
 
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public void insertAppReflectHist(ApplicationReflectHistory hist) {
@@ -220,14 +272,15 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
-				IntegrationOfDaily integrationOfDaily) {
-			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily);
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput,
+					integrationOfDaily, changeDailyAtt);
 		}
 
 		@Override
 		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
-			// TODO: Auto-generated method stub
-			return null;
+			// TODO: ??? repo
+			return Optional.empty();
 		}
 
 		@Override
@@ -242,19 +295,13 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
-			return calculateDailyRecordServiceCenter.calculateForSchedule(calcOption, integrationOfDaily, companySet);
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr) {
+			return calculateDailyRecordServiceCenter.calculatePassCompanySetting(calcOption, integrationOfDaily, companySet, reCalcAtr);
 		}
 
 		@Override
 		public void addAllDomain(IntegrationOfDaily domain) {
 			dailyRecordAdUpService.addAllDomain(domain);
-		}
-
-		@Override
-		public Optional<ReflectWorkChangeApplication> findReflectWorkCg(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 		@Override
@@ -269,33 +316,33 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<ReflectGoBackDirectly> findReflectGoBack(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<ReflectAppStamp> findReflectAppStamp(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<ReflectArrivedLateLeaveEarly> findReflectArrivedLateLeaveEarly(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
+			return Optional.of(new ReflectBusinessTripApp(companyId));
+		}
+
+		@Override
+		public Optional<ReflectWorkChangeApp> findReflectWorkCg(String companyId) {
+			return reflectWorkChangeAppRepository.findByCompanyIdReflect(companyId);
+		}
+
+		@Override
+		public Optional<GoBackReflect> findReflectGoBack(String companyId) {
+			return goBackReflectRepository.findByCompany(companyId);
+		}
+
+		@Override
+		public Optional<StampAppReflect> findReflectAppStamp(String companyId) {
+			return stampAppReflectRepository.findReflectByCompanyId(companyId);
+		}
+
+		@Override
+		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId) {
+			return Optional.ofNullable(lateEarlyCancelReflectRepository.getByCompanyId(companyId));
 		}
 
 		@Override
@@ -305,26 +352,22 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return flowWorkSettingRepository.find(companyId, code.v()).get();
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return flexWorkSettingRepository.find(companyId, code.v()).get();
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
 		}
 
 	}

@@ -14,13 +14,9 @@ public enum FlowFixedRestCalcMethod {
 	// マスタを参照する
 	REFER_MASTER(0, "Enum_FlowFixedRestCalcMethod_useRestTimeToCalc", "マスタを参照する"),
 
-	/** The refer schedule. */
-	// 予定を参照する
-	REFER_SCHEDULE(1, "Enum_FlowFixedRestCalcMethod_useGoOutTimeToCalc", "予定を参照する"),
-	
 	/** The stamp whitout refer. */
 	//参照せずに打刻する
-	STAMP_WHITOUT_REFER(2, "Enum_FlowFixedRestCalcMethod_useGoOutTimeToCalc", "参照せずに打刻する");
+	STAMP_WHITOUT_REFER(1, "Enum_FlowFixedRestCalcMethod_useGoOutTimeToCalc", "参照せずに打刻する");
 
 	/** The value. */
 	public final int value;

@@ -123,7 +123,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		}
 		
 		
-		GoBackDirectly goBackDirectly = new GoBackDirectly();
+		GoBackDirectly goBackDirectly = new GoBackDirectly(application);
 		goBackDirectly.setStraightDistinction(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), NotUseAtr.class));
 		goBackDirectly.setStraightLine(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), NotUseAtr.class));
 		if (Optional.ofNullable(res.getInt("WORK_CHANGE_ATR")).isPresent()) {
@@ -171,6 +171,14 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		this.commandProxy().remove(KrqdtGoBackDirectly.class,
 				new KrqdtGoBackDirectlyPK(AppContexts.user().companyId(), appId));
 		
+	}
+
+	@Override
+	public Optional<GoBackDirectly> find(String companyId, String appId, Application app) {
+		return this.find(companyId, appId).map(c ->{
+					c.setReflectionStatus(app.getReflectionStatus());
+					return c;
+				});
 	}
 
 }

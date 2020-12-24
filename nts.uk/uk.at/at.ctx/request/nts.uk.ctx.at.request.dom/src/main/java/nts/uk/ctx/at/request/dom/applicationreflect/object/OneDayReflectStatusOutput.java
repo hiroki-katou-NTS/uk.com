@@ -27,7 +27,7 @@ public class OneDayReflectStatusOutput {
 	private ReflectStatusResult statusWorkRecord;
 
 	public OneDayReflectStatusOutput() {
-		this.statusWorkRecord = new ReflectStatusResult();
+		this.statusWorkSchedule = new ReflectStatusResult();
 		this.statusWorkRecord = new ReflectStatusResult();
 	}
 
@@ -40,8 +40,10 @@ public class OneDayReflectStatusOutput {
 		return new ReflectionStatus(Arrays.asList(new ReflectionStatusOfDay(statusWorkRecord.getReflectStatus(),
 				statusWorkSchedule.getReflectStatus(), date,
 				Optional.of(DailyAttendanceUpdateStatus.createNew(null, null,
-						statusWorkRecord.getReasonNotReflectWorkRecord().value,
-						statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
+						statusWorkRecord.getReasonNotReflectWorkRecord() == null ? null
+								: statusWorkRecord.getReasonNotReflectWorkRecord().value,
+						statusWorkSchedule.getReasonNotReflectWorkSchedule() == null ? null
+								: statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
 				Optional.empty())));
 	}
 	
