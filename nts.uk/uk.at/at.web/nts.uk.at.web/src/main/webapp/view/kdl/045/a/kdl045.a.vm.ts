@@ -442,6 +442,7 @@ module nts.uk.at.view.kdl045.a {
                         timeRange2ScreenModel.endTime(null);
                     }
                 }else{
+					self.disableA10(true);
                     if(self.isEnableA5_9()  == false){
                         let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                         if (timeRange2ScreenModel) {
@@ -587,7 +588,7 @@ module nts.uk.at.view.kdl045.a {
                             timeRange2ScreenModel.startTime(childData.second.start != null ? childData.second.start : 0);
                             timeRange2ScreenModel.endTime(childData.second.end != null ? childData.second.end : 0);
                         }
-                        
+                        self.timeRange1Value({ startTime: childData.first.start != null ? childData.first.start : null, endTime: childData.first.end != null ? childData.first.end : null }); 
                         self.timeRange2Value({ startTime: childData.second.start != null ? childData.second.start : null, endTime: childData.second.end != null ? childData.second.end : null });
                         
                         setTimeout(function() {

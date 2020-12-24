@@ -170,7 +170,7 @@
 											                                }
 											                            "/>
 									                            </com:ko-if>
-									                            <com:ko-if bind="canModified == false  &amp;&amp; disableA10 == true ">
+									                            <com:ko-if bind="canModified == false  &amp;&amp; disableA10() == true ">
 																	<!-- A10_1 -->     
 																	<span style="padding-left: 28px;" data-bind="text: timeA10_1()"></span>　
 									                            </com:ko-if>
@@ -204,7 +204,7 @@
 												                                }
 												                            "/>
 										                            </com:ko-if>
-										                            <com:ko-if bind="canModified == false  &amp;&amp; disableA10 == true">
+										                            <com:ko-if bind="canModified == false  &amp;&amp; disableA10() == true">
 																		<!-- A10_2 -->     
 																		<span style="padding-left: 28px;" data-bind="text: timeA10_2()"></span>　
 										                            </com:ko-if>
