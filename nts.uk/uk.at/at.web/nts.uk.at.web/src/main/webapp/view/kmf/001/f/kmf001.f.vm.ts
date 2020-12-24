@@ -82,7 +82,7 @@ module nts.uk.pr.view.kmf001.f {
             managementClassification: KnockoutObservable<number> = ko.observable( 0 );
             
             deleteEnable: KnockoutObservable<boolean>;
-            
+            enableF2_18: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(1);
@@ -157,6 +157,10 @@ module nts.uk.pr.view.kmf001.f {
 
                 self.enableDesignOver = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.NotUse;
+                });
+                
+                self.enableF2_18 =  ko.computed(function() {
+                    return self.compenTimeManage() == 1;
                 });
                 
                 self.checkWorkTime.subscribe(function(flag) {
