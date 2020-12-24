@@ -764,22 +764,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
 			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
 			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
-		// to do // KAF006: -PhuongDV domain fix pending
-		//時間代休 = 0 AND 60H超休 = 0 AND 時間年休 = 0 AND 子の看護時間 = 0 AND 介護時間 = 0 AND 時間特別休暇 = 0
-//		if ((timeDigestApplication.getChildTime() == null 
-//		        && timeDigestApplication.getNursingTime() == null 
-//		        && timeDigestApplication.getOvertime60H() == null 
-//		        && timeDigestApplication.getTimeAnualLeave() == null 
-//		        && timeDigestApplication.getTimeOff() == null 
-//		        && timeDigestApplication.getTimeSpecialVacation() == null) || 
-//		        (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() == 0
-//				&& timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() == 0
-//				&& timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() == 0
-//				&& timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() == 0
-//				&& timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() == 0
-//				&& timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() == 0)) {
-//			throw new BusinessException("Msg_511");
-//		}
 		
 		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
@@ -963,7 +947,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		        }
 		    }
 		}
-		return;
 	}
 	
 	private WorkingConditionService.RequireM1 createRequireM1() {

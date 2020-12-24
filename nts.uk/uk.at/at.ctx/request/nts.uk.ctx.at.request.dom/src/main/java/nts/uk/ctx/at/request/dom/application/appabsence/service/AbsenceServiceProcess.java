@@ -14,10 +14,12 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenc
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppForLeaveStartOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationLinkManageInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
@@ -374,4 +376,15 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppForLeaveStartOutput getAppForLeaveStartB(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	
+	/**
+	 *     休暇紐付管理情報を取得する
+	 * @param employeeID
+	 * @param appStartDate
+	 * @param appEndDate
+	 * @param workType
+	 * @param actualContentDisplayLst
+	 */
+	public VacationLinkManageInfo getVacationLinkManageInfo(String employeeID, String appStartDate, String appEndDate, WorkType workType, List<ActualContentDisplay> actualContentDisplayLst);
 }
