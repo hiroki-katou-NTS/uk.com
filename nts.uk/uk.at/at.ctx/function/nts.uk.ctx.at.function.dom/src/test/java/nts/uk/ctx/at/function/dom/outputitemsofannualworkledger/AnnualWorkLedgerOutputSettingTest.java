@@ -24,7 +24,6 @@ public class AnnualWorkLedgerOutputSettingTest {
     AnnualWorkLedgerOutputSetting.Require require;
     private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
     private final OutputItemSettingName name = new OutputItemSettingName("CBA");
-    private final String cid = "companyId";
     private final String eplId = "employeeId";
 
     @Test

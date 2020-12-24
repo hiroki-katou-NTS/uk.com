@@ -21,7 +21,7 @@ import nts.uk.ctx.at.function.dom.commonform.GetClosureDateEmploymentDomainServi
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerContent;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerExportDataSource;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CreateAnnualWorkLedgerContentDomainService;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CreateAnnualWorkLedgerContentQuery;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -148,7 +148,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         // 6 Call 年間勤務台帳の表示内容を作成する
         RequireCreateAnnualWorkLedgerContentService require2 = new RequireCreateAnnualWorkLedgerContentService(
                 affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
-        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentDomainService.getData(require2,
+        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentQuery.getData(require2,
                 datePeriod, mapEmployeeInfo, outputSetting.get(), mapEmployeeWorkplace, mapClosureDateEmployment);
         Comparator<AnnualWorkLedgerContent> compare = Comparator
                 .comparing(AnnualWorkLedgerContent::getWorkplaceCode)
@@ -198,7 +198,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
     }
 
     @AllArgsConstructor
-    private class RequireCreateAnnualWorkLedgerContentService implements CreateAnnualWorkLedgerContentDomainService.Require {
+    private class RequireCreateAnnualWorkLedgerContentService implements CreateAnnualWorkLedgerContentQuery.Require {
         private AffComHistAdapter affComHistAdapter;
         private AttendanceItemServiceAdapter itemServiceAdapter;
         private ActualMultipleMonthAdapter actualMultipleMonthAdapter;

@@ -34,6 +34,13 @@ public class CreateAnualWorkLedgerDSTest {
     public void test_01() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
 
+        new Expectations(AppContexts.class) {
+            {
+                AppContexts.user().employeeId();
+                result = "sid1";
+            }
+        };
+
         new Expectations() {
             {
                 require.checkTheStandard(code);
@@ -69,6 +76,12 @@ public class CreateAnualWorkLedgerDSTest {
     public void test_03() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
 
+        new Expectations(AppContexts.class) {
+            {
+                AppContexts.user().employeeId();
+                result = "sid1";
+            }
+        };
         new Expectations() {
             {
                 require.checkTheStandard(code);

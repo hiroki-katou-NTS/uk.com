@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSet
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.CreateDisplayContentWorkStatusDService;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.CreateDisplayContentWorkStatusQuery;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DisplayContentWorkStatus;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.*;
@@ -113,7 +113,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 4. 勤務状況表の出力設定の詳細を取得する.
         WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
         // 5 Call 勤務状況表の表示内容を作成する:
-        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require, datePeriod,
+        val listData = CreateDisplayContentWorkStatusQuery.displayContentsOfWorkStatus(require, datePeriod,
                 employeeInfoList, workStatusOutputSetting, placeInfoList);
         val wplaceSort = listData.stream().filter(Objects::nonNull).map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toCollection(TreeSet::new));
         val listRs = new ArrayList<ExportExcelDto>();
@@ -159,7 +159,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     }
 
     @AllArgsConstructor
-    public class RequireImpl implements CreateDisplayContentWorkStatusDService.Require {
+    public class RequireImpl implements CreateDisplayContentWorkStatusQuery.Require {
         private AttendanceItemServiceAdapter itemServiceAdapter;
         private AffComHistAdapter affComHistAdapter;
 

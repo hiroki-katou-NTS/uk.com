@@ -24,7 +24,6 @@ public class CreateAnualWorkLedgerDomainService {
 
         Boolean checkDuplicate = false;
         String empId = AppContexts.user().employeeId();
-        String cId = AppContexts.user().companyId();
 
         // 1.1 設定区分 ＝＝ 定型選択 ① : 定型選択の重複をチェックする(require,コード, ログイン会社ID) : boolean
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
