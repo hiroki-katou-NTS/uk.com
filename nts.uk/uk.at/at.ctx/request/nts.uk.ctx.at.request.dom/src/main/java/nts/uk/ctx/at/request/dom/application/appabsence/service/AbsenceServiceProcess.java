@@ -387,4 +387,24 @@ public interface AbsenceServiceProcess {
 	 * @param actualContentDisplayLst
 	 */
 	public VacationLinkManageInfo getVacationLinkManageInfo(String employeeID, String appStartDate, String appEndDate, WorkType workType, List<ActualContentDisplay> actualContentDisplayLst);
+	
+	/**
+	 *     登録前のエラーチェック処理
+	 * @param companyID
+	 * @param appAbsenceStartInfoOutput
+	 * @param appAbsence
+	 * @param agentAtr
+	 * @return
+	 */
+	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
+            ApplyForLeave appAbsence, boolean agentAtr);
+	
+	
+    /**
+         * 休暇紐付け管理を登録する
+     * @param leaveComDayOffMana
+     * @param payoutSubofHDManagements
+     */
+    public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, 
+            List<PayoutSubofHDManagement> payoutSubofHDManagements);
 }
