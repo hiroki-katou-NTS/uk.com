@@ -52,9 +52,10 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     }
 
     @POST
-    @Path("get-check-conditions/{code}/{ym}")
-    public List<CheckConditionDto> getCheckConditions(@PathParam("code") String code, @PathParam("ym") Integer ym) {
-        return extractAlarmListWorkPlaceFinder.getCheckConditions(code, ym);
+    @Path("get-check-conditions")
+    public List<CheckConditionDto> getCheckConditions(GetCheckCondParam param) {
+        return extractAlarmListWorkPlaceFinder.getCheckConditions(param.getAlarmPatternCode(), param.getProcessingYm(),
+                param.getClosureStartDate(), param.getClosureEndDate());
     }
 
     @POST

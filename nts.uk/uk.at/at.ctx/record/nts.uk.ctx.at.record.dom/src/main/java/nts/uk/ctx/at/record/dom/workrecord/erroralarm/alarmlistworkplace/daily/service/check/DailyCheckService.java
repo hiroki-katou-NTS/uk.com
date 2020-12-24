@@ -107,11 +107,13 @@ public class DailyCheckService {
                         break;
                     case PERSONS_ELIGIBLE_ANNUAL_LEAVE:
                         // 4.年休付与対象者をチェック
-                        results = personEligibleAnnualLeaveCheckService.check(cid, personInfos, period);
+                        results = personEligibleAnnualLeaveCheckService.check(cid,
+                                getPersonInfosByWp(personInfos, empInfosByWp.getValue()), period);
                         break;
                     case PERSONS_NOT_ELIGIBLE:
                         // 5.年休未付与者（本年=0の人）をチェック
-                        results = personNotEligibleCheckService.check(cid, personInfos, period);
+                        results = personNotEligibleCheckService.check(cid,
+                                getPersonInfosByWp(personInfos, empInfosByWp.getValue()), period);
                         break;
                     case PLAN_NOT_REGISTERED_PEOPLE:
                         // 6.計画データ未登録をチェック
@@ -133,11 +135,13 @@ public class DailyCheckService {
                         break;
                     case STAMPING_BEFORE_JOINING:
                         // 10.入社日よりも前の打刻をチェック
-                        results = stampBeforeJoinCheckService.check(personInfos, stampsByEmpMap, period);
+                        results = stampBeforeJoinCheckService.check(getPersonInfosByWp(personInfos, empInfosByWp.getValue()),
+                                stampsByEmpMap, period);
                         break;
                     case STAMPING_AFTER_RETIREMENT:
                         // 11.退職日よりも後の打刻をチェック
-                        results = stampAfterRetirementCheckService.check(personInfos, stampsByEmpMap, period);
+                        results = stampAfterRetirementCheckService.check(getPersonInfosByWp(personInfos, empInfosByWp.getValue()),
+                                stampsByEmpMap, period);
                         break;
                 }
 
@@ -145,6 +149,7 @@ public class DailyCheckService {
                 results.forEach(x -> {
                     x.setAlarmItemName(item.getDailyCheckName());
                     x.setComment(Optional.of(new MessageDisplay(fixedExtractDayCon.getMessageDisp().v())));
+                    x.setWorkplaceId(empInfosByWp.getKey());
                 });
                 extractResults.addAll(results);
             }
@@ -158,5 +163,11 @@ public class DailyCheckService {
 
         // List＜アラーム抽出結果（職場別）＞を返す
         return alarmListResults;
+    }
+
+    private List<PersonEmpBasicInfoImport> getPersonInfosByWp(List<PersonEmpBasicInfoImport> personInfos,
+                                                              List<EmployeeInfoImported> empInfos) {
+        return personInfos.stream().filter(x -> empInfos.stream().anyMatch(c -> c.getSid().equals(x.getEmployeeId())))
+                .collect(Collectors.toList());
     }
 }

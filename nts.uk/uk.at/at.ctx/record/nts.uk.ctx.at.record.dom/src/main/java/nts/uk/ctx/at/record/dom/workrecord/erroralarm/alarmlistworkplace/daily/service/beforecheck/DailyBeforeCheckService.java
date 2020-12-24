@@ -69,6 +69,7 @@ public class DailyBeforeCheckService {
         if (fixedExtractDayItems.stream().anyMatch(x -> FixedCheckDayItems.NEW_EMPLOYEE.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.RETIREE.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.PERSONS_ELIGIBLE_ANNUAL_LEAVE.equals(x.getFixedCheckDayItems()) ||
+                FixedCheckDayItems.PERSONS_NOT_ELIGIBLE.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.STAMPING_BEFORE_JOINING.equals(x.getFixedCheckDayItems()) ||
                 FixedCheckDayItems.STAMPING_AFTER_RETIREMENT.equals(x.getFixedCheckDayItems()))) {
             // 社員ID(List)から個人社員基本情報を取得

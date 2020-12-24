@@ -11,6 +11,8 @@ module nts.uk.at.kal011.a {
     export class Kal011AViewModel extends ko.ViewModel {
         employmentCode: string;
         processingYm: number;
+        closureStartDate: number;
+        closureEndDate: number;
         alarmPatterns: KnockoutObservableArray<AlarmPattern> = ko.observableArray([]);
         alarmPatternCode: KnockoutObservable<string> = ko.observable(null);
         conditions: KnockoutObservableArray<CheckCondition> = ko.observableArray([]);
@@ -89,6 +91,8 @@ module nts.uk.at.kal011.a {
                     }
                     vm.employmentCode = res.employmentCode;
                     vm.processingYm = res.processingYm;
+                    vm.closureStartDate = res.closureStartDate;
+                    vm.closureEndDate = res.closureEndDate;
 
                     let parterns: Array<AlarmPattern> = [];
                     _.each(res.alarmPatterns, (item: IAlarmPatternSettingWorkPlace) => {
@@ -108,7 +112,13 @@ module nts.uk.at.kal011.a {
             const vm = this;
             let dfd = $.Deferred();
 
-            vm.$ajax(API.GET_CHECK_CONDITION + "/" + vm.alarmPatternCode() + "/" + vm.processingYm).done((conditions: Array<ICheckCondition>) => {
+            let param: any = {
+                alarmPatternCode: vm.alarmPatternCode(),
+                processingYm: vm.processingYm,
+                closureStartDate: vm.closureStartDate,
+                closureEndDate: vm.closureEndDate
+            };
+            vm.$ajax(API.GET_CHECK_CONDITION, param).done((conditions: Array<ICheckCondition>) => {
                 console.log(conditions)
                 let conds: Array<CheckCondition> = [];
                 if (conditions) {
@@ -257,7 +267,9 @@ module nts.uk.at.kal011.a {
     interface IInitActiveAlarmList {
         employmentCode: string;
         alarmPatterns: Array<IAlarmPatternSettingWorkPlace>;
-        processingYm: number
+        processingYm: number;
+        closureStartDate: any;
+        closureEndDate: any;
     }
 
     interface IAlarmPatternSettingWorkPlace {

@@ -51,6 +51,7 @@ public class UnRegisterManagerCfmService {
         // ドメインモデル「職場管理者」を取得する。
         List<WorkplaceManagerImport> wpMngs = workplaceManagerAdapter.findByPeriodAndWkpIds(workplaceIds, period);
         for (String workplaceId : workplaceIds) {
+            // ループ中職場の「職場管理者」を絞り込み
             if (wpMngs.stream().anyMatch(x -> x.getWorkplaceId().equals(workplaceId))) continue;
 
             // 「アラーム値メッセージ」を作成します。

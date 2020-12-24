@@ -63,6 +63,7 @@ public class PersonNotEligibleCheckService {
             // 次回年休付与日をチェック
             if (period.start().beforeOrEquals(personInfo.getRetirementDate()) &&
                     period.start().beforeOrEquals(ymd) &&
+                    ymd.beforeOrEquals(period.end()) &&
                     periodRemain == 0) {
 
                 // 抽出結果を作成
