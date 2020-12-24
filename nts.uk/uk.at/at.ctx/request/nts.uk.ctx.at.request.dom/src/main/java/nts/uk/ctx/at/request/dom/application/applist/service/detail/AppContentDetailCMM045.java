@@ -3,10 +3,13 @@ package nts.uk.ctx.at.request.dom.application.applist.service.detail;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -185,4 +188,12 @@ public interface AppContentDetailCMM045 {
 	 * @return
 	 */
 	public String createOptionalItemApp(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
+	
+	public String createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
+			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			String companyID);
+	
+	public String createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
+			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			String companyID);
 }

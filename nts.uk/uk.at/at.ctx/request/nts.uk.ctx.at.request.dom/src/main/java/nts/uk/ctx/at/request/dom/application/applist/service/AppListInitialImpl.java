@@ -1042,7 +1042,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
 
-		List<OvertimeColorCheck> actualLst = cal.actualLst;
+		List<OvertimeColorCheck> actualLst = Collections.emptyList();
 		for (OverTimeFrame timeFrame : time) {
 			Integer actTime = this.findTimeRes(actualLst, timeFrame);
 			if (actTime == null || actTime < timeFrame.getApplicationTime()) {

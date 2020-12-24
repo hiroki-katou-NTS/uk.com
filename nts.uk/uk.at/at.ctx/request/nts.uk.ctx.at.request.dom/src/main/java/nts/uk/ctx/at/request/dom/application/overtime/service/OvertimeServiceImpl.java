@@ -588,7 +588,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				overtimeAppSet.getOvertimeLeaveAppCommonSet().getOverrideSet(),
 				Optional.empty(),
 				breakTimes.getTimeZones(),
-				actualContentDisplay);
+				actualContentDisplay).applicationTime;
 		output.setWorkHours(workHoursOp);
 		output.setBreakTimeZoneSetting(breakTimes);
 		output.setApplicationTime(applicationTime);
@@ -705,7 +705,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 							   .stream()
 							   .map(x -> new DeductionTime(x.getTimeZone().getStartTime(), x.getTimeZone().getEndTime()))
 							   .collect(Collectors.toList()),
-					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)));
+					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0))).applicationTime;
 			
 			// 「申請日に関係する情報」を作成する #113175
 			InfoWithDateApplication infoWithDateApplication = new InfoWithDateApplication();

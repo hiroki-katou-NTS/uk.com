@@ -212,7 +212,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(companyId, employeeId, date.orElse(null), ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				initWork.getInitWorkTypeCd().orElse(null), initWork.getInitWorkTimeCd().orElse(null), holidayWorkSetting.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 				Optional.of(holidayWorkSetting.getCalcStampMiss()), hdWorkBreakTimeSetOutput.getDeductionTimeLst(), 
-				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
 		hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(applicationTime));
 		
 		//10-2.代休の設定を取得する
@@ -378,7 +378,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					Optional.of(empAppHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), 
 					empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().isPresent() ? 
 							empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().get().getTimeZones() : Collections.emptyList(), 
-					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null));
+					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null)).applicationTime;
 			
 			//	ループする社員の休日出勤申請起動時の表示情報 = INPUT．休日出勤申請起動時の表示情報
 			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpPreAppContentDisplayLst(Optional.of(preAppContentDisplayLst));

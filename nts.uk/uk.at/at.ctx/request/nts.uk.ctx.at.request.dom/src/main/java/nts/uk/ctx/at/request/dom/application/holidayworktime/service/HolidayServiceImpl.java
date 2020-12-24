@@ -282,7 +282,7 @@ public class HolidayServiceImpl implements HolidayService {
 			actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
 					date, ApplicationType.HOLIDAY_WORK_APPLICATION, workType, workTime, OverrideSet.TIME_OUT_PRIORITY, 
 					Optional.of(CalcStampMiss.CAN_NOT_REGIS), breakTimeZoneSettingList.getTimeZones(), 
-					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
 		}
 		if(!appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
 				|| (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT) 
@@ -290,7 +290,7 @@ public class HolidayServiceImpl implements HolidayService {
 			actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
 					date, ApplicationType.HOLIDAY_WORK_APPLICATION, workType, workTime, holidayWorkAppSet.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 					Optional.of(holidayWorkAppSet.getCalcStampMiss()), breakTimeZoneSettingList.getTimeZones(), 
-					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
 		}
 		hdSelectWorkDispInfoOutput.setActualApplicationTime(actualApplicationTime);
 		
@@ -442,7 +442,7 @@ public class HolidayServiceImpl implements HolidayService {
 						application.getAppDate().getApplicationDate(), ApplicationType.HOLIDAY_WORK_APPLICATION, appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 						appHolidayWork.getWorkInformation().getWorkTimeCode(), OverrideSet.TIME_OUT_PRIORITY, 
 						Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeList, 
-						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
 			}
 			if(!appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
 					|| (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT) 
@@ -451,7 +451,7 @@ public class HolidayServiceImpl implements HolidayService {
 						application.getAppDate().getApplicationDate(), ApplicationType.HOLIDAY_WORK_APPLICATION, appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 						appHolidayWork.getWorkInformation().getWorkTimeCode(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 						Optional.of(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), deductionTimeList, 
-						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
 			}
 			hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(actualApplicationTime));
 			
