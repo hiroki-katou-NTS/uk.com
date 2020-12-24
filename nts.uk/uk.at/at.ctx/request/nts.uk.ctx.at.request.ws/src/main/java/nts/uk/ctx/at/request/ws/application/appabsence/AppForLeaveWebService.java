@@ -137,7 +137,7 @@ public class AppForLeaveWebService extends WebService{
 	
 	@POST
 	@Path("checkBeforeUpdate")
-	public AbsenceCheckRegisterDto checkBeforeRegister(UpdateAppAbsenceCommand param){
+	public AbsenceCheckRegisterDto checkBeforeUpdate(CreatAppAbsenceCommand param){
 		return appForLeaveFinder.checkBeforeUpdate(param);
 	}
 	

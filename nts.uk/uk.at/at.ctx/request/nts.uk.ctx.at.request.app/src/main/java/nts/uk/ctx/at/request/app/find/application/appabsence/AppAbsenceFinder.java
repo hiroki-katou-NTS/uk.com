@@ -546,82 +546,16 @@ public class AppAbsenceFinder {
 		return AbsenceCheckRegisterDto.fromDomain(result);
 	}
 	
-	public AbsenceCheckRegisterDto checkBeforeUpdate(UpdateAppAbsenceCommand param) {
-//		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain();
-//		// 会社ID
-//		String companyID = AppContexts.user().companyId();
-//		Optional<AppAbsence> opAppAbsence = repoAppAbsence.getAbsenceByAppId(companyID, param.getApplicationCommand().getApplicationID());
-//		if(!opAppAbsence.isPresent()){
-//			throw new BusinessException("Msg_198");
-//		}
-//		List<DisplayReasonDto> displayReasonDtoLst = 
-//				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
-//		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == param.getAppAbsenceCommand().getHolidayAppType())
-//				.findAny().orElse(null);
-//		OutputMode outputMode = initMode.getDetailScreenInitMode(
-//				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getUser(), 
-//				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getReflectPlanState().value);
-//		// String appReason = opAppAbsence.get().getApplication().getAppReason().v();
-//		if(outputMode==OutputMode.EDITMODE){
-//			if(displayReasonSet!=null){
-//				boolean displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
-//				boolean displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
-//				String typicalReason = Strings.EMPTY;
-//				String displayReason = Strings.EMPTY;
-//				if(displayFixedReason){
-//					if(Strings.isBlank(param.getApplicationCommand().getAppReasonID())){
-//						typicalReason += "";
-//					} else {
-//						typicalReason += param.getApplicationCommand().getAppReasonID();
-//					}
-//				}
-//				if(displayAppReason){
-//					if(Strings.isNotBlank(typicalReason)){
-//						displayReason += System.lineSeparator();
-//					}
-//					if(Strings.isBlank(param.getApplicationCommand().getApplicationReason())){
-//						displayReason += "";
-//					} else {
-//						displayReason += param.getApplicationCommand().getApplicationReason();
-//					}
-//				}else{
-//					if (Strings.isBlank(typicalReason)) {
-//						// displayReason = opAppAbsence.get().getApplication().getAppReason().v();
-//					}
-//				}
-//				ApplicationSetting applicationSetting = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
-//						.getRequestSetting().getApplicationSetting();
-//				if(displayFixedReason||displayAppReason){
-//					if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
-//							&& Strings.isBlank(typicalReason+displayReason)) {
-//						throw new BusinessException("Msg_115");
-//					}
-//					// appReason = typicalReason + displayReason;
-//				}
-//			}
-//		}
-//		AppAbsence appAbsence = opAppAbsence.get();
-//		appAbsence.setAllDayHalfDayLeaveAtr(EnumAdaptor.valueOf(param.getAppAbsenceCommand().getAllDayHalfDayLeaveAtr(), AllDayHalfDayLeaveAtr.class));
-//		appAbsence.setChangeWorkHour(param.getAppAbsenceCommand().isChangeWorkHour());
-//		appAbsence.setStartTime1(param.getAppAbsenceCommand().getStartTime1() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getStartTime1()));
-//		appAbsence.setEndTime1(param.getAppAbsenceCommand().getEndTime1() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getEndTime1()));
-//		appAbsence.setStartTime2(param.getAppAbsenceCommand().getStartTime2() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getStartTime2()));
-//		appAbsence.setEndTime2(param.getAppAbsenceCommand().getEndTime2() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getEndTime2()));
-//		appAbsence.setWorkTypeCode(param.getAppAbsenceCommand().getWorkTypeCode() == null ? null : new WorkTypeCode(param.getAppAbsenceCommand().getWorkTypeCode()));
-//		appAbsence.setWorkTimeCode(param.getAppAbsenceCommand().getWorkTimeCode() == null ? null : new WorkTimeCode(param.getAppAbsenceCommand().getWorkTimeCode()));
-//		// appAbsence.getApplication().setAppReason(new AppReason(appReason));
-//		appAbsence.setVersion(appAbsence.getVersion());
-//		// appAbsence.getApplication().setVersion(param.getApplicationCommand().getVersion());
-//		AbsenceCheckRegisterOutput result = absenseProcess.checkBeforeUpdate(
-//				companyID, 
-//				appAbsenceStartInfoOutput, 
-//				appAbsence.getApplication(), 
-//				appAbsence, 
-//				param.getAppAbsenceCommand().getAllDayHalfDayLeaveAtr(), 
-//				param.isAgentAtr(), 
-//				Optional.ofNullable(param.getMourningAtr()));
-//		return AbsenceCheckRegisterDto.fromDomain(result);
-		return null;
+	public AbsenceCheckRegisterDto checkBeforeUpdate(CreatAppAbsenceCommand param) {
+	 // 会社ID
+        String companyID = AppContexts.user().companyId();
+        
+        ApplyForLeave applyForLeave = param.getApplyForLeave().toDomain();
+        Application application = param.getApplication().toDomain();
+        applyForLeave.setApplication(application);
+        AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
+        
+		return AbsenceCheckRegisterDto.fromDomain(absenseProcess.checkBeforeUpdate(companyID, appAbsenceStartInfoOutput, applyForLeave, param.isAgentAtr()));
 	}
 
 	public VacationCheckOutput checkVacationTyingManage(WorkTypeDto wtBefore, WorkTypeDto wtAfter,

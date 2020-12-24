@@ -35,7 +35,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }, enable: $parent.checkCondition30" />
+                            }, enable: $parent.condition30" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }, enable: $parent.checkCondition30" />
+                            }, enable: $parent.condition30" />
                         </div>
                     </div>
                     <div style="padding-bottom: 5px;" data-bind="visible: $parent.condition12">
@@ -61,7 +61,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }, enable: $parent.checkCondition30" />
+                            }, enable: $parent.condition30" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
@@ -71,7 +71,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                                     timeWithDay: true,
                                     width: '120'
                                 }
-                            }, enable: $parent.checkCondition30" />
+                            }, enable: $parent.condition30" />
                         </div>
                     </div>
                 </div>

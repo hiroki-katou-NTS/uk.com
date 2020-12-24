@@ -1729,7 +1729,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 
         List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
         List<GeneralDate> listDatesTemp = listDates;
-//        Collections.copy(listDatesTemp, listDates);
         
         List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
         for (GeneralDate date : listDatesTemp) {
@@ -1739,10 +1738,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         }
         
         // 暫定データの登録
-//        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
+        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
         
         // アルゴリズム「新規画面登録後の処理」を実行する
-        // Pending
         ProcessResult result = this.afterRegisterService.processAfterRegister(applyForLeave.getApplication().getAppID(), appTypeSetting, mailServerSet);
         
         return result;
@@ -1906,7 +1904,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
         
         // 休暇申請登録時チェック処理
-        this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates);
-        return null;
+        List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates);
+        result.setConfirmMsgLst(listConfirmMsg);
+        return result;
     }
 }
