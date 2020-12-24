@@ -38,6 +38,8 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
         val premiumSettings = command.getPremiumSettingList().stream().map(e->new PremiumSetting(
+                cid,
+                null,
                 EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
                 new PremiumRate(e.getRate()),
                 EnumAdaptor.valueOf(e.getUnitPrice(),UnitPrice.class),
@@ -52,7 +54,7 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
                 Optional.of(unitPrice),
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
-                command.getHistoryId()
+           null
         );
         this.service.registerLaborCalculationSetting(domain,command.getDate());
 

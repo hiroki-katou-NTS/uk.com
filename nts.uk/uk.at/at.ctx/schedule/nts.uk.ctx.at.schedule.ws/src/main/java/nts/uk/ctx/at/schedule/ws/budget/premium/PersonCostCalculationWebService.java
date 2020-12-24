@@ -79,7 +79,7 @@ public class PersonCostCalculationWebService extends WebService {
     }
 
     @POST
-    @Path("findPremiumItemByCompanyID")
+    @Path("findPremiumItemByCompanyID") // Done
     public List<PremiumItemDto> findPremiumItemByCompanyID() {
         return this.personCostCalculationSettingFinder.findPremiumItemByCompanyID();
     }
@@ -109,7 +109,6 @@ public class PersonCostCalculationWebService extends WebService {
         return this.personCostCalculationSettingFinder.findWorkTypeLanguage(langId);
     }
 
-
     //=================================== Update KML 001 ==================
     // Init screen
     @POST
@@ -122,12 +121,6 @@ public class PersonCostCalculationWebService extends WebService {
     @Path("findHistId")
     public PersonCostCalculationDto getHistPersonCost(PersonCostDto prams) {
         return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistId());
-    }
-
-    @POST
-    @Path("findByLastHist")
-    public PersonCostCalculationDto getLastPersonCost() {
-        return this.personCostCalculationSettingFinder.getLastPersonCost();
     }
 
     @POST

@@ -28,47 +28,47 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	public PersonCostCalculation createPersonCostCalculationFromJavaType(String companyID, GeneralDate startDate, 
 			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings) {
 		String historyID = UUID.randomUUID().toString();
-		return new PersonCostCalculation(companyID, historyID, startDate,
-				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), unitPrice, memo,
-				premiumSettings.stream()
-				.map(x -> new PremiumSetting(
-						companyID,
-						historyID,
-						x.getDisplayNumber(),
-						x.getRate(),
-						x.getName(),
-						x.getUseAtr(),
-						x.getAttendanceItems()))
-				.collect(Collectors.toList()));
+//		return new PersonCostCalculation(companyID, historyID, startDate,
+//				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), unitPrice, memo,
+//				premiumSettings.stream()
+//				.map(x -> new PremiumSetting(
+//						companyID,
+//						historyID,
+//						x.getDisplayNumber(),
+//						x.getRate(),
+//						x.getName(),
+//						x.getUseAtr(),
+//						x.getAttendanceItems()))
+//				.collect(Collectors.toList()));
 		return null;
 	}
 
 	@Override
 	public void insertPersonCostCalculation(PersonCostCalculation personCostCalculation) {
-		Optional<PersonCostCalculation> currentPersonCostResult = this.personCostCalculationRepository.findItemByDate(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
-		if(currentPersonCostResult.isPresent()) throw new BusinessException("Msg_15");
-		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
-		Optional<PersonCostCalculation> afterPersonCostResult = this.personCostCalculationRepository.findItemAfter(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate().addDays(-1));
-		if(afterPersonCostResult.isPresent()) throw new BusinessException("Msg_65");
-		if(beforePersonCostResult.isPresent()){
-			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("Msg_65");
-			this.personCostCalculationRepository.update(
-					new PersonCostCalculation(
-						beforePersonCostResult.get().getCompanyID(),
-						beforePersonCostResult.get().getHistoryID(),
-						beforePersonCostResult.get().getStartDate(),
-						personCostCalculation.getStartDate().addDays(-1),
-						beforePersonCostResult.get().getUnitPrice(),
-						beforePersonCostResult.get().getMemo(),
-						null));
-		}
-		this.personCostCalculationRepository.add(
-				createPersonCostCalculationFromJavaType(
-						personCostCalculation.getCompanyID(),
-						personCostCalculation.getStartDate(),
-						personCostCalculation.getUnitPrice(),
-						personCostCalculation.getMemo(),
-						personCostCalculation.getPremiumSettings()));
+//		Optional<PersonCostCalculation> currentPersonCostResult = this.personCostCalculationRepository.findItemByDate(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
+//		if(currentPersonCostResult.isPresent()) throw new BusinessException("Msg_15");
+//		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
+//		Optional<PersonCostCalculation> afterPersonCostResult = this.personCostCalculationRepository.findItemAfter(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate().addDays(-1));
+//		if(afterPersonCostResult.isPresent()) throw new BusinessException("Msg_65");
+//		if(beforePersonCostResult.isPresent()){
+//			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("Msg_65");
+//			this.personCostCalculationRepository.update(
+//					new PersonCostCalculation(
+//						beforePersonCostResult.get().getCompanyID(),
+//						beforePersonCostResult.get().getHistoryID(),
+//						beforePersonCostResult.get().getStartDate(),
+//						personCostCalculation.getStartDate().addDays(-1),
+//						beforePersonCostResult.get().getUnitPrice(),
+//						beforePersonCostResult.get().getMemo(),
+//						null));
+//		}
+//		this.personCostCalculationRepository.add(
+//				createPersonCostCalculationFromJavaType(
+//						personCostCalculation.getCompanyID(),
+//						personCostCalculation.getStartDate(),
+//						personCostCalculation.getUnitPrice(),
+//						personCostCalculation.getMemo(),
+//						personCostCalculation.getPremiumSettings()));
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 				.filter(x -> x.identifier().equals(histotyId)).findFirst();
 		if (!optionalHisItem.isPresent()) {
 
-			throw new BusinessException("invalid !");
+			throw new BusinessException("");
 		}
 		//Update item
 		listHist.changeSpan(optionalHisItem.get(), period);
@@ -142,7 +142,6 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 		val listUpdate = new ArrayList<DateHistoryItem>();
 		listUpdate.add(optionalHisItem.get());
 		itemBefore.ifPresent(listUpdate::add);
-
 		personCostCalculationRepository.updateHistPersonCl(new HistPersonCostCalculation(companyId, listUpdate));
 	}
 
@@ -159,16 +158,16 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 		DatePeriod datePeriod = new DatePeriod(date, GeneralDate.max());
 		// Item need to add
 		DateHistoryItem itemToBeAdded = DateHistoryItem.createNewHistory(datePeriod);
+		val histId = itemToBeAdded.identifier();
 		// Add into old list
 		listHist.add(itemToBeAdded);
 		//  Item to be update.
 		val itemToBeUpdated = listHist.immediatelyBefore(itemToBeAdded);
-
 		// Update pre hist
 		itemToBeUpdated.ifPresent(dateHistoryItem ->
 				personCostCalculationRepository.updateHistPersonCl(HistPersonCostCalculation.toDomain(companyId, Collections.singletonList(dateHistoryItem))));
 		// Add new item
-		personCostCalculationRepository.createHistPersonCl(HistPersonCostCalculation.toDomain(companyId, Collections.singletonList(itemToBeAdded)));
+		personCostCalculationRepository.createHistPersonCl(domain,itemToBeAdded.start(),itemToBeAdded.end(),histId);
 
 	}
 }

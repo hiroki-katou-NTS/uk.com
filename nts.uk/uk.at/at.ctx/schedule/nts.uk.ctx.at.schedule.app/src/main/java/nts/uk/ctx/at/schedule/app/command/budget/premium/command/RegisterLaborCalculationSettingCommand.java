@@ -16,7 +16,6 @@ import java.util.List;
 public class RegisterLaborCalculationSettingCommand {
     boolean isNew;
     private GeneralDate date;
-    private String historyId;
 
     private Integer unitPrice;
 

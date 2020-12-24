@@ -15,15 +15,13 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeIt
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class PremiumSetting implements Validatable{
-//	private String companyID;
-//
-//	private String historyID;
+
 //
 //	private Integer displayNumber;
 //
 //	private PremiumRate rate;
 //
-//	private PremiumName name;
+
 //
 //	private UseAttribute useAtr;
 //
@@ -41,6 +39,9 @@ public class PremiumSetting implements Validatable{
 //		this.attendanceItems = attendanceItems;
 //	}
 
+	private String companyID;//
+
+	private String historyID;//
 	// 割増時間項目NO
 	private ExtraTimeItemNo iD;
 	// 人件費割増率
@@ -50,13 +51,17 @@ public class PremiumSetting implements Validatable{
 
     private List<Integer> attendanceItems;
 
-    public PremiumSetting(ExtraTimeItemNo iD, PremiumRate rate, UnitPrice unitPrice,
-		 List<Integer> attendanceItems) {
+    public PremiumSetting(String companyID,String historyID,
+						  ExtraTimeItemNo iD, PremiumRate rate,
+						  UnitPrice unitPrice,
+						  List<Integer> attendanceItems) {
 		super();
 		this.iD = iD;
 		this.rate = rate;
 		this.unitPrice = unitPrice;
 		this.attendanceItems = attendanceItems;
+		this.companyID = companyID;
+		this.historyID = historyID;
 	}
 
 	@Override

@@ -93,9 +93,9 @@ public interface PersonCostCalculationRepository {
 
     public Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid);
 
-    public Optional<PersonCostCalculation> getLastPersonCost(String cid, String histId);
+    public Optional<PersonCostCalculation> getPersonCost(String cid, String histId);
 
-    public void createHistPersonCl(HistPersonCostCalculation domain);
+    public void createHistPersonCl(PersonCostCalculation domain,GeneralDate startDate,GeneralDate endDate,String histId);
 
     public void updateHistPersonCl(HistPersonCostCalculation domain);
 

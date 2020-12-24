@@ -38,6 +38,8 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
         val premiumSettings = command.getPremiumSettingList().stream().map(e->new PremiumSetting(
+                cid,
+                command.getHistoryId(),
                 EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
                 new PremiumRate(e.getRate()),
                 EnumAdaptor.valueOf(e.getUnitPrice(),UnitPrice.class),
