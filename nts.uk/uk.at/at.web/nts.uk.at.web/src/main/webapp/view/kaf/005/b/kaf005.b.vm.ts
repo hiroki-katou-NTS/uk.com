@@ -348,13 +348,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
-			if(failData.messageId == "Msg_26") {
-				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
-				.then(() => {
-					return $.Deferred().resolve(false);	
-				});	
-			}
-			if(failData.messageId == "Msg_750") {
+			if(
+				failData.messageId == "Msg_750"
+			||	failData.messageId == "Msg_1654"
+			||	failData.messageId == "Msg_1508"
+			||	failData.messageId == "Msg_424"
+			||	failData.messageId == "Msg_1746"
+			||	failData.messageId == "Msg_1745"
+			||	failData.messageId == "Msg_1748"
+			||	failData.messageId == "Msg_1747"
+			||	failData.messageId == "Msg_1535"
+			||	failData.messageId == "Msg_1536"
+			||	failData.messageId == "Msg_1537"
+			||	failData.messageId == "Msg_1538"
+				) {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
 					return $.Deferred().resolve(false);	
