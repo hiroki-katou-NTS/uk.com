@@ -54,7 +54,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 	</div>
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_1()">
+	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_2()">
 		<div style="width: 120px" class="cell col-1">
 			<div class="cell valign-center labelCustom" data-bind="ntsFormLabel: {
 				constraint: 'DivergenceReason',
