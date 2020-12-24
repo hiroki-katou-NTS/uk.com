@@ -4224,7 +4224,7 @@ module nts.uk.ui.exTable {
                 });
                 
                 if (_.isFunction(sticker.validate)) {
-                    let validate = sticker.validate(rowIdx, key, data);
+                    let validate = sticker.validate(rowIdx, coord.columnKey, data);
                     if (_.has(validate, "done")) {
                         validate.done(result => {
                             if (result === true) {
