@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal.remote;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -88,6 +89,9 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 				.setParameter("code", Integer.parseInt(code.v()))
 				.getList();
 		TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(listEntity);
+		if (timeRecordSetFormatBak == null) {
+			return Collections.emptyList();
+		}
 		return timeRecordSetFormatBak.getListTimeRecordSetFormat();
 	}
 
