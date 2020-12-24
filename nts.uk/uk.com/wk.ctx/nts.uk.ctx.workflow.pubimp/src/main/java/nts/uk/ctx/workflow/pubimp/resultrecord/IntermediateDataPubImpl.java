@@ -65,6 +65,7 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.AppFrameInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppPhaseInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsPeriodExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
@@ -669,7 +670,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public List<ApprovalRootStateExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType) {
+	public List<ApprovalRootStateExport> getAppRootInstanceDayByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalRootState> approvalRootStateLst = new ArrayList<>();
 		RecordRootType recordRootType = EnumAdaptor.valueOf(rootType, RecordRootType.class);
@@ -736,7 +737,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 
 	@Override
 	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
-		String companyID = AppContexts.user().employeeId();
+		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「就業実績確認状態」を取得する
 		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
 		// ドメインモデル「中間データ」を取得する
@@ -780,5 +781,30 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 											y.getAppDate());
 								}).collect(Collectors.toList()));
 					}).collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<AppRootInsPeriodExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
+			Integer rootType) {
+		return appRootInstanceService.getAppRootInstanceByEmpPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			.stream().map(x -> new AppRootInsPeriodExport(
+					x.getEmployeeID(), 
+					x.getAppRootInstanceLst().stream().map(y -> new AppRootInsExport(
+								y.getRootID(), 
+								y.getCompanyID(), 
+								y.getEmployeeID(), 
+								y.getDatePeriod(), 
+								y.getRootType().value, 
+								y.getListAppPhase().stream().map(z -> new AppPhaseInsExport(
+											z.getPhaseOrder(), 
+											z.getApprovalForm().value, 
+											z.getListAppFrame().stream().map(t -> new AppFrameInsExport(
+														t.getFrameOrder(), 
+														t.isConfirmAtr(), 
+														t.getListApprover())
+											).collect(Collectors.toList()))
+								).collect(Collectors.toList()))
+					).collect(Collectors.toList()))
+			).collect(Collectors.toList());
 	}
 }

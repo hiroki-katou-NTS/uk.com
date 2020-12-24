@@ -23,7 +23,6 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
     })
 
     class Kaf006Component2ViewModel extends ko.ViewModel {
-        // {holidayAppType: number, displayName: "string"}
         hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedType: KnockoutObservable<any> = ko.observable();
 
@@ -43,11 +42,6 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
                 if (vm.hdAppSet().length > 0) {
                     vm.selectedType(vm.hdAppSet()[0].holidayAppType);
                 }
-            });
-
-            // check selected item
-            vm.selectedType.subscribe(() => {
-                console.log(this.selectedType())
             });
         }
     }

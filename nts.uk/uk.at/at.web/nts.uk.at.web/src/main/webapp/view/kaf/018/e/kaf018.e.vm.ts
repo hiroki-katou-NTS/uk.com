@@ -3,6 +3,7 @@
 module nts.uk.at.view.kaf018.e.viewmodel {
 	import EmpInfo = nts.uk.at.view.kaf018.d.viewmodel.EmpInfo;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import ApprovalPhaseStateImport_New = nts.uk.at.view.kaf018.share.model.ApprovalPhaseStateImport_New;
 
 	@bean()
 	class Kaf018EViewModel extends ko.ViewModel {
@@ -220,7 +221,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			} else {
 				this.dateStr = moment(apprSttEmpDateContentDto.application.opAppStartDate,'YYYY/MM/DD').format('M/D(ddd)') + 
 								vm.$i18n('KAF018_394') + 
-								moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').format('M/D (ddd)');
+								moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').format('M/D(ddd)');
 			}
 			switch(apprSttEmpDateContentDto.application.appType) {
 				case AppType.OVER_TIME_APPLICATION:
@@ -434,19 +435,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		REMAND = 4,
 		/** 否認 */
 		DENIAL = 5
-	}
-	
-	enum ApprovalPhaseStateImport_New {
-		/** 0:未承認 */
-		UNAPPROVED = 0,
-		/** 1:承認済 */
-		APPROVED = 1,
-		/** 2:否認 */
-		DENIAL = 2,
-		/** 3:差し戻し */
-		REMAND = 3,
-		/** 4:本人差し戻し */
-		ORIGINAL_REMAND = 4
 	}
 	
 	class CellState {

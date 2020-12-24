@@ -90,7 +90,12 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 休暇申請の印刷内容
 		 */
-		
+        
+         /**
+         * 休日出勤の印刷内容
+         */
+        opPrintContentOfHolidayWork: any;
+    
 		/**
 		 * 勤務変更申請の印刷内容
 		 */
@@ -116,6 +121,11 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opInforGoBackCommonDirectOutput: any;
 		
 		opBusinessTripInfoOutput: any;
+		
+		/*
+			残業申請
+		 */
+		opDetailOutput: any;
 
         opOptionalItemOutput: any;
 	}

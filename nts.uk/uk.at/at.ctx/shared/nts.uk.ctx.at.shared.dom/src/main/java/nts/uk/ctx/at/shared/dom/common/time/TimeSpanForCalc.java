@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -275,7 +276,8 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 		default:
 			throw new RuntimeException("unknown duplicatoin");
 		}
-		return result;
+		
+		return result.stream().filter(c -> !c.getStart().equals(c.getEnd())).collect(Collectors.toList());
 	}
 	
 	

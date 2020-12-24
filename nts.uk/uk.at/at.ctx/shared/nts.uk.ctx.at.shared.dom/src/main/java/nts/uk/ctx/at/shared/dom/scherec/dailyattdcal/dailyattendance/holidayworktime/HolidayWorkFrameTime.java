@@ -96,17 +96,17 @@ public class HolidayWorkFrameTime {
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		AttendanceTime holTime = new AttendanceTime(0);
+		int holTime = 0;
 		if(this.getHolidayWorkTime() != null
 			&& this.getHolidayWorkTime().isPresent()
 			&& this.getHolidayWorkTime().get().getDivergenceTime() != null)
-			holTime = this.getHolidayWorkTime().get().getDivergenceTime();
+			holTime += this.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
 		
-		AttendanceTime transTime = new AttendanceTime(0);
+		int transTime = 0;
 		if(this.getTransferTime() != null
 		   && this.getTransferTime().isPresent())
-			transTime = this.getTransferTime().get().getDivergenceTime();
-		return holTime.addMinutes(transTime.valueAsMinutes()).valueAsMinutes();  
+			transTime = this.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		return holTime + transTime;  
 	}
 
 	/**

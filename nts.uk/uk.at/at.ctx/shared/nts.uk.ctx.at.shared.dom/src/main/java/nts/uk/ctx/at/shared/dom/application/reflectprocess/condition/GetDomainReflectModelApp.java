@@ -5,10 +5,10 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
  * @author thanh_nx
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.
  */
 public class GetDomainReflectModelApp {
 
-	public static ApplicationReflect process(Require require, String companyId, ApplicationTypeShare appType,
+	public static Object process(Require require, String companyId, ApplicationTypeShare appType,
 			Optional<Object> typeDaikyu) {
 
 		// 反映する申請の申請種類をもとに、反映条件のドメインモデルを取得する
@@ -71,13 +71,13 @@ public class GetDomainReflectModelApp {
 		 */
 		public Optional<SHAppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationTypeShare appType);
 
-		public Optional<ReflectWorkChangeApplication> findReflectWorkCg(String companyId);
+		public Optional<ReflectWorkChangeApp> findReflectWorkCg(String companyId);
 
-		public Optional<ReflectGoBackDirectly> findReflectGoBack(String companyId);
+		public Optional<GoBackReflect> findReflectGoBack(String companyId);
 
-		public Optional<ReflectAppStamp> findReflectAppStamp(String companyId);
+		public Optional<StampAppReflect> findReflectAppStamp(String companyId);
 
-		public Optional<ReflectArrivedLateLeaveEarly> findReflectArrivedLateLeaveEarly(String companyId);
+		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId);
 
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId);
 	}
