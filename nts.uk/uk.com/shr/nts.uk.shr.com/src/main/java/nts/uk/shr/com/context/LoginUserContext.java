@@ -1,5 +1,6 @@
 package nts.uk.shr.com.context;
 
+import nts.uk.shr.com.company.CompanyId;
 import nts.uk.shr.com.context.loginuser.SelectedLanguage;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
@@ -72,6 +73,6 @@ public interface LoginUserContext {
 	 * @return company ID zero in current contract
 	 */
 	default String zeroCompanyIdInContract() {
-		return this.contractCode() + "-0000";
+		return CompanyId.zeroCompanyInTenant(contractCode());
 	}
 }
