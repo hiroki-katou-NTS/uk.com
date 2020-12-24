@@ -408,7 +408,7 @@ public class CreateWorkLedgerDisplayContentDomainServiceTest {
                 require.getMonthlyItems("cid", null, listAttIds, null);
                 result = Arrays.asList(attName);
 
-                require.getEmploymentInfor("cid", listSid, baseDate);
+                require.getEmploymentInfor(listSid, baseDate);
                 result = mapEmploymentInfor;
 
                 require.getClosureDataByEmployee("eplId01", baseDate);
