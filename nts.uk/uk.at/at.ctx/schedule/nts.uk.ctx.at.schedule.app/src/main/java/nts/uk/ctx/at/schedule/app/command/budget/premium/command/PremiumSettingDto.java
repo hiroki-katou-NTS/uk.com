@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public class PremiumSettingDto {
     private int iD;
-
+    private String name;
     private Integer rate;
 
     private int unitPrice;

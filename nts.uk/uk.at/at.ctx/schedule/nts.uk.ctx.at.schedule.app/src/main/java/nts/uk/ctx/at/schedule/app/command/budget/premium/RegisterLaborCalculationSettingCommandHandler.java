@@ -16,7 +16,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -37,14 +36,14 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
-        val premiumSettings = command.getPremiumSettingList().stream().map(e->new PremiumSetting(
+        val premiumSettings = command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
                 cid,
                 null,
                 EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
                 new PremiumRate(e.getRate()),
-                EnumAdaptor.valueOf(e.getUnitPrice(),UnitPrice.class),
+                EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class),
                 e.getAttendanceItems()
-        )).collect(Collectors.toList()) ;
+        )).collect(Collectors.toList());
         val domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
@@ -54,9 +53,9 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
                 Optional.of(unitPrice),
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
-           null
+                null
         );
-        this.service.registerLaborCalculationSetting(domain,command.getDate());
+        this.service.registerLaborCalculationSetting(domain, command.getDate());
 
     }
 }

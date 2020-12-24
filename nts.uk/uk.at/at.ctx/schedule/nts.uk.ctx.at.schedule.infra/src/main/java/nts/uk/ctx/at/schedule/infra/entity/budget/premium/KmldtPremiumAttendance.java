@@ -23,31 +23,30 @@ public class KmldtPremiumAttendance extends UkJpaEntity {
     @EmbeddedId
     public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumns({
-            @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-            @PrimaryKeyJoinColumn(name = "HIS_ID", referencedColumnName = "HIS_ID"),
-            @PrimaryKeyJoinColumn(name = "PREMIUM_NO", referencedColumnName = "PREMIUM_NO")
-    })
-    public KmlstPremiumSet kmlstPremiumSet;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @PrimaryKeyJoinColumns({
+//            @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+//            @PrimaryKeyJoinColumn(name = "HIS_ID", referencedColumnName = "HIS_ID"),
+//            @PrimaryKeyJoinColumn(name = "PREMIUM_NO", referencedColumnName = "PREMIUM_NO")
+//    })
+//    public KmlstPremiumSet kmlstPremiumSet;
 
     @Override
     protected Object getKey() {
         return kmldpPremiumAttendancePK;
     }
 
-    public static List<KmldtPremiumAttendance> toEntity(List<PremiumSetting> premiumSettings) {
+    public static List<KmldtPremiumAttendance> toEntity(List<PremiumSetting> premiumSettings,String histId) {
         List<KmldtPremiumAttendance> rs = new ArrayList<>();
         premiumSettings.forEach(
                 e -> {
                     rs.addAll(e.getAttendanceItems().stream().map(i -> new KmldtPremiumAttendance(
                             new KmldpPremiumAttendancePK(
                                     e.getCompanyID(),
-                                    e.getHistoryID(),
+                                    histId,
                                     e.getID().value,
                                     i
-                            ),
-                            null
+                            )
                     )).collect(Collectors.toList()));
                 }
         );

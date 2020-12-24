@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdateHistPersonCostCalculationCommand;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
@@ -37,14 +38,14 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
-        val premiumSettings = command.getPremiumSettingList().stream().map(e->new PremiumSetting(
+        val premiumSettings = command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
                 cid,
                 command.getHistoryId(),
                 EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
                 new PremiumRate(e.getRate()),
-                EnumAdaptor.valueOf(e.getUnitPrice(),UnitPrice.class),
+                EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class),
                 e.getAttendanceItems()
-        )).collect(Collectors.toList()) ;
+        )).collect(Collectors.toList());
         val domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
@@ -56,8 +57,8 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
                 command.getHistoryId()
         );
-        DatePeriod period = new DatePeriod(command.getStartDate(), command.getEndDate());
-        service.updateHistPersonCalculation(domain,command.historyId, period);
+        DatePeriod period = new DatePeriod(command.getStartDate(), GeneralDate.max());
+        service.updateHistPersonCalculation(domain, command.historyId, period);
 
     }
 }

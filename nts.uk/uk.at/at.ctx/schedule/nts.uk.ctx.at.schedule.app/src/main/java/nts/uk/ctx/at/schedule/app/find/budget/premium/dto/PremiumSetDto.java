@@ -22,7 +22,7 @@ public class PremiumSetDto {
 
     String name;
 
-    int useAtr;
+    Integer useAtr;
 
     List<ShortAttendanceItemDto> attendanceItems;
 

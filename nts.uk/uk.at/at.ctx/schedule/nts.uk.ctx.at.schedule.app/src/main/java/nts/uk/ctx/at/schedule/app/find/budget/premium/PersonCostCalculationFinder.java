@@ -2,14 +2,14 @@ package nts.uk.ctx.at.schedule.app.find.budget.premium;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PerCostRoundSettingDto;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationDto;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PremiumSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.*;
-import nts.uk.ctx.at.schedule.dom.budget.premium.*;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguageRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumAdapter;
@@ -17,12 +17,10 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDt
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,7 +68,7 @@ public class PersonCostCalculationFinder {
      */
     public List<PremiumItemDto> findPremiumItemByCompanyID() {
         String companyID = AppContexts.user().companyId();
-        return this.premiumItemRepository.findAllIsUse(companyID)
+        return this.premiumItemRepository.findByCompanyID(companyID)
                 .stream()
                 .map(x -> new PremiumItemDto(
                         companyID,
@@ -84,15 +82,13 @@ public class PersonCostCalculationFinder {
         // company id
         String companyId = AppContexts.user().companyId();
         List<PremiumItemLanguage> listPremiumItem = premiumItemLanguageRepository.findByCIdAndLangId(companyId, langId);
-        return listPremiumItem.stream().map(x -> {
-            return PremiumItemDto.fromDomainPremiumItemLanguage(x);
-        }).collect(Collectors.toList());
+        return listPremiumItem.stream().map(PremiumItemDto::fromDomainPremiumItemLanguage).collect(Collectors.toList());
     }
 
     public PersonCostCalculationSettingDto findByHistoryID(String historyID) {
         String companyID = AppContexts.user().companyId();
         return this.personCostCalculationRepository.findItemByHistoryID(companyID, historyID)
-                .map(x -> convertToDto(x)).orElse(null);
+                .map(this::convertToDto).orElse(null);
     }
 
     private PersonCostCalculationSettingDto convertToSimpleDto(PersonCostCalculation personCostCalculation) {
@@ -117,7 +113,7 @@ public class PersonCostCalculationFinder {
                 personCostCalculation.getHistoryID(),
                 personCostCalculation.getUnitPrice().isPresent() ? personCostCalculation.getUnitPrice().get().value : null,
                 personCostCalculation.getRemark().v(),
-                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
+                personCostCalculation.getPremiumSettings().stream().map(this::toPremiumSetDto).collect(Collectors.toList()));
     }
 
     /**
@@ -127,15 +123,19 @@ public class PersonCostCalculationFinder {
      * @return PremiumSetDto Object
      */
     private PremiumSetDto toPremiumSetDto(PremiumSetting premiumSetting) {
-//        return new PremiumSetDto(
-//                premiumSetting.getCompanyID(),
-//                premiumSetting.getHistoryID(),
-//                premiumSetting.getID().value,
-//                premiumSetting.getRate().v(),
-//                premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()),
-//                premiumSetting.getUnitPrice().value
-//        );
-        return null;
+        val listItemName = premiumItemRepository.findByCompanyID(premiumSetting.getCompanyID());
+        val item = listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(premiumSetting.getID().value)) ?
+                listItemName.stream().filter(j -> j.getDisplayNumber().equals(premiumSetting.getID().value)).findFirst().get() : null;
+        return new PremiumSetDto(
+                premiumSetting.getCompanyID(),
+                premiumSetting.getHistoryID(),
+                premiumSetting.getID().value,
+                premiumSetting.getRate().v(),
+                item != null ? item.getName().v() : null,
+                item != null ? item.getUseAtr().value : null,
+                premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()),
+                premiumSetting.getUnitPrice().value
+        );
 
     }
 
@@ -166,6 +166,7 @@ public class PersonCostCalculationFinder {
         if (!listItem.isPresent()) {
             throw new BusinessException("Msg_2027");
         }
+        val listItemName = premiumItemRepository.findByCompanyID(cid);
         val lisHist = listItem.get().items().stream().map(e -> new HistPersonCostCalculationDto(
                 e.start(),
                 e.end(),
@@ -194,6 +195,8 @@ public class PersonCostCalculationFinder {
 
                         domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
                                 e.getID().value,
+                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
                                 e.getRate().v(),
                                 e.getUnitPrice().value,
                                 e.getAttendanceItems()
@@ -211,31 +214,34 @@ public class PersonCostCalculationFinder {
 
     public PersonCostCalculationDto getHistPersonCostByHistId(String histId) {
         val cid = AppContexts.user().companyId();
+        val listItemName = premiumItemRepository.findByCompanyID(cid);
         PersonCostCalculationDto personCostCalLast = null;
-            val domainOpt = this.personCostCalculationRepository.getPersonCost(cid,histId);
-            if (domainOpt.isPresent()) {
-                val domain = domainOpt.get();
-                personCostCalLast = new PersonCostCalculationDto(
-                        null,
-                        null,
-                        domain.getHistoryID(),
-                        domain.getCompanyID(),
-                        domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
-                        domain.getHowToSetUnitPrice().value,
-                        domain.getWorkingHoursUnitPrice().v(),
-                        domain.getRemark().v(),
-                        new PerCostRoundSettingDto(
-                                domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
-                                domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
-                                domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
+        val domainOpt = this.personCostCalculationRepository.getPersonCost(cid, histId);
+        if (domainOpt.isPresent()) {
+            val domain = domainOpt.get();
+            personCostCalLast = new PersonCostCalculationDto(
+                    null,
+                    null,
+                    domain.getHistoryID(),
+                    domain.getCompanyID(),
+                    domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
+                    domain.getHowToSetUnitPrice().value,
+                    domain.getWorkingHoursUnitPrice().v(),
+                    domain.getRemark().v(),
+                    new PerCostRoundSettingDto(
+                            domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
+                            domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                            domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
 
-                        domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
-                                e.getID().value,
-                                e.getRate().v(),
-                                e.getUnitPrice().value,
-                                e.getAttendanceItems()
-                        )).collect(Collectors.toList()));
-            }
+                    domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
+                            e.getID().value,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
+                            e.getRate().v(),
+                            e.getUnitPrice().value,
+                            e.getAttendanceItems()
+                    )).collect(Collectors.toList()));
+        }
 
         return personCostCalLast;
     }

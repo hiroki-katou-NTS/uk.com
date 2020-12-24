@@ -31,7 +31,6 @@ public interface PersonCostCalculationRepository {
      * get single PersonCostCalculation by company ID and history ID
      *
      * @param companyID company ID
-     * @param historyID history ID
      * @return single PersonCostCalculation by company ID and history ID
      */
     public Optional<PersonCostCalculation> findItemByDate(String companyID, GeneralDate startDate);
@@ -49,7 +48,6 @@ public interface PersonCostCalculationRepository {
      * get single PersonCostCalculation before input date by company ID
      *
      * @param companyID company ID
-     * @param date      input date
      * @return single PersonCostCalculation before input date by company ID
      */
     public Optional<PersonCostCalculation> findItemBefore(String companyID, GeneralDate startDate);
@@ -58,46 +56,33 @@ public interface PersonCostCalculationRepository {
      * get single PersonCostCalculation after input date by company ID
      *
      * @param companyID company ID
-     * @param date      input date
      * @return single PersonCostCalculation after input date by company ID
      */
     public Optional<PersonCostCalculation> findItemAfter(String companyID, GeneralDate startDate);
 
-    /**
-     * update PersonCostCalculation
-     *
-     * @param personCostCalculation PersonCostCalculation
-     */
+
     public void update(PersonCostCalculation personCostCalculation);
 
-    /**
-     * delete PersonCostCalculation
-     *
-     * @param personCostCalculation PersonCostCalculation
-     */
-    public void delete(PersonCostCalculation personCostCalculation);
+    public void delete(String companyId, String historyId);
 
-    /**
-     * @param companyID
-     * @param date
-     * @param displayNumber
-     * @return
-     */
+
     public List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
 
     public List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date, List<Integer> itemNos);
 
     public List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date);
 
-    //=============================Update KML 001
 
     public Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid);
+
 
     public Optional<PersonCostCalculation> getPersonCost(String cid, String histId);
 
     public void createHistPersonCl(PersonCostCalculation domain,GeneralDate startDate,GeneralDate endDate,String histId);
 
     public void updateHistPersonCl(HistPersonCostCalculation domain);
+
+    public void update(PersonCostCalculation domain,HistPersonCostCalculation domainHist);
 
 
 }

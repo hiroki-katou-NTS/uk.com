@@ -26,16 +26,14 @@ public class KscmtPerCostCal extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
     public KscmtPerCostCalPk pk;
-    @Column(name = "CONTRACT_CD")
-    public String contractCD;
 
-    @Column(name = "START_YMD")
+    @Column(name = "START_DATE")
     public GeneralDate startDate;
 
-    @Column(name = "END_YMD")
+    @Column(name = "END_DATE")
     public GeneralDate endDate;
     //人件費計算設定.単価
-    @Column(name = "UNIT_PRICE_ATR")
+    @Column(name = "UNITPRICE_ATR")
     public Integer unitPriceAtr;
 
     //人件費計算設定.備考
@@ -74,7 +72,6 @@ public class KscmtPerCostCal extends UkJpaEntity implements Serializable {
 
         return new KscmtPerCostCal(
                 new KscmtPerCostCalPk(domain.getCompanyID(), histId),
-                AppContexts.user().contractCode(),
                 startDate,
                 endDate,
                 unitPrice.isPresent() ? unitPrice.get().value : null,
