@@ -40,9 +40,10 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 	@Override
 	public List<ReqComStatusMonitoring> get(ContractCode contractCode, List<EmpInfoTerminalCode> listTerminalCode,
 			boolean connecting) {
+		List<Integer> listCode = listTerminalCode.stream().map(e -> Integer.parseInt(e.v())).collect(Collectors.toList());
 		return this.queryProxy().query(FIND_CONTRACTCD_CODE_CONNECTING, KrcdtTrRqStMonitor.class)
 					.setParameter("contractCode", contractCode.v())
-					.setParameter("listCode", listTerminalCode)
+					.setParameter("listCode", listCode)
 					.setParameter("connecting", connecting ? 1 : 0).getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
 	}
 
