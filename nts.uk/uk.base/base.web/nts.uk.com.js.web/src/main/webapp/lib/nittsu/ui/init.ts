@@ -27,14 +27,26 @@ module nts.uk.ui {
 
     // Kiban ViewModel
     class KibanViewModel {
+        // deprecate
         title!: KnockoutComputed<string>;
-        errorDialogViewModel!: errors.ErrorsViewModel;
 
         systemName: KnockoutObservable<string> = ko.observable("");
         programName: KnockoutObservable<string> = ko.observable("");
 
+        // error model
+        errorDialogViewModel!: errors.ErrorsViewModel;
+
+        // set page as view or modal
         mode: KnockoutObservable<'view' | 'modal'> = ko.observable(undefined);
+
+        // subscriber windows size
         size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight });
+
+        // show or hide header
+        header: KnockoutObservable<boolean> = ko.observable(true);
+
+        // show or hide notification
+        notification: KnockoutObservable<string> = ko.observable('');
 
         constructor(dialogOptions?: any) {
             const vm = this;
@@ -77,6 +89,9 @@ module nts.uk.ui {
 
                 // update mode of view
                 kiban.mode(window === window.top ? 'view' : 'modal');
+
+                // update header 
+                kiban.header(!__viewContext.noHeader);
 
                 _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
 
@@ -123,11 +138,6 @@ module nts.uk.ui {
                         });
                     })
                     .on('resize', () => $(window).trigger('wd.resize'));
-
-                if (ko.unwrap(kiban.mode) === 'modal') {
-                    $(window)
-                        .trigger('wd.resize');
-                }
             }
         });
 

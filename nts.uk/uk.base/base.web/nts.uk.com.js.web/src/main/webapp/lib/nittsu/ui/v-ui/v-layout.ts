@@ -28,10 +28,11 @@ module nts.uk.ui.layout {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
             element.removeAttribute('data-bind');
 
+            element.setAttribute('id', 'operation-info');
+
+            ko.applyBindingsToNode(element, { component: 'ui-notification' });
+
             return { controlsDescendantBindings: true };
-        }
-        update(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
-            // update notification at here
         }
     }
 
@@ -46,16 +47,9 @@ module nts.uk.ui.layout {
             element.id = "header";
             element.classList.add('header');
 
-            if (__viewContext.noHeader) {
-                element.classList.add('hidden');
-            } else {
-
-            }
+            ko.applyBindingsToNode(element, { component: 'ui-header' });
 
             return { controlsDescendantBindings: true };
-        }
-        update(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
-            // update notification at here
         }
     }
 

@@ -1,26 +1,122 @@
-#header {
-	background-color: #127D09;
-	height: $header_height;
-}
+div#master-wrapper {
+	&>div#operation-info { 
+		height: 80px;
+		overflow: hidden;
+		position: relative;
+		background-color: #FFE9DF;
+		border-left: 7px solid #F18855;
 
-#operation-info {
-	position: absolute;
-	top: 61px;
-	width: 200px; 
-	overflow: hidden; 
-	line-height: 30px;
-	height: 30px;
-	background-color: orange;
-	
-	div {
-	  display: block;
-	  width: fit-content;
-	  height: 30px;
-	  position: absolute;
-	  overflow: hidden;
+		font-size: 16px;
+		font-weight: 700;
+
+		&>svg,
+		&>span.close {
+			position: absolute;
+		}
+
+		&>svg {
+			top: 25px;
+			left: 85px;
+		}
+
+		&>span.close {
+			right: 25px;
+			top: 25px;
+			font-size: 20px;
+		}
+
+		&>div.text {
+			color: #2B2E44;
+			line-height: 80px;
+			padding-left: 140px;
+		}
 	}
-	
-	label:last-child {
-		margin-left: 150px;
+
+	&>div#header {
+		position: relative;
+		background-color: #127D09;
+		height: $header_height;
+
+		&>svg.hamberger {
+			position: absolute;
+			top: 33px;
+			left: 32px;
+		}
+
+		&>img.favicon {
+			width: 56px;
+			height: 30px;
+			position: absolute;
+			top: 25px;
+			left: 84px;
+		}
+
+		div.menu-groups {
+			padding-left: 172px;
+			padding-top: 27px;
+			padding-bottom: 27px;
+
+			&>button.small {
+				border: none;
+				background-color: transparent;
+				color: #fff;
+				padding: 0 16px;
+				vertical-align: middle;
+			}
+
+			&>span.divider {
+				position: relative;
+				&::after {
+					content: '';
+					display: block;
+					position: absolute;
+					border: 1px solid #fff;
+					right: 0px;
+					top: 6px;
+					height: 12px;
+				}
+			}
+		}
+
+		&>div.user-info {
+			position: absolute;
+			right: 0;
+			top: 0;
+			
+			&>div.menu-groups {
+				padding-left: 0px;
+				padding-right: 60px;
+
+				&+div.avatar {
+					position: absolute;
+					width: 40px;
+					height: 40px;
+					background-color: #fff;
+					border-radius: 2px;
+					top: 20px;
+					right: 20px;
+					&.notification {
+						&::after {
+							content: '';
+							display: block;
+							position: absolute;
+							width: 15px;
+							height: 15px;
+							background-color: #D3466D;
+							border-radius: 50%;
+							right: -7px;
+							top: -7px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.modal {
+		&>div#header,
+		&>div#operation-info {
+			display: none;
+		}
 	}
 }

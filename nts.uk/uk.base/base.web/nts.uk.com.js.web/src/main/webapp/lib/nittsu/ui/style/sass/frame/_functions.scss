@@ -72,7 +72,7 @@ div#master-wrapper {
 			border-top: solid 1px $frame_border_color;
 			text-align: center;
 			white-space: nowrap;
-			background-color: #fff;
+			background-color: #F1FDFB;
 			z-index: 10001;
 			box-sizing: border-box;
 			
@@ -89,6 +89,7 @@ div#master-wrapper {
 
 	&.modal {			
 		&>div#functions-area-bottom {
+
 			&>button {
 				vertical-align: middle;
 			}
