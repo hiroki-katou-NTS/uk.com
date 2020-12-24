@@ -974,8 +974,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 																	  , GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
-		//YearMonth endMonth = query.getEndYearMonth();
-		GeneralDate endDate = query.getBaseDate();
 		MonthlyWorkScheduleCondition condition = query.getCondition();
 		
 		// Always has item because this has passed error check
