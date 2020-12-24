@@ -70,7 +70,9 @@ public class AnnualPaidLeaveFinder {
         dto.setReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
         dto.setMaxTimeDay(setting.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
         dto.setRoundProcessClassific(setting.getTimeSetting().getRoundProcessClassific().value);
-        
+        dto.setTimeOfDayReference(setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getTimeOfDayReference().value);
+        dto.setUnifromTime(setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getUniformTime().isPresent() ? setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getUniformTime().get().v() : null );
+        dto.setContractTimeRound(setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getContractTimeRound().isPresent() ? setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getContractTimeRound().get().value : null );
         return dto;
     }
 }

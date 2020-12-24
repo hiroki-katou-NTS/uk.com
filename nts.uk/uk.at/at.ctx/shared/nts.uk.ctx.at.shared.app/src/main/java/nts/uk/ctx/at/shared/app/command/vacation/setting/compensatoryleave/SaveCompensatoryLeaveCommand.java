@@ -151,8 +151,8 @@ public class SaveCompensatoryLeaveCommand {
 
 		@Override
 		public ManageDistinct getLinkingManagementATR() {
-			// TODO Auto-generated method stub
-			return null;
+			
+			return ManageDistinct.valueOf(this.command.linkingManagementATR);
 		}
 	}
 }

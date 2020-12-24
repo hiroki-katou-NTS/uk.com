@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
@@ -28,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDa
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 
 /**
  * The Class AnnualPaidLeaveSaveCommand.
@@ -89,6 +93,12 @@ public class AnnualPaidLeaveSaveCommand {
     
     /** The round processing classification. */
     private Integer roundProcessCla;
+    
+    private int timeOfDayReference;
+    
+    private Integer uniformTime;
+    
+    private Integer contractTimeRound;
 
     /**
      * To domain.
@@ -347,8 +357,12 @@ public class AnnualPaidLeaveSaveCommand {
 
 		@Override
 		public TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay() {
+			TimeAnnualLeaveTimeDay data = new TimeAnnualLeaveTimeDay(
+					DayTimeAnnualLeave.valueOf( this.command.timeOfDayReference),
+					Optional.ofNullable(this.command.uniformTime == null ? null : new LaborContractTime(this.command.uniformTime)),
+					Optional.ofNullable(this.command.contractTimeRound == null ? null : ContractTimeRound.valueOf(this.command.contractTimeRound)   ));
 			
-			return null;
+			return data;
 		}		
     }
 }

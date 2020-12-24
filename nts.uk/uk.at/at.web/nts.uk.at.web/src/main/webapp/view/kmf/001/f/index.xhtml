@@ -115,7 +115,7 @@
 										visibleItemsCount: 6,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: true,
+										enable: isManageCompen,
 										columns: [
 											{ prop: 'localizedName', length: 10 },
 										]}"></div>
@@ -143,8 +143,8 @@
 								data-bind="ntsSwitchButton: {
 												name: '#[KMF001_330]',
 												options: ko.observableArray([
-					                				{ code: 0, name: '#{i18n.getText('KMF001_331')}' },
-					                				{ code: 1, name: '#{i18n.getText('KMF001_332')}' }
+					                				{ code: 1, name: '#{i18n.getText('KMF001_331')}' },
+					                				{ code: 0, name: '#{i18n.getText('KMF001_332')}' }
 					            				]),
 												optionsValue: 'code',
 												optionsText: 'name',

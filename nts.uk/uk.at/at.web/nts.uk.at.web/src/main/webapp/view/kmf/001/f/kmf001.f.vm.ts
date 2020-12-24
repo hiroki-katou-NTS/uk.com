@@ -490,6 +490,8 @@ module nts.uk.pr.view.kmf001.f {
             private loadToScreen(data: any) {
                 let self = this;
                 self.compenManage(data.isManaged);
+                self.managementClassification(data.linkingManagementATR);
+                self.manageDeadline(data.compensatoryAcquisitionUse.termManagement);
 
                 self.expirationDateCode(data.compensatoryAcquisitionUse.expirationTime);
                 self.compenPreApply(data.compensatoryAcquisitionUse.preemptionPermit);
@@ -536,7 +538,10 @@ module nts.uk.pr.view.kmf001.f {
             private saveData() {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                
+                  if(self.managementClassification() == 1 && self.compenTimeManage() == 1 ){
+                   nts.uk.ui.dialog.alertError({ messageId: "Msg_1942", messageParams: [] });
+                      return;
+                    }
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){
                         
@@ -681,8 +686,11 @@ module nts.uk.pr.view.kmf001.f {
                     compensatoryAcquisitionUse: {
                         expirationTime: self.isManageCompen() ? self.expirationDateCode() : data.compensatoryAcquisitionUse.expirationTime,
                         preemptionPermit: self.isManageCompen() ? self.compenPreApply() : data.compensatoryAcquisitionUse.preemptionPermit,
-                        deadlCheckMonth: self.isManageCompen() ? self.compenDeadlCheckMonth() : data.compensatoryAcquisitionUse.deadlCheckMonth
-                    },
+                        deadlCheckMonth: self.isManageCompen() ? self.compenDeadlCheckMonth() : data.compensatoryAcquisitionUse.deadlCheckMonth,       
+                        termManagement : self.manageDeadline ()                  
+                        
+                        },
+                    linkingManagementATR : self.managementClassification(),
                     compensatoryDigestiveTimeUnit: {
                         isManageByTime: self.isManageCompen() ? self.compenTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,
                         digestiveUnit: self.isManageTime() ? self.timeUnitCode() : data.compensatoryDigestiveTimeUnit.digestiveUnit

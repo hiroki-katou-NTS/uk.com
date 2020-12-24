@@ -87,6 +87,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 
 						KtvmtTimeAnnualSet ktvmtTimeVacationSet = new KtvmtTimeAnnualSet();
 						ktvmtTimeVacationSet.setCid(rec.getString("CID"));
+					
 						ktvmtTimeVacationSet.setTimeManageAtr(rec.getInt("TIME_MANAGE_ATR"));
 						ktvmtTimeVacationSet.setTimeUnit(rec.getInt("TIME_UNIT"));
 						ktvmtTimeVacationSet
@@ -96,7 +97,10 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 						ktvmtTimeVacationSet
 								.setTimeMaxDayUnifComp(rec.getInt("TIME_MAX_DAY_UNIF_COMP"));
 						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("ROUND_PROC"));
-
+						ktvmtTimeVacationSet.setTimeOfDayRef(rec.getInt("TIME_OF_DAY_REFERENCE"));
+						ktvmtTimeVacationSet.setUnifromTime(rec.getInt("UNIFORM_TIME"));
+						ktvmtTimeVacationSet.setContractTimeRound(rec.getInt("CONTRACT_TIME_ROUND"));
+						
 						KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
 						entity.setCid(rec.getString("CID"));
 						entity.setPriorityType(rec.getInt("PRIORITY_TYPE"));
