@@ -3086,15 +3086,17 @@ module nts.uk.ui.exTable {
 //                }
             } else {
                 gen.dataSource[rowIdx][columnKey] = value;
+                let detail = new selection.Cell(rowIdx, columnKey, value, -1);
+                if (selector.is($grid, `.${BODY_PRF + LEFTMOST}`)) {
+                    detail.land = BODY_PRF + LEFTMOST;
+                } else if (selector.is($grid, `.${BODY_PRF + MIDDLE}`)) {
+                    detail.land = BODY_PRF + MIDDLE;
+                }
+                
                 if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                    let detail = new selection.Cell(rowIdx, columnKey, value, -1);
-                    if (selector.is($grid, `.${BODY_PRF + LEFTMOST}`)) {
-                        detail.land = BODY_PRF + LEFTMOST;
-                    } else if (selector.is($grid, `.${BODY_PRF + MIDDLE}`)) {
-                        detail.land = BODY_PRF + MIDDLE;
-                    }
-                    
-                    events.trigger($table, events.CELL_UPDATED, detail);
+                    events.trigger($table, events.CELL_UPDATED, detail);    
+                } else {
+                    events.trigger($table, events.CELL_RETAINED, detail);
                 }
             }
             
