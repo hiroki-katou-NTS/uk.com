@@ -154,7 +154,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                                 .setValue(this.formatValue(leftData.get().getActualValue(), leftData.get().getCharacterValue(), dailyData.getLeftAttribute(), dataSource.isZeroDisplay()));
                     }
 
-                    val rightData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
+                    val rightData = dailyData.getLstRightValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
                     if (rightData.isPresent()&& dailyData.getRightAttribute()!= null) {
                         cells.get(firstRow + 6 + di, 3 + mi * 2)
                                 .setValue(this.formatValue(rightData.get().getActualValue(), rightData.get().getCharacterValue(), dailyData.getRightAttribute(), dataSource.isZeroDisplay()));
