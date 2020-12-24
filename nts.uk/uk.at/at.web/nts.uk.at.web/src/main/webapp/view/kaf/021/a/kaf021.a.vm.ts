@@ -109,14 +109,14 @@ module nts.uk.at.kaf021.a {
                 }
 
                 vm.initData().done(() => {
-                    vm.loadMGrid();
-                    $('#A1_5').focus();
-                    vm.$blockui("clear");
                     if (vm.isReload == null) {
                         // Fisrt load
                         vm.getprocessingMonth(null);
                     }
                     vm.reloadAppTypes();
+                    vm.loadMGrid();
+                    $('#A1_5').focus();
+                    vm.$blockui("clear");
                     // Reload when back from screen B (Register success)
                     if (vm.isReload) {
                         vm.$nextTick(() => {
