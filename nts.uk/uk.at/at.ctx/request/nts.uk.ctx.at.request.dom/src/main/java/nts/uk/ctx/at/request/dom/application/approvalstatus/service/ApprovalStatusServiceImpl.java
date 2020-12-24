@@ -26,6 +26,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -85,6 +86,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Workp
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.AffWorkplaceImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -242,6 +244,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
+	@Inject
+	private SyEmployeeAdapter syEmployeeAdapter;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -1322,7 +1327,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		}
 		// アルゴリズム「状況取得_就業確定」を実行する
 		if(initDisplayOfApprovalStatus.isConfirmEmploymentFlg()) {
-			Map<String, Pair<String, GeneralDate>> mapUnConfirmEmploymentCount = this.getStatusEmploymentConfirm(closureId, processingYm, displayWorkplaceLst);
+			Map<String, Pair<String, GeneralDateTime>> mapUnConfirmEmploymentCount = this.getStatusEmploymentConfirm(closureId, processingYm, displayWorkplaceLst);
 			mapUnConfirmEmploymentCount.entrySet().stream().forEach(x -> {
 				result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
 					z.setDisplayConfirm(true);
@@ -1440,10 +1445,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<String, Pair<String, GeneralDate>> getStatusEmploymentConfirm(ClosureId closureId, YearMonth yearMonth, List<DisplayWorkplace> displayWorkplaceLst) {
+	public Map<String, Pair<String, GeneralDateTime>> getStatusEmploymentConfirm(ClosureId closureId, YearMonth yearMonth, List<DisplayWorkplace> displayWorkplaceLst) {
 		String companyID = AppContexts.user().companyId();
 		// クエリモデル「対象職場の締めの確定状況を取得する」を実行する
-		Map<String, Pair<String, GeneralDate>> mapCountWorkConfirm = approvalSttScreenRepository.getCountWorkConfirm(
+		Map<String, Pair<String, GeneralDateTime>> mapCountWorkConfirm = approvalSttScreenRepository.getCountWorkConfirm(
 				closureId, 
 				yearMonth, 
 				companyID, 
@@ -1865,6 +1870,29 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}).collect(Collectors.toList());
 			break;
 		case WORK_CONFIRMATION:
+			// アルゴリズム「メール送信_対象再取得_就業確定」を実行
+			Map<String, String> mapWorkConfirm = this.getMailCountWorkConfirm(
+					period, 
+					closureId, 
+					processingYm, 
+					companyId, 
+					displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList()), 
+					employmentCDLst);
+			List<ApprSttWkpEmpMailOutput> wkpEmpMailWorkLstQuery = apprSttExecutionOutputLst.stream().map(x -> new ApprSttWkpEmpMailOutput(
+					x.getWkpID(), 
+					x.getWkpCD(), 
+					x.getWkpName(), 
+					x.getHierarchyCode(), 
+					0, 
+					Collections.emptyList()))
+					.collect(Collectors.toList());
+			mapWorkConfirm.entrySet().stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
+				wkpEmpMailWorkLstQuery.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+					z.setCountEmp(x.getValue().size());
+					z.setEmpMailLst(x.getValue().stream().map(t -> new ApprSttEmpMailOutput(t.getValue(), "", "")).collect(Collectors.toList()));
+				});
+			});
+			wkpEmpMailLst = wkpEmpMailWorkLstQuery;
 			break;
 		default:
 			break;
@@ -1939,7 +1967,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				companyID, 
 				wkpIDLst, 
 				employmentCDLst);
-		return null;
+		if(CollectionUtil.isEmpty(wkpIDLstQuery)) {
+			return Collections.emptyMap();
+		}
+		// 職場の管理者を求める　　　　　　　　　　　リクエストリストNo.653
+		Map<String, String> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), wkpIDLstQuery);
+		return infoMap;
 	}
 	
 	@Override
@@ -2155,11 +2188,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				Optional<StatusConfirmMonthImport> opStatusConfirmMonthImport = recordWorkInfoAdapter.getConfirmStatusMonthly(
 						companyID, Arrays.asList(empPeriod.getEmpID()), yearMonth, closureId.value);
 				if(opStatusConfirmMonthImport.isPresent()) {
-					monthConfirm = true;
+					if(!CollectionUtil.isEmpty(opStatusConfirmMonthImport.get().getListConfirmStatus())) {
+						monthConfirm = opStatusConfirmMonthImport.get().getListConfirmStatus().get(0).isConfirmStatus();
+					}
 				}
 			}
 			// 月別確認を利用する
-			boolean monthApproval = false;
+			Integer monthApproval = null;
 			if(apprSttComfirmSet.isMonthlyConfirm()) {
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Request533Import request533Import = approvalStateAdapter.getAppRootStatusByEmpsMonth(Arrays.asList(new EmpPerformMonthParamAt(
@@ -2169,9 +2204,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 								paramPeriod.end(), 
 								empPeriod.getEmpID())));
 				if(!CollectionUtil.isEmpty(request533Import.getAppRootSttMonthImportLst())) {
-					if(request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr()==2) {
-						monthApproval = true;
-					}
+					monthApproval = request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr();
 				}
 			}
 			// アルゴリズム「承認状況取得日別確認状況」を実行する
@@ -2222,13 +2255,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				dailyConfirm = confirm.get();
 			} else {
 				// 日別確認（リスト）に追加する
-				dailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false, false);
+				dailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false, null);
 				listDailyConfirm.add(dailyConfirm);
 			}
+			// 上司確認 ＝確認
+			dailyConfirm.setBossConfirm(approval.getApprovalStatus().value);
 			// 承認ルート状況.承認状況
 			if (ApprovalStatusForEmployeeImport.APPROVED.equals(approval.getApprovalStatus())) {
-				// 上司確認 ＝確認
-				dailyConfirm.setBossConfirm(true);
 				// 上司確認件数 ＝＋１
 				sumCount.bossConfirm++;
 			} else {
@@ -2257,7 +2290,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				confirm.get().setPersonConfirm(true);
 			} else {
 				// 日別確認（リスト）に追加
-				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, true, false);
+				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, true, null);
 				listDailyConfirm.add(newConfirm);
 			}
 			// 本人確認件数 ＝＋１
@@ -2277,7 +2310,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 本人未確認件数 ＝日別確認(リスト)で上司確認＝未確認、本人確認＝未確認の件数
 		sumCount.personUnconfirm = (int) listDailyConfirm.stream()
 				.filter(x -> x.getBossConfirm()!=null && x.getPersonConfirm()!=null)
-				.filter(x -> !x.getBossConfirm() && !x.getPersonConfirm()).count();
+				.filter(x -> x.getBossConfirm()==0 && !x.getPersonConfirm()).count();
 	}
 
 	@Override
@@ -2289,7 +2322,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// アルゴリズム「月別上長承認進捗状況を取得する」を実行する
 		Integer monthApproval = this.getMonthApprovalTopStatus(employeeID, period, apprSttComfirmSet, yearMonth, closureId, closureDate);
 		// アルゴリズム「月別承認の進捗過程を取得する」を実行する
-		ApprovalRootStateImport_New approvalRootStateMonth = this.getMonthApprovalStatus(employeeID, period, apprSttComfirmSet).orElse(null);
+		ApprovalRootStateImport_New approvalRootStateMonth = this.getMonthApprovalStatus(employeeID, period, yearMonth, closureId.value, 
+				closureDate, period.end(), apprSttComfirmSet).orElse(null);
 		// アルゴリズム「月別の承認者を取得する」を実行する
 		List<PhaseApproverStt> monthApprovalLst = this.getMonthApproval(apprSttComfirmSet, employeeID, period);
 		// アルゴリズム「日別本人確認と上長承認を取得する」を実行する
@@ -2345,11 +2379,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet) {
+	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate, ApprSttComfirmSet apprSttComfirmSet) {
 		// 「月別実績の上長承認の状況を表示する」を判別する
 		if(apprSttComfirmSet.isMonthlyConfirm()) {
 			// 社員の月別実績の進捗過程を得る。　　　　　　　リクエストリストNo.673
-			return Optional.of(approvalStateAdapter.getAppRootInstanceMonthByEmpPeriod(employeeID, period));
+			return Optional.ofNullable(approvalStateAdapter.getAppRootInstanceMonthByEmpPeriod(employeeID, period, yearMonth, closureID,
+					closureDate, baseDate));
 		}
 		return Optional.empty();
 	}
@@ -2467,5 +2503,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			result.put(loopDate, phaseApproverSttLst);
 		}
 		return result;
+	}
+
+	@Override
+	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
+		String companyID = AppContexts.user().companyId();
+		// 職場管理者を取得する　　　　　　　　　リクエストリストNo.653
+		Map<String, String> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), Arrays.asList(wkpID));
+		// imported（就業）「個人社員基本情報」を取得する
+		return employeeRequestAdapter.getApprovalStatusEmpMailAddr(infoMap.values().stream().collect(Collectors.toList()));
 	}
 }

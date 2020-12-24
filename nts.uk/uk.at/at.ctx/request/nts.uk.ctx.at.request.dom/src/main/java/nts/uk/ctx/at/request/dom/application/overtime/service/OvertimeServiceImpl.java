@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
@@ -388,6 +389,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
+		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		// 計算処理
 		CaculationOutput caculationOutput = this.getCalculation(
 				companyId,
@@ -402,6 +404,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if (caculationOutput != null) {
 			output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
 			output.setCalculationResultOp(Optional.ofNullable(caculationOutput.getCalculationResult()));			
+			output.setCalculatedFlag(caculationOutput.getCalculatedFlag());
 		}
 		// 残業時間帯の値と背景色をセット
 		return output;
@@ -456,11 +459,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 		// OUTPUT「計算結果」をセットして取得した「休出枠」と一緒に返す
 		CalculationResult calculationResult = new CalculationResult();
-		calculationResult.setFlag(0);
-		calculationResult.setOverTimeZoneFlag(0);
 		calculationResult.setOverStateOutput(overStateOutput);
 		calculationResult.setApplicationTimes(applicationTimes);
-		
+		ouput.setCalculatedFlag(CalculatedFlag.CALCULATED);
 		ouput.setCalculationResult(calculationResult);
 		
 		return ouput;
@@ -507,10 +508,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setInfoBaseDateOutput(infoBaseDateOutput);
 		output.setInfoNoBaseDate(infoNoBaseDate);
 		output.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
-		CalculationResult calculationResult = new CalculationResult();
-		calculationResult.setFlag(1);
-		calculationResult.setOverTimeZoneFlag(1);
-		output.setCalculationResultOp(Optional.of(calculationResult));
+		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		output.setIsProxy(isProxy);
 		output.setOvertimeAppAtr(overtimeAppAtr);
 		return output;
@@ -751,10 +749,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.setInfoWithDateApplicationOp(infoOptional);
 		displayInfoOverTime.setOvertimeAppAtr(appOverTime.getOverTimeClf());
 		displayInfoOverTime.setIsProxy(false);
+		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		CalculationResult calculationResult = new CalculationResult();
 		calculationResult.setOverStateOutput(overStateOutput);
-		calculationResult.setFlag(0);
-		calculationResult.setOverTimeZoneFlag(0);
 		displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
 		output.setDisplayInfoOverTime(displayInfoOverTime);
 		output.setAppOverTime(appOverTime);
@@ -890,6 +887,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent);
 		output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 		output.setCalculationResultOp(temp.getCalculationResultOp());
+		output.setCalculatedFlag(temp.getCalculatedFlag());
 		
 		return output;
 	}
@@ -922,7 +920,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));
 		
 		CalculationResult calculationResult = new CalculationResult();
-		calculationResult.setFlag(1);
 		output.setCalculationResultOp(Optional.of(calculationResult));
 		
 		WorkContent workContent = new WorkContent();
@@ -985,7 +982,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workContent);
 		output.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
 		output.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
-		
+		output.setCalculatedFlag(displayInfoOverTimeTemp.getCalculatedFlag());
 		return output;
 	}
 
@@ -1072,6 +1069,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		infoWithDateApplication.setWorkHours(workHours);
 		infoWithDateApplication.setBreakTime(breakTime);
 		displayInfoOverTimeTemp.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+		displayInfoOverTimeTemp.setCalculatedFlag(displayInfoOverTimeTemp.getCalculatedFlag());
 		return displayInfoOverTimeTemp;
 	}
 
@@ -1138,10 +1136,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
 		// 「残業申請の表示情報」を更新して返す
 		if (displayInfoOverTime.getCalculationResultOp().isPresent()) {
-			displayInfoOverTime.getCalculationResultOp().get().setFlag(1);
+//			displayInfoOverTime.getCalculationResultOp().get().setFlag(1);
 		} else {
 			CalculationResult calculationResult = new CalculationResult();
-			calculationResult.setFlag(1);
+//			calculationResult.setFlag(1);
 			displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
 		}
 		

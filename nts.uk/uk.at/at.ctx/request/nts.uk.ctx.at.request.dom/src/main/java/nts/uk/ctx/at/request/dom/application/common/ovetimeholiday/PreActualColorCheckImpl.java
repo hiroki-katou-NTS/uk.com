@@ -628,10 +628,13 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			}
 			if (!output.isPresent()) {
 				output = Optional.of(new ApplicationTime());
-				if (output.get().getOverTimeShiftNight().isPresent()) {
-					output.get().getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
-				}
 				
+			}
+			if (!output.get().getOverTimeShiftNight().isPresent()) {
+				output.get().setOverTimeShiftNight(Optional.of(new OverTimeShiftNight()));
+			}
+			if (output.get().getOverTimeShiftNight().isPresent()) {
+				output.get().getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
 			}
 		} else { // 仮計算実行＝する
 			List<DeductionTime> breakTimeList =  new ArrayList<DeductionTime>();

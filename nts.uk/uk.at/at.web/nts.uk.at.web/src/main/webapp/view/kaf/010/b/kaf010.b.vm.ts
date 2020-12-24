@@ -271,7 +271,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		reload(){
 			const vm = this;
-            if (vm.appType() == vm.application().appType) {
+            if (vm.appType() == AppType.HOLIDAY_WORK_APPLICATION) {
 				vm.isStart = true;
             	vm.initAppDetail();
             }

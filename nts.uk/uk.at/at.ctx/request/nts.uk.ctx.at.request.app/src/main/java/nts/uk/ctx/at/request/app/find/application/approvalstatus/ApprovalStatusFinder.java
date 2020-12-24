@@ -51,6 +51,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendM
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
@@ -741,5 +742,9 @@ public class ApprovalStatusFinder {
 				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 
 				new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth()));
 		return ApprSttConfirmEmpMonthDayDto.fromDomain(apprSttConfirmEmpMonthDay);
+	}
+	
+	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
+		return appSttService.getEmploymentConfirmInfo(wkpID);
 	}
 }

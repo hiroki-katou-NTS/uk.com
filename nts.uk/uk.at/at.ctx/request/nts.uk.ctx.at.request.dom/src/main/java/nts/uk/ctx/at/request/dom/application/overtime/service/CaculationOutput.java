@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
@@ -24,4 +25,6 @@ public class CaculationOutput {
 	private CalculationResult calculationResult;
 	// 休出枠<List>
 	private List<WorkdayoffFrame> workdayoffFrames = Collections.emptyList();
+	// 計算済フラグ
+	private CalculatedFlag calculatedFlag;
 }

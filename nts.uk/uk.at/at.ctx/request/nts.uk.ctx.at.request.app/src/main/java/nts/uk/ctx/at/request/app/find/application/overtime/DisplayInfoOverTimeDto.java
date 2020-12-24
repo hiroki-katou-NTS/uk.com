@@ -27,23 +27,29 @@ public class DisplayInfoOverTimeDto {
 	public CalculationResultDto calculationResultOp;
 	// 申請日に関係する情報
 	public InfoWithDateApplicationDto infoWithDateApplicationOp;
+	// 計算済フラグ
+	public Integer calculatedFlag;
 	
 	public DisplayInfoOverTimeDto(
 			List<WorkdayoffFrameDto> workdayoffFrames,
-			CalculationResultDto calculationResultOp) {
+			CalculationResultDto calculationResultOp,
+			Integer calculateFlag) {
 		this.workdayoffFrames = workdayoffFrames;
 		this.calculationResultOp = calculationResultOp;
+		this.calculatedFlag = calculateFlag;
 	}
 	
 	public DisplayInfoOverTimeDto(
 			List<WorkdayoffFrameDto> workdayoffFrames,
 			AppDispInfoStartupDto appDispInfoStartup,
 			CalculationResultDto calculationResultOp,
-			InfoWithDateApplicationDto infoWithDateApplicationOp) {
+			InfoWithDateApplicationDto infoWithDateApplicationOp,
+			Integer calculateFlag) {
 		this.workdayoffFrames = workdayoffFrames;
 		this.appDispInfoStartup = appDispInfoStartup;
 		this.calculationResultOp = calculationResultOp;
 		this.infoWithDateApplicationOp = infoWithDateApplicationOp;
+		this.calculatedFlag = calculateFlag;
 	}
 	
 	public static DisplayInfoOverTimeDto fromDomain(DisplayInfoOverTime displayInfoOverTime) {
@@ -59,7 +65,8 @@ public class DisplayInfoOverTimeDto {
 				AppDispInfoStartupDto.fromDomain(displayInfoOverTime.getAppDispInfoStartup()),
 				displayInfoOverTime.getIsProxy(),
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
-				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)));
+				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
+				displayInfoOverTime.getCalculatedFlag().value);
 	}
 	public static DisplayInfoOverTimeDto fromDomainChangeDate(DisplayInfoOverTime displayInfoOverTime) {
 		
@@ -70,7 +77,8 @@ public class DisplayInfoOverTimeDto {
 					.collect(Collectors.toList()),
 				AppDispInfoStartupDto.fromDomain(displayInfoOverTime.getAppDispInfoStartup()),
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
-				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)));
+				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
+				displayInfoOverTime.getCalculatedFlag().value);
 	}
 	
 	public static DisplayInfoOverTimeDto fromDomainCalculation(DisplayInfoOverTime displayInfoOverTime) {
@@ -80,7 +88,8 @@ public class DisplayInfoOverTimeDto {
 					.stream()
 					.map(x -> WorkdayoffFrameDto.fromDomain(x))
 					.collect(Collectors.toList()),
-				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null))
+				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
+				displayInfoOverTime.getCalculatedFlag().value
 				);
 	}
 }

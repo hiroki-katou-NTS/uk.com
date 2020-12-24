@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -203,7 +204,7 @@ public interface ApprovalStatusService {
 	 * @param apprSttComfirmSet
 	 * @return
 	 */
-	public Map<String, Pair<String, GeneralDate>> getStatusEmploymentConfirm(ClosureId closureId, YearMonth yearMonth, List<DisplayWorkplace> displayWorkplaceLst);
+	public Map<String, Pair<String, GeneralDateTime>> getStatusEmploymentConfirm(ClosureId closureId, YearMonth yearMonth, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況社員別起動.D:承認状況社員別起動
@@ -450,7 +451,8 @@ public interface ApprovalStatusService {
 	/**
 	 * G:月別承認の進捗を取得する
 	 */
-	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet);
+	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate, ApprSttComfirmSet apprSttComfirmSet);
 	
 	/**
 	 * G:月別の承認者を取得する
@@ -481,4 +483,11 @@ public interface ApprovalStatusService {
 	 * G:社員の日別実績の進捗状況を得る
 	 */
 	public Map<GeneralDate, List<PhaseApproverStt>> getDayAchievementApprover(String employeeID, DatePeriod period);
+	
+	/**
+	 * H:就業確定ダイアログ表示
+	 * @param wkpID
+	 * @return
+	 */
+	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID);
 }
