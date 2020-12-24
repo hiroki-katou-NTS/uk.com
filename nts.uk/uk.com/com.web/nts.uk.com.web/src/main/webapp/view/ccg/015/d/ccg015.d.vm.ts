@@ -107,6 +107,7 @@ module nts.uk.com.view.ccg015.d {
             vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
             vm.listTopPagePart(result);
+            vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
           } else {
             // Do nothing
           }
@@ -148,6 +149,7 @@ module nts.uk.com.view.ccg015.d {
               });
             }
             vm.url(result.url);
+            vm.urlIframe3(result.url);
           } else {
             vm.isNewMode(true);
             vm.layoutType(0);
