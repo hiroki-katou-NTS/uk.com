@@ -72,7 +72,7 @@ public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 	/** The krcst dvgc attendances. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "[NO]", referencedColumnName = "[NO]", insertable = true, updatable = true) })
+			@JoinColumn(name = "NO", referencedColumnName = "NO", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KrcmtDvgcAttendance> krcstDvgcAttendances;
 

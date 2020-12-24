@@ -26,7 +26,7 @@ public class KrcstDvgcAttendancePK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The no. */
-	@Column(name = "[NO]")
+	@Column(name = "NO")
 	private Integer no;
 
 	/** The cid. */
