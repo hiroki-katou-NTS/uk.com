@@ -16,16 +16,14 @@
 </h:head>
 
 <h:body>
-	<div id="master-wrapper" data-bind="with: content">
-		<com:ko tag="let" bind="{ $vm: $data }">
-			<ui:insert name="base-content">
-				<div data-bind="ui-master-notification"></div>
-				<div data-bind="ui-master-header"></div>
-				<div data-bind="ui-master-content">
-					<ui:insert name="content" />
-				</div>
-			</ui:insert>
-		</com:ko>
+	<div data-bind="vm: content">
+		<ui:insert name="base-content">
+			<div data-bind="ui-master-notification"></div>
+			<div data-bind="ui-master-header"></div>
+			<div data-bind="ui-master-content">
+				<ui:insert name="content" />
+			</div>
+		</ui:insert>
 	</div>
 	<div data-bind="with: kiban.errorDialogViewModel">
 		<div data-bind="ntsErrorDialog: {

@@ -1,102 +1,143 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
-    export var _viewModel!: any;
+
+    export interface WindowSize {
+        width: number;
+        height: number;
+    }
+    export interface RootViewModel {
+        kiban: KibanViewModel;
+        content: nts.uk.ui.vm.ViewModel;
+        errors: {
+            isEmpty: KnockoutComputed<boolean>;
+        };
+    }
+
+    export let _viewModel!: RootViewModel;
 
     /** Event to notify document ready to initialize UI. */
-    export var documentReady = $.Callbacks();
+    export const documentReady = $.Callbacks();
 
     /** Event to notify ViewModel built to bind. */
-    export var viewModelBuilt = $.Callbacks();
+    export const viewModelBuilt = $.Callbacks();
 
     /** Event to notify ViewModel applied bindings. */
-    export var viewModelApplied = $.Callbacks();
+    export const viewModelApplied = $.Callbacks();
 
     // Kiban ViewModel
     class KibanViewModel {
-        title: KnockoutComputed<string>;
-        systemName: KnockoutObservable<string> = ko.observable("");
-        programName: KnockoutObservable<string> = ko.observable("");
+        title!: KnockoutComputed<string>;
         errorDialogViewModel!: errors.ErrorsViewModel;
 
-        constructor(dialogOptions?: any) {
-            this.title = ko.computed(() => {
-                // let pgName = this.programName();
-                // if (pgName === "" || pgName === undefined || pgName === null) {
-                return this.systemName();
-                //  }
+        systemName: KnockoutObservable<string> = ko.observable("");
+        programName: KnockoutObservable<string> = ko.observable("");
 
-                // return this.programName() + " - " + this.systemName();
+        mode: KnockoutObservable<'view' | 'modal'> = ko.observable(undefined);
+        size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight });
+
+        constructor(dialogOptions?: any) {
+            const vm = this;
+
+            vm.title = ko.computed({
+                read: () => {
+                    document.title = ko.unwrap(vm.systemName);
+
+                    return document.title;
+                }
             });
 
-            this.errorDialogViewModel = new errors.ErrorsViewModel(dialogOptions);
+            vm.errorDialogViewModel = new errors.ErrorsViewModel(dialogOptions);
+
+            vm.mode
+                .subscribe((m) => {
+                    if (m === 'view') {
+                        $('body>div:first-child').addClass('view');
+                        $('body>div:first-child').removeClass('modal');
+                    } else {
+                        $('body>div:first-child').addClass('modal');
+                        $('body>div:first-child').removeClass('view');
+                    }
+                });
         }
     }
 
     export module init {
         let _start: () => void;
 
-        __viewContext.ready = function (callback: () => void) {
-            _start = callback;
-        };
+        _.extend(__viewContext, {
+            ready: (callback: () => void) => _start = callback,
+            bind: function (content: any, dialogOptions?: any) {
+                const { systemName } = __viewContext.env;
+                const kiban = new KibanViewModel(dialogOptions);
+                const isEmpty = ko.computed(() => !kiban.errorDialogViewModel.occurs());
 
-        __viewContext.bind = function (contentViewModel: any, dialogOptions?: any) {
+                // update title of name
+                kiban.systemName(systemName);
 
-            var kiban = new KibanViewModel(dialogOptions);
+                // update mode of view
+                kiban.mode(window === window.top ? 'view' : 'modal');
 
-            _viewModel = {
-                content: contentViewModel,
-                kiban: kiban,
-                errors: {
-                    isEmpty: ko.computed(() => !kiban.errorDialogViewModel.occurs())
+                _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
+
+                viewModelBuilt.fire(_viewModel);
+
+                // bind viewmodel to document body
+                ko.applyBindings(_viewModel, document.body);
+
+                viewModelApplied.fire(_viewModel);
+
+                // off event reset for class reset-not-apply
+                $(".reset-not-apply").find(".reset-element").off("reset");
+
+                nts.uk.cookie.remove("startfrommenu", { path: "/" });
+
+                $('div[id^=functions-area]')
+                    .each((__: number, e: HTMLElement) => {
+                        if (!e.classList.contains('functions-area')) {
+                            ko.applyBindingsToNode(e,
+                                {
+                                    'ui-function-bar': e.className.match(/bottom$/) ? 'bottom' : 'top',
+                                    title: e.getAttribute('data-title') || true,
+                                    back: e.getAttribute('data-url')
+                                }, _viewModel);
+
+                            e.removeAttribute('data-url');
+                            e.removeAttribute('data-title');
+                        }
+                    });
+
+                $('div[id^=contents-area]')
+                    .each((__: number, e: HTMLElement) => {
+                        if (!e.classList.contains('contents-area')) {
+                            ko.applyBindingsToNode(e, { 'ui-contents': 0 }, _viewModel);
+                        }
+                    });
+
+                // update size
+                $(window)
+                    .on('wd.resize', () => {
+                        kiban.size({
+                            width: window.innerWidth,
+                            height: window.innerHeight
+                        });
+                    })
+                    .on('resize', () => $(window).trigger('wd.resize'));
+
+                if (ko.unwrap(kiban.mode) === 'modal') {
+                    $(window)
+                        .trigger('wd.resize');
                 }
-            };
-
-            // update title when document ready
-            kiban.title
-                .subscribe(newTitle => document.title = newTitle);
-
-            kiban.systemName(__viewContext.env.systemName);
-
-            viewModelBuilt.fire(_viewModel);
-
-            ko.applyBindings(_viewModel);
-
-            viewModelApplied.fire(_viewModel);
-
-            // off event reset for class reset-not-apply
-            $(".reset-not-apply").find(".reset-element").off("reset");
-
-            nts.uk.cookie.remove("startfrommenu", { path: "/" });
-
-            /*//avoid page content overlap header and function area
-            var content_height = 20;
-
-            if ($("#header").length != 0) {
-                content_height += $("#header").outerHeight();//header height+ content area botton padding,top padding
             }
+        });
 
-            if ($("#functions-area").length != 0) {
-                content_height += $("#functions-area").outerHeight();//top function area height
+        const startP = function () {
+            if (!cantCall()) {
+                _start.apply(__viewContext, [__viewContext]);
+            } else {
+                loadEmployeeCodeConstraints()
+                    .always(() => _start.apply(__viewContext, [__viewContext]));
             }
-
-            if ($("#functions-area-bottom").length != 0) {
-                content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
-            }
-
-            // $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-            //            if($("#functions-area-bottom").length!=0){
-            //            } */
-        }
-
-        var startP = function () {
-            _.defer(() => {
-                if (cantCall()) {
-                    loadEmployeeCodeConstraints().always(() => _start.call(__viewContext));
-                } else {
-                    _start.call(__viewContext);
-                }
-            });
 
             // Menu
             /*if ($(document).find("#header").length > 0) {
@@ -115,7 +156,7 @@ module nts.uk.ui {
                 $("#master-wrapper").prepend(header);
                 menu.request();
             }*/
-        }
+        };
 
         const noSessionWebScreens = [
             "/view/sample/",
@@ -211,20 +252,20 @@ module nts.uk.ui {
 
         $(function () {
             _.extend(__viewContext, {
-                noHeader: (__viewContext.noHeader === true) || $("body").hasClass("no-header")
+                noHeader: (__viewContext.noHeader === true) || $("body").hasClass("no-header"),
+                transferred: uk.sessionStorage
+                    .getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                    .map(v => JSON.parse(v))
             });
 
             documentReady.fire();
-
-            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                .map(v => JSON.parse(v));
 
             if ($(".html-loading").length <= 0) {
                 startP();
                 return;
             }
 
-            let dfd = [];
+            let dfd: JQueryDeferred<any>[] = [];
 
             _.forEach($(".html-loading").toArray(), (e: HTMLElement) => {
                 let $container = $(e);
@@ -237,10 +278,11 @@ module nts.uk.ui {
                 dX.promise();
             });
 
-            $.when(...dfd).then(function (data, textStatus, jqXHR) {
-                $('.html-loading').contents().unwrap();
-                startP();
-            });
+            $.when(...dfd)
+                .then(function (data, textStatus, jqXHR) {
+                    $('.html-loading').contents().unwrap();
+                    startP();
+                });
         });
 
 

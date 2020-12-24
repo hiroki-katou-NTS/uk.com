@@ -1,66 +1,97 @@
-#functions-area {
-	min-height: 65px;
-	padding: 25px 0 5px 0;
-	overflow: hidden;
-  	white-space: nowrap;
-	box-sizing: border-box;
+div#master-wrapper {
+	
+	div#master-content {
+		#functions-area {
+			padding: 5px 10px;
+			overflow: hidden;
+			white-space: nowrap;
+			box-sizing: border-box;
 
-	.pg-name {
-		float: left;
-		width: 320px;
-		font-size: 18px;
-		letter-spacing: 5%;
-		font-weight: 500;
-		line-height: 30px;
-		position: relative;
-		overflow: hidden;
-		cursor: pointer; 
-		color: #2B2E44;
+			.pg-name {
+				float: left;
+				width: 320px;
+				font-size: 18px;
+				letter-spacing: 5%;
+				font-weight: 500;
+				line-height: 30px;
+				position: relative;
+				overflow: hidden;
+				cursor: pointer; 
+				color: #2B2E44;
 
-		&.navigator {
-			color: #30CC40;
-			padding-left: 30px;
+				&.navigator {
+					color: #30CC40;
+					padding-left: 30px;
 
-			&>svg {
-				position: absolute;
-				top: 5px;
-				left: 0;
+					&>svg {
+						position: absolute;
+						top: 5px;
+						left: 0;
+					}
+				}
+
+				&+.button-group {
+					margin-left: 320px;
+					text-align: right;
+
+					button {
+						&:not(:first-child) {
+							margin-left: 7px;
+						}
+					}
+				}
 			}
-		}
 
-		&+.button-group {
-			margin-left: 320px;
-			text-align: right;
+			.button-group {
+				&::after {
+					content: '';
+					clear: both;
+				}
 
-			button {
-				&:not(:first-child) {
-					margin-left: 7px;
+				button {
+					min-width: 90px;
+					vertical-align: middle;
+				}
+			}
+
+			&>div.one-panel,
+			&>div.once-panel,
+			&>div.single-panel {
+				#functions-area {
+					padding-left: 0;
+					padding-right: 0;
 				}
 			}
 		}
-	}
 
-	.button-group {
-		&::after {
-			content: '';
-			clear: both;
+		#functions-area-bottom {
+			position: absolute;
+			bottom: 0px;
+			width: 100%;
+			padding: 10px 0;
+			border-top: solid 1px $frame_border_color;
+			text-align: center;
+			white-space: nowrap;
+			background-color: #fff;
+			z-index: 10001;
+			box-sizing: border-box;
+			
+			button {
+				vertical-align: middle;
+			}
 		}
 
-		button {
-			min-width: 90px;
+		&>div#functions-area {
+			border-bottom: solid 1px $frame_border_color;
 		}
 	}
-}
+	
 
-#functions-area-bottom {
-	position: absolute;
-	bottom: 0px;
-	height: $bottom_functions_area_height;
-	width: 100%;
-	border-top: solid 1px $frame_border_color;
-	text-align: center;
-	padding-top: 8px;
-    white-space: nowrap;
-    background-color: #fff;
-    z-index: 10001;
+	&.modal {			
+		&>div#functions-area-bottom {
+			&>button {
+				vertical-align: middle;
+			}
+		}
+	}
 }

@@ -3,6 +3,23 @@
 module nts.uk.ui.layout {
 
     @handler({
+        bindingName: 'vm'
+    })
+    export class MasterUIViewModelBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const content = valueAccessor();
+
+            element.removeAttribute('data-bind');
+
+            element.setAttribute('id', 'master-wrapper');
+
+            ko.applyBindingsToDescendants(bindingContext.extend({ $vm: content, $data: content }), element);
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    @handler({
         bindingName: 'ui-master-notification',
         validatable: true,
         virtual: false
@@ -72,14 +89,20 @@ module nts.uk.ui.layout {
     })
     export class MasterUIFunctionalBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => 'top' | 'bottom', allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }): { controlsDescendantBindings: boolean; } {
+            const mvm = new ko.ViewModel();
             const position: 'top' | 'bottom' = valueAccessor();
             const back: string = allBindingsAccessor.get('back');
             const title: boolean | string = allBindingsAccessor.get('title');
+            const root: nts.uk.ui.RootViewModel = bindingContext.$root;
+            const mode = ko.unwrap<'view' | 'modal'>(root.kiban.mode);
 
-            if (position === 'top') {
+            element.classList.add('functions-area');
+
+            // top area
+            if (!$(element).prev().length && position === 'top') {
                 element.id = "functions-area";
 
-                if (title) {
+                if (title && mode === 'view') {
                     const $title = document.createElement('div');
 
                     $title.classList.add('pg-name');
@@ -91,28 +114,36 @@ module nts.uk.ui.layout {
                     if (back) {
                         $title.classList.add('navigator');
 
+                        const svg = document.createElement('svg');
+
+                        ko.applyBindingsToNode(svg, { 'svg-icon': 'ARROW_LEFT_SQUARE', size: 20 });
+
                         $($title)
-                            .prepend(nts.ui.icons.ARROW_LEFT_SQUARE)
-                            .on('click', () => bindingContext.$vm.$jump(back));
-                    }
-
-                    if (element.childNodes.length) {
-                        const $btnGroup = document.createElement('div');
-                        $btnGroup.classList.add('button-group');
-
-                        $(element).children().each((__: null, e: HTMLElement) => $($btnGroup).append(e));
-
-                        $(element).append($btnGroup);
-
-                        ko.applyBindingsToDescendants(bindingContext, $btnGroup);
+                            .prepend(svg)
+                            .on('click', () => mvm.$jump(back));
                     }
 
                     $(element).prepend($title);
+
+                    if (element.childNodes.length > 1) {
+                        const $btnGroup = document.createElement('div');
+                        $btnGroup.classList.add('button-group');
+
+                        $(element).children().each((__: null, e: HTMLElement) => {
+                            if (!e.classList.contains('pg-name')) {
+                                $($btnGroup).append(e);
+                            }
+                        });
+
+                        $(element).append($btnGroup);
+
+                        ko.applyBindingsToNode($btnGroup, null, bindingContext);
+                    }
                 }
             } else {
                 element.id = "functions-area-bottom";
 
-                ko.applyBindingsToDescendants(bindingContext, element);
+                ko.applyBindingsToNode(element, null, bindingContext);
             }
 
             element.removeAttribute('data-bind');
@@ -134,9 +165,36 @@ module nts.uk.ui.layout {
             element.id = 'contents-area';
             element.classList.add('contents-area');
 
-            element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || 20)}px)`;
+            element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))}px)`;
 
             return { controlsDescendantBindings: false };
+        }
+        update(element: HTMLElement, valueAccessor: () => number, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
+            const root: nts.uk.ui.RootViewModel = bindingContext.$root;
+            const size = ko.unwrap<nts.uk.ui.WindowSize>(root.kiban.size);
+
+            $.Deferred()
+                .resolve(size)
+                .then(() => {
+                    element.classList.add('padding-0');
+                    element.classList.add('overflow-hidden');
+                })
+                .then(() => {
+                    const mb = $(element).next();
+                    const zero = $(element).closest('#master-wrapper.modal').length || $(element).parent().hasClass('master-content');
+
+                    if (!mb.length) {
+                        element.style.height = `calc(100vh - ${Math.floor(element.getBoundingClientRect().top + (valueAccessor() || (zero ? 0 : 20)) - 2)}px)`;
+                    } else {
+                        const bd = mb.get(0).getBoundingClientRect();
+
+                        element.style.height = `calc(100vh - ${Math.floor(element.getBoundingClientRect().top + (valueAccessor() || (zero ? (bd.height || 0) : 20)) - 2)}px)`;
+                    }
+                })
+                .always(() => {
+                    element.classList.remove('padding-0');
+                    element.classList.remove('overflow-hidden');
+                });
         }
     }
 

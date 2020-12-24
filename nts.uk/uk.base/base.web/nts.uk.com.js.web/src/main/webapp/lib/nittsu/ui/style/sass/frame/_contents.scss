@@ -1,56 +1,45 @@
-#master-wrapper {
+div#master-wrapper {
 	height: 100vh;
+	overflow: hidden;
+	background-color: #F1FDFB;
+
+	.padding-0 {
+		padding: 0 !important;
+	}
+
+	.overflow-hidden {
+		overflow: hidden !important;
+	}
+	
+	.fixed-flex-layout {
+		display: flex;
+		
+		> .fixed-flex-layout-left {
+			margin-right: 30px;
+			
+			/* specify width each screens */
+		}
+		
+		> .fixed-flex-layout-right {
+			flex: 1;
+		}
+	}
+	
 	
 	div#master-content {
 		overflow: hidden;
-		background-color: #F1FDFB;
 		box-sizing: border-box;
 
 		div#contents-area {
+			padding: 10px;
 			overflow-y: auto;
 			position: relative;
 			box-sizing: border-box;
-			margin-top: 20px;
-			margin-bottom: 20px;
 		}
 
-		div#functions-area {
-			&+div#contents-area {
-				padding-top: 0px;
-			}
-		}
-
-		&>div#functions-area {
-			&+div#contents-area {
-				margin-top: 0;
-				margin-bottom: 0;
-				padding-top: 20px;
-				padding-bottom: 20px;
-			}
-		}
-	}
-}
-	
-.fixed-flex-layout {
-	display: flex;
-	
-	> .fixed-flex-layout-left {
-		margin-right: 30px;
-		
-		/* specify width each screens */
-	}
-	
-	> .fixed-flex-layout-right {
-		flex: 1;
-	}
-}
-
-div#master-wrapper {
-	div#master-content {
 		&>div#contents-area,
 		&>div#functions-area {
-			padding-left: 80px;
-			padding-right: 80px;
+			margin: 0px;
 		}
 
 		&>div.one-panel,
@@ -76,14 +65,14 @@ div#master-wrapper {
 				overflow: hidden;
 				background-color: #fff;
 				padding-left: 32px;
-				padding-right: 32px;
+				padding-right: 16px;
 			}
 
 			&>div.right-panel {
 				margin-left: 375px;
 				box-sizing: border-box;
 				overflow: hidden;
-				padding-left: 32px;
+				padding-left: 16px;
 				padding-right: 32px;
 			}
 		}
@@ -95,18 +84,36 @@ div#master-wrapper {
 				width: calc(100vw - 375px);
 				overflow: hidden;
 				padding-left: 80px;
+				padding-right: 16px;
 			}
 
 			&>div.right-panel {
 				margin-left: calc(100vw - 375px);
 				box-sizing: border-box;
 				overflow: hidden;
+				padding-left: 16px;
 				padding-right: 32px;
 				background-color: #fff;
 				
 				&>div#contents-area {
 					margin-top: 20px;
 				}
+			}
+		}
+
+		&>div#contents-area {
+			&:first-child {
+				margin-top: 0px;
+				
+				&:last-child {
+					padding: 10px;
+					margin-left: 0px;
+					margin-right: 0px;
+				}
+			}
+
+			&:last-child {
+				margin-bottom: 0px;
 			}
 		}
 	}

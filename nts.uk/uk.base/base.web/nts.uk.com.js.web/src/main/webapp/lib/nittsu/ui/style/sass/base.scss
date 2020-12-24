@@ -53,12 +53,17 @@
 
 
 html {
+    overflow: hidden;
 	font-size: $normal_font_size;
-}
 
-body * {
-    font: {
-        size: 1rem;
-        family: $font_family;
+    body {
+        overflow: hidden;
+
+        * {
+            font: {
+                size: 1rem;
+                family: $font_family;
+            }
+        }
     }
 }

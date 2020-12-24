@@ -16,18 +16,18 @@
 		<ui:define name="content">
 			<div class="two-panel">
 				<div class="left-panel">
-					<div data-bind="ui-contents">
+					<div id="contents-area">
 						<div style="height: 4000px;"></div>
 					</div>
 				</div>
 				<div class="right-panel">
-					<div data-bind="ui-function-bar: 'top', title: 'CCG008_1', back: '/view/ccg/008/a/index.xhtml'">
+					<div id="functions-area" data-title="CCG008_1" data-url="/view/ccg/008/a/index.xhtml">
 						<button class="green solid" data-bind="click: $vm.click">Proceed</button>
 						<button class="green" data-bind="click: $vm.click">Proceed</button>
 						<button class="white" data-bind="click: $vm.click">Normal</button>
 						<button class="red" data-bind="click: $vm.click">Danger</button>
 					</div>
-					<div data-bind="ui-contents">
+					<div id="contents-area">
 						<div style="height: 4000px;"></div>
 					</div>
 				</div>
