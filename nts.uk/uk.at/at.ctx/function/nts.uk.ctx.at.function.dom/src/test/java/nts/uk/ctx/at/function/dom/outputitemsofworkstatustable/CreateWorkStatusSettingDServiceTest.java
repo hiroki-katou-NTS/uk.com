@@ -25,10 +25,7 @@ public class CreateWorkStatusSettingDServiceTest {
     private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
     private final OutputItemSettingName name = new OutputItemSettingName("CBA");
 
-    private final String cid = "companyId";
     private final String empId = "employeeId";
-
-    private final String settingId = "settingId";
 
     private final String iD = "id";
 

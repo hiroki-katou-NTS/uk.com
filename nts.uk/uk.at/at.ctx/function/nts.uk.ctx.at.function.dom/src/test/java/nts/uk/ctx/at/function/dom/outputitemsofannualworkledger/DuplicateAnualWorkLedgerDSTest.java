@@ -63,11 +63,11 @@ public class DuplicateAnualWorkLedgerDSTest {
                 require.getSetting(settingId);
                 result = Optional.of(DumData.dum(code,name,"empId",settingId,SettingClassificationCommon.STANDARD_SELECTION));
 
-                require.checkTheStandard(code,"cid");
+                require.exist(code);
                 result = true;
             }
         };
-        NtsAssert.businessException("Msg_1753", () -> {
+        NtsAssert.businessException("Msg_1859", () -> {
             DuplicateAnualWorkLedgerDomainService.duplicate(require, SettingClassificationCommon.STANDARD_SELECTION, settingId, code,name);
         });
     }
@@ -88,11 +88,11 @@ public class DuplicateAnualWorkLedgerDSTest {
                 require.getSetting(settingId);
                 result = Optional.of(DumData.dum(code,name,"empId",settingId,SettingClassificationCommon.FREE_SETTING));
 
-                require.checkFreedom(code,"cid","sid");
+                require.exist(code,"sid");
                 result = true;
             }
         };
-        NtsAssert.businessException("Msg_1753", () -> {
+        NtsAssert.businessException("Msg_1859", () -> {
             DuplicateAnualWorkLedgerDomainService.duplicate(require, SettingClassificationCommon.FREE_SETTING, settingId, code,name);
         });
     }

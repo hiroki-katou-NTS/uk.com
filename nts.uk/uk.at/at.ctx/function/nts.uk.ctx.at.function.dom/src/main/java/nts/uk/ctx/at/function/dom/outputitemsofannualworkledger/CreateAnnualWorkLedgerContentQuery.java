@@ -26,10 +26,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 年間勤務台帳の表示内容を作成する
+ * Query: 年間勤務台帳の表示内容を作成する
  */
 @Stateless
-public class CreateAnnualWorkLedgerContentDomainService {
+public class CreateAnnualWorkLedgerContentQuery {
     public static List<AnnualWorkLedgerContent> getData(Require require, DatePeriod datePeriod, Map<String, EmployeeBasicInfoImport> lstEmployee,
                                                         AnnualWorkLedgerOutputSetting outputSetting, Map<String, WorkplaceInfor> lstWorkplaceInfor,
                                                         Map<String, ClosureDateEmployment> lstClosureDateEmployment) {

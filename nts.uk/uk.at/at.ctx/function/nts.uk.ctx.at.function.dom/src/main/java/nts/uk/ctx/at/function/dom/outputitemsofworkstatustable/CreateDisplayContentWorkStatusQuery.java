@@ -18,12 +18,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * DomainService: 勤務状況表の表示内容を作成する
+ * Query: 勤務状況表の表示内容を作成する
  *
  * @author chinh.hm
  */
 @Stateless
-public class CreateDisplayContentWorkStatusDService {
+public class CreateDisplayContentWorkStatusQuery {
     public static List<DisplayContentWorkStatus> displayContentsOfWorkStatus(Require require,
                                                                              DatePeriod datePeriod,
                                                                              List<EmployeeInfor> employeeInfoList,

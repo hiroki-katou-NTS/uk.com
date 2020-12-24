@@ -33,15 +33,17 @@ public class CreateAnualWorkLedgerDSTest {
     @Test
     public void test_01() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = "cid";
+                AppContexts.user().employeeId();
+                result = "sid1";
             }
         };
+
         new Expectations() {
             {
-                require.checkTheStandard(code,"cid");
+                require.checkTheStandard(code);
                 result = true;
             }
         };
@@ -57,14 +59,11 @@ public class CreateAnualWorkLedgerDSTest {
             {
                 AppContexts.user().employeeId();
                 result = "sid";
-
-                AppContexts.user().companyId();
-                result = "cid";
             }
         };
         new Expectations() {
             {
-                require.checkFreedom(code,"cid","sid");
+                require.checkFreedom(code,"sid");
                 result = true;
             }
         };
@@ -76,16 +75,16 @@ public class CreateAnualWorkLedgerDSTest {
     @Test
     public void test_03() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = "cid";
+                AppContexts.user().employeeId();
+                result = "sid1";
             }
         };
-
         new Expectations() {
             {
-                require.checkTheStandard(code,"cid");
+                require.checkTheStandard(code);
                 result = false;
             }
         };
@@ -109,8 +108,6 @@ public class CreateAnualWorkLedgerDSTest {
         val settingCategory = SettingClassificationCommon.FREE_SETTING;
         new Expectations(AppContexts.class) {
             {
-                AppContexts.user().companyId();
-                result = "cid";
 
                 AppContexts.user().employeeId();
                 result = "sid";
@@ -119,7 +116,7 @@ public class CreateAnualWorkLedgerDSTest {
 
         new Expectations() {
             {
-                require.checkFreedom(code,"cid","sid");
+                require.checkFreedom(code,"sid");
                 result = false;
             }
         };

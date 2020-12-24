@@ -79,6 +79,7 @@ module nts.uk.at.view.kwr004.a {
       vm.getSettingListItems(1); //自由設定
 
       vm.rdgSelectedId.subscribe((value) => {
+        nts.uk.ui.errors.clearAll();
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
       });
 
@@ -416,7 +417,7 @@ module nts.uk.at.view.kwr004.a {
 
         hasError.error = true;
         hasError.focusId = 'KWR004_106';
-        $('#' + hasError.focusId).ntsError('check');
+        //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
       //定型選択が選択されていません。 
@@ -424,7 +425,7 @@ module nts.uk.at.view.kwr004.a {
         vm.$dialog.error({ messageId: 'Msg_1863' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR004_105';
-        $('#' + hasError.focusId).ntsError('check');
+        //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
 

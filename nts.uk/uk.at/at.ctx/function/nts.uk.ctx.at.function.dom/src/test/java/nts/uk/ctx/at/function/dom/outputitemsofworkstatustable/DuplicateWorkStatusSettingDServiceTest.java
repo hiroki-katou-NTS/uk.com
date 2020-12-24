@@ -64,7 +64,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.getWorkStatusOutputSettings(settingId);
                 result = domain;
 
-                require.checkTheStandard(outputItemSettingCode.v());
+                require.exist(outputItemSettingCode.v());
                 result = true;
 
             }
@@ -88,7 +88,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.getWorkStatusOutputSettings(settingId);
                 result = domain;
 
-                require.checkFreedom(outputItemSettingCode.v(), employeeId);
+                require.exist(outputItemSettingCode.v(), employeeId);
                 result = true;
             }
         };
@@ -118,7 +118,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.getWorkStatusOutputSettings(settingId);
                 result = domain;
 
-                require.checkFreedom(outputItemSettingCode.v(), employeeId);
+                require.exist(outputItemSettingCode.v(), employeeId);
                 result = false;
 
             }
@@ -150,7 +150,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 require.getWorkStatusOutputSettings(settingId);
                 result = domain;
 
-                require.checkTheStandard(outputItemSettingCode.v());
+                require.exist(outputItemSettingCode.v());
                 result = false;
 
             }

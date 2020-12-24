@@ -31,10 +31,10 @@ public class DuplicateWorkStatusSettingDomainService {
         boolean isCheck;
         if(settingCategory == SettingClassificationCommon.STANDARD_SELECTION){
             // 3.1定型選択の重複をチェックする(出力項目設定コード, 会社ID)
-            isCheck = WorkStatusOutputSettings.checkDuplicateStandardSelections(require,settingCode.v());
+            isCheck = require.exist(settingCode.v());
         } else{
             // 3.2自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
-            isCheck = WorkStatusOutputSettings.checkDuplicateFreeSettings(require,settingCode.v(), employeeId);
+            isCheck = require.exist(settingCode.v(), employeeId);
         }
         // 4. [1] true
         if (isCheck ) {
@@ -49,9 +49,15 @@ public class DuplicateWorkStatusSettingDomainService {
         );
     }
 
-    public interface Require extends WorkStatusOutputSettings.Require {
+    public interface Require{
         //  [1]	出力設定の詳細を取得する
         WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId);
+
+        // [2] 指定のコードが既に定型選択に保存されているか
+        boolean exist(String code);
+
+        // [3] 指定のコードが既に自由設定に保存されているか
+        boolean exist(String code, String employeeId);
 
         //  [4] 設定の詳細を複製する
         void duplicateConfigurationDetails(String replicationSourceSettingId,

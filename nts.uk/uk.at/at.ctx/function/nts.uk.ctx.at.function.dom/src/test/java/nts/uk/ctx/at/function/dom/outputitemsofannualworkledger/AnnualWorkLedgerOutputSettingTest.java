@@ -24,7 +24,6 @@ public class AnnualWorkLedgerOutputSettingTest {
     AnnualWorkLedgerOutputSetting.Require require;
     private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
     private final OutputItemSettingName name = new OutputItemSettingName("CBA");
-    private final String cid = "companyId";
     private final String eplId = "employeeId";
 
     @Test
@@ -32,11 +31,11 @@ public class AnnualWorkLedgerOutputSettingTest {
 
         new Expectations() {
             {
-                require.checkTheStandard(code, cid);
+                require.checkTheStandard(code);
                 result = true;
             }
         };
-        val actual = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, code, cid);
+        val actual = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, code);
         assertThat(actual).isEqualTo(true);
     }
 
@@ -44,11 +43,11 @@ public class AnnualWorkLedgerOutputSettingTest {
     public void test_02() {
         new Expectations() {
             {
-                require.checkFreedom(code, cid, eplId);
+                require.checkFreedom(code, eplId);
                 result = true;
             }
         };
-        val actual = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, code, cid, eplId);
+        val actual = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, code, eplId);
         assertThat(actual).isEqualTo(true);
     }
 
