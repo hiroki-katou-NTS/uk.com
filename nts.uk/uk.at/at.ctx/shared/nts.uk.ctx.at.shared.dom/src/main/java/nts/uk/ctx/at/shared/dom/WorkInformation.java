@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -354,7 +353,16 @@ public class WorkInformation {
 
 	}
 
-
+	/**
+	 * ver10
+	 * 出勤系か
+	 * @param require
+	 * @return
+	 */
+	public boolean isAttendanceRate(Require require) {
+		Optional<WorkStyle> workStyle = this.getWorkStyle(require);
+		return workStyle.isPresent() && !(workStyle.get() == WorkStyle.ONE_DAY_REST);
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require
