@@ -58,7 +58,11 @@ public class RemoteSettingsDto {
 	}
 	
 	public static String getUpdateValueByName(String variableName, List<TimeRecordSetUpdate> lstTRecordSetUpdate) {
-		return lstTRecordSetUpdate.stream().filter(e -> e.getVariableName().equals(variableName)).findFirst().get().getUpdateValue().v();
+		List<TimeRecordSetUpdate> filteredList = lstTRecordSetUpdate.stream().filter(e -> e.getVariableName().v().equals(variableName)).collect(Collectors.toList());
+		if (filteredList.isEmpty()) {
+			return "";
+		}
+		return filteredList.stream().findFirst().get().getUpdateValue().v();
 	}
 
 

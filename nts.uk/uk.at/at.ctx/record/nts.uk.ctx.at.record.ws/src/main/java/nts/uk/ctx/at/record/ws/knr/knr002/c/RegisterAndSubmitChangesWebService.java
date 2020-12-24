@@ -18,7 +18,7 @@ public class RegisterAndSubmitChangesWebService extends WebService {
 	
 	@POST
 	@Path("registerAndSubmit")
-	public void RegisterAndSubmitChanges(RegisterAndSubmitChangesCommand command) {
+	public void registerAndSubmitChanges(RegisterAndSubmitChangesCommand command) {
 		this.registerAndSubmitChangesCommandHandler.handle(command);
 	}
 }

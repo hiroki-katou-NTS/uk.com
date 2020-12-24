@@ -5,12 +5,15 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-
+			<script>
+				var dialogSize = {
+					width : 1500,
+					height : 900
+				};
+			</script>
             <com:scriptfile set="IGNITE" />
-            <com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
 			<com:scriptfile path="knr002.c.service.js" />
 			<com:scriptfile path="knr002.c.vm.js" />
 			<com:scriptfile path="knr002.c.start.js" />
@@ -19,9 +22,75 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="top-container">
-					<button>Click</button>
-					<p data-bind="text: displayText"></p>
+				<div>	
+					<div class="top-container">
+						<button class="large proceed">#{i18n.getText('KNR002_75')}</button>
+						<button class="large" data-bind="click: closeDialog">#{i18n.getText('KNR002_76')}</button>
+					</div>
+					<div class="body-container">
+						<div class="left">
+							<div class="first-line">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_77')}</div>
+								<div class="ct-text">#{i18n.getText('KNR002_78')}</div>
+								<div class="ct-text" data-bind="text: empInfoTerCode"></div>
+								<div class="ct-text" data-bind="text: empInfoTerName"></div>
+							</div>
+							<div class="second-line">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_79')}</div>
+							</div>
+							<div class="third-line">
+								<div data-bind="ntsPanel:{width: '220px', height: '550px', direction: 'right', showIcon: false, visible: true}">
+									<div style="float:left; margin-bottom: 20px;">																					
+										<div style="width: 175px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'majorClassification', comId: 'single-list', 
+											items: bigItemData,  selectedKey: 'majorClassification', fields: ['majorClassification'], mode: 'igGrid'}" />			
+										<table id="single-list" data-bind="ntsGridList: {
+											height: 210,
+											options: bigItemData,
+											optionsValue: 'majorClassification',
+											columns: columns1,
+											multiple: false,
+											value: currentCode1
+										}"></table>
+									</div>
+									<div style="float:left">																					
+										<div style="width: 175px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'smallClassification', comId: 'single-list1', 
+											items: smallItemData,  selectedKey: 'smallClassification', fields: ['smallClassification'], mode: 'igGrid'}" />			
+										<table id="single-list1" data-bind="ntsGridList: {
+											height: 210,
+											options: smallItemData,
+											optionsValue: 'smallClassification',
+											columns: columns2,
+											multiple: false,
+											value: currentCode2
+										}"></table>
+									</div>
+								</div>
+								<div class="detail">
+									<div class="pnl-top">#{i18n.getText('KNR002_82')}</div>
+									<div class="pnl-body">
+										<div>
+											<span>#{i18n.getText('KNR002_83')}</span>
+											<span>Dummy text</span>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div>button 1</div>
+									<div>button 2</div>
+								</div>
+							</div>
+						</div>
+						<div class="right">
+							<div class="first-line">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_99')}</div>
+								<div class="ct-text" data-bind="text: displayFlag"></div>
+							</div>
+							<div class="second-line">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_94')}</div>
+							</div>
+							<div>Grid</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</ui:define>

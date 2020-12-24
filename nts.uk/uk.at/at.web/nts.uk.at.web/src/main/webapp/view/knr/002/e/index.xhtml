@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1500,
+					height : 900
+				};
+			</script>
+            <com:scriptfile set="IGNITE" />
+			<com:scriptfile path="knr002.e.service.js" />
+			<com:scriptfile path="knr002.e.vm.js" />
+			<com:scriptfile path="knr002.e.start.js" />
+			<com:stylefile path="knr002.e.style.css" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+                <div class="content">
+                    <div class="left">
+                        <div class="left-top">
+                            <button data-bind="click: closeDialog" >Close</button>
+				            <div data-bind="ntsSwitchButton: {
+                                name: 'Sample Switch',
+                                options: roundingRules,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedRuleCode,
+                                required: false,
+                                enable: true }"></div>
+                        </div>
+                        <div class="left-bottom">
+
+                        </div>
+                    </div>
+                    <div class="right"></div>
+                </div>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -38,12 +38,11 @@ module nts.uk.at.view.knr002.a {
             }
 
             public startPage(): JQueryPromise<void>{
-                var vm = this;										
+                var vm = this;		
+
                 var dfd = $.Deferred<void>();
-                blockUI.invisible();
                 vm.loadData();
-                setInterval(vm.loadData.bind(vm), 300000);
-                  																			
+                setInterval(vm.loadData.bind(vm), 300000);																	
                 dfd.resolve();											
                 return dfd.promise();											
             }
@@ -94,7 +93,6 @@ module nts.uk.at.view.knr002.a {
                         }
     
                         vm.gridData(res.listEmpInfoTerminalDto);
-                        console.log(vm.gridData(), 'gridData');
                         vm.loadGrid();
                         vm.removeBorder();
                         vm.setGridSize();
@@ -107,13 +105,29 @@ module nts.uk.at.view.knr002.a {
                 .always(() => blockUI.clear() );
             }
 
-            public openKNR002BDialog(data: any) {
+            private openKNR002BDialog(data: any) {
                 const vm = this;
-                console.log(data, 'zzzzdata');
                 blockUI.invisible();
                 setShared('knr002-b', data);
                 modal('/view/knr/002/b/index.xhtml', { title: 'B_Screen', }).onClosed(() => {
-                    console.log('b closed');
+                    blockUI.clear();
+                });
+            }
+
+            private openKNR002CDialog(data: any) {
+                const vm = this;
+                blockUI.invisible();
+                setShared('knr002-c', data);
+                modal('/view/knr/002/c/index.xhtml', { title: 'C_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
+
+            public openKNR002EDialog(data: any) {
+                const vm = this;
+                blockUI.invisible();
+                setShared('knr002-e', data);
+                modal('/view/knr/002/e/index.xhtml', { title: 'E_Screen', }).onClosed(() => {
                     blockUI.clear();
                 });
             }
@@ -185,8 +199,8 @@ module nts.uk.at.view.knr002.a {
                         states: stateTable },
                     ],
                     ntsControls: [
-                        { name: 'Button7', text: getText("KNR002_50"), click: function(e: any) {vm.openKNR002BDialog(e)}, controlType: 'Button' },
-                        { name: 'Button8', text: getText("KNR002_51"), click: function() { console.log('Button8'); }, controlType: 'Button' },
+                        { name: 'Button7', text: getText("KNR002_50"), click: function(e: any) { vm.openKNR002BDialog(e) }, controlType: 'Button' },
+                        { name: 'Button8', text: getText("KNR002_51"), click: function(e: any) { vm.openKNR002CDialog(e) }, controlType: 'Button' },
                         { name: 'Button9', text: getText("KNR002_52"), click: function() { console.log('Button9'); }, controlType: 'Button' }
                     ],
                 });
@@ -196,24 +210,24 @@ module nts.uk.at.view.knr002.a {
         }
 
         export interface ResponseData {
-            listEmpInfoTerminalDto: Array<ListEmpInfoTerminalDto>,
-            numAbnormalState: number,
-            numNormalState: number,
-            numOfRegTerminals: number,
-            numUntransmitted: number,
+            listEmpInfoTerminalDto: Array<ListEmpInfoTerminalDto>;
+            numAbnormalState: number;
+            numNormalState: number;
+            numOfRegTerminals: number;
+            numUntransmitted: number;
         }
         export interface ListEmpInfoTerminalDto {
-            empInfoTerCode: string, 
-            empInfoTerName: string, 
-            modelEmpInfoTer: number, 
-            requestFlag: boolean, 
-            signalLastTime: string, 
-            terminalCurrentState: number,
-            workLocationCd: string, 
-            workLocationName: string,
-            displayModelEmpInfoTer: string,
-            displayCurrentState: string,
-            displayFlag: string
+            empInfoTerCode: string; 
+            empInfoTerName: string; 
+            modelEmpInfoTer: number; 
+            requestFlag: boolean; 
+            signalLastTime: string; 
+            terminalCurrentState: number;
+            workLocationCd: string; 
+            workLocationName: string;
+            displayModelEmpInfoTer: string;
+            displayCurrentState: string;
+            displayFlag: string;
         }
 
         class CellState {

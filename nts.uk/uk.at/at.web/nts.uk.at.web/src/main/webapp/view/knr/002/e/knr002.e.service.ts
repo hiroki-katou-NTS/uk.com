@@ -1,8 +1,8 @@
-module nts.uk.at.view.knr002.c.service {
+module nts.uk.at.view.knr002.e.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getData: 'screen/at/knr002/c/getRemoteSettings'
+        getData: 'abc'
     };
 
     export function getAll(empInfoTerminalCode: string): JQueryPromise<any> {
