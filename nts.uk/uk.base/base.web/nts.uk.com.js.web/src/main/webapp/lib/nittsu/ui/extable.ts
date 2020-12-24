@@ -7100,6 +7100,12 @@ module nts.uk.ui.exTable {
                 case "unlockCell":
                     unlockCell(self, params[0], params[1]);
                     break;
+                case "disableCell":
+                    disableCell(self, params[0], params[1], params[2], params[3]);
+                    break;
+                case "enableCell":
+                    enableCell(self, params[0], params[1], params[2], params[3]);
+                    break;
                 case "popupValue":
                     returnPopupValue(self, params[0]);
                     break;
@@ -7981,6 +7987,104 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Disable cell.
+         */
+        function disableCell($container: JQuery, name: string, rowId: any, columnKey: any, innerIdx: any) {
+            let $table;
+            switch (name) {
+                case "middle":
+                    $table = $container.find(`.${BODY_PRF + MIDDLE}`)[0];
+                    break;
+                case "detail":
+                    $table = $container.find(`.${BODY_PRF + DETAIL}`)[0];
+                    break;
+                default:
+                    return;
+            }
+            
+            let ds = helper.getDataSource($table);
+            let pk = helper.getPrimaryKey($table);
+            let i = -1;
+            _.forEach(ds, function(r, j) {
+                if (r[pk] === rowId) {
+                    i = j;
+                    return false;
+                }
+            });
+            
+            if (i === -1) return;
+            let disables = $.data($table, internal.DISABLE);
+            let found = -1;
+            if (disables && disables[i] && disables[i].length > 0) { 
+                _.forEach(disables[i], function(c, j) {
+                    if (c.columnKey === columnKey) {
+                        found = j;
+                        return false;
+                    }
+                });
+            }
+            
+            let $cell = selection.cellAt($table, i, columnKey);
+            if (_.isNil($cell)) return;
+            if (found === -1) {
+                if (!disables) {
+                    disables = {};
+                    disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                    $.data($table, internal.DISABLE, disables);
+                } else if (disables && !disables[i]) {
+                    disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                } else disables[i].push({ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] });
+                helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+            }
+        }
+        
+        /**
+         * Enable cell.
+         */
+        function enableCell($container: JQuery, name: string, rowId: any, columnKey: any, innerIdx: any) {
+            let $table;
+            switch (name) {
+                case "middle":
+                    $table = $container.find(`.${BODY_PRF + MIDDLE}`)[0];
+                    break;
+                case "detail":
+                    $table = $container.find(`.${BODY_PRF + DETAIL}`)[0];
+                    break;
+                default: 
+                    return;
+            }
+            
+            let ds = helper.getDataSource($table);
+            let pk = helper.getPrimaryKey($table);
+            let i = -1;
+            _.forEach(ds, function(r, j) {
+                if (r[pk] === rowId) {
+                    i = j;
+                    return false;
+                }
+            });
+            
+            if (i === -1) return;
+            let disables = $.data($table, internal.DISABLE);
+            let found = -1;
+            if (disables && disables[i] && disables[i].length > 0) {
+                _.forEach(disables[i], function(c, j) {
+                    if (c.columnKey === columnKey) {
+                        found = j;
+                        return false;
+                    }
+                });
+            }
+            
+            if (found > -1) {
+                let $cell = selection.cellAt($table, i, columnKey);
+                disables[i].splice(found, 1);
+                if (disables[i].length === 0) delete disables[i];
+                helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+            }
+        }
+        
+        /**
          * Return popup value.
          */
         function returnPopupValue($container: JQuery, value: any) {
@@ -8257,6 +8361,7 @@ module nts.uk.ui.exTable {
         export let CANON: string = "x-canon";
         export let STICKER: string = "x-sticker";
         export let DET: string = "x-det";
+        export let DISABLE: string = "x-disable";
         export let PAINTER: string = "painter";
         export let CELLS_STYLE: string = "body-cells-style";
         export let D_CELLS_STYLE: string = "d-body-cells-style";
