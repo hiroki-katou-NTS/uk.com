@@ -41,6 +41,7 @@ public class AsposeAppOverTime {
 	public static final String HALF_SIZE_SPACE = " ";
 	public static final String EMPTY_STRING = "";
 	public static final String SPLIT_TIME = "、";
+	public static final String TILDLE_STRING = " ~ ";
 	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
 	
@@ -152,7 +153,7 @@ public class AsposeAppOverTime {
 		if (workType != null) {
 			String nameWorktype = displayInfoOverTime.getInfoBaseDateOutput().getWorktypes()
 				.stream()
-				.filter(x -> x.getWorkTypeCode().v() == workType)
+				.filter(x -> x.getWorkTypeCode().v().equals(workType))
 				.findFirst().map(x -> x.getName().v()).orElse(null);
 			StringBuilder workBuilder = new StringBuilder(workType);
 			workBuilder.append(HALF_SIZE_SPACE);
@@ -168,7 +169,7 @@ public class AsposeAppOverTime {
 			String nameWorktime = displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst()
 					.orElse(Collections.emptyList())	
 					.stream()
-					.filter(x -> x.getWorktimeCode().v() == workTime)
+					.filter(x -> x.getWorktimeCode().v().equals(workTime))
 					.findFirst()
 					.map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v())
 					.orElse(null);
@@ -179,24 +180,24 @@ public class AsposeAppOverTime {
 			
 			
 		}
-		StringBuilder contentD10 = new StringBuilder("");
-		StringBuilder contentD11 = new StringBuilder("");
+		StringBuilder contentD10 = new StringBuilder(EMPTY_STRING);
+		StringBuilder contentD11 = new StringBuilder(EMPTY_STRING);
 		appOverTime.getWorkHoursOp().orElse(Collections.emptyList())
 			.stream()
 			.forEach(x ->  {
 				if (x.getWorkNo().v() == 1) {
 					contentD10.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
-					contentD10.append(" ~ ");
+					contentD10.append(TILDLE_STRING);
 					contentD10.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
 				} else {
 					contentD11.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
-					contentD11.append(" ~ ");
+					contentD11.append(TILDLE_STRING);
 					contentD11.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
 				}
 			});
 		cellD10.setValue(contentD10);
 		cellD11.setValue(contentD11);
-		StringBuilder contentD12 = new StringBuilder("");
+		StringBuilder contentD12 = new StringBuilder(EMPTY_STRING);
 		appOverTime.getBreakTimeOp().orElse(Collections.emptyList())
 			.stream()
 			.forEach(x ->  {
@@ -204,7 +205,7 @@ public class AsposeAppOverTime {
 					contentD12.append(SPLIT_TIME);
 				}
 				contentD12.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
-				contentD12.append(" ~ ");
+				contentD12.append(TILDLE_STRING);
 				contentD12.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());
 			});
 		cellD12.setValue(contentD12);	
