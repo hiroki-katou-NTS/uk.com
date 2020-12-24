@@ -122,7 +122,7 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<div id = "row-left">
-						<button class="toLeft inline" data-bind="click : toLeft">
+						<button  tabindex="-1"  class="toLeft inline" data-bind="click : toLeft">
 						<com:ko-if bind = "indexBtnToLeft() % 2 == 0">
 						<div id="left-button" ><i data-bind="ntsIcon: { no: 152, width: 22, height: 13 }"></i></div>
 						</com:ko-if>
@@ -134,7 +134,7 @@
 					<div style="clear: left"></div>
 					<!-- <div id="gc" style="position: absolute; border: 1px solid #000; width: 1000px; height: 400px; overflow: scroll;"></div> -->
 					<div style="float: left">
-						<button class="toDown inline" data-bind="click : toDown">
+						<button  tabindex="-1"  class="toDown inline" data-bind="click : toDown">
 						<com:ko-if bind = "indexBtnToDown() % 2 == 0">
 						<div id="down-button"><i data-bind="ntsIcon: { no: 150, width:13, height: 22 }"></i></div>
 						</com:ko-if>
