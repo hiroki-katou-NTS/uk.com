@@ -721,9 +721,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				actualContentDisplayList: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
 
 				// List<振出振休紐付け管理>
-				managementData: ko.toJS(vm.leaveComDayOffManas)
+				managementData: ko.toJS(vm.payoutSubofHDManagements)
 			};
-			Kaf006ShrViewModel.openDialogKDL035(params);
+			Kaf006ShrViewModel.openDialogKDL035(params, vm);
+			// vm.payoutSubofHDManagements(payoutMana);
 		}
 
 		public openKDL036() {
@@ -750,8 +751,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				// List<振出振休紐付け管理>
 				managementData: ko.toJS(vm.leaveComDayOffManas)
 			};
-
-			Kaf006ShrViewModel.openDialogKDL036(params);
+			Kaf006ShrViewModel.openDialogKDL036(params, vm);
+			// vm.leaveComDayOffManas(leaveMana);
 		}
 
 

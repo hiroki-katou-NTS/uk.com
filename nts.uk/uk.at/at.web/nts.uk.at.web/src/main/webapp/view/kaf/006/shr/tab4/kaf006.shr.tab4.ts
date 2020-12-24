@@ -81,7 +81,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: openKDL036"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()), click: openKDL036"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
             </div>
             <div class="table" style="margin: 10px 0;">
@@ -95,11 +95,11 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-bind="foreach: ko.toJS($parent.leaveComDayOffManas)">
                             <tr>
-                                <td class="py-10">0</td>
-                                <td class="py-10">0</td>
-                                <td class="py-10">0</td>
+                                <td class="py-10" data-bind="text: outbreakDay"></td>
+                                <td class="py-10" data-bind="text: dateOfUse"></td>
+                                <td class="py-10" data-bind="text: dayNumberUsed"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), click: openKDL035"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()), click: openKDL035"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
             </div>
             <div class="table" style="margin: 10px 0;">
@@ -124,11 +124,11 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-bind="foreach: ko.toJS($parent.payoutSubofHDManagements)">
                             <tr>
-                                <td class="py-10">0</td>
-                                <td class="py-10">0</td>
-                                <td class="py-10">0</td>
+                                <td class="py-10" data-bind="text: outbreakDay"></td>
+                                <td class="py-10" data-bind="text: dateOfUse"></td>
+                                <td class="py-10" data-bind="text: dayNumberUsed"></td>
                             </tr>
                         </tbody>
                     </table>

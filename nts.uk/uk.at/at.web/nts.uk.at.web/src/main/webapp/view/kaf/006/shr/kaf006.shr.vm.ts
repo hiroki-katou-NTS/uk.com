@@ -12,25 +12,29 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
 
         }
 
-        public static openDialogKDL035(params: any) {
+        public static openDialogKDL035(params: any, vm: any) {
             console.log("Open KDL035");
 
+            let linkingDates: any[] = [];
             setShared("KDL035_PARAMS", params);
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
-                const linkingDates: Array<any> = getShared('KDL035_PARAMS');
-                console.log(linkingDates);
+                linkingDates = getShared('KDL035_RESULT');
+                vm.payoutSubofHDManagements(linkingDates);
             });
+
         }
 
-        public static openDialogKDL036(params: any) {
+        public static openDialogKDL036(params: any, vm: any) {
             console.log("Open KDL036");
 
+            let listParam: any[] = [];
             setShared("KDL036_PARAMS", params)
             modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
-            let listParam = getShared("KDL036_SHAREPARAM");
-            console.log(listParam);
+            listParam = getShared("KDL036_RESULT");
+            vm.leaveComDayOffManas(listParam);
           });
+
         }
     }
 
