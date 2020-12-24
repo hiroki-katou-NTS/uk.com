@@ -14776,6 +14776,12 @@ var nts;
                             case "unlockCell":
                                 unlockCell(self, params[0], params[1]);
                                 break;
+                            case "disableCell":
+                                disableCell(self, params[0], params[1], params[2], params[3]);
+                                break;
+                            case "enableCell":
+                                enableCell(self, params[0], params[1], params[2], params[3]);
+                                break;
                             case "popupValue":
                                 returnPopupValue(self, params[0]);
                                 break;
@@ -15644,6 +15650,103 @@ var nts;
                         }
                     }
                     /**
+                     * Disable cell.
+                     */
+                    function disableCell($container, name, rowId, columnKey, innerIdx) {
+                        var $table;
+                        switch (name) {
+                            case "middle":
+                                $table = $container.find("." + (BODY_PRF + MIDDLE))[0];
+                                break;
+                            case "detail":
+                                $table = $container.find("." + (BODY_PRF + DETAIL))[0];
+                                break;
+                            default:
+                                return;
+                        }
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var disables = $.data($table, internal.DISABLE);
+                        var found = -1;
+                        if (disables && disables[i] && disables[i].length > 0) {
+                            _.forEach(disables[i], function (c, j) {
+                                if (c.columnKey === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        var $cell = selection.cellAt($table, i, columnKey);
+                        if (_.isNil($cell))
+                            return;
+                        if (found === -1) {
+                            if (!disables) {
+                                disables = {};
+                                disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                                $.data($table, internal.DISABLE, disables);
+                            }
+                            else if (disables && !disables[i]) {
+                                disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                            }
+                            else
+                                disables[i].push({ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] });
+                            helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+                        }
+                    }
+                    /**
+                     * Enable cell.
+                     */
+                    function enableCell($container, name, rowId, columnKey, innerIdx) {
+                        var $table;
+                        switch (name) {
+                            case "middle":
+                                $table = $container.find("." + (BODY_PRF + MIDDLE))[0];
+                                break;
+                            case "detail":
+                                $table = $container.find("." + (BODY_PRF + DETAIL))[0];
+                                break;
+                            default:
+                                return;
+                        }
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var disables = $.data($table, internal.DISABLE);
+                        var found = -1;
+                        if (disables && disables[i] && disables[i].length > 0) {
+                            _.forEach(disables[i], function (c, j) {
+                                if (c.columnKey === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found > -1) {
+                            var $cell = selection.cellAt($table, i, columnKey);
+                            disables[i].splice(found, 1);
+                            if (disables[i].length === 0)
+                                delete disables[i];
+                            helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                        }
+                    }
+                    /**
                      * Return popup value.
                      */
                     function returnPopupValue($container, value) {
@@ -15926,6 +16029,7 @@ var nts;
                     internal.CANON = "x-canon";
                     internal.STICKER = "x-sticker";
                     internal.DET = "x-det";
+                    internal.DISABLE = "x-disable";
                     internal.PAINTER = "painter";
                     internal.CELLS_STYLE = "body-cells-style";
                     internal.D_CELLS_STYLE = "d-body-cells-style";

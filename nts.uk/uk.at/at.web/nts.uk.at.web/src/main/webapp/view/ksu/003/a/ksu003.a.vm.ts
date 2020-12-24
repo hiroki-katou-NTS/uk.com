@@ -332,7 +332,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							timeRangeLimit, lstTime, 1);
 						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
 							let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
-							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 2);
+							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 4);
 						}
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime,
 							timeRangeLimit, lstTime, 2);
@@ -396,7 +396,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							timeRangeLimit, lstTime, 1);
 						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
 							let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
-							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 2);
+							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 4);
 						}
 						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime,
 							timeRangeLimit, lstTime, 2);
@@ -987,7 +987,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// Tính tổng thời gian holiday time
 					for (let e = 0; e < schedule.workInfoDto.listTimeVacationAndType.length; e++) {
 						let y = schedule.workInfoDto.listTimeVacationAndType[e];
-						lstTime = self.calcChartTypeTime(schedule, y.timeVacation.timeZone, timeRangeLimit, lstTime, 2);
+						lstTime = self.calcChartTypeTime(schedule, y.timeVacation.timeZone, timeRangeLimit, lstTime, 4);
 					}
 
 					// Thời gian chăm sóc / giữ trẻ (short time)
@@ -1325,6 +1325,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal"));
 					}
+					
+					self.checkDisByDate = true;
 				}
 
 				/*if(self.checkDisByDate == false) {
@@ -2708,7 +2710,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								})
 							}
 
-							if (!_.isNil(lstBreak) && lstBreak == 2 && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+							if (!_.isNil(lstBreak) && (lstBreak == 2 || lstBreak == 4)&& (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
 								self.lstHolidayShort.push({
 									start: startCalc,
 									end: endCalc,
