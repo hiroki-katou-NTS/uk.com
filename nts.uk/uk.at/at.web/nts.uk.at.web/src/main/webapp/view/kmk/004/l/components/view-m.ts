@@ -127,7 +127,7 @@ module nts.uk.at.view.kmk004.l {
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
-		
+
 		constructor(public params: IParam) {
 			super();
 		}
@@ -169,20 +169,29 @@ module nts.uk.at.view.kmk004.l {
 						vm.existYear(true);
 					}
 				});
-			vm.selectedId.subscribe((data) => {
-				let selectedItem: UnitModel = _.find(vm.workplaces, ['id', data]);
-				vm.selectedItemText(selectedItem ? selectedItem.name : '');
-				vm.paramL.wkpId(data);
-				vm.paramL.titleName = vm.selectedItemText();
-				vm.selectedIdParam(data);
-				vm.btn_text(
-					vm.alreadySettingList().filter(i => data == i.workplaceId).length == 0 ? 'KMK004_338' : 'KMK004_339');
-			});
 
 			$('#workplace-list').ntsTreeComponent(vm.treeGrid).done(() => {
 				vm.workplaces = $('#workplace-list').getDataList();
+				let flat: any = function(wk: UnitModel) {
+					return [wk, _.flatMap(wk.children, flat)];
+				},
+					flatMapItems = _.flatMapDeep(vm.workplaces, flat);
+
+				vm.selectedId.subscribe((data) => {
+					let selectedItem: UnitModel = _.find(flatMapItems, ['id', data]);
+					vm.selectedItemText(selectedItem ? selectedItem.name : '');
+					vm.paramL.wkpId(data);
+					vm.paramL.titleName = vm.selectedItemText();
+					vm.selectedIdParam(data);
+					vm.btn_text(
+						vm.alreadySettingList().filter(i => data == i.workplaceId).length == 0 ? 'KMK004_338' : 'KMK004_339');
+				});
+
 				vm.selectedId.valueHasMutated();
 			});
+
+
+
 		}
 
 		mounted() {
@@ -227,7 +236,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 				if (result === 'yes') {
 					vm.$blockui("invisible");
-					vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.paramL.wkpId()})).done(() => {
+					vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.paramL.wkpId() })).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
 							vm.isLoadInitData(true);
