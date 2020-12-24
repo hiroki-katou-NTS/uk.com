@@ -14,10 +14,19 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @Getter
 public class ScheduleDailyTablePrintSetting implements DomainAggregate {
 	
+	/**
+	 * コード
+	 */
 	private final ScheduleDailyTableCode code;
 	
-	private ScheduleDailyTableDisplayInfo displayInfo;
+	/**
+	 * 名称	
+	 */
+	private ScheduleDailyTableName name;
 	
+	/**
+	 * 項目設定
+	 */
 	private ScheduleDailyTableItemSetting itemSetting;
 
 }
