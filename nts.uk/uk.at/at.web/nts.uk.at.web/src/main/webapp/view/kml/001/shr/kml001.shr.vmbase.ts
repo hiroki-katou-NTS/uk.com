@@ -16,6 +16,10 @@ module nts.uk.at.view.kml001.shr {
             unitPrice: number;
             memo: string;
             premiumSets: Array<PremiumSettingInterface>;
+            calculationSetting: number;
+            roundingUnitPrice: number;
+            roundingAmount: number;
+            inUnits: number;
         }
     
         export class PersonCostCalculation {
@@ -23,19 +27,36 @@ module nts.uk.at.view.kml001.shr {
             historyID: KnockoutObservable<string>;
             startDate: KnockoutObservable<string>;
             endDate: KnockoutObservable<string>;
-            unitPrice: KnockoutObservable<number>;
+            unitPrice: KnockoutObservable<number> =ko.observable(0);
             memo: KnockoutObservable<string>;
             premiumSets : KnockoutObservableArray<PremiumSetting>;
-            constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, 
-                premiumSets: Array<PremiumSettingInterface>) {
+            //ver9
+            calculationSetting: KnockoutObservable<number> =ko.observable(1);
+            roundingUnitPrice: KnockoutObservable<number>;
+            roundingAmount: KnockoutObservable<number>;
+            inUnits: KnockoutObservable<number>;
+
+            constructor(
+                companyID: string, historyID: string, 
+                startDate: string, endDate: string, 
+                unitPrice: number, memo: string, 
+                premiumSets: Array<PremiumSettingInterface>,
+                calculationSetting: number, roundingUnitPrice: number, 
+                roundingAmount: number, inUnits: number
+                ) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.historyID = ko.observable(historyID);
                 self.startDate = ko.observable(startDate);
                 self.endDate = ko.observable(endDate);
-                self.unitPrice = ko.observable(unitPrice);
+                self.unitPrice(unitPrice);
                 self.memo = ko.observable(memo);
                 self.premiumSets = ko.observableArray(_.map(premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
+                //ver9
+                self.calculationSetting = ko.observable(calculationSetting);
+                self.roundingUnitPrice = ko.observable(roundingUnitPrice);
+                self.roundingAmount = ko.observable(roundingAmount);
+                self.inUnits = ko.observable(inUnits);
             }
         }
         
@@ -57,8 +78,10 @@ module nts.uk.at.view.kml001.shr {
             name: KnockoutObservable<string>;
             useAtr: KnockoutObservable<number>;
             attendanceItems: KnockoutObservableArray<AttendanceItem>;
+            unitPrice: KnockoutObservable<number>;
+
             constructor(companyID: string, historyID: string, displayNumber: number, rate: number,
-                name: string, useAtr: number, attendanceItems: Array<AttendanceItem>) {
+                name: string, useAtr: number, attendanceItems: Array<AttendanceItem>, unitPrice: number) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.historyID = ko.observable(historyID);
@@ -71,6 +94,7 @@ module nts.uk.at.view.kml001.shr {
                     koAttendanceItems.push(new vmbase.AttendanceItem(item.shortAttendanceID, item.name));
                 });
                 self.attendanceItems = ko.observableArray(koAttendanceItems);
+                self.unitPrice = ko.observable(unitPrice);
             }
             
         }

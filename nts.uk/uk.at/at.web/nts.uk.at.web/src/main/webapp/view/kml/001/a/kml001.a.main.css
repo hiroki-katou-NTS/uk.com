@@ -54,15 +54,17 @@ input, textarea {
 }
 
 #memo {
-	width: 390px;
+	width: calc(100% - 5px);
 	height: 100px;
+	margin-top: 10px;
 }
 #premium-set-div {
-	outline-style: solid;
+	/* outline-style: solid;
 	outline-color: #999999;
-	outline-width: 1px;
+	outline-width: 1px; */
 	width: 860px;
-	height: 360px;
+	/* height: 360px; */
+	padding-bottom: 30px;
 }
 #premium-set-tbl {
 	outline-style: solid;
@@ -70,7 +72,9 @@ input, textarea {
 	outline-width: 1px;
 }
 #premium-set-tbl th:NTH-CHILD(2),
-#premium-set-tbl td:NTH-CHILD(2) {
+#premium-set-tbl th:NTH-CHILD(3),
+#premium-set-tbl td:NTH-CHILD(2),
+#premium-set-tbl td:NTH-CHILD(3) {
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }
@@ -164,5 +168,71 @@ input, textarea {
 	padding-left: 10px;
 } 
 #combo-box {
-	width: 132px;
+	width: 100px;
+}
+
+.cell-help-button {
+	padding-left: 15px;
+}
+.two-columns {
+	max-width: 860px;
+	width: 100%;
+}
+.two-columns .cell {
+	vertical-align: top;
+}
+.two-columns .cell-column-1 {
+	width: 70%;
+}
+.two-columns .table {
+	margin-left: 0;
+	width: 100%;
+}
+.two-columns .cell-column-2 .nts-editor-wrapped {	
+	width: calc(100% - 20px);
+}
+.three-columns .cell {
+	width: initial;
+	vertical-align: top;
+	padding-right: 15px;
+}
+.three-columns .column3 {
+	width: 37%;
+}
+.three-columns .column3 .cell:first-child {
+	width: 50%;
+	padding-right: 15px;
+}
+.three-columns .column2 .radio-wrapper {
+	margin-top: 7px;
+}
+.three-columns .column2 .radio-wrapper .ntsRadioBox {
+	margin-bottom: 5px;
+}
+
+.d-flex {
+	display: flex;
+	align-items: center;
+}
+.d-flex .combo-box {
+	margin-left: 15px;
+	width: 110px;
+}
+.d-flex .combo-box1 {
+	margin-left: 15px;
+	width: 170px;
+}
+
+.d-flex.control-group {
+	margin-top: 10px;
+}
+.control-group .d-flex {
+	margin-right: 15px;
+}
+.combo-box-a5-10 {
+	width: 100px;
+}
+td.valign-right {
+	text-align: right;
+	padding-right: 5px;
 }
