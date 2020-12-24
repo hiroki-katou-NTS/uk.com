@@ -60,7 +60,7 @@ module nts.uk.at.kmk004.components.flex {
 		//会社別フレックス勤務集計方法
 		comFlexMonthActCalSet: KnockoutObservable<IComFlexMonthActCalSet> = ko.observable();
 		//フレックス勤務所定労働時間取得
-		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable();
+		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 0 });
 		yearList: KnockoutObservableArray<YearItem> = ko.observableArray();
 		selectedYear: KnockoutObservable<number> = ko.observable();
 		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray();

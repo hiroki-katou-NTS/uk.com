@@ -36,14 +36,16 @@ public class SaveMonthlyWorkTimeSetComCommandHandler extends CommandHandler<Save
 		// 3.BusinessException=0件
 		List<MonthlyWorkTimeSetCom> setComs = cmd.getWorkTimeSetComs().stream().map(wkTimeset -> wkTimeset.toDomain())
 				.collect(Collectors.toList());
+		
+		for (MonthlyWorkTimeSetCom setcom : setComs) {
+			int legalLaborTime = setcom.getLaborTime().getLegalLaborTime().v();
+			
+			int weekAvgTime = setcom.getLaborTime().getWithinLaborTime().map(x -> x.v()).orElse(0);
+			
+			if (weekAvgTime > legalLaborTime) {
 
-		Long totalLegalLaborTime = setComs.stream().map(x -> x.getLaborTime().getLegalLaborTime().v())
-				.collect(Collectors.counting());
-
-		Long totalWeekAvgTime = setComs.stream().map(x -> x.getLaborTime().getWeekAvgTime().map(y -> y.v()).orElse(0))
-				.collect(Collectors.counting());
-		if (totalWeekAvgTime > totalLegalLaborTime) {
-			throw new BusinessException("Msg_1906");
+				throw new BusinessException("Msg_1906");
+			}
 		}
 
 		setComs.forEach(setCom -> {

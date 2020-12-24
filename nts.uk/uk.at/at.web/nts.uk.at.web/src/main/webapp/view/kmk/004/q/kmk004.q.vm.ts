@@ -15,7 +15,7 @@ module nts.uk.at.kmk004.q {
 
 		register() {
 			let vm = this;
-			
+			if (nts.uk.ui.errors.hasError()) { return; }
 			vm.$window.close({
 				year: vm.year()
 			});

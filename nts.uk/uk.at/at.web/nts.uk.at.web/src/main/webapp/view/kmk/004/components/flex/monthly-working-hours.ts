@@ -36,7 +36,7 @@ const template = `
 										<tr style="background-color:#92D050">
 											<th data-bind="visible: screenMode == 'Com_Person'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
-											<th data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,i18n: 'KMK004_264'" style="text-align:center;"></th>
+											<th data-bind="visible: screenData().getFlexPredWorkTime().reference == 1,i18n: 'KMK004_264'" style="text-align:center;"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
 											
@@ -47,10 +47,11 @@ const template = `
 											<tr>
 												<td  data-bind="visible: $parent.screenMode == 'Com_Person' "><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
 												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.yearMonthText + '月度'"></span></td>
-												<td data-bind="visible: $parent.screenData().setting().useRegularWorkingHours() == 1"><input  data-bind="
+												<td data-bind="visible: $parent.screenData().getFlexPredWorkTime().reference == 1"><input  data-bind="
 												ntsTimeEditor: {
 														name:'#[KMK004_264]',
 														value: $data.laborTime().withinLaborTime,
+														constraint:'MonthlyEstimateTime',
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
@@ -60,6 +61,7 @@ const template = `
 												<td ><input  data-bind="
 												ntsTimeEditor: {name:'#[KMK004_265]',
 														value: $data.laborTime().legalLaborTime,
+														constraint:'MonthlyEstimateTime',
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
@@ -69,6 +71,7 @@ const template = `
 												<td ><input  data-bind="
 												ntsTimeEditor: {name:'#[KMK004_266]',
 														value: $data.laborTime().weekAvgTime,
+														constraint:'MonthlyEstimateTime',
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
@@ -77,10 +80,9 @@ const template = `
 												/></td>
 											</tr>
 								</tbody>
-								
 								<tr data-bind="visible: screenMode != 'Com_Person' " >
 									<td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
-									<td data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
+									<td data-bind="visible: screenData().getFlexPredWorkTime().reference == 1,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>
 								</tr>
@@ -168,7 +170,8 @@ class MonthlyWorkingHours extends ko.ViewModel {
 			|| data[0].laborTime.weekAvgTime == null) {
 			return '';
 		}
-		return nts.uk.time.format.byId("Clock_Short_HM", total);
+
+		return nts.uk.time.format.byId("Clock_Short_HM", total > 0 ? total : 0);
 	}
 
 }
