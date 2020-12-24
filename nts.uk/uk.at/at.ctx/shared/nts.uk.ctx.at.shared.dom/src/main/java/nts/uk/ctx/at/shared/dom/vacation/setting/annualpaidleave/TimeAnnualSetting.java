@@ -49,7 +49,7 @@ public class TimeAnnualSetting extends DomainObject {
         this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
         this.roundProcessClassific = memento.GetRoundProcessClassific();
-      //  this.timeAnnualLeaveTimeDay = 
+        this.timeAnnualLeaveTimeDay = memento.getTimeAnnualLeaveTimeDay();
     }
     
     /**
@@ -62,5 +62,6 @@ public class TimeAnnualSetting extends DomainObject {
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
         memento.setRoundProcessClassific(this.roundProcessClassific);
+        memento.setTimeAnnualLeaveTimeDay(this.timeAnnualLeaveTimeDay);
     }
 }

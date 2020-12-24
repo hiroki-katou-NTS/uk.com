@@ -14,6 +14,8 @@
 				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
 				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
 				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays
+				nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime
+				
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -383,6 +385,61 @@
 							<td><div></div></td>
 							<td><div></div></td>
 						</tr>
+						<tr>
+						<td><label class="content-label">#{i18n.getText('KMF001_338')}</label></td>
+						<td>
+						<div  id="combo-box"
+									data-bind="ntsComboBox: {
+										options: C531List,
+										optionsValue: 'code',
+										visibleItemsCount: 2,
+										value: selectC531,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{prop: 'name', length: 10 }
+										]}"></div>
+						
+						
+						
+						</td>
+						<td><div style = "margin-left: 50px;" data-bind="ntsFormLabel: { constraint: 'LaborContractTime', required: true }">#{i18n.getText('KMF001_341')}</div></td>
+						<td><input tabindex="21" id="time-max-day-company"
+								class="nts-input"
+								data-bind="ntsTimeEditor: {
+									value: uniformTime,
+									constraint: 'LaborContractTime',
+									name: '#[KMF001_341]',
+									required: requiredC533,
+									mode: 'time', option: inputOption, inputFormat: 'time',
+									enable: requiredC533 }" /> </td>
+						
+						</tr>
+						<tr>
+						<td></td>
+						<td></td>
+						<td><div style = "margin-left: 50px;" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KMF001_342')}</div>
+						</td>
+						<td>
+						<div  id="combo-box"
+									data-bind="ntsComboBox: {
+										options: C535List,
+										optionsValue: 'code',
+										visibleItemsCount: 2,
+										value: selectC535,
+										optionsText: 'name',
+										editable: false,
+										enable: requiredC535,
+										required: requiredC535,
+										columns: [
+											{prop: 'name', length: 10 }
+										]}"></div>
+						
+						
+						
+						</td>
+						 </tr>
 						<tr data-bind="if: selectedAnnualManage()">
 							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
 							<td><!-- <div tabindex="20" id="combo-box"
