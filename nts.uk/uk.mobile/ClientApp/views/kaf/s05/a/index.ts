@@ -132,8 +132,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND 乖離理由を選択肢から選ぶ = true
     public get c13() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c13_1 = !_.isNil(findResult);
         let c13_2 = c13_1 ? findResult.divergenceReasonSelected : false;
         
@@ -142,8 +142,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND　乖離理由を入力する = true
     public get c14() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c14_1 = !_.isNil(findResult);
         let c14_2 = c14_1 ? findResult.divergenceReasonInputed : false;
 
@@ -254,8 +254,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND 乖離理由を選択肢から選ぶ = true
     public get c20() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
         let c20_1 = !_.isNil(findResult);
         let c20_2 = c20_1 ? findResult.divergenceReasonSelected : false;
         
@@ -264,8 +264,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND　乖離理由を入力する = true
     public get c21() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
         let c21_1 = !_.isNil(findResult);
         let c21_2 = c21_1 ? findResult.divergenceReasonInputed : false;
 
@@ -423,8 +423,8 @@ export class KafS05Component extends KafS00ShrComponent {
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
             {   
-                let start1 = _.get(step1, 'getWorkHours1().start');
-                let end1 = _.get(step1, 'getWorkHours1().end');
+                let start1 = _.get(step1.getWorkHours1(), 'start');
+                let end1 = _.get(step1.getWorkHours1(), 'end');
                 if (_.isNumber(start1) && _.isNumber(end1)) {
                     let timeZone = {} as TimeZoneWithWorkNo;
                     timeZone.workNo = 1;
