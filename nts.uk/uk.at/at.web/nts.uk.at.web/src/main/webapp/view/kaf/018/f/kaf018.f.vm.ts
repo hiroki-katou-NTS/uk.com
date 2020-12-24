@@ -190,13 +190,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				switch(itemValue.status) {
 					//実績確認済      
 			        case CONFIRMSTATUS.CONFIRMED: 
-						return '済';
+						return vm.$i18n('KAF018_560');
 			        //実績上司未確認
 			        case CONFIRMSTATUS.BOSS_UNCONFIRMED: 
-						return '未';
+						return vm.$i18n('KAF018_561');
 			        //本人未確認
 			        case CONFIRMSTATUS.SELF_UNCONFIRMED: 
-						return '未';
+						return vm.$i18n('KAF018_562');
 			        //実績対象外
 			        case CONFIRMSTATUS.NO_TARGET: 
 						return '';
