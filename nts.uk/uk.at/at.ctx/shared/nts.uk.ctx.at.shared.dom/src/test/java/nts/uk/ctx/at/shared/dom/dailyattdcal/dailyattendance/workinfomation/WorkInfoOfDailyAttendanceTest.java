@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
+import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
@@ -107,5 +109,45 @@ public class WorkInfoOfDailyAttendanceTest {
 		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require);
 		assertThat(workstyle.get().equals(WorkStyle.ONE_DAY_WORK)).isTrue();
 	}
-
+	/**
+	 * input:  workInfo.isAttendanceRate(require) = false
+	 * output: false
+	 * 
+	 */
+	
+	@Test
+	public void isAttendanceRate_False() {
+		val workInfo = new WorkInformation("01", "01");
+		val workInfoOfDailyAtt = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		new Expectations(workInfo) {
+			{
+				workInfo.isAttendanceRate(require);
+				result = false;
+			}
+		};
+				
+		assertThat(workInfoOfDailyAtt.isAttendanceRate(require)).isFalse();
+		
+	}
+	
+	/**
+	 * input:  workInfo.isAttendanceRate(require) = true
+	 * output: true
+	 * 
+	 */
+	@Test
+	public void isAttendanceRate_true() {
+		val workInfo = new WorkInformation("01", "01");
+		val workInfoOfDailyAtt = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		new Expectations(workInfo) {
+			{
+				workInfo.isAttendanceRate(require);
+				result = true;
+			}
+		};
+				
+		assertThat(workInfoOfDailyAtt.isAttendanceRate(require)).isTrue();
+		
+	}
+	
 }

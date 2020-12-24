@@ -142,7 +142,16 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			});
 		});
 	}
-
+	
+	/**
+	 * ver5
+	 * 出勤系か
+	 * @param require
+	 * @return
+	 */
+	public boolean isAttendanceRate(Require require) {
+		return this.recordInfo.isAttendanceRate(require);
+	}
 	public static interface Require extends WorkInformation.Require {
 		
 	}
