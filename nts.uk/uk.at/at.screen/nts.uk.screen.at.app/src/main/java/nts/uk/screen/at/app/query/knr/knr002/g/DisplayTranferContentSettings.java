@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.knr.knr002.g;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,12 +30,26 @@ public class DisplayTranferContentSettings {
 
 	public DisplayTranferContentSettingsDto getTimeRecordReqSetting(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		EmpInfoTerminalCode terminalCode = new EmpInfoTerminalCode(empInforTerCode);
+		//	1. get(契約コード、就業情報端末コード): 就業情報端末のリクエスト一覧
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = this.timeRecordReqSettingRepository
-																  .getTimeRecordReqSetting(new EmpInfoTerminalCode(empInforTerCode), contractCode);
+																  .getTimeRecordReqSetting(terminalCode, contractCode);
 		DisplayTranferContentSettingsDto dto = new DisplayTranferContentSettingsDto();
-		if (!timeRecordReqSetting.isPresent())
-			return dto;
-		TimeRecordReqSetting timeRecordReqSettingValue = timeRecordReqSetting.get();
+		TimeRecordReqSetting timeRecordReqSettingValue = null;
+		//	2. G:就業情報端末のリクエスト一覧に登録する(契約コード、会社就業情報端末コード、会社ID、会社コード)
+		if (!timeRecordReqSetting.isPresent()) {
+			timeRecordReqSettingValue = new TimeRecordReqSetting.ReqSettingBuilder(
+											terminalCode,
+											contractCode,
+											new CompanyId(AppContexts.user().companyId()),
+											AppContexts.user().companyCode(),
+											Collections.emptyList(),
+											Collections.emptyList(),
+											Collections.emptyList())
+										.build();
+		} else {
+			timeRecordReqSettingValue = timeRecordReqSetting.get();
+		}
 		dto.setEmpInfoTerCode(timeRecordReqSettingValue.getTerminalCode().v());
 		dto.setCompanyId(timeRecordReqSettingValue.getCompanyId().v());
 		dto.setCompanyCode(timeRecordReqSettingValue.getCompanyCode());

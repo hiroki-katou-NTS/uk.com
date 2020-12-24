@@ -15,16 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class GetBentoMenuDto {
-	// (弁当メニュー．枠番、弁当メニュー．弁当名)<List>
+	//	(弁当メニュー．枠番、弁当メニュー．弁当名)<List>
 	private List<BentoMenuDto> bentoMenuList;
 	//	弁当メニュー枠番<List>
 	private List<Integer> bentoMenu;
 }
-//Bento Menu
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class BentoMenuDto {
-	private int bentoMenuFrameNumber;
-	private String bentoMenuName;
-}
+

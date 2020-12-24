@@ -15,28 +15,34 @@ import lombok.NoArgsConstructor;
 public class ExtractRecoveryTargetTerminalDto {
 	//	端末No
 	private String empInfoTerCode;
-	// 名称
+	//	名称
 	private String empInfoTerName;
-	// 機種
+	//	機種
 	private int modelEmpInfoTer;
 	// MACアドレス
 	private String macAddress;
-	// ＩＰアドレス
+	//	ＩＰアドレス
 	private String ipAddress;
-	// シリアルＮｏ
+	//	シリアルＮｏ
 	private String terSerialNo;
-	// 設置場所
+	//	設置場所
 	private String workLocationCode;
-	// 状態監視間隔
+	//	状態監視間隔
 	private int intervalTime;
-	// 外出応援区分
+	//	外出応援区分
 	private int outSupport;
-	// 外出区分
+	//	外出区分
 	private int replace;
-	// 外出理由
+	//	外出理由
 	private Integer goOutReason;
-	// 入退門区分
+	//	入退門区分
 	private int entranceExit;
-	// メモ
+	//	メモ
 	private String memo;
+	//	機種名
+	private String modelName;
+	//	ROMバージョン
+	private String romVersion;
+	//	機種区分
+	private int modelClassification;
 }

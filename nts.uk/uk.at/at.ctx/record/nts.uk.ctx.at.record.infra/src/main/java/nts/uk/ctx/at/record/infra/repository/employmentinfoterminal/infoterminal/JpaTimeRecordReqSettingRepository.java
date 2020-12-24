@@ -256,5 +256,10 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		}
 		return timeRecordReqSetting.get().getBentoMenuFrameNumbers();
 	}
+	
+	@Override
+	public void insert(TimeRecordReqSetting reqSetting) {
+		this.commandProxy().insert(toEntity(reqSetting));
+	}
 
 }

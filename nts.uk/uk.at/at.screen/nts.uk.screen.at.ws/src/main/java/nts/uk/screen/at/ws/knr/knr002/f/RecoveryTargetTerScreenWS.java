@@ -26,7 +26,7 @@ public class RecoveryTargetTerScreenWS {
 	
 	@POST
 	@Path("getAll/{modelEmpInfoTer}")
-	public List<ExtractRecoveryTargetTerminalDto> getRecoveryTargeTertList(@PathParam("modelEmpInfoTer") int modelEmpInfoTer) {
-		return this.extractRecoveryTargetTerminal.getRecoveryTargeTertList(modelEmpInfoTer);
+	public List<ExtractRecoveryTargetTerminalDto> getRecoveryTargetList(@PathParam("modelEmpInfoTer") int modelEmpInfoTer) {
+		return this.extractRecoveryTargetTerminal.getRecoveryTargetList(modelEmpInfoTer);
 	}
 }

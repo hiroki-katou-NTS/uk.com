@@ -49,4 +49,5 @@ public interface TimeRecordReqSettingRepository {
     // [7]弁当メニュー枠番Listを取得する
     List<Integer> getbentoMenuFrameNumbers(ContractCode contractCode, EmpInfoTerminalCode code);
 
+    void insert(TimeRecordReqSetting reqSetting);
 }
