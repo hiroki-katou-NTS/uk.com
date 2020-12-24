@@ -1999,12 +1999,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let backgroundColor = '';
 				if (item.type == AttendanceType.BREAKTIME) {
 					if (self.isStart) {
-						let findResult = _.find(self.appOverTime.applicationTime.applicationTime, (i: OvertimeApplicationSetting) => {
-							return item.frameNo == String(i.frameNo) && item.type == i.attendanceType;
-						})
-						if (findResult.applicationTime > 0) {
-							backgroundColor = BACKGROUND_COLOR.bgC1;
-						}
+						// let findResult = _.find(self.appOverTime.applicationTime.applicationTime, (i: OvertimeApplicationSetting) => {
+						// 	return item.frameNo == String(i.frameNo) && item.type == i.attendanceType;
+						// })
+						// if (findResult.applicationTime > 0) {
+						// 	backgroundColor = BACKGROUND_COLOR.bgC1;
+						// }
 					} else {
 						// ・計算値：「残業申請の表示情報．計算結果」を確認する
 						if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
@@ -2067,12 +2067,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					
 				} else if (item.type == AttendanceType.MIDDLE_BREAK_TIME) {
 					if (self.isStart) {
-						let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
-						if (!_.isNil(findResult)) {
-							if (findResult.attendanceTime > 0) {
-								backgroundColor = BACKGROUND_COLOR.bgC1;
-							}							
-						}
+						// let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+						// if (!_.isNil(findResult)) {
+						// 	if (findResult.attendanceTime > 0) {
+						// 		backgroundColor = BACKGROUND_COLOR.bgC1;
+						// 	}							
+						// }
 					} else {
 						// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
 						// 法定区分 = 法定内休出
@@ -2124,12 +2124,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					
 				} else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
 					if (self.isStart) {
-						let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
-						if (!_.isNil(findResult)) {
-							if (findResult.attendanceTime > 0) {
-								backgroundColor = BACKGROUND_COLOR.bgC1;
-							}							
-						}
+						// let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+						// if (!_.isNil(findResult)) {
+						// 	if (findResult.attendanceTime > 0) {
+						// 		backgroundColor = BACKGROUND_COLOR.bgC1;
+						// 	}							
+						// }
 					} else {
 						// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
 						// 法定区分 = 法定内休出
@@ -2179,12 +2179,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					
 				} else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY) {
 					if (self.isStart) {
-						let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
-						if (!_.isNil(findResult)) {
-							if (findResult.attendanceTime > 0) {
-								backgroundColor = BACKGROUND_COLOR.bgC1;
-							}							
-						}
+						// let findResult = _.find(midNightHolidayTimes, (i: HolidayMidNightTime) => i.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork);
+						// if (!_.isNil(findResult)) {
+						// 	if (findResult.attendanceTime > 0) {
+						// 		backgroundColor = BACKGROUND_COLOR.bgC1;
+						// 	}							
+						// }
 					} else {
 						// 計算結果．申請時間．就業時間外深夜時間．休出深夜時間．時間 > 0
 						// 法定区分 = 法定内休出
@@ -2267,17 +2267,17 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				if (item.type == AttendanceType.NORMALOVERTIME) {
 					if (self.isStart) {
 						// ・計算値：「残業申請の表示情報．計算結果」を確認する
-						let applicationTime = self.appOverTime.applicationTime.applicationTime;
-						if (!_.isEmpty(applicationTime)) {
-							let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
-								return i.frameNo == Number(item.frameNo) && i.attendanceType == AttendanceType.NORMALOVERTIME;
-							});
-							if (!_.isNil(result)) {
-								if (result.applicationTime > 0) {
-									backgroundColor = BACKGROUND_COLOR.bgC1;									
-								}
-							}
-						}
+						// let applicationTime = self.appOverTime.applicationTime.applicationTime;
+						// if (!_.isEmpty(applicationTime)) {
+						// 	let result = _.find(applicationTime, (i: OvertimeApplicationSetting) => {
+						// 		return i.frameNo == Number(item.frameNo) && i.attendanceType == AttendanceType.NORMALOVERTIME;
+						// 	});
+						// 	if (!_.isNil(result)) {
+						// 		if (result.applicationTime > 0) {
+						// 			backgroundColor = BACKGROUND_COLOR.bgC1;									
+						// 		}
+						// 	}
+						// }
 					} else {
 						// ・計算値：「残業申請の表示情報．計算結果」を確認する
 						if (!_.isEmpty(dataSource.calculationResultOp.applicationTimes)) {
@@ -2345,14 +2345,14 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					// 事前申請・実績の超過状態．事前超過．残業深夜の超過状態 = 超過アラーム
 					if (!_.isNil(overStateOutput)) {
 						if (self.isStart) {
-							if (!_.isNil(self.appOverTime.applicationTime.overTimeShiftNight)) {
-								if (!_.isNil(self.appOverTime.applicationTime.overTimeShiftNight.overTimeMidNight)) {
-									if (self.appOverTime.applicationTime.overTimeShiftNight.overTimeMidNight > 0) {
-										backgroundColor = BACKGROUND_COLOR.bgC1;
-									}
-								} 
+							// if (!_.isNil(self.appOverTime.applicationTime.overTimeShiftNight)) {
+							// 	if (!_.isNil(self.appOverTime.applicationTime.overTimeShiftNight.overTimeMidNight)) {
+							// 		if (self.appOverTime.applicationTime.overTimeShiftNight.overTimeMidNight > 0) {
+							// 			backgroundColor = BACKGROUND_COLOR.bgC1;
+							// 		}
+							// 	} 
 						
-							}
+							// }
 						} else {
 							if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
 								let applicationTime = dataSource.calculationResultOp.applicationTimes[0];
@@ -2391,11 +2391,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				} else if (item.type == AttendanceType.FLEX_OVERTIME) {
 					
 					if (self.isStart) {
-						if (!_.isNil(self.appOverTime.applicationTime.flexOverTime)) {
-							if (self.appOverTime.applicationTime.flexOverTime > 0) {
-								backgroundColor = BACKGROUND_COLOR.bgC1;
-							}
-						}
+						// if (!_.isNil(self.appOverTime.applicationTime.flexOverTime)) {
+						// 	if (self.appOverTime.applicationTime.flexOverTime > 0) {
+						// 		backgroundColor = BACKGROUND_COLOR.bgC1;
+						// 	}
+						// }
 					} else {
 						if (!_.isNil(dataSource.calculationResultOp.applicationTimes)) {
 								let applicationTime = dataSource.calculationResultOp.applicationTimes[0];
