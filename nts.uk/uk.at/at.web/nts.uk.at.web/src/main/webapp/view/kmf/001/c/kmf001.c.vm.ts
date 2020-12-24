@@ -283,6 +283,10 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedMaxDayVacation(res.reference);
                 self.timeMaxNumberCompany(res.maxTimeDay);
                 self.selectedroundProcessClassific(res.roundProcessClassific);
+                self.selectC531(res.timeOfDayReference);
+                self.uniformTime(res.unifromTime);
+                self.selectC535(res.contractTimeRound);
+                
             }
             
             private defaultValue(): any {

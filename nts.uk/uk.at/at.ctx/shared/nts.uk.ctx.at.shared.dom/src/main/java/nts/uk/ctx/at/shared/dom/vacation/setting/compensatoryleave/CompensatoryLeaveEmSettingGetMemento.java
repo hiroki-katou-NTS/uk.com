@@ -31,4 +31,6 @@ public interface CompensatoryLeaveEmSettingGetMemento {
 	 * @return the checks if is managed
 	 */
 	ManageDistinct getIsManaged();
+
+	CompensatoryAcquisitionUse getCompensatoryAcquisitionUse();
 }

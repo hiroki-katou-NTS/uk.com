@@ -107,8 +107,8 @@ public class CompenSuspensionOffsetProcessTest {
 								new DatePeriod(GeneralDate.ymd(2019, 11, 03), GeneralDate.ymd(9999, 12, 31))));
 
 				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", new SubstVacationSetting(ManageDistinct.YES,
-						ExpirationTime.SIX_MONTH, ApplyPermission.ALLOW)));
+				result = Optional.of(new EmpSubstVacation(CID, "00",ManageDistinct.YES
+						));
 
 			}
 		};

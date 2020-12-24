@@ -94,5 +94,11 @@ public class SaveEmploymentCompensatoryCommand {
 			return ManageDistinct.valueOf(this.command.isManaged);
 		}
 
+		@Override
+		public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 }

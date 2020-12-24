@@ -354,7 +354,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				return new EmploymentCode(empCode);
 			}
 
-			@Override
+			/*@Override
 			public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
 				return new CompensatoryDigestiveTimeUnit(new CompensatoryDigestiveTimeUnitGetMemento() {
 
@@ -369,7 +369,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					}
 				});
 			}
-
+*/
 			@Override
 			public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
 				return new CompensatoryAcquisitionUse(new CompensatoryAcquisitionUseGetMemento() {
