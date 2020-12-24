@@ -288,13 +288,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public void removeCompany(String cid, int laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -326,13 +326,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public void removeEmployee(String cid, String sid, int laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -367,13 +367,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public void removeEmployment(String cid, String empCD, int laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -408,13 +408,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public void removeWorkplace(String cid, String wkpId, int laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -439,13 +439,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr,
 			YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -463,13 +463,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public List<MonthlyWorkTimeSetWkp> findWorkplaceByPeriod(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -488,13 +488,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public List<MonthlyWorkTimeSetEmp> findEmploymentByPeriod(String cid, String empCode, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
@@ -513,13 +513,13 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	@Override
 	public List<MonthlyWorkTimeSetSha> findEmployeeByPeriod(String cid, String sid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
 		
-		String startMonth = yearMonthPeriod.start().month() < 9 
+		String startMonth = yearMonthPeriod.start().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
 				: String.valueOf(yearMonthPeriod.start().month());
 		
 		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
 		
-		String endMonth = yearMonthPeriod.end().month() < 9 
+		String endMonth = yearMonthPeriod.end().month() <= 9 
 				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
 				: String.valueOf(yearMonthPeriod.end().month());
 		
