@@ -171,7 +171,7 @@ class SidebarButton extends ko.ViewModel {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
-					vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -192,7 +192,7 @@ class SidebarButton extends ko.ViewModel {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
-					vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -217,7 +217,7 @@ class SidebarButton extends ko.ViewModel {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
-					vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
