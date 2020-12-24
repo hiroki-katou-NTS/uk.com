@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -417,7 +418,10 @@ public class CollectAchievementImpl implements CollectAchievement {
 			}
 			opOvertimeLeaveTimeLst = Optional.of(overtimeLeaveTimes);
 		}
-		
+		Optional<AttendanceTimeOfExistMinus> flexTime = Optional.empty();
+		if (recordWorkInfoImport.getCalculateFlex() != null) {
+			flexTime = Optional.of(recordWorkInfoImport.getCalculateFlex());
+		}
 		
 		AchievementDetail achievementDetail = new AchievementDetail(
 				workTypeCD,
@@ -439,7 +443,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 				opInlawHolidayMidnightTime,
 				opOutlawHolidayMidnightTime,
 				opPublicHolidayMidnightTime,
-				opOvertimeLeaveTimeLst);
+				opOvertimeLeaveTimeLst,
+				flexTime);
 		return new ActualContentDisplay(appDate, Optional.of(achievementDetail));
 	}
 
