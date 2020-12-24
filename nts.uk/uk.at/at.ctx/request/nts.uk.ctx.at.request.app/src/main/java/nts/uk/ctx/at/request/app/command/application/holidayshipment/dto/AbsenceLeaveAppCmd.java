@@ -46,6 +46,10 @@ public class AbsenceLeaveAppCmd {
 	
 	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 	
+	public List<LeaveComDayOffManaDto> leaveComDayOffManaOld;
+	
+	public List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld;
+	
 	/** Use for Insert KAF011A */
 	public AbsenceLeaveApp toDomainInsert() {
 		return new AbsenceLeaveApp(

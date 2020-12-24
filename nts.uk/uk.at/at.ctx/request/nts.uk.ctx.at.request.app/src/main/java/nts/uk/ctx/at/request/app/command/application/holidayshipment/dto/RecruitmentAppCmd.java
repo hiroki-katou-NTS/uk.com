@@ -34,6 +34,8 @@ public class RecruitmentAppCmd {
 	
 	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
+	public List<LeaveComDayOffManaDto> leaveComDayOffManaOld;
+	
 	/** Use for save KAF011A */
 	public RecruitmentApp toDomainInsert() {
 		return new RecruitmentApp(

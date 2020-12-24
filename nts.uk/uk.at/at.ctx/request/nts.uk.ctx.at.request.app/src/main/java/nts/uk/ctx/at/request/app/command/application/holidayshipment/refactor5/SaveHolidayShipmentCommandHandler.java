@@ -13,7 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.dto.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcessImpl;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -60,7 +60,7 @@ public class SaveHolidayShipmentCommandHandler {
 	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
 	
 	@Inject
-	private AbsenceServiceProcessImpl absenceServiceProcessImpl;
+	private AbsenceServiceProcess absenceServiceProcess;
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
@@ -175,7 +175,7 @@ public class SaveHolidayShipmentCommandHandler {
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
 		//休暇紐付け管理を登録する
-		absenceServiceProcessImpl.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
+		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
 		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 		
@@ -222,7 +222,7 @@ public class SaveHolidayShipmentCommandHandler {
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
 		//休暇紐付け管理を登録する
-		absenceServiceProcessImpl.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
+		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
 		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 		
@@ -255,7 +255,7 @@ public class SaveHolidayShipmentCommandHandler {
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
 		//休暇紐付け管理を登録する
-		absenceServiceProcessImpl.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
+		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
 		//暫定データの登録(đăng ký data tạm thời)
 		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 		
