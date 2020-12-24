@@ -26,6 +26,9 @@ class SidebarButton extends ko.ViewModel {
 
 	register() {
 		const vm = this;
+
+		if (nts.uk.ui.errors.hasError()) { return; }
+
 		if (vm.screenData().updateMode()) {
 			vm.updateData();
 		} else {

@@ -37,13 +37,15 @@ public class SaveMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<Save
 		List<MonthlyWorkTimeSetEmp> setEmps = cmd.getWorkTimeSetEmps().stream().map(wkTimeset -> wkTimeset.toDomain())
 				.collect(Collectors.toList());
 		
-		Long totalLegalLaborTime = setEmps.stream().map(x -> x.getLaborTime().getLegalLaborTime().v())
-				.collect(Collectors.counting());
+		for (MonthlyWorkTimeSetEmp setemp : setEmps) {
+			int legalLaborTime = setemp.getLaborTime().getLegalLaborTime().v();
+			
+			int weekAvgTime = setemp.getLaborTime().getWithinLaborTime().map(x -> x.v()).orElse(0);
+			
+			if (weekAvgTime > legalLaborTime) {
 
-		Long totalWeekAvgTime = setEmps.stream().map(x -> x.getLaborTime().getWeekAvgTime().map(y -> y.v()).orElse(0))
-				.collect(Collectors.counting());
-		if (totalWeekAvgTime > totalLegalLaborTime) {
-			throw new BusinessException("Msg_1906");
+				throw new BusinessException("Msg_1906");
+			}
 		}
 
 		setEmps.forEach(setEmp -> {

@@ -36,15 +36,16 @@ public class SaveMonthlyWorkTimeSetWkpCommandHandler extends CommandHandler<Save
 		// 3.BusinessException=0件
 		List<MonthlyWorkTimeSetWkp> setWkps = cmd.getWorkTimeSetWkps().stream().map(wkTimeset -> wkTimeset.toDomain())
 				.collect(Collectors.toList());
-		
-		int totalLegalLaborTime = setWkps.stream().map(x -> x.getLaborTime().getLegalLaborTime().v())
-				.mapToInt(Integer::intValue).sum();
 
-		int totalWeekAvgTime = setWkps.stream().map(x -> x.getLaborTime().getWithinLaborTime().map(y -> y.v()).orElse(0))
-				.mapToInt(Integer::intValue).sum();
-		
-		if (totalWeekAvgTime > totalLegalLaborTime) {
-			throw new BusinessException("Msg_1906");
+		for (MonthlyWorkTimeSetWkp setwkp : setWkps) {
+			int legalLaborTime = setwkp.getLaborTime().getLegalLaborTime().v();
+
+			int weekAvgTime = setwkp.getLaborTime().getWithinLaborTime().map(x -> x.v()).orElse(0);
+
+			if (weekAvgTime > legalLaborTime) {
+
+				throw new BusinessException("Msg_1906");
+			}
 		}
 
 		setWkps.forEach(setWkp -> {

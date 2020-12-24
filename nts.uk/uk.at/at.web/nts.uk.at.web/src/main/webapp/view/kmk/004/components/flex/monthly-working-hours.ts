@@ -51,6 +51,7 @@ const template = `
 												ntsTimeEditor: {
 														name:'#[KMK004_264]',
 														value: $data.laborTime().withinLaborTime,
+														constraint:'MonthlyEstimateTime',
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
@@ -60,6 +61,7 @@ const template = `
 												<td ><input  data-bind="
 												ntsTimeEditor: {name:'#[KMK004_265]',
 														value: $data.laborTime().legalLaborTime,
+														constraint:'MonthlyEstimateTime',
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
@@ -69,6 +71,7 @@ const template = `
 												<td ><input  data-bind="
 												ntsTimeEditor: {name:'#[KMK004_266]',
 														value: $data.laborTime().weekAvgTime,
+														constraint:'MonthlyEstimateTime',
 														enable: $data.laborTime().checkbox,
 														inputFormat: 'time', 
 														mode: 'time',
@@ -77,7 +80,6 @@ const template = `
 												/></td>
 											</tr>
 								</tbody>
-								
 								<tr data-bind="visible: screenMode != 'Com_Person' " >
 									<td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
 									<td data-bind="visible: screenData().setting().useRegularWorkingHours() == 1,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
@@ -168,7 +170,8 @@ class MonthlyWorkingHours extends ko.ViewModel {
 			|| data[0].laborTime.weekAvgTime == null) {
 			return '';
 		}
-		return nts.uk.time.format.byId("Clock_Short_HM", total);
+
+		return nts.uk.time.format.byId("Clock_Short_HM", total > 0 ? total : 0);
 	}
 
 }

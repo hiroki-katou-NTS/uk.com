@@ -16,6 +16,10 @@
 				nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.AggregateSetting
 			</com:EnumScript>
 
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime
+			</com:ValidatorScript>
+
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -30,13 +34,12 @@
 			<com:scriptfile path="../j/screen-j-component.js" />
 			<com:scriptfile path="kmk004.g.vm.js" />
 			<com:stylefile path="kmk004.g.style.css" />
-			<com:ko-if bind="selected() === 'Com_Person'">
-				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/share/ccg.service.js"
-					of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/share/ccg.vm.js"
-					of="/nts.uk.com.web" />
-			</com:ko-if>
+
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
 
 		</ui:define>
 

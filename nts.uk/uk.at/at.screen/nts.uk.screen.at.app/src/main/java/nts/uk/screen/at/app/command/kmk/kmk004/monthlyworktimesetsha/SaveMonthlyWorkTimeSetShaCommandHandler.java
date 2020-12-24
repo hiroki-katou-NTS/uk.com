@@ -36,14 +36,16 @@ public class SaveMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<Save
 		// 3.BusinessException=0件
 		List<MonthlyWorkTimeSetSha> setShas = cmd.getWorkTimeSetShas().stream().map(wkTimeset -> wkTimeset.toDomain())
 				.collect(Collectors.toList());
-		
-		Long totalLegalLaborTime = setShas.stream().map(x -> x.getLaborTime().getLegalLaborTime().v())
-				.collect(Collectors.counting());
 
-		Long totalWeekAvgTime = setShas.stream().map(x -> x.getLaborTime().getWeekAvgTime().map(y -> y.v()).orElse(0))
-				.collect(Collectors.counting());
-		if (totalWeekAvgTime > totalLegalLaborTime) {
-			throw new BusinessException("Msg_1906");
+		for (MonthlyWorkTimeSetSha setsha : setShas) {
+			int legalLaborTime = setsha.getLaborTime().getLegalLaborTime().v();
+
+			int weekAvgTime = setsha.getLaborTime().getWithinLaborTime().map(x -> x.v()).orElse(0);
+
+			if (weekAvgTime > legalLaborTime) {
+
+				throw new BusinessException("Msg_1906");
+			}
 		}
 
 		setShas.forEach(setSha -> {
