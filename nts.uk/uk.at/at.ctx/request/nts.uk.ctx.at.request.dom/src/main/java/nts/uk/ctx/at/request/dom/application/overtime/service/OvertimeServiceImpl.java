@@ -425,7 +425,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if (	!dateOp.isPresent() 
 				|| !workContent.getWorkTypeCode().isPresent()
 				|| !workContent.getWorkTimeCode().isPresent() 
-				|| workContent.getTimeZones().isEmpty()) return null;
+				|| CollectionUtil.isEmpty(workContent.getTimeZones())) return null;
 		// 06_計算処理
 		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(
 				companyId,
