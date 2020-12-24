@@ -653,7 +653,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							return false;
 						}
 						// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-						if (inpStartTime2 && inpEndTime2 && start2 && end2) {
+						if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2)) {
 							if (start2 > end2) {
 								vm.$errors('#inpStartTime2', 'Msg_307');
 								vm.$errors('#inpEndTime2', 'Msg_307');
@@ -662,7 +662,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 						
 						// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-						if (start2 && inpStartTime2) {
+						if (_.isNumber(start2) && inpStartTime2) {
 							if (start2 < end1) {
 								vm.$errors('#inpEndTime1', 'Msg_581');
 								vm.$errors('#inpStartTime2', 'Msg_581');
@@ -671,14 +671,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 						// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
 						if (inpStartTime2 && inpEndTime2) {
-							if (!(start2 && end2)) {
-								if (!start2) {
-									vm.$errors('#inpStartTime2', 'Msg_307');									
+							if (!(_.isNumber(start2) && _.isNumber(end2))) {
+								if (!_.isNumber(start2) && _.isNumber(end2)) {
+									vm.$errors('#inpStartTime2', 'Msg_307');
+									return false;								
 								}
-								if (!end2) {
-									vm.$errors('#inpEndTime2', 'Msg_307');																	
+								if (!_.isNumber(end2) && _.isNumber(start2)) {
+									vm.$errors('#inpEndTime2', 'Msg_307');
+									return false;																
 								}
-								return false;
+								
 							}
 						}
 						return true;						
