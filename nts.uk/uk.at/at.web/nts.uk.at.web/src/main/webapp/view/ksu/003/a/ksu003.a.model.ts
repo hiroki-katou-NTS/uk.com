@@ -429,12 +429,12 @@ module nts.uk.at.view.ksu003.a.model {
 	 * 日別勤怠の休憩時間帯   (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
 	 */
 	export class TimeSpanForCalcDto {
-		startTime: number; //開始 - 勤怠打刻(実打刻付き)
-		endTime: number; //終了 - 勤怠打刻(実打刻付き)
-		constructor(startTime: number,
-			endTime: number) {
-			this.startTime = startTime;
-			this.endTime = endTime;
+		start: number; //開始 - 勤怠打刻(実打刻付き)
+		end: number; //終了 - 勤怠打刻(実打刻付き)
+		constructor(start: number,
+			end: number) {
+			this.start = start;
+			this.end = end;
 
 		}
 	}

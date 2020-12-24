@@ -10716,15 +10716,18 @@ var nts;
                         }
                         else {
                             gen.dataSource[rowIdx][columnKey] = value;
+                            var detail = new selection.Cell(rowIdx, columnKey, value, -1);
+                            if (selector.is($grid, "." + (BODY_PRF + LEFTMOST))) {
+                                detail.land = BODY_PRF + LEFTMOST;
+                            }
+                            else if (selector.is($grid, "." + (BODY_PRF + MIDDLE))) {
+                                detail.land = BODY_PRF + MIDDLE;
+                            }
                             if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                                var detail = new selection.Cell(rowIdx, columnKey, value, -1);
-                                if (selector.is($grid, "." + (BODY_PRF + LEFTMOST))) {
-                                    detail.land = BODY_PRF + LEFTMOST;
-                                }
-                                else if (selector.is($grid, "." + (BODY_PRF + MIDDLE))) {
-                                    detail.land = BODY_PRF + MIDDLE;
-                                }
                                 events.trigger($table, events.CELL_UPDATED, detail);
+                            }
+                            else {
+                                events.trigger($table, events.CELL_RETAINED, detail);
                             }
                         }
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore);
@@ -11873,7 +11876,7 @@ var nts;
                                     return false;
                             });
                             if (_.isFunction(sticker.validate)) {
-                                var validate = sticker.validate(rowIdx, key, data);
+                                var validate = sticker.validate(rowIdx, coord.columnKey, data);
                                 if (_.has(validate, "done")) {
                                     validate.done(function (result) {
                                         if (result === true) {
@@ -36612,6 +36615,9 @@ var nts;
                                                 if (!self.chartArea.contains(child.html)) {
                                                     self.chartArea.appendChild(child.html);
                                                 }
+                                                if (!self.slideTrigger.edgeCharts.find(function (c) { return c.id === child.id; })) {
+                                                    self.slideTrigger.edgeCharts.push(child);
+                                                }
                                             }
                                             else if (nearestLine < child.start) {
                                                 if (!self.chartArea.contains(child.html))
@@ -36620,9 +36626,15 @@ var nts;
                                                 if (currentWidth !== maxWidth) {
                                                     child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
                                                 }
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
                                             }
                                             else {
                                                 child.reposition({ width: 0 });
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
                                             }
                                         }
                                     }
@@ -36658,15 +36670,24 @@ var nts;
                                                 if (!self.chartArea.contains(child.html)) {
                                                     self.chartArea.appendChild(child.html);
                                                 }
+                                                if (!self.slideTrigger.edgeCharts.find(function (c) { return c.id === child.id; })) {
+                                                    self.slideTrigger.edgeCharts.push(child);
+                                                }
                                             }
                                             else if (nearestLine > child.end) {
                                                 var maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
                                                 if (currentWidth !== maxWidth) {
                                                     child.reposition({ width: maxWidth });
                                                 }
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
                                             }
                                             else {
                                                 child.reposition({ width: 0 });
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
                                             }
                                         }
                                     }
@@ -36683,16 +36704,30 @@ var nts;
                                 if (child.pin && child.rollup && child.roundEdge) {
                                     if (self.slideTrigger.holdPos === HOLD_POS.START
                                         && chart.start > child.start && chart.start <= child.end) {
-                                        var delta = (child.end - chart.start) * chart.unitToPx, chartWidth = parseFloat(chart.html.style.width) - delta, chartLeft = parseFloat(chart.html.style.left) + delta;
+                                        var delta_1 = (child.end - chart.start) * chart.unitToPx, chartWidth = parseFloat(chart.html.style.width) - delta_1, chartLeft = parseFloat(chart.html.style.left) + delta_1;
                                         chart.reposition({ width: chartWidth, left: chartLeft, start: child.end });
                                         child.reposition({ width: 0 });
+                                        if (self.slideTrigger.edgeCharts.length > 0) {
+                                            self.slideTrigger.edgeCharts.forEach(function (c) {
+                                                if (c.id === child.id)
+                                                    return;
+                                                c.reposition({ width: parseFloat(c.html.style.width) - delta_1, left: parseFloat(c.html.style.left) + delta_1 });
+                                            });
+                                        }
                                         return false;
                                     }
                                     else if (self.slideTrigger.holdPos === HOLD_POS.END
                                         && chart.end > child.start && chart.end < child.end) {
-                                        var delta = (chart.end - child.start) * chart.unitToPx, chartWidth = parseFloat(chart.html.style.width) - delta;
+                                        var delta_2 = (chart.end - child.start) * chart.unitToPx, chartWidth = parseFloat(chart.html.style.width) - delta_2;
                                         chart.reposition({ width: chartWidth, end: child.start });
                                         child.reposition({ width: 0 });
+                                        if (self.slideTrigger.edgeCharts.length > 0) {
+                                            self.slideTrigger.edgeCharts.forEach(function (c) {
+                                                if (c.id === child.id)
+                                                    return;
+                                                c.reposition({ width: parseFloat(c.html.style.width) - delta_2 });
+                                            });
+                                        }
                                         return false;
                                     }
                                 }
@@ -36748,7 +36783,8 @@ var nts;
                                 length: parseFloat(chart.html.style.width),
                                 start: chart.start,
                                 end: chart.end,
-                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); }),
+                                edgeCharts: []
                             };
                             if (!_.isNil(chart.parent)) {
                                 var parentChart = self.gcChart[chart.lineNo][chart.parent];
