@@ -357,8 +357,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			vm.$ajax(API.getConfirmSttByEmp, wsParam).done((data: Array<ApprSttConfirmEmp>) => {
 				let a: Array<EmpConfirmInfo> = [];
 				_.forEach(empPeriodLst, item => {
-					let apprSttConfirmEmp = _.find(data, o => o.listDailyConfirm[0].empID==item.empID);
-					a.push(new EmpConfirmInfo(apprSttConfirmEmp, vm));	
+					let apprSttConfirmEmp = _.find(data, o => {
+						if(_.isEmpty(o.listDailyConfirm)) {
+							return false;	
+						}
+						return o.listDailyConfirm[0].empID==item.empID;
+					});
+					if(apprSttConfirmEmp) {
+						a.push(new EmpConfirmInfo(apprSttConfirmEmp, vm));	
+					}
 				});
 				vm.dataSource = _.sortBy(a, 'empCD');
 				$("#fGrid").igGrid("option", "dataSource", vm.dataSource);
