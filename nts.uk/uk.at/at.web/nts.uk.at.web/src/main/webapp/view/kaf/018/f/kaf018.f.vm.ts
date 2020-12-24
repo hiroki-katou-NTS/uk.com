@@ -68,95 +68,105 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				{ 
 					headerText: vm.$i18n('KAF018_407'),
 					key: 'empName',
-					width: window.innerWidth - 1100 < 300 ? 300 : window.innerWidth - 1100,
+					width: window.innerWidth - 1000 < 300 ? 300 : window.innerWidth - 1000,
 					headerCssClass: 'kaf018-f-header-empName',
 					formatter: (key: string, object: EmpConfirmInfo) =>  {
 						return vm.getDispEmpName(object.empID);
 					}
-				},
-				{
-					headerText: vm.$i18n('KAF018_408'),
-					key: 'sttUnConfirmMonth',
-					width: 40,
-					headerCssClass: 'kaf018-f-header-stt',
-					columnCssClass: 'kaf018-f-column-stt',
-				},
-				{ 
-					headerText: vm.$i18n('KAF018_409'),
-					key: 'sttUnApprMonth',
-					width: 40,
-					headerCssClass: 'kaf018-f-header-stt',
-					columnCssClass: 'kaf018-f-column-stt',
-				},
-				{ 
-					headerText: vm.$i18n('KAF018_410'),
-					key: 'sttUnConfirmDay',
-					width: 40,
-					headerCssClass: 'kaf018-f-header-stt',
-					columnCssClass: 'kaf018-f-column-stt',
-				},
-				{ 
-					headerText: vm.$i18n('KAF018_411'),
-					key: 'sttUnApprDay',
-					width: 40,
-					headerCssClass: 'kaf018-f-header-stt',
-					columnCssClass: 'kaf018-f-column-stt',
 				}
 			);
-			let dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days'),
-				dateColumnLst = [];
-			for(let i = 0; i <= dateRangeNumber; i++) {
-				if(i < dateRangeNumber) {
-					dateColumnLst.push(
-						{ 
-							headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
-							headerCssClass: vm.getHeaderCss(i),
-							group: [
-								{ 
-									headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
-									key: 'dateInfoLst',
-									width: '30px',
-									headerCssClass: vm.getHeaderCss(i),
-									columnCssClass: 'kaf018-f-column-date',
-									formatter: (value: any) => vm.getStatusByDay(value, i)
-								}
-							]
-						}
-					);	
-				} else {
-					dateColumnLst.push(
-						{ 
-							headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
-							headerCssClass: vm.getHeaderCss(i),
-							group: [
-								{ 
-									headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
-									key: 'dateInfoLst',
-									width: '47px',
-									headerCssClass: vm.getHeaderCss(i),
-									columnCssClass: 'kaf018-f-column-date',
-									formatter: (value: any) => vm.getStatusByDay(value, i)
-								}
-							]
-						}
-					);
-				}
-				
+			if(vm.apprSttComfirmSet.monthlyIdentityConfirm) {
+				vm.columns.push(
+					{
+						headerText: vm.$i18n('KAF018_408'),
+						key: 'sttUnConfirmMonth',
+						width: 40,
+						headerCssClass: 'kaf018-f-header-stt',
+						columnCssClass: 'kaf018-f-column-stt',
+					}
+				);	
 			}
-			vm.columns.push(
-				{ 
-					headerText: '',
-					group: dateColumnLst
-				}
-			);
-			let empID = '', empCD = '', empName = '', sttUnConfirmDay = 0, sttUnApprDay = 0, sttUnConfirmMonth = 0, sttUnApprMonth = 0, dateInfoLst: Array<DateInfo> = [];
-			for(let j = 0; j <= dateRangeNumber; j++) {
-				dateInfoLst.push({
-					date: moment(moment(vm.startDate,'YYYY/MM/DD').add(j, 'd')).format('YYYY/MM/DD'),
-					status: CONFIRMSTATUS.NO_TARGET
-				});
+			if(vm.apprSttComfirmSet.monthlyConfirm) {
+				vm.columns.push(
+					{ 
+						headerText: vm.$i18n('KAF018_409'),
+						key: 'sttUnApprMonth',
+						width: 40,
+						headerCssClass: 'kaf018-f-header-stt',
+						columnCssClass: 'kaf018-f-column-stt',
+					}
+				);	
 			}
-			// vm.dataSource.push({ empID, empCD, empName, sttUnConfirmDay, sttUnApprDay, sttUnConfirmMonth, sttUnApprMonth, dateInfoLst });
+			if(vm.apprSttComfirmSet.usePersonConfirm) {
+				vm.columns.push(
+					{ 
+						headerText: vm.$i18n('KAF018_410'),
+						key: 'sttUnConfirmDay',
+						width: 40,
+						headerCssClass: 'kaf018-f-header-stt',
+						columnCssClass: 'kaf018-f-column-stt',
+					}
+				);	
+			}
+			if(vm.apprSttComfirmSet.useBossConfirm) {
+				vm.columns.push(
+					{ 
+						headerText: vm.$i18n('KAF018_411'),
+						key: 'sttUnApprDay',
+						width: 40,
+						headerCssClass: 'kaf018-f-header-stt',
+						columnCssClass: 'kaf018-f-column-stt',
+					}
+				);	
+			}
+			if(!(!vm.apprSttComfirmSet.usePersonConfirm && !vm.apprSttComfirmSet.useBossConfirm)) {
+				let dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days'),
+					dateColumnLst = [];
+				for(let i = 0; i <= dateRangeNumber; i++) {
+					if(i < dateRangeNumber) {
+						dateColumnLst.push(
+							{ 
+								headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
+								headerCssClass: vm.getHeaderCss(i),
+								group: [
+									{ 
+										headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
+										key: 'dateInfoLst',
+										width: '30px',
+										headerCssClass: vm.getHeaderCss(i),
+										columnCssClass: 'kaf018-f-column-date',
+										formatter: (value: any) => vm.getStatusByDay(value, i)
+									}
+								]
+							}
+						);	
+					} else {
+						dateColumnLst.push(
+							{ 
+								headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
+								headerCssClass: vm.getHeaderCss(i),
+								group: [
+									{ 
+										headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
+										key: 'dateInfoLst',
+										width: '47px',
+										headerCssClass: vm.getHeaderCss(i),
+										columnCssClass: 'kaf018-f-column-date',
+										formatter: (value: any) => vm.getStatusByDay(value, i)
+									}
+								]
+							}
+						);
+					}
+					
+				}
+				vm.columns.push(
+					{ 
+						headerText: '',
+						group: dateColumnLst
+					}
+				);
+			}
 			vm.dataSource.push(new EmpConfirmInfo(null, vm));
 			$("#fGrid").css('visibility','hidden');
 			$('#kaf018-f-dynamic-header').css('visibility','hidden');
