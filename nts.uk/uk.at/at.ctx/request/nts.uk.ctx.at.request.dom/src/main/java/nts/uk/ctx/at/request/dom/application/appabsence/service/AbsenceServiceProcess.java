@@ -362,4 +362,45 @@ public interface AbsenceServiceProcess {
 	 * @param approvalRoot
 	 */
 	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting applicationSetting);
+	
+	
+	/** 
+	 * 5.休暇申請（詳細）起動処理
+	 * @param companyID
+	 * @param appID
+	 * @param appDetailScreenInfo
+	 * @return
+	 */
+	public AppForLeaveStartOutput getAppForLeaveStartB(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	
+	/**
+	 *     休暇紐付管理情報を取得する
+	 * @param employeeID
+	 * @param appStartDate
+	 * @param appEndDate
+	 * @param workType
+	 * @param actualContentDisplayLst
+	 */
+	public VacationLinkManageInfo getVacationLinkManageInfo(String employeeID, String appStartDate, String appEndDate, WorkType workType, List<ActualContentDisplay> actualContentDisplayLst);
+	
+	/**
+	 *     登録前のエラーチェック処理
+	 * @param companyID
+	 * @param appAbsenceStartInfoOutput
+	 * @param appAbsence
+	 * @param agentAtr
+	 * @return
+	 */
+	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
+            ApplyForLeave appAbsence, boolean agentAtr);
+	
+	
+    /**
+         * 休暇紐付け管理を登録する
+     * @param leaveComDayOffMana
+     * @param payoutSubofHDManagements
+     */
+    public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, 
+            List<PayoutSubofHDManagement> payoutSubofHDManagements);
 }
