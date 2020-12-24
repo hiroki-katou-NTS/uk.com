@@ -152,7 +152,7 @@ public class AsposeAppOverTime {
 		if (workType != null) {
 			String nameWorktype = displayInfoOverTime.getInfoBaseDateOutput().getWorktypes()
 				.stream()
-				.filter(x -> x.getWorkTypeCode().v() == workType)
+				.filter(x -> x.getWorkTypeCode().v().equals(workType))
 				.findFirst().map(x -> x.getName().v()).orElse(null);
 			StringBuilder workBuilder = new StringBuilder(workType);
 			workBuilder.append(HALF_SIZE_SPACE);
@@ -168,7 +168,7 @@ public class AsposeAppOverTime {
 			String nameWorktime = displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst()
 					.orElse(Collections.emptyList())	
 					.stream()
-					.filter(x -> x.getWorktimeCode().v() == workTime)
+					.filter(x -> x.getWorktimeCode().v().equals(workTime))
 					.findFirst()
 					.map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v())
 					.orElse(null);
