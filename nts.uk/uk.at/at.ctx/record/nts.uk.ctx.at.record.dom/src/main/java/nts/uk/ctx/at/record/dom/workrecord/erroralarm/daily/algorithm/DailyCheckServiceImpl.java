@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttenda
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 
@@ -87,10 +88,14 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<String> errorDailyCheckCd, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType) {
+		List<WorkTypeCode> lstWkType = new ArrayList<>();
 		
 		// チェックする前にデータを準備
 		PrepareData prepareData = this.prepareDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId,
 																	extractConditionWorkRecord, errorDailyCheckCd);
+		for(ErrorAlarmCondition alarmCon : prepareData.getListErrorAlarmCon()) {
+			lstWkType.addAll(alarmCon.getWorkType());
+		}
 		
 		for(String item : lstSid) {
 			for(GeneralDate i = dPeriod.start(); i.equals(dPeriod.end().addDays(1)); i.addDays(1)) {
@@ -136,7 +141,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<IntegrationOfDaily> listIntegrationDai = dailyRecordShareFinder.findByListEmployeeId(lstSid, dPeriod);
 		
 		// ドメインモデル「勤務実績のエラーアラームチェック」を取得する。
-		List<ErrorAlarmCondition> listErrorAlarmCon = errorConRep.findMessageConByListErAlCheckId(extractConditionWorkRecord);
+		List<ErrorAlarmCondition> listErrorAlarmCon = errorConRep.findConditionByListErrorAlamCheckId(extractConditionWorkRecord);
 		
 		//ドメインモデル「勤務実績の抽出条件」を取得する
 		List<WorkRecordExtractingCondition> workRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(extractConditionWorkRecord, true);
@@ -266,23 +271,65 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	}
 	
 	
-	private void GenerateAlarmValueForDailyChkCondition(List<WorkRecordExtractingCondition> workRecordCond, 
-														IntegrationOfDaily integra, String sid, GeneralDate day, 
-														String wplId, Map<Integer, String> work, String errorDailyCheckId) {
+	 /**
+	  * 日次のチェック条件のアラーム値を生成する 
+	  * @param workRecordCond
+	  * @param integra
+	  * @param sid
+	  * @param day
+	  * @param wplId
+	  * @param work
+	  * @param extractConditionWorkRecord
+	  */
+	private void GenerateAlarmValueForDailyChkCondition(IntegrationOfDaily integra, List<String> extractConditionWorkRecord,
+			List<ErrorAlarmCondition> listErrorAlarmCon, List<WorkTypeCode> lstWkType, String sid, String errorDailyCheckId) {
+		
+		boolean testSid = true;
+		
 		if(integra.getWorkInformation() != null) {
 			
 			Optional<ErrorAlarmCondition> errorAlarm = errorConRep.findConditionByErrorAlamCheckId(errorDailyCheckId);
 			if(errorAlarm.isPresent()) {
 				int filterCompare = errorAlarm.get().getWorkTypeCondition().getComparePlanAndActual().value;
-			}
+				// 勤務種類でフィルタする
+				List<ErrorAlarmCondition> errorAlarmCon = errorConRep.findConditionByListErrorAlamCheckId(extractConditionWorkRecord);
+				WorkTypeCode wkTypeCd = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
+				for(ErrorAlarmCondition item : errorAlarmCon) {
+					switch (filterCompare) {
+						// 予定と実績の比較をしない  = 全て
+						case 0:
+							break;
+							
+						// 予定と実績が同じものを抽出する = 選択
+						case 1:
+							if(lstWkType.contains(wkTypeCd)) {
+								testSid = true;
+							}
+							
+						// 予定と実績が異なるものを抽出する = 選択以外
+						case 2:
+							if(lstWkType.contains(wkTypeCd)) {
+								testSid = false;
+							}
+						default:
+					}
+					
+					if(testSid == true) {
+						// 実績をチェックする
+					}
+				}
 					
 			
-			WorkInfoOfDailyAttendance workInfo = integra.getWorkInformation();
+			
+				WorkInfoOfDailyAttendance workInfo = integra.getWorkInformation();
+			}
 		}
 	}
 	
-	
-	private void FilterWorkType(int filterByCompare, List<ErrorAlarmCondition> listErrorAlarmCon) {
+	/**
+	 * 勤務種類でフィルタする
+	 */
+	private String FilterWorkType(String sid, List<WorkTypeCode> wkType, ) {
 		
 	}
 }
