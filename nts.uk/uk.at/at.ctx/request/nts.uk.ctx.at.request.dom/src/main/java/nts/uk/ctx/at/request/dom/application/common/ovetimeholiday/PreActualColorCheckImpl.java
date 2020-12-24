@@ -536,7 +536,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			
 			if (achievementDetail.getOpOvertimeLeaveTimeLst().isPresent()) {
 				List<OvertimeLeaveTime> overTimeLeaveTimes = achievementDetail.getOpOvertimeLeaveTimeLst().get().stream()
-						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getAttendanceType() == AttendanceType_Update.BREAKTIME.value)
+						//.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getAttendanceType() == AttendanceType_Update.BREAKTIME.value)
 						.collect(Collectors.toList());
 				List<OvertimeApplicationSetting> overTimeApplicationTimes = new ArrayList<>();
 				overTimeLeaveTimes.forEach(item -> {
@@ -556,27 +556,23 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					output.get().setApplicationTime(overTimeApplicationTimes);
 				}
 				/*
-				・INPUT．「表示する実績内容．実績詳細．7勤怠時間．4勤怠種類 = 残業時間」AND 「実績詳細．7勤怠時間．1枠NO = 11」がある場合：
-						　申請時間．フレックス超過時間 = 実績詳細．7勤怠時間．3時間
+				・INPUT．「表示する実績内容．実績詳細．計算フレックス」がある場合：
+　					申請時間．フレックス超過時間 = 実績詳細．計算フレックス
 				*/
-				Optional<OvertimeLeaveTime> isFlexOverOp = achievementDetail.getOpOvertimeLeaveTimeLst().get().stream()
-						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value && x.getFrameNo() == 11)
-						.findFirst();
-				if (isFlexOverOp.isPresent()) {
+
+				if (achievementDetail.getOpFlexTime().isPresent()) {
 					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
-					output.get().setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(isFlexOverOp.get().getTime())));
+					output.get().setFlexOverTime(achievementDetail.getOpFlexTime());
 				}
 				/*
-				 ・INPUT．「表示する実績内容．実績詳細．7勤怠時間．4勤怠種類 = 残業時間」AND 「実績詳細．7勤怠時間．1枠NO = 12」がある場合：
-　					申請時間．就業時間外深夜時間．残業深夜時間 = 実績詳細．7勤怠時間．3時間
-				 * */
-				Optional<OvertimeLeaveTime> isOverTimeMidNightOp = achievementDetail.getOpOvertimeLeaveTimeLst().get().stream()
-						.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value && x.getFrameNo() == 12)
-						.findFirst();
-				if (isOverTimeMidNightOp.isPresent()) {
-					overTimeShiftNightOp = Optional.of(new OverTimeShiftNight());
-					overTimeShiftNightOp.get().setMidNightOutSide(
-							new AttendanceTime(isOverTimeMidNightOp.get().getTime()));
+				 *・INPUT．「表示する実績内容．実績詳細．残業深夜時間」がある場合：
+　					申請時間．就業時間外深夜時間．残業深夜時間 = 表示する実績内容．実績詳細．残業深夜時間
+				 */
+				if (achievementDetail.getOpOvertimeMidnightTime().isPresent()) {
+					if (!overTimeShiftNightOp.isPresent()) {
+						overTimeShiftNightOp = Optional.of(new OverTimeShiftNight());
+					}
+					overTimeShiftNightOp.get().setOverTimeMidNight(achievementDetail.getOpOvertimeMidnightTime().orElse(null));
 					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
 					output.get().setOverTimeShiftNight(overTimeShiftNightOp);
 				}
