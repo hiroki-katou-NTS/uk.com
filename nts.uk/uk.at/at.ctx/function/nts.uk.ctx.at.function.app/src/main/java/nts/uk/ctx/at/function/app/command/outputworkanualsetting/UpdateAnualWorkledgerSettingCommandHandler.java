@@ -55,13 +55,13 @@ public class UpdateAnualWorkledgerSettingCommandHandler extends CommandHandler<U
         private AnnualWorkLedgerOutputSettingRepository repository;
 
         @Override
-        public boolean checkTheStandard(OutputItemSettingCode code, String cid) {
-            return repository.exist(code, cid);
+        public boolean checkTheStandard(OutputItemSettingCode code) {
+            return repository.exist(code, AppContexts.user().companyId());
         }
 
         @Override
-        public boolean checkFreedom(OutputItemSettingCode code, String cid, String employeeId) {
-            return repository.exist(code, cid, employeeId);
+        public boolean checkFreedom(OutputItemSettingCode code, String employeeId) {
+            return repository.exist(code, AppContexts.user().companyId(), employeeId);
         }
 
         @Override
