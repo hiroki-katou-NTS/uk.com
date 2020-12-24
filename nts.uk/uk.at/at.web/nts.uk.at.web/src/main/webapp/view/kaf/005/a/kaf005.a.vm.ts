@@ -240,8 +240,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				) {
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 					.then(() => {
-						return $.Deferred().resolve(false);						
 					});
+				return $.Deferred().resolve(false);						
 			}
 			return $.Deferred().resolve(true);
 		}
