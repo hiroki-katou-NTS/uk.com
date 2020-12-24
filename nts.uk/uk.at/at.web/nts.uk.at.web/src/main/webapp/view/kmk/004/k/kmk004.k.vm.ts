@@ -291,7 +291,7 @@ module nts.uk.at.kmk004.k {
 	}
 
 	class GetFlexPredWorkTime {
-		reference: KnockoutObservable<number> = ko.observable(0);
+		reference: KnockoutObservable<number> = ko.observable(1);
 
 		update(param: IGetFlexPredWorkTime) {
 			if (param) {
