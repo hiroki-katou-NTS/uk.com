@@ -42,7 +42,7 @@ public class JpaReqComStatusMonitoringRepository extends JpaRepository implement
 			boolean connecting) {
 		return this.queryProxy().query(FIND_CONTRACTCD_CODE_CONNECTING, KrcdtTrRqStMonitor.class)
 					.setParameter("contractCode", contractCode.v())
-					.setParameter("timeRecordCode", listTerminalCode)
+					.setParameter("listCode", listTerminalCode)
 					.setParameter("connecting", connecting).getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
 	}
 
