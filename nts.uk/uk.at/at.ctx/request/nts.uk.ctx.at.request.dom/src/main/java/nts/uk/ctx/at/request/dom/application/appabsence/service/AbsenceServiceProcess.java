@@ -407,4 +407,15 @@ public interface AbsenceServiceProcess {
      */
     public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, 
             List<PayoutSubofHDManagement> payoutSubofHDManagements);
+    
+    /**
+         * 休暇紐付け管理を更新する
+     * @param oldLeaveComDayOffMana
+     * @param oldPayoutSubofHDManagements
+     * @param newLeaveComDayOffMana
+     * @param newPayoutSubofHDManagements
+     */
+    public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
+            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements, List<LeaveComDayOffManagement> newLeaveComDayOffMana, 
+            List<PayoutSubofHDManagement> newPayoutSubofHDManagements);
 }
