@@ -183,8 +183,8 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         private ClosureEmploymentRepository closureEmploymentRepository;
 
         @Override
-        public Map<String, BsEmploymentHistoryImport> getEmploymentInfor(String companyId, List<String> listSid, GeneralDate baseDate) {
-            return shareEmploymentAdapter.findEmpHistoryVer2(companyId, listSid, baseDate);
+        public Map<String, BsEmploymentHistoryImport> getEmploymentInfor(List<String> listSid, GeneralDate baseDate) {
+            return shareEmploymentAdapter.findEmpHistoryVer2(AppContexts.user().companyId(), listSid, baseDate);
         }
 
         @Override

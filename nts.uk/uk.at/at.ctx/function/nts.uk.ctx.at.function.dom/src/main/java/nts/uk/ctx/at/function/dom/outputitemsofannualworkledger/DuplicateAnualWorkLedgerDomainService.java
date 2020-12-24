@@ -33,11 +33,11 @@ public class DuplicateAnualWorkLedgerDomainService {
         boolean isCheck = false;
         // 1.1 設定区分 ＝＝ 定型選択 ① : 定型選択の重複をチェックする(require,コード, ログイン会社ID) : boolean
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-            isCheck = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, settingCode, cId);
+            isCheck = require.exist(settingCode);
         }
         // 1.2 設定区分 == 自由設定 ① : 自由設定の重複をチェックする(require,出力項目設定コード, 会社ID, 社員ID) : boolean
         if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            isCheck = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, settingCode, cId, empId);
+            isCheck = require.exist(settingCode, empId);
         }
         // 4. [1] true
         if (isCheck) {
@@ -53,9 +53,15 @@ public class DuplicateAnualWorkLedgerDomainService {
         );
     }
 
-    public interface Require extends AnnualWorkLedgerOutputSetting.Require {
+    public interface Require{
         //  [1]	出力設定の詳細を取得する
         Optional<AnnualWorkLedgerOutputSetting> getSetting(String settingId);
+
+        // 	[2] 指定のコードが既に定型選択に保存されているか
+        boolean exist(OutputItemSettingCode code);
+
+        //	[3] 指定のコードが既に自由設定に保存されているか
+        boolean exist(OutputItemSettingCode code, String employeeId);
 
         //  [4] 設定の詳細を複製する
         void duplicate(String emId, String replicationSourceSettingId,

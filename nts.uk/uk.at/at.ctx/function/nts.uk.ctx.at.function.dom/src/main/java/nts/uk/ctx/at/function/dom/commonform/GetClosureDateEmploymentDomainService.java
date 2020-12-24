@@ -26,19 +26,20 @@ public class GetClosureDateEmploymentDomainService {
      * @return
      */
     public static List<ClosureDateEmployment> get(Require require, GeneralDate baseDate, List<String> listSid) {
-        val companyId = AppContexts.user().companyId();
 
         // 雇用を取得する
-        val lstEmploymentInfo = require.getEmploymentInfor(companyId, listSid, baseDate);
+        val lstEmploymentInfo = require.getEmploymentInfor(listSid, baseDate);
 
         return lstEmploymentInfo.values().stream().map(i -> {
             // Call 社員に対応する処理締めを取得する
             val closure = require.getClosureDataByEmployee(i.getEmployeeId(), baseDate);
 
             // ※締め．締め変更履歴 がリストの場合は基準日がある履歴のみ残して、他の履歴を無視する
-            val closureHistories = new ArrayList<ClosureHistory>();
-            closureHistories.add(closure.getHistoryByBaseDate(baseDate));
-            closure.setClosureHistories(closureHistories);
+            if (closure != null) {
+                val closureHistories = new ArrayList<ClosureHistory>();
+                closureHistories.add(closure.getHistoryByBaseDate(baseDate));
+                closure.setClosureHistories(closureHistories);
+            }
 
             return new ClosureDateEmployment(
                     i.getEmployeeId(),
@@ -54,12 +55,11 @@ public class GetClosureDateEmploymentDomainService {
          * [R-1] 社員ID（List）と指定期間から社員の雇用履歴を取得 (社員一覧, 期間)
          * nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter.findEmpHistoryVer2(String companyId, List<String> lstSID, GeneralDate baseDate)
          *
-         * @param companyId
          * @param listSid
          * @param baseDate
          * @return
          */
-        Map<String, BsEmploymentHistoryImport> getEmploymentInfor(String companyId, List<String> listSid, GeneralDate baseDate);
+        Map<String, BsEmploymentHistoryImport> getEmploymentInfor(List<String> listSid, GeneralDate baseDate);
 
         /**
          * [R-2] 社員に対応する処理締めを取得する（社員ID、基準日

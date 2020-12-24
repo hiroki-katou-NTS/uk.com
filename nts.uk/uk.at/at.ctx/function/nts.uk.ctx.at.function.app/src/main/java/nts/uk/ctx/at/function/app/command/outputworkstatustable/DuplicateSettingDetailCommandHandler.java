@@ -59,12 +59,12 @@ public class DuplicateSettingDetailCommandHandler extends CommandHandler<Duplica
         }
 
         @Override
-        public boolean checkTheStandard(String code) {
+        public boolean exist(String code) {
             return this.settingsRepository.exist(new OutputItemSettingCode(code),AppContexts.user().companyId());
         }
 
         @Override
-        public boolean checkFreedom(String code, String employeeId) {
+        public boolean exist(String code, String employeeId) {
             return this.settingsRepository.exist(new OutputItemSettingCode(code),AppContexts.user().companyId(),employeeId);
         }
     }
