@@ -46,7 +46,6 @@ module nts.uk.at.view.kmk004.p {
 	export interface IResponse {
 		deforLaborTimeComDto: DeforLaborTimeComDto; //会社別変形労働法定労働時間
 		settingDto: SettingDto; //会社別変形労働集計設定
-		//isSinglemonth: number;
 	}
 
 	export enum SCREEN_MODE {
@@ -113,7 +112,6 @@ module nts.uk.at.view.kmk004.p {
 			if (vm.params.sidebarType == 'Com_Company') {
 				vm.mode(SCREEN_MODE.UPDATE);
 				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING).done((data: IResponse) => {
-					//data.isSinglemonth = vm.selectedP3_3();
 					vm.bindingData(data);
 					vm.checkDisplay();
 
@@ -545,14 +543,13 @@ module nts.uk.at.view.kmk004.p {
 
 	//清算期間
 	export class Settlement {
-		startMonth = ko.observable(0);
+		startMonth = ko.observable(parseInt(moment().format('MM')));
 		period = ko.observable(0);
 		repeatAtr = ko.observable(false);
 		constructor() { }
 		update(param: SettlementPeriod) {
 			this.startMonth(param.startMonth);
 			this.period(param.period);
-			//this.period(param.isSingleMonth == 0 ? 1: param.period);
 			this.repeatAtr(param.repeatAtr);
 		}
 	}
