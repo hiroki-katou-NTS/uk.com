@@ -11,7 +11,8 @@ module knr002.d {
 			empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
             destinationCopyList: KnockoutObservableArray<EmpInfoTerminal>;
-            selectableCodeList: Array<ItemModel>;
+            selectableCodeList: Array<string>;
+            command: any;
             
             constructor(){
                 var self = this;
@@ -19,6 +20,7 @@ module knr002.d {
                 self.empInfoTerName = ko.observable('');
                 self.destinationCopyList = ko.observableArray<EmpInfoTerminal>([]);
                 self.selectableCodeList = [];
+                self.command = {};
             }
             /**
              * Start Page
@@ -31,37 +33,71 @@ module knr002.d {
                 // get Shared from C
                 self.empInfoTerCode(getShared('KNR002D_empInfoTerCode'));
                 self.empInfoTerName(getShared('KNR002D_empInfoTerName'));
+                self.command = getShared('KNR002D_command');
+                
                 if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
                     self.destinationCopyList([]);
                     self.selectableCodeList = [];
                 } else {
                     // get Shared from A
-                    let empInfoTerList = getShared('KNR002D_empInfoTerList');
-                    if(empInfoTerList){                   
-                        let desCopyTempList = [];
-                        for(let e of empInfoTerList){
-                            if(e.empInfoTerCode != self.empInfoTerCode())
-                                desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
-                        };
-                        self.destinationCopyList(desCopyTempList); 
-                    } else {
+                    //let empInfoTerList = getShared('KNR002D_empInfoTerList');
+                    // if(empInfoTerList){                   
+                    //     let desCopyTempList = [];
+                    //     for(let e of empInfoTerList){
+                    //         if(e.empInfoTerCode != self.empInfoTerCode())
+                    //             desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
+                    //     };
+                    //     self.destinationCopyList(desCopyTempList); 
+                    // } else {
+                    //     service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
+                    //         if(!data || data.length <= 0){
+                    //             //do something
+                    //             self.destinationCopyList([]);
+                    //             self.selectableCodeList = [];
+                    //         } else {
+                    //             let desCopyTempList = [];
+                    //             for(let item of data){
+                    //                 let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
+                    //                 desCopyTempList.push(desCopyTemp);
+                    //             }   
+                    //             self.destinationCopyList(desCopyTempList);
+                    //         }                       
+                    //     });
+                    // }
                         service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                            if(!data || data.length <= 0){
-                                //do something
-                                self.destinationCopyList([]);
-                                self.selectableCodeList = [];
-                            } else {
-                                let desCopyTempList = [];
+                        if(!data || data.length <= 0){
+                            //do something
+                            self.destinationCopyList([]);
+                            self.selectableCodeList = [];
+                            self.bindDestinationCopyList();
+                        } else {
+                            // get Shared from A
+                            let empInfoTerList = getShared('KNR002D_empInfoTerList');
+                            let desCopyTempList = [];
+                            if(empInfoTerList){
+                                let keyMap: any = {};
+                                _.forEach(empInfoTerList, e => {
+                                    keyMap[e.empInfoTerCode] = e;
+                                }); 
+                                for(let item of data){
+                                    let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
+                                    let currentItem = keyMap[item.empInfoTerCode];                           
+                                    if (currentItem) {
+                                        desCopyTemp.workLocationName = currentItem.workLocationName;
+                                    }                               
+                                    desCopyTempList.push(desCopyTemp);
+                                }
+                            } else{
                                 for(let item of data){
                                     let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
                                     desCopyTempList.push(desCopyTemp);
                                 }   
-                                self.destinationCopyList(desCopyTempList);
-                            }                       
-                        });
-                    }
+                            }
+                            self.destinationCopyList(desCopyTempList);  
+                        }                       
+                        self.bindDestinationCopyList();
+                    });
                 }
-                self.bindDestinationCopyList();
                 $('#D5_1').focus();
                 blockUI.clear();   																			
                 dfd.resolve();											
@@ -104,8 +140,33 @@ module knr002.d {
                 self.selectableCodeList = [];
                 _.forEach(self.destinationCopyList(), e => {
                     if(e.availability)
-                    self.selectableCodeList.push(new ItemModel(e.empInfoTerCode));
-                });             
+                    self.selectableCodeList.push(e.empInfoTerCode);
+                });  
+                if(self.selectableCodeList.length <= 0){
+                    // do  something
+                } else {
+                    dialog.confirm({messageId:"Msg_1986"})
+                    .ifYes(() => {                   
+                        blockUI.invisible();
+                        service.checkRemoteSettingsToCopy(self.selectableCodeList).done(()=>{
+                            self.command.empInfoTerCode = self.selectableCodeList;
+                            service.registerAndSubmitChanges(self.command).done(() => {
+
+                            }).fail(() => {
+                                
+                            });
+                        }).fail((err)=>{
+                            dialog.error({messageId: err.messageId}).then(()=>{
+                                // do something
+                            });
+                        });
+                    }).ifNo(() => {
+                            // do something
+                    }).always(() => {
+                        blockUI.clear(); 
+                    });
+                }          
+
                 setShared('KNR002D_selectableCodeList', self.selectableCodeList);
                 nts.uk.ui.windows.close();
             }
@@ -145,11 +206,9 @@ module knr002.d {
                 this.availability = false;
             }
         }
-        class ItemModel{
-            code: string;
-            constructor(code: string){
-                this.code = code;
-            }
+        class TimeRecordSetUpdateDto{
+            variableName: string;
+            updateValue: string;
         }
     }
 }

@@ -57,7 +57,7 @@ module knr002.f {
                     self.selectedList = [];
                     self.bindDestinationCopyList(); 
                 } else {             
-                    service.getRecoveryTargeTertList(self.modelEmpInfoTer()).done((data)=>{
+                    service.getRecoveryTargetList(self.modelEmpInfoTer()).done((data)=>{
                         if(!data || data.leng <= 0 ){
                             self.recoveryTargetList([]); 
                         }else{
@@ -141,18 +141,17 @@ module knr002.f {
                         return;
                     }); 
                 } else {
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    dialog.confirm({ messageId: "Msg_2020", messageParams: ["X", "Y"] }).ifYes(() => {
                         blockUI.invisible();
-                        service.remove(self.currentFrameCd()).done(() => {
-                                dialog.info({ messageId: "Msg_16" }).then(function() {
-                                    
-                                });;
-                            })
-                            .fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
-                            .always(() => {
+                        service.recovery(self.empInfoTerCode(), self.selectedList).done(() => {
+                            
+                            }).fail(() => {dialog.error({ messageId: "Msg_1984" });
+                            }).always(() => {
                                 blockUI.clear();
                             });
-                    });
+                    }).ifNo(function() {
+                        blockUI.clear();
+                    });
                 }   
             }
             /**

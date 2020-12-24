@@ -27,17 +27,23 @@ module knr002.g {
             applicationReceive: KnockoutObservable<boolean>;//全ての申請データ
             reservationReceive: KnockoutObservable<boolean>;//全ての予約データ
             
-            //WorkType_ 
+            //  WorkType_ 
             posibleWorkTypes: KnockoutObservableArray<string>;
             workTypeCodes: KnockoutObservableArray<string>;
             selectableWorkTypes: KnockoutObservableArray<string>;
             isCloseWorkType: KnockoutObservable<boolean>;
 
-            //WorkTime_ 就業時間帯の設定
+            //  WorkTime_ 就業時間帯の設定
             posibleWorkTimes: KnockoutObservableArray<string>;
             workTimeCodes: KnockoutObservableArray<string>;
             selectableWorkTimes: KnockoutObservableArray<string>;
             isCloseWorkTime: KnockoutObservable<boolean>;
+
+            //  bentoMenu
+            selectableBentos: KnockoutObservableArray<number>;
+
+            //  employee
+            selectableEmployees: KnockoutObservableArray<string>;
 
             constructor(){
                 var self = this;
@@ -61,12 +67,19 @@ module knr002.g {
                 self.posibleWorkTypes = ko.observableArray([]);
                 self.workTypeCodes = ko.observableArray([]);
                 self.selectableWorkTypes = ko.observableArray([]);
-                self.isCloseWorkType = ko.observable(false); 
+                
                 // Worktime
                 self.posibleWorkTimes = ko.observableArray([]);
                 self.workTimeCodes = ko.observableArray([]);
                 self.selectableWorkTimes = ko.observableArray([]);
-                self.isCloseWorkTime = ko.observable(false);               
+
+                //  bento menu
+                self.selectableBentos = ko.observableArray([]);
+
+                //  employees
+                self.selectableEmployees = ko.observableArray([]);
+
+                        
             }
             /**
              * Start Page
@@ -133,7 +146,7 @@ module knr002.g {
                         nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(() => {
                             var selectable = nts.uk.ui.windows.getShared("KDL002_SelectedNewItem");
                             self.selectableWorkTypes(selectable !== undefined? selectable : []);
-                            self.isCloseWorkType(true);
+                        
                             blockUI.clear();
                         });
                     }	
@@ -157,8 +170,9 @@ module knr002.g {
                         setShared('kml001selectedCodeList', self.workTimeCodes());
                         nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             var selectable = getShared("kml001selectedCodeList");
-                            self.isCloseWorkTime(true);
+                            
                             self.selectableWorkTimes(selectable !== undefined? selectable : []);
+                            console.log(self.selectableWorkTimes);
                             blockUI.clear();
                         });       
                     }	
@@ -189,15 +203,13 @@ module knr002.g {
                 });
             }
             /**
-             * get Model Name
+             * G11_1
+             * 決定ボタン
              */
-            private getModelName(modelEmpInfoTer: Number): string{
-                switch(modelEmpInfoTer){
-                    case 7: return 'NRL_1';
-                    case 8: return 'NRL_2';
-                    case 9: return 'NRL_M';
-                    default : return '';
-                }	
+            private enter(): void{
+                var self = this;
+                blockUI.invisible();
+                
             }
             
             /**
