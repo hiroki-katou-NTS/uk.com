@@ -28,11 +28,11 @@ public class CreateAnualWorkLedgerDomainService {
 
         // 1.1 設定区分 ＝＝ 定型選択 ① : 定型選択の重複をチェックする(require,コード, ログイン会社ID) : boolean
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-            checkDuplicate = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, new OutputItemSettingCode(code.v()), cId);
+            checkDuplicate = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, new OutputItemSettingCode(code.v()));
         }
         // 1.2 設定区分 == 自由設定 ① : 自由設定の重複をチェックする(require,出力項目設定コード, 会社ID, 社員ID) : boolean
         if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            checkDuplicate = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, new OutputItemSettingCode(code.v()), cId, empId);
+            checkDuplicate = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, new OutputItemSettingCode(code.v()), empId);
         }
 
         //2: [①　== true]

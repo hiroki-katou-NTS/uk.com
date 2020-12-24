@@ -55,4 +55,17 @@ public class GetSuitableDateByClosureDateUtilityTest {
 
     }
 
+    @Test
+    public void test_04() {
+
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 10), GeneralDate.ymd(2020, 11, 10));
+        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod,20);
+
+        YearMonth startYearMonth = YearMonth.of(2020, 10);
+        YearMonth endYearMonth = YearMonth.of(2020,11);
+        YearMonthPeriod expected = new YearMonthPeriod(startYearMonth, endYearMonth);
+        assertThat(actual).isEqualTo(expected);
+
+    }
+
 }

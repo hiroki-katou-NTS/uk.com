@@ -100,15 +100,9 @@ public class GetClosureDateEmploymentDomainServiceTest {
 
         Closure closure = createClosure();
 
-        new Expectations(AppContexts.class) {
-            {
-                AppContexts.user().companyId();
-                result = "cid";
-            }
-        };
         new Expectations() {
             {
-                require.getEmploymentInfor("cid",listSid, baseDate);
+                require.getEmploymentInfor(listSid, baseDate);
                 result = expectedList;
 
                 require.getClosureDataByEmployee("sid", baseDate);
@@ -122,6 +116,93 @@ public class GetClosureDateEmploymentDomainServiceTest {
         assertThat(result.get(0).getEmploymentCode()).isEqualTo("code");
         assertThat(result.get(0).getEmploymentName()).isEqualTo("name");
         assertThat(result.get(0).getClosure()).isEqualTo(closure);
+    }
+
+
+    @Test
+    public void test_02() {
+
+        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
+        Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
+
+        new Expectations() {
+            {
+                require.getEmploymentInfor(listSid, baseDate);
+                result = expectedList;
+            }
+        };
+
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void test_03() {
+
+        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
+        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
+
+        Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
+        expectedList.put("01",historyImport);
+
+        new Expectations() {
+            {
+                require.getEmploymentInfor(listSid, baseDate);
+                result = expectedList;
+
+                require.getClosureDataByEmployee("sid", baseDate);
+                result = null;
+            }
+        };
+
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getEmployeeId()).isEqualTo("sid");
+        assertThat(result.get(0).getEmploymentCode()).isEqualTo("code");
+        assertThat(result.get(0).getEmploymentName()).isEqualTo("name");
+        assertThat(result.get(0).getClosure()).isEqualTo(null);
+    }
+
+
+    @Test
+    public void test_04() {
+
+        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
+        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
+        BsEmploymentHistoryImport historyImport1 = new BsEmploymentHistoryImport("sid1","code","name",datePeriod);
+
+        Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
+        expectedList.put("01",historyImport);
+        expectedList.put("02",historyImport1);
+
+        Closure closure = createClosure();
+
+        new Expectations() {
+            {
+                require.getEmploymentInfor(listSid, baseDate);
+                result = expectedList;
+
+                require.getClosureDataByEmployee("sid", baseDate);
+                result = closure;
+                require.getClosureDataByEmployee("sid1", baseDate);
+                result = closure;
+            }
+        };
+
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0).getEmployeeId()).isEqualTo("sid");
+        assertThat(result.get(0).getEmploymentCode()).isEqualTo("code");
+        assertThat(result.get(0).getEmploymentName()).isEqualTo("name");
+        assertThat(result.get(0).getClosure()).isEqualTo(closure);
+
+        assertThat(result.get(1).getEmployeeId()).isEqualTo("sid1");
+        assertThat(result.get(1).getEmploymentCode()).isEqualTo("code");
+        assertThat(result.get(1).getEmploymentName()).isEqualTo("name");
+        assertThat(result.get(1).getClosure()).isEqualTo(closure);
     }
 
 }
