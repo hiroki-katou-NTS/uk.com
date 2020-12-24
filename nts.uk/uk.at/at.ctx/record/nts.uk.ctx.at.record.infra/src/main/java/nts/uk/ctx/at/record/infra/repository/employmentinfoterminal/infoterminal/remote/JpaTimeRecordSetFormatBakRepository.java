@@ -34,7 +34,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 	
 	private final static String FIND_CONTRACTCD = "SELECT m FROM KrcdtTrRemoteBackup m WHERE m.pk.contractCode = :contractCode ORDER BY m.pk.timeRecordCode ASC";
 	
-	private final static String FIND_CONTRACTCD_CODE = "";
+	private final static String FIND_CONTRACTCD_CODE = "SELECT m FROM KrcdtTrRemoteBackup m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode = :code";
 
 	@Override
 	public void insert(TimeRecordSetFormatBak timeRecordSetFormatBak) {
@@ -83,14 +83,20 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 
 	@Override
 	public List<TimeRecordSetFormat> getTimeRecordSetFormat(ContractCode contractCode, EmpInfoTerminalCode code) {
-		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class).getList();
+		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class)
+				.setParameter("contractCode", contractCode.v())
+				.setParameter("code", code.v())
+				.getList();
 		TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(listEntity);
 		return timeRecordSetFormatBak.getListTimeRecordSetFormat();
 	}
 
 	@Override
 	public Optional<TimeRecordSetFormatBak> get(ContractCode contractCode, EmpInfoTerminalCode code) {
-		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class).getList();
+		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class)
+				.setParameter("contractCode", contractCode.v())
+				.setParameter("code", code.v())
+				.getList();
 		return Optional.ofNullable(toDomain(listEntity));
 	}
 	
