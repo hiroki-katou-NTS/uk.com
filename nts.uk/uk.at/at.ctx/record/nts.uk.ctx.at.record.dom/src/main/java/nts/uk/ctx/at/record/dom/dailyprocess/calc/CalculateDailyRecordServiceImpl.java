@@ -321,8 +321,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				workType,
 				integrationOfWorkTime,
 				schedule);
-		// ※　エラーアラームチェックのため、日別実績(Work)に保存
-		integrationOfDaily.setDeclareCalcRange(declare.getDeclareCalcRange());
 		
 		ManageReGetClass scheduleManageReGetClass = new ManageReGetClass(
 				schedule.get().getCalculationRangeOfOneDay(),

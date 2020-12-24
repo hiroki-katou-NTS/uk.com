@@ -306,12 +306,14 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		}
 		
 		// 編集状態更新
-		List<EditStateOfDailyPerformance> editStateList = new ArrayList<>();
-		for (EditStateOfDailyAttd editState : value.getEditState()){
-			editStateList.add(new EditStateOfDailyPerformance(value.getEmployeeId(), value.getYmd(), editState));
+		if (value.getEditState().size() > 0){
+			List<EditStateOfDailyPerformance> editStateList = new ArrayList<>();
+			for (EditStateOfDailyAttd editState : value.getEditState()){
+				editStateList.add(new EditStateOfDailyPerformance(value.getEmployeeId(), value.getYmd(), editState));
+			}
+			this.dailyRecordAdUpService.adUpEditState(editStateList);
+			this.dailyRecordAdUpService.clearExcludeEditState(editStateList);
 		}
-		this.dailyRecordAdUpService.adUpEditState(editStateList);
-		this.dailyRecordAdUpService.clearExcludeEditState(editStateList);
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareAttdLeave;
@@ -158,11 +159,11 @@ public class DeclareSet extends AggregateRoot {
 	public boolean checkError(boolean isHolidayWork, DeclareAttdLeave attdLeave){
 	
 		// 申告設定残業枠エラーチェック
-		if (this.overtimeFrame.checkErrorOvertimeFrame()) return true;
+		this.overtimeFrame.checkErrorOvertimeFrame();
 		// 申告設定休出枠エラーチェック
-		if (this.holidayWorkFrame.checkErrorHolidayWorkFrame()) return true;
+		this.holidayWorkFrame.checkErrorHolidayWorkFrame();
 		// 申告設定深夜エラーチェック
-		if (this.checkErrorMidnightFrame()) return true;
+		this.checkErrorMidnightFrame();
 		// 申告時間枠エラーチェック
 		List<DeclareTimeFrameError> errors = this.checkErrorFrame(isHolidayWork, attdLeave);
 		if (errors.size() > 0) return true;
@@ -177,19 +178,24 @@ public class DeclareSet extends AggregateRoot {
 	public boolean checkErrorMidnightFrame(){
 		
 		// 枠設定を確認する
+		boolean result = false;
 		if (this.frameSet == DeclareFrameSet.OT_HDWK_SET){
 			// 深夜時間自動計算を確認する
 			if (this.midnightAutoCalc == NotUseAtr.USE){
 				// 残業枠を確認する
 				if (!this.overtimeFrame.getEarlyOvertimeMn().isPresent() ||		// 早出残業深夜
 					!this.overtimeFrame.getOvertimeMn().isPresent()){			// 普通残業深夜 
-					return true;
+					result = true;
 				}
 				// 休出枠を確認する
 				if (!this.holidayWorkFrame.getHolidayWorkMn().isPresent()){		// 休出深夜 
-					return true;
+					result = true;
 				}
 			}
+		}
+		if (result == true){
+			// システムエラーとする
+			throw new BusinessException("Msg_2055");
 		}
 		return false;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -337,16 +338,17 @@ public class DeclareOvertimeFrame {
 	public boolean checkErrorOvertimeFrame(){
 		
 		// 残業枠を確認する
+		boolean result = false;
 		if (this.earlyOvertime.isPresent()){	// 早出残業
 			if (this.earlyOvertimeMn.isPresent()){	// 早出残業深夜
 			}
 			else{
-				return true;
+				result = true;
 			}
 		}
 		else{
 			if (this.earlyOvertimeMn.isPresent()){	// 早出残業深夜
-				return true;
+				result = true;
 			}
 			else{
 			}
@@ -355,15 +357,19 @@ public class DeclareOvertimeFrame {
 			if (this.overtimeMn.isPresent()){		// 普通残業深夜
 			}
 			else{
-				return true;
+				result = true;
 			}
 		}
 		else{
 			if (this.overtimeMn.isPresent()){		// 普通残業深夜
-				return true;
+				result = true;
 			}
 			else{
 			}
+		}
+		if (result == true){
+			// システムエラーとする
+			throw new BusinessException("Msg_2053");
 		}
 		return false;
 	}
