@@ -7,11 +7,13 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCAppReflectionSetting;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
@@ -23,10 +25,13 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDai
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author thanh_nx
@@ -35,25 +40,40 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId, ApplicationShare application,
-			GeneralDate date, ReflectStatusResultShare reflectStatus) {
+	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ExecutionType type, ApplicationShare application,
+			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
 		if (workSchedule == null)
-			return Pair.of(reflectStatus, AtomTask.of(() -> {
-			}));
+			return Pair.of(reflectStatus, AtomTask.of(() -> {}));
 
-		// TODO: 事前申請を勤務予定に反映する chua xu ly, vi tam hoan
+		/** 事前申請を勤務予定に反映する */
+		if(preAppWorkScheReflectAttr == 0) { /** [反映しない] */
+			
+			return Pair.of(reflectStatus, AtomTask.of(() -> {}));
+		}
+		Optional<SnapShot> snapshot = Optional.empty();
+		
+		if (preAppWorkScheReflectAttr == 2) { /** [反映しないがスナップショット作成後は反映する] */
+			
+			/** スナップショットを取得する */
+			val dailySnapshot = require.snapshot(application.getEmployeeID(), date);
+			if (!dailySnapshot.isPresent()) {
+				
+				return Pair.of(reflectStatus, AtomTask.of(() -> {}));
+			}
+			
+			snapshot = dailySnapshot.map(c -> c.getSnapshot());
+		}
 
 		// input.日別勤怠(work）を[反映前の日別勤怠(work)]へコピーして保持する
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(workSchedule.getEmployeeID(), workSchedule.getYmd(),
-				workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), Optional.empty(), new ArrayList<>(),
+				workSchedule.getWorkInfo(), CalAttrOfDailyAttd.createAllCalculate(), workSchedule.getAffInfo(), Optional.empty(), new ArrayList<>(),
 				Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(),
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(),
-				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>());
+				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), snapshot);
 
 		IntegrationOfDaily domainBeforeReflect = createDailyDomain(require, domainDaily);
-		
 
 		// 日別勤怠(申請取消用Work）を作成して、日別勤怠(work）をコピーする
 		DailyRecordOfApplication dailyRecordApp = new DailyRecordOfApplication(new ArrayList<>(),
@@ -76,7 +96,7 @@ public class ReflectApplicationWorkSchedule {
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(type, CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect));
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
@@ -116,12 +136,14 @@ public class ReflectApplicationWorkSchedule {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false);
+		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo);
 	}
 
 	public static interface Require extends CorrectDailyAttendanceService.Require,
 			SCCreateDailyAfterApplicationeReflect.Require, CreateApplicationReflectionHist.Require {
 
+		Optional<DailySnapshotWork> snapshot(String sid, GeneralDate ymd);
+		
 		/**
 		 * 
 		 * require{ 申請反映設定を取得する(会社ID、申請種類） }
@@ -142,7 +164,7 @@ public class ReflectApplicationWorkSchedule {
 		public void insertSchedule(WorkSchedule workSchedule);
 
 		// CalculateDailyRecordServiceCenterNew
-		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
 
 	}

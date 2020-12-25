@@ -24,4 +24,7 @@ public class TimeVacationManagementOutput {
     // 時間年休管理
     private TimeAnnualLeaveManagement timeAnnualLeaveManagement;
 
+    // 時間特別休暇管理
+    private TimeSpecialLeaveMng timeSpecialLeaveMng;
+
 }

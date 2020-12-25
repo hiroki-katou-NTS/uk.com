@@ -1,28 +1,28 @@
 package nts.uk.ctx.at.request.dom.application.timeleaveapplication.service;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppType;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
@@ -46,6 +46,9 @@ import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -86,6 +89,15 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
     @Inject
     private InterimRemainDataMngCheckRegister interimRemainDataMngCheckRegister;
+
+    @Inject
+    private SpecialHolidayRepository specialHolidayRepository;
+
+    @Inject
+    private CommonAlgorithm commonAlgorithm;
+
+    @Inject
+    private DetailBeforeUpdate detailBeforeProcessRegisterService;
 
     @Override
     public TimeLeaveApplicationReflect getTimeLeaveAppReflectSetting(String companyId) {
@@ -224,7 +236,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     public void checkBeforeRigister(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output) {
 
         //特別休暇枠をチェックする
-        if (timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> !x.getTimeDigestApplication().getSpecialHdFrameNo().isPresent()
+        if (timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> !x.getTimeDigestApplication().getSpecialVacationFrameNO().isPresent()
             && x.getTimeDigestApplication().getTimeSpecialVacation().v() > 0).collect(Collectors.toList()).size() > 0) {
             throw new BusinessException("Msg_1983");
         }
@@ -236,52 +248,74 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         remainingTimeVacationCheck(timeDigestAppType, timeLeaveApplication);
 
         //時間休暇の消化単位チェック
-
-        //TODO call algorithm
-//        //60H超休消化単位
-//        Optional<Integer> super60HDigestion = Optional.of(output.getTimeVacationManagementOutput().getSupHolidayManagement().getSuper60HDigestion().value);
-//        Optional<Integer> timeBaseRestingUnit = Optional.of(output.getTimeVacationManagementOutput().getTimeAllowanceManagement().getTimeBaseRestingUnit().value);
-//        Optional<Integer> timeAnnualLeaveUnit = Optional.of(output.getTimeVacationManagementOutput().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit().value);
-//        Optional<Integer> timeChildNursing = Optional.of(output.getTimeVacationManagementOutput().getChildNursingManagement().getTimeChildDigestiveUnit().value);
-//
-//        //INPUT．「時間消化申請」をチェックする
-//        if (timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x ->
-//            x.getTimeDigestApplication().getHoursOfSubHoliday().v() == 0 &&
-//                x.getTimeDigestApplication().getSixtyHOvertime().v() == 0 &&
-//                x.getTimeDigestApplication().getHoursOfHoliday().v() == 0 &&
-//                x.getTimeDigestApplication().getChildNursingTime().v() == 0 &&
-//                x.getTimeDigestApplication().getNursingTime().v() == 0 &&
-//                x.getTimeDigestApplication().getTimeSpecialVacation().v() == 0
-//        ).collect(Collectors.toList()).size() > 0) {
-//            throw new BusinessException("Msg_511");
-//        }
-//
-//        if (timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME.value) {
-//            //TODO INPUT．「時間消化申請．60H超休」/ INPUT．「60H超休消化単位」の余りが0
-//            if (totalSixtyOvertime > super60HDigestion.orElse(1)) {
-//                throw new BusinessException("Msg_478",super60HDigestion.orElse(1).toString());
-//            }
-//        } else if (timeDigestAppType == TimeDigestAppType.HOURS_OF_SUB_HOLIDAY.value){
-//            if (totalAnualSubHoliday > timeBaseRestingUnit.orElse(1)){
-//                throw new BusinessException("Msg_477",timeBaseRestingUnit.orElse(1).toString());
-//            }
-//        } else if (timeDigestAppType == TimeDigestAppType.HOURS_OF_HOLIDAY.value){
-//            if (totalAnualHoliday > timeAnnualLeaveUnit.orElse(1)){
-//                throw new BusinessException("Msg_476",timeAnnualLeaveUnit.orElse(1).toString());
-//            }
-//        }else if (timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME.value){
-//            if (totalChildNursingTime > timeChildNursing.orElse(1)){
-//                throw new BusinessException("Msg_1686",totalChildNursingTime.toString(), timeBaseRestingUnit.orElse(1).toString());
-//            }
-//        }else if (timeDigestAppType == TimeDigestAppType.NURSING_TIME.value){
-//            if (totalNursingTime> timeChildNursing.orElse(1)){
-//                throw new BusinessException("Msg_1686",totalChildNursingTime.toString(), timeBaseRestingUnit.orElse(1).toString());
-//            }
-//        }
+        Optional<TimeDigestiveUnit> super60HDigestion = Optional.of(output.getTimeVacationManagementOutput().getSupHolidayManagement().getSuper60HDigestion());
+        Optional<TimeDigestiveUnit> timeBaseRestingUnit = Optional.of(output.getTimeVacationManagementOutput().getTimeAllowanceManagement().getTimeBaseRestingUnit());
+        Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.of(output.getTimeVacationManagementOutput().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
+        Optional<TimeDigestiveUnit> timeChildNursing = Optional.of(output.getTimeVacationManagementOutput().getChildNursingManagement().getTimeChildDigestiveUnit());
+        Optional<TimeDigestiveUnit> timeNursing = Optional.of(output.getTimeVacationManagementOutput().getChildNursingManagement().getTimeDigestiveUnit());
+        Optional<TimeDigestiveUnit> pendingUnit = Optional.of(EnumAdaptor.valueOf(output.getTimeVacationManagementOutput().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit(), TimeDigestiveUnit.class));
+        timeLeaveApplication.getLeaveApplicationDetails().forEach(x -> {
+            commonAlgorithm.vacationDigestionUnitCheck(x.getTimeDigestApplication(),
+                super60HDigestion,
+                timeBaseRestingUnit,
+                timeAnnualLeaveUnit,
+                timeChildNursing,
+                timeNursing,
+                pendingUnit
+            );
+        });
 
         //契約時間をチェック
         checkContractTime(timeDigestAppType, timeLeaveApplication, output.getWorkingConditionItemOutput());
 
+    }
+
+    /**
+     * 登録前チェック
+     */
+    @Override
+    public void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output) {
+
+        // 4-1.詳細画面登録前の処理
+        this.detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(
+            AppContexts.user().companyId(),
+            timeLeaveApplication.getApplication().getEmployeeID(),
+            timeLeaveApplication.getApplication().getAppDate().getApplicationDate(),
+            EmploymentRootAtr.APPLICATION.value,
+            timeLeaveApplication.getApplication().getAppID(),
+            timeLeaveApplication.getApplication().getPrePostAtr(),
+            timeLeaveApplication.getApplication().getVersion(),
+            null,
+            null,
+            output.getAppDispInfoStartupOutput()
+        );
+
+        this.checkBeforeRigister(timeDigestAppType,timeLeaveApplication,output);
+
+    }
+
+    @Override
+    public TimeLeaveApplicationOutput GetSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput) {
+
+        if (specialHdFrameNo.isPresent()) {
+            //ドメインモデル「特別休暇」を取得する
+            List<Integer> byAbsframeNo = specialHolidayRepository.findByAbsframeNo(AppContexts.user().companyId(), specialHdFrameNo.get());
+
+            // [NO.273]期間中の特別休暇残数を取得 TODO QA 38719
+//            SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(AppContexts.user().companyId(),
+//                timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
+//                timeLeaveApplicationOutput.getTimeVacationRemainingOutput().getDatePeriod(),
+//                false,timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(), byAbsframeNo.get(0), false);
+
+//            if (specialVacationImported != null){
+//                TimeSpecialVacationRemaining timeSpecial = timeLeaveApplicationOutput.getTimeVacationRemainingOutput().getTimeSpecialVacationRemaining();
+//                timeSpecial.setDayOfSpecialLeave(specialHdFrameNo.get()); //TODO
+//                timeSpecial.setTimeOfSpecialLeave(specialHdFrameNo.get()); //TODO
+//                timeSpecial.setSpecialFrameNo(specialHdFrameNo.get());
+//            }
+        }
+
+        return timeLeaveApplicationOutput;
     }
 
     /**
@@ -290,18 +324,15 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     private void timeVacationCheck(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication,
                                    TimeVacationRemainingOutput timeVacationRemainingOutput,
                                    TimeVacationManagementOutput timeVacationManagementOutput) {
-        if (timeDigestAppType == TimeDigestAppType.HOURS_OF_HOLIDAY.value || timeDigestAppType == TimeDigestAppType.USE_COMBINATION.value &&
-            timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getHoursOfHoliday().v() > 0).collect(Collectors.toList()).size() > 0) {
+        if (timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE.value || timeDigestAppType == TimeDigestAppType.USE_COMBINATION.value &&
+            timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getTimeAnualLeave().v() > 0).collect(Collectors.toList()).size() > 0) {
 
             //ドメインモデル「休暇の取得ルール」を取得する
             Optional<AcquisitionRule> acquisitionRule = acquisitionRuleRepository.findById(AppContexts.user().companyId());
 
             //時間休暇の優先順をチェックする
 
-            //60H超休残時間
-            int subOfHoliday = timeVacationRemainingOutput.getSubOfHoliday();
-            //時間代休残数
-            int timeOfTimeOff = timeVacationRemainingOutput.getTimeOfTimeOff();
+
             //代休の時間管理区分
             boolean timeBaseManagementClass = timeVacationManagementOutput.getTimeAllowanceManagement().isTimeBaseManagementClass();
             //60H超休の時間管理区分
@@ -310,28 +341,30 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             //時間消化申請
             List<TimeDigestApplication> timeDigestApplications = timeLeaveApplication.getLeaveApplicationDetails().stream().map(TimeLeaveApplicationDetail::getTimeDigestApplication).collect(Collectors.toList());
 
-            Integer totalAnualHoliday = timeDigestApplications.stream().reduce(0, (a, b) -> a + b.getHoursOfHoliday().v(), Integer::sum);
-            Integer totalSixtyOvertime = timeDigestApplications.stream().reduce(0, (a, b) -> a + b.getSixtyHOvertime().v(), Integer::sum);
-            Integer totalAnualSubHoliday = timeDigestApplications.stream().reduce(0, (a, b) -> a + b.getHoursOfSubHoliday().v(), Integer::sum);
+            Integer totalTimeAnnualLeave = timeDigestApplications.stream().reduce(0, (a, b) -> a + b.getTimeAnualLeave().v(), Integer::sum);
+            Integer totalSixtyOvertime = timeDigestApplications.stream().reduce(0, (a, b) -> a + b.getOvertime60H().v(), Integer::sum);
+            Integer totalTimeOff = timeDigestApplications.stream().reduce(0, (a, b) -> a + b.getTimeOff().v(), Integer::sum);
 
             //「@取得する順番をチェックする」を確認する
             if (acquisitionRule.isPresent() && acquisitionRule.get().getCategory() == SettingDistinct.YES) {
                 //「@年休より優先する休暇．60H超休を優先」　と　INPUT「60H超休の時間管理区分」を確認する
                 if (acquisitionRule.get().getAnnualHoliday().isSixtyHoursOverrideHoliday() && overrest60HManagement) {
-                    //INPUT「時間消化申請」とINPUT「60H超休残数」を確認する
+                    //60H超休残時間
+                    int subOfHoliday = timeVacationRemainingOutput.getSubOfHoliday();
 
-                    if (totalAnualHoliday > 0 && timeVacationRemainingOutput.getSubOfHoliday() > 0 && (subOfHoliday - totalSixtyOvertime) > 0) {
-                        //TODO
-                        throw new BusinessException("Msg_1687", "", "", "");
+                    //INPUT「時間消化申請」とINPUT「60H超休残数」を確認する
+                    if (totalTimeAnnualLeave > 0 && subOfHoliday > 0 && (subOfHoliday - totalSixtyOvertime) > 0) {
+                        throw new BusinessException("Msg_1687", "#Com_ExsessHoliday", "#Com_PaidHoliday", "#Com_ExsessHoliday");
                     }
                 } else {
                     //「@年休より優先する休暇．代休を優先」　と　INPUT「代休の時間管理区分」を確認する
                     if (acquisitionRule.get().getAnnualHoliday().isPriorityPause() && timeBaseManagementClass) {
+                        //時間代休残数
+                        int timeOfTimeOff = timeVacationRemainingOutput.getTimeOfTimeOff();
 
                         //INPUT「時間消化申請」とINPUT「時間代休残数」を確認する
-                        if (totalAnualHoliday > 0 && timeOfTimeOff > 0 && (timeOfTimeOff - totalAnualSubHoliday) > 0) {
-                            //TODO
-                            throw new BusinessException("Msg_1687", "", "", "");
+                        if (totalTimeAnnualLeave > 0 && timeOfTimeOff > 0 && (timeOfTimeOff - totalTimeOff) > 0) {
+                            throw new BusinessException("Msg_1687", "#Com_ExsessHoliday", "#Com_PaidHoliday", "#Com_ExsessHoliday");
                         }
                     }
                 }
@@ -353,13 +386,13 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             timeLeaveApplication.getAppDate().getApplicationDate(),
             new DatePeriod(timeLeaveApplication.getOpAppStartDate().isPresent() ? timeLeaveApplication.getOpAppStartDate().get().getApplicationDate() : null,
                 timeLeaveApplication.getOpAppEndDate().isPresent() ? timeLeaveApplication.getOpAppEndDate().get().getApplicationDate() : null), true,
-            Collections.emptyList(), Collections.emptyList(), getAppData(timeLeaveApplication.getApplication()), timeDigestAppType == TimeDigestAppType.HOURS_OF_SUB_HOLIDAY.value,
-            false, timeDigestAppType == TimeDigestAppType.HOURS_OF_HOLIDAY.value, false, false,
+            Collections.emptyList(), Collections.emptyList(), getAppData(timeLeaveApplication.getApplication()), timeDigestAppType == TimeDigestAppType.TIME_OFF.value,
+            false, timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE.value, false, false,
             false, timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME.value);
 
-        boolean ChkSixtyHOvertime = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getSixtyHOvertime().v() > 0).collect(Collectors.toList()).size() > 0;
-        boolean chkHoursOfHoliday = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getHoursOfHoliday().v() > 0).collect(Collectors.toList()).size() > 0;
-        boolean chkHoursOfSubHoliday = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getHoursOfSubHoliday().v() > 0).collect(Collectors.toList()).size() > 0;
+        boolean ChkSixtyHOvertime = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getOvertime60H().v() > 0).collect(Collectors.toList()).size() > 0;
+        boolean chkHoursOfHoliday = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getTimeAnualLeave().v() > 0).collect(Collectors.toList()).size() > 0;
+        boolean chkHoursOfSubHoliday = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getTimeOff().v() > 0).collect(Collectors.toList()).size() > 0;
 
         if (timeDigestAppType == TimeDigestAppType.USE_COMBINATION.value) {
             inputParam.setChkSubHoliday(chkHoursOfSubHoliday);
@@ -370,8 +403,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
         EarchInterimRemainCheck remainCheck = interimRemainDataMngCheckRegister.checkRegister(inputParam);
 
-        if (remainCheck.isChkSubHoliday() || remainCheck.isChkPause() || remainCheck.isChkAnnual() ||
-            remainCheck.isChkFundingAnnual() || remainCheck.isChkSpecial()) {
+        if (!remainCheck.isChkPublicHoliday() && !remainCheck.isChkSuperBreak()) {
             //TODO
             throw new BusinessException("Msg_1409", "", "");
         }
@@ -383,28 +415,28 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     private void checkContractTime(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, WorkingConditionItem workingConditionItem) {
 
         //1日の契約時間をチェックする
-        Integer totalAnualHoliday = 0;
+        Integer totalAnnualHoliday = 0;
 
         if (timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME.value) {
-            totalAnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getSixtyHOvertime().v(), Integer::sum);
-        } else if (timeDigestAppType == TimeDigestAppType.HOURS_OF_SUB_HOLIDAY.value) {
-            totalAnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getHoursOfSubHoliday().v(), Integer::sum);
+            totalAnnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getOvertime60H().v(), Integer::sum);
+        } else if (timeDigestAppType == TimeDigestAppType.TIME_OFF.value) {
+            totalAnnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getTimeOff().v(), Integer::sum);
 
-        } else if (timeDigestAppType == TimeDigestAppType.HOURS_OF_HOLIDAY.value) {
-            totalAnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getHoursOfHoliday().v(), Integer::sum);
+        } else if (timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE.value) {
+            totalAnnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getTimeAnualLeave().v(), Integer::sum);
 
         } else if (timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME.value) {
-            totalAnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getChildNursingTime().v(), Integer::sum);
+            totalAnnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getChildTime().v(), Integer::sum);
 
         } else if (timeDigestAppType == TimeDigestAppType.NURSING_TIME.value) {
-            totalAnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getNursingTime().v(), Integer::sum);
+            totalAnnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getNursingTime().v(), Integer::sum);
 
         } else if (timeDigestAppType == TimeDigestAppType.TIME_SPECIAL_VACATION.value) {
-            totalAnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getTimeSpecialVacation().v(), Integer::sum);
+            totalAnnualHoliday += timeLeaveApplication.getLeaveApplicationDetails().stream().reduce(0, (a, b) -> a + b.getTimeDigestApplication().getTimeSpecialVacation().v(), Integer::sum);
         }
 
-        if (totalAnualHoliday > workingConditionItem.getContractTime().v()) {
-            throw new BusinessException("Msg_1760", "", "", "");
+        if (totalAnnualHoliday > workingConditionItem.getContractTime().v()) {
+            throw new BusinessException("Msg_1760");
         }
     }
 

@@ -5,6 +5,9 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.LeaveRemainingInfo;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+
+import java.util.Optional;
 
 public interface TimeLeaveApplicationService {
     /**
@@ -27,4 +30,14 @@ public interface TimeLeaveApplicationService {
      * 時間休暇申請登録前チェック
      */
     void checkBeforeRigister(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
+
+    /**
+     * 登録前チェック
+     */
+    void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output);
+
+    /**
+     * 特別休暇枠を選択する
+     */
+    TimeLeaveApplicationOutput GetSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
 }

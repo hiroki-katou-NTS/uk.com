@@ -8,9 +8,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TimeDigestAppType {
 
-	HOURS_OF_SUB_HOLIDAY(0, "時間代休時間"),
+	TIME_OFF(0, "時間代休時間"),
 
-	HOURS_OF_HOLIDAY(1, "時間年休時間"),
+	TIME_ANNUAL_LEAVE(1, "時間年休時間"),
 
 	CHILD_NURSING_TIME(2, "子の看護時間"),
 

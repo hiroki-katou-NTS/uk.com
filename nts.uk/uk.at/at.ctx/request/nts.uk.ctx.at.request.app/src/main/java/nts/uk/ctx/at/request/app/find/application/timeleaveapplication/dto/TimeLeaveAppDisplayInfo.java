@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveManagement;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveRemaining;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
@@ -32,4 +32,9 @@ public class TimeLeaveAppDisplayInfo {
 
     // 時間休暇管理
     private TimeLeaveManagement timeLeaveManagement;
+
+    public static TimeLeaveApplicationOutput mappingData(TimeLeaveAppDisplayInfo info){
+        return null;
+    }
+
 }

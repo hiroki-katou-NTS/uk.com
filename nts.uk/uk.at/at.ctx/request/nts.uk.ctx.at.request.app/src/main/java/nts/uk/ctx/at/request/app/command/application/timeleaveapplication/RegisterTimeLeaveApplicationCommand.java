@@ -1,19 +1,18 @@
 package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 
 import lombok.Data;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
 
 @Data
 public class RegisterTimeLeaveApplicationCommand {
 
     private TimeLeaveApplicationCommand timeLeaveApplicationCommand;
 
-
-    private TimeLeaveApplicationOutput timeLeaveApplicationOutput;
+    private TimeLeaveAppDisplayInfo timeLeaveAppDisplayInfo;
 
     // 申請
-    private ApplicationDto application;
+    private ApplicationInsertCmd application;
 
 
 }

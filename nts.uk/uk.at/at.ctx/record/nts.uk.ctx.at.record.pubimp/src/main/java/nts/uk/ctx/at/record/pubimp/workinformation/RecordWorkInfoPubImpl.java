@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pubimp.workinformation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -242,9 +242,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setListShortWorkingTimeSheet(shortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets());
 			
 		}
-		List<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPer =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		Optional<BreakTimeOfDailyPerformance> listBreakTimeOfDailyPer =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
 		List<BreakTimeSheet> listBreakTimeSheet = new ArrayList<>();
-		listBreakTimeOfDailyPer.stream().map(c->listBreakTimeSheet.addAll(c.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList());
+		listBreakTimeOfDailyPer.ifPresent(c-> listBreakTimeSheet.addAll(c.getTimeZone().getBreakTimeSheets()));
 		record.setListBreakTimeSheet(listBreakTimeSheet);
 		
 		return record;
@@ -484,7 +484,8 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	    		record.setCalculateFlex(overTimeWork.get().getFlexTime().getFlexTime().getTime());
 //	    		日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間．残業枠時間
 	    		List<OverTimeFrameTime> overTimeWorkFrameTime = overTimeWork.get().getOverTimeWorkFrameTime();
-	    		List<AttendanceTime> overTimeLstSet = overTimeWorkFrameTime.stream().map(x -> x.getOverTimeWork().getCalcTime()).collect(Collectors.toList());
+	    		Map<Integer, AttendanceTime> overTimeLstSet = overTimeWorkFrameTime.stream()
+	    															.collect(Collectors.toMap(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getCalcTime()));
 	    		record.setOverTimeLst(overTimeLstSet);
 	    		List<AttendanceTime> calculateTransferOverTimeLstSet = 
 	    				overTimeWorkFrameTime.stream().map(x -> x.getTransferTime().getCalcTime()).collect(Collectors.toList());
@@ -493,9 +494,11 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	    		Optional<HolidayWorkTimeOfDaily> workHolidayTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
 	    		if (workHolidayTime.isPresent()) {
 	    			List<HolidayWorkFrameTime> holidayWorkFrameTime = workHolidayTime.get().getHolidayWorkFrameTime();
-	    			List<AttendanceTime> calculateHolidayLst = 
-	    					holidayWorkFrameTime.stream().map(x -> x.getHolidayWorkTime().get().getCalcTime()).collect(Collectors.toList());
-	    			record.setCalculateHolidayLst(calculateHolidayLst);
+	    			Map<Integer, AttendanceTime> calculateHolidayLst = holidayWorkFrameTime.stream()
+	    																	.collect(Collectors.toMap(
+	    																			x -> x.getHolidayFrameNo().v(),
+	    																			y -> y.getHolidayWorkTime().get().getCalcTime()));
+	    			 record.setCalculateHolidayLst(calculateHolidayLst);
 	    			
 	    			List<AttendanceTime> calculateTransferLstSet = 
 	    					holidayWorkFrameTime.stream().map(x -> x.getTransferTime().get().getCalcTime()).collect(Collectors.toList());
@@ -567,10 +570,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setShortWorkingTimeSheets(shOptional.get().getShortWorkingTimeSheets());
 		}
 //		breakTimeSheets do not repo
-		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
-		if (!CollectionUtil.isEmpty(breakTimeOfDailyPerformanceLst)) {
-			List<BreakTimeSheet> breakTimeSheetsSet = 
-					breakTimeOfDailyPerformanceLst.get(0).getTimeZone().getBreakTimeSheets();
+		Optional<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		if (breakTimeOfDailyPerformanceLst.isPresent()) {
+			List<BreakTimeSheet> breakTimeSheetsSet = breakTimeOfDailyPerformanceLst.get().getTimeZone().getBreakTimeSheets();
 			record.setBreakTimeSheets(breakTimeSheetsSet);
 		}
 		
