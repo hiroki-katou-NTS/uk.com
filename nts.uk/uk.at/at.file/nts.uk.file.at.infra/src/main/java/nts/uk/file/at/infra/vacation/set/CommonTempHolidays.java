@@ -149,6 +149,32 @@ public class CommonTempHolidays {
         return "";
     }
     
+    public static String getTextEnumDayTimeAnnualLeave(int value){
+        switch (value) {
+            case 0: {
+                return I18NText.getText("Enum_DayTimeAnnualLeave_Company_wide_Uniform");
+            }
+            case 1: {
+                return I18NText.getText("Enum_DayTimeAnnualLeave_Calculated_Based_On_Employee");
+            }
+
+        }
+        return "";
+    }
+    
+    public static String getTextEnumContractTimeRound(int value){
+        switch (value) {
+            case 0: {
+                return I18NText.getText("Enum_ContractTimeRound_Round_up_to_1_hour");
+            }
+            case 1: {
+                return I18NText.getText("Enum_ContractTimeRound_Do_not_round");
+            }
+
+        }
+        return "";
+    }
+    
     public static String getTextEnumTermManagement(int value){
         switch (value) {
             case 0: {

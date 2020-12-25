@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+/**
+ * enum : 一日の時間年休時間参照場所
+ * @author hieuLt
+ *
+ */
 public enum DayTimeAnnualLeave {
 	
 	/** 全社一律**/
