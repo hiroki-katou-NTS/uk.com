@@ -30,6 +30,8 @@ public class AbsenceLeaveAppCmd {
 	
 	public String appID;
 	
+	public ApplicationDto application;
+	
 	/** For KAF011A */
 	public ApplicationInsertCmd applicationInsert;
 	
@@ -46,9 +48,9 @@ public class AbsenceLeaveAppCmd {
 	
 	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
-	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
-	
 	public List<LeaveComDayOffManaDto> leaveComDayOffManaOld;
+	
+	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 	
 	public List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld;
 	
@@ -72,6 +74,14 @@ public class AbsenceLeaveAppCmd {
 				StringUtils.isEmpty(this.changeSourceHoliday) ? Optional.empty() : Optional.of(GeneralDate.fromString(this.changeSourceHoliday, "yyyy/MM/dd")), 
 				TypeApplicationHolidays.Abs, 
 				applicationUpdate.toDomain(applicationDto));
+	}
+	
+	public AbsenceLeaveAppCmd(AbsenceLeaveApp domain) {
+		this.application = ApplicationDto.fromDomain(domain);
+		this.workingHours = domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList());
+		this.workInformation = WorkInformationDto.fromDomain(domain.getWorkInformation());
+		this.workChangeUse = domain.getWorkChangeUse().value;
+		this.changeSourceHoliday = domain.getChangeSourceHoliday().map(c->c.toString()).orElse(null);
 	}
 
 }

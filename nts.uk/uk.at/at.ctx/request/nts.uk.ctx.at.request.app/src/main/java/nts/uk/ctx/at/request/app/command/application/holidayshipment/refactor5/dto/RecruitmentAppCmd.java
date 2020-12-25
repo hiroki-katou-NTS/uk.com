@@ -24,6 +24,8 @@ public class RecruitmentAppCmd {
 	
 	public String appID;
 	
+	public ApplicationDto application;
+	
 	/** For KAF011A */
 	public ApplicationInsertCmd applicationInsert;
 	
@@ -54,6 +56,12 @@ public class RecruitmentAppCmd {
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
 				TypeApplicationHolidays.Rec, 
 				applicationUpdate.toDomain(applicationDto));
+	}
+	
+	public RecruitmentAppCmd(RecruitmentApp domain) {
+		this.application = ApplicationDto.fromDomain(domain);
+		this.workingHours = domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList());
+		this.workInformation = WorkInformationDto.fromDomain(domain.getWorkInformation());
 	}
 
 }

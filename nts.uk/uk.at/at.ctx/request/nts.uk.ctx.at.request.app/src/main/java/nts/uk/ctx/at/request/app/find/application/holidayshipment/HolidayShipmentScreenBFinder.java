@@ -194,7 +194,7 @@ public class HolidayShipmentScreenBFinder {
 			// 振休申請をクリアする
 			clearRecApp(screenInfo);
 			// アルゴリズム「振休申請と関連付けた振出情報の取得」を実行する
-			AbsenceLeaveAppDto absApp = screenInfo.getAbsApp();
+//			AbsenceLeaveAppDto absApp = screenInfo.getAbsApp();
 //			absApp.getSubDigestions().forEach(x -> {
 //				if (x.getPayoutMngDataID() != null) {
 //					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
@@ -286,7 +286,7 @@ public class HolidayShipmentScreenBFinder {
 	}
 
 	private void clearAbsApp(HolidayShipmentDto screenInfo) {
-		screenInfo.setAbsApp(null);
+//		screenInfo.setAbsApp(null);
 	}
 
 	private void setRecApp(RecruitmentApp recruitmentApp, HolidayShipmentDto screenInfo) {

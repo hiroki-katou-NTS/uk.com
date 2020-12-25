@@ -86,7 +86,7 @@ public class HolidayShipmentDto {
 	 * 振休申請
 	 * 
 	 */
-	private AbsenceLeaveAppDto absApp;
+//	private AbsenceLeaveAppDto absApp;
 
 	/**
 	 * 振出申請
