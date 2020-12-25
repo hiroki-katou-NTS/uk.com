@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kmk004.n;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
@@ -14,6 +15,7 @@ import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
  * @author tutt
  *
  */
+@Stateless
 public class AfterCopyDeforMonthlyWorkTimeSetEmp {
 
 	@Inject
