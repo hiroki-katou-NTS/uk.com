@@ -49,7 +49,8 @@ module nts.uk.at.view.kmk004.b {
 						years: years,
 						type: type,
 						selectId: ko.observable(''),
-						workTimes: workTimes
+						workTimes: workTimes,
+						yearDelete: yearDelete
 					}
 				}"></div>
 			</div>
@@ -80,6 +81,7 @@ module nts.uk.at.view.kmk004.b {
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
+		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
 		created() {
 			const vm = this;
@@ -90,6 +92,7 @@ module nts.uk.at.view.kmk004.b {
 						vm.existYear(true);
 					} else {
 						vm.existYear(false);
+						vm.checkDelete(false);
 					}
 				});
 
@@ -107,6 +110,8 @@ module nts.uk.at.view.kmk004.b {
 						} else {
 							vm.checkDelete(true);
 						}
+					} else {
+						vm.checkDelete(false);
 					}
 				});
 		}
@@ -160,6 +165,8 @@ module nts.uk.at.view.kmk004.b {
 								});
 							}).then(() => {
 								vm.$errors('clear');
+							}).then(() => {
+								vm.selectedYear.valueHasMutated();
 							});
 					}
 				});
@@ -177,6 +184,9 @@ module nts.uk.at.view.kmk004.b {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
 						.done(() => {
+							vm.yearDelete(ko.unwrap(vm.selectedYear));
+						})
+						.then(() => {
 							_.remove(ko.unwrap(vm.years), ((value) => {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
@@ -190,6 +200,9 @@ module nts.uk.at.view.kmk004.b {
 							});
 						}).then(() => {
 							vm.$errors('clear');
+						})
+						.then(() => {
+							vm.selectedYear.valueHasMutated();
 						})
 						.always(() => vm.$blockui("clear"));
 				});

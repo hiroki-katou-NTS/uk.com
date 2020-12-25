@@ -67,7 +67,8 @@ module nts.uk.at.view.kmk004.b {
 							selectedYear: selectedYear,
 							years: years,
 							selectId: emloyment.code,
-							workTimes: workTimes
+							workTimes: workTimes,
+							yearDelete: yearDelete
 						}
 					}"></div>
 				</div>
@@ -91,7 +92,7 @@ module nts.uk.at.view.kmk004.b {
 	})
 
 	export class ViewDComponent extends ko.ViewModel {
-
+		public type: SIDEBAR_TYPE = 'Com_Employment';
 		public modeCheckSetting: KnockoutObservable<boolean> = ko.observable(true);
 		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
@@ -99,10 +100,10 @@ module nts.uk.at.view.kmk004.b {
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public emloyment: Employment = new Employment();
 		public alreadySettings: KnockoutObservableArray<AlreadySettingEmployment> = ko.observableArray([]);
-		public type: SIDEBAR_TYPE = 'Com_Employment';
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
+		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
 		created(params: Params) {
 			const vm = this;
@@ -131,6 +132,8 @@ module nts.uk.at.view.kmk004.b {
 						} else {
 							vm.checkDelete(true);
 						}
+					} else {
+						vm.checkDelete(false);
 					}
 				});
 		}
@@ -161,6 +164,8 @@ module nts.uk.at.view.kmk004.b {
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.selectedYear.valueHasMutated();
 					vm.$dialog.info({ messageId: 'Msg_15' });
+				}).then(() => {
+					vm.selectedYear.valueHasMutated();
 				});
 
 			$(document).ready(function () {
@@ -190,6 +195,12 @@ module nts.uk.at.view.kmk004.b {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
 						.done(() => {
+							vm.yearDelete(ko.unwrap(vm.selectedYear));
+						})
+						.then(() => {
+							vm.yearDelete(ko.unwrap(vm.selectedYear));
+						})
+						.then(() => {
 							_.remove(ko.unwrap(vm.years), ((value) => {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
@@ -203,6 +214,8 @@ module nts.uk.at.view.kmk004.b {
 							});
 						}).then(() => {
 							vm.$errors('clear');
+						}).then(() => {
+							vm.selectedYear.valueHasMutated();
 						})
 						.always(() => vm.$blockui("clear"));
 				})

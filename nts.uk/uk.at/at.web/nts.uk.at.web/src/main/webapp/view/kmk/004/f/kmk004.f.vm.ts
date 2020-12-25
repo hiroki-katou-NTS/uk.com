@@ -40,13 +40,15 @@ module nts.uk.at.view.kmk004.f {
             { code: '1', name: this.$i18n('KMK004_250') },
             { code: '0', name: this.$i18n('KMK004_251') }
         ];
-        public valueInsurrance: KnockoutObservable<string> = ko.observable('1');
-        public valueSurcharges: KnockoutObservable<string> = ko.observable('1');
+        public valueInsurrance: KnockoutObservable<string> = ko.observable('0');
+        public valueSurcharges: KnockoutObservable<string> = ko.observable('0');
         public checkCompany: KnockoutObservable<boolean> = ko.observable(false);
         public checkWorkPlace: KnockoutObservable<boolean> = ko.observable(true);
         public checkEmployment: KnockoutObservable<boolean> = ko.observable(true);
         public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
         public attendance: KnockoutObservable<boolean> = ko.observable(false);
+
+
         public type = '';
         public selectId = '';
         public nameSynthetic = '';
@@ -60,6 +62,11 @@ module nts.uk.at.view.kmk004.f {
             vm.selectId = params.selectId;
             vm.nameSynthetic = params.nameSynthetic;
             vm.attendance(params.isSetting);
+
+            vm.init();
+            vm.reloadData();
+            vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
+            vm.model.outsideSurchargeWeekMonth.valueHasMutated();
 
             switch (vm.type) {
                 case 'Com_Company':
@@ -99,18 +106,18 @@ module nts.uk.at.view.kmk004.f {
         add() {
             const vm = this;
             switch (ko.unwrap(vm.valueInsurrance)) {
-                case '1':
+                case '0':
                     vm.model.deforWorkLegalOverTimeWork(false);
                     break;
-                case '0':
+                case '1':
                     vm.model.deforWorkLegalOverTimeWork(true);
                     break
             }
             switch (ko.unwrap(vm.valueSurcharges)) {
-                case '1':
+                case '0':
                     vm.model.outsidedeforWorkLegalOverTimeWork(false);
                     break;
-                case '0':
+                case '1':
                     vm.model.outsidedeforWorkLegalOverTimeWork(true);
                     break
             }
@@ -160,8 +167,33 @@ module nts.uk.at.view.kmk004.f {
 
         }
 
-        delete() {
+        remote() {
+            const vm = this;
 
+            const inputByIdDelete = {
+                id: ko.unwrap(vm.selectId)
+            }
+
+            switch (vm.type) {
+                case 'Com_Workplace':
+                    vm.$ajax(API.DELETE_WORKPLACE, inputByIdDelete)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Employment':
+                    vm.$ajax(API.DELETE_EMPLOYMENT, inputByIdDelete)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+                case 'Com_Person':
+                    vm.$ajax(API.DELETE_EMPLOYEE, inputByIdDelete)
+                        .done(() => {
+                            vm.$window.close();
+                        })
+                    break;
+            }
         }
 
         init() {
@@ -190,8 +222,7 @@ module nts.uk.at.view.kmk004.f {
                     vm.$blockui('invisible')
                         .then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
                         .then((data: IModel) => {
-                            vm.model.update(data)
-                            console.log(data);
+                            vm.model.update(data);
                         })
                         .then(() => vm.$blockui('clear'));
                     break;
@@ -200,7 +231,7 @@ module nts.uk.at.view.kmk004.f {
                         vm.$blockui('invisible')
                             .then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
                             .then((data: IModel) => {
-                                vm.model.update(data)
+                                vm.model.update(data);
                             })
                             .then(() => vm.$blockui('clear'));
                     }
@@ -210,7 +241,7 @@ module nts.uk.at.view.kmk004.f {
                         vm.$blockui('invisible')
                             .then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
                             .then((data: IModel) => {
-                                vm.model.update(data)
+                                vm.model.update(data);
                             })
                             .then(() => vm.$blockui('clear'));
                     }
@@ -220,7 +251,7 @@ module nts.uk.at.view.kmk004.f {
                         vm.$blockui('invisible')
                             .then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
                             .then((data: IModel) => {
-                                vm.model.update(data)
+                                vm.model.update(data);
                             })
                             .then(() => vm.$blockui('clear'));
                     }

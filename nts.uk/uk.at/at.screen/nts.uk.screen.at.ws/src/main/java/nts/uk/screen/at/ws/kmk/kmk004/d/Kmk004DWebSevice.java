@@ -60,7 +60,7 @@ public class Kmk004DWebSevice extends WebService {
 	@POST
 	@Path("viewd/emp/getEmploymentId")
 	public List<EmploymentCodeDto> getEmploymentCode() {
-		return this.employmentList.get(LaborWorkTypeAttr.DEFOR_LABOR);
+		return this.employmentList.get(LaborWorkTypeAttr.REGULAR_LABOR);
 	}
 	
 	@POST

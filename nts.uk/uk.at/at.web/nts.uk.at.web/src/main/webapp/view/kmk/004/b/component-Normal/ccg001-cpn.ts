@@ -122,5 +122,9 @@ module nts.uk.at.view.kmk004.b {
 				this.nameSynthetic(params.code + ' ' + params.name);
 			}
 		}
+
+		public updateStatus(isAlreadySetting: boolean) {
+			this.isAlreadySetting(isAlreadySetting);
+		}
 	}
 }

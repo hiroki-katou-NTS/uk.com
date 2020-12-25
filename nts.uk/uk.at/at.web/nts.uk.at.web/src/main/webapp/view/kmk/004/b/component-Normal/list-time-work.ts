@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk004.b {
         type: SIDEBAR_TYPE;
         selectId: KnockoutObservable<string>;
         workTimes: KnockoutObservableArray<WorkTime>;
+        yearDelete: KnockoutObservable<number | null>;
     }
 
     const API = {
@@ -103,6 +104,7 @@ module nts.uk.at.view.kmk004.b {
         public selectId: KnockoutObservable<string>;
         public mode: KnockoutObservable<'New' | 'Update'> = ko.observable('New');
         public workTimeSaves: KnockoutObservableArray<WorkTimeSave> = ko.observableArray([]);
+        public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
         created(params: Params) {
             const vm = this;
@@ -112,6 +114,7 @@ module nts.uk.at.view.kmk004.b {
             vm.type = params.type;
             vm.selectId = params.selectId;
             vm.workTimes = params.workTimes;
+            vm.yearDelete = params.yearDelete;
 
             vm.initList();
             vm.reloadData();
@@ -130,18 +133,18 @@ module nts.uk.at.view.kmk004.b {
                 if (ko.unwrap(vm.selectedYear) != null) {
                     const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
 
-                    if (ko.unwrap(vm.mode) === 'Update') {
-                        if (!ko.unwrap(vm.years)[index].isNew) {
-                            _.remove(ko.unwrap(vm.years), ((value) => {
-                                return value.year == ko.unwrap(vm.selectedYear);
-                            }));
-                            vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
-                            vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+                    if (ko.unwrap(vm.years).length > 0) {
+                        if (ko.unwrap(vm.mode) === 'Update') {
+                            if (!ko.unwrap(vm.years)[index].isNew) {
+                                _.remove(ko.unwrap(vm.years), ((value) => {
+                                    return value.year == ko.unwrap(vm.selectedYear);
+                                }));
+                                vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
+                                vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+                            }
                         }
-
                     }
                     vm.updateListSave();
-
                 }
             });
 
@@ -164,8 +167,23 @@ module nts.uk.at.view.kmk004.b {
             vm.selectId
                 .subscribe(() => {
                     vm.workTimeSaves([]);
+                    vm.reloadData();
                 });
 
+            vm.years
+                .subscribe(() => {
+                    if (ko.unwrap(vm.years).length == 0) {
+                        vm.workTimeSaves([]);
+                        vm.initList();
+
+                    } else {
+                        if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
+                            _.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
+                                return value.year == ko.unwrap(vm.yearDelete);
+                            }))
+                        }
+                    }
+                });
         }
 
         reloadData() {
@@ -191,13 +209,8 @@ module nts.uk.at.view.kmk004.b {
                                 .done((data: IWorkTime[]) => {
                                     if (data.length > 0) {
                                         const data1: IWorkTime[] = [];
-                                        var check: boolean = true;
-
-                                        if (ko.unwrap(vm.checkEmployee)) {
-                                            check = false;
-                                        }
                                         data.map(m => {
-                                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                            const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                             data1.push(s);
                                         });
 
@@ -221,13 +234,8 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
-                                            var check: boolean = true;
-
-                                            if (ko.unwrap(vm.checkEmployee)) {
-                                                check = false;
-                                            }
                                             data.map(m => {
-                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                                 data1.push(s);
                                             });
 
@@ -250,13 +258,8 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
-                                            var check: boolean = true;
-
-                                            if (ko.unwrap(vm.checkEmployee)) {
-                                                check = false;
-                                            }
                                             data.map(m => {
-                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                                 data1.push(s);
                                             });
 
@@ -279,11 +282,16 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
+                                            let check = true;
 
                                             const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
+                                            if (exist) {
+                                                check = !exist.isNew;
+                                            }
+
                                             data.map(m => {
-                                                const s: IWorkTime = { check: !exist.isNew, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                                 data1.push(s);
                                             });
 
@@ -293,7 +301,7 @@ module nts.uk.at.view.kmk004.b {
                                     });
                             }
                         }
-                        break
+                        break;
                 }
             } else {
                 vm.initList();

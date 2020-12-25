@@ -42,6 +42,7 @@ module nts.uk.at.view.kmk004.b {
                 const exist = _.find(ko.unwrap(vm.employmentList), (emp: IEmployment) => emp.code === ko.unwrap(vm.selectedCode));
                 if (exist) {
                     vm.employment.update(exist);
+                    vm.checkStatus();
                 }
             });
 
@@ -62,8 +63,22 @@ module nts.uk.at.view.kmk004.b {
                             list.push(object);
                         }));
                         vm.alreadySettings(list);
+                        vm.checkStatus();
                     }
-                })
+                });
+        }
+
+        checkStatus() {
+            const vm = this;
+            if (ko.unwrap(vm.selectedCode)) {
+                const exist = _.find(ko.unwrap(vm.alreadySettings), (m: AlreadySettingEmployment) => m.code === ko.unwrap(vm.employment.code));
+
+                if (exist) {
+                    vm.employment.updateStatus(exist.isAlreadySetting);
+                } else {
+                    vm.employment.updateStatus(false);
+                }
+            }
         }
 
         reload() {
@@ -123,6 +138,10 @@ module nts.uk.at.view.kmk004.b {
             md.code(param.code);
             md.name(param.name);
             md.isAlreadySetting(param.isAlreadySetting);
+        }
+
+        updateStatus(isAlreadySetting: boolean) {
+            this.isAlreadySetting(isAlreadySetting);
         }
     }
 

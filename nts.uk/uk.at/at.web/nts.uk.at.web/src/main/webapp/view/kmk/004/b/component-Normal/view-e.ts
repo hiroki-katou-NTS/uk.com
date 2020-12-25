@@ -77,7 +77,8 @@ module nts.uk.at.view.kmk004.b {
 							type: type,
 							years: years,
 							selectId: model.id,
-							workTimes: workTimes
+							workTimes: workTimes,
+							yearDelete: yearDelete
 						}
 					}"></div>
 				</div>
@@ -92,7 +93,8 @@ module nts.uk.at.view.kmk004.b {
 
 	const API = {
 		ADD_WORK_TIME: 'screen/at/kmk004/viewd/sha/monthlyWorkTime/add',
-		DELETE_WORK_TIME: 'screen/at/kmk004/viewd/sha/monthlyWorkTime/delete'
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewd/sha/monthlyWorkTime/delete',
+		GET_EMPLOYEEIDS: 'screen/at/kmk004/viewe/sha/getEmployeeId'
 	};
 
 	@component({
@@ -116,6 +118,7 @@ module nts.uk.at.view.kmk004.b {
 		public existEmployee: KnockoutObservable<boolean> = ko.observable(false);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public checkAdd: KnockoutObservable<boolean> = ko.observable(false);
+		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
 		created(params: Params) {
 			const vm = this;
@@ -126,7 +129,7 @@ module nts.uk.at.view.kmk004.b {
 					} else {
 						vm.existYear(true);
 					}
-				})
+				});
 
 			vm.selectedCode
 				.subscribe(() => {
@@ -135,7 +138,8 @@ module nts.uk.at.view.kmk004.b {
 						vm.model.update(employee);
 						vm.selectedYear.valueHasMutated();
 					}
-				})
+					vm.updateCheck();
+				});
 
 			vm.employees
 				.subscribe(() => {
@@ -143,6 +147,7 @@ module nts.uk.at.view.kmk004.b {
 						vm.existEmployee(false);
 					} else {
 						vm.existEmployee(true);
+						vm.checkDelete(false);
 					}
 				});
 
@@ -175,11 +180,15 @@ module nts.uk.at.view.kmk004.b {
 						} else {
 							vm.checkDelete(true);
 						}
+					} else {
+						vm.checkDelete(false);
 					}
 				});
 		}
 
 		mounted() {
+			const vm = this;
+
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
@@ -214,6 +223,9 @@ module nts.uk.at.view.kmk004.b {
 									$('.listbox').focus();
 								});
 							}).then(() => {
+								vm.selectedYear.valueHasMutated();
+							})
+							.then(() => {
 								vm.$errors('clear');
 							});
 					}
@@ -255,6 +267,9 @@ module nts.uk.at.view.kmk004.b {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
 						.done(() => {
+							vm.yearDelete(ko.unwrap(vm.selectedYear));
+						})
+						.then(() => {
 							_.remove(ko.unwrap(vm.years), ((value) => {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
@@ -268,6 +283,8 @@ module nts.uk.at.view.kmk004.b {
 							});
 						}).then(() => {
 							vm.$errors('clear');
+						}).then(() => {
+							vm.selectedYear.valueHasMutated();
 						})
 						.always(() => vm.$blockui("clear"));
 				})
@@ -295,6 +312,22 @@ module nts.uk.at.view.kmk004.b {
 					.then(() => $('.nts-input').trigger("validate"))
 					.then(() => !$('.nts-input').ntsError('hasError'));
 			}
+		}
+
+		public updateCheck() {
+			const vm = this;
+			vm.$ajax(API.GET_EMPLOYEEIDS)
+				.then((data: any) => {
+					console.log(data);
+					const exist = _.find(data, (m: any) => m.employeeId === ko.unwrap(vm.model.id));
+					console.log(exist);
+				
+					if (exist) {
+						vm.model.updateStatus(true);
+					} else {
+						vm.model.updateStatus(false);
+					}
+				});
 		}
 	}
 }

@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk004.b {
         selectedCode: KnockoutObservable<string>;
         employees: KnockoutObservableArray<IEmployee>;
         isChange: KnockoutObservable<string>;
+        model: Employee;
     }
 
     const API = {
@@ -28,12 +29,14 @@ module nts.uk.at.view.kmk004.b {
         public employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
         public isChange: KnockoutObservable<string> = ko.observable('');
+        public model: Employee = new Employee();
 
         created(params: ParamsKcp005) {
             const vm = this;
             vm.selectedCode = params.selectedCode;
             vm.employees = params.employees;
             vm.isChange = params.isChange;
+            vm.model = params.model;
 
             vm.reload();
 
@@ -52,7 +55,6 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.reloadIsCheck();
                 });
-
         }
 
         reloadIsCheck() {
@@ -71,6 +73,19 @@ module nts.uk.at.view.kmk004.b {
                     vm.alreadySettingList(list);
                 });
         }
+
+        // checkStatus() {
+        //     const vm = this;
+        //     if (ko.unwrap(vm.selectedCode)) {
+        //         const exist = _.find(ko.unwrap(vm.alreadySettingList), (m: UnitAlreadySettingModel) => m.code === ko.unwrap(vm));
+
+        //         if (exist) {
+        //             vm.employment.updateStatus(exist.isAlreadySetting);
+        //         } else {
+        //             vm.employment.updateStatus(false);
+        //         }
+        //     }
+        // }
 
         reload() {
 

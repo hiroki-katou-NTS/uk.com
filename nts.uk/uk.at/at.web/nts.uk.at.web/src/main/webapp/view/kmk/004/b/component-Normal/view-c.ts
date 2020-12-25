@@ -68,7 +68,8 @@ module nts.uk.at.view.kmk004.b {
 								type: type,
 								years: years,
 								selectId: selectedId,
-								workTimes: workTimes
+								workTimes: workTimes,
+								yearDelete: yearDelete
 							}
 						}"></div>
 					</div>
@@ -103,6 +104,7 @@ module nts.uk.at.view.kmk004.b {
 		public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
+		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
 		created(params: Params) {
 			const vm = this;
@@ -121,6 +123,8 @@ module nts.uk.at.view.kmk004.b {
 						} else {
 							vm.checkDelete(true);
 						}
+					} else {
+						vm.checkDelete(false);
 					}
 				});
 		}
@@ -131,7 +135,7 @@ module nts.uk.at.view.kmk004.b {
 			vm.selectedId
 				.subscribe(() => {
 					vm.selectedYear.valueHasMutated();
-				})
+				});
 
 			$(document).ready(function () {
 				$('.listbox').focus();
@@ -144,6 +148,7 @@ module nts.uk.at.view.kmk004.b {
 						vm.existYear(true);
 					} else {
 						vm.existYear(false);
+						vm.checkDelete(false);
 					}
 				});
 		}
@@ -177,6 +182,9 @@ module nts.uk.at.view.kmk004.b {
 									$('.listbox').focus();
 								});
 							}).then(() => {
+								vm.selectedYear.valueHasMutated();
+							})
+							.then(() => {
 								vm.$errors('clear');
 							});
 					}
@@ -205,6 +213,9 @@ module nts.uk.at.view.kmk004.b {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
 						.done(() => {
+							vm.yearDelete(ko.unwrap(vm.selectedYear));
+						})
+						.then(() => {
 							_.remove(ko.unwrap(vm.years), ((value) => {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
@@ -218,6 +229,8 @@ module nts.uk.at.view.kmk004.b {
 							});
 						}).then(() => {
 							vm.$errors('clear');
+						}).then(() => {
+							vm.selectedYear.valueHasMutated();
 						})
 						.always(() => vm.$blockui("clear"));
 				})
@@ -229,10 +242,11 @@ module nts.uk.at.view.kmk004.b {
 				type: vm.type,
 				selectId: ko.unwrap(vm.selectedId),
 				nameSynthetic: ko.unwrap(vm.model.name),
-				isSetting: ko.unwrap(vm.model.isAlreadySetting)
+				isSetting: !ko.unwrap(vm.model.isAlreadySetting)
 			};
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
+				console.log(ko.unwrap(vm.model.isAlreadySetting));
 			});
 		}
 
