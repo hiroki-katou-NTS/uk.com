@@ -7,6 +7,7 @@ body {
 .control-group { 
 	margin: 5px;
 	margin-left: 15px; 
+	overflow: hidden;
 }
 .label:FIRST-CHILD{
 	font-size: large;
@@ -14,7 +15,7 @@ body {
 	margin-left: 20px;
 }
 #search-div {
-	padding-left: 120px;
+	/* padding-left: 120px; */
 	margin-bottom: 10px;
 }
 #search-div span:NTH-CHILD(3) {
@@ -31,13 +32,13 @@ input.ui-igcombo-field {
 div.nts-column{
 	padding-left: 10px;
 }
-#search-div button:NTH-CHILD(6) {
+/* #search-div button:NTH-CHILD(6) {
 	margin-left: 20px;
 	width: 60px;
-}
-#search-div button:LAST-CHILD {
+} */
+/* #search-div button:LAST-CHILD {
 	margin-left: 257px;
-}
+} */
 #day-list-div {
 	padding-left: 15px;
 	padding-right: 15px;
@@ -59,4 +60,19 @@ div.nts-column{
 }
 .label{
 	margin-left: 10px;
+}
+.search-by-code {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.search-by-code .cell {
+	width: 83%;
+}
+
+.search-by-code .cell:last-child .control-group {
+	margin: -17px 0 0;
+}
+.search-by-code .cell:last-child button {
+	margin-top: 5px;
 }

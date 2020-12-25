@@ -53,8 +53,9 @@ module nts.uk.at.view.kdl003.a {
 
             // Parameter from caller screen.
             callerParameter: CallerParameter;
-
-            constructor(parentData: CallerParameter) {
+            searchCode: KnockoutObservable<string> = ko.observable(null);
+            
+            constructor(parentData: CallerParameter) {  
                 var self = this;
 
                 self.readonly = ko.observable(true);
@@ -102,6 +103,7 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'code', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL003_19'), prop: 'workTime1', width: 200 },
+                    { headerText: nts.uk.resource.getText('KDL003_20'), prop: 'workTime2', width: 200 },
                     { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 130 },
                     { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
@@ -449,7 +451,7 @@ module nts.uk.at.view.kdl003.a {
             public search(): void {
                 var self = this;
                 if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_307" });
                     return;
                 }
 
@@ -629,6 +631,17 @@ module nts.uk.at.view.kdl003.a {
              */
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
+            }
+
+            searchByCodeName() {
+                let self = this;
+                if( nts.uk.util.isNullOrEmpty(self.searchCode()) ) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_2073' }).then(() => { 
+                        $('#A2_6').focus();
+                        nts.uk.ui.block.clear(); 
+                    });
+                    return;
+                }
             }
         }
 

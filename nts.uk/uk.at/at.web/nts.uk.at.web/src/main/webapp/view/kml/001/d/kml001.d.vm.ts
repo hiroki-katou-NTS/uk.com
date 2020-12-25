@@ -1,8 +1,10 @@
+import { support } from "jquery";
+
 module nts.uk.at.view.kml001.d {
     export module viewmodel {
         import servicebase = kml001.shr.servicebase;
         import vmbase = kml001.shr.vmbase;
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel{
             isUpdate: KnockoutObservable<boolean>;
             deleteAble: KnockoutObservable<boolean>;
             size: number;
@@ -14,6 +16,7 @@ module nts.uk.at.view.kml001.d {
             currentEndDate: KnockoutObservable<string>;
             newStartDate: KnockoutObservable<string>;
             constructor() {
+                super();
                 var self = this;
                 self.personCostList = ko.observableArray(
                     _.map(nts.uk.ui.windows.getShared('personCostList'), (item : vmbase.PersonCostCalculationInterface) => { return vmbase.ProcessHandler.fromObjectPerconCost(item); })
@@ -59,9 +62,11 @@ module nts.uk.at.view.kml001.d {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){ 
                             servicebase.personCostCalculationDelete(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                                 .done(function(res: Array<any>) {
-                                    nts.uk.ui.windows.setShared('isEdited', 1);
-                                    nts.uk.ui.block.clear();
-                                    nts.uk.ui.windows.close(); 
+                                    self.$dialog.info({messageId: 'Msg_16'}).then(() => {
+                                        nts.uk.ui.windows.setShared('isEdited', 1);
+                                        nts.uk.ui.block.clear();
+                                        nts.uk.ui.windows.close(); 
+                                    });                                   
                                 })
                                 .fail(function(res) {
                                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});     
@@ -70,7 +75,7 @@ module nts.uk.at.view.kml001.d {
                             nts.uk.ui.block.clear();        
                         });
                     } else{ 
-                        $("#startDateInput").ntsError('set', {messageId:"Msg_128"});
+                        //$("#startDateInput").ntsError('set', {messageId:"Msg_128"});
                         nts.uk.ui.block.clear();
                     }
                 }

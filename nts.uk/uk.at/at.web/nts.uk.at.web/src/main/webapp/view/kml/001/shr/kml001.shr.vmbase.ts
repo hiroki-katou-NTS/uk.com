@@ -41,8 +41,8 @@ module nts.uk.at.view.kml001.shr {
                 startDate: string, endDate: string, 
                 unitPrice: number, memo: string, 
                 premiumSets: Array<PremiumSettingInterface>,
-                calculationSetting: number, roundingUnitPrice: number, 
-                roundingAmount: number, inUnits: number
+                calculationSetting: number = 1, roundingUnitPrice: number = 0, 
+                roundingAmount: number = 1, inUnits: number = 0
                 ) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
@@ -68,6 +68,7 @@ module nts.uk.at.view.kml001.shr {
             name: string;
             useAtr: number;
             attendanceItems: Array<AttendanceItem>;
+            unitPrice: number;
         }
         
         export class PremiumSetting {
@@ -115,13 +116,15 @@ module nts.uk.at.view.kml001.shr {
             name: KnockoutObservable<string>;
             useAtr: KnockoutObservable<number>;
             isChange: KnockoutObservable<boolean>;
-            constructor(companyID: string, displayNumber: number, name: string, useAtr: number, isChange: boolean) {
+            unitPrice: KnockoutObservable<number>;
+            constructor(companyID: string, displayNumber: number, name: string, useAtr: number, isChange: boolean, unitPrice: number) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.displayNumber = ko.observable(displayNumber);
                 self.name = ko.observable(name);
                 self.useAtr = ko.observable(useAtr);
                 self.isChange = ko.observable(isChange);
+                self.unitPrice = ko.observable(unitPrice);
             }
         }
         
@@ -168,7 +171,11 @@ module nts.uk.at.view.kml001.shr {
                     endDate: koObject.endDate(),
                     unitPrice: koObject.unitPrice(),
                     memo: koObject.memo(),
-                    premiumSets : premiumSets     
+                    premiumSets : premiumSets,
+                    calculationSetting: koObject.calculationSetting(),
+                    roundingUnitPrice: koObject.roundingUnitPrice(),
+                    roundingAmount: koObject.roundingAmount(),
+                    inUnits: koObject.inUnits()
                 };    
             }
             
@@ -183,7 +190,8 @@ module nts.uk.at.view.kml001.shr {
                     object.rate,
                     object.name,
                     object.useAtr,
-                    object.attendanceItems);
+                    object.attendanceItems,
+                    object.unitPrice);
             }
             
             /**
@@ -197,7 +205,8 @@ module nts.uk.at.view.kml001.shr {
                     rate: koObject.rate(),
                     name: koObject.name(),
                     useAtr: koObject.useAtr(),
-                    attendanceItems: _.map(koObject.attendanceItems() , function(item){ return {shortAttendanceID: item.shortAttendanceID, name: item.name}})   
+                    attendanceItems: _.map(koObject.attendanceItems() , function(item){ return {shortAttendanceID: item.shortAttendanceID, name: item.name}}),
+                    unitPrice: koObject.unitPrice()
                 };    
             }
             
@@ -220,7 +229,11 @@ module nts.uk.at.view.kml001.shr {
                             koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
                         } else {
                             koPremiumSets.push(
-                                new vmbase.PremiumSetting("", "", premiumItem.displayNumber(), 100, premiumItem.name(), premiumItem.useAtr(), [])
+                                new vmbase.PremiumSetting(
+                                    "", "", premiumItem.displayNumber(), 
+                                    100, premiumItem.name(), premiumItem.useAtr(), 
+                                    [], premiumItem.unitPrice()
+                                )
                             );    
                         }
                     }
