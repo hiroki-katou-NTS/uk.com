@@ -1,11 +1,9 @@
-package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
+package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
@@ -26,7 +24,7 @@ public class DisplayInforWhenStarting {
 	//振休申請起動時の表示情報
 	public DisplayInformationApplication applicationForHoliday;
 	//振休残数情報
-	public RemainingHolidayInfor remainingHolidayInfor;
+	public RemainingHolidayInforDto remainingHolidayInfor;
 	//振休振出申請設定
 	public SubstituteHdWorkAppSetDto substituteHdWorkAppSet;
 	//振休紐付け管理区分

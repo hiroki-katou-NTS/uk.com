@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 
 @NoArgsConstructor
 @Setter

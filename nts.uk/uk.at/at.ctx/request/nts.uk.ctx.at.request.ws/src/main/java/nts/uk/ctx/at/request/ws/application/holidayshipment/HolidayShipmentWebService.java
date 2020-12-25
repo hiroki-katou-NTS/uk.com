@@ -27,14 +27,16 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveChangeA
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkingDateParam;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -45,6 +47,12 @@ public class HolidayShipmentWebService extends WebService {
 
 	@Inject
 	private HolidayShipmentScreenAFinder screenAFinder;
+	
+	@Inject
+	private SaveHolidayShipmentCommandHandlerRef5 saveCommandHandler;
+	
+	
+	
 	@Inject
 	private HolidayShipmentScreenCFinder screenCFinder;
 	@Inject
@@ -69,13 +77,6 @@ public class HolidayShipmentWebService extends WebService {
 	private SaveChangeAbsDateCommandHandler changeAbsDateHander;
 
 	@POST
-	@Path("start")
-	public HolidayShipmentDto startPage(StartScreenAParam param) {
-//		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
-		return null;
-	}
-	
-	@POST
 	@Path("startPageARefactor")
 	public DisplayInforWhenStarting startPageARefactor(StartPageARefactorParam param) {
 		return this.screenAFinder.startPageARefactor(
@@ -85,13 +86,46 @@ public class HolidayShipmentWebService extends WebService {
 				param.getAppDispInfoStartup()
 				);
 	}
-
+	
+	
+	
+	@POST
+	@Path("changeRecDate")
+	public DisplayInforWhenStarting changeRecDate(ChangeDateParam param) {
+		
+	}
+	
+	@POST
+	@Path("save")
+	public void save(HolidayShipmentRefactor5Command command) {
+		saveCommandHandler.register(command);
+	}
+	
+	
+	
+	
+	
 	@POST
 	@Path("change_work_type")
 	public WorkTimeInfoDto changeWorkType(ChangeWorkTypeParam param) {
 //		return this.screenAFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
 		return null;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
 
 	@POST
 	@Path("update")
@@ -117,15 +151,7 @@ public class HolidayShipmentWebService extends WebService {
 		return null;
 	}
 	
-	@POST
-	@Path("changeHolidayDateRefactor")
-	public DisplayInforWhenStarting changeHolidayDateRefactor(ChangeWorkingDateParam param) {
-//		return this.screenAFinder.changeHolidayDateRefactor(
-//				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
-//				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
-//				param.displayInforWhenStarting);
-		return null;
-	}
+
 
 	@POST
 	@Path("get_selected_working_hours")
@@ -140,11 +166,7 @@ public class HolidayShipmentWebService extends WebService {
 		return null;/* saveHandler.handle(command); */
 	}
 	
-	@POST
-	@Path("save")
-	public JavaTypeResult<ProcessResult> save(SaveHolidayShipmentCommand command) {
-		return new JavaTypeResult<ProcessResult>(saveHandler.handle(command));
-	}
+
 
 	@POST
 	@Path("find_by_id")

@@ -29,9 +29,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class AbsenceLeaveAppCmd {
 	
 	public String appID;
-	/** command for KAF011A */
+	
+	/** For KAF011A */
 	public ApplicationInsertCmd applicationInsert;
-	/** command for KAF011B */
+	
+	/** For KAF011B */
 	public ApplicationUpdateCmd applicationUpdate;
 	
 	public List<TimeZoneWithWorkNoDto> workingHours;

@@ -23,9 +23,11 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOf
 public class RecruitmentAppCmd {
 	
 	public String appID;
-	/** command for KAF011A */
+	
+	/** For KAF011A */
 	public ApplicationInsertCmd applicationInsert;
-	/** command for KAF011B */
+	
+	/** For KAF011B */
 	public ApplicationUpdateCmd applicationUpdate;
 	
 	public List<TimeZoneWithWorkNoDto> workingHours;

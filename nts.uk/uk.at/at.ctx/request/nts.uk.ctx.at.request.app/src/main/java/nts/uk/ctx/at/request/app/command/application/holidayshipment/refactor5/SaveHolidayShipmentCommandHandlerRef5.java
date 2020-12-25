@@ -45,7 +45,7 @@ import nts.uk.shr.com.context.AppContexts;
  *	UKDesign.UniversalK.就業.KAF_申請.KAF011_振休振出申請.A：振休振出申請（新規）.ユースケース.登録する(Đăng kí).登録する
  */
 @Stateless
-public class SaveHolidayShipmentCommandHandler {
+public class SaveHolidayShipmentCommandHandlerRef5 {
 
 	@Inject
 	private ErrorCheckProcessingBeforeRegistrationKAF011 errorCheckProcessingBeforeRegistrationKAF011;
@@ -99,13 +99,12 @@ public class SaveHolidayShipmentCommandHandler {
 				appDispInfoStartup);
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
-		//QA: http://192.168.50.4:3000/issues/113451
+		//QA: http://192.168.50.4:3000/issues/113451 -> done
 		this.registrationApplicationProcess(
 				companyId, 
 				abs, 
 				rec, 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
-				null, 
 				appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(), 
 				appDispInfoStartup.getAppDetailScreenInfo().get().getApprovalLst(), 
 				command.existRec() ? command.rec.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
@@ -121,7 +120,6 @@ public class SaveHolidayShipmentCommandHandler {
 	 * @param abs 振休申請
 	 * @param rec 振出申請
 	 * @param baseDate 基準日
-	 * @param managementUnit 管理単位
 	 * @param mailServerSet メールサーバ設定済区分
 	 * @param approvalLst 承認ルートインスタンス
 	 * @param leaveComDayOffMana_Rec 振出_休出代休紐付け管理
@@ -131,20 +129,20 @@ public class SaveHolidayShipmentCommandHandler {
 	 * @param applicationSetting 申請表示情報
 	 */
 	public void registrationApplicationProcess(String companyId, Optional<AbsenceLeaveApp> abs,
-			Optional<RecruitmentApp> rec, GeneralDate baseDate, Integer managementUnit, boolean mailServerSet,
+			Optional<RecruitmentApp> rec, GeneralDate baseDate, boolean mailServerSet,
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs,
 			List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs, ManageDistinct holidayManage,
 			ApplicationSetting applicationSetting) {
 		if(rec.isPresent() && abs.isPresent()) {
 			//振休申請・振出申請の同時登録(đăng ký đồng thời đơn xin nghỉ bù/ đơn xin làm bù)
-			this.registerRecAndAbs(companyId, baseDate, rec, abs, managementUnit, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
+			this.registerRecAndAbs(companyId, baseDate, rec, abs, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
 		}else if(rec.isPresent()){
 			//振出申請の登録(đăng ký đơn xin làm bù)
-			this.registerRec(companyId, baseDate, rec, managementUnit, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
+			this.registerRec(companyId, baseDate, rec, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
 		}else if(abs.isPresent()){
 			//振休申請の登録(đăng ký đơn xin nghỉ bù)
-			this.registerAbs(companyId, baseDate, abs, managementUnit, mailServerSet, approvalLst, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs, applicationSetting);
+			this.registerAbs(companyId, baseDate, abs, mailServerSet, approvalLst, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs, applicationSetting);
 		}
 	}
 	
@@ -167,7 +165,7 @@ public class SaveHolidayShipmentCommandHandler {
 	 * @param applicationSetting 申請表示情報
 	 */
 	public void registerRecAndAbs(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
-			Optional<AbsenceLeaveApp> abs, Integer managementUnit, boolean mailServerSet,
+			Optional<AbsenceLeaveApp> abs, boolean mailServerSet,
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			ManageDistinct holidayManage, ApplicationSetting applicationSetting) {
 		//ドメイン「振出申請」を1件登録する(đăng ký 1 domain[đơn xin nghì bù])
@@ -214,7 +212,7 @@ public class SaveHolidayShipmentCommandHandler {
 	 * @param applicationSetting 申請表示情報
 	 */
 	public void registerRec(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
-			Integer managementUnit, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
+			boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec, ManageDistinct holidayManage,
 			ApplicationSetting applicationSetting) {
 		//ドメイン「振出申請」を1件登録する(đăng ký 1 domain[đơn xin nghì bù])
@@ -247,7 +245,7 @@ public class SaveHolidayShipmentCommandHandler {
 	 * @param applicationSetting 申請表示情報
 	 */
 	public void registerAbs(String companyId, GeneralDate baseDate, Optional<AbsenceLeaveApp> abs,
-			Integer managementUnit, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
+			boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs,
 			ApplicationSetting applicationSetting) {
 		//ドメイン「振休申請」を1件登録する
