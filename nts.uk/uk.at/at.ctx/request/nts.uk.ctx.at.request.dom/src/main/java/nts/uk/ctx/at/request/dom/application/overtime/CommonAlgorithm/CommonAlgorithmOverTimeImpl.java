@@ -968,7 +968,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			List<GeneralDate> dates = new ArrayList<GeneralDate>();
 			dates.add(appOverTime.getAppDate().getApplicationDate());
 			List<String> workTypeLst = new ArrayList<String>();
-			workTypeLst.add(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null));
+			if (appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).isPresent()) {
+				workTypeLst.add(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null));				
+			}
 			// 申請の矛盾チェック
 			commonAlgorithm.appConflictCheck(
 					companyId,
