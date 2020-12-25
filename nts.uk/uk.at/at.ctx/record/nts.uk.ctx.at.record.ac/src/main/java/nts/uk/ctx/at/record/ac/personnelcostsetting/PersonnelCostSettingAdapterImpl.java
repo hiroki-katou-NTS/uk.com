@@ -19,23 +19,23 @@ public class PersonnelCostSettingAdapterImpl implements PersonnelCostSettingAdap
 	@Inject
 	private PremiumItemPub premiumItemPub;
 	
-	@Override
-	public List<PersonnelCostSettingImport> findAll(String companyId, GeneralDate baseDate){
-		
-		List<PersonCostSettingExport> export = premiumItemPub.getPersonCostSetting(companyId, baseDate);
-		return export.stream().map(x -> {
-			return new PersonnelCostSettingImport(x.getPremiumNo(), x.getAttendanceItems(), x.getPeriod());
-		}).collect(Collectors.toList());
-		
-	}
-	
-	@Override
-	public List<PersonnelCostSettingImport> findAll(String companyId, DatePeriod period){
-		
-		List<PersonCostSettingExport> export = premiumItemPub.getPersonCostSetting(companyId, period);
-		return export.stream().map(x -> {
-			return new PersonnelCostSettingImport(x.getPremiumNo(), x.getAttendanceItems(), x.getPeriod());
-		}).collect(Collectors.toList());
-		
-	}
+//	@Override
+//	public List<PersonnelCostSettingImport> findAll(String companyId, GeneralDate baseDate){
+//		
+//		List<PersonCostSettingExport> export = premiumItemPub.getPersonCostSetting(companyId, baseDate);
+//		return export.stream().map(x -> {
+//			return new PersonnelCostSettingImport(x.getPremiumNo(), x.getAttendanceItems(), x.getPeriod());
+//		}).collect(Collectors.toList());
+//		
+//	}
+//	
+//	@Override
+//	public List<PersonnelCostSettingImport> findAll(String companyId, DatePeriod period){
+//		
+//		List<PersonCostSettingExport> export = premiumItemPub.getPersonCostSetting(companyId, period);
+//		return export.stream().map(x -> {
+//			return new PersonnelCostSettingImport(x.getPremiumNo(), x.getAttendanceItems(), x.getPeriod());
+//		}).collect(Collectors.toList());
+//		
+//	}
 }

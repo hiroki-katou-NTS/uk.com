@@ -77,4 +77,14 @@ public interface AffWorkplaceAdapter {
 	 */
 	List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
 	
+	/**
+	 * [No.571]職場の上位職場を取得する
+	 * @param cacheCarrier
+	 * @param companyID
+	 * @param workplaceID
+	 * @param date
+	 * @return
+	 */
+	List<String> getWorkplaceIdAndUpper(CacheCarrier cacheCarrier, String companyID, String workplaceID, GeneralDate date);
+	
 }

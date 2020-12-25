@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,12 +26,15 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPa
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -112,8 +116,24 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
 			
-			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
-								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay));
+			/*インセンティブ単価*/
+			Map<OuenFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
+			incentiveUnitPrice = IncentiveUnitPriceService.getIncentiveUnitPrice(
+					requireService.createRequire(),
+					new CacheCarrier(),
+					daily.getYmd(),
+					companyId,
+					daily.getOuenTimeSheet());
+			
+			return Optional.of(
+					new ManagePerPersonDailySet(
+					nowWorkingItem,
+					dailyUnit,
+					addSetting,
+					bonusPaySetting,
+					predetermineTimeSetByPersonWeekDay,
+					incentiveUnitPrice)
+				);
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();

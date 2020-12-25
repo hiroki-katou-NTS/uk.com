@@ -988,4 +988,21 @@ public class OverTimeSheet {
 			}
 		}
 	}
+
+	/**
+	 * 残業時間帯をを指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		List<OverTimeFrameTimeSheetForCalc> frames = this.frameTimeSheets.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		for(int i=0; i<frames.size(); i++) {
+			//残業枠時間帯を指定した時間帯に絞り込む
+			frames.get(i).reduceRange(timeSpan);
+		this.frameTimeSheets.clear();
+		this.frameTimeSheets.addAll(frames);
+		}
+	}
 }

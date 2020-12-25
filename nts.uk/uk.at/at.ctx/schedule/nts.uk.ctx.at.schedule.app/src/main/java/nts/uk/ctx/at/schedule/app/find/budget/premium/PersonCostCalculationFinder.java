@@ -12,16 +12,16 @@ import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationS
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumSetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.ShortAttendanceItemDto;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
-import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
-import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguageRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculationRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguageRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

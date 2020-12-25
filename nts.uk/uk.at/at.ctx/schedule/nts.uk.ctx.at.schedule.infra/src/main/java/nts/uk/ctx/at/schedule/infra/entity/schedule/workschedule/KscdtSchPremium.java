@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.shr.com.context.AppContexts;
@@ -68,7 +69,7 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 		List<PremiumTime> result = new ArrayList<>();
 		if(!premiums.isEmpty()) {
 		premiums.stream().forEach( x ->{
-			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()));
+			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()), AttendanceAmountDaily.ZERO);
 			result.add(time);
 		});
 		}

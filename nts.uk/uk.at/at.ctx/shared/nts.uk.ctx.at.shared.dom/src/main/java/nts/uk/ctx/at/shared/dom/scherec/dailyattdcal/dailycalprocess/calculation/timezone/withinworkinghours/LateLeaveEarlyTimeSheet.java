@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -21,6 +22,20 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 
 	public LateLeaveEarlyTimeSheet(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding) {
 		super(timeSheet, rounding);
+	}
+	
+	private LateLeaveEarlyTimeSheet(
+			TimeSpanForDailyCalc timeSheet,
+			TimeRoundingSetting rounding,
+			List<TimeSheetOfDeductionItem> recordedTimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
+			Optional<DeductionOffSetTime> deductionOffSetTime) {
+		super(timeSheet, rounding);
+		this.timeSheet = timeSheet;
+		this.rounding = rounding;
+		this.deductionTimeSheet = deductionTimeSheet;
+		this.recordedTimeSheet = recordedTimeSheet;
+		this.deductionOffSetTime = deductionOffSetTime;
 	}
 	
 	//遅刻再度補正
@@ -79,5 +94,22 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate,Optional.empty());
 
 		return result;
+	}
+	
+	/**
+	 * 遅刻早退時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicates.isPresent())
+			return;
+		
+		//時間帯を変更する
+		this.shiftTimeSheet(duplicates.get());
+		
+		//控除相殺時間を削除する
+		if(this.deductionOffSetTime.isPresent())
+			this.deductionOffSetTime = Optional.empty();
 	}
 }

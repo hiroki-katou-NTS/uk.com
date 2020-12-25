@@ -74,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyl
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.TimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -91,6 +92,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -591,8 +593,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			DeclareTimezoneResult declareResult) {
 		String companyId = AppContexts.user().companyId();
 
-		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getYmd();
-
 		// 加給時間計算設定
 		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId), 1,
 				WorkingTimesheetCalculationSetting.CalculateAutomatic,
@@ -633,11 +633,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 乖離時間(AggregateRoot)取得
 		List<DivergenceTimeRoot> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
 
-		List<PersonnelCostSettingImport> personalSetting = getPersonalSetting(companyId, targetDate,
-				recordReGetClass.getCompanyCommonSetting());
-
+		
 		/* 時間の計算 */
-		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(vacation, workType.get(),
+		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyAttendance.calcTimeResult(vacation, workType.get(),
 				flexCalcMethod, bonusPayAutoCalcSet, eachCompanyTimeSet, divergenceTimeList,
 				calculateOfTotalConstraintTime, scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
@@ -653,33 +651,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		/* 日別実績への項目移送 */
 		return recordReGetClass.getIntegrationOfDaily();
-	}
-
-	/**
-	 * 割増設定取得
-	 * 
-	 * @param companyId
-	 *            会社ID
-	 * @param targetDate
-	 *            対象日
-	 * @param companyCommonSetting
-	 *            会社共通設定
-	 * @return 割増設定
-	 */
-	private List<PersonnelCostSettingImport> getPersonalSetting(String companyId, GeneralDate targetDate,
-			ManagePerCompanySet companyCommonSetting) {
-		if (!CollectionUtil.isEmpty(companyCommonSetting.getPersonnelCostSettings())) {
-
-			List<PersonnelCostSettingImport> current = companyCommonSetting.getPersonnelCostSettings().stream()
-					.filter(pcs -> {
-						return pcs.getPeriod().contains(targetDate);
-					}).collect(Collectors.toList());
-
-			if (!current.isEmpty()) {
-				return current;
-			}
-		}
-		return personnelCostSettingAdapter.findAll(companyId, targetDate);
 	}
 
 	/**

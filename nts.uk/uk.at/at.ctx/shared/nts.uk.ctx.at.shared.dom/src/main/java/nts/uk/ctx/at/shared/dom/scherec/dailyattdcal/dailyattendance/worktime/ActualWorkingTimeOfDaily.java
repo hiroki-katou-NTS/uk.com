@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -246,10 +247,20 @@ public class ActualWorkingTimeOfDaily {
 		
 	}
 	
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(Optional<PersonCostCalculation> personCostCalculation,
+	 																				DailyRecordToAttendanceItemConverter dailyRecordDto) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		return PremiumTimeOfDailyPerformance.calcPremiumTime(personCostCalculation.get(), dailyRecordDto);
+	}
 	
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(List<PersonnelCostSettingImport> personnelCostSettingImport,
-	 																				Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
-		return PremiumTimeOfDailyPerformance.calcPremiumTime(personnelCostSettingImport, dailyRecordDto);
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForOuen(Optional<PersonCostCalculation> personCostCalculation,
+				DailyRecordToAttendanceItemConverter dailyRecordDto) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		return PremiumTimeOfDailyPerformance.calcPremiumTimeForOuen(personCostCalculation.get(), dailyRecordDto);
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(

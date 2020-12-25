@@ -1,20 +1,11 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
-import lombok.val;
 import nts.arc.diagnose.stopwatch.Stopwatch;
 import nts.arc.diagnose.stopwatch.Stopwatch.TimeUnit;
 import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -107,7 +98,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	/**
 	 * 時間・回数・乖離系(計算で求める全ての値)が全て０
-	 * @return
 	 */
 	public static AttendanceTimeOfDailyPerformance allZeroValue(String empId, GeneralDate ymd) {
 		return new AttendanceTimeOfDailyPerformance(empId, 

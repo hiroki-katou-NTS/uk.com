@@ -130,6 +130,9 @@ public interface ItemConst extends Cloneable {
 	
 	public final String DAILY_ERROR_NAME = "社員の日別実績エラー一覧";
 
+	public final String DAILY_SUPPORT_TIME_CODE = LAYOUT_R;
+	public final String DAILY_SUPPORT_TIME_NAME = "日別実績の応援時間";
+
 	public final String DAILY_SNAPSHOT_CODE = LAYOUT_S;
 	public final String DAILY_SNAPSHOT_NAME = "日別勤怠のスナップショット";
 
@@ -310,6 +313,8 @@ public interface ItemConst extends Cloneable {
 	public final String STRAIGHT_GO_BACK = "直行直帰";
 	public final String TOPPAGE = "トップページ";
 	public final String TRANSFER_HOLIDAY = "振休";
+	public final String MOVE = "移動";
+	public final String PRICE_UNIT = "単価";
 	public final String CHILD_CARE = "子の看護";
 	public final String CARE = "介護";
 	public final String SUPER_60 = "60H超休";

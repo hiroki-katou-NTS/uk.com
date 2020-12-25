@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
@@ -47,6 +48,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Getter
+@AllArgsConstructor
 public class IntegrationOfDaily {
 	//社員ID
 	@Setter

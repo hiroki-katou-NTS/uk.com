@@ -14,10 +14,11 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.premiumitem.PriceUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
@@ -61,7 +62,7 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 	@Column(name = "MOVE_WITHIN_TIME")
 	public int moveWithinTime;
 
-	/** 移動の休憩時間 */
+	/** 移動休憩時間 */
 	@Column(name = "MOVE_BREAK_TIME")
 	public int moveBreakTime;
 
@@ -104,24 +105,64 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 	/** 割増時間10 */
 	@Column(name = "PREMIUM_TIME10")
 	public int premiumTime10;
+	
+	/** 割増金額1 */
+	@Column(name = "PREMIUM_AMOUNT1")
+	public int premiumAmount1;
 
-	/** 移動の割増時間1 */
+	/** 割増金額2 */
+	@Column(name = "PREMIUM_AMOUNT2")
+	public int premiumAmount2;
+
+	/** 割増金額3 */
+	@Column(name = "PREMIUM_AMOUNT3")
+	public int premiumAmount3;
+
+	/** 割増金額4 */
+	@Column(name = "PREMIUM_AMOUNT4")
+	public int premiumAmount4;
+
+	/** 割増金額5 */
+	@Column(name = "PREMIUM_AMOUNT5")
+	public int premiumAmount5;
+
+	/** 割増金額6 */
+	@Column(name = "PREMIUM_AMOUNT6")
+	public int premiumAmount6;
+
+	/** 割増金額7 */
+	@Column(name = "PREMIUM_AMOUNT7")
+	public int premiumAmount7;
+
+	/** 割増金額8 */
+	@Column(name = "PREMIUM_AMOUNT8")
+	public int premiumAmount8;
+
+	/** 割増金額9 */
+	@Column(name = "PREMIUM_AMOUNT9")
+	public int premiumAmount9;
+
+	/** 割増金額10 */
+	@Column(name = "PREMIUM_AMOUNT10")
+	public int premiumAmount10;
+
+	/** 移動割増時間1 */
 	@Column(name = "MOVE_PREMIUM_TIME1")
 	public int movePremiumTime1;
 
-	/** 移動の割増時間2 */
+	/** 移動割増時間2 */
 	@Column(name = "MOVE_PREMIUM_TIME2")
 	public int movePremiumTime2;
 
-	/** 移動の割増時間3 */
+	/** 移動割増時間3 */
 	@Column(name = "MOVE_PREMIUM_TIME3")
 	public int movePremiumTime3;
 
-	/** 移動の割増時間4 */
+	/** 移動割増時間4 */
 	@Column(name = "MOVE_PREMIUM_TIME4")
 	public int movePremiumTime4;
 
-	/** 移動の割増時間5 */
+	/** 移動割増時間5 */
 	@Column(name = "MOVE_PREMIUM_TIME5")
 	public int movePremiumTime5;
 
@@ -129,22 +170,22 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 	@Column(name = "MOVE_PREMIUM_TIME6")
 	public int movePremiumTime6;
 
-	/** 移動の割増時間7 */
+	/** 移動割増時間7 */
 	@Column(name = "MOVE_PREMIUM_TIME7")
 	public int movePremiumTime7;
 
-	/** 移動の割増時間8 */
+	/** 移動割増時間8 */
 	@Column(name = "MOVE_PREMIUM_TIME8")
 	public int movePremiumTime8;
 
-	/** 移動の割増時間9 */
+	/** 移動割増時間9 */
 	@Column(name = "MOVE_PREMIUM_TIME9")
 	public int movePremiumTime9;
 
-	/** 移動の割増時間10 */
+	/** 移動割増時間10 */
 	@Column(name = "MOVE_PREMIUM_TIME10")
 	public int movePremiumTime10;
-
+	
 	/** 常勤勤務時間 */
 	@Column(name = "NORMAL_WORK_TIME")
 	public int normalWorkTime;
@@ -189,40 +230,46 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 										new AttendanceTime(nightDeductionTime)));
 		
 		return OuenWorkTimeOfDaily.create(pk.sid, pk.ymd, 
-				OuenWorkTimeOfDailyAttendance.create(pk.ouenNo, 
+				OuenWorkTimeOfDailyAttendance.create(new OuenFrameNo(pk.ouenNo), 
 						OuenAttendanceTimeEachTimeSheet.create(
 								new AttendanceTime(totalTime), 
 								new AttendanceTime(breakTime), 
 								new AttendanceTime(withinTime),
 								medicalTimes, 
 								premiumTime(premiumTime1, premiumTime2, premiumTime3, premiumTime4, premiumTime5, 
-											premiumTime6, premiumTime7, premiumTime8, premiumTime9, premiumTime10)),
+											premiumTime6, premiumTime7, premiumTime8, premiumTime9, premiumTime10,
+											premiumAmount1, premiumAmount2, premiumAmount3, premiumAmount4, premiumAmount5,
+											premiumAmount6, premiumAmount7, premiumAmount8, premiumAmount9, premiumAmount10)),
 						OuenMovementTimeEachTimeSheet.create(
 								new AttendanceTime(moveTotalTime), 
 								new AttendanceTime(moveBreakTime), 
 								new AttendanceTime(moveWithinTime), 
 								premiumTime(movePremiumTime1, movePremiumTime2, movePremiumTime3, movePremiumTime4, movePremiumTime5, 
-											movePremiumTime6, movePremiumTime7, movePremiumTime8, movePremiumTime9, movePremiumTime10)), 
+											movePremiumTime6, movePremiumTime7, movePremiumTime8, movePremiumTime9, movePremiumTime10,
+											0, 0, 0, 0, 0,0, 0, 0, 0, 0)),
 						new AttendanceAmountDaily(amount), 
 						new PriceUnit(priceUnit)));
 	}
 	
 	public List<PremiumTime> premiumTime(int no1, int no2, int no3, 
 			int no4, int no5, int no6, int no7, 
-			int no8, int no9, int no10){
+			int no8, int no9, int no10,
+			int amount1, int amount2, int amount3, int amount4,
+			int amount5, int amount6, int amount7, int amount8,
+			int amount9, int amount10){
 		
 		List<PremiumTime> premiumTimes = new ArrayList<>();
 		
-		premiumTimes.add(new PremiumTime(1, new AttendanceTime(no1)));
-		premiumTimes.add(new PremiumTime(2, new AttendanceTime(no2)));
-		premiumTimes.add(new PremiumTime(3, new AttendanceTime(no3)));
-		premiumTimes.add(new PremiumTime(4, new AttendanceTime(no4)));
-		premiumTimes.add(new PremiumTime(5, new AttendanceTime(no5)));
-		premiumTimes.add(new PremiumTime(6, new AttendanceTime(no6)));
-		premiumTimes.add(new PremiumTime(7, new AttendanceTime(no7)));
-		premiumTimes.add(new PremiumTime(8, new AttendanceTime(no8)));
-		premiumTimes.add(new PremiumTime(9, new AttendanceTime(no9)));
-		premiumTimes.add(new PremiumTime(10, new AttendanceTime(no10)));
+		premiumTimes.add(new PremiumTime(1, new AttendanceTime(no1), new AttendanceAmountDaily(amount1)));
+		premiumTimes.add(new PremiumTime(2, new AttendanceTime(no2), new AttendanceAmountDaily(amount2)));
+		premiumTimes.add(new PremiumTime(3, new AttendanceTime(no3), new AttendanceAmountDaily(amount3)));
+		premiumTimes.add(new PremiumTime(4, new AttendanceTime(no4), new AttendanceAmountDaily(amount4)));
+		premiumTimes.add(new PremiumTime(5, new AttendanceTime(no5), new AttendanceAmountDaily(amount5)));
+		premiumTimes.add(new PremiumTime(6, new AttendanceTime(no6), new AttendanceAmountDaily(amount6)));
+		premiumTimes.add(new PremiumTime(7, new AttendanceTime(no7), new AttendanceAmountDaily(amount7)));
+		premiumTimes.add(new PremiumTime(8, new AttendanceTime(no8), new AttendanceAmountDaily(amount8)));
+		premiumTimes.add(new PremiumTime(9, new AttendanceTime(no9), new AttendanceAmountDaily(amount9)));
+		premiumTimes.add(new PremiumTime(10, new AttendanceTime(no10), new AttendanceAmountDaily(amount10)));
 		
 		return premiumTimes;
 	}
@@ -231,7 +278,7 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 		KrcdtDayOuenTime entity = new KrcdtDayOuenTime();
 		
 		entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
-				domain.getYmd(), domain.getOuenTime().getWorkNo());
+				domain.getYmd(), domain.getOuenTime().getWorkNo().v());
 		
 		entity.amount = domain.getOuenTime().getAmount().v();
 		entity.priceUnit = domain.getOuenTime().getPriceUnit().v();
@@ -248,6 +295,16 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 		entity.premiumTime8 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 8);
 		entity.premiumTime9 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 9);
 		entity.premiumTime10 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 10);
+		entity.premiumAmount1 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 1);
+		entity.premiumAmount2 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 2);
+		entity.premiumAmount3 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 3);
+		entity.premiumAmount4 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 4);
+		entity.premiumAmount5 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 5);
+		entity.premiumAmount6 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 6);
+		entity.premiumAmount7 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 7);
+		entity.premiumAmount8 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 8);
+		entity.premiumAmount9 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 9);
+		entity.premiumAmount10 = getPremiumAmount(domain.getOuenTime().getWorkTime().getPremiumTime(), 10);
 		entity.moveTotalTime = domain.getOuenTime().getMoveTime().getTotalMoveTime().valueAsMinutes();
 		entity.moveBreakTime = domain.getOuenTime().getMoveTime().getBreakTime().valueAsMinutes();
 		entity.moveWithinTime = domain.getOuenTime().getMoveTime().getWithinMoveTime().valueAsMinutes();
@@ -289,5 +346,11 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 		
 		return times.stream().filter(c -> c.getPremiumTimeNo() == no)
 				.findFirst().map(c -> c.getPremitumTime().v()).orElse(0);
+	}
+	
+	private static int getPremiumAmount(List<PremiumTime> times, int no) {
+		
+		return times.stream().filter(c -> c.getPremiumTimeNo() == no)
+				.findFirst().map(c -> c.getPremiumAmount().v()).orElse(0);
 	}
 }
