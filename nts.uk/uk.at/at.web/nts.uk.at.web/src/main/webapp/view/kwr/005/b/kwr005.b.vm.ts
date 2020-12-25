@@ -165,7 +165,11 @@ module nts.uk.at.view.kwr005.b {
         vm.$blockui('hide');
       }).fail((error) => {
         let ctrlFocus = error.messageId === 'Msg_1927' ? '#KWR005_B52' : '#btnB11';
-        $(ctrlFocus).ntsError('set', { messageId: error.messageId });
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          vm.$blockui('hide');
+          $(ctrlFocus).focus();
+        });
+        //$(ctrlFocus).ntsError('set', { messageId: error.messageId });
       }).always(() => vm.$blockui('hide'));
 
     }
