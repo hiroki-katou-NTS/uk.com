@@ -187,7 +187,7 @@ public class HolidayShipmentScreenAFinder {
 		result.setApplicationForWorkingDay(applicationForWorkingDay);
 		
 		//1.振休申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application nghỉ bù (New )(có liên quan application ngày đối tượng )
-		// chờ QA: 113043
+		// chờ QA: 113043 -> Done
 		DisplayInformationApplication applicationForHoliday = this.applicationForHoliday(companyId, 
 																						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
 																						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent() ? 
@@ -374,12 +374,19 @@ public class HolidayShipmentScreenAFinder {
 	
 	}
 
-	//1.振休申請（新規）起動処理(申請対象日関係あり)
+	/**
+	 * @name 1.振休申請（新規）起動処理(申請対象日関係あり)
+	 * @param companyId
+	 * @param employmentCode
+	 * @param workTypeCD
+	 * @return
+	 */
 	public DisplayInformationApplication applicationForHoliday(String companyId, String employmentCode, Optional<String> workTypeCD) {
 		DisplayInformationApplication result = new DisplayInformationApplication();
 		//振休用勤務種類の取得(Lấy worktype nghỉ bù)
 		List<WorkType> workTypeForHoliday = this.getWorkTypeForHoliday(companyId, employmentCode, null);
 		
+		//振休申請起動時の表示情報．勤務種類リスト=取得した振休用勤務種類(List) (DisplayInfo khi khởi động đơn xin nghỉ bù. WorkTypeList= worktype nghỉ bù (List) đã lấy)
 		result.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 		
 		//振出日の休日区分により振休の勤務種類を取得する(Acquisition of the work type of the holiday based on the holiday classification of the withdrawal date)
@@ -389,10 +396,10 @@ public class HolidayShipmentScreenAFinder {
 	}
 	
 	/**
-	 * @name 1.振休申請（新規）起動処理(申請対象日関係あり)
+	 * @name 振出日の休日区分により振休の勤務種類を取得する
 	 * @param companyId
-	 * @param workTypeCD
-	 * @param workTypeForHoliday
+	 * @param workTypeCD 振出日の勤務種類 (optional)
+	 * @param workTypeForHoliday 振休用勤務種類(List)：1日の勤務
 	 * @return
 	 */
 	public Optional<String> getWorkTypeOfTheHoliday(String companyId, Optional<String> workTypeCD, List<WorkType> workTypeForHoliday) {
