@@ -584,8 +584,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			service.getDataStartScreen(targetOrgDto)
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
-					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
-					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;
+					/*self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
+					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;*/
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
@@ -1151,7 +1151,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					totalTime: 1,
 					breaktime: 1
 				})
-
+				
+				// SET COLOR A6
 				if (dataMid.color != "" && dataMid.color !== null && self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule == 1 && self.checkDisByDate != false) {
 					if (checkColor.worktypeCode != 0)
 						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId,
@@ -1963,9 +1964,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						endTime1 = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
 
 						if ((timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) &&
-							(timeChart.startTime < Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
-							(_.inRange(timeChartBrk.startTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
-								_.inRange(timeChartBrk.endTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+							(timeChart.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartBrk.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartBrk.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 							let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, { start: startTime1, end: endTime1 }, i);
 							ruler.addChartWithType("BreakTime", {
 								id: id,
@@ -1982,22 +1983,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								},
 								dropFinished: (b: any, e: any) => {
 									let datafilterBrk = _.filter(midData, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
-										dataMidBrk = datafilterBrk[0];
+										dataMidBrk = datafilterBrk[0], timeChartBrk2 : any = null, checkChange = 0;
 										let breakChange = _.filter(self.allTimeBrk, (x: any) => { return x.options.lineNo === i });
 										let indexBrk = _.findIndex(breakChange, (x: any) => {return x.options.id === id})
-										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
-										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
-;									/*	for (let l = 0; l < breakTime.length; l++) {
-											timeChartBrk2 = self.convertTimeToChart(_.isNil(y.startTime) ? y.start : y.startTime, _.isNil(y.endTime) ? y.end : y.endTime);
-											if (b === timeChartBrk2.startTime && e === timeChartBrk2.endTime) {
+										for (let l = 0; l < breakChange.length; l++) {
+											if (b + self.dispStart === breakChange[l].options.start && e + self.dispStart === breakChange[l].options.end) {
 												checkChange = 1;
 											}
 										}
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
 										if (checkChange == 0) {
-											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", breakTime == null ? "0:00" : breakTime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
+											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
 										} else {
-											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", breakTime == null ? "0:00" : breakTime);
-										}*/
+											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime);
+										}
 								}
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
@@ -2007,9 +2007,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 						if (datafilter[0].gantCharts === 1) {
 							if ((timeMinus2.length > 0 && timeMinus2[0].startTime != null && timeMinus2[0].endTime != null) &&
-								(timeChart2.startTime < Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
-								(_.inRange(timeChartBrk.startTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
-									_.inRange(timeChartBrk.endTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+								(timeChart2.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+								(_.inRange(timeChartBrk.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+									_.inRange(timeChartBrk.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 								id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
 								let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, { start: startTime1, end: endTime1 }, i);
 								ruler.addChartWithType("BreakTime", {
@@ -2812,7 +2812,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				totalTimeAll += (total.end * 5) - (total.start * 5)
 			});
 			start1 = start1 <= self.dispStart * 5 ? self.dispStart * 5 : start1 ;
+			
+			if(start2 != null && start2 != 0)
 			start2 = start2 <= self.dispStart * 5 ? self.dispStart * 5 : start2;
+			
 			if (start2 != 0 && end2 != 0)
 				totalTimeWork = ((end2 - (end2 % 5)) - (start2 - (start2 % 5))) + ((end1 - (end1 % 5)) - (start1 - (start1 % 5)));
 			else if (end1 != 0 && (start2 == 0 || end2 == 0))
