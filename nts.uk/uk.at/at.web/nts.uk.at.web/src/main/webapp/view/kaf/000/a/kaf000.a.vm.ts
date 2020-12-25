@@ -7,9 +7,9 @@ module nts.uk.at.view.kaf000.a.viewmodel {
     export class Kaf000AViewModel extends ko.ViewModel {
     	appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(CommonProcess.initCommonSetting());
     	
-        loadData(empLst: Array<string>, dateLst: Array<string>, appType: AppType) {
+        loadData(empLst: Array<string>, dateLst: Array<string>, appType: AppType, opHolidayAppType?: number, opOvertimeAppAtr?: number) {
             const vm = this;
-            let command = { empLst, dateLst, appType };
+            let command = { empLst, dateLst, appType, opHolidayAppType, opOvertimeAppAtr };
             return vm.$ajax(API.startNew, command)
             .then((data: any) => {
                 vm.appDispInfoStartupOutput(data);

@@ -222,12 +222,26 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		handleErrorCustom(failData: any): any {
 			const vm = this;
-			if (failData.messageId == "Msg_26") {
+			if (
+				failData.messageId == "Msg_750"
+				|| failData.messageId == "Msg_1654"
+				|| failData.messageId == "Msg_1508"
+				|| failData.messageId == "Msg_424"
+				|| failData.messageId == "Msg_1746"
+				|| failData.messageId == "Msg_1745"
+				|| failData.messageId == "Msg_1748"
+				|| failData.messageId == "Msg_1747"
+				|| failData.messageId == "Msg_1748"
+				|| failData.messageId == "Msg_1656"
+				|| failData.messageId == "Msg_1535"
+				|| failData.messageId == "Msg_1536"
+				|| failData.messageId == "Msg_1537"
+				|| failData.messageId == "Msg_1538"
+				) {
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 					.then(() => {
-						vm.$jump("com", "/view/ccg/008/a/index.xhtml");
 					});
-				return $.Deferred().resolve(false);
+				return $.Deferred().resolve(false);						
 			}
 			return $.Deferred().resolve(true);
 		}
@@ -653,7 +667,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							return false;
 						}
 						// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-						if (inpStartTime2 && inpEndTime2 && start2 && end2) {
+						if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2)) {
 							if (start2 > end2) {
 								vm.$errors('#inpStartTime2', 'Msg_307');
 								vm.$errors('#inpEndTime2', 'Msg_307');
@@ -662,7 +676,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 						
 						// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-						if (start2 && inpStartTime2) {
+						if (_.isNumber(start2) && inpStartTime2) {
 							if (start2 < end1) {
 								vm.$errors('#inpEndTime1', 'Msg_581');
 								vm.$errors('#inpStartTime2', 'Msg_581');
@@ -671,14 +685,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 						// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
 						if (inpStartTime2 && inpEndTime2) {
-							if (!(start2 && end2)) {
-								if (!start2) {
-									vm.$errors('#inpStartTime2', 'Msg_307');									
+							if (!(_.isNumber(start2) && _.isNumber(end2))) {
+								if (!_.isNumber(start2) && _.isNumber(end2)) {
+									vm.$errors('#inpStartTime2', 'Msg_307');
+									return false;								
 								}
-								if (!end2) {
-									vm.$errors('#inpEndTime2', 'Msg_307');																	
+								if (!_.isNumber(end2) && _.isNumber(start2)) {
+									vm.$errors('#inpEndTime2', 'Msg_307');
+									return false;																
 								}
-								return false;
+								
 							}
 						}
 						return true;						

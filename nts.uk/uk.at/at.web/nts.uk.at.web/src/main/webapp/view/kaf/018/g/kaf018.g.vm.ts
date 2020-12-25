@@ -7,12 +7,16 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 
     @bean()
     class Kaf018GViewModel extends ko.ViewModel {
-		dataSource1: Array<EmpDateConfirmContent> = [];
-		dataSource2: Array<EmpDateConfirmContent> = [];
+		dataSourceMonth: Array<EmpDateConfirmContent> = [];
+		dataSourceDay: Array<EmpDateConfirmContent> = [];
 		startDate: string;
 		endDate: string;
 		currentEmpInfo: KnockoutObservable<EmpConfirmInfo> = ko.observable(null);
 		empInfoLst: Array<EmpConfirmInfo> = [];
+		columnIggridMonth: Array<any> = [];
+		columnIggridDay: Array<any> = [];
+		columnIggridMonthFixed: Array<any> = [];
+		columnIggridDayFixed: Array<any> = [];
 		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			const vm = this;
 			let index = _.indexOf(vm.empInfoLst, vm.currentEmpInfo())
@@ -41,17 +45,57 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
 			vm.currentEmpInfo(_.find(vm.empInfoLst, o => o.empID == params.currentEmpID));
+			vm.columnIggridMonth = [
+				{ headerText: "", key: 'rootID', width: 1, hidden: true },
+				{ headerText: vm.$i18n('KAF018_422'), key: 'dateStr', width: 180 }
+			];
+			vm.columnIggridDay = [
+				{ headerText: "", key: 'rootID', width: 1, hidden: true },
+				{ headerText: vm.$i18n('KAF018_431'), key: 'dateStr', width: 180 }
+			];
+			vm.columnIggridMonthFixed = [{ columnKey: 'dateStr', isFixed: true }];
+			vm.columnIggridDayFixed = [{ columnKey: 'dateStr', isFixed: true }];
+			if(vm.params.apprSttComfirmSet.usePersonConfirm || vm.params.apprSttComfirmSet.monthlyIdentityConfirm) {
+				vm.columnIggridMonth.push({ headerText: vm.$i18n('KAF018_423'), key: 'confirmStt', width: 150 });
+				vm.columnIggridDay.push({ headerText: vm.$i18n('KAF018_432'), key: 'confirmStt', width: 150 });
+				vm.columnIggridMonthFixed.push({ columnKey: 'confirmStt', isFixed: true });
+				vm.columnIggridDayFixed.push({ columnKey: 'confirmStt', isFixed: true });
+			}
+			if(vm.params.apprSttComfirmSet.useBossConfirm || vm.params.apprSttComfirmSet.monthlyConfirm) {
+				vm.columnIggridMonth.push({ headerText: vm.$i18n('KAF018_424'), key: 'apprStt', width: 150 });
+				vm.columnIggridDay.push({ headerText: vm.$i18n('KAF018_433'), key: 'apprStt', width: 150 });
+				vm.columnIggridMonthFixed.push({ columnKey: 'apprStt', isFixed: true });
+				vm.columnIggridDayFixed.push({ columnKey: 'apprStt', isFixed: true });
+			}
+			vm.columnIggridMonth = _.concat(vm.columnIggridMonth, [
+				{ headerText: vm.$i18n('KAF018_425'), key: 'approvalStatus', width: 150 },
+				{ headerText: vm.$i18n('KAF018_426'), key: 'phase1', width: 250 },
+				{ headerText: vm.$i18n('KAF018_427'), key: 'phase2', width: 250 },
+				{ headerText: vm.$i18n('KAF018_428'), key: 'phase3', width: 250 },
+				{ headerText: vm.$i18n('KAF018_429'), key: 'phase4', width: 250 },
+				{ headerText: vm.$i18n('KAF018_430'), key: 'phase5', width: 267 }	
+			]);
+			vm.columnIggridDay = _.concat(vm.columnIggridDay, [
+				{ headerText: vm.$i18n('KAF018_434'), key: 'approvalStatus', width: 150 },
+				{ headerText: vm.$i18n('KAF018_435'), key: 'phase1', width: 250 },
+				{ headerText: vm.$i18n('KAF018_436'), key: 'phase2', width: 250 },
+				{ headerText: vm.$i18n('KAF018_437'), key: 'phase3', width: 250 },
+				{ headerText: vm.$i18n('KAF018_438'), key: 'phase4', width: 250 },
+				{ headerText: vm.$i18n('KAF018_439'), key: 'phase5', width: 267 }
+			]);
+			vm.columnIggridMonthFixed.push({ columnKey: 'approvalStatus', isFixed: true });
+			vm.columnIggridDayFixed.push({ columnKey: 'approvalStatus', isFixed: true });
 			vm.refreshDataSource().then(() => {
 				$("#kaf018-e-cancel-btn").focus();	
 			});
 		}
 		
-		createIggrid1() {
+		createIggridMonth() {
 			const vm = this;
 			$("#eGrid1").igGrid({
 				height: 66,
 				width: window.innerWidth - 40,
-				dataSource: vm.dataSource1,
+				dataSource: vm.dataSourceMonth,
 				primaryKey: 'rootID',
 				primaryKeyDataType: 'string',
 				hidePrimaryKey: true,
@@ -65,40 +109,24 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 						vm.$blockui('hide');
 					});  
 			    },
-				columns: [
-					{ headerText: "", key: 'rootID', width: 1, hidden: true },
-					{ headerText: vm.$i18n('KAF018_385'), key: 'dateStr', width: 180 },
-					{ headerText: vm.$i18n('KAF018_383'), key: 'confirmStt', width: 150 },
-					{ headerText: vm.$i18n('KAF018_384'), key: 'apprStt', width: 150 },
-					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150 },
-					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 250 },
-					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
-					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
-					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 267 }
-				],
+				columns: vm.columnIggridMonth,
 				features: [
 					{
 						name: 'ColumnFixing', 
 						fixingDirection: 'left',
 						showFixButtons: false,
-						columnSettings: [
-							{ columnKey: 'dateStr', isFixed: true },
-							{ columnKey: 'confirmStt', isFixed: true },
-							{ columnKey: 'apprStt', isFixed: true },
-							{ columnKey: 'approvalStatus', isFixed: true }
-						]
+						columnSettings: vm.columnIggridMonthFixed
 					}
 				]
 			});
 		}
 		
-		createIggrid2() {
+		createIggridDay() {
 			const vm = this;
 			$("#eGrid2").igGrid({
 				height: 434,
 				width: window.innerWidth - 40,
-				dataSource: vm.dataSource2,
+				dataSource: vm.dataSourceDay,
 				primaryKey: 'rootID',
 				primaryKeyDataType: 'string',
 				hidePrimaryKey: true,
@@ -112,29 +140,13 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 						vm.$blockui('hide');
 					});  
 			    },
-				columns: [
-					{ headerText: "", key: 'rootID', width: 1, hidden: true },
-					{ headerText: vm.$i18n('KAF018_385'), key: 'dateStr', width: 180 },
-					{ headerText: vm.$i18n('KAF018_383'), key: 'confirmStt', width: 150 },
-					{ headerText: vm.$i18n('KAF018_384'), key: 'apprStt', width: 150 },
-					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150 },
-					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 250 },
-					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
-					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
-					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 267 }
-				],
+				columns: vm.columnIggridDay,
 				features: [
 					{
 						name: 'ColumnFixing', 
 						fixingDirection: 'left',
 						showFixButtons: false,
-						columnSettings: [
-							{ columnKey: 'dateStr', isFixed: true },
-							{ columnKey: 'confirmStt', isFixed: true },
-							{ columnKey: 'apprStt', isFixed: true },
-							{ columnKey: 'approvalStatus', isFixed: true }
-						]
+						columnSettings: vm.columnIggridDayFixed
 					}
 				]
 			});
@@ -206,8 +218,8 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				empDateConfirmContent.phase5 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==5));
 				monthDataSource.push(empDateConfirmContent);	
 			}
-			vm.dataSource1 = monthDataSource;
-			vm.createIggrid1();
+			vm.dataSourceMonth = monthDataSource;
+			vm.createIggridMonth();
 		}
 		
 		createDayDataSource(apprSttConfirmEmpMonthDay: ApprSttConfirmEmpMonthDay) {
@@ -247,8 +259,8 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				}
 				dayDataSource.push(empDateConfirmContent);
 			});
-			vm.dataSource2 = dayDataSource;
-			vm.createIggrid2();
+			vm.dataSourceDay = dayDataSource;
+			vm.createIggridDay();
 		}
 		
 		getPhaseStatusStr(phase: any) {

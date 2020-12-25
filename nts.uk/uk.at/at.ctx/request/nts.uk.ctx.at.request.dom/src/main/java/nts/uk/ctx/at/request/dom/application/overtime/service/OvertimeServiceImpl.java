@@ -425,7 +425,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if (	!dateOp.isPresent() 
 				|| !workContent.getWorkTypeCode().isPresent()
 				|| !workContent.getWorkTimeCode().isPresent() 
-				|| workContent.getTimeZones().isEmpty()) return null;
+				|| CollectionUtil.isEmpty(workContent.getTimeZones())) return null;
 		// 06_計算処理
 		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(
 				companyId,
@@ -1133,15 +1133,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				displayInfoOverTime.getAppDispInfoStartup(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
 		
-		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
 		// 「残業申請の表示情報」を更新して返す
-		if (displayInfoOverTime.getCalculationResultOp().isPresent()) {
-//			displayInfoOverTime.getCalculationResultOp().get().setFlag(1);
-		} else {
-			CalculationResult calculationResult = new CalculationResult();
-//			calculationResult.setFlag(1);
-			displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
-		}
+		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		
 		return displayInfoOverTime;
 	}

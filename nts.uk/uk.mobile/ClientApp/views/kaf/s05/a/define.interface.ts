@@ -21,6 +21,7 @@ export interface DisplayInfoOverTime {
     isProxy: Boolean;
     calculationResultOp?: CalculationResult;
     infoWithDateApplicationOp?: InfoWithDateApplication;
+    calculatedFlag: CalculatedFlag;
 }
 export interface WorkdayoffFrame {
     workdayoffFrNo: number;
@@ -467,4 +468,10 @@ export interface BreakTime {
     valueHours: any;
     title: string;
     frameNo: number;
+}
+export enum CalculatedFlag {
+    // 計算済
+    CALCULATED, 	
+    // 未計算
+    UNCALCULATED 
 }

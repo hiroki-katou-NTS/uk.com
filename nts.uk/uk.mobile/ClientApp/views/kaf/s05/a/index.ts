@@ -124,11 +124,16 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return value;
     }
+    public get c12() {
+        const self = this;
+
+        return self.c13 || self.c14;
+    }
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND 乖離理由を選択肢から選ぶ = true
     public get c13() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c13_1 = !_.isNil(findResult);
         let c13_2 = c13_1 ? findResult.divergenceReasonSelected : false;
         
@@ -137,8 +142,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 1」 <> empty　AND　乖離理由を入力する = true
     public get c14() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 1 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c14_1 = !_.isNil(findResult);
         let c14_2 = c14_1 ? findResult.divergenceReasonInputed : false;
 
@@ -249,8 +254,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND 乖離理由を選択肢から選ぶ = true
     public get c20() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
         let c20_1 = !_.isNil(findResult);
         let c20_2 = c20_1 ? findResult.divergenceReasonSelected : false;
         
@@ -259,8 +264,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // 「残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．NO = 2」 <> empty　AND　乖離理由を入力する = true
     public get c21() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let findResult = _.find(displayOverTime.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+        let model = self.model as Model;
+        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
         let c21_1 = !_.isNil(findResult);
         let c21_2 = c21_1 ? findResult.divergenceReasonInputed : false;
 
@@ -417,25 +422,29 @@ export class KafS05Component extends KafS00ShrComponent {
                 appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-            {
-                let timeZone = {} as TimeZoneWithWorkNo;
-                timeZone.workNo = 1;
-                timeZone.timeZone = {} as TimeZoneNew;
-                timeZone.timeZone.startTime = step1.getWorkHours1().start;
-                timeZone.timeZone.endTime = step1.getWorkHours1().end;
-                appOverTimeInsert.workHoursOp.push(timeZone);
+            {   
+                let start1 = _.get(step1.getWorkHours1(), 'start');
+                let end1 = _.get(step1.getWorkHours1(), 'end');
+                if (_.isNumber(start1) && _.isNumber(end1)) {
+                    let timeZone = {} as TimeZoneWithWorkNo;
+                    timeZone.workNo = 1;
+                    timeZone.timeZone = {} as TimeZoneNew;
+                    timeZone.timeZone.startTime = start1;
+                    timeZone.timeZone.endTime = end1;
+                    appOverTimeInsert.workHoursOp.push(timeZone);
+                }
             }
             appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
             let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
             _.forEach(breakTimes, (item: BreakTime, index: number) => {
                 let start = _.get(item,'valueHours.start');
                 let end = _.get(item,'valueHours.end');
-                if (!_.isNil(start) && !_.isNil(end)) {
+                if (_.isNumber(start) && _.isNumber(end)) {
                     let timeZone = {} as TimeZoneWithWorkNo;
                     timeZone.workNo = index + 1;
                     timeZone.timeZone = {} as TimeZoneNew;
-                    timeZone.timeZone.startTime = 
-                    timeZone.timeZone.endTime = step1.getWorkHours1().end;
+                    timeZone.timeZone.startTime = start;
+                    timeZone.timeZone.endTime = end;
                     appOverTimeInsert.breakTimeOp.push(timeZone);
                 }
             });
@@ -451,13 +460,29 @@ export class KafS05Component extends KafS00ShrComponent {
         let step2 = self.$refs.step2 as KafS05Step2Component;
 
         let overTimes = step2.overTimes as Array<OverTime>;
-        // AttendanceType.NORMALOVERTIME
         let applicationTime = appOverTime.applicationTime = {} as ApplicationTime;
         let applicationTimes = applicationTime.applicationTime = [] as Array<OvertimeApplicationSetting>;
         _.forEach(overTimes, (item: OverTime) => {
+            // AttendanceType.NORMALOVERTIME
             if (item.type == AttendanceType.NORMALOVERTIME && item.applicationTime > 0) {
                 let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
                 overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
+                overtimeApplicationSetting.frameNo = Number(item.frameNo);
+                overtimeApplicationSetting.applicationTime = item.applicationTime;
+                applicationTimes.push(overtimeApplicationSetting);
+            }
+            if (item.type == AttendanceType.MIDNIGHT_OUTSIDE && item.applicationTime > 0) {
+                if (_.isNil(applicationTime.overTimeShiftNight)) {
+                    // applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+                }
+            }
+            
+        });
+        _.forEach(overTimes, (item: OverTime) => {
+            // AttendanceType.BREAKTIME
+            if (item.type == AttendanceType.BREAKTIME && item.applicationTime > 0) {
+                let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+                overtimeApplicationSetting.attendanceType = AttendanceType.BREAKTIME;
                 overtimeApplicationSetting.frameNo = Number(item.frameNo);
                 overtimeApplicationSetting.applicationTime = item.applicationTime;
                 applicationTimes.push(overtimeApplicationSetting);
@@ -502,6 +527,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     .then((res: any) => {
                         vm.model.displayInfoOverTime.calculationResultOp = res.data.calculationResultOp;
                         vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
+                        vm.model.displayInfoOverTime.calculatedFlag = res.data.calculatedFlag;
                         vm.numb = value;
                         let step2 = vm.$refs.step2 as KafS05Step2Component;
                         step2.loadAllData();
