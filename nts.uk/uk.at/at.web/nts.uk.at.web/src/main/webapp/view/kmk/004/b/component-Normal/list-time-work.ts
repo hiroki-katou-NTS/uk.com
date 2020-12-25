@@ -97,7 +97,6 @@ module nts.uk.at.view.kmk004.b {
         public workTimes: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
         public total: KnockoutObservable<string> = ko.observable('');
         public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
-        public ckeckNullYear: KnockoutObservable<boolean> = ko.observable(false);
         public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
         public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
         public type: SIDEBAR_TYPE;
@@ -117,7 +116,6 @@ module nts.uk.at.view.kmk004.b {
             vm.yearDelete = params.yearDelete;
 
             vm.initList();
-            vm.reloadData();
 
             vm.workTimes.subscribe((wts) => {
                 const total: number = wts.reduce((p, c) => p += Number(c.laborTime()), 0);
@@ -150,18 +148,19 @@ module nts.uk.at.view.kmk004.b {
 
             vm.selectedYear
                 .subscribe(() => {
-                    vm.mode("New")
-                    if (vm.type === 'Com_Person') {
-                        setTimeout(() => {
-                            if (ko.unwrap(vm.years).length == 0) {
-                                vm.initList();
-                            } else {
-                                vm.reloadData();
-                            }
-                        }, 100);
-                    } else {
-                        vm.reloadData();
-                    }
+                    vm.mode("New");
+                    vm.reloadData();
+                    // if (vm.type === 'Com_Person') {
+                    //     setTimeout(() => {
+                    //         if (ko.unwrap(vm.years).length == 0) {
+                    //             vm.initList();
+                    //         } else {
+                    //             vm.reloadData();
+                    //         }
+                    //     }, 100);
+                    // } else {
+                    //     vm.reloadData();
+                    // }
                 });
 
             vm.selectId
@@ -172,17 +171,19 @@ module nts.uk.at.view.kmk004.b {
 
             vm.years
                 .subscribe(() => {
-                    if (ko.unwrap(vm.years).length == 0) {
-                        vm.workTimeSaves([]);
-                        vm.initList();
+                    setTimeout(() => {
+                        if (ko.unwrap(vm.years).length == 0) {
+                            vm.workTimeSaves([]);
+                            vm.initList();
 
-                    } else {
-                        if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
-                            _.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
-                                return value.year == ko.unwrap(vm.yearDelete);
-                            }))
+                        } else {
+                            if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
+                                _.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
+                                    return value.year == ko.unwrap(vm.yearDelete);
+                                }))
+                            }
                         }
-                    }
+                    }, 100);
                 });
         }
 
@@ -190,11 +191,10 @@ module nts.uk.at.view.kmk004.b {
             const vm = this;
             const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
 
-            if (ko.unwrap(vm.selectedYear) != null) {
-                vm.ckeckNullYear(true);
-            }
-
             const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
+
+            console.log(exist);
+
 
             if (exist) {
                 switch (vm.type) {
@@ -224,7 +224,6 @@ module nts.uk.at.view.kmk004.b {
                     case 'Com_Workplace':
                         if (ko.unwrap(vm.selectId) !== '') {
                             const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
-
                             if (exist) {
                                 vm.workTimes(exist.worktimes.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                 vm.mode('Update');
@@ -340,7 +339,6 @@ module nts.uk.at.view.kmk004.b {
 
         updateListSave() {
             const vm = this;
-
             const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
             if (exist) {
@@ -365,7 +363,11 @@ module nts.uk.at.view.kmk004.b {
                     s.push(t);
                 }));
 
-                vm.workTimeSaves.push(new WorkTimeSave(ko.unwrap(vm.selectedYear), s));
+                vm.workTimeSaves.push(new WorkTimeSave(ko.unwrap(vm.selectedYear) as number, s));
+            }
+
+            if (ko.unwrap(vm.years).length == 0) {
+                vm.workTimeSaves([]);
             }
         }
     }
