@@ -1,17 +1,22 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
-
+  import ntsFile = nts.uk.request.file; 
   @component({
     name: 'layout1-component',
     template: 
     `
         <div>
-          <com:ko-if bind="$component.isShowUrlLayout1()">
+          <span data-bind="if: $component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
+          </span>
+          <com:ko-if bind="$component.isFlowmenu()">
+            <div data-bind="foreach: $component.lstHtml">
+              <div data-bind="html: html" id="F1-frame" ></div>
+            </div>
+          </com:ko-if>  
+          <com:ko-if bind="!$component.isFlowmenu()">
+          <iframe style="width: 100%" data-bind="attr: {src: $component.filePath}" id="F2-frame" ></iframe>
           </com:ko-if>
-          <div data-bind="foreach: $component.lstHtml">
-            <div data-bind="html: html" id="F1-frame" ></div>
-          </div>
         </div>
     `
   })
@@ -19,17 +24,21 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     urlIframe1: KnockoutObservable<string> = ko.observable("");
     lstHtml: KnockoutObservableArray<any> = ko.observableArray([]);
     isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
+    isFlowmenu: KnockoutObservable<boolean> = ko.observable(false);
+    filePath: KnockoutObservable<string> = ko.observable("");
 
     created(param: any) {
       const vm = this;
       const data = param.item();
       const layout1 = param.item().layout1;
+      if(layout1[0]) {
+        vm.isFlowmenu = layout1[0].isFlowmenu;
+      }
       if (layout1) {
         if (data.urlLayout1) {
           vm.isShowUrlLayout1(true);
           vm.urlIframe1(data.urlLayout1);
-          
-        } else {
+        } else if(layout1[0].isFlowmenu) {
           const lstFileId = ko.observableArray([]);
           _.each(layout1, (item: any) => {
             const fileId = item.fileId;
@@ -47,6 +56,14 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
               vm.renderHTML(res[0].htmlContent);
             }
           });
+        } else {
+          vm.filePath(ntsFile.liveViewUrl(layout1[0].fileId, 'index.htm'));
+          const ifr = document.getElementById('F2-frame');
+          const width = ifr.scrollWidth;
+          const ifrParent = $('.contents_layout');
+          const height = ifrParent.innerHeight();
+          (ifr as any).width = `${width.toString()}px`;
+          (ifr as any).height = `${height.toString()}px`;
         }
       }
     }
