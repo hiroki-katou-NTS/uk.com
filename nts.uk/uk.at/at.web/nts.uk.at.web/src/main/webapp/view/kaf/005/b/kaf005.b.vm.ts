@@ -128,7 +128,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		// for set color 
 		isStart: Boolean = true;
-		
+		isBindFirstBreakTime = true;
 		
 		// assign value after calling service calculation
 		timeTemp: Array<OvertimeApplicationSetting>;
@@ -167,6 +167,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
         initAppDetail() {
             let vm = this;
             vm.$blockui('show');
+			vm.isBindFirstBreakTime = true;
             let command = {
 				companyId: vm.$user.companyId,
 				appId: ko.toJS(vm.application).appID,
@@ -699,16 +700,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let workHours1 = {} as WorkHours;
 				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});
 				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});
-				workHours1.start.subscribe((value) => {
-					if (_.isNumber(value) && !_.isNil(workHours1.end())) {
-						self.getBreakTimes();
-					}
-				})
-				workHours1.end.subscribe((value) => {
-					if (_.isNumber(value) && !_.isNil(workHours1.start())) {
-						self.getBreakTimes();
-					}
-				})
+				ko.computed(() => {
+					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && !self.isBindFirstBreakTime) {
+						return self.getBreakTimes();
+					} else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
+						self.isBindFirstBreakTime = false;
+					}	
+				}, self).extend({notify: 'always', rateLimit: 500});
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
@@ -2477,7 +2475,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			command.workTimeCode = self.workInfo().workTime().code;
 			command.startTime = self.workInfo().workHours1.start();
 			command.endTime = self.workInfo().workHours1.end();
-			command.actualContentDisplayDtos = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLstl;
+			command.actualContentDisplayDtos = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst;
 			self.$ajax(API.breakTimes, command)
 				.done((res: BreakTimeZoneSetting) => {
 					if (res) {
