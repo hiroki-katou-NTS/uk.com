@@ -14,6 +14,7 @@ import nts.uk.screen.at.app.command.kmk.kmk004.o.DeleteTransMonthlyWorkTimeSetSh
 import nts.uk.screen.at.app.command.kmk.kmk004.o.DeleteTransMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.o.RegisterTransMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.o.UpdateTransMonthlyWorkTimeSetShaCommandHandler;
+import nts.uk.screen.at.app.kmk004.o.AfterCopyDeforMonthlyWorkTimeSetSha;
 import nts.uk.screen.at.app.kmk004.o.DeforLaborMonthTimeShaDto;
 import nts.uk.screen.at.app.kmk004.o.DisplayDeforBasicSettingByEmployee;
 import nts.uk.screen.at.app.kmk004.o.SelectEmployeeDefor;
@@ -29,7 +30,7 @@ import nts.uk.screen.at.app.query.kmk004.common.EmployeeList;
  * @author tutt
  *
  */
-@Path("screen/at/kmk004")
+@Path("screen/at/kmk004/viewO")
 @Produces("application/json")
 public class Kmk004OWebService {
 
@@ -53,46 +54,55 @@ public class Kmk004OWebService {
 
 	@Inject
 	private EmployeeList employeeList;
+	
+	@Inject
+	private AfterCopyDeforMonthlyWorkTimeSetSha afterCopy;
 
 	@POST
-	@Path("viewO/monthlyWorkTimeSet/add")
+	@Path("monthlyWorkTimeSet/add")
 	public void registerMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetShaCommand command) {
 		registerHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewO/monthlyWorkTimeSet/update")
+	@Path("monthlyWorkTimeSet/update")
 	public void updateMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetShaCommand command) {
 		updateHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewO/monthlyWorkTimeSet/delete")
+	@Path("monthlyWorkTimeSet/delete")
 	public void deleteMonthlyWorkTimeSet(DeleteTransMonthlyWorkTimeSetShaCommand command) {
 		deleteHandler.handle(command);
 	}
 	
 	@POST
-	@Path("viewO/getBasicSetting/{employeeId}")
+	@Path("getBasicSetting/{employeeId}")
 	public DeforLaborMonthTimeShaDto getBasicSetting(@PathParam("employeeId") String empId) {
 		return dislaySetting.displayDeforBasicSettingByEmployee(empId);
 	}
 	
 	@POST
-	@Path("viewO/selectSha/{empId}")
+	@Path("selectSha/{empId}")
 	public SelectEmployeeDeforDto selectWkp(@PathParam("empId") String empId) {
 		return select.selectEmployeeDefor(empId);
 	}
 	
 	@POST
-	@Path("viewO/getWorkingHoursByEmployee")
+	@Path("getWorkingHoursByEmployee")
 	public List<WorkTimeComDto> getWorkingHoursBySha(DisplayMonthlyWorkingByShaInputDto param) {
 		return selectYearByEmployee.getDeforDisplayMonthlyWorkingHoursByEmployee(param) ;
 	}
 	
 	@POST
-	@Path("viewO/getEmployeeIds")
+	@Path("getEmployeeIds")
 	public List<EmployeeIdDto> getEmployeeId() {
 		return this.employeeList.get(LaborWorkTypeAttr.DEFOR_LABOR);
+	}
+	
+	@POST
+	@Path("after-copy")
+	public List<String> afterCopy() {
+		return this.afterCopy.afterCopyDeforMonthlyWorkTimeSetSha();
 	}
 }

@@ -20,6 +20,7 @@ import nts.uk.screen.at.app.kmk004.n.DisplayInitialDeforScreenByEmploymentDto;
 import nts.uk.screen.at.app.kmk004.n.SelectEmploymentDefor;
 import nts.uk.screen.at.app.kmk004.n.SelectEmploymentDeforDto;
 import nts.uk.screen.at.app.kmk004.n.SelectYearByEmployment;
+import nts.uk.screen.at.app.kmk004.n.AfterCopyDeforMonthlyWorkTimeSetEmp;
 import nts.uk.screen.at.app.query.kmk004.b.WorkTimeComDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingByEmploymentInputDto;
 
@@ -28,70 +29,79 @@ import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingByEmploymen
  * @author tutt
  *
  */
-@Path("screen/at/kmk004")
+@Path("screen/at/kmk004/viewN")
 @Produces("application/json")
 public class Kmk004NWebService {
-	
+
 	@Inject
 	private RegisterTransMonthlyWorkTimeSetEmpCommandHandler registerHandler;
-	
+
 	@Inject
 	private UpdateTransMonthlyWorkTimeSetEmpCommandHandler updateHandler;
-	
+
 	@Inject
 	private DeleteTransMonthlyWorkTimeSetEmpCommandHandler deleteHandler;
 
 	@Inject
 	private DisplayDeforBasicSettingByEmployment dislaySetting;
-	
+
 	@Inject
 	private DisplayInitialDeforScreenByEmployment initScreen;
-	
+
 	@Inject
 	private SelectEmploymentDefor select;
-	
+
 	@Inject
 	private SelectYearByEmployment selectYearByEmp;
-	
+
+	@Inject
+	private AfterCopyDeforMonthlyWorkTimeSetEmp afterCopy;
+
 	@POST
-	@Path("viewN/monthlyWorkTimeSet/add")
+	@Path("monthlyWorkTimeSet/add")
 	public void registerMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetEmpCommand command) {
 		registerHandler.handle(command);
 	}
-	
+
 	@POST
-	@Path("viewN/monthlyWorkTimeSet/update")
+	@Path("monthlyWorkTimeSet/update")
 	public void updateMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetEmpCommand command) {
 		updateHandler.handle(command);
 	}
-	
+
 	@POST
-	@Path("viewN/monthlyWorkTimeSet/delete")
+	@Path("monthlyWorkTimeSet/delete")
 	public void deleteMonthlyWorkTimeSet(DeleteTransMonthlyWorkTimeSetEmpCommand command) {
 		deleteHandler.handle(command);
 	}
-	
+
 	@POST
-	@Path("viewN/getBasicSetting/{empCode}")
+	@Path("getBasicSetting/{empCode}")
 	public DeforLaborMonthTimeEmpDto getBasicSetting(@PathParam("empCode") String empCode) {
 		return dislaySetting.displayDeforBasicSettingByEmployment(empCode);
 	}
-	
+
 	@POST
-	@Path("viewN/selectEmp/{empCode}")
+	@Path("selectEmp/{empCode}")
 	public SelectEmploymentDeforDto selectWkp(@PathParam("empCode") String empCode) {
 		return select.selectEmploymentDefor(empCode);
 	}
 
 	@POST
-	@Path("viewN/initScreen")
+	@Path("initScreen")
 	public DisplayInitialDeforScreenByEmploymentDto initScreen() {
-		return initScreen.displayInitialDeforScreenByEmployment() ;
+		return initScreen.displayInitialDeforScreenByEmployment();
 	}
-	
+
 	@POST
-	@Path("viewN/getWorkingHoursByEmp")
+	@Path("getWorkingHoursByEmp")
 	public List<WorkTimeComDto> getWorkingHoursByEmp(DisplayMonthlyWorkingByEmploymentInputDto param) {
-		return selectYearByEmp.getDeforDisplayMonthlyWorkingHoursByEmp(param) ;
+		return selectYearByEmp.getDeforDisplayMonthlyWorkingHoursByEmp(param);
+	}
+
+	@POST
+	@Path("after-copy")
+	public List<String> afterCopy() {
+		return this.afterCopy.afterCopyDeforMonthlyWorkTimeSetEmp();
 	}
 }

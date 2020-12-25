@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.command.kmk.kmk004.m.DeleteTransMonthlyWorkTimeSetWk
 import nts.uk.screen.at.app.command.kmk.kmk004.m.RegisterTransMonthlyWorkTimeSetWkpCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.m.UpdateTransMonthlyWorkTimeSetWkpCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.SaveMonthlyWorkTimeSetWkpCommand;
+import nts.uk.screen.at.app.kmk004.m.AfterCopyDeforMonthlyWorkTimeSetWkp;
 import nts.uk.screen.at.app.kmk004.m.DeforLaborMonthTimeWkpDto;
 import nts.uk.screen.at.app.kmk004.m.DisplayDeforBasicSettingByWorkplace;
 import nts.uk.screen.at.app.kmk004.m.DisplayInitialDeforScreenByWorkPlaceDto;
@@ -28,7 +29,7 @@ import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingByWkpInputD
  * @author tutt
  *
  */
-@Path("screen/at/kmk004")
+@Path("screen/at/kmk004/viewM")
 @Produces("application/json")
 public class Kmk004MWebService {
 
@@ -52,46 +53,55 @@ public class Kmk004MWebService {
 	
 	@Inject
 	private SelectYearByWorkplace selectYearByWkp;
+	
+	@Inject
+	private AfterCopyDeforMonthlyWorkTimeSetWkp afterCopy;
 
 	@POST
-	@Path("viewM/monthlyWorkTimeSet/add")
+	@Path("monthlyWorkTimeSet/add")
 	public void registerMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetWkpCommand command) {
 		registerHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewM/monthlyWorkTimeSet/update")
+	@Path("monthlyWorkTimeSet/update")
 	public void updateMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetWkpCommand command) {
 		updateHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewM/monthlyWorkTimeSet/delete")
+	@Path("monthlyWorkTimeSet/delete")
 	public void deleteMonthlyWorkTimeSet(DeleteTransMonthlyWorkTimeSetWkpCommand command) {
 		deleteHandler.handle(command);
 	}
 	
 	@POST
-	@Path("viewM/getBasicSetting/{wkpId}")
+	@Path("getBasicSetting/{wkpId}")
 	public DeforLaborMonthTimeWkpDto getBasicSetting(@PathParam("wkpId") String wkpId) {
 		return dislaySetting.displayDeforBasicSettingByWorkplace(wkpId);
 	}
 	
 	@POST
-	@Path("viewM/selectWkp/{wkpId}")
+	@Path("selectWkp/{wkpId}")
 	public SelectWorkplaceDeforDto selectWkp(@PathParam("wkpId") String wkpId) {
 		return select.selectWorkplaceDefor(wkpId);
 	}
 	
 	@POST
-	@Path("viewM/initScreen")
+	@Path("initScreen")
 	public DisplayInitialDeforScreenByWorkPlaceDto initScreen() {
 		return initScreen.displayInitialDeforScreenByWorkplace() ;
 	}
 	
 	@POST
-	@Path("viewM/getWorkingHoursByWkp")
+	@Path("getWorkingHoursByWkp")
 	public List<WorkTimeComDto> getWorkingHoursByWkp(DisplayMonthlyWorkingByWkpInputDto param) {
 		return selectYearByWkp.getDeforDisplayMonthlyWorkingHoursByWkp(param) ;
+	}
+	
+	@POST
+	@Path("after-copy")
+	public List<String> afterCopy() {
+		return this.afterCopy.afterCopyDeforMonthlyWorkTimeSetWkp();
 	}
 }

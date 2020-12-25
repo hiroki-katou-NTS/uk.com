@@ -25,7 +25,7 @@ import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingInput;
  * @author tutt
  *
  */
-@Path("screen/at/kmk004")
+@Path("screen/at/kmk004/viewL")
 @Produces("application/json")
 public class Kmk004LWebService {
 
@@ -48,37 +48,37 @@ public class Kmk004LWebService {
 	private SelectYearByCompany selectYearByCompany;
 
 	@POST
-	@Path("viewL/monthlyWorkTimeSet/add")
+	@Path("monthlyWorkTimeSet/add")
 	public void registerMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetComCommand command) {
 		registerHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewL/monthlyWorkTimeSet/update")
+	@Path("monthlyWorkTimeSet/update")
 	public void updateMonthlyWorkTimeSet(SaveMonthlyWorkTimeSetComCommand command) {
 		updateHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewL/monthlyWorkTimeSet/delete")
+	@Path("monthlyWorkTimeSet/delete")
 	public void deleteMonthlyWorkTimeSet(DeleteTransMonthlyWorkTimeSetComCommand command) {
 		deleteHandler.handle(command);
 	}
 	
 	@POST
-	@Path("viewL/getBasicSetting")
+	@Path("getBasicSetting")
 	public DeforLaborMonthTimeComDto getBasicSetting() {
 		return dislaySetting.displayDeforBasicSettingByCompany();
 	}
 	
 	@POST
-	@Path("viewL/initScreen")
+	@Path("initScreen")
 	public DisplayInitialDeforScreenByCompanyDto initScreen() {
 		return initScreen.displayInitialDeforScreenByCom() ;
 	}
 	
 	@POST
-	@Path("viewL/getWorkingHoursByCompany")
+	@Path("getWorkingHoursByCompany")
 	public List<WorkTimeComDto> getWorkingHoursByCompany(DisplayMonthlyWorkingInput param) {
 		return selectYearByCompany.getDeforDisplayMonthlyWorkingHoursByCompany(param) ;
 	}
