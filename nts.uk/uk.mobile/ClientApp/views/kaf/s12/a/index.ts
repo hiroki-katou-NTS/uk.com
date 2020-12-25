@@ -4,6 +4,7 @@ import { component } from '@app/core/component';
 import { KafS12A1Component } from '../a1';
 import { KafS12A2Component } from '../a2';
 import { KafS12CComponent } from '../c';
+import {ITimeLeaveAppDispInfo} from './define';
 @component({
     name: 'kafs12a',
     route: '/kaf/s12/a',
@@ -22,10 +23,12 @@ import { KafS12CComponent } from '../c';
 export class KafS12AComponent extends Vue {
     public step: string = 'KAFS12_1';
     public mode: boolean = true;
+    public timeLeaveAppDispInfo: ITimeLeaveAppDispInfo;
 
-    public handleNextToStepTwo() {
+    public handleNextToStepTwo(data: ITimeLeaveAppDispInfo) {
         const vm = this;
 
+        vm.timeLeaveAppDispInfo = data;
         vm.step = 'KAFS12_2';
     }
 

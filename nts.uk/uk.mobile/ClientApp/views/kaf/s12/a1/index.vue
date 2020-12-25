@@ -218,5 +218,4 @@
           {{ "KAFS12_19" | i18n }}
         </button>
     </div>
-  </div>
 </template>

@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { KafS00DComponent } from '../../s00/d';
 import { ScreenMode } from '../../s00/b';
 @component({
@@ -16,6 +16,9 @@ import { ScreenMode } from '../../s00/b';
 })
 export class KafS12CComponent extends Vue {
     public kafS00DParam: IPramsS00D;
+
+    @Prop({default:() => ({mode: true,data: 'havent data'})})
+    public readonly mode!: boolean;
 
     public beforeCreate() {
         const vm = this;
