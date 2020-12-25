@@ -117,7 +117,7 @@ module nts.uk.at.view.kwr005.a {
         showBaseDate: true, //基準日利用
         showClosure: true,
         showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
-        showPeriod: true, //対象期間利用
+        showPeriod: false, //対象期間利用
         periodFormatYM: false,
 
         /** Required parameter */

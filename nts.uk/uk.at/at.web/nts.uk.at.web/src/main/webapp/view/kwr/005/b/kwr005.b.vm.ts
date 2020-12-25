@@ -49,10 +49,11 @@ module nts.uk.at.view.kwr005.b {
         { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label'  },
       ]);
 
+      vm.printAttributes();
+
       vm.getWorkStatusTableOutput().done(() => {
         vm.getSettingList(params);
-        vm.printAttributes();
-  
+
         vm.currentCodeList.subscribe((newValue: any) => {
           nts.uk.ui.errors.clearAll();
           if (!newValue) return;
@@ -62,6 +63,7 @@ module nts.uk.at.view.kwr005.b {
         vm.printPropertyCode.subscribe((newValue: any) => {
           $('#swapList-search-area-clear-btn').trigger('click');
           $('.ntsSwapSearchRight #swapList-search-area-input').val(null);
+          vm.clearSelection();
           vm.filterListMonthly(newValue);
         });
       }); 
@@ -95,15 +97,20 @@ module nts.uk.at.view.kwr005.b {
       nts.uk.ui.errors.clearAll();
       vm.currentCodeList(null);
       vm.currentCodeListSwap([]);
-      vm.printPropertyCode(-1);
+      //vm.printPropertyCode(-1);
+      vm.clearSelection();
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
       vm.isEnableAttendanceCode(true);
       vm.createDefaultSettingDetails();
       vm.isNewMode(true);
-      $('#KWR005_B52').focus();
+      $('#KWR005_B52').focus();      
     }
 
+    clearSelection() {
+      $("#swapList-grid1").igGridSelection("clearSelection");
+      $("#swapList-grid2").igGridSelection("clearSelection");
+    }
     /**
      * Registers setting
      */
@@ -250,8 +257,7 @@ module nts.uk.at.view.kwr005.b {
 
       vm.currentCodeListSwap([]);
       vm.resetListItemsSwap();      
-      $("#swapList-grid1").igGridSelection("clearSelection");
-      $("#swapList-grid2").igGridSelection("clearSelection");
+      vm.clearSelection();
       //call to server
       vm.$blockui('show');
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: settingId })
