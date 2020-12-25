@@ -20,6 +20,9 @@ module nts.uk.at.view.kal013.b {
         switchPatternA: KnockoutObservable<boolean> = ko.observable(true);
         timeControl: KnockoutObservable<boolean> = ko.observable(true);
         constraint : KnockoutObservable<string> = ko.observable("");
+        numberEditorOption: KnockoutObservable<any>;
+        listZeroDecimalNum: Array<string> = ["NumberOfPeople","Amount","RatioComparison","AverageNumberTimes","AverageRatio"];
+        listOneDecimalNum: Array<string> = ["AverageNumberDays"];
         dailyContraint: Map<number,string> =new Map([
             [1, "NumberOfPeople"],
             [2, "Time"],
@@ -39,11 +42,11 @@ module nts.uk.at.view.kal013.b {
         constructor(params: IParentParams) {
             super();
             const vm = this;
-            //
-            // let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
-            //     operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
-            //
-            // params = {category: WorkplaceCategory.MONTHLY, condition: option};
+            vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                grouplength: 0,
+                decimallength: 2,
+                placeholder: ''
+            }));
 
             if (params.category == WorkplaceCategory.MONTHLY) {
                 vm.listTypeCheck(__viewContext.enums.CheckMonthlyItemsType);
@@ -70,6 +73,23 @@ module nts.uk.at.view.kal013.b {
                 nts.uk.ui.errors.clearAll();
                 vm.pattern().clearCheckCod();
 
+                // Kind of control
+                // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
+                if ((vm.category() == WorkplaceCategory.MONTHLY && value == 1)
+                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 2) ){
+                    vm.timeControl(true);
+                } else{
+                    vm.timeControl(false);
+                }
+                console.log("timeControl: "+ vm.timeControl());
+                // Contraint
+                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
+                    vm.constraint(vm.dailyContraint.get(value));
+                } else{
+                    vm.constraint(vm.monthlyContraint.get(value));
+                }
+                console.log("constraint: "+ vm.constraint());
+
                 // Change pattern
                 vm.switchPatternA(true)
                 // 対比の場合 - スケジュール／日次
@@ -95,32 +115,13 @@ module nts.uk.at.view.kal013.b {
                             break;
                     }
                 }
-
-                // Kind of control
-                // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
-                if ((vm.category() == WorkplaceCategory.MONTHLY && value == 1)
-                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 2) ){
-                    vm.timeControl(true);
-                } else{
-                    vm.timeControl(false);
-                }
-                console.log("timeControl: "+ vm.timeControl());
-                // Contraint
-                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                    vm.constraint(vm.dailyContraint.get(value));
-                } else{
-                    vm.constraint(vm.monthlyContraint.get(value));
-                }
-                console.log("constraint: "+ vm.constraint());
-
-
             });
 
             vm.pattern().checkCondB.subscribe((value)=>{
                 if (vm.switchPatternA()){
                     return;
                 }
-                vm.$errors("clear",".endValue");
+                nts.uk.ui.errors.clearAll();
                 vm.timeControl(false);
                 if (_.indexOf([2,5,8],value) != -1){
                     vm.timeControl(true);
@@ -133,19 +134,42 @@ module nts.uk.at.view.kal013.b {
                 } else if (_.indexOf([3,6,9],value) != -1){
                     vm.constraint(vm.dailyContraint.get(3));
                 }
+
+                console.log("constraint: "+ vm.constraint());
             })
 
             vm.pattern().checkCond.subscribe((value)=>{
                 vm.$errors("clear","#check-condition");
             });
 
+            vm.constraint.subscribe((value)=>{
+                const vm = this;
+                // if (_.indexOf(vm.listZeroDecimalNum,value) != -1){
+                //     vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                //         grouplength: 0,
+                //         decimallength: 0,
+                //         placeholder: ''
+                //     }));
+                // } else
+                if (_.indexOf(vm.listOneDecimalNum,value) != -1){
+                    vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                        grouplength: 0,
+                        decimallength: 1,
+                        placeholder: ''
+                    }));
+                } else {
+                    vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                        grouplength: 0,
+                        decimallength: 0,
+                        placeholder: ''
+                    }));
+                }
+
+            });
         }
 
         created(params: IParentParams) {
             const vm = this;
-            // let option: IPattern = {checkItem: 1, checkCond: [], checkCondB:1,
-            //     operator: 1, minValue: 1, maxValue:1, displayMessage:"dkdkdkd"};
-            // params = {category: WorkplaceCategory.MONTHLY, condition: option};
 
             vm.category(params.category);
             vm.pattern().update(params.condition);
@@ -299,7 +323,7 @@ module nts.uk.at.view.kal013.b {
         }
     }
 
-    interface IPattern{
+    export interface IPattern{
         checkItem: number;
         checkCond: string;
         checkCondB: number;
