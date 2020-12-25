@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: false,
+									enable: true,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -96,8 +96,9 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 						<!--A6_7-->
 						<td class="header" data-bind="text: frameName()"></td>
 						<!--A6_8 -->
-						<td><input tabindex="12" class="right-content"
+						<td data-bind="style: {'background-color': backgroundColor()}"><input tabindex="12" class="right-content"
 							data-bind="
+								style: {'background-color': backgroundColor()},
 								ntsTimeWithDayEditor: {
 									name: '#[KAF005_337]', 
 									value: start,
@@ -148,9 +149,10 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 						<td class="header" data-bind="text: frameName()"
 							></td>
 						<!--A7_8 残業申請時間入力-->
-						<td>
+						<td data-bind="style: {'background-color': backgroundColor()}">
 							<input tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
 									value: applicationTime, 
 									option: {width: '85px', timeWithDay: true},
@@ -180,6 +182,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 		application: KnockoutObservable<Application>;
 		holidayTime: KnockoutObservableArray<HolidayTime>;
 		overTime: KnockoutObservableArray<OverTime>;
+
+		backgroundColor: KnockoutObservable<Boolean> = ko.observable(false);
 		
         created(params: any) {
 			const self = this;

@@ -34,6 +34,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		urlParam: string;
 		mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
 		employeeIDLst: Array<string>;
+		// assign value after calling service calculation
+		timeTemp: Array<OvertimeApplicationSetting>;
 		
 		
 		created(params: AppInitParam) {
@@ -88,7 +90,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			vm.$blockui("show");
 			// load setting common KAF000
-			vm.loadData(empLst, dateLst, vm.appType())
+			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
 				.then((loadDataFlag: any) => {
 					vm.application().appDate.subscribe(value => {
 						console.log(value);
@@ -149,6 +151,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						vm.bindHolidayTime(vm.dataSource, 1);
 						vm.bindOverTime(vm.dataSource, 1);
 						vm.bindMessageInfo(vm.dataSource);
+						vm.assginTimeTemp();
 					}
 				}).fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -370,6 +373,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					self.bindRestTime(self.dataSource);
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
+					self.assginTimeTemp();
 
 				})
 				.fail((res: any) => {
@@ -622,6 +626,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 			return appOverTime;
 		}
+		
+		public handleEditInputTime(timeTemp: Array<any>) {
+			const self = this;
+			let isEqual = _.differenceWith(timeTemp, self.createTimeTemp(), _.isEqual);
+			
+			return isEqual.length > 0;
+		}
 
 		register() {
 			const vm = this;
@@ -635,6 +646,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			commandCheck.displayInfoOverTime = vm.dataSource;
 
 			let appOverTimeTemp = null as AppOverTime;
+			
+			// handle when edit input time
+			
+			if (vm.handleEditInputTime(vm.timeTemp)) {
+				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+			}
 
 			// validate chung KAF000
 			vm.$validate('#kaf000-a-component4 .nts-input', 
@@ -847,6 +864,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
 					if (!_.isNil(item)) {
 						workType.name = item.name;
+					} else {
+						workType.name = self.$i18n('KAF_005_345');
 					}
 				} else {
 					workType.name = self.$i18n('KAF_005_345');
@@ -858,6 +877,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
 						if (!_.isNil(item)) {
 							workTime.name = item.workTimeDisplayName.workTimeName;
+						} else {
+							workTime.name = self.$i18n('KAF_005_345');
 						}
 					}
 				} else {
@@ -2241,6 +2262,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								self.bindRestTime(self.dataSource);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
+								self.assginTimeTemp();
 							}
 						})
 						.fail(res => {
@@ -2569,6 +2591,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.createVisibleModel(self.dataSource);
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
+						self.assginTimeTemp();
 					}
 				})
 				.fail((res: any) => {
@@ -2582,6 +2605,30 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				})
 				.always(() => self.$blockui("hide"));
 
+		}
+		
+		public assginTimeTemp() {
+			const self = this;
+			self.timeTemp = self.createTimeTemp();
+		}
+		public createTimeTemp() {
+			const vm = this;
+			let result = [] as Array<OvertimeApplicationSetting>;
+			_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
+				let item = {} as OvertimeApplicationSetting;
+				item.frameNo = Number(i.frameNo);
+				item.applicationTime = ko.toJS(i.applicationTime) || 0;
+				item.attendanceType = i.type;
+				result.push(item);
+			});
+			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
+				let item = {} as OvertimeApplicationSetting;
+				item.frameNo = Number(i.frameNo);
+				item.applicationTime = ko.toJS(i.start) || 0;
+				item.attendanceType = i.type;
+				result.push(item);
+			});
+			return result;
 		}
 
 

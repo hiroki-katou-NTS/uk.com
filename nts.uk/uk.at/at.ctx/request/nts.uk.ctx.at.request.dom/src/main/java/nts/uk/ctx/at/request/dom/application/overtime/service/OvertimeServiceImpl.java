@@ -784,8 +784,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appOverTime.getAppID(),
 				appOverTime.getPrePostAtr(),
 				appOverTime.getVersion(),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null),
 				displayInfoOverTime.getAppDispInfoStartup());
 		// 残業申請の個別登録前チェッ処理
 		output = commonAlgorithmOverTime.checkBeforeOverTime(
@@ -1148,7 +1148,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			DisplayInfoOverTime displayInfoOverTime) {
 		List<ConfirmMsgOutput> outputs = new ArrayList<ConfirmMsgOutput>();
 		// 申請する残業時間をチェックする
-		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェック
 		List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
 		outputs.addAll(checkExcessList);

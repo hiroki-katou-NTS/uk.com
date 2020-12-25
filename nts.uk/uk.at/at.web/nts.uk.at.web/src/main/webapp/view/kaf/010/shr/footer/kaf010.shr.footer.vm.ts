@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 			</div>
 		</div>
 	</div>
-	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.selectReflectDivergenceCheck()">
+	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.inputReflectDivergenceCheck()">
 		<div class="cell" style="width: 120px;">
 			<div class="cell valign-center" data-bind="ntsFormLabel: { 
 													text: $i18n('KAF010_92'),

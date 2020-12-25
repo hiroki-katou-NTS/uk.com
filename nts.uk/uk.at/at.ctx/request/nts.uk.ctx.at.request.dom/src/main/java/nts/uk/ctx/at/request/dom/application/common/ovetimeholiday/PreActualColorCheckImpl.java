@@ -513,12 +513,12 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		AchievementDetail achievementDetail = opAchievementDetail.get();
 		// INPUT．「表示する実績内容．実績詳細」 <> empty　AND　INPUT．「表示する実績内容．実績詳細．実績スケ区分」 = 日別実績 -> true
 		// アルゴリズム「勤務分類変更の判定」を実行する
-		JudgmentWorkTypeResult judgmentWorkTypeResult = this.judgmentWorkTypeChange(companyId, appType, achievementDetail.getWorkTypeCD(), workTypeCode.v());
+		JudgmentWorkTypeResult judgmentWorkTypeResult = this.judgmentWorkTypeChange(companyId, appType, achievementDetail.getWorkTypeCD(), Optional.ofNullable(workTypeCode).map(x -> x.v()).orElse(null));
 		// アルゴリズム「就業時間帯変更の判定」を実行する
-		JudgmentWorkTimeResult judgmentWorkTimeResult = this.judgmentWorkTimeChange(achievementDetail.getWorkTimeCD(), workTimeCode.v());
+		JudgmentWorkTimeResult judgmentWorkTimeResult = this.judgmentWorkTimeChange(achievementDetail.getWorkTimeCD(), Optional.ofNullable(workTimeCode).map(x -> x.v()).orElse(null));
 		
 		// アルゴリズム「当日判定」を実行する
-		Boolean isJudgmentToday = this.judgmentToday(date, workTimeCode.v());
+		Boolean isJudgmentToday = this.judgmentToday(date, Optional.ofNullable(workTimeCode).map(x -> x.v()).orElse(null));
 		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
 		JudgmentStampResult judgmentStampResult = this.judgmentStamp(isJudgmentToday, overrideSet, calOptional, achievementDetail.getOpWorkTime().orElse(null), achievementDetail.getOpLeaveTime().orElse(null), date);
 		// アルゴリズム「実績状態の判定」を実行する

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitW
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
@@ -691,23 +692,33 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public Boolean checkOverTime(List<OvertimeApplicationSetting> applicationTime) {
+	public void checkOverTime(ApplicationTime applicationTime) {
 		Integer timeTotal = 0;
 		// INPUT「申請時間詳細」<List>をチェックする
-		if (!CollectionUtil.isEmpty(applicationTime)) {
-			timeTotal = applicationTime.stream()
+		if (!CollectionUtil.isEmpty(applicationTime.getApplicationTime())) {
+			timeTotal = applicationTime.getApplicationTime().stream()
 							.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
 							.mapToInt(x -> x.getApplicationTime().v())
 							.sum();
-		} else {
-			throw new BusinessException("Msg_1654");			
 		}
+		// 申請時間．フレックス超過時間
+		timeTotal += applicationTime.getFlexOverTime().map(x -> x.v()).orElse(0);
+		// 申請時間．就業時間外深夜時間．残業深夜時間
+		timeTotal += applicationTime.getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(0);
 		
-		if (timeTotal <= 0) {
+		Integer result = applicationTime
+			.getOverTimeShiftNight()
+			.flatMap(x -> CollectionUtil.isEmpty(x.getMidNightHolidayTimes()) ? Optional.empty() : Optional.of(x.getMidNightHolidayTimes()))
+			.map(x -> x)
+			.orElse(Collections.emptyList())
+			.stream()
+			.mapToInt(x -> Optional.ofNullable(x.getAttendanceTime()).map(y -> y.v()).orElse(0))
+			.sum();
+		timeTotal += result;
+		
+		if (timeTotal == 0) {
 			throw new BusinessException("Msg_1654");	
 		}
-		
-		return false;
 	}
 
 
@@ -968,7 +979,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			List<GeneralDate> dates = new ArrayList<GeneralDate>();
 			dates.add(appOverTime.getAppDate().getApplicationDate());
 			List<String> workTypeLst = new ArrayList<String>();
-			workTypeLst.add(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null));
+			if (appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).isPresent()) {
+				workTypeLst.add(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null));				
+			}
 			// 申請の矛盾チェック
 			commonAlgorithm.appConflictCheck(
 					companyId,
@@ -999,7 +1012,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
 		// 申請する残業時間をチェックする
-		this.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		this.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェックする
 		List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(
 				appOverTime,

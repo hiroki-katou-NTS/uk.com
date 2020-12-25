@@ -264,63 +264,63 @@ public class KrqdtAppHolidayWork extends ContractUkJpaEntity implements Serializ
 			appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));
 		}
 		if (breakTimeStart2 != null && breakTimeEnd2 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart2, breakTimeEnd2);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(2, breakTimeStart2, breakTimeEnd2);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart3 != null && breakTimeEnd3 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart3, breakTimeEnd3);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(3, breakTimeStart3, breakTimeEnd3);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart4 != null && breakTimeEnd4 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart4, breakTimeEnd4);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(4, breakTimeStart4, breakTimeEnd4);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart5 != null && breakTimeEnd5 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart5, breakTimeEnd5);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(5, breakTimeStart5, breakTimeEnd5);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart6 != null && breakTimeEnd6 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart6, breakTimeEnd6);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(6, breakTimeStart6, breakTimeEnd6);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart7 != null && breakTimeEnd7 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart7, breakTimeEnd7);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(7, breakTimeStart7, breakTimeEnd7);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart8 != null && breakTimeEnd8 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart8, breakTimeEnd8);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(8, breakTimeStart8, breakTimeEnd8);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart9 != null && breakTimeEnd9 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart9, breakTimeEnd9);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(9, breakTimeStart9, breakTimeEnd9);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
 			}
 		}
 		if (breakTimeStart10 != null && breakTimeEnd10 != null) {
-			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(1, breakTimeStart10, breakTimeEnd10);
+			TimeZoneWithWorkNo timeZoneWithWorkNo = new TimeZoneWithWorkNo(10, breakTimeStart10, breakTimeEnd10);
 			breakTimeList.add(timeZoneWithWorkNo);
 			if (!appHolidayWork.getBreakTimeList().isPresent()) {
 				appHolidayWork.setBreakTimeList(Optional.of(breakTimeList));				
