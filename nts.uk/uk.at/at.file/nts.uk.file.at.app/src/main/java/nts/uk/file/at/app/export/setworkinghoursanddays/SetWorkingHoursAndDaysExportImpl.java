@@ -21,6 +21,18 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	@Inject
 	private SetWorkingHoursAndDaysExRepository repo;
+	
+	@Inject
+	private GetKMK004CompanyExportRepository companyRepo;
+	
+	@Inject
+	private GetKMK004WorkPlaceExportRepository wkpRepo;
+	
+	@Inject
+	private GetKMK004EmploymentExportRepository empRepo;
+	
+	@Inject
+	private GetKMK004EmployeeExportRepository shaRepo;
 
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
@@ -345,28 +357,28 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
-		return repo.getCompanyExportData(startDate, endDate);
+		return companyRepo.getCompanyExportData(startDate, endDate);
 	}
 	
 	public List<MasterData> getMasterDatasEmployment(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
 		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
-		datas = repo.getEmploymentExportData(startDate, endDate);
+		datas = empRepo.getEmploymentExportData(startDate, endDate);
 		return datas;
 	}
 	
 	public List<MasterData> getMasterDatasEmployee(MasterListExportQuery query) {
 		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
-		return repo.getEmployeeData(startDate, endDate);
+		return shaRepo.getEmployeeData(startDate, endDate);
 	}
 	
 	public List<MasterData> getMasterDatasWorkPlace(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
 		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
-		datas = repo.getWorkPlaceExportData(startDate, endDate);
+		datas = wkpRepo.getWorkPlaceExportData(startDate, endDate);
 		return datas;
 	}
 	
