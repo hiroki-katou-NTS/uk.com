@@ -950,7 +950,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let reasonDissociation = self.appOverTime.applicationTime.reasonDissociation;
 				let selectedCode = '';
 				let result = _.find(reasonDissociation, (item: ReasonDivergence) => item.diviationTime == 2);
-				if (_!.isNil(result)) {
+				if (!_.isNil(result)) {
 					let resultItemModel = _.find(itemList, (item: ItemModel) => item.code == result.reasonCode);
 					if (!_.isNil(resultItemModel)) {
 						selectedCode = resultItemModel.code;
