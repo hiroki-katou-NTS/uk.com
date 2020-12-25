@@ -39,10 +39,6 @@
 	margin-bottom: 10px;
 }
 
-.view-c-kmk004 .right-content .setting {
-	margin-top: 15px;
-}
-
 .view-c-kmk004 .right-content .content-data {
 	margin-top: 10px;
 	margin-left: 10px;
@@ -89,10 +85,6 @@
 
 .view-d-kmk004 .right-content p {
 	font-size: 20px;
-}
-
-.view-d-kmk004 .right-content .setting {
-	margin-top: 15px;
 }
 
 .view-d-kmk004 .right-content .content-data {
@@ -151,10 +143,6 @@
 
 .view-e-kmk004 .right-content p {
 	font-size: 20px;
-}
-
-.view-e-kmk004 .right-content .setting {
-	margin-top: 15px;
 }
 
 .view-e-kmk004 .right-content .content-data {
@@ -347,10 +335,11 @@
 
 /*Common*/
 #func-notifier-errors {
-	top: 143px;
-	left: 120px;
-	position: fixed;
-	width: 120px;
-	height: 24px;
-	z-index: 999999;
+	top: 128px;
+    left: 121px;
+    position: fixed;
+    text-align: center;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
 }

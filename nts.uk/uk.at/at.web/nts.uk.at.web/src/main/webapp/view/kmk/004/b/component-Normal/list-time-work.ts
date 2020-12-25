@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk004.b {
                                         value: $data.laborTime,
                                         enable: $data.check,
                                         inputFormat: 'time',
-                                        constraint: 'TimeDay',
+                                        constraint: 'MonthlyTime',
                                         option: {
                                             width: '60px',
                                             textalign: 'center'}, 
@@ -63,7 +63,7 @@ module nts.uk.at.view.kmk004.b {
                                         value: $data.laborTime,
                                         enable: $data.check, 
                                         inputFormat: 'time',
-                                        constraint: 'TimeDay',
+                                        constraint: 'MonthlyTime',
                                         option: {
                                             width: '60px',
                                             textalign: 'center'}, 
