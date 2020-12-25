@@ -15,14 +15,9 @@ module nts.uk.at.view.kml001.a {
             textKML001_40 = nts.uk.resource.getText("KML001_40");
             isLastItem: KnockoutObservable<Boolean> = ko.observable(false);
             standardDate: KnockoutObservable<string> = ko.observable(null);
-            langId: KnockoutObservable<string> = ko.observable('ja');/* 
-
-            calculationSetting: KnockoutObservable<number> = ko.observable(1);
-            roundingUnitPrice: KnockoutObservable<number> = ko.observable(0);
-            roundingAmount: KnockoutObservable<number> = ko.observable(1);
-            inUnits: KnockoutObservable<number> = ko.observable(0); */
+            langId: KnockoutObservable<string> = ko.observable('ja');
             unitPriceOpt: KnockoutObservaleArray<any> = ko.observableArray([]);
-            _calculationSetting: KnockoutObservable<number> = ko.observable(1);
+
             constructor() {
                 super();
 
@@ -32,7 +27,7 @@ module nts.uk.at.view.kml001.a {
                 self.currentPersonCost = ko.observable(
                     new vmbase.PersonCostCalculation('', '', "", "9999/12/31", 0, '', [], 1, 0, 1, 0)
                 );
-                console.log(self.currentPersonCost());
+            
                 self.newStartDate = ko.observable(null);
                 self.gridPersonCostList = ko.observableArray([]);
                 self.currentGridPersonCost = ko.observable(null);
@@ -64,9 +59,9 @@ module nts.uk.at.view.kml001.a {
                     self.changeUnitPrice(newValue);
                 });
 
-                self.currentPersonCost().calculationSetting.subscribe((newValue) => {
+               /*  self.currentPersonCost().calculationSetting.subscribe((newValue) => {
                     self._calculationSetting(newValue);
-                });
+                }); */
             }
 
             /**
@@ -341,7 +336,8 @@ module nts.uk.at.view.kml001.a {
                                         item.displayNumber,
                                         item.name,
                                         item.useAtr,
-                                        false
+                                        false,
+                                        item.unitPrice
                                     ));
                             });
                             // PersonCostCalculationSelect: Done
@@ -350,7 +346,7 @@ module nts.uk.at.view.kml001.a {
                                 self.premiumItems().forEach(function (item) {
                                     if (item.useAtr()) {
                                         self.currentPersonCost().premiumSets.push(
-                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
+                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), [], item.unitPrice()));
                                     }
                                 });
                                 $("#startDateInput").focus();
@@ -362,7 +358,7 @@ module nts.uk.at.view.kml001.a {
                                             let currentIndexSet = _.find(oldPremiumSets, function (o) { return o.displayNumber() == item.displayNumber(); });
                                             if (nts.uk.util.isNullOrUndefined(currentIndexSet)) {
                                                 self.currentPersonCost().premiumSets.push(
-                                                    new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), [], item.unitPrice));
+                                                    new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), [], item.unitPrice()));
                                             } else {
                                                 self.currentPersonCost().premiumSets.push(currentIndexSet);
                                             }

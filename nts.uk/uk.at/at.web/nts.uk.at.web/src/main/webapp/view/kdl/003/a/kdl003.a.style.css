@@ -11,10 +11,18 @@ body {
 #search-div {
 	padding-bottom: 10px;
 }
-#search-div span:NTH-CHILD(3) {
-/* 	font-size: x-large; */
-	margin-left: 10px;
+#search-div .table .cell:nth-child(2) {
+	padding-left: 30px;
+}
+#search-div .table .cell:last-child {
+	padding-left: 20px;	
+}
+#search-div .table .cell:last-child .checkbox-wrapper {
+	margin-top: 5px;
 	margin-right: 10px;
+}
+#search-div span:NTH-CHILD(3) { 
+	margin-left: 10px;
 }
 .ui-igcombo-wrapper {
 	width: 90px;

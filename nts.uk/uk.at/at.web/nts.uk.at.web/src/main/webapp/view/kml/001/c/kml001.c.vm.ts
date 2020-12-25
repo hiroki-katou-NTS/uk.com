@@ -2,7 +2,7 @@ module nts.uk.at.view.kml001.c {
     export module viewmodel {
         import servicebase = kml001.shr.servicebase;
         import vmbase = kml001.shr.vmbase;
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
             copyDataFlag: KnockoutObservable<boolean>;
             lastStartDate: KnockoutObservable<string>;
             beginStartDate: KnockoutObservable<string>;
@@ -10,6 +10,7 @@ module nts.uk.at.view.kml001.c {
             size: KnockoutObservable<number>;
             textKML001_47: KnockoutObservable<string>;
             constructor() {
+                super();
                 var self = this;
                 self.copyDataFlag = ko.observable(true);
                 self.lastStartDate = ko.observable(nts.uk.ui.windows.getShared('lastestStartDate'));
@@ -27,9 +28,13 @@ module nts.uk.at.view.kml001.c {
                 if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
                     $("#startDateInput").ntsError('set', {messageId:"Msg_102"});
                 } else {
-                    nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
-                    nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
-                    nts.uk.ui.windows.close(); 
+                    //call to save
+                    self.$dialog.info({ messageId: 'Msg_15'}).then(() => {
+                        nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
+                        nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
+                        nts.uk.ui.windows.close(); 
+                    });
+                    
                 }
             }
             

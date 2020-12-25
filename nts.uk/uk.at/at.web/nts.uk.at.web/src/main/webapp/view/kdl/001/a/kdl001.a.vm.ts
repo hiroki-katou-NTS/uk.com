@@ -16,13 +16,14 @@ module nts.uk.at.view.kdl001.a {
             isEnableSwitchButton: KnockoutObservable<boolean> = ko.observable(false);
             gridHeight: number = 260;
             initialWorkTimeCodes: Array<String>;
+            searchCode: KnockoutObservable<string> = ko.observable(null);
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
                     { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
-                    //{ headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
+                    { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
                     { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 160 },
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
@@ -90,6 +91,19 @@ module nts.uk.at.view.kdl001.a {
             search() {
                 nts.uk.ui.block.invisible();
                 var self = this;
+                if( nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime()) ) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => { 
+                        $('#inputStartTime').focus();
+                        nts.uk.ui.block.clear(); 
+                    });
+                    return;
+                }
+
+                if ($('#inputEndTime').ntsError('hasError') ||
+                    $('#inputStartTime').ntsError('hasError')) {
+                    return;
+                }
+
                 let command = {
                     codelist: self.initialWorkTimeCodes,
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? null : self.startTime(),
@@ -167,8 +181,19 @@ module nts.uk.at.view.kdl001.a {
             }
 
             closeDialog() {
-                 nts.uk.ui.windows.setShared('KDL001_IsCancel', true);
+                nts.uk.ui.windows.setShared('KDL001_IsCancel', true);
                 nts.uk.ui.windows.close();
+            }
+
+            searchByCodeName() {
+                let self = this;
+                if( nts.uk.util.isNullOrEmpty(self.searchCode()) ) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_2073' }).then(() => { 
+                        $('#A2_6').focus();
+                        nts.uk.ui.block.clear(); 
+                    });
+                    return;
+                }
             }
         }
         export class TimeItem {
