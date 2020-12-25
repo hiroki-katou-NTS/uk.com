@@ -109,6 +109,9 @@ declare module nts.uk.ui.vm {
 		readonly programName: string;
 		readonly path: string;
 		readonly isDebugMode: boolean;
+		readonly operationSetting: {
+			readonly message: string;
+		};
 	}
 
 	// Data structure of names and messages

@@ -97,7 +97,7 @@ module nts.uk.ui {
                 kiban.systemName(systemName);
 
                 // update mode of view
-                kiban.mode(window === window.top ? 'view' : 'modal');
+                kiban.mode(!util.isInFrame() ? 'view' : 'modal');
 
                 // update header 
                 kiban.header(!__viewContext.noHeader);
@@ -105,41 +105,44 @@ module nts.uk.ui {
                 // update notification
                 kiban.notification(__viewContext.program.operationSetting.message);
 
-                _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
+                // mock ready function
+                $(() => {
+                    _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
 
-                viewModelBuilt.fire(_viewModel);
+                    viewModelBuilt.fire(_viewModel);
 
-                // bind viewmodel to document body
-                ko.applyBindings(_viewModel, document.body);
+                    // bind viewmodel to document body
+                    ko.applyBindings(_viewModel, document.body);
 
-                viewModelApplied.fire(_viewModel);
+                    viewModelApplied.fire(_viewModel);
 
-                // off event reset for class reset-not-apply
-                $(".reset-not-apply").find(".reset-element").off("reset");
+                    // off event reset for class reset-not-apply
+                    $(".reset-not-apply").find(".reset-element").off("reset");
 
-                nts.uk.cookie.remove("startfrommenu", { path: "/" });
+                    nts.uk.cookie.remove("startfrommenu", { path: "/" });
 
-                $('div[id^=functions-area]')
-                    .each((__: number, e: HTMLElement) => {
-                        if (!e.classList.contains('functions-area')) {
-                            ko.applyBindingsToNode(e,
-                                {
-                                    'ui-function-bar': e.className.match(/bottom$/) ? 'bottom' : 'top',
-                                    title: e.getAttribute('data-title') || true,
-                                    back: e.getAttribute('data-url')
-                                }, _viewModel);
+                    $('div[id^=functions-area]')
+                        .each((__: number, e: HTMLElement) => {
+                            if (!e.classList.contains('functions-area')) {
+                                ko.applyBindingsToNode(e,
+                                    {
+                                        'ui-function-bar': e.className.match(/bottom$/) ? 'bottom' : 'top',
+                                        title: e.getAttribute('data-title') || true,
+                                        back: e.getAttribute('data-url')
+                                    }, _viewModel);
 
-                            e.removeAttribute('data-url');
-                            e.removeAttribute('data-title');
-                        }
-                    });
+                                e.removeAttribute('data-url');
+                                e.removeAttribute('data-title');
+                            }
+                        });
 
-                $('div[id^=contents-area]')
-                    .each((__: number, e: HTMLElement) => {
-                        if (!e.classList.contains('contents-area')) {
-                            ko.applyBindingsToNode(e, { 'ui-contents': 0 }, _viewModel);
-                        }
-                    });
+                    $('div[id^=contents-area]')
+                        .each((__: number, e: HTMLElement) => {
+                            if (!e.classList.contains('contents-area')) {
+                                ko.applyBindingsToNode(e, { 'ui-contents': 0 }, _viewModel);
+                            }
+                        });
+                });
 
                 // update size
                 $(window)

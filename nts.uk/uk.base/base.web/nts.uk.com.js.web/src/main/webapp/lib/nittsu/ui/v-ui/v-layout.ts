@@ -30,7 +30,9 @@ module nts.uk.ui.layout {
 
             element.setAttribute('id', 'operation-info');
 
-            ko.applyBindingsToNode(element, { component: 'ui-notification' });
+            if (ko.components.isRegistered('ui-notification')) {
+                ko.applyBindingsToNode(element, { component: 'ui-notification' });
+            }
 
             return { controlsDescendantBindings: true };
         }
@@ -47,7 +49,9 @@ module nts.uk.ui.layout {
             element.id = "header";
             element.classList.add('header');
 
-            ko.applyBindingsToNode(element, { component: 'ui-header' });
+            if (ko.components.isRegistered('ui-header')) {
+                ko.applyBindingsToNode(element, { component: 'ui-header' });
+            }
 
             return { controlsDescendantBindings: true };
         }
