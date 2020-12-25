@@ -118,6 +118,8 @@ module nts.uk.at.ksm008.a {
                             case "07":
                                 item.image = '../resource/07.png';
                                 break;
+                            default:
+                                item.image = '';
                         }
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });
