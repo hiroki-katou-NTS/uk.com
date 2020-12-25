@@ -49,6 +49,19 @@ module nts.uk.at.view.kmf001.a.viewmodel {
         public openKMF001M(): void {
             nts.uk.request.jump("/view/kmf/001/m/index.xhtml", {});
         }
+        
+        // Export Excel
+        public exportExcel() {
+            nts.uk.at.view.kmf001.a.service.exportExcel().done(function(data) {
+
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError(res).then(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }).always(() => {
+                block.clear();
+            });
+        }
 
     }
 }
