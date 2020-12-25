@@ -34,7 +34,7 @@ import nts.uk.screen.at.app.query.kmk004.p.GetWorkplaceBasicSetting;
  * @author tutt
  *
  */
-@Path("screen/at/kmk004")
+@Path("screen/at/kmk004/viewP")
 @Produces("application/json")
 public class KMK004PWebService {
 
@@ -86,88 +86,88 @@ public class KMK004PWebService {
 
 	// Company
 	@POST
-	@Path("viewP/com/basicSetting")
+	@Path("com/basicSetting")
 	public DeforLaborComDto getComBasicSetting() {
 		return comBasicSetting.get();
 	}
 
 	@POST
-	@Path("viewP/com/basicSetting/update")
+	@Path("com/basicSetting/update")
 	public void updateComBasicSetting(ComBasicSettingCommand command) {
 		updateComBasicSettingCommandHandler.handle(command);
 	}
 
 	// Workplace
 	@POST
-	@Path("viewP/wkp/basicSetting/{wkpId}")
+	@Path("wkp/basicSetting/{wkpId}")
 	public DeforLaborWkpDto getWkpBasicSetting(@PathParam("wkpId") String wkpId) {
 		return wkpBasicSetting.get(wkpId);
 	}
 
 	@POST
-	@Path("viewP/wkp/basicSetting/add")
+	@Path("wkp/basicSetting/add")
 	public void addWkpBasicSetting(WkpBasicSettingCommand command) {
 		addWkpBasicSettingCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewP/wkp/basicSetting/update")
+	@Path("wkp/basicSetting/update")
 	public void updateWkpBasicSetting(WkpBasicSettingCommand command) {
 		updateWkpBasicSettingCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewP/wkp/basicSetting/delete")
+	@Path("wkp/basicSetting/delete")
 	public void deleteWkpBasicSetting(WkpBasicSettingCommand command) {
 		removeWkpBasicSettingCommandHandler.handle(command);
 	}
 
 	// Employment
 	@POST
-	@Path("viewP/emp/basicSetting/{empCode}")
+	@Path("emp/basicSetting/{empCode}")
 	public DeforLaborEmpDto getEmpBasicSetting(@PathParam("empCode") String empCode) {
 		return empBasicSetting.get(empCode);
 	}
 
 	@POST
-	@Path("viewP/emp/basicSetting/add")
+	@Path("emp/basicSetting/add")
 	public void addEmpBasicSetting(EmpBasicSettingCommand command) {
 		addEmpBasicSettingCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewP/emp/basicSetting/update")
+	@Path("emp/basicSetting/update")
 	public void updateEmpBasicSetting(EmpBasicSettingCommand command) {
 		updateEmpBasicSettingCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewP/emp/basicSetting/delete")
+	@Path("emp/basicSetting/delete")
 	public void deleteEmpBasicSetting(EmpBasicSettingCommand command) {
 		removeEmpBasicSettingCommandHandler.handle(command);
 	}
 
 	// Employee
 	@POST
-	@Path("viewP/sha/basicSetting/{empId}")
+	@Path("sha/basicSetting/{empId}")
 	public DeforLaborShaDto getshaBasicSetting(@PathParam("empId") String empId) {
 		return shaBasicSetting.get(empId);
 	}
 
 	@POST
-	@Path("viewP/sha/basicSetting/add")
+	@Path("sha/basicSetting/add")
 	public void addShaBasicSetting(ShaBasicSettingCommand command) {
 		addShaBasicSettingCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewP/sha/basicSetting/update")
+	@Path("sha/basicSetting/update")
 	public void updateShaBasicSetting(ShaBasicSettingCommand command) {
 		updateShaBasicSettingCommandHandler.handle(command);
 	}
 
 	@POST
-	@Path("viewP/sha/basicSetting/delete")
+	@Path("sha/basicSetting/delete")
 	public void deleteShaBasicSetting(ShaBasicSettingCommand command) {
 		removeShaBasicSettingCommandHandler.handle(command);
 	}

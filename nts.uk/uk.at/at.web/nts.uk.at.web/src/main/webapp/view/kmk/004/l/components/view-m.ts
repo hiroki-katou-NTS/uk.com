@@ -8,7 +8,8 @@ module nts.uk.at.view.kmk004.l {
 
 	const KMK004M_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewM/monthlyWorkTimeSet/update',
-		DELETE_WORK_TIME: 'screen/at/kmk004/viewM/monthlyWorkTimeSet/delete'
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewM/monthlyWorkTimeSet/delete',
+		WKP_GET_BASIC_SETTING: 'screen/at/kmk004/viewM/getBasicSetting'
 	};
 
 	const template = `
@@ -183,8 +184,13 @@ module nts.uk.at.view.kmk004.l {
 					vm.paramL.wkpId(data);
 					vm.paramL.titleName = vm.selectedItemText();
 					vm.selectedIdParam(data);
-					vm.btn_text(
-						vm.alreadySettingList().filter(i => data == i.workplaceId).length == 0 ? 'KMK004_338' : 'KMK004_339');
+					
+				vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.paramL.wkpId()).done((data: any) => {
+					if (data.deforLaborTimeWkpDto != null && data.wkpDeforLaborMonthActCalSetDto != null) {
+						vm.btn_text('KMK004_339');
+					} else vm.btn_text('KMK004_338');
+				})	
+					
 				});
 
 				vm.selectedId.valueHasMutated();
