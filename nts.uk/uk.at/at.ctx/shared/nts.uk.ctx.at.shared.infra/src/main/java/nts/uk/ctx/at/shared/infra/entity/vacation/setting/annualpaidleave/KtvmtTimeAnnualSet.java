@@ -56,7 +56,7 @@ public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
     private Integer timeMaxDayUnifComp;
     
     /** The Round Processing Classification. */
-    @Column(name = "ROUND_PROC")
+    @Column(name = "ROUND_PROC_CLA")
     private Integer roundProcessCla;
      
     /** 1日の時間年休時間参照先**/

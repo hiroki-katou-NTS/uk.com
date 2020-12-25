@@ -87,7 +87,7 @@ module nts.uk.pr.view.kmf001.c {
                     new C535Model(1, nts.uk.resource.getText('KMF001_344'))
                 ]);
                  self.selectC535  = ko.observable(0);
-                self.uniformTime = ko.observable("");
+                self.uniformTime = ko.observable("0:00");
                 
                 // 年休取得の設定
                 self.annualPriorityList = ko.observableArray([]);
@@ -132,10 +132,10 @@ module nts.uk.pr.view.kmf001.c {
                     return self.enableTimeSetting() && self.selectedMaxDayVacation() == 0;
                 });
                 self.enableC222 = ko.computed(function() {
-                    return self.selectedMaxNumberSemiVacation() == 0;
+                    return self.selectedMaxNumberSemiVacation() == 0 && self.selectedAnnualManage() == 1;
                 });
                 self.requiredC535 = ko.computed(function() {
-                    return self.selectC531() == 0;
+                    return self.selectC531() == 1;
                 });
                 self.requiredC533 = ko.computed(function() {
                     return self.selectC531() == 0;

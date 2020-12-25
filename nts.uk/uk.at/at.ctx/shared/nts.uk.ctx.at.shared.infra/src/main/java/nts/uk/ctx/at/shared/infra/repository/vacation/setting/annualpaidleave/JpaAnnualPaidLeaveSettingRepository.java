@@ -54,14 +54,22 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
     /*
      * (non-Javadoc)
      * 
+     * 
+     * 
+     * ROUND_PROC
+		ROUND_PROC_CLA
+     * 
+     * 
+     * 
      * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
      * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
      */
+    
     @SneakyThrows
     @Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
-		String sqlJdbc = "SELECT *, KMAS.HALF_ROUND_PROC KMASROUND_PROC, KTAS.ROUND_PROC KTASHALF_ROUND_PROC "
+		String sqlJdbc = "SELECT *, KMAS.HALF_ROUND_PROC KMASROUND_PROC, KTAS.ROUND_PROC_CLA KTASHALF_ROUND_PROC "
 				+ "FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
 				+ "LEFT JOIN KMAMT_MNG_ANNUAL_SET KMAS ON KAPL.CID = KMAS.CID "
 				+ "LEFT JOIN KTVMT_TIME_ANNUAL_SET KTAS ON KAPL.CID = KTAS.CID "
@@ -96,7 +104,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 								.setTimeMaxDayReference(rec.getInt("TIME_MAX_DAY_REFERENCE"));
 						ktvmtTimeVacationSet
 								.setTimeMaxDayUnifComp(rec.getInt("TIME_MAX_DAY_UNIF_COMP"));
-						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("ROUND_PROC"));
+						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("ROUND_PROC_CLA"));
 						ktvmtTimeVacationSet.setTimeOfDayRef(rec.getInt("TIME_OF_DAY_REFERENCE"));
 						ktvmtTimeVacationSet.setUnifromTime(rec.getInt("UNIFORM_TIME"));
 						ktvmtTimeVacationSet.setContractTimeRound(rec.getInt("CONTRACT_TIME_ROUND"));
