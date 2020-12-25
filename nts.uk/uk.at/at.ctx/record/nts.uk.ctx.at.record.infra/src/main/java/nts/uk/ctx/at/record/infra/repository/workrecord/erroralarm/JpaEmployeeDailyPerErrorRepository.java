@@ -58,17 +58,17 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			String errorAlarmMessage = eral.getErrorAlarmMessage().isPresent()
 					? eral.getErrorAlarmMessage().get().v() : null;
 			String insertTableSQL = "INSERT INTO " + checkErType(erCode) 
-					+ " ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID, CONTRACT_CD , ERROR_MESSAGE) "
+					+ " ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID, ERROR_MESSAGE) "
 					+ "VALUES( '" + id + "' , '" + erCode
 					+ "' , '" + eral.getEmployeeID() + "' , '"
-					+ eral.getDate() + "' , '" + eral.getCompanyID() + "' , '" + ccd
+					+ eral.getDate() + "' , '" + eral.getCompanyID()
 					+ "', '" + errorAlarmMessage + "' )";
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (Integer attendanceItemId : eral.getAttendanceItemList()) {
-				String insertAttendanceItem = "INSERT INTO " + checkErTypeC(erCode) + " ( ID , ATTENDANCE_ITEM_ID , SID, PROCESSING_DATE , CID , CONTRACT_CD ) "
+				String insertAttendanceItem = "INSERT INTO " + checkErTypeC(erCode) + " ( ID , ATTENDANCE_ITEM_ID , SID, PROCESSING_DATE , CID ) "
 						+ "VALUES( '" + id + "', '" + attendanceItemId  + "' , '" + eral.getEmployeeID() + "' , '"
-								+ eral.getDate() + "' , '" + eral.getCompanyID() + "' , '" + ccd + "' )";
+								+ eral.getDate() + "' , '" + eral.getCompanyID()  + "' )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertAttendanceItem));
 			}
 		} catch (Exception e) {
