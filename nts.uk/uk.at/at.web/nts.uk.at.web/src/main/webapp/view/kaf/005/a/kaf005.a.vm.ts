@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			vm.$blockui("show");
 			// load setting common KAF000
-			vm.loadData(empLst, dateLst, vm.appType())
+			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
 				.then((loadDataFlag: any) => {
 					vm.application().appDate.subscribe(value => {
 						console.log(value);
