@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -36,8 +37,9 @@ public class JpaFixedExtractionScheduleItemsRepository extends JpaRepository imp
     @Override
     public List<FixedExtractionScheduleItems> getBy(List<FixedCheckDayItemName> nos) {
         if (CollectionUtil.isEmpty(nos)) return new ArrayList<>();
+        List<Integer> noList = nos.stream().map(x -> x.value).collect(Collectors.toList());
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpSchedaiFxexItm.class)
-            .setParameter("nos", nos)
+            .setParameter("nos", noList)
             .getList(KrcmtWkpSchedaiFxexItm::toDomain);
     }
 

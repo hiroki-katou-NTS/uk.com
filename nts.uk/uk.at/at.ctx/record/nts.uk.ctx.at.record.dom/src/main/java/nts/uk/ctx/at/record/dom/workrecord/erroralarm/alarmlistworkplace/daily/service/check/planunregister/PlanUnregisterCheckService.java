@@ -4,6 +4,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.shift.estimate.company.CompanyEstablishmentImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExtBudgetType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
@@ -30,29 +31,30 @@ public class PlanUnregisterCheckService {
      *
      * @param period          期間
      * @param exBudgetDailies List＜日次の外部予算実績＞
-     * @param actualValue     外部予算実績値
+     * @param extBudgetType   外部予算実績値
      * @return List＜抽出結果＞
      */
-    public List<ExtractResultDto> check(DatePeriod period, List<ExBudgetDailyImport> exBudgetDailies, Integer actualValue) {
+    public List<ExtractResultDto> check(DatePeriod period, List<ExBudgetDailyImport> exBudgetDailies, ExtBudgetType extBudgetType) {
         List<ExtractResultDto> results = new ArrayList<>();
 
         // Input．期間をループする
         period.datesBetween().forEach(date -> {
             // 日次の外部予算実績を探す
-            List<ExBudgetDailyImport> exFilter = exBudgetDailies.stream().filter(x -> x.getYmd().equals(date) && x.getActualValue() == actualValue)
+            List<ExBudgetDailyImport> exFilter = exBudgetDailies.stream().filter(x -> x.getYmd().equals(date)
+                    && x.getActualValue() != null && extBudgetType.equals(x.getActualValue().getExtBudgetType()))
                     .collect(Collectors.toList());
             if (!CollectionUtil.isEmpty(exFilter)) return;
 
             // 抽出結果を作成
             String actualValueName = "";
-            switch (actualValue) {
-                case 0:
+            switch (extBudgetType) {
+                case NUM_PERSON:
                     actualValueName = TextResource.localize("KAL020_107");
                     break;
-                case 1:
+                case MONEY:
                     actualValueName = TextResource.localize("KAL020_108");
                     break;
-                case 2:
+                case TIME:
                     actualValueName = TextResource.localize("KAL020_109");
                     break;
             }

@@ -70,6 +70,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 
 		WorkScheduleExport workScheduleExport = new WorkScheduleExport(
 				data.getEmployeeID(),
+				data.getConfirmedATR().value,
 				data.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
 				data.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
 						: data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),

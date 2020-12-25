@@ -54,8 +54,8 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 								.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
 										x.getEndTime(), x.getBreakTime()))
 								.collect(Collectors.toList())));
-		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getWorkTyle(), data.getWorkTime(),
-				data.getGoStraightAtr(), data.getBackStraightAtr(),
+		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getConfirmedATR(), data.getWorkTyle(),
+				data.getWorkTime(), data.getGoStraightAtr(), data.getBackStraightAtr(),
 				!data.getTimeLeavingOfDailyAttd().isPresent() ? null
 						: new TimeLeavingOfDailyAttdImport(
 						data.getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()

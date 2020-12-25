@@ -51,7 +51,7 @@ public class AlarmListExtractResultWorkplaceData {
     /**
      * 開始日
      */
-    private GeneralDate startTime;
+    private String startTime;
     /**
      * コメント
      */
@@ -98,7 +98,7 @@ public class AlarmListExtractResultWorkplaceData {
                     categoryName,
                     extractResult.getCheckTargetValue(),
                     alExtractInfo.getCategory().value,
-                    GeneralDate.today(), //TODO Q&A 37860
+                    date.getStartDate(), //TODO Q&A 37860
                     extractResult.getComment().isPresent() ? extractResult.getComment().get().v() : "",
                     extractResult.getWorkplaceId().orElse(""),
                     extractResult.getWorkplaceCode().orElse(""),

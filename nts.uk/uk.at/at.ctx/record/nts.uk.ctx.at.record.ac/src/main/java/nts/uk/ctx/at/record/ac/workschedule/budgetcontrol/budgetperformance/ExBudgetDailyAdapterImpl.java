@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.record.ac.workschedule.budgetcontrol.budgetperformance;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyAdapter;
-import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
-import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.*;
 import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyPub;
 import nts.uk.ctx.at.schedule.pub.workschedule.budgetcontrol.budgetperformance.TargetOrgIdenInforExport;
 
@@ -35,7 +34,9 @@ public class ExBudgetDailyAdapterImpl implements ExBudgetDailyAdapter {
                                 x.getTargetOrg().getWorkplaceGroupId()),
                         x.getItemCode(),
                         x.getYmd(),
-                        x.getActualValue()))
+                        x.getActualValue() == null ? null : new ExtBudgetActualValuesImport(
+                                EnumAdaptor.valueOf(x.getActualValue().getExtBudgetType().value,
+                                        ExtBudgetType.class), x.getActualValue().getValue())))
                 .collect(Collectors.toList());
     }
 }

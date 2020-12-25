@@ -18,6 +18,6 @@ public class ExtBudgetDailyExport {
 	private GeneralDate ymd;
 
 	/**	値- 外部予算実績値  **/
-	private int actualValue;
+	private ExtBudgetActualValuesExport actualValue;
 
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExtBudgetType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.check.leave.LeaveCheckService;
@@ -117,15 +118,15 @@ public class DailyCheckService {
                         break;
                     case PLAN_NOT_REGISTERED_PEOPLE:
                         // 6.計画データ未登録をチェック
-                        results = planUnregisterCheckService.check(period, exBudgetDailies, 0);
+                        results = planUnregisterCheckService.check(period, exBudgetDailies, ExtBudgetType.NUM_PERSON);
                         break;
                     case PLAN_NOT_REGISTERED_TIME:
                         // 6.計画データ未登録をチェック
-                        results = planUnregisterCheckService.check(period, exBudgetDailies, 1);
+                        results = planUnregisterCheckService.check(period, exBudgetDailies, ExtBudgetType.TIME);
                         break;
                     case PLAN_NOT_REGISTERED_AMOUNT:
                         // 6.計画データ未登録をチェック
-                        results = planUnregisterCheckService.check(period, exBudgetDailies, 2);
+                        results = planUnregisterCheckService.check(period, exBudgetDailies, ExtBudgetType.MONEY);
                         break;
                     case CARD_UNREGISTERD_STAMP:
                         for (Map.Entry<String, List<Object>> unregistedStampCardsByWp : unregistedStampCardsByWpMap.entrySet()) {

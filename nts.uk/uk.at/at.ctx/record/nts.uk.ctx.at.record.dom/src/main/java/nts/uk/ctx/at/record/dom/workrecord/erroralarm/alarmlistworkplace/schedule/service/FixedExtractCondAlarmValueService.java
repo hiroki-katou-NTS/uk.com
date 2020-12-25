@@ -72,8 +72,8 @@ public class FixedExtractCondAlarmValueService {
                                     new AlarmValueDate(period.start().toString("yyyyMMdd"),
                                             Optional.of(period.end().toString("yyyyMMdd"))),
                                     item.getScheduleCheckName(),
-                                    Optional.ofNullable(TextResource.localize("KAL020_318", String.valueOf(count))),
-                                    Optional.of(new MessageDisplay(item.getFirstMessageDisp().v())),
+                                    Optional.ofNullable(TextResource.localize("KAL020_318", String.valueOf(employeeIds.size()))),
+                                    Optional.of(new MessageDisplay(fixedCond.getMessageDisp().v())),
                                     empInfosByWp.getKey()
                             );
                             extractResults.add(result);

@@ -31,7 +31,7 @@ public class ExBudgetDailyImport {
     /**
      * 値- 外部予算実績値
      */
-    private int actualValue;
+    private ExtBudgetActualValuesImport actualValue;
 
 
 }

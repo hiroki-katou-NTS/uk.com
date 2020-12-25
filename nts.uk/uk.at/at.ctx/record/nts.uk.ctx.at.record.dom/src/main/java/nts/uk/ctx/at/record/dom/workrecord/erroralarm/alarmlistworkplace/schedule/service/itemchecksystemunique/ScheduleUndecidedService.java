@@ -21,7 +21,7 @@ public class ScheduleUndecidedService {
         for (String employeeId : employeeIds) {
             // 勤務予定を絞り込む
             List<WorkScheduleWorkInforImport> workInfos = workScheduleWorkInfos.stream()
-                    .filter(x -> x.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
+                    .filter(x -> x.getEmployeeId().equals(employeeId) && x.getConfirmedATR() == 0).collect(Collectors.toList());
             // 絞り込んだ勤務予定をチェック
             if (CollectionUtil.isEmpty(workInfos)) continue;
             count++;

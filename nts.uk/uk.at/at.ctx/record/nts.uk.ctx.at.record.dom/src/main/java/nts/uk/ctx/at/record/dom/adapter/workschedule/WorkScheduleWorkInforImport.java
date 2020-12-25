@@ -18,6 +18,8 @@ public class WorkScheduleWorkInforImport  {
 
 	private String employeeId;
 
+	private int confirmedATR;
+
 	private String workTyle;
 	
 	private String workTime;
@@ -33,11 +35,12 @@ public class WorkScheduleWorkInforImport  {
 	///** 日別勤怠の出退勤**/
 	private Optional<TimeLeavingOfDailyAttdImport> timeLeaving = Optional.empty();
 
-	public WorkScheduleWorkInforImport(String employeeId, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
+	public WorkScheduleWorkInforImport(String employeeId, int confirmedATR, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdImport timeLeavingOfDailyAttd,
 			Optional<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport) {
 		super();
 		this.employeeId = employeeId;
+		this.confirmedATR = confirmedATR;
 		this.workTyle = workTyle;
 		this.workTime = workTime;
 		this.goStraightAtr = goStraightAtr;
