@@ -142,26 +142,38 @@ module nts.uk.at.view.kmk004.f {
                 case 'Com_Company':
                     vm.$ajax(API.ADD_OR_UPDATE_COM, input)
                         .done(() => {
-                            vm.$window.close();
+                            vm.$dialog.info({ messageId: 'Msg_15' });
                         })
+                        .then(() => {
+                            vm.$window.close();
+                        });
                     break;
                 case 'Com_Workplace':
                     vm.$ajax(API.ADD_OR_UPDATE_WORKPLACE, inputById)
                         .done(() => {
-                            vm.$window.close();
+                            vm.$dialog.info({ messageId: 'Msg_15' });
                         })
+                        .then(() => {
+                            vm.$window.close();
+                        });
                     break;
                 case 'Com_Employment':
                     vm.$ajax(API.ADD_OR_UPDATE_EMPLOYMENT, inputById)
                         .done(() => {
-                            vm.$window.close();
+                            vm.$dialog.info({ messageId: 'Msg_15' });
                         })
+                        .then(() => {
+                            vm.$window.close();
+                        });
                     break;
                 case 'Com_Person':
                     vm.$ajax(API.ADD_OR_UPDATE_EMPLOYEE, inputById)
                         .done(() => {
-                            vm.$window.close();
+                            vm.$dialog.info({ messageId: 'Msg_15' });
                         })
+                        .then(() => {
+                            vm.$window.close();
+                        });
                     break;
             }
 
@@ -173,27 +185,34 @@ module nts.uk.at.view.kmk004.f {
             const inputByIdDelete = {
                 id: ko.unwrap(vm.selectId)
             }
-
-            switch (vm.type) {
-                case 'Com_Workplace':
-                    vm.$ajax(API.DELETE_WORKPLACE, inputByIdDelete)
-                        .done(() => {
-                            vm.$window.close();
+            nts.uk.ui.dialog
+                .confirm({ messageId: "Msg_18" })
+                .ifYes(() => {
+                    vm.$blockui("invisible")
+                        .then(() => {
+                            switch (vm.type) {
+                                case 'Com_Workplace':
+                                    vm.$ajax(API.DELETE_WORKPLACE, inputByIdDelete)
+                                        .done(() => {
+                                            vm.$window.close();
+                                        })
+                                    break;
+                                case 'Com_Employment':
+                                    vm.$ajax(API.DELETE_EMPLOYMENT, inputByIdDelete)
+                                        .done(() => {
+                                            vm.$window.close();
+                                        })
+                                    break;
+                                case 'Com_Person':
+                                    vm.$ajax(API.DELETE_EMPLOYEE, inputByIdDelete)
+                                        .done(() => {
+                                            vm.$window.close();
+                                        })
+                                    break;
+                            }
                         })
-                    break;
-                case 'Com_Employment':
-                    vm.$ajax(API.DELETE_EMPLOYMENT, inputByIdDelete)
-                        .done(() => {
-                            vm.$window.close();
-                        })
-                    break;
-                case 'Com_Person':
-                    vm.$ajax(API.DELETE_EMPLOYEE, inputByIdDelete)
-                        .done(() => {
-                            vm.$window.close();
-                        })
-                    break;
-            }
+                        .always(() => vm.$blockui("clear"));
+                });
         }
 
         init() {
