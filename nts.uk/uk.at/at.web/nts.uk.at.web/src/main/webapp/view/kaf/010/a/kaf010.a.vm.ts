@@ -91,10 +91,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 			vm.isSendMail = ko.observable(false);
 			if (!_.isNil(dataTransfer)) {
-				vm.application().prePostAtr(1);
-				vm.application().appDate(dataTransfer.appDate);
-				vm.application().opAppStartDate(dataTransfer.appDate);
-				vm.application().opAppEndDate(dataTransfer.appDate);
+				if(!_.isNil(dataTransfer.appDate)){
+					vm.application().prePostAtr(1);
+					vm.application().appDate(dataTransfer.appDate);
+					vm.application().opAppStartDate(dataTransfer.appDate);
+					vm.application().opAppEndDate(dataTransfer.appDate);
+				}
 			}
 			if (!_.isNil(params)) {
 				if (!_.isNil(params.baseDate)) {
@@ -235,10 +237,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				// ※27
 				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useInputDivergenceReason == true) {
 					self.inputReflectDivergenceCheck(true);
+				} else {
+					self.inputReflectDivergenceCheck(false);
 				}
 				// ※26
 				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useComboDivergenceReason == true) {
 					self.selectReflectDivergenceCheck(true);
+				} else {
+					self.selectReflectDivergenceCheck(false);
 				}
 			} else {
 				self.inputReflectDivergenceCheck(false);
@@ -284,7 +290,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					let applicationTimes = self.dataSource.calculationResult.applicationTime.applicationTime;
 					if (!_.isEmpty(applicationTimes) && applicationTimes.filter(applicationTime => applicationTime.attendanceType==AttendanceType.NORMALOVERTIME).length > 0) {
 						self.overTimeTableVisible(true);
+					} else {
+						self.overTimeTableVisible(false);
 					}
+				} else {
+					self.overTimeTableVisible(false);
 				}
 			} else {
 				self.overTimeTableVisible(false);
@@ -340,7 +350,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			if(vm.divergenceReasonText()){
 				reasonDissociation.reason = vm.divergenceReasonText();
 			}
-			reasonDissociation.diviationTime = 0;
+			reasonDissociation.diviationTime = 3;
 
 			appHolidayWork.workInformation = {} as WorkInformationCommand;
 			appHolidayWork.workInformation.workType = vm.workInfo().workType().code;
@@ -356,7 +366,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			appHolidayWork.application = ko.toJS(vm.application);
 
 			appHolidayWork.workingTimeList = [] as Array<TimeZoneWithWorkNoCommand>;
-			if(!_.isNil(vm.workInfo().workHours1.start()) && !_.isNil(vm.workInfo().workHours1.end())){
+			if(!_.isNil(vm.workInfo().workHours1) && _.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())){
 				let workingTime1 = {} as TimeZoneWithWorkNoCommand;
 				workingTime1.workNo = 1;
 				workingTime1.timeZone = {} as TimeZoneNewDto;
@@ -365,7 +375,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				appHolidayWork.workingTimeList.push(workingTime1);
 			}
 			
-			if(!_.isNil(vm.workInfo().workHours2.start()) && !_.isNil(vm.workInfo().workHours2.end())){
+			if(!_.isNil(vm.workInfo().workHours2) && _.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())){
 				let workingTime2 = {} as TimeZoneWithWorkNoCommand;
 				workingTime2.workNo = 2;
 				workingTime2.timeZone = {} as TimeZoneNewDto;
@@ -379,7 +389,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 			appHolidayWork.breakTimeList = [] as Array<TimeZoneWithWorkNoCommand>;
 			for (let i = 0; i < vm.restTime().length && i < 10; i++) {
-				if(!_.isNil(vm.restTime()[i].start()) && !_.isNil(vm.restTime()[i].end())){
+				if(_.isNumber(vm.restTime()[i].start()) && _.isNumber(vm.restTime()[i].end())){
 					let restTime = {} as TimeZoneWithWorkNoCommand;
 					restTime.workNo = i+1;
 					restTime.timeZone = {} as TimeZoneNewDto;
@@ -787,9 +797,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					if (!_.isEmpty(res.hdWorkDispInfoWithDateOutput.actualApplicationTime)) {
 						let actualApplicationTime = res.hdWorkDispInfoWithDateOutput.actualApplicationTime;
 						if (actualApplicationTime) {
-							let applicationTime = actualApplicationTime.applicationTime[0];
+							let applicationTime = actualApplicationTime.applicationTime;
 							if (!_.isEmpty(applicationTime)) {
 								_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
+									console.log(item);
 									holidayTimeArray
 										.filter(holidayTime => holidayTime.frameNo() == item.frameNo && item.attendanceType == AttendanceType.BREAKTIME)
 										.map(holidayTime => holidayTime.actualTime(item.applicationTime));
@@ -1053,7 +1064,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			if(self.nightOvertimeReflectAtrCheck()){
 				let item = {} as OverTime;
 				item.frameNo = ko.observable(overTimeArray.length + 1);
-				item.frameName = ko.observable(self.$i18n('KAF005_61'));
+				item.frameName = ko.observable(self.$i18n('KAF005_63'));
 				item.applicationTime = ko.observable(res.calculationResult && res.calculationResult.calculatedFlag == 0 ? 0 : null);
 				item.preTime = ko.observable(null);
 				item.actualTime = ko.observable(null);
@@ -1107,9 +1118,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				// A7_9
 				let opPreAppContentDisplayLst = res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst;
 				if (!_.isEmpty(opPreAppContentDisplayLst)) {
-					let apOptional = opPreAppContentDisplayLst[0].apOptional;
-					if (apOptional) {
-						let applicationTime = apOptional.applicationTime as ApplicationTime;
+					let appHolidayWork = opPreAppContentDisplayLst[0].appHolidayWork;
+					if (appHolidayWork) {
+						let applicationTime = appHolidayWork.applicationTime.applicationTime;
 						if (!_.isEmpty(applicationTime)) {
 							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
 								overTimeArray
@@ -1411,7 +1422,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		calculate() {
 			const self = this;
 			
-			self.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inpStartTime1', '#inpEndTime1')
+			self.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#inpStartTime1', '#inpEndTime1')
 				.then(isValid => {
 					if (isValid) {
 						let command = {} as ParamCalculationHolidayWork;
@@ -1435,7 +1446,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						command.actualApplicationTime = self.dataSource.hdWorkDispInfoWithDateOutput.actualApplicationTime;
 
 						let timeZone1 = {} as TimeZone;
-						if (!(_.isNil(workInfo.workHours1.start()) || _.isNil(workInfo.workHours1.end()))) {
+						if (!_.isNil(workInfo.workHours1) && _.isNumber(workInfo.workHours1.start()) && _.isNumber(workInfo.workHours1.end())) {
 							timeZone1.frameNo = 1;
 							timeZone1.start = workInfo.workHours1.start();
 							timeZone1.end = workInfo.workHours1.end();
@@ -1443,7 +1454,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 						if(!self.managementMultipleWorkCyclescheck()){
 							let timeZone2 = {} as TimeZone;
-							if (!(_.isNil(workInfo.workHours2.start()) || _.isNil(workInfo.workHours2.end()))) {
+							if (!_.isNil(workInfo.workHours2) && _.isNumber(workInfo.workHours2.start()) && _.isNumber(workInfo.workHours2.end())) {
 								timeZone2.frameNo = 2;
 								timeZone2.start = workInfo.workHours2.start();
 								timeZone2.end = workInfo.workHours2.end();
@@ -1451,7 +1462,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							}
 						}
 						restTime.forEach(item => {
-							if (!(_.isNil(ko.toJS(item.start)) || _.isNil(ko.toJS(item.end)))) {
+							if (_.isNumber(ko.toJS(item.start)) && _.isNumber(ko.toJS(item.end))) {
 								let breakTime = {} as BreakTime;
 								breakTime.breakFrameNo = Number(item.frameNo);
 								breakTime.startTime = ko.toJS(item.start);
