@@ -96,6 +96,29 @@ module nts.uk.at.ksm008.a {
                             explanation = explanation.replace(/\\n/g, "\n");
                             subCondition.explanation = explanation;
                         });
+                        switch (item.code) {
+                            case "01":
+                                item.image = '../resource/01.png';
+                                break;
+                            case "02":
+                                item.image = '../resource/02.png';
+                                break;
+                            case "03":
+                                item.image = '../resource/03.png';
+                                break;
+                            case "04":
+                                item.image = '../resource/04.png';
+                                break;
+                            case "05":
+                                item.image = '../resource/05.png';
+                                break;
+                            case "06":
+                                item.image = '../resource/06.png';
+                                break;
+                            case "07":
+                                item.image = '../resource/07.png';
+                                break;
+                        }
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });
                 }
@@ -133,6 +156,8 @@ module nts.uk.at.ksm008.a {
         code: KnockoutObservable<string>,
         /** 条件名 */
         name: KnockoutObservable<string>,
+
+        image: string,
         /** サブ条件リスト */
         subConditions: KnockoutObservableArray<SubConditionKO>
     }
