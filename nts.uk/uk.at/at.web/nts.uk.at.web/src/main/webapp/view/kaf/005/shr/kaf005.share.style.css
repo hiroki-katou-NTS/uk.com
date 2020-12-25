@@ -182,3 +182,9 @@ div.form-label.broken {
 .labelCustom label {
 	white-space: normal !important;
 }
+.overTime1 .nts-fixed-body-wrapper{
+	height: 192px !important;
+}
+.overTime2 .nts-fixed-body-wrapper{
+	height: 192px !important;
+}
