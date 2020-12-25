@@ -2,11 +2,14 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.HistAnPerCost;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.*;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
@@ -20,7 +23,6 @@ import javax.ejb.TransactionAttributeType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,9 +62,12 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         List<PersonCostCalculation> rs = new ArrayList<>();
         val listEntity = this.queryProxy().query(SEL_BY_CID, KscmtPerCostCal.class).setParameter("companyID", companyID)
                 .getList();
+        val listHistId = listEntity.stream().map(e -> e.getPk().histID).collect(Collectors.toList());
+        val listRate = getPersonCostByListHistId(companyID, listHistId);
         for (KscmtPerCostCal item : listEntity) {
-            val sub = getPersonCost(item.pk.companyID, item.pk.histID);
-            sub.ifPresent(rs::add);
+            val listPremiumSetting = listRate.stream().filter(x -> x.getHistoryID().equals(item.pk.histID)).collect(Collectors.toList());
+            val sub = toSimpleDomain(item, listPremiumSetting);
+            rs.add(sub);
         }
         return rs;
     }
@@ -135,7 +140,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     }
 
-    private PersonCostCalculation toSimpleDomain(KscmtPerCostCal kscmtPerCostCal) {
+    private PersonCostCalculation toSimpleDomain(KscmtPerCostCal kscmtPerCostCal, List<PremiumSetting> premiumSetting) {
 
 
         val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCal.costRounding, UnitPriceRounding.class));
@@ -148,7 +153,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                 kscmtPerCostCal.getPk().companyID,
                 new Remarks(kscmtPerCostCal.getMemo()),
-                Collections.emptyList(),
+                premiumSetting,
                 Optional.of(EnumAdaptor.valueOf(kscmtPerCostCal.getUnitPriceAtr(), UnitPrice.class)),
                 EnumAdaptor.valueOf(kscmtPerCostCal.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(kscmtPerCostCal.getWokkingHoursUnitPriceAtr()),
@@ -371,8 +376,55 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     }
 
     @Override
-    public Optional<PersonCostCalculation> getPersonCostByListHistId(String cid, List<String> histId) {
-        return Optional.empty();
+    public List<PremiumSetting> getPersonCostByListHistId(String cid, List<String> histId) {
+        String queryRate = "SELECT a FROM KscmtPerCostPremiRate a " +
+                " WHERE a.pk.companyID = :cid " +
+                " AND a.pk.histID  IN  :histIDs ";
+        List<KscmtPerCostPremiRate> listEntityRate = new ArrayList<>();
+        CollectionUtil.split(histId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+            listEntityRate.addAll(this.queryProxy().query(queryRate, KscmtPerCostPremiRate.class)
+                    .setParameter("cid", cid)
+                    .setParameter("histIDs", splitData)
+                    .getList());
+        });
+        List<PremiumSetting> premiumSettings = new ArrayList<>();
+        if (!listEntityRate.isEmpty()) {
+            premiumSettings = listEntityRate.stream().map(e -> new PremiumSetting(
+                    e.getPk().companyID,
+                    e.getPk().histID,
+                    ExtraTimeItemNo.valueOf(e.getPk().premiumNo),
+                    new PremiumRate(e.getPremiumRate()),
+                    EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class), listEntityAtt(e.getPk().companyID, e.getPk().histID, e.getPk().premiumNo))
+            ).collect(Collectors.toList());
+        }
+        return premiumSettings;
+    }
+
+    @Override
+    public HistAnPerCost getHistAnPerCost(String companyID) {
+        val result = new HistAnPerCost();
+        List<PersonCostCalculation> rs = new ArrayList<>();
+        val listEntity = this.queryProxy().query(SEL_BY_CID, KscmtPerCostCal.class).setParameter("companyID", companyID)
+                .getList();
+        val listHistId = listEntity.stream().map(e -> e.getPk().histID).collect(Collectors.toList());
+        val listRate = getPersonCostByListHistId(companyID, listHistId);
+        for (KscmtPerCostCal item : listEntity) {
+            val listPremiumSetting = listRate.stream().filter(x -> x.getHistoryID().equals(item.pk.histID)).collect(Collectors.toList());
+            val sub = toSimpleDomain(item, listPremiumSetting);
+            rs.add(sub);
+        }
+        result.setPersonCostCalculation(rs);
+        if (!listEntity.isEmpty()) {
+            List<DateHistoryItem> historyItems = new ArrayList<>();
+            listEntity.forEach((item) -> {
+                historyItems.add(new DateHistoryItem(item.pk.histID, new DatePeriod(item.startDate, item.endDate)));
+            });
+            HistPersonCostCalculation hist = new HistPersonCostCalculation(companyID, historyItems);
+            result.setHistPersonCostCalculation(hist);
+            ;
+        }
+
+        return result;
     }
 
     private List<Integer> listEntityAtt(String cid, String historyID, int displayNumber) {

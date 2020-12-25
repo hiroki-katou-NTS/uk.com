@@ -14,13 +14,12 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDt
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -50,28 +49,29 @@ public class PersonCostCalculationFinder {
     public List<PersonCostCalDto> findPersonCostCal() {
         List<PersonCostCalDto> rs = new ArrayList<>();
         String companyID = AppContexts.user().companyId();
-        val listHistOpt = this.personCostCalculationRepository.getHistPersonCostCalculation(companyID);
-        val listItemName = premiumItemRepository.findByCompanyID(companyID);
+        val listItem = this.personCostCalculationRepository.getHistAnPerCost(companyID);
+        val calculationList = listItem.getHistPersonCostCalculation();
+        val listPer = listItem.getPersonCostCalculation();
 
-        if (listHistOpt.isPresent()) {
-            val calculationList = listHistOpt.get();
-            val listItem  = this.personCostCalculationRepository.findByCompanyID(companyID);
-            for (int i = 0; i < listItem.size(); i++) {
-                val sub = listItem.get(i);
-                val item =  convertToPersonCostDto(sub,calculationList,listItemName);
+        List<Integer> listId = new ArrayList<>();
+        listPer.forEach(e -> listId.addAll(e.getPremiumSettings().stream().map(i -> (i.getID().value)).collect(Collectors.toList())));
+        val listItemInfo = premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID,listId);
+        if (!listPer.isEmpty()) {
+            for (PersonCostCalculation sub : listPer) {
+                val dateHistoryItem = calculationList.getHistoryItems().stream().filter(e -> e.identifier().equals(sub.getHistoryID())).findFirst();
+                val item = convertToPersonCostDto(sub, dateHistoryItem, listItemInfo);
                 rs.add(item);
             }
         }
         return rs;
-
     }
 
     public PersonCostCalDto convertToPersonCostDto(PersonCostCalculation domain,
-                                                   HistPersonCostCalculation hist, List<PremiumItem> listItemName) {
-        val item = hist.getHistoryItems().stream().filter(e -> e.identifier().equals(domain.getHistoryID())).findFirst();
+                                                   Optional<DateHistoryItem> dateHistoryItem, List<PremiumItem> listItemName) {
         PersonCostCalDto rs = new PersonCostCalDto();
-        if (item.isPresent()) {
-            val sub = item.get();
+       // Map<Integer,PremiumItem> mapItem = listItemName.stream().collect(Collectors.toMap(i.))
+        if (dateHistoryItem.isPresent()) {
+            val sub = dateHistoryItem.get();
             rs = new PersonCostCalDto(
                     sub.start(),
                     sub.end(),
