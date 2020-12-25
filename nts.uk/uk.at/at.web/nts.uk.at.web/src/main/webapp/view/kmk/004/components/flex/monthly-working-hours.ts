@@ -160,14 +160,23 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 	calTotalTime(attributeName: string) {
 		let vm = this,
-			data = ko.mapping.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+			data = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
 			total = _.sumBy(data, 'laborTime.' + attributeName);
 
 		if (
-			!vm.screenData().monthlyWorkTimeSetComs().length
-			|| data[0].laborTime.withinLaborTime == null
-			|| data[0].laborTime.legalLaborTime == null
-			|| data[0].laborTime.weekAvgTime == null) {
+			!vm.screenData().monthlyWorkTimeSetComs().length) {
+			return '';
+		}
+
+		if (attributeName == 'withinLaborTime' && !_.filter(data, (item: IMonthlyWorkTimeSetCom) => { return item.laborTime.withinLaborTime != null }).length) {
+			return '';
+		}
+
+		if (attributeName == 'legalLaborTime' && !_.filter(data, (item: IMonthlyWorkTimeSetCom) => { return item.laborTime.legalLaborTime != null }).length) {
+			return '';
+		}
+
+		if (attributeName == 'weekAvgTime' && !_.filter(data, (item: IMonthlyWorkTimeSetCom) => { return item.laborTime.weekAvgTime != null }).length) {
 			return '';
 		}
 

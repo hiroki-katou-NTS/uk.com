@@ -95,11 +95,11 @@ class BasicSettingsCompany extends ko.ViewModel {
 		if (vm.screenMode == 'Com_Workplace') {
 			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_338' : 'KMK004_339';
 		}
-		
+
 		if (vm.screenMode == 'Com_Employment') {
 			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_340' : 'KMK004_341';
 		}
-		
+
 		if (vm.screenMode == 'Com_Person') {
 			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_342' : 'KMK004_343';
 		}
@@ -143,18 +143,21 @@ class BasicSettingsCompany extends ko.ViewModel {
 		vm.$blockui('invisible');
 		vm.$ajax(url).done((setting: IDisplayFlexBasicSettingByCompanyDto) => {
 			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
-			if (vm.screenData().getFlexPredWorkTime().reference != setting.flexPredWorkTime.reference) {
-				if (setting.flexPredWorkTime.reference == 1) {
-					_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
-						item.laborTime().withinLaborTime(null);
-					});
-				} else {
-					_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
-						item.laborTime().withinLaborTime(0);
-					});
+			if (_.has(setting, 'flexPredWorkTime.reference')) {
+				if (vm.screenData().getFlexPredWorkTime().reference != _.get(setting, 'flexPredWorkTime.reference')) {
+					if (setting.flexPredWorkTime.reference == 1) {
+						_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+							item.laborTime().withinLaborTime(null);
+						});
+					} else {
+						_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+							item.laborTime().withinLaborTime(0);
+						});
+					}
 				}
+				vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
 			}
-			vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
+
 		}).always(() => { vm.$blockui('clear'); });
 
 	}

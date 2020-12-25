@@ -27,23 +27,22 @@ module nts.uk.at.view.kmk004.b {
 				<div class="name" data-bind="i18n: emloyment.name"></div>
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-					<!-- ko if: emloyment.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_241', click: openDialogF"></button>
+					<!-- ko if: checkSeting -->
+						<button tabindex="5" data-bind="i18n: 'KMK004_341', click: openDialogF"></button>
 					<!-- /ko -->
-					<!-- ko ifnot: emloyment.isAlreadySetting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_240', click: openDialogF"></button>
+					<!-- ko ifnot: checkSeting -->
+						<button tabindex="5" data-bind="i18n: 'KMK004_340', click: openDialogF"></button>
 					<!-- /ko -->
 				</div>
-				<!-- ko if: emloyment.isAlreadySetting -->
-					<div class ="setting" data-bind="component: {
-						name: 'basic-setting',
-						params:{
-							type: type,
-							selectId: emloyment.code,
-							change: change
-						}
-					}"></div>
-				<!-- /ko -->
+				<div class ="setting" data-bind="component: {
+					name: 'basic-setting',
+					params:{
+						type: type,
+						selectId: emloyment.code,
+						change: change,
+						checkSeting: checkSeting
+					}
+				}"></div>
 				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
 					<div>
@@ -104,6 +103,7 @@ module nts.uk.at.view.kmk004.b {
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+		public checkSeting: KnockoutObservable<boolean> = ko.observable(true);
 
 		created(params: Params) {
 			const vm = this;
@@ -162,18 +162,28 @@ module nts.uk.at.view.kmk004.b {
 					}));
 					vm.years.push(new IYear(ko.unwrap(vm.selectedYear), false));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.selectedYear.valueHasMutated();
 					vm.$dialog.info({ messageId: 'Msg_15' });
 				}).then(() => {
 					vm.selectedYear.valueHasMutated();
 				});
-
 			$(document).ready(function () {
+				vm.change.valueHasMutated();
 				$('.listbox').focus();
 			});
 		}
 
 		copy() {
+			const vm = this;
+
+			vm.$window.modal('/view/kmk/004/r/index.xhtml', {
+				screenMode: vm.type,
+				data: [],
+				selected: ko.unwrap(vm.emloyment.code),
+				year: ko.unwrap(vm.selectedYear),
+				laborAttr: 0,
+			}).then(() => {
+				vm.change.valueHasMutated();
+			});
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});

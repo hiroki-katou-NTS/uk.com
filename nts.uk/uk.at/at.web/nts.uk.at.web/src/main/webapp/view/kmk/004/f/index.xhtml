@@ -10,9 +10,9 @@
             <com:scriptfile set="IGNITE" />
 
             <com:ValidatorScript>
-                nts.uk.ctx.at.shared.dom.common.DailyTime
-                nts.uk.ctx.at.shared.dom.common.WeeklyTime
-            </com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.common.DailyTime
+					nts.uk.ctx.at.shared.dom.common.WeeklyTime
+   			</com:ValidatorScript>
 
             <script>var dialogSize = { width: 450, height: 610 };</script>
             <com:stylefile path="./style.css" />
@@ -25,7 +25,7 @@
                     <label class="title" data-bind="i18n: $vm.nameSynthetic"></label>
                     <hr>
                     </hr>
-                    <div data-bind="ifnot: attendance">
+                    <div data-bind="if: attendance">
                         <com:ko-if bind="!checkWorkPlace()">
                             <div class="node" data-bind="i18n: 'KMK004_344'"></div>
                         </com:ko-if>

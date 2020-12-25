@@ -161,3 +161,13 @@
     height: calc(100vh - 143px);
     overflow: hidden scroll;
 }
+
+#func-notifier-errors {
+	top: 128px;
+    left: 121px;
+    position: fixed;
+    text-align: center;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
+}

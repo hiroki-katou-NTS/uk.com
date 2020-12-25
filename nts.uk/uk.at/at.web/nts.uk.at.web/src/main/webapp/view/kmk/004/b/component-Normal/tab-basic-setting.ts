@@ -10,12 +10,14 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	interface Params {
-		type: SIDEBAR_TYPE
+		type: SIDEBAR_TYPE;
 		selectId: KnockoutObservable<string>;
-		change: KnockoutObservable<string>
+		change: KnockoutObservable<string>;
+		checkSeting?: KnockoutObservable<boolean>;
 	}
 
 	const template = `
+	<!-- ko if: checkSeting -->
         <div class="table-view">
             <table>
                 <tbody>
@@ -69,13 +71,15 @@ module nts.uk.at.view.kmk004.b {
                     </tr>
                 </tbody>
             </table>
-        </div>
+		</div>
+		<!-- /ko -->
         <style type="text/css" rel="stylesheet">
             .table-view{
                 padding: 15px;
                 border: 2px solid #B1B1B1;
                 border-radius: 15px;
-                margin-left: 15px;
+				margin-left: 15px;
+				margin-top: 15px;
             }
 
             .table-view table {
@@ -114,12 +118,16 @@ module nts.uk.at.view.kmk004.b {
 		public type: SIDEBAR_TYPE;
 		public selectId: KnockoutObservable<string> = ko.observable('');
 		public change: KnockoutObservable<string> = ko.observable('');
+		public checkSeting: KnockoutObservable<boolean> = ko.observable(true);
 
 		created(params: Params) {
 			const vm = this;
 			vm.type = params.type;
 			vm.selectId = params.selectId;
 			vm.change = params.change;
+			if (params.checkSeting) {
+				vm.checkSeting = params.checkSeting;
+			}
 
 			vm.reloadData();
 
@@ -195,6 +203,13 @@ module nts.uk.at.view.kmk004.b {
 						vm.$blockui('invisible')
 							.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
 							.then((data: ITabSetting) => {
+								if (data) {
+									vm.tabSetting.create(data);
+									vm.init();
+									vm.checkSeting(true);
+								} else {
+									vm.checkSeting(false);
+								}
 								vm.tabSetting.create(data);
 								vm.init();
 							})
@@ -206,8 +221,13 @@ module nts.uk.at.view.kmk004.b {
 						vm.$blockui('invisible')
 							.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
 							.then((data: ITabSetting) => {
-								vm.tabSetting.create(data);
-								vm.init();
+								if (data) {
+									vm.tabSetting.create(data);
+									vm.init();
+									vm.checkSeting(true);
+								} else {
+									vm.checkSeting(false);
+								}
 							})
 							.then(() => vm.$blockui('clear'));
 					}

@@ -233,6 +233,16 @@ module nts.uk.at.view.kmk004.b {
 		}
 
 		copy() {
+			const vm = this; 
+			vm.$window.modal('/view/kmk/004/r/index.xhtml', {
+				screenMode: vm.type,
+				data: [],
+				selected: ko.unwrap(vm.employees),
+				year: ko.unwrap(vm.model.code),
+				laborAttr: 0,
+			}).then(() => {
+				vm.change.valueHasMutated();
+			});
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});

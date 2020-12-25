@@ -38,6 +38,8 @@ public class BasicSettingsByEmployment {
 		if (regularLaborTimeEmp.isPresent()) {
 			result.setDaily(regularLaborTimeEmp.get().getDailyTime().getDailyTime().v());
 			result.setWeekly(regularLaborTimeEmp.get().getWeeklyTime().getTime().v());
+		} else {
+			return null;
 		}
 
 		// 2 get(職場別通常勤務集計設定)

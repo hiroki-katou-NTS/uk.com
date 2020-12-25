@@ -76,7 +76,6 @@ module nts.uk.at.view.kmk004.b {
 
         reloadData() {
             const vm = this;
-            console.log(ko.unwrap(vm.alreadySettingList));
 
             vm.$blockui("invisible")
                 .then(() => $('#tree-grid')
