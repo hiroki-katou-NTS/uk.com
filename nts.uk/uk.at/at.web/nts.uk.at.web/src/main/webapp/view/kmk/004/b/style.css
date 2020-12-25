@@ -60,6 +60,7 @@
 	margin-left: 177px;
 	width: 190px;
 	margin-top: 10px;
+	max-width: 203px;
 }
 
 /* View D */
@@ -107,6 +108,7 @@
 .view-d-kmk004 .right-content .time-work {
 	margin-left: 177px;
 	margin-top: 10px;
+	max-width: 203px;
 }
 
 .view-d-kmk004 .right-content .name {
@@ -165,6 +167,7 @@
 .view-e-kmk004 .right-content .time-work {
 	margin-left: 177px;
 	margin-top: 10px;
+	max-width: 203px;
 }
 
 .view-e-kmk004 .name {
