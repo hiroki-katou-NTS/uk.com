@@ -47,9 +47,8 @@ public class ReflectionStatusCheckService {
 
         // 実績反映状態＝【INPUT.反映状態】の件数をチェックする
         // (Check số record có reflectStatus thực tế = 【INPUT.reflect】)
-        // TODO Q&A 37644
         List<ApplicationDateImport> appDateFilter = appDates.stream().filter(x -> x.getApplication().getReflectionStatus()
-                .getListReflectionStatusOfDayExport().stream().anyMatch(c -> c.getActualReflectStatus() == reflectState))
+                .getListReflectionStatusOfDayExport().stream().anyMatch(c -> c.getActualReflectStatus() != reflectState))
                 .collect(Collectors.toList());
         int count = appDateFilter.size();
         if (count == 0) {
