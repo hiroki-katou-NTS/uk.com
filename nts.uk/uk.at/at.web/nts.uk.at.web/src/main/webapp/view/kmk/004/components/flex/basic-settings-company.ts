@@ -121,6 +121,17 @@ class BasicSettingsCompany extends ko.ViewModel {
 		vm.$blockui('invisible');
 		vm.$ajax(url).done((setting: IDisplayFlexBasicSettingByCompanyDto) => {
 			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
+			if (vm.screenData().getFlexPredWorkTime().reference != setting.flexPredWorkTime.reference) {
+				if (setting.flexPredWorkTime.reference == 1) {
+					_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+						item.laborTime().withinLaborTime(null);
+					});
+				} else {
+					_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+						item.laborTime().withinLaborTime(0);
+					});
+				}
+			}
 			vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
 		}).always(() => { vm.$blockui('clear'); });
 
@@ -172,7 +183,7 @@ class BasicSettingsCompany extends ko.ViewModel {
 			return '';
 		}
 
-		return vm.$i18n.text(vm.screenData().getFlexPredWorkTime().reference == 1 ? 'KMK004_288' : 'KMK004_289');
+		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
 	}
 
 	getIncludeOverTimeText() {
