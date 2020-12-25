@@ -76,7 +76,7 @@ public enum NotUseAtr {
 		if (value) {
 			return NotUseAtr.USE;
 		} else {
-			return NotUseAtr.NOT_USE;
+			return NotUseAtr.NOTUSE;
 		}
 	}
 	
@@ -93,7 +93,7 @@ public enum NotUseAtr {
 	 * @return　boolean
 	 */
 	public boolean isNotUse() {
-		return NOT_USE.equals(this);
+		return NOTUSE.equals(this);
 	}
 
 
