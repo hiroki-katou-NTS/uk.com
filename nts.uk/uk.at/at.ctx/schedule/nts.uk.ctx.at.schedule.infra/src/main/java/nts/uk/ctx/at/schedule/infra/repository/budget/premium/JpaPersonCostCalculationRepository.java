@@ -57,8 +57,14 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     @Override
     public List<PersonCostCalculation> findByCompanyID(String companyID) {
-        return this.queryProxy().query(SEL_BY_CID, KscmtPerCostCal.class).setParameter("companyID", companyID)
-                .getList(x -> toSimpleDomain(x));
+        List<PersonCostCalculation> rs = new ArrayList<>();
+        val listEntity = this.queryProxy().query(SEL_BY_CID, KscmtPerCostCal.class).setParameter("companyID", companyID)
+                .getList();
+        for (KscmtPerCostCal item : listEntity) {
+            val sub = getPersonCost(item.pk.companyID, item.pk.histID);
+            sub.ifPresent(rs::add);
+        }
+        return rs;
     }
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -101,7 +107,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @Override
     public void delete(String companyId, String historyId) {
 
-        val entityPerCosst =  this.queryProxy().query(SEL_ITEM_BY_HID, KscmtPerCostCal.class).setParameter("companyID", companyId).setParameter("historyID", historyId)
+        val entityPerCosst = this.queryProxy().query(SEL_ITEM_BY_HID, KscmtPerCostCal.class).setParameter("companyID", companyId).setParameter("historyID", historyId)
                 .getSingle();
 
         entityPerCosst.ifPresent(kscmtPerCostCal -> this.commandProxy().remove(kscmtPerCostCal));
@@ -112,7 +118,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 .setParameter("cid", companyId)
                 .setParameter("histID", historyId)
                 .getList();
-        if(!listEntityRate.isEmpty()){
+        if (!listEntityRate.isEmpty()) {
             this.commandProxy().removeAll(listEntityRate);
         }
 
@@ -123,7 +129,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 .setParameter("cid", companyId)
                 .setParameter("histID", historyId)
                 .getList();
-        if(!listEntityRate.isEmpty()){
+        if (!listEntityRate.isEmpty()) {
             this.commandProxy().removeAll(listEntityPremiumAttendance);
         }
 
@@ -137,6 +143,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 AmountUnit.valueOf(kscmtPerCostCal.getCostUnit()),
                 AmountRounding.valueOf(kscmtPerCostCal.costRounding)
         );
+
         return new PersonCostCalculation(
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                 kscmtPerCostCal.getPk().companyID,
@@ -156,17 +163,37 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      * @return PersonCostCalculation Domain Object
      */
     private PersonCostCalculation toDomainPersonCostCalculation(KscmtPerCostCal kscmtPerCostCal) {
-
         val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCal.costRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
                 AmountUnit.valueOf(kscmtPerCostCal.getCostUnit()),
                 AmountRounding.valueOf(kscmtPerCostCal.costRounding)
         );
+        val cid = kscmtPerCostCal.pk.companyID;
+        val histID = kscmtPerCostCal.pk.histID;
+        String queryRate = "SELECT a FROM KscmtPerCostPremiRate a " +
+                " WHERE a.pk.companyID = :cid " +
+                " AND a.pk.histID = :histID ";
+        List<KscmtPerCostPremiRate> listEntityRate = this.queryProxy().query(queryRate, KscmtPerCostPremiRate.class)
+                .setParameter("cid", cid)
+                .setParameter("histID", histID)
+                .getList();
+
+        List<PremiumSetting> premiumSettings = new ArrayList<>();
+        if (!listEntityRate.isEmpty()) {
+            premiumSettings = listEntityRate.stream().map(e -> new PremiumSetting(
+                    e.getPk().companyID,
+                    e.getPk().histID,
+                    ExtraTimeItemNo.valueOf(e.getPk().premiumNo),
+                    new PremiumRate(e.getPremiumRate()),
+                    EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class), listEntityAtt(e.getPk().companyID, e.getPk().histID, e.getPk().premiumNo))
+            ).collect(Collectors.toList());
+        }
+
         return new PersonCostCalculation(
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                 kscmtPerCostCal.getPk().companyID,
                 new Remarks(kscmtPerCostCal.getMemo()),
-                Collections.emptyList(),
+                premiumSettings,
                 Optional.of(EnumAdaptor.valueOf(kscmtPerCostCal.getUnitPriceAtr(), UnitPrice.class)),
                 EnumAdaptor.valueOf(kscmtPerCostCal.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(kscmtPerCostCal.getWokkingHoursUnitPriceAtr()),
@@ -304,7 +331,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     public void createHistPersonCl(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId) {
         val entityPerCostCal = KscmtPerCostCal.toEntity(domain, startDate, endDate, histId);
         val listEntityRate = KscmtPerCostPremiRate.toEntity(domain, histId);
-        val listAtt = KmldtPremiumAttendance.toEntity(domain.getPremiumSettings(),histId);
+        val listAtt = KmldtPremiumAttendance.toEntity(domain.getPremiumSettings(), histId);
         this.commandProxy().insertAll(listAtt);
         this.commandProxy().insertAll(listEntityRate);
         this.commandProxy().insert(entityPerCostCal);
@@ -341,6 +368,11 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             }
         });
         this.commandProxy().updateAll(updateList);
+    }
+
+    @Override
+    public Optional<PersonCostCalculation> getPersonCostByListHistId(String cid, List<String> histId) {
+        return Optional.empty();
     }
 
     private List<Integer> listEntityAtt(String cid, String historyID, int displayNumber) {

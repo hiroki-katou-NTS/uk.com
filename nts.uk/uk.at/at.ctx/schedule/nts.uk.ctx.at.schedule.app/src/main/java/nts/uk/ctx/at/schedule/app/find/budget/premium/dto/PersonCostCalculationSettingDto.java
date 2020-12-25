@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.*;
  */
 
 @AllArgsConstructor
-@Value
+@Getter
 public class PersonCostCalculationSettingDto {
 	String companyID;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.premium.command;
+package nts.uk.ctx.at.schedule.app.find.budget.premium.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PremiumSettingDto {
+public class PremiumSettingAndNameDto {
     private int iD;
     private String name;
-    private Integer useAtr;
     private Integer rate;
+    private Integer useAtr;
     private int unitPrice;
-    private List<Integer> attendanceItems;
-    private List<AttendanceNamePriniumDto> attendanceNames;
+
+    private List<AttendanceNamePriniumDto> attendanceItems;
 }

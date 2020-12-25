@@ -8,10 +8,12 @@ import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePremiumItemComman
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.*;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.HistAndPersonCostLastDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
+import nts.uk.ctx.at.schedule.ws.budget.premium.language.HistoryDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -49,8 +51,8 @@ public class PersonCostCalculationWebService extends WebService {
 
     @POST
     @Path("findByHistoryID") // 1
-    public PersonCostCalculationSettingDto findByHistoryID(String historyID) {
-        return this.personCostCalculationSettingFinder.findByHistoryID(historyID);
+    public PersonCostCalculationSettingDto findByHistoryID(HistoryDto historyID) {
+        return this.personCostCalculationSettingFinder.findByHistoryID(historyID.getHistoryID());
     }
 
     @POST
@@ -91,7 +93,7 @@ public class PersonCostCalculationWebService extends WebService {
     }
 
     @POST
-    @Path("findHistId")// 7
+    @Path("findByHistory")// 7
     public PersonCostCalculationDto getHistPersonCost(PersonCostDto prams) {
         return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistoryId());
     }
@@ -112,5 +114,11 @@ public class PersonCostCalculationWebService extends WebService {
     @Path("deletePersonCostCalculation") // 10
     public void deleteLaborCalculationSetting(DeleteLaborCalculationSettingCommand command) {
         this.deletePersonCostCalculationSettingCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("getDatafull") // 10
+    public List<PersonCostCalDto> findPersonCostCal() {
+       return this.personCostCalculationSettingFinder.findPersonCostCal();
     }
 }

@@ -6,10 +6,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PerCostRoundSet
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationDto;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PremiumSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.*;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
+import nts.uk.ctx.at.schedule.dom.budget.premium.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguageRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumAdapter;
@@ -21,6 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,17 +46,58 @@ public class PersonCostCalculationFinder {
     @Inject
     private PremiumItemLanguageRepository premiumItemLanguageRepository;
 
-    /**
-     * get all Person Cost Calculation by company ID
-     *
-     * @return list Person Cost Calculation by company ID
-     */
-    public List<PersonCostCalculationSettingDto> findPersonCostCalculationByCompanyID() {
+
+    public List<PersonCostCalDto> findPersonCostCal() {
+        List<PersonCostCalDto> rs = new ArrayList<>();
         String companyID = AppContexts.user().companyId();
-        return this.personCostCalculationRepository.findByCompanyID(companyID)
-                .stream()
-                .map(x -> convertToSimpleDto(x))
-                .collect(Collectors.toList());
+        val listHistOpt = this.personCostCalculationRepository.getHistPersonCostCalculation(companyID);
+        val listItemName = premiumItemRepository.findByCompanyID(companyID);
+
+        if (listHistOpt.isPresent()) {
+            val calculationList = listHistOpt.get();
+            val listItem  = this.personCostCalculationRepository.findByCompanyID(companyID);
+            for (int i = 0; i < listItem.size(); i++) {
+                val sub = listItem.get(i);
+                val item =  convertToPersonCostDto(sub,calculationList,listItemName);
+                rs.add(item);
+            }
+        }
+        return rs;
+
+    }
+
+    public PersonCostCalDto convertToPersonCostDto(PersonCostCalculation domain,
+                                                   HistPersonCostCalculation hist, List<PremiumItem> listItemName) {
+        val item = hist.getHistoryItems().stream().filter(e -> e.identifier().equals(domain.getHistoryID())).findFirst();
+        PersonCostCalDto rs = new PersonCostCalDto();
+        if (item.isPresent()) {
+            val sub = item.get();
+            rs = new PersonCostCalDto(
+                    sub.start(),
+                    sub.end(),
+                    sub.identifier(),
+                    domain.getCompanyID(),
+                    domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
+                    domain.getHowToSetUnitPrice().value,
+                    domain.getWorkingHoursUnitPrice().v(),
+                    domain.getRemark().v(),
+                    new PerCostRoundSettingDto(
+                            domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
+                            domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                            domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
+                    domain.getPremiumSettings().stream().map(e -> new PremiumSettingAndNameDto(
+                            e.getID().value,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getUseAtr().value : null,
+                            e.getRate().v(),
+                            e.getUnitPrice().value,
+                            atNames(e.getAttendanceItems())
+                    )).collect(Collectors.toList())
+            );
+        }
+        return rs;
     }
 
     /**
@@ -89,15 +128,6 @@ public class PersonCostCalculationFinder {
         String companyID = AppContexts.user().companyId();
         return this.personCostCalculationRepository.findItemByHistoryID(companyID, historyID)
                 .map(this::convertToDto).orElse(null);
-    }
-
-    private PersonCostCalculationSettingDto convertToSimpleDto(PersonCostCalculation personCostCalculation) {
-        return new PersonCostCalculationSettingDto(
-                personCostCalculation.getCompanyID(),
-                personCostCalculation.getHistoryID(),
-                personCostCalculation.getUnitPrice().isPresent() ? personCostCalculation.getUnitPrice().get().value : null,
-                personCostCalculation.getRemark().v(),
-                Collections.emptyList());
     }
 
     /**
@@ -133,7 +163,9 @@ public class PersonCostCalculationFinder {
                 premiumSetting.getRate().v(),
                 item != null ? item.getName().v() : null,
                 item != null ? item.getUseAtr().value : null,
-                premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()),
+                premiumSetting.getAttendanceItems().stream().map(x ->
+                        new ShortAttendanceItemDto(x, atNames(Collections.singletonList(x))
+                                .get(0).getAttendanceItemName())).collect(Collectors.toList()),
                 premiumSetting.getUnitPrice().value
         );
 
@@ -197,15 +229,15 @@ public class PersonCostCalculationFinder {
                                 e.getID().value,
                                 listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
                                         listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
+                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getUseAtr().value : null,
                                 e.getRate().v(),
                                 e.getUnitPrice().value,
-                                e.getAttendanceItems()
+                                e.getAttendanceItems(),
+                                atNames(e.getAttendanceItems())
                         )).collect(Collectors.toList()));
             }
-
-
         }
-
         return new HistAndPersonCostLastDto(
                 lisHist,
                 personCostCalLast
@@ -237,9 +269,13 @@ public class PersonCostCalculationFinder {
                             e.getID().value,
                             listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
                                     listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getUseAtr().value : null,
+
                             e.getRate().v(),
                             e.getUnitPrice().value,
-                            e.getAttendanceItems()
+                            e.getAttendanceItems(),
+                            atNames(e.getAttendanceItems())
                     )).collect(Collectors.toList()));
         }
 

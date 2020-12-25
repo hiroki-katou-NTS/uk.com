@@ -78,11 +78,11 @@ public interface PersonCostCalculationRepository {
 
     public Optional<PersonCostCalculation> getPersonCost(String cid, String histId);
 
-    public void createHistPersonCl(PersonCostCalculation domain,GeneralDate startDate,GeneralDate endDate,String histId);
+    public void createHistPersonCl(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId);
 
     public void updateHistPersonCl(HistPersonCostCalculation domain);
 
-    public void update(PersonCostCalculation domain,HistPersonCostCalculation domainHist);
+    public void update(PersonCostCalculation domain, HistPersonCostCalculation domainHist);
 
-
+    public Optional<PersonCostCalculation> getPersonCostByListHistId(String cid, List<String> histId);
 }
