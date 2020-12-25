@@ -15,10 +15,10 @@ public class ErrorAlarmWorkRecordDto {
 	private String name;
 
 	/* システム固定とする */
-	private int fixedAtr;
+	private boolean fixedAtr;
 
 	/* 使用する */
-	private int useAtr;
+	private boolean useAtr;
 
 	/* 区分 */
 	private int typeAtr;
@@ -27,13 +27,13 @@ public class ErrorAlarmWorkRecordDto {
 	private String eralCheckId;
 
 	/* メッセージを太字にする */
-	private int boldAtr;
+	private boolean boldAtr;
 
 	/* メッセージの色 */
 	private String messageColor;
 
 	/* エラーアラームを解除できる */
-	private int cancelableAtr;
+	private boolean cancelableAtr;
 
 	/* エラー表示項目 */
 	private Integer errorDisplayItem;
