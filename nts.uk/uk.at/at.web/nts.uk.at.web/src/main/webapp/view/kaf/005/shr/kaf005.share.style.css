@@ -188,3 +188,10 @@ div.form-label.broken {
 .overTime2 .nts-fixed-body-wrapper{
 	height: 192px !important;
 }
+.holidayTime1 .nts-fixed-body-wrapper {
+	height: 96px !important;
+}
+.holidayTime2 .nts-fixed-body-wrapper {
+	height: 96px !important;
+}
+
