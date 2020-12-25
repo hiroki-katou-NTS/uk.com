@@ -130,11 +130,7 @@
                                         value: minValue,
                                         constraint: $vm.constraint,
                                         required: true,
-                                        option: new nts.uk.ui.option.NumberEditorOption({
-                                                                grouplength: 0,
-                                                                decimallength: 1,
-                                                                placeholder: ''
-                                                            })
+                                        option: $vm.numberEditorOption
                                     }"/>
                             </td>
                             <td class="pad_left_5px">
@@ -143,13 +139,9 @@
                                         name: '#{i18n.getText('KAL003_65')}',
                                         value: maxValue,
                                         constraint: $vm.constraint,
-                                        required: $vm.enableMaxValue(),
+                                        required: $vm.enableMaxValue,
                                         enable: $vm.enableMaxValue(),
-                                        option: new nts.uk.ui.option.NumberEditorOption({
-                                                                grouplength: 0,
-                                                                decimallength: 1,
-                                                                placeholder: ''
-                                                            })
+                                        option: $vm.numberEditorOption
                                     }"/>
                             </td>
                         </com:ko-if>
@@ -170,7 +162,7 @@
                                         name: '#{i18n.getText('KAL003_65')}',
                                         value: maxValue,
                                         constraint: $vm.constraint,
-                                        required: $vm.enableMaxValue(),
+                                        required: $vm.enableMaxValue,
                                         enable: $vm.enableMaxValue(),
                                         mode: 'time',
                                         inputFormat: 'time'
