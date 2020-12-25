@@ -4,7 +4,7 @@ import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/
 import { KafS00DComponent } from 'views/kaf/s00/d';
 import { DispInfoOfTimeLeaveRequest, GoBackTime } from '../shr/';
 import { KafS00SubP1Component, ExcessTimeStatus } from 'views/kaf/s00/sub/p1/';
-import { IAppDispInfoStartupOutput, IOpActualContentDisplayLst } from '../../s04/a/define';
+import { ICondition, IObjectChangeDate,ITimeLeaveAppDispInfo } from '../a/define';
 @component({
     name: 'kafs12a1',
     route: '/kaf/s12/a1',
@@ -24,9 +24,13 @@ import { IAppDispInfoStartupOutput, IOpActualContentDisplayLst } from '../../s04
 export class KafS12A1Component extends KafS00ShrComponent {
     public title: string = 'KafS12A1';
     public application: Application = null;
-    public mode: boolean = true;
     public user: any = null;
     public condition: ICondition = null;
+    public isValidateAll: boolean = true;
+    public timeLeaveAppDispInfo: any = [];
+
+    @Prop({ default: () => ({ mode: true }) })
+    public readonly mode!: boolean;
 
     //Disp Infomation Time Leave Request Value
     public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
@@ -107,7 +111,6 @@ export class KafS12A1Component extends KafS00ShrComponent {
         const vm = this;
 
         if (vm.params) {
-            vm.mode = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
         }
         if (vm.mode) {
@@ -140,7 +143,7 @@ export class KafS12A1Component extends KafS00ShrComponent {
                     return true;
                 }
             })
-            .then((result: { data: IResult }) => {
+            .then((result: { data: ITimeLeaveAppDispInfo }) => {
                 if (result) {
                     const { data } = result;
                     const { reflectSetting, appDispInfoStartupOutput } = data;
@@ -158,7 +161,7 @@ export class KafS12A1Component extends KafS00ShrComponent {
                         unionGoingOut,
                         managementMultipleWorkCycles
                     };
-                    console.log(vm.condition);
+                    vm.timeLeaveAppDispInfo = data;
                 } else {
 
                 }
@@ -179,7 +182,15 @@ export class KafS12A1Component extends KafS00ShrComponent {
     public nextToStep2() {
         const vm = this;
 
-        vm.$emit('next-to-step-two');
+        vm.isValidateAll = vm.customValidate(vm);
+        vm.$validate();
+        if (!vm.$valid || !vm.isValidateAll) {
+
+            window.scrollTo(0, 100);
+
+            return;
+        }
+        vm.$emit('next-to-step-two', vm.timeLeaveAppDispInfo);
     }
 
     public kaf000BChangeDate(objectDate: IObjectChangeDate) {
@@ -192,30 +203,54 @@ export class KafS12A1Component extends KafS00ShrComponent {
                 // console.log('changeDateCustom');
             }
         }
-
-
         const { DispInfoOfTimeLeaveRequestLst } = vm;
         const { appDispInfoStartupOutput } = objectDate;
         const { appDispInfoWithDateOutput } = appDispInfoStartupOutput;
         const { opActualContentDisplayLst } = appDispInfoWithDateOutput;
 
         DispInfoOfTimeLeaveRequestLst.forEach((i) => {
+            const { frame } = i;
             opActualContentDisplayLst.forEach((f) => {
-                if (i.frame === 0) {
-                    i.attendanceTime = f.opAchievementDetail.opWorkTime;
-                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                }
-                if (i.frame === 1) {
-                    i.attendanceTime = f.opAchievementDetail.opLeaveTime;
-                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                }
-                if (i.frame === 2) {
-                    i.attendanceTime = f.opAchievementDetail.opWorkTime2;
-                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                }
-                if (i.frame === 3) {
-                    i.attendanceTime = f.opAchievementDetail.opDepartureTime2;
-                    i.kafS00P1Params.scheduleTime = f.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                if (f.opAchievementDetail) {
+                    const { opAchievementDetail } = f;
+                    const { opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2, achievementEarly, stampRecordOutput } = opAchievementDetail;
+                    const { outingTime } = stampRecordOutput;
+                    const { scheAttendanceTime1, scheAttendanceTime2, scheDepartureTime1, scheDepartureTime2 } = achievementEarly;
+
+                    if (frame === 0) {
+                        i.attendanceTime = opWorkTime ? opWorkTime : null;
+                        i.kafS00P1Params.scheduleTime = scheAttendanceTime1;
+                    }
+                    if (frame === 1) {
+                        i.attendanceTime = opLeaveTime ? opLeaveTime : null;
+                        i.kafS00P1Params.scheduleTime = scheDepartureTime1;
+                    }
+                    if (frame === 2) {
+                        i.attendanceTime = opWorkTime2 ? opWorkTime2 : null;
+                        i.kafS00P1Params.scheduleTime = scheAttendanceTime2;
+                    }
+                    if (frame === 3) {
+                        i.attendanceTime = opDepartureTime2 ? opDepartureTime2 : null;
+                        i.kafS00P1Params.scheduleTime = scheDepartureTime2;
+                    }
+
+                    vm.GoBackTimeLst = [];
+
+                    outingTime.forEach((i) => {
+                        vm.GoBackTimeLst.push({
+                            frame: i.frameNo - 1,
+                            goBackTime: {
+                                start: i.opStartTime,
+                                end: i.opEndTime
+                            },
+                            name: 'KAFS12_18',
+                            swtOutClassification: i.opGoOutReasonAtr
+                        });
+                    });
+                } else {
+                    i.kafS00P1Params.scheduleTime = null;
+                    i.attendanceTime = null;
+                    vm.GoBackTimeLst = [this.iGoBackTime1, this.iGoBackTime2, this.iGoBackTime3];
                 }
             });
         });
@@ -393,41 +428,18 @@ export class KafS12A1Component extends KafS00ShrComponent {
             vm.GoBackTimeLst.push(iGoBackTime);
         }
     }
-}
+    get showAddButton(): boolean {
+        const vm = this;
 
+        if (vm.GoBackTimeLst && vm.GoBackTimeLst.length === 10) {
+
+            return false;
+        }
+
+        return true;
+    }
+}
 
 const API = {
     initAppNew: 'at/request/application/timeLeave/initNewApp',
 };
-
-export interface IObjectChangeDate {
-    startDate: Date;
-    endDate: Date;
-    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
-}
-
-export interface IResult {
-    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
-    reflectSetting: {
-        condition: {},
-        destination: {
-            firstAfterWork: 0 | 1
-            firstBeforeWork: 0 | 1
-            privateGoingOut: 0 | 1;
-            secondAfterWork: 0 | 1;
-            secondBeforeWork: 0 | 1;
-            unionGoingOut: 0 | 1;
-        }
-    };
-    reflectActualTimeZone: number;
-}
-
-export interface ICondition {
-    firstAfterWork: number;
-    firstBeforeWork: number;
-    privateGoingOut: number;
-    secondAfterWork: number;
-    secondBeforeWork: number;
-    unionGoingOut: number;
-    managementMultipleWorkCycles: boolean;
-}

@@ -1,8 +1,9 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { CalculationResult } from '../shr';
 import { KafS00CComponent } from 'views/kaf/s00/c';
-import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
+import { KafS00ShrComponent, AppType, Application } from 'views/kaf/s00/shr';
+import {ITimeLeaveAppDispInfo} from '../a/define';
 @component({
     name: 'kafs12a2',
     route: '/kaf/s12/a2',
@@ -19,6 +20,18 @@ export class KafS12A2Component extends KafS00ShrComponent {
     public application: Application = null;
     public hoursOfWorkTypeFromA1: number = null;
     public hoursOfWorkTypeFromA12: number = null;
+
+    @Prop({ default: () => ({ mode: true }) })
+    public readonly mode!: boolean;
+
+    @Prop({ default: (): ITimeLeaveAppDispInfo => ({
+        appDispInfoStartupOutput: null,
+        reflectSetting: null,
+        timeLeaveManagement: null,
+        timeLeaveRemaining: null,
+        workingConditionItem: null,
+    })})
+    public readonly timeLeaveAppDispInfo!: ITimeLeaveAppDispInfo;
 
     //Calculate result value
     public calculateResult1 = new CalculationResult({
@@ -260,7 +273,7 @@ export class KafS12A2Component extends KafS00ShrComponent {
     public nextToStep3() {
         const vm = this;
 
-        vm.$emit('next-to-step-three',{});
+        vm.$emit('next-to-step-three', {});
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
