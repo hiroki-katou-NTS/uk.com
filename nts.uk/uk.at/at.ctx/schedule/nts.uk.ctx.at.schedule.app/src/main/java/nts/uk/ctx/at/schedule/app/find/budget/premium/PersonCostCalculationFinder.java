@@ -2,12 +2,14 @@ package nts.uk.ctx.at.schedule.app.find.budget.premium;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PerCostRoundSettingDto;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationDto;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PremiumSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.*;
-import nts.uk.ctx.at.schedule.dom.budget.premium.*;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguageRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumAdapter;
@@ -15,12 +17,10 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDt
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,7 +68,7 @@ public class PersonCostCalculationFinder {
      */
     public List<PremiumItemDto> findPremiumItemByCompanyID() {
         String companyID = AppContexts.user().companyId();
-        return this.premiumItemRepository.findAllIsUse(companyID)
+        return this.premiumItemRepository.findByCompanyID(companyID)
                 .stream()
                 .map(x -> new PremiumItemDto(
                         companyID,
@@ -82,28 +82,22 @@ public class PersonCostCalculationFinder {
         // company id
         String companyId = AppContexts.user().companyId();
         List<PremiumItemLanguage> listPremiumItem = premiumItemLanguageRepository.findByCIdAndLangId(companyId, langId);
-        return listPremiumItem.stream().map(x -> {
-            return PremiumItemDto.fromDomainPremiumItemLanguage(x);
-        }).collect(Collectors.toList());
+        return listPremiumItem.stream().map(PremiumItemDto::fromDomainPremiumItemLanguage).collect(Collectors.toList());
     }
 
     public PersonCostCalculationSettingDto findByHistoryID(String historyID) {
         String companyID = AppContexts.user().companyId();
         return this.personCostCalculationRepository.findItemByHistoryID(companyID, historyID)
-                .map(x -> convertToDto(x)).orElse(null);
+                .map(this::convertToDto).orElse(null);
     }
 
     private PersonCostCalculationSettingDto convertToSimpleDto(PersonCostCalculation personCostCalculation) {
-//        return new PersonCostCalculationSettingDto(
-//                personCostCalculation.getCompanyID(),
-//                personCostCalculation.getHistoryID(),
-//                personCostCalculation.getStartDate(),
-//                personCostCalculation.getEndDate(),
-//                personCostCalculation.getUnitPrice().value,
-//                personCostCalculation.getMemo().v(),
-//                Collections.emptyList());
-
-        return null;
+        return new PersonCostCalculationSettingDto(
+                personCostCalculation.getCompanyID(),
+                personCostCalculation.getHistoryID(),
+                personCostCalculation.getUnitPrice().isPresent() ? personCostCalculation.getUnitPrice().get().value : null,
+                personCostCalculation.getRemark().v(),
+                Collections.emptyList());
     }
 
     /**
@@ -114,29 +108,13 @@ public class PersonCostCalculationFinder {
      */
 
     private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation) {
-//        return new PersonCostCalculationSettingDto(
-//                personCostCalculation.getCompanyID(),
-//                personCostCalculation.getHistoryID(),
-//                personCostCalculation.getStartDate(),
-//                personCostCalculation.getEndDate(),
-//                personCostCalculation.getUnitPrice().value,
-//                personCostCalculation.getMemo().v(),
-//                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
-
-        return null;
+        return new PersonCostCalculationSettingDto(
+                personCostCalculation.getCompanyID(),
+                personCostCalculation.getHistoryID(),
+                personCostCalculation.getUnitPrice().isPresent() ? personCostCalculation.getUnitPrice().get().value : null,
+                personCostCalculation.getRemark().v(),
+                personCostCalculation.getPremiumSettings().stream().map(this::toPremiumSetDto).collect(Collectors.toList()));
     }
-
-
-
-//    private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation) {
-//        return new PersonCostCalculationSettingDto(
-//                personCostCalculation.getCompanyID(),
-//                personCostCalculation.getHistoryID(),
-//
-//                personCostCalculation.getUnitPrice().value,
-//                personCostCalculation.getMemo().v(),
-//                personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
-//    }
 
     /**
      * convert PremiumSetting to PremiumSetDto
@@ -145,14 +123,20 @@ public class PersonCostCalculationFinder {
      * @return PremiumSetDto Object
      */
     private PremiumSetDto toPremiumSetDto(PremiumSetting premiumSetting) {
+        val listItemName = premiumItemRepository.findByCompanyID(premiumSetting.getCompanyID());
+        val item = listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(premiumSetting.getID().value)) ?
+                listItemName.stream().filter(j -> j.getDisplayNumber().equals(premiumSetting.getID().value)).findFirst().get() : null;
         return new PremiumSetDto(
                 premiumSetting.getCompanyID(),
                 premiumSetting.getHistoryID(),
-                premiumSetting.getDisplayNumber(),
+                premiumSetting.getID().value,
                 premiumSetting.getRate().v(),
-                premiumSetting.getName().v(),
-                premiumSetting.getUseAtr().value,
-                premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()));
+                item != null ? item.getName().v() : null,
+                item != null ? item.getUseAtr().value : null,
+                premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()),
+                premiumSetting.getUnitPrice().value
+        );
+
     }
 
     /**
@@ -176,39 +160,89 @@ public class PersonCostCalculationFinder {
      * Get 人件費計算設定の履歴
      */
 
-    public List<HistPersonCostCalculationDto> getHistPersonCost() {
+    public HistAndPersonCostLastDto getHistPersonCost() {
         val cid = AppContexts.user().companyId();
         val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
         if (!listItem.isPresent()) {
             throw new BusinessException("Msg_2027");
         }
-        return listItem.get().items().stream().map(e -> new HistPersonCostCalculationDto(
+        val listItemName = premiumItemRepository.findByCompanyID(cid);
+        val lisHist = listItem.get().items().stream().map(e -> new HistPersonCostCalculationDto(
                 e.start(),
                 e.end(),
                 cid,
                 e.identifier()
         )).collect(Collectors.toList());
+        PersonCostCalculationDto personCostCalLast = null;
+        if (lisHist != null) {
+            val hist = lisHist.get(0);
+            val domainOpt = this.personCostCalculationRepository.getPersonCost(cid, hist.getHistoryID());
+            if (domainOpt.isPresent()) {
+                val domain = domainOpt.get();
+                personCostCalLast = new PersonCostCalculationDto(
+                        hist.getStartDate(),
+                        hist.getEndDate(),
+                        domain.getHistoryID(),
+                        domain.getCompanyID(),
+                        domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
+                        domain.getHowToSetUnitPrice().value,
+                        domain.getWorkingHoursUnitPrice().v(),
+                        domain.getRemark().v(),
+                        new PerCostRoundSettingDto(
+                                domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
+                                domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                                domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
 
+                        domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
+                                e.getID().value,
+                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
+                                e.getRate().v(),
+                                e.getUnitPrice().value,
+                                e.getAttendanceItems()
+                        )).collect(Collectors.toList()));
+            }
+
+
+        }
+
+        return new HistAndPersonCostLastDto(
+                lisHist,
+                personCostCalLast
+        );
     }
+
     public PersonCostCalculationDto getHistPersonCostByHistId(String histId) {
         val cid = AppContexts.user().companyId();
-        val listItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
-        if (!listItem.isPresent()) {
-            throw new BusinessException("Msg_2027");
-        };
-        return null;
-    }
+        val listItemName = premiumItemRepository.findByCompanyID(cid);
+        PersonCostCalculationDto personCostCalLast = null;
+        val domainOpt = this.personCostCalculationRepository.getPersonCost(cid, histId);
+        if (domainOpt.isPresent()) {
+            val domain = domainOpt.get();
+            personCostCalLast = new PersonCostCalculationDto(
+                    null,
+                    null,
+                    domain.getHistoryID(),
+                    domain.getCompanyID(),
+                    domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
+                    domain.getHowToSetUnitPrice().value,
+                    domain.getWorkingHoursUnitPrice().v(),
+                    domain.getRemark().v(),
+                    new PerCostRoundSettingDto(
+                            domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
+                            domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                            domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
 
-
-    public PersonCostCalculationDto getLastPersonCost() {
-        val cid = AppContexts.user().companyId();
-        val optItem = this.personCostCalculationRepository.getHistPersonCostCalculation(cid);
-        if (!optItem.isPresent()) {
-            throw new BusinessException("Msg_2027");
+                    domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
+                            e.getID().value,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
+                            e.getRate().v(),
+                            e.getUnitPrice().value,
+                            e.getAttendanceItems()
+                    )).collect(Collectors.toList()));
         }
-        val item = optItem.get();
-        return new PersonCostCalculationDto(
 
-        );
+        return personCostCalLast;
     }
 }

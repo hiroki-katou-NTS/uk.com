@@ -21,11 +21,7 @@ public class PersonCostCalculationSettingDto {
 
 	String historyID;
 
-	GeneralDate startDate;
-
-	GeneralDate endDate;
-
-	int unitPrice;
+	Integer unitPrice;
 
 	String memo;
 

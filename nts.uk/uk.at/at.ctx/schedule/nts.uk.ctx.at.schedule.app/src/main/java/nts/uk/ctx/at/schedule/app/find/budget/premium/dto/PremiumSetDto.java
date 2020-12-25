@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
@@ -13,16 +13,18 @@ import lombok.Value;
 @Value
 public class PremiumSetDto {
 	String companyID;
-	
+
 	String historyID;
-	
+
 	Integer displayNumber;
-	
+
 	Integer rate;
-    
+
     String name;
-    
-    int useAtr;
-    
+
+    Integer useAtr;
+
     List<ShortAttendanceItemDto> attendanceItems;
+
+    int unitPrice;
 }

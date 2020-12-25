@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.schedule.ws.budget.premium;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.*;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.DeletePersonCostCalculationCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.RegisterLaborCalculationSettingCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdateHistPersonCostCalculationCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePremiumItemCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.*;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
-import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.HistPersonCostCalculationDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.HistAndPersonCostLastDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
@@ -25,14 +28,10 @@ import java.util.List;
 @Produces("application/json")
 public class PersonCostCalculationWebService extends WebService {
 
-    @Inject
-    private InsertPersonCostCalculationCommandHandler insertPersonCostCalculationSettingCommandHandler;
 
     @Inject
     private PersonCostCalculationFinder personCostCalculationSettingFinder;
 
-    @Inject
-    private UpdatePersonCostCalculationCommandHandler updatePersonCostCalculationSettingCommandHandler;
 
     @Inject
     private DeletePersonCostCalculationCommandHandler deletePersonCostCalculationSettingCommandHandler;
@@ -47,97 +46,71 @@ public class PersonCostCalculationWebService extends WebService {
     @Inject
     private RegisterLaborCalculationSettingCommandHandler registerLaborCalSettingCommandHandler;
 
-    @POST
-    @Path("insertPersonCostCalculation")
-    public void insert(PersonCostCalculationCommand command) {
-        this.insertPersonCostCalculationSettingCommandHandler.handle(command);
-    }
 
     @POST
-    @Path("findPersonCostCalculationByCompanyID")
-    public List<PersonCostCalculationSettingDto> findPersonCostCalculationByCompanyID() {
-        return this.personCostCalculationSettingFinder.findPersonCostCalculationByCompanyID();
-    }
-
-    @POST
-    @Path("findByHistoryID")
+    @Path("findByHistoryID") // 1
     public PersonCostCalculationSettingDto findByHistoryID(String historyID) {
         return this.personCostCalculationSettingFinder.findByHistoryID(historyID);
     }
 
     @POST
-    @Path("updatePersonCostCalculation")
-    public void update(PersonCostCalculationCommand command) {
-        this.updatePersonCostCalculationSettingCommandHandler.handle(command);
-    }
-
-    @POST
-    @Path("deletePersonCostCalculation")
-    public void delete(PersonCostCalculationCommand command) {
-        this.deletePersonCostCalculationSettingCommandHandler.handle(command);
-    }
-
-    @POST
-    @Path("findPremiumItemByCompanyID")
+    @Path("findPremiumItemByCompanyID") // 2
     public List<PremiumItemDto> findPremiumItemByCompanyID() {
         return this.personCostCalculationSettingFinder.findPremiumItemByCompanyID();
     }
 
     @POST
-    @Path("updatePremiumItem")
+    @Path("updatePremiumItem")// 3
     public void update(List<UpdatePremiumItemCommand> command) {
         this.updatePremiumItemCommandHandler.handle(command);
     }
 
     @POST
-    @Path("attendancePremiumItem")
+    @Path("attendancePremiumItem")// 3
     public List<AttendanceTypePriServiceDto> findAttendanceType() {
         //人数：0
         return this.personCostCalculationSettingFinder.atTypes(0);
     }
 
     @POST
-    @Path("attendancePremiumName")
+    @Path("attendancePremiumName") // 4
     public List<AttendanceNamePriniumDto> findAttendanceName(List<Integer> dailyAttendanceItemIds) {
         return this.personCostCalculationSettingFinder.atNames(dailyAttendanceItemIds);
     }
 
     @POST
-    @Path("getByCIdAndLangId/{langId}")
+    @Path("getByCIdAndLangId/{langId}") // 5
     public List<PremiumItemDto> findWorkTypeLanguage(@PathParam("langId") String langId) {
         return this.personCostCalculationSettingFinder.findWorkTypeLanguage(langId);
     }
 
-
-    //=================================== Update KML 001 ==================
-
     @POST
-    @Path("findHistByCompanyID")
-    public List<HistPersonCostCalculationDto> getHistPersonCostCalculations() {
+    @Path("findPersonCostCalculationByCompanyID")// 6
+    public HistAndPersonCostLastDto getHistPersonCostCalculations() {
         return this.personCostCalculationSettingFinder.getHistPersonCost();
     }
 
     @POST
-    @Path("findHistId")
+    @Path("findHistId")// 7
     public PersonCostCalculationDto getHistPersonCost(PersonCostDto prams) {
-        return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistId());
+        return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistoryId());
     }
 
     @POST
-    @Path("findByLastHist")
-    public PersonCostCalculationDto getLastPersonCost() {
-        return this.personCostCalculationSettingFinder.getLastPersonCost();
-    }
-
-    @POST
-    @Path("update/hist")
+    @Path("updatePersonCostCalculation") // 8
     public void updateHistPersonCalculation(UpdateHistPersonCostCalculationCommand command) {
         this.updateHistCommandHandler.handle(command);
     }
 
     @POST
-    @Path("register/hist")
+    @Path("insertPersonCostCalculation") // 9
     public void registerLaborCalculationSetting(RegisterLaborCalculationSettingCommand command) {
         this.registerLaborCalSettingCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("deletePersonCostCalculation") // 10
+    public void deleteLaborCalculationSetting(DeleteLaborCalculationSettingCommand command) {
+        this.deletePersonCostCalculationSettingCommandHandler.handle(command);
     }
 }

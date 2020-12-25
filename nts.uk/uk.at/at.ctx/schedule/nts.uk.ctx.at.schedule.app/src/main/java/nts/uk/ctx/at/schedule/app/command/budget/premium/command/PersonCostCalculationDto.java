@@ -16,7 +16,7 @@ public class PersonCostCalculationDto {
     private GeneralDate startDate;
     private GeneralDate endDate;
     private String historyId;
-
+    private String companyId;
     private Integer unitPrice;
 
     private int howToSetUnitPrice;

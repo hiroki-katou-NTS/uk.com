@@ -17,7 +17,7 @@ public class KscmtPerCostCalPk implements Serializable {
     @Column(name = "CID")
     public String companyID;
 
-    @Column(name = "HIST_ID")
+    @Column(name = "HIS_ID")
     public String histID;
 
 }

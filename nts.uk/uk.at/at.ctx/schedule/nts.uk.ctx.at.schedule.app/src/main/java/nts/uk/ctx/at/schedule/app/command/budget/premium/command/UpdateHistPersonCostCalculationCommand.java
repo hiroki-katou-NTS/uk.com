@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateHistPersonCostCalculationCommand {
     public GeneralDate startDate;
-    public GeneralDate endDate;
     public String historyId;
 
     private Integer unitPrice;
