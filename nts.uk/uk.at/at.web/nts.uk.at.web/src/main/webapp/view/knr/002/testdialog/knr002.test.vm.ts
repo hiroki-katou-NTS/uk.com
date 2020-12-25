@@ -78,12 +78,12 @@ module knr002.test {
 
 
                 // G_Dialog
-                self.empInfoTerCode_G = ko.observable("1111");
+                self.empInfoTerCode_G = ko.observable("0001");
                 self.empInfoTerName_G = ko.observable("Name 2G_Shared");
                 self.modelEmpInfoTerName_G = ko.observable("NRL-G");
                 self.workLocationName_G = ko.observable("Work Location 2G");
                 //  K_Dialog
-                self.empInfoTerCode_K = ko.observable("1111");
+                self.empInfoTerCode_K = ko.observable("0001");
             }
 
             public startPage(): JQueryPromise<void>{

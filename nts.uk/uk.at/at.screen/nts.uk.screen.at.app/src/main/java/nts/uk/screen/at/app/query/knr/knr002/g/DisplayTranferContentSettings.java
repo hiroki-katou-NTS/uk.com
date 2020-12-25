@@ -23,8 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DisplayTranferContentSettings {
+	
 	//	就業情報端末のリクエスト一覧Repository.[1] 就業情報端末のリクエスト一覧を取得する
-
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
@@ -46,6 +46,18 @@ public class DisplayTranferContentSettings {
 											Collections.emptyList(),
 											Collections.emptyList(),
 											Collections.emptyList())
+											.remoteSetting(false)	//	リモート設定　
+											.sendEmployeeId(false)	//	社員ＩＤ送信
+											.sendWorkType(false)	//	勤務種類コード送信　
+											.sendWorkTime(false)	//	就業時間帯コード送信
+											.overTimeHoliday(false)	//	残業・休日出勤送信　
+											.applicationReason(false)	//	申請理由送信　
+											.sendBentoMenu(false)	//	弁当メニュー枠番送信
+											.timeSetting(false)	//	時刻セット　
+											.reboot(false)	//	再起動を行う
+											.stampReceive(false)	//	全ての打刻データ
+											.applicationReceive(false)	//	全ての申請データ
+											.reservationReceive(false)	//	全ての予約データ
 										.build();
 		} else {
 			timeRecordReqSettingValue = timeRecordReqSetting.get();

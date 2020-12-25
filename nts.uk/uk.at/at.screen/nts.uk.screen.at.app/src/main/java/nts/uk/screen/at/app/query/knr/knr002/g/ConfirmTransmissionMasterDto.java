@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 
 /**
  * 
@@ -17,16 +16,9 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordRe
 @AllArgsConstructor
 @Data
 public class ConfirmTransmissionMasterDto {
-	//	就業情報端末のリクエスト一覧
-	private TimeRecordReqSetting timeRecordReqSetting;
+
 	//	端末No
 	private String empInfoTerCode;
-	// 	契約コード
-	private String contractCode;
-	//	会社ID
-	private String companyId;
-	//	会社コード
-	private String companyCode;
 	//	社員ID送信
 	private boolean sendEmployeeId;
 	//	社員ID

@@ -18,6 +18,7 @@ import nts.uk.screen.at.app.query.knr.knr002.g.DisplayTranferContentSettingsDto;
 @Path("screen/at/tranfercontentsettings")
 @Produces(MediaType.APPLICATION_JSON)
 public class DisplayTranferContentSettingsScreenWS {
+	//	送受信内容の設定内容表示
 	@Inject
 	private DisplayTranferContentSettings displayTranferContentSettings;
 	

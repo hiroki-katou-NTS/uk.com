@@ -32,11 +32,11 @@ public class MakeTranferSelectedDataWebService  extends WebService{
 	@Inject
 	MakeTransferSelectedWorkTypesCommandHandler makeTransferSelectedWorkTypesCommandHandler;
 	
-	//	選択した社員を送信データにする
+	//	選択した社員を送信データにするCommandHandler.handle
 	@Inject
 	MakeSelectedEmployeesCommandHandler makeSelectedEmployeesCommandHandler;
 	
-	//	選択した弁当メニュー枠番を送信データにする
+	//	選択した弁当メニュー枠番を送信データにする.CommandHandler.handle
 	@Inject
 	MakeTransferSelectedBentoMenuFrameNumberCommandHandler makeTransferSelectedBentoMenuFrameNumberCommandHandler;
 	
@@ -63,6 +63,4 @@ public class MakeTranferSelectedDataWebService  extends WebService{
 	public void makeSelectedBentoMenu(MakeTransferSelectedBentoMenuFrameNumberCommand command) {
 		this.makeTransferSelectedBentoMenuFrameNumberCommandHandler.handle(command);
 	}
-	
-
 }

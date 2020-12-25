@@ -21,7 +21,7 @@ public class GetBentoMenuScreenWS {
 	@Inject
 	private GetBentoMenu getBentoMenu;
 	@POST
-	@Path("getBentoMenu/{empInfoTerCode}")
+	@Path("getbentomenu/{empInfoTerCode}")
 	public GetBentoMenuDto getBentoMenu(@PathParam("empInfoTerCode") String empInforTerCode) {
 		return this.getBentoMenu.getBentoMenu(empInforTerCode);
 	}

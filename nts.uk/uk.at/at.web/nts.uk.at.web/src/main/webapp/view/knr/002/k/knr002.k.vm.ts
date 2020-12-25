@@ -11,12 +11,14 @@ module knr002.k {
             bentoMenu: KnockoutObservableArray<BentoMenuItem>;
             selectedList: KnockoutObservableArray<number>;
             empInfoTerCode: string;
+            isCancel: boolean;
             
             constructor(){
                 var self = this;  
                 self.bentoMenu = ko.observableArray<BentoMenuItem>([]);
                 self.selectedList = ko.observableArray<number>([]);
                 self.empInfoTerCode = '';
+                self.isCancel = true;
             }
             /**
              * Start Page
@@ -32,14 +34,10 @@ module knr002.k {
                     self.bentoMenu([]);
                     self.selectedList([]);
                 }else{
-                    console.log("empInfoTerCode: ", self.empInfoTerCode);
                     service.getBentoMenu(self.empInfoTerCode).done((data)=>{
-                        console.log("data: ", data);
                         if(!data){
                             //do something
                         }else{
-                            //  self.bentoMenu(data.bentoMenuList);
-                            //  self.selectedList(data.bentoMenu);
                             let bentoMenuTemp = [];
                             for(let item of data.bentoMenuList){
                                 let bentoTemp = new BentoMenuItem(item.bentoMenuFrameNumber, item.bentoMenuName);
@@ -53,18 +51,33 @@ module knr002.k {
                             self.selectedList(selectedListTemp);
                         }
                     });
-                    console.log("bentoMenu", self.bentoMenu());
-                    console.log("selectedList: ", self.selectedList());
                 }
                 blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
             }
             /**
+             * K4_1
+             * 決定ボタン
+             */
+            private enter(): any{
+                let self = this;
+                self.isCancel = false;
+                if(!self.selectedList() || self.selectedList().length <= 0){
+                    dialog.error({ messageId: "Msg_2026" }).then(() => {
+                        blockUI.clear();
+                    });
+                }else{
+                    setShared('KNR002K_selectedList', self.selectedList());
+                    setShared('KNR002K_isCancel', self.selectedList());
+                }               
+            }
+            /**
              * cancel_Dialog
              */
             private cancel_Dialog(): any {
                 let self = this;
+                self.isCancel = true;
                 nts.uk.ui.windows.close();
             }
    

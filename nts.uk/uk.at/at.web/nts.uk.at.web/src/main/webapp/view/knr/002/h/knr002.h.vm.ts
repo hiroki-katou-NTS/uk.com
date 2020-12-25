@@ -24,11 +24,13 @@ module knr002.h {
             alreadySettingPersonal: KnockoutObservableArray<any>;
             employeeSearchedList: KnockoutObservableArray<ExportEmployeeSearchDto >;
             columns: KnockoutObservableArray<any>;
+            isCancel: boolean;
             
 
             constructor() {
                 let self = this;
                 self.empInfoTerCode = '';
+                self.isCancel = true;
                 self.listEmployee = ko.observableArray<ExportEmployeeSearchDto >([]);
 
 
@@ -100,7 +102,6 @@ module knr002.h {
             }
 
             public startPage(): JQueryPromise<any> {
-
                 blockUI.invisible();
                 let self = this;
                 let dfd = $.Deferred();
@@ -119,7 +120,6 @@ module knr002.h {
                        // var sortArray = _.orderBy(data, [e.employeeCode], ['asc']);
                         self.employeesList(data);
                     }
-                    console.log("data from server: ", data);
                     dfd.resolve();
                 });
 
@@ -127,7 +127,32 @@ module knr002.h {
                 return dfd.promise();
             }
 
+            /**
+             * H6_1
+             * 決定ボタン
+             */
+            private enter(): any{
+                let self = this;
+                self.isCancel = false;
+                if(!self.employeeSearchedList() || self.employeeSearchedList().length <= 0){
+                    dialog.error({ messageId: "Msg_2026" }).then(() => {
+                        blockUI.clear();
+                    });
+                }else{
+                    setShared('KNR002H_selectedList', self.employeeSearchedList());
+                    setShared('KNR002H_isCancel', self.isCancel);
+                }            
+            }
 
+            /**
+             * cancel_Dialog
+             */
+            private cancel_Dialog(): any {
+                let self = this;
+                self.isCancel = true;
+                setShared('KNR002H_isCancel', self.isCancel);
+                nts.uk.ui.windows.close();
+            }
 
             /**
              * apply ccg001 search data to load
@@ -146,13 +171,6 @@ module knr002.h {
                     employeeSearchs.push(employee);
                 }
                 self.employeeSearchedList(employeeSearchs);
-            }
-            /**
-             * cancel_Dialog
-             */
-            private cancel_Dialog(): any {
-                let self = this;
-                nts.uk.ui.windows.close();
             }
         }
 
