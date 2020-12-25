@@ -18,7 +18,7 @@ public class HospitalBusinessOfficeInfo implements DomainAggregate{
 	private final String workplaceGroupId;
 	
 	/** 履歴ID */
-	private final String history;
+	private final String historyId;
 	
 	/** 夜勤運用ルール */
 	private NightShiftOperationRule nightShiftOpeRule;

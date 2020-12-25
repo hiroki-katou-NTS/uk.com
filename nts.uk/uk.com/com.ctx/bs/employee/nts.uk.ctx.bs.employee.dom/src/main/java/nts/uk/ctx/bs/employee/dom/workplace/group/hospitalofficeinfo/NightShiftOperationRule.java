@@ -17,6 +17,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class NightShiftOperationRule {
 	/** 夜勤運用区分*/
 	private final NotUseAtr nightShiftOperationAtr;
+	
 	/**　時間帯*/
 	private final Optional<ClockHourMinuteSpan> shiftTime;
 	

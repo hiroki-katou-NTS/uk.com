@@ -18,7 +18,6 @@ import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
 @Getter
 @AllArgsConstructor
 public class HospitalBusinessOfficeInfoHistory implements DomainAggregate, PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
-
 	/** 職場グルーブID　*/
 	private final String workplaceGroupId;
 	
