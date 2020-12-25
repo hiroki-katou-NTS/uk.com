@@ -83,7 +83,7 @@ public class AggregateProcessScheduleService {
         List<FixedExtractionScheduleItems> fixedExtractScheduleItems = fixedExtractionScheduleItemsRepo.getBy(nos);
 
         // チェック条件の種類ごとにチェックを行う
-        alarmListResults = fixedExtractCondAlarmValueService.create(empInfosByWpMap, employeeIds, workScheduleWorkInfos, period,
+        alarmListResults = fixedExtractCondAlarmValueService.create(empInfosByWpMap, workScheduleWorkInfos, period,
                 fixedExtractScheduleCons, fixedExtractScheduleItems);
 
         // List＜アラーム抽出結果（職場別）＞を返す

@@ -36,7 +36,6 @@ public class FixedExtractCondAlarmValueService {
      * 固定抽出条件のアラーム値を作成する
      *
      * @param empInfosByWpMap           Map＜職場ID、List＜社員情報＞＞
-     * @param employeeIds               List＜社員ID＞
      * @param workScheduleWorkInfos     List＜勤務予定＞
      * @param period                    期間
      * @param fixedExtractScheduleCons  List＜アラームリスト（職場別）スケジュール／日次の固定抽出条件＞
@@ -44,7 +43,6 @@ public class FixedExtractCondAlarmValueService {
      * @return List＜アラームリスト抽出情報（職場）＞
      */
     public List<AlarmListExtractionInfoWorkplaceDto> create(Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
-                                                            List<String> employeeIds,
                                                             List<WorkScheduleWorkInforImport> workScheduleWorkInfos,
                                                             DatePeriod period,
                                                             List<FixedExtractionScheduleCon> fixedExtractScheduleCons,
@@ -59,6 +57,8 @@ public class FixedExtractCondAlarmValueService {
                         .filter(x -> x.getFixedCheckDayItemName().equals(fixedCond.getFixedCheckDayItemName())).findFirst();
                 if (!itemOpt.isPresent()) continue;
                 FixedExtractionScheduleItems item = itemOpt.get();
+                List<String> employeeIds = empInfosByWp.getValue().stream().map(EmployeeInfoImported::getSid)
+                        .distinct().collect(Collectors.toList());
 
                 switch (fixedCond.getFixedCheckDayItemName()) {
                     case SCHEDULE_UNDECIDED:
