@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 public class TimeLeaveApplicationOutput {
 
     //労働条件項目
-    private WorkingConditionItem workingConditionItemOutput; //TODO not output
+    private WorkingConditionItem workingConditionItemOutput;
 
     //時間休暇残数
     private TimeVacationRemainingOutput timeVacationRemainingOutput;
@@ -28,6 +28,6 @@ public class TimeLeaveApplicationOutput {
     private TimeVacationManagementOutput timeVacationManagementOutput;
 
     // 申請表示情報
-    private AppDispInfoStartupOutput appDispInfoStartup;
+    private AppDispInfoStartupOutput appDispInfoStartupOutput;
 
 }

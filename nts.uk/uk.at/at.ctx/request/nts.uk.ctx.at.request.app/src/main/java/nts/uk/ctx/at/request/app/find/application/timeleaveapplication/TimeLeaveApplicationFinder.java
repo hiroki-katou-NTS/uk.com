@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.LeaveRemainingInfo;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLeaveApplicationService;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
@@ -51,14 +52,13 @@ public class TimeLeaveApplicationFinder {
     @Inject
     private WorkingConditionRepository workingConditionRepo;
 
-
     /**
      * 登録前チェック
      */
     public List<ConfirmMsgOutput> checkBeforeRegister(RequestParam param) {
         String sid = AppContexts.user().employeeId();
         List<ConfirmMsgOutput> confirmMsgOutputs;
-
+        TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfo.mappingData(param.getTimeLeaveAppDisplayInfo());
         ApplicationDto applicationDto = param.getApplication();
 
         Application application = Application.createFromNew(
@@ -73,7 +73,8 @@ public class TimeLeaveApplicationFinder {
             Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
             applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
             applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
-            ));
+            )
+        );
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
@@ -82,15 +83,15 @@ public class TimeLeaveApplicationFinder {
             true,
             application,
             null,
-            param.getTimeLeaveApplicationOutput().getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+            output.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
             Collections.emptyList(),
-            param.getTimeLeaveApplicationOutput().getAppDispInfoStartup()
+            output.getAppDispInfoStartupOutput()
         );
 
         TimeLeaveApplication domain = TimeLeaveApplicationDto.toDomain(param.getTimeLeaveApplicationDto(), application);
 
         //時間休暇申請登録前チェック
-        timeLeaveApplicationService.checkBeforeRigister(param.getTimeDigestAppType(), domain, param.getTimeLeaveApplicationOutput());
+        timeLeaveApplicationService.checkBeforeRigister(param.getTimeDigestAppType(), domain, output);
 
         return confirmMsgOutputs;
     }

@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -40,26 +40,26 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
     @Inject
     NewAfterRegister newAfterRegister;
 
+    @Inject
+    ApplicationApprovalService appRepository;
+
     @Override
     protected ProcessResult handle(CommandHandlerContext<RegisterTimeLeaveApplicationCommand> context) {
 
         RegisterTimeLeaveApplicationCommand command = context.getCommand();
-        String loginSid = AppContexts.user().employeeId();
-        ApplicationDto applicationDto = command.getApplication();
+        Application application = command.getApplication().toDomain();
+        TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfo.mappingData(command.getTimeLeaveAppDisplayInfo());
 
-        Application application = Application.createFromNew(
-            EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
-            applicationDto.getEmployeeID() == null ? loginSid : applicationDto.getEmployeeID(),
-            EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
-            new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
-            loginSid,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-            Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
-            applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
-            applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
-            ));
+        // ドメインモデル「申請」の新規登録をする
+        this.appRepository.insertApp(
+            application,
+            timeLeaveApplicationOutput
+                .getAppDispInfoStartupOutput()
+                .getAppDispInfoWithDateOutput()
+                .getOpListApprovalPhaseState().isPresent() ? timeLeaveApplicationOutput.getAppDispInfoStartupOutput()
+                .getAppDispInfoWithDateOutput()
+                .getOpListApprovalPhaseState()
+                .get() : null);
 
         //ドメインモデル「時間休暇申請」を登録する
         timeLeaveApplicationRepository.add(TimeLeaveApplicationCommand.toDomain(command.getTimeLeaveApplicationCommand(), application));
@@ -70,8 +70,8 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         //暫定データの登録
         this.interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), application.getEmployeeID(), Arrays.asList(application.getAppDate().getApplicationDate()));
 
-        Optional<AppTypeSetting> appTypeSet = command.getTimeLeaveApplicationOutput()
-            .getAppDispInfoStartup()
+        Optional<AppTypeSetting> appTypeSet = timeLeaveApplicationOutput
+            .getAppDispInfoStartupOutput()
             .getAppDispInfoNoDateOutput()
             .getApplicationSetting()
             .getAppTypeSettings().stream().filter(i -> i.getAppType() == ApplicationType.ANNUAL_HOLIDAY_APPLICATION)
@@ -81,7 +81,7 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         return this.newAfterRegister.processAfterRegister(
             application.getAppID(),
             appTypeSet.get(),
-            command.getTimeLeaveApplicationOutput().getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()
+            timeLeaveApplicationOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet()
         );
     }
 }

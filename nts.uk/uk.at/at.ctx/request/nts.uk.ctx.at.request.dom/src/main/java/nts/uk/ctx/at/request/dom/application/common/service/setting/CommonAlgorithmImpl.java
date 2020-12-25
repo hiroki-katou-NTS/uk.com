@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -768,7 +767,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
-		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnualLeave()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnualLeave()) &&
 		        !this.isValidAttendanceTime(timeDigestApplication.getTimeOff()) &&
 		        !this.isValidAttendanceTime(timeDigestApplication.getTimeSpecialVacation())) {
             throw new BusinessException("Msg_511");

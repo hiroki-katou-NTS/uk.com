@@ -10,14 +10,17 @@ import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.*;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTrip;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHd;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdInput;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdPK;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.context.AppContexts;
+
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 import javax.ejb.Stateless;
 import java.text.DateFormat;
@@ -33,6 +36,9 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
 
     private static final String SELECT;
 
+    private static final String SELECT_APP_TIME_HD = "SELECT a FROM KrqdtAppTimeHd a WHERE a.krqdtAppTimeHdPK.companyID = :companyId AND a.krqdtAppTimeHdPK.appID = :appId";
+    private static final String SELECT_APP_TIME_HD_INPUT = "SELECT b FROM KrqdtAppTimeHdInput b WHERE a.krqdtAppTimeHdInputPK.companyID = :companyId AND a.krqdtAppTimeHdInputPK.appID = :appId";
+
     private static final String GET_BY_KEYS;
 
     static {
@@ -44,7 +50,7 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE a.CID = @companyId AND a.APP_ID = @appId AND a.TIME_HD_TYPE = @appTimeType ");
+        builderString.append(" WHERE a.CID = @companyId AND a.APP_ID = @appId ");
         GET_BY_KEYS = builderString.toString();
     }
 
@@ -71,9 +77,19 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
 
     @Override
     public void update(TimeLeaveApplication domain) {
-        //TODO need remove before remove
-        List<KrqdtAppTimeHd> entities = toEntity(domain);
-        this.commandProxy().updateAll(entities);
+        List<KrqdtAppTimeHd> entities = this.queryProxy().query(SELECT_APP_TIME_HD, KrqdtAppTimeHd.class)
+            .setParameter("companyId", AppContexts.user().companyId())
+            .setParameter("appId", domain.getAppID()).getList();
+
+        List<KrqdtAppTimeHdInput> details = this.queryProxy().query(SELECT_APP_TIME_HD_INPUT, KrqdtAppTimeHdInput.class)
+            .setParameter("companyId", AppContexts.user().companyId())
+            .setParameter("appId", domain.getAppID()).getList();
+
+        this.commandProxy().removeAll(KrqdtAppTimeHd.class, entities.stream().map(i -> i.krqdtAppTimeHdPK).collect(Collectors.toList()));
+        this.commandProxy().removeAll(KrqdtAppTimeHdInput.class, details.stream().map(i -> i.krqdtAppTimeHdInputPK).collect(Collectors.toList()));
+
+        this.commandProxy().insertAll(toEntity(domain));
+        this.commandProxy().insertAll(toEntityDetail(domain));
     }
 
     @Override
@@ -81,7 +97,7 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         List<KrqdtAppTimeHd> entities = toEntity(domain);
         List<KrqdtAppTimeHdInput> details = toEntityDetail(domain);
         this.commandProxy().removeAll(KrqdtAppTimeHd.class, entities.stream().map(i -> i.krqdtAppTimeHdPK).collect(Collectors.toList()));
-        this.commandProxy().removeAll(KrqdtAppTimeHd.class, details.stream().map(i -> i.krqdtAppTimeHdInputPK).collect(Collectors.toList()));
+        this.commandProxy().removeAll(KrqdtAppTimeHdInput.class, details.stream().map(i -> i.krqdtAppTimeHdInputPK).collect(Collectors.toList()));
     }
 
     public static List<TimeLeaveApplicationDetail> setDetail(List<TimeLeaveApplication> domains) {
@@ -93,23 +109,24 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         List<TimeZoneWithWorkNo> lstNoForPrivate = new ArrayList<>();
         List<TimeZoneWithWorkNo> lstNoForUnion = new ArrayList<>();
         domains.forEach(x -> {
-            AppTimeType appTimeType = x.getLeaveApplicationDetails().get(0).getAppTimeType();
+            TimeLeaveApplicationDetail detail = x.getLeaveApplicationDetails().get(0);
+            AppTimeType appTimeType = detail.getAppTimeType();
             if (appTimeType == AppTimeType.PRIVATE) {
                 detailForPrivate.setAppTimeType(appTimeType);
-                lstNoForPrivate.add(x.getLeaveApplicationDetails().get(0).getTimeZoneWithWorkNoLst().get(0));
-                detailForPrivate.setTimeDigestApplication(x.getLeaveApplicationDetails().get(0).getTimeDigestApplication());
+                detailForPrivate.setTimeDigestApplication(detail.getTimeDigestApplication());
+                lstNoForPrivate.add(detail.getTimeZoneWithWorkNoLst().get(0));
             } else if (appTimeType == AppTimeType.UNION) {
                 detailForUnion.setAppTimeType(appTimeType);
-                lstNoForUnion.add(x.getLeaveApplicationDetails().get(0).getTimeZoneWithWorkNoLst().get(0));
-                detailForUnion.setTimeDigestApplication(x.getLeaveApplicationDetails().get(0).getTimeDigestApplication());
+                detailForUnion.setTimeDigestApplication(detail.getTimeDigestApplication());
+                lstNoForUnion.add(detail.getTimeZoneWithWorkNoLst().get(0));
             } else {
                 result.add(new TimeLeaveApplicationDetail(
-                        AppTimeType.ATWORK,
+                    detail.getAppTimeType(),
                         Collections.singletonList(new TimeZoneWithWorkNo(
-                            x.getLeaveApplicationDetails().get(0).getTimeZoneWithWorkNoLst().get(0).getWorkNo(),
-                            x.getLeaveApplicationDetails().get(0).getTimeZoneWithWorkNoLst().get(0).getTimeZone()
+                            detail.getTimeZoneWithWorkNoLst().get(0).getWorkNo(),
+                            detail.getTimeZoneWithWorkNoLst().get(0).getTimeZone()
                         )),
-                        x.getLeaveApplicationDetails().get(0).getTimeDigestApplication()
+                    detail.getTimeDigestApplication()
                     )
                 );
             }
@@ -184,7 +201,7 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
                     res.getInt("HOUR_OF_HDCOM") == null ? new AttendanceTime(0) : new AttendanceTime(res.getInt("HOUR_OF_HDCOM")),
                     res.getInt("HOUR_OF_HDPAID") == null ? new AttendanceTime(0) : new AttendanceTime(res.getInt("HOUR_OF_HDPAID")),
                     res.getInt("HOUR_OF_HDSP") == null ? new AttendanceTime(0) : new AttendanceTime(res.getInt("HOUR_OF_HDSP")),
-                    res.getInt("FRAME_NO_OF_HDSP") == null ? Optional.empty() : Optional.of(new SpecialHdFrameNo(res.getInt("FRAME_NO_OF_HDSP")))
+                    Optional.of(res.getInt("FRAME_NO_OF_HDSP"))
 
                 )
             )
@@ -224,13 +241,13 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
                         domain.getAppID(),
                         detail.getAppTimeType().value
                     ),
-                    detail.getTimeDigestApplication().getSixtyHOvertime().v() > 0 ? detail.getTimeDigestApplication().getSixtyHOvertime().v() : null,
+                    detail.getTimeDigestApplication().getOvertime60H().v() > 0 ? detail.getTimeDigestApplication().getOvertime60H().v() : null,
                     detail.getTimeDigestApplication().getNursingTime().v() > 0 ? detail.getTimeDigestApplication().getNursingTime().v() : null,
-                    detail.getTimeDigestApplication().getChildNursingTime().v() > 0 ? detail.getTimeDigestApplication().getChildNursingTime().v() : null,
-                    detail.getTimeDigestApplication().getHoursOfSubHoliday().v() > 0 ? detail.getTimeDigestApplication().getHoursOfSubHoliday().v() : null,
-                    detail.getTimeDigestApplication().getHoursOfHoliday().v() > 0 ? detail.getTimeDigestApplication().getHoursOfHoliday().v() : null,
+                    detail.getTimeDigestApplication().getChildTime().v() > 0 ? detail.getTimeDigestApplication().getChildTime().v() : null,
+                    detail.getTimeDigestApplication().getTimeOff().v() > 0 ? detail.getTimeDigestApplication().getTimeOff().v() : null,
+                    detail.getTimeDigestApplication().getTimeAnualLeave().v() > 0 ? detail.getTimeDigestApplication().getTimeAnualLeave().v() : null,
                     detail.getTimeDigestApplication().getTimeSpecialVacation().v() > 0 ? detail.getTimeDigestApplication().getTimeSpecialVacation().v() : null,
-                    detail.getTimeDigestApplication().getSpecialHdFrameNo().isPresent() ? detail.getTimeDigestApplication().getSpecialHdFrameNo().get().v() : null
+                    detail.getTimeDigestApplication().getSpecialVacationFrameNO().isPresent() ? detail.getTimeDigestApplication().getSpecialVacationFrameNO().get() : null
                 );
                 entity.contractCd = AppContexts.user().contractCode();
                 result.add(entity);
