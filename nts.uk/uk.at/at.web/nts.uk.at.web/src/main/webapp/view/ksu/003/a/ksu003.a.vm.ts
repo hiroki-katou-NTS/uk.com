@@ -584,8 +584,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			service.getDataStartScreen(targetOrgDto)
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
-					/*self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
-					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;*/
+					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
+					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
@@ -1687,7 +1687,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		/** ADD-CHART-ZONE */
 		addAllChart(datafilter: Array<ITimeGantChart>, i: number, lstBreakTime: any, midData: any, screen: string, lstBrkNew?: any) {
-			let self = this, fixedGc: any = [], totalBreakTimeNew: any = 0, timeRangeLimit = Math.floor((self.timeRange * 60) / 5);
+			let self = this, fixedGc: any = [], totalBreakTimeNew: any = 0, timeRangeLimit = Math.floor((self.timeRange * 60) / 5 + self.dispStart);
 			let timeChart: any = null, timeChart2: any = null, lgc = null, rgc = null, timeChartOver: any = null, timeChartCore: any = null,
 				timeChartBrk: any = null, timeChartHoliday: any = null, timeChartShort: any = null, indexLeft = 0, indexRight = 0;
 			let timeMinus: any = [], timeMinus2: any = [], start1 = null, start2 = null, end1 = null, end2 = null,dispStart= (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5;
@@ -1902,7 +1902,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 					indexF = ++indexF;
 				}*/
-
+				// OVER-TIME
 				let overTime = datafilter[0].gcOverTime;
 				if (overTime.length > 0 && datafilter[0].typeOfTime !== "Changeable") {
 					for (let o = 0; o < overTime[0].lstOverTime.length; o++) {
@@ -1910,10 +1910,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						timeChartOver = self.convertTimeToChart(y.startTime, y.endTime);
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 						if ((timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) &&
-							(timeChart.startTime < Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
-							(_.inRange(timeChartOver.startTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
-								_.inRange(timeChartOver.endTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
-							self.addChildChartWithTypes(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, null, 1000)
+							(timeChart.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartOver.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartOver.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 							ruler.addChartWithType("OT", {
 									id: id,
 									parent: parent,
