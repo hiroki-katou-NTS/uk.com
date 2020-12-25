@@ -27,23 +27,22 @@ module nts.uk.at.view.kmk004.b {
 					<div class="name" data-bind="i18n: model.name"></div>
 					<div>
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-						<!-- ko if: model.isAlreadySetting -->
+						<!-- ko if: checkSeting -->
 							<button tabindex="5" data-bind="i18n: 'KMK004_239', click: openDialogF"></button>
 						<!-- /ko -->
-						<!-- ko ifnot: model.isAlreadySetting -->
+						<!-- ko ifnot: checkSeting -->
 							<button tabindex="5" data-bind="i18n: 'KMK004_238', click: openDialogF"></button>
 						<!-- /ko -->
 					</div>
-					<!-- ko if: model.isAlreadySetting -->
-						<div class ="setting" data-bind="component: {
-							name: 'basic-setting',
-							params:{
-								type: type,
-								selectId: selectedId,
-								change: change
-							}
-						}"></div>
-					<!-- /ko -->
+					<div class ="setting" data-bind="component: {
+						name: 'basic-setting',
+						params:{
+							type: type,
+							selectId: selectedId,
+							change: change,
+							checkSeting: checkSeting
+						}
+					}"></div>
 					<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 					<div class="content-data">
 						<div>
@@ -105,8 +104,13 @@ module nts.uk.at.view.kmk004.b {
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+		public checkSeting: KnockoutObservable<boolean> = ko.observable(true);
 
 		created(params: Params) {
+			const vm = this;
+		}
+
+		mounted() {
 			const vm = this;
 
 			vm.selectedYear
@@ -127,19 +131,6 @@ module nts.uk.at.view.kmk004.b {
 						vm.checkDelete(false);
 					}
 				});
-		}
-
-		mounted() {
-			const vm = this;
-
-			vm.selectedId
-				.subscribe(() => {
-					vm.selectedYear.valueHasMutated();
-				});
-
-			$(document).ready(function () {
-				$('.listbox').focus();
-			});
 
 			vm.years
 				.subscribe(() => {
@@ -151,6 +142,16 @@ module nts.uk.at.view.kmk004.b {
 						vm.checkDelete(false);
 					}
 				});
+
+			vm.selectedId
+				.subscribe(() => {
+					vm.years([]);
+					vm.selectedYear.valueHasMutated();
+				});
+
+			$(document).ready(function () {
+				$('.listbox').focus();
+			});
 		}
 
 		add() {
@@ -183,6 +184,7 @@ module nts.uk.at.view.kmk004.b {
 								});
 							}).then(() => {
 								vm.selectedYear.valueHasMutated();
+								vm.change.valueHasMutated();
 							})
 							.then(() => {
 								vm.$errors('clear');
@@ -253,11 +255,10 @@ module nts.uk.at.view.kmk004.b {
 				type: vm.type,
 				selectId: ko.unwrap(vm.selectedId),
 				nameSynthetic: ko.unwrap(vm.model.name),
-				isSetting: !ko.unwrap(vm.model.isAlreadySetting)
+				isSetting: !ko.unwrap(vm.checkSeting)
 			};
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
-				console.log(ko.unwrap(vm.model.isAlreadySetting));
 			});
 		}
 

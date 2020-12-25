@@ -125,7 +125,7 @@ module nts.uk.at.view.kmk004.b {
 			vm.type = params.type;
 			vm.selectId = params.selectId;
 			vm.change = params.change;
-			if (params.checkSeting){
+			if (params.checkSeting) {
 				vm.checkSeting = params.checkSeting;
 			}
 
@@ -203,6 +203,13 @@ module nts.uk.at.view.kmk004.b {
 						vm.$blockui('invisible')
 							.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
 							.then((data: ITabSetting) => {
+								if (data) {
+									vm.tabSetting.create(data);
+									vm.init();
+									vm.checkSeting(true);
+								} else {
+									vm.checkSeting(false);
+								}
 								vm.tabSetting.create(data);
 								vm.init();
 							})
@@ -214,8 +221,6 @@ module nts.uk.at.view.kmk004.b {
 						vm.$blockui('invisible')
 							.then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
 							.then((data: ITabSetting) => {
-								console.log(data);
-								
 								if (data) {
 									vm.tabSetting.create(data);
 									vm.init();

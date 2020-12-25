@@ -56,8 +56,6 @@ module nts.uk.at.view.kmk004.b {
             const vm = this;
             vm.$ajax(API.GET_LIST_EMPLOYMENT)
                 .then((data: any) => {
-                    console.log(data);
-                    
                     if (data) {
                         let list: AlreadySettingEmployment[] = [];
                         _.forEach(data, ((value) => {
