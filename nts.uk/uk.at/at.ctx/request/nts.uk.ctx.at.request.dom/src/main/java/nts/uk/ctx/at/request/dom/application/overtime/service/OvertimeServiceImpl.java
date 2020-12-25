@@ -1148,7 +1148,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			DisplayInfoOverTime displayInfoOverTime) {
 		List<ConfirmMsgOutput> outputs = new ArrayList<ConfirmMsgOutput>();
 		// 申請する残業時間をチェックする
-		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェック
 		List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
 		outputs.addAll(checkExcessList);
