@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,11 +25,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -44,13 +42,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
-import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -154,7 +150,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		// Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
-			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, Collections.emptyList());
+			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, null);
 		}
 		// アルゴリズム「勤務分類変更の判定」を実行する
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
@@ -228,7 +224,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				judgmentWorkTimeResult.getCalcWorkTime(),
 				recordWorkInfoImport.getAttendanceStampTimeFirst(),
 				judgmentStampResult.getCalcLeaveStamp(),
-				actualLst);
+				null);
 	}
 
 	@Override
@@ -495,7 +491,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public ApplicationTime checkStatus(
+	public ActualStatusCheckResult checkStatus(
 			String companyId,
 			String employeeId,
 			GeneralDate date,
@@ -512,7 +508,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		
 		if (!(opAchievementDetail.isPresent() && opAchievementDetail.get().getTrackRecordAtr() == TrackRecordAtr.DAILY_RESULTS)) {
 			
-			return null;
+			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, null);
 		}
 		AchievementDetail achievementDetail = opAchievementDetail.get();
 		// INPUT．「表示する実績内容．実績詳細」 <> empty　AND　INPUT．「表示する実績内容．実績詳細．実績スケ区分」 = 日別実績 -> true
@@ -682,9 +678,14 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			
 		}
 		
+		return new ActualStatusCheckResult(
+				actualStatus, 
+				judgmentWorkTypeResult.getCalcWorkType(), 
+				judgmentWorkTimeResult.getCalcWorkTime(),
+				achievementDetail.getOpWorkTime().orElse(null),
+				judgmentStampResult.getCalcLeaveStamp(),
+				output.orElse(null));
 		
-		
-		return output.orElse(null);
 	}
 	public List<ApplicationTime> convertApplicationList(
 			String companyId,

@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
@@ -165,7 +164,7 @@ public interface PreActualColorCheck {
 	 * @param acuActualContentDisplay
 	 * @return
 	 */
-	public ApplicationTime checkStatus(
+	public ActualStatusCheckResult checkStatus(
 			String companyId,
 			String employeeId,
 			GeneralDate date,
