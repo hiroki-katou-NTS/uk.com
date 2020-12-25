@@ -1934,7 +1934,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						let applicationTime = infoWithDateApplicationOp.applicationTime.applicationTime;
 						if (!_.isEmpty(applicationTime)) {
 							_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-								let findOverTimeArray = _.find(overTimeArray, { frameNo: item.frameNo }) as OverTime;
+								let findOverTimeArray = _.find(overTimeArray, { frameNo: String(item.frameNo) }) as OverTime;
 	
 								if (!_.isNil(findOverTimeArray) && item.attendanceType == AttendanceType.NORMALOVERTIME) {
 									if (item.applicationTime > 0) {
