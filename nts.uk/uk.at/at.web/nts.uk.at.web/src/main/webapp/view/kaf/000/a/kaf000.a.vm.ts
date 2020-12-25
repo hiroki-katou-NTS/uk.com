@@ -55,11 +55,31 @@ module nts.uk.at.view.kaf000.a.viewmodel {
 		
 		handleErrorCommon(failData: any) {
 			const vm = this;
-			if(failData.messageId == "Msg_324") {
-				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
-				return;
-			}	
-			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+			switch(failData.messageId) {
+				case 'Msg_197':
+				case 'Msg_198':
+				case 'Msg_235':
+				case 'Msg_391':
+				case 'Msg_1518':
+				case 'Msg_236':
+				case 'Msg_324':
+				case 'Msg_237':
+				case 'Msg_238':
+				case 'Msg_327':
+				case 'Msg_328':
+				case 'Msg_1530':
+				case 'Msg_426':
+				case 'Msg_448':
+				case 'Msg_449':
+				case 'Msg_450':
+				case 'Msg_451':
+				case 'Msg_768':
+				case 'Msg_1715':
+				case 'Msg_1521':
+				case 'Msg_1648':
+				default:
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });	
+			}
 		}
     }
 
