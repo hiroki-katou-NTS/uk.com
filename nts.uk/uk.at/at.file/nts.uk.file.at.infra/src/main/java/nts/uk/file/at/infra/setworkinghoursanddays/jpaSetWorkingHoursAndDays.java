@@ -65,7 +65,12 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, "
 											+" KRCST_COM_FLEX_M_CAL_SET.AGGR_METHOD, "
 											+" IIF (KRCST_COM_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_COM_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, "
+											+" KRCST_COM_FLEX_M_CAL_SET.INCLUDE_HDWK, "
+											+" KRCST_COM_FLEX_M_CAL_SET.LEGAL_AGGR_SET, "
 											+" KRCST_COM_FLEX_M_CAL_SET.INSUFFIC_SET, "
+											+" KRCST_COM_FLEX_M_CAL_SET.SETTLE_PERIOD_MON, "
+											+" KRCST_COM_FLEX_M_CAL_SET.SETTLE_PERIOD, "
+											+" KRCST_COM_FLEX_M_CAL_SET.START_MONTH AS FLEX_START_MONTH, "
 											+" KSHST_COM_TRANS_LAB_TIME.DAILY_TIME AS REG_DAILY_TIME, "
 											+" KSHST_COM_TRANS_LAB_TIME.WEEKLY_TIME AS REG_WEEKLY_TIME, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.STR_MONTH, "
@@ -315,71 +320,80 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					.findFirst();
 			
 			datas.add(buildARow(
-					String.valueOf(y),
-					//R8_2 R8_3
-					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
+					//R8_3
+					String.valueOf(y), 
 					//R8_4
-					convertTime(normal.isPresent() ? normal.get().legalTime : 0),
+					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					//R8_5
-					I18NText.getText("KMK004_177"),
+					convertTime(normal.isPresent() ? normal.get().legalTime : 0),
+					//R8_6
+					convertTime(r.getInt(("DAILY_TIME"))),
 					//R8_7
-					convertTime(r.getInt(("DAILY_TIME"))), 
-					//R8_9
-					startOfWeek,
-					//R8_10
+					convertTime(r.getInt(("WEEKLY_TIME"))),
+					//R8_8
 					getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
+					//R8_9
+					r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null,
+					//R8_10
+					r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null,
 					//R8_11
-					r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null, 
+					getExtraType(r.getInt("INCLUDE_EXTRA_OT")),		
 					//R8_12
-					r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null, 
-					//R8_13
-					getExtraType(r.getInt("INCLUDE_EXTRA_OT")), 
-					//R8_14
 					r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null,
-					//R8_15
+					//R8_13
 					r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+					//R8_14
+					getFlexType(refPreTime),
+					//R8_15
+					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					//R8_16
-					getFlexType(r.getInt("REFERENCE_PRED_TIME")), 
-					//R8_17 R8_18
-					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
-					//R8_19
-					refPreTime != null && refPreTime == 0 ? (flex.isPresent() ? String.valueOf(flex.get().withinTime) : null) : null,
-					// R10_22
+					convertTime(flex.isPresent() ? flex.get().withinTime : 0),
+					//R8_17
 					convertTime(flex.isPresent() ? flex.get().legalTime : 0),
-					//R8_21		
-					getAggType(r.getInt("AGGR_METHOD")),
+					//R8_18
+					convertTime(flex.isPresent() ?flex.get().weekAvgTime : 0),
+					//R8_19
+					r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
+					//R8_20
+					getSettle(r.getInt("SETTLE_PERIOD")),
+					//R8_21
+					r.getInt("FLEX_START_MONTH").toString() + "月",
 					//R8_22
-					r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+					getShortageTime(r.getInt("INSUFFIC_SET")),
 					//R8_23
-					getShortageTime(r.getInt("INSUFFIC_SET")), 
-					//R8_24 8_25
-					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+					getAggType(r.getInt("AGGR_METHOD")),
+					//R8_24
+					r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+					//R8_25
+					getInclude(r.getInt("INCLUDE_HDWK")),
 					//R8_26
-					convertTime(defor.isPresent() ? defor.get().legalTime : 0),
+					getLegal(r.getInt("LEGAL_AGGR_SET")),
 					//R8_27		
-					I18NText.getText("KMK004_177"), 
+					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
+					//R8_28
+					convertTime(defor.isPresent() ? defor.get().legalTime : 0),
 					//R8_29
-					convertTime(r.getInt("REG_DAILY_TIME")), 
+					convertTime(r.getInt("REG_DAILY_TIME")),
+					//R8_30
+					convertTime(r.getInt("REG_WEEKLY_TIME")), 
 					//R8_31
-					startOfWeek,
-					//R8_32 R8_33
-					r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
-					//R8_34 R8_35
-					r.getInt("PERIOD") + I18NText.getText("KMK004_180"), 
-					//R8_36
-					r.getInt("REPEAT_ATR") == 1 ? "○" : "-", 
-					//R8_37
+					r.getInt("STR_MONTH") + I18NText.getText("KMK004_402"),
+					//R8_32
+					r.getInt("PERIOD") + I18NText.getText("KMK004_403"),
+					//R8_33
+					r.getInt("REPEAT_ATR") == 1 ? "○" : "-",
+					//R8_34
 					getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_AGGR")),
-					//R8_38
+					//R8_35
 					r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
-					//R8_39
+					//R8_36
 					r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
-					//R8_40
+					// R8_36
 					getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_OT")),
-					//R8_41
+					// R8_37
 					r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
-					//R8_42
-					r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null
+					// R8_38
+					r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")): null
 					));
 
 			int nextYm = y *100 + month + 1;
@@ -394,73 +408,80 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					.findFirst();
 			//Arow month + 1
 			datas.add(buildARow(
-					//R8_1
-					null,
-					//R8_2 R8_3
-					((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"), 
+					//R8_3
+					null, 
 					//R8_4
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					//R8_5
 					convertTime(normalN.isPresent() ? normalN.get().legalTime : 0),
 					//R8_6
-					I18NText.getText("KMK004_178"),
+					null,
+					//R8_7
+					null,
 					//R8_8
-					convertTime(r.getInt(("WEEKLY_TIME"))), 
+					null,
 					//R8_9
 					null,
 					//R8_10
 					null,
 					//R8_11
-					null, 
+					null,		
 					//R8_12
-					null, 
+					null,
 					//R8_13
-					null, 
+					null,
 					//R8_14
 					null,
 					//R8_15
-					null,
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					//R8_16
-					null, 
-					//R8_17 R8_18
-					((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
-					//R8_19
-					refPreTime != null && refPreTime == 0 ? (flexN.isPresent() ? String.valueOf(flexN.get().withinTime) : null) : null,
-					// R10_22
+					convertTime(flexN.isPresent() ? flexN.get().withinTime : 0),
+					//R8_17
 					convertTime(flexN.isPresent() ? flexN.get().legalTime : 0),
-					//R8_21		
+					//R8_18
+					convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : 0),
+					//R8_19
+					null,
+					//R8_20
+					null,
+					//R8_21
 					null,
 					//R8_22
 					null,
 					//R8_23
-					null, 
-					//R8_24 8_25
-					((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+					null,
+					//R8_24
+					null,
+					//R8_25
+					null,
 					//R8_26
+					null,
+					//R8_27		
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					//R8_28
 					convertTime(deforN.isPresent() ? deforN.get().legalTime : 0),
-					//R8_28	
-					I18NText.getText("KMK004_178"), 
+					//R8_29
+					null,
 					//R8_30
-					convertTime(r.getInt("REG_WEEKLY_TIME")), 
+					null, 
 					//R8_31
 					null,
-					//R8_32 R8_33
-					null, 
-					//R8_34 R8_35
-					null, 
+					//R8_32
+					null,
+					//R8_33
+					null,
+					//R8_34
+					null,
+					//R8_35
+					null,
 					//R8_36
-					null, 
-					//R8_37
 					null,
-					//R8_38
+					// R8_36
 					null,
-					//R8_39
+					// R8_37
 					null,
-					//R8_40
-					null,
-					//R8_41
-					null,
-					//R8_42
-					null
-					));
+					// R8_38
+					null));
 			
 			// buil month remain
 			for (int i = 1; i < 11; i++) {
@@ -476,78 +497,86 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						.filter(l -> l.pk.ym == currentYm && l.pk.type == LaborWorkTypeAttr.FLEX.value)
 						.findFirst();
 				datas.add(buildARow(
-						//R8_1
-						null,
-						//R8_2 R8_3
-						(m) + I18NText.getText("KMK004_176"), 
+						//R8_3
+						null, 
 						//R8_4
+						(m) + I18NText.getText("KMK004_401"),
+						//R8_5
 						convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
 						//R8_6
 						null,
+						//R8_7
+						null,
 						//R8_8
-						null, 
+						null,
 						//R8_9
 						null,
 						//R8_10
 						null,
 						//R8_11
-						null, 
+						null,		
 						//R8_12
-						null, 
+						null,
 						//R8_13
-						null, 
+						null,
 						//R8_14
 						null,
 						//R8_15
-						null,
+						(m) + I18NText.getText("KMK004_401"),
 						//R8_16
-						null, 
-						//R8_17 R8_18
-						(m) + I18NText.getText("KMK004_176"),
-						//R8_19
-						refPreTime != null && refPreTime == 0 ? (flexC.isPresent() ? String.valueOf(flexC.get().withinTime) : null) : null,
-						// R10_22
+						convertTime(flexC.isPresent() ? flexC.get().withinTime : 0),
+						//R8_17
 						convertTime(flexC.isPresent() ? flexC.get().legalTime : 0),
-						//R8_21		
+						//R8_18
+						convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : 0),
+						//R8_19
+						null,
+						//R8_20
+						null,
+						//R8_21
 						null,
 						//R8_22
 						null,
 						//R8_23
-						null, 
-						//R8_24 8_25
-						(m) + I18NText.getText("KMK004_176"),
+						null,
+						//R8_24
+						null,
+						//R8_25
+						null,
 						//R8_26
+						null,
+						//R8_27		
+						(m) + I18NText.getText("KMK004_401"),
+						//R8_28
 						convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
-						//R8_28	
-						null, 
+						//R8_29
+						null,
 						//R8_30
 						null, 
 						//R8_31
 						null,
-						//R8_32 R8_33
-						null, 
-						//R8_34 R8_35
-						null, 
+						//R8_32
+						null,
+						//R8_33
+						null,
+						//R8_34
+						null,
+						//R8_35
+						null,
 						//R8_36
-						null, 
-						//R8_37
 						null,
-						//R8_38
+						// R8_36
 						null,
-						//R8_39
+						// R8_37
 						null,
-						//R8_40
-						null,
-						//R8_41
-						null,
-						//R8_42
+						// R8_38
 						null
 						));
 			}
 		}
 		return datas;
 	}
-	
+
 	private MasterData buildARow(
 			String value1, String value2, String value3, String value4, String value5,
 			String value6, String value7, String value8, String value9, String value10,
@@ -555,172 +584,193 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			String value16, String value17, String value18, String value19, String value20,
 			String value21, String value22, String value23, String value24, String value25,
 			String value26, String value27, String value28, String value29, String value30,
-			String value31, String value32, String value33) {
+			String value31, String value32, String value33, String value34, String value35, 
+			String value36, String value37) {
 		
 		Map<String, MasterCellData> data = new HashMap<>();
-            data.put(CompanyColumn.KMK004_155, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_155)
+		 data.put(CompanyColumn.KMK004_372, MasterCellData.builder()
+                 .columnId(CompanyColumn.KMK004_372)
+                 .value(value1)
+                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                 .build());
+            data.put(CompanyColumn.KMK004_373, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_373)
                 .value(value2)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_156, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_156)
+            data.put(CompanyColumn.KMK004_374, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_374)
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_154, MasterCellData.builder()
-                    .columnId(CompanyColumn.KMK004_154)
-                    .value(value1)
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                    .build());
-            data.put(CompanyColumn.KMK004_157, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_157)
+            data.put(CompanyColumn.KMK004_375, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_375)
                 .value(value4)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_156_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_156_1)
+            data.put(CompanyColumn.KMK004_376, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_376)
                 .value(value5)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_158, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_158)
+            data.put(CompanyColumn.KMK004_377, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_377)
                 .value(value6)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_159, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_159)
+            data.put(CompanyColumn.KMK004_378, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_378)
                 .value(value7)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_160, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_160)
+            data.put(CompanyColumn.KMK004_379, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_379)
                 .value(value8)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_161, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_161)
+            data.put(CompanyColumn.KMK004_380, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_380)
                 .value(value9)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_162, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_162)
+            data.put(CompanyColumn.KMK004_381, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_381)
                 .value(value10)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_163, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_163)
+            data.put(CompanyColumn.KMK004_382, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_382)
                 .value(value11)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_164, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_164)
+            data.put(CompanyColumn.KMK004_383, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_383)
                 .value(value12)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_165, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_165)
+            data.put(CompanyColumn.KMK004_384, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_384)
                 .value(value13)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_166, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_166)
+            data.put(CompanyColumn.KMK004_385, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_385)
                 .value(value14)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_167, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_167)
+            data.put(CompanyColumn.KMK004_386, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_386)
                 .value(value15)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_156_2, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_156_2)
+            data.put(CompanyColumn.KMK004_387, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_387)
                 .value(value16)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_168, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_168)
+            data.put(CompanyColumn.KMK004_388, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_388)
                 .value(value17)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_169, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_169)
+            data.put(CompanyColumn.KMK004_389, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_389)
                 .value(value18)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_170, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_170)
+            data.put(CompanyColumn.KMK004_390, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_390)
                 .value(value19)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_171, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_171)
+            data.put(CompanyColumn.KMK004_391, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_391)
                 .value(value20)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_156_3, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_156_3)
+            data.put(CompanyColumn.KMK004_392, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_392)
                 .value(value21)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_172, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_172)
+            data.put(CompanyColumn.KMK004_393, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_393)
                 .value(value22)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_156_4, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_156_4)
+            data.put(CompanyColumn.KMK004_394, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_394)
                 .value(value23)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_158_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_158_1)
+            data.put(CompanyColumn.KMK004_395, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_395)
                 .value(value24)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_173, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_173)
+            data.put(CompanyColumn.KMK004_396, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_396)
                 .value(value25)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_174, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_174)
+            data.put(CompanyColumn.KMK004_375_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_375_1)
                 .value(value26)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_175, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_175)
+            data.put(CompanyColumn.KMK004_376_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_376_1)
                 .value(value27)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_159_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_159_1)
+            data.put(CompanyColumn.KMK004_397, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_397)
                 .value(value28)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyColumn.KMK004_160_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_160_1)
+            data.put(CompanyColumn.KMK004_398, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_398)
                 .value(value29)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_161_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_161_1)
+            data.put(CompanyColumn.KMK004_399, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_399)
                 .value(value30)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_162_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_162_1)
+            data.put(CompanyColumn.KMK004_400, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_400)
                 .value(value31)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_163_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_163_1)
+            data.put(CompanyColumn.KMK004_377_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_377)
                 .value(value32)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyColumn.KMK004_164_1, MasterCellData.builder()
-                .columnId(CompanyColumn.KMK004_164_1)
+            data.put(CompanyColumn.KMK004_378_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_378_1)
                 .value(value33)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CompanyColumn.KMK004_379_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_379_1)
+                .value(value34)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CompanyColumn.KMK004_380_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_380_1)
+                .value(value35)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CompanyColumn.KMK004_381_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_381_1)
+                .value(value36)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CompanyColumn.KMK004_382_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_382_1)
+                .value(value37)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		return MasterData.builder().rowData(data).build();
@@ -2386,9 +2436,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getExtraType(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_59");
+    		return TextResource.localize("KMK004_404");
     	case 1:
-    		return TextResource.localize("KMK004_58");
+    		return TextResource.localize("KMK004_405");
     	default: 
     		return null;
     	}
@@ -2397,9 +2447,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getLegalType(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_64");
+    		return TextResource.localize("KMK004_406");
     	case 1:
-    		return TextResource.localize("KMK004_63");
+    		return TextResource.localize("KMK004_407");
     	default: 
     		return null;
     	}
@@ -2408,9 +2458,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getFlexType(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_147");
+    		return TextResource.localize("KMK004_408");
     	case 1:
-    		return TextResource.localize("KMK004_148");
+    		return TextResource.localize("KMK004_409");
     	default: 
     		return null;
     	}
@@ -2430,13 +2480,24 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getInclude(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_73");
+    		return TextResource.localize("KMK004_406");
     	case 1:
-    		return TextResource.localize("KMK004_72");
+    		return TextResource.localize("KMK004_407");
     	default: 
     		return null;
     	}
     }
+	
+	public static String getLegal(int value) {
+		switch (value) {
+		case 0:
+			return TextResource.localize("KMK004_412");
+		case 1:
+			return TextResource.localize("KMK004_413");
+		default:
+			return null;
+		}
+	}
 	
 	public static String getShortageTime(int value){
     	switch (value){
@@ -2449,12 +2510,23 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
     	}
     }
 	
+	private String getSettle(int value) {
+		switch (value){
+    	case 0:
+    		return TextResource.localize("KMK004_272");
+    	case 1:
+    		return TextResource.localize("KMK004_273");
+    	default: 
+    		return null;
+    	}
+	}
+	
 	public static String getWeeklySurcharge(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_59");
+    		return TextResource.localize("KMK004_404");
     	case 1:
-    		return TextResource.localize("KMK004_58");
+    		return TextResource.localize("KMK004_405");
     	default: 
     		return null;
     	}
