@@ -1123,7 +1123,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	}
 
 	@Override
-	public String createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
+	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
@@ -1138,7 +1138,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().orElse(null)).orElse(null));
 		}
 		// 　申請内容　＝　残業申請の申請内容
-		return appContentService.getOvertimeHolidayWorkContent(
+		String appContent = appContentService.getOvertimeHolidayWorkContent(
 				null, 
 				appOverTime, 
 				overtimeHolidayWorkActual, 
@@ -1149,10 +1149,25 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
 				ScreenAtr.CMM045, 
 				application);
+		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
+		switch (appOverTime.getOverTimeClf()) {
+		case EARLY_OVERTIME:
+			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.EARLY_OVERTIME);
+			break;
+		case NORMAL_OVERTIME:
+			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.NORMAL_OVERTIME);
+			break;
+		case EARLY_NORMAL_OVERTIME:
+			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME);
+			break;
+		default:
+			break;
+		}
+		return new AppOvertimeDataOutput(appContent, opAppTypeDisplay);
 	}
 
 	@Override
-	public String createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
+	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
@@ -1167,7 +1182,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().orElse(null));
 		}
 		// 申請内容　＝　休日出勤申請の申請内容
-		return appContentService.getOvertimeHolidayWorkContent(
+		String appContent = appContentService.getOvertimeHolidayWorkContent(
 				appHolidayWork, 
 				null, 
 				overtimeHolidayWorkActual, 
@@ -1178,5 +1193,6 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
 				ScreenAtr.CMM045, 
 				application);
+		return new AppHolidayWorkDataOutput(appContent);
 	}
 }
