@@ -6,12 +6,13 @@ module nts.uk.at.view.kmk004.l {
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
 	const DATE_FORMAT = 'YYYY/MM/DD';
-	
+
 	const KMK004O_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/update',
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete',
 		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeIds',
-		SHA_GET_BASIC_SETTING: 'screen/at/kmk004/viewO/getBasicSetting'
+		SHA_GET_BASIC_SETTING: 'screen/at/kmk004/viewO/getBasicSetting',
+		COPY_SETTING: 'screen/at/kmk004/viewO/after-copy'
 	};
 
 	const template = `
@@ -19,7 +20,7 @@ module nts.uk.at.view.kmk004.l {
 		<div class="title" data-bind="i18n: 'Com_Person'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button class="proceed" data-bind="enable: existYear, click: register, i18n: 'KMK004_225'"></button>
-		<button data-bind="visible: true, enable: existYear, i18n: 'KMK004_226'"></button>
+		<button data-bind="visible: true, enable: existYear, click: openViewR, i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="enable: existYear, click: remove, i18n: 'KMK004_227'"></button>
 	</div>
 	
@@ -96,7 +97,7 @@ module nts.uk.at.view.kmk004.l {
 		code: string;
 		isAlreadySetting: boolean;
 	}
-	
+
 	interface IWorkTimeSetCom {
 		empId: string;
 		laborAttr: number;
@@ -145,11 +146,11 @@ module nts.uk.at.view.kmk004.l {
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
 		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
-		
-		
+
+
 		constructor(private params: IParam) {
 			super();
-			}
+		}
 
 		created() {
 			const vm = this;
@@ -201,7 +202,7 @@ module nts.uk.at.view.kmk004.l {
 
 					vm.employeeList(employees);
 				}
-					
+
 			}
 
 			//KCP005
@@ -215,18 +216,18 @@ module nts.uk.at.view.kmk004.l {
 			vm.isShowSelectAllButton = ko.observable(false);
 			vm.disableSelection = ko.observable(false);
 			vm.currentItemName = ko.observable('');
-			
+
 			vm.$ajax(KMK004O_API.GET_EMPLOYEE_ID)
 				.done((data: any) => {
 					let settings: UnitAlreadySettingModel[] = [];
 					_.forEach(data, ((value) => {
 						let s: UnitAlreadySettingModel = { code: value.employeeId, isAlreadySetting: true };
 						settings.push(s);
-						
-						}));
-						vm.alreadySettingList(settings);
-					})
-					
+
+					}));
+					vm.alreadySettingList(settings);
+				})
+
 			vm.listComponentOption = {
 				isShowAlreadySet: vm.isShowAlreadySet(),
 				isMultiSelect: vm.isMultiSelect(),
@@ -241,7 +242,7 @@ module nts.uk.at.view.kmk004.l {
 				isShowSelectAllButton: vm.isShowSelectAllButton(),
 				disableSelection: vm.disableSelection()
 			};
-			vm.paramL = {isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
+			vm.paramL = { isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.selectedYear
 				.subscribe(() => {
 					if (vm.selectedYear != null) {
@@ -263,16 +264,16 @@ module nts.uk.at.view.kmk004.l {
 					vm.paramL.titleName = vm.currentItemName();
 					vm.selectedId(newValue);
 					vm.initBtnEnable(true);
-						
-				vm.$ajax(KMK004O_API.SHA_GET_BASIC_SETTING + "/" + vm.paramL.empId()).done((data: any) => {
-					if (data.deforLaborTimeShaDto != null && data.shaDeforLaborMonthActCalSetDto != null) {
-						vm.btn_text('KMK004_343');
-					} else vm.btn_text('KMK004_342');
-				})
+
+					vm.$ajax(KMK004O_API.SHA_GET_BASIC_SETTING + "/" + vm.paramL.empId()).done((data: any) => {
+						if (data.deforLaborTimeShaDto != null && data.shaDeforLaborMonthActCalSetDto != null) {
+							vm.btn_text('KMK004_343');
+						} else vm.btn_text('KMK004_342');
+					})
 				});
 			});
 		}
-		
+
 		register() {
 			const vm = this;
 
@@ -302,14 +303,14 @@ module nts.uk.at.view.kmk004.l {
 				});
 			});
 		}
-		
-		
+
+
 		remove() {
 			const vm = this;
 			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 				if (result === 'yes') {
 					vm.$blockui("invisible");
-					vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), employeeId: vm.paramL.empId()})).done(() => {
+					vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), employeeId: vm.paramL.empId() })).done(() => {
 						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
 							vm.close();
 							vm.isLoadInitData(true);
@@ -329,7 +330,7 @@ module nts.uk.at.view.kmk004.l {
 			});
 
 		}
-		
+
 		close() {
 			const vm = this;
 			vm.$window.close();
@@ -341,6 +342,23 @@ module nts.uk.at.view.kmk004.l {
 				vm.isLoadData(true);
 			});
 		}
+
+		openViewR() {
+			const vm = this;
+
+			vm.$window.modal('at', '/view/kmk/004/r/index.xhtml', {
+				data: vm.employeeList(),
+				screenMode: vm.type,
+				selected: vm.selectedId(),
+				year: vm.selectedYear(),
+				laborAttr: 1
+			}).then(() => {
+				vm.$ajax(KMK004O_API.COPY_SETTING).done((data) => {
+					vm.alreadySettingList(_.map(data, (item: string) => { return { code: item, isAlreadySetting: true } }));
+				}).always(() => { vm.$blockui("clear"); });
+			});
+		}
+		
 	}
 
 
