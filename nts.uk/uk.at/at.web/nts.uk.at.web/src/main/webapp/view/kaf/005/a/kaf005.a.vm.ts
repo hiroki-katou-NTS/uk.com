@@ -864,6 +864,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
 					if (!_.isNil(item)) {
 						workType.name = item.name;
+					} else {
+						workType.name = self.$i18n('KAF_005_345');
 					}
 				} else {
 					workType.name = self.$i18n('KAF_005_345');
@@ -875,6 +877,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
 						if (!_.isNil(item)) {
 							workTime.name = item.workTimeDisplayName.workTimeName;
+						} else {
+							workTime.name = self.$i18n('KAF_005_345');
 						}
 					}
 				} else {

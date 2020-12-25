@@ -796,9 +796,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
 						if (!_.isNil(item)) {
 							workType.name = item.name;
+						} else {
+							workType.name = self.$i18n('KAF005_345');
 						}
 					} else {
-						workType.name = self.$i18n('KAF_005_345');
+						workType.name = self.$i18n('KAF005_345');
 					}
 					workTime.code = self.appOverTime.workInfoOp.workTime;
 					
@@ -808,10 +810,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
 							if (!_.isNil(item)) {
 								workTime.name = item.workTimeDisplayName.workTimeName;
+							} else {
+								workTime.name = self.$i18n('KAF005_345');
 							}
 						}
 					} else {
-						workTime.name = self.$i18n('KAF_005_345');
+						workTime.name = self.$i18n('KAF005_345');
 					}
 				}
 				if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
