@@ -5,7 +5,7 @@ import IDisplayFlexBasicSettingByCompanyDto = nts.uk.at.kmk004.components.flex.I
 const template = `
 	<div   style="margin-top: 10px; margin-bottom:15px;"  >
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
-		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n: 'KMK004_231'" ></button>
+		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n:getTextKButton()" ></button>
 	</div>
 	<div data-bind="visible:screenData().comFlexMonthActCalSet() != null" class="div_line" 
 		style="
@@ -86,6 +86,28 @@ class BasicSettingsCompany extends ko.ViewModel {
 		});
 	}
 
+	getTextKButton() {
+		const vm = this;
+		if (vm.screenMode == 'Com_Company') {
+			return 'KMK004_231';
+		}
+
+		if (vm.screenMode == 'Com_Workplace') {
+			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_338' : 'KMK004_339';
+		}
+
+		if (vm.screenMode == 'Com_Employment') {
+			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_340' : 'KMK004_341';
+		}
+
+		if (vm.screenMode == 'Com_Person') {
+			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_342' : 'KMK004_343';
+		}
+	}
+
+
+
+
 	enableKButton() {
 		const vm = this;
 		if (vm.screenMode == 'Com_Company') {
@@ -121,7 +143,21 @@ class BasicSettingsCompany extends ko.ViewModel {
 		vm.$blockui('invisible');
 		vm.$ajax(url).done((setting: IDisplayFlexBasicSettingByCompanyDto) => {
 			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
-			vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
+			if (_.has(setting, 'flexPredWorkTime.reference')) {
+				if (vm.screenData().getFlexPredWorkTime().reference != _.get(setting, 'flexPredWorkTime.reference')) {
+					if (setting.flexPredWorkTime.reference == 1) {
+						_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+							item.laborTime().withinLaborTime(null);
+						});
+					} else {
+						_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+							item.laborTime().withinLaborTime(0);
+						});
+					}
+				}
+				vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
+			}
+
 		}).always(() => { vm.$blockui('clear'); });
 
 	}
@@ -172,7 +208,7 @@ class BasicSettingsCompany extends ko.ViewModel {
 			return '';
 		}
 
-		return vm.$i18n.text(vm.screenData().getFlexPredWorkTime().reference == 1 ? 'KMK004_288' : 'KMK004_289');
+		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
 	}
 
 	getIncludeOverTimeText() {

@@ -36,7 +36,7 @@ const template = `
 										<tr style="background-color:#92D050">
 											<th data-bind="visible: screenMode == 'Com_Person'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
-											<th data-bind="visible: screenData().getFlexPredWorkTime().reference == 1,i18n: 'KMK004_264'" style="text-align:center;"></th>
+											<th data-bind="visible: screenData().getFlexPredWorkTime().reference == 0,i18n: 'KMK004_264'" style="text-align:center;"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
 											
@@ -47,7 +47,7 @@ const template = `
 											<tr>
 												<td  data-bind="visible: $parent.screenMode == 'Com_Person' "><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
 												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.yearMonthText + '月度'"></span></td>
-												<td data-bind="visible: $parent.screenData().getFlexPredWorkTime().reference == 1"><input  data-bind="
+												<td data-bind="visible: $parent.screenData().getFlexPredWorkTime().reference == 0"><input  data-bind="
 												ntsTimeEditor: {
 														name:'#[KMK004_264]',
 														value: $data.laborTime().withinLaborTime,
@@ -82,7 +82,7 @@ const template = `
 								</tbody>
 								<tr data-bind="visible: screenMode != 'Com_Person' " >
 									<td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
-									<td data-bind="visible: screenData().getFlexPredWorkTime().reference == 1,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
+									<td data-bind="visible: screenData().getFlexPredWorkTime().reference == 0,text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>
 								</tr>
@@ -160,14 +160,23 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 	calTotalTime(attributeName: string) {
 		let vm = this,
-			data = ko.mapping.toJS(vm.screenData().monthlyWorkTimeSetComs()),
+			data = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
 			total = _.sumBy(data, 'laborTime.' + attributeName);
 
 		if (
-			!vm.screenData().monthlyWorkTimeSetComs().length
-			|| data[0].laborTime.withinLaborTime == null
-			|| data[0].laborTime.legalLaborTime == null
-			|| data[0].laborTime.weekAvgTime == null) {
+			!vm.screenData().monthlyWorkTimeSetComs().length) {
+			return '';
+		}
+
+		if (attributeName == 'withinLaborTime' && !_.filter(data, (item: IMonthlyWorkTimeSetCom) => { return item.laborTime.withinLaborTime != null }).length) {
+			return '';
+		}
+
+		if (attributeName == 'legalLaborTime' && !_.filter(data, (item: IMonthlyWorkTimeSetCom) => { return item.laborTime.legalLaborTime != null }).length) {
+			return '';
+		}
+
+		if (attributeName == 'weekAvgTime' && !_.filter(data, (item: IMonthlyWorkTimeSetCom) => { return item.laborTime.weekAvgTime != null }).length) {
 			return '';
 		}
 

@@ -4,9 +4,12 @@ import java.util.List;
 
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
-public interface SetWorkingHoursAndDaysExRepository {
-	
-	
-	
-	Object[] getUsage();
+/**
+ * 
+ * @author sonnlb
+ *
+ */
+public interface GetKMK004EmployeeExportRepository {
+
+	List<MasterData> getEmployeeData(int startDate, int endDate);
 }
