@@ -24,7 +24,7 @@ module nts.uk.com.view.ccg003.c {
   @bean()
   export class ViewModel extends ko.ViewModel {
     messageText: KnockoutObservable<string> = ko.observable('');
-    destination: KnockoutObservable<number> = ko.observable(2);
+    destination: KnockoutObservable<number> = ko.observable(1);
     dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
       startDate: '',
       endDate: ''
@@ -38,7 +38,7 @@ module nts.uk.com.view.ccg003.c {
     isVisibleDestination: KnockoutComputed<boolean> = ko.computed(() =>
       this.isNewMode() || moment.utc(this.dateValue().startDate, 'YYYY/MM/DD').isBefore(moment.utc(new Date(), 'YYYY/MM/DD')));
     // ※C1
-    isVisibleAllEmployees: KnockoutComputed<boolean> = ko.computed(() => !this.isNewMode() && this.assignAtr() === 0);
+    isVisibleAllEmployees: KnockoutComputed<boolean> = ko.computed(() => this.assignAtr() === 0);
     // ※C2
     isActiveWorkplaceBtn: KnockoutComputed<boolean> = ko.computed(() => this.isVisibleDestination() && this.destination() === DestinationClassification.WORKPLACE);
     // ※C3
@@ -81,6 +81,7 @@ module nts.uk.com.view.ccg003.c {
         if (vm.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
           if (!_.isNull(vm.notificationCreated().workplaceInfo)) {
             const workplaceInfo = this.notificationCreated().workplaceInfo;
+            vm.workPlaceIdList([workplaceInfo.workplaceId]);
             vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
           }
         }
@@ -147,7 +148,7 @@ module nts.uk.com.view.ccg003.c {
       vm.notificationCreated(data);
       if (this.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
         // ※新規モード又は更新モード(宛先区分≠職場選択)
-        if (_.isNull(data.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
+        if (!_.isNull(data.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
           vm.workPlaceIdList([data.workplaceInfo.workplaceId]);
           vm.workPlaceName([data.workplaceInfo.workplaceName]);
         }
@@ -156,9 +157,11 @@ module nts.uk.com.view.ccg003.c {
         vm.isStartUpdateMode = false;
         const wkpList = vm.notificationCreated().targetWkps;
         vm.workPlaceTxtRefer(_.map(wkpList, wkp => wkp.workplaceName).join(COMMA));
+        vm.workPlaceIdList(_.map(wkpList, wkp => wkp.workplaceId));
       }
-      if (_.isEmpty(vm.workPlaceTxtRefer())) {
+      if (_.isEmpty(vm.workPlaceTxtRefer()) && !_.isNil(this.notificationCreated().workplaceInfo)) {
         const workplaceInfo = this.notificationCreated().workplaceInfo;
+        vm.workPlaceIdList([workplaceInfo.workplaceId]);
         vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
       }
       // ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合
@@ -228,14 +231,15 @@ module nts.uk.com.view.ccg003.c {
         }
         vm.employeeInfoId().push(getShared('CDL009Output'));
         vm.$blockui('show');
-        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId()).then((response: EmployeeInfo[]) => {
-          if (response) {
-            const employeeInfoId = _.map(response, x => x.sid)
-            const employeeName = _.map(response, x => x.bussinessName);
-            vm.employeeInfoId(employeeInfoId);
-            vm.employeeName(employeeName);
-          }
-        })
+        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId())
+          .then((response: EmployeeInfo[]) => {
+            if (response) {
+              const employeeInfoId = _.map(response, x => x.sid)
+              const employeeName = _.map(response, x => x.bussinessName);
+              vm.employeeInfoId(employeeInfoId);
+              vm.employeeName(employeeName);
+            }
+          })
           .always(() => vm.$blockui('hide'));
       });
     }
@@ -394,10 +398,11 @@ module nts.uk.com.view.ccg003.c {
   }
 
   enum SystemType {
-    COMMON = 0,
-    EMPLOYMENT = 1,
-    SALARY = 2,
-    HUMAN_RESOURCE = 3
+    PERSONAL_INFORMATION = 1,
+    EMPLOYMENT = 2,
+    SALARY = 3,
+    HUMAN_RESOURCES = 4,
+    ADMINISTRATOR = 5
   }
 
   enum EmployeeReferenceRange {

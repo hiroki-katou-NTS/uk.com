@@ -83,4 +83,17 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		}
 		return result;
 	}
+	
+	public ExtractionResponseDto extractFlowMenu(String fileId) throws IOException {
+		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
+		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
+		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
+		if (!status.equals(ExtractStatus.SUCCESS)) {
+			return null;
+		}
+		
+		File file = destinationDirectory.toFile().listFiles()[0];
+		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
+	}
+	
 }

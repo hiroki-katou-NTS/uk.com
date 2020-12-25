@@ -74,5 +74,13 @@ public interface FlowMenuRepository {
 	 */
 	public List<FlowMenu> findByType(String companyID, Integer topPagePartType);
 	
+	/**
+	 * 
+	 * @param companyID
+	 * @param code
+	 * @param topPagePartType
+	 * @return
+	 */
+	public Optional<FlowMenu> findByToppagePartCodeAndType(String companyID, String code, Integer topPagePartType);
 	
 }

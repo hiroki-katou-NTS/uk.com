@@ -9,8 +9,8 @@
 }
 #C1_2 {
   width: 440px;
-  height: 225px;
   overflow-y: scroll;
+  resize: none;
 }
 .left {
   float: left;
@@ -71,4 +71,27 @@
 }
 .ml-13 {
   margin-left: 13px;
+}
+.flex-nowrap {
+  display: flex;
+  white-space: nowrap;
+}
+.pt-5 {
+  padding-top: 5px;
+}
+.pt-10 {
+  padding-top: 10px;
+}
+.pr-15 {
+  padding-right: 15px;
+}
+.w-100p {
+  width: 100% !important;
+}
+.editor-wrapped > .ntsControl {
+  display: flex !important;
+  width: 100%;
+}
+.pl-10 {
+  padding-left: 10px;
 }

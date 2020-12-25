@@ -30,6 +30,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
 	private static final String SELECT_BY_TYPE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID AND t.topPagePartType = :topPagePartType";
 	private static final String SELECT_IN = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID IN :topPagePartID";
+	private static final String SELECT_BY_CODE = SELECT_BY_TYPE + " AND t.code = :code";
 
 	@Override
 	public List<FlowMenu> findAll(String companyID) {
@@ -53,6 +54,15 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				.getSingle(c -> joinObjectToDomain(c));
 	}
 
+	
+	@Override
+	public Optional<FlowMenu> findByToppagePartCodeAndType(String companyID, String code, Integer topPagePartType) {
+		return this.queryProxy().query(SELECT_BY_CODE, Object[].class)
+				.setParameter("companyID", companyID)
+				.setParameter("code", code)
+				.setParameter("topPagePartType", topPagePartType)
+				.getSingle(c -> joinObjectToDomain(c));
+	}
 	@Override
 	public void add(FlowMenu flow) {
 		this.commandProxy().insert(toEntity(flow));

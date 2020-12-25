@@ -54,50 +54,30 @@ module nts.uk.com.view.ccg008.a.screenModel {
           }
           vm.topPageSetting = res;
           //var fromScreen = "login";
-          if (fromScreen == "login") {
-            vm.$ajax("com", API.getCache).then((data: any) => {
-              character.save("cache", data).then(() => {
-                vm.topPageCode(code);
-                character.restore("cache").then((obj: any) => {
-                  if (obj) {
-                    const endDate = moment.utc(obj.endDate, "YYYY/MM/DD");
-                    if (
-                      endDate
-                        .add(vm.topPageSetting.switchingDate)
-                        .isSameOrAfter(moment.utc(new Date(), "YYYY/MM/DD"))
-                    ) {
-                      vm.selectedSwitch(1);
-                    } else {
-                      vm.selectedSwitch(2);
-                      obj.currentOrNextMonth = 2;
-                    }
-                    vm.closureSelected(obj.closureId);
-                    nts.uk.ui.windows.setShared("cache", obj);
+          vm.$ajax("com", API.getCache).then((data: any) => {
+            character.save("cache", data).then(() => {
+              vm.topPageCode(code);
+              character.restore("cache").then((obj: any) => {
+                if (obj) {
+                  let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
+                  if (moment.utc(endDate, "YYYY/MM/DD")
+                      .isSameOrAfter(moment.utc(new Date(), "YYYY/MM/DD"))
+                  ) {
+                    vm.selectedSwitch(2);
+                    obj.currentOrNextMonth = 2;
                   } else {
-                    vm.closureSelected(1);
-                    vm.selectedSwitch(null);
+                    vm.selectedSwitch(1);
                   }
-                });
-              });
-            });
-          } else {
-            // get combobox and switch button
-            character.restore("cache").done((obj: any) => {
-              if (obj) {
-                if (obj.currentOrNextMonth) {
-                  vm.selectedSwitch(obj.currentOrNextMonth);
+                  vm.closureSelected(obj.closureId);
+                  nts.uk.ui.windows.setShared("cache", obj);
                 } else {
+                  vm.closureSelected(1);
                   vm.selectedSwitch(null);
                 }
-                vm.closureSelected(obj.closureId);
-                nts.uk.ui.windows.setShared("cache", obj);
-              } else {
-                vm.closureSelected(1);
-                vm.selectedSwitch(null);
-              }
+              });
             });
-          }
-          vm.dataToppage(null);
+          });
+        vm.dataToppage(null);
         });
       }).always(() => vm.$blockui("clear"));
 
@@ -124,14 +104,16 @@ module nts.uk.com.view.ccg008.a.screenModel {
       });
 
       vm.reloadInterval.subscribe((data: any) => {
-        const minutes = vm.getMinutes(data);
-        const miliSeconds = minutes * MINUTESTOMILISECONDS;
+        let minutes = vm.getMinutes(data);
+        let miliSeconds = minutes * MINUTESTOMILISECONDS;
         if (data !== 0) {
           setInterval(() => {
             vm.callApiTopPage(vm);
           }, miliSeconds);
         }
       });
+
+      $('#content-top').focus()
     }
 
     callApiTopPage(vm: any) {
@@ -165,31 +147,67 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
     getToppage(data: DataTopPage) {
       const vm = this;
-      const origin: string = window.location.origin;
       if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
         vm.isShowButtonRefresh(true);
       }
-      if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
-        if (data.standardMenu.url) {
-          // show standardmenu
-          const res = "/" + data.standardMenu.url.split("web/")[1];
-          const topPageUrl = "/view/ccg/008/a/index.xhtml";
-          if (res && topPageUrl !== res.trim()) {
-            if (_.includes(data.standardMenu.url, ".at.")) {
-              nts.uk.request.jump("at", res);
-            } else {
-              nts.uk.request.jump(res);
+      const transferData = __viewContext.transferred.value;
+      const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+      if(fromScreen === 'login'){
+        if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
+          if (data.standardMenu.url) {
+            if (!!data.standardMenu.url.split("web/")[1]) {
+               // show standardmenu
+              const res = "/" + data.standardMenu.url.split("web/")[1];
+              const topPageUrl = "/view/ccg/008/a/index.xhtml";
+              if (res && topPageUrl !== res.trim()) {
+                if (_.includes(data.standardMenu.url, ".at.")) {
+                  nts.uk.request.jump("at", res);
+                } else {
+                  nts.uk.request.jump(res);
+                }
+              }
             }
           }
+          // show toppage
+        } else {
+          const layout1 = data.displayTopPage.layout1;
+          const layout2 = data.displayTopPage.layout2;
+          const layout3 = data.displayTopPage.layout3;
+          vm.visible(true)
+          if (layout1) {
+            vm.paramIframe1(data.displayTopPage);
+          }
+          if (layout2) {
+            _.each(layout2, (item: WidgetSettingDto) => {
+              if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
+                vm.isShowSwitch(true);
+              }
+              if (item.widgetType === 1) {
+                vm.isShowClosure(true);
+              }
+            });
+            vm.paramWidgetLayout2(layout2);
+          }
+          if (layout3) {
+            _.each(layout3, (item: WidgetSettingDto) => {
+              if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
+                vm.isShowSwitch(true);
+              }
+            
+              if (item.widgetType === 1) {
+                vm.isShowClosure(true);
+              }
+            });
+            vm.paramWidgetLayout3(layout3);
+          }
         }
-        // show toppage
       } else {
         const layout1 = data.displayTopPage.layout1;
         const layout2 = data.displayTopPage.layout2;
         const layout3 = data.displayTopPage.layout3;
+        vm.visible(true)
         if (layout1) {
           vm.paramIframe1(data.displayTopPage);
-          vm.visible(true)
         }
         if (layout2) {
           _.each(layout2, (item: WidgetSettingDto) => {

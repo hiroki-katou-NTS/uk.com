@@ -66,4 +66,9 @@ public class RegisterMessageNoticeCommand implements MessageNotice.MementoGetter
 		return infor;
 	}
 
+	public void setCurrentDate() {
+		this.messageNotice.setInputDate(GeneralDateTime.now());
+		this.messageNotice.setModifiedDate(GeneralDateTime.now());
+	}
+
 }

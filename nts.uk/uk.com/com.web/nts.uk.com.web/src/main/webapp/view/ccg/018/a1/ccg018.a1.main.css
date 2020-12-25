@@ -186,3 +186,6 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 	padding-top: 0 !important;
 	padding-left: 0 !important;
 }
+.ui-igcombo-list {
+	max-height: 130px !important;
+}
