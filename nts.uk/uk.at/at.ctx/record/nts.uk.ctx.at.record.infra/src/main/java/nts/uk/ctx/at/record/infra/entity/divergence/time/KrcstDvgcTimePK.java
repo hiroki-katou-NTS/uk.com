@@ -30,7 +30,7 @@ public class KrcstDvgcTimePK implements Serializable {
 	private String cid;
 
 	/** The no. */
-	@Column(name = "[NO]")
+	@Column(name = "NO")
 	private Integer no;
 
 	/*

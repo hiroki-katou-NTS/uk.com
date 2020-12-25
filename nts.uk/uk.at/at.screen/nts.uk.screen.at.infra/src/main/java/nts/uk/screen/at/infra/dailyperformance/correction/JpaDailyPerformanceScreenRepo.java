@@ -258,7 +258,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcmtDvgcReason c"
 //			+ " WHERE c.id.cid = :companyId";
 
-	private final static String SELECT_ALL_DIVREASON_JDBC = "SELECT REASON, [NO], REASON_CD FROM KRCMT_DVGC_REASON c WHERE CID = ?";
+	private final static String SELECT_ALL_DIVREASON_JDBC = "SELECT REASON, NO, REASON_CD FROM KRCMT_DVGC_REASON c WHERE CID = ?";
 
 	private final static String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
