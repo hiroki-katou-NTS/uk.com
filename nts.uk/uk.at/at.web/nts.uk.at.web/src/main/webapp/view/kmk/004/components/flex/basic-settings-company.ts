@@ -5,7 +5,7 @@ import IDisplayFlexBasicSettingByCompanyDto = nts.uk.at.kmk004.components.flex.I
 const template = `
 	<div   style="margin-top: 10px; margin-bottom:15px;"  >
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
-		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n: 'KMK004_231'" ></button>
+		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n:getTextKButton()" ></button>
 	</div>
 	<div data-bind="visible:screenData().comFlexMonthActCalSet() != null" class="div_line" 
 		style="
@@ -85,6 +85,28 @@ class BasicSettingsCompany extends ko.ViewModel {
 			vm.reloadAfterChangeSetting();
 		});
 	}
+
+	getTextKButton() {
+		const vm = this;
+		if (vm.screenMode == 'Com_Company') {
+			return 'KMK004_231';
+		}
+
+		if (vm.screenMode == 'Com_Workplace') {
+			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_338' : 'KMK004_339';
+		}
+		
+		if (vm.screenMode == 'Com_Employment') {
+			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_340' : 'KMK004_341';
+		}
+		
+		if (vm.screenMode == 'Com_Person') {
+			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_342' : 'KMK004_343';
+		}
+	}
+
+
+
 
 	enableKButton() {
 		const vm = this;
