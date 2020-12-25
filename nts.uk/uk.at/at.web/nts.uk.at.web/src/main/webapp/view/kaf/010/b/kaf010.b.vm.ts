@@ -522,7 +522,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			if (!_.isNil(self.appHolidayWork)) {
 				if (!_.isNil(self.appHolidayWork.applicationTime)){
 					let applicationTimes = self.appHolidayWork.applicationTime.applicationTime;
-					if (!_.isEmpty(applicationTimes) && applicationTimes.filter(applicationTime => applicationTime.attendanceType==AttendanceType.NORMALOVERTIME).length > 0) {
+					if (!_.isEmpty(applicationTimes) 
+					&& applicationTimes.filter(applicationTime => applicationTime.attendanceType==AttendanceType.NORMALOVERTIME && applicationTime.applicationTime > 0).length > 0) {
 						self.overTimeTableVisible(true);
 					} else {
 						self.overTimeTableVisible(false);
@@ -1146,12 +1147,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 
 			self.holidayTime(holidayTimeArray);
-			self.setColorForHolidayTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 0, self.dataSource);
+			self.setColorForHolidayTime(self.dataSource);
 		}
 
-		setColorForHolidayTime(isCalculation: Boolean, dataSource: AppHdWorkDispInfo) {
+		setColorForHolidayTime(dataSource: AppHdWorkDispInfo) {
 			const self = this;
-			if (!isCalculation || _.isNil(dataSource.calculationResult)) {
+			if (_.isNil(dataSource.calculationResult)) {
 				return;
 			}
 			let holidayTimes = self.holidayTime() as Array<HolidayTime>;
@@ -1557,12 +1558,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			}
 
 			self.overTime(overTimeArray);
-			self.setColorForOverTime(self.dataSource.calculationResult && self.dataSource.calculationResult.calculatedFlag == 0, self.dataSource);
+			self.setColorForOverTime(self.dataSource);
 		}
 
-		setColorForOverTime(isCalculation: Boolean, dataSource: AppHdWorkDispInfo) {
+		setColorForOverTime(dataSource: AppHdWorkDispInfo) {
 			const self = this;
-			if (!isCalculation || _.isNil(dataSource.calculationResult)) {
+			if (_.isNil(dataSource.calculationResult)) {
 				return;
 			}
 			let overTimes = self.overTime() as Array<OverTime>;

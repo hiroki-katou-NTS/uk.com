@@ -34,7 +34,8 @@ public class HolidayWorkCalculationResultDto {
 	
 	public static HolidayWorkCalculationResultDto fromDomain(HolidayWorkCalculationResult domain) {
 		if(domain == null) return null;
-		return new HolidayWorkCalculationResultDto(OverStateOutputDto.fromDomain(domain.getActualOvertimeStatus()), 
+		return new HolidayWorkCalculationResultDto(
+				domain.getActualOvertimeStatus() != null ? OverStateOutputDto.fromDomain(domain.getActualOvertimeStatus()) : null, 
 				ApplicationTimeDto.fromDomain(domain.getApplicationTime()), 
 				domain.getCalculatedFlag().value);
 	}
