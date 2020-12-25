@@ -13,7 +13,7 @@ module nts.uk.at.view.kmk004.components.transform {
 	}
 
 	const template = `
-		<button id = "btn_year" data-bind="click: openQDialog, i18n: 'KMK004_233'"></button>
+		<button id = "btn_year" data-bind="enable: initBtnEnable, click: openQDialog, i18n: 'KMK004_233'"></button>
         <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
                 options: years,
@@ -42,6 +42,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		public type: SIDEBAR_TYPE;
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		isLoadInitData: KnockoutObservable<boolean>;
+		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(private params: Params) {
 			super();
@@ -50,7 +51,6 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.isLoadInitData = vm.params.isLoadInitData;
 			vm.isLoadInitData.subscribe((value: boolean) => {
 				if (value) {
-					
 					if (vm.type == 'Com_Company') {
 						vm.initData();
 					} else {
@@ -66,7 +66,10 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.selectedYear = params.selectedYear;
 			vm.type = params.type;
 			vm.selectedId = params.selectedId;
-			
+
+			if (vm.type != 'Com_Person') {
+				vm.initBtnEnable(true);
+			}
 		}
 
 		mounted() {
@@ -75,6 +78,10 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.selectedId
 				.subscribe(() => {
 					vm.loadData(0);
+					if (vm.params.type == 'Com_Person' && vm.selectedId() != '') {
+						vm.initBtnEnable(true);
+					}
+
 				});
 
 			vm.selectedId.valueHasMutated();

@@ -10,7 +10,8 @@ module nts.uk.at.view.kmk004.l {
 	const KMK004O_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/update',
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete',
-		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeIds'
+		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeIds',
+		SHA_GET_BASIC_SETTING: 'screen/at/kmk004/viewO/getBasicSetting'
 	};
 
 	const template = `
@@ -18,7 +19,7 @@ module nts.uk.at.view.kmk004.l {
 		<div class="title" data-bind="i18n: 'Com_Person'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button class="proceed" data-bind="enable: existYear, click: register, i18n: 'KMK004_225'"></button>
-		<button data-bind="visible: true, i18n: 'KMK004_226'"></button>
+		<button data-bind="visible: true, enable: existYear, i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="enable: existYear, click: remove, i18n: 'KMK004_227'"></button>
 	</div>
 	
@@ -41,7 +42,7 @@ module nts.uk.at.view.kmk004.l {
 						
 						<div class="header_title">
 							<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-							<button data-bind="i18n: btn_text, click: openViewP"></button>
+							<button data-bind="enable: initBtnEnable, i18n: btn_text, click: openViewP"></button>
 						</div>
 						<div class="header_content">
 							<div data-bind="component: {
@@ -139,10 +140,12 @@ module nts.uk.at.view.kmk004.l {
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
-		btn_text: KnockoutObservable<string> = ko.observable('KMK004_338');
+		btn_text: KnockoutObservable<string> = ko.observable('KMK004_342');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
 		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
+		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
+		
 		
 		constructor(private params: IParam) {
 			super();
@@ -259,8 +262,13 @@ module nts.uk.at.view.kmk004.l {
 					vm.paramL.empId(newValue);
 					vm.paramL.titleName = vm.currentItemName();
 					vm.selectedId(newValue);
-					vm.btn_text(
-					vm.alreadySettingList().filter(i => newValue == i.code).length == 0 ? 'KMK004_338' : 'KMK004_339');
+					vm.initBtnEnable(true);
+						
+				vm.$ajax(KMK004O_API.SHA_GET_BASIC_SETTING + "/" + vm.paramL.empId()).done((data: any) => {
+					if (data.deforLaborTimeShaDto != null && data.shaDeforLaborMonthActCalSetDto != null) {
+						vm.btn_text('KMK004_343');
+					} else vm.btn_text('KMK004_342');
+				})
 				});
 			});
 		}

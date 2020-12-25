@@ -4,10 +4,12 @@ module nts.uk.at.view.kmk004.l {
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
+	import IResponse = nts.uk.at.view.kmk004.p.IResponse;
 	
 	const KMK004N_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewN/monthlyWorkTimeSet/update',
-		DELETE_WORK_TIME: 'screen/at/kmk004/viewN/monthlyWorkTimeSet/delete'
+		DELETE_WORK_TIME: 'screen/at/kmk004/viewN/monthlyWorkTimeSet/delete',
+		EMP_GET_BASIC_SETTING: 'screen/at/kmk004/viewN/getBasicSetting'
 	};
 
 	const template = `
@@ -145,7 +147,6 @@ module nts.uk.at.view.kmk004.l {
 		public type: SIDEBAR_TYPE = 'Com_Employment';
 		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
-		//isLoadInitData: KnockoutObservable<boolean>;
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
@@ -205,9 +206,14 @@ module nts.uk.at.view.kmk004.l {
 				vm.paramL.empCode(newValue);
 				vm.paramL.titleName = vm.currentItemName();
 				vm.selectedId(newValue);
-				vm.btn_text(
-					vm.alreadySettingList().filter(i => newValue == i.code).length == 0 ? 'KMK004_340' : 'KMK004_341');
-			});
+				
+				vm.$ajax(KMK004N_API.EMP_GET_BASIC_SETTING + "/" + vm.paramL.empCode()).done((data: any) => {
+					if (data.deforLaborTimeEmpDto != null && data.empDeforLaborMonthActCalSetDto != null) {
+						vm.btn_text('KMK004_341');
+					} else vm.btn_text('KMK004_340');
+				})
+				
+				});
 
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
 				vm.employeeList($('#empt-list-setting').getDataList());
