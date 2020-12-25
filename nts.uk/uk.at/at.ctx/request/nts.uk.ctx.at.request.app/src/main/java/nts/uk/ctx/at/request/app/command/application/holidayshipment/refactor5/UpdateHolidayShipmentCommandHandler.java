@@ -107,7 +107,7 @@ public class UpdateHolidayShipmentCommandHandler {
 	 * @param payoutSubofHDManagement_Abs_Old 振休_古いの振出振休紐付け管理
 	 * @param leaveComDayOffMana_Abs 振休_休出代休紐付け管理
 	 * @param payoutSubofHDManagement_Abs 振休_振出振休紐付け管理
-	 * @param appDispInfoStartup -> http://192.168.50.4:3000/issues/113502
+	 * @param appDispInfoStartup 申請表示情報  -> http://192.168.50.4:3000/issues/113502 -> done
 	 */
 	public void updateApplicationProcess(String companyId, Optional<RecruitmentApp> rec, Optional<AbsenceLeaveApp> abs, 
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec_Old, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
