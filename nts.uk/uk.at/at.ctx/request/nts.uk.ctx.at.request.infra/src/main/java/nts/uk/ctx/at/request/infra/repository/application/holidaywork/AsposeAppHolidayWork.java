@@ -232,7 +232,7 @@ public class AsposeAppHolidayWork {
 		
 		if(c3 && c4) {
 			Cell cellD24 = cells.get("D24");
-			cellD24.setValue(I18NText.getText("KAF005_61"));
+			cellD24.setValue(I18NText.getText("KAF005_63"));
 			
 			Cell cellF24 = cells.get("F24");
 			Optional<OverTimeShiftNight> overTimeShiftNight = printContentOfHolidayWork.getApplicationTime().getOverTimeShiftNight();
