@@ -252,7 +252,7 @@ module nts.uk.at.kal014.a {
                     });
 
                     vm.alarmPatterSet().update(data.alarmPatternCD,data.alarmPatternName,checkCon,_.sortBy(listSelected,
-                            i => i.code));
+                            ['code','categoryName']));
                     dfd.resolve();
                 })
                 .fail((error: any)=>{
@@ -632,18 +632,6 @@ module nts.uk.at.kal014.a {
         }
     }
 
-    class AlarmPattern {
-        /** コード */
-        code: KnockoutObservable<string>;
-        /** 名称 */
-        name: KnockoutObservable<string>;
-
-        constructor(code: string, name: string) {
-            this.code = ko.observable(code);
-            this.name = ko.observable(name);
-        };
-    }
-
     class AlarmPatternObject{
         // アラームリストパターンコード
         alarmPatternCD: KnockoutObservable<string> = ko.observable(null);
@@ -660,7 +648,7 @@ module nts.uk.at.kal014.a {
             this.alarmPatternCD(alarmPatternCD);
             this.alarmPatternName(alarmPatternName);
             this.alarmPerSet(alarmPerSet);
-            this.checkConList(checkConList || []);
+            this.checkConList(_.isEmpty(checkConList) ? [] : _.sortBy(checkConList,i=>i.alarmCategory()));
             this.allCtgCdSelected(allCtgCdSelected || []);
 
         }
@@ -669,7 +657,7 @@ module nts.uk.at.kal014.a {
                     allCtgCdSelected: Array<AlarmCheckCategoryList>){
             this.alarmPatternCD(alarmPatternCD);
             this.alarmPatternName(alarmPatternName);
-            this.checkConList(checkConList || []);
+            this.checkConList(_.isEmpty(checkConList) ? [] :_.sortBy(checkConList,i=>i.alarmCategory()));
             this.allCtgCdSelected(allCtgCdSelected || []);
 
         }
@@ -682,12 +670,12 @@ module nts.uk.at.kal014.a {
                 fullCtg.push(item);
             })
 
-            this.checkConList(fullCtg);
+            this.checkConList(_.sortBy(fullCtg,i=>i.alarmCategory()));
         }
 
         // Update condition
         updateConditionCtg(newCtg: Array<WkpCheckConditionDto>){
-            this.checkConList(newCtg);
+            this.checkConList(_.sortBy(newCtg,i=>i.alarmCategory()));
         }
 
     }
