@@ -128,6 +128,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		// for set color 
 		isStart: Boolean = true;
+		
+		
+		// assign value after calling service calculation
+		timeTemp: Array<OvertimeApplicationSetting>;
 
         created(
             params: {
@@ -181,6 +185,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.bindHolidayTime(vm.dataSource, 0);
 					vm.bindOverTime(vm.dataSource, 0);
 					vm.bindMessageInfo(vm.dataSource);
+					vm.assginTimeTemp();
 					if (vm.isStart) {
 						vm.isStart = false;
 					}
@@ -204,13 +209,24 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             }
         }
 
+		public handleEditInputTime(timeTemp: Array<any>) {
+			const self = this;
+			let isEqual = _.differenceWith(timeTemp, self.createTimeTemp(), _.isEqual);
+			
+			return isEqual.length > 0;
+		}
+
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
-			let command = {};
+            vm.$blockui("show");
 			let applicationTemp = vm.toAppOverTime();
 			let appOverTimeTemp = null as AppOverTime;
-            vm.$blockui("show");
+			// handle when edit input time
+			
+			if (vm.handleEditInputTime(vm.timeTemp)) {
+				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+			}
             let dfd = $.Deferred();
 			// validate chung KAF000
 			 vm.$validate(
@@ -1059,6 +1075,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 								self.bindRestTime(self.dataSource, 1);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
+								self.assginTimeTemp();
 							}
 						})
 						.fail(res => {
@@ -1156,6 +1173,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.createVisibleModel(self.dataSource);
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
+						self.assginTimeTemp();
 					}
 				})
 				.fail((res: any) => {
@@ -2705,6 +2723,30 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		getFormatTime(number: number) {
 			if (_.isNil(number)) return '';
 			return (formatTime("Clock_Short_HM", number));
+		}
+		
+		public assginTimeTemp() {
+			const self = this;
+			self.timeTemp = self.createTimeTemp();
+		}
+		public createTimeTemp() {
+			const vm = this;
+			let result = [] as Array<OvertimeApplicationSetting>;
+			_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
+				let item = {} as OvertimeApplicationSetting;
+				item.frameNo = Number(i.frameNo);
+				item.applicationTime = ko.toJS(i.applicationTime) || 0;
+				item.attendanceType = i.type;
+				result.push(item);
+			});
+			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
+				let item = {} as OvertimeApplicationSetting;
+				item.frameNo = Number(i.frameNo);
+				item.applicationTime = ko.toJS(i.start) || 0;
+				item.attendanceType = i.type;
+				result.push(item);
+			});
+			return result;
 		}
 		
     }
