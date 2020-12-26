@@ -255,7 +255,10 @@ module nts.uk.at.view.kwr004.b {
           break;
 
         case 'Msg_1859':
-          $('#KWR004_B32').ntsError('set', { messageId: messageId });
+          //$('#KWR004_B32').ntsError('set', { messageId: messageId });
+          vm.$dialog.error({ messageId: messageId }).then(() => {
+            $('#KWR004_B32').focus();
+          });
           break;
       }
     }
