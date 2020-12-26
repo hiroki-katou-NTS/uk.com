@@ -142,7 +142,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private PersonCostCalculation toSimpleDomain(KscmtPerCostCal kscmtPerCostCal, List<PremiumSetting> premiumSetting) {
 
-
         val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCal.costRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
                 AmountUnit.valueOf(kscmtPerCostCal.getCostUnit()),
@@ -410,6 +409,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         val listRate = getPersonCostByListHistId(companyID, listHistId);
         for (KscmtPerCostCal item : listEntity) {
             val listPremiumSetting = listRate.stream().filter(x -> x.getHistoryID().equals(item.pk.histID)).collect(Collectors.toList());
+            if(listPremiumSetting.isEmpty())continue;
             val sub = toSimpleDomain(item, listPremiumSetting);
             rs.add(sub);
         }
@@ -421,7 +421,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             });
             HistPersonCostCalculation hist = new HistPersonCostCalculation(companyID, historyItems);
             result.setHistPersonCostCalculation(hist);
-            ;
         }
 
         return result;

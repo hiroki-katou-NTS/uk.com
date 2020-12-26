@@ -19,7 +19,10 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -52,52 +55,47 @@ public class PersonCostCalculationFinder {
         val listItem = this.personCostCalculationRepository.getHistAnPerCost(companyID);
         val calculationList = listItem.getHistPersonCostCalculation();
         val listPer = listItem.getPersonCostCalculation();
-
         List<Integer> listId = new ArrayList<>();
-        listPer.forEach(e -> listId.addAll(e.getPremiumSettings().stream().map(i -> (i.getID().value)).collect(Collectors.toList())));
-        val listItemInfo = premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID,listId);
-        if (!listPer.isEmpty()) {
+        listPer.forEach(e -> {
+            listId.addAll(e.getPremiumSettings().stream().map(i -> (i.getID().value)).collect(Collectors.toList()));
+        });
+        val listItemInfo = premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID, listId);
+        Map<Integer, PremiumItem> mapItemInfo = listItemInfo.stream().distinct().collect(Collectors.toMap(PremiumItem::getDisplayNumber, i -> i));
+        if (listPer.isEmpty()) return rs;
             for (PersonCostCalculation sub : listPer) {
                 val dateHistoryItem = calculationList.getHistoryItems().stream().filter(e -> e.identifier().equals(sub.getHistoryID())).findFirst();
-                val item = convertToPersonCostDto(sub, dateHistoryItem, listItemInfo);
+                if (!dateHistoryItem.isPresent()) continue;
+                val item = convertToPersonCostDto(sub, dateHistoryItem.get(), mapItemInfo);
                 rs.add(item);
             }
-        }
+
         return rs;
     }
 
-    public PersonCostCalDto convertToPersonCostDto(PersonCostCalculation domain,
-                                                   Optional<DateHistoryItem> dateHistoryItem, List<PremiumItem> listItemName) {
-        PersonCostCalDto rs = new PersonCostCalDto();
-       // Map<Integer,PremiumItem> mapItem = listItemName.stream().collect(Collectors.toMap(i.))
-        if (dateHistoryItem.isPresent()) {
-            val sub = dateHistoryItem.get();
-            rs = new PersonCostCalDto(
-                    sub.start(),
-                    sub.end(),
-                    sub.identifier(),
-                    domain.getCompanyID(),
-                    domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
-                    domain.getHowToSetUnitPrice().value,
-                    domain.getWorkingHoursUnitPrice().v(),
-                    domain.getRemark().v(),
-                    new PerCostRoundSettingDto(
-                            domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
-                            domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
-                            domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
-                    domain.getPremiumSettings().stream().map(e -> new PremiumSettingAndNameDto(
-                            e.getID().value,
-                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
-                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
-                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
-                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getUseAtr().value : null,
-                            e.getRate().v(),
-                            e.getUnitPrice().value,
-                            atNames(e.getAttendanceItems())
-                    )).collect(Collectors.toList())
-            );
-        }
-        return rs;
+    private PersonCostCalDto convertToPersonCostDto(PersonCostCalculation domain,
+                                                    DateHistoryItem dateHistoryItem, Map<Integer, PremiumItem> mapItemInfo) {
+        return new PersonCostCalDto(
+                dateHistoryItem.start(),
+                dateHistoryItem.end(),
+                dateHistoryItem.identifier(),
+                domain.getCompanyID(),
+                domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
+                domain.getHowToSetUnitPrice().value,
+                domain.getWorkingHoursUnitPrice().v(),
+                domain.getRemark().v(),
+                new PerCostRoundSettingDto(
+                        domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
+                        domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                        domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
+                domain.getPremiumSettings().stream().map(e -> new PremiumSettingAndNameDto(
+                        e.getID().value,
+                        mapItemInfo.get(e.getID().value) != null ? mapItemInfo.get(e.getID().value).getName().v() : null,
+                        mapItemInfo.get(e.getID().value) != null ? mapItemInfo.get(e.getID().value).getUseAtr().value : null,
+                        e.getRate().v(),
+                        e.getUnitPrice().value,
+                        atNames(e.getAttendanceItems())
+                )).collect(Collectors.toList())
+        );
     }
 
     /**
