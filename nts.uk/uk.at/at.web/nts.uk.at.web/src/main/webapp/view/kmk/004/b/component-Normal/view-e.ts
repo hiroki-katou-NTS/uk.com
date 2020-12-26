@@ -36,23 +36,22 @@ module nts.uk.at.view.kmk004.b {
 				<div class="name" data-bind="i18n: model.nameSynthetic"></div>
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-					<!-- ko if: model.isAlreadySetting -->
+					<!-- ko if: checkSeting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_243', click: openDialogF, enable: existEmployee"></button>
 					<!-- /ko -->
-					<!-- ko ifnot: model.isAlreadySetting -->
+					<!-- ko ifnot: checkSeting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_242', click: openDialogF, enable: existEmployee"></button>
 					<!-- /ko -->
 				</div>
-				<!-- ko if: model.isAlreadySetting -->
-					<div class ="setting" data-bind="component: {
-						name: 'basic-setting',
-						params:{
-							type: type,
-							selectId: model.id,
-							change: change
-						}
-					}"></div>
-				<!-- /ko -->
+				<div class ="setting" data-bind="component: {
+					name: 'basic-setting',
+					params:{
+						type: type,
+						selectId: model.id,
+						change: change,
+						checkSeting: checkSeting
+					}
+				}"></div>
 				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
 				<div class="content-data">
 					<div>
@@ -119,6 +118,7 @@ module nts.uk.at.view.kmk004.b {
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public checkAdd: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+		public checkSeting: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;

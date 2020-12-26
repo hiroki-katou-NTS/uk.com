@@ -104,9 +104,11 @@ public class Kmk004EWebSevice extends WebService {
 		List<MonthlyWorkTimeSetShaCommand> result = new ArrayList<>();
 		
 		for (int i = 0; i < input.getLaborTime().size(); i++) {
-			MonthlyWorkTimeSetShaCommand s = new MonthlyWorkTimeSetShaCommand(input.sid, 0,
-					input.getYearMonth().get(i), new MonthlyLaborTimeCommand(input.getLaborTime().get(i), null, null));
-			result.add(s);
+			if (input.getLaborTime().get(i) != null) {
+				MonthlyWorkTimeSetShaCommand s = new MonthlyWorkTimeSetShaCommand(input.sid, 0,
+						input.getYearMonth().get(i), new MonthlyLaborTimeCommand(input.getLaborTime().get(i), null, null));
+				result.add(s);
+			}
 		}
 		SaveMonthlyWorkTimeSetShaCommand command = new SaveMonthlyWorkTimeSetShaCommand(result);
 		this.saveWorkTime.handle(command);;

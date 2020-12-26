@@ -103,7 +103,7 @@ module nts.uk.at.view.kmk004.b {
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
-		public checkSeting: KnockoutObservable<boolean> = ko.observable(true);
+		public checkSeting: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;

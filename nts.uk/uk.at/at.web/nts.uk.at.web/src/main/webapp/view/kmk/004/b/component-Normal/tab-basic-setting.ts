@@ -128,6 +128,9 @@ module nts.uk.at.view.kmk004.b {
 			if (params.checkSeting) {
 				vm.checkSeting = params.checkSeting;
 			}
+			if (vm.type === 'Com_Company') {
+				vm.checkSeting(true);
+			}
 
 			vm.reloadData();
 
@@ -237,8 +240,13 @@ module nts.uk.at.view.kmk004.b {
 						vm.$blockui('invisible')
 							.then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
 							.then((data: ITabSetting) => {
-								vm.tabSetting.create(data);
-								vm.init();
+								if (data) {
+									vm.tabSetting.create(data);
+									vm.init();
+									vm.checkSeting(true);
+								} else {
+									vm.checkSeting(false);
+								}
 							})
 							.then(() => vm.$blockui('clear'));
 					}

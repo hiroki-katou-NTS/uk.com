@@ -104,7 +104,7 @@ module nts.uk.at.view.kmk004.b {
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
-		public checkSeting: KnockoutObservable<boolean> = ko.observable(true);
+		public checkSeting: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;
@@ -146,13 +146,14 @@ module nts.uk.at.view.kmk004.b {
 			$(document).ready(function () {
 				$('.listbox').focus();
 			});
+
 		}
 
 		add() {
 			const vm = this;
 			const times = _.map(ko.unwrap(vm.workTimes), ((value) => {
 				return ko.unwrap(value.laborTime);
-			}));
+			}));			
 
 			const yearMonth = _.map(ko.unwrap(vm.workTimes), ((value) => {
 				return ko.unwrap(value.yearMonth);
@@ -262,13 +263,16 @@ module nts.uk.at.view.kmk004.b {
 		openDialogQ() {
 			const vm = this;
 			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
-			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
+			vm.$window.modal('/view/kmk/004/q/index.xhtml', param)
+			.then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.selectedYear(ko.unwrap(vm.years)[0].year);
-					vm.selectedYear.valueHasMutated();
 				}
+			})
+			.then(() => {
+				vm.selectedYear.valueHasMutated();
 			});
 		}
 

@@ -65,8 +65,8 @@ module nts.uk.at.view.kmk004.f {
 
             vm.init();
             vm.reloadData();
-            vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
-            vm.model.outsideSurchargeWeekMonth.valueHasMutated();
+            // vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
+            // vm.model.outsideSurchargeWeekMonth.valueHasMutated();
 
             switch (vm.type) {
                 case 'Com_Company':
@@ -141,39 +141,23 @@ module nts.uk.at.view.kmk004.f {
             switch (vm.type) {
                 case 'Com_Company':
                     vm.$ajax(API.ADD_OR_UPDATE_COM, input)
-                        .done(() => {
-                            vm.$dialog.info({ messageId: 'Msg_15' });
-                        })
-                        .then(() => {
-                            vm.$window.close();
-                        });
+                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                        .then(vm.$window.close);
                     break;
                 case 'Com_Workplace':
                     vm.$ajax(API.ADD_OR_UPDATE_WORKPLACE, inputById)
-                        .done(() => {
-                            vm.$dialog.info({ messageId: 'Msg_15' });
-                        })
-                        .then(() => {
-                            vm.$window.close();
-                        });
+                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                        .then(vm.$window.close);
                     break;
                 case 'Com_Employment':
                     vm.$ajax(API.ADD_OR_UPDATE_EMPLOYMENT, inputById)
-                        .done(() => {
-                            vm.$dialog.info({ messageId: 'Msg_15' });
-                        })
-                        .then(() => {
-                            vm.$window.close();
-                        });
+                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                        .then(vm.$window.close);
                     break;
                 case 'Com_Person':
                     vm.$ajax(API.ADD_OR_UPDATE_EMPLOYEE, inputById)
-                        .done(() => {
-                            vm.$dialog.info({ messageId: 'Msg_15' });
-                        })
-                        .then(() => {
-                            vm.$window.close();
-                        });
+                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                        .then(vm.$window.close);
                     break;
             }
 

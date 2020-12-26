@@ -37,6 +37,8 @@ public class BasicSettingsForEmployee {
 		if (regularLaborTimeSha.isPresent()) {
 			result.setDaily(regularLaborTimeSha.get().getDailyTime().getDailyTime().v());
 			result.setWeekly(regularLaborTimeSha.get().getWeeklyTime().getTime().v());
+		} else {
+			return null;
 		}
 
 		// 2 get(職場別通常勤務集計設定)
@@ -54,8 +56,10 @@ public class BasicSettingsForEmployee {
 					shaRegulaMonthActCalSet.get().getExcessOutsideTimeSet().isLegalOverTimeWork());
 			result.setOutsideSurchargeWeekMonth(
 					shaRegulaMonthActCalSet.get().getExcessOutsideTimeSet().isSurchargeWeekMonth());
+		} else {
+			return null;
 		}
-		
+
 		return result;
 	}
 	
