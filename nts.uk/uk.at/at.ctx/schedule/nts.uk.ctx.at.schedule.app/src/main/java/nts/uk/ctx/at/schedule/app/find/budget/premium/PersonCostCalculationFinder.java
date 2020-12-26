@@ -222,7 +222,6 @@ public class PersonCostCalculationFinder {
                                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
                                 domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
                                 domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
-
                         domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
                                 e.getID().value,
                                 listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?

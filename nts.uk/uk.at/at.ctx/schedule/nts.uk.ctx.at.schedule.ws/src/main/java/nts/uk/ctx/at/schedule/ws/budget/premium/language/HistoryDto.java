@@ -8,5 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 
 public class HistoryDto {
-    String historyID;
+     String historyId;
 }
