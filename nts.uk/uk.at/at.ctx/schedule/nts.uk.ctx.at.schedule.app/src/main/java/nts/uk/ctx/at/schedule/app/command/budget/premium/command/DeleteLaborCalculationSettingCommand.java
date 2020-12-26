@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class DeleteLaborCalculationSettingCommand {
-    private String historyId;
+    private String historyID;
 }

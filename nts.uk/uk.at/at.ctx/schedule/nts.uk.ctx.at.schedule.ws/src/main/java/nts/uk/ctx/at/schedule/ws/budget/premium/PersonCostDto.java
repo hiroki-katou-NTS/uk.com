@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class PersonCostDto {
 
-    private String historyId;
+    private String historyID;
 }

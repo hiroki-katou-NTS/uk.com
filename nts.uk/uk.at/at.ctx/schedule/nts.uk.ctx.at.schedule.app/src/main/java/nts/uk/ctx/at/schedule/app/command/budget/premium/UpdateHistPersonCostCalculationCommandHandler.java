@@ -40,7 +40,7 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
         val premiumSettings = command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
                 cid,
-                command.getHistoryId(),
+                command.getHistoryID(),
                 EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
                 new PremiumRate(e.getRate()),
                 EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class),
@@ -55,10 +55,10 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
                 Optional.of(unitPrice),
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
-                command.getHistoryId()
+                command.getHistoryID()
         );
         DatePeriod period = new DatePeriod(command.getStartDate(), GeneralDate.max());
-        service.updateHistPersonCalculation(domain, command.historyId, period);
+        service.updateHistPersonCalculation(domain, command.getHistoryID(), period);
 
     }
 }

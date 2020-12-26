@@ -95,7 +95,7 @@ public class PersonCostCalculationWebService extends WebService {
     @POST
     @Path("findByHistory")// 7
     public PersonCostCalculationDto getHistPersonCost(PersonCostDto prams) {
-        return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistoryId());
+        return this.personCostCalculationSettingFinder.getHistPersonCostByHistId(prams.getHistoryID());
     }
 
     @POST
