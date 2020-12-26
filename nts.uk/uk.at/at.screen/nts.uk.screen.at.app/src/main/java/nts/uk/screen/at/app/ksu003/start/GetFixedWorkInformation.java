@@ -86,15 +86,19 @@ public class GetFixedWorkInformation {
 		String cid = AppContexts.user().companyId();
 		BreakTimeKdl045Dto breakTime = null;
 		FixedWorkInforDto inforDto = null;
-
+		// 1 loop：勤務情報 in 勤務情報リスト
 		for (WorkInforDto x : information) {
-			// 1 get(ログイン会社ID、取得した勤務種類コード):勤務種類
+			// 1.1 get(ログイン会社ID、取得した勤務種類コード):勤務種類
 			Optional<WorkType> type = workTypeRepo.findByPK(cid, information.get(0).getWorkTypeCode());
-
-			// 2 1日半日出勤・1日休日系の判定（休出判定あり） : 出勤日区分
+			
+			// 1.2 call 就業時間帯の必須チェック
+			SetupType workTimeSetting = basicScheduleService
+					.checkNeededOfWorkTimeSetting(information.get(0).getWorkTypeCode());
+			
+			// 1.3 1日半日出勤・1日休日系の判定（休出判定あり） : 出勤日区分
 			AttendanceDayAttr dayAttr = type.get().chechAttendanceDay();
 
-			// 3 変更可能な勤務時間帯を取得する(Require):List<勤務NOごとの変更可能な勤務時間帯>
+			// 1.4  変更可能な勤務時間帯を取得する(Require):List<勤務NOごとの変更可能な勤務時間帯>
 			List<ChangeableWorkingTimeZonePerNo> lstNo = new ArrayList<>();
 			WorkInformation workInformation = new WorkInformation(information.get(0).getWorkTypeCode(),
 					information.get(0).getWorkTimeCode());
@@ -102,45 +106,45 @@ public class GetFixedWorkInformation {
 					workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
 					predetemineTimeSet);
 
-			// 4 出勤日区分 == 1日休日系
+			// 1.5 出勤日区分 == 1日休日系
 			if (dayAttr == AttendanceDayAttr.HOLIDAY) {
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
-						type.get().getAbbreviationName().v(), null, null, null, null);
+						type.get().getAbbreviationName().v(), null, null, null, null, null);
 				inforDtos.add(inforDto);
 			} else {
 				lstNo = workInformation.getChangeableWorkingTimezones(impl);
 			}
 
-			// 5 List<勤務NOごとの変更可能な勤務時間帯>isPresentList
+			// 1.6 List<勤務NOごとの変更可能な勤務時間帯>isPresentList
 			if (!lstNo.isEmpty()) {
 				TimeZoneDto startTimeRange1 = null, endTimeRange1 = null, startTimeRange2 = null, endTimeRange2 = null;
-					// 5.1 休憩時間帯を取得する(Require):Optional<休憩時間>
+					// 1.6.1 休憩時間帯を取得する(Require):Optional<休憩時間>
 					Optional<BreakTimeZone> brkTime = workInformation.getBreakTimeZone(impl);
-					// 5.1.1
+					// 1.6.2
 					List<TimeSpanForCalcDto> calcDto = brkTime.get().getBreakTimes().stream()
 							.map(y -> new TimeSpanForCalcDto(y.getStart().v(), y.getEnd().v()))
 							.collect(Collectors.toList());
 					breakTime = new BreakTimeKdl045Dto(brkTime.get().isFixed(), calcDto);
 
-					// 5.2 get(ログイン会社ID、取得した就業時間帯コード):就業時間帯の設定
+					// 1.6.3 get(ログイン会社ID、取得した就業時間帯コード):就業時間帯の設定
 					Optional<WorkTimeSetting> worktimeSet = workTimeSettingRepository.findByCode(cid,
 							information.get(0).getWorkTimeCode());
 
-					// 5.3 取得する(就業時間帯コード) : 就業時間帯の勤務形態 (勤務形態を取得する)
+					// 1.6.4 取得する(就業時間帯コード) : 就業時間帯の勤務形態 (勤務形態を取得する)
 					WorkTimeForm timeForm = null;
 					try {
 						timeForm = worktimeSet.get().getWorkTimeDivision().getWorkTimeForm();
 					} catch (Exception e) {
 					}
 
-					// 就業時間帯の勤務形態 == フレックス勤務用 : 取得する(勤務種類コード) : コアタイム時間帯
+					//  就業時間帯の勤務形態 == フレックス勤務用 : 取得する(勤務種類コード) : コアタイム時間帯
 					Integer coreStartTime = null;
 					Integer coreEndTime = null;
 					String workTimeName = worktimeSet.isPresent()
 							? worktimeSet.get().getWorkTimeDisplayName().getWorkTimeAbName().v()
 							: null;
 					if (timeForm == WorkTimeForm.FLEX) {
-						// 5.4 就業時間帯の勤務形態 == フレックス勤務用 : 取得する(Require, 勤務種類コード, 就業時間帯コード):
+						// 1.6.5 就業時間帯の勤務形態 == フレックス勤務用 : 取得する(Require, 勤務種類コード, 就業時間帯コード):
 						// Optional<計算時間帯>
 						WorkSettingImpl settingImpl = new WorkSettingImpl(workTypeRepo, flexWorkSet, predetemineTimeSet);
 						Optional<TimeSpanForCalc> coreTime = GetTimezoneOfCoreTimeService.get(settingImpl,
@@ -153,7 +157,7 @@ public class GetFixedWorkInformation {
 
 					}
 					List<ChangeableWorkTimeDto> lstOverTime = new ArrayList<>();
-					// 5.5 就業時間帯の勤務形態 == 固定勤務 : get(会社ID, 就業時間帯コード):Optional<固定勤務設定>
+					// 1.6.6 就業時間帯の勤務形態 == 固定勤務 : get(会社ID, 就業時間帯コード):Optional<固定勤務設定>
 					if (timeForm == WorkTimeForm.FIXED) {
 						// 5.6
 						Optional<FixedWorkSetting> fixedSet = fixedWorkSet.findByKey(cid,
@@ -180,7 +184,7 @@ public class GetFixedWorkInformation {
 //					default :
 //						break;
 //					}
-					// 5.7
+					// 1.6.7
 					startTimeRange1 = new TimeZoneDto(
 							new TimeOfDayDto(lstNo.get(0).getForStart().getStart().getDayDivision().value,
 									lstNo.get(0).getForStart().getStart().v()),
@@ -206,12 +210,12 @@ public class GetFixedWorkInformation {
 					Integer fixBreakTime = brkTime.isPresent() ? brkTime.get().isFixed() == true ? 1 : 0 : null;
 					inforDto = new FixedWorkInforDto(workTimeName, coreStartTime, coreEndTime, lstOverTime, startTimeRange1,
 							endTimeRange1, type.get().getAbbreviationName().v(), startTimeRange2, endTimeRange2,
-							fixBreakTime, timeForm.value);
+							fixBreakTime, timeForm.value, workTimeSetting.value == 2 ? false : true);
 					inforDtos.add(inforDto);
 			} else {
-				// 6
+				// 1.7 List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
-						type.get().getAbbreviationName().v(), null, null, null, null);
+						type.get().getAbbreviationName().v(), null, null, null, null, null);
 				inforDtos.add(inforDto);
 			}
 		}

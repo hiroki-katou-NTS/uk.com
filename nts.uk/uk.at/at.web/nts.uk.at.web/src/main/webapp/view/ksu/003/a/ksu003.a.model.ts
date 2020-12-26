@@ -472,6 +472,7 @@ module nts.uk.at.view.ksu003.a.model {
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
+		isNeedWorkTime: boolean;
 	}
 	
 	export class FixedWork {
@@ -498,6 +499,7 @@ module nts.uk.at.view.ksu003.a.model {
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
+		isNeedWorkTime: boolean; // 休日か : SetupType
 		constructor(param: IFixedWorkInforDto) {
 			let self = this;
 			self.workTimeName = param.workTimeName;
@@ -511,6 +513,7 @@ module nts.uk.at.view.ksu003.a.model {
 			self.endTimeRange1 = param.endTimeRange1;
 			self.fixBreakTime = param.fixBreakTime;
 			self.workType = param.workType;
+			self.isNeedWorkTime = param.isNeedWorkTime;
 		}
 	}
 

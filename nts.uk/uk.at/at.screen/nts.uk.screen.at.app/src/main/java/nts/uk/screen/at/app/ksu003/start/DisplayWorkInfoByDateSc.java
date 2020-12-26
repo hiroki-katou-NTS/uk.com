@@ -114,7 +114,7 @@ public class DisplayWorkInfoByDateSc {
 			
 			List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<>();
 			List<WorkInformation> lstWorkInformation = new ArrayList<>();// 勤務情報
-			Integer editState = null;
+			Integer breakTimeStatus = null; // break time status
 			Integer startTime1 = null;
 			Integer startTime1Status = null;
 			Integer startTime2 = null;
@@ -208,7 +208,7 @@ public class DisplayWorkInfoByDateSc {
 				// 休憩時間帯編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateDaily = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 535).findFirst();
-				editState = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
+				breakTimeStatus = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
 
 				// 開始時刻 1= 勤務予定．出退勤．出退勤．出勤
 				Optional<TimeLeavingWork> dailyAttd = value.get().getOptTimeLeaving().get().getTimeLeavingWorks()
@@ -285,7 +285,7 @@ public class DisplayWorkInfoByDateSc {
 						startTime1, startTime1Status, endTime1, endTime1Status, 
 						startTime2, startTime2Status, endTime2, endTime2Status, 
 						listBreakTimeZoneDto, workTypeCode, 
-						editState,
+						breakTimeStatus,
 						workTypeStatus, workTimeCode, workTimeStatus);
 				
 			} else {

@@ -595,8 +595,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			service.getDataStartScreen(targetOrgDto)
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
-					/*self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
-					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;*/
+					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
+					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
@@ -1731,7 +1731,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitEndMin: end1 - dispStart,
 								limitEndMax: limitTime.limitEndMax - dispStart
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, timeChart, i, null, 
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, {startTime : timeChart.startTime - dispStart, endTime : timeChart.endTime - dispStart}, i, null, 
 							limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexLeft = indexLeft++;
 						}
@@ -1763,7 +1763,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								});
 							}
 
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `rgc${i}`, timeChart2, i, null, limitTime.limitStartMin - dispStart, 
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `rgc${i}`, {startTime : timeChart2.startTime - dispStart, endTime : timeChart2.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, 
 							limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexRight = indexRight++;
 						}
@@ -1804,7 +1804,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 							});
 
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `lgc${i}`, timeChart, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, 
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `lgc${i}`, {startTime : timeChart.startTime - dispStart, endTime : timeChart.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, 
 							limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexLeft = indexLeft++;
 						}
@@ -1842,7 +1842,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 											return;
 									}
 								});
-								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `rgc${i}`, timeChart2, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
+								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `rgc${i}`, {startTime : timeChart2.startTime - dispStart, endTime : timeChart2.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 								indexRight = indexRight++;
 							}
 
@@ -1881,7 +1881,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										return;
 								}
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Flex", `lgc${i}`, timeChart, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Flex", `lgc${i}`, {startTime : timeChart.startTime - dispStart, endTime : timeChart.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexLeft = ++indexLeft;
 							// CORE-TIME
 							if (coreTime.length > 0 && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
@@ -1894,7 +1894,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartCore.endTime - dispStart,
 									pin: true
 								});
-								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "CoreTime", `lgc${i}_` + indexLeft, timeChartCore, i, `lgc${i}`));
+								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "CoreTime", `lgc${i}_` + indexLeft, {startTime : timeChartCore.startTime - dispStart, endTime : timeChartCore.endTime - dispStart}, i, `lgc${i}`));
 								indexLeft = ++indexLeft;
 							}
 						}
@@ -1935,7 +1935,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartOver.endTime - dispStart,
 									zindex: 1001
 								});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, 1000));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, {startTime : timeChartOver.startTime - dispStart, endTime : timeChartOver.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1000));
 							indexLeft = ++indexLeft;
 						}
 
@@ -1952,7 +1952,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartOver.endTime - dispStart,
 									zindex: 1001
 								});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, 1000));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, {startTime : timeChartOver.startTime - dispStart, endTime : timeChartOver.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1000));
 							indexRight = ++indexRight;
 						}
 					}
@@ -2013,7 +2013,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										}
 								}
 							});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, {startTime : timeChartBrk.startTime - dispStart, endTime : timeChartBrk.endTime - dispStart}, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 							self.allTimeBrk.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 							indexLeft = ++indexLeft;
 						}
@@ -2049,7 +2049,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									}
 								});
 								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, 0, 9999, 0, 9999, 1001));
-								self.allTimeBrk.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
+								self.allTimeBrk.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, {startTime : timeChartBrk.startTime - dispStart, endTime : timeChartBrk.endTime - dispStart}, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 								indexRight = ++indexRight;
 							}
 						}
@@ -2085,7 +2085,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartShort.endTime - dispStart,
 									zindex: 1002
 								});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, timeChartShort, i, parent, 0, 9999, 0, 9999, 1002));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1002));
 							indexLeft = ++indexLeft;
 						}
 
@@ -2100,7 +2100,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartShort.endTime - dispStart,
 									zindex: 1002
 								});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, timeChartShort, i, parent, 0, 9999, 0, 9999, 1002));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1002));
 							indexRight = ++indexRight;
 						}
 
@@ -2130,7 +2130,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartHoliday.endTime - dispStart,
 									zindex: 1003
 								});
-									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, timeChartHoliday, i, parent, 0, 9999, 0, 9999, 1003));
+									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1003));
 									indexLeft = ++indexLeft;
 								}
 							}
@@ -2147,7 +2147,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									end: timeChartHoliday.endTime - dispStart,
 									zindex: 1003
 								});
-									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, timeChartHoliday, i, parent, 0, 9999, 0, 9999, 1003));
+									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1003));
 									indexRight = ++indexRight;
 								}
 							}
