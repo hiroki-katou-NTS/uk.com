@@ -26,7 +26,7 @@ public class DeletePersonCostCalculationCommandHandler extends CommandHandler<De
     protected void handle(CommandHandlerContext<DeleteLaborCalculationSettingCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         val cid = AppContexts.user().companyId();
-        val histId = command.getHistoryId();
+        val histId = command.getHistoryID();
         personCostCalculationDomainService.deletePersonCostCalculation(cid, histId);
     }
 
