@@ -123,6 +123,7 @@ module nts.uk.at.view.kal013.b {
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
+                vm.pattern().clearCheckCod();
                 vm.timeControl(false);
                 if (_.indexOf([2, 5, 8], value) != -1) {
                     vm.timeControl(true);
@@ -308,6 +309,8 @@ module nts.uk.at.view.kal013.b {
         clearCheckCod(){
             this.checkCond(null);
             this.checkCondDis("");
+            this.minValue(null);
+            this.maxValue(null);
         }
     }
 
