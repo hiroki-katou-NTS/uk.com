@@ -2,6 +2,7 @@
 module nts.uk.at.view.kal013.d {
 
   import common = nts.uk.at.view.kal013.common;
+  import errors = nts.uk.ui.errors;
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -10,12 +11,12 @@ module nts.uk.at.view.kal013.d {
     categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedCategoryCode: KnockoutObservable<number> = ko.observable(0);
 
-    constructor(params: any) {
+    constructor(params: number) {
       super();
       const vm = this;
 
       vm.categoryList(common.workplaceCategory());
-      vm.selectedCategoryCode( common.WorkplaceCategory.MASTER_CHECK_BASIC);
+      vm.selectedCategoryCode(params);
     }
 
     created(params: any) {
@@ -24,15 +25,25 @@ module nts.uk.at.view.kal013.d {
 
     mounted() {
       const vm = this;
+      $('#KAL013_10').focus();
     }
 
     proceed() {
-
+      const vm = this;
+        $('.nts-input').filter(":enabled").trigger("validate");
+        if (errors.hasError() === true) {
+            return;
+        }
+        let shareParam: number = vm.selectedCategory();
+        vm.$window.close({
+            shareParam
+        });
     }
 
     cancel() {
       const vm = this;
-      vm.$window.close();
+        vm.$window.close({
+        });
     }
   }
 }

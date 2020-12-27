@@ -84,14 +84,12 @@ module nts.uk.at.view.kal013.b {
                 } else{
                     vm.timeControl(false);
                 }
-                console.log("timeControl: "+ vm.timeControl());
                 // Contraint
                 if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
                     vm.constraint(vm.dailyContraint.get(value));
                 } else{
                     vm.constraint(vm.monthlyContraint.get(value));
                 }
-                console.log("constraint: "+ vm.constraint());
 
                 // Change pattern
                 vm.switchPatternA(true)
@@ -137,7 +135,6 @@ module nts.uk.at.view.kal013.b {
                 } else if (_.indexOf([3, 6, 9], value) != -1) {
                     vm.constraint(vm.dailyContraint.get(3));
                 }
-                console.log("constraint: "+ vm.constraint());
             })
 
             vm.pattern().checkCond.subscribe((value)=>{
@@ -168,12 +165,10 @@ module nts.uk.at.view.kal013.b {
 
             vm.category(params.category);
             vm.pattern().update(params.condition);
-            console.log("timeControl1: "+ vm.timeControl());
         }
 
         mounted() {
             const vm = this;
-            console.log("timeControl2: "+ vm.timeControl());
             $('#cbxTypeCheckWorkRecordcategory5').focus();
         }
 
