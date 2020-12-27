@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalRange;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
  * @author Thanh.LNP
  */
 @DecimalRange(min = "0.1", max = "99.9")
+@DecimalMantissaMaxLength(1)
 public class AverageNumberDays extends DecimalPrimitiveValue<AverageNumberDays> {
 
     private static final long serialVersionUID = 1L;

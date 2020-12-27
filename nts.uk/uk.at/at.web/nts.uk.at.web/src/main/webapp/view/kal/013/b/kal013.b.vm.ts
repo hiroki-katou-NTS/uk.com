@@ -4,6 +4,7 @@ module nts.uk.at.view.kal013.b {
     import errors = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import NumberEditorOption = nts.uk.ui.option.NumberEditorOption;
 
     const PATH_API = {
        GET_ENUM_OPERATOR: "at/record/alarmwrkp/screen/getEnumCompareType",
@@ -20,9 +21,11 @@ module nts.uk.at.view.kal013.b {
         switchPatternA: KnockoutObservable<boolean> = ko.observable(true);
         timeControl: KnockoutObservable<boolean> = ko.observable(true);
         constraint : KnockoutObservable<string> = ko.observable("");
-        numberEditorOption: KnockoutObservable<any>;
+        numberEditorOption: KnockoutObservable<NumberEditorOption> = ko.observable(null);
         listZeroDecimalNum: Array<string> = ["NumberOfPeople","Amount","RatioComparison","AverageNumberTimes","AverageRatio"];
         listOneDecimalNum: Array<string> = ["AverageNumberDays"];
+        monthlyTimeControl: Array<number> = [1,5];
+        dailyTimeControl: Array<number> = [2];
         dailyContraint: Map<number,string> =new Map([
             [1, "NumberOfPeople"],
             [2, "Time"],
@@ -42,11 +45,11 @@ module nts.uk.at.view.kal013.b {
         constructor(params: IParentParams) {
             super();
             const vm = this;
-            vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                grouplength: 0,
-                decimallength: 2,
-                placeholder: ''
-            }));
+            // vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+            //     grouplength: 0,
+            //     decimallength: 2,
+            //     placeholder: ''
+            // }));
 
             if (params.category == WorkplaceCategory.MONTHLY) {
                 vm.listTypeCheck(__viewContext.enums.CheckMonthlyItemsType);
@@ -75,8 +78,8 @@ module nts.uk.at.view.kal013.b {
 
                 // Kind of control
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
-                if ((vm.category() == WorkplaceCategory.MONTHLY && value == 1)
-                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 2) ){
+                if ((vm.category() == WorkplaceCategory.MONTHLY && _.indexOf(vm.monthlyTimeControl,value) != -1)
+                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && _.indexOf(vm.dailyTimeControl,value) != -1) ){
                     vm.timeControl(true);
                 } else{
                     vm.timeControl(false);
@@ -118,23 +121,22 @@ module nts.uk.at.view.kal013.b {
             });
 
             vm.pattern().checkCondB.subscribe((value)=>{
-                if (vm.switchPatternA()){
+                if (vm.switchPatternA() || vm.category() != WorkplaceCategory.SCHEDULE_DAILY){
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
                 vm.timeControl(false);
-                if (_.indexOf([2,5,8],value) != -1){
+                if (_.indexOf([2, 5, 8], value) != -1) {
                     vm.timeControl(true);
                 }
 
-                if (_.indexOf([1,4,7],value) != -1){
+                if (_.indexOf([1, 4, 7], value) != -1) {
                     vm.constraint(vm.dailyContraint.get(1));
-                } else if (_.indexOf([2,5,8],value) != -1){
+                } else if (_.indexOf([2, 5, 8], value) != -1) {
                     vm.constraint(vm.dailyContraint.get(2));
-                } else if (_.indexOf([3,6,9],value) != -1){
+                } else if (_.indexOf([3, 6, 9], value) != -1) {
                     vm.constraint(vm.dailyContraint.get(3));
                 }
-
                 console.log("constraint: "+ vm.constraint());
             })
 
@@ -144,21 +146,14 @@ module nts.uk.at.view.kal013.b {
 
             vm.constraint.subscribe((value)=>{
                 const vm = this;
-                // if (_.indexOf(vm.listZeroDecimalNum,value) != -1){
-                //     vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                //         grouplength: 0,
-                //         decimallength: 0,
-                //         placeholder: ''
-                //     }));
-                // } else
                 if (_.indexOf(vm.listOneDecimalNum,value) != -1){
-                    vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    vm.numberEditorOption(new NumberEditorOption({
                         grouplength: 0,
                         decimallength: 1,
                         placeholder: ''
                     }));
                 } else {
-                    vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    vm.numberEditorOption(new NumberEditorOption({
                         grouplength: 0,
                         decimallength: 0,
                         placeholder: ''
@@ -252,8 +247,6 @@ module nts.uk.at.view.kal013.b {
             {
                 return false;
             }
-
-
             return true;
         }
 
