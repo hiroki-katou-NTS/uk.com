@@ -50,7 +50,7 @@ public class PersonCostCalculation extends AggregateRoot {
     private String companyID;
     // 3 : 備考
     private Remarks remark;
-    // 4: 割増設定 : List<割増設定>
+    // 4: 割増設定 : List<割増設定>`
     private List<PremiumSetting> premiumSettings;
     // 5: 単価 : Optional<単価>
     private Optional<UnitPrice> unitPrice;

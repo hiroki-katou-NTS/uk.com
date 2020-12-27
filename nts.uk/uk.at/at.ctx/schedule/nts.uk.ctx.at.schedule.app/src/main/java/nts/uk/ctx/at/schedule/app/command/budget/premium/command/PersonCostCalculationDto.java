@@ -15,8 +15,8 @@ import java.util.List;
 public class PersonCostCalculationDto {
     private GeneralDate startDate;
     private GeneralDate endDate;
-    private String historyId;
-    private String companyId;
+    private String historyID;
+    private String companyID;
     private Integer unitPrice;
 
     private int howToSetUnitPrice;
