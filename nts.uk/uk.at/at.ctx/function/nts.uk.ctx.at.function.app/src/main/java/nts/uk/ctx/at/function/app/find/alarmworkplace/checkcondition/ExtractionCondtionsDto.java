@@ -12,6 +12,8 @@ public class ExtractionCondtionsDto {
 
     private List<FixedExtractionConditionDto> conditions;
 
-    private List<OptionalItemDto> optionalItems;
+    private List<ExtractionSchelConDto> opSchelCons;
+
+    private List<ExtractionMonConDto> opMonCons;
 
 }

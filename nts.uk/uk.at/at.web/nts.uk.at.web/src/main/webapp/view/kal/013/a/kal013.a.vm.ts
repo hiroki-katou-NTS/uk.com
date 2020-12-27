@@ -9,7 +9,8 @@ module nts.uk.at.view.kal013.a {
         changeCategory: "alarmworkplace/checkCondition/getByCategory",
         changeAlarmCode: "alarmworkplace/checkCondition/getByCategoryItemCD",
         register: "alarmworkplace/checkCondition/register",
-        delete: "alarmworkplace/checkCondition/delete"
+        delete: "alarmworkplace/checkCondition/delete",
+        update: "alarmworkplace/checkCondition/update"
     };
 
     @bean()
@@ -110,8 +111,9 @@ module nts.uk.at.view.kal013.a {
             });
 
             vm.actualFixedItems.subscribe(value => {
-                vm.uniqueConditions().alarmListItem(value);
                 vm.uniqueConditions().selectedAll(false);
+                vm.uniqueConditions().alarmListItem(value);
+
             })
         }
 
@@ -201,7 +203,7 @@ module nts.uk.at.view.kal013.a {
             vm.$ajax(PATH_API.changeAlarmCode, params).done((res: any) => {
                 if (res) {
                     let fixed = ko.toJS(vm.fixedItems());
-                    let actual = _.map(fixed, function (i: common.AlarmDto) {
+                    let actual = _.map(fixed, function (i: any) {
                         if (res.conditions && res.conditions.length) {
                             let con = res.conditions;
                             let itemHasSameNo = _.find(con, (x: FixedExtractionConditionDto) => x.no == i.no);
@@ -222,8 +224,18 @@ module nts.uk.at.view.kal013.a {
 
                     vm.actualFixedItems(actual);
 
-                    if (res.optionalItems && res.optionalItems) {
+                    if (vm.selectedCategoryCode() == common.WorkplaceCategory.MONTHLY) {
+                        if (res.opMonCons && res.opMonCons.length) {
 
+                        }
+                    }
+
+                    if (vm.selectedCategoryCode() == common.WorkplaceCategory.SCHEDULE_DAILY) {
+                        if (res.opSchelCons && res.opSchelCons.length) {
+
+                        } else {
+
+                        }
                     }
 
                 }
@@ -267,8 +279,10 @@ module nts.uk.at.view.kal013.a {
                 alarmCheckCon
             };
 
+            const apiString = vm.isNewMode() ? PATH_API.register : PATH_API.update;
+
             vm.$blockui("grayout");
-            vm.$ajax(PATH_API.register, param).done((res) => {
+            vm.$ajax(apiString, param).done((res) => {
                 vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                     vm.changeCategory().then(() => {
                         vm.selectedAlarmCode(alarmCheck.code);
@@ -339,14 +353,14 @@ module nts.uk.at.view.kal013.a {
             vm.tabs = ko.observableArray([
                 {
                     id: 'tab-1',
-                    title: vm.$i18n('KAL013_15'),
+                    title: vm.$i18n('KAL003_15'),
                     content: '.tab-content-1',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
                 },
                 {
                     id: 'tab-2',
-                    title: vm.$i18n('KAL013_15'),
+                    title: vm.$i18n('KAL003_16'),
                     content: '.tab-content-2',
                     enable: ko.observable(true),
                     visible: ko.observable(false)
@@ -384,12 +398,12 @@ module nts.uk.at.view.kal013.a {
 
                 case vm.workplaceCategory.SCHEDULE_DAILY:
                     vm.tabs()[1].visible(true);
-                    vm.checkConditions(new tab.CheckCondition(true));
+                    vm.checkConditions(new tab.CheckCondition(true, vm.workplaceCategory.SCHEDULE_DAILY));
                     break;
 
                 case vm.workplaceCategory.MONTHLY:
                     vm.tabs()[1].visible(true);
-                    vm.checkConditions(new tab.CheckCondition(true));
+                    vm.checkConditions(new tab.CheckCondition(true, vm.workplaceCategory.MONTHLY));
                     break;
             }
         }
@@ -436,5 +450,32 @@ module nts.uk.at.view.kal013.a {
         code: string;
         // 名称
         name: string;
+    }
+
+    interface ExtractionMonConDto {
+        errorAlarmWorkplaceId: string;
+        no: number;
+        checkMonthlyItemsType: number;
+        useAtr: boolean;
+        errorAlarmCheckID: string;
+        checkTarget: string;
+        averageNumberOfDays: number;
+        averageNumberOfTimes: number;
+        averageTime: number;
+        averageRatio: number;
+        monExtracConName: string;
+        messageDisp: string;
+    }
+
+    interface ExtractionSchelCon {
+        errorAlarmWorkplaceId: string;
+        orderNumber: number;
+        checkDayItemsType: number;
+        useAtr: boolean;
+        errorAlarmCheckID: string;
+        checkTarget: string;
+        contrastType: number;
+        daiExtracConName: string;
+        messageDisp: string;
     }
 }

@@ -175,10 +175,10 @@ public class AlarmCheckCdtWkpFinder {
     public ExtractionCondtionsDto getCategoryItemInfo(InitScreenDto param) {
 
         List<FixedExtractionConditionDto> fixedExtractConditions = Collections.emptyList();
-        List<OptionalItemDto> optionalItems = Collections.emptyList();
-
         Optional<AlarmCheckCdtWorkplaceCategory> alarmCheck = alarmCheckCdtWkpCtgRepo
                 .getByID(param.getCategory(), param.getCode());
+        List<ExtractionSchelConDto> opSchelCons = new ArrayList<>();
+        List<ExtractionMonConDto> opMonCons = new ArrayList<>();
 
         if (alarmCheck.isPresent()) {
             switch (alarmCheck.get().getCategory()) {
@@ -241,14 +241,7 @@ public class AlarmCheckCdtWkpFinder {
 
                     // ドメインモデル「アラームリスト（職場別）スケジュール／日次の抽出条件」を取得する。
                     List<ExtractionScheduleCon> opItems = extractionScheduleConRepo.getByIds(opIds);
-                    optionalItems = opItems.stream().map(i -> new OptionalItemDto(
-                            i.getCheckDayItemsType().value,
-                            i.getOrderNumber().value,
-                            i.getDaiExtracConName().v(),
-                            i.getMessageDisp().v(),
-                            i.isUseAtr()
-
-                    )).collect(Collectors.toList());
+                    opSchelCons = opItems.stream().map(ExtractionSchelConDto::fromDomain).collect(Collectors.toList());
                     break;
                 }
                 // 月次
@@ -266,13 +259,7 @@ public class AlarmCheckCdtWkpFinder {
                     )).collect(Collectors.toList());
                     // ドメインモデル「アラームリスト（職場）月次の抽出条件」を取得する。
                     List<ExtractionMonthlyCon> opItems = extractionMonthlyConRepo.getByIds(opIds);
-                    optionalItems = opItems.stream().map(i -> new OptionalItemDto(
-                            i.getCheckMonthlyItemsType().value,
-                            i.getNo().value,
-                            i.getMonExtracConName().v(),
-                            i.getMessageDisp().v(),
-                            i.isUseAtr()
-                    )).collect(Collectors.toList());
+                    opMonCons = opItems.stream().map(ExtractionMonConDto::fromDomain).collect(Collectors.toList());
                     break;
                 }
                 // 申請承認
@@ -291,7 +278,7 @@ public class AlarmCheckCdtWkpFinder {
             }
         }
 
-        return new ExtractionCondtionsDto(fixedExtractConditions, optionalItems);
+        return new ExtractionCondtionsDto(fixedExtractConditions, opSchelCons, opMonCons);
 
     }
 }

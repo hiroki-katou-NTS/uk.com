@@ -85,4 +85,9 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
                 .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
     }
 
+    @Override
+    public void register(ExtractionScheduleCon domain) {
+
+    }
+
 }

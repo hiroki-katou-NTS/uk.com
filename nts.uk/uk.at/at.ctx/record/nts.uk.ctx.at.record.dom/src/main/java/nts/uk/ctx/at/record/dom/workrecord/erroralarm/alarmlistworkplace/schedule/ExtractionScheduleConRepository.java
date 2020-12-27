@@ -7,4 +7,6 @@ public interface ExtractionScheduleConRepository {
     List<ExtractionScheduleCon> getBy(List<String> ids, boolean useAtr);
 
     List<ExtractionScheduleCon> getByIds(List<String> ids);
+
+    void register(ExtractionScheduleCon domain);
 }

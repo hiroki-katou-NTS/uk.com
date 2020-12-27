@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWkpCtgRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.AlarmCheckCdtWorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.ExtractionCondition;
@@ -214,7 +215,7 @@ public class UpdateAlarmCheckCdtWkpCommandHandler extends CommandHandler<UpdateA
             AlarmCheckCdtWorkplaceCategory newDomain = new AlarmCheckCdtWorkplaceCategory(
                     domain.get().getCategory().value,
                     domain.get().getCode().v(),
-                    domain.get().getName().v(),
+                    command.getAlarmCheck().getName(),
                     condition
             );
             alarmCheckCdtWkpCtgRepo.update(newDomain);

@@ -157,7 +157,7 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
     @Override
     public void update(AlarmCheckCdtWorkplaceCategory domain) {
         // Update main table
-        this.commandProxy().update(domain);
+        this.commandProxy().update(KfnmtWkpAlstchkConcat.toEntity(domain));
         // Update sub table
         List<KfnmtCatMapEachType> entitySub = this.queryProxy()
                 .query(GET_SUB_BY_CTG_AND_CODE, KfnmtCatMapEachType.class)
@@ -165,7 +165,7 @@ public class JpaAlarmWkpAlstchkConcatRepository extends JpaRepository implements
                 .setParameter("ctg", domain.getCategory().value)
                 .setParameter("ctgCD", domain.getCode().v())
                 .getList();
-        this.commandProxy().removeAll(entitySub.stream().map(KfnmtCatMapEachType::getPk).collect(Collectors.toList()));
+        this.commandProxy().removeAll(KfnmtCatMapEachType.class, entitySub.stream().map(KfnmtCatMapEachType::getPk).collect(Collectors.toList()));
 
         List<KfnmtCatMapEachType> entitiesSubAfterUpdate = KfnmtCatMapEachType.toEntity(domain);
         this.commandProxy().insertAll(entitiesSubAfterUpdate);

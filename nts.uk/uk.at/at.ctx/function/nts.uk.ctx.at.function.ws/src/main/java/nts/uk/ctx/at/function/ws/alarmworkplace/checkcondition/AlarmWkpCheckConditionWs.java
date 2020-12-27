@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.function.ws.alarmworkplace.checkcondition;
 
-import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.AddAlarmCheckCdtWkpCommand;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.AddAlarmCheckCdtWkpCommandHandler;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.DeleteAlarmCheckCdtWkpCommand;
-import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.DeleteAlarmCheckCdtWkpCommandHandler;
+import nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.*;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition.AlarmCheckCdtWkpFinder;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition.ExtractionCondtionsDto;
 import nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition.InitScreenDto;
@@ -29,6 +26,9 @@ public class AlarmWkpCheckConditionWs {
     @Inject
     private DeleteAlarmCheckCdtWkpCommandHandler deleteAlarmCheckCdtWkpCommandHandler;
 
+    @Inject
+    private UpdateAlarmCheckCdtWkpCommandHandler updateAlarmCheckCdtWkpCommandHandler;
+
     @POST
     @Path("getByCategory/{category}")
     public ScreenContentDto getByCategory(@PathParam("category") int category) {
@@ -51,6 +51,12 @@ public class AlarmWkpCheckConditionWs {
     @Path("delete")
     public void delete(DeleteAlarmCheckCdtWkpCommand param) {
         this.deleteAlarmCheckCdtWkpCommandHandler.handle(param);
+    }
+
+    @POST
+    @Path("update")
+    public void update(UpdateAlarmCheckCdtWkpCommand param) {
+        this.updateAlarmCheckCdtWkpCommandHandler.handle(param);
     }
 
 }
