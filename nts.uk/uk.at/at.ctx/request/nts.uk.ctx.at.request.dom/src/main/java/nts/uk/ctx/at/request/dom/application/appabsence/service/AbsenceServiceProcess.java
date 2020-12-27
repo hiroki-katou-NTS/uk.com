@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppForLea
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationLinkManageInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
@@ -27,9 +28,12 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
@@ -418,4 +422,22 @@ public interface AbsenceServiceProcess {
     public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
             List<PayoutSubofHDManagement> oldPayoutSubofHDManagements, List<LeaveComDayOffManagement> newLeaveComDayOffMana, 
             List<PayoutSubofHDManagement> newPayoutSubofHDManagements);
+    
+    /**
+         * 指定する勤務種類に必要な休暇時間を算出する
+     * @param employeeID
+     * @param date
+     * @param workTypeCode
+     * @param workTimeCode
+     * @param scheduleToWork
+     * @param workingCondition
+     * @return
+     */
+    public AttendanceTime calculateTimeRequired(String employeeID, 
+            Optional<GeneralDate> date, 
+            Optional<String> workTypeCode, 
+            Optional<String> workTimeCode, 
+            Optional<WorkInfoOfDailyAttendance> workInfoDaily,
+            Optional<ScBasicScheduleImport> scheduleToWork, 
+            Optional<WorkingConditionItem> workingCondition);
 }

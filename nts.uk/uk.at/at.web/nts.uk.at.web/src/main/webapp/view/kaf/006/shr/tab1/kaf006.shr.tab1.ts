@@ -17,9 +17,9 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
                         <div class="cell">
-                            <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour"></button>
+                            <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour, click: openKDL003"></button>
                         </div>
-                        <div class="cell" data-bind="text: $i18n('KAF006_21')"></div>
+                        <div class="cell" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
                     <div style="padding-bottom: 5px;">
                         <div class="cell col-1">
@@ -100,6 +100,10 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
 
         mounted() {
 
+        }
+
+        openKDL003() {
+            ko.contextFor(this.$el).$parent.content.openKDL003();
         }
     }
 }

@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -65,6 +67,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTyp
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
@@ -303,13 +306,14 @@ public class AppAbsenceFinder {
 	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetAllAppAbsence param) {
 		String companyID = AppContexts.user().companyId();
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);
-		appAbsenceStartInfoOutput = absenseProcess.allHalfDayChangeProcess(
-				companyID, 
-				appAbsenceStartInfoOutput, 
-				param.isDisplayHalfDayValue(), 
-				param.getAlldayHalfDay(), 
-				Optional.of(EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class)));
-		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+//		appAbsenceStartInfoOutput = absenseProcess.allHalfDayChangeProcess(
+//				companyID, 
+//				appAbsenceStartInfoOutput, 
+//				param.isDisplayHalfDayValue(), 
+//				param.getAlldayHalfDay(), 
+//				Optional.of(EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class)));
+//		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+		return null;
 	}
 
 	/**
@@ -381,15 +385,33 @@ public class AppAbsenceFinder {
 	 * @param holidayType
 	 * @return
 	 */
-	public List<TimeZoneUseDto> getWorkingHours(String workTimeCode, String workTypeCode, Integer holidayType, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
+	public AppAbsenceStartInfoDto getWorkingHours(String date, String workTimeCode, String workTypeCode, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
 		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain(companyID);
+		// 就業時間帯変更時処理
 		appAbsenceStartInfoOutput = absenseProcess.workTimesChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 
 				workTypeCode, 
 				Optional.of(workTimeCode));
-		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput).workTimeLst;
+		
+		Optional<GeneralDate> dateOpt = StringUtils.isEmpty(date) ?
+		        Optional.empty() : Optional.of(GeneralDate.fromString(date, DATE_FORMAT));
+		// 指定する勤務種類に必要な休暇時間を算出する
+		AttendanceTime requireTime = absenseProcess.calculateTimeRequired(
+		        employeeID,
+		        dateOpt,
+		        Optional.ofNullable(workTypeCode),
+		        Optional.ofNullable(workTimeCode),
+		        Optional.empty(), 
+		        Optional.empty(), 
+		        Optional.empty());
+		
+		// 返ってきた「必要時間」を「休暇申請起動時の表示情報」にセットする
+		appAbsenceStartInfoDto.setRequiredVacationTime(requireTime.v());
+		
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
 
 	/**

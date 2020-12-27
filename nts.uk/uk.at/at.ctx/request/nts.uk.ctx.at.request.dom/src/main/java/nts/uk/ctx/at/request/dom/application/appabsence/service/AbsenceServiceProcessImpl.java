@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
@@ -833,8 +834,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		} else if (holidayType == HolidayAppType.DIGESTION_TIME) {
 		    // 指定する勤務種類に必要な休暇時間を算出する
 		    AttendanceTime requiredTime = this.calculateTimeRequired(
-		            Optional.of(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0)), 
-		            appDates.isEmpty() ? Optional.empty() : Optional.of(appDates.get(0)), 
+		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getScd(), 
+		            appDates.isEmpty() ? Optional.empty() : Optional.of(GeneralDate.fromString(appDates.get(0), FORMAT_DATE)), 
 		            workTypeCD,
 		            appAbsenceStartInfoOutput.getSelectedWorkTimeCD(),
 		            Optional.empty(), 
@@ -861,7 +862,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	/**
 	 * 指定する勤務種類に必要な休暇時間を算出する
-	 * @param employeeInfo
+	 * @param employeeID
 	 * @param date
 	 * @param workTypeCD
 	 * @param selectedWorkTimeCD
@@ -870,9 +871,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param workingCondition
 	 * @return
 	 */
-	private AttendanceTime calculateTimeRequired(
-	        Optional<EmployeeInfoImport> employeeInfo, 
-	        Optional<String> date, 
+	@Override
+	public AttendanceTime calculateTimeRequired(
+	        String employeeID, 
+	        Optional<GeneralDate> date, 
 	        Optional<String> workTypeCD, 
 	        Optional<String> selectedWorkTimeCD,
 	        Optional<WorkInfoOfDailyAttendance> workInfoDaily,
@@ -887,7 +889,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    }
 	    
 	    // 就業時間帯を判断する
-	    Optional<String> workTimeCD = this.determineWorkingHour(employeeInfo.get().getSid(), date.isPresent() ? GeneralDate.fromString(date.get(), "yyyy/MM/dd") : null, selectedWorkTimeCD, workInfoDaily, schedule, workingCondition);
+	    Optional<String> workTimeCD = this.determineWorkingHour(employeeID, date.isPresent() ? date.get() : null, selectedWorkTimeCD, workInfoDaily, schedule, workingCondition);
 	    
 	    // 取得した「就業時間帯コード」をチェックする
 	    if (!workTimeCD.isPresent()) {

@@ -99,12 +99,13 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("getListWorkTime")
 	public List<String> getListWorkTime(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getListWorkTimeCodes(param.getStartAppDate(),param.getEmployeeID());
+//		return this.appForLeaveFinder.getListWorkTimeCodes(param.getStartAppDate(),param.getEmployeeID());
+	    return null;
 	}
 	@POST
-	@Path("getWorkingHours")
-	public List<TimeZoneUseDto> getWorkingHours(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType(), param.getAppAbsenceStartInfoDto());
+	@Path("findChangeWorkTime")
+	public AppAbsenceStartInfoDto getWorkingHours(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getWorkingHours(param.getDate(), param.getWorkTimeCode(),param.getWorkTypeCode(), param.getAppAbsenceStartInfoDto());
 	}
 	@POST
 	@Path("insert")

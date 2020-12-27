@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_28')"></div>
                 </div>
                 <div class="cell">
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Over60">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ExsessHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ExsessHoliday'),
@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             mode: 'time'
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Substitute">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_30')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_30'),
@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             mode: 'time'
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Annual">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_29')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_29'),
@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             mode: 'time'
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="$parent.condition19ChildNursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ChildNurseHoliday'),
@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             mode: 'time'
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="$parent.condition19Nursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_CareHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_CareHoliday'),
@@ -77,9 +77,9 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                 <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                             </div>
                             <div class="cell">
-                                <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour"></button>
+                                <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour, click: openKDL003"></button>
                             </div>
-                            <div class="cell" data-bind="text: $i18n('KAF006_21')"></div>
+                            <div class="cell" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                         </div>
                         <div style="padding-bottom: 5px;">
                             <div class="cell col-1">
@@ -183,6 +183,10 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
 
         mounted() {
 
+        }
+
+        openKDL003() {
+            ko.contextFor(this.$el).$parent.content.openKDL003();
         }
     }
 }
