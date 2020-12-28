@@ -31,7 +31,7 @@ public class TimeDurationFormatExtend {
 	public boolean isZero() {
 		return this.value == 0;
 	}
-	
+
 	public int daysOffset() {
 		return this.isNegative()
 				? (this.value + 1) / MINUTES_OF_DAY - 1
