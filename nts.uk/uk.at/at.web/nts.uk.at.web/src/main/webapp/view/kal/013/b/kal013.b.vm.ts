@@ -60,15 +60,6 @@ module nts.uk.at.view.kal013.b {
             vm.getEnum().done(()=>{
 
             });
-            vm.pattern().operator.subscribe((value)=>{
-                vm.$errors("clear",".endValue");
-                if (_.indexOf([6,7,8,9],value) != -1 ){
-                    vm.enableMaxValue(true);
-                } else {
-                    vm.enableMaxValue(false);
-                    vm.pattern().clearMaxValue();
-                }
-            });
 
             vm.pattern().checkItem.subscribe((value)=>{
 
@@ -172,6 +163,16 @@ module nts.uk.at.view.kal013.b {
 
                 }
 
+            });
+
+            vm.pattern().operator.subscribe((value)=>{
+                vm.$errors("clear",".endValue");
+                if (_.indexOf([6,7,8,9],value) != -1 ){
+                    vm.enableMaxValue(true);
+                } else {
+                    vm.enableMaxValue(false);
+                    vm.pattern().clearMaxValue();
+                }
             });
         }
 
