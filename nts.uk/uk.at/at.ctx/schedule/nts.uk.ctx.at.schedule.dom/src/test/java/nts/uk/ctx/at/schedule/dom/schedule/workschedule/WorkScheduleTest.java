@@ -275,7 +275,37 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testUpdateValueByHandCorrection_sameValue(
+	public void testUpdateValueByHandCorrection_sameValue_noAddEditState(
+			@Injectable TimeWithDayAttr end1
+			) {
+		
+		TimeLeavingOfDailyAttd timeLeaving = 
+				Helper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+		
+		
+		WorkSchedule workSchedule = Helper.createWithParams( 
+				Optional.of(timeLeaving), 
+				new ArrayList<>()); // editStateList is empty
+		
+		// Act
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValueByHandCorrection", 
+				require, 
+				WS_AttendanceItem.StartTime1.ID, 
+				new TimeWithDayAttr(123));
+		
+		
+		// Assert
+		val start1_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+												.getAttendanceLeavingWork(1).get()
+												.getAttendanceStamp().get()
+												.getStamp().get()
+												.getTimeDay().getTimeWithDay().get();
+		assertThat( start1_OfWorkSchedule.v() ).isEqualTo( 123 );
+		assertThat( workSchedule.getLstEditState() ).isEmpty();
+	}
+	
+	@Test
+	public void testUpdateValueByHandCorrection_sameValue_editStateNotChange(
 			@Injectable TimeWithDayAttr end1
 			) {
 		
