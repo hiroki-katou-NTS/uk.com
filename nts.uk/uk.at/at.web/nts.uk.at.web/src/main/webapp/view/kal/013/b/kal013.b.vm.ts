@@ -140,7 +140,9 @@ module nts.uk.at.view.kal013.b {
 
             vm.pattern().checkCond.subscribe((value)=>{
                 if (vm.switchPatternA()){
-                    vm.$errors("clear","#check-condition");
+                    // vm.$errors("clear","#check-condition");
+                    $("#check-condition").ntsError("clear");
+
                 }
 
             });
