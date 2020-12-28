@@ -40,7 +40,7 @@ module nts.uk.ui.header {
                         mouseout: function() { $component.itemBarMouseOut(bar) }
                     },
                     css: {
-                        'hover': bar.hover()
+                        'hover': bar.hover() && $component.click()
                     },
                     attr: {
                         'data-column': (bar.titleMenu || []).length
@@ -83,6 +83,7 @@ module nts.uk.ui.header {
     })
     export class HeaderViewModel extends ko.ViewModel {
         ctrl: KnockoutObservable<boolean> = ko.observable(false);
+        click: KnockoutObservable<boolean> = ko.observable(false);
 
         menuSet: {
             hover: KnockoutObservable<boolean>;
@@ -240,8 +241,12 @@ module nts.uk.ui.header {
         }
 
         selectBar(item: MenuBar) {
+            const vm = this;
+
             if (item.link && (!item.titleMenu || item.titleMenu.length === 0)) {
                 window.location.href = item.link;
+            } else {
+                vm.click(!vm.click());
             }
         }
 
