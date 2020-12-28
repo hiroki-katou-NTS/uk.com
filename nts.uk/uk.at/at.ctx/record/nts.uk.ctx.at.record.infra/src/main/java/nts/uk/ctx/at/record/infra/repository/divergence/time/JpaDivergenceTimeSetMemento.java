@@ -88,10 +88,10 @@ public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 	public void setErrorCancelMedthod(DivergenceTimeErrorCancelMethod errorCancelMedthod) {
 
 		this.entity
-				.setReasonInputCanceled(errorCancelMedthod.isReasonInputed() ? BigDecimal.ONE : BigDecimal.ZERO);
+				.setReasonInputCanceled(errorCancelMedthod.isReasonInputed());
 
 		this.entity
-				.setReasonSelectCanceled(errorCancelMedthod.isReasonSelected() ? BigDecimal.ONE : BigDecimal.ZERO);
+				.setReasonSelectCanceled(errorCancelMedthod.isReasonSelected());
 
 	}
 

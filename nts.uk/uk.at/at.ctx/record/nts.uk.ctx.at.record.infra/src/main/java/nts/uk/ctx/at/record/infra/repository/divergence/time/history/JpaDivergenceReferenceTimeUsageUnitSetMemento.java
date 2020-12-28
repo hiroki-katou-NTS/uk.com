@@ -44,7 +44,7 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 */
 	@Override
 	public void setWorkTypeUseSet(boolean workTypeUseSet) {
-		this.krcstDrtUseUnit.setWorktypeUseSet(workTypeUseSet ? BigDecimal.ONE : BigDecimal.ZERO);
+		this.krcstDrtUseUnit.setWorktypeUseSet(workTypeUseSet);
 	}
 
 }

@@ -35,7 +35,7 @@ public class KrcmtDvgcUnitSet extends ContractUkJpaEntity implements Serializabl
 
 	/** The worktype use set. */
 	@Column(name="WORKTYPE_USE_SET")
-	private BigDecimal worktypeUseSet;
+	private boolean worktypeUseSet;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
