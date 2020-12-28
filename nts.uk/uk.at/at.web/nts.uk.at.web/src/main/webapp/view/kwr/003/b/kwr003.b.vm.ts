@@ -277,7 +277,10 @@ module nts.uk.at.view.kwr003.b {
             break;
 
           case 'Msg_1753':
-            $('#KWR003_B42').ntsError('set', { messageId: error.messageId });
+            //$('#KWR003_B42').ntsError('set', { messageId: error.messageId });
+            vm.$dialog.error({ messageId: error.messageId }).then(() => {
+              $('#KWR003_B42').focus();
+            });
             break;
         }
         vm.$blockui('hide');
