@@ -915,6 +915,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					if (!_.isNil(resultItemModel)) {
 						selectedCode = resultItemModel.code;
 						messageInfo1.selectedCode(selectedCode);
+						
+					} else {
+						let findCode = _.find(itemList, (el: any) => el.code == result.reasonCode);
+						if (_.isNil(findCode)) {
+							{
+								let i = {} as ItemModel;
+								i.code = result.reasonCode;
+								i.name = result.reasonCode + ' ' + self.$i18n('KAF005_345');
+								let itemDelete = itemList.shift();
+								itemList.unshift(i);
+								itemList.unshift(itemDelete);
+							}
+						}
+						messageInfo1.selectedCode(result.reasonCode);
 					}
 				}
 				
@@ -933,6 +947,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			if (self.visibleModel.c12_1()) {
 				let itemList = [] as Array<ItemModel>;
 				let findResut = _.find(res.infoNoBaseDate.divergenceReasonInputMethod, { divergenceTimeNo: 2 });
+				let codeReason2 = '';
 				// first dropdown
 				{
 					let i = {} as ItemModel;
@@ -957,6 +972,19 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					if (!_.isNil(resultItemModel)) {
 						selectedCode = resultItemModel.code;
 						messageInfo2.selectedCode(selectedCode);
+					} else {
+						let findCode = _.find(itemList, (el: any) => el.code == result.reasonCode);
+						if (_.isNil(findCode)) {
+							{
+								let i = {} as ItemModel;
+								i.code = result.reasonCode;
+								i.name = result.reasonCode + ' ' + self.$i18n('KAF005_345');
+								let itemDelete = itemList.shift();
+								itemList.unshift(i);
+								itemList.unshift(itemDelete);
+							}
+						}
+						messageInfo2.selectedCode(result.reasonCode);
 					}
 				}
 			} else {
