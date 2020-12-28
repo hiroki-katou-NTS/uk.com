@@ -144,6 +144,17 @@ module nts.uk.at.view.kmk004.b {
                     }
                     vm.updateListSave();
                 }
+
+                _.forEach(ko.unwrap(vm.workTimes), ((value) => {
+                    if (ko.unwrap(value.check)) {
+                        if (ko.unwrap(value.laborTime)  == null) {
+                            value.updateLaborTime(0);
+                        }
+                    } else {
+                        value.updateLaborTime(null);
+                    }
+                }));
+
             });
 
             vm.selectedYear
@@ -192,9 +203,6 @@ module nts.uk.at.view.kmk004.b {
             const input = { workType: TYPE, year: ko.unwrap(vm.selectedYear) };
 
             const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
-
-            console.log(exist);
-
 
             if (exist) {
                 switch (vm.type) {
@@ -314,7 +322,6 @@ module nts.uk.at.view.kmk004.b {
             if (vm.type === 'Com_Person') {
                 check = true;
             }
-
             const input = { workType: TYPE, year: 9998 };
 
             vm.$ajax(API.GET_WORK_TIME, input)
@@ -326,7 +333,7 @@ module nts.uk.at.view.kmk004.b {
                             check = false;
                         }
                         data.map(m => {
-                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                            const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: null };
                             data1.push(s);
                         });
 
@@ -393,7 +400,7 @@ class WorkTime {
     check: KnockoutObservable<boolean> = ko.observable(false);
     yearMonth: KnockoutObservable<number | null> = ko.observable(null);
     nameMonth: KnockoutObservable<string> = ko.observable('');
-    laborTime: KnockoutObservable<number> = ko.observable(0);
+    laborTime: KnockoutObservable<number | null> = ko.observable(null);
 
     constructor(params?: IWorkTime & { parrent: KnockoutObservableArray<WorkTime> }) {
         const md = this;
@@ -410,6 +417,10 @@ class WorkTime {
 
         if (param.check) {
             md.laborTime(param.laborTime);
+        }
+
+        if (!md.check) {
+            md.laborTime(0);
         }
 
         switch (param.yearMonth.toString().substring(4, 6)) {
@@ -450,5 +461,9 @@ class WorkTime {
                 md.nameMonth('12月度')
                 break
         }
+    }
+
+    public updateLaborTime(value: number | null) {
+        this.laborTime(value);
     }
 }

@@ -81,6 +81,16 @@ module nts.uk.at.kmk004.k {
 		}
 
 
+
+		showDeleteButton() {
+			const vm = this;
+			if (vm.screenMode == 'Com_Company') {
+				return false;
+			}
+			return !vm.notSetting();
+		}
+
+
 		register() {
 			const vm = this;
 
