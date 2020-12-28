@@ -265,6 +265,7 @@ module nts.uk.at.view.kwr005.b {
       vm.currentCodeListSwap([]);
       vm.resetListItemsSwap();
       vm.clearSelection();
+      vm.printPropertyCode.valueHasMutated();
       //call to server
       vm.$blockui('show');
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: settingId })
@@ -329,15 +330,6 @@ module nts.uk.at.view.kwr005.b {
       }
 
       $('#KWR005_B53').focus();
-    }
-
-    resetSettingListItems(): JQueryPromise<any> {
-      const vm = this;
-      const dfd = $.Deferred<any>();
-
-      vm.printPropertyCode(-1);
-      dfd.resolve();
-      return dfd.promise();
     }
 
     getWorkStatusTableOutput(): JQueryPromise<any> {
@@ -436,7 +428,7 @@ module nts.uk.at.view.kwr005.b {
 
       let newSettingListItems = _.filter(vm.settingListItems(), (x) => x.code !== vm.currentCodeList());
       vm.settingListItems([]);
-      if (newSettingListItems.length > 0) {
+      if (newSettingListItems.length > 0) {        
         vm.settingListItems(newSettingListItems);
         vm.currentCodeList(newSelectedCode);
       } else {
