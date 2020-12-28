@@ -524,8 +524,6 @@ public class AnnualLeaveInfo implements Cloneable {
 				// 「休暇残数シフトリストWORK」一時変数を作成
 				RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
 
-				boolean isForcibly = true; // ooooo
-
 				// 休暇残数を指定使用数消化する
 				LeaveGrantRemainingData.digest(
 						require,
@@ -534,8 +532,7 @@ public class AnnualLeaveInfo implements Cloneable {
 						leaveUsedNumber,
 						companyId,
 						employeeId,
-						aggregatePeriodWork.getPeriod().start(),
-						isForcibly);
+						aggregatePeriodWork.getPeriod().start());
 
 				// 残数不足で一部消化できなかったとき
 				if ( !remNumShiftListWork.getUnusedNumber().isZero() ){
