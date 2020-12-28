@@ -32,7 +32,7 @@ module cmm044.c.viewmodel {
             const self = this;
             nts.uk.ui.block.invisible();
             service.sendMail({ approverId: self.approverId(), emailContent: self.emailContent() }).then(() => {
-                // nts.uk.ui.windows.close();
+                nts.uk.ui.dialog.info({messageId: "Msg_792"})
             }).fail(error => {
                 nts.uk.ui.dialog.alert(error);
             }).always(() => {
