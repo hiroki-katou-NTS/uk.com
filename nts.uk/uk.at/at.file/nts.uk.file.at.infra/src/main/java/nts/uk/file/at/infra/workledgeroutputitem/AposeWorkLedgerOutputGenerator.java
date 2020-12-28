@@ -102,18 +102,20 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     cells.copyRow(cells, 0, count);
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
-                    cells.clearContents(count,0,count+3,15);
+                    cells.clearContents(count,0,cells.getMaxRow(),15);
                     cells.get(count, 6).setValue(TextResource.localize("KWR004_205") +
                             TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
                                     this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
-                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+
+                    cells.get(count, 0).setValue("");
+                    cells.get(count + 1, 0).setValue("");
+
                     printDate(worksheet, count +2, yearMonths);
                     count +=3;
 
                 }
                 if (j % 2 == 0) {
-                    cells.copyRow(cells, 5, count);
+                    cells.copyRow(cells, 3, count);
                 } else {
                     cells.copyRow(cells, 4, count);
                 }
