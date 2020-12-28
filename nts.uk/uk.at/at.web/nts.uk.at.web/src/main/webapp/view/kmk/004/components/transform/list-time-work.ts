@@ -252,14 +252,14 @@ class WorkTimeL {
 	nameMonth: KnockoutObservable<string> = ko.observable('');
 	laborTime: KnockoutObservable<number> = ko.observable(0);
 
-	constructor(params?: IWorkTime & { parent: KnockoutObservableArray<WorkTimeL> }) {
+	constructor(params?: IWorkTimeL & { parent: KnockoutObservableArray<WorkTimeL> }) {
 		const md = this;
 
 		md.create(params);
 		this.laborTime.subscribe(c => params.parent.valueHasMutated());
 	}
 
-	public create(param?: IWorkTime) {
+	public create(param?: IWorkTimeL) {
 		const md = this;
 		md.check(param.check);
 		md.yearMonth(param.yearMonth);
