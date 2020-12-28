@@ -217,6 +217,7 @@ public class DisplayMyPageFinder {
 								.flowCode(data.get().getFlowMenuCode().v())
 								.flowName(data.get().getFlowMenuName().v())
 								.fileId(data.get().getFlowMenuLayout().map(FlowMenuLayout::getFileId).orElse(""))
+								.isFlowmenu(true)
 								.build());
 					}
 				} else {
@@ -228,6 +229,7 @@ public class DisplayMyPageFinder {
 											.fileId(item.getFlowMenuLayout()
 														.map(FlowMenuLayout::getFileId)
 														.orElse(""))
+											.isFlowmenu(true)
 											.build())
 							.collect(Collectors.toList());
 				}
@@ -245,6 +247,7 @@ public class DisplayMyPageFinder {
 								.flowCode(data.get().getCode().v())
 								.flowName(data.get().getName().v())
 								.fileId(data.get().getFileID())
+								.isFlowmenu(false)
 								.build());
 					}
 				} else {
@@ -254,6 +257,7 @@ public class DisplayMyPageFinder {
 								.flowCode(item.getCode().v())
 								.flowName(item.getName().v())
 								.fileId(item.getFileID())
+								.isFlowmenu(false)
 								.build())
 							.collect(Collectors.toList());
 				}

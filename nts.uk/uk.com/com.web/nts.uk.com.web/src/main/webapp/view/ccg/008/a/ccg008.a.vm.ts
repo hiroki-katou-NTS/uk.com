@@ -37,6 +37,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
     dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
     layoutDisplayType: KnockoutObservable<number> = ko.observable(null);
     visible: KnockoutObservable<boolean> = ko.observable(false);
+    reload: any;
 
     created() {
       const vm = this;
@@ -106,11 +107,12 @@ module nts.uk.com.view.ccg008.a.screenModel {
       vm.reloadInterval.subscribe((data: any) => {
         let minutes = vm.getMinutes(data);
         let miliSeconds = minutes * MINUTESTOMILISECONDS;
-        if (data !== 0) {
-          setInterval(() => {
-            vm.callApiTopPage(vm);
-          }, miliSeconds);
-        }
+          clearInterval(vm.reload);
+          if (data !== 0) {
+            vm.reload =  setInterval(() => {
+              vm.callApiTopPage(vm);
+            }, miliSeconds);
+          }
       });
 
       $('#content-top').focus()
@@ -336,6 +338,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
     flowCode: string;
     flowName: string;
     fileId: string;
+    isFlowmenu: boolean;
     constructor(init?: Partial<FlowMenuOutputCCG008>) {
       $.extend(this, init);
     }
