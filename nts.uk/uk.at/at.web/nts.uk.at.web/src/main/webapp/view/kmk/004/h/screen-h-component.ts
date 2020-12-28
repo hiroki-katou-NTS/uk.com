@@ -99,6 +99,9 @@ class ScreenHComponent extends ko.ViewModel {
 					item.laborTime().withinLaborTime(null);
 				});
 
+				vm.screenData().serverData = null;
+				vm.screenData().unSaveSetComs = [];
+
 				return;
 			}
 
