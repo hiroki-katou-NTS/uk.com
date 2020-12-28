@@ -15,7 +15,6 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -36,12 +35,6 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	
 	@Injectable
 	GetWorkTogetherEmpOnDayBySpecEmpService.Require require;
-	
-	@Mocked 
-	GetTargetIdentifiInforService targetIndentifiServce;
-	
-	@Mocked 
-	GetEmpCanReferBySpecOrganizationService empCanReferBySpeOrgService;
 	/**
 	 * input 社員ID = "sid_0"
 	 *       List<組織に出勤する社員ID> = "sid_1", "sid_2", "sid_3"
@@ -72,7 +65,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 				empSameOrgService.getListEmpID(require, baseDate, sid, targetOrg);
 				result = empSameOrgs;
 				
-				require.getWorkSchedule(empSameOrgs, (DatePeriod) any);
+				require.getWorkSchedule(empSameOrgs, baseDate);
 				result = Arrays.asList(workSchedule1, workSchedule2, workSchedule3);
 				
 				workSchedule1.getWorkInfo().isAttendanceRate(require);
@@ -89,7 +82,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 		
 		val result = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, sid, baseDate);
 		
-		assertThat(result).containsExactlyElementsOf(Arrays.asList("sid_1", "sid_2"));
+		assertThat(result).containsExactly("sid_1", "sid_2");
 		
 	}
 	
