@@ -747,8 +747,8 @@ public class RecordDomRequireService {
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, 
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, outsideOTSettingCache, flowWorkSetMap, flexWorkSetMap, fixedWorkSetMap,
-				workTimeSetMap, weekRuleManagementCache, workTypeMap, closureMap);
-				roleOfOpenPeriodRepo, snapshotAdapter, superHD60HConMedRepo);
+				workTimeSetMap, weekRuleManagementCache, workTypeMap, closureMap,
+				snapshotAdapter, superHD60HConMedRepo);
 	}
 	
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -876,7 +876,7 @@ public class RecordDomRequireService {
 				HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap,
 				Optional<WeekRuleManagement> weekRuleManagementCache,
 				HashMap<String, Optional<WorkType>>  workTypeMap,
-				HashMap<Integer, Optional<Closure>> closureMap) {
+				HashMap<Integer, Optional<Closure>> closureMap,
 				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2,
