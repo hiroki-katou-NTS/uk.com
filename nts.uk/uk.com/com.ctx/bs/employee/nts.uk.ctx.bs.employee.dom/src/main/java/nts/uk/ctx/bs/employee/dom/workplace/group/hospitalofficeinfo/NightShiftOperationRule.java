@@ -36,7 +36,8 @@ public class NightShiftOperationRule {
 	 */
 	public static NightShiftOperationRule createByNightShiftUse(ClockHourMinuteSpan shiftTime) {
 		val shiftTimeStandard = new ClockHourMinuteSpan(ClockHourMinute.hm(22, 00), ClockHourMinute.hm(29, 00));
-		if(!shiftTime.contains(shiftTimeStandard)) {
+		val check16Hours = shiftTime.end().backByHours(16).equals(shiftTime.start());
+		if(!(shiftTime.contains(shiftTimeStandard) && check16Hours)) {
 			throw new BusinessException("Msg_2090");
 		}
 		return new NightShiftOperationRule(NotUseAtr.USE, Optional.of(shiftTime));
