@@ -5,7 +5,7 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
+import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -54,8 +54,6 @@ export class KafS05Step2Component extends Vue {
 
     public created() {
         const self = this;
-        // self.createOverTime();
-        // self.createHolidayTime();
     }
     public mounted() {
 
@@ -480,30 +478,6 @@ export class KafS05Step2Component extends Vue {
         self.holidayTimes = holidayTimes;
     }
 
-    // public createHolidayTime() {
-    //     const self = this;
-    //     {
-    //         let holidaytime = {} as HolidayTime;
-    //         holidaytime.frameNo = '1';
-    //         holidaytime.title = self.$i18n('KAFS05_73') + holidaytime.frameNo;
-    //         holidaytime.visible = true;
-    //         holidaytime.applicationTime = 0;
-    //         holidaytime.preApp = {
-    //             preAppDisp: true,
-    //             preAppTime: 0,
-    //             preAppExcess: ExcessTimeStatus.NONE,
-
-    //         };
-    //         holidaytime.actualApp = {
-    //             actualDisp: true,
-    //             actualTime: 0,
-    //             actualExcess: ExcessTimeStatus.NONE
-    //         };
-    //         holidaytime.type = AttendanceType.BREAKTIME;
-    //         self.holidayTimes.push(holidaytime);
-    //     }
-        
-    // }
     get $appContext(): KafS05Component {
         const self = this;
 
@@ -570,6 +544,28 @@ export class KafS05Step2Component extends Vue {
         self.bindAllReason();
         self.bindOverTime();
         self.bindHolidayTime();
+    }
+
+    public getReasonDivergence() {
+        const self = this;
+        let list = [] as Array<ReasonDivergence>;
+
+        {
+            let item = {} as ReasonDivergence;
+            item.diviationTime = 1;
+            item.reasonCode = self.reason1.selectedValue;
+            item.reason = self.reason1.reason;
+            list.push(item);
+        }
+        {
+            let item = {} as ReasonDivergence;
+            item.diviationTime = 2;
+            item.reasonCode = self.reason1.selectedValue;
+            item.reason = self.reason1.reason;
+            list.push(item);
+        }
+
+        return list;
     }
 
 }
