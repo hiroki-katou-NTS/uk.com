@@ -79,7 +79,7 @@ public class TopPageServiceImpl implements TopPageService {
 			// コピー元レイアウトが登録済みの場合
 			if (!lsLayoutsOld.isEmpty()) {
 				for(LayoutNew layout: lsLayoutsOld) {
-					layout.setTopPageCode(topPage.getTopPageCode());
+					layout.setTopPageCode(topPage.getTopPageCode().toString());
 					// コピー元「レイアウト」を元に「レイアウト」を新規登録する
 					layoutNewRepository.insert(layout);
 				}

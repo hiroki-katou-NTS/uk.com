@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,10 +19,8 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 public class LayoutNew extends AggregateRoot {
 	/** ウィジェット設定 */
-	@Setter
 	private List<WidgetSetting> widgetSettings;
 	/** トップページコード */
-	@Setter
 	private TopPageCode topPageCode;
 	/** レイアウトNO */
 	private LayoutNO layoutNo;
@@ -89,5 +86,13 @@ public class LayoutNew extends AggregateRoot {
 		public String getFlowMenuCd();
 		public String getFlowMenuUpCd();
 		public String getUrl();
+	}
+	
+	public void setTopPageCode(String toppageCode) {
+		this.topPageCode = new TopPageCode(toppageCode);
+	}
+	
+	public void setWidgetSetting(List<WidgetSetting> lstWidget) {
+		this.widgetSettings = lstWidget;
 	}
 }
