@@ -1,7 +1,7 @@
 module nts.uk.at.view.kml001.shr {
     export module servicebase {
         var paths: any = {
-            personCostCalculationSelect: "at/schedule/budget/premium/findPersonCostCalculationByCompanyID",
+            personCostCalculationSelect: "at/schedule/budget/premium/findPersonCostCalculationByCompanyID",            
             personCostCalculationInsert: "at/schedule/budget/premium/insertPersonCostCalculation",
             personCostCalculationUpdate: "at/schedule/budget/premium/updatePersonCostCalculation",
             personCostCalculationDelete: "at/schedule/budget/premium/deletePersonCostCalculation",

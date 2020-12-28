@@ -305,7 +305,7 @@
 									<com:ko-if bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 2">             
 									<tr>
                     <td data-bind="text: '#{i18n.getText('KML001_83')}'"></td>
-                    <td class="valign-right" data-bind="text: '#{i18n.getText('KML001_84')}'"></td>
+                    <td class="valign-right" data-bind="text: '#{i18n.getText('KML001_84')}'">100%</td>
                     <td>                      
                       <div
                         id="comboBoxA5_13"
@@ -315,7 +315,7 @@
 														name: '#[KML001_85]',
 														options: $parent.unitPriceOpt(),
 														optionsValue: 'code',
-														value: unitPrice,
+														value: $vm.currentPersonCost().workingHour,
 														optionsText: 'name',
 														dropDownAttachedToBody:true,
 														selectFirstIfNull: true,
@@ -391,13 +391,12 @@
                           class="premiumInput premiumItems"
                           data-bind="ntsTextEditor: {
 													name: '#[KML001_14]',
-													value: ko.observable(null),
+													value: $parent.viewAttendanceItems()[$index()],
 													constraint: 'Memo',
 													option: { width: '360px' },
 													enable: true,
 													readonly: true }"
                         />
-                        <!-- $parent.viewAttendanceItems()[$index()] -->
                       </div>
                     </td>
                   </tr>

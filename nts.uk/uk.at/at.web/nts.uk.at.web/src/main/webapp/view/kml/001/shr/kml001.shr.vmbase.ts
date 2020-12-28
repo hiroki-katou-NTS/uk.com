@@ -2,9 +2,17 @@ module nts.uk.at.view.kml001.shr {
     export module vmbase {
         export class GridPersonCostCalculation {
             dateRange: string;  
-            constructor(dateRange: string) {
+            companyId?: string;
+            historyId?: string;
+            startDate?: string;
+            endDate?: string;
+            constructor(dateRange: string, companyId?: string, historyId?: string, startDate?: string, endDate?: string) {
                 var self = this;
-                self.dateRange = dateRange;
+                self.dateRange = dateRange; //display on the list
+                self.companyId = companyId;
+                self.historyId = historyId;                
+                self.startDate = startDate;
+                self.endDate   = endDate;
             }  
         }
     
@@ -20,6 +28,7 @@ module nts.uk.at.view.kml001.shr {
             roundingUnitPrice: number;
             roundingAmount: number;
             inUnits: number;
+            workingHour: number;
         }
     
         export class PersonCostCalculation {
@@ -35,21 +44,21 @@ module nts.uk.at.view.kml001.shr {
             roundingUnitPrice: KnockoutObservable<number>;
             roundingAmount: KnockoutObservable<number>;
             inUnits: KnockoutObservable<number>;
-
+            workingHour: KnockoutObservable<number>;
             constructor(
                 companyID: string, historyID: string, 
                 startDate: string, endDate: string, 
                 unitPrice: number, memo: string, 
                 premiumSets: Array<PremiumSettingInterface>,
                 calculationSetting: number = 1, roundingUnitPrice: number = 0, 
-                roundingAmount: number = 1, inUnits: number = 0
+                roundingAmount: number = 1, inUnits: number = 0, workingHour: number
                 ) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.historyID = ko.observable(historyID);
                 self.startDate = ko.observable(startDate);
                 self.endDate = ko.observable(endDate);
-                self.unitPrice(unitPrice);
+                self.unitPrice = ko.observable(unitPrice);
                 self.memo = ko.observable(memo);
                 self.premiumSets = ko.observableArray(_.map(premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
                 //ver9
@@ -57,6 +66,25 @@ module nts.uk.at.view.kml001.shr {
                 self.roundingUnitPrice = ko.observable(roundingUnitPrice);
                 self.roundingAmount = ko.observable(roundingAmount);
                 self.inUnits = ko.observable(inUnits);
+                self.workingHour = ko.observable(workingHour);
+            }
+
+
+            public updateData(data: PersonCostCalculationInterface) {
+                var self = this;
+                self.companyID(data.companyID);
+                self.historyID(data.historyID);
+                self.startDate(data.startDate);
+                self.endDate(data.endDate);
+                self.unitPrice(data.unitPrice);
+                self.memo(data.memo);
+                self.premiumSets(_.map(data.premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
+                //ver9
+                self.calculationSetting(data.calculationSetting);
+                self.roundingUnitPrice(data.roundingUnitPrice);
+                self.roundingAmount(data.roundingAmount);
+                self.inUnits(data.inUnits);
+                self.workingHour(data.workingHour);
             }
         }
         
@@ -155,7 +183,13 @@ module nts.uk.at.view.kml001.shr {
                     object.endDate,
                     object.unitPrice,
                     object.memo,
-                    object.premiumSets);
+                    object.premiumSets,
+                    object.calculationSetting,
+                    object.roundingUnitPrice,
+                    object.roundingAmount,
+                    object.inUnits,
+                    object.workingHour
+                );
             }
             
             /**
@@ -175,7 +209,8 @@ module nts.uk.at.view.kml001.shr {
                     calculationSetting: koObject.calculationSetting(),
                     roundingUnitPrice: koObject.roundingUnitPrice(),
                     roundingAmount: koObject.roundingAmount(),
-                    inUnits: koObject.inUnits()
+                    inUnits: koObject.inUnits(),
+                    workingHour: koObject.workingHour()
                 };    
             }
             
@@ -191,7 +226,8 @@ module nts.uk.at.view.kml001.shr {
                     object.name,
                     object.useAtr,
                     object.attendanceItems,
-                    object.unitPrice);
+                    object.unitPrice
+                );
             }
             
             /**
@@ -211,7 +247,7 @@ module nts.uk.at.view.kml001.shr {
             }
             
             static createPersonCostCalFromValue(objectPersonCostCalculation: PersonCostCalculationInterface, premiumItems: Array<PremiumItem>): PersonCostCalculation {
-                let personCostCalculation = new PersonCostCalculation("","","","",0,"",[]);
+                let personCostCalculation = new PersonCostCalculation("","","","",0,"",[], 1, 0, 0, 1, 0);
                 var self = this;
                 personCostCalculation.companyID(objectPersonCostCalculation.companyID);
                 personCostCalculation.historyID(objectPersonCostCalculation.historyID);
