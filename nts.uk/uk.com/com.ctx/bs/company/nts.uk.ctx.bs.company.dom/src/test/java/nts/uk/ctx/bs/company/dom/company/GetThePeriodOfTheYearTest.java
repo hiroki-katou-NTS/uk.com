@@ -31,14 +31,7 @@ public class GetThePeriodOfTheYearTest {
 	
 	@Test
 	public void getDataWhenCNull() {
-		new Expectations() {
-			{
-				require.getComanyInfoByCid(CID);
-				result = Optional.empty();
-
-			}
-		};
-
+		
 		YearMonthPeriod ym = GetThePeriodOfTheYear.getPeriodOfTheYear(require, CID, 2020);
 
 		assertThat(ym).isNull();
