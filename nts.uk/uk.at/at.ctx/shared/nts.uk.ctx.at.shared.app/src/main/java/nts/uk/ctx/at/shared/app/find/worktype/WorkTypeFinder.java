@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktype;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -206,17 +207,45 @@ public class WorkTypeFinder {
         String companyId = AppContexts.user().companyId();
         //<<Public>> 指定した勤務種類をすべて取得する
         List<WorkTypeInfor> lst = new ArrayList<>();
-//        if (!lstPossible.isEmpty()) {
-//            lst = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstPossible);
-//        } else {
-//            lst = this.workTypeRepo.getAllWorkTypeNotAbolished(companyId).stream().map(e -> new WorkTypeInfor(
-//                    e.getWorkTypeCode().v(),
-//					e.getName().v(),
-//                    e.getAbbreviationName().v(),
-//                    e.getSymbolicName().v(),
-//
-//                    )).collect(Collectors.toList());
-//        }
+        if (!lstPossible.isEmpty()) {
+            lst = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstPossible);
+        } else {
+            lst = this.workTypeRepo.getAllWorkTypeNotAbolished(companyId).stream().map(e ->
+            {
+                val listDetail = e.getWorkTypeSetList().stream().map(i ->
+                        new nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetDto(
+                                i.getWorkTypeCd().toString(),
+                                i.getWorkAtr().value,
+                                i.getDigestPublicHd().value,
+                                i.getHolidayAtr().value,
+                                i.getCountHodiday().value,
+                                i.getCloseAtr().value,
+                                i.getSumAbsenseNo(),
+                                i.getSumSpHodidayNo(),
+                                i.getTimeLeaveWork().value,
+                                i.getAttendanceTime().value,
+                                i.getGenSubHodiday().value,
+                                i.getDayNightTimeAsk().value
+                        )
+                ).collect(Collectors.toList());
+                val rs = new WorkTypeInfor(
+                        e.getWorkTypeCode().v(),
+                        e.getName().v(),
+                        e.getAbbreviationName().v(),
+                        e.getSymbolicName().v(),
+                        e.getDeprecate().value,
+                        e.getMemo().v(),
+                        e.getDailyWork().getWorkTypeUnit().value,// TODO
+                        e.getDailyWork().getOneDay().value,
+                        e.getDailyWork().getMorning().value,
+                        e.getDailyWork().getAfternoon().value,
+                        e.getCalculateMethod().value,
+                        e.getDispOrder()
+                );
+                rs.setWorkTypeSets(listDetail);
+                return rs;
+            }).collect(Collectors.toList());
+        }
 
         //取得されている勤務種類一覧から廃止されている勤務種類を取り除く
 //		"廃止区分
