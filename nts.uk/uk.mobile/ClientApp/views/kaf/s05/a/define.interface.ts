@@ -84,6 +84,9 @@ export interface InfoWithDateApplication {
 export interface BreakTimeZoneSetting {
     timeZones?: Array<TimeZone>;
 }
+export interface BreakTimeOp {
+    timeZone?: Array<TimeZone>;
+}
 export interface TimeZone {
     frameNo: number;
     start: number;
@@ -208,13 +211,13 @@ export enum OvertimeAppAtr {
 }
 export enum AttendanceType {
 
-    NORMALOVERTIME,
+    NORMALOVERTIME, // 残業時間
 
-    BREAKTIME,
+    BREAKTIME, // 休出時間
 
-    BONUSPAYTIME,
+    BONUSPAYTIME, // 加給時間
 
-    BONUSSPECIALDAYTIME,
+    BONUSSPECIALDAYTIME, // 特定日加給時間
 
     MIDNIGHT,
 
