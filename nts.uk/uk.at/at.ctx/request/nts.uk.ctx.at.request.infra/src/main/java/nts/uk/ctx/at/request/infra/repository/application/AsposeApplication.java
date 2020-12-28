@@ -145,9 +145,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			AsposeAppOverTime.CalRange result = asposeAppOverTime.printAppOverTimeContent(worksheet, printContentOfApp);
 			int startReasonCommon = result.getStartReasonCommon();
 			int startReasonLabel = result.getStartReasonLabel();
-			reasonLabel = worksheet.getCells().get("B" + (26 - startReasonCommon));
-			remarkLabel = worksheet.getCells().get("B" + (26 - startReasonCommon + 11 - startReasonLabel));
-			reasonContent = worksheet.getCells().get("D" + (28 - startReasonCommon));
+			reasonLabel = worksheet.getCells().get("B" + (27 - startReasonCommon));
+			remarkLabel = worksheet.getCells().get("B" + (27 - startReasonCommon + 9 - startReasonLabel));
+			reasonContent = worksheet.getCells().get("D" + (27 - startReasonCommon));
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case ABSENCE_APPLICATION:

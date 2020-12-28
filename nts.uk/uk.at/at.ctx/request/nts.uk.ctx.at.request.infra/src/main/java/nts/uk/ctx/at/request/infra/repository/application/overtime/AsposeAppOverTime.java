@@ -23,6 +23,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -44,6 +46,40 @@ public class AsposeAppOverTime {
 	public static final String TILDLE_STRING = " ~ ";
 	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
+	
+	public StringBuilder getContentReason (Optional<DetailOutput> opDetailOutput, int frame) {
+		StringBuilder d31 = new StringBuilder("");
+		// 申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．選択肢一覧
+		// 申請の印刷内容．残業申請の印刷内容．残業申請．申請時間．乖離理由
+		// 条件：選択肢一覧．コード = 残業申請．申請時間．乖離理由．理由コード　AND　残業申請．申請時間．乖離理由．乖離時間NO = frame
+		Optional<ReasonDivergence> reOptional1 = opDetailOutput.get().getAppOverTime().getApplicationTime().getReasonDissociation().get()
+			.stream()
+			.filter(x -> x.getDiviationTime() == frame)
+			.findFirst();
+		Optional<DivergenceReasonInputMethod> diOptional1 = opDetailOutput.get().getDisplayInfoOverTime()
+							.getInfoNoBaseDate()
+							.getDivergenceReasonInputMethod()
+							.stream()
+							.filter(x -> x.getDivergenceTimeNo() == frame)
+							.findFirst();
+		String contentCodeD31 = diOptional1.map(x -> x.getReasons()).orElse(Collections.emptyList())
+				.stream()
+				.filter(x -> Optional.ofNullable(x.getDivergenceReasonCode()).map(y -> y.v()).orElse("")
+						.equals(reOptional1.flatMap(a -> Optional.ofNullable(a.getReasonCode())).map(b -> b.v()).orElse(""))
+						)
+				.findFirst()
+				.flatMap(z -> Optional.ofNullable(z.getReason()))
+				.map(a -> a.v())
+				.orElse("");
+				
+		String contentInputD31 = reOptional1.flatMap(x -> Optional.ofNullable(x.getReason())).map(x -> x.v()).orElse("");
+		d31.append(contentCodeD31);
+		if (!StringUtils.isBlank(contentCodeD31)) {
+			d31.append("\n");			
+		}
+		d31.append(contentInputD31);
+		return d31;
+	}
 	
 	public AsposeAppOverTime.CalRange printAppOverTimeContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
 		Optional<DetailOutput> opDetailOutput = printContentOfApp.getOpDetailOutput();
@@ -444,38 +480,30 @@ public class AsposeAppOverTime {
 							   
 						   });
 		
-		Cell cellB31 = cells.get("B31");
-		Cell cellD31 = cells.get("D31");
-		Cell cellB34 = cells.get("B34");
-		Cell cellD34 = cells.get("D34");
+		Cell cellB30 = cells.get("B30");
+		Cell cellD30 = cells.get("D30");
+		Cell cellB33 = cells.get("B33");
+		Cell cellD33 = cells.get("D33");
 		
-		String b31 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
+		String b30 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
 					.stream()
 					.filter(x -> x.getDivergenceTimeNo() == 1)
 					.map(x -> x.getDivTimeName().v())
 					.findFirst()
 					.orElse(EMPTY_STRING);
-		String b34 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
+		String b33 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
 					.stream()
 					.filter(x -> x.getDivergenceTimeNo() == 2)
 					.map(x -> x.getDivTimeName().v())
 					.findFirst()
 					.orElse(EMPTY_STRING);
-		cellB31.setValue(I18NText.getText("KAF005_93", b31));
-		cellB34.setValue(I18NText.getText("KAF005_93", b34));
+		cellB30.setValue(I18NText.getText("KAF005_93", b30));
+		cellB33.setValue(I18NText.getText("KAF005_93", b33));
 		if (appOverTime.getApplicationTime().getReasonDissociation().isPresent()) {
-			String d31 = opDetailOutput.get().getAppOverTime().getApplicationTime().getReasonDissociation().get()
-				.stream()
-				.filter(x -> x.getDiviationTime() == 1)
-				.map(x -> x.getReason() == null ? "" : x.getReason().v())
-				.findFirst().orElse("");
-			cellD31.setValue(d31);
-			String d34 = opDetailOutput.get().getAppOverTime().getApplicationTime().getReasonDissociation().get()
-					.stream()
-					.filter(x -> x.getDiviationTime() == 2)
-					.map(x -> x.getReason() == null ? "" : x.getReason().v())
-					.findFirst().orElse("");
-			cellD34.setValue(d34);
+			StringBuilder d31 = this.getContentReason(opDetailOutput, 1);
+			cellD30.setValue(d31);
+			StringBuilder d34 = this.getContentReason(opDetailOutput, 2);
+			cellD33.setValue(d34);
 		}
 		
 		Cell cellB13 = cells.get("B13");
