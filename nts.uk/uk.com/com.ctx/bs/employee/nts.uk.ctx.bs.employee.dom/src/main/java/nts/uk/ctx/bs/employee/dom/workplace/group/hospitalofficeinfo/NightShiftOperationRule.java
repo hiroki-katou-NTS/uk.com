@@ -31,14 +31,14 @@ public class NightShiftOperationRule {
 	
 	/**
 	 * 夜勤運用ありで作る	
-	 * @param shiftTime
+	 * @param shiftTime 夜勤時間帯
 	 * @return
 	 */
 	public static NightShiftOperationRule createByNightShiftUse(ClockHourMinuteSpan shiftTime) {
-		val shiftTimeStandard = new ClockHourMinuteSpan(new ClockHourMinute(1320), new ClockHourMinute(1740));
+		val shiftTimeStandard = new ClockHourMinuteSpan(ClockHourMinute.hm(22, 00), ClockHourMinute.hm(29, 00));
 		if(!shiftTime.contains(shiftTimeStandard)) {
 			throw new BusinessException("Msg_2090");
 		}
-		return new NightShiftOperationRule(NotUseAtr.USE, Optional.ofNullable(shiftTime));
+		return new NightShiftOperationRule(NotUseAtr.USE, Optional.of(shiftTime));
 	}
 }
