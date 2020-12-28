@@ -68,7 +68,7 @@
                     <table
                       id="grid-list"                      
                       data-bind="ntsGridList: {
-                        height: 285,
+                        height: isIE() ? 317 : 312,
                         options: workplaceWorkingTimeList,
                         optionsValue: 'code',
                         columns: gridListHeader,
