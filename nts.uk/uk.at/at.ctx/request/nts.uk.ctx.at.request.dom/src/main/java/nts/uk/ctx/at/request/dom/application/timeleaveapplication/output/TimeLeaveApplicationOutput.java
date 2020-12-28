@@ -8,26 +8,25 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
- * 時間休暇申請の表示情報
+ * output: 時間休暇申請の表示情報
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class TimeLeaveApplicationOutput {
 
     //労働条件項目
-    private WorkingConditionItem workingConditionItemOutput;
+    private WorkingConditionItem workingConditionItem;
 
     //時間休暇残数
-    private TimeVacationRemainingOutput timeVacationRemainingOutput;
+    private TimeVacationRemainingOutput timeVacationRemaining;
 
     // 時間休暇申請の反映
     private TimeLeaveApplicationReflect timeLeaveApplicationReflect;
 
     //時間休暇管理
-    private TimeVacationManagementOutput timeVacationManagementOutput;
+    private TimeVacationManagementOutput timeVacationManagement;
 
     // 申請表示情報
-    private AppDispInfoStartupOutput appDispInfoStartupOutput;
+    private AppDispInfoStartupOutput appDispInfoStartup;
 
 }

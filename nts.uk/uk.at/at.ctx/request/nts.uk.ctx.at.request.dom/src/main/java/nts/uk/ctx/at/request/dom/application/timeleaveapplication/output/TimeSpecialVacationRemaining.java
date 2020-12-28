@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 時間休暇残数
+ * 時間特別休暇残数
  */
 @AllArgsConstructor
 @NoArgsConstructor

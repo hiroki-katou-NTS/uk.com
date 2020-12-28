@@ -42,8 +42,24 @@ public class TimeLeaveRemaining {
     private Integer annualTimeLeaveRemainingTime = 0;
 
     // 時間特別休暇残数
-    private List<Object> specialTimeFrames = new ArrayList<>();
+    private List<TimeSpecialVacationRemaining> specialTimeFrames = new ArrayList<>();
 
     // 残数期間
     private DatePeriod remainingPeriod;
+
+    public static TimeVacationRemainingOutput setDataOutput(TimeLeaveRemaining dto) {
+
+        return new TimeVacationRemainingOutput(
+            dto.super60HRemainingTime,
+            dto.careRemainingDays,
+            dto.careRemainingTime,
+            dto.childCareRemainingDays,
+            dto.childCareRemainingTime,
+            dto.subTimeLeaveRemainingTime,
+            dto.careRemainingDays,
+            dto.annualTimeLeaveRemainingTime,
+            dto.specialTimeFrames,
+            dto.remainingPeriod
+        );
+    }
 }

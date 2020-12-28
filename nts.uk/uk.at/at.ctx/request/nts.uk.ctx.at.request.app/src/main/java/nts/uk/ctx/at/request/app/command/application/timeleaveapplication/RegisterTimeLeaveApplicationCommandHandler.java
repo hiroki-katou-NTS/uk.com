@@ -54,9 +54,9 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         this.appRepository.insertApp(
             application,
             timeLeaveApplicationOutput
-                .getAppDispInfoStartupOutput()
+                .getAppDispInfoStartup()
                 .getAppDispInfoWithDateOutput()
-                .getOpListApprovalPhaseState().isPresent() ? timeLeaveApplicationOutput.getAppDispInfoStartupOutput()
+                .getOpListApprovalPhaseState().isPresent() ? timeLeaveApplicationOutput.getAppDispInfoStartup()
                 .getAppDispInfoWithDateOutput()
                 .getOpListApprovalPhaseState()
                 .get() : null);
@@ -71,7 +71,7 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         this.interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), application.getEmployeeID(), Arrays.asList(application.getAppDate().getApplicationDate()));
 
         Optional<AppTypeSetting> appTypeSet = timeLeaveApplicationOutput
-            .getAppDispInfoStartupOutput()
+            .getAppDispInfoStartup()
             .getAppDispInfoNoDateOutput()
             .getApplicationSetting()
             .getAppTypeSettings().stream().filter(i -> i.getAppType() == ApplicationType.ANNUAL_HOLIDAY_APPLICATION)
@@ -81,7 +81,7 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         return this.newAfterRegister.processAfterRegister(
             application.getAppID(),
             appTypeSet.get(),
-            timeLeaveApplicationOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet()
+            timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()
         );
     }
 }

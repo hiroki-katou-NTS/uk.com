@@ -83,9 +83,9 @@ public class TimeLeaveApplicationFinder {
             true,
             application,
             null,
-            output.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+            output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
             Collections.emptyList(),
-            output.getAppDispInfoStartupOutput()
+            output.getAppDispInfoStartup()
         );
 
         TimeLeaveApplication domain = TimeLeaveApplicationDto.toDomain(param.getTimeLeaveApplicationDto(), application);

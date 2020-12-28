@@ -18,11 +18,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 @NoArgsConstructor
 @Data
 public class TimeLeaveAppDisplayInfo {
-    // 申請表示情報
-    private AppDispInfoStartupDto appDispInfoStartupOutput;
-
-    // 時間休暇申請の反映
-    private TimeLeaveAppReflectDto reflectSetting;
 
     // 労働条件項目
     private WorkingConditionItem workingConditionItem;
@@ -30,11 +25,21 @@ public class TimeLeaveAppDisplayInfo {
     // 時間休暇残数
     private TimeLeaveRemaining timeLeaveRemaining;
 
+    // 時間休暇申請の反映
+    private TimeLeaveAppReflectDto reflectSetting;
+
     // 時間休暇管理
     private TimeLeaveManagement timeLeaveManagement;
 
-    public static TimeLeaveApplicationOutput mappingData(TimeLeaveAppDisplayInfo info){
-        return null;
-    }
+    // 申請表示情報
+    private AppDispInfoStartupDto appDispInfoStartupOutput;
 
+    public static TimeLeaveApplicationOutput mappingData(TimeLeaveAppDisplayInfo info) {
+        return new TimeLeaveApplicationOutput(info.workingConditionItem,
+            TimeLeaveRemaining.setDataOutput(info.timeLeaveRemaining),
+            TimeLeaveAppReflectDto.toDomain(info.reflectSetting),
+            TimeLeaveManagement.setDtaOutput(info.timeLeaveManagement),
+            info.appDispInfoStartupOutput.toDomain()
+        );
+    }
 }
