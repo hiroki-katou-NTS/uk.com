@@ -114,10 +114,10 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
      * @param cid the cid
      * @param halfMaxDayYear the half max day year
      */
-    public KmamtMngAnnualSet(String cid, Integer halfMaxDayYear) {
-        this.cid = cid;
-        this.halfMaxDayYear = halfMaxDayYear;
-    }
+//    public KmamtMngAnnualSet(String cid, Integer halfMaxDayYear) {
+//        this.cid = cid;
+//        this.halfMaxDayYear = halfMaxDayYear;
+//    }
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
