@@ -86,9 +86,9 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.clearContents(count,0,cells.getMaxRow(),15);
             }
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-            cells.get(count, 7).setValue(TextResource.localize("KWR005_303") +
-                    TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
-                            this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
+            cells.get(count, 7).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
+                    this.toYearMonthString(dataSource.getYearMonthPeriod().start())+   TextResource.localize("KWR005_305")+
+                    this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
             // print date
             printDate(worksheet, count +2, yearMonths);
@@ -103,9 +103,9 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
                     cells.clearContents(count,0,cells.getMaxRow(),15);
-                    cells.get(count, 6).setValue(TextResource.localize("KWR004_205") +
-                            TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
-                                    this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
+                    cells.get(count, 6).setValue(TextResource.localize("KWR005_303") +
+                       this.toYearMonthString(dataSource.getYearMonthPeriod().start())+   TextResource.localize("KWR005_305")+
+                            this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
                     cells.get(count, 0).setValue("");
                     cells.get(count + 1, 0).setValue("");
@@ -151,9 +151,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         for (int mi = 0; mi < yearMonths.size(); mi++) {
             cells.setColumnWidth(mi + 2, 7);
             val yearMonth = yearMonths.get(mi);
-            String yearMonthString = (yearMonth.month() == 1) ?
-                    TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
-                    TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
+            String yearMonthString = String.valueOf(yearMonth.month()) +   TextResource.localize("KWR005_306");
             cells.merge(rowCount, 0, 1, 2, true, true);
             cells.get(rowCount, 2 + mi).setValue(yearMonthString);
         }
