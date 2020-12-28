@@ -192,7 +192,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
         let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-            if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+            if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork && item.attendanceTime > 0) {
 
                 return true && self.c5;
             }
@@ -212,7 +212,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
         let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-            if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+            if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork && item.attendanceTime > 0) {
 
                 return true && self.c5;
             }
@@ -233,7 +233,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
         let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
-            if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+            if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork && item.attendanceTime > 0) {
 
                 return true && self.c5;
             }
