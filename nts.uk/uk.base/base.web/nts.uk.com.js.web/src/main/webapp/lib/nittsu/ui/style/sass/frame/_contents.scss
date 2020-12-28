@@ -61,7 +61,6 @@ div#master-wrapper {
 			&>div.left-panel {
 				float: left;
 				box-sizing: border-box;
-				width: 375px;
 				overflow: hidden;
 				background-color: #fff;
 				padding-left: 32px;
@@ -69,7 +68,6 @@ div#master-wrapper {
 			}
 
 			&>div.right-panel {
-				margin-left: 375px;
 				box-sizing: border-box;
 				overflow: hidden;
 				padding-left: 16px;
@@ -88,7 +86,6 @@ div#master-wrapper {
 			}
 
 			&>div.right-panel {
-				margin-left: calc(100vw - 375px);
 				box-sizing: border-box;
 				overflow: hidden;
 				padding-left: 16px;
@@ -120,5 +117,8 @@ div#master-wrapper {
 
 	&.modal {
 		background-color: #fff;
+		&>#master-content {
+			height: 100vh;
+		}
 	}
 }

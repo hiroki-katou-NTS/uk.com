@@ -4,12 +4,17 @@ div#master-wrapper {
 		#functions-area {
 			padding: 5px 10px;
 			overflow: hidden;
+			position: relative;
 			white-space: nowrap;
 			box-sizing: border-box;
 
+			&>button.btn-error {
+				margin-left: 25px;
+				vertical-align: middle;
+			}
+
 			.pg-name {
 				float: left;
-				width: 320px;
 				font-size: 18px;
 				letter-spacing: 5%;
 				font-weight: 500;
@@ -31,7 +36,8 @@ div#master-wrapper {
 				}
 
 				&+.button-group {
-					margin-left: 320px;
+					position: relative;
+					overflow: hidden;
 					text-align: right;
 
 					button {
@@ -39,6 +45,13 @@ div#master-wrapper {
 							margin-left: 7px;
 						}
 					}
+				}
+
+				&>button.btn-error {
+					margin-left: 25px;
+					vertical-align: middle;
+					margin-top: -4px;
+					padding: 0 12px;
 				}
 			}
 
@@ -65,19 +78,22 @@ div#master-wrapper {
 		}
 
 		#functions-area-bottom {
-			position: absolute;
-			bottom: 0px;
 			width: 100%;
 			padding: 10px 0;
-			border-top: solid 1px $frame_border_color;
-			text-align: center;
 			white-space: nowrap;
 			background-color: #F1FDFB;
-			z-index: 10001;
 			box-sizing: border-box;
+			position: relative;
+			text-align: center;
 			
 			button {
 				vertical-align: middle;
+			}
+
+			&>button.btn-error {
+				position: absolute;
+				top: -13px;
+				left: 10px;
 			}
 		}
 
@@ -86,9 +102,10 @@ div#master-wrapper {
 		}
 	}
 	
-
 	&.modal {			
 		&>div#functions-area-bottom {
+			text-align: center;
+			border-top: solid 1px $frame_border_color;
 
 			&>button {
 				vertical-align: middle;

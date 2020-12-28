@@ -195,6 +195,7 @@ module nts.uk.ui.errors {
         
         stashMemento(): ErrorViewModelMemento {
             let memento = new ErrorViewModelMemento();
+            
             memento.setErrors(ko.unwrap(this.errors));
             memento.setGridErrors(ko.unwrap(this.gridErrors));
             memento.option = ko.unwrap(this.option);

@@ -20,6 +20,26 @@ module nts.uk.ui.layout {
     }
 
     @handler({
+        bindingName: 'kb'
+    })
+    export class KibanUIViewModelBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const content = valueAccessor();
+            const { errorDialogViewModel } = content;
+
+            element.removeAttribute('data-bind');
+
+            element.classList.add('view');
+            element.setAttribute('id', 'kiban-wrapper');
+
+            ko.applyBindingsToDescendants(bindingContext.extend({ $vm: errorDialogViewModel, $data: errorDialogViewModel }), element);
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+
+    @handler({
         bindingName: 'ui-master-notification',
         validatable: true,
         virtual: false
@@ -107,7 +127,7 @@ module nts.uk.ui.layout {
 
                     const { programId, programName } = __viewContext.program;
 
-                    ko.applyBindingsToNode($title, { i18n: _.isString(title) ? title.trim() : `${programId || ''} ${programName || ''}`.trim() }, bindingContext);
+                    $title.innerHTML = `<span>${mvm.$i18n(_.isString(title) ? title.trim() : `${programId || ''} ${programName || ''}`.trim())}</span>`;
 
                     if (back) {
                         $title.classList.add('navigator');
@@ -137,11 +157,20 @@ module nts.uk.ui.layout {
 
                         ko.applyBindingsToNode($btnGroup, null, bindingContext);
                     }
+
+                    // button error in function bar
+                    ko.applyBindingsToNode($('<button>').appendTo($title).get(0), { 'c-error': '' }, bindingContext);
+                } else {
+                    // button error in function bar
+                    ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
                 }
             } else {
                 element.id = "functions-area-bottom";
 
                 ko.applyBindingsToNode(element, null, bindingContext);
+
+                // button error in function bar
+                ko.applyBindingsToNode($('<button>').prependTo(element).get(0), { 'c-error': '' }, bindingContext);
             }
 
             element.removeAttribute('data-bind');

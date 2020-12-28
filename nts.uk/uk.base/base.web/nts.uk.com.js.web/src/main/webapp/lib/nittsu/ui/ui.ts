@@ -1,7 +1,7 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
-    
+
     export module toBeResource {
         export let yes = "はい";
         export let no = "いいえ";
@@ -28,7 +28,7 @@ module nts.uk.ui {
         export let manual = "マニュアル";
         export let logout = "ログアウト";
         export let settingPersonal = "個人情報の設定";
-        export let weekDaysShort = [ "日", "月", "火", "水", "木", "金", "土" ];
+        export let weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
         export let searchByCodeName = "コード・名称で検索・・・";
         export let search = "検索";
         export let filter = "絞り込み";
@@ -52,27 +52,30 @@ module nts.uk.ui {
     export function localize(textId: string): string {
         return textId;
     }
-    
-    export function writeViewConstraint(constraint: any){
-        if(nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)){
-            __viewContext.primitiveValueConstraints = {};
+
+    export function writeViewConstraint(constraint: any) {
+        if (_.isNil(__viewContext.primitiveValueConstraints)) {
+            _.extend(__viewContext, {
+                primitiveValueConstraints: {}
+            });
         }
+
         __viewContext.primitiveValueConstraints[constraint.itemCode] = constraint;
     }
 
+    export const confirmSave = function (dirtyChecker: DirtyChecker) {
+        const frame = windows.getSelf();
 
-    export var confirmSave: (dirtyChecker: DirtyChecker) => any;
-    confirmSave = function(dirtyChecker: DirtyChecker) {
-        var frame = windows.getSelf();
-        if (frame.$dialog === undefined || frame.$dialog === null) {
+        if (_.isNil(frame.$dialog)) {
             confirmSaveWindow(dirtyChecker);
         } else {
             confirmSaveDialog(dirtyChecker, frame.$dialog);
         }
     }
+
     function confirmSaveWindow(dirtyChecker: DirtyChecker) {
 
-        var beforeunloadHandler = function(e) {
+        var beforeunloadHandler = function (e) {
             if (dirtyChecker.isDirty()) {
                 return "ban co muon save hok?";
                 //return nts.ui.message('Com_0000105');
@@ -84,14 +87,14 @@ module nts.uk.ui {
 
     function confirmSaveDialog(dirtyChecker: DirtyChecker, dialog: JQuery) {
         //dialog* any;
-        var beforeunloadHandler = function(e) {
+        var beforeunloadHandler = function (e) {
             if (dirtyChecker.isDirty()) {
                 e.preventDefault();
                 nts.uk.ui.dialog.confirm("Are you sure you want to leave the page?")
-                    .ifYes(function() {
+                    .ifYes(function () {
                         dirtyChecker.reset();
                         dialog.dialog("close");
-                    }).ifNo(function() {
+                    }).ifNo(function () {
                     })
                 //return nts.ui.message('Com_0000105');
             }
@@ -105,7 +108,7 @@ module nts.uk.ui {
     };
 
     export function confirmSaveDisableDialog(dialog) {
-        dialog.on("dialogbeforeclose", function() { });
+        dialog.on("dialogbeforeclose", function () { });
     };
 
     export function confirmSaveEnable(beforeunloadHandler) {
@@ -121,7 +124,7 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-        
+
         export function invisible() {
             let rect = calcRect();
 
@@ -214,23 +217,23 @@ module nts.uk.ui {
                         });
                         return;
                     }
-                    
+
                     $label.bind('mouseleave.limitedlabel', () => {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();
                     });
-                    
-                    $label.on('remove', function() {
+
+                    $label.on('remove', function () {
                         $view.remove();
                     });
                 }
             });
         });
-        
+
         function isOverflow($label) {
-            if ( $label[0].nodeName === "INPUT"
+            if ($label[0].nodeName === "INPUT"
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
-                || !!window.navigator.userAgent.match(/trident/i))) {
+                    || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));
                 let style = $label[0].currentStyle;
                 if (style) {
@@ -238,45 +241,45 @@ module nts.uk.ui {
                         $div[0].style[p] = style[p];
                     }
                 }
-                
+
                 $div.html($label.val());
                 let width = $div.outerWidth();
                 let scrollWidth = $div[0].scrollWidth;
                 $div.remove();
                 return width < scrollWidth;
             }
-            
+
             return $label[0].offsetWidth < $label[0].scrollWidth;
         }
     }
-    
+
     export module keyboardStream {
-        
+
         let _lastKey: { code: number, time: Date } = {
             code: undefined,
             time: undefined
         };
-        
+
         export function lastKey(): { code: number, time: Date } {
             return {
                 code: _lastKey.code,
                 time: _lastKey.time
             };
         }
-        
+
         export function wasKeyDown(keyCode: number, millisToExpire: number): boolean {
-            
+
             return _lastKey.code === keyCode
                 && (+new Date() - +_lastKey.time <= millisToExpire);
         }
-        
+
         $(() => {
-            
+
             $(window).on("keydown", e => {
                 _lastKey.code = e.keyCode;
                 _lastKey.time = new Date();
             });
-            
+
         });
     }
 
