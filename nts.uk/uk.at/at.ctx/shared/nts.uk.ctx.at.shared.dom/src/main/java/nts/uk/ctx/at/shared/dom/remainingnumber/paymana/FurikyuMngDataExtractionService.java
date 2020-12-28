@@ -153,7 +153,6 @@ public class FurikyuMngDataExtractionService {
 					.employeeCode(personEmpBasicInfoImport.getEmployeeCode())
 					.employeeName(personEmpBasicInfoImport.getBusinessName())
 					.build();
-
 			return result;
 		}
 	}
@@ -196,10 +195,9 @@ public class FurikyuMngDataExtractionService {
 		SubstVacationSetting substVacationSetting = optComSubData.map(ComSubstVacation::getSetting).orElse(null);
 		ManageDistinct manageDistinct = ManageDistinct.NO;
 		if (optEmpSubData.isPresent()) {
-			manageDistinct = optEmpSubData.get().getSetting().getIsManage();
+			manageDistinct = optEmpSubData.get().getManageDistinct();
 		} else {
-			SubstVacationSetting setting = optComSubData.map(ComSubstVacation::getSetting).orElse(null);
-			manageDistinct = setting == null ? ManageDistinct.NO : setting.getIsManage();
+			manageDistinct = optComSubData.map(ComSubstVacation::getManageDistinct).orElse(ManageDistinct.NO);
 		}
 		return ManagementClassificationSetting.builder()
 				.substVacationSetting(substVacationSetting)
@@ -257,7 +255,7 @@ public class FurikyuMngDataExtractionService {
 		if (empCD != null) {
 			if(empSubstVacationRepository.findById(cid, empCD).isPresent()) {
 				empSubstVacation = empSubstVacationRepository.findById(cid, empCD).get();
-				expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
+			//	expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
 			} else if (comSubstVacationRepository.findById(cid).isPresent()){
 				comSubstVacation = comSubstVacationRepository.findById(cid).get();
 				expirationDate = comSubstVacation.getSetting().getExpirationDate().value;

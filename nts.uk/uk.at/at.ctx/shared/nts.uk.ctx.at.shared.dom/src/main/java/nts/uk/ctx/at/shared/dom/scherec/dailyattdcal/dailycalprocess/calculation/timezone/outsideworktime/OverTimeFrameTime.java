@@ -128,16 +128,16 @@ public class OverTimeFrameTime {
 	 * @return　
 	 */
 	public int calcOverLimitDivergenceTime() {
-		AttendanceTime overTime = new AttendanceTime(0);
+		int overTime = 0;
 		if(this.getOverTimeWork() != null
 			&& this.getOverTimeWork().getDivergenceTime() != null)
-			overTime = this.getOverTimeWork().getDivergenceTime();
+			overTime += this.getOverTimeWork().getDivergenceTime().valueAsMinutes();
 		
-		AttendanceTime transTime = new AttendanceTime(0);
+		int transTime = 0;
 		if(this.getTransferTime() != null
 		   && this.getTransferTime().getDivergenceTime() != null)
-			transTime = this.getTransferTime().getDivergenceTime();
-		return overTime.addMinutes(transTime.valueAsMinutes()).valueAsMinutes();  
+			transTime = this.getTransferTime().getDivergenceTime().valueAsMinutes();
+		return overTime + transTime;  
 				 
 	}
 

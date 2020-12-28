@@ -35,5 +35,7 @@ public class FixedWorkInforDto {
 	 	private Integer fixBreakTime; 
 	 	//勤務タイプ : WorkTimeForm
 	 	private Integer workType;
+	 	// 休日か : SetupType
+	 	private Boolean isNeedWorkTime;
 	
 }

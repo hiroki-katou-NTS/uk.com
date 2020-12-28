@@ -44,9 +44,9 @@
 					<div style="width: 600px; padding-left: 90px">
 						<!-- A4_1 -->
 						<div class="panel panel-frame flex-layout">
-							<div data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp()}" ></div>
+							<div data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp}" ></div>
 							<!-- A4_2 -->
-							<div data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp()}">
+							<div data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp}">
 								<div tabindex="5" id="employee-list"></div>
 							</div>
 							
@@ -285,7 +285,7 @@
 											</td>
 										</tr>
 										<tr>
-											<td>
+											<td colspan="2">
 												<div  data-bind="ntsCheckBox: { checked: isNursingAndtimeChildNull , text: '(false:not null,true: null)' }"></div>
 											</td>
 										</tr>

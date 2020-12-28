@@ -270,7 +270,7 @@ public class ShNursingLeaveSettingPubImpl {
 //			int fakeTargetNumberFamily = 13; // (gọi request 440 và 441 ra,
 //												// param: useEndDateBeforeGrant)
 //			int vacationDays = 0;
-//			if (fakeTargetNumberFamily >= nursingLeaveSetting.getMaxPersonSetting().getNursingNumberPerson().v()) {
+//			if (fakeTargetNumberFamily >= nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay2().v()) {
 //				vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 //			}
 //			ouput.setGrantedNumberThisTime(vacationDays);
@@ -278,7 +278,7 @@ public class ShNursingLeaveSettingPubImpl {
 //			if (childNursingRemainExport.getGrantPeriodFlag()) {
 //				int fakeTargetNumberFamily2 = 14; // (440,441 - param: endDate)
 //				if (nursingLeaveSetting != null && fakeTargetNumberFamily2 >= nursingLeaveSetting.getMaxPersonSetting()
-//						.getNursingNumberPerson().v()) {
+//						.getNursingNumberLeaveDay2().v()) {
 //					vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 //				}
 //				ouput.setGrantedNumberNextTime(vacationDays);
@@ -317,7 +317,7 @@ public class ShNursingLeaveSettingPubImpl {
 //				int fakeTargetNumberFamily = 13; // (gọi request 440 và 441 ra,
 //													// param: useEndDateBeforeGrant)
 //				int vacationDays = 0;
-//				if (fakeTargetNumberFamily >= nursingLeaveSetting.getMaxPersonSetting().getNursingNumberPerson().v()) {
+//				if (fakeTargetNumberFamily >= nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay2().v()) {
 //					vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 //				}
 //				ouput.setGrantedNumberThisTime(vacationDays);
@@ -325,7 +325,7 @@ public class ShNursingLeaveSettingPubImpl {
 //				if (childNursingRemainExport.getGrantPeriodFlag()) {
 //					int fakeTargetNumberFamily2 = 14; // (440,441 - param: endDate)
 //					if (nursingLeaveSetting != null && fakeTargetNumberFamily2 >= nursingLeaveSetting.getMaxPersonSetting()
-//							.getNursingNumberPerson().v()) {
+//							.getNursingNumberLeaveDay2().v()) {
 //						vacationDays = nursingLeaveSetting.getMaxPersonSetting().getNursingNumberLeaveDay().v();
 //					}
 //					ouput.setGrantedNumberNextTime(vacationDays);

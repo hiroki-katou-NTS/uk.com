@@ -482,8 +482,7 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", new SubstVacationSetting(ManageDistinct.YES,
-						ExpirationTime.THREE_MONTH, ApplyPermission.ALLOW)));
+				result = Optional.of(new EmpSubstVacation(CID, "00", ManageDistinct.YES));
 			}
 		};
 
@@ -558,8 +557,8 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", new SubstVacationSetting(ManageDistinct.YES,
-						ExpirationTime.THREE_MONTH, ApplyPermission.ALLOW)));
+				result = Optional.of(new EmpSubstVacation(CID, "00", ManageDistinct.YES
+						));
 			}
 		};
 

@@ -21,7 +21,7 @@ public class AcquisitionRule extends DomainObject {
 	/** The company id. */
 	private String companyId;
 
-	/** The setting classification. */
+	/** The setting classification. --- 取得する順番をチェックする */
 	@Setter
 	private SettingDistinct category;
 	
@@ -29,9 +29,7 @@ public class AcquisitionRule extends DomainObject {
 	@Setter
 	private AnnualHoliday annualHoliday;
 	
-	/**時間年休より優先する休暇*/
-	@Setter
-	private HoursHoliday hoursHoliday;
+	
 
 	/**
 	 * Instantiates a new vacation acquisition rule.
@@ -44,7 +42,7 @@ public class AcquisitionRule extends DomainObject {
 		this.companyId = memento.getCompanyId();
 		this.category = memento.getCategory();
 		this.annualHoliday = memento.getAnnualHoliday();
-		this.hoursHoliday = memento.getHoursHoliday();
+	
 
 	}
 
@@ -58,6 +56,6 @@ public class AcquisitionRule extends DomainObject {
 		memento.setCompanyId(this.companyId);
 		memento.setCategory(this.category);
 		memento.setAnnualHoliday(this.annualHoliday);
-		memento.setHoursHoliday(this.hoursHoliday);
+	
 	}
 }

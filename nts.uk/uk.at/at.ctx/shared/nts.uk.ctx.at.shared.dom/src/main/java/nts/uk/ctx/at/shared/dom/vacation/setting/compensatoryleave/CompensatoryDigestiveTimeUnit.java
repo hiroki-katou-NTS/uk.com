@@ -44,4 +44,11 @@ public class CompensatoryDigestiveTimeUnit {
 		memento.setDigestiveUnit(this.digestiveUnit);
 		memento.setIsManageByTime(this.isManageByTime);
 	}
+
+	public CompensatoryDigestiveTimeUnit(ManageDistinct isManageByTime, TimeDigestiveUnit digestiveUnit) {
+		super();
+		this.isManageByTime = isManageByTime;
+		this.digestiveUnit = digestiveUnit;
+	}
+	
 }
