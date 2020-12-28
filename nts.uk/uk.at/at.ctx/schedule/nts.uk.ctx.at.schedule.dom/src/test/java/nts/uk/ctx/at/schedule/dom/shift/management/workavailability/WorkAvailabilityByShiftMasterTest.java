@@ -70,11 +70,114 @@ public class WorkAvailabilityByShiftMasterTest {
 	}
 	
 	/**
+	 * input: 全部シフトマスタの出勤・休日系の判定　: 午前出勤系
+	 * output: false
+	 */
+	@Test
+	public void testIsHolidayAvailability_morning_work_false() {
+		
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		new Expectations(shiftMaster1, shiftMaster2) {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				
+				shiftMaster1.getWorkStyle(require);
+				result = Optional.of(WorkStyle.MORNING_WORK);
+				
+				shiftMaster2.getWorkStyle(require);
+				result = Optional.of(WorkStyle.MORNING_WORK);
+			}
+		};
+		
+		assertThat(shiftExp.isHolidayAvailability(require)).isFalse();
+	}
+	
+	/**
+	 * input: 全部シフトマスタの出勤・休日系の判定　: 午後出勤系
+	 * output: false
+	 */
+	@Test
+	public void testIsHolidayAvailability_afternoon_work_false() {
+		
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		new Expectations(shiftMaster1, shiftMaster2) {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				
+				shiftMaster1.getWorkStyle(require);
+				result = Optional.of(WorkStyle.AFTERNOON_WORK);
+				
+				shiftMaster2.getWorkStyle(require);
+				result = Optional.of(WorkStyle.AFTERNOON_WORK);
+			}
+		};
+		
+		assertThat(shiftExp.isHolidayAvailability(require)).isFalse();
+	}
+	
+	/**
+	 * input: S01:午前出勤系, S02:午後出勤系
+	 * output: false
+	 */
+	@Test
+	public void testIsHolidayAvailability_have_morning_day_have_afternoon_day() {
+		
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		new Expectations(shiftMaster1, shiftMaster2) {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				
+				shiftMaster1.getWorkStyle(require);
+				result = Optional.of(WorkStyle.MORNING_WORK);
+				
+				shiftMaster2.getWorkStyle(require);
+				result = Optional.of(WorkStyle.AFTERNOON_WORK);
+			}
+		};
+		
+		assertThat(shiftExp.isHolidayAvailability(require)).isFalse();
+	}	
+	
+	/**
+	 * input: S01:1日出勤系, S02:午後出勤系
+	 * output: false
+	 */
+	@Test
+	public void testIsHolidayAvailability_working_false() {
+		
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		new Expectations(shiftMaster1, shiftMaster2) {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>) any);
+				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				
+				shiftMaster1.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_WORK);
+				
+				shiftMaster2.getWorkStyle(require);
+				result = Optional.of(WorkStyle.AFTERNOON_WORK);
+			}
+		};
+		
+		assertThat(shiftExp.isHolidayAvailability(require)).isFalse();
+	}
+	/**
 	 * input: シフトマスタリスト中にいずれかの出勤・休日系の判定　＝＝ 休日
 	 * output: true 
 	 */
 	@Test
-	public void testIsHolidayAvailability_true() {
+	public void testIsHolidayAvailability_holiday_true() {
 		
 		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
 		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
@@ -98,7 +201,6 @@ public class WorkAvailabilityByShiftMasterTest {
 	
 	@Test
 	public void testIsMatchingWorkAvailability_getShiftMaster_empty() {
-		
 		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.defaultCreate();
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");

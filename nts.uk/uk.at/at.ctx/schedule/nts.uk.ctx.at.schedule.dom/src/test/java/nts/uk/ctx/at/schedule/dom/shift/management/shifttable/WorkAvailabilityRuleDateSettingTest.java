@@ -21,11 +21,10 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 public class WorkAvailabilityRuleDateSettingTest {
 	@Injectable
-	WorkAvailabilityOfOneDay.Require require;
+	WorkAvailabilityRule.Require require;
 	
 	@Test
 	public void getters() {
-		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		NtsAssert.invokeGetters(target);  
 	}

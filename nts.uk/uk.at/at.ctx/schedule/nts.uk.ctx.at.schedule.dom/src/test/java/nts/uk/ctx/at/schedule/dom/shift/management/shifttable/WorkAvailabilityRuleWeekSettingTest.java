@@ -93,7 +93,7 @@ public class WorkAvailabilityRuleWeekSettingTest {
 	}
 	
 	@Test
-	public void testIsOverHolidayMaxdays(@Injectable WorkAvailabilityOfOneDay.Require require) {
+	public void testIsOverHolidayMaxdays(@Injectable WorkAvailabilityRule.Require require) {
 		
 		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper.defaultCreate();
 		
