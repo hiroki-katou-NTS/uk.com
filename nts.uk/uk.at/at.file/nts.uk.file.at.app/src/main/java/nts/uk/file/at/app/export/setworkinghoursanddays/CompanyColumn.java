@@ -31,7 +31,7 @@ public class CompanyColumn {
 	public static final String KMK004_396 = "変形労働";
 	public static final String KMK004_397 = "法定労働時間_Defor";
 	public static final String KMK004_375_1 = "1日の法定労働時間_Defor";
-	public static final String KMK004_376_1 = "1週の法定労働時間_Normal";
+	public static final String KMK004_376_1 = "1週の法定労働時間_Defor";
 	public static final String KMK004_398 = "期間設定開始月";
 	public static final String KMK004_399 = "期間_Defor";
 	public static final String KMK004_400 = "繰り返し";
