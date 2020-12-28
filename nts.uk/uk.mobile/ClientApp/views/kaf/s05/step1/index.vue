@@ -111,7 +111,6 @@
           </div>
           <div class="card-body">
             <nts-time-range-input
-              v-bind:disabled="true"
               class="mb-1"
               v-model="item.valueHours"
             />
