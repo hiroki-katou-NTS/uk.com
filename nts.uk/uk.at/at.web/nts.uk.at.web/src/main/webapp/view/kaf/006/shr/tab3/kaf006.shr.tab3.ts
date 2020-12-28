@@ -6,9 +6,8 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
         <div id="kaf006tab3">
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
                 checked: isChangeWorkHour,
-                text: $i18n('KAF006_18'),
-                visible: $parent.condition11
-            }"></div>
+                text: $i18n('KAF006_18')
+            }, visible: $parent.condition11"></div>
             <hr style="width: 700px; margin-inline-start: initial;" data-bind="visible: $parent.condition11" />
             <div class="table" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
@@ -79,10 +78,10 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
             <div class="table">
                 <div class="cell">
                     <div class="table">
-                        <div class="cell col-1">
+                        <div class="cell col-1" data-bind="visible: $parent.condition6">
                             <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_33')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell" data-bind="visible: $parent.condition6">
                             <div style="vertical-align: bottom;" data-bind="ntsComboBox: {
                                 name: $i18n('KAF006_33'),
                                 options: dateSpecHdRelationLst,
@@ -96,9 +95,9 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                             checked: $parent.isCheckMourn,
                             text: $i18n('KAF006_34'),
                             enable: $parent.isDispMourn
-                        }"></div>
+                        }, visible: $parent.condition7"></div>
                     </div>
-                    <div class="table" style="margin-top: 5px;">
+                    <div class="table" style="margin-top: 5px;" data-bind="visible: $parent.condition8">
                         <div class="cell col-1">
                             <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_43')"></div>
                         </div>
@@ -114,7 +113,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         </div>
                     </div>
                 </div>
-                <div class="cell vertical-align">
+                <div class="cell vertical-align" data-bind="visible: $parent.condition9">
                     <div style="margin-left: 10px; white-space: pre-wrap;" class="panel panel-frame" data-bind="text: $parent.maxNumberOfDay"></div>
                 </div>
             </div>

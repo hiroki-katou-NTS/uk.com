@@ -7,9 +7,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
         <div id="kaf006tab4">
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
                 checked: isChangeWorkHour,
-                text: $i18n('KAF006_18'),
-                visible: $parent.condition11
-            }"></div>
+                text: $i18n('KAF006_18')
+            }, visible: $parent.condition11"></div>
             <hr style="width: 700px; margin-inline-start: initial;" data-bind="visible: $parent.condition11" />
             <div class="table" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
