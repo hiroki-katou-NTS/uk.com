@@ -27,8 +27,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCaculation {
@@ -42,8 +44,12 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setYmd(ymd);
 		dailyAttendanceTimePubImport.setWorkTypeCode(workTypeCode == null ? null : new WorkTypeCode(workTypeCode));
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
-		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
-		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
+		if(workStartTime != null && workEndTime != null) {
+			TimeZone timeZone = new TimeZone(new TimeWithDayAttr(workStartTime),new TimeWithDayAttr(workEndTime));
+			dailyAttendanceTimePubImport.getLstTimeZone().add(timeZone);
+		}
+		/*dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
+		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));*/
 		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
 		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
 		//1日分の勤怠時間を仮計算
@@ -114,8 +120,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setYmd(dailyAttenTimeParam.getYmd());
 		dailyAttendanceTimePubImport.setWorkTypeCode(dailyAttenTimeParam.getWorkTypeCode());
 		dailyAttendanceTimePubImport.setWorkTimeCode(dailyAttenTimeParam.getWorkTimeCode());
-		dailyAttendanceTimePubImport.setWorkStartTime(dailyAttenTimeParam.getWorkStartTime());
-		dailyAttendanceTimePubImport.setWorkEndTime(dailyAttenTimeParam.getWorkEndTime());
+		TimeZone timeZone = new TimeZone(new TimeWithDayAttr(dailyAttenTimeParam.getWorkStartTime().valueAsMinutes()),new TimeWithDayAttr(dailyAttenTimeParam.getWorkEndTime().valueAsMinutes()));
+		dailyAttendanceTimePubImport.getLstTimeZone().add(timeZone);
 		dailyAttendanceTimePubImport.setBreakStartTime(dailyAttenTimeParam.getBreakStartTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakStartTime()));
 		dailyAttendanceTimePubImport.setBreakEndTime(dailyAttenTimeParam.getBreakEndTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakEndTime()));
 		DailyAttendanceTimePubLateLeaveExport result = dailyAttendanceTimePub.calcDailyLateLeave(dailyAttendanceTimePubImport);
