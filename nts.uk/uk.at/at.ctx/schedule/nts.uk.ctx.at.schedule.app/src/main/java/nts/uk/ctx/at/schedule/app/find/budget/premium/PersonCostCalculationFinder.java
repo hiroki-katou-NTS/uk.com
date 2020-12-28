@@ -56,24 +56,28 @@ public class PersonCostCalculationFinder {
         val calculationList = listItem.getHistPersonCostCalculation();
         val listPer = listItem.getPersonCostCalculation();
         List<Integer> listId = new ArrayList<>();
-        listPer.forEach(e -> {
+        List<Integer> listAttId = new ArrayList<>();
+        for (PersonCostCalculation e : listPer) {
             listId.addAll(e.getPremiumSettings().stream().map(i -> (i.getID().value)).collect(Collectors.toList()));
-        });
+            e.getPremiumSettings().forEach(m -> listAttId.addAll(m.getAttendanceItems()));
+        }
+        val listNameAtt = atName.getDailyAttendanceItemName(listAttId).stream().distinct()
+                .collect(Collectors.toMap(AttendanceNamePriniumDto::getAttendanceItemId, i -> i));
         val listItemInfo = premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID, listId);
         Map<Integer, PremiumItem> mapItemInfo = listItemInfo.stream().distinct().collect(Collectors.toMap(PremiumItem::getDisplayNumber, i -> i));
         if (listPer.isEmpty()) return rs;
-            for (PersonCostCalculation sub : listPer) {
-                val dateHistoryItem = calculationList.getHistoryItems().stream().filter(e -> e.identifier().equals(sub.getHistoryID())).findFirst();
-                if (!dateHistoryItem.isPresent()) continue;
-                val item = convertToPersonCostDto(sub, dateHistoryItem.get(), mapItemInfo);
-                rs.add(item);
-            }
+        for (PersonCostCalculation sub : listPer) {
+            val dateHistoryItem = calculationList.getHistoryItems().stream().filter(e -> e.identifier().equals(sub.getHistoryID())).findFirst();
+            if (!dateHistoryItem.isPresent()) continue;
+            val item = convertToPersonCostDto(sub, dateHistoryItem.get(), mapItemInfo, listNameAtt);
+            rs.add(item);
+        }
 
         return rs;
     }
 
-    private PersonCostCalDto convertToPersonCostDto(PersonCostCalculation domain,
-                                                    DateHistoryItem dateHistoryItem, Map<Integer, PremiumItem> mapItemInfo) {
+    private PersonCostCalDto convertToPersonCostDto(PersonCostCalculation domain, DateHistoryItem dateHistoryItem,
+                                                    Map<Integer, PremiumItem> mapItemInfo, Map<Integer, AttendanceNamePriniumDto> mapName) {
         return new PersonCostCalDto(
                 dateHistoryItem.start(),
                 dateHistoryItem.end(),
@@ -93,7 +97,7 @@ public class PersonCostCalculationFinder {
                         mapItemInfo.get(e.getID().value) != null ? mapItemInfo.get(e.getID().value).getUseAtr().value : null,
                         e.getRate().v(),
                         e.getUnitPrice().value,
-                        atNames(e.getAttendanceItems())
+                        e.getAttendanceItems().stream().map(mapName::get).collect(Collectors.toList())
                 )).collect(Collectors.toList())
         );
     }
