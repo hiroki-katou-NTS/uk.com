@@ -16,8 +16,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             self.frameName = ko.observable("");
             
             self.frameElimination = ko.observableArray([
-                { code: '0', frameValue: nts.uk.resource.getText("KMK007_55") },
-                { code: '1', frameValue: nts.uk.resource.getText("KMK007_56") }
+                { code: '1', frameValue: nts.uk.resource.getText("KMK007_55") },
+                { code: '0', frameValue: nts.uk.resource.getText("KMK007_56") }
             ]);
             
             self.frameEliminationSelectedCode = ko.observable(0);
