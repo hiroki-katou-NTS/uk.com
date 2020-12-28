@@ -233,10 +233,11 @@ module nts.uk.at.view.kmk004.b {
 		}
 
 		copy() {
-			const vm = this; 
+			const vm = this;
+			console.log(ko.unwrap(vm.employees));
 			vm.$window.modal('/view/kmk/004/r/index.xhtml', {
 				screenMode: vm.type,
-				data: [],
+				data: ko.unwrap(vm.employees),
 				selected: ko.unwrap(vm.employees),
 				year: ko.unwrap(vm.model.code),
 				laborAttr: 0,
