@@ -50,3 +50,13 @@
 .list-buttom .button3 {
     margin-left: 20px;
 }
+
+#func-notifier-errors {
+	top: 40px;
+    left: 20px;
+    position: fixed;
+    text-align: center;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
+}
