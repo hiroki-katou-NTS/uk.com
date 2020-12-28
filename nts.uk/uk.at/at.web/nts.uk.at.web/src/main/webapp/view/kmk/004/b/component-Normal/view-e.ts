@@ -215,7 +215,7 @@ module nts.uk.at.view.kmk004.b {
 								_.remove(ko.unwrap(vm.years), ((value) => {
 									return value.year == ko.unwrap(vm.selectedYear) as number;
 								}));
-								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, true));
 								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 							})
 							.then(() => {
