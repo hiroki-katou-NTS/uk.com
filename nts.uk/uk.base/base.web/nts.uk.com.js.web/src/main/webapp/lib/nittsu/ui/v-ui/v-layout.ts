@@ -209,14 +209,18 @@ module nts.uk.ui.layout {
                 })
                 .then(() => {
                     const mb = $(element).next();
+                    const md = $(element).closest('.modal');
                     const zero = $(element).closest('#master-wrapper.modal').length || $(element).parent().hasClass('master-content');
 
                     if (!mb.length) {
-                        element.style.height = `calc(100vh - ${Math.floor(element.getBoundingClientRect().top + (valueAccessor() || (zero ? 0 : 20)) - 2)}px)`;
+                        const height = element.getBoundingClientRect().top + (valueAccessor() || (zero ? 0 : (md.length ? 0 : 20))) - 2;
+
+                        element.style.height = `calc(100vh - ${Math.floor(Math.max(0, height))}px)`;
                     } else {
                         const bd = mb.get(0).getBoundingClientRect();
+                        const height = element.getBoundingClientRect().top + (valueAccessor() || (zero ? (bd.height || 0) : 20)) - 2;
 
-                        element.style.height = `calc(100vh - ${Math.floor(element.getBoundingClientRect().top + (valueAccessor() || (zero ? (bd.height || 0) : 20)) - 2)}px)`;
+                        element.style.height = `calc(100vh - ${Math.floor(Math.max(0, height))}px)`;
                     }
                 })
                 .always(() => {
