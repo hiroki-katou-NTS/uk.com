@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -87,5 +88,16 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         return this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonExtracCon.class)
                 .setParameter("ids", ids)
                 .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
+    }
+
+    @Override
+    public void register(List<ExtractionMonthlyCon> domains) {
+        List<KrcmtWkpMonExtracCon> entities = domains.stream().map(KrcmtWkpMonExtracCon::fromDomain).collect(Collectors.toList());
+        this.commandProxy().insertAll(entities);
+    }
+
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpMonExtracCon.class, ids);
     }
 }

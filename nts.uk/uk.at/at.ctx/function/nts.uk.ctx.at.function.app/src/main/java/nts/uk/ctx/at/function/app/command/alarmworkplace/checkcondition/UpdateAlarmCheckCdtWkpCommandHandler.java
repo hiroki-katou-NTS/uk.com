@@ -21,14 +21,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.basic.B
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.FixedExtractionDayItemsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.FixedExtractionScheduleItemsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.*;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.*;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.workplace.AlarmFixedExtractionItemRepository;
@@ -161,13 +155,16 @@ public class UpdateAlarmCheckCdtWkpCommandHandler extends CommandHandler<UpdateA
                                     i.getMessage()
                             ))
                             .collect(Collectors.toList());
+                    List<ExtractionScheduleCon> opItems = command.toDomainSchedule();
                     condition = new AlarmScheduleCheckCdt(
                             conItems.stream().map(FixedExtractionScheduleCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
                             Collections.emptyList());
                     List<String> fixedIds = ((AlarmScheduleCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmScheduleCheckCdt) domain.get().getCondition()).getListOptionalIDs();
                     fixedExtractionScheduleConRepo.delete(fixedIds);
+                    extractionScheduleConRepo.delete(opIds);
                     fixedExtractionScheduleConRepo.register(conItems);
+                    extractionScheduleConRepo.register(opItems);
                     break;
                 }
                 // 月次
@@ -186,10 +183,13 @@ public class UpdateAlarmCheckCdtWkpCommandHandler extends CommandHandler<UpdateA
                             conItems.stream().map(FixedExtractionMonthlyCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
                             Collections.emptyList()
                     );
+                    List<ExtractionMonthlyCon> opItems = command.toDomainMon();
                     List<String> fixedIds = ((AlarmMonthlyCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmMonthlyCheckCdt) domain.get().getCondition()).getListOptionalIDs();
                     fixedExtractionMonthlyConRepo.delete(fixedIds);
+                    extractionMonthlyConRepo.delete(opIds);
                     fixedExtractionMonthlyConRepo.register(conItems);
+                    extractionMonthlyConRepo.register(opItems);
                     break;
                 }
                 // 申請承認

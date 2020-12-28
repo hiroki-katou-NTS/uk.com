@@ -99,20 +99,38 @@ module nts.uk.at.view.kal013 {
         }
 
         export class CheckConditionDto {
-            id: number;
-            isChecked: KnockoutObservable<boolean> = ko.observable(false);
+            isCheck: KnockoutObservable<boolean> = ko.observable(false);
+            id: string;
+            no: KnockoutObservable<number> = ko.observable(null);
+            checkItem: KnockoutObservable<number> = ko.observable(null);
+            useAtr: KnockoutObservable<number> = ko.observable(null);
             name: KnockoutObservable<string> = ko.observable(null);
-            configuration: KnockoutObservable<string> = ko.observable(null);
+            minValue: KnockoutObservable<string> = ko.observable(null);
+            maxValue: KnockoutObservable<string> = ko.observable(null);
+            operator: KnockoutObservable<number> = ko.observable(null);
             message: KnockoutObservable<string> = ko.observable(null);
-            usageCategory: KnockoutObservable<number> = ko.observable(0);
 
-            constructor(id?: number, isChecked?: boolean, name?: string, configuration?: any, message?: string, usageCategory?: number) {
+            checkCond: KnockoutObservable<string> = ko.observable(null);
+            checkCondB: KnockoutObservable<number> = ko.observable(null);
+
+            constructor(isCheck: boolean, id: string,
+                        no: number, checkItem: number,
+                        useAtr: number, name: string,
+                        minValue: string, maxValue: string,
+                        operator: number, message: string,
+                        checkCond: string, checkCondB: number) {
+                this.isCheck(isCheck);
                 this.id = id;
-                this.isChecked(isChecked);
+                this.no(no);
+                this.checkItem(checkItem);
+                this.useAtr(useAtr);
                 this.name(name);
-                this.configuration(configuration);
+                this.minValue(minValue)
+                this.maxValue(maxValue);
+                this.operator(operator);
                 this.message(message);
-                this.usageCategory(usageCategory);
+                this.checkCond(checkCond);
+                this.checkCondB(checkCondB);
             }
         }
     }

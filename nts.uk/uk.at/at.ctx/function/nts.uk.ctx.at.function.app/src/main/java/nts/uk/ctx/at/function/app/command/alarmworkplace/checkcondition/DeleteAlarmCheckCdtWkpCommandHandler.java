@@ -110,6 +110,7 @@ public class DeleteAlarmCheckCdtWkpCommandHandler extends CommandHandler<DeleteA
                     List<String> fixedIds = ((AlarmScheduleCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmScheduleCheckCdt) domain.get().getCondition()).getListOptionalIDs();
                     fixedExtractionScheduleConRepo.delete(fixedIds);
+                    extractionScheduleConRepo.delete(opIds);
                     break;
                 }
                 // 月次
@@ -117,6 +118,7 @@ public class DeleteAlarmCheckCdtWkpCommandHandler extends CommandHandler<DeleteA
                     List<String> fixedIds = ((AlarmMonthlyCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmMonthlyCheckCdt) domain.get().getCondition()).getListOptionalIDs();
                     fixedExtractionMonthlyConRepo.delete(fixedIds);
+                    extractionMonthlyConRepo.delete(opIds);
                     break;
                 }
                 // 申請承認

@@ -226,15 +226,45 @@ module nts.uk.at.view.kal013.a {
 
                     if (vm.selectedCategoryCode() == common.WorkplaceCategory.MONTHLY) {
                         if (res.opMonCons && res.opMonCons.length) {
-
+                            let opItems = _.map(res.opMonCons, function (i: ExtractionMonConDto) {
+                                return new common.CheckConditionDto(
+                                    false,
+                                    i.errorAlarmWorkplaceId,
+                                    i.no,
+                                    i.checkMonthlyItemsType,
+                                    i.useAtr ? 0 : 1,
+                                    i.monExtracConName,
+                                    null,
+                                    null,
+                                    null,
+                                    i.messageDisp,
+                                    null,
+                                    null
+                                );
+                            });
+                            vm.checkConditions().checkConditionsList(opItems);
                         }
                     }
 
                     if (vm.selectedCategoryCode() == common.WorkplaceCategory.SCHEDULE_DAILY) {
                         if (res.opSchelCons && res.opSchelCons.length) {
-
-                        } else {
-
+                            let opItems = _.map(res.opSchelCons, function (i: ExtractionSchelCon) {
+                                return new common.CheckConditionDto(
+                                    false,
+                                    i.errorAlarmWorkplaceId,
+                                    i.orderNumber,
+                                    i.checkDayItemsType,
+                                    i.useAtr ? 0 : 1,
+                                    i.daiExtracConName,
+                                    null,
+                                    null,
+                                    null,
+                                    i.messageDisp,
+                                    null,
+                                    null
+                                );
+                            });
+                            vm.checkConditions().checkConditionsList(opItems);
                         }
                     }
 
@@ -274,9 +304,12 @@ module nts.uk.at.view.kal013.a {
                };
             });
 
+            let opItems = ko.toJS(vm.checkConditions().checkConditionsList());
+
             let param = {
                 alarmCheck,
-                alarmCheckCon
+                alarmCheckCon,
+                opItems
             };
 
             const apiString = vm.isNewMode() ? PATH_API.register : PATH_API.update;
@@ -465,6 +498,9 @@ module nts.uk.at.view.kal013.a {
         averageRatio: number;
         monExtracConName: string;
         messageDisp: string;
+        minValue: string;
+        maxValue: string;
+        operator: number;
     }
 
     interface ExtractionSchelCon {
@@ -477,5 +513,8 @@ module nts.uk.at.view.kal013.a {
         contrastType: number;
         daiExtracConName: string;
         messageDisp: string;
+        minValue: string;
+        maxValue: string;
+        operator: number;
     }
 }

@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -86,8 +87,14 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
     }
 
     @Override
-    public void register(ExtractionScheduleCon domain) {
+    public void register(List<ExtractionScheduleCon> domain) {
+        List<KrcmtWkpSchedaiExCon> entities = domain.stream().map(KrcmtWkpSchedaiExCon::fromDomain).collect(Collectors.toList());
+        this.commandProxy().insertAll(entities);
+    }
 
+    @Override
+    public void delete(List<String> ids) {
+        this.commandProxy().removeAll(KrcmtWkpSchedaiExCon.class, ids);
     }
 
 }

@@ -50,12 +50,18 @@
         <tbody data-bind="foreach: checkConditionsList">
           <tr>
             <td class="text-center">
-              <div data-bind="ntsCheckBox: { checked: isChecked }"></div>
+              <div data-bind="ntsCheckBox: { checked: isCheck }"></div>
             </td>
             <td class="text-center">
-              <span data-bind="text: $index() + 1"></span>
+              <span data-bind="text: no"></span>
             </td>            
-            <td><span data-bind="text: name"></span></td>
+            <td>
+              <input tabindex="10"
+                     data-bind="ntsTextEditor: {
+                                  value: name,
+                                  required: true
+                                }"/>
+            </td>
             <td class="text-center">
               <button data-bind="text: '条件', click: function(data) { $parent.displayScreenKAL003B(data) }" />
             </td>
@@ -69,7 +75,7 @@
                 ],
                 optionsValue: 'code',
                 optionsText: 'name',
-                value: usageCategory
+                value: useAtr
               }"></div>
             </td>
           </tr>

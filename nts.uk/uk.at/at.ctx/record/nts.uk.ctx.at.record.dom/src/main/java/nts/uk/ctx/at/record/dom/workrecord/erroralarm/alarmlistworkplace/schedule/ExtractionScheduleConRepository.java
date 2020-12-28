@@ -8,5 +8,7 @@ public interface ExtractionScheduleConRepository {
 
     List<ExtractionScheduleCon> getByIds(List<String> ids);
 
-    void register(ExtractionScheduleCon domain);
+    void register(List<ExtractionScheduleCon> domain);
+
+    void delete(List<String> ids);
 }
