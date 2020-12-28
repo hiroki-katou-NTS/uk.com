@@ -47,6 +47,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		divergenceReasonText: KnockoutObservable<string> = ko.observable();
 		mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
 		employeeIdLst: Array<string>;
+		isFromOther: boolean = false;
 
 		constructor() {
 			super();
@@ -60,8 +61,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			let dataTransfer: DataTransfer;
 			if (_.isNil(params)) {
 				dataTransfer = __viewContext.transferred.value; // from spr		
+				
 			}
-			__viewContext.transferred.value = undefined;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			// __viewContext.transferred.value = undefined;
 
 			vm.createRestTime();
 			vm.setMode(params);

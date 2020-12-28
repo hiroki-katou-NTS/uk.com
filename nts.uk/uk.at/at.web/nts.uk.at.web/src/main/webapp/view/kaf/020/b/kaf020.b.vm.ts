@@ -23,6 +23,7 @@ module nts.uk.at.view.kaf020.b {
             appDispInfoStartupOutput: ko.observable(null)
         });
         allOptional: any = [];
+		isFromOther: boolean = false;
 
         constructor(props: any) {
             super();
@@ -41,6 +42,10 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
             vm.$blockui("show");
             vm.loadData([], [], vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
