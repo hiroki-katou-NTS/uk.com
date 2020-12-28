@@ -594,8 +594,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			service.getDataStartScreen(targetOrgDto)
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
-					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
-					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;
+/*					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
+					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;*/
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
