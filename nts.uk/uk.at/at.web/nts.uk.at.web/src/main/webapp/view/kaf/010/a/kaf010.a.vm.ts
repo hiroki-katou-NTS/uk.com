@@ -321,26 +321,26 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			let listMidNightHolidayTimes = [];
 			let overTimeMidNight = null;
 			for (let i = 0; i < vm.holidayTime().length; i++) {
-				if (vm.holidayTime()[i].type() == 1 && !_.isNil(vm.holidayTime()[i].start())) {
+				if (vm.holidayTime()[i].type() == 1 && !_.isNil(vm.holidayTime()[i].start()) && vm.holidayTime()[i].start() > 0) {
 					let holidayTime = {} as OvertimeApplicationSetting;
 					holidayTime.frameNo = vm.holidayTime()[i].frameNo();
 					holidayTime.attendanceType = 1;
 					holidayTime.applicationTime = vm.holidayTime()[i].start();
 					listApplicationTime.push(holidayTime);
 				}
-				if (!_.isNil(vm.holidayTime()[i].legalClf()) && !_.isNil(vm.holidayTime()[i].start())) {
+				if (!_.isNil(vm.holidayTime()[i].legalClf()) && !_.isNil(vm.holidayTime()[i].start()) && vm.holidayTime()[i].start() > 0) {
 					listMidNightHolidayTimes.push({attendanceTime: vm.holidayTime()[i].start(), legalClf: vm.holidayTime()[i].legalClf()});
 				}
 			}
 			for (let i = 0; i < vm.overTime().length; i++) {
-				if (vm.overTime()[i].type() == 0 && !_.isNil(vm.overTime()[i].applicationTime())) {
+				if (vm.overTime()[i].type() == 0 && !_.isNil(vm.overTime()[i].applicationTime()) && vm.overTime()[i].applicationTime() > 0) {
 					let overTime = {} as OvertimeApplicationSetting;
 					overTime.frameNo = vm.overTime()[i].frameNo();
 					overTime.attendanceType = 0;
 					overTime.applicationTime = vm.overTime()[i].applicationTime();
 					listApplicationTime.push(overTime);
 				}
-				if (vm.overTime()[i].type() === 100 && !_.isNil(vm.overTime()[i].applicationTime())) {
+				if (vm.overTime()[i].type() === 100 && !_.isNil(vm.overTime()[i].applicationTime()) && vm.overTime()[i].applicationTime() > 0) {
 					overTimeMidNight = vm.overTime()[i].applicationTime();
 				}
 			}
@@ -363,6 +363,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			appHolidayWork.applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
 			appHolidayWork.applicationTime.overTimeShiftNight.midNightHolidayTimes = listMidNightHolidayTimes;
 			appHolidayWork.applicationTime.overTimeShiftNight.overTimeMidNight = overTimeMidNight;
+			if(!_.isNil(vm.dataSource.calculationResult)){
+				if(!_.isNil(vm.dataSource.calculationResult.applicationTime)){
+					if(!_.isNil(vm.dataSource.calculationResult.applicationTime.overTimeShiftNight)){
+						appHolidayWork.applicationTime.overTimeShiftNight.midNightOutSide 
+							= vm.dataSource.calculationResult.applicationTime.overTimeShiftNight.midNightOutSide;
+					}
+				}
+			}
 
 			appHolidayWork.application = ko.toJS(vm.application);
 
@@ -418,7 +426,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			vm.$blockui("show");
 			let appHolidayWork = vm.toAppHolidayWork();
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inpStartTime1', '#inpEndTime1')
+			vm.$validate(
+				'#kaf000-a-component4 .nts-input', 
+				'#kaf000-a-component3-prePost', 
+				'#kaf000-a-component5-comboReason', 
+				'#kaf000-a-component5-textReason', 
+				'#inpStartTime1', 
+				'#inpEndTime1')
 				.then(isValid => {
 					if (isValid) {
 						return true;
@@ -483,7 +497,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 			let approvalRootContentMap: any = null;
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inpStartTime1', '#inpEndTime1')
+			vm.$validate(
+				'#kaf000-a-component4 .nts-input', 
+				'#kaf000-a-component3-prePost', 
+				'#kaf000-a-component5-comboReason', 
+				'#kaf000-a-component5-textReason', 
+				'#inpStartTime1', 
+				'#inpEndTime1')
 				.then(isValid => {
 					if (isValid) {
 						return true;
