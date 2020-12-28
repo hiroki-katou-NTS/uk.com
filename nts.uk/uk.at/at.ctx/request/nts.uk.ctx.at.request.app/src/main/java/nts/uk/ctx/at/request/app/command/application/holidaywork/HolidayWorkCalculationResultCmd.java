@@ -34,7 +34,10 @@ public class HolidayWorkCalculationResultCmd {
 	private int calculatedFlag;
 	
 	public HolidayWorkCalculationResult toDomain() {
-		return new HolidayWorkCalculationResult(this.actualOvertimeStatus.toDomain(),
-				this.applicationTime.toDomain(), this.calculatedFlag == 0 ? CalculatedFlag.CALCULATED : CalculatedFlag.UNCALCULATED);
+		return new HolidayWorkCalculationResult(
+				this.actualOvertimeStatus != null ? this.actualOvertimeStatus.toDomain() : null,
+				this.applicationTime != null ? this.applicationTime.toDomain() : null,
+				this.calculatedFlag == 0 ? CalculatedFlag.CALCULATED : CalculatedFlag.UNCALCULATED
+						);
 	}
 }

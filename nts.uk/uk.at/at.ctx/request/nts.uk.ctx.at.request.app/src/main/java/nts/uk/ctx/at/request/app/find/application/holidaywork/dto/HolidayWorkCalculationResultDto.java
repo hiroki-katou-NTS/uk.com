@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.overtime.ApplicationTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.OverStateOutputDto;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
 
 /**
@@ -36,7 +37,7 @@ public class HolidayWorkCalculationResultDto {
 		if(domain == null) return null;
 		return new HolidayWorkCalculationResultDto(
 				domain.getActualOvertimeStatus() != null ? OverStateOutputDto.fromDomain(domain.getActualOvertimeStatus()) : null, 
-				ApplicationTimeDto.fromDomain(domain.getApplicationTime()), 
-				domain.getCalculatedFlag().value);
+				domain.getApplicationTime() != null ? ApplicationTimeDto.fromDomain(domain.getApplicationTime()) : null, 
+				domain.getCalculatedFlag() != null ? domain.getCalculatedFlag().value : CalculatedFlag.UNCALCULATED.value);
 	}
 }
