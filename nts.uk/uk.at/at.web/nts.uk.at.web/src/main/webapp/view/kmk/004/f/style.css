@@ -51,9 +51,9 @@
     margin-left: 20px;
 }
 
-#func-notifier-errors {
-	top: 40px;
-    left: 20px;
+#func-notifier-errors.shown {
+	top: 40px !important;
+    left: 20px !important;
     position: fixed;
     text-align: center;
     width: 100px;
