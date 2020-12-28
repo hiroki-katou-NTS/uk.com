@@ -11,7 +11,7 @@ import java.util.Set;
  * @author jinno
  *
  */
-public class CreateCodeTest {
+public class CreateCodeTest_repository {
 
 	public static void main(String[] args) {
 
