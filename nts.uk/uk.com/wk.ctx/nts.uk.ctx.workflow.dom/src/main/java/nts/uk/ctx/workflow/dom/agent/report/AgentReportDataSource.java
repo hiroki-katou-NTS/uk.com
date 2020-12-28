@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +14,5 @@ import java.util.List;
 @Setter
 public class AgentReportDataSource {
     private String fileName;
-    private List<LinkedHashMap<String, String>> data;
+    private List<Map<String, String>> data;
 }

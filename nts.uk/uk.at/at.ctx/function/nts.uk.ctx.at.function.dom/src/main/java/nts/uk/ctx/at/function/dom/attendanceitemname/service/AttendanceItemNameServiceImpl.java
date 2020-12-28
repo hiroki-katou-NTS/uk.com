@@ -28,6 +28,8 @@ import nts.uk.ctx.at.function.dom.adapter.OptionalItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.OptionalItemImport;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapter;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapterDto;
+import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdater;
+import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdaterDto;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
 import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuAdaptor;
@@ -116,7 +118,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	
 	@Inject
 	private BentoMenuAdaptor bentoMenuAdaptor;
-
+	
 	@Inject
 	private TempAbsenceFrameApdater tempAbsenceFrameApdater;
 
@@ -268,6 +270,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			FrameCategory frCtg = EnumAdaptor.valueOf(item.getFrameCategory(), FrameCategory.class);
 			AttendanceItemLinking itemLink = mapItemLinking.get(item.getAttendanceItemId());
 			Integer frameNo = itemLink.getFrameNo().v();
+            item.setFrameNo(frameNo);
 			
 			switch (frCtg) {
 			case OverTime:
@@ -605,24 +608,27 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				.getByCompanyIdAndUseClassification(companyId, UseClassification.UseClass_NotUse.value);
 		
 		// 使用不可のList<時間外超過の内訳項目＞をチェックする Check list < hạng mục chi tiết tăng ca> không thể sử dụng
-		// 使用不可のList<超過時間＞をチェック Check list <thời gian vượt quá> không thể sử dụng
-		if (!outsideOTBRDItems.isEmpty() && !overtimes.isEmpty()) {
-			// List<枠NO>：使用不可のList<超過時間>．超過時間NO
-			List<BigDecimal> frameNos = overtimes.stream()
-					.map(t -> BigDecimal.valueOf(t.getOvertimeNo().value))
-					.collect(Collectors.toList());
+		if (!outsideOTBRDItems.isEmpty()) {
 			
-			List<Integer> frameCategories = Arrays.asList(FrameCategory.ExcessTime.value);
-			
-			List<Integer> breakdownItemNos = outsideOTBRDItems.stream().map(t -> t.getBreakdownItemNo().value).collect(Collectors.toList());
+			// 使用不可のList<超過時間＞をチェック Check list <thời gian vượt quá> không thể sử dụng
+			if (!overtimes.isEmpty()) {
+				// List<枠NO>：使用不可のList<超過時間>．超過時間NO
+				List<BigDecimal> frameNos = overtimes.stream()
+						.map(t -> BigDecimal.valueOf(t.getOvertimeNo().value))
+						.collect(Collectors.toList());
+				
+				List<Integer> frameCategories = Arrays.asList(FrameCategory.ExcessTime.value);
+				
+				List<Integer> breakdownItemNos = outsideOTBRDItems.stream().map(t -> t.getBreakdownItemNo().value).collect(Collectors.toList());
 
-			// List<使用不可の超過時間系勤怠項目ID＞を取得する Nhận list <Attendance items ID liên quand đến thời gian OT không thể sử dụng>
-			List<Integer> notUsedTime = this.attendanceItemLinkingRepository
-					.findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(frameNos, type.value, frameCategories, breakdownItemNos).stream()
-					.map(t -> t.getAttendanceItemId())
-					.collect(Collectors.toList());
-			// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く 
-			attendanceItemIdAvaiable.removeAll(notUsedTime);
+				// List<使用不可の超過時間系勤怠項目ID＞を取得する Nhận list <Attendance items ID liên quand đến thời gian OT không thể sử dụng>
+				List<Integer> notUsedTime = this.attendanceItemLinkingRepository
+						.findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(frameNos, type.value, frameCategories, breakdownItemNos).stream()
+						.map(t -> t.getAttendanceItemId())
+						.collect(Collectors.toList());
+				// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く 
+				attendanceItemIdAvaiable.removeAll(notUsedTime);
+			}
 		}
 		
 		// 使用不可の回数集計を取得する Nhận tính toán số lần không thể sử dụng
@@ -744,5 +750,4 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				return null;
 		}
 	}
-	
 }

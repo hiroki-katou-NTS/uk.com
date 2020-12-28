@@ -14,9 +14,9 @@ import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class RCReflectWorkChangeAppTest {
@@ -41,7 +41,7 @@ public class RCReflectWorkChangeAppTest {
 				2);
 
 		// 勤務変更申請の反映
-		ReflectWorkChangeApplication reflectWorkChange = new ReflectWorkChangeApplication("", NotUseAtr.USE);// 出退勤を反映するか＝
+		ReflectWorkChangeApp reflectWorkChange = new ReflectWorkChangeApp("", NotUseAtr.USE);// 出退勤を反映するか＝
 																												// true;
 		List<Integer> actualResult = new ArrayList<Integer>();
 		actualResult.addAll(RCReflectWorkChangeApp.reflect(require, createAppChange(ScheduleRecordClassifi.RECORD),
@@ -67,7 +67,7 @@ public class RCReflectWorkChangeAppTest {
 				2);
 
 		// 勤務変更申請の反映
-		ReflectWorkChangeApplication reflectWorkChange = new ReflectWorkChangeApplication("", NotUseAtr.NOT_USE);// 出退勤を反映するか
+		ReflectWorkChangeApp reflectWorkChange = new ReflectWorkChangeApp("", NotUseAtr.NOT_USE);// 出退勤を反映するか
 																													// =
 																													// false;
 		List<Integer> actualResult = new ArrayList<Integer>();

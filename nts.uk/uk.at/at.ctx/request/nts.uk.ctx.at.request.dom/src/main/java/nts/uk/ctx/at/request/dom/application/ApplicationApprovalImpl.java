@@ -20,6 +20,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
@@ -46,7 +48,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 
 	@Inject
 	private AppStampRepository appStampRepository;
-	
+
 	@Inject
 	private AppRecordImageRepository appRecordImageRepository;
 
@@ -79,6 +81,9 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	@Inject
     private BusinessTripRepository businessTripRepo;
 
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepo;
+
 	@Override
 	public void delete(String appID) {
 		String companyID = AppContexts.user().companyId();
@@ -87,7 +92,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 		case STAMP_APPLICATION:
 			if (application.getOpStampRequestMode().isPresent()) {
 				if (application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
-					appStampRepository.delete(companyID, appID);					
+					appStampRepository.delete(companyID, appID);
 				} else {
 					appRecordImageRepository.delete(companyID, appID);
 				}
@@ -132,6 +137,13 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 		        businessTripRepo.remove(businessTrip.get());
 		    }
 		    break;
+        case OPTIONAL_ITEM_APPLICATION:
+            Optional<OptionalItemApplication> opItemApp = optionalItemApplicationRepo.getByAppId(companyID, appID);
+            if (opItemApp.isPresent()) {
+            	opItemApp.get().setAppID(appID);
+                optionalItemApplicationRepo.remove(opItemApp.get());
+            }
+            break;
 		default:
 			break;
 		}

@@ -27,6 +27,7 @@ module nts.uk.com.view.cmm024.a {
 		companyScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		companyScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		companyLatestPeriod: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
+		isNoteSaveAfterClonedA: KnockoutObservable<boolean> = ko.observable(false);
 		//Screen B
 		modelB: KnockoutObservable<Model> = ko.observable(new Model());
 		enableRegisterB: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,6 +41,7 @@ module nts.uk.com.view.cmm024.a {
 		workplaceScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		workplaceScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		workplaceLatestPeriod: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
+		isNoteSaveAfterClonedB: KnockoutObservable<boolean> = ko.observable(false);
 		// KCP010
 		kcp010Model: kcp010.viewmodel.ScreenModel;
 		listComponentOption: common.ComponentOption;
@@ -70,14 +72,6 @@ module nts.uk.com.view.cmm024.a {
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
 
 			vm.initialScreenB();
-		}
-
-		// start point of object
-		created(params: any) {
-			let vm = this;
-
-			_.extend(window, { vm });
-
 			//Screen A			
 			vm.screenAMode(ScreenModel.EDIT);
 			vm.companyScheduleHistoryListing();
@@ -85,21 +79,28 @@ module nts.uk.com.view.cmm024.a {
 			let company = JSON.parse(nts.uk.sessionStorage.nativeStorage.getItem('nts.uk.session.COMPANY'));
 			vm.company({ name: company[0].companyName, id: company[0].companyId });
 			vm.modelA().workPlaceCompanyId = vm.company().id;
-		}
 
-		// raise event when view initial success full
-		mounted() {
-			let vm = this;
-
-			vm.companyScheduleHistorySelected.subscribe(function (value: string) {
-				if (value === 'reload') return;
-				vm.dispplayInfoOnScreenA(value);
+			vm.companyScheduleHistorySelected.subscribe((value: string) => {
+				if (value === 'reload' || _.isNil(value)) return;
+				if (vm.isNoteSaveAfterClonedA()) {			
+					vm.companyScheduleHistoryObjSelected(_.find(vm.companyScheduleHistoryList(), (x) => x.code === value));			
+					vm.screenAMode(ScreenModel.EDIT);
+					vm.companyScheduleHistoryListing();
+				} else
+					vm.displayInfoOnScreenA(value);
 			});
 
 			//Screen B			
-			vm.workplaceScheduleHistorySelected.subscribe(function (value: string) {
-				if (value === 'reload') return;
-				if (vm.isShowPanelB()) vm.dispplayInfoOnScreenB(value);
+			vm.workplaceScheduleHistorySelected.subscribe((value: string) => {
+				if (value === 'reload' || _.isNil(value)) return;
+				if (vm.isShowPanelB()) {
+					if (vm.isNoteSaveAfterClonedB()){
+						vm.workplaceScheduleHistoryObjSelected(_.find(vm.workplaceScheduleHistoryList(), (x) => x.code === value));
+						vm.screenBMode(ScreenModel.EDIT);
+						vm.workplaceScheduleHistoryListing();
+					} else
+						vm.displayInfoOnScreenB(value);
+				}
 			});
 
 			vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
@@ -108,6 +109,16 @@ module nts.uk.com.view.cmm024.a {
 					if (vm.isShowPanelB()) vm.workplaceScheduleHistoryListing();
 				}
 			});
+		}
+
+		// start point of object
+		created(params: any) {
+			let vm = this;
+		}
+
+		// raise event when view initial success full
+		mounted() {
+			let vm = this;
 			//responsive
 			if ($(window).width() < 1360) {
 				$('.contents-area').addClass('fix1280');
@@ -122,7 +133,7 @@ module nts.uk.com.view.cmm024.a {
 		/***********************************************************************
 		 * Screen A
 		 * ********************************************************************/
-		dispplayInfoOnScreenA(value: string = null) {
+		displayInfoOnScreenA(value: string = null) {
 
 			let vm = this,
 				objFind: ScheduleHistoryDto = null,
@@ -299,7 +310,8 @@ module nts.uk.com.view.cmm024.a {
 							vm.modelA().endDate(data.scheduleHistoryItem.endDate);
 						}
 						//disable/enable buttons
-						vm.resetSettingsScreenA(true, false, false, false, ScreenModel.ADDNEW);
+						vm.resetSettingsScreenA(true, false, false, true, ScreenModel.ADDNEW);
+						vm.isNoteSaveAfterClonedA(true);
 					} else {
 						if (currentScheduleHistoryList.length > 0)
 							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
@@ -493,7 +505,7 @@ module nts.uk.com.view.cmm024.a {
 				tempScheduleList: Array<ScheduleHistoryDto> = [];
 
 			vm.$blockui('show');
-
+			vm.isNoteSaveAfterClonedA(false);
 			//get Schedule of a company			
 			vm.$ajax('at', common.CMM024_API.screenA_GetScheduleHistoryList)
 				.done((response) => {
@@ -533,7 +545,7 @@ module nts.uk.com.view.cmm024.a {
 							vm.enableRegisterA(false);
 							vm.modelB().approverPanel([]);
 							vm.modelB().employeesRepresentative([]);
-							//vm.dispplayInfoOnScreenA(null);
+							//vm.displayInfoOnScreenA(null);
 						}
 					}
 					vm.$blockui('hide');
@@ -660,7 +672,7 @@ module nts.uk.com.view.cmm024.a {
 		/***********************************************************************
 		 * Screen B
 		 * ********************************************************************/
-		dispplayInfoOnScreenB(value: string = null) {
+		displayInfoOnScreenB(value: string = null) {
 			let vm = this,
 				objFind: ScheduleHistoryDto = null,
 				scheduleHistory: Array<any> = vm.workplaceScheduleHistoryList();
@@ -701,7 +713,7 @@ module nts.uk.com.view.cmm024.a {
 			if (vm.isReloadScreen()) {
 				vm.$ajax('at', common.CMM024_API.getAgreementUnitSetting)
 					.done((data) => {
-						if (data && data.workPlaceUseAtr !== 1) {
+						if (data && data.useWorkplace !== 1) { //workPlaceUseAtr
 							$("#sidebar").ntsSideBar("hide", 1);
 							$('.sidebar-content .disappear').html('');
 							vm.isShowPanelB(false);
@@ -758,8 +770,8 @@ module nts.uk.com.view.cmm024.a {
 			let vm = this,
 				currentScheduleHistoryList: Array<ScheduleHistoryDto> = vm.workplaceScheduleHistoryList();
 
-			//vm.workplaceScheduleHistorySelected(null);
-			vm.$window.storage("scheduleHistorySelected", vm.workplaceScheduleHistoryObjSelected());
+			let params = (currentScheduleHistoryList.length > 0) ? currentScheduleHistoryList[0] : null;
+			vm.$window.storage("scheduleHistorySelected", params);
 			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: vm.$i18n('CMM024_92') }).then(function () {
 				//開始年月日テキストボックス
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
@@ -781,7 +793,8 @@ module nts.uk.com.view.cmm024.a {
 							vm.modelB().startDate(data.scheduleHistoryItem.startDate);
 							vm.modelB().endDate(data.scheduleHistoryItem.endDate);
 						}
-						vm.resetSettingsScreenB(true, false, false, false, ScreenModel.ADDNEW);
+						vm.resetSettingsScreenB(true, false, false, true, ScreenModel.ADDNEW);
+						vm.isNoteSaveAfterClonedB(true);
 					} else {
 						if (currentScheduleHistoryList.length > 0)
 							vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
@@ -819,7 +832,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.screenBModeEdit(false);
 			vm.screenBMode(ScreenModel.EDIT);
-
+			vm.isNoteSaveAfterClonedB(false);
 			vm.$blockui('show');
 
 			//get Schedule of a workplace
@@ -862,7 +875,6 @@ module nts.uk.com.view.cmm024.a {
 							vm.workplaceScheduleHistoryObjSelected(null);
 							vm.modelB().approverPanel([]);
 							vm.modelB().employeesRepresentative([]);
-							//vm.dispplayInfoOnScreenB(null);
 						}
 					}
 

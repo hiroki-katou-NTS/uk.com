@@ -9,10 +9,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AttendanceRecordExportSettingSaveCommandHandler.
@@ -37,15 +38,15 @@ public class AttendanceRecordExportSettingSaveCommandHandler
 		// convert to domain
 
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
-		domain.setCompanyId(AppContexts.user().companyId());
-		domain.setCode(new ExportSettingCode(command.getCode()));
+		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));
 		domain.setSealStamp(
 				command.getSealStamp().stream().map(item -> new SealColumnName(item)).collect(Collectors.toList()));
 		domain.setSealUseAtr(command.getSealUseAtr());
-
+		domain.setExportFontSize(ExportFontSize.valueOf(command.getExportFontSize()));
+		domain.setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay.valueOf(command.getMonthlyDisplay()));
 		// update
-		attendanceRecExpSetRepo.updateAttendanceRecExpSet(domain);
+//		attendanceRecExpSetRepo.updateAttendanceRecExpSet(domain);
 	}
 
 }

@@ -7,7 +7,10 @@ class NumberComponent extends InputComponent {
     public type: string = 'number';
 
     get rawValue() {
-        return (this.value || '').toString();
+        const vm = this;
+        const { value } = vm;
+
+        return typeof value === 'number' && !isNaN(value) ? `${value}` : '';
     }
 
     @Emit()

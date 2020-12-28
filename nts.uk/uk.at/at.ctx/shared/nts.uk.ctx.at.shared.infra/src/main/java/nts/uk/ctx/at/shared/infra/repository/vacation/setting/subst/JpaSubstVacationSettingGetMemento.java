@@ -7,13 +7,15 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
 
 /**
  * The Class JpaSubstVacationSettingGetMemento.
  */
-public class JpaSubstVacationSettingGetMemento<T extends KsvstSubstVacationSetting>
+public class JpaSubstVacationSettingGetMemento<T extends KsvstComSubstVacation>
 		implements SubstVacationSettingGetMemento {
 
 	/** The type value. */
@@ -29,24 +31,15 @@ public class JpaSubstVacationSettingGetMemento<T extends KsvstSubstVacationSetti
 		this.typeValue = typeValue;
 	}
 
-	/**
-	 * Gets the checks if is manage.
-	 *
-	 * @return the checks if is manage
-	 */
 	@Override
-	public ManageDistinct getIsManage() {
-		return ManageDistinct.valueOf(this.typeValue.getIsManage());
+	public ManageDeadline manageDeadline() {
+		
+		return ManageDeadline.valueOf(this.typeValue.getExpDateMngMethod().intValue());
 	}
 
-	/**
-	 * Gets the expiration date.
-	 *
-	 * @return the expiration date
-	 */
 	@Override
 	public ExpirationTime getExpirationDate() {
-		return ExpirationTime.valueOf(this.typeValue.getExpirationDateSet());
+		return ExpirationTime.valueOf(this.typeValue.getExpitationDateSet());
 	}
 
 	/**
@@ -58,5 +51,25 @@ public class JpaSubstVacationSettingGetMemento<T extends KsvstSubstVacationSetti
 	public ApplyPermission getAllowPrepaidLeave() {
 		return ApplyPermission.valueOf(this.typeValue.getAllowPrepaidLeave());
 	}
+
+	@Override
+	public ManageDistinct getManageDistinct() {
+		
+		return ManageDistinct.valueOf(this.typeValue.getManageAtr());
+	}
+
+	@Override
+	public ManageDistinct getLinkingManagementATR() {
+		// TODO Auto-generated method stub
+		return ManageDistinct.valueOf(this.typeValue.getExpDateMngMethod());
+	}
+
+
+	/**
+	 * Gets the expiration date.
+	 *
+	 * @return the expiration date
+	 */
+	
 
 }

@@ -26,7 +26,7 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 		implements DailyPerformAuthorRepo {
 
 	private static final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
-
+	
 	private static final String GET_DAI_PER_AUTH_WITH_ROLE_AND_FUNCTION_NO = "SELECT da FROM KrcmtDaiPerformanceAut da"
 			+ "	WHERE da.pk.roleId = :roleId"
 			+ "		AND da.pk.functionNo = :functionNo"

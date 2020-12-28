@@ -11,9 +11,9 @@ import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectDirectBounceClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectWorkInformation;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ApplicationStatusShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
@@ -26,18 +26,18 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class SCRCReflectGoBackDirectlyApp {
 	public static Collection<Integer> reflect(Require require, String companyId, GoBackDirectlyShare appGoback,
-			DailyRecordOfApplication dailyApp, ReflectGoBackDirectly reflectGoback) {
+			DailyRecordOfApplication dailyApp,  GoBackReflect reflectGoback) {
 
 		Set<Integer> lstResult = new HashSet<>();
 		// [勤務情報を反映する]をチェック
-		if (reflectGoback.getReflectWorkInfo() == ApplicationStatusShare.DO_REFLECT) {
+		if (reflectGoback.getReflectApplication() == ApplicationStatus.DO_REFLECT) {
 			// 1:反映する
 			lstResult.addAll(processWorkType(require, companyId, appGoback, dailyApp, reflectGoback));
 
 		}
 
-		if (reflectGoback.getReflectWorkInfo() == ApplicationStatusShare.DO_NOT_REFLECT_1
-				|| reflectGoback.getReflectWorkInfo() == ApplicationStatusShare.DO_REFLECT_1) {
+		if (reflectGoback.getReflectApplication() == ApplicationStatus.DO_NOT_REFLECT_1
+				|| reflectGoback.getReflectApplication() == ApplicationStatus.DO_REFLECT_1) {
 			// 2：申請時に決める、3：申請時に決める
 			if (appGoback.getIsChangedWork().isPresent() && appGoback.getIsChangedWork().get() == NotUseAtr.USE) {
 				lstResult.addAll(processWorkType(require, companyId, appGoback, dailyApp, reflectGoback));
@@ -51,7 +51,7 @@ public class SCRCReflectGoBackDirectlyApp {
 	}
 
 	private static List<Integer> processWorkType(Require require, String companyId, GoBackDirectlyShare appGoback,
-			DailyRecordOfApplication dailyApp, ReflectGoBackDirectly reflectGoback) {
+			DailyRecordOfApplication dailyApp, GoBackReflect reflectGoback) {
 		// 勤務種類を取得する
 		Optional<WorkType> workTypeOpt = require.findByPK(companyId,
 				dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v());

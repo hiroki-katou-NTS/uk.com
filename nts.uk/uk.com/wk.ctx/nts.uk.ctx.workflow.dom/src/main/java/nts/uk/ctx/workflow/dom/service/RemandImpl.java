@@ -71,7 +71,7 @@ public class RemandImpl implements RemandService {
 		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID, rootType);
 		// ドメインモデル「承認ルートインスタンス」．承認フェーズ１．承認区分をupdateする
 		approvalRootStateRepository.findByID(rootStateID, rootType).ifPresent(appRoot -> {
-			appRoot.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+			appRoot.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 			appRoot.getListApprovalPhaseState().get(0).setApprovalAtr(ApprovalBehaviorAtr.ORIGINAL_REMAND);
 			approvalRootStateRepository.update(appRoot, rootType);
 		});
