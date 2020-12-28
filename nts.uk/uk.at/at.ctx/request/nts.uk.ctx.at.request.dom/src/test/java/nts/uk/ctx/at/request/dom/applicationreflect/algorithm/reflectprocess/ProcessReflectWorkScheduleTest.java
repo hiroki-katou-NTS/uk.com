@@ -130,7 +130,7 @@ public class ProcessReflectWorkScheduleTest {
 			{
 				require.findAppReflectExecCond(anyString);
 				result = Optional
-						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));
 				
 				CheckProcessDuringLock.checkProcess(require, companyId, closureId, anyBoolean, (GeneralDate) any);
 				result = NotUseAtr.NOT_USE;
