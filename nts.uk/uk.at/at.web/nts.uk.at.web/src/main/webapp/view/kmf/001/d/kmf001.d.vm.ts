@@ -163,8 +163,10 @@ module nts.uk.pr.view.kmf001.d {
             // Initialize wholeCompany Data
             initializeWholeCompanyData(data: RetentionYearlyFindDto): void {
                 var self = this;
-                
                 self.selectedComManagement(data.managementCategory);
+                self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
+                self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
+                self.leaveAsWorkDays(data.leaveAsWorkDays);
             }
             
             // Collect wholeCompany Data
