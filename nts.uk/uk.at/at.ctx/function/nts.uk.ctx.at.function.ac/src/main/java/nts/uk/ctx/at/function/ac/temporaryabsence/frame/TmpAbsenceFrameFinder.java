@@ -36,7 +36,6 @@ public class TmpAbsenceFrameFinder implements TempAbsenceFrameApdater {
 	 */
 	@Override
 	public List<TempAbsenceFrameApdaterDto> findWithUseState(String cId, Integer useAtr) {
-		
 		return this.tempAbsenceFramePub.findWithUseState(cId, useAtr).stream()
 				.map(t -> TempAbsenceFrameApdaterDto.builder()
 						.companyId(t.getCompanyId())
