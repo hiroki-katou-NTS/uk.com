@@ -7,6 +7,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetUsingShiftTableRuleOfEmployeeService;
+import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRule;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -53,7 +54,9 @@ public class RegisterWorkAvailability {
 		
 	}
 	
-	public static interface Require extends GetUsingShiftTableRuleOfEmployeeService.Require, WorkAvailabilityOfOneDay.Require{
+	public static interface Require extends GetUsingShiftTableRuleOfEmployeeService.Require
+											, WorkAvailabilityOfOneDay.Require
+											, WorkAvailabilityRule.Require{
 		
 		/**
 		 * [R-1] 一日分の勤務希望を追加する

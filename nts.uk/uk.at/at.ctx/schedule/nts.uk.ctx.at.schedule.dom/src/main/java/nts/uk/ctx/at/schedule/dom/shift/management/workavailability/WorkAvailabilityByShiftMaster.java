@@ -11,6 +11,7 @@ import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -56,8 +57,8 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 	public boolean isHolidayAvailability(WorkAvailability.Require require) {
 		List<ShiftMaster> shiftList = require.getShiftMaster(this.workableShiftCodeList);
 		return  shiftList.stream().map(c -> c.getWorkStyle(require))
-				.filter(c -> c.isPresent())
-				.anyMatch(c -> c.get() == WorkStyle.ONE_DAY_REST);
+				.flatMap(OptionalUtil::stream)
+				.anyMatch(c -> c == WorkStyle.ONE_DAY_REST);
 	}
 
 	@Override
@@ -82,11 +83,18 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 	}
 
 	@Override
-	public WorkAvailabilityDisplayInfo getDisplayInformation(WorkAvailability.Require require) {		
+	public WorkAvailabilityDisplayInfo getDisplayInformation(WorkAvailability.Require require) {
+		
 		Map<ShiftMasterCode, Optional<String>> shiftList = this.workableShiftCodeList.stream().collect(Collectors.toMap(c -> c, c -> {
 			List<ShiftMaster> shiftMasterList = require.getShiftMaster(Arrays.asList(c));
-			return CollectionUtil.isEmpty(shiftMasterList)? Optional.empty(): Optional.ofNullable(shiftMasterList.get(0).getDisplayInfor().getName().v());
+			
+			if(CollectionUtil.isEmpty(shiftMasterList)) 
+				return Optional.empty();
+			
+			return Optional.ofNullable(shiftMasterList.get(0).getDisplayInfor().getName().v());
+			
 		}));
+		
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
 		return new WorkAvailabilityDisplayInfo(asignmentMethod, shiftList, Collections.emptyList());
 	}
@@ -103,5 +111,4 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 		boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode);
 		
 	}
-	
 }
