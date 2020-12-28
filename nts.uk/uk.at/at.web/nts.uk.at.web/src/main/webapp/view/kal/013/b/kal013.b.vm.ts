@@ -138,14 +138,7 @@ module nts.uk.at.view.kal013.b {
                 }
             })
 
-            vm.pattern().checkCond.subscribe((value)=>{
-                if (vm.switchPatternA()){
-                    // vm.$errors("clear","#check-condition");
-                    $("#check-condition").ntsError("clear");
 
-                }
-
-            });
 
             vm.constraint.subscribe((value)=>{
                 const vm = this;
@@ -171,6 +164,15 @@ module nts.uk.at.view.kal013.b {
 
             vm.category(params.category);
             vm.pattern().update(params.condition);
+
+            vm.pattern().checkCond.subscribe((value)=>{
+                if (vm.switchPatternA()){
+                    // vm.$errors("clear","#check-condition");
+                    $("#check-condition").ntsError("clear");
+
+                }
+
+            });
         }
 
         mounted() {
