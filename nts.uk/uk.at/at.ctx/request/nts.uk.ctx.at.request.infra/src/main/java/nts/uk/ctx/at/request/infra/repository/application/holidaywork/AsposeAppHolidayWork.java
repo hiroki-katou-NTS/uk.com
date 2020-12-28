@@ -103,8 +103,8 @@ public class AsposeAppHolidayWork {
 			cellB12.setValue(I18NText.getText("KAF005_40"));
 		}
 		
-		String workTypeName = printContentOfHolidayWork.getWorkTypeName().orElse(new WorkTypeName(I18NText.getText("KAF005_345"))).v();
-		String workTimeName = printContentOfHolidayWork.getWorkTimeName().orElse(new WorkTimeName(I18NText.getText("KAF005_345"))).v();
+		String workTypeName = printContentOfHolidayWork.getWorkTypeName().orElse(new WorkTypeName(printContentOfHolidayWork.getWorkTypeCode() + " " + I18NText.getText("KAF005_345"))).v();
+		String workTimeName = printContentOfHolidayWork.getWorkTimeName().orElse(new WorkTimeName(printContentOfHolidayWork.getWorkTimeCode() + " " + I18NText.getText("KAF005_345"))).v();
 		cellD8.setValue(workTypeName);
 		cellD9.setValue(workTimeName);
 		
