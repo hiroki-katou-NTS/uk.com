@@ -41,7 +41,7 @@ public class CreateWorkScheduleTest {
 			@Injectable WorkInformation workInformation
 			) {
 		
-		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
+		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfoWithWorkTimeZone", 
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
@@ -71,7 +71,7 @@ public class CreateWorkScheduleTest {
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		updateInfoMap.put(31, (T) new TimeWithDayAttr(31));
 		
-		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
+		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfoWithWorkTimeZone", 
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 
@@ -105,7 +105,7 @@ public class CreateWorkScheduleTest {
 		
 		Map<Integer, T> updateInfoMap = new HashMap<>();
 		updateInfoMap.put( WS_AttendanceItem.StartTime1.ID, (T) new TimeWithDayAttr(31));
-		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfo", 
+		Optional<ErrorInfoOfWorkSchedule> result = NtsAssert.Invoke.staticMethod(CreateWorkSchedule.class, "getErrorInfoWithWorkTimeZone", 
 				require, 
 				"empId", 
 				GeneralDate.ymd(2020, 11, 1), 

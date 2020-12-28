@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
@@ -60,17 +62,11 @@ public class CreateWorkSchedule {
 			workSchedule = registedWorkSchedule.get();
 		}
 		
-		if ( updateInfoMap.containsKey( WS_AttendanceItem.StartTime1.ID ) || 
-				updateInfoMap.containsKey( WS_AttendanceItem.EndTime1.ID ) || 
-				updateInfoMap.containsKey( WS_AttendanceItem.StartTime2.ID ) || 
-				updateInfoMap.containsKey( WS_AttendanceItem.EndTime2.ID) ) {
-			
-			List<ErrorInfoOfWorkSchedule> errorList = 
-					CreateWorkSchedule.checkTimeSpan(require, employeeId, date, workInformation, updateInfoMap);
-			
-			if ( !errorList.isEmpty() ) {
-				return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
-			}
+		// 時間帯チェック CheckTime Span
+		List<ErrorInfoOfWorkSchedule> errorList = 
+				CreateWorkSchedule.checkTimeSpan(require, employeeId, date, workInformation, updateInfoMap);
+		if ( !errorList.isEmpty() ) {
+			return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
 		}
 		
 		workSchedule.changeAttendanceItemValueByHandCorrection(require, updateInfoMap);
@@ -115,29 +111,14 @@ public class CreateWorkSchedule {
 			Map<Integer, T> updateInfoMap
 			) {
 		
-		// 開始時刻１
-		Optional<ErrorInfoOfWorkSchedule> errorOfStartTime1 = 
-				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.START_TIME_1, updateInfoMap);
-		// 終了時刻１
-		Optional<ErrorInfoOfWorkSchedule> errorOfEndTime1 = 
-				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.END_TIME_1, updateInfoMap);
-		// 開始時刻２
-		Optional<ErrorInfoOfWorkSchedule> errorOfStartTime2 = 
-				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.START_TIME_2, updateInfoMap);
-		// 終了時刻２
-		Optional<ErrorInfoOfWorkSchedule> errorOfEndTime2 = 
-				CreateWorkSchedule.getErrorInfo(require, employeeId, date, workInformation, WorkTimeZone.END_TIME_2, updateInfoMap);
-		
-		List<ErrorInfoOfWorkSchedule> errorInfoList = new ArrayList<>();
-		errorOfStartTime1.ifPresent(errorInfoList::add);
-		errorOfEndTime1.ifPresent(errorInfoList::add);
-		errorOfStartTime2.ifPresent(errorInfoList::add);
-		errorOfEndTime2.ifPresent(errorInfoList::add);
-		return errorInfoList;
+		return Stream.of ( WorkTimeZone.values() )
+					.map( workTimeZone -> getErrorInfoWithWorkTimeZone(require, employeeId, date, workInformation, workTimeZone, updateInfoMap) )
+					.flatMap( OptionalUtil::stream )
+					.collect( Collectors.toList() );
 	}
 	
 	/**
-	 * 勤務予定のエラー情報を取る
+	 * 勤務時間帯に対するエラー情報を作成する
 	 * @param require
 	 * @param employeeId 社員ID
 	 * @param date 年月日
@@ -146,7 +127,7 @@ public class CreateWorkSchedule {
 	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
-	private static <T> Optional<ErrorInfoOfWorkSchedule> getErrorInfo(
+	private static <T> Optional<ErrorInfoOfWorkSchedule> getErrorInfoWithWorkTimeZone(
 			Require require,
 			String employeeId, 
 			GeneralDate date, 
@@ -159,7 +140,7 @@ public class CreateWorkSchedule {
 			return Optional.empty();
 		}
 		
-		T time  = updateInfoMap.get( workTimeZone.attendanceItemId );
+		T time = updateInfoMap.get( workTimeZone.attendanceItemId );
 		ContainsResult stateOfTime = 
 				workInformation.containsOnChangeableWorkingTime(require, workTimeZone.clockArea , workTimeZone.workNo, (TimeWithDayAttr) time);
 		if ( stateOfTime.isContains() ) {
