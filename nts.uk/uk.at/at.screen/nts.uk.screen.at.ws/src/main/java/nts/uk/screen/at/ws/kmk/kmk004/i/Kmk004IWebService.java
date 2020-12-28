@@ -72,7 +72,7 @@ public class Kmk004IWebService {
 
 	@POST
 	@Path("register")
-	public List<EmploymentCodeDto> register(SaveMonthlyWorkTimeSetEmpCommand command) {
+	public List<String> register(SaveMonthlyWorkTimeSetEmpCommand command) {
 		return this.registerHandler.handle(command);
 	}
 
@@ -84,7 +84,7 @@ public class Kmk004IWebService {
 
 	@POST
 	@Path("delete")
-	public List<EmploymentCodeDto> delete(DeleteFlexMonthlyWorkTimeSetEmpCommand command) {
+	public List<String> delete(DeleteFlexMonthlyWorkTimeSetEmpCommand command) {
 		return this.deleteHandler.handle(command);
 	}
 

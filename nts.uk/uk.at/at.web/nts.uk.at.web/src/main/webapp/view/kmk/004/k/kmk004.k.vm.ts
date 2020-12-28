@@ -82,7 +82,7 @@ module nts.uk.at.kmk004.k {
 
 
 
-		showDeleteButton() {
+		enableDeleteButton() {
 			const vm = this;
 			if (vm.screenMode == 'Com_Company') {
 				return false;
