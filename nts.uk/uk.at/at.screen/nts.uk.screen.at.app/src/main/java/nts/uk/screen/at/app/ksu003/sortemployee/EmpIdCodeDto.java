@@ -10,9 +10,9 @@ import lombok.Value;
  *
  */
 @Value
-public class SortEmployeeParam {
-
-	private String ymd;
+public class EmpIdCodeDto {
+		
+	public String empId;
 	
-	private List<EmpIdCodeDto> lstEmpId;
+	public String code;
 }
