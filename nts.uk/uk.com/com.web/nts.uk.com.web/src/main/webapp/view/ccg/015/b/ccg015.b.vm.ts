@@ -136,7 +136,7 @@ module nts.uk.com.view.ccg015.b {
             vm.listTopPage(lstSort);
             const selectToppage = _.find(vm.listTopPage(), item => { return item.code === selectedCode; })
             vm.isDisableNewBtn(false);
-            vm.toppageSelectedCode(selectedCode || data[0].topPageCode);
+            vm.toppageSelectedCode(selectedCode || lstSort[0].code);
             vm.topPageModel().topPageName(selectToppage.name)
             $("#inp_name").focus();
           } else {

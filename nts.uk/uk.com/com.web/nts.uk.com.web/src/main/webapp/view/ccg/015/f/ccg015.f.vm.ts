@@ -11,6 +11,8 @@ module nts.uk.com.view.ccg015.f {
     layoutDisplayType: KnockoutObservable<number> = ko.observable(null);
     visible: KnockoutObservable<boolean> = ko.observable(false);
     isNoContent : KnockoutObservable<boolean> = ko.observable(false);
+    isNoContentLayout2 : KnockoutObservable<boolean> = ko.observable(false);
+    isNoContentLayout3 : KnockoutObservable<boolean> = ko.observable(false);
     created(params: any) {
       const vm = this;
       if (params.topPageModel) {
@@ -41,6 +43,12 @@ module nts.uk.com.view.ccg015.f {
       }
       if (!data.layout1 && data.layout2.length < 1 && data.layout3.length < 1) {
         vm.isNoContent(true);
+      }
+      if(data.layout2.length < 1) {
+        vm.isNoContentLayout2(true);
+      }
+      if(data.layout3.length < 1) {
+        vm.isNoContentLayout3(true);
       }
     }
 
