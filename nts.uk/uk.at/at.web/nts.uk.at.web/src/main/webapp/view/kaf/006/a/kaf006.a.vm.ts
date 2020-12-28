@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		payoutSubofHDManagements: KnockoutObservable<any> = ko.observableArray([]);
 		workTypeBefore: KnockoutObservable<any> = ko.observable();
 		workTypeAfter: KnockoutObservable<any> = ko.observable();
+		isFromOther: boolean = false;
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -90,7 +91,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         created(params: AppInitParam) {
             const vm = this;
-
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
 			if (!_.isEmpty(params)) {

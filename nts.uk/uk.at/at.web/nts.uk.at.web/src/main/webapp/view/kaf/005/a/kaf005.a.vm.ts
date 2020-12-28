@@ -34,6 +34,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		urlParam: string;
 		mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
 		employeeIDLst: Array<string>;
+		// assign value after calling service calculation
+		timeTemp: Array<OvertimeApplicationSetting>;
+		isFromOther: boolean = false;
 		
 		
 		created(params: AppInitParam) {
@@ -44,7 +47,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (_.isNil(params)) {
 				dataTransfer = __viewContext.transferred.value; // from spr		
 			}
-			__viewContext.transferred.value = undefined;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			//__viewContext.transferred.value = undefined;
 			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
 			vm.setMode(params);
