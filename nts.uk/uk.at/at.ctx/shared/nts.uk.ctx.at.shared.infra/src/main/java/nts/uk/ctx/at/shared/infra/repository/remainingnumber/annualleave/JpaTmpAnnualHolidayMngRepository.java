@@ -44,7 +44,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 		optTmpAnnualHolidayMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
-		
+
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 		}
 	}
 
-	private TmpAnnualHolidayMng toDomain(NtsResultRecord x) {		
+	private TmpAnnualHolidayMng toDomain(NtsResultRecord x) {
 		return new TmpAnnualHolidayMng(x.getString("ANNUAL_MNG_ID"),
 				x.getString("WORKTYPE_CODE"),
 				new UseDay(x.getBigDecimal("USE_DAYS") == null ? 0 : x.getBigDecimal("USE_DAYS").doubleValue()));

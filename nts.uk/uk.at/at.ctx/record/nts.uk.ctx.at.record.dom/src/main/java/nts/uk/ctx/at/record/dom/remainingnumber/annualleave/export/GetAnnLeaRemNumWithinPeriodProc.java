@@ -759,16 +759,13 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				results.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
 
-			//テスト用
-			results.add(TmpAnnualLeaveMngWork.of("",
-			GeneralDate.ymd(2020, 10, 20),
-			"060",
-			new UseDay(1.0),
-			CreateAtr.RECORD,
-			RemainAtr.SINGLE));
-
-
-
+//			//テスト用
+//			results.add(TmpAnnualLeaveMngWork.of("",
+//			GeneralDate.ymd(2020, 10, 20),
+//			"060",
+//			new UseDay(1.0),
+//			CreateAtr.RECORD,
+//			RemainAtr.SINGLE));
 
 			// 年休フレックス補填分を暫定年休データに反映する
 			{

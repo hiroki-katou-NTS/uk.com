@@ -141,7 +141,7 @@ public class SpecialLeaveManagementService {
 
 			// 特休の消滅・付与・消化
 			outputData = specialLeaveInfo.lapsedGrantDigest(
-					require, // ooooo
+					require,
 					param.getCid(),
 					param.getSid(),
 					aggregatePeriodWork,

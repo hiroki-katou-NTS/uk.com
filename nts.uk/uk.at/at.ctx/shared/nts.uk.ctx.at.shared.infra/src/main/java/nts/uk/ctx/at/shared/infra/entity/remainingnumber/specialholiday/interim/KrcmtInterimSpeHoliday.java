@@ -27,18 +27,22 @@ public class KrcmtInterimSpeHoliday extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	public KrcmtInterimSpeHolidayPK pk;
 
-	/** 社員ID */
-	@Column(name ="SID")
-	public String sid;
-	/** 対象日 */
-	@Column(name ="YMD")
-	public GeneralDate ymd;
-	/** 作成元区分	 */
-	@Column(name ="CREATOR_ATR")
-	public int createAtr;
-	/** 残数分類 */
-	@Column(name ="REMAIN_ATR")
-	public int remainAtr;
+	/** 特別休暇コード */
+	@Column(name = "SPECIAL_HOLIDAY_CODE")
+	public int specialHolidayCode;
+
+//	/** 社員ID */
+//	@Column(name ="SID")
+//	public String sid;
+//	/** 対象日 */
+//	@Column(name ="YMD")
+//	public GeneralDate ymd;
+//	/** 作成元区分	 */
+//	@Column(name ="CREATOR_ATR")
+//	public int createAtr;
+//	/** 残数分類 */
+//	@Column(name ="REMAIN_ATR")
+//	public int remainAtr;
 	/** 管理単位区分 */
 	@Column(name ="MNG_ATR")
 	public int mngAtr;
@@ -48,12 +52,12 @@ public class KrcmtInterimSpeHoliday extends UkJpaEntity implements Serializable 
 	/** 使用時間 */
 	@Column(name ="USED_TIME")
 	public Integer usedTime;
-	/** 時間消化休暇かどうか */
-	@Column(name ="TIME_DIGESTIVE_ATR")
-	public Integer timeDigestiveAtr;
-	/** 時間休暇種類*/
-	@Column(name ="TIME_HD_TYPE")
-	public Integer timeHdType;
+//	/** 時間消化休暇かどうか */
+//	@Column(name ="TIME_DIGESTIVE_ATR")
+//	public Integer timeDigestiveAtr;
+//	/** 時間休暇種類*/
+//	@Column(name ="TIME_HD_TYPE")
+//	public Integer timeHdType;
 
 	/**
 	 *

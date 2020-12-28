@@ -20,7 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "KRCDT_INTERIM_HDSTK")
+//@Table(name = "KRCDT_INTERIM_HDSTK")
+@Table(name = "KRCMT_INTERIM_RESERVE_MNG")
 public class KrcdtInterimHdstk extends UkJpaEntity{
 
 	/**
@@ -33,29 +34,29 @@ public class KrcdtInterimHdstk extends UkJpaEntity{
 		return remainMngId;
 	}
 
-	/**
-	 * 社員ID
-	 */
-	@Column(name = "SID")
-	public String sid;
-
-	/**
-	 * 対象日
-	 */
-	@Column(name = "YMD")
-	public GeneralDate ymd;
-
-	/**
-	 * 作成元区分
-	 */
-	@Column(name = "CREATOR_ATR")
-	public int createAtr;
-
-	/**
-	 * 残数分類
-	 */
-	@Column(name = "REMAIN_ATR")
-	public int remainAtr;
+//	/**
+//	 * 社員ID
+//	 */
+//	@Column(name = "SID")
+//	public String sid;
+//
+//	/**
+//	 * 対象日
+//	 */
+//	@Column(name = "YMD")
+//	public GeneralDate ymd;
+//
+//	/**
+//	 * 作成元区分
+//	 */
+//	@Column(name = "CREATOR_ATR")
+//	public int createAtr;
+//
+//	/**
+//	 * 残数分類
+//	 */
+//	@Column(name = "REMAIN_ATR")
+//	public int remainAtr;
 
 	/**
 	 * 使用日数

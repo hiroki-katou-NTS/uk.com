@@ -623,8 +623,7 @@ public class SpecialLeaveInfo implements Cloneable {
 							leaveUsedNumber,
 							companyId,
 							employeeId,
-							aggregatePeriodWork.getPeriod().start(),
-							isForcibly);
+							aggregatePeriodWork.getPeriod().start());
 
 					// 時間休暇消化数を求める
 					// 消化できた時間を求める
