@@ -651,7 +651,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		DetailOutput output = new DetailOutput();
 		DisplayInfoOverTime displayInfoOverTime = new DisplayInfoOverTime();
-		// 申請日に関係する情報 (do not call by any handle)
+		// 申請日に関係する情報
 		Optional<InfoWithDateApplication> infoOptional = Optional.empty();
 		// ドメインモデル「残業申請」を取得する
 		Optional<AppOverTime> appOverTimeOp = appOverTimeRepository.find(companyId, appId);
@@ -1015,8 +1015,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 		
 		WorkContent workContent = new WorkContent();
-		workContent.setWorkTypeCode(workTypeCode == null ? Optional.empty() : Optional.of(workTypeCode.v()));
-		workContent.setWorkTimeCode(workTimeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()));
+		workContent.setWorkTypeCode(Optional.ofNullable(workTypeCode).flatMap(x -> Optional.of(x.v())));
+		workContent.setWorkTimeCode(Optional.ofNullable(workTimeCode).flatMap(x -> Optional.of(x.v())));
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
 		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
 		Optional<WorkHours> workHours = selectWorkOutput.getWorkHours();
