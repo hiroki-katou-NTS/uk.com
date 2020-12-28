@@ -298,7 +298,7 @@ export interface AnyItemValue {
 }
 export interface ReasonDivergence {
 
-    reason: DivergenceReason;
+    reason: any;
     reasonCode: string;
     diviationTime: number;
 }

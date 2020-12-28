@@ -134,7 +134,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c13() {
         const self = this;
         let model = self.model as Model;
-        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
+        let findResult = _.find(_.get(model, 'displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c13_1 = !_.isNil(findResult);
         let c13_2 = c13_1 ? findResult.divergenceReasonSelected : false;
 
@@ -144,7 +144,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c14() {
         const self = this;
         let model = self.model as Model;
-        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
+        let findResult = _.find(_.get(model, 'displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c14_1 = !_.isNil(findResult);
         let c14_2 = c14_1 ? findResult.divergenceReasonInputed : false;
 
@@ -257,7 +257,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c20() {
         const self = this;
         let model = self.model as Model;
-        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
+        let findResult = _.find(_.get(model, 'displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
         let c20_1 = !_.isNil(findResult);
         let c20_2 = c20_1 ? findResult.divergenceReasonSelected : false;
 
@@ -267,7 +267,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c21() {
         const self = this;
         let model = self.model as Model;
-        let findResult = _.find(_.get(model, 'displayOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
+        let findResult = _.find(_.get(model, 'displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 2 });
         let c21_1 = !_.isNil(findResult);
         let c21_2 = c21_1 ? findResult.divergenceReasonInputed : false;
 
@@ -512,6 +512,7 @@ export class KafS05Component extends KafS00ShrComponent {
             }
 
         });
+        appOverTime.applicationTime.reasonDissociation = step2.getReasonDivergence();
 
         // assign value to overtime and holidaytime
         return appOverTime;
