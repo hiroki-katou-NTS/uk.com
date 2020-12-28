@@ -1,0 +1,28 @@
+.div-line {
+  margin-left: 20px;
+  margin-bottom: 10px;
+  display: flex;
+}
+.column-label {
+  width: 150px;
+}
+.column-value {
+  width: 120px;
+}
+.menu-list {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+.system-list {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+#F2_1 {
+  margin-right: 20px;
+}
+.radio-wrapper .ntsRadioBox {
+  margin: 3px 0px;
+}
+.div-line:last-child {
+  margin-bottom: 0px !important;
+}

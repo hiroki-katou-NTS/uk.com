@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,11 +25,12 @@ public class CopyTopPageCommandHandler extends CommandHandler<CopyTopPageCommand
 	
 	@Override
 	protected void handle(CommandHandlerContext<CopyTopPageCommand> context) {
+		
 		CopyTopPageCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		boolean isCheckOverWrite = command.isCheckOverwrite;
 		String copyCode = command.getCopyCode();
-		TopPage tp = command.toDomain();
+		ToppageNew tp = ToppageNew.createFromMemento(command);
 		topPageService.copyTopPage(tp, companyId, isCheckOverWrite, copyCode);
 	}
 

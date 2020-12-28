@@ -289,7 +289,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	            EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 	    
 	    HolidayManagement holidayManagement = new HolidayManagement(
-	            comSubstVacation.getSetting().getIsManage(), 
+	            comSubstVacation.getManageDistinct(), 
 	            EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
 	    
 	    Overtime60HManagement overtime60hManagement = new Overtime60HManagement(
