@@ -60,6 +60,11 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return value == NotUseAtr.USE;
     }
+    public get c2() {
+
+        return true;
+    }
+
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
     public get c3() {
         const self = this;
