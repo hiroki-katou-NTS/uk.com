@@ -13,7 +13,12 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabi
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class WorkAvailabilityRuleDateSettingHelper {
@@ -54,4 +59,30 @@ public class WorkAvailabilityRuleDateSettingHelper {
 				timeZoneList);
 	}
 	
+	public static WorkAvailabilityOfOneDay createExpectationByShiftMaster(
+			@Injectable WorkAvailability.Require require,
+			GeneralDate expectingDate, ShiftMasterCode shiftMasterCode) {
+		
+		return WorkAvailabilityOfOneDay.create(
+				require,
+				"emp-id", 
+				expectingDate,
+				new WorkAvailabilityMemo("memo"), 
+				AssignmentMethod.SHIFT, 
+				Arrays.asList(shiftMasterCode), 
+				Collections.emptyList());
+	}
+	
+	public static ShiftMaster createShiftMasterWithCodeName(String shiftMasterCode, String shiftMasterName) {
+		return new ShiftMaster(
+				shiftMasterCode + "-sid", 
+    			new ShiftMasterCode(shiftMasterCode), 
+    			new ShiftMasterDisInfor(
+    					new ShiftMasterName(shiftMasterName), 
+    					new ColorCodeChar6("000000"), 
+    					new Remarks(shiftMasterCode + "-r")), 
+    			"001", 
+    			"001");
+		
+	}
 }

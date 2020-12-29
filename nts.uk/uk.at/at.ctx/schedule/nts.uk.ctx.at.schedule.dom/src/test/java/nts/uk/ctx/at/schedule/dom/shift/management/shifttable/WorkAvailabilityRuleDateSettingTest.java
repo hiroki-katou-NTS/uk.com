@@ -17,8 +17,9 @@ import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-
+@SuppressWarnings("unchecked")
 public class WorkAvailabilityRuleDateSettingTest {
 	@Injectable
 	WorkAvailabilityRule.Require require;
@@ -80,11 +81,17 @@ public class WorkAvailabilityRuleDateSettingTest {
 		assertThat(isOverDeadline).isTrue();
 	}
 	
+	/**
+	 * 出勤系か = false
+	 * 
+	 */
 	@Test
 	public void testIsOverHolidayMaxdays_false() {
 		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
+		ShiftMaster shiftMaster1 = WorkAvailabilityRuleDateSettingHelper.createShiftMasterWithCodeName("S01", "S01-name");
+
 		new Expectations() {
 			{
 				require.shiftMasterIsExist((ShiftMasterCode) any);
@@ -93,23 +100,40 @@ public class WorkAvailabilityRuleDateSettingTest {
 		};
 		
 		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(require, GeneralDate.ymd(2020, 10, 1), new ShiftMasterCode("S01")),
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
 				);
 
+		new Expectations() {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>)any);
+				result = shiftMaster1;
+				
+				shiftMaster1.isAttendanceRate(require);
+				result = false;
+				
+			}
+		};
+		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
 		
 		assertThat(isOverHolidayMaxDays).isFalse();
 	}
 	
+	/**
+	 * 出勤系か = true
+	 * 
+	 */
 	@Test
 	public void testIsOverHolidayMaxdays_true() {
 		
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
+		ShiftMaster shiftMaster1 = WorkAvailabilityRuleDateSettingHelper.createShiftMasterWithCodeName("S01", "S01-name");
+
 		new Expectations() {
 			{
 				require.shiftMasterIsExist((ShiftMasterCode) any);
@@ -125,6 +149,17 @@ public class WorkAvailabilityRuleDateSettingTest {
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY),
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 6), AssignmentMethod.HOLIDAY)
 				);
+		
+		new Expectations() {
+			{
+				require.getShiftMaster((List<ShiftMasterCode>)any);
+				result = shiftMaster1;
+				
+				shiftMaster1.isAttendanceRate(require);
+				result = true;
+				
+			}
+		};
 		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
 		
