@@ -16,8 +16,8 @@ import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.MenuDisplayName;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,7 +28,7 @@ public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCom
 
 	/** The top page repository. */
 	@Inject
-	private ToppageNewRepository toppageNewRepository;
+	private ToppageRepository toppageNewRepository;
 
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
@@ -45,8 +45,8 @@ public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCom
 		UpdateTopPageCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		// 対象の「トップページ」を取得する
-		Optional<ToppageNew> findTopPage = toppageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
-		ToppageNew topPage = ToppageNew.createFromMemento(command);
+		Optional<Toppage> findTopPage = toppageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
+		Toppage topPage = Toppage.createFromMemento(command);
 		// ドメインモデル「トップページ」を更新する
 		if (findTopPage.isPresent()) {
 			toppageNewRepository.update(topPage);

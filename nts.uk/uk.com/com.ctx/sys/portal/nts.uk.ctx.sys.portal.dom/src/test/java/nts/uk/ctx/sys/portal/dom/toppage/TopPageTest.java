@@ -20,7 +20,7 @@ public class TopPageTest {
 	@Test
 	public void createFromMementoAndGetMemento() {
 		//When
-		ToppageNew domain = ToppageNew.createFromMemento(mockDto);
+		Toppage domain = Toppage.createFromMemento(mockDto);
 		//Then
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getTopPageCode().v()).isEqualTo(mockDto.getTopPageCode());
@@ -32,7 +32,7 @@ public class TopPageTest {
 	public void testSetMemeto() {
 		//Given
 		TopPageDto dto = TopPageDto.builder().build();
-		ToppageNew domain = ToppageNew.createFromMemento(mockDto);
+		Toppage domain = Toppage.createFromMemento(mockDto);
 		
 		//When
 		domain.setMemento(dto);
@@ -47,7 +47,7 @@ public class TopPageTest {
 	@Test
 	public void getters() {
 		//When
-		ToppageNew domain = ToppageNew.createFromMemento(mockDto);
+		Toppage domain = Toppage.createFromMemento(mockDto);
 		// then
 		NtsAssert.invokeGetters(domain);
 	}
@@ -57,7 +57,7 @@ public class TopPageTest {
 		//given
 		TopPageDto mockDtoNull = TopPageDto.builder().build();
 		//when
-		ToppageNew domain = new ToppageNew();
+		Toppage domain = new Toppage();
 		domain.getMemento(mockDtoNull);
 		//then
 		NtsAssert.invokeGetters(domain);

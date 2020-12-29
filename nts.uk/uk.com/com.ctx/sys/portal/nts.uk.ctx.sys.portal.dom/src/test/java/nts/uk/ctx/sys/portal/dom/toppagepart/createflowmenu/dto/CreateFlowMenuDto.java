@@ -139,7 +139,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
 						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-						.linkContent(domain.getLinkContent().orElse(null))
+						.linkContent(domain.getLinkContent().map(DisplayName::v).orElse(null))
 						.row(domain.getSizeAndPosition().getRow().v())
 						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
 						.width(domain.getSizeAndPosition().getWidth().v())
@@ -190,7 +190,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
 						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-						.linkContent(domain.getLinkContent().orElse(null))
+						.linkContent(domain.getLinkContent().map(DisplayName::v).orElse(null))
 						.row(domain.getSizeAndPosition().getRow().v())
 						.url(domain.getUrl().v())
 						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
@@ -245,7 +245,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
 										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
-						.linkContent(Optional.ofNullable(dto.getLinkContent()))
+						.linkContent(Optional.ofNullable(dto.getLinkContent()).map(DisplayName::new))
 						.sizeAndPosition(new SizeAndPosition(
 								new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()),
@@ -313,7 +313,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
 										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
-						.linkContent(Optional.ofNullable(dto.getLinkContent()))
+						.linkContent(Optional.ofNullable(dto.getLinkContent()).map(DisplayName::new))
 						.sizeAndPosition(new SizeAndPosition(
 								new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()),

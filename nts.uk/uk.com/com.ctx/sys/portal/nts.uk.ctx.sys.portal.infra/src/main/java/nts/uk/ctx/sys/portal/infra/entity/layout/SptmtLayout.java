@@ -18,7 +18,7 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 import nts.uk.ctx.sys.portal.infra.entity.layout.widget.SptmtLayoutWidget;
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SPTMT_LAYOUT")
 @EqualsAndHashCode(callSuper = true)
-public class SptmtLayout extends UkJpaEntity implements Serializable, LayoutNew.MementoGetter, LayoutNew.MementoSetter {
+public class SptmtLayout extends UkJpaEntity implements Serializable, Layout.MementoGetter, Layout.MementoSetter {
 
 	private static final long serialVersionUID = 1L;
 

@@ -16,8 +16,8 @@ import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,7 +28,7 @@ public class RegisterTopPageCommandHandler extends CommandHandler<RegisterTopPag
 
 	/** The top page repository. */
 	@Inject
-	private ToppageNewRepository topPageNewRepository;
+	private ToppageRepository topPageNewRepository;
 	
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
@@ -47,14 +47,14 @@ public class RegisterTopPageCommandHandler extends CommandHandler<RegisterTopPag
 		command.setCid(companyId);
 		
 		// ドメインモデル「トップページ」の重複をチェックする
-		Optional<ToppageNew> findTopPage = this.topPageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
+		Optional<Toppage> findTopPage = this.topPageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
 		if (findTopPage.isPresent()) {
 			// エラーメッセージ（#Msg_3#）を表示する
 			throw new BusinessException("Msg_3");
 		} 
 
 		// to Domain
-		ToppageNew topPage = ToppageNew.createFromMemento(command);
+		Toppage topPage = Toppage.createFromMemento(command);
 		
 		// ドメインモデル「トップページ」を登録する
 		this.topPageNewRepository.insert(topPage);
