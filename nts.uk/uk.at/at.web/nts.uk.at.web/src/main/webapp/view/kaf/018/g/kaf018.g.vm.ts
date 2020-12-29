@@ -189,18 +189,18 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				wsParam = { wkpID, startDate, endDate, empID, apprSttComfirmSet, yearMonth, closureId, closureDay, lastDayOfMonth };
 			vm.$blockui('show');
 			return vm.$ajax(API.getConfirmApprSttByEmpMonthDay, wsParam).done((data: ApprSttConfirmEmpMonthDay) => {
-				vm.createMonthDataSource(data);
+				vm.createMonthDataSource(data, yearMonth);
 				vm.createDayDataSource(data);
 			});
 		}
 		
-		createMonthDataSource(apprSttConfirmEmpMonthDay: ApprSttConfirmEmpMonthDay) {
+		createMonthDataSource(apprSttConfirmEmpMonthDay: ApprSttConfirmEmpMonthDay, yearMonth: any) {
 			const vm = this;
 			let monthDataSource: Array<EmpDateConfirmContent> = [];
 			if(!_.isNull(apprSttConfirmEmpMonthDay.approvalRootStateMonth)) {
 				let empDateConfirmContent: EmpDateConfirmContent = new EmpDateConfirmContent('');
 				empDateConfirmContent.rootID = apprSttConfirmEmpMonthDay.approvalRootStateMonth.rootStateID;
-				empDateConfirmContent.dateStr = moment(apprSttConfirmEmpMonthDay.approvalRootStateMonth.date,'YYYY/MM/DD').format('M/D(ddd)');
+				empDateConfirmContent.dateStr = moment(yearMonth,'YYYYMM').format('M') + vm.$i18n('KAF018_532');
 				empDateConfirmContent.confirmStt = apprSttConfirmEmpMonthDay.monthConfirm ? vm.$i18n('KAF018_534') : vm.$i18n('KAF018_533');
 				empDateConfirmContent.apprStt = apprSttConfirmEmpMonthDay.monthApproval == 0 ? vm.$i18n('KAF018_535') :
 					apprSttConfirmEmpMonthDay.monthApproval == 1 ? vm.$i18n('KAF018_536') :	vm.$i18n('KAF018_537');
