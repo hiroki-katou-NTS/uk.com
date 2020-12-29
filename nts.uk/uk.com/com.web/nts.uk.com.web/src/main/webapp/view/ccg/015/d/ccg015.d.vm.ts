@@ -83,8 +83,9 @@ module nts.uk.com.view.ccg015.d {
       vm.toppageSelectedCode.subscribe(data => {
         const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode ===  data});
         vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
-        const fileIdChoose: string = vm.listFlowMenu()[topPagePartChoose].fileId;
+        const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
         vm.fileID(fileIdChoose);
+        vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
       })
     }
 
@@ -107,6 +108,9 @@ module nts.uk.com.view.ccg015.d {
             vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
             vm.listTopPagePart(result);
+            if(result.length > 0){
+              vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
+            }
           } else {
             // Do nothing
           }
@@ -131,23 +135,13 @@ module nts.uk.com.view.ccg015.d {
             if (result.flowMenuCd && vm.layoutType() === 0) {
               const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd });
               vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
-              const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
-              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-                if (!_.isEmpty(item)) {
-                  vm.renderHTML(item.htmlContent, 'frame1');
-                }
-              });
             }
             if (result.flowMenuUpCd && vm.layoutType() === 1) {
               const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd });
               vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
-              const fileIdChoose: string = vm.listFlowMenu()[topPagePartChoose].fileId;
-              vm.fileID(fileIdChoose);
-              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-                vm.filePath(item.path);
-              });
             }
             vm.url(result.url);
+            vm.urlIframe3(result.url);
           } else {
             vm.isNewMode(true);
             vm.layoutType(0);
@@ -218,9 +212,7 @@ module nts.uk.com.view.ccg015.d {
         .always(() => vm.$blockui('clear'));
     }
 
-    getPreviewURL(): string {
-      return ntsFile.liveViewUrl(this.fileID(), "index.htm");
-    }
+ 
 
     // URLの内容表示するを
     showUrl() {

@@ -16,7 +16,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 @Stateless
 public class GetScheduleActualOfWorkInfo002 {
 	@Inject
-	private GetWorkRecord getWorkRecord;
+	private GetWorkActualOfWorkInfo002 getWorkRecord;
 
 	@Inject
 	private GetScheduleOfWorkInfo002 getScheduleOfWorkInfo002;
@@ -27,7 +27,7 @@ public class GetScheduleActualOfWorkInfo002 {
 
 		if (param.getActualData()) {
 			// lay data Daily
-			List<WorkScheduleWorkInforDto> listDataDaily = getWorkRecord.get(param);
+			List<WorkScheduleWorkInforDto> listDataDaily = getWorkRecord.getDataActualOfWorkInfo(param);
 			
 			for (WorkScheduleWorkInforDto ds : listDataSchedule) {
 				listDataDaily.stream().filter(c -> c.employeeId.equals(ds.employeeId) && c.date.equals(ds.date)).findFirst()

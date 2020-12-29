@@ -417,7 +417,6 @@ public class KTG027QueryProcessor {
 			Optional<DatePeriod> datePeriod) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		String cId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
 		List<AgreementTimeOfManagePeriod> listAgreementTimeDetail = new ArrayList<AgreementTimeOfManagePeriod>();
 		for (String empCode : lstEmployeeId) {
@@ -437,7 +436,6 @@ public class KTG027QueryProcessor {
 		}
 		List<AgreementTimeOfManagePeriodDto> Result = listAgreementTimeDetail.stream().map(item -> AgreementTimeOfManagePeriodDto.from(item)).collect(Collectors.toList());
 		
-		// sủa lại sau khi có update 30/09
 		return Result;
 	}
 }

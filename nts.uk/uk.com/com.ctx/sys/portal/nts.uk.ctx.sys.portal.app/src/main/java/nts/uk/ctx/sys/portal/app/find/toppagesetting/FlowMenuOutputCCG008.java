@@ -14,4 +14,6 @@ public class FlowMenuOutputCCG008 {
 	
 	//	ファイルID
 	private String fileId;
+	
+	private Boolean isFlowmenu;
 }

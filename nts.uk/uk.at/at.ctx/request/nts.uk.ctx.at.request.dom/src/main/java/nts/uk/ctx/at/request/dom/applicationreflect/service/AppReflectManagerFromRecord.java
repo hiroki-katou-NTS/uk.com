@@ -5,11 +5,9 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.SetInforReflAprResultImport;*/
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
 public interface AppReflectManagerFromRecord {
 	/**
@@ -28,8 +26,8 @@ public interface AppReflectManagerFromRecord {
 	 * @param datePeriod
 	 * @return
 	 */
-	void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
-			ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting );
+	void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
+			ExecutionTypeExImport refAppResult);
 	/**
 	 * 申請の取得_OLD
 	 * @param sid 社員ID
@@ -46,8 +44,8 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod);
-	void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
-			InformationSettingOfEachApp reflectSetting, DatePeriod appDatePeriod);
+
+	void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult, DatePeriod appDatePeriod);
 	
 	void reflectApplication(List<String> lstID);
 	/**

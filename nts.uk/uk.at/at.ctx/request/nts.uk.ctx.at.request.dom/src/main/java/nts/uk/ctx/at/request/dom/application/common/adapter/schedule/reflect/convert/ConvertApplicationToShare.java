@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
@@ -30,6 +31,10 @@ import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusOfDayShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
+import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateCancelationShare;
+import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateOrEarlyAtrShare;
+import nts.uk.ctx.at.shared.dom.application.lateleaveearly.TimeReportShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
@@ -167,8 +172,18 @@ public class ConvertApplicationToShare {
 			return appShare;
 
 		case EARLY_LEAVE_CANCEL_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			ArrivedLateLeaveEarly early = (ArrivedLateLeaveEarly) application;
+			return new ArrivedLateLeaveEarlyShare(
+					early.getLateCancelation().stream()
+							.map(x -> new LateCancelationShare(x.getWorkNo(),
+									LateOrEarlyAtrShare.valueOf(x.getLateOrEarlyClassification().value)))
+							.collect(Collectors.toList()),
+					early.getLateOrLeaveEarlies().stream()
+							.map(x -> new TimeReportShare(x.getWorkNo(),
+									LateOrEarlyAtrShare.valueOf(x.getLateOrEarlyClassification().value),
+									x.getTimeWithDayAttr()))
+							.collect(Collectors.toList()),
+					appShare);
 
 		case COMPLEMENT_LEAVE_APPLICATION:
 			// TODO: wait new domain

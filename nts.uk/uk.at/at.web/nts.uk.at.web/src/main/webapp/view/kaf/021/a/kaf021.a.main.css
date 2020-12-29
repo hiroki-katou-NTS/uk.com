@@ -1,6 +1,7 @@
 .kaf021a-content{
     margin-left: 80px;
     margin-top: 5px;
+    margin-right: 20px;
 }
 
 #A1_2{
@@ -13,7 +14,9 @@
 
 #tbl-control{
     margin-top: 5px;
-    width: 1180px;
+    width: 100%;
+    max-width: 1660px;
+    min-width: 1000px;
 }
 
 #tbl-control .cell:nth-child(1){

@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.toppage.service;
 
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
 
 /**
  * The Interface TopPageService.
@@ -17,7 +17,7 @@ public interface TopPageService {
 	 * @param topPage the top page
 	 * @param companyId the company id
 	 */
-	void copyTopPage(ToppageNew topPage,String companyId,boolean isCheckOverWrite, String copyCode);
+	void copyTopPage(Toppage topPage,String companyId,boolean isCheckOverWrite, String copyCode);
 	
 	/**
 	 * Removes the top page.

@@ -180,7 +180,7 @@ public class SptmtCreateFlowMenu extends UkJpaEntity
 				.fileId(domain.getFileId()).fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 				.height(domain.getSizeAndPosition().getHeight().v())
 				.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-				.linkContent(domain.getLinkContent().orElse(null))
+				.linkContent(domain.getLinkContent().map(DisplayName::v).orElse(null))
 				.pk(new SptmtFlowLayoutFileAttachmentPk(this.getCid(), this.getFlowMenuCode(),
 						domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
 				.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
@@ -225,7 +225,7 @@ public class SptmtCreateFlowMenu extends UkJpaEntity
 						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
 						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-						.linkContent(domain.getLinkContent().orElse(null))
+						.linkContent(domain.getLinkContent().map(DisplayName::v).orElse(null))
 						.pk(new SptmtFlowLayoutLinkPk(this.getCid(), this.getFlowMenuCode(),
 								domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
 						.url(domain.getUrl().v())
@@ -277,7 +277,7 @@ public class SptmtCreateFlowMenu extends UkJpaEntity
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(entity.getHorizontalPosition(), HorizontalPosition.class),
 										EnumAdaptor.valueOf(entity.getVerticalPosition(), VerticalPosition.class))))
-						.linkContent(Optional.ofNullable(entity.getLinkContent()))
+						.linkContent(Optional.ofNullable(entity.getLinkContent()).map(DisplayName::new))
 						.sizeAndPosition(new SizeAndPosition(new HorizontalAndVerticalSize(entity.getPk().column),
 								new HorizontalAndVerticalSize(entity.getPk().row),
 								new HorizontalAndVerticalSize(entity.getHeight()),
@@ -336,7 +336,7 @@ public class SptmtCreateFlowMenu extends UkJpaEntity
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(entity.getHorizontalPosition(), HorizontalPosition.class),
 										EnumAdaptor.valueOf(entity.getVerticalPosition(), VerticalPosition.class))))
-						.linkContent(Optional.ofNullable(entity.getLinkContent()))
+						.linkContent(Optional.ofNullable(entity.getLinkContent()).map(DisplayName::new))
 						.sizeAndPosition(new SizeAndPosition(new HorizontalAndVerticalSize(entity.getPk().column),
 								new HorizontalAndVerticalSize(entity.getPk().row),
 								new HorizontalAndVerticalSize(entity.getHeight()),

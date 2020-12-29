@@ -20,5 +20,5 @@ public class ApprSttSpecDeadlineSetDto {
 	private String endDate;
 	
 	// 雇用コード（リスト）
-	private List<String> listEmployeeCD;
+	private List<String> listEmploymentCD;
 }

@@ -137,8 +137,7 @@ public class KTG026QueryProcessor {
 		// 上長用の時間外時間表示．対象社員の年間超過回数＝取得した「36協定超過情報」
 		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
 				.excessTimes(otHours.getAgreeInfo())
-				.yearMonths(
-						otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
+				.yearMonths(otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
 				.build();
 
 		// 社員ID(List)から個人社員基本情報を取得
@@ -263,7 +262,13 @@ public class KTG026QueryProcessor {
 				
 			} else if (processingDate.lessThanOrEqualTo(loopYM)) { // [INPUT．当月の年月<=ループする年月]がtrue
 				// 【NO.333】36協定時間の取得
-				AgreementTimeOfManagePeriod agreementTimeDetail = GetAgreementTime.get(require, employeeId, loopYM, new ArrayList<>(), loopYM.lastGeneralDate(), ScheRecAtr.SCHEDULE);
+				AgreementTimeOfManagePeriod agreementTimeDetail = GetAgreementTime.get(
+						require
+						, employeeId
+						, loopYM
+						, new ArrayList<>()
+						, loopYM.lastGeneralDate()
+						, ScheRecAtr.SCHEDULE);
 				
 				if (agreementTimeDetail != null) {
 					ymOvertimes.add(YearMonthOvertime.builder()

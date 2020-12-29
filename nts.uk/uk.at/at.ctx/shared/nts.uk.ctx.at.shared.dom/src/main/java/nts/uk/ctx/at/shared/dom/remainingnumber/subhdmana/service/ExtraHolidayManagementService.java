@@ -255,7 +255,8 @@ public class ExtraHolidayManagementService {
 				.totalRemainingNumber(carryforwardDays)
 				.dispExpiredDate(compLeavCom != null
 					? compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description
-					: empSetting.getCompensatoryAcquisitionUse().getExpirationTime().description)
+					: null)
+					//	empSetting.getCompensatoryAcquisitionUse().getExpirationTime().description)
 				.remainingData(lstDataRemainDto)
 				.startDate(closing.get().getClosureStartDate())
 				.endDate(closing.get().getClosureEndDate())

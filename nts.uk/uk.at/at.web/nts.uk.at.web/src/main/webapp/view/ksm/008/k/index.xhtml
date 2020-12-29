@@ -34,8 +34,7 @@
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel" data-bind="visible:  $vm.$user.role.isInCharge.attendance">
             <com:ko tag="if" bind="$vm.$user.role.isInCharge.attendance">
-            <div class="sidebar-content-header custom-header">
-                <div>
+            <div class="sidebar-content-header">
                     <span class="title">#{i18n.getText('Com_Company')}</span>
                     <!--k2_1-->
                     <a class="goback" tabindex="2"
@@ -48,7 +47,6 @@
                     <!--k2_4-->
                     <button class="danger" data-bind="enable:vm.isKScreenUpdateMode(),click:kScreenClickDeleteButton"
                             tabindex="5">#{i18n.getText('KSM008_152')}</button>
-                </div>
             </div>
             <div class="contents-area custom-class">
                 <div>
@@ -65,7 +63,7 @@
                 <div class="table" style="margin-top: 8px;">
                     <div class="cell valign-top">
                         <!--k5-->
-                        <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}"
+                        <div data-bind="ntsPanel:{direction: 'right', showIcon: false, visible: true}"
                             >
                             <!--k5_1-->
                             <table tabindex="6" id="single-list" data-bind="ntsGridList: {

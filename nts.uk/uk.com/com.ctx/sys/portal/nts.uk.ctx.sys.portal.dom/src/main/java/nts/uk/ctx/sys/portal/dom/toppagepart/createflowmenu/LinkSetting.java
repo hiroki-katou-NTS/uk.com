@@ -31,5 +31,5 @@ public class LinkSetting extends DomainObject {
 	/**
 	 * リンク内容
 	 */
-	private Optional<String> linkContent;
+	private Optional<DisplayName> linkContent;
 }

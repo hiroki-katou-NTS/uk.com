@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class TopPageDto implements ToppageNew.MementoSetter, ToppageNew.MementoGetter {
+public class TopPageDto implements Toppage.MementoSetter, Toppage.MementoGetter {
 	
 	private String cid;
 	

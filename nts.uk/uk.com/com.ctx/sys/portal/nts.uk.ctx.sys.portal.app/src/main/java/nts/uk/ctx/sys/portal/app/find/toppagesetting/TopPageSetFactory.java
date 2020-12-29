@@ -1,9 +1,5 @@
 package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
-import java.util.List;
-
-import nts.uk.ctx.sys.portal.dom.layout.Layout;
-import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 /**
@@ -12,20 +8,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
  *
  */
 public interface TopPageSetFactory {
-	/**
-	 * build layout my page
-	 * @param layout
-	 * @param placements
-	 * @return
-	 */
-	LayoutForMyPageDto buildLayoutMyPage(Layout layout, List<Placement> placements);
-	/**
-	 * build layout top page
-	 * @param layout
-	 * @param placements
-	 * @return
-	 */
-	LayoutForTopPageDto buildLayoutTopPage(Layout layout, List<Placement> placements);
+	
 	/**
 	 * get top page for position
 	 * @param jobPosition
