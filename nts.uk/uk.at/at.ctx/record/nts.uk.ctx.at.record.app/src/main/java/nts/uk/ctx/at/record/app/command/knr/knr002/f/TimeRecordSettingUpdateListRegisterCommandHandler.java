@@ -49,8 +49,8 @@ public class TimeRecordSettingUpdateListRegisterCommandHandler extends CommandHa
 					if(!terminal.isPresent())
 						return null;
 					EmpInfoTerminal terminalValue = terminal.get();
-					Optional<NRLMachineInfo> romVersionOpt = nrlMachineInfoList.stream().filter(x -> x.getEmpInfoTerCode().v().equals(terminalValue.getEmpInfoTerCode().v())).findAny();
-					NRRomVersion romVersion = null;
+					Optional<NRLMachineInfo> romVersionOpt = nrlMachineInfoList.stream().filter(x -> Integer.parseInt(x.getEmpInfoTerCode().v()) == Integer.parseInt(terminalValue.getEmpInfoTerCode().v())).findAny();
+					NRRomVersion romVersion = new NRRomVersion("");
 					if (romVersionOpt.isPresent()) {
 						romVersion = romVersionOpt.get().getRomVersion();
 					}

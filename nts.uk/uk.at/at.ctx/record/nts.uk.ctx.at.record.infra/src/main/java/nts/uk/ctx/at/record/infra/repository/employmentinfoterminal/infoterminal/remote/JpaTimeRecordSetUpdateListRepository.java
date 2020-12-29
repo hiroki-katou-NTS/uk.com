@@ -88,6 +88,6 @@ public class JpaTimeRecordSetUpdateListRepository extends JpaRepository implemen
 	@Override
 	public void delete(List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList) {
 		listTimeRecordSetUpdateList.stream().forEach(x -> this.commandProxy().removeAll(KrcdtTrRemoteUpdate.class, toEntity(x).stream().map(e -> e.pk).collect(Collectors.toList())));
-		
+		this.getEntityManager().flush();
 	}
 }
