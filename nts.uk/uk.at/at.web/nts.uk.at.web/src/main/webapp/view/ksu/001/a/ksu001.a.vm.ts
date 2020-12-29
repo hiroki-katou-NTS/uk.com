@@ -24,6 +24,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
         
+        enbBtnReg : KnockoutObservable<boolean> = ko.observable(false);
         visibleShiftPalette: KnockoutObservable<boolean> = ko.observable(true);
         mode: KnockoutObservable<string> = ko.observable('edit'); // edit || confirm 
         showA9: boolean;
@@ -3068,6 +3069,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(item.get());
             setTimeout(() => {
+                
+                let updatedCells = $("#extable").exTable("updatedCells");
+                if (_.size(updatedCells) > 0) {
+                    self.enbBtnReg(true);
+                } else {
+                    self.enbBtnReg(false);
+                }
+
                 if (userInfor.updateMode == 'stick') {
                     
                     // check undo
