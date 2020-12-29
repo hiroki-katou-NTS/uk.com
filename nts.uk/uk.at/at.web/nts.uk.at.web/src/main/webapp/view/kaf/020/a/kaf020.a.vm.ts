@@ -33,12 +33,7 @@ module nts.uk.at.view.kaf020.a {
                 if (data.length == 0) {
                     vm.$dialog.error({messageId: "Msg_1694"});
                 } else if (data.length == 1 && (!params || !params.fromB)) {
-                    vm.detail({
-                        optionalItem: data[0],
-                        empLst: vm.empLst,
-                        dateLst: vm.dateLst,
-                        isAgentMode: vm.isAgentMode()
-                    });
+                    vm.detail(data[0]);
                 } else {
                     vm.optionalItemAppSet(data);
                     $('#fixed-table').focus();
