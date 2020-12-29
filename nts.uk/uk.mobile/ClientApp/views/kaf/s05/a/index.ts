@@ -325,6 +325,9 @@ export class KafS05Component extends KafS00ShrComponent {
                 vm.updateKaf000_A_Params(vm.user);
                 vm.updateKaf000_B_Params(vm.modeNew);
                 vm.updateKaf000_C_Params(vm.modeNew);
+                if (vm.modeNew) {
+                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
+                }
                 let command = {} as ParamStartMobile;
                 let url = self.location.search.split('=')[1];
                 command.mode = vm.modeNew;
