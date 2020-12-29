@@ -234,7 +234,7 @@ public class TimeLeaveApplicationFinder {
             achievementDetailDto.getWorkTypeCD(),
             achievementDetailDto.getWorkTimeCD(),
 
-            //TODO not mapping EA and source
+            //TODO chờ team nsvn update RQL23
             Collections.emptyList(),
             Collections.emptyList(),
             Collections.emptyList()
