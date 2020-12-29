@@ -33,6 +33,8 @@ public class GetSettingStatusForEachEmployeeTest {
 
 	private static String SID00003 = "9787c06b-3c71-4508-8e06-c70ad41f042a";
 	
+	private static String SID00004 = "abe4cf98-45cd-4508-2321-c70ad41f042b";
+	
 	
 	@Test
 	public void getter() {
@@ -48,20 +50,16 @@ public class GetSettingStatusForEachEmployeeTest {
 				require.findEmployeeByCid(CID, LaborWorkTypeAttr.REGULAR_LABOR);
 				result = Arrays.asList(
 						MonthlyWorkTimeSetSha.of(null, SID00001, null, null,null),
-						MonthlyWorkTimeSetSha.of(null, SID00002, null, null,null),
 						MonthlyWorkTimeSetSha.of(null, SID00003, null, null,null));
 				
 				require.findAll(CID);
 				result = Arrays.asList(
-						RegularLaborTimeSha.of(null, SID00001, null,null),
 						RegularLaborTimeSha.of(null, SID00002, null,null),
 						RegularLaborTimeSha.of(null, SID00003, null,null));
 
 				require.findRegulaMonthActCalSetByCid(CID);
 				result = Arrays.asList(
-						ShaRegulaMonthActCalSet.of(SID00001, null, null, null),
-						ShaRegulaMonthActCalSet.of(SID00002, null, null, null),
-						ShaRegulaMonthActCalSet.of(SID00003, null, null, null));
+						ShaRegulaMonthActCalSet.of(SID00004, null, null, null));
 
 			}
 		};
@@ -69,7 +67,7 @@ public class GetSettingStatusForEachEmployeeTest {
 		List<String> employeeIds = GetSettingStatusForEachEmployee.getSettingStatusForEachEmployee(require,
 				"000000000000-0001", LaborWorkTypeAttr.REGULAR_LABOR);
 
-		assertThat(employeeIds).isEqualTo(Arrays.asList(SID00001, SID00002, SID00003));
+		assertThat(employeeIds).isEqualTo(Arrays.asList(SID00001, SID00003, SID00002, SID00004));
 
 	}
 	
@@ -81,14 +79,12 @@ public class GetSettingStatusForEachEmployeeTest {
 				require.findEmployeeByCid(CID, LaborWorkTypeAttr.FLEX);
 				result = Arrays.asList(
 						MonthlyWorkTimeSetSha.of(null, SID00001, null, null,null),
-						MonthlyWorkTimeSetSha.of(null, SID00002, null, null,null),
 						MonthlyWorkTimeSetSha.of(null, SID00003, null, null,null));
 				
 				require.findAllShaByCid(CID);
 				result = Arrays.asList(
-						ShaFlexMonthActCalSet.of(null,null,null,null,null,SID00001),
-						ShaFlexMonthActCalSet.of(null,null,null,null,null,SID00001),
-						ShaFlexMonthActCalSet.of(null,null,null,null,null,SID00001));
+						ShaFlexMonthActCalSet.of(null,null,null,null,null,SID00002),
+						ShaFlexMonthActCalSet.of(null,null,null,null,null,SID00003));
 
 			}
 		};
@@ -96,7 +92,7 @@ public class GetSettingStatusForEachEmployeeTest {
 		List<String> employeeIds = GetSettingStatusForEachEmployee.getSettingStatusForEachEmployee(require,
 				"000000000000-0001", LaborWorkTypeAttr.FLEX);
 
-		assertThat(employeeIds).isEqualTo(Arrays.asList(SID00001, SID00002, SID00003));
+		assertThat(employeeIds).isEqualTo(Arrays.asList(SID00001, SID00003, SID00002));
 
 	}
 	
@@ -108,20 +104,17 @@ public class GetSettingStatusForEachEmployeeTest {
 				require.findEmployeeByCid(CID, LaborWorkTypeAttr.DEFOR_LABOR);
 				result = Arrays.asList(
 						MonthlyWorkTimeSetSha.of(null, SID00001, null, null,null),
-						MonthlyWorkTimeSetSha.of(null, SID00002, null, null,null),
-						MonthlyWorkTimeSetSha.of(null, SID00003, null, null,null));
+						MonthlyWorkTimeSetSha.of(null, SID00003, null, null,null)
+						);
 				
 				require.findDeforLaborTimeShaByCid(CID);
 				result = Arrays.asList( 
-						DeforLaborTimeSha.of(null, SID00001, null, null),
 						DeforLaborTimeSha.of(null, SID00002, null, null),
 						DeforLaborTimeSha.of(null, SID00003, null, null));
 
 				require.findByCid(CID);
 				result = Arrays.asList(
-						ShaDeforLaborMonthActCalSet.of(SID00001, null, null, null, null, null),
-						ShaDeforLaborMonthActCalSet.of(SID00002, null, null, null, null, null),
-						ShaDeforLaborMonthActCalSet.of(SID00003, null, null, null, null, null));
+						ShaDeforLaborMonthActCalSet.of(SID00004, null, null, null, null, null));
 
 			}
 		};
@@ -129,7 +122,7 @@ public class GetSettingStatusForEachEmployeeTest {
 		List<String> employeeIds = GetSettingStatusForEachEmployee.getSettingStatusForEachEmployee(require,
 				"000000000000-0001", LaborWorkTypeAttr.DEFOR_LABOR);
 
-		assertThat(employeeIds).isEqualTo(Arrays.asList(SID00001, SID00002, SID00003));
+		assertThat(employeeIds).isEqualTo(Arrays.asList(SID00001, SID00003, SID00002, SID00004));
 
 	}
 

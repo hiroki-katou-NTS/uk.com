@@ -33,6 +33,8 @@ public class GetSettingStatusEmploymentTest {
 	private static String EMPCD2 = "KO";
 
 	private static String EMPCD3 = "08";
+	
+	private static String EMPCD4 = "69";
 
 	@Test
 	public void getter() {
@@ -48,19 +50,18 @@ public class GetSettingStatusEmploymentTest {
 				require.findEmploymentbyCid(CID, LaborWorkTypeAttr.REGULAR_LABOR);
 				result = Arrays.asList(
 						MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD1), null, null, null),
-						MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD2), null, null, null),
-						MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD2), null, null, null)
+						MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD3), null, null, null)
 						);
 
 				require.findListByCid(CID);
 				result = Arrays.asList(
-						RegularLaborTimeEmp.of(null, new EmploymentCode(EMPCD1), null, null)
+						RegularLaborTimeEmp.of(null, new EmploymentCode(EMPCD2), null, null),
+						RegularLaborTimeEmp.of(null, new EmploymentCode(EMPCD3), null, null)
 						);
 
 				require.findByCid(CID);
 				result = Arrays.asList(
-						EmpRegulaMonthActCalSet.of(new EmploymentCode(EMPCD1), null, null, null),
-						EmpRegulaMonthActCalSet.of(new EmploymentCode(EMPCD3), null, null, null)
+						EmpRegulaMonthActCalSet.of(new EmploymentCode(EMPCD4), null, null, null)
 						);
 
 			}
@@ -69,7 +70,7 @@ public class GetSettingStatusEmploymentTest {
 		List<String> empCds = GetSettingStatusEmployment.getSettingEmployment(require,
 				"000000000000-0001", LaborWorkTypeAttr.REGULAR_LABOR);
 
-		assertThat(empCds).isEqualTo(Arrays.asList(EMPCD1, EMPCD2, EMPCD3));
+		assertThat(empCds).isEqualTo(Arrays.asList(EMPCD1, EMPCD3, EMPCD2, EMPCD4));
 
 	}
 
@@ -79,20 +80,22 @@ public class GetSettingStatusEmploymentTest {
 		new Expectations() {
 			{
 				require.findEmploymentbyCid(CID, LaborWorkTypeAttr.DEFOR_LABOR);
-				result = Arrays.asList(MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD1), null, null, null));
+				result = Arrays.asList(MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD1), null, null, null),
+						MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD3), null, null, null));
 
 				require.findDeforLaborByCid(CID);
-				result = Arrays.asList(DeforLaborTimeEmp.of(null, new EmploymentCode(EMPCD1), null, null));
+				result = Arrays.asList(DeforLaborTimeEmp.of(null, new EmploymentCode(EMPCD2), null, null),
+						DeforLaborTimeEmp.of(null, new EmploymentCode(EMPCD3), null, null));
 
 				require.findEmpDeforLabor(CID);
-				result = Arrays.asList(EmpDeforLaborMonthActCalSet.of(new EmploymentCode(EMPCD2), null, null, null, null, null));
+				result = Arrays.asList(EmpDeforLaborMonthActCalSet.of(new EmploymentCode(EMPCD4), null, null, null, null, null));
 			}
 		};
 
 		List<String> empCds = GetSettingStatusEmployment.getSettingEmployment(require,
 				"000000000000-0001", LaborWorkTypeAttr.DEFOR_LABOR);
 
-		assertThat(empCds).isEqualTo(Arrays.asList(EMPCD1, EMPCD2));
+		assertThat(empCds).isEqualTo(Arrays.asList(EMPCD1, EMPCD3, EMPCD2, EMPCD4));
 
 	}
 
@@ -102,10 +105,12 @@ public class GetSettingStatusEmploymentTest {
 		new Expectations() {
 			{
 				require.findEmploymentbyCid(CID, LaborWorkTypeAttr.FLEX);
-				result = Arrays.asList(MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD2), null, null, null));
+				result = Arrays.asList(MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD1), null, null, null),
+						MonthlyWorkTimeSetEmp.of(null, new EmploymentCode(EMPCD3), null, null, null));
 
 				require.findEmpFlexMonthByCid(CID);
-				result = Arrays.asList(EmpFlexMonthActCalSet.of(null, null, null, null, null, new EmploymentCode(EMPCD3)));
+				result = Arrays.asList(EmpFlexMonthActCalSet.of(null, null, null, null, null, new EmploymentCode(EMPCD2)),
+						EmpFlexMonthActCalSet.of(null, null, null, null, null, new EmploymentCode(EMPCD3)));
 
 			}
 		};
@@ -113,7 +118,7 @@ public class GetSettingStatusEmploymentTest {
 		List<String> empCds = GetSettingStatusEmployment.getSettingEmployment(require,
 				"000000000000-0001", LaborWorkTypeAttr.FLEX);
 
-		assertThat(empCds).isEqualTo(Arrays.asList(EMPCD2,EMPCD3));
+		assertThat(empCds).isEqualTo(Arrays.asList(EMPCD1, EMPCD3, EMPCD2));
 
 	}
 
