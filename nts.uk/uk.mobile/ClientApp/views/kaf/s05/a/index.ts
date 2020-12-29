@@ -45,6 +45,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public overTimeClf: number;
     public appId: string;
 
+    public isMsg_1562: Boolean = false;
+
     @Prop()
     public readonly params: InitParam;
 
@@ -639,7 +641,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let step2 = vm.$refs.step2 as KafS05Step2Component;
         vm.isValidateAll = vm.customValidate(step2);
         vm.$validate();
-        if (!vm.$valid || !vm.isValidateAll) {
+        if (!vm.$valid || !vm.isValidateAll && vm.numb == 1) {
             window.scrollTo(500, 0);
             vm.$nextTick(() => vm.$mask('hide'));
 
@@ -670,11 +672,6 @@ export class KafS05Component extends KafS00ShrComponent {
                     }).then((result: any) => {
                         vm.appId = result.data.appID;
                         vm.toStep(3);
-
-                        // return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-
-                        //     return true;
-                        // });	
                     });
                 }
             }).then((result: any) => {

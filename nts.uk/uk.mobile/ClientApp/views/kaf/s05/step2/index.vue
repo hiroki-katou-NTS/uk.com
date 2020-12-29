@@ -7,22 +7,23 @@
         v-bind:params="$appContext.kaf000_A_Params"
       />
     </div>
-    <div
-      v-if="!$appContext.$valid || !$appContext.isValidateAll"
-      class="card bg-danger top-alert uk-text-danger topError"
-    >
-      <button class="btn btn-link uk-text-danger">
-        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ "KAFS07_1" | i18n }}
-      </button>
-    </div>
 
     <!-- A2_B1 -->
-    <div v-if="true" class="card card-label">
+    <div v-if="$appContext.isMsg_1562" class="card card-label">
       <!--A2_B1_1-->
       <div class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS05_70" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
+      </div>
+      <!--A2_B1_5-->
+      <div
+      v-if="false"
+      class="card bg-danger top-alert uk-text-danger topError"
+      >
+        <button class="btn btn-link uk-text-danger">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          {{ "Msg_1562" | i18n }}
+        </button>
       </div>
       <!--A2_B1_2-->
       <div v-show="overTimes.length != 0 " v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
@@ -46,8 +47,6 @@
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              v-bind:require="false"
-              v-bind:showTitle="true"
               v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
@@ -89,8 +88,6 @@
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              v-bind:require="false"
-              v-bind:showTitle="true"
               v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
