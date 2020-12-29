@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class SaveLayoutFlowMenuCommandHandler extends CommandHandler<SaveLayoutCommand> {
 
 	@Inject
-	private LayoutNewRepository layoutNewRepository;
+	private LayoutRepository layoutNewRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveLayoutCommand> context) {
@@ -29,10 +29,10 @@ public class SaveLayoutFlowMenuCommandHandler extends CommandHandler<SaveLayoutC
 		String companyId = AppContexts.user().companyId();
 		command.setCid(companyId);
 		// ドメインモデル「レイアウト」を登録する
-		Optional<LayoutNew> findLayout = this.layoutNewRepository.getByCidAndCode(companyId, command.getTopPageCode(), command.getLayoutNo());
-		LayoutNew newLayout = LayoutNew.createFromMemento(command);
+		Optional<Layout> findLayout = this.layoutNewRepository.getByCidAndCode(companyId, command.getTopPageCode(), command.getLayoutNo());
+		Layout newLayout = Layout.createFromMemento(command);
 		if (findLayout.isPresent()) {
-			LayoutNew existedLayout = findLayout.get();
+			Layout existedLayout = findLayout.get();
 			newLayout.setWidgetSetting(existedLayout.getWidgetSettings());
 			this.layoutNewRepository.update(newLayout);
 		} else {
