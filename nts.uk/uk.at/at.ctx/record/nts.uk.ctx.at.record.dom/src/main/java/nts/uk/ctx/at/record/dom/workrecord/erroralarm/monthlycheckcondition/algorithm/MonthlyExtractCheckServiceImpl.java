@@ -302,12 +302,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							continue;
 						}
 						if(lstCompenEmpSetting.isEmpty() && !data.comLeaveSetting.isManaged()) continue;
-						int deadlCheckMonth;
-						if(!lstCompenEmpSetting.isEmpty() ) {
-							deadlCheckMonth = lstCompenEmpSetting.get(0).getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
-						} else {
-							deadlCheckMonth = data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
-						}
+						int deadlCheckMonth = data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+						
 						List<Closure> closure = data.lstClosure.stream().filter(x -> x.getClosureId().value == cloEmp.getClosureId()
 								&& x.getClosureMonth().getProcessingYm().equals(ym)).collect(Collectors.toList());
 						if(closure.isEmpty()) continue;
