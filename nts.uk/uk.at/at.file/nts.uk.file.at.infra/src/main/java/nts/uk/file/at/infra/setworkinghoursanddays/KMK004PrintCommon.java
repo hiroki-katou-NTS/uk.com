@@ -90,6 +90,17 @@ public class KMK004PrintCommon {
     	}
     }
 	
+	public static String getAggTypeEmployee(int value){
+    	switch (value){
+    	case 0:
+    		return TextResource.localize("KMK004_410");
+    	case 1:
+    		return TextResource.localize("KMK004_411");
+    	default: 
+    		return null;
+    	}
+    }
+	
 	public static String getInclude(int value){
     	switch (value){
     	case 0:
