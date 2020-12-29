@@ -77,6 +77,19 @@ module knr002.g {
                 //  employees
                 self.selectableEmployees = ko.observableArray([]);
 
+                // clear Errors
+                self.sendEmployeeId.subscribe(check => {
+                    self.clearErrors();
+                });
+                self.sendWorkType.subscribe(check => {
+                    self.clearErrors();
+                });
+                self.sendWorkTime.subscribe(check => {
+                    self.clearErrors();
+                });
+                self.sendBentoMenu.subscribe(check => {
+                    self.clearErrors();
+                });
                         
             }
             /**

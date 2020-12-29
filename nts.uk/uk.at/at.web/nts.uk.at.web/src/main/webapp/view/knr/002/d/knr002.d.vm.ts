@@ -65,7 +65,6 @@ module knr002.d {
                     // }
                         service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
                         if(!data || data.length <= 0){
-                            //do something
                             self.destinationCopyList([]);
                             self.selectableCodeList = [];
                             self.bindDestinationCopyList();
@@ -142,7 +141,9 @@ module knr002.d {
                     self.selectableCodeList.push(e.empInfoTerCode);
                 });  
                 if(self.selectableCodeList.length <= 0){
-                    // do  something
+                    dialog.error({messageId: "Msg_2093"}).then(()=>{
+                        return;
+                    }); 
                 } else {    
                     self.command.empInfoTerCode = self.selectableCodeList;              
                     service.checkRemoteSettingsToCopy(self.selectableCodeList).done(()=>{
@@ -153,7 +154,7 @@ module knr002.d {
                             console.log("call C Api");              
                             self.call_C_Api(self.command);
                         }).ifNo(() => {
-                                // do something
+                                // do nothing
                         }).always(() => {
                             blockUI.clear(); 
                         });

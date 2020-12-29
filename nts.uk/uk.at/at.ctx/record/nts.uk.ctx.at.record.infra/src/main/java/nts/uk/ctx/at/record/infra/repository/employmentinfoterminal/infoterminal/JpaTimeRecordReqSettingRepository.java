@@ -133,9 +133,16 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 				.of(new TimeRecordReqSetting.ReqSettingBuilder(reqTemp.getTerminalCode(), reqTemp.getContractCode(),
 						reqTemp.getCompanyId(), reqTemp.getCompanyCode(), employeeIds, reservation, wTypeCode)
 								.workTime(wTimeCode).overTimeHoliday(reqTemp.isOverTimeHoliday())
-								.applicationReason(reqTemp.isApplicationReason()).stampReceive(reqTemp.isStampReceive())
+								.applicationReason(reqTemp.isApplicationReason())
+								.stampReceive(reqTemp.isStampReceive())
 								.reservationReceive(reqTemp.isReservationReceive())
-								.applicationReceive(reqTemp.isApplicationReceive()).timeSetting(reqTemp.isTimeSetting())
+								.applicationReceive(reqTemp.isApplicationReceive())
+								.timeSetting(reqTemp.isTimeSetting())
+								.sendEmployeeId(reqTemp.isSendEmployeeId())
+								.sendWorkType(reqTemp.isSendWorkType())
+								.sendWorkTime(reqTemp.isSendWorkTime())
+								.sendBentoMenu(reqTemp.isSendBentoMenu())
+								.reboot(reqTemp.isReboot())
 								.build());
 	}
 

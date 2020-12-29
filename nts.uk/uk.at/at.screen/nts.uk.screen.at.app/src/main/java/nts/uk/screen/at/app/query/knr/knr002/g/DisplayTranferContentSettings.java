@@ -64,24 +64,25 @@ public class DisplayTranferContentSettings {
 			timeRecordReqSettingValue = timeRecordReqSetting.get();
 		}
 		dto.setEmpInfoTerCode(timeRecordReqSettingValue.getTerminalCode().v());
+		dto.setContractCode(timeRecordReqSettingValue.getContractCode().v());
 		dto.setCompanyId(timeRecordReqSettingValue.getCompanyId().v());
 		dto.setCompanyCode(timeRecordReqSettingValue.getCompanyCode());
-		dto.setContractCode(timeRecordReqSettingValue.getContractCode().v());
-		dto.setBentoMenuFrameNumbers(timeRecordReqSettingValue.getBentoMenuFrameNumbers());
+		dto.setSendEmployeeId(timeRecordReqSettingValue.isSendEmployeeId());
 		dto.setEmployeeIds(timeRecordReqSettingValue.getEmployeeIds()
-						   .stream().map(e -> e.v()).collect(Collectors.toList()));
+				   .stream().map(e -> e.v()).collect(Collectors.toList()));
+		dto.setSendBentoMenu(timeRecordReqSettingValue.isSendBentoMenu());
+		dto.setBentoMenuFrameNumbers(timeRecordReqSettingValue.getBentoMenuFrameNumbers());
+		dto.setSendWorkType(timeRecordReqSettingValue.isSendWorkType());
+		dto.setWorkTypeCodes(timeRecordReqSettingValue.getWorkTypeCodes()
+				   .stream().map(e -> e.v()).collect(Collectors.toList()));
+		dto.setSendWorkTime(timeRecordReqSettingValue.isSendWorkTime());
 		dto.setWorkTimeCodes(timeRecordReqSettingValue.getWorkTimeCodes()
 						   .stream().map(e -> e.v()).collect(Collectors.toList()));
-		dto.setWorkTypeCodes(timeRecordReqSettingValue.getWorkTypeCodes()
-						   .stream().map(e -> e.v()).collect(Collectors.toList()));
-		dto.setApplicationReason(timeRecordReqSettingValue.isApplicationReason());
-		dto.setSendEmployeeId(timeRecordReqSettingValue.isSendEmployeeId());
-		dto.setSendBentoMenu(timeRecordReqSettingValue.isSendBentoMenu());
-		dto.setSendWorkType(timeRecordReqSettingValue.isSendWorkType());
-		dto.setSendWorkTime(timeRecordReqSettingValue.isSendWorkTime());
 		dto.setOverTimeHoliday(timeRecordReqSettingValue.isOverTimeHoliday());
+		dto.setApplicationReason(timeRecordReqSettingValue.isApplicationReason());
 		dto.setStampReceive(timeRecordReqSettingValue.isStampReceive());
 		dto.setReservationReceive(timeRecordReqSettingValue.isReservationReceive());
+		dto.setApplicationReceive(timeRecordReqSettingValue.isApplicationReceive());
 		dto.setTimeSetting(timeRecordReqSettingValue.isTimeSetting());
 		dto.setRemoteSetting(timeRecordReqSettingValue.isRemoteSetting());
 		dto.setReboot(timeRecordReqSettingValue.isReboot());

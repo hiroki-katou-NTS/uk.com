@@ -142,7 +142,7 @@ module knr002.f {
                     _.forEach(self.selectedList, (e => {
                         y += `「${e}」`
                     }));
-                    dialog.confirm({ messageId: "Msg_2020", messageParams: [x, y] }).ifYes(() => {
+                    dialog.confirm({ messageId: "Msg_2020", messageParams: [x.substring(1, x.length -1), y.substring(1, y.length - 1)] }).ifYes(() => {
                         blockUI.invisible();
                         service.recovery(self.empInfoTerCode(), self.selectedList).done(() => {
                             nts.uk.ui.windows.close();
