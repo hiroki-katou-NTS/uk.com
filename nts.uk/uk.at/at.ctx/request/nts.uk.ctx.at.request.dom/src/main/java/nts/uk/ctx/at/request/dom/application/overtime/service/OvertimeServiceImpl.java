@@ -651,7 +651,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		DetailOutput output = new DetailOutput();
 		DisplayInfoOverTime displayInfoOverTime = new DisplayInfoOverTime();
-		// 申請日に関係する情報 (do not call by any handle)
+		// 申請日に関係する情報
 		Optional<InfoWithDateApplication> infoOptional = Optional.empty();
 		// ドメインモデル「残業申請」を取得する
 		Optional<AppOverTime> appOverTimeOp = appOverTimeRepository.find(companyId, appId);
@@ -784,8 +784,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appOverTime.getAppID(),
 				appOverTime.getPrePostAtr(),
 				appOverTime.getVersion(),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null),
 				displayInfoOverTime.getAppDispInfoStartup());
 		// 残業申請の個別登録前チェッ処理
 		output = commonAlgorithmOverTime.checkBeforeOverTime(
@@ -1015,8 +1015,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 		
 		WorkContent workContent = new WorkContent();
-		workContent.setWorkTypeCode(workTypeCode == null ? Optional.empty() : Optional.of(workTypeCode.v()));
-		workContent.setWorkTimeCode(workTimeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()));
+		workContent.setWorkTypeCode(Optional.ofNullable(workTypeCode).flatMap(x -> Optional.of(x.v())));
+		workContent.setWorkTimeCode(Optional.ofNullable(workTimeCode).flatMap(x -> Optional.of(x.v())));
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
 		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
 		Optional<WorkHours> workHours = selectWorkOutput.getWorkHours();
@@ -1148,7 +1148,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			DisplayInfoOverTime displayInfoOverTime) {
 		List<ConfirmMsgOutput> outputs = new ArrayList<ConfirmMsgOutput>();
 		// 申請する残業時間をチェックする
-		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		commonAlgorithmOverTime.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェック
 		List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
 		outputs.addAll(checkExcessList);
