@@ -2352,7 +2352,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			Optional<StatusConfirmMonthImport> opStatusConfirmMonthImport = recordWorkInfoAdapter.getConfirmStatusMonthly(
 					companyID, Arrays.asList(employeeID), yearMonth, closureId.value);
 			if(opStatusConfirmMonthImport.isPresent()) {
-				return true;
+				if(!CollectionUtil.isEmpty(opStatusConfirmMonthImport.get().getListConfirmStatus())) {
+					return opStatusConfirmMonthImport.get().getListConfirmStatus().get(0).isConfirmStatus();
+				}
 			}
 		}
 		return false;

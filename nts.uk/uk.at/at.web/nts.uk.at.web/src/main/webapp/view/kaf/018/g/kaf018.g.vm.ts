@@ -235,7 +235,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 						return;
 					}
 					if(!_.isNull(dailyConfirmItem.personConfirm)) {
-						empDateConfirmContent.confirmStt = dailyConfirmItem.personConfirm ? vm.$i18n('KAF018_534') : vm.$i18n('KAF018_533');	
+						empDateConfirmContent.confirmStt = dailyConfirmItem.personConfirm ? vm.$i18n('KAF018_534') : vm.$i18n('KAF018_533');
 					}
 					if(!_.isNull(dailyConfirmItem.bossConfirm)) {
 						empDateConfirmContent.apprStt = dailyConfirmItem.bossConfirm == 0 ? vm.$i18n('KAF018_535') :
