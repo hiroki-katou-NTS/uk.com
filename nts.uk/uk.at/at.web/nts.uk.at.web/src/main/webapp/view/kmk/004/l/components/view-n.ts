@@ -69,7 +69,8 @@ module nts.uk.at.view.kmk004.l {
 										years: years,
 										workTimes: workTimes,
 										type: type,
-										selectId: paramL.empCode()
+										selectId: paramL.empCode(),
+										yearDelete: yearDelete
 									}
 								}"></div>
 							</div>
@@ -151,6 +152,7 @@ module nts.uk.at.view.kmk004.l {
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
+		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
 		constructor(private params: IParam) {
 			super();
@@ -255,7 +257,7 @@ module nts.uk.at.view.kmk004.l {
 			});
 		}
 
-		remove() {
+		/*remove() {
 			const vm = this;
 			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 				if (result === 'yes') {
@@ -279,7 +281,44 @@ module nts.uk.at.view.kmk004.l {
 				}
 			});
 
+		}*/
+		
+		remove(){
+			const vm = this;
+			const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
+			const old_index = index === ko.unwrap(vm.years).length - 1 ? index - 1 : index;
+
+			nts.uk.ui.dialog
+				.confirm({ messageId: "Msg_18" })
+				.ifYes(() => {
+					vm.$blockui("invisible")
+						.then(() => vm.$ajax(KMK004N_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), employmentCode: vm.paramL.empCode() })))
+						.done(() => {
+							vm.yearDelete(ko.unwrap(vm.selectedYear));
+						})
+						.then(() => {
+							_.remove(ko.unwrap(vm.years), ((value) => {
+								return value.year == ko.unwrap(vm.selectedYear);
+							}));
+							vm.years(ko.unwrap(vm.years));
+							if (ko.unwrap(vm.years).length > 0) {
+								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							}
+						})
+						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+						.then(() => {
+							$(document).ready(function () {
+								$('#box-year').focus();
+							});
+						}).then(() => {
+							vm.$errors('clear');
+						}).then(() => {
+							vm.selectedYear.valueHasMutated();
+						})
+						.always(() => vm.$blockui("clear"));
+				})
 		}
+
 
 		close() {
 			const vm = this;
