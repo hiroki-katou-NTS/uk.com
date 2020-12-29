@@ -3007,7 +3007,9 @@ module nts.uk.ui.exTable {
                         exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
                     }
                     return { updateTarget: updateTarget, value: oldVal };
-                } 
+                }
+                
+                exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
                 return null;
             }
             
