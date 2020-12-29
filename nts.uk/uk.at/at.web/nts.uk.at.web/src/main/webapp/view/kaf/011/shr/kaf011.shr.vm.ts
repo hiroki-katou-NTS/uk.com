@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf011 {
 	import getText = nts.uk.resource.getText;
 	/** 振出申請 */
 	export class RecruitmentApp {
-		appType: number; //0: Rec, 1: Abs
+		appType: number; //0: Rec-振出, 1: Abs-振休
 		appID: string;
 		application: Application = new Application();
 		workingHours: TimeZoneWithWorkNo[] = [];
