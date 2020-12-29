@@ -28,6 +28,12 @@ public class EmployeeInfoContactImport {
 	// 携帯電話番号
 	/** The cell phone no. */
 	private String cellPhoneNo;
+	
+	// 座席ダイヤルイン
+	private String seatDialIn;
+	
+	//座席内線番号
+	private String seatExtensionNumber;
 
 	/**
 	 * Instantiates a new employee info contact import.
@@ -42,11 +48,13 @@ public class EmployeeInfoContactImport {
 	 *            the cell phone no
 	 */
 	public EmployeeInfoContactImport(String employeeId, String mailAddress, String mobileMailAddress,
-			String cellPhoneNo) {
+			String cellPhoneNo, String seatDialIn, String seatExtensionNumber) {
 		this.employeeId = employeeId;
 		this.mailAddress = mailAddress;
 		this.mobileMailAddress = mobileMailAddress;
 		this.cellPhoneNo = cellPhoneNo;
+		this.seatDialIn = seatDialIn;
+		this.seatExtensionNumber = seatExtensionNumber;
 	}
 
 	/**

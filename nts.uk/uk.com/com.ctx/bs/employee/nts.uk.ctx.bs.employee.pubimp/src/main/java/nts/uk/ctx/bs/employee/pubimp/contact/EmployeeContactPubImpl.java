@@ -44,7 +44,8 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 				item.getSeatDialIn().map(m -> m.v()).orElse(null),
 				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null),
 				item.getMobileMailAddress().map(m -> m.v()).orElse(null),
-				item.getCellPhoneNumber().map(m -> m.v()).orElse(null)
+				item.getCellPhoneNumber().map(m -> m.v()).orElse(null),
+				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null)
 				);
 	}
 

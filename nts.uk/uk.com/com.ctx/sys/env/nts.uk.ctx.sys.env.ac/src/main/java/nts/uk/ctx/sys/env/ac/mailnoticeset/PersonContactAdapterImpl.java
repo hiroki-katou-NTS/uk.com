@@ -35,7 +35,7 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 	public List<PersonContactImport> getListContact(List<String> personIds) {
 		List<PersonContactObject> listContact = this.personContactPub.getList(personIds);
 		return listContact.stream().map(item -> new PersonContactImport(item.getPersonId(), item.getMailAdress(),
-				item.getMobileMailAdress(), item.getCellPhoneNumber())).collect(Collectors.toList());
+				item.getMobileMailAdress(), item.getCellPhoneNumber(), item.getMemo1(), item.getMemo2())).collect(Collectors.toList());
 	}
 
 	/*

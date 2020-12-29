@@ -29,4 +29,6 @@ public class EmployeeContactObject {
 	//携帯電話番号
 	private String cellPhoneNo;
 	
+	//座席内線番号
+	private String seatExtensionNumber;
 }
