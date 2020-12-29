@@ -256,7 +256,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						// } else {
 						// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
 						// }
-					} 
+					} else {
+						$('.table-time2 .nts-fixed-header-wrapper').width(455);
+						$('.table-time2 .nts-fixed-body-wrapper').width(455);
+						$('.table-time3 .nts-fixed-header-wrapper').width(455);
+						$('.table-time3 .nts-fixed-body-wrapper').width(455);
+					}
                 }
             }).fail(err => {
 				// xử lý lỗi nghiệp vụ riêng

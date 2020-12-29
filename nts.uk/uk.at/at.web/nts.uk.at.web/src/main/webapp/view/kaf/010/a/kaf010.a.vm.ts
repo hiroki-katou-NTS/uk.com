@@ -198,7 +198,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							// } else {
 							// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
 							// }
-						} 
+						} else {
+							$('.table-time2 .nts-fixed-header-wrapper').width(455);
+							$('.table-time2 .nts-fixed-body-wrapper').width(455);
+							$('.table-time3 .nts-fixed-header-wrapper').width(455);
+							$('.table-time3 .nts-fixed-body-wrapper').width(455);
+						}
 						if (!_.isNil(dataTransfer)) {
 							if(!_.isNil(dataTransfer.appDate)){
 								vm.application().prePostAtr(1);
@@ -652,6 +657,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				workHours1.end = ko.observable(null);
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
+				if(hdWorkDispInfoWithDateOutput && hdWorkDispInfoWithDateOutput.workHours){
+					workHours1.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
+					workHours1.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
+					workHours2.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
+					workHours2.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
+				}
 			} else {
 				workHours1 = self.workInfo().workHours1;
 				workHours2 = self.workInfo().workHours2;
