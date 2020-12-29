@@ -175,7 +175,6 @@ module nts.uk.at.view.kmk004.components {
 
 			vm.years
 				.subscribe(() => {
-					setTimeout(() => {
 						if (ko.unwrap(vm.years).length == 0) {
 							vm.workTimeSaves([]);
 							vm.initList();
@@ -187,7 +186,6 @@ module nts.uk.at.view.kmk004.components {
 								}))
 							}
 						}
-					}, 100);
 				});
 
 
