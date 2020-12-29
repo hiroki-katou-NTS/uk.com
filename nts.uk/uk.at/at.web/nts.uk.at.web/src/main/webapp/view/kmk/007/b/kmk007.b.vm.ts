@@ -24,8 +24,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             
             self.timeMngAtr =  ko.observable(0);
              self.itemListB41 = ko.observableArray([
-                { code: '1', frameValue: nts.uk.resource.getText("KMF004_167") },
-                { code: '0', frameValue: nts.uk.resource.getText("KMF004_168") }
+                { code: '1', frameValue: nts.uk.resource.getText("KMF004_114") },
+                { code: '0', frameValue: nts.uk.resource.getText("KMF004_115") }
             ]);
             
             self.frameId = ko.observable(nts.uk.ui.windows.getShared("KMK007_ITEM_ID"));
