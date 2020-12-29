@@ -1017,7 +1017,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		checkCondition1(data: any) {
 			const vm = this;
 			if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst) {
-				let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, { 'appType': 0 });
+				let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, { 'appType': 1 });
 				if (targetWorkType.length > 0) {
 					if (targetWorkType.opHolidayTypeUse) {
 						vm.condition1(false);
