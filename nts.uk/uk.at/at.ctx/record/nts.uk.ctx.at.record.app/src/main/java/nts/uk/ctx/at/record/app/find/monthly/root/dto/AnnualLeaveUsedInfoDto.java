@@ -50,8 +50,8 @@ public class AnnualLeaveUsedInfoDto implements ItemConst {
 	}
 
 	public AnnualLeaveUsedInfo toDomain() {
-		return new AnnualLeaveUsedInfo(usedNumberBeforeGrant == null ? new AnnualLeaveUsedNumber() : usedNumberBeforeGrant.toDomain(),
-										usedNumber == null ? new AnnualLeaveUsedNumber() : usedNumber.toDomain(),
+		return AnnualLeaveUsedInfo.of(usedNumber == null ? new AnnualLeaveUsedNumber() : usedNumber.toDomain(),
+										usedNumberBeforeGrant == null ? new AnnualLeaveUsedNumber() : usedNumberBeforeGrant.toDomain(),
 										new UsedTimes(annualLeaveUsedTimes), new UsedTimes(annualLeaveUsedDayTimes),
 										usedNumberAfterGrantOpt == null ? Optional.empty() : Optional.of(usedNumberAfterGrantOpt.toDomain()));
 	}
