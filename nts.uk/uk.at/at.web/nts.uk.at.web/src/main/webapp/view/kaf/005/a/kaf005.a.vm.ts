@@ -38,6 +38,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		timeTemp: Array<OvertimeApplicationSetting>;
 		isFromOther: boolean = false;
 		
+		// display mode edit, or view =0 (false)
+		outputMode: KnockoutObservable<Boolean> = ko.observable(true);
+		
 		
 		created(params: AppInitParam) {
 			// new 

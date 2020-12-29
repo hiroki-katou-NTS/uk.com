@@ -26,6 +26,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
+											enable: outputMode,
 											value: messageInfos()[0].valueInput,
 											constraint: 'DivergenceReason',
 											option: {
@@ -63,6 +64,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
+														enable: outputMode,
 														value: messageInfos()[1].valueInput,
 														constraint: 'DivergenceReason',
 														option: {

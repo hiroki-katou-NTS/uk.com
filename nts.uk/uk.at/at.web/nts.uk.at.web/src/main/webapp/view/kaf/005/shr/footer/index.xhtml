@@ -24,6 +24,7 @@
 		</div>
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
+											enable: outputMode,
 											value: messageInfos()[0].valueInput,
 											constraint: 'DivergenceReason',
 											option: {
@@ -61,6 +62,7 @@
 		</div>
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
+														enable: outputMode,
 														value: messageInfos()[1].valueInput,
 														constraint: 'DivergenceReason',
 														option: {
