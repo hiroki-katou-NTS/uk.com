@@ -224,7 +224,14 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
-					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().alreadySettingList(
+						_.map(data, (selectedId) => {
+							let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
+							if (!emp) {
+								return { code: null, isAlreadySetting: false };
+							}
+							return { code: emp.code, isAlreadySetting: true };
+						}));
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);

@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.j;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -27,7 +29,7 @@ public class AfterChangeFlexEmployeeSetting {
 		result.setFlexMonthActCalSet(this.displayFlexBasicSettingByEmployee.displayFlexBasicSettingByEmployee(sId).getFlexMonthActCalSet());
 
 		// 社員リストを表示する
-		result.setEmployeeIds(this.employeeList.get(LaborWorkTypeAttr.FLEX));
+		result.setAlreadySettings(this.employeeList.get(LaborWorkTypeAttr.FLEX).stream().map(x-> x.employeeId).collect(Collectors.toList()));
 
 		return result;
 	}

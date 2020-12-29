@@ -141,7 +141,8 @@ class BasicSettingsCompany extends ko.ViewModel {
 		}
 
 		vm.$blockui('invisible');
-		vm.$ajax(url).done((setting: IDisplayFlexBasicSettingByCompanyDto) => {
+		vm.$ajax(url).done((setting: any) => {
+			vm.setAlreadySettingList(setting.alreadySettings);
 			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
 			if (_.has(setting, 'flexPredWorkTime.reference')) {
 				if (vm.screenData().getFlexPredWorkTime().reference != _.get(setting, 'flexPredWorkTime.reference')) {
@@ -160,6 +161,26 @@ class BasicSettingsCompany extends ko.ViewModel {
 
 		}).always(() => { vm.$blockui('clear'); });
 
+	}
+
+	setAlreadySettingList(data: Array<string>) {
+		const vm = this;
+		if (vm.screenMode == 'Com_Workplace')
+			vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+
+		if (vm.screenMode == 'Com_Employment')
+			vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+
+		if (vm.screenMode == 'Com_Person')
+			vm.screenData().alreadySettingList(
+				_.map(data, (selectedId) => {
+							let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
+							if (!emp) {
+								return { code: null, isAlreadySetting: false };
+							}
+							return { code: emp.code, isAlreadySetting: true };
+						})
+			);
 	}
 
 	getStartMonth() {

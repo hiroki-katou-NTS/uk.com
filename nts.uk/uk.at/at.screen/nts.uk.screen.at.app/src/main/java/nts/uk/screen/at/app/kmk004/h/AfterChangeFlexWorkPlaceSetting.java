@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.h;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -30,7 +32,8 @@ public class AfterChangeFlexWorkPlaceSetting {
 		result.setFlexMonthActCalSet(displayFlexDto.getFlexMonthActCalSet());
 		result.setFlexPredWorkTime(displayFlexDto.getFlexPredWorkTime());
 		// 職場リストを表示する
-		result.setWkpIds(this.workplaceList.get(LaborWorkTypeAttr.FLEX));
+		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
+				.collect(Collectors.toList()));
 
 		return result;
 	}

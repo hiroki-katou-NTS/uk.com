@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
-import nts.uk.screen.at.app.query.kmk004.common.WorkplaceIdDto;
 
 /**
  * 
@@ -22,5 +21,5 @@ public class AfterChangeFlexWorkPlaceSettingDto {
 	// フレックス勤務所定労働時間取得
 	GetFlexPredWorkTimeDto flexPredWorkTime;
 
-	List<WorkplaceIdDto> wkpIds;
+	List<String> alreadySettings;
 }

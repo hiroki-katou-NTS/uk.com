@@ -76,7 +76,7 @@ module nts.uk.at.kmk004.components.flex {
 		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		constructor(param?: IScreenData) {
-			const vm = this;
+			
 			if (param) {
 				this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 				this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
