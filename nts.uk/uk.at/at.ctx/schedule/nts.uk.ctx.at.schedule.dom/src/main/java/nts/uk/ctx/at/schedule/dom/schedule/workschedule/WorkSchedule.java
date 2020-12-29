@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -481,15 +482,14 @@ public class WorkSchedule implements DomainAggregate {
 				.sorted(Comparator.comparingInt(TimeSpanForCalc::startValue))
 				.collect(Collectors.toList());;
 				
-		List<BreakTimeSheet> newBreakTimeSheets = new ArrayList<>(); 
-		for (int index = 0; index < sortedBreakTimeList.size(); index++) {
-			val aNewBreakTimeSheet = new BreakTimeSheet(
-					new BreakFrameNo(index + 1), 
-					sortedBreakTimeList.get(index).getStart(), 
-					sortedBreakTimeList.get(index).getEnd() );
-			
-			newBreakTimeSheets.add(aNewBreakTimeSheet);
-		}
+		List<BreakTimeSheet> newBreakTimeSheets = 
+			IntStream.range(0, sortedBreakTimeList.size()).boxed()
+				.map( index ->
+						new BreakTimeSheet(
+							new BreakFrameNo(index + 1),
+							sortedBreakTimeList.get(index).getStart(),
+							sortedBreakTimeList.get(index).getEnd() ))
+				.collect(Collectors.toList());
 		
 		// update value of BreakTime
 		val newBreakTimeOfDailyAttd = new BreakTimeOfDailyAttd(BreakType.REFER_SCHEDULE, newBreakTimeSheets);
