@@ -3,6 +3,10 @@ module nts.uk.at.view.kdl045.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            setTimeout(() => {
+                screenModel.workStyle(screenModel.informationStartup.workStyle);
+                screenModel.workStyle.valueHasMutated();
+            }, 100);
 
             $(".popup-area1").ntsPopup({
                 position: {

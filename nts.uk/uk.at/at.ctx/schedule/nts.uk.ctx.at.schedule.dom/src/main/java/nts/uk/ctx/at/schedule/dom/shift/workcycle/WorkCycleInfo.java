@@ -1,15 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-import org.eclipse.persistence.internal.xr.ValueObject;
-
-import java.util.List;
 
 /*
     勤務サイクルの勤務情報
