@@ -55,7 +55,7 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
                 null
         );
-        this.service.registerLaborCalculationSetting(domain, command.getDate());
+        this.service.registerLaborCalculationSetting(domain, command.getStartDate());
 
     }
 }

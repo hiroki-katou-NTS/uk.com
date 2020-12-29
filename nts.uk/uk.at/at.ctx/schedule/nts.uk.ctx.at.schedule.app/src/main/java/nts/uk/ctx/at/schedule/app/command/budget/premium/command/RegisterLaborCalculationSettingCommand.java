@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class RegisterLaborCalculationSettingCommand {
-    private GeneralDate date;
+    private GeneralDate startDate;
 
     private Integer unitPrice;
 
