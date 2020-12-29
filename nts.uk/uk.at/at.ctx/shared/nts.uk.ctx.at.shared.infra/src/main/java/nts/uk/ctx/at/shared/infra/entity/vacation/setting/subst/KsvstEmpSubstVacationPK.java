@@ -26,7 +26,7 @@ public class KsvstEmpSubstVacationPK implements Serializable {
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
-
+	//雇用区分コード
 	/** The contract type cd. */
 	@Column(name = "EMPCD")
 	private String contractTypeCd;

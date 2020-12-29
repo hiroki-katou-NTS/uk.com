@@ -80,7 +80,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		//時間帯の作成
 		Map<Integer, TimeZone> timeZoneMap = new HashMap<Integer, TimeZone>();
 		for(int i = 0;i<imp.getLstTimeZone().size();i++) {
-			TimeZone timeZone = imp.getLstTimeZone().get(i);
+			TimeZone timeZone = imp.getLstTimeZone().get(i+1);
 			timeZoneMap.put(i+1, timeZone);
 		}
 		

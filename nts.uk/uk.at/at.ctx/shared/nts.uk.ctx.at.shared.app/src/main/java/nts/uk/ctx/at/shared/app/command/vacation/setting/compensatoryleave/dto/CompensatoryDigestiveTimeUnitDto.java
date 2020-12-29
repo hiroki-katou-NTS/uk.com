@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryD
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class CompensatoryDigestiveTimeUnitDto {
 
 	/** The is manage by time. */
@@ -24,6 +26,15 @@ public class CompensatoryDigestiveTimeUnitDto {
 	/** The digestive unit. */
 	private Integer digestiveUnit;
 
+	public CompensatoryDigestiveTimeUnit toDomainNew() {
+		return new CompensatoryDigestiveTimeUnit(
+				ManageDistinct.valueOf(this.isManageByTime),
+				TimeDigestiveUnit.valueOf(this.digestiveUnit));
+	}
+	
+	public static CompensatoryDigestiveTimeUnitDto toDto(CompensatoryDigestiveTimeUnit domain) {
+		return new CompensatoryDigestiveTimeUnitDto(domain.getIsManageByTime().value, domain.getDigestiveUnit().value);
+	}
 	/**
 	 * To domain.
 	 *

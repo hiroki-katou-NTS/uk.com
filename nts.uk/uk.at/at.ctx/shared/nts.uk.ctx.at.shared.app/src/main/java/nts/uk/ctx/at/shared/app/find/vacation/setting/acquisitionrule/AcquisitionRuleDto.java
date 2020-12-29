@@ -22,10 +22,10 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	/** The category. */
 	public int category;
 	
-	/** */
+	/** The AnnualHolidayItemDto ---年休より優先する休暇 */
 	public AnnualHolidayItemDto annualHolidayShow;
 	
-	/** */
+	/** The HoursHolidayShow*/
 	public HoursHolidayItemDto hoursHolidayShow;
 
 	/*
@@ -71,10 +71,5 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	 * AcquisitionRuleSetMemento#setHoursHoliday
 	 * (nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday)
 	 */
-	@Override
-	public void setHoursHoliday(HoursHoliday hoursHoliday) {
-		HoursHolidayItemDto dto = HoursHolidayItemDto.builder().build();
-		hoursHoliday.saveToMemento(dto);
-		this.hoursHolidayShow = dto;		
-	}
+
 }

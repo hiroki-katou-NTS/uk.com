@@ -31,15 +31,22 @@ public class GetInformationStartupOutput {
 	 * 一日分の勤務希望の表示情報
 	 */
 	private WorkAvailabilityOfOneDayDto workAvaiOfOneDayDto;
+	
+	/**
+	 * 　Optional<出勤休日区分>
+	 * return Enum : WorkStyle
+	 */
+	private Integer workStyle;
 
 	public GetInformationStartupOutput(WorkTimezoneCommonSetDto workTimezoneCommonSet,
 			List<UsageTimeAndType> listUsageTimeAndType, Integer showYourDesire,
-			WorkAvailabilityOfOneDayDto workAvaiOfOneDayDto) {
+			WorkAvailabilityOfOneDayDto workAvaiOfOneDayDto,Integer workStyle) {
 		super();
 		this.workTimezoneCommonSet = workTimezoneCommonSet;
 		this.listUsageTimeAndType = listUsageTimeAndType;
 		this.showYourDesire = showYourDesire;
 		this.workAvaiOfOneDayDto = workAvaiOfOneDayDto;
+		this.workStyle = workStyle;
 	}
 	
 }
