@@ -289,16 +289,16 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
-                                            let check = true;
+                                            // let check = true;
 
-                                            const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+                                            // const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
-                                            if (exist) {
-                                                check = !exist.isNew;
-                                            }
+                                            // if (exist) {
+                                            //     check = !exist.isNew;
+                                            // }
 
                                             data.map(m => {
-                                                const s: IWorkTime = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                                 data1.push(s);
                                             });
 
