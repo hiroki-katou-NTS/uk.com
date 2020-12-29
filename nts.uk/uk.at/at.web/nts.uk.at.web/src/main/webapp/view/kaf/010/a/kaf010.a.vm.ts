@@ -98,7 +98,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			vm.isSendMail = ko.observable(false);
 			if (!_.isNil(dataTransfer)) {
 				if(!_.isNil(dataTransfer.appDate)){
-					vm.application().prePostAtr(1);
 					vm.application().appDate(dataTransfer.appDate);
 					vm.application().opAppStartDate(dataTransfer.appDate);
 					vm.application().opAppEndDate(dataTransfer.appDate);
@@ -200,6 +199,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
 							// }
 						} 
+						if (!_.isNil(dataTransfer)) {
+							if(!_.isNil(dataTransfer.appDate)){
+								vm.application().prePostAtr(1);
+							}
+						}
 					}
 				}).fail((failData: any) => {
 					if (failData.messageId === "Msg_43") {
