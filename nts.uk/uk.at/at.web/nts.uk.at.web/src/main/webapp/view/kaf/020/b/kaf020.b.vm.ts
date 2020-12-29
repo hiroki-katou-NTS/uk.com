@@ -22,17 +22,13 @@ module nts.uk.at.view.kaf020.b {
             name: "",
             appDispInfoStartupOutput: ko.observable(null)
         });
-        allOptional: any = [];
-
-        constructor(props: any) {
-            super();
-        }
 
         created(params: any) {
             const vm = this;
-            if (params != undefined) {
-                nts.uk.characteristics.save("KAF020InitParams", params)
-                vm.code = params.code;
+            if (params && params.isAgentMode) vm.isAgentMode(params.isAgentMode);
+            if (params != undefined && params.optionalItem) {
+                nts.uk.characteristics.save("KAF020InitParams", params.optionalItem);
+                vm.code = params.optionalItem.code;
 
             } else {
                 nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
@@ -41,11 +37,14 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
+            let empLst = [], dateLst = [];
+            if (params && params.empLst) empLst = params.empLst;
+            if (params && params.dateLst) dateLst = params.dateLst;
             vm.$blockui("show");
-            vm.loadData([], [], vm.appType()).then((loadFlag) => {
+            vm.loadData(empLst, dateLst, vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
-                    if (params != undefined) {
-                        return vm.fetchData(params);
+                    if (params != undefined && params.optionalItem) {
+                        return vm.fetchData(params.optionalItem);
                     } else {
                         nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
                             return vm.fetchData(cacheParams);
@@ -54,11 +53,9 @@ module nts.uk.at.view.kaf020.b {
                 }
             }).then((response: any) => {
 
-            })
-        }
-
-        mounted() {
-            const vm = this;
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         fetchData(params: any) {
@@ -111,7 +108,7 @@ module nts.uk.at.view.kaf020.b {
 
         goBack() {
             const vm = this;
-            vm.$jump('../a/index.xhtml');
+            vm.$jump('../a/index.xhtml', {fromB: true, isAgentMode: vm.isAgentMode()});
         }
 
         register() {
