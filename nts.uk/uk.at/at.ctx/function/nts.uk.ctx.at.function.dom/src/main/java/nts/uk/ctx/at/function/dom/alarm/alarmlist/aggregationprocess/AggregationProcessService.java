@@ -45,6 +45,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmC
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmExtracResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
@@ -241,6 +242,10 @@ public class AggregationProcessService {
 					.collect(Collectors.toList());
 			if(!periodCheck.isEmpty() && periodCheck.get(0).getStartDate() != null) {
 				datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),periodCheck.get(0).getEndDate());
+				if(x.getCategory() == AlarmCategory.MONTHLY || x.getCategory() == AlarmCategory.MULTIPLE_MONTH) {
+					datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),
+							periodCheck.get(0).getEndDate().addMonths(1).addDays(-1));
+				}
 			}
 			List<String> lstSidTmp = new ArrayList<>(lstSid);
 			AlarmCheckTargetCondition extractTargetCondition = x.getExtractTargetCondition();
@@ -312,6 +317,14 @@ public class AggregationProcessService {
 				case APPLICATION_APPROVAL:
 					break;
 				case MULTIPLE_MONTH:
+					MulMonAlarmCond mulMonCheck = (MulMonAlarmCond) x.getExtractionCondition();
+					extractAlarmService.extractMultiMonthCheckResult(cid,
+							lstSidTmp, 
+							new YearMonthPeriod(datePeriod.start().yearMonth(), datePeriod.end().yearMonth()),
+							mulMonCheck.getErrorAlarmCondIds(), 
+							getWplByListSidAndPeriod, 
+							lstResultCondition,
+							lstCheckType);
 					break;
 				case ANY_PERIOD:
 					break;

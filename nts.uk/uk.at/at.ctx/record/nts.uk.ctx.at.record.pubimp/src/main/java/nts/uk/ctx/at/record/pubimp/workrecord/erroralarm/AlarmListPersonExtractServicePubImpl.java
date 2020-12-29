@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.Mast
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm.MonthlyExtractCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.algorithm.MultiMonthlyExtractCheckService;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.AlarmListPersonExtractServicePub;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
@@ -21,7 +22,8 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	private MasterCheckService masterCheck;
 	@Inject
 	private MonthlyExtractCheckService monthCheck;
-	
+	@Inject
+	private MultiMonthlyExtractCheckService multiMonthCheck;
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
 			String errorMasterCheckId,
@@ -44,12 +46,35 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 		
 	}
 
-
 	@Override
 	public void extractMonthlyCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
-		monthCheck.extractMonthlyAlarm(cid, lstSid, mPeriod, fixConId, lstAnyConID, getWplByListSidAndPeriod, lstResultCondition, lstCheckType);
+		monthCheck.extractMonthlyAlarm(cid,
+				lstSid,
+				mPeriod,
+				fixConId,
+				lstAnyConID, 
+				getWplByListSidAndPeriod,
+				lstResultCondition,
+				lstCheckType);
 		
 	}
+
+
+	@Override
+	public void extractMultiMonthlyResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
+			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+		multiMonthCheck.extractMultiMonthlyAlarm(cid,
+				lstSid,
+				mPeriod,
+				lstAnyConID,
+				getWplByListSidAndPeriod,
+				lstResultCondition,
+				lstCheckType);
+		
+	}
+	
+		
 }

@@ -49,4 +49,18 @@ public interface AlarmListPersonExtractServicePub {
 	void extractMonthlyCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+	/**
+	 * 複数月次
+	 * @param cid
+	 * @param lstSid
+	 * @param mPeriod
+	 * @param lstAnyConID
+	 * @param getWplByListSidAndPeriod
+	 * @param lstResultCondition
+	 * @param lstCheckType
+	 */
+	void extractMultiMonthlyResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
+			List<String> lstAnyConID,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
 }

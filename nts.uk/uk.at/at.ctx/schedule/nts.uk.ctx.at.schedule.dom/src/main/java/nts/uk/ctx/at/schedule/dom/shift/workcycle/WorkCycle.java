@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import lombok.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /*
     勤務サイクル
@@ -93,13 +94,4 @@ public class WorkCycle extends AggregateRoot {
             }
         }
     }
-
-    /**
-     * [prv-2] 総日数を計算する
-     * @return 勤務情報リスト：sum $.日数
-     */
-    private int calculateTotalDays() {
-            return this.infos.stream().mapToInt(i -> i.getDays().v()).sum();
-    }
-
 }

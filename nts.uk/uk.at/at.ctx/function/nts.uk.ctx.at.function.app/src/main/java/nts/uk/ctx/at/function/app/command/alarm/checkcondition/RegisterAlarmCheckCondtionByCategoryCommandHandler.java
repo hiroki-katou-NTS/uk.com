@@ -263,6 +263,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						.getErrorAlarmCheckIDOlds();
 				for (int i = 0; i < listMulMonCheckConds.size(); i++) {
 					MulMonCheckCondDomainEventDto dto = listMulMonCheckConds.get(i);
+					dto.setCid(companyId);
 					if (dto.getErrorAlarmCheckID().equals("")) {
 						dto.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
 					}
@@ -543,6 +544,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 				String mulMonAlarmCondID = IdentifierUtil.randomUniqueId();
 				for (MulMonCheckCondDomainEventDto item : listMulMonCheckConds) {
+					item.setCid(companyId);
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
 				}
 

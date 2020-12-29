@@ -44,7 +44,10 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public List<ErrorRecordExport> checkV2(List<String> EACheckIDs, DatePeriod workingDate,
 			Collection<String> employeeIds, Map<String, Integer> mapCheckItem) {
-		return this.checkService.checkWithRecordV2(workingDate, employeeIds, EACheckIDs, mapCheckItem).stream()
+		/*return this.checkService.checkWithRecordV2(workingDate, employeeIds, EACheckIDs, mapCheckItem).stream()
+				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
+				.collect(Collectors.toList());*/
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());
 	}

@@ -62,4 +62,6 @@ public interface ClosureEmploymentRepository {
 	 * @param employmentCD the employment CD
 	 */
 	void removeClousureEmp(String companyID, String employmentCD);
+	
+	List<ClosureEmployment> findAllByCid(String cid);
 }

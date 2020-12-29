@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation;
@@ -64,17 +65,12 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 		this.typeValue.setKclstEmpSubstVacationPK(empSubstVacationPK);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * EmpSubstVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.subst.SubstVacationSetting)
-	 */
 	@Override
-	public void setSetting(SubstVacationSetting setting) {
-		setting.saveToMemento(
-				new JpaSubstVacationSettingSetMemento<KsvstSubstVacationSetting>(this.typeValue));
+	public void setManageDistinct(ManageDistinct manageDistinct) {
+		this.typeValue.setManageAtr(manageDistinct.value);
+		
 	}
 
+	
+	
 }

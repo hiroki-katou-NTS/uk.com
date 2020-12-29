@@ -32,46 +32,39 @@ public class SettingSubstituteHolidayProcess {
 		// ドメインモデル「雇用の代休管理設定」を取得する(lấy domain 「雇用の代休管理設定」)
 		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.findComLeavEmpSet(companyID,
 				empHistImport.get().getEmploymentCode());
+
+		// １件以上取得できた(lấy được 1 data trở lên)
 		if (compensatoryLeaveEmSet != null) {
-			if (compensatoryLeaveEmSet.getIsManaged() != null) {
-				// １件以上取得できた(lấy được 1 data trở lên)
-				if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
-					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
-					result.setSubstitutionFlg(true);
-					result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
-					// add refactor RequestList203
-					result.setAdvancePayment(
-							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
-				} else {
-					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理しない
-					result.setSubstitutionFlg(false);
-					result.setTimeOfPeriodFlg(false);
-				}
+			// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理しない
+			if (compensatoryLeaveEmSet.getIsManaged() != null
+					&& (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.NO))) {
+				result.setSubstitutionFlg(false);
+				result.setTimeOfPeriodFlg(false);
+				return result;
 			}
-		} else {
-			// ０件(0 data), ドメインモデル「代休管理設定」を取得する
+		}
+		// ０件(0 data) or ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
+		if (compensatoryLeaveEmSet == null || (compensatoryLeaveEmSet.getIsManaged() != null
+				&& (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)))) {
+			// ドメインモデル「代休管理設定」を取得する
 			CompensatoryLeaveComSetting compensatoryLeaveComSet = require.findComLeavComSet(companyID);
-			if (compensatoryLeaveComSet != null) {
-				if (compensatoryLeaveComSet.isManaged()) {
-					// ドメインモデル「代休管理設定」．管理区分 = 管理する
-					result.setSubstitutionFlg(true);
-					result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
-					// add refactor RequestList203
-					result.setAdvancePayment(
-							compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
-				}
-			} else {
+			if (compensatoryLeaveComSet == null || !compensatoryLeaveComSet.isManaged()) {
 				// ドメインモデル「代休管理設定」．管理区分 = 管理しない
 				result.setSubstitutionFlg(false);
 				result.setTimeOfPeriodFlg(false);
+				return result;
+			}
+			if (compensatoryLeaveComSet != null && compensatoryLeaveComSet.isManaged()) {
+				// ドメインモデル「代休管理設定」．管理区分 = 管理する
+				result.setSubstitutionFlg(true);
+				result.setExpirationOfsubstiHoliday(
+						compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+				// add refactor RequestList203
+				result.setAdvancePayment(
+						compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
+				isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value;
+				digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
+
 			}
 		}
 		// 代休管理区分をチェックする(kiểm tra 代休管理区分)
