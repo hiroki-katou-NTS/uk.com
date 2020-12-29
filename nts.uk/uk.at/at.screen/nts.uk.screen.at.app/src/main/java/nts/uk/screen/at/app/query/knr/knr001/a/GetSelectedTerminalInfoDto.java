@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class GetSelectedTerminalInfoDto {
 
 	//	端末No
-	private int empInfoTerCode;
+	private String empInfoTerCode;
 	//	名称
 	private String empInfoTerName;
 	//	機種

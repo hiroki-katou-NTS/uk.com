@@ -109,6 +109,9 @@ public class KshstApprovalStatusMailTemp extends UkJpaEntity implements Serializ
 			urlDayEmbed = domain.getUrlDayEmbed().value;
 			urlMonthEmbed = domain.getUrlMonthEmbed().value;
 			break;
+		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+			urlMonthEmbed = domain.getUrlMonthEmbed().value;
+			break;
 		}
 		return new KshstApprovalStatusMailTemp(
 				new KshstApprovalStatusMailTempPk(domain.getCid(), domain.getMailType().value), urlApprovalEmbed,

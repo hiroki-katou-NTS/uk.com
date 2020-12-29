@@ -56,7 +56,7 @@ public class SendWorkTimeNameServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -65,7 +65,7 @@ public class SendWorkTimeNameServiceTest {
 	public void testSendEmptyWorkTime() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), null, Collections.emptyList()).overTimeHoliday(true)
 								.workTime(Collections.emptyList()).build());
 		new Expectations() {
@@ -75,7 +75,7 @@ public class SendWorkTimeNameServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -85,7 +85,7 @@ public class SendWorkTimeNameServiceTest {
 	public void testSendDone() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), null, Collections.emptyList()).overTimeHoliday(true)
 								.workTime(Arrays.asList(new WorkTimeCode("A"), new WorkTimeCode("B"))).build());
 		new Expectations() {
@@ -140,7 +140,7 @@ public class SendWorkTimeNameServiceTest {
 
 			}
 		};
-		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getWorkTimeNumber(), d -> d.getWorkTimeName(), d -> d.getTime())
 				.containsExactly(Tuple.tuple("00A", "AAA", "+08001700"), Tuple.tuple("00B", "AAA", "+08001700"),

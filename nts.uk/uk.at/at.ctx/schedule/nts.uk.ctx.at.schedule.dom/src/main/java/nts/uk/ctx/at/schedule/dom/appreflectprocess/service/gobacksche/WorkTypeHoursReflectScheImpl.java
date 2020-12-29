@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.UpdateScheCommonAppRelect;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -16,8 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
 @Stateless
 public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
-	@Inject
-	private BasicScheduleRepository basicSche;
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	@Inject

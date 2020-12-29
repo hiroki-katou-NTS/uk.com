@@ -37,7 +37,7 @@
 							</label>
 							</span>
 						</div>
-						<div data-bind="if:value==1">
+						<!-- <div data-bind="if:value==1">
 							<div class="style-checkbox-btn">
 								<div class="checkbox_display control-group" tabindex="2"
 									data-bind="ntsCheckBox: { checked: $parent.isCalcFromSchedule, enable: $parent.calcMethodFixed() == 1 }">
@@ -48,16 +48,16 @@
 									#{i18n.getText('KMK003_294')}</div>
 								<br />
 							</div>
-						</div>
+						</div> -->
 
-						<div data-bind="if:value==2">
+						<div data-bind="if:value==1">
 							<div class="style-checkbox-btn">
 								<div class="checkbox_display control-group" tabindex="4"
-									data-bind="ntsCheckBox: { checked: $parent.usePrivateGoOutRest, enable: $parent.calcMethodFixed() == 2 }">
+									data-bind="ntsCheckBox: { checked: $parent.usePrivateGoOutRest, enable: $parent.calcMethodFixed() == 1 }">
 									#{i18n.getText('KMK003_250')}</div>
 								<br />
 								<div class="checkbox_display control-group" tabindex="5"
-									data-bind="ntsCheckBox: { checked: $parent.useAssoGoOutRest, enable: $parent.calcMethodFixed() == 2 }">
+									data-bind="ntsCheckBox: { checked: $parent.useAssoGoOutRest, enable: $parent.calcMethodFixed() == 1 }">
 									#{i18n.getText('KMK003_251')}</div>
 							</div>
 						</div>

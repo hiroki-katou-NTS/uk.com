@@ -17,6 +17,7 @@ module nts.uk.at.ksm008.i {
         getStartupInfo: 'screen/at/ksm008/j/getStartupInfo',
         getWorkHoursList: 'screen/at/ksm008/j/getWorkHoursList',
         getWorkHoursDetails: 'screen/at/ksm008/j/getWorkHoursDetails',
+        getAlarmCheckConSche: 'screen/at/ksm008/j/getCheckCon'
     };
 
     @bean()
@@ -27,7 +28,7 @@ module nts.uk.at.ksm008.i {
         iScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
         jScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
         items: KnockoutObservableArray<ItemModel>;
-        workingHours: KnockoutObservableArray<WorkingHour>;
+        workingHours: Array<WorkingHour>;
         jItems: KnockoutObservableArray<ItemModel>;
         backButon: string = "/view/ksm/008/a/index.xhtml";
         item: KnockoutObservable<ItemModel>;
@@ -52,7 +53,7 @@ module nts.uk.at.ksm008.i {
             super();
             const vm = this;
             vm.items = ko.observableArray([]);
-            vm.workingHours = ko.observableArray([]);
+            vm.workingHours = [];
             vm.initialCodeList = ko.observableArray([]);
             vm.jItems = ko.observableArray([]);
             vm.currentCode = ko.observable();
@@ -100,19 +101,34 @@ module nts.uk.at.ksm008.i {
             });
             vm.$blockui("invisible");
             vm.$ajax(API_ISCREEN.getAllWorkingHours).then(data => {
-                vm.initialCodeList(data.map(function (item: any) {
+                vm.initialCodeList(_.map(data,function (item: any) {
                     return item.code;
                 }));
-                vm.workingHours(_.map(data, function (item: any) {
+                vm.workingHours =_.map(data, function (item: any) {
                     return new WorkingHour(item.code, item.name)
-                }));
+                });
             }).fail(err => {
                 vm.$dialog.error(err);
             }).always(() => vm.$blockui("clear"));
-            vm.loadIScreenListData();
-            vm.loadJScreenListData();
+
         }
 
+        mounted(){
+            const vm = this;
+
+            if (!vm.$user.role.isInCharge.attendance){
+                $('#panel-1').removeClass('active');
+                $('#panel-2').addClass('active');
+                $('#tabpanel-2').removeClass('disappear');
+            }
+            if (vm.$user.role.isInCharge.attendance) {
+                vm.onCompanySelect();
+            } else {
+                vm.getAlarmCheckCon().then(() => {
+                    vm.onOrganizationSelect();
+                });
+            }
+        }
         /**
          * Function execute after organization tab select
          *
@@ -121,16 +137,31 @@ module nts.uk.at.ksm008.i {
         onOrganizationSelect() {
             const vm = this;
             vm.isJScreenStart = true;
-            vm.loadJScreenListData();
-            vm.$errors("clear", ".nts-editor", "button")
-            setTimeout(function () {
-                if (vm.jItems().length > 0) {
-                    $("#J3_3").focus();
-                } else {
-                    vm.jScreenClickNewButton();
+            vm.loadJScreenListData().done(()=>{
+                vm.$errors("clear", ".nts-editor", "button")
+                if (vm.isJScreenUpdateMode()){
+                    $('#J3_3').focus();
                 }
-            }, 0);
-            vm.getJScreenDetails(vm.jItems().length > 0 ? vm.jItems()[0].code : "");
+                else {
+                    $('#J3_2').focus();
+                }
+            });
+
+        }
+
+        getAlarmCheckCon() {
+            const vm = this;
+            const screenCode = "06";
+
+            vm.$blockui("grayout");
+            return vm.$ajax(API_JSCREEN.getAlarmCheckConSche + "/" + screenCode).done((res: any) => {
+                let explanation = _.join(res.explanationList, "\n");
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(screenCode, res.conditionName, explanation.trim()));
+            }).fail((err: any) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui("clear"));
         }
 
         /**
@@ -141,16 +172,17 @@ module nts.uk.at.ksm008.i {
         onCompanySelect() {
             const vm = this;
             vm.isIScreenStart = true;
-            vm.loadIScreenListData();
-            vm.$errors("clear", ".nts-editor", "button")
-            setTimeout(function () {
-                if (vm.items().length > 0) {
-                    $("#I6_3").focus();
-                } else {
-                    vm.iScreenClickNewButton();
+            vm.loadIScreenListData().done(()=>{
+                vm.$errors("clear", ".nts-editor", "button")
+                if (vm.isIScreenUpdateMode()){
+                    $('#I6_3').focus();
                 }
-            }, 0);
-            vm.getIScreenDetails(vm.items().length > 0 ? vm.items()[0].code : "");
+                else {
+                    $('#I6_2').focus();
+                }
+            });
+
+
         }
 
         /**
@@ -212,7 +244,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             var workHour: string = "";
             for (var i = 0; i < shareWorkCocde.length; i++) {
-                var matched = _.find(vm.workingHours(), function (currentItem: WorkingHour) {
+                var matched = _.find(vm.workingHours, function (currentItem: WorkingHour) {
                     return currentItem.code === shareWorkCocde[i]
                 });
                 if (matched) {
@@ -246,6 +278,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isIScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isIScreenUpdateMode(true);
+                        vm.currentCode("");
                         vm.currentCode(data.workTimeList[0].code);
                         $("#I6_3").focus();
                     }
@@ -283,6 +316,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isJScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isJScreenUpdateMode(true);
+                        vm.jScreenCurrentCode("");
                         vm.jScreenCurrentCode(data.workTimeList[0].code);
                         $("J3_3").focus();
                     }

@@ -55,7 +55,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * @author laitv
  * ScreenQuery 勤務予定で勤務予定（シフト）dtoを作成する
- *
+ * Path: UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).個人別と共通の処理.勤務予定で勤務予定（シフト）dtoを作成する
  */
 @Stateless
 public class CreateWorkScheduleShift {
@@ -247,11 +247,12 @@ public class CreateWorkScheduleShift {
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd,
-				String workTimeCd, Integer workNo) {
-			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd,
+//				String workTimeCd, Integer workNo) {
+//			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
 			// TODO 自動生成されたメソッド・スタブ
@@ -318,10 +319,11 @@ public class CreateWorkScheduleShift {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+// fix bug 113211		
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

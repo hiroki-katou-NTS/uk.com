@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
@@ -25,5 +24,5 @@ private static final long serialVersionUID = 1L;
 	 * 就業情報端末コード
 	 */
 	@Column(name = "TIMERECORDER_CD")
-	public int timeRecordCode;
+	public String timeRecordCode;
 }

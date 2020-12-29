@@ -18,6 +18,7 @@ module nts.uk.at.ksm008.i {
         getStartupInfo: 'screen/at/ksm008/l/getStartupInfo',
         getWorkHoursList: 'screen/at/ksm008/l/getWorkHoursList',
         getWorkHoursDetails: 'screen/at/ksm008/l/getWorkTimeDetails',
+        getAlarmCheckConSche: 'screen/at/ksm008/l/getCheckCon'
     };
 
     @bean()
@@ -43,7 +44,7 @@ module nts.uk.at.ksm008.i {
         isKScreenStart: boolean = true;
         isKDL046StateChanged: boolean = false;
         initialCodeList: KnockoutObservableArray<string>;
-        workingHours: KnockoutObservableArray<WorkingHour>;
+        workingHours: Array<WorkingHour>;
         date: KnockoutObservable<string>;
 
         constructor() {
@@ -60,7 +61,7 @@ module nts.uk.at.ksm008.i {
             vm.isLScreenStart = true;
             vm.isKScreenStart = true;
             vm.initialCodeList = ko.observableArray([]);
-            vm.workingHours = ko.observableArray([]);
+            vm.workingHours = [];
             vm.date = ko.observable(new Date().toISOString());
         }
 
@@ -91,17 +92,47 @@ module nts.uk.at.ksm008.i {
                     });
                 }
             });
-            vm.loadKScreenListData();
-            vm.loadLScreenListData();
             vm.$blockui("invisible");
             vm.$ajax(API_KSCREEN.getAllWorkingHours).then(data => {
                 vm.initialCodeList(data.map(function (item: any) {
                     return item.code;
                 }));
-                vm.workingHours(_.map(data, function (item: any) {
+                vm.workingHours=_.map(data, function (item: any) {
                     return new WorkingHour(item.code, item.name)
-                }));
+                });
             }).fail(err => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui("clear"));
+        }
+
+        mounted(){
+            const vm = this;
+
+            if (!vm.$user.role.isInCharge.attendance){
+                $('#panel-1').removeClass('active');
+                $('#panel-2').addClass('active');
+                $('#tabpanel-2').removeClass('disappear');
+            }
+            if (vm.$user.role.isInCharge.attendance) {
+                vm.onCompanySelect();
+            } else {
+                vm.getAlarmCheckCon().then(() => {
+                    vm.onOrganizationSelect();
+                });
+            }
+        }
+
+        getAlarmCheckCon() {
+            const vm = this;
+            const screenCode = "07";
+
+            vm.$blockui("grayout");
+            return vm.$ajax(API_LSCREEN.getAlarmCheckConSche + "/" + screenCode).done((res: any) => {
+                let explanation = _.join(res.explanationList, "\n");
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(screenCode, res.conditionName, explanation.trim()));
+            }).fail((err: any) => {
                 vm.$dialog.error(err);
             }).always(() => vm.$blockui("clear"));
         }
@@ -165,7 +196,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             var workHour: string = "";
             for (var i = 0; i < shareWorkCocde.length; i++) {
-                var matched = _.find(vm.workingHours(), function (currentItem: WorkingHour) {
+                var matched = _.find(vm.workingHours, function (currentItem: WorkingHour) {
                     return currentItem.code === shareWorkCocde[i]
                 });
                 if (matched) {
@@ -199,6 +230,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isKScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isKScreenUpdateMode(true);
+                        vm.kScreenCurrentCode("");
                         vm.kScreenCurrentCode(data.workTimeList[0].code);
                     }
                     vm.isKScreenStart = false;
@@ -235,6 +267,7 @@ module nts.uk.at.ksm008.i {
                 if (vm.isLScreenStart) {
                     if (data.workTimeList.length > 0) {
                         vm.isLScreenUpdateMode(true);
+                        vm.lScreenCurrentCode("");
                         vm.lScreenCurrentCode(data.workTimeList[0].code);
                     }
                     vm.isLScreenStart = false;
@@ -545,16 +578,15 @@ module nts.uk.at.ksm008.i {
         onOrganizationSelect() {
             const vm = this;
             vm.isLScreenStart = true;
-            vm.loadLScreenListData();
-            vm.$errors("clear", ".nts-editor", "button")
-            setTimeout(function () {
-                if (vm.lScreenGridListData().length > 0) {
-                    $("#L3_3").focus();
-                } else {
-                    vm.lScreenClickNewButton();
+            vm.loadLScreenListData().done(()=>{
+                vm.$errors("clear", ".nts-editor", "button");
+                if (vm.isLScreenUpdateMode()){
+                    $('#L3_3').focus();
                 }
-            }, 0);
-            vm.getDetailsLScreen(vm.lScreenGridListData().length > 0 ? vm.lScreenGridListData()[0].code : "");
+                else {
+                    $('L3_2').focus();
+                }
+            })
         }
 
         /**
@@ -566,18 +598,17 @@ module nts.uk.at.ksm008.i {
         onCompanySelect() {
             const vm = this;
             vm.isKScreenStart = true;
-            vm.loadKScreenListData();
-            vm.$errors("clear", ".nts-editor", "button")
-            setTimeout(function () {
-                if (vm.kScreenGridListData().length > 0) {
-                    $("#K6_3").focus();
-                } else {
-                    vm.kScreenClickNewButton();
+            vm.loadKScreenListData().done(()=>{
+                vm.$errors("clear", ".nts-editor", "button");
+                if (vm.isKScreenUpdateMode()){
+                    $('#K6_3').focus();
                 }
-            }, 0);
-            vm.getDetailsKScreen(vm.kScreenGridListData().length > 0 ? vm.kScreenGridListData()[0].code : "");
-        }
+                else {
+                    $('#K6_2').focus();
+                }
+            });
 
+        }
         /**
          * This function is responsible to delete an selected item from L screen
          *

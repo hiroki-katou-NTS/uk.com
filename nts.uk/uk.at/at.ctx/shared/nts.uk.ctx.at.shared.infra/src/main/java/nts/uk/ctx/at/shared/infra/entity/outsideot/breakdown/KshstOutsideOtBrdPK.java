@@ -45,7 +45,7 @@ public class KshstOutsideOtBrdPK implements Serializable {
      * @param cid the cid
      * @param brdItemNo the brd item no
      */
-    public KshstOutsideOtBrdPK(String cid, short brdItemNo) {
+    public KshstOutsideOtBrdPK(String cid, int brdItemNo) {
         this.cid = cid;
         this.brdItemNo = brdItemNo;
     }

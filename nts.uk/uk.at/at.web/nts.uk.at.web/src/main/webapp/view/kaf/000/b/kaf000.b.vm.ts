@@ -1,12 +1,14 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf000.b.viewmodel {
+	import character = nts.uk.characteristics;
     import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     import UserType = nts.uk.at.view.kaf000.shr.viewmodel.model.UserType;
     import Status = nts.uk.at.view.kaf000.shr.viewmodel.model.Status;
     import ApprovalAtr = nts.uk.at.view.kaf000.shr.viewmodel.model.ApprovalAtr;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {
@@ -22,6 +24,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			opArrivedLateLeaveEarlyInfo: null,
 			opInforGoBackCommonDirectOutput: null,
             opBusinessTripInfoOutput: null,
+            opOptionalItemOutput: null,
 		};
         childParam: any = {};
 
@@ -33,7 +36,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				return true;
 			} else {
 				return false;
-			}	
+			}
 		});
 		enableNext: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			const vm = this;
@@ -72,12 +75,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         childUpdateEvent!: () => any;
 		childReloadEvent: () => any;
-		
+
 		appNameList: any = null;
 
-        created(listAppMeta: Array<string>, currentApp: string) {
+        created(params: any) {
             const vm = this;
-			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+			character.restore("AppListExtractCondition").then((obj: any) => {
                 if (nts.uk.util.isNullOrUndefined(obj)) {
                     vm.displayGoback(false);
                 } else {
@@ -86,20 +89,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });
             vm.listApp(__viewContext.transferred.value.listAppMeta);
             vm.currentApp(__viewContext.transferred.value.currentApp);
-            vm.appType = ko.observable(99);
+            vm.appType = ko.observable(null);
             vm.childParam = {
 				appType: vm.appType,
             	application: vm.application,
 				printContentOfEachAppDto: vm.opPrintContentOfEachApp,
                 approvalReason: vm.approvalReason,
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) },
-				eventReload: function(a) { vm.getChildReloadEvent.apply(vm, [a]) },
+                eventUpdate: function(a: any) { vm.getChildUpdateEvent.apply(vm, [a]) },
+				eventReload: function(a: any) { vm.getChildReloadEvent.apply(vm, [a]) },
             }
 			vm.$blockui("show");
 			vm.$ajax(API.getAppNameInAppList).then((data) => {
 				vm.appNameList = data;
-				vm.loadData();	
+				vm.loadData();
 			});
         }
 
@@ -127,17 +130,17 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 								condition = condition && o.opApplicationTypeDisplay==3;
 								opString = "C";
 							} else {
-								condition = condition && o.opApplicationTypeDisplay==4;	
+								condition = condition && o.opApplicationTypeDisplay==4;
 								opString = "D";
 							}
 						}
 						return condition;
 					});
 				if(appNameInfo) {
-					document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;	
+					document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;
 				} else {
-					document.getElementById("pg-name").innerHTML = "";	
-				}	
+					document.getElementById("pg-name").innerHTML = "";
+				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
                     successData.appDetailScreenInfo.approvalATR,
@@ -152,6 +155,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
         }
+
+		getAppType(key: string) {
+			return _.get(AppType, '[' + key + ']');
+		}
 
         setControlButton(
             userTypeValue: any, // phân loại người dùng
@@ -213,7 +220,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             if (index > 0) {
                 vm.currentApp(vm.listApp()[index - 1]);
 				vm.$errors("clear").then(() => {
-					vm.loadData();	
+					vm.loadData();
 				});
             }
         }
@@ -224,7 +231,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			if (index < (vm.listApp().length-1)) {
                 vm.currentApp(vm.listApp()[index + 1]);
 				vm.$errors("clear").then(() => {
-					vm.loadData();	
+					vm.loadData();
 				});
             }
         }
@@ -237,8 +244,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.approve, command)
-            .done((successData: any) => {
+            .done((successData: any) => {	
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
+                	let param = [successData.reflectAppId];
+                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
                     vm.loadData();
                 });
             }).fail((res: any) => {
@@ -278,7 +287,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 	                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
 	                        vm.loadData();
 	                    });
-	                }	
+	                }
 				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
@@ -286,7 +295,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         btnRemand() {
-
+			const vm = this;
+			let appID = vm.application().appID(),
+				version = vm.appDispInfoStartupOutput().appDetailScreenInfo.application.version,
+				command = { appID, version };
+			vm.$window.storage('KDL034_PARAM', command);
+			vm.$window.modal('/view/kdl/034/a/index.xhtml').then(() => {
+				vm.loadData();
+			});
         }
 
         updateData() {
@@ -294,8 +310,27 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             // nếu component con có bind event ra
             if(_.isFunction(vm.childUpdateEvent)) {
-                vm.childUpdateEvent().then(() => {
-					vm.loadData();
+                vm.childUpdateEvent().then((result: any) => {
+					if(result) {
+						vm.loadData();
+					} else {
+						vm.$blockui('hide');
+					}
+				}).fail((res: any) => {
+					if(res) {
+						let a = [
+							AppType.OVER_TIME_APPLICATION, // 残業申請
+				            AppType.ABSENCE_APPLICATION, // 休暇申請
+				            AppType.HOLIDAY_WORK_APPLICATION, // 休出時間申請
+				            AppType.ANNUAL_HOLIDAY_APPLICATION, // 時間休暇申請
+				            AppType.COMPLEMENT_LEAVE_APPLICATION, // 振休振出申請
+				            AppType.OPTIONAL_ITEM_APPLICATION, // 任意項目申請
+						];
+						if(_.includes(a, vm.appType()) || vm.currentApp()=="sample") {
+							vm.handlerExecuteErrorMsg(res);
+						}
+					}
+					vm.$blockui('hide')
 				});
             }
         }
@@ -334,14 +369,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-						nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+						character.restore("AppListExtractCondition").then((obj: any) => {
 							let param = 0;
 							if(obj.appListAtr==1) {
-								param = 1;		
+								param = 1;
 							}
 							vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
 			            });
-	                });	
+	                });
 				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
@@ -360,7 +395,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
 	                    vm.loadData();
-	                });	
+	                });
 				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
@@ -372,10 +407,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             switch(res.messageId) {
             case "Msg_426":
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-					nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+					character.restore("AppListExtractCondition").then((obj: any) => {
 						let param = 0;
 						if(obj.appListAtr==1) {
-							param = 1;		
+							param = 1;
 						}
 						vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
 		            });
@@ -388,7 +423,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 break;
             case "Msg_198":
                 vm.$dialog.error({ messageId: "Msg_198" }).then(() => {
-					nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+					character.restore("AppListExtractCondition").then((obj: any) => {
 						let param = 0;
 						if(obj.appListAtr==1) {
 							param = 1;		
@@ -396,6 +431,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
 		            });
                 });
+                break;
+            case "Msg_1692":
+            case "Msg_1691":
+            case "Msg_1693":
+                vm.$dialog.error(res);
                 break;
             default:
                 vm.$dialog.error(res.message).then(() => {
@@ -422,15 +462,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
 		backtoCMM045() {
 			const vm = this;
-			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+			character.restore("AppListExtractCondition").then((obj: any) => {
 				let param = 0;
 				if(obj.appListAtr==1) {
-					param = 1;		
+					param = 1;
 				}
 				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
             });
 		}
-		
+
 		sendMailAfterUpdate() {
 			const vm = this;
 			return vm.$ajax(API.sendMailAfterUpdate)
@@ -457,6 +497,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         cancel: "at/request/application/cancelapp",
         print: "at/request/application/print",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
-		sendMailAfterUpdate: ""
+		sendMailAfterUpdate: "",
+		reflectAppSingle: "at/request/application/reflect-app"
     }
 }

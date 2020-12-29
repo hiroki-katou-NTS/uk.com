@@ -79,6 +79,7 @@ module nts.uk.com.view.cli003.b {
 
     //B2
     conditionDatasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
+    listItemNo: KnockoutObservableArray<string> = ko.observableArray([]);
     conditionColumns: KnockoutObservableArray<any> = ko.observableArray([
       {
         headerText: this.$i18n("CLI003_90"),
@@ -229,7 +230,7 @@ module nts.uk.com.view.cli003.b {
         .getLogOutputItemByRecordType(String(logSet.recordType))
         .then((logOutputItems: LogOutputItem[]) => {
           vm.setLogSetInfo(logSet);
-          const logSetItemDetailsList = _.map(logSet.logSetOutputs, (item: any, index: number) => {
+          const logSetItemDetailsList = _.map(logSet.logSetOutputs, (item: any) => {
             const listCond: string[] = ["", "", "", "", "", ""];
             item.logSetItemDetails.map((itemDetail: any, i: number) => {
               const condSymbol = _.find(vm.symbolList(), (symbol) => symbol.code === itemDetail.sybol).name;
@@ -248,6 +249,10 @@ module nts.uk.com.view.cli003.b {
             );
           });
           vm.conditionDatasource(logSetItemDetailsList);
+
+          //get itemNo display
+          const listItemNo = _.map(logSet.logSetOutputs, (item: any) => String(item.itemNo));
+          vm.listItemNo(listItemNo);
         })
         .fail(() => {
           vm.$dialog.alert({ messageId: "Msg_1221" });
@@ -299,7 +304,7 @@ module nts.uk.com.view.cli003.b {
         default:
           vm.showOperator(true);
           break;
-      } 
+      }
     }
 
     //get recordType Name
@@ -335,7 +340,7 @@ module nts.uk.com.view.cli003.b {
             break;
           default:
             break;
-        } 
+        }
       }
     }
 
@@ -347,12 +352,14 @@ module nts.uk.com.view.cli003.b {
         .then(() => {
           vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
             vm.$window.storage("operatorEmployeeCount").then((data) => {
-              if (data)
+              if(data) {
                 vm.operatorEmployeeCount(data);
-            })
+              }
+            });
             vm.$window.storage("selectedEmployeeCodeOperator").then((data) => {
-              if (data)
+              if(data) {
                 vm.selectedEmployeeCodeOperator(data);
+              }
             });
           });
         });
@@ -366,12 +373,14 @@ module nts.uk.com.view.cli003.b {
         .then(() => {
           vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
             vm.$window.storage("targetEmployeeCount").then((data) => {
-              if (data)
+              if(data) {
                 vm.targetEmployeeCount(data);
+              }
             });
             vm.$window.storage("selectedEmployeeCodeTarget").then((data) => {
-              if (data)
+              if(data) {
                 vm.selectedEmployeeCodeTarget(data);
+              }
             });
           });
         });
@@ -400,8 +409,9 @@ module nts.uk.com.view.cli003.b {
       } else if (vm.selectedEmpSelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
         vm.$dialog.error({ messageId: "Msg_1719" });
         return false;
-      } 
-      return true;
+      } else {
+        return true;
+      }
     }
 
     //jump to screen F
@@ -424,6 +434,7 @@ module nts.uk.com.view.cli003.b {
           selectedRuleCodeOperator: vm.operatorEmpSelectedRuleCode(),
           selectedRuleCodeTarget: vm.selectedEmpSelectedRuleCode(),
           targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
+          displayItemNo : vm.listItemNo()
         };
         vm.$window
           .storage('VIEW_B_DATA', data)

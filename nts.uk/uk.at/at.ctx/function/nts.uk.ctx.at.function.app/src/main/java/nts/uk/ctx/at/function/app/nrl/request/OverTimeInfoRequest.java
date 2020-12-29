@@ -39,7 +39,7 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 		// Get work time info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		// TODO: default ContractCode "000000000000"
-		Optional<SendOvertimeNameImport> info = sendNRDataAdapter.sendOvertime(Integer.parseInt(nrlNo.trim()),
+		Optional<SendOvertimeNameImport> info = sendNRDataAdapter.sendOvertime(nrlNo.trim(),
 				"000000000000");
 		String payload = info.isPresent() ? toStringObject(info.get()) : "";
 		byte[] payloadBytes = Codryptofy.decode(payload);

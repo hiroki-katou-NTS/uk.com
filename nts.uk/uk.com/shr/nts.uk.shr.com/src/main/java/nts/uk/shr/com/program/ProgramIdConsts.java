@@ -240,16 +240,6 @@ public class ProgramIdConsts {
 	public static final String KML002F = "KML002F";
 
 	public static final String KML002G = "KML002G";
-
-	public static final String KML002H = "KML002H";
-
-	public static final String KML002I = "KML002I";
-
-	public static final String KML002K = "KML002K";
-
-	public static final String KML002L = "KML002L";
-
-	public static final String KML002M = "KML002M";
 	
 	public static final String KSU003A = "KSU003A";
 
@@ -286,6 +276,10 @@ public class ProgramIdConsts {
 	public static final String KDL010A = "KDL010A";
 
 	public static final String KDL021A = "KDL021A";
+
+	public static final String KDL035A = "KDL035A";
+
+	public static final String KDL036A = "KDL036A";
 
 	public static final String KSM003A = "KSM003A";
 
@@ -791,6 +785,10 @@ public class ProgramIdConsts {
 	public static final String KMK013P = "KMK013P";
 	public static final String KMK013Q = "KMK013Q";
 
+	public static final String KAF020A = "KAF020A";
+	public static final String KAF020B = "KAF020B";
+	public static final String KAF020C = "KAF020C";
+
 	public static final String KAF021A = "KAF021A";
 	public static final String KAF021B = "KAF021B";
 	public static final String KAF021C = "KAF021C";
@@ -1054,6 +1052,7 @@ public class ProgramIdConsts {
 	public static final String KWR002C = "KWR002C";
 	public static final String KWR002D = "KWR002D";
 	public static final String KWR002E = "KWR002E";
+	public static final String KWR002F = "KWR002F";
 	
 	/**
 	 * CDL027
@@ -1071,6 +1070,7 @@ public class ProgramIdConsts {
 	public static final String KAF018F = "KAF018F";
 	public static final String KAF018G = "KAF018G";
 	public static final String KAF018H = "KAF018H";
+	public static final String KAF018I = "KAF018I";
 	
 	/**
 	 * KFP001
@@ -1187,9 +1187,13 @@ public class ProgramIdConsts {
 	public static final String JHN011C = "JHN011C";
 
 	//スマホ②
+	public static final String KAFS04A = "KAFS04A";
 	public static final String KAFS05A = "KAFS05A";
 	public static final String KAFS07A = "KAFS07A";
+	public static final String KAFS08A = "KAFS08A";
 	public static final String KAFS09A = "KAFS09A";
+	public static final String KAFS12A = "KAFS12A";
+	public static final String KAFS20A = "KAFS20A";
 	public static final String KAFS05B = "KAFS05B";
 	public static final String KAFS02A = "KAFS02A";
 	public static final String KAFS02C = "KAFS02C";
@@ -1206,7 +1210,6 @@ public class ProgramIdConsts {
 	public static final String KDPS01S = "KDPS01S";
 	public static final String KDPS01T = "KDPS01T";
 
-	public static final String KAFS08A = "KAFS08A";
 	public static final String KAFS08A1 = "KAFS08A1";
 	public static final String KAFS08A2 = "KAFS08A2";
 	public static final String KAFS08B = "KAFS08B";
@@ -1428,6 +1431,14 @@ public class ProgramIdConsts {
 	public static final String KDL048 = "KDL048";
 	/** KDL047 */
 	public static final String KDL047 = "KDL047";
+	/** KDL051 */
+	public static final String KDL051A = "KDL051A";
+	public static final String KDL051B = "KDL051B";
+	
+	/** KDL052 */
+	public static final String KDL052A = "KDL052A";
+	public static final String KDL052B = "KDL052B";
+	
 	/**
 	 * CMM024
 	 */

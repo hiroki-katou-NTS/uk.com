@@ -14,8 +14,8 @@ import nts.uk.file.at.app.export.attendanceitemprepare.ControlOfAttMonthlyRepoEx
 @Stateless
 public class JpaControlOfAttItemsMonthlyRepo extends JpaRepository implements ControlOfAttMonthlyRepoExcel {
 
-	private static final String GET_ALL = "select a.ITEM_MONTHLY_ID, a.TIME_INPUT_UNIT, a.HEADER_BACKGROUND_COLOR "
-			+ "from KSHST_MON_ITEM_CONTROL a where a.CID=?companyId";
+	private static final String GET_ALL = "select a.ITEM_MONTHLY_ID, a.INPUT_UNIT, a.HEADER_BACKGROUND_COLOR "
+			+ "from KSHMT_MON_ITEM_CONTROL a where a.CID=?companyId";
 
 	@Override
 	public Map<Integer,ControlOfAttMonthlyDtoExcel> getAllByCompanyId(String companyId) {

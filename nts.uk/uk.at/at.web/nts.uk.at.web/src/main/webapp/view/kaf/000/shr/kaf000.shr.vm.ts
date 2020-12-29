@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
         prePostAtr: KnockoutObservable<number>;
         employeeIDLst: KnockoutObservableArray<string>;
         appType: number;
+        inputDate: string;
         appDate: KnockoutObservable<string>;
         opAppReason: KnockoutObservable<string>;
         opAppStandardReasonCD: KnockoutObservable<number>;
@@ -115,6 +116,8 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opInforGoBackCommonDirectOutput: any;
 		
 		opBusinessTripInfoOutput: any;
+
+        opOptionalItemOutput: any;
 	}
 	
 	export interface AppInitParam {
@@ -158,7 +161,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             WORK_CHANGE_APPLICATION = 2, // 勤務変更申請
             BUSINESS_TRIP_APPLICATION = 3, // 出張申請
             GO_RETURN_DIRECTLY_APPLICATION = 4, // 直行直帰申請
-            LEAVE_TIME_APPLICATION = 6, // 休出時間申請
+            HOLIDAY_WORK_APPLICATION = 6, // 休出時間申請
             STAMP_APPLICATION = 7, // 打刻申請
             ANNUAL_HOLIDAY_APPLICATION = 8, // 時間休暇申請
             EARLY_LEAVE_CANCEL_APPLICATION = 9, // 遅刻早退取消申請
@@ -202,7 +205,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
         }    
         
         public static initDeadlineMsg(value: any, vm: any) {
-            vm.message(value.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].memo);
+            vm.message(_.escape(value.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].memo).replace(/\n/g, '<br/>'));
             if(_.isEmpty(vm.message())) {
                 vm.displayMsg(false);         
             } else {

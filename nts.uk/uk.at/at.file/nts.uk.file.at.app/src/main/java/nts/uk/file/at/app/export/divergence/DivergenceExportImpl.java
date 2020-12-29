@@ -33,11 +33,11 @@ import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeError
 import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeErrorAlarmMessageFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageFinder;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;

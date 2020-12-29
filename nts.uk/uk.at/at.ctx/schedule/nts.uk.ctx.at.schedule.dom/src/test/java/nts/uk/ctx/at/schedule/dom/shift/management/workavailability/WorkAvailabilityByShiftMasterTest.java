@@ -4,17 +4,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -135,4 +139,87 @@ public class WorkAvailabilityByShiftMasterTest {
 		assertThat(displayInfo.getTimeZoneList()).isEmpty();
 	}
 	
+	/**
+	 * input: シフトマスタコード　= empty
+	 * output: systemError
+	 */
+	
+	@Test
+	public void create_throw_empty() {
+		
+		NtsAssert.systemError(() -> {
+			WorkAvailabilityByShiftMaster.create(require, Collections.emptyList());
+		});
+		
+	}
+	
+	/**
+	 * input: [S01, S02]
+	 * S01 = false
+	 * output: Msg_1705
+	 */
+	@Test
+	public void create_throw_Msg_1705_first_false() {
+		
+		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
+
+		new Expectations() {
+			{
+				require.shiftMasterIsExist(shiftMasterCodes.get(0));
+				result = false;
+			}
+		};
+
+		NtsAssert.businessException("Msg_1705",
+				() -> WorkAvailabilityByShiftMaster.create(require, shiftMasterCodes));
+	}
+	
+	/**
+	 * input: [S01, S02]
+	 * S01 = true, S02 = false
+	 * output: Msg_1705
+	 */
+	@Test
+	public void create_throw_Msg_1705_have_element_false() {
+		
+		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
+
+		new Expectations() {
+			{
+				require.shiftMasterIsExist(shiftMasterCodes.get(0));
+				result = true;
+				
+				require.shiftMasterIsExist(shiftMasterCodes.get(1));
+				result = false;
+			}
+		};
+
+		NtsAssert.businessException("Msg_1705",
+				() -> WorkAvailabilityByShiftMaster.create(require, shiftMasterCodes));
+	}
+	
+	/**
+	 * input: [S01, S02]
+	 * S01 = true, S02 = true
+	 * output: create success
+	 */
+	@Test
+	public void create_success() {
+		
+		List<ShiftMasterCode> shiftMasterCodes = Arrays.asList(new ShiftMasterCode("S01"), new ShiftMasterCode("S02"));
+		
+		new Expectations() {
+			{
+				require.shiftMasterIsExist(shiftMasterCodes.get(0));
+				result = true;
+				
+				require.shiftMasterIsExist(shiftMasterCodes.get(1));
+				result = true;
+			}
+		};
+		
+		val result = WorkAvailabilityByShiftMaster.create(require, shiftMasterCodes);
+		assertThat(result.getWorkableShiftCodeList()).extracting(d -> d.v()).containsExactly("S01","S02");
+		
+	}
 }

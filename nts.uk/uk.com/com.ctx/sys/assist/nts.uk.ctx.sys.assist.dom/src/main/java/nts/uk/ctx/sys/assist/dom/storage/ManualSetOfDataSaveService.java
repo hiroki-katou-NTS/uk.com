@@ -640,7 +640,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				}
 				// 固定項目
 				GeneralDateTime logTime = GeneralDateTime.now();
-				String logContent = TextResource.localize("CMF003_628");
+				String logContent = TextResource.localize("CMF003_628", fileName);
 				String errorEmployeeId = "";
 				GeneralDate errorDate = null;
 				String errorContent = "";

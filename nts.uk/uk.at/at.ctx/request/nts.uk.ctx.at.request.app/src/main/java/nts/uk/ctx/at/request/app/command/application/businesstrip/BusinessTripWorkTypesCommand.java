@@ -19,7 +19,7 @@ public class BusinessTripWorkTypesCommand {
     public BusinessTripWorkTypes toDomain() {
         return new BusinessTripWorkTypes(
                 GeneralDate.fromString(this.date, "yyyy/MM/dd"),
-                this.workTypeDto.toDomain()
+                this.workTypeDto == null ? null : this.workTypeDto.toDomain()
         );
     }
 

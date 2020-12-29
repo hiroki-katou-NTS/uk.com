@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.service.event.breaktime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -72,8 +71,7 @@ public class BreakTimeOfDailyService {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 
-		BreakTimeOfDailyAttd dailyAttd = working.getBreakTime().stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().isPresent() ? 
-				working.getBreakTime().stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().get() : null;
+		BreakTimeOfDailyAttd dailyAttd = working.getBreakTime().orElse(null);
 		BreakTimeOfDailyPerformance dailyPerformance = new BreakTimeOfDailyPerformance(working.getEmployeeId(), working.getYmd(), dailyAttd);
 		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(Optional.ofNullable(dailyPerformance),
 							() -> getBreakTimeDefault(wi.getEmployeeId(), wi.getYmd()));
@@ -104,8 +102,7 @@ public class BreakTimeOfDailyService {
 			DailyRecordToAttendanceItemConverter converter, List<ItemValue> beforeCorrectItemValues,
 			BreakTimeOfDailyPerformance breakTime) {
 		/** 「日別実績の休憩時間帯」を更新する */
-		working.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
-		working.getBreakTime().add(breakTime.getTimeZone());
+		working.setBreakTime(Optional.of(breakTime.getTimeZone()));
 		
 		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(working.getEmployeeId(), working.getYmd(),breakTime.getTimeZone()).convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -127,12 +124,13 @@ public class BreakTimeOfDailyService {
 		String empId = working.getEmployeeId();
 		GeneralDate workingDate = working.getYmd();
 		BreakTimeOfDailyPerformance deleted = mergeWithEditStates(empId, workingDate, 
-				working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(working.getEmployeeId(), working.getYmd(), mapper)).collect(Collectors.toList()), new BreakTimeOfDailyPerformance(empId, BreakType.REFER_WORK_TIME, new ArrayList<>(), workingDate), breakTimeRecord);
+				working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(working.getEmployeeId(), working.getYmd(), mapper)).collect(Collectors.toList()), 
+				new BreakTimeOfDailyPerformance(empId, workingDate, new ArrayList<>()), breakTimeRecord);
 		if(!deleted.getTimeZone().getBreakTimeSheets().isEmpty()){
 			return updateBreakTime(working, directToDB, converter, beforeCorrectItemValues, deleted);
 		}
 		
-		working.getBreakTime().removeIf(c -> c.getBreakType() == BreakType.REFER_WORK_TIME);
+		working.setBreakTime(Optional.empty());
 		working.getEditState().removeIf(es -> canBeUpdatedItemIds.contains(es.getAttendanceItemId()));
 		
 		/** 「日別実績の休憩時間帯」を削除する */
@@ -175,11 +173,12 @@ public class BreakTimeOfDailyService {
 
 		if (!itemsToMerge.isEmpty()) {
 			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter()
-																	.employeeId(empId).workingDate(targetDate).withBreakTime(empId, targetDate, new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
+																	.employeeId(empId).workingDate(targetDate)
+																	.withBreakTime(empId, targetDate, breakTime.getTimeZone());
 			
 			List<ItemValue> ipByHandValues = converter.convert(itemsToMerge);
 			
-			converter.withBreakTime(empId, targetDate, new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
+//			converter.withBreakTime(empId, targetDate, breakTime.getTimeZone());
 			
 //			List<ItemValue> recordVal = converter.convert(itemsToMerge);
 			
@@ -187,7 +186,7 @@ public class BreakTimeOfDailyService {
 			
 			converter.merge(ipByHandValues);
 
-			return new BreakTimeOfDailyPerformance(empId, targetDate,converter.breakTime().get(0));
+			return new BreakTimeOfDailyPerformance(empId, targetDate, converter.breakTime().get());
 		}
 
 		return breakTime;
