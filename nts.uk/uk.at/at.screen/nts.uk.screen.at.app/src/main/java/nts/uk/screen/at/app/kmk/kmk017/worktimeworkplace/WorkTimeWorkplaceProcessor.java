@@ -1,7 +1,10 @@
 package nts.uk.screen.at.app.kmk.kmk017.worktimeworkplace;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplace;
-import nts.uk.ctx.at.shared.dom.worktime.workplace.service.WorkTimeWorkplaveSevice;
+import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.workplace.service.WorkTimeWorkplaceService;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,11 +18,25 @@ import java.util.stream.Collectors;
 public class WorkTimeWorkplaceProcessor {
 
     @Inject
-    private WorkTimeWorkplaveSevice workTimeWorkplaveSevice;
+    private WorkTimeWorkplaceService workTimeWorkplaceService;
+
+    @Inject
+    private WorkTimeWorkplaceRepository repository;
 
     public List<WorkTimeWorkplaceDto> findWorkTimeWorkplace() {
 
-        List<WorkTimeWorkplace> workTimeWorkplaces = workTimeWorkplaveSevice.getByCid();
+        RequireImpl require = new RequireImpl(repository);
+        List<WorkTimeWorkplace> workTimeWorkplaces = workTimeWorkplaceService.getByCid(require);
         return workTimeWorkplaces.stream().map(WorkTimeWorkplaceDto::setData).collect(Collectors.toList());
+    }
+
+    @AllArgsConstructor
+    private class RequireImpl implements WorkTimeWorkplaceService.Require {
+        private WorkTimeWorkplaceRepository repository;
+
+        @Override
+        public List<WorkTimeWorkplace> getByCId() {
+            return repository.getByCId(AppContexts.user().companyId());
+        }
     }
 }

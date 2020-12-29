@@ -12,16 +12,19 @@ import java.util.List;
  * 就業時間帯割り当て済みの職場を取得する.
  */
 @Stateless
-public class WorkTimeWorkplaveSevice {
-
-	@Inject
-	private WorkTimeWorkplaceRepository repository;
+public class WorkTimeWorkplaceService {
 
 	/**
 	 * 設定済みの職場を取得する
 	 */
-	public List<WorkTimeWorkplace> getByCid() {
-		return repository.getByCId(AppContexts.user().companyId());
+	public List<WorkTimeWorkplace> getByCid(Require require) {
+		return require.getByCId();
+	}
+
+	public static interface Require {
+
+		List<WorkTimeWorkplace> getByCId();
+
 	}
 
 }
