@@ -179,3 +179,19 @@ div.form-label.broken {
 #overtime-container .nts-fixed-body-container.ui-iggrid {
 	overflow: hidden;		
 }
+.labelCustom label {
+	white-space: normal !important;
+}
+.overTime1 .nts-fixed-body-wrapper{
+	height: 192px !important;
+}
+.overTime2 .nts-fixed-body-wrapper{
+	height: 192px !important;
+}
+.holidayTime1 .nts-fixed-body-wrapper {
+	height: 96px !important;
+}
+.holidayTime2 .nts-fixed-body-wrapper {
+	height: 96px !important;
+}
+

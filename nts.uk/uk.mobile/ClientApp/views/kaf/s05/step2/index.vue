@@ -46,7 +46,7 @@
               name=""
               v-bind:require="false"
               v-bind:showTitle="true"
-              v-bind:disabled="false"
+              v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
           </div>
@@ -88,7 +88,7 @@
               name=""
               v-bind:require="false"
               v-bind:showTitle="true"
-              v-bind:disabled="false"
+              v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
           </div>
@@ -107,7 +107,7 @@
 
     <!--A2_B5-->
 
-    <div class="card card-label" v-if="true">
+    <div class="card card-label" v-if="$appContext.c12">
         <!--A2_B5_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n1">
@@ -116,7 +116,7 @@
         </div>
         <div class="card-body">
             <!--A2_B5_2-->
-            <div>
+            <div v-if="$appContext.c13">
                   <div class="mb-1">
                         <span class="small-header">{{'KAFS05_79' | i18n(reason1.title)}}</span>
                   </div>
@@ -129,7 +129,7 @@
                   </div>
             </div>
             <!--A2_B5_1-->
-            <div>
+            <div v-if="$appContext.c14">
                   <div class="mb-1">
                         <span class="small-header">{{'KAFS05_80' | i18n(reason1.title)}}</span>
                   </div>
@@ -142,7 +142,7 @@
 
 
 
-    <div class="card card-label" v-if="true">
+    <div class="card card-label" v-if="$appContext.c19">
         <!--A2_B5_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n1">
@@ -151,7 +151,7 @@
         </div>
         <div class="card-body">
             <!--A2_B5_2-->
-            <div>
+            <div v-if="$appContext.c20">
                   <div class="mb-1">
                         <span class="small-header">{{'KAFS05_79' | i18n(reason2.title)}}</span>
                   </div>
@@ -164,7 +164,7 @@
                   </div>
             </div>
             <!--A2_B5_1-->
-            <div>
+            <div v-if="$appContext.c21">
                   <div class="mb-1">
                         <span class="small-header">{{'KAFS05_80' | i18n(reason2.title)}}</span>
                   </div>

@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 
@@ -23,8 +26,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
@@ -39,8 +45,49 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class AsposeAppOverTime {
 	public static final String HALF_SIZE_SPACE = " ";
+	public static final String EMPTY_STRING = "";
+	public static final String SPLIT_TIME = "、";
+	public static final String TILDLE_STRING = " ～ ";
 	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
+	
+	public StringBuilder getContentReason (Optional<DetailOutput> opDetailOutput, int frame) {
+		StringBuilder d31 = new StringBuilder("");
+		// 申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．選択肢一覧
+		// 申請の印刷内容．残業申請の印刷内容．残業申請．申請時間．乖離理由
+		// 条件：選択肢一覧．コード = 残業申請．申請時間．乖離理由．理由コード　AND　残業申請．申請時間．乖離理由．乖離時間NO = frame
+		Optional<ReasonDivergence> reOptional1 = opDetailOutput.get().getAppOverTime().getApplicationTime().getReasonDissociation().get()
+			.stream()
+			.filter(x -> x.getDiviationTime() == frame)
+			.findFirst();
+		Optional<DivergenceReasonInputMethod> diOptional1 = opDetailOutput.get().getDisplayInfoOverTime()
+							.getInfoNoBaseDate()
+							.getDivergenceReasonInputMethod()
+							.stream()
+							.filter(x -> x.getDivergenceTimeNo() == frame)
+							.findFirst();
+		String contentCodeD31 = diOptional1.map(x -> x.getReasons()).orElse(Collections.emptyList())
+				.stream()
+				.filter(x -> Optional.ofNullable(x.getDivergenceReasonCode()).map(y -> y.v()).orElse("")
+						.equals(reOptional1.flatMap(a -> Optional.ofNullable(a.getReasonCode())).map(b -> b.v()).orElse(""))
+						)
+				.findFirst()
+				.flatMap(z -> Optional.ofNullable(z.getReason()))
+				.map(a -> a.v())
+				.orElse(
+						StringUtils.isBlank(reOptional1.flatMap(a -> Optional.ofNullable(a.getReasonCode())).map(b -> b.v()).orElse("")) ? 
+								"" 
+								: 
+								reOptional1.flatMap(a -> Optional.ofNullable(a.getReasonCode())).map(b -> b.v()).orElse("") + " " + I18NText.getText("KAF005_345"));
+				
+		String contentInputD31 = reOptional1.flatMap(x -> Optional.ofNullable(x.getReason())).map(x -> x.v()).orElse("");
+		d31.append(contentCodeD31);
+		if (!StringUtils.isBlank(contentCodeD31)) {
+			d31.append("\n");			
+		}
+		d31.append(contentInputD31);
+		return d31;
+	}
 	
 	public AsposeAppOverTime.CalRange printAppOverTimeContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
 		Optional<DetailOutput> opDetailOutput = printContentOfApp.getOpDetailOutput();
@@ -150,10 +197,9 @@ public class AsposeAppOverTime {
 		if (workType != null) {
 			String nameWorktype = displayInfoOverTime.getInfoBaseDateOutput().getWorktypes()
 				.stream()
-				.filter(x -> x.getWorkTypeCode().v() == workType)
+				.filter(x -> x.getWorkTypeCode().v().equals(workType))
 				.findFirst().map(x -> x.getName().v()).orElse(null);
-			StringBuilder workBuilder = new StringBuilder(workType);
-			workBuilder.append(HALF_SIZE_SPACE);
+			StringBuilder workBuilder = new StringBuilder("");
 			workBuilder.append(StringUtils.isBlank(nameWorktype) ? I18NText.getText("KAF005_345") : nameWorktype);
 			cellD8.setValue(workBuilder);
 			
@@ -166,44 +212,43 @@ public class AsposeAppOverTime {
 			String nameWorktime = displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst()
 					.orElse(Collections.emptyList())	
 					.stream()
-					.filter(x -> x.getWorktimeCode().v() == workTime)
+					.filter(x -> x.getWorktimeCode().v().equals(workTime))
 					.findFirst()
 					.map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v())
 					.orElse(null);
-			StringBuilder workBuilder = new StringBuilder(workTime);
-			workBuilder.append(HALF_SIZE_SPACE);
+			StringBuilder workBuilder = new StringBuilder("");
 			workBuilder.append(StringUtils.isBlank(nameWorktime) ? I18NText.getText("KAF005_345") : nameWorktime);
 			cellD9.setValue(workBuilder);
 			
 			
 		}
-		StringBuilder contentD10 = new StringBuilder("");
-		StringBuilder contentD11 = new StringBuilder("");
+		StringBuilder contentD10 = new StringBuilder(EMPTY_STRING);
+		StringBuilder contentD11 = new StringBuilder(EMPTY_STRING);
 		appOverTime.getWorkHoursOp().orElse(Collections.emptyList())
 			.stream()
 			.forEach(x ->  {
 				if (x.getWorkNo().v() == 1) {
-					contentD10.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
-					contentD10.append(" ~ ");
-					contentD10.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
+					contentD10.append(x.getTimeZone().getStartTime().getFullText());
+					contentD10.append(TILDLE_STRING);
+					contentD10.append(x.getTimeZone().getEndTime().getFullText());					
 				} else {
-					contentD11.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
-					contentD11.append(" ~ ");
-					contentD11.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
+					contentD11.append(x.getTimeZone().getStartTime().getFullText());
+					contentD11.append(TILDLE_STRING);
+					contentD11.append(x.getTimeZone().getEndTime().getFullText());					
 				}
 			});
 		cellD10.setValue(contentD10);
 		cellD11.setValue(contentD11);
-		StringBuilder contentD12 = new StringBuilder("");
+		StringBuilder contentD12 = new StringBuilder(EMPTY_STRING);
 		appOverTime.getBreakTimeOp().orElse(Collections.emptyList())
 			.stream()
 			.forEach(x ->  {
 				if (x.getWorkNo().v() != 1) {
-					contentD12.append("`");
+					contentD12.append(SPLIT_TIME);
 				}
-				contentD12.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
-				contentD12.append(" ~ ");
-				contentD12.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());
+				contentD12.append(x.getTimeZone().getStartTime().getFullText());
+				contentD12.append(TILDLE_STRING);
+				contentD12.append(x.getTimeZone().getEndTime().getFullText());
 			});
 		cellD12.setValue(contentD12);	
 		
@@ -217,8 +262,6 @@ public class AsposeAppOverTime {
 		Cell cellD16 = cells.get("D16");
 		Cell cellD17 = cells.get("D17");
 		Cell cellD18 = cells.get("D18");
-		cellD18.setValue(I18NText.getText("KAF005_63"));
-		Cell cellF18 = cells.get("F18");
 		
 		Cell cellH13 = cells.get("H13");
 		Cell cellH14 = cells.get("H14");
@@ -226,20 +269,8 @@ public class AsposeAppOverTime {
 		Cell cellH16 = cells.get("H16");
 		Cell cellH17 = cells.get("H17");
 		Cell cellH18 = cells.get("H18");
-		cellH18.setValue(I18NText.getText("KAF005_65"));
-		Optional<AttendanceTime> overTimeMidNight = Optional.ofNullable(appOverTime.getApplicationTime()
-												.getOverTimeShiftNight()
-												.map(OverTimeShiftNight::getOverTimeMidNight)
-												.orElse(null));
-		cellF18.setValue(TIME_ZERO);
-		if (overTimeMidNight.isPresent()) {
-			cellF18.setValue(new TimeWithDayAttr(overTimeMidNight.get().v()).getInDayTimeWithFormat());			
-		}
-		Cell cellJ18 = cells.get("J18");
-		cellJ18.setValue(TIME_ZERO);
-		if (appOverTime.getApplicationTime().getFlexOverTime().isPresent()) {
-			cellJ18.setValue(new TimeWithDayAttr(appOverTime.getApplicationTime().getFlexOverTime().get().v()).getInDayTimeWithFormat());			
-		}
+		
+		
 		
 		
 		
@@ -250,10 +281,8 @@ public class AsposeAppOverTime {
 		Cell cellD22 = cells.get("D22");
 		Cell cellD23 = cells.get("D23");
 		Cell cellD24 = cells.get("D24");
-		cellD24.setValue(I18NText.getText("KAF005_341"));
 		
 		Cell cellD25 = cells.get("D25");
-		cellD25.setValue(I18NText.getText("KAF005_343"));
 		
 		Cell cellH19 = cells.get("H19");
 		Cell cellH20 = cells.get("H20");
@@ -261,7 +290,7 @@ public class AsposeAppOverTime {
 		Cell cellH22 = cells.get("H22");
 		Cell cellH23 = cells.get("H23");
 		Cell cellH24 = cells.get("H24");
-		cellH24.setValue(I18NText.getText("KAF005_342"));
+		
 		
 		
 		Cell cellF13 = cells.get("F13");
@@ -269,6 +298,7 @@ public class AsposeAppOverTime {
 		Cell cellF15 = cells.get("F15");
 		Cell cellF16 = cells.get("F16");
 		Cell cellF17 = cells.get("F17");
+		Cell cellF18 = cells.get("F18");
 		
 		Cell cellF19 = cells.get("F19");
 		Cell cellF20 = cells.get("F20");
@@ -277,9 +307,7 @@ public class AsposeAppOverTime {
 		Cell cellF23 = cells.get("F23");
 		
 		Cell cellF24 = cells.get("F24");
-		cellF24.setValue(TIME_ZERO);
 		Cell cellF25 = cells.get("F25");
-		cellF25.setValue(TIME_ZERO);
 		
 		
 		Cell cellJ19 = cells.get("J19");
@@ -289,7 +317,6 @@ public class AsposeAppOverTime {
 		Cell cellJ23 = cells.get("J23");
 		
 		Cell cellJ24 = cells.get("J24");
-		cellJ24.setValue(TIME_ZERO);
 		
 		
 		Cell cellJ13 = cells.get("J13");
@@ -297,159 +324,211 @@ public class AsposeAppOverTime {
 		Cell cellJ15 = cells.get("J15");
 		Cell cellJ16 = cells.get("J16");
 		Cell cellJ17 = cells.get("J17");
-		if (appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent()) {
-			List<HolidayMidNightTime> midNightHolidayTimes = appOverTime.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes();
-			cellF24.setValue(TIME_ZERO);
-			cellF25.setValue(TIME_ZERO);
-			cellJ24.setValue(TIME_ZERO);
-			if (!CollectionUtil.isEmpty(midNightHolidayTimes)) {
-				midNightHolidayTimes.stream().forEach(x -> {
-					String time = new TimeWithDayAttr(x.getAttendanceTime().v()).getInDayTimeWithFormat();
-					if (x.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
-						cellF24.setValue(time);
-					} else if (x.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
-						cellJ24.setValue(time);
-					} else if (x.getLegalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
-						cellF25.setValue(time);
-					}
-				});
-			}
-		}
+		Cell cellJ18 = cells.get("J18");
 		
 		List<OvertimeWorkFrame> overTimeQuotaLis = displayInfoOverTime.getInfoBaseDateOutput().getQuotaOutput().getOverTimeQuotaList();
 		
-		overTimeQuotaLis.stream()
-						.forEach(x -> {
-							String nameWorkFrame = x.getOvertimeWorkFrName().v();
-							if (x.getOvertimeWorkFrNo().v().intValue() == 1) {
-								cellD13.setValue(nameWorkFrame);
-								cellF13.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 2) {
-								cellH13.setValue(nameWorkFrame);
-								cellJ13.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 3) {
-								cellD14.setValue(nameWorkFrame);
-								cellF14.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 4) {
-								cellH14.setValue(nameWorkFrame);
-								cellJ14.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 5) {
-								cellD15.setValue(nameWorkFrame);
-								cellF15.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 6) {
-								cellH15.setValue(nameWorkFrame);
-								cellJ15.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 7) {
-								cellD16.setValue(nameWorkFrame);
-								cellF16.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 8) {
-								cellH16.setValue(nameWorkFrame);
-								cellJ16.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 9) {
-								cellD17.setValue(nameWorkFrame);
-								cellF17.setValue(TIME_ZERO);
-							} else if (x.getOvertimeWorkFrNo().v().intValue() == 10) {
-								cellH17.setValue(nameWorkFrame);
-								cellJ17.setValue(TIME_ZERO);
-							} 
-						});
+		List<OverTimeObject> overTimeList = overTimeQuotaLis.stream()
+						.map(x -> new OverTimeObject(x.getOvertimeWorkFrName().v(), 0, x.getOvertimeWorkFrNo().v().intValue()))
+						.collect(Collectors.toList());
 		
+		Optional<AttendanceTime> overTimeMidNight = Optional.ofNullable(appOverTime.getApplicationTime()
+												.getOverTimeShiftNight()
+												.map(OverTimeShiftNight::getOverTimeMidNight)
+												.orElse(null));
+		if (overTimeMidNight.isPresent()) {
+			if (overTimeMidNight.get().v() > 0) {
+				overTimeList.add(new OverTimeObject(I18NText.getText("KAF005_63"), overTimeMidNight.get().v(), 11));			
+			}
+		}
 		
+		if (appOverTime.getApplicationTime().getFlexOverTime().isPresent()) {
+			if (appOverTime.getApplicationTime().getFlexOverTime().get().v() > 0) {
+				overTimeList.add(new OverTimeObject(I18NText.getText("KAF005_65"), appOverTime.getApplicationTime().getFlexOverTime().get().v(), 12));	
+			}
+		}
+		List<OverTimeObject> holidayList = displayInfoOverTime.getWorkdayoffFrames()
+														.stream()
+														.map(x -> new OverTimeObject(x.getWorkdayoffFrName().v(), 0, x.getWorkdayoffFrNo().v().intValue()))
+														.collect(Collectors.toList());
 		
+		if (appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent()) {
+			List<HolidayMidNightTime> midNightHolidayTimes = appOverTime.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes();
+			if (CollectionUtil.isEmpty(midNightHolidayTimes)) {
+				midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
+			}
+			holidayList.addAll(
+					midNightHolidayTimes.stream().map(x -> {
+									if (x.getAttendanceTime() != null) {
+										if (x.getAttendanceTime().v() > 0) {
+				//							String time = new TimeWithDayAttr(x.getAttendanceTime().v()).getInDayTimeWithFormat();
+											if (x.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+												return new OverTimeObject(I18NText.getText("KAF005_341"),x.getAttendanceTime().v(), 11 );
+											} else if (x.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+												return new OverTimeObject(I18NText.getText("KAF005_342"), x.getAttendanceTime().v(), 12);
+											} else if (x.getLegalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+												return new OverTimeObject(I18NText.getText("KAF005_343"), x.getAttendanceTime().v(), 14);
+											}													
+										}
+									}
+									return null;
+								}).filter(x -> x != null)
+								.collect(Collectors.toList())
+			);
+			
+		}
 		
+		final List<OverTimeObject> overTimeListTemp = overTimeList;
+		final List<OverTimeObject> holidayListTemp = holidayList;
 		appOverTime.getApplicationTime().getApplicationTime()
 				  						.stream()
 				  						.forEach(x -> {
 				  							if (x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME) {
-				  								String time = x.getApplicationTime().getInDayTimeWithFormat();
-					  							if (x.getFrameNo().v() == 1) {
-					  								cellF13.setValue(time);
-					  							} else if (x.getFrameNo().v() == 2) {
-					  								cellJ13.setValue(time);
-					  							} else if (x.getFrameNo().v() == 3) {
-					  								cellF14.setValue(time);
-					  							} else if (x.getFrameNo().v() == 4) {
-					  								cellJ14.setValue(time);
-					  							} else if (x.getFrameNo().v() == 5) {
-					  								cellF15.setValue(time);
-					  							} else if (x.getFrameNo().v() == 6) {
-					  								cellJ15.setValue(time);
-					  							} else if (x.getFrameNo().v() == 7) {
-					  								cellF16.setValue(time);
-					  							} else if (x.getFrameNo().v() == 8) {
-					  								cellJ16.setValue(time);
-					  							} else if (x.getFrameNo().v() == 9) {
-					  								cellF17.setValue(time);
-					  							} else if (x.getFrameNo().v() == 10) {
-					  								cellJ17.setValue(time);
-					  							}
+				  								Optional<OverTimeObject> overTimeObjectOp =  overTimeListTemp.stream()
+				  										.filter(a -> a.getFrame() == x.getFrameNo().v() && a.getFrame() > 0 && a.getFrame() < 11).findFirst();
+				  								if (overTimeObjectOp.isPresent()) {
+				  									if (x.getApplicationTime().v() > 0) {
+				  										overTimeObjectOp.get().setTime(x.getApplicationTime().v());
+				  									}
+				  								}
 				  							} else if (x.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
-				  								String time = x.getApplicationTime().getInDayTimeWithFormat();
-					  							if (x.getFrameNo().v() == 1) {
-					  								cellF19.setValue(time);
-					  							} else if (x.getFrameNo().v() == 2) {
-					  								cellJ19.setValue(time);
-					  							} else if (x.getFrameNo().v() == 3) {
-					  								cellF20.setValue(time);
-					  							} else if (x.getFrameNo().v() == 4) {
-					  								cellJ20.setValue(time);
-					  							} else if (x.getFrameNo().v() == 5) {
-					  								cellF21.setValue(time);
-					  							} else if (x.getFrameNo().v() == 6) {
-					  								cellJ21.setValue(time);
-					  							} else if (x.getFrameNo().v() == 7) {
-					  								cellF22.setValue(time);
-					  							} else if (x.getFrameNo().v() == 8) {
-					  								cellJ22.setValue(time);
-					  							} else if (x.getFrameNo().v() == 9) {
-					  								cellF23.setValue(time);
-					  							} else if (x.getFrameNo().v() == 10) {
-					  								cellJ23.setValue(time);
-					  							}
+				  								Optional<OverTimeObject> overTimeObjectOp =  holidayListTemp.stream()
+				  										.filter(a -> a.getFrame() == x.getFrameNo().v() && a.getFrame() > 0 && a.getFrame() < 11).findFirst();
+				  								if (overTimeObjectOp.isPresent()) {
+				  									if (x.getApplicationTime().v() > 0) {
+				  										overTimeObjectOp.get().setTime(x.getApplicationTime().v());
+				  									}				  									
+				  								}
 				  							}
 				  							
 				  						});
 		
-		// 
-		displayInfoOverTime.getWorkdayoffFrames()
-						   .stream()
-						   .forEach(x -> {
-							   
-							   String workdayoffFrName = x.getWorkdayoffFrName().v();
-							   
-							   if (x.getWorkdayoffFrNo().v().intValue() == 1) {
-								   cellD19.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 2) {
-								   cellH19.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 3) {
-								   cellD20.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 4) {
-								   cellH20.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 5) {
-								   cellD21.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 6) {
-								   cellH21.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 7) {
-								   cellD22.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 8) {
-								   cellH22.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 9) {
-								   cellD23.setValue(workdayoffFrName);
-							   } else if (x.getWorkdayoffFrNo().v().intValue() == 10) {
-								   cellH23.setValue(workdayoffFrName);
-							   }
-							   
-						   });
+		if (!CollectionUtil.isEmpty(holidayList)) {
+			holidayList = holidayList.stream().filter(x -> x.getTime() > 0).collect(Collectors.toList());
+			final List<OverTimeObject> holidayListTemp2 = holidayList;
+			IntStream.range(0, holidayList.size())
+			         .forEach(x -> {
+			        	 OverTimeObject object = holidayListTemp2.get(x);
+			        	 String time = new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat();
+			        	 if (x == 0) {
+			        		 cellD19.setValue(object.getName());
+			        		 cellF19.setValue(time);
+			        	 } else if (x == 1) {
+			        		 cellH19.setValue(object.getName());
+			        		 cellJ19.setValue(time);
+			        	 } else if (x == 2) {
+			        		 cellD20.setValue(object.getName());
+			        		 cellF20.setValue(time);
+			        	 } else if (x == 3) {
+			        		 cellH20.setValue(object.getName());
+			        		 cellJ20.setValue(time);
+			        	 }  else if (x == 4) {
+			        		 cellD21.setValue(object.getName());
+			        		 cellF21.setValue(time);
+			        	 } else if (x == 5) {
+			        		 cellH21.setValue(object.getName());
+			        		 cellJ21.setValue(time);
+			        	 }  else if (x == 6) {
+			        		 cellD22.setValue(object.getName());
+			        		 cellF22.setValue(time);
+			        	 } else if (x == 7) {
+			        		 cellH22.setValue(object.getName());
+			        		 cellJ22.setValue(time);
+			        	 }  else if (x == 8) {
+			        		 cellD23.setValue(object.getName());
+			        		 cellF23.setValue(time);
+			        	 } else if (x == 9) {
+			        		 cellH23.setValue(object.getName());
+			        		 cellJ23.setValue(time);
+			        	 } else if (x == 10) {
+			        		 cellD24.setValue(object.getName());
+			        		 cellF24.setValue(time);
+			        	 } else if (x == 11) {
+			        		 cellH24.setValue(object.getName());
+			        		 cellJ24.setValue(time);
+			        	 }  else if (x == 12) {
+			        		 cellD25.setValue(object.getName());
+			        		 cellF25.setValue(time);
+			        	 }
+			        	 
+			         });
+		}
 		
-		Cell cellB31 = cells.get("B31");
-		Cell cellD31 = cells.get("D31");
-		Cell cellB34 = cells.get("B34");
-		Cell cellD34 = cells.get("D34");
 		
-		cellB31.setValue(I18NText.getText("KAF005_93"));
-		cellD31.setValue("D31");
-		cellB34.setValue(I18NText.getText("KAF005_93"));
-		cellD34.setValue("D34");
+		if (!CollectionUtil.isEmpty(overTimeList)) {
+			overTimeList = overTimeList.stream().filter(x -> x.getTime() > 0).collect(Collectors.toList());
+			final List<OverTimeObject> overTimeListTemp2 = overTimeList;
+			IntStream.range(0, overTimeList.size())
+			         .forEach(x -> {
+			        	 OverTimeObject object = overTimeListTemp2.get(x);
+			        	 if (x == 0) {
+			        		 cellD13.setValue(object.getName());
+			        		 cellF13.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 1) {
+			        		 cellH13.setValue(object.getName());
+			        		 cellJ13.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 2) {
+			        		 cellD14.setValue(object.getName());
+			        		 cellF14.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 3) {
+			        		 cellH14.setValue(object.getName());
+			        		 cellJ14.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 }  else if (x == 4) {
+			        		 cellD15.setValue(object.getName());
+			        		 cellF15.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 5) {
+			        		 cellH15.setValue(object.getName());
+			        		 cellJ15.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 }  else if (x == 6) {
+			        		 cellD16.setValue(object.getName());
+			        		 cellF16.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 7) {
+			        		 cellH16.setValue(object.getName());
+			        		 cellJ16.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 }  else if (x == 8) {
+			        		 cellD17.setValue(object.getName());
+			        		 cellF17.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 9) {
+			        		 cellH17.setValue(object.getName());
+			        		 cellJ17.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 10) {
+			        		 cellD18.setValue(object.getName());
+			        		 cellF18.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 } else if (x == 11) {
+			        		 cellH18.setValue(object.getName());
+			        		 cellJ18.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        	 }
+			        	 
+			         });
+		}
+		
+
+		
+		Cell cellB30 = cells.get("B30");
+		Cell cellD30 = cells.get("D30");
+		Cell cellB33 = cells.get("B33");
+		Cell cellD33 = cells.get("D33");
+		
+		String b30 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
+					.stream()
+					.filter(x -> x.getDivergenceTimeNo() == 1)
+					.map(x -> x.getDivTimeName().v())
+					.findFirst()
+					.orElse(EMPTY_STRING);
+		String b33 = opDetailOutput.get().getDisplayInfoOverTime().getInfoNoBaseDate().getDivergenceTimeRoot()
+					.stream()
+					.filter(x -> x.getDivergenceTimeNo() == 2)
+					.map(x -> x.getDivTimeName().v())
+					.findFirst()
+					.orElse(EMPTY_STRING);
+		cellB30.setValue(I18NText.getText("KAF005_93", b30));
+		cellB33.setValue(I18NText.getText("KAF005_93", b33));
+		if (appOverTime.getApplicationTime().getReasonDissociation().isPresent()) {
+			StringBuilder d31 = this.getContentReason(opDetailOutput, 1);
+			cellD30.setValue(d31);
+			StringBuilder d34 = this.getContentReason(opDetailOutput, 2);
+			cellD33.setValue(d34);
+		}
 		
 		Cell cellB13 = cells.get("B13");
 		Cell cellB19 = cells.get("B19");
@@ -465,16 +544,31 @@ public class AsposeAppOverTime {
 			result.setStartReasonLabel(result.getStartReasonLabel() + 3);
 			cells.deleteRows(29, 3);
 		}
-		if (!c4 && !c5) {
-			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
-			cells.deleteRow(17);
+
+		if (!CollectionUtil.isEmpty(holidayList)) {
+			int size = holidayList.size();
+			int deleteRows = (size / 2) + (size % 2);
+			result.setStartReasonCommon(result.getStartReasonCommon() + 7 - deleteRows);
+			cells.deleteRows(18 + deleteRows, 7 - deleteRows);
+		} else {
+			result.setStartReasonCommon(result.getStartReasonCommon() + 7);
+			cells.deleteRows(18, 7);
+		}
+		if (!CollectionUtil.isEmpty(overTimeList)) {
+			int size = overTimeList.size();
+			int deleteRows = (size / 2) + (size % 2);
+			result.setStartReasonCommon(result.getStartReasonCommon() + 6 - deleteRows);
+			cells.deleteRows(12 + deleteRows, 6 - deleteRows);
+		} else {
+			result.setStartReasonCommon(result.getStartReasonCommon() + 6);
+			cells.deleteRows(12, 6);
 		}
 		if (!c3) {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
 			cells.deleteRow(11);
 		}
 		
-		if (!c2) {
+		if (!c2 || StringUtils.isBlank(contentD11)) {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
 			cells.deleteRow(10);
 		}

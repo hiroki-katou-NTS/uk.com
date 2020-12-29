@@ -260,4 +260,13 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 
 		return entity;
 	}
+
+	@Override
+	public void delete(String companyId, String applicationId) {
+		Optional<KrqdtAppHolidayWork> opEntity = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyId, applicationId), KrqdtAppHolidayWork.class);
+		if(!opEntity.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de update");
+		}
+		this.commandProxy().remove(KrqdtAppHolidayWork.class, new KrqdtAppHolidayWorkPK(companyId, applicationId));
+	}
 }

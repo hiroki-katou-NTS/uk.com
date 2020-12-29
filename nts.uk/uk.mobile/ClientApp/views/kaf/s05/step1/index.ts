@@ -3,7 +3,7 @@ import { component, Watch } from '@app/core/component';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { BreakTime, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime} from '../a/define.interface';
+import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
 import { KafS05Component} from '../a/index';
 @component({
     name: 'kafs05step1',
@@ -30,13 +30,15 @@ export class KafS05Step1Component extends Vue {
 
     public workInfo: WorkInfo = {} as WorkInfo;
 
-    public workHours1: { start: number, end: number } = null;
+    public workHours1: ValueTime = null;
 
-    public workHours2?: { start: number, end: number } = null;
+    public workHours2?: ValueTime = null;
 
     public breakTimes: Array<BreakTime> = [];
 
     public displayNumberBreakTime = 3;
+
+    public isFirstModeUpdate: boolean = true;
 
     public get isAddFrameBreakTime() {
         const self = this;
@@ -47,7 +49,8 @@ export class KafS05Step1Component extends Vue {
     @Watch('workHours1', {deep: true})
     public changeWorkHours1(data: ValueTime) {
         const self = this;
-        if (_.isNil(data.start) || _.isNil(data.end)) {
+        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
+            self.isFirstModeUpdate = false;
 
             return;
         }
@@ -60,7 +63,7 @@ export class KafS05Step1Component extends Vue {
         command.startTime = self.workHours1.start;
         command.endTime = self.workHours1.end;
         command.companyId = parent.user.companyId;
-        command.actualContentDisplayDto = _.get(parent.model.displayInfoOverTime,'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst');
+        command.actualContentDisplayDtos = _.get(parent.model.displayInfoOverTime,'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst');
         parent.getBreakTime(command);
         
     }
@@ -92,16 +95,7 @@ export class KafS05Step1Component extends Vue {
         const self = this;
     }
 
-    public createBreakTime() {
-        const self = this;
-        for (let i = 0; i < 10; i++) {
-            let item = {} as BreakTime;
-            item.valueHours = null as ValueTime;
-            item.frameNo = i + 1;
-            item.title = self.$i18n('KAFS05_69', String(item.frameNo));
-            self.breakTimes.push(item);
-        }
-    }
+    
     public getWorkHours1() {
         const self = this;
 
@@ -181,10 +175,21 @@ export class KafS05Step1Component extends Vue {
 
         return self.$parent as KafS05Component;
     }
-
-    public loadBreakTime(timeZone?: any) {
+    public createBreakTimeModel() {
         const self = this;
-       
+        for (let i = 0; i < 10; i++) {
+            let item = {} as BreakTime;
+            item.valueHours = null as ValueTime;
+            item.frameNo = i + 1;
+            item.title = self.$i18n('KAFS05_69', String(item.frameNo));
+            self.breakTimes.push(item);
+        }
+    }
+    public createBreakTime(timeZone?: any) {
+        const self = this;
+        if (_.isEmpty(self.breakTimes)) {
+            self.createBreakTimeModel();
+        }
         _.forEach(self.breakTimes, (item: any) => {
             item.valueHours = null as ValueTime;
         });
@@ -200,169 +205,108 @@ export class KafS05Step1Component extends Vue {
         });
     }
 
-    public loadWorkHours(object?: DisplayInfoOverTime) {
+    public createWorkHours(mode: boolean) {
         const self = this;
-        if (!_.isNil(object)) {
-            if (!_.isNil(object.infoWithDateApplicationOp)) {
-                let workHours = object.infoWithDateApplicationOp.workHours;
-                if (!_.isNil(workHours)) {
-                    if (!_.isNil(workHours.startTimeOp1)) {
-                        if (_.isNil(self.workHours1)) {
-                            self.workHours1 = {} as ValueTime;
-                        }
-                        self.workHours1.start = workHours.startTimeOp1;
-                    }
-
-                    if (!_.isNil(workHours.endTimeOp1)) {
-                        if (_.isNil(self.workHours1)) {
-                            self.workHours1 = {} as ValueTime;
-                        }
-                        self.workHours1.end = workHours.endTimeOp1;
-                    }
-
-                    if (!_.isNil(workHours.startTimeOp2)) {
-                        if (_.isNil(self.workHours2)) {
-                            self.workHours2 = {} as ValueTime;
-                        }
-                        self.workHours2.start = workHours.startTimeOp2;
-                    }
-
-                    if (!_.isNil(workHours.endTimeOp2)) {
-                        if (_.isNil(self.workHours2)) {
-                            self.workHours2 = {} as ValueTime;
-                        }
-                        self.workHours2.end = workHours.endTimeOp2;
-                    }
-                }
+ 
+        let workHours = _.get(self.$appContext.model.displayInfoOverTime, 'infoWithDateApplicationOp.workHours') as WorkHoursDto;
+        let workHours1 = {} as ValueTime;
+        let workHours2 = {} as ValueTime;
+        if (mode) {
+            if (workHours) {
+                workHours1.start = workHours.startTimeOp1;
+                workHours1.end = workHours.endTimeOp1;
+                workHours2.start = workHours.startTimeOp2;
+                workHours2.end = workHours.endTimeOp2;
             }
+        } else {
+            _.sortBy(self.$appContext.model.appOverTime.workHoursOp, (i: TimeZoneWithWorkNo) => i.workNo);
+            let workHoursOp1 = _.get(self.$appContext.model.appOverTime, 'workHoursOp[0].timeZone') as TimeZoneNew;
+            let workHoursOp2 = _.get(self.$appContext.model.appOverTime, 'workHoursOp[1].timeZone') as TimeZoneNew;
+
+            workHours1.start = workHoursOp1 ? workHoursOp1.startTime : null;
+            workHours1.end = workHoursOp1 ? workHoursOp1.endTime : null;
+
+            workHours2.start = workHoursOp2 ? workHoursOp2.startTime : null;
+            workHours2.end = workHoursOp2 ? workHoursOp2.endTime : null;
 
         }
+        self.workHours1 = workHours1.start ?  workHours1 : null;
+        self.workHours2 = workHours2.start ?  workHours2 : null;
 
     }
-    public loadData(object?: DisplayInfoOverTime) {
+    public loadData(displayInfoOverTime?: DisplayInfoOverTime, inputByUser?: boolean) {
         const self = this;
-        console.log('loadData');
-        if (!_.isNil(object)) {
-            let workType = {} as Work;
-            if (!_.isNil(object.infoWithDateApplicationOp)) {
-                workType.code = object.infoWithDateApplicationOp.workTypeCD;
+        if (!_.isNil(displayInfoOverTime)) {
+
+            if (!self.$appContext.modeNew && !inputByUser) { // bind from appovertime within update mode
+                let appOverTime = self.$appContext.model.appOverTime;
+                self.createWorkInfo(_.get(appOverTime, 'workInfoOp.workType'), _.get(appOverTime, 'workInfoOp.workTime'));
+                self.createBreakTime(_.map(_.get(appOverTime, 'breakTimeOp'), (x: any) => {
+                    
+                    return {
+                        start: x.timeZone.startTime,
+                        end: x.timeZone.endTime
+                    };
+                }));
+                self.createWorkHours(false);
+
+
+                return;
             }
-            if (!_.isNil(workType.code)) {
-                let workTypes = object.infoBaseDateOutput.worktypes;
-                let resultWorkType = 
-                        _.find(
-                                workTypes,
-                                (i: any) => i.workTypeCode == workType.code);
-                if (!_.isNil(resultWorkType)) {
-                    workType.name = resultWorkType.name;
-                }                
-                
-            }
+            let codeType = _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTypeCD');
+            let codeTime = _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTimeCD');
+            self.createWorkInfo(codeType, codeTime);
+            self.createBreakTime(_.get(displayInfoOverTime, 'infoWithDateApplicationOp.breakTime.timeZones'));
 
-            let workTime = {} as Work;
-            if (!_.isNil(object.infoWithDateApplicationOp)) {
-                workTime.code = object.infoWithDateApplicationOp.workTimeCD;
-            }
-            if (!_.isNil(workTime.code)) {
-                let workTimes = object.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-                let resultWorkTime = 
-                        _.find(
-                                workTimes,
-                                (i: any) => i.worktimeCode == workTime.code);
-                if (!_.isNil(resultWorkTime)) {
-                    workTime.name = resultWorkTime.workTimeDisplayName.workTimeName;
-                }                
-                
-            }
-            self.workInfo.workType = workType;
-            self.workInfo.workTime = workTime;
-
-            let workInfo = {} as WorkInfo;
-            workInfo.workType = workType;
-            workInfo.workTime = workTime;
-            self.workInfo = workInfo;
-
-
-            // load break time
-
-            self.loadBreakTime(_.get(object, 'infoWithDateApplicationOp.breakTime.timeZones'));
             // load work hours
-            self.loadWorkHours(object);
+            self.createWorkHours(true);
 
             return;
-        } 
+        } else {
+            self.createWorkInfo();
+            self.createBreakTime();
+        }
 
-        // loading first time
-        self.workInfo.workType = {
-            code: '',
-            name: ''
-        } as Work;
-        self.workInfo.workTime = {
-            code: '',
-            name: '',
-            time: '12:00 ~ 20:00'
-        } as Work;
+           
 
-
-        self.createBreakTime();
     }
 
-    public loadDataFromStep2() {
+    public createWorkInfo(codeType?: string, codeTime?: string) {
         const self = this;
-        let appOverTime = self.$appContext.model.appOverTime as AppOverTime;
-        let displayOverTime = self.$appContext.model.displayInfoOverTime as DisplayInfoOverTime;
-        // loading first time
-        self.workInfo.workType = {
-            code: '',
-            name: ''
-        } as Work;
-        self.workInfo.workTime = {
-            code: '',
-            name: '',
-            time: ''
-        } as Work;
-        self.createBreakTime();
 
         let workType = {} as Work;
-        if (!_.isNil(appOverTime.workInfoOp)) {
-            workType.code = appOverTime.workInfoOp.workType;
-        }
-        if (!_.isNil(workType.code)) {
-            let workTypes = displayOverTime.infoBaseDateOutput.worktypes;
-            let resultWorkType = 
-                    _.find(
-                            workTypes,
-                            (i: any) => i.workTypeCode == workType.code);
-            if (!_.isNil(resultWorkType)) {
-                workType.name = resultWorkType.name;
-            }                
-            
-        }
+        workType.code = codeType || '';
 
         let workTime = {} as Work;
-        if (!_.isNil(appOverTime.workInfoOp)) {
-            workTime.code = appOverTime.workInfoOp.workTime;
-        }
-        if (!_.isNil(workTime.code)) {
-            let workTimes = displayOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-            let resultWorkTime = 
-                    _.find(
-                            workTimes,
-                            (i: any) => i.worktimeCode == workTime.code);
-            if (!_.isNil(resultWorkTime)) {
-                workTime.name = resultWorkTime.workTimeDisplayName.workTimeName;
-            }                
-            
-        }
-        self.workInfo.workType = workType;
-        self.workInfo.workTime = workTime;
+        workTime.code = codeTime || '';
+        let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
+        if (displayInfoOverTime) {
+            let workTypes = displayInfoOverTime.infoBaseDateOutput.worktypes;
+            let resultWorkType = 
+                _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
+            workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
 
+            let workTimes = displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+            let resultWorkTime = 
+                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+  
+        }
         let workInfo = {} as WorkInfo;
         workInfo.workType = workType;
         workInfo.workTime = workTime;
-        self.workInfo = workInfo;     
 
+        self.workInfo = workInfo;
     }
+
+    // public loadDataFromStep2() {
+    //     const self = this;
+    //     let appOverTime = self.$appContext.model.appOverTime as AppOverTime;
+    //     let displayOverTime = self.$appContext.model.displayInfoOverTime as DisplayInfoOverTime;
+    //     self.createWorkInfo(_.get(appOverTime, 'workInfoOp.workType') , _.get(appOverTime, 'workInfoOp.workTime'));
+    //     self.initBreakTime();
+
+    // }
 
     public addBreakHour() {
         const self= this;

@@ -311,7 +311,8 @@ public interface IntermediateDataPub {
 	 * @param period
 	 * @return
 	 */
-	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period);
+	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate);
 	
 	/**
 	 * RequestList 709

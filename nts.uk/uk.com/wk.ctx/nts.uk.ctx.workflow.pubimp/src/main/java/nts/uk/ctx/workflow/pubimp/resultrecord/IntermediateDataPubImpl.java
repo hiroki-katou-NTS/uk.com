@@ -736,15 +736,23 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
+	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate) {
 		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「就業実績確認状態」を取得する
-		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
+		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpMonth(companyID, employeeID, yearMonth, closureID, closureDate, 
+				RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootConfirm.isPresent()) {
+			return null;
+		}
 		// ドメインモデル「中間データ」を取得する
-		AppRootInstance appRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, appRootConfirm.getRecordDate(), 
-				RecordRootType.CONFIRM_WORK_BY_MONTH).get();
+		Optional<AppRootInstance> opAppRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, opAppRootConfirm.get().getRecordDate(), 
+				RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootInstance.isPresent()) {
+			return null;
+		}
 		// 中間データから承認ルートインスタンスに変換する
-		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(opAppRootInstance.get(), opAppRootConfirm.get());
 		return new ApprovalRootStateExport(
 					approvalRootState.getRootStateID(),
 					approvalRootState.getRootType().value,

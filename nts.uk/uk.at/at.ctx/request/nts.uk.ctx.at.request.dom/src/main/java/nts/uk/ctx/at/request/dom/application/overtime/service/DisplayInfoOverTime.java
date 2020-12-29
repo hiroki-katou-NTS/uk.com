@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
@@ -42,4 +43,6 @@ public class DisplayInfoOverTime {
 	private Optional<CalculationResult> calculationResultOp = Optional.empty();
 	// 申請日に関係する情報
 	private Optional<InfoWithDateApplication> infoWithDateApplicationOp = Optional.empty(); 
+	// 計算済フラグ
+	private CalculatedFlag calculatedFlag;
 }

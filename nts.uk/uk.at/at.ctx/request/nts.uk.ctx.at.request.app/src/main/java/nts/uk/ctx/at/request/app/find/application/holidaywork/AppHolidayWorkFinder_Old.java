@@ -461,7 +461,7 @@ public class AppHolidayWorkFinder_Old {
 				otTimeLst, 
 				preAppCheckResult.opAppBefore, 
 				preAppCheckResult.beforeAppStatus, 
-				actualStatusCheckResult.actualLst, 
+				Collections.emptyList(), 
 				actualStatusCheckResult.actualStatus);
 		
 		return preActualColorResult;

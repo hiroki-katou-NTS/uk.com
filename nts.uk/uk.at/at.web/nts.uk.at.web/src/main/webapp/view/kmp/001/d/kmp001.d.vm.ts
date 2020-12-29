@@ -91,7 +91,6 @@ module nts.uk.at.view.kmp001.d {
 			vm.$ajax(KMP001D_API.UPDATE_EDITTING, command);
 			vm.$window.close({ stampCardDigitNumber, stampCardEditMethod });
 		}
-		}
 	}
 
 	export enum StampCardEditMethod {

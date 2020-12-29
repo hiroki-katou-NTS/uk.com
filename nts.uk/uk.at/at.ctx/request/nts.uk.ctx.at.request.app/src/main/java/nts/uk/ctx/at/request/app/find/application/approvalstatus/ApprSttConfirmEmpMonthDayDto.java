@@ -32,7 +32,7 @@ public class ApprSttConfirmEmpMonthDayDto {
 		return new ApprSttConfirmEmpMonthDayDto(
 				apprSttConfirmEmpMonthDay.isMonthConfirm(), 
 				apprSttConfirmEmpMonthDay.getMonthApproval(), 
-				ApprovalRootStateImportDto.fromDomain(apprSttConfirmEmpMonthDay.getApprovalRootStateMonth()), 
+				apprSttConfirmEmpMonthDay.getApprovalRootStateMonth() == null ? null : ApprovalRootStateImportDto.fromDomain(apprSttConfirmEmpMonthDay.getApprovalRootStateMonth()), 
 				apprSttConfirmEmpMonthDay.getMonthApprovalLst(), 
 				apprSttConfirmEmpMonthDay.getListDailyConfirm(), 
 				apprSttConfirmEmpMonthDay.getApprovalRootStateDayLst().stream().map(x -> ApprovalRootStateImportDto.fromDomain(x)).collect(Collectors.toList()), 

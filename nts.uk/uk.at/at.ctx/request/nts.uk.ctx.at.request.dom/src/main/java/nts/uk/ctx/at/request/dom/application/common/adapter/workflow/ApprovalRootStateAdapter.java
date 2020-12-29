@@ -197,7 +197,8 @@ public interface ApprovalRootStateAdapter {
 	 * @param period
 	 * @return
 	 */
-	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period);
+	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate);
 	
 	/**
 	 * RequestList 115
