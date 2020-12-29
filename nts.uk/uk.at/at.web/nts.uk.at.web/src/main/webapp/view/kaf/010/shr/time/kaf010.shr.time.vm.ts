@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: $parent.mode() != 3,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									name: '#[KAF010_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: $parent.mode() != 3,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 
 	<!-- calculate button A5_8-->
 	<div style="margin-bottom: 20px" data-bind="visible: restTimeTableVisible2()">
-		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate" class="caret-bottom caret-inline" ></button>
+		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate, enable: mode() != 3" class="caret-bottom caret-inline" ></button>
 	</div>
 
 	<!-- holiday time -->
@@ -105,7 +105,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
 									mode: 'time',
-									enable: $parent.inputEnable,
+									enable: $parent.inputEnable() && ($parent.mode() != 3 || type() != 1),
 									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
@@ -159,7 +159,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									inputFormat: 'time',
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: true }" />
+									enable: $parent.mode() != 3 || type() != 0 }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
