@@ -94,8 +94,8 @@ public class PersonCostCalculationFinder {
                 domain.getPremiumSettings().stream().map(e -> new PremiumSettingAndNameDto(
                         e.getID().value,
                         mapItemInfo.get(e.getID().value) != null ? mapItemInfo.get(e.getID().value).getName().v() : null,
-                        mapItemInfo.get(e.getID().value) != null ? mapItemInfo.get(e.getID().value).getUseAtr().value : null,
                         e.getRate().v(),
+                        mapItemInfo.get(e.getID().value) != null ? mapItemInfo.get(e.getID().value).getUseAtr().value : null,
                         e.getUnitPrice().value,
                         e.getAttendanceItems().stream().map(mapName::get).collect(Collectors.toList())
                 )).collect(Collectors.toList())
@@ -212,10 +212,10 @@ public class PersonCostCalculationFinder {
             val hist = lisHist.get(0);
             val domainOpt = this.personCostCalculationRepository.getPersonCost(cid, hist.getHistoryID());
             if (domainOpt.isPresent()) {
-                val domain = domainOpt.get();
+                val domain = domainOpt.get().getPersonCostCalculation();
                 personCostCalLast = new PersonCostCalculationDto(
-                        hist.getStartDate(),
-                        hist.getEndDate(),
+                        domainOpt.get().getStartDate(),
+                        domainOpt.get().getEndDate(),
                         domain.getHistoryID(),
                         domain.getCompanyID(),
                         domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
@@ -251,10 +251,10 @@ public class PersonCostCalculationFinder {
         PersonCostCalculationDto personCostCalLast = null;
         val domainOpt = this.personCostCalculationRepository.getPersonCost(cid, histId);
         if (domainOpt.isPresent()) {
-            val domain = domainOpt.get();
+            val domain = domainOpt.get().getPersonCostCalculation();
             personCostCalLast = new PersonCostCalculationDto(
-                    null,
-                    null,
+                    domainOpt.get().getStartDate(),
+                    domainOpt.get().getEndDate(),
                     domain.getHistoryID(),
                     domain.getCompanyID(),
                     domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,

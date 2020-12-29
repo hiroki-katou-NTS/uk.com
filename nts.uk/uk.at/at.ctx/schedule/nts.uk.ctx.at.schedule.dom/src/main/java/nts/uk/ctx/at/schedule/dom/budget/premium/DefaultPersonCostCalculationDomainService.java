@@ -49,7 +49,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 
         // Update before history
 
-        this.personCostCalculationRepository.update(listOldPersonCostCal.get(), listOldHistPersonCostCal.get());
+        this.personCostCalculationRepository.update(listOldPersonCostCal.get().getPersonCostCalculation(), listOldHistPersonCostCal.get());
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.HistAnPerCost;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.PersonCostCalAndDateDto;
 
 /**
  * @author Doan Duy Hung
@@ -77,7 +78,7 @@ public interface PersonCostCalculationRepository {
      Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid);
 
 
-     Optional<PersonCostCalculation> getPersonCost(String cid, String histId);
+     Optional<PersonCostCalAndDateDto> getPersonCost(String cid, String histId);
 
      void createHistPersonCl(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId);
 

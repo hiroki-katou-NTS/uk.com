@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.HistAnPerCost;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.PersonCostCalAndDateDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.*;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
@@ -282,7 +283,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     }
 
     @Override
-    public Optional<PersonCostCalculation> getPersonCost(String cid, String histID) {
+    public Optional<PersonCostCalAndDateDto> getPersonCost(String cid, String histID) {
+        val rs = new PersonCostCalAndDateDto();
         String queryRate = "SELECT a FROM KscmtPerCostPremiRate a " +
                 " WHERE a.pk.companyID = :cid " +
                 " AND a.pk.histID = :histID ";
@@ -316,7 +318,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     AmountUnit.valueOf(entity.getCostUnit()),
                     AmountRounding.valueOf(entity.costRounding)
             );
-            val rs = new PersonCostCalculation(
+            val per = new PersonCostCalculation(
                     new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                     entity.getPk().companyID,
                     new Remarks(entity.getMemo()),
@@ -326,6 +328,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     new WorkingHoursUnitPrice(entity.getWokkingHoursUnitPriceAtr()),
                     entity.getPk().histID
             );
+            rs.setPersonCostCalculation(per);
+            rs.setStartDate(entity.startDate);
+            rs.setEndDate(entity.endDate);
             return Optional.of(rs);
         }
         return Optional.empty();
