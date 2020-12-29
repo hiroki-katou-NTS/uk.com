@@ -13,7 +13,12 @@ import { KafS05Component} from '../a/index';
     resource: require('./resources.json'),
     validations: {
         workHours1: {
-            required: true
+            required: true,
+            timeRange: true
+        },
+        workHours2: {
+            required: false,
+            timeRange: true
         }
     },
     constraints: [],
