@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.command.kmk.kmk004.i;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,7 +17,6 @@ import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.DeleteMonthlyWorkTimeSetEmpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.DeleteMonthlyWorkTimeSetEmpCommandHandler;
-import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DeleteFlexMonthlyWorkTimeSetEmpCommandHandler
-		extends CommandHandlerWithResult<DeleteFlexMonthlyWorkTimeSetEmpCommand, List<EmploymentCodeDto>> {
+		extends CommandHandlerWithResult<DeleteFlexMonthlyWorkTimeSetEmpCommand, List<String>> {
 
 	@Inject
 	private DeleteMonthlyWorkTimeSetEmpCommandHandler deleteHandler;
@@ -40,7 +40,7 @@ public class DeleteFlexMonthlyWorkTimeSetEmpCommandHandler
 	private EmploymentList employmentList;
 
 	@Override
-	protected List<EmploymentCodeDto> handle(CommandHandlerContext<DeleteFlexMonthlyWorkTimeSetEmpCommand> context) {
+	protected List<String> handle(CommandHandlerContext<DeleteFlexMonthlyWorkTimeSetEmpCommand> context) {
 
 		DeleteFlexMonthlyWorkTimeSetEmpCommand cmd = context.getCommand();
 		// 年度の期間を取得(require, 会社ID, 年度)
@@ -53,7 +53,7 @@ public class DeleteFlexMonthlyWorkTimeSetEmpCommandHandler
 				.handle(new DeleteMonthlyWorkTimeSetEmpCommand(cmd.getEmploymentCode(), LaborWorkTypeAttr.FLEX.value,
 						new YearMonthPeriodCommand(yearMonths.start().v(), yearMonths.end().v())));
 		// 雇用リストを表示する
-		return this.employmentList.get(LaborWorkTypeAttr.FLEX);
+		return this.employmentList.get(LaborWorkTypeAttr.FLEX).stream().map(x-> x.employmentCode).collect(Collectors.toList());
 
 	}
 

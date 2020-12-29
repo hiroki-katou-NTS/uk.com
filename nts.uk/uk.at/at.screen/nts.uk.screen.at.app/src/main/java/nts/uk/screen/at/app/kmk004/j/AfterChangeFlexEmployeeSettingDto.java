@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
 
 /**
  * 
@@ -19,5 +18,5 @@ public class AfterChangeFlexEmployeeSettingDto {
 
 	private ShaFlexMonthActCalSetDto flexMonthActCalSet;
 
-	private List<EmployeeIdDto> employeeIds;
+	private List<String> alreadySettings;
 }

@@ -76,7 +76,7 @@ module nts.uk.at.kmk004.components.flex {
 		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		constructor(param?: IScreenData) {
-			const vm = this;
+			
 			if (param) {
 				this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 				this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
@@ -115,6 +115,15 @@ module nts.uk.at.kmk004.components.flex {
 
 			yearList.push(new YearItem(Number(year), false));
 			vm.yearList(_.orderBy(yearList, ['year'], ['desc']));
+		}
+
+		saveData() {
+			const vm = this;
+			
+			let saveitem = ko.toJS(vm.monthlyWorkTimeSetComs()),
+				year = Number(vm.selectedYear());
+				
+			vm.serverData = { year: year, data: saveitem };
 		}
 
 		deleteYear(year: number) {
@@ -184,6 +193,7 @@ module nts.uk.at.kmk004.components.flex {
 		setUpdateYear(year: number) {
 			const vm = this,
 				yearList = vm.yearList();
+
 			_.remove(yearList, (item) => { return item.year == year; });
 
 			yearList.push(new YearItem(Number(year), true));
@@ -206,7 +216,7 @@ module nts.uk.at.kmk004.components.flex {
 				item.laborTime.weekAvgTime = 0;
 			});
 			vm.serverData = { year: year, data: workTimes };
-			vm.unSaveSetComs.push({ year: year, data: workTimes });
+			//vm.unSaveSetComs.push({ year: year, data: workTimes });
 			/*let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
 			vm.monthlyWorkTimeSetComs(setComs);*/
 		}

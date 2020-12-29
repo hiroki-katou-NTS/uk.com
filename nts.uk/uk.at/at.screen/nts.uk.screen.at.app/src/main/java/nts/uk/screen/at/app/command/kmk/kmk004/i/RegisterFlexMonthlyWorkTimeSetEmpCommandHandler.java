@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.command.kmk.kmk004.i;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,7 +11,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.SaveMonthlyWorkTimeSetEmpCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.SaveMonthlyWorkTimeSetEmpCommandHandler;
-import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
  */
 @Stateless
 public class RegisterFlexMonthlyWorkTimeSetEmpCommandHandler
-		extends CommandHandlerWithResult<SaveMonthlyWorkTimeSetEmpCommand, List<EmploymentCodeDto>> {
+		extends CommandHandlerWithResult<SaveMonthlyWorkTimeSetEmpCommand, List<String>> {
 
 	@Inject
 	private SaveMonthlyWorkTimeSetEmpCommandHandler saveHandler;
@@ -30,12 +30,12 @@ public class RegisterFlexMonthlyWorkTimeSetEmpCommandHandler
 	private EmploymentList employmentList;
 
 	@Override
-	protected List<EmploymentCodeDto> handle(CommandHandlerContext<SaveMonthlyWorkTimeSetEmpCommand> context) {
+	protected List<String> handle(CommandHandlerContext<SaveMonthlyWorkTimeSetEmpCommand> context) {
 		// 雇用別月単位労働時間を登録・更新する
 		this.saveHandler.handle(context.getCommand());
 		// 雇用リストを表示する
 
-		return this.employmentList.get(LaborWorkTypeAttr.FLEX);
+		return this.employmentList.get(LaborWorkTypeAttr.FLEX).stream().map(x-> x.employmentCode).collect(Collectors.toList());
 	}
 
 }

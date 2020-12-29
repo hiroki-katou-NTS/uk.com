@@ -81,6 +81,15 @@ class ScreenGComponent extends ko.ViewModel {
 		vm.screenData().selectedYear.subscribe((yearInput) => {
 
 			if (!yearInput) {
+				_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+					item.laborTime().checkbox(false);
+					item.laborTime().legalLaborTime(null);
+					item.laborTime().weekAvgTime(null);
+					item.laborTime().withinLaborTime(null);
+				});
+
+				vm.screenData().serverData = null;
+				vm.screenData().unSaveSetComs = [];
 				return;
 			}
 

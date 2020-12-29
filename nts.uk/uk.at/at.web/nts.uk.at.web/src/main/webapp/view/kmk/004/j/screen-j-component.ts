@@ -109,6 +109,8 @@ class ScreenJComponent extends ko.ViewModel {
 					item.laborTime().weekAvgTime(null);
 					item.laborTime().withinLaborTime(null);
 				});
+				vm.screenData().serverData = null;
+				vm.screenData().unSaveSetComs = [];
 				return;
 			}
 

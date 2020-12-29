@@ -32,6 +32,8 @@ public class GeSettingStatusForEachWorkplaceTest {
 
 	private static String WKP3 = "509a8d6a-d644-413e-85da-fbae5776e5ce";
 	
+	private static String WKP4 = "1b70774e-8e1c-4b4d-a71d-153261886c74";
+	
 	
 	@Test
 	public void getter() {
@@ -47,17 +49,16 @@ public class GeSettingStatusForEachWorkplaceTest {
 				require.findWorkplace(CID, LaborWorkTypeAttr.REGULAR_LABOR);
 				result = Arrays.asList(
 						MonthlyWorkTimeSetWkp.of(null, WKP1, null, null, null),
-						MonthlyWorkTimeSetWkp.of(null, WKP2, null, null, null),
 						MonthlyWorkTimeSetWkp.of(null, WKP3, null, null, null));
 				
 				require.findAll(CID);
 				result = Arrays.asList(
-						RegularLaborTimeWkp.of(null, WKP1, null,null),
 						RegularLaborTimeWkp.of(null, WKP2, null,null),
 						RegularLaborTimeWkp.of(null, WKP3, null,null));
 
 				require.findWkpRegulaMonthAll(CID);
-				result = Arrays.asList(WkpRegulaMonthActCalSet.of(WKP1, null, null, null));
+				result = Arrays.asList(
+						WkpRegulaMonthActCalSet.of(WKP4, null, null,null));
 
 			}
 		};
@@ -65,7 +66,7 @@ public class GeSettingStatusForEachWorkplaceTest {
 		List<String> wkpIds = GeSettingStatusForEachWorkplace.geSettingStatusForEachWorkplace(require,
 				"000000000000-0001", LaborWorkTypeAttr.REGULAR_LABOR);
 
-		assertThat(wkpIds).isEqualTo(Arrays.asList(WKP1, WKP2, WKP3));
+		assertThat(wkpIds).isEqualTo(Arrays.asList(WKP1, WKP3, WKP2, WKP4));
 
 	}
 	
@@ -78,16 +79,18 @@ public class GeSettingStatusForEachWorkplaceTest {
 			{
 				require.findWorkplace(CID, LaborWorkTypeAttr.DEFOR_LABOR);
 				result = Arrays.asList(
-						MonthlyWorkTimeSetWkp.of(null, WKP1, null, null, null));
+						MonthlyWorkTimeSetWkp.of(null, WKP1, null, null, null),
+						MonthlyWorkTimeSetWkp.of(null, WKP3, null, null, null)
+						);
 				
 				require.findDeforLaborTimeWkpByCid(CID);
 				result = Arrays.asList(
-						DeforLaborTimeWkp.of(null, WKP1, null, null),
+						DeforLaborTimeWkp.of(null, WKP2, null, null),
 						DeforLaborTimeWkp.of(null, WKP3, null, null));
 
 				require.findAllByCid(CID);
 				result = Arrays.asList(
-						WkpDeforLaborMonthActCalSet.of(WKP3, null, null, null, null, null)
+						WkpDeforLaborMonthActCalSet.of(WKP4, null, null, null, null, null)
 						);
 
 			}
@@ -96,7 +99,7 @@ public class GeSettingStatusForEachWorkplaceTest {
 		List<String> wkpIds = GeSettingStatusForEachWorkplace.geSettingStatusForEachWorkplace(require,
 				"000000000000-0001", LaborWorkTypeAttr.DEFOR_LABOR);
 
-		assertThat(wkpIds).isEqualTo(Arrays.asList(WKP1, WKP3));
+		assertThat(wkpIds).isEqualTo(Arrays.asList(WKP1, WKP3, WKP2, WKP4));
 
 	}
 	
@@ -108,10 +111,13 @@ public class GeSettingStatusForEachWorkplaceTest {
 				require.findWorkplace(CID, LaborWorkTypeAttr.FLEX);
 				result = Arrays.asList(
 						MonthlyWorkTimeSetWkp.of(null, WKP1, null, null, null),
-						MonthlyWorkTimeSetWkp.of(null, WKP2, null, null, null));
+						MonthlyWorkTimeSetWkp.of(null, WKP3, null, null, null)
+						);
 				
 				require.findByCid(CID);
-				result = Arrays.asList(WkpFlexMonthActCalSet.of(null, null, null, null, null, WKP2) );
+				result = Arrays.asList(
+						WkpFlexMonthActCalSet.of(null,null, null, null, null, WKP2),
+						WkpFlexMonthActCalSet.of(null,null, null, null, null, WKP3) );
 
 			}
 		};
@@ -119,7 +125,7 @@ public class GeSettingStatusForEachWorkplaceTest {
 		List<String> wkpIds = GeSettingStatusForEachWorkplace.geSettingStatusForEachWorkplace(require,
 				"000000000000-0001", LaborWorkTypeAttr.FLEX);
 
-		assertThat(wkpIds).isEqualTo(Arrays.asList(WKP1, WKP2));
+		assertThat(wkpIds).isEqualTo(Arrays.asList(WKP1, WKP3, WKP2));
 
 	}
 

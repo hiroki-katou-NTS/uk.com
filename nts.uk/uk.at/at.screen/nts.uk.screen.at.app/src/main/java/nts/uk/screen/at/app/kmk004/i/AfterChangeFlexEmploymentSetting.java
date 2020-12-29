@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kmk004.i;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,13 +26,15 @@ public class AfterChangeFlexEmploymentSetting {
 	public AfterChangeFlexEmploymentSettingDto afterChangeFlexEmploymentSetting(String employmentCd) {
 		AfterChangeFlexEmploymentSettingDto result = new AfterChangeFlexEmploymentSettingDto();
 		// 雇用別基本設定（フレックス勤務）を表示する
-		DisplayFlexBasicSettingByEmploymentDto displayFlexDto = this.displayFlexBasicSettingByEmployment.displayFlexBasicSettingByEmployment(employmentCd);
-		
+		DisplayFlexBasicSettingByEmploymentDto displayFlexDto = this.displayFlexBasicSettingByEmployment
+				.displayFlexBasicSettingByEmployment(employmentCd);
+
 		result.setFlexMonthActCalSet(displayFlexDto.getFlexMonthActCalSet());
 
 		result.setFlexPredWorkTime(displayFlexDto.getFlexPredWorkTime());
 		// 雇用リストを表示する
-		result.setEmploymentList(this.employmentList.get(LaborWorkTypeAttr.FLEX));
+		result.setAlreadySettings(this.employmentList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.employmentCode)
+				.collect(Collectors.toList()));
 
 		return result;
 	}
