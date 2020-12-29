@@ -116,6 +116,7 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                                 rowData.get("備考").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
                                 rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
                                 rowData.get("単価").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+                                rowData.get("割増率").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
                                 rowData.get("人件費計算用時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
                                 datas.add(masterData);
                             }
@@ -144,7 +145,7 @@ public class PersonCostCalculationExportImpl implements MasterListData {
         columns.add(new MasterHeaderColumn("備考", TextResource.localize("KML001_11"), ColumnTextAlign.LEFT, "", true));//Remarks
         columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML001_12"), ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn("割増率", TextResource.localize("KML001_13"), ColumnTextAlign.RIGHT, "", true));
-        columns.add(new MasterHeaderColumn("単価", TextResource.localize("KML001_11"), ColumnTextAlign.LEFT, "", true));//Unit price
+        columns.add(new MasterHeaderColumn("単価", TextResource.localize("KML001_82"), ColumnTextAlign.LEFT, "", true));//Unit price
         columns.add(new MasterHeaderColumn("人件費計算用時間", TextResource.localize("KML001_14"), ColumnTextAlign.LEFT, "", true));
 
 
