@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NumberRange extends DomainObject {
+public class NumberRange extends DomainObject implements RangeGetter {
 
     // 日別実績の回数範囲
 	private Optional<DailyTimesRange> dailyTimesRange;
@@ -28,4 +29,19 @@ public class NumberRange extends DomainObject {
 	// 月別実績の回数範囲
 	private Optional<MonthlyTimesRange> monthlyTimesRange;
 
+	public Optional<BigDecimal> getUpper(PerformanceAtr performanceAtr) {
+		if (performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) {
+			return dailyTimesRange.flatMap(c -> c.getUpperLimit()).map(c -> c.v());
+		}
+		
+		return monthlyTimesRange.flatMap(c -> c.getUpperLimit()).map(c -> c.v());
+	}
+	
+	public Optional<BigDecimal> getLower(PerformanceAtr performanceAtr) {
+		if (performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) {
+			return dailyTimesRange.flatMap(c -> c.getLowerLimit()).map(c -> c.v());
+		}
+		
+		return monthlyTimesRange.flatMap(c -> c.getLowerLimit()).map(c -> c.v());
+	}
 }

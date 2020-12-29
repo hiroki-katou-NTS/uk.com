@@ -86,8 +86,8 @@ module nts.uk.at.view.kaf022.v.viewmodel {
                     (_.find(menus, m => m.programId == "KAF002" && m.screenId == "A") || {displayName: null}).displayName || getText("KAF022_11")
                 ),
                 new MenuModel(
-                    "KAF002A",
-                    !!_.find(appSetForProxyApp, o => o.appType == 7),
+                    "KAF002B",
+                    !!_.find(appSetForProxyApp, o => o.appType == 7 && o.stampRequestMode == 1),
                     (_.find(menus, m => m.programId == "KAF002" && m.screenId == "B") || {displayName: null}).displayName || getText("KAF022_778")
                 ),
                 new MenuModel(

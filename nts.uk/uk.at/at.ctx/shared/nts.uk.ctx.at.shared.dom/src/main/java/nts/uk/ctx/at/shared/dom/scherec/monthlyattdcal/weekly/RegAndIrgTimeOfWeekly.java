@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.TargetPremiumTimeWeekOfIrregular;
@@ -77,6 +78,7 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param weekPeriod 週期間
+	 * @param period 期間
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
 	 * @param settingsByReg 通常勤務が必要とする設定
@@ -84,18 +86,13 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param weekStart 週開始
 	 * @param premiumTimeOfPrevMonLast 前月の最終週の週割増対象時間
+	 * @param verticalTotalMethod 月別実績の縦計方法
 	 */
-	public void aggregatePremiumTime(
-			String companyId,
-			String employeeId,
-			DatePeriod weekPeriod,
-			WorkingSystem workingSystem,
-			MonthlyAggregateAtr aggregateAtr,
-			SettingRequiredByReg settingsByReg,
-			SettingRequiredByDefo settingsByDefo,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			WeekStart weekStart,
-			AttendanceTimeMonth premiumTimeOfPrevMonLast){
+	public void aggregatePremiumTime(String companyId, String employeeId, DatePeriod weekPeriod,
+			DatePeriod period, WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
+			SettingRequiredByReg settingsByReg, SettingRequiredByDefo settingsByDefo,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime, WeekStart weekStart,
+			AttendanceTimeMonth premiumTimeOfPrevMonLast, AggregateMethodOfMonthly verticalTotalMethod){
 
 		// 週割増を集計する期間を求める
 		this.weekPremiumProcPeriod = new DatePeriod(weekPeriod.start(), weekPeriod.end());
@@ -121,8 +118,8 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 				
 				// 通常勤務の週割増時間を集計する
 				this.aggregateWeeklyPremiumTimeOfRegular(companyId, employeeId, this.weekPremiumProcPeriod,
-						addSet, aggregateTotalWorkingTime, settingsByReg.getStatutoryWorkingTimeWeek(),
-						weekStart, premiumTimeOfPrevMonLast);
+						period, addSet, aggregateTotalWorkingTime, settingsByReg.getStatutoryWorkingTimeWeek(),
+						weekStart, premiumTimeOfPrevMonLast, verticalTotalMethod);
 			}
 		}
 		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
@@ -135,8 +132,8 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 			
 			// 変形労働勤務の週割増時間を集計する
 			this.aggregateWeeklyPremiumTimeOfIrregular(companyId, employeeId, this.weekPremiumProcPeriod,
-					addSet, aggregateTotalWorkingTime, settingsByDefo.getStatutoryWorkingTimeWeek(),
-					weekStart, premiumTimeOfPrevMonLast);
+					period, addSet, aggregateTotalWorkingTime, settingsByDefo.getStatutoryWorkingTimeWeek(),
+					weekStart, premiumTimeOfPrevMonLast, verticalTotalMethod);
 		}
 	}
 
@@ -145,39 +142,27 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param weekPeriod 週割増処理期間
+	 * @param period 期間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param statutoryWorkingTimeWeek 週間法定労働時間
 	 * @param weekStart 週開始
 	 * @param premiumTimeOfPrevMonLast 前月の最終週の週割増対象時間
 	 */
-	private void aggregateWeeklyPremiumTimeOfRegular(
-			String companyId,
-			String employeeId,
-			DatePeriod weekPeriod,
-			AddSet addSet,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			AttendanceTimeMonth statutoryWorkingTimeWeek,
-			WeekStart weekStart,
-			AttendanceTimeMonth premiumTimeOfPrevMonLast){
+	private void aggregateWeeklyPremiumTimeOfRegular(String companyId, String employeeId,
+			DatePeriod weekPeriod, DatePeriod period, AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth statutoryWorkingTimeWeek, WeekStart weekStart,
+			AttendanceTimeMonth premiumTimeOfPrevMonLast, AggregateMethodOfMonthly verticalTotalMethod) {
 		
 		// 通常勤務の週割増時間の対象となる時間を求める
 		val targetPremiumTimeWeekOfReg = TargetPremiumTimeWeekOfRegular.askPremiumTimeWeek(
-				companyId, employeeId, weekPeriod, addSet, aggregateTotalWorkingTime, premiumTimeOfPrevMonLast);
+				companyId, employeeId, weekPeriod, addSet, aggregateTotalWorkingTime, 
+				premiumTimeOfPrevMonLast);
 		val targetPremiumTimeWeek = targetPremiumTimeWeekOfReg.getPremiumTimeWeek();
-		
-		AttendanceTimeMonth targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingTimeWeek.v());
-		
+
 		// 法定労働時間を按分するか確認する　（期間が7日未満　の時、按分する）
-		if (weekStart == WeekStart.TighteningStartDate){
-			boolean isDistribute = false;
-			val periodDays = weekPeriod.start().daysTo(weekPeriod.end()) + 1;
-			if (periodDays < 7) isDistribute = true;
-			if (isDistribute){
-				int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
-				targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingMinutesDay * periodDays);
-			}
-		}
+		AttendanceTimeMonth targetStatutoryWorkingTime = distributeStatutoryWorkTime(
+				weekPeriod, period, statutoryWorkingTimeWeek, weekStart, verticalTotalMethod);
 		
 		// 週割増対象時間と法定労働時間を比較する
 		if (targetPremiumTimeWeek.lessThanOrEqualTo(targetStatutoryWorkingTime)) return;
@@ -201,21 +186,18 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param weekPeriod 週期間
+	 * @param period 期間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param statutoryWorkingTimeWeek 週間法定労働時間
 	 * @param weekStart 週開始
 	 * @param premiumTimeOfPrevMonLast 前月の最終週の週割増対象時間
 	 */
-	private void aggregateWeeklyPremiumTimeOfIrregular(
-			String companyId,
-			String employeeId,
-			DatePeriod weekPeriod,
-			AddSet addSet,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			AttendanceTimeMonth statutoryWorkingTimeWeek,
-			WeekStart weekStart,
-			AttendanceTimeMonth premiumTimeOfPrevMonLast){
+	private void aggregateWeeklyPremiumTimeOfIrregular(String companyId, String employeeId,
+			DatePeriod weekPeriod, DatePeriod period, AddSet addSet, 
+			AggregateTotalWorkingTime aggregateTotalWorkingTime, AttendanceTimeMonth statutoryWorkingTimeWeek, 
+			WeekStart weekStart, AttendanceTimeMonth premiumTimeOfPrevMonLast, 
+			AggregateMethodOfMonthly verticalTotalMethod){
 		
 		// 変形労働勤務の週割増時間の対象となる時間を求める
 		val targetPremiumTimeWeekOfIrg = TargetPremiumTimeWeekOfIrregular.askPremiumTimeWeek(
@@ -226,19 +208,10 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 		// （実績）所定労働時間を取得する
 		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
 		val recordPresctibedWorkingTime = prescribedWorkingTime.getTotalRecordPrescribedWorkingTime(weekPeriod);
-		
-		AttendanceTimeMonth targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingTimeWeek.v());
-		
+
 		// 法定労働時間を按分するか確認する　（期間が7日未満　の時、按分する）
-		if (weekStart == WeekStart.TighteningStartDate){
-			boolean isDistribute = false;
-			val periodDays = weekPeriod.start().daysTo(weekPeriod.end()) + 1;
-			if (periodDays < 7) isDistribute = true;
-			if (isDistribute){
-				int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
-				targetStatutoryWorkingTime = new AttendanceTimeMonth(statutoryWorkingMinutesDay * periodDays);
-			}
-		}
+		AttendanceTimeMonth targetStatutoryWorkingTime = distributeStatutoryWorkTime(
+				weekPeriod, period, statutoryWorkingTimeWeek, weekStart, verticalTotalMethod);
 		
 		// 法定労働時間と所定労働時間を比較する
 		int weekUnit = 0;
@@ -268,5 +241,68 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 			
 		// 週単位の週割増時間を週割増合計時間に加算する
 		this.weeklyTotalPremiumTime = new AttendanceTimeMonth(weekUnit);
+	}
+
+	/** ○法定労働時間を按分する */
+	private AttendanceTimeMonth distributeStatutoryWorkTime(DatePeriod weekPeriod, DatePeriod period,
+			AttendanceTimeMonth statutoryWorkingTimeWeek, WeekStart weekStart, 
+			AggregateMethodOfMonthly verticalSetting) {
+		
+		/** ○按分するか確認する */
+		if (confirmDistributeStatutoryWorkTime(weekPeriod, period, weekStart, verticalSetting)) {
+			/** ○法定労働時間を按分する */
+			int statutoryWorkingMinutesDay = statutoryWorkingTimeWeek.v() / 7;
+			return new AttendanceTimeMonth(statutoryWorkingMinutesDay * daysIn(weekPeriod));
+		}
+		
+		return statutoryWorkingTimeWeek;
+	}
+	
+	/** 按分するか確認する */
+	private boolean confirmDistributeStatutoryWorkTime(DatePeriod weekPeriod, DatePeriod period,
+			WeekStart weekStart, AggregateMethodOfMonthly verticalSetting) {
+		
+		if (weekStart == WeekStart.TighteningStartDate) {
+			if (shouldDistributeStatutoryWorkTime(weekPeriod)) {
+				return true;
+			}
+		} else {
+			
+			return confirmDistributeInNotClosureDayCase(weekPeriod, period, verticalSetting);
+		}
+		
+		return false;
+	}
+	
+	/** 締め開始日じゃない場合の確認 */
+	private boolean confirmDistributeInNotClosureDayCase(DatePeriod weekPeriod, DatePeriod period,
+			AggregateMethodOfMonthly verticalSetting) {
+		
+		/** 最終週かを確認する */
+		if (weekPeriod.end().equals(period.end())) {
+			/** 按分すべきか */
+			return shouldDistributeStatutoryWorkTime(weekPeriod);
+		} else {
+			
+			if (!verticalSetting.isCalcWithPreviousMonthLastWeek()) {
+				/** 按分すべきか */
+				return shouldDistributeStatutoryWorkTime(weekPeriod);
+			}
+		}
+		
+		return false;
+	}
+	
+	/** 按分すべきか */
+	private boolean shouldDistributeStatutoryWorkTime(DatePeriod weekPeriod) {
+		if (daysIn(weekPeriod) < 7) 
+			return true;
+		
+		return false;
+	}
+	
+	private int daysIn(DatePeriod weekPeriod) {
+		
+		return weekPeriod.start().daysTo(weekPeriod.end()) + 1;
 	}
 }

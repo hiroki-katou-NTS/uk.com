@@ -225,7 +225,7 @@ module nts.uk.com.view.kwr002.a {
                     }
                 });
 
-                $.when(vm.getDataCharateristic()).done((dataCharacteristic: any) => {
+                $.when(vm.getDataCharateristic()).done((dataCharacteristic: AttendanceRecordOutputConditionsDto) => {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     service.getAllAttendanceRecExpSet().done((wrapper: AttendanceRecordExportSettingWrapperDto) => {
                         if (wrapper.standardSettingLst.length === 0) {
@@ -262,8 +262,7 @@ module nts.uk.com.view.kwr002.a {
                         }
                         vm.enableA8_3(!wrapper.isFreeSetting);
                         vm.enableA8_8(wrapper.isFreeSetting);
-
-                        vm.selectedDataZeroDisplayType(dataCharacteristic.zeroDisplayType);
+                        vm.selectedDataZeroDisplayType(isExist ? dataCharacteristic.zeroDisplayType : 0);
                         dfd.resolve();
                     });
                 });

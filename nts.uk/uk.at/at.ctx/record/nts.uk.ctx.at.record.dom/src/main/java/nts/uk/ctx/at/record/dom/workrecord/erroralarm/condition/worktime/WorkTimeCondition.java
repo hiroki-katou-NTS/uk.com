@@ -4,12 +4,14 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -34,7 +36,7 @@ public class WorkTimeCondition extends DomainObject {
 	}
 
 	/** 就業時間帯をチェックする */
-	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot) {
 		return WorkCheckResult.NOT_CHECK;
 	}
 	
