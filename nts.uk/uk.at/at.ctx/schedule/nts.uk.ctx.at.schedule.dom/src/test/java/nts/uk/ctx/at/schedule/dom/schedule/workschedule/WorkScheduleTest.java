@@ -343,7 +343,48 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testUpdateValueByHandCorrection_differentValue(
+	public void testUpdateValueByHandCorrection_differentValue_addNewEditState(
+			@Injectable TimeWithDayAttr end1
+			) {
+		
+		TimeLeavingOfDailyAttd timeLeaving = 
+				Helper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+		
+		WorkSchedule workSchedule = Helper.createWithParams( 
+				Optional.of(timeLeaving), 
+				new ArrayList<>()); // editStateList is empty
+		
+		new Expectations() {{
+			require.getLoginEmployeeId();
+			result = workSchedule.getEmployeeID();
+		}};
+		
+		// Act
+		NtsAssert.Invoke.privateMethod(workSchedule, "updateValueByHandCorrection", 
+				require, 
+				WS_AttendanceItem.StartTime1.ID, 
+				new TimeWithDayAttr(234));
+		
+		// Assert
+		val start1_OfWorkSchedule = workSchedule.getOptTimeLeaving().get()
+												.getAttendanceLeavingWork(1).get()
+												.getAttendanceStamp().get()
+												.getStamp().get()
+												.getTimeDay().getTimeWithDay().get();
+		
+		assertThat( start1_OfWorkSchedule.v() ).isEqualTo( 234 );
+		assertThat( workSchedule.getLstEditState() )
+			.extracting( 
+					d -> d.getAttendanceItemId(),
+					d -> d.getEditStateSetting() )
+			.containsExactly(
+				tuple ( 
+					WS_AttendanceItem.StartTime1.ID, 
+					EditStateSetting.HAND_CORRECTION_MYSELF ));
+	}
+	
+	@Test
+	public void testUpdateValueByHandCorrection_differentValue_changeEditState(
 			@Injectable TimeWithDayAttr end1
 			) {
 		
@@ -909,8 +950,8 @@ public class WorkScheduleTest {
 		
 		// Act
 		workSchedule.handCorrectBreakTimeList(require, Arrays.asList(
-				new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
 				new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(400)),
+				new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
 				new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
 				));
 		
