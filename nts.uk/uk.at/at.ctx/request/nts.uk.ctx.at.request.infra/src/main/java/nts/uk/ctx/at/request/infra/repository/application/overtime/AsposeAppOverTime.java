@@ -43,7 +43,7 @@ public class AsposeAppOverTime {
 	public static final String HALF_SIZE_SPACE = " ";
 	public static final String EMPTY_STRING = "";
 	public static final String SPLIT_TIME = "、";
-	public static final String TILDLE_STRING = " ~ ";
+	public static final String TILDLE_STRING = " ～ ";
 	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
 	
@@ -191,8 +191,7 @@ public class AsposeAppOverTime {
 				.stream()
 				.filter(x -> x.getWorkTypeCode().v().equals(workType))
 				.findFirst().map(x -> x.getName().v()).orElse(null);
-			StringBuilder workBuilder = new StringBuilder(workType);
-			workBuilder.append(HALF_SIZE_SPACE);
+			StringBuilder workBuilder = new StringBuilder("");
 			workBuilder.append(StringUtils.isBlank(nameWorktype) ? I18NText.getText("KAF005_345") : nameWorktype);
 			cellD8.setValue(workBuilder);
 			
@@ -209,8 +208,7 @@ public class AsposeAppOverTime {
 					.findFirst()
 					.map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v())
 					.orElse(null);
-			StringBuilder workBuilder = new StringBuilder(workTime);
-			workBuilder.append(HALF_SIZE_SPACE);
+			StringBuilder workBuilder = new StringBuilder("");
 			workBuilder.append(StringUtils.isBlank(nameWorktime) ? I18NText.getText("KAF005_345") : nameWorktime);
 			cellD9.setValue(workBuilder);
 			
@@ -222,13 +220,13 @@ public class AsposeAppOverTime {
 			.stream()
 			.forEach(x ->  {
 				if (x.getWorkNo().v() == 1) {
-					contentD10.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
+					contentD10.append(x.getTimeZone().getStartTime().getFullText());
 					contentD10.append(TILDLE_STRING);
-					contentD10.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
+					contentD10.append(x.getTimeZone().getEndTime().getFullText());					
 				} else {
-					contentD11.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
+					contentD11.append(x.getTimeZone().getStartTime().getFullText());
 					contentD11.append(TILDLE_STRING);
-					contentD11.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());					
+					contentD11.append(x.getTimeZone().getEndTime().getFullText());					
 				}
 			});
 		cellD10.setValue(contentD10);
@@ -240,9 +238,9 @@ public class AsposeAppOverTime {
 				if (x.getWorkNo().v() != 1) {
 					contentD12.append(SPLIT_TIME);
 				}
-				contentD12.append(x.getTimeZone().getStartTime().getInDayTimeWithFormat());
+				contentD12.append(x.getTimeZone().getStartTime().getFullText());
 				contentD12.append(TILDLE_STRING);
-				contentD12.append(x.getTimeZone().getEndTime().getInDayTimeWithFormat());
+				contentD12.append(x.getTimeZone().getEndTime().getFullText());
 			});
 		cellD12.setValue(contentD12);	
 		

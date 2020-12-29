@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		currentApprSttExeDto: KnockoutObservable<ApprSttExecutionDto> = ko.observable(null);
 		headers: Array<any> = [];
 		columns: Array<any> = [];
+		features: Array<any> = [];
 		dataSource: Array<EmpConfirmInfo> = [];
 		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			const vm = this;
@@ -57,6 +58,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			vm.apprSttComfirmSet = params.apprSttComfirmSet;
 			vm.apprSttExeDtoLst = params.apprSttExeDtoLst;
 			vm.currentApprSttExeDto(_.find(params.apprSttExeDtoLst, o => o.wkpID == params.currentWkpID));
+			let empNameColumnWidth = window.innerWidth - 1000 < 300 ? 300 : window.innerWidth - 1000;
 			vm.columns.push(
 				{ 
 					headerText: '', 
@@ -64,17 +66,51 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					dataType: 'string',
 					width: 1,
 					hidden: true
-				},
-				{ 
-					headerText: vm.$i18n('KAF018_407'),
-					key: 'empName',
-					width: window.innerWidth - 1000 < 300 ? 300 : window.innerWidth - 1000,
-					headerCssClass: 'kaf018-f-header-empName',
-					formatter: (key: string, object: EmpConfirmInfo) =>  {
-						return vm.getDispEmpName(object.empID);
-					}
 				}
 			);
+			if(!vm.apprSttComfirmSet.usePersonConfirm && !vm.apprSttComfirmSet.useBossConfirm) {
+				vm.columns.push(
+					{ 
+						headerText: vm.$i18n('KAF018_407'),
+						key: 'empName',
+						headerCssClass: 'kaf018-f-header-empName',
+						formatter: (key: string, object: EmpConfirmInfo) =>  {
+							return vm.getDispEmpName(object.empID);
+						}
+					}
+				);
+			} else {
+				vm.columns.push(
+					{ 
+						headerText: vm.$i18n('KAF018_407'),
+						key: 'empName',
+						width: empNameColumnWidth,
+						headerCssClass: 'kaf018-f-header-empName',
+						formatter: (key: string, object: EmpConfirmInfo) =>  {
+							return vm.getDispEmpName(object.empID);
+						}
+					}
+				);
+				vm.features =  
+				[
+					{
+						name: 'MultiColumnHeaders'
+					},
+					{
+						name: 'ColumnFixing', 
+						fixingDirection: 'left',
+						showFixButtons: false,
+						columnSettings: [
+											{ columnKey: 'empName', isFixed: true },
+											{ columnKey: 'sttUnConfirmDay', isFixed: true },
+											{ columnKey: 'sttUnApprDay', isFixed: true },
+											{ columnKey: 'sttUnConfirmMonth', isFixed: true },
+											{ columnKey: 'sttUnApprMonth', isFixed: true }
+										]
+					}
+				];
+			}
+			
 			if(vm.apprSttComfirmSet.monthlyIdentityConfirm) {
 				vm.columns.push(
 					{
@@ -283,23 +319,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 					vm.cellGridClick(evt, ui); 
 				},
 				columns: vm.columns,
-				features: [
-					{
-						name: 'MultiColumnHeaders'
-					},
-					{
-						name: 'ColumnFixing', 
-						fixingDirection: 'left',
-						showFixButtons: false,
-						columnSettings: [
-							{ columnKey: 'empName', isFixed: true },
-							{ columnKey: 'sttUnConfirmDay', isFixed: true },
-							{ columnKey: 'sttUnApprDay', isFixed: true },
-							{ columnKey: 'sttUnConfirmMonth', isFixed: true },
-							{ columnKey: 'sttUnApprMonth', isFixed: true }
-						]
-					}
-				],
+				features: vm.features,
 			});
 		}
 		
@@ -370,7 +390,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				vm.dataSource = _.sortBy(a, 'empCD');
 				$("#fGrid").igGrid("option", "dataSource", vm.dataSource);
 				$("#fGrid").css('visibility','visible');
-				$('#kaf018-f-dynamic-header').css('visibility','visible');
+				if(!(!vm.apprSttComfirmSet.usePersonConfirm && !vm.apprSttComfirmSet.useBossConfirm)) {
+					$('#kaf018-f-dynamic-header').css('visibility','visible');	
+				}
 			});
 		}
 	}

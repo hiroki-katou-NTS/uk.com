@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: $parent.outputMode(),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input class="right-content"
@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: $parent.outputMode(),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	<!-- calculate button A5_8-->
 	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px">
 		<button style="width: 100px; margin-left: 200px"
-			data-bind="text: $i18n('KAF005_43'), click: calculate"
+			data-bind="text: $i18n('KAF005_43'), click: calculate, enable: outputMode()"
 			class="caret-bottom caret-inline"></button>
 	</div>
 
@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									inputFormat: 'time',
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: $parent.visibleModel.c28() }" />
+									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
 						</td>
 						<!--A6_9 残業事前申請時間-->
 						<td class="right-content hoangnd"
@@ -154,7 +154,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									inputFormat: 'time',
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: $parent.visibleModel.c28() }" />
+									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
 						</td>
 					</tr>
 				</tbody>
@@ -212,7 +212,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
-									enable: $parent.visibleModel.c28(),
+									enable: $parent.visibleModel.c28() && $parent.outputMode(),
 									mode: 'time',
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
@@ -253,7 +253,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
-									enable: $parent.visibleModel.c28(),
+									enable: $parent.visibleModel.c28() && $parent.outputMode(),
 									mode: 'time',
 									option: {width: '85px', timeWithDay: true}}" />
 						</td>
@@ -272,6 +272,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
+
 
 
 	`

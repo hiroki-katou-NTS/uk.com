@@ -132,6 +132,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		// assign value after calling service calculation
 		timeTemp: Array<OvertimeApplicationSetting>;
+		
+		// display mode edit, or view =0 (false)
+		outputMode: KnockoutObservable<Boolean> = ko.observable(true);
 
         created(
             params: {
@@ -187,6 +190,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.bindOverTime(vm.dataSource, 0);
 					vm.bindMessageInfo(vm.dataSource);
 					vm.assginTimeTemp();
+					// assign mode can be editd or displayed
+					vm.outputMode(vm.dataSource.appDispInfoStartup.appDetailScreenInfo.outputMode == 1);
 					if (vm.isStart) {
 						vm.isStart = false;
 					}
