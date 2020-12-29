@@ -12,7 +12,7 @@ module nts.uk.at.view.kwr006.d {
 
             D1_6_value: KnockoutObservable<string>;
             D1_7_value: KnockoutObservable<string>;
-            
+
             constructor() {
                 let self = this;
                 self.itemList = ko.observableArray([]);
@@ -64,6 +64,7 @@ module nts.uk.at.view.kwr006.d {
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();
+                    dataReturnScrC.fontSize = command.fontSize;
                     nts.uk.ui.windows.setShared('KWR006_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                 }).fail(function(err) {

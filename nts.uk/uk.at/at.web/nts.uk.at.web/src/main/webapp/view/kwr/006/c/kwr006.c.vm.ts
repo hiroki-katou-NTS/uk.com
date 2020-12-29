@@ -46,6 +46,9 @@ module nts.uk.at.view.kwr006.c {
             loadSwapLst: KnockoutObservable<boolean> = ko.observable(true);
             sizeClassificationLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KWR006_53"));
 
+            // mode copy : add font sĩze
+            dataCoppy: KnockoutObservable<any>;
+
             constructor() {
                 var self = this;
                 self.C3_2_value = ko.observable("");
@@ -57,6 +60,10 @@ module nts.uk.at.view.kwr006.c {
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.outputItemList = ko.observableArray([]);
                 self.selectedCodeC2_3 = ko.observable();
+
+                self.currentCodeListSwap.subscribe(function(value) {
+                    self.fillterByAttendanceType(self.C5_4_value());
+                })
 
                 self.enableBtnDel = ko.observable(false);
                 self.enableCodeC3_2 = ko.observable(false);
@@ -145,7 +152,7 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
                 let lstSwapLeft =_.sortBy(self.outputItemPossibleLst(), i => i.code);
-                let lstSwapRight = [];
+                let lstSwapRight:any = [];
                 if (lstDisplayedAttendance) {
                     _.forEach(lstDisplayedAttendance, (item, index) => {
                         if (item.attendanceName) {
@@ -170,6 +177,8 @@ module nts.uk.at.view.kwr006.c {
             */
             openScreenD() {
                 var self = this;
+                const oldSelectedCodeC2_3 = self.selectedCodeC2_3();
+                const oldCurrentCodeListSwap = self.currentCodeListSwap();
                 if (!_.isEmpty(self.selectedCodeC2_3())) {
                     self.storeCurrentCodeBeforeCopy(self.selectedCodeC2_3());
                 }
@@ -206,13 +215,26 @@ module nts.uk.at.view.kwr006.c {
 
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR006_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR006_D').nameCopy);
+                        self.dataCoppy = ko.observable(nts.uk.ui.windows.getShared('KWR006_D'));
                         if (_.size(KWR006DOutput.lstAtdChoose.errorList)) {
                             nts.uk.ui.dialog.alertError({ messageId: KWR006DOutput.lstAtdChoose.errorList }).then(() => {
-                                self.saveData();
+                                self.saveData()
+                                .fail(() => {
+                                    self.selectedCodeC2_3(oldSelectedCodeC2_3);
+                                    self.currentCodeListSwap(oldCurrentCodeListSwap);
+                                    if (_.isEmpty(oldSelectedCodeC2_3)) {
+                                        self.C3_2_value('');
+                                        self.C3_3_value('');
+                                    }
+                                })
+                                .always(() => self.dataCoppy(null));
                             });
                         }
                         else {
-                            self.saveData();
+                            self.saveData().fail(() => {
+                                self.selectedCodeC2_3(oldSelectedCodeC2_3);
+                                self.currentCodeListSwap(oldCurrentCodeListSwap);
+                            });
                         }
                     } else {
                         self.selectedCodeC2_3(self.storeCurrentCodeBeforeCopy());
@@ -256,12 +278,13 @@ module nts.uk.at.view.kwr006.c {
                 let dfd = $.Deferred();
                 let command: any = {};
                 let itemType: number = nts.uk.ui.windows.getShared('itemSelection');
+                let fontSizeCopy: any = _.isNil(self.dataCoppy) ? null : self.dataCoppy();
                 command.itemCode = self.C3_2_value();
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 // command.printSettingRemarksColumn = self.C5_4_value();
                 command.itemType = itemType;
-                command.textSize = self.C9_2_value();
+                command.textSize = _.isNil(fontSizeCopy) ? self.C9_2_value() : fontSizeCopy.fontSize ;
                 command.layoutID = self.layoutId();
                 command.isRemarkPrinted = self.isEnableRemarkInputContents();
                 _.map(self.currentCodeListSwap(), function (value, index) {

@@ -16,16 +16,16 @@ public class WorkScheOutputConstants {
 	public static final String DAYMONTH = "月日";
 	
 	/** The Constant YEARMONTH. */
-	public static final String YEARMONTH = "KWR006_65";
+	public static final String YEARMONTH = "年月";
 	
 	/** The Constant DAY. */
 	public static final String DAY = "曜";
 	
 	/** The Constant CLOSURE_DATE. */
-	public static final String CLOSURE_DATE = "KWR006_84";
+	public static final String CLOSURE_DATE = "締日";
 	
 	/** The Constant REMARK. */
-	public static final String REMARK = "KWR006_67";
+	public static final String REMARK = "備考";
 	
 	/** The Constant PERSONAL_NAME. */
 	public static final String PERSONAL_NAME = "個人名";
@@ -51,16 +51,19 @@ public class WorkScheOutputConstants {
 	public static final String TOTAL_DAY = "日数計";
 	
 	// Record part
-	public static final String WORKPLACE = "KWR006_68";
+	public static final String WORKPLACE = "[職場]";
+	
+	/** The Constant WORKPLACE_INFO. */
+	public static final String WORKPLACE_INFO = "KWR006_74";
 	
 	/** The Constant EMPLOYEE. */
-	public static final String EMPLOYEE = "KWR006_69";
+	public static final String EMPLOYEE = "[個人]";
 	
 	/** The Constant EMPLOYMENT. */
-	public static final String EMPLOYMENT = "KWR006_70";
+	public static final String EMPLOYMENT = "[雇用]";
 	
 	/** The Constant POSITION. */
-	public static final String POSITION = "KWR006_71";
+	public static final String POSITION = "[職位]";
 	
 	/** The Constant DATE_BRACKET. */
 	public static final String DATE_BRACKET = "[日付]";
@@ -72,7 +75,7 @@ public class WorkScheOutputConstants {
 	
 	
 	// Personal total
-	public static final String PERSONAL_TOTAL = "KWR006_72";
+	public static final String PERSONAL_TOTAL = "個人計";
 	
 	/** The Constant WORKPLACE_TOTAL. */
 	public static final String WORKPLACE_TOTAL = "職場計";

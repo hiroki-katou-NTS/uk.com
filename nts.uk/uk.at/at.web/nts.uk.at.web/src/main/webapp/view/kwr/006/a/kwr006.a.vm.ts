@@ -119,6 +119,7 @@ module nts.uk.at.view.kwr006.a {
                 self.monthlyWorkScheduleConditionModel.itemSettingType.subscribe((value) => {
                     self.enableA7_3(value == 0);
                     self.enableA7_11(value == 1);
+                    nts.uk.ui.errors.clearAll();
                 });
             }
 
@@ -136,8 +137,8 @@ module nts.uk.at.view.kwr006.a {
                 ]);
                 // A12_1
                 self.dataDisplayClassification = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_88")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_89"))
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_88")),// 表示
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_89")) // 非表示
                 ]);
                 // A13_1
                 self.dataDisplaySwitching = ko.observableArray([
@@ -413,7 +414,9 @@ module nts.uk.at.view.kwr006.a {
                     startYearMonth: startYM,
                     endYearMonth: endYM,
                     workplaceIds: [],
-                    code: self.monthlyWorkScheduleConditionModel.selectedCode(),
+                    code: self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION
+                            ? self.monthlyWorkScheduleConditionModel.selectedCode()
+                            : self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(),
                     employeeId: self.getListSelectedEmployee(),
                     condition: self.monthlyWorkScheduleConditionModel.toDto(),
                     fileType: null,
@@ -623,7 +626,7 @@ module nts.uk.at.view.kwr006.a {
                 self.totalOutputSetting = new WorkScheduleSettingTotalOutputModel();
                 self.totalOutputSetting.isIndividualTypeSelected = self.isIndividualTypeSelected;
                 self.itemSettingType = ko.observable(ItemSelectionEnum.STANDARD_SELECTION);
-                self.displayType = ko.observable(1);
+                self.displayType = ko.observable(0);
                 self.itemDisplaySwitch = ko.observable(0);
             }
             public updateData(data: MonthlyWorkScheduleConditionDto, authorityFreeSetting: boolean): void {
