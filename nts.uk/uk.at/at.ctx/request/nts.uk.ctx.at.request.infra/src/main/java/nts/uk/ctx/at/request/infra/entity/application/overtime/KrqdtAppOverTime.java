@@ -14,7 +14,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -54,10 +52,6 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	@EmbeddedId
 	public KrqdtAppOvertimePK krqdtAppOvertimePK;
 	
-	@Version
-	@Column(name = "EXCLUS_VER")
-	public Long version;
-
 	@Column(name = "OVERTIME_ATR")
 	public Integer overtimeAtr;
 	
