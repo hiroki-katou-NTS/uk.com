@@ -79,9 +79,5 @@ public class WorkAvailabilityRuleWeekSetting implements WorkAvailabilityRule, Do
 		GeneralDate startDate = availabilityDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		return new DatePeriod(startDate, startDate.addDays(6));
 	}
-
-	public static interface Require extends WorkAvailabilityOfOneDay.Require{
-		
-	}
 	
 }

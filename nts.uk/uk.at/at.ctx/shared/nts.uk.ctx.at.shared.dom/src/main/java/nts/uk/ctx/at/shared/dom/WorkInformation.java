@@ -354,7 +354,6 @@ public class WorkInformation {
 	}
 
 	/**
-	 * ver10
 	 * 出勤系か
 	 * @param require
 	 * @return

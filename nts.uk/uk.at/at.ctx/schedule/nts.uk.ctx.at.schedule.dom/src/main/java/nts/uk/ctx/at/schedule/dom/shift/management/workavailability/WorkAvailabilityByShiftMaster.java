@@ -11,10 +11,8 @@ import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -56,9 +54,8 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 	@Override
 	public boolean isHolidayAvailability(WorkAvailability.Require require) {
 		List<ShiftMaster> shiftList = require.getShiftMaster(this.workableShiftCodeList);
-		return  shiftList.stream().map(c -> c.getWorkStyle(require))
-				.flatMap(OptionalUtil::stream)
-				.anyMatch(c -> c == WorkStyle.ONE_DAY_REST);
+		return  shiftList.stream()
+				.anyMatch(c -> c.isAttendanceRate(require));
 	}
 
 	@Override
