@@ -7,16 +7,18 @@ module nts.uk.at.view.kaf011 {
 		appType: number; //0: Rec-振出, 1: Abs-振休
 		appID: string;
 		application: Application = new Application();
-		workingHours: TimeZoneWithWorkNo[] = [];
-		workTimeDisplay: KnockoutObservable<string> = ko.observable('');
-		workingHours1: TimeZoneWithWorkNo = new TimeZoneWithWorkNo(1, this.collectWorkingHours, this);
-		workingHours2: TimeZoneWithWorkNo = new TimeZoneWithWorkNo(2, this.collectWorkingHours, this);
-		workingHours2DispLay: KnockoutObservable<boolean> = ko.observable(false);
 		workInformation: WorkInformation = new WorkInformation();
-		workTypeList = ko.observableArray([]);
+		workingHours: KnockoutObservableArray<TimeZoneWithWorkNo> = ko.observableArray([new TimeZoneWithWorkNo(1)]);
+
+		leaveComDayOffMana: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		leaveComDayOffManaOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);		
+		
 		workTypeSelected = new WorkTypeSelected();
-		subWorkSubHolidayLinkingMngList: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		workTypeList = ko.observableArray([]);
+		workTimeDisplay: KnockoutObservable<string> = ko.observable();
 		displayInforWhenStarting: any;
+
+		
 		//điều kiện hiển thị ※H1
 		dk1: KnockoutObservable<boolean> = ko.observable(false);
 		// điều kiện hiển thị ※E1
@@ -34,43 +36,53 @@ module nts.uk.at.view.kaf011 {
 					self.checkDisplay();
 				}
 			});
-			self.workInformation.workTime.subscribe((data: string) =>{
-				if(data){
-					self.workTimeDisplay(data + " " + self.time_convert());	
-				}
-			});
 		}
 		
-		update(param: any){
-			let self = this;
-			self.appID = param.appID;
-			self.application.update(param.application);
-			self.workInformation.update(param.workInformation);
-			self.workingHours = param.workingHours;
-			let e1 = _.find(param.workingHours, { 'workNo': 1});
-			if(e1) {
-				self.workingHours1.update(e1);	
-			}
-			let e2 = _.find(param.workingHours, { 'workNo': 2});
-			if(e2) {
-				self.workingHours2.update(e2);	
-			}
-			
-		}
-		
-		bindDingScreenA(data: any, displayInforWhenStarting: any){
+		bindingScreenA(data: any, displayInforWhenStarting: any){
 			let self = this;
 			_.orderBy(data.workTypeList, ['code'], ['asc'])
 			self.workTypeList(data.workTypeList);
-			self.workingHours1.timeZone.update({startTime: data.startTime, endTime: data.endTime});
-			if(data.startTime2 && data.endTime2){
-				self.workingHours2DispLay(true);
-				self.workingHours2.timeZone.update({startTime: data.startTime2, endTime: data.endTime2});	
-			}
-			
 			self.workInformation.update(data);
 			self.displayInforWhenStarting = displayInforWhenStarting;
+			
+			let w1 = _.find(self.workingHours(), {'workNo': 1});
+			w1.update({startTime: data.startTime, endTime: data.endTime});
+			if(data.startTime2 && data.endTime2){
+				let w2 = new TimeZoneWithWorkNo(2);
+				w2.update({startTime: data.startTime2, endTime: data.endTime2});
+				self.workingHours.push(w2);	
+			}
+			
 		}
+		
+		bindingScreenB(param: any, workTypeList:[], displayInforWhenStarting: any){
+			let self = this;
+			self.appID = param.appID;
+			self.application.update(param.application);
+			self.workTypeList(workTypeList);
+			self.workInformation.update(param.workInformation);
+			self.displayInforWhenStarting = displayInforWhenStarting;
+			
+			let w1 = _.find(self.workingHours(), {'workNo': 1});
+			w1.update(_.find(param.workingHours, { 'workNo': 1}));
+			let w2 = _.find(param.workingHours, { 'workNo': 2});
+			if(w2) {
+				let tg = new TimeZoneWithWorkNo(2);
+				tg.update(tg)
+				self.workingHours.push(tg);		
+			}
+		}
+		
+		convertTimeToString(data: any){ 
+			let self = this;
+			if(data.first){
+				return '';
+			}
+			self.workTimeDisplay(data.selectedWorkTimeCode + ' ' + 
+									data.selectedWorkTimeName + ' ' + 
+									moment(Math.floor(data.first.start / 60),'mm').format('mm') + ":" + moment(data.first.start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.first.end / 60),'mm').format('mm') + ":" + moment(data.first.end % 60,'mm').format('mm'));         
+		}
+		
 		checkDisplay(){
 			let self = this;
 			if(self.displayInforWhenStarting){
@@ -92,8 +104,8 @@ module nts.uk.at.view.kaf011 {
 				
 		time_convert(): string{ 
 			let self = this;
-			let start = self.workingHours1.timeZone.startTime();
-			let end = self.workingHours1.timeZone.endTime(); 
+			let start = _.find(self.workingHours(), {'workNo': 1}).timeZone.startTime();
+			let end = _.find(self.workingHours(), {'workNo': 1}).timeZone.endTime(); 
 			if(!start || !end){
 				return '';
 			}
@@ -120,15 +132,24 @@ module nts.uk.at.view.kaf011 {
 			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml').onClosed(() => {
 				let data = nts.uk.ui.windows.getShared('childData');
 					if(data){
-						self.workingHours1.timeZone.startTime(data.first.start);
-						self.workingHours1.timeZone.endTime(data.first.end);
+						
 						self.workInformation.workType(data.selectedWorkTypeCode);
 						self.workInformation.workTime(data.selectedWorkTimeCode);
+						
+						let w1 = _.find(self.workingHours(), {'workNo': 1});
+						w1.update(data.first);
 						if(data.second.start && data.second.end){
-							self.workingHours2.timeZone.startTime(data.second.start);
-							self.workingHours2.timeZone.endTime(data.second.end);
-							self.workingHours2DispLay(true);	
+							let w2 = _.find(self.workingHours(), {'workNo': 2});
+							if(w2){
+								w2.update(data.second);
+							}else{
+								let tg = new TimeZoneWithWorkNo(2);
+							tg.update(data.second)
+							self.workingHours.push(tg);	
+							}
 						}
+						
+						self.convertTimeToString(data);
 					}
 			});
 		}
@@ -151,12 +172,12 @@ module nts.uk.at.view.kaf011 {
 					daysUnit: 0.5,
 					targetSelectionAtr: 1,
 					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
-					managementData: self.subWorkSubHolidayLinkingMngList()
+					managementData: self.leaveComDayOffMana()
 				});
 				nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
 					let data = nts.uk.ui.windows.getShared('KDL035_RESULT');
 					if(data){
-						self.subWorkSubHolidayLinkingMngList(data);
+						self.leaveComDayOffMana(data);
 					}
 				});
 			}
@@ -168,13 +189,16 @@ module nts.uk.at.view.kaf011 {
 	export class AbsenceLeaveApp extends RecruitmentApp {
 		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
 		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
+		payoutSubofHDManagements: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		payoutSubofHDManagementsOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 		
 		constructor(appType: number){
 			super(appType);
 		}
-		update(param: any){
+		
+		bindingScreenBAbs(param: any, workTypeList: [], displayInforWhenStarting: any){
 			let self = this;
-			super.update(param);
+			super.bindingScreenB(param, workTypeList, displayInforWhenStarting);
 			self.workChangeUse(param.workChangeUse);
 			self.changeSourceHoliday(param.changeSourceHoliday);
 		}
@@ -206,15 +230,14 @@ module nts.uk.at.view.kaf011 {
 	
 	export class TimeZoneWithWorkNo {
 		workNo: number;
-		timeZone: TimeZone;
-		constructor(workNo: number, collectWorkingHours: ((vm:any) => void), vm: any){
+		timeZone: TimeZone = new TimeZone();
+		constructor(workNo: number){
 			let self = this;
 			self.workNo = workNo;
-			self.timeZone = new TimeZone(collectWorkingHours, vm)
 		}
-		update(param: any){
+		update(timeZone: any){
 			let self = this;
-			self.timeZone.update(param.timeZone);
+			self.timeZone.update(timeZone);
 		}
 		
 	}
@@ -222,20 +245,14 @@ module nts.uk.at.view.kaf011 {
 	export class TimeZone {
 		startTime: KnockoutObservable<number> = ko.observable();
 		endTime: KnockoutObservable<number> = ko.observable();
-		constructor(collectWorkingHours: ((vm: any) => void), vm: any){
-			let self = this;
-			self.startTime.subscribe(() => {
-				collectWorkingHours(vm);
-			});
-			self.endTime.subscribe(() => {
-				collectWorkingHours(vm);
-			});
+		constructor(){
 		}
 		update(param: any){
 			let self = this;
-			self.startTime(param.startTime);
-			self.endTime(param.endTime);
+			self.startTime(param.startTime || param.start);
+			self.endTime(param.endTime || param.end);
 		}
+		
 	}
 	
 	export class Comment {

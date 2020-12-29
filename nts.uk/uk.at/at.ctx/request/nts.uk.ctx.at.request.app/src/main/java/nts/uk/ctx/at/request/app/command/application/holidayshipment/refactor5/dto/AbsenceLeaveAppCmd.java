@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
@@ -25,37 +25,18 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
-@AllArgsConstructor
-public class AbsenceLeaveAppCmd {
-	
-	public String appID;
-	
-	public ApplicationDto application;
-	
-	/** For KAF011A */
-	public ApplicationInsertCmd applicationInsert;
-	
-	/** For KAF011B */
-	public ApplicationUpdateCmd applicationUpdate;
-	
-	public List<TimeZoneWithWorkNoDto> workingHours;
-	
-	public WorkInformationDto workInformation;
+public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 	
 	public Integer workChangeUse;
 	
 	public String changeSourceHoliday;
-	
-	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
-	
-	public List<LeaveComDayOffManaDto> leaveComDayOffManaOld;
 	
 	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 	
 	public List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld;
 	
 	/** Use for Insert KAF011A */
-	public AbsenceLeaveApp toDomainInsert() {
+	public AbsenceLeaveApp toDomainInsertAbs() {
 		return new AbsenceLeaveApp(
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
 				workInformation.toDomain(), 
@@ -66,7 +47,7 @@ public class AbsenceLeaveAppCmd {
 	}
 
 	/** Use for update KAF011B */
-	public AbsenceLeaveApp toDomainUpdate(ApplicationDto applicationDto) {
+	public AbsenceLeaveApp toDomainUpdateAbs(ApplicationDto applicationDto) {
 		return new AbsenceLeaveApp(
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
 				workInformation.toDomain(), 
@@ -76,12 +57,33 @@ public class AbsenceLeaveAppCmd {
 				applicationUpdate.toDomain(applicationDto));
 	}
 	
-	public AbsenceLeaveAppCmd(AbsenceLeaveApp domain) {
-		this.application = ApplicationDto.fromDomain(domain);
-		this.workingHours = domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList());
-		this.workInformation = WorkInformationDto.fromDomain(domain.getWorkInformation());
-		this.workChangeUse = domain.getWorkChangeUse().value;
-		this.changeSourceHoliday = domain.getChangeSourceHoliday().map(c->c.toString()).orElse(null);
+	public static AbsenceLeaveAppCmd fromDomain(AbsenceLeaveApp domain) {
+		return new AbsenceLeaveAppCmd(
+				ApplicationDto.fromDomain(domain),
+				null,
+				null,
+				WorkInformationDto.fromDomain(domain.getWorkInformation()),
+				domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList()),
+				new ArrayList<>(),
+				new ArrayList<>(),
+				domain.getWorkChangeUse().value,
+				domain.getChangeSourceHoliday().map(c->c.toString()).orElse(null),
+				new ArrayList<>(),
+				new ArrayList<>());
+	}
+
+	public AbsenceLeaveAppCmd(ApplicationDto applicationDto, ApplicationInsertCmd applicationInsert,
+			ApplicationUpdateCmd applicationUpdate, WorkInformationDto workInformation, 
+			List<TimeZoneWithWorkNoDto> workingHours, List<LeaveComDayOffManaDto> leaveComDayOffMana,
+			List<LeaveComDayOffManaDto> leaveComDayOffManaOld, Integer workChangeUse, String changeSourceHoliday,
+			List<PayoutSubofHDManagementDto> payoutSubofHDManagements,
+			List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld) {
+		super(applicationDto, applicationInsert, applicationUpdate, workInformation, workingHours, leaveComDayOffMana,
+				leaveComDayOffManaOld);
+		this.workChangeUse = workChangeUse;
+		this.changeSourceHoliday = changeSourceHoliday;
+		this.payoutSubofHDManagements = payoutSubofHDManagements;
+		this.payoutSubofHDManagementsOld = payoutSubofHDManagementsOld;
 	}
 
 }

@@ -37,7 +37,7 @@
 							<div class="ntsControl">
 								<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 	                                                    constraint:'TimeWithDayAttr',
-	                                                    value: workingHours1.timeZone.startTime,
+	                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
 	                                                    readonly: false,
 	                                                    required: true,
 	                                                    name: '#{i18n.getText('KAF011_32')}',
@@ -45,20 +45,20 @@
 	                             #{i18n.getText('KAF011_37')}
 	                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 	                                                    constraint:'TimeWithDayAttr',
-	                                                    value: workingHours1.timeZone.endTime,
+	                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.endTime,
 	                                                    readonly: false,
 	                                                    required: true,
 	                                                    name: '#{i18n.getText('KAF011_33')}',
 	                                                    enable: true }" />
 							</div>
 						</div>
-						<com:ko-if bind="workingHours2DispLay">
+						<com:ko-if bind="_.find(workingHours(), {'workNo': 2})">
 							<div class="row">
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_34')}</div>
 								<div class="ntsControl">
 									<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 		                                                    constraint:'TimeWithDayAttr',
-		                                                    value: workingHours2.timeZone.startTime,
+		                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
 		                                                    readonly: false,
 		                                                    required: true,
 		                                                    name: '#{i18n.getText('KAF011_35')}',
@@ -66,7 +66,7 @@
 		                             #{i18n.getText('KAF011_37')}
 		                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 		                                                    constraint:'TimeWithDayAttr',
-		                                                    value: workingHours2.timeZone.endTime,
+		                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.endTime,
 		                                                    readonly: false,
 		                                                    required: true,
 		                                                    name: '#{i18n.getText('KAF011_36')}',
@@ -90,7 +90,7 @@
 													<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
 												</tr>
 											</thead>
-		        							<tbody data-bind="foreach: subWorkSubHolidayLinkingMngList">
+		        							<tbody data-bind="foreach: leaveComDayOffMana">
 												<tr>
 													<td data-bind="text: outbreakDay"></td>
 													<td data-bind="text: dayNumberUsed"></td>
@@ -141,7 +141,7 @@
 										<div class="ntsControl">
 											<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
-				                                                    value: workingHours1.timeZone.startTime,
+				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
 				                                                    readonly: false,
 				                                                    required: true,
 				                                                    name: '#{i18n.getText('KAF011_32')}',
@@ -149,7 +149,7 @@
 				                             #{i18n.getText('KAF011_37')}
 				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
-				                                                    value: workingHours1.timeZone.endTime,
+				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.endTime,
 				                                                    readonly: false,
 				                                                    required: true,
 				                                                    name: '#{i18n.getText('KAF011_33')}',
@@ -157,13 +157,13 @@
 										</div>
 									</div>
 								</com:ko-if>
-								<com:ko-if bind="workingHours2DispLay() &amp;&amp; displayInforWhenStarting.appDispInfoStartup.managementMultipleWorkCycles == 1">
+								<com:ko-if bind="_.find(workingHours(), {'workNo': 2}) &amp;&amp; displayInforWhenStarting.appDispInfoStartup.managementMultipleWorkCycles == 1">
 									<div class="row">
 										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_34')}</div>
 										<div class="ntsControl">
 											<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
-				                                                    value: workingHours2.timeZone.startTime,
+				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
 				                                                    readonly: false,
 				                                                    required: false,
 				                                                    name: '#{i18n.getText('KAF011_35')}',
@@ -171,7 +171,7 @@
 				                             #{i18n.getText('KAF011_37')}
 				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
-				                                                    value: workingHours2.timeZone.endTime,
+				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.endTime,
 				                                                    readonly: false,
 				                                                    required: false,
 				                                                    name: '#{i18n.getText('KAF011_36')}',
@@ -196,7 +196,7 @@
 														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
 													</tr>
 												</thead>
-			        							<tbody data-bind="foreach: subWorkSubHolidayLinkingMngList">
+			        							<tbody data-bind="foreach: leaveComDayOffMana">
 													<tr>
 														<td data-bind="text: outbreakDay"></td>
 														<td data-bind="text: dayNumberUsed"></td>
@@ -223,7 +223,7 @@
 														<th class="bg-green" >#{i18n.getText('KAF011_57')}</th>
 													</tr>
 												</thead>
-			        							<tbody data-bind="foreach: subWorkSubHolidayLinkingMngList">
+			        							<tbody data-bind="foreach: payoutSubofHDManagements">
 													<tr>
 														<td data-bind="text: outbreakDay"></td>
 														<td data-bind="text: dayNumberUsed"></td>

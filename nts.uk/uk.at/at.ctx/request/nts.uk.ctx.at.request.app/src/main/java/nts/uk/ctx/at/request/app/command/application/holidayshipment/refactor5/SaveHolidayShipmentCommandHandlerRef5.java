@@ -82,8 +82,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 */
 	public void register(HolidayShipmentRefactor5Command command){
 		String companyId = AppContexts.user().companyId();
-		Optional<AbsenceLeaveApp> abs = Optional.ofNullable(command.existAbs() ? command.abs.toDomainInsert() : null);
-		Optional<RecruitmentApp> rec = Optional.ofNullable(command.existRec() ? command.rec.toDomainInsert(): null);
+		Optional<AbsenceLeaveApp> abs = Optional.ofNullable(command.existAbs() ? command.abs.toDomainInsertAbs() : null);
+		Optional<RecruitmentApp> rec = Optional.ofNullable(command.existRec() ? command.rec.toDomainInsertRec(): null);
 
 		//申請表示情報 = 振休振出申請起動時の表示情報．申請表示情報
 		AppDispInfoStartupOutput appDispInfoStartup = command.displayInforWhenStarting.appDispInfoStartup.toDomain();

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,9 +23,7 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOf
 @AllArgsConstructor
 public class RecruitmentAppCmd {
 	
-	public String appID;
-	
-	public ApplicationDto application;
+	public ApplicationDto applicationDto;
 	
 	/** For KAF011A */
 	public ApplicationInsertCmd applicationInsert;
@@ -32,16 +31,16 @@ public class RecruitmentAppCmd {
 	/** For KAF011B */
 	public ApplicationUpdateCmd applicationUpdate;
 	
-	public List<TimeZoneWithWorkNoDto> workingHours;
-	
 	public WorkInformationDto workInformation;
+	
+	public List<TimeZoneWithWorkNoDto> workingHours;
 	
 	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
 	public List<LeaveComDayOffManaDto> leaveComDayOffManaOld;
 	
 	/** Use for save KAF011A */
-	public RecruitmentApp toDomainInsert() {
+	public RecruitmentApp toDomainInsertRec() {
 		return new RecruitmentApp(
 				workInformation.toDomain(), 
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
@@ -50,7 +49,7 @@ public class RecruitmentAppCmd {
 	}
 	
 	/** Use for update KAF011B */
-	public RecruitmentApp toDomainUpdate(ApplicationDto applicationDto) {
+	public RecruitmentApp toDomainUpdateRec(ApplicationDto applicationDto) {
 		return new RecruitmentApp(
 				workInformation.toDomain(),
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
@@ -58,10 +57,15 @@ public class RecruitmentAppCmd {
 				applicationUpdate.toDomain(applicationDto));
 	}
 	
-	public RecruitmentAppCmd(RecruitmentApp domain) {
-		this.application = ApplicationDto.fromDomain(domain);
-		this.workingHours = domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList());
-		this.workInformation = WorkInformationDto.fromDomain(domain.getWorkInformation());
+	public static RecruitmentAppCmd fromDomain(RecruitmentApp domain) {
+		return new RecruitmentAppCmd(
+				ApplicationDto.fromDomain(domain),
+				null,
+				null,
+				WorkInformationDto.fromDomain(domain.getWorkInformation()),
+				domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList()),
+				new ArrayList<>(),
+				new ArrayList<>());
 	}
 
 }

@@ -31,8 +31,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		recruitmentApp = new RecruitmentApp(0);
 		absenceLeaveApp = new AbsenceLeaveApp(1);
 		
-		
-		
 		isAgentMode = ko.observable(false);
 		selectedRuleCode = ko.observable('');
 		required = ko.observable(true);
@@ -65,11 +63,11 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
-					vm.recruitmentApp.bindDingScreenA(data.applicationForWorkingDay, data);
-					vm.absenceLeaveApp.bindDingScreenA(data.applicationForHoliday, data);
+					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
+					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
 				}).always(() => {
-					$('#functions-area').css({'display': ''});
+					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					vm.$blockui("hide"); 
 				});

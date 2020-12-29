@@ -41,15 +41,15 @@
 			<com:scriptfile path="kaf011.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" style="display: none">
+			<div id="functions-area">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<button class="" data-bind="click: register" tabindex="2">#{i18n.getText('KAF011_7')}</button>
-				<div data-bind="component: { name: 'kaf000-a-component7', 
+				<div id="isSendMail" style="display: none" data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
 												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }" style="display: inline-block;"></div>
+											} }"></div>
 			</div>
 			
 			<div id="contents-area" style="display: none">
