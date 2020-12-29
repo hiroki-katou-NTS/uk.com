@@ -256,7 +256,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						// } else {
 						// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
 						// }
-					} 
+					} else {
+						$('.table-time2 .nts-fixed-header-wrapper').width(455);
+						$('.table-time2 .nts-fixed-body-wrapper').width(455);
+						$('.table-time3 .nts-fixed-header-wrapper').width(455);
+						$('.table-time3 .nts-fixed-body-wrapper').width(455);
+					}
                 }
             }).fail(err => {
 				// xử lý lỗi nghiệp vụ riêng
@@ -294,7 +299,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				'#kaf000-a-component4 .nts-input', 
 				'#kaf000-a-component3-prePost', 
 				'#kaf000-a-component5-comboReason', 
-				'#kaf000-a-component5-textReason', 
+				'#kaf000-a-component5-textReason',
+				'#kaf000-b-component4 .nts-input', 
+				'#kaf000-b-component3-prePost', 
+				'#kaf000-b-component7 #combo-box', 
+				'#kaf000-b-component7 #inpReasonTextarea', 
 				'#inpStartTime1', 
 				'#inpEndTime1')
 				.then(isValid => {
@@ -530,16 +539,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			// ※18
 			if (self.dataSource.hdWorkOvertimeReflect.nightOvertimeReflectAtr == 0) {
 				self.nightOvertimeReflectAtrCheck(false);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
 			} else {
 				self.nightOvertimeReflectAtrCheck(true);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
 			}
 			// ※16
 			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr == 1) {
@@ -715,7 +724,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		setComboDivergenceReason(res: AppHdWorkDispInfo) {
 			const self = this;
 			if(res.comboDivergenceReason && res.comboDivergenceReason.length > 0){
-				self.comboDivergenceReason(res.comboDivergenceReason);
+				let comboBoxOptions: Array<ComboDivergenceReason> = res.comboDivergenceReason
+						.map(reason => {
+							reason.comboBoxText = reason.divergenceReasonCode + ' ' + reason.reason;
+							return reason;
+						});
+				self.comboDivergenceReason(comboBoxOptions);
 			}
 			let defaultReasonTypeItem = _.find(res.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
 			if(_.isUndefined(defaultReasonTypeItem)) {
@@ -723,6 +737,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					divergenceReasonCode: '',
 					reason: self.$i18n('KAFS00_23'),
 					reasonRequired: 1,
+					comboBoxText: self.$i18n('KAFS00_23'),
 				}];
 				self.comboDivergenceReason(_.concat(dataLst, self.comboDivergenceReason()));
 				self.selectedDivergenceReasonCode(_.head(self.comboDivergenceReason()).divergenceReasonCode);
@@ -2142,6 +2157,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		divergenceReasonCode: string;
 		reason: string;
 		reasonRequired: number;
+		comboBoxText: string;
 	}
 	enum MODE {
 		VIEW,

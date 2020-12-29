@@ -98,7 +98,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			vm.isSendMail = ko.observable(false);
 			if (!_.isNil(dataTransfer)) {
 				if(!_.isNil(dataTransfer.appDate)){
-					vm.application().prePostAtr(1);
 					vm.application().appDate(dataTransfer.appDate);
 					vm.application().opAppStartDate(dataTransfer.appDate);
 					vm.application().opAppEndDate(dataTransfer.appDate);
@@ -199,7 +198,17 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							// } else {
 							// 	$('.table-time3 .nts-fixed-body-wrapper').width(225);
 							// }
-						} 
+						} else {
+							$('.table-time2 .nts-fixed-header-wrapper').width(455);
+							$('.table-time2 .nts-fixed-body-wrapper').width(455);
+							$('.table-time3 .nts-fixed-header-wrapper').width(455);
+							$('.table-time3 .nts-fixed-body-wrapper').width(455);
+						}
+						if (!_.isNil(dataTransfer)) {
+							if(!_.isNil(dataTransfer.appDate)){
+								vm.application().prePostAtr(1);
+							}
+						}
 					}
 				}).fail((failData: any) => {
 					if (failData.messageId === "Msg_43") {
@@ -270,19 +279,19 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.inputEnable(false)
 			}
-			// ※18
+			// ※18	//huytodo
 			if (self.dataSource.hdWorkOvertimeReflect.nightOvertimeReflectAtr == 0) {
 				self.nightOvertimeReflectAtrCheck(false);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
 			} else {
 				self.nightOvertimeReflectAtrCheck(true);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
 			}
 			// ※16
 			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr == 1) {
@@ -418,6 +427,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		
 		register() {
 			const vm = this;
+
+			if(!_.isNil(vm.workInfo().workHours2) 
+				&& ((!_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end()))
+					 || (_.isNumber(vm.workInfo().workHours2.start()) && !_.isNumber(vm.workInfo().workHours2.end())))){
+				vm.handleErrorCustom({messageId : "Msg_307"});
+				return;
+			}
 			
 			if(vm.mode() != MODE.MULTiPLE_AGENT){
 				vm.registerSingle();
@@ -572,7 +588,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		setComboDivergenceReason(res: AppHdWorkDispInfo) {
 			const self = this;
 			if(res.comboDivergenceReason && res.comboDivergenceReason.length > 0){
-				self.comboDivergenceReason(res.comboDivergenceReason);
+				let comboBoxOptions: Array<ComboDivergenceReason> = res.comboDivergenceReason
+						.map(reason => {
+							reason.comboBoxText = reason.divergenceReasonCode + ' ' + reason.reason;
+							return reason;
+						});
+				self.comboDivergenceReason(comboBoxOptions);
 			}
 			let defaultReasonTypeItem = _.find(res.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
 			if(_.isUndefined(defaultReasonTypeItem)) {
@@ -580,6 +601,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					divergenceReasonCode: '',
 					reason: self.$i18n('KAFS00_23'),
 					reasonRequired: 1,
+					comboBoxText: self.$i18n('KAFS00_23'),
 				}];
 				self.comboDivergenceReason(_.concat(dataLst, self.comboDivergenceReason()));
 				self.selectedDivergenceReasonCode(_.head(self.comboDivergenceReason()).divergenceReasonCode);
@@ -635,6 +657,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				workHours1.end = ko.observable(null);
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
+				if(hdWorkDispInfoWithDateOutput && hdWorkDispInfoWithDateOutput.workHours){
+					workHours1.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
+					workHours1.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
+					workHours2.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
+					workHours2.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
+				}
 			} else {
 				workHours1 = self.workInfo().workHours1;
 				workHours2 = self.workInfo().workHours2;
@@ -1605,6 +1633,23 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					}
 				});
 		}
+
+		handleErrorCustom(failData: any): any {
+			const vm = this;
+			if(failData.messageId == "Msg_26") {
+				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+				.then(() => {
+					return $.Deferred().resolve(false);	
+				});	
+			}
+			if(failData.messageId == "Msg_307"){
+				return vm.$dialog.error({ messageId: failData.messageId})
+				.then(() => {
+					return $.Deferred().resolve(false);	
+				});	
+			}
+			return $.Deferred().resolve(true);
+		}
 	}
 
 	const API = {
@@ -1821,6 +1866,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		divergenceReasonCode: string;
 		reason: string;
 		reasonRequired: number;
+		comboBoxText: string;
 	}
 	enum MODE {
 		NORMAL,

@@ -105,7 +105,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
 									mode: 'time',
-									enable: true,
+									enable: $parent.inputEnable,
 									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
