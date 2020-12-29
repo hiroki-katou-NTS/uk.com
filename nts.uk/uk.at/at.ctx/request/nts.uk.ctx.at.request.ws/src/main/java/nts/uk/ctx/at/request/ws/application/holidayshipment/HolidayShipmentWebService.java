@@ -32,7 +32,6 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.d
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkingDateParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
@@ -91,7 +90,7 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("changeRecDate")
-	public DisplayInforWhenStarting changeRecDate(ChangeDateParam param) {
+	public void changeRecDate(ChangeDateParam param) {
 		
 	}
 	
@@ -143,7 +142,7 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("changeWorkingDateRefactor")
-	public DisplayInforWhenStarting changeWorkingDateRefactor(ChangeWorkingDateParam param) {
+	public DisplayInforWhenStarting changeWorkingDateRefactor() {
 //		return this.screenAFinder.changeWorkingDateRefactor(
 //				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
 //				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 

@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -45,7 +46,7 @@ public class ChangeValueItemsOnHolidayShipment {
 	
 	@Inject
 	private AppAbsenceFinder appAbsenceFinder;
-
+	
 	/**
 	 * @name 振出日を変更する
 	 * @param recDate 申請対象日
@@ -130,12 +131,12 @@ public class ChangeValueItemsOnHolidayShipment {
 	}
 	
 	/**
-	 * @name 振休日を変更する
+	 * @name 振出の勤務種類を変更する -- 振休の勤務種類を変更する
 	 * @param workTypeBefore 変更前の勤務種類
 	 * @param workTypeAfter 変更後の勤務種類
 	 * @param workTimeCode 就業時間帯コード
 	 * @param leaveComDayOffMana 振出振休紐付け管理<List>
-	 * @param payoutSubofHDManagement 振出振休紐付け管理<List>
+	 * @param payoutSubofHDManagement 振出振休紐付け管理<List> -- 休出代休紐付け管理<List>
 	 * @return
 	 */
 	public ChangeWorkTypeResultDto changeWorkType(WorkTypeDto workTypeBefore, WorkTypeDto workTypeAfter, Optional<String> workTimeCode, List<LeaveComDayOffManaDto> leaveComDayOffMana, List<PayoutSubofHDManagementDto> payoutSubofHDManagement) {
@@ -158,4 +159,20 @@ public class ChangeValueItemsOnHolidayShipment {
 				payoutSubofHDManagement.stream().map(c->c.toDomain()).collect(Collectors.toList()));
 		return new ChangeWorkTypeResultDto(checkVacationTyingManage, workingHours);
 	}
+	
+	/**
+	 * @name 振出の就業時間帯を選択する -- 振休の就業時間帯を選択する
+	 * @param companyId 申請者会社ID
+	 * @param opWorkTimeLst List＜就業時間帯の設定＞
+	 * @param recDate 振出日
+	 * @param absDate 振休日
+	 * @param workTypeCode 勤務種類コード
+	 * @param WorkTimeCode 就業時間帯コード
+	 */
+	public void selectWorkingHours(String companyId, List<WorkTimeSetting> opWorkTimeLst, GeneralDate recDate, Optional<GeneralDate> absDate, String workTypeCode, String WorkTimeCode) {
+		//QA: http://192.168.50.4:3000/issues/113564#note-5
+		//QA: http://192.168.50.4:3000/issues/113580 
+	}
+	
+
 }

@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
  * UKDesign.UniversalK.就業.KAF_申請.KAF011_振休振出申請.B：振休振出申請（詳細）.ユースケース.登録する.登録する
  */
 @Stateless
-public class UpdateHolidayShipmentCommandHandler {
+public class UpdateHolidayShipmentCommandHandlerRef5 {
 
 	@Inject
 	private PreUpdateErrorCheck preUpdateErrorCheck;
