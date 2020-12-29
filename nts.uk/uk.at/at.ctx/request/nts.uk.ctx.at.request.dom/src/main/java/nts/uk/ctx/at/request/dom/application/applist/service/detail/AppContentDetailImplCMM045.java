@@ -1133,21 +1133,21 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
 			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
 					companyID, 
-					application, 
+					appOverTime,
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode()).orElse(null), 
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().orElse(null)).orElse(null));
 		}
 		// 　申請内容　＝　残業申請の申請内容
 		String appContent = appContentService.getOvertimeHolidayWorkContent(
 				null, 
-				appOverTime, 
-				overtimeHolidayWorkActual, 
+				null,
 				application.getAppType(), 
 				application.getPrePostAtr(), 
 				applicationListAtr, 
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045, 
+				ScreenAtr.CMM045,
+				overtimeHolidayWorkActual.isActualStatusCheckResult(),
 				application);
 		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
 		switch (appOverTime.getOverTimeClf()) {
@@ -1177,21 +1177,21 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
 			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
 					companyID, 
-					application, 
+					appHolidayWork,
 					appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().orElse(null));
 		}
 		// 申請内容　＝　休日出勤申請の申請内容
 		String appContent = appContentService.getOvertimeHolidayWorkContent(
-				appHolidayWork, 
 				null, 
-				overtimeHolidayWorkActual, 
+				null,
 				application.getAppType(), 
 				application.getPrePostAtr(), 
 				applicationListAtr, 
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045, 
+				ScreenAtr.CMM045,
+				overtimeHolidayWorkActual.isActualStatusCheckResult(),
 				application);
 		return new AppHolidayWorkDataOutput(appContent);
 	}

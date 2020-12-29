@@ -189,10 +189,32 @@ public interface AppContentDetailCMM045 {
 	 */
 	public String createOptionalItemApp(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.残業申請データを作成.残業申請データを作成
+	 * @param application
+	 * @param workTypeLst
+	 * @param workTimeSettingLst
+	 * @param attendanceItemLst
+	 * @param applicationListAtr
+	 * @param approvalListDisplaySetting
+	 * @param companyID
+	 * @return
+	 */
 	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID);
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.休出時間申請データを作成.休出時間申請データを作成
+	 * @param application
+	 * @param workTypeLst
+	 * @param workTimeSettingLst
+	 * @param attendanceItemLst
+	 * @param applicationListAtr
+	 * @param approvalListDisplaySetting
+	 * @param companyID
+	 * @return
+	 */
 	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID);

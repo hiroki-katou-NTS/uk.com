@@ -491,7 +491,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public ActualStatusCheckResult checkStatus(
+	public ApplicationTime checkStatus(
 			String companyId,
 			String employeeId,
 			GeneralDate date,
@@ -508,7 +508,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		
 		if (!(opAchievementDetail.isPresent() && opAchievementDetail.get().getTrackRecordAtr() == TrackRecordAtr.DAILY_RESULTS)) {
 			
-			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, null);
+			return null;
 		}
 		AchievementDetail achievementDetail = opAchievementDetail.get();
 		// INPUT．「表示する実績内容．実績詳細」 <> empty　AND　INPUT．「表示する実績内容．実績詳細．実績スケ区分」 = 日別実績 -> true
@@ -674,13 +674,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			
 		}
 		
-		return new ActualStatusCheckResult(
-				actualStatus, 
-				judgmentWorkTypeResult.getCalcWorkType(), 
-				judgmentWorkTimeResult.getCalcWorkTime(),
-				achievementDetail.getOpWorkTime().orElse(null),
-				judgmentStampResult.getCalcLeaveStamp(),
-				output.orElse(null));
+		return output.orElse(null);
 		
 	}
 	public List<ApplicationTime> convertApplicationList(
