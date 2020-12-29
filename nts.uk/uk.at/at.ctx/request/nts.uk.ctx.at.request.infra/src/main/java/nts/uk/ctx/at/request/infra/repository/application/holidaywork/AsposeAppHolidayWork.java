@@ -2,16 +2,12 @@ package nts.uk.ctx.at.request.infra.repository.application.holidaywork;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
@@ -20,9 +16,6 @@ import com.aspose.cells.Worksheet;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
@@ -45,10 +38,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class AsposeAppHolidayWork {
 
-	public int printAppHolidayWorkContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
-		Stack<Integer> deleteRows = new Stack<>();
+	public List<Integer> printAppHolidayWorkContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
+		List<Integer> deleteRowsList = new ArrayList<Integer>();
+		deleteRowsList.add(0);
+		deleteRowsList.add(0);
+		int deleteRows = 0;
 		Optional<PrintContentOfHolidayWork> opPrintContentOfHolidayWork = printContentOfApp.getOpPrintContentOfHolidayWork();
-		if (!opPrintContentOfHolidayWork.isPresent()) return 0 ;
+		if (!opPrintContentOfHolidayWork.isPresent()) return deleteRowsList;
 		PrintContentOfHolidayWork printContentOfHolidayWork = opPrintContentOfHolidayWork.get();
 //		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput;
 //		AppHolidayWork appHolidayWork;
@@ -96,11 +92,17 @@ public class AsposeAppHolidayWork {
 		cellB8.setValue(I18NText.getText("KAF010_34"));
 		cellB9.setValue(I18NText.getText("KAF010_35"));
 		cellB10.setValue(I18NText.getText("KAF010_37"));
+		int deleteC1 = 0;
 		if(c1) {
 			cellB11.setValue(I18NText.getText("KAF010_339"));
+		} else {
+			deleteC1 += 1;
 		}
+		int deleteC2 = 0;
 		if(c2) {
 			cellB12.setValue(I18NText.getText("KAF005_40"));
+		} else {
+			deleteC2 += 1;
 		}
 		
 		String workTypeName = printContentOfHolidayWork.getWorkTypeName().orElse(new WorkTypeName(printContentOfHolidayWork.getWorkTypeCode() + " " + I18NText.getText("KAF005_345"))).v();
@@ -122,6 +124,7 @@ public class AsposeAppHolidayWork {
 				cellD11.setValue(timeZone);
 			}
 		});
+		
 		if(c2) {
 			List<TimeZoneWithWorkNo> breakTimeList = printContentOfHolidayWork.getBreakTimeList().orElse(Collections.emptyList());
 			if(!breakTimeList.isEmpty()) {
@@ -140,6 +143,7 @@ public class AsposeAppHolidayWork {
 		Cell cellB13 = cells.get("B13");
 		cellB13.setValue(I18NText.getText("KAF010_50"));
 		
+		int deleteWorkdayoff = 0;
 		List<WorkdayoffFrame> workdayoffFrameList = printContentOfHolidayWork.getWorkdayoffFrameList();
 		Collections.sort(workdayoffFrameList, 
 				(workdayoffFrame1, workdayoffFrame2) -> workdayoffFrame1.getWorkdayoffFrNo().v().compareTo(workdayoffFrame2.getWorkdayoffFrNo().v()));
@@ -164,7 +168,13 @@ public class AsposeAppHolidayWork {
 				}
 			}
 		});
+		if(workdayoffCountColumn.get() == 3) {
+			deleteWorkdayoff = 16 - workdayoffCountRow.get() + 1 ;
+		} else {
+			deleteWorkdayoff = 16 - workdayoffCountRow.get();
+		}
 		
+		int deleteWorkdayoffNight = 0;
 		if(c3) {
 			Cell cellD18 = cells.get("D18");
 			cellD18.setValue(I18NText.getText("KAF010_342"));
@@ -198,8 +208,11 @@ public class AsposeAppHolidayWork {
 			String publicHolidayWorkTimeText = publicHolidayWorkTime.isPresent() ? 
 					(new TimeWithDayAttr(publicHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellJ18.setValue(publicHolidayWorkTimeText);
+		} else {
+			deleteWorkdayoffNight += 2;
 		}
 		
+		int deleteOvertime = 0;
 		if(c4) {
 			Cell B20 = cells.get("B20");
 			B20.setValue(I18NText.getText("KAF005_50"));
@@ -228,13 +241,21 @@ public class AsposeAppHolidayWork {
 					}
 				}
 			});
+			if(overtimeWorkCountColumn.get() == 3) {
+				deleteOvertime = 23 - overtimeWorkCountRow.get() + 1 ;
+			} else {
+				deleteOvertime = 23 - overtimeWorkCountRow.get();
+			}
+		} else {
+			deleteOvertime = 5;
 		}
 		
+		int deleteOvertimeNight = 0;
 		if(c3 && c4) {
-			Cell cellD24 = cells.get("D24");
+			Cell cellD24 = cells.get("D25");
 			cellD24.setValue(I18NText.getText("KAF005_63"));
 			
-			Cell cellF24 = cells.get("F24");
+			Cell cellF24 = cells.get("F25");
 			Optional<OverTimeShiftNight> overTimeShiftNight = printContentOfHolidayWork.getApplicationTime().getOverTimeShiftNight();
 			if(overTimeShiftNight.isPresent()) {
 				Integer overTimeMidNightTime = overTimeShiftNight.get().getOverTimeMidNight() != null ? 
@@ -242,6 +263,8 @@ public class AsposeAppHolidayWork {
 				String overTimeMidNightText = overTimeMidNightTime != null ? (new TimeWithDayAttr(overTimeMidNightTime)).getInDayTimeWithFormat() : "";
 				cellF24.setValue(overTimeMidNightText);
 			}
+		} else {
+			deleteOvertimeNight += 1;
 		}
 		
 		if(c5) {
@@ -253,7 +276,7 @@ public class AsposeAppHolidayWork {
 			String cellD30Text = "";
 			Optional<List<ReasonDivergence>> reasonDissociation = printContentOfHolidayWork.getApplicationTime().getReasonDissociation();
 			List<ReasonDivergence> reasonDivergenceList = reasonDissociation.isPresent() ? reasonDissociation.get() : Collections.emptyList();
-			ReasonDivergence reasonDivergence = reasonDivergenceList.isEmpty() ? reasonDivergenceList.get(0) : new ReasonDivergence(null, null, null);
+			ReasonDivergence reasonDivergence = !reasonDivergenceList.isEmpty() ? reasonDivergenceList.get(0) : new ReasonDivergence(null, null, null);
 			if(c6) {
 				cellD30Text += reasonDivergence.getReasonCode() != null ? reasonDivergence.getReasonCode().v() + "\n" : "";
 			}
@@ -262,9 +285,51 @@ public class AsposeAppHolidayWork {
 			}
 			cellD30.setValue(cellD30Text);
 		}
-		//huytodo deleteRows
 
-		return 0;
+		if(!c5 && !c6 && !c7) {
+			cells.deleteRows(29, 3);
+			deleteRowsList.set(1, 3);
+		}
+		if(deleteOvertimeNight > 0) {
+			cells.deleteRow(24);
+			deleteRows += deleteOvertimeNight;
+		}
+		if(deleteOvertime > 0) {
+			cells.deleteRows(24 - deleteOvertime, deleteOvertime);
+			deleteRows += deleteOvertime;
+		}
+		if(deleteWorkdayoffNight > 0) {
+			cells.deleteRows(17, deleteWorkdayoffNight);
+			deleteRows += deleteWorkdayoffNight;
+		}
+		if(deleteWorkdayoff > 0) {
+			if(deleteWorkdayoff < 5) {
+				cells.deleteRows(17 - deleteWorkdayoff, deleteWorkdayoff);
+				deleteRows += deleteWorkdayoff;
+			} else {
+				if(deleteWorkdayoffNight > 0) {
+					cells.deleteRows(17 - deleteWorkdayoff + 1, deleteWorkdayoff - 1);
+					deleteRows += deleteWorkdayoff - 1;
+				} else {
+					cells.deleteRows(17 - deleteWorkdayoff + 1, deleteWorkdayoff - 1);
+					deleteRows += deleteWorkdayoff - 1;
+					cells.get("B14").copy(cells.get("B13"));
+					cells.get("C14").copy(cells.get("C13"));
+					cells.deleteRow(12);
+					deleteRows += 1;
+				}
+			}
+		}
+		if(deleteC2 > 0) {
+			cells.deleteRow(11);
+			deleteRows += 1;
+		}
+		if(deleteC1 > 0) {
+			cells.deleteRow(10);
+			deleteRows += 1;
+		}
+		deleteRowsList.set(0, deleteRows);
+		return deleteRowsList;
 	}
 	
 	public String formatTimeWithDayAttr(TimeWithDayAttr timeWithDayAttr) {

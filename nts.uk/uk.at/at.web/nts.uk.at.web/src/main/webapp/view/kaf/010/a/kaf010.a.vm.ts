@@ -264,19 +264,19 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.inputEnable(false)
 			}
-			// ※18
+			// ※18	//huytodo
 			if (self.dataSource.hdWorkOvertimeReflect.nightOvertimeReflectAtr == 0) {
 				self.nightOvertimeReflectAtrCheck(false);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
 			} else {
 				self.nightOvertimeReflectAtrCheck(true);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
 			}
 			// ※16
 			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr == 1) {
@@ -412,6 +412,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		
 		register() {
 			const vm = this;
+
+			if(!_.isNil(vm.workInfo().workHours2) 
+				&& ((!_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end()))
+					 || (_.isNumber(vm.workInfo().workHours2.start()) && !_.isNumber(vm.workInfo().workHours2.end())))){
+				vm.handleErrorCustom({messageId : "Msg_307"});
+				return;
+			}
 			
 			if(vm.mode() != MODE.MULTiPLE_AGENT){
 				vm.registerSingle();
@@ -1598,6 +1605,23 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						return $.Deferred().resolve(false);
 					}
 				});
+		}
+
+		handleErrorCustom(failData: any): any {
+			const vm = this;
+			if(failData.messageId == "Msg_26") {
+				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+				.then(() => {
+					return $.Deferred().resolve(false);	
+				});	
+			}
+			if(failData.messageId == "Msg_307"){
+				return vm.$dialog.error({ messageId: failData.messageId})
+				.then(() => {
+					return $.Deferred().resolve(false);	
+				});	
+			}
+			return $.Deferred().resolve(true);
 		}
 	}
 

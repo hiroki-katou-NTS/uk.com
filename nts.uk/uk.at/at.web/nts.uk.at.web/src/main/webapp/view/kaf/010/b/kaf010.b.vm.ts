@@ -294,7 +294,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				'#kaf000-a-component4 .nts-input', 
 				'#kaf000-a-component3-prePost', 
 				'#kaf000-a-component5-comboReason', 
-				'#kaf000-a-component5-textReason', 
+				'#kaf000-a-component5-textReason',
+				'#kaf000-b-component4 .nts-input', 
+				'#kaf000-b-component3-prePost', 
+				'#kaf000-b-component7 #combo-box', 
+				'#kaf000-b-component7 #inpReasonTextarea', 
 				'#inpStartTime1', 
 				'#inpEndTime1')
 				.then(isValid => {
@@ -530,16 +534,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			// ※18
 			if (self.dataSource.hdWorkOvertimeReflect.nightOvertimeReflectAtr == 0) {
 				self.nightOvertimeReflectAtrCheck(false);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).hide();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).hide();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).hide();
 			} else {
 				self.nightOvertimeReflectAtrCheck(true);
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
-				$(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
-				$(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-1})`).show();
+				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length-2})`).show();
+				// $(`#fixed-overtime-hour-table tr:nth-child(${self.overTime().length})`).show();
 			}
 			// ※16
 			if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr == 1) {
