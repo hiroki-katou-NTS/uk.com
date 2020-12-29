@@ -2209,7 +2209,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 			// アルゴリズム「承認状況取得日別確認状況」を実行する
 			List<DailyConfirmOutput> dailyConfirmOutputLst = this.createConfirmApprSttByDate(wkpID, empPeriod.getEmpID(), period, apprSttComfirmSet);
-			apprSttConfirmEmpLst.add(new ApprSttConfirmEmp(dailyConfirmOutputLst, employeeBasicInfoImport.getEmployeeCode(), employeeBasicInfoImport.getPName(), monthConfirm, monthApproval));
+			apprSttConfirmEmpLst.add(new ApprSttConfirmEmp(
+					dailyConfirmOutputLst, 
+					employeeBasicInfoImport.getEmployeeCode(), 
+					employeeBasicInfoImport.getPName(), 
+					monthConfirm, 
+					monthApproval,
+					employeeBasicInfoImport.getEmployeeId()));
 		}
 		return apprSttConfirmEmpLst.stream().sorted(Comparator.comparing(ApprSttConfirmEmp::getEmpCD)).collect(Collectors.toList());
 	}

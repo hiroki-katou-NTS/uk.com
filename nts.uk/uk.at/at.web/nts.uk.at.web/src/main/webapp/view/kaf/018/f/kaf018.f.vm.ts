@@ -256,6 +256,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		updateCellStyles() {
 			const vm = this;
 			_.forEach(vm.dataSource, (item: EmpConfirmInfo) => {
+				if(!vm.apprSttComfirmSet.usePersonConfirm && !vm.apprSttComfirmSet.useBossConfirm) {
+					return;
+				}
 				for(let i=0; i<item.dateInfoLst.length; i++) {
 					let dateInfoItem = item.dateInfoLst[i];
 					$('#fGrid').igGrid("cellById", item.empID, "dateInfoLst").get(i).classList.remove('kaf018-f-stt-confirmed');
@@ -378,10 +381,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				let a: Array<EmpConfirmInfo> = [];
 				_.forEach(empPeriodLst, item => {
 					let apprSttConfirmEmp = _.find(data, o => {
-						if(_.isEmpty(o.listDailyConfirm)) {
-							return false;	
-						}
-						return o.listDailyConfirm[0].empID==item.empID;
+						return o.empID==item.empID;
 					});
 					if(apprSttConfirmEmp) {
 						a.push(new EmpConfirmInfo(apprSttConfirmEmp, vm));	
@@ -412,6 +412,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		empName: string;
 		monthConfirm: boolean;
 		monthApproval: boolean;
+		empID: string;
 	}
 	
 	interface DailyConfirmOutput {
@@ -448,7 +449,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		dateInfoLst: Array<DateInfo>;
 		constructor(apprSttConfirmEmp: ApprSttConfirmEmp, vm: any) {
 			if(apprSttConfirmEmp) {
-				this.empID = apprSttConfirmEmp.listDailyConfirm[0].empID;
+				this.empID = apprSttConfirmEmp.empID;
 				this.empCD = apprSttConfirmEmp.empCD;
 				this.empName = apprSttConfirmEmp.empName;
 				this.sttUnConfirmDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.personConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
