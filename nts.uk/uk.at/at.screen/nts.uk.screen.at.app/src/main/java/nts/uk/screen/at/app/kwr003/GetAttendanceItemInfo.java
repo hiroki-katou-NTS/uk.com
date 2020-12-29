@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttri
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
@@ -46,15 +47,14 @@ public class GetAttendanceItemInfo {
             val listAttdanceIdOfDaily = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.DAILY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
             val listAttId = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Daily, listAttdanceIdOfDaily);
-            //勤怠項目の種類　（1:日次）
-
-            val itemDailys = dailyItemService.getDailyItems(cid, roleId, listAttId, null);
+            //勤怠項目の種類　（1:日次）-- 日次の勤怠項目を取得する Nhận daily Attendance items
+            val itemDailys = dailyItemService.findByAttendanceItems(cid, listAttId);
             rs.addAll(itemDailys.stream().map(e -> new AttItemDto(
-                    e.getAttendanceItemId(),
-                    e.getAttendanceItemName(),
-                    e.getAttendanceItemDisplayNumber(),
-                    e.getTypeOfAttendanceItem(),
-                    convertDailyToAttForms(e.getTypeOfAttendanceItem(), 0)))
+                    e.getTimeId(),
+                    e.getName(),
+                    e.getDisplayNumber(),
+                    null,
+                    convertDailyToAttForms(e.getAttribute(), e.getMasterType())))
                     .collect(Collectors.toCollection(ArrayList::new)));
             return rs;
         }
@@ -80,11 +80,11 @@ public class GetAttendanceItemInfo {
 
     private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, int masterType) {
         if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
-            //&& masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value
+                && masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value
                 ) {
             return CommonAttributesOfForms.WORK_TYPE.value;
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
-            // && masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value
+                && masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value
                 ) {
             return CommonAttributesOfForms.WORKING_HOURS.value;
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.NumberOfTime.value)) {
