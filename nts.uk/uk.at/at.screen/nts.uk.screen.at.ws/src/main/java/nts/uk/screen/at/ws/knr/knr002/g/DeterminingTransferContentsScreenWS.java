@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.screen.at.app.query.knr.knr002.g.ConfirmTransmissionMaster;
 import nts.uk.screen.at.app.query.knr.knr002.g.ConfirmTransmissionMasterDto;
 import nts.uk.screen.at.app.query.knr.knr002.g.DeterminingTransferContents;
+import nts.uk.screen.at.app.query.knr.knr002.g.DeterminingTransferContentsDto;
 
 /**
  * 
@@ -34,7 +35,7 @@ public class DeterminingTransferContentsScreenWS {
 
 	@POST
 	@Path("determine")
-	public ConfirmTransmissionMasterDto determine(ConfirmTransmissionMasterDto dto) {
+	public DeterminingTransferContentsDto determine(DeterminingTransferContentsDto dto) {
 		return this.determiningTransferContents.determine(dto.getEmpInfoTerCode(),
 														  dto.isSendEmployeeId(),
 														  dto.isSendWorkType(),

@@ -66,38 +66,28 @@ module knr002.g.service {
      */
     export function determine(empInfoTerCode: string,
                              sendEmployeeId: boolean,
-                             employeeIds: Array<string>,
                              sendBentoMenu: boolean,
-                             bentoMenuFrameNumbers: Array<string>,
                              sendWorkType: boolean,
-                             workTypeCodes: Array<string>,
                              sendWorkTime: boolean,
-                             workTimeCodes: Array<string>,
                              overTimeHoliday: boolean,
                              applicationReason: boolean,
                              stampReceive: boolean,
                              reservationReceive: boolean,
                              applicationReceive: boolean,
                              timeSetting: boolean,
-                             remoteSetting: boolean,
                              reboot: boolean): JQueryPromise<any> {
         const dto = {
             empInfoTerCode: empInfoTerCode,
             sendEmployeeId: sendEmployeeId,
-            employeeIds: employeeIds,
             sendBentoMenu: sendBentoMenu,
-            bentoMenuFrameNumbers: bentoMenuFrameNumbers,
             sendWorkType: sendWorkType,
-            workTypeCodes: workTypeCodes,
             sendWorkTime: sendWorkTime,
-            workTimeCodes: workTimeCodes,
             overTimeHoliday: overTimeHoliday,
             applicationReason: applicationReason,
             stampReceive: stampReceive,
             reservationReceive: reservationReceive,
             applicationReceive: applicationReceive,
             timeSetting: timeSetting,
-            remoteSetting: remoteSetting,
             reboot: reboot
         };
         return ajax(paths.determine, dto);

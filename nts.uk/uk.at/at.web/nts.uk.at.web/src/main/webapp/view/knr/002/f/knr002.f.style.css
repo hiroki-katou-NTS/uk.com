@@ -22,9 +22,15 @@
 .contentDialog td[role=gridcell] {
     border-bottom: 1px dotted black;
 }
+.ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
+    padding: 0 2px;
+}
+.contentDialog td[role=gridcell] {
+    border-bottom: 1px dotted black;
+}
 
 .contentDialog #tablerange{
-	hight: 168px;
+	height: 168px;
 	width: 565px;
 }
 .testcss {

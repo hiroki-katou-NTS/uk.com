@@ -55,7 +55,7 @@ public class TimeRecordSettingUpdateRegisterCommandHandler extends CommandHandle
 		List<ReqComStatusMonitoring> reqComStatusMonitoring = this.reqComStatusMonitoringRepository.get(new ContractCode(contractCode), listTerminalCode, true);
 		//	2. リクエスト通信の状態監視＞0件
 		if(reqComStatusMonitoring.size() > 0)
-			throw new BusinessException("Msg_1986");
+			throw new BusinessException("Msg_1984");
 		//	3. 削除する(契約コード、就業情報端末コード<List>): 契約コード、復旧先就業情報端末コード<List>
 		this.timeRecordSettingUpdateListDeleteCommandHandler
 			.handle(new TimeRecordSettingUpdateListDeleteCommand(command.getRestoreDestinationTerminalList()));

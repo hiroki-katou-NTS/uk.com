@@ -26,6 +26,8 @@ module knr002.test {
             empInfoTerCode_D: KnockoutObservable<string>;
             empInfoTerName_D: KnockoutObservable<string>;
             empInfoTerList_D: KnockoutObservableArray<any>;
+            command_D: any;
+            
             //currentCodeList_D: KnockoutObservableArray<any>;
             //  F_Dialog
             empInfoTerCode_F: KnockoutObservable<string>;
@@ -46,28 +48,29 @@ module knr002.test {
                 self.sharedContent = ko.observable("The Shared Content is: \nScreen: ");
                 self.isMulti = true;
                 //B_Dialog
-                self.empInfoTerCode_B = ko.observable("0002");
-                self.empInfoTerName_B = ko.observable("Name 2B_Shared");
-                self.modelEmpInfoTerName_B = ko.observable("NRL-2B");
-                self.workLocationName_B = ko.observable("Work Location 2B");
+                self.empInfoTerCode_B = ko.observable("0001");
+                self.empInfoTerName_B = ko.observable("Name 1B_Shared");
+                self.modelEmpInfoTerName_B = ko.observable("NRL-1B");
+                self.workLocationName_B = ko.observable("Work Location 1B");
                 self.lastSuccessDate_B = ko.observable("2020/12/12 12:12:12");
                 self.status = ko.observable("Normal");
                 //D_Dialog
-                self.empInfoTerCode_D = ko.observable("0002");
-                self.empInfoTerName_D = ko.observable("Name 2D_Shared");
+                self.empInfoTerCode_D = ko.observable("0001");
+                self.empInfoTerName_D = ko.observable("Name D_Shared");
                 self.empInfoTerList_D = ko.observableArray([new EmpInfoTerminal("0001", "Name1", "NRL-1", "WLN 1"), 
                                                             new EmpInfoTerminal("0002", "Name2", "NRL-2", "WLN 2"), 
                                                             new EmpInfoTerminal("0003", "Name3", "NRL-3", "WLN 3"), 
                                                             new EmpInfoTerminal("0004", "Name4", "NRL-4", "WLN 4"),
                                                             new EmpInfoTerminal("0005", "Name5", "NRL-5", "WLN 5")]);
+                self.command_D = new D_Command("0001", "Name 1", "R1", 8, [new TimeRecordSetUpdateDto("v1", "u1")]);
                 // self.currentCodeList_D = ko.observableArray([new ItemModel("0001"), 
                 //                                              new ItemModel("0002"),
                 //                                              new ItemModel("0005"),
                 //                                              new ItemModel("0004")]);
 
                 //F_Dialog
-                self.empInfoTerCode_F = ko.observable("0002");
-                self.empInfoTerName_F = ko.observable("Name 2F_Shared");
+                self.empInfoTerCode_F = ko.observable("0001");
+                self.empInfoTerName_F = ko.observable("Name F_Shared");
                 self.modelEmpInfoTer_F = ko.observable(9);
                 self.lastSuccessDate_F = ko.observable("2020/12/12 12:12:12");
                 self.empInfoTerList_F = ko.observableArray([new EmpInfoTerminal("0001", "Name1", "NRL-1", "WLN 1"), 
@@ -118,8 +121,8 @@ module knr002.test {
                 var self = this;
                 blockUI.invisible();
                 //setShared From C
-                setShared('KNR002D_empInfoTerCode', self.empInfoTerCode_D());
-                setShared('KNR002D_empInfoTerName', self.empInfoTerName_D());
+                setShared('KNR002D_command', self.command_D);
+                console.log(self.command_D);
                 //setShare From A
                 setShared('KNR002D_empInfoTerList', self.empInfoTerList_D());
                 //setShared('KNR002D_currentCodeList', self.currentCodeList_D());
@@ -189,12 +192,30 @@ module knr002.test {
                 });
             }
         }
-        class ItemModel {
-            code: string;
-            constructor(code: string) {
-                this.code = code;
+
+        class D_Command {
+            empInfoTerCode: any;
+            empInfoTerName: string;
+            romVersion: string;
+            modelEmpInfoTer: number;
+            listTimeRecordSetUpdateDto: Array<TimeRecordSetUpdateDto>;
+            constructor(empInfoTerCode: any, empInfoTerName: string, romVersion: string, modelEmpInfoTer: number, listTimeRecordSetUpdateDto: Array<TimeRecordSetUpdateDto>){
+                this.empInfoTerCode = empInfoTerCode;
+                this.empInfoTerName = empInfoTerName;
+                this.romVersion = romVersion;
+                this.modelEmpInfoTer = modelEmpInfoTer;
+                this.listTimeRecordSetUpdateDto = listTimeRecordSetUpdateDto;
             }
         }
+        class TimeRecordSetUpdateDto{
+            variableName: string;
+            updateValue: string;
+            constructor(variableName: string, updateValue: string){
+                this.variableName = variableName;
+                this.updateValue = updateValue;
+            }
+        }
+
         class EmpInfoTerminal{
             empInfoTerCode: string;
             empInfoTerName: string;

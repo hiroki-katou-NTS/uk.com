@@ -58,6 +58,7 @@ public class DisplayTranferContentSettings {
 											.stampReceive(false)	//	全ての打刻データ
 											.applicationReceive(false)	//	全ての申請データ
 											.reservationReceive(false)	//	全ての予約データ
+										.workTime(Collections.emptyList())
 										.build();
 		} else {
 			timeRecordReqSettingValue = timeRecordReqSetting.get();

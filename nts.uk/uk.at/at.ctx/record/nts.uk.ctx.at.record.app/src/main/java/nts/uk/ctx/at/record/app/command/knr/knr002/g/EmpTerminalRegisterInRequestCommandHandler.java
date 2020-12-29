@@ -57,6 +57,17 @@ public class EmpTerminalRegisterInRequestCommandHandler extends CommandHandler<E
 																		timeRecordReqSettingVal.getEmployeeIds(),
 																		timeRecordReqSettingVal.getBentoMenuFrameNumbers(),
 																		timeRecordReqSettingVal.getWorkTypeCodes())
+																	.sendEmployeeId(command.isSendEmployeeId())
+																	.sendWorkType(command.isSendWorkType())
+																	.sendWorkTime(command.isSendWorkTime())
+																	.overTimeHoliday(command.isOverTimeHoliday())
+																	.applicationReason(command.isApplicationReason())
+																	.sendBentoMenu(command.isSendBentoMenu())
+																	.timeSetting(command.isTimeSetting())
+																	.reboot(command.isReboot())
+																	.stampReceive(command.isStampReceive())
+																	.applicationReceive(command.isApplicationReceive())
+																	.reservationReceive(command.isReservationReceive())
 															  .build();
 			//	4. persist
 			this.timeRecordReqSettingRepository.updateSetting(timeRecordReqSettingUpdate);

@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ConfirmTransmissionMaster {
 
-	// 就業情報端末のリクエスト一覧Repository.[1] 就業情報端末のリクエスト一覧を取得する
+	//	就業情報端末のリクエスト一覧Repository.[1] 就業情報端末のリクエスト一覧を取得する
 	@Inject
 	TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 

@@ -30,11 +30,10 @@ module knr002.d {
                 var self = this;										
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
-                // get Shared from C
-                self.empInfoTerCode(getShared('KNR002D_empInfoTerCode'));
-                self.empInfoTerName(getShared('KNR002D_empInfoTerName'));
+                // get shared from C
                 self.command = getShared('KNR002D_command');
-                
+                self.empInfoTerCode(self.command.empInfoTerCode);
+                self.empInfoTerName(self.command.empInfoTerName);
                 if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
                     self.destinationCopyList([]);
                     self.selectableCodeList = [];
@@ -144,26 +143,20 @@ module knr002.d {
                 });  
                 if(self.selectableCodeList.length <= 0){
                     // do  something
-                } else {
-                    dialog.confirm({messageId:"Msg_1986"})
-                    .ifYes(() => {                   
-                        blockUI.invisible();
-                        service.checkRemoteSettingsToCopy(self.selectableCodeList).done(()=>{
-                            self.command.empInfoTerCode = self.selectableCodeList;
-                            service.registerAndSubmitChanges(self.command).done(() => {
-
-                            }).fail(() => {
-                                
-                            });
-                        }).fail((err)=>{
-                            dialog.error({messageId: err.messageId}).then(()=>{
+                } else {    
+                    self.command.empInfoTerCode = self.selectableCodeList;              
+                    service.checkRemoteSettingsToCopy(self.selectableCodeList).done(()=>{
+                        self.call_C_Api(self.command);
+                    }).fail((err)=>{
+                        dialog.confirm({messageId: err.messageId, messageParams: err.parameterIds})
+                        .ifYes(() => {     
+                            console.log("call C Api");              
+                            self.call_C_Api(self.command);
+                        }).ifNo(() => {
                                 // do something
-                            });
+                        }).always(() => {
+                            blockUI.clear(); 
                         });
-                    }).ifNo(() => {
-                            // do something
-                    }).always(() => {
-                        blockUI.clear(); 
                     });
                 }          
 
@@ -191,6 +184,16 @@ module knr002.d {
                 }
                 return arr;
             }
+            /**
+             * register and submit changes(call C screen Api)
+             */
+            private call_C_Api(command: any): any{
+                service.registerAndSubmitChanges(command).done(() => { 
+                    nts.uk.ui.windows.close();
+                }).fail((err) => {
+                    dialog.error({messageId: err.messageId});
+                });
+            }
         }
         class EmpInfoTerminal{
             empInfoTerCode: string;
@@ -205,10 +208,6 @@ module knr002.d {
                 this.workLocationName = workLocationName;
                 this.availability = false;
             }
-        }
-        class TimeRecordSetUpdateDto{
-            variableName: string;
-            updateValue: string;
         }
     }
 }

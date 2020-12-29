@@ -53,5 +53,4 @@ public class JpaTimeRecordReqSettingSendEmployeeRepository extends JpaRepository
 						setting.getTerminalCode().v(),
 						employeeId));
 	}
-
 }

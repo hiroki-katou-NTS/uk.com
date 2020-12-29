@@ -46,7 +46,7 @@
 							disableMoveButton: false,
 							primaryKey: 'employeeCode',
 							columns: columns,
-							value: currentCodeList,
+							value: employeesListVal,
 							searchMode: 'filter',
 							searchCriterion: ['employeeCode', 'employeeName', 'affiliationName'],
 							draggable: true,
@@ -60,7 +60,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed" id="H6_1" tabindex="4"
-					data-bind="">#{i18n.getText('KNR002_185')}</button>
+					data-bind="click: enter">#{i18n.getText('KNR002_185')}</button>
 				<button id="H6_2" tabindex="5"
 					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_186')}</button>
 			</div>

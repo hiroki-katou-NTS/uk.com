@@ -35,9 +35,9 @@ public class CheckRemoteSettingsToCopy {
 		
 		if(getTimeRecordSetUpdateList.size() > 0) {
 			dto.setHasError(true);
-			StringBuilder param = new StringBuilder();
-			getTimeRecordSetUpdateList.stream().forEach(e -> param.append("「" + e.getEmpInfoTerCode().v() + "」"));
-			throw new BusinessException("Msg_1986", param.toString());
+			StringBuilder parameterIds = new StringBuilder();
+			getTimeRecordSetUpdateList.stream().forEach(e -> parameterIds.append("「" + e.getEmpInfoTerCode().v() + "」"));
+			throw new BusinessException("Msg_1986", parameterIds.toString());
 		}
 		return dto;
 	}

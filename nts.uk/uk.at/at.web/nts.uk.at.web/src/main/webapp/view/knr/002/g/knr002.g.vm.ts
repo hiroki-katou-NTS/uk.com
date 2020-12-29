@@ -28,20 +28,20 @@ module knr002.g {
             reservationReceive: KnockoutObservable<boolean>;//全ての予約データ
             
             //  WorkType_ 
-            posibleWorkTypes: KnockoutObservableArray<string>;
+            posibleWorkTypes: KnockoutObservableArray<any>;
             workTypeCodes: KnockoutObservableArray<string>;
-            selectableWorkTypes: KnockoutObservableArray<string>;
+            selectableWorkTypes: KnockoutObservableArray<any>;
 
             //  WorkTime_ 就業時間帯の設定
-            posibleWorkTimes: KnockoutObservableArray<string>;
+            posibleWorkTimes: KnockoutObservableArray<any>;
             workTimeCodes: KnockoutObservableArray<string>;
-            selectableWorkTimes: KnockoutObservableArray<string>;
+            selectableWorkTimes: KnockoutObservableArray<any>;
 
             //  bentoMenu
             selectableBentos: KnockoutObservableArray<number>;
 
             //  employee
-            selectableEmployees: KnockoutObservableArray<string>;
+            selectableEmployees: KnockoutObservableArray<any>;
 
             constructor(){
                 var self = this;
@@ -125,6 +125,45 @@ module knr002.g {
                 dfd.resolve();											
                 return dfd.promise();											
             }
+
+            /**
+             * get employees
+             * 
+             */
+            private call_H_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                setShared('KNR002H_empInfoTerCode', self.empInfoTerCode());
+                modal('/view/knr/002/h/index.xhtml', { title: 'H_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                    let selectable = getShared("KNR002H_selectedList");
+                    let isCancel = getShared("KNR002H_isCancel");
+                    if(isCancel !== undefined && isCancel === false){
+                        self.selectableEmployees(selectable !== undefined? selectable : []);
+                        if(self.selectableEmployees().length <= 0){
+                            console.log("choosed nothing");
+                            dialog.error({ messageId: "Msg_2023" }).then(() => {
+                                //  do something
+                            });
+                        } else {
+                            let command: any = {};
+                            command.terminalCode = self.empInfoTerCode();
+                            command.selectedEmployeesID = self.selectableEmployees();
+                            service.makeSelectedEmployees(command).done(() => {
+                                blockUI.invisible();
+                                dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    self.sendEmployeeId(true);
+                                });                      
+                            }).fail(() => {
+                                // do something
+                            }).always(() => {
+                                blockUI.clear();
+                            });              
+                        }
+                    }
+                });
+            }
+
             /**
              * get worktype to be sent
              * 
@@ -147,19 +186,17 @@ module knr002.g {
                             self.selectableWorkTypes(selectable !== undefined? selectable : []);
                             if(isCancel !== undefined && isCancel === false){
                                 if(self.selectableWorkTypes().length <= 0){
-                                    // dialog.error({ messageId: "Msg_" }).then(() => {
-                                    //     blockUI.clear();
-                                    // });
+                                    dialog.error({ messageId: "Msg_2024" }).then(() => {
+                                        // do something
+                                    });
                                 } else {
                                     let command: any = {};
                                     command.terminalCode = self.empInfoTerCode();
                                     command.selectedWorkTypes = self.selectableWorkTypes().map(e => e.code);
-                                    console.log("command: ", command);
                                     service.makeSelectedWorkTypes(command).done(() => {
                                         blockUI.invisible();
-                                        console.log("done");
                                         dialog.info({ messageId: "Msg_15" }).then(() => {
-                                            nts.uk.ui.windows.close();
+                                            self.sendWorkType(true);
                                         });                      
                                     }).fail(() => {
                                         // do something
@@ -195,9 +232,9 @@ module knr002.g {
                             if(isCancel !== undefined && isCancel === false){
                                 self.selectableWorkTimes(selectable !== undefined? selectable : []);
                                 if(self.selectableWorkTimes().length <= 0 ){
-                                    // dialog.error({ messageId: "Msg_" }).then(() => {
-                                    //     blockUI.clear();
-                                    // });
+                                    dialog.error({ messageId: "Msg_2025" }).then(() => {
+                                        // do something
+                                    });
                                 } else {
                                     let command: any = {};
                                     command.terminalCode = self.empInfoTerCode();
@@ -205,7 +242,7 @@ module knr002.g {
                                     service.makeSelectedWorkTimes(command).done(() => {
                                         blockUI.invisible();
                                         dialog.info({ messageId: "Msg_15" }).then(() => {
-                                            nts.uk.ui.windows.close();
+                                            self.sendWorkTime(true);
                                         });                      
                                     }).fail(() => {
                                         // do something
@@ -219,18 +256,7 @@ module knr002.g {
                     }	
                 });	 
             }
-            /**
-             * get employees
-             * 
-             */
-            private call_H_Dialog(): void{
-                var self = this;
-                blockUI.invisible();
-                setShared('KNR002H_empInfoTerCode', self.empInfoTerCode());
-                modal('/view/knr/002/h/index.xhtml', { title: 'H_Screen', }).onClosed(() => {
-                    blockUI.clear();
-                });
-            }
+            
             /**
              * get bento
              * 
@@ -256,7 +282,7 @@ module knr002.g {
                             service.makeSelectedBentoMenu(command).done(() => {
                                 blockUI.invisible();
                                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    nts.uk.ui.windows.close();
+                                    self.sendBentoMenu(true);
                                 });                      
                             }).fail(() => {
                                 // do something
@@ -273,36 +299,74 @@ module knr002.g {
              */
             private enter(): void{
                 var self = this;
-                blockUI.invisible();
+                self.clearErrors();
                 service.confirm(self.empInfoTerCode()).done((data) => {
                     if(!data){
                         // do something
+                        console.log("no data");
                     } else {
-                        self.selectableEmployees(data.employeeIds);
-                        self.selectableWorkTypes(data.workTypeCodes);
-                        self.selectableWorkTimes(data.workTimeCodes);
-                        self.selectableBentos(data.bentoMenuFrameNumbers);
-                        if((self.selectableEmployees().length <= 0 && self.sendEmployeeId())
-                        || self.selectableEmployees().length > 0 && !self.sendEmployeeId()){
+                        if(!self.sendEmployeeId() && 
+                            !self.sendWorkType() && 
+                            !self.sendWorkTime() && 
+                            !self.overTimeHoliday() &&
+                            !self.applicationReason() &&
+                            !self.sendBentoMenu() &&
+                            !self.timeSetting() &&
+                            !self.reboot() &&
+                            !self.stampReceive() &&
+                            !self.applicationReceive() &&
+                            !self.reservationReceive()) {
+                            dialog.error({ messageId: "Msg_2035" }).then(() => {
+                                blockUI.clear();
+                            });
+                        }
+
+                        if((data.employeeIds.length <= 0 && self.sendEmployeeId())
+                        || (data.employeeIds.length > 0 && !self.sendEmployeeId())){
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
-                        if((self.selectableWorkTypes().length <= 0 && self.sendWorkType())
-                        || self.selectableWorkTimes().length > 0 && !self.sendWorkType()){
+                        if((data.workTypeCodes.length <= 0 && self.sendWorkType())
+                        || (data.workTypeCodes.length > 0 && !self.sendWorkType())){
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
-                        if((self.selectableWorkTimes().length <= 0 && self.sendWorkTime())
-                        || self.selectableWorkTimes().length > 0 && !self.sendWorkTime()){
+                        if((data.workTimeCodes.length <= 0 && self.sendWorkTime())
+                        || (data.workTimeCodes.length > 0 && !self.sendWorkTime())){
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
-                        if((self.selectableBentos().length <= 0 && self.sendBentoMenu())
-                        || self.selectableBentos().length > 0 && !self.sendBentoMenu()){
+                        if((data.bentoMenuFrameNumbers.length <= 0 && self.sendBentoMenu())
+                        || (data.bentoMenuFrameNumbers.length > 0 && !self.sendBentoMenu())){
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
+                        if(self.hasError()){
+                            return;
+                        }
+                        
 
-
+                        service.determine(self.empInfoTerCode(),
+                                          self.sendEmployeeId(),
+                                          self.sendBentoMenu(),
+                                          self.sendWorkType(),
+                                          self.sendWorkTime(),
+                                          self.overTimeHoliday(),
+                                          self.applicationReason(),
+                                          self.stampReceive(),
+                                          self.reservationReceive(),
+                                          self.applicationReceive(),
+                                          self.timeSetting(),
+                                          self.reboot())
+                                .done(() => {
+                                    blockUI.invisible();
+                                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                                        nts.uk.ui.windows.close();
+                                    }); 
+                                }).fail(() => {
+                                    console.log("determine false");
+                                }).always(() => {
+                                    blockUI.clear();
+                                });
                     }
                 });
             }
@@ -319,9 +383,13 @@ module knr002.g {
              * Check List Err
              */
             private hasError(): boolean{
-                var self = this;
-                let checkIP = true;
-                self.clearErrors(); 
+                if( $('#G6_1').ntsError('hasError') ||
+                    $('#G6_2').ntsError('hasError') ||
+                    $('#G6_3').ntsError('hasError') ||
+                    $('#G6_6').ntsError('hasError'))    {
+                    return true;
+                }
+                return false;                    
             }
 
             /**

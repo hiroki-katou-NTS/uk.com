@@ -48,7 +48,11 @@ module knr002.k {
                             for(let item of data.bentoMenu){
                                 selectedListTemp.push(item);
                             }
-                            self.selectedList(selectedListTemp);
+                            if(selectedListTemp.length > 0){
+                                self.selectedList(selectedListTemp);
+                            } else if (self.bentoMenu().length > 0){
+                                self.selectedList.push(self.bentoMenu()[0].frameNumber);
+                            }
                         }
                     });
                 }
@@ -67,10 +71,10 @@ module knr002.k {
                     dialog.error({ messageId: "Msg_2026" }).then(() => {
                         blockUI.clear();
                     });
-                }else{
+                }else
                     setShared('KNR002K_selectedList', self.selectedList());
-                    setShared('KNR002K_isCancel', self.selectedList());
-                }               
+                setShared('KNR002K_isCancel', self.isCancel);
+                nts.uk.ui.windows.close();
             }
             /**
              * cancel_Dialog
@@ -78,6 +82,7 @@ module knr002.k {
             private cancel_Dialog(): any {
                 let self = this;
                 self.isCancel = true;
+                setShared('KNR002K_isCancel', self.isCancel);
                 nts.uk.ui.windows.close();
             }
    

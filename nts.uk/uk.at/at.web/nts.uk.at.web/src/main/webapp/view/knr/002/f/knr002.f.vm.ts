@@ -12,7 +12,6 @@ module knr002.f {
 			empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
             modelEmpInfoTer: KnockoutObservable<number>;
-            modelEmpInfoTerName: KnockoutObservable<string>;
             lastSuccessDate: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
             recoveryTargetList: KnockoutObservableArray<any>;
@@ -24,7 +23,6 @@ module knr002.f {
                 self.empInfoTerCode = ko.observable("");
                 self.empInfoTerName = ko.observable("");
                 self.modelEmpInfoTer = ko.observable(0);
-                self.modelEmpInfoTerName = ko.observable("");
                 self.lastSuccessDate = ko.observable("");
                 self.workLocationName = ko.observable("");
                 self.recoveryTargetList = ko.observableArray<EmpInfoTerminal>([]);
@@ -50,7 +48,6 @@ module knr002.f {
                     self.empInfoTerCode('');
                     self.empInfoTerName('');
                     self.modelEmpInfoTer(0);
-                    self.modelEmpInfoTerName('');
                     self.lastSuccessDate('');
                     self.workLocationName('');
                     self.recoveryTargetList([]);
@@ -108,7 +105,7 @@ module knr002.f {
                         { headerText: '', key: 'availability', dataType: 'boolean', width: ' 35px', ntsControl: 'Checkbox' },
                         { headerText: getText('KNR002_238'), key: 'empInfoTerCode', dataType: 'string', width: 60},
                         { headerText: getText('KNR002_239'), key: 'empInfoTerName', dataType: 'string', width: 200},
-                        { headerText: getText('KNR002_240'), key: 'modelEmpInfoTer', dataType: 'string', width: 70},
+                        { headerText: getText('KNR002_240'), key: 'modelEmpInfoTerName', dataType: 'string', width: 120},
                         { headerText: getText('KNR002_241'), key: 'workLocationName', dataType: 'string', width: 200},
                     ],
                     features: [{
@@ -123,7 +120,6 @@ module knr002.f {
              * cancel_Dialog
              */
             private cancel_Dialog(): any {
-                let self = this;
                 nts.uk.ui.windows.close();
             }
             /**
@@ -141,11 +137,17 @@ module knr002.f {
                         return;
                     }); 
                 } else {
-                    dialog.confirm({ messageId: "Msg_2020", messageParams: ["X", "Y"] }).ifYes(() => {
+                    let x = `「${self.empInfoTerCode()}」`;
+                    let y = '';
+                    _.forEach(self.selectedList, (e => {
+                        y += `「${e}」`
+                    }));
+                    dialog.confirm({ messageId: "Msg_2020", messageParams: [x, y] }).ifYes(() => {
                         blockUI.invisible();
                         service.recovery(self.empInfoTerCode(), self.selectedList).done(() => {
-                            
-                            }).fail(() => {dialog.error({ messageId: "Msg_1984" });
+                            nts.uk.ui.windows.close();
+                            }).fail((err) => {
+                                dialog.error({ messageId: err.messageId });
                             }).always(() => {
                                 blockUI.clear();
                             });
@@ -191,12 +193,6 @@ module knr002.f {
                 this.empInfoTerName = empInfoTerName;
                 this.modelEmpInfoTerName = modelEmpInfoTerName;
                 this.availability = false;
-            }
-        }
-        class Dto{
-            empInfoTerCode: string;
-            constructor(empInfoTerCode: string){
-                this.empInfoTerCode = empInfoTerCode;
             }
         }
     }

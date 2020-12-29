@@ -1,13 +1,10 @@
 module knr002.h {
     import blockUI = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import getMsg = nts.uk.resource.getMessage;
-    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import dialog = nts.uk.ui.dialog;
+
 
     export module viewmodel {
         export class ScreenModel {
@@ -15,8 +12,8 @@ module knr002.h {
             ccgcomponent: GroupOption;       
             baseDate: KnockoutObservable<Date>;
             listEmployee: KnockoutObservableArray<ExportEmployeeSearchDto >;
-            currentCodeList: KnockoutObservableArray<string>;
             employeesList: KnockoutObservableArray<EmployeesDto>;
+            employeesListVal: KnockoutObservableArray<ExportEmployeeSearchDto >;
             selectedCode: KnockoutObservable<string>;
             selectedEmployee: KnockoutObservableArray<any>;
             lstPersonComponentOption: any;
@@ -35,9 +32,9 @@ module knr002.h {
 
 
                 self.employeesList = ko.observableArray([]);
+                self.employeesListVal = ko.observableArray([]);
 
                 self.selectedCode = ko.observable(null);
-                self.currentCodeList = ko.observableArray([]);
                 self.selectedEmployee = ko.observableArray([]);
 
                 self.baseDate = ko.observable(new Date());
@@ -115,10 +112,22 @@ module knr002.h {
 
                 service.getEmployees(self.empInfoTerCode).done(data => {
                     if (data === undefined || data.length == 0) {
-                        self.employeesList();
+                        self.employeesList([]);
+                        self.employeesListVal([]);
                     } else {                  
                        // var sortArray = _.orderBy(data, [e.employeeCode], ['asc']);
+                       let keyMap: any = {};
+                       _.forEach(data, e => {
+                           keyMap[e.employeeId] = e;
+                       });
+
                         self.employeesList(data);
+                        let employeesListTemp = [];
+                        for(let item of data){
+                            let employee = new ExportEmployeeSearchDto(item.employeeId, item.employeeCode, item.businessName, item.workplaceName);
+                            employeesListTemp.push(employee);
+                        }
+                        self.employeesListVal(employeesListTemp);
                     }
                     dfd.resolve();
                 });
@@ -134,14 +143,14 @@ module knr002.h {
             private enter(): any{
                 let self = this;
                 self.isCancel = false;
-                if(!self.employeeSearchedList() || self.employeeSearchedList().length <= 0){
-                    dialog.error({ messageId: "Msg_2026" }).then(() => {
-                        blockUI.clear();
+                if(!self.employeesListVal() || self.employeesListVal().length <= 0){
+                    dialog.error({ messageId: "Msg_2023" }).then(() => {
+                        // do something
                     });
-                }else{
-                    setShared('KNR002H_selectedList', self.employeeSearchedList());
-                    setShared('KNR002H_isCancel', self.isCancel);
-                }            
+                }else
+                    setShared('KNR002H_selectedList', self.employeesListVal().map(e => e.employeeId));
+                setShared('KNR002H_isCancel', self.isCancel);
+                nts.uk.ui.windows.close();
             }
 
             /**

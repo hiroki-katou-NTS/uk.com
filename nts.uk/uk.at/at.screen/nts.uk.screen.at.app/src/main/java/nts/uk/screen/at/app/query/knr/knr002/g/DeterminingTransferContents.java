@@ -23,7 +23,7 @@ public class DeterminingTransferContents {
 	@Inject
 	EmpTerminalRegisterInRequestCommandHandler empTerminalRegisterInRequestCommandHandler;
 
-	public ConfirmTransmissionMasterDto determine(String empInfoTerCode,
+	public DeterminingTransferContentsDto determine(String empInfoTerCode,
 													 boolean sendEmployeeId, 
 													 boolean sendWorkType, 
 													 boolean sendWorkTime, 
@@ -39,7 +39,7 @@ public class DeterminingTransferContents {
 		//	1.	送信するマスタにデータが選択されているか確認 ??? Old Data ==> is necessary???
 		ConfirmTransmissionMasterDto comfirmination = this.confirmTransmissionMaster
 														  .getTimeRecordReqSetting(empInfoTerCode);
-		
+		DeterminingTransferContentsDto dto  = new DeterminingTransferContentsDto();
 		//	2. 就業情報端末のリクエスト一覧に登録する(契約コード、就業情報端末コード、就業情報端末のリクエスト一覧)
 		this.empTerminalRegisterInRequestCommandHandler
 			.handle(new EmpTerminalRegisterInRequestCommand(
@@ -56,6 +56,6 @@ public class DeterminingTransferContents {
 					applicationReceive,
 					reservationReceive));
 		
-		return comfirmination;
+		return dto;
 	}
 }
