@@ -25,7 +25,6 @@ module nts.uk.com.view.ccg015.f {
           vm.layoutDisplayType(params.selectedId);
           vm.getToppage(result);
         })
-        
         .always(() => vm.$blockui('clear'));
     }
 
@@ -72,13 +71,6 @@ module nts.uk.com.view.ccg015.f {
       const vm = this;
       vm.$window.close();
     }
-  }
-
-  enum LayoutType {
-    LAYOUT_TYPE_1 = 0,
-    LAYOUT_TYPE_2 = 1,
-    LAYOUT_TYPE_3 = 2,
-    LAYOUT_TYPE_4 = 3,
   }
 
   export class DataTopPageDto {
