@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
  * 時間休暇管理
@@ -27,4 +29,29 @@ public class TimeLeaveManagement {
 
     // 時間特別休暇管理
     private TimeSpecialLeaveMng timeSpecialLeaveMng;
+
+    public static TimeVacationManagementOutput setDtaOutput(TimeLeaveManagement dto) {
+
+        return new TimeVacationManagementOutput(
+            new SupHolidayManagement(
+                EnumAdaptor.valueOf(dto.super60HLeaveMng.getSuper60HLeaveUnit(), TimeDigestiveUnit.class),
+                dto.super60HLeaveMng.getSuper60HLeaveMngAtr()
+            ),
+            new ChildNursingManagement(
+                EnumAdaptor.valueOf(dto.nursingLeaveMng.getTimeCareLeaveUnit(), TimeDigestiveUnit.class),
+                dto.nursingLeaveMng.getTimeCareLeaveMngAtr(),
+                EnumAdaptor.valueOf(dto.nursingLeaveMng.getTimeChildCareLeaveUnit(), TimeDigestiveUnit.class),
+                dto.nursingLeaveMng.getTimeChildCareLeaveMngAtr()
+            ),
+            new TimeAllowanceManagement(
+                EnumAdaptor.valueOf(dto.timeSubstituteLeaveMng.getTimeSubstituteLeaveUnit(), TimeDigestiveUnit.class),
+                dto.timeSubstituteLeaveMng.getTimeSubstituteLeaveMngAtr()
+            ),
+            new TimeAnnualLeaveManagement(
+                EnumAdaptor.valueOf(dto.timeAnnualLeaveMng.getTimeAnnualLeaveUnit(), TimeDigestiveUnit.class),
+                dto.timeAnnualLeaveMng.getTimeAnnualLeaveMngAtr()
+            ),
+            dto.timeSpecialLeaveMng
+        );
+    }
 }

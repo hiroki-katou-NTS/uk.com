@@ -242,18 +242,18 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         }
 
         //時間休暇優先順位チェック
-        timeVacationCheck(timeDigestAppType, timeLeaveApplication, output.getTimeVacationRemainingOutput(), output.getTimeVacationManagementOutput());
+        timeVacationCheck(timeDigestAppType, timeLeaveApplication, output.getTimeVacationRemaining(), output.getTimeVacationManagement());
 
         //時間休暇残数チェック
         remainingTimeVacationCheck(timeDigestAppType, timeLeaveApplication);
 
         //時間休暇の消化単位チェック
-        Optional<TimeDigestiveUnit> super60HDigestion = Optional.of(output.getTimeVacationManagementOutput().getSupHolidayManagement().getSuper60HDigestion());
-        Optional<TimeDigestiveUnit> timeBaseRestingUnit = Optional.of(output.getTimeVacationManagementOutput().getTimeAllowanceManagement().getTimeBaseRestingUnit());
-        Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.of(output.getTimeVacationManagementOutput().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
-        Optional<TimeDigestiveUnit> timeChildNursing = Optional.of(output.getTimeVacationManagementOutput().getChildNursingManagement().getTimeChildDigestiveUnit());
-        Optional<TimeDigestiveUnit> timeNursing = Optional.of(output.getTimeVacationManagementOutput().getChildNursingManagement().getTimeDigestiveUnit());
-        Optional<TimeDigestiveUnit> pendingUnit = Optional.of(EnumAdaptor.valueOf(output.getTimeVacationManagementOutput().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit(), TimeDigestiveUnit.class));
+        Optional<TimeDigestiveUnit> super60HDigestion = Optional.of(output.getTimeVacationManagement().getSupHolidayManagement().getSuper60HDigestion());
+        Optional<TimeDigestiveUnit> timeBaseRestingUnit = Optional.of(output.getTimeVacationManagement().getTimeAllowanceManagement().getTimeBaseRestingUnit());
+        Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.of(output.getTimeVacationManagement().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
+        Optional<TimeDigestiveUnit> timeChildNursing = Optional.of(output.getTimeVacationManagement().getChildNursingManagement().getTimeChildDigestiveUnit());
+        Optional<TimeDigestiveUnit> timeNursing = Optional.of(output.getTimeVacationManagement().getChildNursingManagement().getTimeDigestiveUnit());
+        Optional<TimeDigestiveUnit> pendingUnit = Optional.of(EnumAdaptor.valueOf(output.getTimeVacationManagement().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit(), TimeDigestiveUnit.class));
         timeLeaveApplication.getLeaveApplicationDetails().forEach(x -> {
             commonAlgorithm.vacationDigestionUnitCheck(x.getTimeDigestApplication(),
                 super60HDigestion,
@@ -266,7 +266,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         });
 
         //契約時間をチェック
-        checkContractTime(timeDigestAppType, timeLeaveApplication, output.getWorkingConditionItemOutput());
+        checkContractTime(timeDigestAppType, timeLeaveApplication, output.getWorkingConditionItem());
 
     }
 
@@ -287,7 +287,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             timeLeaveApplication.getApplication().getVersion(),
             null,
             null,
-            output.getAppDispInfoStartupOutput()
+            output.getAppDispInfoStartup()
         );
 
         this.checkBeforeRigister(timeDigestAppType,timeLeaveApplication,output);
@@ -350,17 +350,17 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                 //「@年休より優先する休暇．60H超休を優先」　と　INPUT「60H超休の時間管理区分」を確認する
                 if (acquisitionRule.get().getAnnualHoliday().isSixtyHoursOverrideHoliday() && overrest60HManagement) {
                     //60H超休残時間
-                    int subOfHoliday = timeVacationRemainingOutput.getSubOfHoliday();
+                    int super60HRemainingTime = timeVacationRemainingOutput.getSuper60HRemainingTime();
 
                     //INPUT「時間消化申請」とINPUT「60H超休残数」を確認する
-                    if (totalTimeAnnualLeave > 0 && subOfHoliday > 0 && (subOfHoliday - totalSixtyOvertime) > 0) {
+                    if (totalTimeAnnualLeave > 0 && super60HRemainingTime > 0 && (super60HRemainingTime - totalSixtyOvertime) > 0) {
                         throw new BusinessException("Msg_1687", "#Com_ExsessHoliday", "#Com_PaidHoliday", "#Com_ExsessHoliday");
                     }
                 } else {
                     //「@年休より優先する休暇．代休を優先」　と　INPUT「代休の時間管理区分」を確認する
                     if (acquisitionRule.get().getAnnualHoliday().isPriorityPause() && timeBaseManagementClass) {
                         //時間代休残数
-                        int timeOfTimeOff = timeVacationRemainingOutput.getTimeOfTimeOff();
+                        int timeOfTimeOff = timeVacationRemainingOutput.getSubTimeLeaveRemainingTime();
 
                         //INPUT「時間消化申請」とINPUT「時間代休残数」を確認する
                         if (totalTimeAnnualLeave > 0 && timeOfTimeOff > 0 && (timeOfTimeOff - totalTimeOff) > 0) {

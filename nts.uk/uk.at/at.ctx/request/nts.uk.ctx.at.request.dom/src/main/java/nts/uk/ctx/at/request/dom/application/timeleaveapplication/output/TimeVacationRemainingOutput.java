@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
 
+import java.util.List;
+
 /**
  * 時間休暇残数
  */
@@ -14,33 +16,33 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class TimeVacationRemainingOutput {
 
     // 60H超休の残時間
-    private int subOfHoliday;
+    private int super60HRemainingTime;
 
     // 介護の残日数
-    private int dayOfLongTerm;
+    private int careRemainingDays;
 
     // 介護の残時間
-    private int timeOfLongTerm;
+    private int careRemainingTime;
 
     // 子看護の残日数
-    private int dayOfChildNursing;
+    private int childCareRemainingDays;
 
     // 子看護の残時間
-    private int timeOfChildNursing;
+    private int childCareRemainingTime;
 
     // 時間代休の残時間
-    private int timeOfTimeOff;
+    private int subTimeLeaveRemainingTime;
 
     // 時間年休の残日数
-    private int dayOfAnnualLeave;
+    private int annualTimeLeaveRemainingDays;
 
     // 時間年休の残時間
-    private int timeOfAnnualLeave;
+    private int annualTimeLeaveRemainingTime;
 
     // 時間特別休暇残数
-    private TimeSpecialVacationRemaining timeSpecialVacationRemaining;
+    private List<TimeSpecialVacationRemaining> specialTimeFrames;
 
     // 残数期間
-    private DatePeriod datePeriod;
+    private DatePeriod remainingPeriod;
 
 }

@@ -66,6 +66,6 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
 
         //4-2.詳細画面登録後の処理
         return detailAfterUpdate.processAfterDetailScreenRegistration(AppContexts.user().companyId(), application.getAppID(),
-            timeLeaveApplicationOutput.getAppDispInfoStartupOutput());
+            timeLeaveApplicationOutput.getAppDispInfoStartup());
     }
 }
