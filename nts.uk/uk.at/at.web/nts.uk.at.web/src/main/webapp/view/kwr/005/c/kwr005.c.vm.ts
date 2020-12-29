@@ -16,6 +16,7 @@ module nts.uk.at.view.kwr005.c {
     newName: KnockoutObservable<string> = ko.observable(null);
 
     params: KnockoutObservable<any> = ko.observable({});
+    isDeleted: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
@@ -54,8 +55,9 @@ module nts.uk.at.view.kwr005.c {
     }
 
     cancel() {
-      const vm = this;   
-      vm.$window.close(null);
+      const vm = this; 
+      const setShare:any =  vm.isDeleted() ? { code: null, name: null } : null;
+      vm.$window.close(setShare);
     }
 
     /**
@@ -70,7 +72,7 @@ module nts.uk.at.view.kwr005.c {
       vm.$blockui('show');
       vm.params().dupCode = vm.newCode();
       vm.params().dupName = vm.newName();
-
+      vm.isDeleted(false);
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
         .done((response) => {
           vm.$blockui('hide');
@@ -78,6 +80,7 @@ module nts.uk.at.view.kwr005.c {
         })
         .fail((error) => {
           let ctrlId = (error.messageId === 'Msg_1927') ? '#KWR005_C23' : '#closeDialog';
+          if( error.messageId === 'Msg_1928' ) vm.isDeleted(true);
           $(ctrlId).ntsError('set', { messageId: error.messageId });
           vm.$blockui('hide');
         })

@@ -46,7 +46,7 @@ module nts.uk.at.view.kwr005.b {
 
       vm.columns = ko.observableArray([
         { headerText: vm.$i18n('KWR005_107'), key: 'attendanceItemId', width: 80, formatter: _.escape },
-        { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label'  },
+        { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label' },
       ]);
 
       vm.printAttributes();
@@ -59,14 +59,14 @@ module nts.uk.at.view.kwr005.b {
           if (!newValue) return;
           vm.getSettingListForPrint(newValue);
         });
-  
+
         vm.printPropertyCode.subscribe((newValue: any) => {
           $('#swapList-search-area-clear-btn').trigger('click');
           $('.ntsSwapSearchRight #swapList-search-area-input').val(null);
           vm.clearSelection();
           vm.filterListMonthly(newValue);
         });
-      }); 
+      });
     }
 
     created(params: any) {
@@ -83,7 +83,7 @@ module nts.uk.at.view.kwr005.b {
       const vm = this;
       const userAgent = window.navigator.userAgent;
       let msie = userAgent.match(/Trident.*rv\:11\./);
-      if (!_.isNil(msie) && msie.index > -1)  {
+      if (!_.isNil(msie) && msie.index > -1) {
         $('.kwr-005b').addClass('ie');
         $('#multiList_displayContainer').height(300);
       }
@@ -104,7 +104,7 @@ module nts.uk.at.view.kwr005.b {
       vm.isEnableAttendanceCode(true);
       vm.createDefaultSettingDetails();
       vm.isNewMode(true);
-      $('#KWR005_B52').focus();      
+      $('#KWR005_B52').focus();
     }
 
     clearSelection() {
@@ -130,7 +130,7 @@ module nts.uk.at.view.kwr005.b {
 
       let selectedItems: Array<any> = [];
       _.forEach(vm.currentCodeListSwap(), (x, index) => {
-        selectedItems.push({ ranking: index + 1, attendanceId: x.attendanceItemId });
+        selectedItems.push({ ranking: index, attendanceId: x.attendanceItemId });
       });
 
       let params = {
@@ -157,7 +157,7 @@ module nts.uk.at.view.kwr005.b {
             vm.loadSettingList({ standOrFree: params.settingCategory, code: params.code });
           } else {
             let index = _.findIndex(vm.settingListItems(), (x) => x.code === vm.mode().code());
-            if( index >= 0) vm.settingListItems()[index].name = vm.mode().name();
+            if (index >= 0) vm.settingListItems()[index].name = vm.mode().name();
             vm.settingListItems.valueHasMutated();
             vm.isNewMode(false); //edit
           }
@@ -168,6 +168,9 @@ module nts.uk.at.view.kwr005.b {
         vm.$dialog.error({ messageId: error.messageId }).then(() => {
           vm.$blockui('hide');
           $(ctrlFocus).focus();
+          if (error.messageId === 'Msg_1928') {
+            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
+          }
         });
         //$(ctrlFocus).ntsError('set', { messageId: error.messageId });
       }).always(() => vm.$blockui('hide'));
@@ -203,7 +206,7 @@ module nts.uk.at.view.kwr005.b {
                 vm.$blockui('hide');
               })
             });
-        } else 
+        } else
           vm.$blockui('hide');
       });
     }
@@ -260,8 +263,9 @@ module nts.uk.at.view.kwr005.b {
       const vm = this;
 
       vm.currentCodeListSwap([]);
-      vm.resetListItemsSwap();      
+      vm.resetListItemsSwap();
       vm.clearSelection();
+      vm.printPropertyCode.valueHasMutated();
       //call to server
       vm.$blockui('show');
       vm.$ajax(PATH.getSettingLitsWorkStatusDetails, { settingId: settingId })
@@ -328,19 +332,10 @@ module nts.uk.at.view.kwr005.b {
       $('#KWR005_B53').focus();
     }
 
-    resetSettingListItems(): JQueryPromise<any> {
-      const vm = this;
-      const dfd = $.Deferred<any>();
-
-      vm.printPropertyCode(-1);
-      dfd.resolve();
-      return dfd.promise();
-    }
-
-    getWorkStatusTableOutput() : JQueryPromise<any> {
+    getWorkStatusTableOutput(): JQueryPromise<any> {
       const vm = this;
       const deferred = $.Deferred<any>();
-      vm.$blockui('show');
+      vm.$blockui('grayout');
 
       vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {
 
@@ -366,11 +361,11 @@ module nts.uk.at.view.kwr005.b {
         vm.$blockui('hide');
         deferred.resolve();
       })
-      .fail(() => {
-        deferred.reject();
-        vm.$blockui('hide');
-      })
-      .always(() => vm.$blockui('hide'));
+        .fail(() => {
+          deferred.reject();
+          vm.$blockui('hide');
+        })
+        .always(() => vm.$blockui('hide'));
 
       return deferred.promise();
     }
@@ -433,7 +428,7 @@ module nts.uk.at.view.kwr005.b {
 
       let newSettingListItems = _.filter(vm.settingListItems(), (x) => x.code !== vm.currentCodeList());
       vm.settingListItems([]);
-      if (newSettingListItems.length > 0) {
+      if (newSettingListItems.length > 0) {        
         vm.settingListItems(newSettingListItems);
         vm.currentCodeList(newSelectedCode);
       } else {
