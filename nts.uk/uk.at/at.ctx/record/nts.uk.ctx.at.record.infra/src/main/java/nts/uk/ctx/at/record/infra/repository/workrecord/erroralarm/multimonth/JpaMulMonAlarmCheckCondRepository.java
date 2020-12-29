@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.multimonth;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,10 +19,13 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtM
 public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements MulMonAlarmCheckCondRepository {
 	
 	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KrcmtMulMonAlarmCheck c "
-			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID ORDER BY c.insDate ASC ";
+			+ " WHERE c.pk.eralCheckId IN :listErrorAlarmCheckID ORDER BY c.pk.condNo";
 	private static final String SELECT_BY_CODE  = "SELECT c FROM KrcmtMulMonAlarmCheck c "
-			+ " WHERE c.errorAlarmCheckID =:errorAlarmCheckID" ;
+			+ " WHERE c.pk.eralCheckId =:errorAlarmCheckID" ;
 	
+	private static final String SELECT_BY_USEATR = "SELECT c FROM KrcmtMulMonAlarmCheck c "
+			+ " WHERE c.pk.eralCheckId IN :lstId "
+			+ " AND c.useAtr = :useAtr";
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulMonAlarmsByListID(List<String> listErrorAlarmCheckID) {
 		if(listErrorAlarmCheckID.isEmpty()) {
@@ -36,7 +38,7 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 							this.queryProxy().query(SELECT_BY_LIST_ID, KrcmtMulMonAlarmCheck.class)
 									.setParameter("listErrorAlarmCheckID", subIdList).getList());
 				});
-		data.sort(Comparator.comparing(KrcmtMulMonAlarmCheck::getInsDate));
+		//data.sort(Comparator.comparing(KrcmtMulMonAlarmCheck::getInsDate));
 		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
 	
@@ -56,14 +58,8 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	
 	@Override
 	public void updateMulMonAlarm(MulMonthAlarmCheckCond mulMonthAlarmCheckCond) {
-		KrcmtMulMonAlarmCheck updateEntity = this.queryProxy().find(mulMonthAlarmCheckCond.getErrorAlarmCheckID(), KrcmtMulMonAlarmCheck.class).get();
 		KrcmtMulMonAlarmCheck newEntity = KrcmtMulMonAlarmCheck.toEntity(mulMonthAlarmCheckCond);
-		updateEntity.nameAlarmCon = newEntity.nameAlarmCon;
-		updateEntity.typeCheckItem = newEntity.typeCheckItem;
-		updateEntity.messageBold = newEntity.messageBold;
-		updateEntity.messageColor = newEntity.messageColor;
-		updateEntity.messageDisplay = newEntity.messageDisplay;
-		this.commandProxy().update(updateEntity);
+		this.commandProxy().update(newEntity);
 		this.getEntityManager().flush();
 	}
 	
@@ -71,6 +67,17 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	public void deleteMulMonAlarm(String errorAlarmCheckID) {
 		this.commandProxy().remove(KrcmtMulMonAlarmCheck.class,errorAlarmCheckID);
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<MulMonthAlarmCheckCond> getMulCondByUseAtr(List<String> lstId, boolean useAtr) {
+		List<KrcmtMulMonAlarmCheck> data = new ArrayList<>();
+		data.addAll(
+				this.queryProxy().query(SELECT_BY_USEATR, KrcmtMulMonAlarmCheck.class)
+						.setParameter("lstId", lstId)
+						.setParameter("useAtr", useAtr ? 1 : 0)
+						.getList());
+		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
 
 }

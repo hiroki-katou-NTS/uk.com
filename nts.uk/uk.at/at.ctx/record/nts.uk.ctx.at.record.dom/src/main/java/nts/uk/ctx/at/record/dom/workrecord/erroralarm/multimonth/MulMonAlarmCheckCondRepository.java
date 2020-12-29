@@ -13,5 +13,8 @@ public interface MulMonAlarmCheckCondRepository {
 	void updateMulMonAlarm(MulMonthAlarmCheckCond mulMonthAlarmCheckCond);
 	
 	void deleteMulMonAlarm(String errorAlarmCheckID);
+	
+	List<MulMonthAlarmCheckCond> getMulCondByUseAtr(List<String> lstId, boolean useAtr);
+	
 }
 

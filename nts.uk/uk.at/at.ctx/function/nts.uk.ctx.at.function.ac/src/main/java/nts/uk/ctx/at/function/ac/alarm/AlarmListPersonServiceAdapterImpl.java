@@ -70,4 +70,23 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				lstAnyConID, lstWkpIdAndPeriod, lstResultCondition, lstCheckInfor);
 	}
 
+	@Override
+	public void extractMultiMonthCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
+			List<String> lstAnyConID, List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor) {
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = lstWplHist.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList())))
+					.collect(Collectors.toList());
+		extractService.extractMultiMonthlyResult(cid,
+				lstSid,
+				mPeriod, 
+				lstAnyConID,
+				lstWkpIdAndPeriod,
+				lstResultCondition,
+				lstCheckInfor);
+	}
+
+	
 }

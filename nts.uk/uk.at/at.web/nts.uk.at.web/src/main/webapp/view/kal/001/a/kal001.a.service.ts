@@ -91,21 +91,15 @@ module nts.uk.at.view.kal001.a.service {
                     this.category = p.category;
                     this.name = p.categoryName;     
                                         
-                    if(p.category==2|| p.category==5 || p.category == 8){
+                    if(p.category==2|| p.category==5 || p.category == 8){ //スケジュール4週,日次,申請承認
                         this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
                         this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
                         
-                    }else if(p.category ==7 || p.category == 9){
-//                        this.startDate = null ;
-//                        this.endDate = null;
-                        let sDate =p.dateValue().startDate + '/01';
-                            let eDate = p.dateValue().endDate;
-
-                            let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
-                            eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
-                                                        
-                            this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
-                            this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;   
+                    }else if(p.category ==7 || p.category == 9){ //月次、複数月次
+                        let sDate =p.dateValue().startDate + '01';
+                        let eDate = p.dateValue().endDate + '01';;
+                        this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
+                        this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;   
                         
                     }else if(p.category==12){
                         this.name=nts.uk.resource.getText("KAL010_208");

@@ -59,4 +59,19 @@ public interface AlarmListPersonServiceAdapter {
 			List<String> lstAnyConID, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckInfor);
+	/**
+	 * 複数月次
+	 * @param cid
+	 * @param lstSid
+	 * @param mPeriod
+	 * @param lstAnyConID
+	 * @param lstWplHist
+	 * @param lstResultCondition
+	 * @param lstCheckInfor
+	 */
+	void extractMultiMonthCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
+			List<String> lstAnyConID, 
+			List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckInfor);
 }

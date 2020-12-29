@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate;
 import java.util.List;
 
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -31,4 +33,6 @@ public interface EditStateOfMonthlyPerRepository {
 	 * @param closureDate 締め日
 	 */
 	void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+	
+	List<EditStateOfMonthlyPerformance> findBySidsAndYM(List<String> lstSid, DatePeriod mPeriod);
 }
