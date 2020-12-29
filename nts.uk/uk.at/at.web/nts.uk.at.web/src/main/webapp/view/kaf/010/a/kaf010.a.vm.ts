@@ -583,7 +583,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		setComboDivergenceReason(res: AppHdWorkDispInfo) {
 			const self = this;
 			if(res.comboDivergenceReason && res.comboDivergenceReason.length > 0){
-				self.comboDivergenceReason(res.comboDivergenceReason);
+				let comboBoxOptions: Array<ComboDivergenceReason> = res.comboDivergenceReason
+						.map(reason => {
+							reason.comboBoxText = reason.divergenceReasonCode + ' ' + reason.reason;
+							return reason;
+						});
+				self.comboDivergenceReason(comboBoxOptions);
 			}
 			let defaultReasonTypeItem = _.find(res.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
 			if(_.isUndefined(defaultReasonTypeItem)) {
@@ -591,6 +596,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					divergenceReasonCode: '',
 					reason: self.$i18n('KAFS00_23'),
 					reasonRequired: 1,
+					comboBoxText: self.$i18n('KAFS00_23'),
 				}];
 				self.comboDivergenceReason(_.concat(dataLst, self.comboDivergenceReason()));
 				self.selectedDivergenceReasonCode(_.head(self.comboDivergenceReason()).divergenceReasonCode);
@@ -1849,6 +1855,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		divergenceReasonCode: string;
 		reason: string;
 		reasonRequired: number;
+		comboBoxText: string;
 	}
 	enum MODE {
 		NORMAL,

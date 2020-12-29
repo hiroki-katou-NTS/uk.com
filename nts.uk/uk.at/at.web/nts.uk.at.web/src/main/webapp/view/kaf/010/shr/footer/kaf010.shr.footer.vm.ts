@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 								optionsValue: 'divergenceReasonCode',
 								optionsText: 'reason',
 								value: $parent.selectedDivergenceReasonCode,
-								columns: [{ prop: 'reason', length: 20 }],
+								columns: [{ prop: 'comboBoxText', length: 20 }],
 								required: $parent.comboDivergenceReason()[0] && $parent.comboDivergenceReason()[0].reasonRequired == 0 }">
 			</div>
 		</div>
